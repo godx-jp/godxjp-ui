@@ -1,7 +1,8 @@
 import { act, render, screen } from "@testing-library/react";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { Table, TableBody, TableCell, TableRow } from "../../components/data-display/table";
 import { useScrollsOnAxis } from "../hooks";
 
 /**
@@ -56,22 +57,39 @@ class CapturingResizeObserver {
   }
 }
 
-/** `clientWidth` / `scrollWidth` are 0 in jsdom, and 0 means "unlaid out", never "it fits". */
-function layout({ client, scroll }: { client: number; scroll: number }) {
-  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
-    value: client,
-    configurable: true,
-  });
-  Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
-    value: scroll,
-    configurable: true,
-  });
+/**
+ * Every box size is 0 in jsdom, and a box with BOTH client sizes 0 is "unlaid out", never "it
+ * fits". All four are written every time: they are stubbed on the prototype, so a height left over
+ * from one test would otherwise leak into the next.
+ */
+function layout({
+  client,
+  scroll,
+  clientHeight = 0,
+  scrollHeight = 0,
+}: {
+  client: number;
+  scroll: number;
+  clientHeight?: number;
+  scrollHeight?: number;
+}) {
+  const box = { clientWidth: client, scrollWidth: scroll, clientHeight, scrollHeight };
+  for (const [name, value] of Object.entries(box)) {
+    Object.defineProperty(HTMLElement.prototype, name, { value, configurable: true });
+  }
 }
 
-function Region() {
+function Region({ style }: { style?: CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
   const scrolls = useScrollsOnAxis(ref, true, "horizontal");
-  return <div ref={ref} data-testid="box" {...(scrolls ? { tabIndex: 0, role: "group" } : {})} />;
+  return (
+    <div
+      ref={ref}
+      data-testid="box"
+      style={style}
+      {...(scrolls ? { tabIndex: 0, role: "group" } : {})}
+    />
+  );
 }
 
 describe("the scroll region's tab stop (gh#907)", () => {
@@ -187,5 +205,94 @@ describe("the scroll region's tab stop (gh#907)", () => {
     layout({ client: 375, scroll: 1200 });
     render(<Region />);
     expect(flushSync).not.toHaveBeenCalled();
+  });
+});
+
+describe("the scroll region's tab stop on the axis the box REALLY scrolls on (gh#907, 31.0.3)", () => {
+  /* REOPENED with a concrete DOM: a `Table` in a `[role="tabpanel"]` that was hidden when the table
+   * mounted, settled at 317/309 with no `tabindex`, and axe `scrollable-region-focusable` failing.
+   * The report's reading — "hidden measured 0/0, taken as FITS, never re-measured" — does not hold:
+   * a box with both client sizes 0 counts as scrolling, and Chromium's ResizeObserver fires when a
+   * `display:none` box is shown. Measured in Chromium against the unfixed hook, hidden by
+   * `display:none`, `visibility`, `content-visibility`, a 0-height collapse, a 0-width box, off
+   * screen, and the kit's own `Tabs` (`destroyOnHidden` both ways): the stop was present after
+   * showing in every case. The first two tests pin that, so it stays true.
+   *
+   * What DID fail was the axis. axe's matcher only looks at a region whose overflow exceeds 13px
+   * (`getScroll(node, 13)`), so 317/309 — and the report's other sample, 310/309 — cannot be what
+   * axe flagged on the inline axis. It was the BLOCK axis: the wrapper is `overflow-auto`, a
+   * height-constrained parent made the table taller than its box, and the hook only ever asked the
+   * horizontal question. Chromium, a `Table` in a 160px flex column, unfixed: 309/309 × 204/160
+   * and 310/309 × 204/160 → no stop, axe fails; fixed → stop, axe passes. */
+  beforeEach(() => {
+    globalThis.ResizeObserver = CapturingResizeObserver as unknown as typeof ResizeObserver;
+  });
+  afterEach(() => {
+    notify = undefined;
+    document.head.querySelector("style[data-test-907]")?.remove();
+  });
+
+  it("keeps the stop through a hidden mount — a 0×0 box is UNKNOWN, never proof it fits", () => {
+    layout({ client: 0, scroll: 0 }); // `display:none` ancestor: the tabpanel is not selected
+    render(<Region />);
+    notify?.(); // the observer's first report of the hidden box
+    expect(screen.getByTestId("box")).toHaveAttribute("tabindex", "0");
+
+    layout({ client: 309, scroll: 317, clientHeight: 200, scrollHeight: 200 }); // tab selected
+    notify?.();
+    expect(screen.getByTestId("box")).toHaveAttribute("tabindex", "0");
+  });
+
+  it("still drops the stop when the shown box provably FITS (gh#821's contract)", () => {
+    layout({ client: 0, scroll: 0 });
+    render(<Region />);
+    layout({ client: 309, scroll: 309, clientHeight: 200, scrollHeight: 200 });
+    act(() => {
+      notify?.();
+    });
+    expect(screen.getByTestId("box")).not.toHaveAttribute("tabindex");
+  });
+
+  it("ADDS the stop for BLOCK-axis overflow when the box's own `overflow` scrolls that axis", () => {
+    layout({ client: 309, scroll: 309, clientHeight: 200, scrollHeight: 200 });
+    // Longhands: jsdom does not expand the `overflow` shorthand into `overflowX`/`overflowY`.
+    render(<Region style={{ overflowX: "auto", overflowY: "auto" }} />);
+    expect(screen.getByTestId("box")).not.toHaveAttribute("tabindex");
+
+    flushSync.mockClear();
+    layout({ client: 309, scroll: 310, clientHeight: 160, scrollHeight: 204 }); // the report's 310/309
+    notify?.();
+
+    expect(screen.getByTestId("box")).toHaveAttribute("tabindex", "0");
+    expect(flushSync, "a block-axis add is as urgent as an inline one").toHaveBeenCalled();
+  });
+
+  it("does NOT add it for an axis the box clips — `overflow-y: hidden` cannot be scrolled to", () => {
+    layout({ client: 309, scroll: 309, clientHeight: 160, scrollHeight: 204 });
+    render(<Region style={{ overflowX: "auto", overflowY: "hidden" }} />);
+    expect(screen.getByTestId("box")).not.toHaveAttribute("tabindex");
+  });
+
+  it("covers the Table primitive's own `overflow-auto` wrapper (and so DataTable's preset)", () => {
+    // jsdom loads no stylesheet; the one rule the wrapper's scroll axes come from is supplied, as
+    // longhands because jsdom does not expand the `overflow` shorthand.
+    const style = document.createElement("style");
+    style.dataset.test907 = "";
+    style.textContent = ".overflow-auto { overflow-x: auto; overflow-y: auto; }";
+    document.head.append(style);
+
+    layout({ client: 309, scroll: 309, clientHeight: 160, scrollHeight: 204 });
+    const { container } = render(
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableCell>春のキャンペーンチラシ</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
+    );
+    const wrapper = container.querySelector("div.overflow-auto");
+    expect(wrapper).toHaveAttribute("tabindex", "0");
+    expect(wrapper).toHaveAttribute("role", "group");
   });
 });
