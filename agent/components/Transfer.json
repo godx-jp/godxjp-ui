@@ -110,6 +110,11 @@
       "type": "(sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void"
     },
     {
+      "description": "antd `locale`, ported for `notFoundContent` only: what an empty or search-emptied pane shows (default: localized `dataEntry.transfer.empty`). A `[source, target]` pair sets each pane separately, as in antd.",
+      "name": "locale",
+      "type": "{ notFoundContent?: ReactNode | [ReactNode, ReactNode] }"
+    },
+    {
       "description": "Fires when items move between panels; you own `targetKeys` state.",
       "name": "onValueChange",
       "type": "(targetKeys: string[], direction: \"left\" | \"right\", moveKeys: string[]) => void"

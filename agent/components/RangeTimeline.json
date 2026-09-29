@@ -64,6 +64,12 @@
       "description": "Fires with the next expanded parent ids when a disclosure is toggled, for controlled and uncontrolled timelines alike.",
       "name": "onExpandedValuesChange",
       "type": "(values: string[]) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "antd Table `sticky` — keep the axis header (bands + ticks) on screen while the PAGE scrolls a long schedule. `offsetHeader` is px from the top of the scrolling viewport (the height of a fixed app topbar). The header moves out of the horizontal scroller and follows its scrollLeft; the section becomes `overflow: clip` and the body scroller takes the keyboard tab stop. Like antd, it needs no clipping ancestor between the timeline and the page scroller: `Card` is `overflow: hidden`, so a sticky timeline goes in the page as its own section, not inside a Card. antd's `offsetScroll` / `getContainer` (sticky horizontal scrollbar) are not ported.",
+      "name": "sticky",
+      "type": "boolean | { offsetHeader?: number }"
     }
   ],
   "rules": [],

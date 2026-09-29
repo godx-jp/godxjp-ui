@@ -9,7 +9,7 @@ import type {
 } from "@tanstack/react-query";
 import type { LinkProps } from "react-router-dom";
 import type { ButtonProp } from "./general.prop";
-import type { ClassNameProp, HandlerProp } from "../vocabulary";
+import type { ClassNameProp, HandlerProp, LabelProp } from "../vocabulary";
 
 /** @see DataState — TanStack Query lifecycle widget (not a visual component). */
 export type DataStateProp<T> = {
@@ -131,6 +131,13 @@ export type InfiniteQueryStateProp<
   loadingMore?: React.ReactNode;
   /** Custom load-more footer; `false` hides footer entirely. */
   loadMore?: React.ReactNode | false;
+  /**
+   * Text of the built-in load-more button (localized `query.loadMore` otherwise) — e.g.
+   * 「さらに表示」「さらに古い版を表示」. Only the idle label: the button, its pending label and its
+   * disabled-while-fetching behaviour stay the component's. Ignored when `loadMore` replaces the
+   * footer.
+   */
+  loadMoreLabel?: LabelProp;
   /** Show default load-more button when `hasNextPage`. Default `true`. */
   showLoadMore?: boolean;
   children: (flat: TFlat, helpers: InfiniteQueryHelpers) => React.ReactNode;

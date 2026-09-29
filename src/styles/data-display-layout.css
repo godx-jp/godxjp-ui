@@ -1503,6 +1503,18 @@
     padding-inline-end: calc(var(--code-block-space-inset) + var(--control-height-xs));
   }
 
+  /* An unwrapped block scrolls sideways, and a scrolled line would pass under the button: padding
+   * is part of the scrollport, so the reserved column only exists at the far end of the content
+   * (gh#1035). A transparent BORDER is outside the scrollport — the column stays put at every
+   * scroll position and the muted background still paints under it (background-clip:
+   * border-box). It is the button plus its `--space-1` inset on both sides, because scrolled text
+   * DOES run through the padding. Wrapped blocks never scroll sideways, so they keep the padding
+   * and render exactly as before. */
+  .ui-code-block[data-copyable][data-wrap="false"] {
+    padding-inline-end: var(--code-block-space-inset);
+    border-inline-end: calc(var(--control-height-xs) + 2 * var(--space-1)) solid transparent;
+  }
+
   .ui-code-block-copy {
     position: absolute;
     inset-block-start: var(--space-1);
@@ -1513,6 +1525,11 @@
   @media (pointer: coarse) {
     .ui-code-block[data-copyable] {
       padding-inline-end: calc(var(--code-block-space-inset) + var(--control-height-default));
+    }
+
+    .ui-code-block[data-copyable][data-wrap="false"] {
+      padding-inline-end: var(--code-block-space-inset);
+      border-inline-end-width: calc(var(--control-height-default) + 2 * var(--space-1));
     }
   }
 
@@ -2004,6 +2021,22 @@
     overflow: auto;
     border: var(--stroke-hairline) solid hsl(var(--range-timeline-border-color));
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+  }
+  /* `sticky` (antd Table `sticky`): the section stops scrolling (`clip` is not a scroll container,
+   * so the header below can stick to the PAGE's scroller) and hands sideways scrolling to the
+   * body scroller; the header rides on top at the consumer's offset and mirrors its scrollLeft. */
+  .ui-range-timeline[data-sticky="true"] {
+    overflow: clip;
+  }
+  .ui-range-timeline-sticky-header {
+    position: sticky;
+    inset-block-start: var(--range-timeline-sticky-offset, 0px);
+    z-index: 2;
+    overflow: hidden;
+  }
+  .ui-range-timeline-scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
   .ui-range-timeline-canvas {
     min-inline-size: calc(
@@ -2763,6 +2796,44 @@
   }
 
   .ui-tree[data-divided="true"] > .ui-tree-node:first-child {
+    border-block-start-color: transparent;
+  }
+
+  /* A node `filterTreeNode` matched (antd `:not(.ant-tree-treenode-disabled).filter-node
+   * .ant-tree-title`). The weight is the non-colour cue (WCAG 1.4.1); antd's 600 is not on this
+   * scale (docs: 400 · 500 · 700), so it is the label weight, 500. */
+  .ui-tree-node[data-filter-node="true"]:not([data-disabled]) .ui-tree-label {
+    color: var(--tree-node-filter-foreground, hsl(var(--primary)));
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* WINDOWED (`height`, gh#1042): rows are a flat run with no `.ui-tree-group`, so the `showLine`
+   * rail is drawn per row, one span per ancestor level, at the same inline offset the group rail
+   * above uses for that level. */
+  .ui-tree[data-virtual="true"][data-show-line="true"] .ui-tree-node {
+    position: relative;
+  }
+
+  .ui-tree-rail {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(
+      var(--tree-node-padding-inline) + (var(--tree-rail-level, 1) - 1) * var(--tree-indent-width) +
+        var(--tree-switcher-size) / 2
+    );
+    border-inline-start: var(--stroke-hairline) solid var(--tree-line-color, hsl(var(--border)));
+  }
+
+  /* The window's spacers: they hold the scroll height of the rows outside it. A flex item in a
+   * height-capped column shrinks by default, which would collapse them to nothing. */
+  .ui-tree-spacer {
+    flex: none;
+  }
+
+  /* A leading spacer means no row is `:first-child` while windowed, so the outline's first row is
+   * named by its ARIA position instead. */
+  .ui-tree[data-virtual="true"][data-divided="true"]
+    > .ui-tree-node[aria-level="1"][aria-posinset="1"] {
     border-block-start-color: transparent;
   }
 

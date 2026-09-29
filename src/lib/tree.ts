@@ -220,3 +220,54 @@ export function findNodeByValue(
   }
   return undefined;
 }
+
+/**
+ * rc-tree gives up on a node after this many rejected `loadData` calls and treats it as loaded
+ * (rc-tree `MAX_RETRY_TIMES`), so a permanently broken endpoint cannot be hammered forever.
+ */
+export const MAX_LAZY_LOAD_RETRIES = 10;
+
+/**
+ * The lazy-children ledger shared by `Tree`, `TreeSelect` and `Cascader` — rc-tree's
+ * `loadedKeys` / `loadingKeys` / `loadingRetryTimes`, in one place (gh#1041).
+ *
+ * A key is asked for at most once while in flight and never again once it RESOLVED. A REJECTED
+ * load is not "loaded": the key leaves the in-flight set and the next expand asks again, until
+ * `MAX_LAZY_LOAD_RETRIES` failures. The old per-component ledgers recorded the key before the
+ * promise settled and never cleared it, so one network blip left a branch unloadable for the life
+ * of the component.
+ */
+export type LazyLoadLedger = {
+  /**
+   * Call `load` for `key` unless it is in flight or already loaded. A synchronous throw counts
+   * as a rejection. `onSettle(ok)` runs once the load settles. Returns whether `load` was called.
+   */
+  run: (key: string, load: () => void | Promise<void>, onSettle?: (ok: boolean) => void) => boolean;
+};
+
+export function createLazyLoadLedger(): LazyLoadLedger {
+  const loaded = new Set<string>();
+  const inFlight = new Set<string>();
+  const failures = new Map<string, number>();
+  return {
+    run(key, load, onSettle) {
+      if (loaded.has(key) || inFlight.has(key)) return false;
+      inFlight.add(key);
+      new Promise<void>((resolve) => resolve(load())).then(
+        () => {
+          inFlight.delete(key);
+          loaded.add(key);
+          onSettle?.(true);
+        },
+        () => {
+          inFlight.delete(key);
+          const count = (failures.get(key) ?? 0) + 1;
+          failures.set(key, count);
+          if (count >= MAX_LAZY_LOAD_RETRIES) loaded.add(key);
+          onSettle?.(false);
+        },
+      );
+      return true;
+    },
+  };
+}

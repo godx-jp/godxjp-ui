@@ -1450,5 +1450,24 @@
     "nameColumn": "Name",
     "inviteTitle": "Send invitation",
     "send": "Send"
+  },
+  "treeDocs": {
+    "longList": {
+      "title": "Long child lists (height · virtual · filterTreeNode)",
+      "description": "2 suites → 28 sections → up to 421 cases. With height the tree scrolls inside that height and renders only the rows in view (antd height + virtual). Nodes matching the search are highlighted by filterTreeNode, never hidden. Section 2 fails its first loadData and fetches again when reopened. Section 3 shows how to compose a paged API: selecting the last leaf loads the next 100.",
+      "searchLabel": "Search cases",
+      "searchPlaceholder": "Highlight by case name (e.g. 042)",
+      "treeLabel": "Test suites",
+      "suiteIntegration": "Integration tests",
+      "suiteAcceptance": "Acceptance tests",
+      "section": "Section {number}",
+      "sectionFailing": "Section {number} (first load fails)",
+      "sectionPaged": "Section {number} ({count} at a time)",
+      "case": "Case {number}",
+      "loadMore": {
+        "one": "Load {count} more",
+        "other": "Load {count} more"
+      }
+    }
   }
 }

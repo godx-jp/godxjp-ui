@@ -3093,6 +3093,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "notFoundContent",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
@@ -8974,6 +8982,14 @@
           "declaredIn": ["src/props/components/query.prop.ts"]
         },
         {
+          "name": "loadMoreLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/query.prop.ts"]
+        },
+        {
           "name": "onAuthError",
           "origin": "owned",
           "required": false,
@@ -12823,6 +12839,14 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "sticky",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { offsetHeader?: number; } | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "today",
           "origin": "owned",
           "required": false,
@@ -13009,6 +13033,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "loadMoreLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "loadOptions",
           "origin": "owned",
           "required": false,
@@ -13022,6 +13054,14 @@
           "required": false,
           "type": "\"single\" | \"multiple\" | undefined",
           "values": ["single", "multiple"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "notFoundContent",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -19340,6 +19380,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "locale",
+          "origin": "owned",
+          "required": false,
+          "type": "{ notFoundContent?: NotFoundContentProp | [NotFoundContentProp, NotFoundContentProp]; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "name",
           "origin": "owned",
           "required": false,
@@ -19561,6 +19609,22 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "filterTreeNode",
+          "origin": "owned",
+          "required": false,
+          "type": "((node: TreeNodeProp) => boolean) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "height",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "id",
           "origin": "owned",
           "required": false,
@@ -19662,6 +19726,14 @@
           "required": false,
           "type": "\"default\" | \"directory\" | undefined",
           "values": ["default", "directory"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "virtual",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]

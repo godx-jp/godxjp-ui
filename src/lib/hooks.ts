@@ -209,9 +209,10 @@ export function useScrollableRegionTabIndex(element: HTMLElement | null): void {
  * overflows. Reading it as "no overflow" would strand the overflow from every keyboard user — a
  * worse failure than an extra tab stop — so an unmeasured box counts as scrolling.
  *
- * `axis` is the box's OWN `overflow`, not a preference: an axis it does not scroll on is `hidden`
- * there, so overflow on that axis is CLIPPED rather than reachable, and measuring it would keep a
- * tab stop that scrolls nothing. `ScrollArea`'s `orientation` is exactly this union.
+ * `axis` names the axes the caller KNOWS scroll; an axis whose computed `overflow` is `auto` or
+ * `scroll` is measured as well, because the box scrolls there whatever the caller asked. An axis
+ * that is `hidden` CLIPS rather than scrolls, so it is never measured — that would keep a tab stop
+ * that scrolls nothing. `ScrollArea`'s `orientation` is exactly this union.
  */
 export function useScrollsOnAxis(
   ref: RefObject<HTMLElement | null>,
@@ -222,8 +223,33 @@ export function useScrollsOnAxis(
   useEffect(() => {
     const el = ref.current;
     if (!enabled || !el) return undefined;
-    // `client === 0` is an UNLAID-OUT box, never "it fits" — see the note above.
-    const overflows = (client: number, scroll: number) => client === 0 || scroll - client > 1;
+    const overflows = (client: number, scroll: number) => scroll - client > 1;
+    /* THE AXES ARE THE BOX'S COMPUTED OVERFLOW, not only the one the caller named (gh#907,
+     * reopened on 31.0.3). `Table`'s wrapper is `overflow-auto`, and `.ui-data-table-scroll` /
+     * `.ui-org-chart-scroll` are `overflow-x: auto` — which COMPUTES `overflow-y` to `auto` as well
+     * (CSS Overflow 3: `visible` beside a scrolling axis becomes `auto`). All three asked the
+     * horizontal question only, so a table that is taller than its box — a height-constrained
+     * flex column, `DataTable scroll={{ y }}` — scrolled vertically with no tab stop. Measured in
+     * Chromium, a `Table` in a 160px flex column: 309/309 × 204/160 and 310/309 × 204/160 both
+     * had NO stop and axe `scrollable-region-focusable` failed. That is also why the report saw
+     * axe fire at 1px of horizontal overflow when axe's own matcher needs 13: the axis it caught
+     * was the vertical one. An axis that is `hidden` (ScrollArea's `orientation`) still computes
+     * `hidden` and stays unmeasured, so gh#821's "clipped is not reachable" holds. */
+    const scrollsOn = (value: string) => value === "auto" || value === "scroll";
+    const update = (sync: boolean) => {
+      // BOTH client sizes 0 is an UNLAID-OUT box (`display:none`, jsdom, pre-layout) — unknown,
+      // never "it fits"; see the note above. One laid-out axis means the box IS laid out.
+      const unmeasured = el.clientWidth === 0 && el.clientHeight === 0;
+      const style = getComputedStyle(el);
+      const next =
+        unmeasured ||
+        ((axis !== "vertical" || scrollsOn(style.overflowX)) &&
+          overflows(el.clientWidth, el.scrollWidth)) ||
+        ((axis !== "horizontal" || scrollsOn(style.overflowY)) &&
+          overflows(el.clientHeight, el.scrollHeight));
+      if (next && sync) flushSync(() => setScrolls(true));
+      else setScrolls(next);
+    };
     /* THE TWO DIRECTIONS ARE NOT SYMMETRIC, and gh#907 is what happens when they are treated as
      * if they were. A `ResizeObserver` callback runs after layout and BEFORE paint, but the
      * `setScrolls` inside it is batched, so the re-render lands in the NEXT frame: the frame in
@@ -241,13 +267,6 @@ export function useScrollsOnAxis(
     /* `sync` is false for the FIRST call, which happens inside this effect: React warns when
      * `flushSync` is called from a lifecycle, and it would buy nothing there — the state already
      * starts `true`, so the mount frame always carries the stop. Only the observer needs it. */
-    const update = (sync: boolean) => {
-      const next =
-        (axis !== "vertical" && overflows(el.clientWidth, el.scrollWidth)) ||
-        (axis !== "horizontal" && overflows(el.clientHeight, el.scrollHeight));
-      if (next && sync) flushSync(() => setScrolls(true));
-      else setScrolls(next);
-    };
     update(false);
 
     /* A WEB FACE ARRIVING AFTER FIRST PAINT IS A THIRD WAY INTO OVERFLOW, and the observer below
@@ -287,7 +306,10 @@ export function useScrollsOnAxis(
   return enabled && scrolls;
 }
 
-/** A table's wrapper scrolls on one axis only, so it asks the one question it has (gh#817). */
+/**
+ * The horizontal question a table asks (gh#817). The block axis is measured TOO whenever the box's
+ * computed `overflow-y` scrolls — `overflow-x: auto` computes it to `auto` — see `useScrollsOnAxis`.
+ */
 export function useScrollsHorizontally(
   ref: RefObject<HTMLElement | null>,
   enabled: boolean,

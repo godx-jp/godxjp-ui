@@ -240,6 +240,27 @@ export type TableSelectionItemProp = {
 };
 
 /**
+ * A built-in entry for the `selections` list (antd `Table.SELECTION_ALL` / `SELECTION_INVERT` /
+ * `SELECTION_NONE`, published here as `DataTable.SELECTION_*`). Mix them with custom
+ * {@link TableSelectionItemProp} entries in any order, exactly as antd does.
+ */
+export type TableSelectionBuiltInProp = "SELECT_ALL" | "SELECT_INVERT" | "SELECT_NONE";
+
+/**
+ * "Select all N matching" for a server-paged table (Gmail / Jira / GitHub; antd has no
+ * equivalent). Once every row of the page is selected, a banner above the header offers the whole
+ * result set; choosing it flips `selected`, and the consumer then sends its FILTER to the server
+ * instead of the ids. Unticking any row, or "Clear selection", reports `false`.
+ */
+export type TableSelectAllMatchingProp = {
+  /** Rows the current query matches on the server — the N in "Select all N". */
+  total: number;
+  /** Controlled: `true` while the whole matching set is selected. */
+  selected: boolean;
+  onSelectedChange: (selected: boolean) => void;
+};
+
+/**
  * Row-selection configuration (antd `TableRowSelection`). The object form is the full surface;
  * the older `selectable` / `selected` / `onSelectChange` triple stays and drives the same state.
  */
@@ -253,10 +274,21 @@ export type TableRowSelectionProp<T> = {
   getCheckboxProps?: (row: T) => { disabled?: boolean; "aria-label"?: string };
   /** Keep keys selected even once their row leaves `data` (server paging / filtering). */
   preserveSelectedRowKeys?: boolean;
-  /** Extra bulk-select entries under the header checkbox. `true` = the built-in all/none/invert. */
-  selections?: TableSelectionItemProp[] | boolean;
+  /**
+   * Extra bulk-select entries under the header checkbox. `true` = the built-in all/invert/none;
+   * a list mixes `DataTable.SELECTION_*` built-ins with custom entries, in the order given.
+   */
+  selections?: (TableSelectionItemProp | TableSelectionBuiltInProp)[] | boolean;
   hideSelectAll?: boolean;
   columnTitle?: React.ReactNode;
+  /**
+   * Accessible name of the header checkbox. Default: "Select all rows", or "Select all rows on
+   * this page" once `matching` is set. Name what it really selects — on a server-paged table it
+   * is the page, not the result set.
+   */
+  selectAllLabel?: string;
+  /** Opt-in "select all N matching" banner for a server-paged table. */
+  matching?: TableSelectAllMatchingProp;
 };
 
 /** Expandable-row configuration (antd/rc-table `ExpandableConfig`). */

@@ -8594,6 +8594,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than inverts. A service retunes the whole outline in one place instead of forking a row. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a shell that re-scopes `--control-height` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
   },
   {
+    "name": "--tree-node-filter-foreground",
+    "value": "initial",
+    "description": "Label of a node `filterTreeNode` matched (antd `.filter-node` title: primary colour, strong weight). A role mirror, so `initial` with the role at the call site. Documented default: --tree-node-filter-foreground = hsl(var(--primary))."
+  },
+  {
     "name": "--tree-loading-bar-inline-size",
     "value": "40%",
     "description": "Width of the indeterminate bar shown while `loadData` resolves a branch. A fraction, not a length: it has to read as \"part of a row\" at every row width and every density."

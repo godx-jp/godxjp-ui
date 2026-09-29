@@ -12,7 +12,9 @@ import {
   Tree,
   type TreeNodeProp,
 } from "@godxjp/ui/data-display";
+import { SearchInput } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 import { Building2, FolderTree, ShieldCheck } from "lucide-react";
 
@@ -167,7 +169,85 @@ function attachChildren(nodes: Department[], id: string, children: Department[])
   );
 }
 
+// ── card 4 · a long lazy level (height + virtual · filterTreeNode · retry) ────────────────────
+// The godx-task shape (gh#1041-1043): 2 suites → 28 sections → up to 421 cases per section,
+// fetched when a section opens. antd's Tree has no "load more" node — `height` keeps a 421-row
+// level to a few dozen DOM rows — so the one paged section below composes its own: a leaf whose
+// selection asks for the next page. It is a real treeitem, so the keyboard reaches it.
+const CASE_PAGE = 100;
+// The data carries VALUES only; every visible label is derived from the value through `t()` at
+// render (`labelSuiteTree`), so the demo follows the active locale like the library's chrome does.
+const suites: TreeNodeProp[] = [1, 2].map((suiteNumber) => ({
+  value: `suite-${suiteNumber}`,
+  label: "",
+  children: Array.from({ length: 14 }, (_, sectionIndex) => ({
+    value: `suite-${suiteNumber}/section-${sectionIndex + 1}`,
+    label: "",
+    isLeaf: false,
+  })),
+}));
+
+function caseNodes(section: string, from: number, to: number): TreeNodeProp[] {
+  return Array.from({ length: to - from }, (_, index) => ({
+    value: `${section}/case-${from + index + 1}`,
+    label: "",
+    isLeaf: true,
+  }));
+}
+
+function withChildren(
+  nodes: TreeNodeProp[],
+  value: string,
+  children: TreeNodeProp[],
+): TreeNodeProp[] {
+  return nodes.map((node) =>
+    node.value === value
+      ? { ...node, children }
+      : node.children
+        ? { ...node, children: withChildren(node.children, value, children) }
+        : node,
+  );
+}
+
+function labelSuiteTree(
+  nodes: TreeNodeProp[],
+  t: ReturnType<typeof useTranslation>["t"],
+): TreeNodeProp[] {
+  return nodes.map((node) => {
+    const value = node.value;
+    let label: string;
+    if (value.endsWith("::more")) {
+      label = t("treeDocs.longList.loadMore", { count: CASE_PAGE });
+    } else if (/\/case-\d+$/.test(value)) {
+      label = t("treeDocs.longList.case", {
+        number: String(Number(value.split("case-").pop())).padStart(3, "0"),
+      });
+    } else if (/\/section-\d+$/.test(value)) {
+      const number = Number(value.split("section-").pop());
+      const key =
+        value === "suite-1/section-2"
+          ? "treeDocs.longList.sectionFailing"
+          : value === "suite-1/section-3"
+            ? "treeDocs.longList.sectionPaged"
+            : "treeDocs.longList.section";
+      label = t(key, { number, count: CASE_PAGE });
+    } else {
+      label = t(
+        value === "suite-1"
+          ? "treeDocs.longList.suiteIntegration"
+          : "treeDocs.longList.suiteAcceptance",
+      );
+    }
+    return {
+      ...node,
+      label,
+      children: node.children ? labelSuiteTree(node.children, t) : undefined,
+    };
+  });
+}
+
 export default function Demo() {
+  const { t } = useTranslation();
   // Card 1 — checks are controlled so the readout beside the tree can never disagree with it.
   const [granted, setGranted] = React.useState<string[]>(["billing.invoice.read"]);
   // Card 2 — selection is controlled and drives the detail pane.
@@ -179,6 +259,45 @@ export default function Demo() {
   // Card 5 — independent (strict) checks, and a multi-select tree.
   const [strictChecks, setStrictChecks] = React.useState<string[]>(["people", "people.read"]);
   const [picked, setPicked] = React.useState<string[]>(["billing", "audit"]);
+  // Card 4 — the long lazy level.
+  const [suiteTree, setSuiteTree] = React.useState<TreeNodeProp[]>(suites);
+  const [caseQuery, setCaseQuery] = React.useState("");
+  // "" (not undefined) keeps the tree CONTROLLED while nothing is open.
+  const [openCase, setOpenCase] = React.useState("");
+  const failedOnce = React.useRef(false);
+
+  const loadSection = async (node: TreeNodeProp) => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    if (node.value === "suite-1/section-2" && !failedOnce.current) {
+      failedOnce.current = true;
+      // Rejected: the branch folds back shut, and opening it again asks again (gh#1041).
+      throw new Error("network");
+    }
+    const paged = node.value === "suite-1/section-3";
+    const children = caseNodes(node.value, 0, paged ? CASE_PAGE : 421);
+    if (paged) {
+      children.push({
+        value: `${node.value}::more`,
+        label: "",
+        isLeaf: true,
+      });
+    }
+    setSuiteTree((current) => withChildren(current, node.value, children));
+  };
+
+  const loadMoreCases = (moreValue: string) => {
+    const section = moreValue.replace(/::more$/, "");
+    setSuiteTree((current) => {
+      const sectionNode = current
+        .flatMap((suite) => suite.children ?? [])
+        .find((node) => node.value === section);
+      const loaded = (sectionNode?.children ?? []).filter((node) => !node.value.endsWith("::more"));
+      const next = caseNodes(section, loaded.length, Math.min(421, loaded.length + CASE_PAGE));
+      const more =
+        loaded.length + next.length < 421 ? [{ value: moreValue, label: "", isLeaf: true }] : [];
+      return withChildren(current, section, [...loaded, ...next, ...more]);
+    });
+  };
 
   const loadDepartment = async (node: TreeNodeProp) => {
     // A real delay, so the Skeleton row and aria-busy are OBSERVABLE rather than theoretical.
@@ -362,6 +481,41 @@ export default function Demo() {
                 </Text>
               )}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("treeDocs.longList.title")}</CardTitle>
+            <CardDescription>{t("treeDocs.longList.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <SearchInput
+                ariaLabel={t("treeDocs.longList.searchLabel")}
+                placeholder={t("treeDocs.longList.searchPlaceholder")}
+                value={caseQuery}
+                onValueChange={setCaseQuery}
+                onSearch={() => {}}
+              />
+              <Tree
+                aria-label={t("treeDocs.longList.treeLabel")}
+                treeData={labelSuiteTree(suiteTree, t)}
+                height={360}
+                defaultExpandedValues={["suite-1"]}
+                loadData={loadSection}
+                filterTreeNode={(node) =>
+                  caseQuery.trim() !== "" && String(node.label).includes(caseQuery.trim())
+                }
+                value={openCase}
+                onValueChange={(next) => {
+                  // The "load more" leaf is an action, not a selection — it never stays selected,
+                  // so choosing it again always asks for the next page.
+                  if (typeof next === "string" && next.endsWith("::more")) loadMoreCases(next);
+                  else setOpenCase((next as string | undefined) ?? "");
+                }}
+              />
+            </Flex>
           </CardContent>
         </Card>
 

@@ -79,7 +79,8 @@ that every Ant-shaped app reaches for was never built.
 | Density | — | `size: xs \| sm \| lg` (`md` is the default, never `"default"`) |
 | Directory variant | `<DirectoryTree>` | `variant="directory"` |
 | Drag & drop | `draggable` | **out of scope for v1** — file a follow-up issue |
-| Virtual scroll | `virtual` / `height` | **out of scope for v1** — cap with `ScrollArea`; file a follow-up issue |
+| Virtual scroll | `virtual` / `height` | `height` + `virtual` (gh#1042) — windowed rows are a flat run of treeitems; antd has no "load more" node, so none is shipped |
+| Match highlight | `filterTreeNode` | `filterTreeNode` (gh#1043) — `data-filter-node="true"` for antd's `filter-node` class, plus an sr-only "matches" |
 
 Plus the house rules: forward `ref`, spread `...props`, accept `className` + `id`, export
 `TreeProp` and `TreeProp as TreeProps` from `src/props/components/data-display.prop.ts`, and

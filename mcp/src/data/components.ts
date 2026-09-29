@@ -601,6 +601,13 @@ export const COMPONENTS: ComponentEntry[] = [
         description:
           "Fires with the next expanded parent ids when a disclosure is toggled, for controlled and uncontrolled timelines alike.",
       },
+      {
+        name: "sticky",
+        type: "boolean | { offsetHeader?: number }",
+        defaultValue: "false",
+        description:
+          "antd Table `sticky` — keep the axis header (bands + ticks) on screen while the PAGE scrolls a long schedule. `offsetHeader` is px from the top of the scrolling viewport (the height of a fixed app topbar). The header moves out of the horizontal scroller and follows its scrollLeft; the section becomes `overflow: clip` and the body scroller takes the keyboard tab stop. Like antd, it needs no clipping ancestor between the timeline and the page scroller: `Card` is `overflow: hidden`, so a sticky timeline goes in the page as its own section, not inside a Card. antd's `offsetScroll` / `getContainer` (sticky horizontal scrollbar) are not ported.",
+      },
     ],
     example:
       '<RangeTimeline label="Schedule" columns={[{ label: "Week", units: 7 }]} rows={[{ id: "task", label: "Task", start: 0, end: 6, startLabel: "Start: day 1", endLabel: "End: day 7" }]} />',
@@ -4137,9 +4144,9 @@ import { Icon, Text } from "@godxjp/ui/general";
       },
       {
         name: "rowSelection",
-        type: "{ type?: 'checkbox'|'radio'; selectedRowKeys?: string[]; defaultSelectedRowKeys?: string[]; onChange?: (keys, rows) => void; getCheckboxProps?: (row) => { disabled?, 'aria-label'? }; preserveSelectedRowKeys?: boolean; selections?: true | { key, text, onSelect }[]; hideSelectAll?: boolean; columnTitle?: ReactNode }",
+        type: "{ type?: 'checkbox'|'radio'; selectedRowKeys?: string[]; defaultSelectedRowKeys?: string[]; onChange?: (keys, rows) => void; getCheckboxProps?: (row) => { disabled?, 'aria-label'? }; preserveSelectedRowKeys?: boolean; selections?: true | ({ key, text, onSelect } | DataTable.SELECTION_ALL | DataTable.SELECTION_INVERT | DataTable.SELECTION_NONE)[]; hideSelectAll?: boolean; columnTitle?: ReactNode; selectAllLabel?: string; matching?: { total: number; selected: boolean; onSelectedChange: (selected: boolean) => void } }",
         description:
-          "Full row-selection configuration (antd rowSelection). Supersedes — and can be mixed with — selectable/selected/onSelectChange, which drive the same state. type:'radio' makes the column single-choice (no header checkbox at all). getCheckboxProps is the declared home for 'this row cannot be selected' (disabled) and for a per-row accessible name. preserveSelectedRowKeys keeps a key selected after its row leaves `data` (server paging / a filter), which is the only way a select-across-pages bulk action can be correct. selections adds bulk entries under the header checkbox (true = the built-in all · invert · none).",
+          "Full row-selection configuration (antd rowSelection). Supersedes — and can be mixed with — selectable/selected/onSelectChange, which drive the same state. type:'radio' makes the column single-choice (no header checkbox at all). getCheckboxProps is the declared home for 'this row cannot be selected' (disabled) and for a per-row accessible name. preserveSelectedRowKeys keeps a key selected after its row leaves `data` (server paging / a filter), which is the only way a select-across-pages bulk action can be correct. selections adds bulk entries under the header checkbox (true = the built-in all · invert · none; a list mixes antd's DataTable.SELECTION_ALL / SELECTION_INVERT / SELECTION_NONE with custom entries in the order given). selectAllLabel names the header checkbox — say what it really selects (on a server-paged table: the page) instead of replacing it through columnTitle. matching (no antd equivalent; Gmail/Jira/GitHub) is the server-paged 'select all N matching' banner: once the whole page is ticked and total exceeds the page, a polite status above the header offers 'Select all N matching rows'; choosing it reports onSelectedChange(true) — send your FILTER, not the ids, for the bulk write — and while selected every row of any page shows ticked. Unticking a row or 'Clear selection' reports false. With matching set, the header checkbox defaults to 'Select all rows on this page'.",
       },
       {
         name: "expandable",
@@ -6304,13 +6311,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
         required: true,
         description: "Render with flat data + { fetchNextPage, hasNextPage, isFetchingNextPage }.",
       },
+      {
+        name: "loadMoreLabel",
+        type: "ReactNode",
+        description:
+          "Idle text of the built-in load-more button (default: localized `query.loadMore`, 「さらに読み込む」) — e.g. 「さらに表示」「さらに古い版を表示」. The button, its pending label and disabled-while-fetching stay the component's. Ignored when `loadMore` replaces the footer.",
+      },
     ],
     usage: [
       "DO: Import from `@godxjp/ui/query` (not `@godxjp/ui`). Use the bundled `flattenItemPages` helper for any API that returns `{ items: T[] }` pages — it handles `undefined` data safely. Custom page shapes require a custom `flatten` function.",
       "DO: Always pass `skeleton` (e.g. `<SkeletonTable />` or `<SkeletonStat />`). It shows on initial `isPending`, on refetch-after-error, and whenever `data` is absent. Never show a blank area while loading.",
       "DO: Pass `empty` (an `<EmptyState>` node) to handle the zero-results case — without it the children render-prop is called with an empty array and you get a silent blank screen. Provide a custom `isEmpty` only when `TFlat` is not an array.",
       "DO: Let errors remain cause-aware. Retry is automatic only for classified transient/network/5xx failures. Unknown errors do not get a blind retry unless `showRetry` or `onRetry` is explicitly supplied; a 401 is handled by the app-root `AuthExpiryProvider` (auto, once, skeleton + live region) or, without one, by the `onAuthError` sign-in button; raw backend/token text is never rendered.",
-      "DON'T: Hand-roll a load-more button. The component renders a default centered outline Button when `hasNextPage` is true. Override only via `loadMore` (custom node) or `showLoadMore={false}` (hide entirely). Never call `query.fetchNextPage()` outside the component for pagination.",
+      "DON'T: Hand-roll a load-more button. The component renders a default centered outline Button when `hasNextPage` is true. Rename it with `loadMoreLabel` (keeps the pending state); replace it only via `loadMore` (custom node) or `showLoadMore={false}` (hide entirely). Never call `query.fetchNextPage()` outside the component for pagination.",
       "DON'T: Use `InfiniteQueryState` for a `useQuery` result — it expects `UseInfiniteQueryResult` shape (`pages`, `hasNextPage`, `fetchNextPage`, `isFetchingNextPage`). For regular `useQuery` use `DataState` instead.",
       "DON'T: Confuse the two generics: `TPage` is the raw page shape from the API, `TFlat` is what `flatten` returns (usually `TItem[]`). The `children` render-prop receives `TFlat`, not `TPage`. Pass `isEmpty` if `TFlat` is not a plain array so empty detection works correctly.",
     ],
@@ -7121,6 +7134,18 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         type: "string",
         description:
           "Dialog heading. Defaults to the localized `dataEntry.recordPicker.dialogTitle`.",
+      },
+      {
+        name: "notFoundContent",
+        type: "ReactNode",
+        description:
+          "antd `notFoundContent` — shown when the search finds nothing, in the dropdown shape and the dialog alike (default: localized `dataEntry.recordPicker.empty`). Name WHAT was not found, e.g. 「該当するファイルはありません」.",
+      },
+      {
+        name: "loadMoreLabel",
+        type: "ReactNode",
+        description:
+          "Text of the dialog's load-more button (default: localized `dataEntry.recordPicker.more`). Only the label — the button still appears only while the server returns a `nextCursor`.",
       },
       {
         name: "size",
@@ -9167,7 +9192,7 @@ toast.error("保存に失敗しました");`,
         name: "controls",
         type: "IdProp",
         description:
-          "Strip-only mode (gh#1021): the tabs drive content OUTSIDE the strip. No tabpanel is rendered, and the selected tab's `aria-controls` points at this id, which is the consumer's own region (give it `role=\"region\"` and a name). Content there is never remounted on a tab switch, so a typed draft survives. With the compound form it applies to triggers without a declared `TabsContent` (a declared panel wins). A pure filter with NO region to point at is not a tab strip; use `Segmented`. The root's `aria-label`/`aria-labelledby` name the `role=\"tablist\"` (gh#1020), and a compound `TabsTrigger` takes `count`/`overflowCount`/`showZero`/`countLabel`, drawn exactly like `items[].count`.",
+          'Strip-only mode (gh#1021): the tabs drive content OUTSIDE the strip. No tabpanel is rendered, and the selected tab\'s `aria-controls` points at this id, which is the consumer\'s own region (give it `role="region"` and a name). Content there is never remounted on a tab switch, so a typed draft survives. With the compound form it applies to triggers without a declared `TabsContent` (a declared panel wins). A pure filter with NO region to point at is not a tab strip; use `Segmented`. The root\'s `aria-label`/`aria-labelledby` name the `role="tablist"` (gh#1020), and a compound `TabsTrigger` takes `count`/`overflowCount`/`showZero`/`countLabel`, drawn exactly like `items[].count`.',
       },
       {
         name: "variant",
@@ -10497,7 +10522,7 @@ export function CutoffTimeForm() {
         name: "loadData",
         type: "(selectedOptions: TreeOptionProp[]) => void | Promise<void>",
         description:
-          "antd `loadData` — lazy children. Called ONCE per branch that has no children and isLeaf !== true, the first time it is expanded; push the fetched children into options.",
+          "antd `loadData` — lazy children. Called when a branch that has no children and isLeaf !== true is expanded, and never again once its promise resolves; push the fetched children into options. A rejected promise is forgotten, so the next activation of the branch asks again (gh#1041).",
       },
       {
         name: "displayRender",
@@ -10829,7 +10854,7 @@ function MultiRegionPicker() {
         name: "loadData",
         type: "(node: TreeOptionProp) => void | Promise<void>",
         description:
-          "antd `loadData` — lazy children. Called ONCE per node that has no children and isLeaf !== true, the first time it is expanded; push the fetched children into treeData. Such a node still reads as expandable (aria-expanded + a working expander).",
+          "antd `loadData` — lazy children. Called when a node that has no children and isLeaf !== true is expanded, and never again once its promise resolves; push the fetched children into treeData. A rejected promise folds the branch shut and the next expand asks again, up to 10 attempts (rc-tree, gh#1041). Such a node still reads as expandable (aria-expanded + a working expander).",
       },
       {
         name: "treeTitleRender",
@@ -11053,6 +11078,12 @@ export function DepartmentFilter() {
         type: "(sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void",
         description:
           "Called whenever the checked selection in either panel changes. Provides updated arrays for source and target selections. Required when `selectedKeys` is controlled.",
+      },
+      {
+        name: "locale",
+        type: "{ notFoundContent?: ReactNode | [ReactNode, ReactNode] }",
+        description:
+          "antd `locale`, ported for `notFoundContent` only: what an empty or search-emptied pane shows (default: localized `dataEntry.transfer.empty`). A `[source, target]` pair sets each pane separately, as in antd.",
       },
       {
         name: "onValueChange",
@@ -13192,12 +13223,31 @@ export function FilterSection() {
         name: "loadData",
         type: "(node: TreeNodeProp) => void | Promise<void>",
         description:
-          "Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no `children` and `isLeaf !== true` is expanded; a Skeleton row and `aria-busy` cover the wait. Push the fetched children into `treeData`.",
+          "Lazy children (antd `loadData`). Called when a branch with no `children` and `isLeaf !== true` is expanded, and never again once its promise RESOLVES; a Skeleton row and `aria-busy` cover the wait. Push the fetched children into `treeData`. A REJECTED promise is not a load (rc-tree, gh#1041): the branch folds back shut (uncontrolled expansion) and the next expand asks again, up to 10 attempts.",
       },
       {
         name: "titleRender",
         type: "(node: TreeNodeProp) => ReactNode",
         description: "Render a node's title yourself (antd `titleRender`).",
+      },
+      {
+        name: "filterTreeNode",
+        type: "(node: TreeNodeProp) => boolean",
+        description:
+          'Highlight the nodes this returns true for (antd `filterTreeNode`, gh#1043) — the match of a search box above the tree. Matching rows are MARKED, not hidden: `data-filter-node="true"`, the label in `--tree-node-filter-foreground` (default `hsl(var(--primary))`) at the medium weight, plus sr-only "matches the filter" text. Outline, keyboard and ARIA are unchanged. To also open the branches that hold a match, drive `expandedValues`.',
+      },
+      {
+        name: "height",
+        type: "number",
+        description:
+          "Viewport height in px (antd `height`, gh#1042). The tree scrolls inside it and, unless `virtual={false}`, renders only the rows in view plus a small overscan — the windowed rows stay a flat run of treeitems whose `aria-level`/`aria-setsize`/`aria-posinset` still describe the whole outline. Rows must share one height (the `size` tier).",
+      },
+      {
+        name: "virtual",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Set `false` to keep the `height` viewport but render every row (antd `virtual`).",
       },
       {
         name: "showLine",
@@ -13262,8 +13312,9 @@ export function FilterSection() {
       "DON'T nest a Button, Checkbox, Link or any focusable control inside a node label. A tree item owns exactly ONE tab stop; the disclosure triangle and the tick box are decorative glyphs for that reason. Put row actions in a sibling column outside the tree, or open a detail pane on selection.",
       'DON\'T hand-roll an indented `<ul>` (or a NavList / ListRow stack with a per-depth margin) for a hierarchy. A flat indented list only LOOKS like a tree: no expand/collapse, no `role="tree"`, no keyboard model, no selection contract. `TreeList` was exactly that list and was REMOVED in 21.0.0 — Tree is what replaced it, and it is the one to reach for whenever nodes expand, collapse or are keyboard-navigated.',
       "DO pass `divided` when the tree IS the navigation of a page — a wiki/document outline or a section index sitting in a `Card` (`Card` > `CardContent flush` > `Tree divided`). Without a rule the rows run together and the outline reads as one block; with it, it reads as the ruled list ListRow and Table already give a flat list. Retint it per theme with `--tree-divider-color`, never with a per-page utility class.",
-      "DO cap a long tree with `ScrollArea` — virtualisation is not in v1, so a 5,000-node tree renders 5,000 rows.",
-      "DO push fetched children into `treeData` from `loadData`; the tree calls it once per node and shows a Skeleton row until the data lands.",
+      "DO pass `height` for a long tree (antd `height` + `virtual`): the tree scrolls inside that height and keeps only the rows in view in the DOM, so a 421-child level renders a few dozen rows. Do not wrap it in `ScrollArea` as well — the tree is its own viewport.",
+      "DO push fetched children into `treeData` from `loadData`; the tree calls it once per node that loads and shows a Skeleton row until the data lands. Reject the promise on failure — the branch folds shut and the next expand retries.",
+      'DON\'T wait for a paged "load more" node — antd\'s Tree has none, and `height` covers a long list. If the API itself is paged, append a leaf node such as `{ value: `${parent}::more`, label: t("…load more"), isLeaf: true }` to the loaded children and fetch the next page from `onValueChange` when it is selected: it is a real treeitem, so it is keyboard-reachable and announced.',
     ],
     useCases: [
       "A permission tree: modules → resources → actions with tri-state checkboxes, where ticking a module ticks everything under it and a partly-granted module shows the dash.",
@@ -13278,7 +13329,7 @@ export function FilterSection() {
       "TreeSelect — the same hierarchy INSIDE a Popover, as a form field. Use TreeSelect when the answer is a value in a form; use Tree when the hierarchy itself is the page.",
       "Cascader — a path picker across columns. Use it when the user walks one path to a leaf; use Tree when several branches are open at once.",
       "Accordion — single-level disclosure with rich panel content. It is not a hierarchy and has no tree keyboard model.",
-      "ScrollArea — wrap Tree in one to cap a long outline; Tree does not virtualise in v1.",
+      "ScrollArea — not needed around Tree: pass `height`, and the tree is its own (windowed) scroll viewport.",
     ],
     example: `import * as React from "react";
 import { Tree } from "@godxjp/ui/data-display";
@@ -16885,6 +16936,12 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
         type: "boolean",
         defaultValue: "true",
         description: "Built-in branch search above the checkbox list.",
+      },
+      {
+        name: "notFoundContent",
+        type: "ReactNode",
+        description:
+          "antd `notFoundContent` — shown when the branch SEARCH matches nothing (default: localized `dataEntry.branchScope.noMatches`). An empty `branches` list is `empty`'s job, not this.",
       },
       {
         name: "allLabel / selectedLabel",

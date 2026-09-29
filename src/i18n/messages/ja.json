@@ -353,7 +353,8 @@
       "collapse": "折りたたむ",
       "loading": "子ノードを読み込み中…",
       "empty": "表示する項目がありません",
-      "selected": "選択中"
+      "selected": "選択中",
+      "filterMatch": "フィルターに一致"
     },
     "thoughtChain": {
       "label": "思考の手順",
@@ -572,7 +573,11 @@
     "sortDescending": "降順に並べ替え",
     "sortCancel": "並べ替えを解除",
     "selectColumn": "選択",
-    "scrollRegion": "スクロール可能な表"
+    "scrollRegion": "スクロール可能な表",
+    "selectPage": "このページの行をすべて選択",
+    "matchingPage": "このページの{count}件を選択中",
+    "matchingSelectAll": "{count}件すべてを選択",
+    "matchingSelected": "{count}件すべてを選択中"
   },
   "dataGrid": {
     "search": "検索",

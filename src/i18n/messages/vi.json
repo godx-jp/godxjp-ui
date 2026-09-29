@@ -354,7 +354,8 @@
       "collapse": "Thu gọn",
       "loading": "Đang tải nút con…",
       "empty": "Không có gì để hiển thị",
-      "selected": "Đã chọn"
+      "selected": "Đã chọn",
+      "filterMatch": "Khớp bộ lọc"
     },
     "thoughtChain": {
       "label": "Các bước suy luận",
@@ -573,7 +574,11 @@
     "sortDescending": "Sắp xếp giảm dần",
     "sortCancel": "Bỏ sắp xếp",
     "selectColumn": "Chọn",
-    "scrollRegion": "Bảng có thể cuộn"
+    "scrollRegion": "Bảng có thể cuộn",
+    "selectPage": "Chọn tất cả các dòng trên trang này",
+    "matchingPage": "Đã chọn {count} dòng trên trang này.",
+    "matchingSelectAll": "Chọn tất cả {count} dòng khớp",
+    "matchingSelected": "Đã chọn tất cả {count} dòng khớp."
   },
   "dataGrid": {
     "search": "Tìm kiếm",

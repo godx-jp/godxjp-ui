@@ -53,6 +53,14 @@ export type RangeTimelineProps = React.HTMLAttributes<HTMLElement> & {
   defaultExpandedValues?: readonly string[];
   /** Fires with the next expanded parent ids, for controlled and uncontrolled timelines alike. */
   onExpandedValuesChange?: (values: string[]) => void;
+  /**
+   * Keep the axis header (bands + ticks) on screen while the PAGE scrolls a long schedule — antd
+   * Table `sticky`. `offsetHeader` is the distance in px from the top of the scrolling viewport,
+   * e.g. the height of a fixed app topbar. The header then scrolls horizontally with the body.
+   * Needs no clipping ancestor (e.g. `Card`, which is `overflow: hidden`) between it and the page
+   * scroller. antd's `offsetScroll` / `getContainer` (a sticky horizontal scrollbar) are not ported.
+   */
+  sticky?: boolean | { offsetHeader?: number };
 };
 
 /** A horizontal range axis. Units and labels are data; the design system owns all geometry. */
@@ -70,6 +78,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       expandedValues,
       defaultExpandedValues,
       onExpandedValuesChange,
+      sticky = false,
       className,
       ...props
     },
@@ -131,6 +140,8 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       columns.reduce((sum, column) => sum + column.units, 0),
     );
     const track = React.useRef<HTMLDivElement>(null);
+    const stickyHeader = React.useRef<HTMLDivElement>(null);
+    const bodyScroller = React.useRef<HTMLDivElement>(null);
     const drag = React.useRef<{
       id: string;
       edge: "start" | "end";
@@ -164,250 +175,281 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
           : Math.max(delta, row.start - row.end);
       if (bounded) onRangeChange?.(row.id, current.edge, bounded);
     };
-    return (
-      <section
-        {...props}
-        ref={ref}
-        className={cn("ui-range-timeline", className)}
-        data-bordered={bordered ? "true" : undefined}
-        // Only a NON-default step scopes the unit-width knob, so a theme that narrows
-        // --range-timeline-unit-width globally still owns the default timeline (gh#730).
-        data-density={density === "default" ? undefined : density}
-        aria-label={label}
-        tabIndex={0}
-      >
-        <div
-          className="ui-range-timeline-canvas"
-          style={
-            {
-              "--range-timeline-columns": Math.max(1, columns.length),
-              "--range-timeline-units": units,
-            } as React.CSSProperties
-          }
-        >
-          {bands && bands.length > 0 && (
-            <div className="ui-range-timeline-header">
-              <div className="ui-range-timeline-label" aria-hidden="true" />
-              <div className="ui-range-timeline-columns">
-                {bands.map((band, index) => (
-                  <div
-                    key={index}
-                    className="ui-range-timeline-column"
-                    style={{ gridColumn: `span ${band.units}` }}
-                  >
-                    <Text size="xs" weight="medium">
-                      {band.label}
-                    </Text>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+    const canvasStyle = {
+      "--range-timeline-columns": Math.max(1, columns.length),
+      "--range-timeline-units": units,
+    } as React.CSSProperties;
+    const header = (
+      <>
+        {bands && bands.length > 0 && (
           <div className="ui-range-timeline-header">
-            <div className="ui-range-timeline-label">
-              <Text weight="bold">{label}</Text>
-            </div>
-            <div className="ui-range-timeline-columns" ref={track}>
-              {columns.map((column, index) => (
+            <div className="ui-range-timeline-label" aria-hidden="true" />
+            <div className="ui-range-timeline-columns">
+              {bands.map((band, index) => (
                 <div
                   key={index}
                   className="ui-range-timeline-column"
-                  style={{ gridColumn: `span ${column.units}` }}
+                  style={{ gridColumn: `span ${band.units}` }}
                 >
-                  <Text size="xs">{column.label}</Text>
+                  <Text size="xs" weight="medium">
+                    {band.label}
+                  </Text>
                 </div>
               ))}
             </div>
           </div>
-          <div className="ui-range-timeline-body" role={nested ? "list" : undefined}>
-            {(bordered || columns.some((column) => column.muted)) && (
-              // Decorative: the same unit tracks as the header columns, laid once behind every row so
-              // each vertical rule runs the full body height exactly under its header column.
-              <div className="ui-range-timeline-grid" aria-hidden="true">
-                <div />
-                <div className="ui-range-timeline-columns">
-                  {columns.map((column, index) => (
-                    <div
-                      key={index}
-                      className="ui-range-timeline-grid-column"
-                      data-muted={column.muted ? "true" : undefined}
-                      style={{ gridColumn: `span ${column.units}` }}
-                    />
-                  ))}
-                </div>
+        )}
+        <div className="ui-range-timeline-header">
+          <div className="ui-range-timeline-label">
+            <Text weight="bold">{label}</Text>
+          </div>
+          <div className="ui-range-timeline-columns" ref={track}>
+            {columns.map((column, index) => (
+              <div
+                key={index}
+                className="ui-range-timeline-column"
+                style={{ gridColumn: `span ${column.units}` }}
+              >
+                <Text size="xs">{column.label}</Text>
               </div>
-            )}
-            {visibleRows.map((row, index) => {
-              // Ids from the row's position, never from `row.id` (which may hold spaces).
-              const idBase = `${reactId}-row-${rows.indexOf(row)}`;
-              const delta = preview?.id === row.id ? preview.delta : 0;
-              const start = Math.min(row.end, row.start + (preview?.edge === "start" ? delta : 0));
-              const end = Math.max(row.start, row.end + (preview?.edge === "end" ? delta : 0));
-              const left = Math.max(0, start),
-                right = Math.min(units, end + 1);
-              return (
+            ))}
+          </div>
+        </div>
+      </>
+    );
+    const body = (
+      <div className="ui-range-timeline-body" role={nested ? "list" : undefined}>
+        {(bordered || columns.some((column) => column.muted)) && (
+          // Decorative: the same unit tracks as the header columns, laid once behind every row so
+          // each vertical rule runs the full body height exactly under its header column.
+          <div className="ui-range-timeline-grid" aria-hidden="true">
+            <div />
+            <div className="ui-range-timeline-columns">
+              {columns.map((column, index) => (
                 <div
-                  className="ui-range-timeline-row"
-                  key={row.id}
-                  {...(nested && {
-                    role: "listitem",
-                    "aria-level": depthOf(row) + 1,
-                    "aria-setsize": siblingsOf(index).size,
-                    "aria-posinset": siblingsOf(index).position,
-                  })}
+                  key={index}
+                  className="ui-range-timeline-grid-column"
+                  data-muted={column.muted ? "true" : undefined}
+                  style={{ gridColumn: `span ${column.units}` }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+        {visibleRows.map((row, index) => {
+          // Ids from the row's position, never from `row.id` (which may hold spaces).
+          const idBase = `${reactId}-row-${rows.indexOf(row)}`;
+          const delta = preview?.id === row.id ? preview.delta : 0;
+          const start = Math.min(row.end, row.start + (preview?.edge === "start" ? delta : 0));
+          const end = Math.max(row.start, row.end + (preview?.edge === "end" ? delta : 0));
+          const left = Math.max(0, start),
+            right = Math.min(units, end + 1);
+          return (
+            <div
+              className="ui-range-timeline-row"
+              key={row.id}
+              {...(nested && {
+                role: "listitem",
+                "aria-level": depthOf(row) + 1,
+                "aria-setsize": siblingsOf(index).size,
+                "aria-posinset": siblingsOf(index).position,
+              })}
+            >
+              {nested ? (
+                <div
+                  className="ui-range-timeline-label"
+                  data-nested="true"
+                  style={{ "--range-timeline-depth": depthOf(row) } as React.CSSProperties}
                 >
-                  {nested ? (
-                    <div
-                      className="ui-range-timeline-label"
-                      data-nested="true"
-                      style={{ "--range-timeline-depth": depthOf(row) } as React.CSSProperties}
+                  {parents.includes(row.id) ? (
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
+                      className="ui-range-timeline-disclosure"
+                      aria-expanded={isExpanded(row.id)}
+                      aria-labelledby={`${idBase}-toggle ${idBase}-label`}
+                      onClick={() => toggleRow(row.id)}
                     >
-                      {parents.includes(row.id) ? (
-                        <Button
-                          variant="ghost"
-                          size="icon-xs"
-                          className="ui-range-timeline-disclosure"
-                          aria-expanded={isExpanded(row.id)}
-                          aria-labelledby={`${idBase}-toggle ${idBase}-label`}
-                          onClick={() => toggleRow(row.id)}
-                        >
-                          <span id={`${idBase}-toggle`} hidden>
-                            {t("rangeTimeline.childRows")}
-                          </span>
-                          {isExpanded(row.id) ? (
-                            <ChevronDown aria-hidden="true" />
-                          ) : (
-                            <ChevronRight
-                              aria-hidden="true"
-                              className="ui-range-timeline-disclosure-collapsed"
-                            />
-                          )}
-                        </Button>
+                      <span id={`${idBase}-toggle`} hidden>
+                        {t("rangeTimeline.childRows")}
+                      </span>
+                      {isExpanded(row.id) ? (
+                        <ChevronDown aria-hidden="true" />
                       ) : (
-                        <span aria-hidden="true" className="ui-range-timeline-disclosure-spacer" />
+                        <ChevronRight
+                          aria-hidden="true"
+                          className="ui-range-timeline-disclosure-collapsed"
+                        />
                       )}
-                      <div id={`${idBase}-label`} className="ui-range-timeline-label-content">
-                        {row.label}
-                      </div>
-                    </div>
+                    </Button>
                   ) : (
-                    <div className="ui-range-timeline-label">{row.label}</div>
+                    <span aria-hidden="true" className="ui-range-timeline-disclosure-spacer" />
                   )}
-                  <div className="ui-range-timeline-track">
-                    {today != null && today >= 0 && today < units && (
-                      <span
-                        aria-hidden="true"
-                        className="ui-range-timeline-today"
-                        style={{ insetInlineStart: `${((today + 0.5) / units) * 100}%` }}
-                      />
-                    )}
-                    {right <= left &&
-                      (end < 0 ? (
-                        <span className="ui-range-timeline-outside" data-direction="before">
-                          <ChevronLeft
-                            aria-hidden="true"
-                            className="ui-range-timeline-outside-icon"
-                          />
-                          <Text size="xs" tone="muted">
-                            {t("rangeTimeline.outsideBefore")}
-                          </Text>
-                        </span>
-                      ) : (
-                        <span className="ui-range-timeline-outside" data-direction="after">
-                          <Text size="xs" tone="muted">
-                            {t("rangeTimeline.outsideAfter")}
-                          </Text>
-                          <ChevronRight
-                            aria-hidden="true"
-                            className="ui-range-timeline-outside-icon"
-                          />
-                        </span>
-                      ))}
-                    {right > left && (
-                      <div
-                        className="ui-range-timeline-bar"
-                        style={{
-                          insetInlineStart: `${(left / units) * 100}%`,
-                          inlineSize: `${((right - left) / units) * 100}%`,
-                        }}
-                      >
-                        {onRangeChange &&
-                          (right - left) * Math.max(1, columns.length) >= units &&
-                          (["start", "end"] as const)
-                            .filter((edge) =>
-                              edge === "start"
-                                ? start >= 0 && start < units
-                                : end >= 0 && end < units,
-                            )
-                            .map((edge) => (
-                              <Button
-                                key={edge}
-                                variant="ghost"
-                                size="icon-xs"
-                                className="ui-range-timeline-handle"
-                                data-edge={edge}
-                                aria-label={edge === "start" ? row.startLabel : row.endLabel}
-                                onPointerDown={(event) => {
-                                  const width = track.current?.getBoundingClientRect().width ?? 0;
-                                  if (!width || event.button !== 0) return;
-                                  event.currentTarget.setPointerCapture(event.pointerId);
-                                  drag.current = {
-                                    id: row.id,
-                                    edge,
-                                    x: event.clientX,
-                                    width,
-                                    direction:
-                                      getComputedStyle(event.currentTarget).direction === "rtl"
-                                        ? -1
-                                        : 1,
-                                  };
-                                }}
-                                onPointerMove={(event) => {
-                                  if (drag.current)
-                                    setPreview({
-                                      id: drag.current.id,
-                                      edge: drag.current.edge,
-                                      delta: deltaAt(event.clientX),
-                                    });
-                                }}
-                                onPointerUp={complete}
-                                onPointerCancel={cancel}
-                                onLostPointerCapture={cancel}
-                                onKeyDown={(event) => {
-                                  if (event.key === "Escape") {
-                                    cancel();
-                                    return;
-                                  }
-                                  const step =
-                                    event.key === "ArrowRight"
-                                      ? 1
-                                      : event.key === "ArrowLeft"
-                                        ? -1
-                                        : 0;
-                                  if (!step) return;
-                                  event.preventDefault();
-                                  const direction =
-                                    getComputedStyle(event.currentTarget).direction === "rtl"
-                                      ? -1
-                                      : 1;
-                                  const delta = step * direction;
-                                  if (
-                                    edge === "start"
-                                      ? row.start + delta <= row.end
-                                      : row.end + delta >= row.start
-                                  )
-                                    onRangeChange(row.id, edge, delta);
-                                }}
-                              >
-                                <GripVertical aria-hidden="true" />
-                              </Button>
-                            ))}
-                      </div>
-                    )}
+                  <div id={`${idBase}-label`} className="ui-range-timeline-label-content">
+                    {row.label}
                   </div>
                 </div>
-              );
-            })}
+              ) : (
+                <div className="ui-range-timeline-label">{row.label}</div>
+              )}
+              <div className="ui-range-timeline-track">
+                {today != null && today >= 0 && today < units && (
+                  <span
+                    aria-hidden="true"
+                    className="ui-range-timeline-today"
+                    style={{ insetInlineStart: `${((today + 0.5) / units) * 100}%` }}
+                  />
+                )}
+                {right <= left &&
+                  (end < 0 ? (
+                    <span className="ui-range-timeline-outside" data-direction="before">
+                      <ChevronLeft aria-hidden="true" className="ui-range-timeline-outside-icon" />
+                      <Text size="xs" tone="muted">
+                        {t("rangeTimeline.outsideBefore")}
+                      </Text>
+                    </span>
+                  ) : (
+                    <span className="ui-range-timeline-outside" data-direction="after">
+                      <Text size="xs" tone="muted">
+                        {t("rangeTimeline.outsideAfter")}
+                      </Text>
+                      <ChevronRight aria-hidden="true" className="ui-range-timeline-outside-icon" />
+                    </span>
+                  ))}
+                {right > left && (
+                  <div
+                    className="ui-range-timeline-bar"
+                    style={{
+                      insetInlineStart: `${(left / units) * 100}%`,
+                      inlineSize: `${((right - left) / units) * 100}%`,
+                    }}
+                  >
+                    {onRangeChange &&
+                      (right - left) * Math.max(1, columns.length) >= units &&
+                      (["start", "end"] as const)
+                        .filter((edge) =>
+                          edge === "start" ? start >= 0 && start < units : end >= 0 && end < units,
+                        )
+                        .map((edge) => (
+                          <Button
+                            key={edge}
+                            variant="ghost"
+                            size="icon-xs"
+                            className="ui-range-timeline-handle"
+                            data-edge={edge}
+                            aria-label={edge === "start" ? row.startLabel : row.endLabel}
+                            onPointerDown={(event) => {
+                              const width = track.current?.getBoundingClientRect().width ?? 0;
+                              if (!width || event.button !== 0) return;
+                              event.currentTarget.setPointerCapture(event.pointerId);
+                              drag.current = {
+                                id: row.id,
+                                edge,
+                                x: event.clientX,
+                                width,
+                                direction:
+                                  getComputedStyle(event.currentTarget).direction === "rtl"
+                                    ? -1
+                                    : 1,
+                              };
+                            }}
+                            onPointerMove={(event) => {
+                              if (drag.current)
+                                setPreview({
+                                  id: drag.current.id,
+                                  edge: drag.current.edge,
+                                  delta: deltaAt(event.clientX),
+                                });
+                            }}
+                            onPointerUp={complete}
+                            onPointerCancel={cancel}
+                            onLostPointerCapture={cancel}
+                            onKeyDown={(event) => {
+                              if (event.key === "Escape") {
+                                cancel();
+                                return;
+                              }
+                              const step =
+                                event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                              if (!step) return;
+                              event.preventDefault();
+                              const direction =
+                                getComputedStyle(event.currentTarget).direction === "rtl" ? -1 : 1;
+                              const delta = step * direction;
+                              if (
+                                edge === "start"
+                                  ? row.start + delta <= row.end
+                                  : row.end + delta >= row.start
+                              )
+                                onRangeChange(row.id, edge, delta);
+                            }}
+                          >
+                            <GripVertical aria-hidden="true" />
+                          </Button>
+                        ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+    const sectionProps = {
+      ...props,
+      ref,
+      className: cn("ui-range-timeline", className),
+      "data-bordered": bordered ? "true" : undefined,
+      // Only a NON-default step scopes the unit-width knob, so a theme that narrows
+      // --range-timeline-unit-width globally still owns the default timeline (gh#730).
+      "data-density": density === "default" ? undefined : density,
+      "aria-label": label,
+    };
+    if (!sticky) {
+      return (
+        <section {...sectionProps} tabIndex={0}>
+          <div className="ui-range-timeline-canvas" style={canvasStyle}>
+            {header}
+            {body}
+          </div>
+        </section>
+      );
+    }
+    // STICKY (antd Table `sticky`). A sticky header cannot live inside the element that scrolls
+    // sideways: that element is its scroll container, so it would stick to a box that never
+    // scrolls vertically and ride away with the page. The header therefore sits OUTSIDE the
+    // horizontal scroller (the section is `overflow: clip`, which is not a scroll container), sticks
+    // to the page's scroller at `offsetHeader`, and follows the body's scrollLeft. The keyboard stop
+    // moves with the scrolling: it is the body scroller, since the section no longer scrolls.
+    const offsetHeader = typeof sticky === "object" ? (sticky.offsetHeader ?? 0) : 0;
+    return (
+      <section {...sectionProps} data-sticky="true">
+        <div
+          ref={stickyHeader}
+          className="ui-range-timeline-sticky-header"
+          style={{ "--range-timeline-sticky-offset": `${offsetHeader}px` } as React.CSSProperties}
+          onWheel={(event) => {
+            if (bodyScroller.current && event.deltaX)
+              bodyScroller.current.scrollLeft += event.deltaX;
+          }}
+        >
+          <div className="ui-range-timeline-canvas" style={canvasStyle}>
+            {header}
+          </div>
+        </div>
+        <div
+          ref={bodyScroller}
+          className="ui-range-timeline-scroller"
+          role="group"
+          aria-label={label}
+          tabIndex={0}
+          onScroll={(event) => {
+            if (stickyHeader.current)
+              stickyHeader.current.scrollLeft = event.currentTarget.scrollLeft;
+          }}
+        >
+          <div className="ui-range-timeline-canvas" style={canvasStyle}>
+            {body}
           </div>
         </div>
       </section>

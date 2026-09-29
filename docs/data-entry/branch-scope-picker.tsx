@@ -54,7 +54,12 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <FormField label="適用範囲" required>
-                <BranchScopePicker branches={BRANCHES} value={scope} onValueChange={setScope} />
+                <BranchScopePicker
+                  branches={BRANCHES}
+                  value={scope}
+                  onValueChange={setScope}
+                  notFoundContent="No branch matches that search"
+                />
               </FormField>
             </CardContent>
           </Card>

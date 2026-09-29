@@ -1304,6 +1304,17 @@ export type RecordPickerProp = Omit<
   emptyOption?: { value: string; label: string };
   placeholder?: string;
   dialogTitle?: string;
+  /**
+   * Node shown when the search finds nothing (antd `notFoundContent`) — in the dropdown shape and
+   * in the dialog alike. Localized `dataEntry.recordPicker.empty` otherwise.
+   */
+  notFoundContent?: NotFoundContentProp;
+  /**
+   * Text of the dialog's load-more button (localized `dataEntry.recordPicker.more` otherwise). Only
+   * the label: the button and when it appears (the server returned a `nextCursor`) stay the
+   * picker's.
+   */
+  loadMoreLabel?: LabelProp;
   size?: "xs" | "sm" | "md" | "lg";
   /**
    * Tên trường, do `FormField` truyền xuống. Khai tường minh vì CẢ HAI nhánh phải giữ nó: một
@@ -1945,8 +1956,9 @@ export type CascaderProp = FieldA11yProps & {
    */
   showCheckedStrategy?: Exclude<ShowCheckedStrategyProp, "SHOW_ALL">;
   /**
-   * Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no
-   * `children` and `isLeaf !== true` is expanded; push the fetched children into `options`.
+   * Lazy children (antd `loadData`). Called when a branch with no `children` and
+   * `isLeaf !== true` is expanded, and never again once its promise RESOLVES; push the fetched
+   * children into `options`. A REJECTED promise is forgotten, so the next activation asks again.
    */
   loadData?: (selectedOptions: TreeOptionProp[]) => void | Promise<void>;
   /** Render the trigger label from the selected path (antd `displayRender`). */
@@ -2023,8 +2035,10 @@ export type TreeSelectProp = FieldA11yProps & {
   /** Panel open change (antd `onOpenChange`). Fires for both controlled and uncontrolled panels. */
   onOpenChange?: OnOpenChangeProp;
   /**
-   * Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no
-   * `children` and `isLeaf !== true` is expanded; push the fetched children into `treeData`.
+   * Lazy children (antd `loadData`). Called when a branch with no `children` and
+   * `isLeaf !== true` is expanded, and never again once its promise RESOLVES; push the fetched
+   * children into `treeData`. A REJECTED promise folds the branch shut and the next expand asks
+   * again, up to 10 attempts (rc-tree).
    */
   loadData?: (node: TreeOptionProp) => void | Promise<void>;
   /** Render a node's title (antd `treeTitleRender`). */
@@ -2104,6 +2118,14 @@ export type TransferProp = FieldA11yProps & {
   className?: ClassNameProp;
   selectedKeys?: [string[], string[]];
   onSelectChange?: (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void;
+  /**
+   * antd `locale`, ported for `notFoundContent` only: the node an empty (or search-emptied) pane
+   * shows. A `[source, target]` pair sets each pane separately, as in antd. Localized
+   * `dataEntry.transfer.empty` otherwise.
+   */
+  locale?: {
+    notFoundContent?: NotFoundContentProp | [NotFoundContentProp, NotFoundContentProp];
+  };
 };
 
 /** @see BranchScopePicker — scope mode: every branch, or an explicit subset. */
@@ -2152,6 +2174,11 @@ export type BranchScopePickerProp = FieldA11yProps & {
   loading?: boolean;
   /** Custom empty content when `branches` is empty; defaults to a localized message. */
   empty?: React.ReactNode;
+  /**
+   * Shown when the branch search matches nothing (antd `notFoundContent`); localized
+   * `dataEntry.branchScope.noMatches` otherwise. An empty `branches` list is `empty`'s, not this.
+   */
+  notFoundContent?: NotFoundContentProp;
   /** Branch-collection READ failure (distinct from `error`, which is field validation). */
   listError?: React.ReactNode;
   /** Permission-denied state — the branch read was refused. Takes precedence over `listError`. */

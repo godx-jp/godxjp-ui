@@ -322,11 +322,23 @@ export const VOCABULARY_REGISTRY = {
     description:
       "One entry in the selection-column dropdown — { key, text, onSelect } (antd SelectionItem)",
   },
+  TableSelectionBuiltInProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Built-in selections entry — SELECT_ALL | SELECT_INVERT | SELECT_NONE (antd Table.SELECTION_ALL / SELECTION_INVERT / SELECTION_NONE, published as DataTable.SELECTION_*)",
+  },
+  TableSelectAllMatchingProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Server-paged 'select all N matching' banner — { total, selected, onSelectedChange } (no antd equivalent; Gmail/Jira/GitHub pattern)",
+  },
   TableRowSelectionProp: {
     file: "vocabulary/data.prop.ts",
     category: "data",
     description:
-      "DataTable row-selection config — type | selectedRowKeys | onChange | getCheckboxProps | preserveSelectedRowKeys | selections | hideSelectAll | columnTitle (antd TableRowSelection)",
+      "DataTable row-selection config — type | selectedRowKeys | onChange | getCheckboxProps | preserveSelectedRowKeys | selections | hideSelectAll | columnTitle | selectAllLabel | matching (antd TableRowSelection + select-all-matching)",
   },
   TableExpandableProp: {
     file: "vocabulary/data.prop.ts",
@@ -2279,7 +2291,16 @@ export const COMPONENT_PROP_REGISTRY = {
   RecordPickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "SizeProp", "PlaceholderProp"],
+    vocabulary: [
+      "ValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "SizeProp",
+      "PlaceholderProp",
+      // gh#1044: antd `notFoundContent` for the empty search, and the dialog's load-more text.
+      "NotFoundContentProp",
+      "LabelProp",
+    ],
     note: "One picker whose SHAPE follows the size of the set: Select at or under `threshold`, a searchable Dialog with consumer-declared filters over it (gh#932).",
   },
   RecordPickerFilterProp: {
@@ -2395,7 +2416,16 @@ export const COMPONENT_PROP_REGISTRY = {
   TransferProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["DisabledProp", "ClassNameProp"],
+    vocabulary: [
+      "DisabledProp",
+      "ClassNameProp",
+      {
+        field: "locale",
+        local: true,
+        reason:
+          "antd Transfer `locale`, ported for `notFoundContent` only (one node, or a [source, target] pair) — gh#1044.",
+      },
+    ],
   },
   TransferItemProp: {
     group: "data-entry",
@@ -2485,6 +2515,8 @@ export const COMPONENT_PROP_REGISTRY = {
       "ColumnFilterStateProp",
       "ColumnSorterProp",
       "TableRowSelectionProp",
+      "TableSelectionBuiltInProp",
+      "TableSelectAllMatchingProp",
       "TableExpandableProp",
       "TableSummaryProp",
       "TableScrollProp",
@@ -2980,7 +3012,8 @@ export const COMPONENT_PROP_REGISTRY = {
   InfiniteQueryStateProp: {
     group: "query",
     file: "components/query.prop.ts",
-    vocabulary: ["HandlerProp"],
+    // LabelProp: `loadMoreLabel`, the built-in button's idle text (gh#1044).
+    vocabulary: ["HandlerProp", "LabelProp"],
   },
   PrefetchLinkProp: { group: "query", file: "components/query.prop.ts", vocabulary: [] },
   AuthExpiryProviderProp: {
@@ -4103,6 +4136,12 @@ export const COMPONENT_PROP_REGISTRY = {
           "An endpoint movement command, not an internally owned value; the consumer commits its row data.",
       },
       {
+        field: "sticky",
+        local: true,
+        reason:
+          "antd Table `sticky` — `true` or `{ offsetHeader }` (px) keeps the axis header on screen while the page scrolls (gh#1044).",
+      },
+      {
         field: "expandedValues",
         local: true,
         reason:
@@ -4347,6 +4386,8 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Custom empty content when there are no branches.",
       },
+      // gh#1044: antd `notFoundContent` — the line shown when the branch SEARCH matches nothing.
+      "NotFoundContentProp",
       {
         field: "listError",
         local: true,

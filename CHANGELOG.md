@@ -6,11 +6,114 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.6.0] - 2026-09-29
+
+### ✨ Tree: `height` + `virtual`, `filterTreeNode` (#1042, #1043)
+
+MINOR. Ports antd's answers for a long, searchable lazy tree.
+
+- `height` (px) makes the tree its own scroll viewport. Unless `virtual={false}`, only the rows in
+  view render: a 421-child level stays ~24 DOM rows. Windowed rows are a flat run of treeitems;
+  their `aria-level` / `aria-setsize` / `aria-posinset` describe the whole outline, and the focused
+  row is never unmounted.
+- antd has no "load more" node. For a paged API, the Tree docs show one composed as a leaf.
+- `filterTreeNode(node)` highlights matching rows without hiding anything: `data-filter-node="true"`,
+  new token `--tree-node-filter-foreground`, medium weight, and a screen-reader-only "matches".
+
+### 🐛 Tree / TreeSelect / Cascader: a rejected `loadData` can be retried (#1041)
+
+PATCH. The lazy-load ledger recorded a node before its promise settled and never cleared it, so
+one failed request left the branch unloadable. It now follows rc-tree:
+
+- A rejected load is not counted as loaded, and the next expand calls `loadData` again, up to 10
+  attempts.
+- An uncontrolled Tree / TreeSelect branch folds shut.
+- Cascader forgets the failed branch.
+
+### ✨ DataTable: server-paged selection — name the header checkbox, "select all N matching" (#1036)
+
+MINOR. A server-paged table can say what its header checkbox really selects, and offer the whole
+matching set the way Gmail, Jira and GitHub do. Nothing changes for a table that does not opt in.
+
+- `rowSelection.selectAllLabel` names the header checkbox without replacing it (`columnTitle`
+  replaced it and lost the tri-state). With `matching` set, it defaults to "Select all rows on this
+  page".
+- `rowSelection.matching={{ total, selected, onSelectedChange }}`: once the page is fully ticked, a
+  polite status above the header offers "Select all 4,112 matching rows". Copy is in en/ja/vi with
+  CLDR plurals and Intl number grouping.
+  - While it is selected, every row on any page shows ticked; send your filter, not the ids.
+  - Unticking a row or choosing "Clear selection" reports `false`.
+  - antd has no equivalent.
+- antd parity: a `selections` list can mix `DataTable.SELECTION_ALL` / `SELECTION_INVERT` /
+  `SELECTION_NONE` with custom entries, in the order given.
+
+### 🐛 DataTable: bulk selection never changes a row `getCheckboxProps` disables (#1036)
+
+PATCH. The header checkbox, SELECT_ALL / SELECT_INVERT / SELECT_NONE and "all N matching" now
+leave a disabled row as it is. The header reads as checked when its only unticked rows are
+disabled, as in antd. Tables without `getCheckboxProps` are unchanged.
+
+### ✨ InfiniteQueryState / RecordPicker / RangeTimeline / BranchScopePicker / Transfer: load-more label, sticky Gantt header, picker "no match" text (#1044)
+
+MINOR. Paging every list screen needed three things these components hard-coded.
+
+- `loadMoreLabel` on `InfiniteQueryState` and `RecordPicker` renames the built-in load-more button
+  (「さらに表示」「さらに古い版を表示」) without replacing it. The pending label and
+  disabled-while-fetching behaviour are kept. `loadMore` (the whole-footer node) is unchanged.
+- `RangeTimeline sticky`, from antd Table `sticky` (`true | { offsetHeader }`): the band/tick header
+  stays at the top of the page scroller and follows the body's horizontal scroll. `offsetHeader`
+  clears a fixed topbar.
+  - It needs no clipping ancestor, so place it outside a `Card`.
+  - antd's `offsetScroll` / `getContainer` are not ported.
+- antd `notFoundContent` on `RecordPicker` (dropdown and dialog) and `BranchScopePicker` (search
+  no-match). `Transfer` takes antd's `locale.notFoundContent`: one node, or a `[source, target]`
+  pair.
+- RecordPicker: the dialog's error-state button reads 「再試行」 (`common.retry`) instead of
+  「さらに読み込む」, and `loadMoreLabel` does not apply to it.
+
+### 🐛 Table / DataTable / ScrollArea: a region that scrolls vertically keeps its tab stop (#907)
+
+PATCH. `useScrollsOnAxis` measured only the axis the caller named. But `Table`'s wrapper is
+`overflow-auto`, and `.ui-data-table-scroll` is `overflow-x: auto`, which computes `overflow-y` to
+`auto`. So a table taller than its box scrolled with no keyboard access.
+
+- Every axis whose computed `overflow` is `auto` or `scroll` is now measured. `hidden` axes are
+  still skipped, so gh#821's "FITS → no stop" contract is unchanged.
+- Measured in Chromium:
+  - `Table` in a 160px flex column (310/309 × 204/160): no stop and axe
+    `scrollable-region-focusable` fails → stop, axe passes.
+  - `DataTable scroll={{ y: 160 }}` (300/300 × 749/160): no stop → stop.
+- A table mounted in an unselected tab panel and then shown already kept its stop (stop → stop),
+  and this is now pinned by tests. The gap axe caught in the report was the vertical axis.
+
+### 🐛 CodeBlock: copyable + wrap={false} no longer scrolls code under the copy button (#1035)
+
+PATCH. The reserved column was padding, which scrolls with the content, so a long unwrapped line
+passed under the corner button.
+
+- An unwrapped copyable block now reserves the button column as a transparent inline-end border,
+  outside the scrollport. Measured overlap is 0px in LTR and RTL at both scroll ends.
+- Wrapped blocks (the default) and non-copyable blocks render exactly as before.
+
+### 🐛 ui-audit: FormRoot is recognised as a Form (#1039)
+
+PATCH. `formfield-needs-form` and `select-width-hint` only counted a literal `<Form>`. `FormRoot`
+renders `Form` around its fields, so every field under it was a false positive.
+
+- Fields under `<FormRoot>` no longer trip `formfield-needs-form`.
+- `controlWidth` on `<FormRoot>` now clears `select-width-hint`.
+- Consumers can drop `ui-audit-disable` blocks added for this.
+
+### 🐛 DataTable: a selected row keeps the selection fill (#1038)
+
+PATCH. On a selected unread row, the unread band no longer paints over the selection fill.
+
 ## [31.5.0] - 2026-09-29
 
 ### ✨ CodeBlock: `copyable` (#1032)
 
 MINOR. antd Typography's `copyable`, with the same name, the same semantics and the same copy code:
+
 - A copy button sits in the block's inline-end corner, and the block reserves that column so no
   wrapped line runs under it. Measured: 0 of 8 lines overlapped, in LTR and RTL.
 - It copies `copyable.text`, or the block's own text content, highlighter spans included.
@@ -22,6 +125,7 @@ MINOR. antd Typography's `copyable`, with the same name, the same semantics and 
 
 MINOR. A new component in data-display: boxes joined by CSS lines, top-down, with avatar, name,
 title, an `extra` slot and an optional `renderNode`.
+
 - **Agents:** `variant: "agent"` draws a dashed box and adds a localized "AI agent" to the node's
   accessible name.
 - **Wide charts:** when wider than its container, the chart scrolls in its own named region. That
@@ -32,26 +136,29 @@ title, an `extra` slot and an optional `renderNode`.
   the frame.
 - New `--org-chart-*` tokens and new i18n keys `dataDisplay.orgChart.*` in en/ja/vi.
 
-
 ## [31.4.0] - 2026-09-28
 
 ### 🐛 PageContainer: header actions keep one row; the title wraps first (#1025)
 
 PATCH. At ≥640px, `.ui-page-header-extra` no longer shrinks in proportion to the title. It keeps
 its width up to 60% of the header row, and the title wraps into the rest.
+
 - Measured at 1142px with a sidebar: 3 buttons (344px) went from 2 rows (action box 230px) to 1
   row (344px).
 - The gh#300 guarantee (the title keeps ≥40%) is unchanged.
 - Mobile layout is unchanged.
 - A Chromium regression test covers four cases.
+
 ### 🐛 Segmented: count pills follow the Tabs convention (#1019)
 
 PATCH. A resting count pill is quiet: `--background` / `--muted-foreground`, the same as the
 Tabs card-tab pill. Only the selected segment's pill uses `--primary`.
+
 - Before: every pill, including zero counts, was solid primary (measured rgb(122,0,255) on all 4).
 - Text contrast is at least 5.65:1 at rest and 6.31:1 when selected, in light and dark.
 - New `initial` knobs: `--segmented-count-selected-background`, `-selected-background-alpha`,
   `-selected-color` and `--segmented-count-forced-outline-width`.
+
 ### 🎨 Follow-ups in the same batch
 
 - `--page-header-extra-max-measure` (`initial`, default 60% at the call site) is the PageHeader
@@ -63,6 +170,7 @@ Tabs card-tab pill. Only the selected segment's pill uses `--primary`.
 ### ✨ Tabs: the tablist gets its name; strip-only `controls` mode; `count` on TabsTrigger (#1020, #1021)
 
 MINOR.
+
 - **Name (#1020):** `aria-label` / `aria-labelledby` on the Tabs root now name the `role="tablist"`.
   Before, they sat on a role-less div, which ARIA 1.2 prohibits. Measured on the Tabs preview:
   named tablists went from 0 to 2.
@@ -76,6 +184,7 @@ MINOR.
 ### 🐛 FormField: the label's first line matches the control's first line (#1024); Upload trigger keeps its width (#1023)
 
 PATCH.
+
 - **Label alignment (#1024):** in horizontal and inline forms, the label now lines up with the
   control's first line for Textarea, Switch with a helper, and vertical RadioGroup / CheckboxGroup.
   Measured in Chromium (vi and ja): off by 5.1–5.6px before, 0.4px after. Vertical choice lists sit
@@ -83,7 +192,6 @@ PATCH.
 - **Upload trigger (#1023):** the `variant="button"` and multi-image `picture` trigger keeps its
   natural width instead of stretching across the control column (576 → 117px and 576 → 91px). The
   file list still spans the column.
-
 
 ### 🐛 SkeletonTable and SkeletonDetail bars are visible again — they were 0px tall
 
