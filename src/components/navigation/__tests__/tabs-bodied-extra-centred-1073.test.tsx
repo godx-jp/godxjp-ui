@@ -8,8 +8,8 @@ import { Button } from "../../general/button";
 import { Tabs } from "../tabs";
 
 /**
- * gh#1073 — `<Tabs variant="editable-card" bodied hideAdd extra={{ end: <3 Buttons/> }}>` (godx-task
- * /TEMPO/issues): the three default-size Buttons are taller than a tab face, and the bodied bar was
+ * gh#1073 — `<Tabs variant="editable-card" bodied hideAdd extra={{ end: <3 Buttons/> }}>` (a consumer
+ * issue list): the three default-size Buttons are taller than a tab face, and the bodied bar was
  * `align-items: flex-end` while the panel is pulled up one border width, so the buttons' bottom
  * edge landed ON, and 1px into, the panel's top border.
  *
