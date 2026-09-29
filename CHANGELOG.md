@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.7.0] - 2026-09-29
+
+### ✨ Typography / Breadcrumb / DataTable: the ellipsis tooltip renders; crumbs and headers truncate (#1045, #1046)
+
+MINOR. `Text` / `Paragraph` / `Title` `ellipsis={{ tooltip }}` now renders its tooltip, and a long
+breadcrumb segment or column header can truncate to one line.
+
+- `ellipsis.tooltip` shows the full text only while the text is actually clipped.
+  - It opens on hover, and on keyboard focus of the Text (an `asChild` link) or of the control
+    around it (Tree item, sort button, link). It adds no tab stop, and Escape dismisses it.
+  - The accessible name stays the full text.
+- `Text asChild` + `ellipsis` renders one element (no more `<a><a>`) and measures its overflow.
+- DataTable: a `<Text ellipsis>` in `ColumnDef.header` truncates inside its column instead of
+  painting over the next one.
+- New `BreadcrumbItemProp.ellipsis?: boolean | { tooltip?: ReactNode }`, for Breadcrumb and
+  PageContainer `breadcrumb`.
+  - The trail stays on one line and the segment is cut with "…". The full label shows in a tooltip
+    on hover and on link focus.
+  - New token `--breadcrumb-item-max-inline-size` (default `none`).
+  - antd Breadcrumb has no per-item ellipsis, so the shape follows Typography's.
+
+### ✨ Progress: breakdown `total`, so the unclaimed rest stays track and is read out (#1047)
+
+MINOR. `segments` always treated the sum of the slices as the whole, so a test-results bar with 3
+passed of 400 cases filled green end to end.
+
+- New `total` (breakdown only): slices are drawn against it, and the remainder stays the neutral
+  track. This is antd's `percent` model, in the caller's unit. A `total` below the slice sum is
+  ignored.
+- New `remainderLabel` names the remainder in the `role="img"` readout (e.g. `未実施`). It defaults
+  to Remaining / 残り / Còn lại.
+- With `total` set, every amount is Intl-formatted in the active locale.
+- Without `total`, rendering and readout are unchanged.
+
 ## [31.6.0] - 2026-09-29
 
 ### ✨ Tree: `height` + `virtual`, `filterTreeNode` (#1042, #1043)
