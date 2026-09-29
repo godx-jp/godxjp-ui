@@ -147,6 +147,27 @@ describe("Image preview in Chromium (gh#1077)", () => {
     await page.close();
   });
 
+  it("opened from the keyboard, focus is in the preview at once and the first ← / → / Esc land", async () => {
+    // Regression: react-aria moved focus in only after the thumbnail veil's transition ended, and
+    // the thumbnail had gone inert under it meanwhile — focus sat on <body>, so the first arrow
+    // key and Esc were lost (found adopting 31.11.0 in godx-task).
+    const page = await mount();
+    await page.getByRole("button", { name: "Preview: Red" }).focus();
+    await page.keyboard.press("Enter");
+    await page.getByRole("dialog", { name: "Image preview" }).waitFor();
+    expect(
+      await page.evaluate(() => !!document.activeElement?.closest('[data-slot="image-preview"]')),
+    ).toBe(true);
+    await page.keyboard.press("ArrowRight");
+    expect(await page.locator('[data-slot="image-preview-counter"]').textContent()).toBe("2 / 3");
+    await page.keyboard.press("Escape");
+    await expect.poll(() => page.getByRole("dialog").count()).toBe(0);
+    expect(await page.evaluate(() => document.activeElement?.getAttribute("aria-label"))).toBe(
+      "Preview: Red",
+    );
+    await page.close();
+  });
+
   it("shows the veil when the thumbnail has keyboard focus", async () => {
     const page = await mount();
     await page.getByRole("link", { name: "Before" }).focus();
