@@ -6,6 +6,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.10.0] - 2026-09-29
+
+### 🐛 SpaceCompact: `fullWidth` lets the field grow and keeps a Button at its content width (#1062)
+
+PATCH. `SpaceCompact fullWidth` now renders like antd `Space.Compact block`. An `[Input][Button]`
+row gives the Input the rest of the row instead of splitting it 50/50 with the Button (measured in
+a 600px row: 300.5 / 300.5 → Input fills, Button at its content width).
+
+- In a horizontal `fullWidth` row, only children that hold a field grow: the Input family,
+  NumberInput, Textarea, TagInput, the Date/Time pickers, and Select / Cascader / TreeSelect /
+  SearchSelect. Buttons and other non-field children keep their content width.
+- Two fields (NumberInput + Select) still share the row evenly. Vertical and non-`fullWidth` rows
+  are unchanged.
+- Deviation from antd: antd grows only its Input family; here every field grows.
+
+### 🐛 Select: tags mode is never inert without options, and typed text makes the create row the Enter target (#1063, #1064)
+
+PATCH.
+
+- `mode="multiple" | "tags"` always uses the data API, so antd's bare `<Select mode="tags" />` with
+  no `options` prop renders a working control. Before, it rendered no control at all. Only an
+  explicit `disabled` disables a tags Select (`options={[]}` was already fixed in 31.8.0).
+- While text is typed, the tags list is ordered: create row, then an unpicked exact
+  (case-insensitive) match, then the options, then held values filtered by the typed text, as
+  rc-select does. Held values are appended, no longer prepended.
+- The active (Enter) row is re-chosen as the first enabled drawn row whenever the typed text or a
+  fresh page changes the list. Enter no longer removes a held tag instead of creating the new one.
+- Deviation from antd: an exact match is lifted right after the create row (antd keeps option
+  order).
+
+### 🐛 DataTable.BulkActions: the bar wraps at narrow widths instead of overflowing (#1065)
+
+PATCH. At 390px the count and four actions stayed on one line, squeezing the count into a 20px
+column and scrolling the page 36px sideways. The bar now wraps like antd `Space wrap`.
+
+- `.ui-data-table-bulk` and `.ui-data-table-bulk-actions` wrap with the kit's `--space-inline-sm`
+  gap. The count and the action group wrap as two items, and the group wraps its own buttons.
+- The render-prop form (`children(count)`) wraps its items too.
+- A bar that fits is still one row.
+
 ## [31.9.0] - 2026-09-29
 
 ### ✨ SplitPane: `stackOrder="aside-first"` puts the aside first when the panes stack (#1057)
