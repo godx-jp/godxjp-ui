@@ -555,6 +555,16 @@
       "presetsOnlyDescription": "panelRender chỉ trả về Presets — người dùng chọn trong bảng màu, không gõ được mã hex tuỳ ý.",
       "tagColorLabel": "Màu thẻ",
       "tagColorHelper": "Phím mũi tên di chuyển giữa các ô màu; ô đang chọn được đọc lên."
+    },
+    "splitPaneStackOrder": {
+      "title": "stackOrder — đưa cột phụ lên trước khi xếp chồng",
+      "lead": "stackOrder=\"aside-first\" đặt cột phụ lên trên cột chính khi khung quá hẹp để chia đôi, và đặt nó trước trong DOM nên phím Tab cũng tới nó trước. Khi đủ rộng để chia, nó nằm ở cột cuối như mặc định. Khung nhúng bên dưới hẹp hơn ngưỡng chia đôi, nên thẻ thuộc tính nằm trên luồng bình luận.",
+      "propertiesTitle": "Thuộc tính",
+      "status": "Trạng thái",
+      "statusValue": "Đang xử lý",
+      "assignee": "Người phụ trách",
+      "threadTitle": "Bình luận",
+      "threadLead": "Trên điện thoại, luồng bình luận dài không còn đẩy phần thuộc tính xuống dưới."
     }
   },
   "serviceLauncherShowcase": {

@@ -748,6 +748,14 @@
     min-block-size: 0;
   }
 
+  /* STACK ORDER — `stackOrder="aside-first"` renders the aside BEFORE main in the DOM, so the
+   * stacked layout reads, tabs and paints aside → main in one order (a CSS `order` swap would
+   * split visual and focus order). Stacked + `fill`: the flexible row belongs to main, now the
+   * SECOND row. The split layouts below put both back on one row. */
+  .ui-split-pane[data-fill="true"][data-stack-order="aside-first"]:not([data-aside="closed"]) {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
   .ui-resizable-panel-group {
     display: flex;
     min-height: 0;
@@ -802,12 +810,55 @@
     .ui-split-pane[data-aside-width="md"] {
       grid-template-columns: minmax(0, 1fr) 22rem;
     }
+
+    /* Split: aside-first DOM, main-first GEOMETRY — main in the leading column, aside in the
+     * trailing (inline-end) one, both on row 1, exactly where main-first puts them. */
+    .ui-split-pane[data-stack-order="aside-first"]:is(
+        [data-aside-width="sm"],
+        [data-aside-width="md"]
+      )
+      > .ui-split-pane-main {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .ui-split-pane[data-stack-order="aside-first"]:is(
+        [data-aside-width="sm"],
+        [data-aside-width="md"]
+      )
+      > .ui-split-pane-aside {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .ui-split-pane[data-fill="true"][data-stack-order="aside-first"]:is(
+        [data-aside-width="sm"],
+        [data-aside-width="md"]
+      ):not([data-aside="closed"]) {
+      grid-template-rows: minmax(0, 1fr);
+    }
   }
 
   /* `lg` splits later than the other two ON PURPOSE. */
   @container split-pane (min-width: 64rem) {
     .ui-split-pane[data-aside-width="lg"] {
       grid-template-columns: minmax(0, 1fr) 30rem;
+    }
+
+    .ui-split-pane[data-stack-order="aside-first"][data-aside-width="lg"] > .ui-split-pane-main {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .ui-split-pane[data-stack-order="aside-first"][data-aside-width="lg"] > .ui-split-pane-aside {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .ui-split-pane[data-fill="true"][data-stack-order="aside-first"][data-aside-width="lg"]:not(
+        [data-aside="closed"]
+      ) {
+      grid-template-rows: minmax(0, 1fr);
     }
   }
 

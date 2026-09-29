@@ -248,4 +248,65 @@ describe("SplitPane", () => {
       expect(container.querySelector(".ui-split-pane")).toHaveAttribute("data-fill", "true");
     });
   });
+
+  /*
+   * `stackOrder` (gh#1057) — which pane comes first when the columns stack. The geometry is
+   * measured in Chromium (split-pane-stack-order-1057.test.tsx); jsdom checks the DOM contract.
+   */
+  describe("stackOrder", () => {
+    const order = (el: HTMLElement) =>
+      [...el.querySelector(".ui-split-pane")!.children].map((c) => c.className);
+
+    it("defaults to main-first: main before aside in the DOM, no attribute", () => {
+      const { container } = render(<SplitPane aside={<div>サイド</div>}>本文</SplitPane>);
+      expect(order(container)).toEqual(["ui-split-pane-main", "ui-split-pane-aside"]);
+      expect(container.querySelector(".ui-split-pane")).not.toHaveAttribute("data-stack-order");
+    });
+
+    it("aside-first renders the <aside> BEFORE main in the DOM, not just visually", () => {
+      const { container } = render(
+        <SplitPane aside={<div>サイド</div>} stackOrder="aside-first">
+          本文
+        </SplitPane>,
+      );
+      expect(order(container)).toEqual(["ui-split-pane-aside", "ui-split-pane-main"]);
+      expect(container.querySelector(".ui-split-pane")).toHaveAttribute(
+        "data-stack-order",
+        "aside-first",
+      );
+    });
+
+    it("does NOT remount children when stackOrder flips or the rail opens/closes", () => {
+      let mounts = 0;
+      function Main() {
+        useEffect(() => {
+          mounts += 1;
+        }, []);
+        return <div data-testid="ordered-main">本文</div>;
+      }
+      const { getByTestId, rerender } = render(
+        <SplitPane aside={<div>サイド</div>}>
+          <Main />
+        </SplitPane>,
+      );
+      const before = getByTestId("ordered-main");
+      rerender(
+        <SplitPane aside={<div>サイド</div>} stackOrder="aside-first">
+          <Main />
+        </SplitPane>,
+      );
+      rerender(
+        <SplitPane aside={null} stackOrder="aside-first">
+          <Main />
+        </SplitPane>,
+      );
+      rerender(
+        <SplitPane aside={<div>サイド</div>} stackOrder="aside-first">
+          <Main />
+        </SplitPane>,
+      );
+      expect(getByTestId("ordered-main")).toBe(before);
+      expect(mounts).toBe(1);
+    });
+  });
 });

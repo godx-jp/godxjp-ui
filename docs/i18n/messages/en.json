@@ -561,6 +561,16 @@
       "presetsOnlyDescription": "panelRender returns only Presets — people pick from the palette and cannot type an arbitrary hex.",
       "tagColorLabel": "Tag colour",
       "tagColorHelper": "Arrow keys move between swatches; the selected one is announced."
+    },
+    "splitPaneStackOrder": {
+      "title": "stackOrder — the aside first when the panes stack",
+      "lead": "stackOrder=\"aside-first\" puts the aside above main once the pane is too narrow to split, and first in the DOM, so Tab reaches it first too. Wide enough to split, it sits in the trailing column exactly as it does by default. The embed below is narrower than the split width, so the properties card sits above the thread.",
+      "propertiesTitle": "Properties",
+      "status": "Status",
+      "statusValue": "In progress",
+      "assignee": "Assignee",
+      "threadTitle": "Comments",
+      "threadLead": "Long threads no longer push the properties below the fold on a phone."
     }
   },
   "serviceLauncherShowcase": {

@@ -10,6 +10,7 @@ import {
   StatCard,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { FileText, Building2, Calendar, CreditCard, ArrowRight } from "lucide-react";
 
 /**
@@ -98,6 +99,7 @@ const yen = (n: number) => yenFormat.format(Math.round(n));
 const toNumber = (amount: string) => Number(amount.replace(/[^0-9]/g, ""));
 
 export default function Demo() {
+  const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string>("INV-0241");
   const [asideWidth, setAsideWidth] = useState<"sm" | "md">("md");
   const [threadOpen, setThreadOpen] = useState(true);
@@ -403,6 +405,69 @@ export default function Demo() {
                 </Card>
               </SplitPane>
             </Flex>
+          </CardContent>
+        </Card>
+
+        {/* ── stackOrder="aside-first" (gh#1057) — the aside stacks ABOVE main when narrow ── */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("showcase.splitPaneStackOrder.title")}</CardTitle>
+            <CardDescription>{t("showcase.splitPaneStackOrder.lead")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Card className="max-w-md">
+              <CardContent>
+                <SplitPane
+                  stackOrder="aside-first"
+                  asideWidth="sm"
+                  asideLabel={t("showcase.splitPaneStackOrder.propertiesTitle")}
+                  aside={
+                    <Card variant="muted">
+                      <CardHeader>
+                        <CardTitle level={3} className="text-sm">
+                          {t("showcase.splitPaneStackOrder.propertiesTitle")}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <Flex direction="col" gap="xs">
+                          <Flex direction="row" justify="between" gap="sm">
+                            <Text tone="muted">{t("showcase.splitPaneStackOrder.status")}</Text>
+                            <Badge tone="info">
+                              {t("showcase.splitPaneStackOrder.statusValue")}
+                            </Badge>
+                          </Flex>
+                          <Flex direction="row" justify="between" gap="sm">
+                            <Text tone="muted">{t("showcase.splitPaneStackOrder.assignee")}</Text>
+                            <Text>{THREAD_REPLIES[0].author}</Text>
+                          </Flex>
+                        </Flex>
+                      </CardContent>
+                    </Card>
+                  }
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle level={3} className="text-sm">
+                        {t("showcase.splitPaneStackOrder.threadTitle")}
+                      </CardTitle>
+                      <CardDescription>
+                        {t("showcase.splitPaneStackOrder.threadLead")}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Flex direction="col" gap="sm">
+                        {CHANNEL_MESSAGES.map((message) => (
+                          <Flex key={message.author} direction="col" gap="xs">
+                            <Text weight="medium">{message.author}</Text>
+                            <Text tone="muted">{message.body}</Text>
+                          </Flex>
+                        ))}
+                      </Flex>
+                    </CardContent>
+                  </Card>
+                </SplitPane>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 
