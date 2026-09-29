@@ -67,6 +67,22 @@ describe("formfield-needs-form (gh#998)", () => {
     ).toEqual(["formfield-needs-form:error", "formfield-needs-form:error"]);
   });
 
+  it("fields directly under <FormRoot> are inside a Form — FormRoot renders it (gh#1039)", () => {
+    expect(
+      rules(
+        `<FormRoot form={form} onSubmit={onSubmit} layout="vertical">\n${field("a")}\n${field("b")}\n</FormRoot>`,
+      ),
+    ).toEqual([]);
+  });
+
+  it("after </FormRoot> closes, later fields with no form are still flagged (gh#1039)", () => {
+    expect(
+      rules(
+        `<div><FormRoot form={form}>${field("a")}${field("b")}</FormRoot><Flex>${field("c")}${field("d")}</Flex></div>`,
+      ),
+    ).toEqual(["formfield-needs-form:error", "formfield-needs-form:error"]);
+  });
+
   it("a LONE field is not flagged — a search box, the ConfirmDialog's type-to-confirm input", () => {
     expect(rules(`<DialogBody>${field("confirm")}<p>note</p></DialogBody>`)).toEqual([]);
   });
@@ -134,6 +150,14 @@ describe("select-width-hint (gh#998)", () => {
   it("controlWidth once on the enclosing Form clears it", () => {
     expect(
       rules(`<Form controlWidth="md"><FormField id="s" label="L">${select}</FormField></Form>`),
+    ).toEqual([]);
+  });
+
+  it("controlWidth once on the enclosing FormRoot clears it (gh#1039)", () => {
+    expect(
+      rules(
+        `<FormRoot form={form} controlWidth="md"><FormField id="s" label="L">${select}</FormField></FormRoot>`,
+      ),
     ).toEqual([]);
   });
 

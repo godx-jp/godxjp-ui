@@ -1916,6 +1916,16 @@ for (const dir of SCAN_DIRS) {
        */
       const stack = [];
       const bareByParent = new Map();
+      /*
+       * Every exported tag that renders @godxjp/ui's <Form> around its children (gh#1039). A field
+       * under any of them has the Form layout context, so it must count like a literal <Form>.
+       * `FormRoot` (@godxjp/ui/form, src/form/form-root.tsx) wraps its <form> in <Form asChild>
+       * whenever a layout prop is set, and is the form shell with one stacked layout otherwise.
+       * Pagination also renders <Form>, but around its own controls, not a consumer's fields. Add a
+       * tag here when another exported wrapper starts rendering <Form> around children.
+       */
+      const FORM_TAGS = new Set(["Form", "FormRoot"]);
+      const formOpenTag = new RegExp(`<(${[...FORM_TAGS].join("|")})(?=[\\s>])([^>]*)>`, "g");
       let formDepth = 0;
       for (const m of scanContent.matchAll(
         /(?<![\w.$])<(\/?)([A-Za-z][\w.]*)(?=[\s>/])([^<>]*?(?:\{[^{}]*\}[^<>]*?)*)(\/?)>/g,
@@ -1928,7 +1938,7 @@ for (const dir of SCAN_DIRS) {
               break;
             }
           }
-          if (tag === "Form") formDepth = Math.max(0, formDepth - 1);
+          if (FORM_TAGS.has(tag)) formDepth = Math.max(0, formDepth - 1);
           continue;
         }
         if (tag === "FormField" && formDepth === 0) {
@@ -1937,7 +1947,7 @@ for (const dir of SCAN_DIRS) {
         }
         if (selfClose) continue;
         stack.push({ tag, index: m.index });
-        if (tag === "Form") formDepth += 1;
+        if (FORM_TAGS.has(tag)) formDepth += 1;
       }
       for (const group of bareByParent.values()) {
         if (group.length < 2) continue;
@@ -1975,9 +1985,9 @@ for (const dir of SCAN_DIRS) {
       for (const m of scanContent.matchAll(/<FormField(?=[\s>])([^>]*)>([\s\S]*?)<\/FormField>/g)) {
         if (!/<Select(?=[\s>/])/.test(m[2]) || /controlWidth=/.test(m[1])) continue;
         const before = scanContent.slice(0, m.index);
-        const lastForm = [...before.matchAll(/<Form(?=[\s>])([^>]*)>/g)].at(-1);
-        const insideForm = lastForm && before.lastIndexOf("</Form>") < lastForm.index;
-        if (insideForm && /controlWidth=/.test(lastForm[1])) continue;
+        const lastForm = [...before.matchAll(formOpenTag)].at(-1);
+        const insideForm = lastForm && before.lastIndexOf(`</${lastForm[1]}>`) < lastForm.index;
+        if (insideForm && /controlWidth=/.test(lastForm[2])) continue;
         const lineNo = lineAt(m.index);
         if (suppressed("select-width-hint", lineNo - 1)) continue;
         findings.push({
