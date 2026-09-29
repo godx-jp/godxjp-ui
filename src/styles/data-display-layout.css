@@ -1503,6 +1503,18 @@
     padding-inline-end: calc(var(--code-block-space-inset) + var(--control-height-xs));
   }
 
+  /* An unwrapped block scrolls sideways, and a scrolled line would pass under the button: padding
+   * is part of the scrollport, so the reserved column only exists at the far end of the content
+   * (gh#1035). A transparent BORDER is outside the scrollport — the column stays put at every
+   * scroll position and the muted background still paints under it (background-clip:
+   * border-box). It is the button plus its `--space-1` inset on both sides, because scrolled text
+   * DOES run through the padding. Wrapped blocks never scroll sideways, so they keep the padding
+   * and render exactly as before. */
+  .ui-code-block[data-copyable][data-wrap="false"] {
+    padding-inline-end: var(--code-block-space-inset);
+    border-inline-end: calc(var(--control-height-xs) + 2 * var(--space-1)) solid transparent;
+  }
+
   .ui-code-block-copy {
     position: absolute;
     inset-block-start: var(--space-1);
@@ -1513,6 +1525,11 @@
   @media (pointer: coarse) {
     .ui-code-block[data-copyable] {
       padding-inline-end: calc(var(--code-block-space-inset) + var(--control-height-default));
+    }
+
+    .ui-code-block[data-copyable][data-wrap="false"] {
+      padding-inline-end: var(--code-block-space-inset);
+      border-inline-end-width: calc(var(--control-height-default) + 2 * var(--space-1));
     }
   }
 
