@@ -56,7 +56,8 @@
     },
     "colorPicker": {
       "ariaLabel": "色を選択",
-      "hexLabel": "カラーコード（HEX）"
+      "hexLabel": "カラーコード（HEX）",
+      "presetEmpty": "空"
     },
     "upload": {
       "dropzoneLabel": "ファイルをアップロード",

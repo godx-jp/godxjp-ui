@@ -2148,6 +2148,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp"],
   },
+  ColorPickerPresetProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["LabelProp", "DefaultOpenProp"],
+  },
   SearchSelectBaseProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

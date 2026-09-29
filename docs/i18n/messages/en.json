@@ -543,6 +543,17 @@
       "longIdTitle": "Long identifiers and +N",
       "ledgerLabel": "Ledger ID",
       "ledgerHelper": "A 71-character identifier still stays inside the control"
+    },
+    "colorPicker": {
+      "presetsTitle": "Tag colour from a palette",
+      "presetsDescription": "presets — fixed swatch groups under the picker; each group collapses, and the free picker stays available.",
+      "paletteLabel": "Label colour",
+      "recommendedGroup": "Recommended",
+      "recentGroup": "Recently used",
+      "presetsOnlyTitle": "Palette only",
+      "presetsOnlyDescription": "panelRender returns only Presets — people pick from the palette and cannot type an arbitrary hex.",
+      "tagColorLabel": "Tag colour",
+      "tagColorHelper": "Arrow keys move between swatches; the selected one is announced."
     }
   },
   "serviceLauncherShowcase": {

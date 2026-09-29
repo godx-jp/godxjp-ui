@@ -299,6 +299,12 @@
 
   /* ColorPicker — width of the hex text field beside the swatch. */
   --color-picker-input-width: 6.5rem;
+  /* ColorPicker `presets` (gh#1055). The swatch box IS the radio's pointer target, so it sits on
+   * the WCAG 2.2 SC 2.5.8 floor (antd's own preset block is 24px too) and never rides --scaling
+   * below it. The gap leaves room for the checked ring, which is drawn outside the box. */
+  --color-picker-preset-size: var(--touch-target-min);
+  --color-picker-preset-gap: var(--space-2);
+  --color-picker-presets-gap: var(--space-1);
 
   /* Command / CommandPalette — list height, inner paddings and the palette's own box. */
   --command-list-max-height: min(300px, 50vh);
@@ -350,6 +356,10 @@
     calc(var(--font-size-base) / var(--font-size-ratio))
   );
   --color-picker-hex-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --color-picker-presets-font-size: var(
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))
   );

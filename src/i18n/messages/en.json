@@ -56,7 +56,8 @@
     },
     "colorPicker": {
       "ariaLabel": "Pick color",
-      "hexLabel": "Hex color value"
+      "hexLabel": "Hex color value",
+      "presetEmpty": "Empty"
     },
     "upload": {
       "dropzoneLabel": "Upload files",
