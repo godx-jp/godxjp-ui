@@ -3388,11 +3388,7 @@
     position: fixed;
     inset: 0;
     z-index: var(--overlay-z-index);
-    background-color: color-mix(
-      in srgb,
-      var(--overlay-background) var(--image-preview-background-alpha),
-      black
-    );
+    background-color: var(--image-preview-background, var(--overlay-background));
   }
 
   .ui-image-preview {
