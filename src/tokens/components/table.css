@@ -157,7 +157,9 @@
   --table-action-collection-primary-width: 18%; /* requester / subject */
   --table-action-collection-secondary-width: 22%; /* target / resource */
   --table-action-collection-meta-width: 12%; /* timestamps, ids — lowest priority */
-  --table-action-collection-actions-width: 3.5rem; /* row-action affordance, never clipped */
+  /* row-action affordance: a FLOOR, not a cap — Table grows the column to a wider actions cell
+   * content (a text button + `…` menu), gh#1067 */
+  --table-action-collection-actions-width: 3.5rem;
   /* Compact tier, applied below the collapse step (the 390px acceptance frame). Percentages,
    * like the desktop tier: while the priority ratios FIT (the canonical queues up to the
    * six-column budget below), they keep the table filling its container edge-to-edge with no

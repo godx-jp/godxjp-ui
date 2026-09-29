@@ -102,6 +102,80 @@ export function scrollRegionLabel(
   return typeof label === "string" && label.trim() !== "" ? label : t("dataTable.scrollRegion");
 }
 
+/** The custom property `useActionsColumnFit` publishes on the collection wrapper (gh#1067). */
+const ACTIONS_CONTENT_WIDTH = "--table-action-collection-actions-content-width";
+
+/**
+ * gh#1067 — the `actions` column of `preset="action-collection"` sizes to its CONTENT when that
+ * content is wider than the token measure.
+ *
+ * The preset is `table-layout: fixed`, which never reads cell content: a text button
+ * ("Retry" / "Chạy lại") plus a `…` menu in the 3.5rem actions column overflowed its cell and —
+ * being end-aligned — painted over the previous column. No CSS keyword can express "this column,
+ * at least as wide as its content" in the fixed algorithm (measured in Chromium: `max-content` /
+ * `fit-content` on the cells are treated as `auto` and take a share of the free space; `1px` +
+ * `nowrap` is a literal 1px). antd has no priority preset; its action column is sized by `width`
+ * or, in its default `auto` layout, by content — this restores the content rule for this one
+ * column only.
+ *
+ * So the content is measured: every actions cell wraps its children in a shrink-to-content box
+ * (`.ui-table-actions-content`, see TableCell), and when the widest one would reach past its cell
+ * at the token measure, its width (plus the cell's own inset) is published as
+ * `--table-action-collection-actions-content-width`, which the column reads in place of the
+ * token. When everything fits — an icon-only actions column — nothing is published and the column
+ * keeps the token measure exactly. A consumer `width` on the column is an inline `inline-size`
+ * and still wins.
+ */
+function useActionsColumnFit(ref: React.RefObject<HTMLDivElement | null>, enabled: boolean) {
+  React.useLayoutEffect(() => {
+    const box = ref.current;
+    if (!enabled || !box || typeof ResizeObserver === "undefined") return undefined;
+    const measure = () => {
+      // Measure against the TOKEN measure, never against a width this hook published earlier —
+      // otherwise a column that once grew could never shrink back when its content does.
+      box.style.removeProperty(ACTIONS_CONTENT_WIDTH);
+      let needed = 0;
+      box.querySelectorAll<HTMLElement>(".ui-table-actions-content").forEach((content) => {
+        const cell = content.parentElement;
+        if (!cell) return;
+        const style = getComputedStyle(cell);
+        const inset = parseFloat(style.paddingInlineStart) + parseFloat(style.paddingInlineEnd);
+        const width = content.getBoundingClientRect().width;
+        // Fits the cell's PADDING box: it reaches no neighbour. The inset is the gutter an icon
+        // target has always been allowed to use — the docs' xs `…` trigger is 26.7px in a 24px
+        // content box — so an icon-only column keeps its exact token measure.
+        if (width <= cell.clientWidth + 0.5) return;
+        const edges =
+          style.boxSizing === "border-box"
+            ? inset +
+              parseFloat(style.borderInlineStartWidth) +
+              parseFloat(style.borderInlineEndWidth)
+            : 0;
+        needed = Math.max(needed, Math.ceil(width + edges));
+      });
+      if (needed > 0) box.style.setProperty(ACTIONS_CONTENT_WIDTH, `${needed}px`);
+    };
+    const resize = new ResizeObserver(measure);
+    const observeAll = () => {
+      resize.disconnect();
+      resize.observe(box);
+      box
+        .querySelectorAll<HTMLElement>(".ui-table-actions-content")
+        .forEach((content) => resize.observe(content));
+      measure();
+    };
+    // Rows arrive and leave (paging, filtering, async data) without the box changing size.
+    const mutations = new MutationObserver(observeAll);
+    mutations.observe(box, { childList: true, subtree: true });
+    observeAll();
+    return () => {
+      resize.disconnect();
+      mutations.disconnect();
+      box.style.removeProperty(ACTIONS_CONTENT_WIDTH);
+    };
+  }, [ref, enabled]);
+}
+
 export const Table = React.forwardRef<HTMLTableElement, TableProps>(
   (
     {
@@ -122,6 +196,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
     // Measured, not assumed — see `useScrollsHorizontally`. `scrollable={false}` means an ancestor
     // owns the scroll region, so nothing is measured and nothing is emitted here.
     const scrolls = useScrollsHorizontally(scrollRef, scrollable);
+    useActionsColumnFit(scrollRef, preset === "action-collection");
     return (
       // A table wider than its container scrolls horizontally in this wrapper; keep it
       // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
@@ -377,7 +452,14 @@ export const TableCell = React.forwardRef<
           {label}
         </span>
       ) : null}
-      {children}
+      {/* gh#1067 — the box `Table preset="action-collection"` measures to size the actions column
+       * to its content (see useActionsColumnFit). `display: contents` everywhere else, so it
+       * lays out nothing outside that preset. */}
+      {priority === "actions" ? (
+        <span className="ui-table-actions-content">{children}</span>
+      ) : (
+        children
+      )}
     </td>
   ),
 );

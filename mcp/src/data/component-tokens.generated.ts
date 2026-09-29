@@ -8136,7 +8136,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-action-collection-actions-width",
     "value": "3.5rem",
-    "description": "row-action affordance, never clipped"
+    "description": "row-action affordance: a FLOOR, not a cap — Table grows the column to a wider actions cell content (a text button + `…` menu), gh#1067"
   },
   {
     "name": "--table-action-collection-primary-width-compact",
