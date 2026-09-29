@@ -66,7 +66,9 @@ describe("Tree — filterTreeNode (gh#1043)", () => {
       /\.ui-tree-node\[data-filter-node="true"\]:not\(\[data-disabled\]\) \.ui-tree-label \{([^}]*)\}/,
     );
     expect(rule, "filter-node rule").not.toBeNull();
-    expect(rule![1]).toContain("var(--tree-node-filter-foreground, hsl(var(--primary)))");
+    expect(rule![1]).toContain(
+      "var(--tree-node-filter-foreground, hsl(var(--text-brand, var(--primary))))",
+    );
     expect(rule![1]).toContain("font-weight: var(--font-weight-medium)");
   });
 });
