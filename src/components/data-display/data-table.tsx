@@ -778,11 +778,16 @@ export function DataTable<T>({
         : internalSelection;
   // "All N matching" selects every row the query matches, so every row of whichever page is on
   // screen shows as selected — Gmail keeps the ticks on every page it pages to.
+  // antd: a row `getCheckboxProps` disables is out of every bulk path — select-all, invert, none
+  // and "all matching" leave it exactly as it is.
+  const isRowLocked = (row: T) => !!rowSelection?.getCheckboxProps?.(row).disabled;
   const matching = rowSelection?.matching;
   const rowSelectionState: RowSelectionState = matching?.selected
     ? {
         ...ownSelectionState,
-        ...(Object.fromEntries(data.map((row) => [getRowId(row), true])) as RowSelectionState),
+        ...(Object.fromEntries(
+          data.filter((row) => !isRowLocked(row)).map((row) => [getRowId(row), true]),
+        ) as RowSelectionState),
       }
     : ownSelectionState;
 
@@ -830,7 +835,7 @@ export function DataTable<T>({
     }
     const keys = Object.keys(next).filter((key) => next[key]);
     // Unticking any row leaves "all N matching" — the set is no longer everything that matches.
-    if (matching?.selected && data.some((row) => !next[getRowId(row)])) {
+    if (matching?.selected && data.some((row) => !isRowLocked(row) && !next[getRowId(row)])) {
       matching.onSelectedChange(false);
     }
     if (rowSelectionKeys === undefined && controlledSelected === undefined) {
@@ -913,7 +918,12 @@ export function DataTable<T>({
     // rows unsliced. Page count still derives from `rowCount`/the pre-paginated model either way.
     manualPagination: manualPagination || serverPaged || !paginationEngaged,
     rowCount: paginationConfig?.total ?? rowCount,
-    enableRowSelection: selectionEnabled,
+    // A function only when rows CAN be locked, so a table without `getCheckboxProps` is untouched.
+    // TanStack's page toggles and header tri-state then skip a locked row in both directions.
+    enableRowSelection:
+      selectionEnabled && rowSelection?.getCheckboxProps
+        ? (row) => !isRowLocked(row.original as T)
+        : selectionEnabled,
     state: {
       sorting: sortingState,
       columnFilters,
@@ -1183,7 +1193,10 @@ DataTable.SelectAll = function DataTableSelectAll() {
           Object.fromEntries(
             table
               .getRowModel()
-              .rows.filter((row) => !row.getIsSelected())
+              .rows.filter((row) =>
+                // A locked row keeps its state; every other row flips.
+                row.getCanSelect() ? !row.getIsSelected() : row.getIsSelected(),
+              )
               .map((row) => [getRowId(row.original as never), true]),
           ),
         );
@@ -1636,9 +1649,9 @@ DataTable.Content = function DataTableContent() {
     table.getIsAllPageRowsSelected();
   const matchingShown = !!matching && (matching.selected || matchingOffered);
   const clearMatching = () => {
-    // Unticking the page is what reports `false` (see the root's selection handler); an empty
-    // page has nothing to untick, so it reports directly.
-    if (rowCount > 0) table.toggleAllPageRowsSelected(false);
+    // Unticking the page is what reports `false` (see the root's selection handler); a page with
+    // nothing selectable to untick (empty, or every row locked) reports directly.
+    if (dataRows.some((row) => row.getCanSelect())) table.toggleAllPageRowsSelected(false);
     else matching?.onSelectedChange(false);
   };
 
