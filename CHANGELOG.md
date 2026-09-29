@@ -36,6 +36,21 @@ PATCH.
 - Deviation from antd: an exact match is lifted right after the create row (antd keeps option
   order).
 
+### 🐛 Table / DataTable: the action-collection `actions` column grows to fit a text action (#1067)
+
+PATCH. Under `preset="action-collection"` the `priority: "actions"` column was a fixed 3.5rem. The
+preset uses `table-layout: fixed`, so a text Button plus a `…` menu overflowed it and painted over
+the previous column (godx-jp/id `/admin/operations/jobs` at 1440px: the attempts count "3" was
+hidden).
+
+- The actions column sizes to its content when the content does not fit. `Table` measures each
+  actions cell and publishes `--table-action-collection-actions-content-width`; the 3.5rem token
+  is now a minimum, not a cap.
+- An icon-only actions column keeps exactly the token width (56px before and after), and an
+  explicit column `width` still wins, so the `width: "11rem"` stopgap can be removed.
+- `TableCell priority="actions"` now wraps its children in `.ui-table-actions-content`. A
+  consumer selector such as `td > button` no longer matches there.
+
 ### 🐛 DataTable.BulkActions: the bar wraps at narrow widths instead of overflowing (#1065)
 
 PATCH. At 390px the count and four actions stayed on one line, squeezing the count into a 20px
