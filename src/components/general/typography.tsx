@@ -36,6 +36,7 @@ export type {
   LinkProp as LinkProps,
 } from "../../props/components/general.prop";
 import { isDevelopment } from "../../lib/dev";
+import { isImeComposing } from "../../lib/ime";
 
 /*
  * ═══════════════════════════════════════════════════════════════════════════════════════════════
@@ -337,7 +338,12 @@ function TypographyEditor({
         onKeyDown={(event) => {
           // A key pressed while an IME is composing is the IME's, not the user's — committing a
           // Japanese conversion with Enter must not also confirm the edit.
-          if (inComposition.current) return;
+          // `isImeComposing` (gh#1054) also covers Safari, which fires `compositionend` BEFORE
+          // the confirming Enter's keydown and flags it only with keyCode 229.
+          if (inComposition.current || isImeComposing(event)) {
+            lastKey.current = null;
+            return;
+          }
           lastKey.current = event.key;
         }}
         onKeyUp={(event) => {

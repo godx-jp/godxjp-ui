@@ -9,6 +9,7 @@ import type {
   ChatSuggestionItemProp,
   ChatSuggestionProp,
 } from "../../props/components/data-entry.prop";
+import { isImeComposing } from "../../lib/ime";
 
 export type {
   ChatSuggestionProp,
@@ -266,6 +267,9 @@ export function ChatSuggestion({
 
   const onKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      // gh#1054: Enter/Tab/Escape/arrows during an IME composition drive the candidate window —
+      // picking a suggestion here would replace the half-converted reading.
+      if (isImeComposing(event)) return;
       if (!openRef.current) {
         // A caret that moves without changing the text still changes the query.
         if (event.key.startsWith("Arrow") || event.key === "Home" || event.key === "End") {

@@ -14,6 +14,7 @@ import type {
   TimePickerDisabledTimeProp,
   TimePickerProp,
 } from "../../props/components/data-entry.prop";
+import { isImeComposing } from "../../lib/ime";
 
 export type {
   TimePickerDisabledTimeProp,
@@ -448,6 +449,8 @@ function TimePickerPanel({
           aria-label={t("dataEntry.timePicker.typeLabel")}
           className="text-center tabular-nums"
           onKeyDown={(e) => {
+            // gh#1054: the Enter that confirms an IME conversion is not "commit this time".
+            if (isImeComposing(e)) return;
             if (e.key === "Enter") {
               e.preventDefault();
               commitDraft();
@@ -644,6 +647,8 @@ export function TimePicker({
               if (!disabled) setOpen(true);
             }}
             onKeyDown={(event) => {
+              // gh#1054: while an IME composes, Enter/Escape/arrows belong to the candidate window.
+              if (isImeComposing(event)) return;
               if (event.key === "ArrowDown") {
                 event.preventDefault();
                 setOpen(true);
