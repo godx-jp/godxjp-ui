@@ -127,6 +127,7 @@ import type {
   TablePresetProp,
   TableRowSelectionProp,
   TableScrollProp,
+  TableSelectionBuiltInProp,
   TableStickyProp,
   TableSummaryProp,
 } from "../../props/vocabulary";
@@ -769,12 +770,21 @@ export function DataTable<T>({
   };
 
   const rowSelectionKeys = rowSelection?.selectedRowKeys;
-  const rowSelectionState: RowSelectionState =
+  const ownSelectionState: RowSelectionState =
     rowSelectionKeys !== undefined
       ? (Object.fromEntries(rowSelectionKeys.map((key) => [key, true])) as RowSelectionState)
       : controlledSelected !== undefined
         ? selectionFromSet(controlledSelected)
         : internalSelection;
+  // "All N matching" selects every row the query matches, so every row of whichever page is on
+  // screen shows as selected — Gmail keeps the ticks on every page it pages to.
+  const matching = rowSelection?.matching;
+  const rowSelectionState: RowSelectionState = matching?.selected
+    ? {
+        ...ownSelectionState,
+        ...(Object.fromEntries(data.map((row) => [getRowId(row), true])) as RowSelectionState),
+      }
+    : ownSelectionState;
 
   const onSortingChange: OnChangeFn<SortingState> = (updater) => {
     const next = typeof updater === "function" ? updater(sortingState) : updater;
@@ -819,6 +829,10 @@ export function DataTable<T>({
       }
     }
     const keys = Object.keys(next).filter((key) => next[key]);
+    // Unticking any row leaves "all N matching" — the set is no longer everything that matches.
+    if (matching?.selected && data.some((row) => !next[getRowId(row)])) {
+      matching.onSelectedChange(false);
+    }
     if (rowSelectionKeys === undefined && controlledSelected === undefined) {
       setInternalSelection(next);
     }
@@ -1134,7 +1148,11 @@ DataTable.SelectAll = function DataTableSelectAll() {
     <Checkbox
       checked={allSelected ? true : someSelected ? "indeterminate" : false}
       onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
-      aria-label={t("dataTable.selectAll")}
+      aria-label={
+        rowSelection?.selectAllLabel ??
+        // With `matching` on, the table is server-paged by declaration: this box selects the PAGE.
+        t(rowSelection?.matching ? "dataTable.selectPage" : "dataTable.selectAll")
+      }
     />
   );
   if (rowSelection?.columnTitle !== undefined) return <>{rowSelection.columnTitle}</>;
@@ -1146,13 +1164,16 @@ DataTable.SelectAll = function DataTableSelectAll() {
   const selectedKeys = table
     .getSelectedRowModel()
     .rows.map((row) => getRowId(row.original as never));
-  const builtIn = [
-    {
+  const builtIn: Record<
+    TableSelectionBuiltInProp,
+    { key: string; text: React.ReactNode; onSelect: () => void }
+  > = {
+    SELECT_ALL: {
       key: "all",
       text: t("dataTable.selectAll"),
       onSelect: () => table.toggleAllPageRowsSelected(true),
     },
-    {
+    SELECT_INVERT: {
       key: "invert",
       text: t("dataTable.selectInvert"),
       onSelect: () => {
@@ -1168,20 +1189,25 @@ DataTable.SelectAll = function DataTableSelectAll() {
         );
       },
     },
-    {
+    SELECT_NONE: {
       key: "none",
       text: t("dataTable.selectNone"),
       onSelect: () => table.toggleAllPageRowsSelected(false),
     },
-  ];
+  };
+  // antd: a list may mix the `SELECTION_*` built-ins with custom entries, in the order given.
   const entries =
     rowSelection.selections === true
-      ? builtIn
-      : rowSelection.selections.map((entry) => ({
-          key: entry.key,
-          text: entry.text,
-          onSelect: () => entry.onSelect(pageKeys.length > 0 ? pageKeys : selectedKeys),
-        }));
+      ? [builtIn.SELECT_ALL, builtIn.SELECT_INVERT, builtIn.SELECT_NONE]
+      : rowSelection.selections.map((entry) =>
+          typeof entry === "string"
+            ? builtIn[entry]
+            : {
+                key: entry.key,
+                text: entry.text,
+                onSelect: () => entry.onSelect(pageKeys.length > 0 ? pageKeys : selectedKeys),
+              },
+        );
   return (
     <span className="ui-data-table-selection-menu">
       {box}
@@ -1208,6 +1234,13 @@ DataTable.SelectAll = function DataTableSelectAll() {
   );
 };
 (DataTable.SelectAll as React.FC).displayName = "DataTable.SelectAll";
+
+/** antd `Table.SELECTION_ALL` — the built-in "select all" entry for a `selections` list. */
+DataTable.SELECTION_ALL = "SELECT_ALL" as const satisfies TableSelectionBuiltInProp;
+/** antd `Table.SELECTION_INVERT` — the built-in "invert selection" entry. */
+DataTable.SELECTION_INVERT = "SELECT_INVERT" as const satisfies TableSelectionBuiltInProp;
+/** antd `Table.SELECTION_NONE` — the built-in "clear selection" entry. */
+DataTable.SELECTION_NONE = "SELECT_NONE" as const satisfies TableSelectionBuiltInProp;
 
 // ── BulkActions — visible when selection > 0 ───────────────────────────
 
@@ -1592,6 +1625,23 @@ DataTable.Content = function DataTableContent() {
   const dataRows = table.getRowModel().rows;
   const rowCount = dataRows.length;
 
+  // "Select all N matching" (opt-in). Offered once the whole page is ticked and the query matches
+  // more than the page holds; while chosen, it says so and offers the way back out.
+  const matching = rowSelection?.type === "radio" ? undefined : rowSelection?.matching;
+  const matchingOffered =
+    !!matching &&
+    !matching.selected &&
+    rowCount > 0 &&
+    matching.total > rowCount &&
+    table.getIsAllPageRowsSelected();
+  const matchingShown = !!matching && (matching.selected || matchingOffered);
+  const clearMatching = () => {
+    // Unticking the page is what reports `false` (see the root's selection handler); an empty
+    // page has nothing to untick, so it reports directly.
+    if (rowCount > 0) table.toggleAllPageRowsSelected(false);
+    else matching?.onSelectedChange(false);
+  };
+
   // antd `scroll` / `sticky` — CONSUMER lengths, so they travel as custom properties and the
   // geometry that reads them stays in table-layout.css.
   const scrollStyle: React.CSSProperties = {};
@@ -1638,6 +1688,31 @@ DataTable.Content = function DataTableContent() {
         data-hoverable={hoverable ? "" : undefined}
       >
         {/* With `preset="default"` the `.ui-data-table-scroll` region above owns the overflow, so the primitive's wrapper is a bare box (`scrollable={false}` — no nested scroller, no duplicate tab stop). Only the table's DIRECT wrapper sees the growth, so for the preset that wrapper is the keyboard-reachable scroll region (exactly the bare `Table` behaviour), scrolling inside the surface border. */}
+        {/* A live region has to EXIST before its text changes to be announced, so the banner's
+            `role="status"` is mounted for as long as `matching` is set and only filled in when
+            the offer appears. Empty, it has no box (see `.ui-data-table-matching`). */}
+        {matching ? (
+          <div className="ui-data-table-matching" data-active={matchingShown ? "" : undefined}>
+            <span role="status">
+              {matchingShown
+                ? matching.selected
+                  ? t("dataTable.matchingSelected", { count: matching.total })
+                  : t("dataTable.matchingPage", { count: rowCount })
+                : null}
+            </span>
+            {matchingShown ? (
+              <Button
+                variant="link"
+                size="sm"
+                onClick={matching.selected ? clearMatching : () => matching.onSelectedChange(true)}
+              >
+                {matching.selected
+                  ? t("dataTable.selectNone")
+                  : t("dataTable.matchingSelectAll", { count: matching.total })}
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
         <Table
           scrollable={preset !== "default"}
           label={label}

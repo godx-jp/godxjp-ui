@@ -147,6 +147,8 @@ export type {
   ColumnCompareProp,
   ColumnSorterProp,
   TableSelectionItemProp,
+  TableSelectionBuiltInProp,
+  TableSelectAllMatchingProp,
   TableRowSelectionProp,
   TableExpandableProp,
   TableSummaryProp,

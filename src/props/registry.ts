@@ -322,11 +322,23 @@ export const VOCABULARY_REGISTRY = {
     description:
       "One entry in the selection-column dropdown — { key, text, onSelect } (antd SelectionItem)",
   },
+  TableSelectionBuiltInProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Built-in selections entry — SELECT_ALL | SELECT_INVERT | SELECT_NONE (antd Table.SELECTION_ALL / SELECTION_INVERT / SELECTION_NONE, published as DataTable.SELECTION_*)",
+  },
+  TableSelectAllMatchingProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Server-paged 'select all N matching' banner — { total, selected, onSelectedChange } (no antd equivalent; Gmail/Jira/GitHub pattern)",
+  },
   TableRowSelectionProp: {
     file: "vocabulary/data.prop.ts",
     category: "data",
     description:
-      "DataTable row-selection config — type | selectedRowKeys | onChange | getCheckboxProps | preserveSelectedRowKeys | selections | hideSelectAll | columnTitle (antd TableRowSelection)",
+      "DataTable row-selection config — type | selectedRowKeys | onChange | getCheckboxProps | preserveSelectedRowKeys | selections | hideSelectAll | columnTitle | selectAllLabel | matching (antd TableRowSelection + select-all-matching)",
   },
   TableExpandableProp: {
     file: "vocabulary/data.prop.ts",
@@ -2485,6 +2497,8 @@ export const COMPONENT_PROP_REGISTRY = {
       "ColumnFilterStateProp",
       "ColumnSorterProp",
       "TableRowSelectionProp",
+      "TableSelectionBuiltInProp",
+      "TableSelectAllMatchingProp",
       "TableExpandableProp",
       "TableSummaryProp",
       "TableScrollProp",

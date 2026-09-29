@@ -771,6 +771,22 @@
     gap: var(--table-selection-menu-gap);
   }
 
+  /* ── `rowSelection.matching` — "select all N matching" (gh#1036) ──────────
+   * Mounted for as long as `matching` is set (its `role="status"` must exist before it speaks),
+   * but it only takes a box while it has something to say: idle, it is zero-height. */
+  .ui-data-table-matching[data-active] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-inline-sm);
+    padding-block: var(--space-stack-xs);
+    padding-inline: var(--table-cell-space-x);
+    border-block-end: var(--stroke-hairline) solid var(--table-border-color, hsl(var(--border)));
+    background-color: hsl(var(--muted));
+    font-size: var(--font-size-sm);
+  }
+
   /* `<DataTable bordered>` forwards antd's `bordered` to the Table primitive, whose own outer
    * frame would otherwise stack on top of the surface's. Only the INNER column rules are wanted
    * here; the surface keeps drawing the frame. */
