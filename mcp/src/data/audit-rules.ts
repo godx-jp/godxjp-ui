@@ -222,6 +222,13 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: 'Wrap FormFields in <Form layout="horizontal" labelWidth controlWidth>; a row of fields is <SpaceCompact> or <Form columns>, never a hand-rolled <Flex>. A field component whose whole output is one FormField is exempt.',
   },
   {
+    id: "mixed-button-size",
+    severity: "error",
+    category: "composition",
+    standard: null,
+    fix: 'Sibling <Button>s under one parent (through fragments, {cond && …}, ternaries, Tooltip wrappers) share ONE size; a missing size is default; icon-sm pairs with sm, icon-xs with xs, icon with default. Never `size="sm"` beside a default Button in one action row.',
+  },
+  {
     id: "dialog-form-too-big",
     severity: "error",
     category: "composition",

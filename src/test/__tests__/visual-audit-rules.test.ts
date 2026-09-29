@@ -12,6 +12,7 @@ import {
   findVisualRule,
   CHROMA_LIMIT,
   isShippedBrandAccent,
+  mixedButtonHeights,
   BRAND_ACCENT_TOLERANCE,
   // @ts-expect-error — plain .mjs script module, no types
 } from "../../../scripts/visual-audit-rules.mjs";
@@ -134,6 +135,20 @@ describe("alertControlIssues (Alert anatomy)", () => {
       dismissCorner: "top-right",
     });
     expect(issues).toEqual([]);
+  });
+});
+
+describe("mixedButtonHeights (one Button size per row)", () => {
+  it("flags a row whose Buttons differ by more than 0.5px, and only that row", () => {
+    const rows = [
+      { name: "sm-beside-default", heights: [28, 32] },
+      { name: "sub-pixel", heights: [28, 28.4] },
+      { name: "single", heights: [24] },
+    ];
+    expect(mixedButtonHeights(rows).map((r: { name: string }) => r.name)).toEqual([
+      "sm-beside-default",
+    ]);
+    expect(findVisualRule("mixed-button-height")?.severity).toBe("error");
   });
 });
 

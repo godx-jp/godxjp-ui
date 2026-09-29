@@ -891,6 +891,30 @@ const RULES = [
     message:
       'Hand-rolled overflow-wrap:anywhere ([overflow-wrap:anywhere] / wrap-anywhere) — use <Text break="anywhere"> for an email, code or id in a table cell or Descriptions value. It also releases the cell\'s inherited nowrap, so drop the break-words / whitespace-normal that came with it. Not whitespace="pre-wrap": its break-word does not shrink a table column (gh#927).',
   },
+  {
+    id: "mixed-button-size",
+    replacement: "one Button size per row",
+    scope: "consumer",
+    severity: "error",
+    /*
+     * ONE ROW, ONE BUTTON SIZE. A consumer shipped 「AIスコアを編集」 at `size="sm"` beside 裁定する at
+     * the default size in one action row: two heights, two paddings, two type sizes side by side,
+     * and the owner saw it before any audit did. Sibling <Button>s under one JSX parent must share
+     * a size. A missing `size` is `default`; an `icon-*` size belongs to its text size's family
+     * (`icon-sm` = `sm`, `icon-xs` = `xs`, `icon` = default), so `xs` beside `icon-sm` still fails.
+     *
+     * "Siblings" looks through what renders no box of its own: fragments, `{cond && …}`,
+     * ternaries, `.map(…)` and a Tooltip / TooltipTrigger around a button. Any other element is a
+     * new parent — FormActions, CardFooter, ModalFooter, Space, Flex, PageHeader `actions={…}` are
+     * all just parents here. A `size={expr}` that is not a string literal is unknown and skipped;
+     * a button kept in a variable (`{editButton}`) is invisible to a static scan — the runtime
+     * `mixed-button-height` check in visual-audit.mjs catches that one.
+     */
+    spansElement: true,
+    matches: mixedButtonSizeMatches,
+    message:
+      "Buttons in one row mix sizes — every Button under one parent takes the same `size` (a missing size is `default`; `icon-sm` pairs with `sm`, `icon-xs` with `xs`, `icon` with default). Pick the row's size and apply it to every button in it (docs/CONSUMER-RULES.md §5).",
+  },
 ];
 
 /**
@@ -1516,6 +1540,111 @@ function jsxOpeningEnd(source, start) {
     else if (char === ">" && braces === 0) return i;
   }
   return source.length;
+}
+
+/** Transparent wrappers: they render no row of their own, so the buttons inside stay siblings. */
+const BUTTON_ROW_TRANSPARENT = new Set([
+  "",
+  "Fragment",
+  "React.Fragment",
+  "Tooltip",
+  "TooltipTrigger",
+]);
+
+/** A Button's `size` literal from its OPENING tag's own attributes (not a nested element's). */
+function buttonSizeOf(openTag) {
+  // Blank every `{…}` body so `icon={<Plus size="sm" />}` cannot answer for the Button.
+  let top = "";
+  let depth = 0;
+  let quote = "";
+  for (let i = 0; i < openTag.length; i++) {
+    const ch = openTag[i];
+    if (quote) {
+      if (ch === "\\") i++;
+      else if (ch === quote) quote = "";
+      top += depth ? " " : ch;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === "`") quote = ch;
+    if (ch === "{") depth++;
+    top += depth ? (ch === "{" && depth === 1 ? "{" : " ") : ch;
+    if (ch === "}") depth--;
+  }
+  const at = /\bsize\s*=\s*/.exec(top);
+  if (!at) return "default";
+  const rest = openTag.slice(at.index + at[0].length);
+  const lit = /^(?:"([^"]*)"|'([^']*)'|\{\s*(?:"([^"]*)"|'([^']*)'|`([^`$]*)`)\s*\})/.exec(rest);
+  return lit ? (lit[1] ?? lit[2] ?? lit[3] ?? lit[4] ?? lit[5]) : null;
+}
+
+/** `icon-sm` → `sm`, `icon` → `default`, `md` → `default` (Button maps md to the default size). */
+const buttonSizeFamily = (size) => {
+  const bare = size.replace(/^icon-?/, "");
+  return bare === "" || bare === "md" ? "default" : bare;
+};
+
+/**
+ * `mixed-button-size`: group every <Button> by its nearest non-transparent JSX parent and yield
+ * one match per group whose size families differ. A tag stack over the whole file; an element in
+ * an attribute (`actions={<>…</>}`) gets the attribute's owner as its parent, kept apart from the
+ * owner's children. A `<` glued to an identifier outside JSX children is a TS generic.
+ */
+function* mixedButtonSizeMatches(source) {
+  const stack = []; // { tag, id, attr }
+  const pending = []; // opening tags whose attributes are still being scanned
+  const groups = new Map();
+  let nextId = 0;
+  const settle = (upTo) => {
+    while (pending.length && pending.at(-1).end < upTo) {
+      const p = pending.pop();
+      const i = stack.lastIndexOf(p.frame);
+      if (i >= 0) stack.length = i;
+      if (!p.selfClose) stack.push({ tag: p.frame.tag, id: nextId++, attr: false });
+    }
+  };
+  const tagRe = /<(\/?)(?:([A-Za-z][\w.]*)(?=[\s/>])|(?=>))/g;
+  for (const m of source.matchAll(tagRe)) {
+    settle(m.index);
+    const [, close, tag = ""] = m;
+    // `useState<Issue>(` — a `<` glued to an identifier, `)` or `]` is a generic, unless it sits
+    // in JSX children, where `Total<b>` is text followed by a tag.
+    const glued = /[\w$)\].]/.test(source[m.index - 1] ?? "");
+    if (!close && glued && (stack.length === 0 || stack.at(-1).attr)) continue;
+    if (close) {
+      for (let i = stack.length - 1; i >= 0; i--) {
+        if (!stack[i].attr && stack[i].tag === tag) {
+          stack.length = i;
+          break;
+        }
+      }
+      continue;
+    }
+    const end = jsxOpeningEnd(source, m.index);
+    if (end >= source.length) continue;
+    const openTag = source.slice(m.index, end + 1);
+    if (tag === "Button") {
+      const parent = stack.findLast((f) => f.attr || !BUTTON_ROW_TRANSPARENT.has(f.tag));
+      const size = buttonSizeOf(openTag);
+      if (parent && size !== null) {
+        (groups.get(parent.id) ?? groups.set(parent.id, []).get(parent.id)).push({
+          size,
+          index: m.index,
+          openTag,
+        });
+      }
+    }
+    const frame = { tag, id: nextId++, attr: true };
+    stack.push(frame);
+    pending.push({ end, frame, selfClose: /\/\s*>$/.test(openTag) });
+  }
+  for (const group of groups.values()) {
+    const families = new Set(group.map((b) => buttonSizeFamily(b.size)));
+    if (group.length < 2 || families.size < 2) continue;
+    yield {
+      0: `sizes ${group.map((b) => b.size).join(" + ")}: ${group[0].openTag}`,
+      index: group[0].index,
+    };
+  }
 }
 
 // Structural: a <Card> (without p-0) whose first child is body content rather than a Card

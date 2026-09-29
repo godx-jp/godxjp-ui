@@ -35,6 +35,13 @@ export const VISUAL_RULES: VisualRule[] = [
     fix: "Every control in one row must share --control-height; replace hand-rolled pills with Avatar/Button/Badge, never restyle a control's height.",
   },
   {
+    id: "mixed-button-height",
+    severity: "error",
+    category: "layout",
+    standard: "@godxjp/ui Button size (one size per row) · Nielsen consistency heuristic",
+    fix: "Buttons in one flex row must render at one height (within 0.5px): one `size` per row; icon-sm pairs with sm, icon-xs with xs, icon with default. Runtime twin of the static mixed-button-size rule.",
+  },
+  {
     id: "sibling-card-gap",
     severity: "error",
     category: "layout",

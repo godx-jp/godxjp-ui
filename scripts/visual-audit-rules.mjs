@@ -44,6 +44,13 @@ export const VISUAL_RULES = [
     fix: "Every control in one row (Flex row, PageContainer extra, footer) must share --control-height. Replace the odd one with the real primitive (Avatar/Button/Badge) instead of a hand-rolled pill; never restyle a control's height.",
   },
   {
+    id: "mixed-button-height",
+    severity: "error",
+    category: "layout",
+    standard: "@godxjp/ui Button size (one size per row) · Nielsen consistency heuristic",
+    fix: "Every Button in one flex row renders at one height (within 0.5px): give them all the same `size` (icon-sm pairs with sm, icon-xs with xs, icon with default). This is the runtime twin of the static `mixed-button-size` rule and catches rows assembled from variables.",
+  },
+  {
     id: "sibling-card-gap",
     severity: "error",
     category: "layout",
@@ -183,6 +190,16 @@ export function missingCssLayers(probes) {
 /** Rows whose controls disagree on height. @param {{name:string, heights:number[]}[]} rows */
 export function controlHeightMismatches(rows) {
   return rows.filter((r) => new Set(r.heights).size > 1);
+}
+
+/**
+ * Flex rows whose Buttons render at different heights (spread > 0.5px). Heights are NOT rounded:
+ * 28 vs 28.4 is the same size, 24 vs 28 is `xs` beside `sm`. @param {{name:string, heights:number[]}[]} rows
+ */
+export function mixedButtonHeights(rows, tolerance = 0.5) {
+  return rows.filter(
+    (r) => r.heights.length > 1 && Math.max(...r.heights) - Math.min(...r.heights) > tolerance,
+  );
 }
 
 /** Adjacent card pairs closer than the minimum gap. @param {{gap:number}[]} pairs */
