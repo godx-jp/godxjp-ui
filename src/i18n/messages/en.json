@@ -585,7 +585,20 @@
     "sortDescending": "Sort descending",
     "sortCancel": "Cancel sort",
     "selectColumn": "Select",
-    "scrollRegion": "Scrollable table"
+    "scrollRegion": "Scrollable table",
+    "selectPage": "Select all rows on this page",
+    "matchingPage": {
+      "one": "{count} row on this page is selected.",
+      "other": "All {count} rows on this page are selected."
+    },
+    "matchingSelectAll": {
+      "one": "Select {count} matching row",
+      "other": "Select all {count} matching rows"
+    },
+    "matchingSelected": {
+      "one": "{count} matching row is selected.",
+      "other": "All {count} matching rows are selected."
+    }
   },
   "dataGrid": {
     "search": "Search",

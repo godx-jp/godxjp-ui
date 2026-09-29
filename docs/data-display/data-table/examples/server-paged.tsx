@@ -26,6 +26,10 @@ import { Download, FileText, LayoutDashboard, Plus, ReceiptText } from "lucide-r
  * showTotal, onChange }}` — the real Pagination, total beside the page numbers, bottom-end. The
  * table is compact, so the pager is `size="sm"` and sits on the same control step as the toolbar
  * buttons above it. `data` is only the current page; the footer offers ceil(total / pageSize).
+ *
+ * Selection on a server-paged list (gh#1036): the header checkbox ticks THIS PAGE, and says so.
+ * Once the page is fully ticked, `rowSelection.matching` offers every matching row; while that is
+ * chosen the bulk action sends the query's filter to the server instead of a list of ids.
  */
 const sections: SidebarSectionProp[] = [
   {
@@ -86,6 +90,8 @@ export default function Demo() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const rows = useMemo(() => fetchPage(page, pageSize), [page, pageSize]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [allMatching, setAllMatching] = useState(false);
 
   return (
     <AppShell
@@ -126,6 +132,17 @@ export default function Demo() {
               data={rows}
               columns={columns}
               getRowId={(row) => row.id}
+              rowSelection={{
+                selectedRowKeys: selectedKeys,
+                onChange: (keys) => {
+                  setSelectedKeys(keys);
+                },
+                matching: {
+                  total: SERVER_TOTAL,
+                  selected: allMatching,
+                  onSelectedChange: setAllMatching,
+                },
+              }}
               pagination={{
                 total: SERVER_TOTAL,
                 current: page,
@@ -144,6 +161,12 @@ export default function Demo() {
                     <Download />
                     エクスポート
                   </Button>
+                  {/* While "all matching" is chosen the count is the server's, not the page's. */}
+                  <DataTable.BulkActions count={allMatching ? SERVER_TOTAL : undefined}>
+                    <Button size="sm" variant="outline">
+                      Mark as paid
+                    </Button>
+                  </DataTable.BulkActions>
                 </Flex>
                 <DataTable.ViewOptions />
               </DataTable.Toolbar>
