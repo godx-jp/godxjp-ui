@@ -1080,7 +1080,7 @@
     block-size: var(--color-picker-preset-size);
     border: var(--stroke-hairline) solid hsl(var(--input) / var(--input-alpha, 100%));
     border-radius: var(--control-radius);
-    background-color: var(--color-picker-preset-color);
+    background-color: var(--color-picker-preset-color, transparent);
     cursor: pointer;
     forced-color-adjust: none;
   }
