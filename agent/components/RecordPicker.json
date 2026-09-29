@@ -83,6 +83,16 @@
       "type": "string"
     },
     {
+      "description": "antd `notFoundContent` — shown when the search finds nothing, in the dropdown shape and the dialog alike (default: localized `dataEntry.recordPicker.empty`). Name WHAT was not found, e.g. 「該当するファイルはありません」.",
+      "name": "notFoundContent",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Text of the dialog's load-more button (default: localized `dataEntry.recordPicker.more`). Only the label — the button still appears only while the server returns a `nextCursor`.",
+      "name": "loadMoreLabel",
+      "type": "ReactNode"
+    },
+    {
       "description": "Control height of the trigger, on the shared control ladder.",
       "name": "size",
       "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""

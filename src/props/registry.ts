@@ -2279,7 +2279,16 @@ export const COMPONENT_PROP_REGISTRY = {
   RecordPickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "SizeProp", "PlaceholderProp"],
+    vocabulary: [
+      "ValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "SizeProp",
+      "PlaceholderProp",
+      // gh#1044: antd `notFoundContent` for the empty search, and the dialog's load-more text.
+      "NotFoundContentProp",
+      "LabelProp",
+    ],
     note: "One picker whose SHAPE follows the size of the set: Select at or under `threshold`, a searchable Dialog with consumer-declared filters over it (gh#932).",
   },
   RecordPickerFilterProp: {
@@ -2395,7 +2404,16 @@ export const COMPONENT_PROP_REGISTRY = {
   TransferProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["DisabledProp", "ClassNameProp"],
+    vocabulary: [
+      "DisabledProp",
+      "ClassNameProp",
+      {
+        field: "locale",
+        local: true,
+        reason:
+          "antd Transfer `locale`, ported for `notFoundContent` only (one node, or a [source, target] pair) — gh#1044.",
+      },
+    ],
   },
   TransferItemProp: {
     group: "data-entry",
@@ -2980,7 +2998,8 @@ export const COMPONENT_PROP_REGISTRY = {
   InfiniteQueryStateProp: {
     group: "query",
     file: "components/query.prop.ts",
-    vocabulary: ["HandlerProp"],
+    // LabelProp: `loadMoreLabel`, the built-in button's idle text (gh#1044).
+    vocabulary: ["HandlerProp", "LabelProp"],
   },
   PrefetchLinkProp: { group: "query", file: "components/query.prop.ts", vocabulary: [] },
   AuthExpiryProviderProp: {
@@ -4103,6 +4122,12 @@ export const COMPONENT_PROP_REGISTRY = {
           "An endpoint movement command, not an internally owned value; the consumer commits its row data.",
       },
       {
+        field: "sticky",
+        local: true,
+        reason:
+          "antd Table `sticky` — `true` or `{ offsetHeader }` (px) keeps the axis header on screen while the page scrolls (gh#1044).",
+      },
+      {
         field: "expandedValues",
         local: true,
         reason:
@@ -4347,6 +4372,8 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Custom empty content when there are no branches.",
       },
+      // gh#1044: antd `notFoundContent` — the line shown when the branch SEARCH matches nothing.
+      "NotFoundContentProp",
       {
         field: "listError",
         local: true,

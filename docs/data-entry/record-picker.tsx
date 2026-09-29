@@ -109,6 +109,7 @@ export default function Demo() {
                 value={owner}
                 onValueChange={(v) => setOwner(v as string)}
                 dialogTitle="Choose an owner"
+                notFoundContent="No one matches that name"
               />
               <Text as="p" size="2xs" tone="muted" tabular>
                 value: {JSON.stringify(owner)}

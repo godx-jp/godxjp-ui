@@ -118,6 +118,8 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement | HTMLInputElemen
       emptyOption,
       placeholder,
       dialogTitle,
+      notFoundContent,
+      loadMoreLabel,
       disabled = false,
       size,
       className,
@@ -179,6 +181,8 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement | HTMLInputElemen
           emptyOption={emptyOption}
           placeholder={placeholder}
           dialogTitle={dialogTitle}
+          notFoundContent={notFoundContent}
+          loadMoreLabel={loadMoreLabel}
           disabled={disabled}
           size={size}
           className={className}
@@ -225,6 +229,7 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement | HTMLInputElemen
           value={(isMultiple ? selected : (selected[0] ?? undefined)) as never}
           onValueChange={((next: string | string[]) => commit(toArray(next))) as never}
           placeholder={placeholder ?? t("dataEntry.recordPicker.placeholder")}
+          notFoundContent={notFoundContent}
           disabled={disabled}
           size={size}
           className={className}
@@ -248,6 +253,8 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement | HTMLInputElemen
         emptyOption={emptyOption}
         placeholder={placeholder}
         dialogTitle={dialogTitle}
+        notFoundContent={notFoundContent}
+        loadMoreLabel={loadMoreLabel}
         disabled={disabled}
         size={size}
         className={className}
@@ -305,6 +312,8 @@ type InlinePickerProps = {
   emptyOption?: RecordPickerProp["emptyOption"];
   placeholder?: string;
   dialogTitle?: string;
+  notFoundContent?: RecordPickerProp["notFoundContent"];
+  loadMoreLabel?: RecordPickerProp["loadMoreLabel"];
   disabled?: boolean;
   size?: RecordPickerProp["size"];
   className?: string;
@@ -325,6 +334,8 @@ const InlinePicker = React.forwardRef<HTMLInputElement, InlinePickerProps>(funct
     emptyOption,
     placeholder,
     dialogTitle,
+    notFoundContent,
+    loadMoreLabel,
     disabled,
     size,
     className,
@@ -480,6 +491,8 @@ const InlinePicker = React.forwardRef<HTMLInputElement, InlinePickerProps>(funct
           selectedOptions={selectedOptions}
           emptyOption={emptyOption}
           dialogTitle={dialogTitle}
+          notFoundContent={notFoundContent}
+          loadMoreLabel={loadMoreLabel}
           initialQuery={dialogQuery}
           autoOpen
           onDismiss={() => setDialogQuery(null)}
@@ -519,6 +532,8 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
     emptyOption,
     placeholder,
     dialogTitle,
+    notFoundContent,
+    loadMoreLabel,
     disabled,
     size,
     className,
@@ -747,7 +762,10 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
                     {t("dataEntry.recordPicker.loading")}
                   </div>
                 ) : visible.length === 0 ? (
-                  <EmptyState variant="compact" title={t("dataEntry.recordPicker.empty")} />
+                  <EmptyState
+                    variant="compact"
+                    title={notFoundContent ?? t("dataEntry.recordPicker.empty")}
+                  />
                 ) : (
                   groups.map(([heading, items]) => {
                     const rendered = items.map((o) => {
@@ -801,7 +819,7 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
                   size="sm"
                   onClick={() => void load(query, filterValues, cursor)}
                 >
-                  {t("dataEntry.recordPicker.more")}
+                  {loadMoreLabel ?? t("dataEntry.recordPicker.more")}
                 </Button>
               ) : null}
             </Flex>

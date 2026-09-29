@@ -590,6 +590,12 @@
         "description": "Fires with the next expanded parent ids when a disclosure is toggled, for controlled and uncontrolled timelines alike.",
         "name": "onExpandedValuesChange",
         "type": "(values: string[]) => void"
+      },
+      {
+        "defaultValue": "false",
+        "description": "antd Table `sticky` — keep the axis header (bands + ticks) on screen while the PAGE scrolls a long schedule. `offsetHeader` is px from the top of the scrolling viewport (the height of a fixed app topbar). The header moves out of the horizontal scroller and follows its scrollLeft; the section becomes `overflow: clip` and the body scroller takes the keyboard tab stop. Like antd, it needs no clipping ancestor between the timeline and the page scroller: `Card` is `overflow: hidden`, so a sticky timeline goes in the page as its own section, not inside a Card. antd's `offsetScroll` / `getContainer` (sticky horizontal scrollbar) are not ported.",
+        "name": "sticky",
+        "type": "boolean | { offsetHeader?: number }"
       }
     ],
     "rules": [],
@@ -5346,6 +5352,11 @@
         "name": "children",
         "required": true,
         "type": "(flat, helpers) => ReactNode"
+      },
+      {
+        "description": "Idle text of the built-in load-more button (default: localized `query.loadMore`, 「さらに読み込む」) — e.g. 「さらに表示」「さらに古い版を表示」. The button, its pending label and disabled-while-fetching stay the component's. Ignored when `loadMore` replaces the footer.",
+        "name": "loadMoreLabel",
+        "type": "ReactNode"
       }
     ],
     "related": [
@@ -5362,7 +5373,7 @@
       "DO: Always pass `skeleton` (e.g. `<SkeletonTable />` or `<SkeletonStat />`). It shows on initial `isPending`, on refetch-after-error, and whenever `data` is absent. Never show a blank area while loading.",
       "DO: Pass `empty` (an `<EmptyState>` node) to handle the zero-results case — without it the children render-prop is called with an empty array and you get a silent blank screen. Provide a custom `isEmpty` only when `TFlat` is not an array.",
       "DO: Let errors remain cause-aware. Retry is automatic only for classified transient/network/5xx failures. Unknown errors do not get a blind retry unless `showRetry` or `onRetry` is explicitly supplied; a 401 is handled by the app-root `AuthExpiryProvider` (auto, once, skeleton + live region) or, without one, by the `onAuthError` sign-in button; raw backend/token text is never rendered.",
-      "DON'T: Hand-roll a load-more button. The component renders a default centered outline Button when `hasNextPage` is true. Override only via `loadMore` (custom node) or `showLoadMore={false}` (hide entirely). Never call `query.fetchNextPage()` outside the component for pagination.",
+      "DON'T: Hand-roll a load-more button. The component renders a default centered outline Button when `hasNextPage` is true. Rename it with `loadMoreLabel` (keeps the pending state); replace it only via `loadMore` (custom node) or `showLoadMore={false}` (hide entirely). Never call `query.fetchNextPage()` outside the component for pagination.",
       "DON'T: Use `InfiniteQueryState` for a `useQuery` result — it expects `UseInfiniteQueryResult` shape (`pages`, `hasNextPage`, `fetchNextPage`, `isFetchingNextPage`). For regular `useQuery` use `DataState` instead.",
       "DON'T: Confuse the two generics: `TPage` is the raw page shape from the API, `TFlat` is what `flatten` returns (usually `TItem[]`). The `children` render-prop receives `TFlat`, not `TPage`. Pass `isEmpty` if `TFlat` is not a plain array so empty detection works correctly."
     ],
@@ -6116,6 +6127,16 @@
         "description": "Dialog heading. Defaults to the localized `dataEntry.recordPicker.dialogTitle`.",
         "name": "dialogTitle",
         "type": "string"
+      },
+      {
+        "description": "antd `notFoundContent` — shown when the search finds nothing, in the dropdown shape and the dialog alike (default: localized `dataEntry.recordPicker.empty`). Name WHAT was not found, e.g. 「該当するファイルはありません」.",
+        "name": "notFoundContent",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Text of the dialog's load-more button (default: localized `dataEntry.recordPicker.more`). Only the label — the button still appears only while the server returns a `nextCursor`.",
+        "name": "loadMoreLabel",
+        "type": "ReactNode"
       },
       {
         "description": "Control height of the trigger, on the shared control ladder.",
@@ -9480,6 +9501,11 @@
         "description": "Called whenever the checked selection in either panel changes. Provides updated arrays for source and target selections. Required when `selectedKeys` is controlled.",
         "name": "onSelectChange",
         "type": "(sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void"
+      },
+      {
+        "description": "antd `locale`, ported for `notFoundContent` only: what an empty or search-emptied pane shows (default: localized `dataEntry.transfer.empty`). A `[source, target]` pair sets each pane separately, as in antd.",
+        "name": "locale",
+        "type": "{ notFoundContent?: ReactNode | [ReactNode, ReactNode] }"
       },
       {
         "description": "Fires when items move between panels; you own `targetKeys` state.",
@@ -14654,6 +14680,11 @@
         "description": "Built-in branch search above the checkbox list.",
         "name": "searchable",
         "type": "boolean"
+      },
+      {
+        "description": "antd `notFoundContent` — shown when the branch SEARCH matches nothing (default: localized `dataEntry.branchScope.noMatches`). An empty `branches` list is `empty`'s job, not this.",
+        "name": "notFoundContent",
+        "type": "ReactNode"
       },
       {
         "description": "Override the localized radio labels (e.g. domain wording like 全店舗).",

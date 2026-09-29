@@ -58,6 +58,7 @@ export function InfiniteQueryState<
   onAuthError,
   loadingMore,
   loadMore,
+  loadMoreLabel,
   showLoadMore = true,
   children,
 }: InfiniteQueryStateProp<TPage, TFlat>) {
@@ -125,7 +126,9 @@ export function InfiniteQueryState<
               disabled={query.isFetchingNextPage}
               onClick={() => void query.fetchNextPage()}
             >
-              {query.isFetchingNextPage ? t("common.working") : t("query.loadMore")}
+              {query.isFetchingNextPage
+                ? t("common.working")
+                : (loadMoreLabel ?? t("query.loadMore"))}
             </Button>
           </div>
         ))

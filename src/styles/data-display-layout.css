@@ -2005,6 +2005,22 @@
     border: var(--stroke-hairline) solid hsl(var(--range-timeline-border-color));
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   }
+  /* `sticky` (antd Table `sticky`): the section stops scrolling (`clip` is not a scroll container,
+   * so the header below can stick to the PAGE's scroller) and hands sideways scrolling to the
+   * body scroller; the header rides on top at the consumer's offset and mirrors its scrollLeft. */
+  .ui-range-timeline[data-sticky="true"] {
+    overflow: clip;
+  }
+  .ui-range-timeline-sticky-header {
+    position: sticky;
+    inset-block-start: var(--range-timeline-sticky-offset, 0px);
+    z-index: 2;
+    overflow: hidden;
+  }
+  .ui-range-timeline-scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
   .ui-range-timeline-canvas {
     min-inline-size: calc(
       var(--range-timeline-label-width) + var(--range-timeline-columns, 1) *

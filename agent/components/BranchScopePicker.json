@@ -60,6 +60,11 @@
       "type": "boolean"
     },
     {
+      "description": "antd `notFoundContent` — shown when the branch SEARCH matches nothing (default: localized `dataEntry.branchScope.noMatches`). An empty `branches` list is `empty`'s job, not this.",
+      "name": "notFoundContent",
+      "type": "ReactNode"
+    },
+    {
       "description": "Override the localized radio labels (e.g. domain wording like 全店舗).",
       "name": "allLabel / selectedLabel",
       "type": "ReactNode"
