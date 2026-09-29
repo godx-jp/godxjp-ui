@@ -14,6 +14,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { SearchInput } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 import { Building2, FolderTree, ShieldCheck } from "lucide-react";
 
@@ -174,17 +175,14 @@ function attachChildren(nodes: Department[], id: string, children: Department[])
 // level to a few dozen DOM rows — so the one paged section below composes its own: a leaf whose
 // selection asks for the next page. It is a real treeitem, so the keyboard reaches it.
 const CASE_PAGE = 100;
-const suites: TreeNodeProp[] = ["結合テスト", "受入テスト"].map((suite, suiteIndex) => ({
-  value: `suite-${suiteIndex + 1}`,
-  label: suite,
+// The data carries VALUES only; every visible label is derived from the value through `t()` at
+// render (`labelSuiteTree`), so the demo follows the active locale like the library's chrome does.
+const suites: TreeNodeProp[] = [1, 2].map((suiteNumber) => ({
+  value: `suite-${suiteNumber}`,
+  label: "",
   children: Array.from({ length: 14 }, (_, sectionIndex) => ({
-    value: `suite-${suiteIndex + 1}/section-${sectionIndex + 1}`,
-    label:
-      suiteIndex === 0 && sectionIndex === 1
-        ? "セクション 2（初回の読み込みが失敗）"
-        : suiteIndex === 0 && sectionIndex === 2
-          ? "セクション 3（100 件ずつ）"
-          : `セクション ${sectionIndex + 1}`,
+    value: `suite-${suiteNumber}/section-${sectionIndex + 1}`,
+    label: "",
     isLeaf: false,
   })),
 }));
@@ -192,7 +190,7 @@ const suites: TreeNodeProp[] = ["結合テスト", "受入テスト"].map((suite
 function caseNodes(section: string, from: number, to: number): TreeNodeProp[] {
   return Array.from({ length: to - from }, (_, index) => ({
     value: `${section}/case-${from + index + 1}`,
-    label: `ケース ${String(from + index + 1).padStart(3, "0")}`,
+    label: "",
     isLeaf: true,
   }));
 }
@@ -211,7 +209,45 @@ function withChildren(
   );
 }
 
+function labelSuiteTree(
+  nodes: TreeNodeProp[],
+  t: ReturnType<typeof useTranslation>["t"],
+): TreeNodeProp[] {
+  return nodes.map((node) => {
+    const value = node.value;
+    let label: string;
+    if (value.endsWith("::more")) {
+      label = t("treeDocs.longList.loadMore", { count: CASE_PAGE });
+    } else if (/\/case-\d+$/.test(value)) {
+      label = t("treeDocs.longList.case", {
+        number: String(Number(value.split("case-").pop())).padStart(3, "0"),
+      });
+    } else if (/\/section-\d+$/.test(value)) {
+      const number = Number(value.split("section-").pop());
+      const key =
+        value === "suite-1/section-2"
+          ? "treeDocs.longList.sectionFailing"
+          : value === "suite-1/section-3"
+            ? "treeDocs.longList.sectionPaged"
+            : "treeDocs.longList.section";
+      label = t(key, { number, count: CASE_PAGE });
+    } else {
+      label = t(
+        value === "suite-1"
+          ? "treeDocs.longList.suiteIntegration"
+          : "treeDocs.longList.suiteAcceptance",
+      );
+    }
+    return {
+      ...node,
+      label,
+      children: node.children ? labelSuiteTree(node.children, t) : undefined,
+    };
+  });
+}
+
 export default function Demo() {
+  const { t } = useTranslation();
   // Card 1 — checks are controlled so the readout beside the tree can never disagree with it.
   const [granted, setGranted] = React.useState<string[]>(["billing.invoice.read"]);
   // Card 2 — selection is controlled and drives the detail pane.
@@ -242,7 +278,7 @@ export default function Demo() {
     if (paged) {
       children.push({
         value: `${node.value}::more`,
-        label: "さらに 100 件を読み込む",
+        label: "",
         isLeaf: true,
       });
     }
@@ -258,9 +294,7 @@ export default function Demo() {
       const loaded = (sectionNode?.children ?? []).filter((node) => !node.value.endsWith("::more"));
       const next = caseNodes(section, loaded.length, Math.min(421, loaded.length + CASE_PAGE));
       const more =
-        loaded.length + next.length < 421
-          ? [{ value: moreValue, label: "さらに 100 件を読み込む", isLeaf: true }]
-          : [];
+        loaded.length + next.length < 421 ? [{ value: moreValue, label: "", isLeaf: true }] : [];
       return withChildren(current, section, [...loaded, ...next, ...more]);
     });
   };
@@ -452,27 +486,21 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>長い子リスト（height · virtual · filterTreeNode）</CardTitle>
-            <CardDescription>
-              2 スイート → 28 セクション → 最大 421 ケース。height を渡すとツリー自身がその高さで
-              スクロールし、見えている行だけを描画します（antd の height + virtual）。検索語に一致
-              するノードは filterTreeNode で強調されるだけで、隠れません。「セクション 2」は初回の
-              loadData が失敗し、もう一度開くと再取得します。「セクション 3」は API
-              がページングされている場合の組み立て例で、末尾の葉を選ぶと次の 100 件を読み込みます。
-            </CardDescription>
+            <CardTitle level={2}>{t("treeDocs.longList.title")}</CardTitle>
+            <CardDescription>{t("treeDocs.longList.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">
               <SearchInput
-                ariaLabel="ケースを検索"
-                placeholder="ケース名で強調（例: 042）"
+                ariaLabel={t("treeDocs.longList.searchLabel")}
+                placeholder={t("treeDocs.longList.searchPlaceholder")}
                 value={caseQuery}
                 onValueChange={setCaseQuery}
                 onSearch={() => {}}
               />
               <Tree
-                aria-label="テストスイート"
-                treeData={suiteTree}
+                aria-label={t("treeDocs.longList.treeLabel")}
+                treeData={labelSuiteTree(suiteTree, t)}
                 height={360}
                 defaultExpandedValues={["suite-1"]}
                 loadData={loadSection}
