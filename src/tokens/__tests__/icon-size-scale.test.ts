@@ -167,6 +167,9 @@ const FROZEN: Record<string, [string, string, string]> = {
   // the drop placeholder IS an upload dropzone and the card's × IS an upload row's remove.
   "--attachments-placeholder-icon-size": ["2.5rem", "2.5rem", "2.5rem"],
   "--attachments-remove-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
+  // Image preview (#1077): the glyph in every round control on the preview stage — the close,
+  // prev/next and tool buttons — and in the thumbnail's veil. Reads `--icon-size-lg`: a no-move row.
+  "--image-preview-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
 };
 
 // Must stay in step with the selector pattern in the ratchet below. They drifted apart once —

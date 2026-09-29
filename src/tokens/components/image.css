@@ -2,9 +2,9 @@
  * IMAGE — a picture that opens large, and its full-viewport preview
  * (`src/components/data-display/image.tsx`, antd `Image` + `Image.PreviewGroup`).
  *
- * The preview is a dark stage whatever the theme, as in antd: a screenshot is judged against a
- * neutral surround, not the page's colour. Its scrim is the shared `--overlay-background`, only
- * denser, so a brand that retunes every overlay's scrim retunes this one too.
+ * The preview's scrim is the shared `--overlay-background` itself — antd's preview mask is its
+ * modal mask — so a brand that retunes every overlay's scrim retunes this one too. It is used
+ * whole, never as a share of a share (gh#886).
  *
  * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md ·
  * "Role-mirror knobs MUST be `initial`").
@@ -18,7 +18,7 @@
   --image-radius: initial; /* default = var(--radius) */
 
   /* The preview stage. */
-  --image-preview-background-alpha: 85%;
+  --image-preview-background: initial; /* default = --overlay-background, as antd's mask */
   --image-preview-foreground: initial; /* default = hsl(var(--background)) */
   --image-preview-inset: var(--space-4);
   --image-preview-gap: var(--space-2);
