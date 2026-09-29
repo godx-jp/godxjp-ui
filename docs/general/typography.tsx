@@ -21,8 +21,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  DataTable,
+  Tree,
 } from "@godxjp/ui/data-display";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Breadcrumb, Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
  * Text + Heading — the typographic primitives. Use these INSTEAD of a hand-rolled
@@ -46,8 +48,15 @@ const headingTones = [
   { tone: "info", title: "システムメンテナンスのお知らせ" },
 ] as const;
 
+type SuiteRow = { id: string; title: string };
+
 export default function Demo() {
   const { t } = useTranslation();
+  const longTitle = t("textExamples.ellipsisLongTitle");
+  const suiteRows: SuiteRow[] = [
+    { id: "TS-0412", title: longTitle },
+    { id: "TS-0413", title: t("textExamples.ellipsisShortTitle") },
+  ];
   return (
     <PageContainer
       title="Typography"
@@ -385,6 +394,80 @@ export default function Demo() {
                 発生条件は 390px 幅の端末で、日本語ロケールのときのみです。
                 再現手順とスクリーンショットは添付の通りです。
               </Paragraph>
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("textExamples.ellipsisTitle")}</CardTitle>
+            <CardDescription>{t("textExamples.ellipsisDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <ResponsiveGrid columns={{ sm: 2, lg: 3 }}>
+                <Flex direction="col" gap="xs">
+                  <Text size="xs" tone="muted">
+                    {t("textExamples.ellipsisPlain")}
+                  </Text>
+                  <Text ellipsis={{ tooltip: true }}>{longTitle}</Text>
+                </Flex>
+                <Flex direction="col" gap="xs">
+                  <Text size="xs" tone="muted">
+                    {t("textExamples.ellipsisLink")}
+                  </Text>
+                  <Text asChild link ellipsis={{ tooltip: true }}>
+                    <a href="#typography">{longTitle}</a>
+                  </Text>
+                </Flex>
+                <Flex direction="col" gap="xs">
+                  <Text size="xs" tone="muted">
+                    {t("textExamples.ellipsisTree")}
+                  </Text>
+                  <Tree
+                    aria-label={t("textExamples.ellipsisTree")}
+                    treeData={[
+                      {
+                        value: "suite",
+                        label: longTitle,
+                        children: [
+                          { value: "case-1", label: t("textExamples.ellipsisShortTitle") },
+                        ],
+                      },
+                    ]}
+                    defaultExpandedValues={["suite"]}
+                    titleRender={(node) => <Text ellipsis={{ tooltip: true }}>{node.label}</Text>}
+                  />
+                </Flex>
+              </ResponsiveGrid>
+              <DataTable<SuiteRow>
+                label={t("textExamples.ellipsisTable")}
+                data={suiteRows}
+                getRowId={(row) => row.id}
+                columns={[
+                  { key: "id", header: "ID", width: "7rem", render: (row) => row.id },
+                  {
+                    key: "title",
+                    header: (
+                      <Text ellipsis={{ tooltip: true }}>
+                        {t("textExamples.ellipsisLongHeader")}
+                      </Text>
+                    ),
+                    width: "12rem",
+                    ellipsis: true,
+                    sortable: true,
+                    sorter: (a, b) => a.title.localeCompare(b.title),
+                    render: (row) => <Text ellipsis={{ tooltip: true }}>{row.title}</Text>,
+                  },
+                ]}
+              />
+              <Breadcrumb
+                ariaLabel={t("textExamples.ellipsisBreadcrumb")}
+                items={[
+                  { label: t("textExamples.ellipsisCrumbHome"), to: "#typography" },
+                  { label: longTitle, to: "#typography", ellipsis: true },
+                  { label: longTitle, ellipsis: true },
+                ]}
+              />
             </Flex>
           </CardContent>
         </Card>

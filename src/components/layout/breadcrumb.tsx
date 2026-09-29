@@ -2,6 +2,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import type { ElementType, ReactNode } from "react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { BreadcrumbCrumbText, trailEllipsis } from "./breadcrumb-ellipsis";
 import type {
   BreadcrumbItemProp,
   BreadcrumbItemRenderProp,
@@ -48,12 +49,16 @@ export function Breadcrumb({
 
   return (
     <nav aria-label={ariaLabel ?? t("navigation.breadcrumb.ariaLabel")} className="ui-breadcrumb">
-      <ol className="ui-breadcrumb-list">
+      <ol className="ui-breadcrumb-list" data-ellipsis={trailEllipsis(items)}>
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
 
           return (
-            <li key={item.to ?? index} className="ui-breadcrumb-item">
+            <li
+              key={item.to ?? index}
+              className="ui-breadcrumb-item"
+              data-ellipsis={item.ellipsis ? "" : undefined}
+            >
               {renderBreadcrumbSegment({ item, index, isLast, items, itemRender, LinkComponent })}
               {!isLast ? (
                 <span className="ui-breadcrumb-separator" aria-hidden="true">
@@ -124,15 +129,19 @@ function renderBreadcrumbSegment({
 
   if (item.to && !isLast) {
     return (
-      <LinkComponent href={item.to} to={item.to} className="ui-breadcrumb-link">
-        {item.label}
-      </LinkComponent>
+      <BreadcrumbCrumbText item={item}>
+        <LinkComponent href={item.to} to={item.to} className="ui-breadcrumb-link">
+          {item.label}
+        </LinkComponent>
+      </BreadcrumbCrumbText>
     );
   }
 
   return (
-    <span className="ui-breadcrumb-current" aria-current={isLast ? "page" : undefined}>
-      {item.label}
-    </span>
+    <BreadcrumbCrumbText item={item}>
+      <span className="ui-breadcrumb-current" aria-current={isLast ? "page" : undefined}>
+        {item.label}
+      </span>
+    </BreadcrumbCrumbText>
   );
 }

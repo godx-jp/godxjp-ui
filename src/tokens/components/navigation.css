@@ -72,6 +72,9 @@
   /* Ant Design `BreadcrumbItemType.menu` — the sibling picker hung off a segment. The trigger is
    * the segment's own text plus a disclosure chevron, so it only needs the gap between them. */
   --breadcrumb-menu-trigger-gap: var(--space-inline-xs);
+  /* `BreadcrumbItemProp.ellipsis` (gh#1046) — the widest a truncating crumb may grow. `none` = it
+   * only cuts when the one-line trail runs out of room; a theme may cap it (e.g. `16em`). */
+  --breadcrumb-item-max-inline-size: none;
   --menu-shortcut-font-size: var(
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))

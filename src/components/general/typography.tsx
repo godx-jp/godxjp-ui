@@ -3,7 +3,7 @@ import { Check, Copy, LoaderCircle, Pencil } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
+import { EllipsisTooltip, Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
 import { Textarea } from "../data-entry/textarea";
 import type {
   HeadingProp,
@@ -396,6 +396,10 @@ type BlockRender = {
   /** The resolved tooltip that carries the full text while it is truncated. */
   ellipsisTooltip: React.ReactNode;
   isEllipsis: boolean;
+  /** The measured element — the anchor the ellipsis tooltip positions against (gh#1045). */
+  anchorRef: React.RefObject<HTMLElement | null>;
+  /** True when `ellipsis.tooltip` asked for one and the run is clamping; `EllipsisTooltip` renders. */
+  showsEllipsisTooltip: boolean;
 };
 
 function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRender {
@@ -660,6 +664,13 @@ function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRen
     onTextClick: enableEdit && triggerType.includes("text") ? startEditing : undefined,
     ellipsisTooltip,
     isEllipsis,
+    anchorRef: elementRef,
+    showsEllipsisTooltip:
+      clamping &&
+      ellipsisTooltip !== undefined &&
+      ellipsisTooltip !== null &&
+      ellipsisTooltip !== false &&
+      ellipsisTooltip !== "",
   };
 }
 
@@ -742,7 +753,14 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
     ...rest
   } = props;
 
-  const block = useTypographyBlock(props, allowRows);
+  // With `asChild` the TEXT is the child's own children — the child element is the box. Handing the
+  // element itself to the block behaviour is what nested `<a>` inside `<a>` (gh#1045).
+  const asChildElement =
+    asChild && React.isValidElement<{ children?: React.ReactNode }>(children) ? children : null;
+  const block = useTypographyBlock(
+    asChildElement ? { ...props, children: asChildElement.props.children } : props,
+    allowRows,
+  );
   const element = as ?? (component as TextProp["as"]) ?? "span";
 
   // `clamp` is a max line count: integer ≥ 1. Anything else is ignored (dev builds warn).
@@ -864,27 +882,37 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
   //
   // Slot's merge order, reproduced: our props first, the child's own on top (so the child keeps its
   // `href`), with className concatenated rather than replaced.
+  let rendered: React.ReactElement;
   if (asChild) {
     const child = React.Children.only(children) as React.ReactElement<{ className?: string }>;
     const cloned = {
       ...typography,
       ...child.props,
-      ref,
+      // The measuring ref too, or an `asChild` ellipsis never learns it is clipping (gh#1045).
+      ref: composeRefs(block.measureRef, ref),
       className: cn(typography.className as string, child.props.className),
     } as never;
     // A plain `<Text asChild>` leaves the child's own children untouched — the shape every existing
     // call site is written in, and the one `typography-link.test.tsx` pins. Only a call that ASKED
-    // for decorations or an action cluster has its children replaced, because those nodes have
-    // nowhere else to go.
-    return usesBlockBehaviour(props)
+    // for decorations or an action cluster has its children replaced — by the child's OWN children,
+    // decorated — because those nodes have nowhere else to go.
+    rendered = usesBlockBehaviour(props)
       ? React.cloneElement(child, cloned, body)
       : React.cloneElement(child, cloned);
+  } else {
+    rendered = React.createElement(
+      element,
+      { ref: composeRefs(block.measureRef, ref), ...typography },
+      body,
+    );
   }
 
-  return React.createElement(
-    element,
-    { ref: composeRefs(block.measureRef, ref), ...typography },
-    body,
+  if (!block.showsEllipsisTooltip) return rendered;
+  return (
+    <>
+      {rendered}
+      <EllipsisTooltip anchorRef={block.anchorRef} title={block.ellipsisTooltip} />
+    </>
   );
 });
 TextBase.displayName = "TextBase";
@@ -1060,7 +1088,7 @@ export const Title = React.forwardRef<HTMLElement, TypographyTitleProp>((props, 
     </>
   );
 
-  return React.createElement(
+  const rendered = React.createElement(
     element,
     {
       ref: composeRefs(block.measureRef, ref),
@@ -1079,6 +1107,14 @@ export const Title = React.forwardRef<HTMLElement, TypographyTitleProp>((props, 
       ...rest,
     },
     body,
+  );
+
+  if (!block.showsEllipsisTooltip) return rendered;
+  return (
+    <>
+      {rendered}
+      <EllipsisTooltip anchorRef={block.anchorRef} title={block.ellipsisTooltip} />
+    </>
   );
 });
 Title.displayName = "Title";
