@@ -829,12 +829,31 @@ export type TreeProp = {
   /** Start with every branch open (antd `defaultExpandAll`). Seeded once, never re-applied. */
   defaultExpandAll?: boolean;
   /**
-   * Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no
-   * `children` and `isLeaf !== true` is expanded; push the fetched children into `treeData`.
+   * Lazy children (antd `loadData`). Called when a branch with no `children` and
+   * `isLeaf !== true` is expanded, and never again once its promise RESOLVES; push the fetched
+   * children into `treeData`. A REJECTED promise is not a load: the branch folds back shut
+   * (uncontrolled expansion) and the next expand asks again, up to 10 attempts (rc-tree).
    */
   loadData?: (node: TreeNodeProp) => void | Promise<void>;
   /** Render a node's title (antd `titleRender`). */
   titleRender?: (node: TreeNodeProp) => React.ReactNode;
+  /**
+   * Highlight the nodes this returns `true` for (antd `filterTreeNode`) — the match of a search
+   * box above the tree. Matching rows are marked, NOT hidden: the outline, the keyboard path and
+   * every ARIA attribute stay exactly as they were. The row gets `data-filter-node="true"` and its
+   * label reads `--tree-node-filter-foreground` in the medium weight, plus an sr-only "matches"
+   * so the mark is never colour alone. Receives the node data, as `titleRender` and `loadData` do.
+   */
+  filterTreeNode?: (node: TreeNodeProp) => boolean;
+  /**
+   * Viewport height in px (antd `height`). The tree scrolls inside this height, and — unless
+   * `virtual` is `false` — renders only the rows in view (plus a small overscan), so a branch of
+   * several hundred lazily-loaded children stays a few dozen DOM rows. Rows must share one height
+   * (the `size` tier) for the window to be exact.
+   */
+  height?: number;
+  /** Set `false` to render every row even when `height` is set (antd `virtual`). Default `true`. */
+  virtual?: boolean;
   /** Draw the connector rails between a parent and its children (antd `showLine`). */
   showLine?: boolean;
   /**

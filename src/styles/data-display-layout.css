@@ -2799,6 +2799,44 @@
     border-block-start-color: transparent;
   }
 
+  /* A node `filterTreeNode` matched (antd `:not(.ant-tree-treenode-disabled).filter-node
+   * .ant-tree-title`). The weight is the non-colour cue (WCAG 1.4.1); antd's 600 is not on this
+   * scale (docs: 400 · 500 · 700), so it is the label weight, 500. */
+  .ui-tree-node[data-filter-node="true"]:not([data-disabled]) .ui-tree-label {
+    color: var(--tree-node-filter-foreground, hsl(var(--primary)));
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* WINDOWED (`height`, gh#1042): rows are a flat run with no `.ui-tree-group`, so the `showLine`
+   * rail is drawn per row, one span per ancestor level, at the same inline offset the group rail
+   * above uses for that level. */
+  .ui-tree[data-virtual="true"][data-show-line="true"] .ui-tree-node {
+    position: relative;
+  }
+
+  .ui-tree-rail {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(
+      var(--tree-node-padding-inline) + (var(--tree-rail-level, 1) - 1) * var(--tree-indent-width) +
+        var(--tree-switcher-size) / 2
+    );
+    border-inline-start: var(--stroke-hairline) solid var(--tree-line-color, hsl(var(--border)));
+  }
+
+  /* The window's spacers: they hold the scroll height of the rows outside it. A flex item in a
+   * height-capped column shrinks by default, which would collapse them to nothing. */
+  .ui-tree-spacer {
+    flex: none;
+  }
+
+  /* A leading spacer means no row is `:first-child` while windowed, so the outline's first row is
+   * named by its ARIA position instead. */
+  .ui-tree[data-virtual="true"][data-divided="true"]
+    > .ui-tree-node[aria-level="1"][aria-posinset="1"] {
+    border-block-start-color: transparent;
+  }
+
   .ui-tree-loading {
     display: flex;
     align-items: center;

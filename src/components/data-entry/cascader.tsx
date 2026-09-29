@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover
 import { ScrollArea } from "../data-display/scroll-area";
 import { Command, CommandInput } from "./command";
 import {
+  createLazyLoadLedger,
   filterTreeOptions,
   formatPathLabels,
   getNodeByPath,
@@ -231,20 +232,19 @@ export function Cascader({
     },
     [isSearchControlled, onSearchChange],
   );
-  // antd `loadData` fires ONCE per branch. Without this ledger every re-expand of the same node
-  // would refetch, and a slow endpoint would be hammered by a user drilling up and down a column.
-  const requestedLoads = React.useRef(new Set<string>());
+  // antd `loadData` fires ONCE per branch that loaded. Without this ledger every re-expand of the
+  // same node would refetch, and a slow endpoint would be hammered by a user drilling up and down a
+  // column. A REJECTED load is forgotten, so the next activation asks again (gh#1041).
+  const [lazyLoads] = React.useState(createLazyLoadLedger);
   const requestLoad = React.useCallback(
     (path: string[], chain: NormalizedTreeOption[]) => {
       if (!loadData) return;
       const node = chain.at(-1);
       if (!node || node.isLeaf === true || (node.children?.length ?? 0) > 0) return;
       const key = pathKey(path);
-      if (requestedLoads.current.has(key)) return;
-      requestedLoads.current.add(key);
-      void loadData(chain);
+      lazyLoads.run(key, () => loadData(chain));
     },
-    [loadData],
+    [loadData, lazyLoads],
   );
 
   const isControlledSingle = !multiple && value !== undefined;

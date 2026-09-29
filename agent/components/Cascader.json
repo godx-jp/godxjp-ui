@@ -152,7 +152,7 @@
       "type": "\"SHOW_CHILD\" | \"SHOW_PARENT\""
     },
     {
-      "description": "antd `loadData` — lazy children. Called ONCE per branch that has no children and isLeaf !== true, the first time it is expanded; push the fetched children into options.",
+      "description": "antd `loadData` — lazy children. Called when a branch that has no children and isLeaf !== true is expanded, and never again once its promise resolves; push the fetched children into options. A rejected promise is forgotten, so the next activation of the branch asks again (gh#1041).",
       "name": "loadData",
       "type": "(selectedOptions: TreeOptionProp[]) => void | Promise<void>"
     },

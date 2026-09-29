@@ -19609,6 +19609,22 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "filterTreeNode",
+          "origin": "owned",
+          "required": false,
+          "type": "((node: TreeNodeProp) => boolean) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "height",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "id",
           "origin": "owned",
           "required": false,
@@ -19710,6 +19726,14 @@
           "required": false,
           "type": "\"default\" | \"directory\" | undefined",
           "values": ["default", "directory"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "virtual",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]

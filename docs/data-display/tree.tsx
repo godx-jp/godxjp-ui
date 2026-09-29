@@ -12,6 +12,7 @@ import {
   Tree,
   type TreeNodeProp,
 } from "@godxjp/ui/data-display";
+import { SearchInput } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 import { Building2, FolderTree, ShieldCheck } from "lucide-react";
@@ -167,6 +168,49 @@ function attachChildren(nodes: Department[], id: string, children: Department[])
   );
 }
 
+// ── card 4 · a long lazy level (height + virtual · filterTreeNode · retry) ────────────────────
+// The godx-task shape (gh#1041-1043): 2 suites → 28 sections → up to 421 cases per section,
+// fetched when a section opens. antd's Tree has no "load more" node — `height` keeps a 421-row
+// level to a few dozen DOM rows — so the one paged section below composes its own: a leaf whose
+// selection asks for the next page. It is a real treeitem, so the keyboard reaches it.
+const CASE_PAGE = 100;
+const suites: TreeNodeProp[] = ["結合テスト", "受入テスト"].map((suite, suiteIndex) => ({
+  value: `suite-${suiteIndex + 1}`,
+  label: suite,
+  children: Array.from({ length: 14 }, (_, sectionIndex) => ({
+    value: `suite-${suiteIndex + 1}/section-${sectionIndex + 1}`,
+    label:
+      suiteIndex === 0 && sectionIndex === 1
+        ? "セクション 2（初回の読み込みが失敗）"
+        : suiteIndex === 0 && sectionIndex === 2
+          ? "セクション 3（100 件ずつ）"
+          : `セクション ${sectionIndex + 1}`,
+    isLeaf: false,
+  })),
+}));
+
+function caseNodes(section: string, from: number, to: number): TreeNodeProp[] {
+  return Array.from({ length: to - from }, (_, index) => ({
+    value: `${section}/case-${from + index + 1}`,
+    label: `ケース ${String(from + index + 1).padStart(3, "0")}`,
+    isLeaf: true,
+  }));
+}
+
+function withChildren(
+  nodes: TreeNodeProp[],
+  value: string,
+  children: TreeNodeProp[],
+): TreeNodeProp[] {
+  return nodes.map((node) =>
+    node.value === value
+      ? { ...node, children }
+      : node.children
+        ? { ...node, children: withChildren(node.children, value, children) }
+        : node,
+  );
+}
+
 export default function Demo() {
   // Card 1 — checks are controlled so the readout beside the tree can never disagree with it.
   const [granted, setGranted] = React.useState<string[]>(["billing.invoice.read"]);
@@ -179,6 +223,47 @@ export default function Demo() {
   // Card 5 — independent (strict) checks, and a multi-select tree.
   const [strictChecks, setStrictChecks] = React.useState<string[]>(["people", "people.read"]);
   const [picked, setPicked] = React.useState<string[]>(["billing", "audit"]);
+  // Card 4 — the long lazy level.
+  const [suiteTree, setSuiteTree] = React.useState<TreeNodeProp[]>(suites);
+  const [caseQuery, setCaseQuery] = React.useState("");
+  // "" (not undefined) keeps the tree CONTROLLED while nothing is open.
+  const [openCase, setOpenCase] = React.useState("");
+  const failedOnce = React.useRef(false);
+
+  const loadSection = async (node: TreeNodeProp) => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    if (node.value === "suite-1/section-2" && !failedOnce.current) {
+      failedOnce.current = true;
+      // Rejected: the branch folds back shut, and opening it again asks again (gh#1041).
+      throw new Error("network");
+    }
+    const paged = node.value === "suite-1/section-3";
+    const children = caseNodes(node.value, 0, paged ? CASE_PAGE : 421);
+    if (paged) {
+      children.push({
+        value: `${node.value}::more`,
+        label: "さらに 100 件を読み込む",
+        isLeaf: true,
+      });
+    }
+    setSuiteTree((current) => withChildren(current, node.value, children));
+  };
+
+  const loadMoreCases = (moreValue: string) => {
+    const section = moreValue.replace(/::more$/, "");
+    setSuiteTree((current) => {
+      const sectionNode = current
+        .flatMap((suite) => suite.children ?? [])
+        .find((node) => node.value === section);
+      const loaded = (sectionNode?.children ?? []).filter((node) => !node.value.endsWith("::more"));
+      const next = caseNodes(section, loaded.length, Math.min(421, loaded.length + CASE_PAGE));
+      const more =
+        loaded.length + next.length < 421
+          ? [{ value: moreValue, label: "さらに 100 件を読み込む", isLeaf: true }]
+          : [];
+      return withChildren(current, section, [...loaded, ...next, ...more]);
+    });
+  };
 
   const loadDepartment = async (node: TreeNodeProp) => {
     // A real delay, so the Skeleton row and aria-busy are OBSERVABLE rather than theoretical.
@@ -362,6 +447,47 @@ export default function Demo() {
                 </Text>
               )}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>長い子リスト（height · virtual · filterTreeNode）</CardTitle>
+            <CardDescription>
+              2 スイート → 28 セクション → 最大 421 ケース。height を渡すとツリー自身がその高さで
+              スクロールし、見えている行だけを描画します（antd の height + virtual）。検索語に一致
+              するノードは filterTreeNode で強調されるだけで、隠れません。「セクション 2」は初回の
+              loadData が失敗し、もう一度開くと再取得します。「セクション 3」は API
+              がページングされている場合の組み立て例で、末尾の葉を選ぶと次の 100 件を読み込みます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <SearchInput
+                ariaLabel="ケースを検索"
+                placeholder="ケース名で強調（例: 042）"
+                value={caseQuery}
+                onValueChange={setCaseQuery}
+                onSearch={() => {}}
+              />
+              <Tree
+                aria-label="テストスイート"
+                treeData={suiteTree}
+                height={360}
+                defaultExpandedValues={["suite-1"]}
+                loadData={loadSection}
+                filterTreeNode={(node) =>
+                  caseQuery.trim() !== "" && String(node.label).includes(caseQuery.trim())
+                }
+                value={openCase}
+                onValueChange={(next) => {
+                  // The "load more" leaf is an action, not a selection — it never stays selected,
+                  // so choosing it again always asks for the next page.
+                  if (typeof next === "string" && next.endsWith("::more")) loadMoreCases(next);
+                  else setOpenCase((next as string | undefined) ?? "");
+                }}
+              />
+            </Flex>
           </CardContent>
         </Card>
 
