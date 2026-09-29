@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.10.1] - 2026-09-29
+
+### 🐛 Table: the action-collection column fit is cheaper, and the actions wrapper is scoped to that preset (#1069, #1070)
+
+PATCH. Follow-ups to #1067 from a review of 31.10.0.
+
+- `Table preset="action-collection"` re-measures its actions column only when rows or cells are
+  added or removed, no longer on every DOM change inside the table. Every re-measure, whether from
+  a row change or a resize, is coalesced into one animation frame.
+- `TableCell priority="actions"` wraps its children in `span.ui-table-actions-content` only under
+  `preset="action-collection"`. Every other table renders the pre-31.10.0 markup (`td > button`)
+  again, so `td > button` and `:first-child` selectors match again.
+
+### 🐛 SearchSelect: a cached `loadOptions` page no longer makes the active row jump later (#1071)
+
+PATCH. Follow-up to #1064. When `loadOptions` returned the same array it had already returned (a
+cached page), the "re-pick the first row" signal stayed set. The next unrelated change, such as a
+held value toggled or rows loaded on scroll, then moved the active row back to the top.
+
+- A fresh page or new typed text re-activates the first row exactly once, whether or not the list
+  changed.
+- An active row the user moved with the arrow keys stays put through unrelated re-renders.
+
 ## [31.10.0] - 2026-09-29
 
 ### 🐛 SpaceCompact: `fullWidth` lets the field grow and keeps a Button at its content width (#1062)
