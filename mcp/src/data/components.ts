@@ -11665,19 +11665,17 @@ export function AvatarField() {
       "Select / SearchSelect — use for choosing from a list of colour NAMES (e.g. 'Red', 'Blue'); for a fixed palette of visible swatches use ColorPicker `presets` (presets-only via `panelRender`).",
     ],
     example: `import { useState } from "react";
-import { ColorPicker, FormField } from "@godxjp/ui/data-entry";
+import { ColorPicker, Form, FormField } from "@godxjp/ui/data-entry";
 
 export function BrandColorField() {
   const [color, setColor] = useState("#2563eb");
 
   return (
-    <FormField id="brand-color" label="Brand color" className="max-w-xs">
-      <ColorPicker
-        id="brand-color"
-        value={color}
-        onValueChange={setColor}
-      />
-    </FormField>
+    <Form>
+      <FormField id="brand-color" label="Brand color">
+        <ColorPicker id="brand-color" value={color} onValueChange={setColor} />
+      </FormField>
+    </Form>
   );
 }
 
@@ -11691,15 +11689,17 @@ export function SwatchOnly() {
 export function TagColorField() {
   const [color, setColor] = useState("#2563eb");
   return (
-    <FormField id="tag-color" label="Tag colour">
-      <ColorPicker
-        id="tag-color"
-        value={color}
-        onValueChange={setColor}
-        presets={[{ label: "Palette", colors: ["#dc2626", "#16a34a", "#2563eb", "#9333ea"] }]}
-        panelRender={(_, { components: { Presets } }) => <Presets />}
-      />
-    </FormField>
+    <Form>
+      <FormField id="tag-color" label="Tag colour">
+        <ColorPicker
+          id="tag-color"
+          value={color}
+          onValueChange={setColor}
+          presets={[{ label: "Palette", colors: ["#dc2626", "#16a34a", "#2563eb", "#9333ea"] }]}
+          panelRender={(_, { components: { Presets } }) => <Presets />}
+        />
+      </FormField>
+    </Form>
   );
 }
 
