@@ -159,7 +159,15 @@ jobs:
         shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v6
+      # `chromium: 'true'` (gh#1059): the suite has vitest+Playwright files that launch Chromium
+      # (geometry / getComputedStyle tests), and one swarm-pool node's image shipped without
+      # /opt/ms-playwright/chromium_headless_shell-1234 — every Chromium file on that runner failed
+      # at `browserType.launch: Executable doesn't exist`, a rerun elsewhere passed (31.6.0,
+      # 31.7.0, 31.8.0 main runs). The setup step is check-and-exit where the browser is baked,
+      # downloads it where it is not, and fails fast with a named error if it still cannot launch.
       - uses: ./.github/actions/setup
+        with:
+          chromium: "true"
       # No build step: the suite imports from `src`, not from `dist`. The `static` job owns the
       # build and every gate that reads the shipped artifact.
       # NO BARE `--` BEFORE THE FLAG, AND THAT IS A MEASUREMENT. It used to read
