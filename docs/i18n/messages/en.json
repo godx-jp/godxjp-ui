@@ -543,6 +543,24 @@
       "longIdTitle": "Long identifiers and +N",
       "ledgerLabel": "Ledger ID",
       "ledgerHelper": "A 71-character identifier still stays inside the control"
+    },
+    "select": {
+      "createTitle": "Tags: create row, onCreate and case-insensitive matching",
+      "createDescription": "Typed text that matches no option is offered as an explicit “Create” row. onCreate reports only invented text, never an option id. Typing “bug” finds “Bug” instead of creating a duplicate (caseSensitive restores exact matching). Unlike antd, the create row is labelled and text longer than 12 characters is refused through allowCreate.",
+      "createField": "Labels",
+      "createdHelper": "Created in this session: {list}",
+      "createdNone": "Nothing created yet"
+    },
+    "colorPicker": {
+      "presetsTitle": "Tag colour from a palette",
+      "presetsDescription": "presets — fixed swatch groups under the picker; each group collapses, and the free picker stays available.",
+      "paletteLabel": "Label colour",
+      "recommendedGroup": "Recommended",
+      "recentGroup": "Recently used",
+      "presetsOnlyTitle": "Palette only",
+      "presetsOnlyDescription": "panelRender returns only Presets — people pick from the palette and cannot type an arbitrary hex.",
+      "tagColorLabel": "Tag colour",
+      "tagColorHelper": "Arrow keys move between swatches; the selected one is announced."
     }
   },
   "serviceLauncherShowcase": {

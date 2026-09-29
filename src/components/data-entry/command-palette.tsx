@@ -13,6 +13,7 @@ import {
   CommandItem,
   CommandList,
 } from "./command";
+import { isImeComposing } from "../../lib/ime";
 
 export type CommandPaletteItem = {
   id: string;
@@ -152,7 +153,7 @@ export function CommandPalette({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
-        !event.isComposing &&
+        !isImeComposing(event) &&
         event.key.toLowerCase() === "k" &&
         (event.metaKey || event.ctrlKey)
       ) {

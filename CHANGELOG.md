@@ -6,6 +6,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.8.0] - 2026-09-29
+
+### ✨ Select: tags create row, onCreate / allowCreate, case-insensitive matching (#1052, #1053)
+
+MINOR. `mode="tags"` now labels its create row (`Create “x”` / `「x」を作成` / `Tạo “x”`) and tells
+invented text apart from option ids.
+
+- `createLabel?: (text) => ReactNode` replaces the create row's wording. The committed value is
+  still the typed text.
+- `onCreate?: (text) => void` fires only for text that no option carries (from the create row,
+  Enter, or a `tokenSeparators` run), alongside `onSelect`.
+- `allowCreate?: boolean | (text) => boolean` (default `true`). When creation is not allowed, the
+  create row is hidden and unknown tokens are dropped.
+- `caseSensitive?: boolean` (default `false`): the filter, the create row and token runs ignore
+  case, so "bug" finds "Bug" instead of creating a duplicate. antd compares its create row exactly;
+  `true` restores that.
+- A `mode="tags"` Select with no options is no longer disabled.
+
+### 🐛 IME: the Enter that confirms a conversion no longer commits, submits or picks (#1054)
+
+PATCH. Japanese / Chinese / Korean IMEs deliver the conversion-confirming Enter (and Escape/Tab) as
+an ordinary keydown. The kit now ignores it wherever it acts on those keys in a text field, via one
+helper: `isImeComposing`, which checks `isComposing` or the legacy `keyCode 229`.
+
+- Newly guarded: Select / SearchSelect search box (including separators typed mid-composition),
+  TagInput, TimePicker (field and panel draft), DatePicker / DateRangePicker / MonthPicker /
+  MonthRangePicker, the Pagination quick jumper, editable Typography, ChatSuggestion, and the
+  ColorPicker hex field.
+- ChatComposer, NumberInput, CommandPalette ⌘K and non-modal Dialog/Sheet Escape now use the same
+  helper. NumberInput, TagInput, ⌘K and non-modal Escape now also catch `keyCode 229` (Safari).
+
+### ✨ ColorPicker: `presets` swatch palette and a presets-only `panelRender`, as in antd (#1055)
+
+MINOR. Tags that must pick from a fixed palette no longer need a ToggleGroup of swatches.
+
+- `presets={[{ label, colors, defaultOpen?, key? }]}` follows antd's shape.
+  - Each group is collapsible and open by default.
+  - Each swatch is a radio named by its hex; arrow keys move and select, following RTL.
+  - The swatch equal to `value` is checked.
+  - An empty group shows the localized "Empty" line.
+- `panelRender={(_, { components: { Presets } }) => <Presets />}` gives the presets-only mode (no
+  free hex). The palette is named by the FormField label, and the hidden `name` input still submits.
+- Swatches are 24×24 (`--color-picker-preset-size`, WCAG 2.5.8). Only hex strings are accepted;
+  antd also takes colour objects and gradients.
+- Without `presets` / `panelRender`, the markup is unchanged.
+- MCP catalog: ColorPicker's callback is listed as `onValueChange` (the stale `onChange` entry is
+  removed), and uncontrolled `defaultValue` is documented.
+
 ## [31.7.0] - 2026-09-29
 
 ### ✨ Typography / Breadcrumb / DataTable: the ellipsis tooltip renders; crumbs and headers truncate (#1045, #1046)

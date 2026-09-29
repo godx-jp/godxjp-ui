@@ -8,6 +8,7 @@ import { Button } from "../general/button";
 import { Input } from "./input";
 import type { NumberInputProp } from "../../props/components/data-entry.prop";
 import { numberFormat } from "../../lib/intl-cache";
+import { isImeComposing } from "../../lib/ime";
 
 export type {
   NumberInputProp,
@@ -271,7 +272,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
       // ENTER DURING A COMPOSITION CONFIRMS THE CONVERSION — it is neither a submit nor a commit.
       // Committing here reformats the field out from under the candidate window and the chosen
       // reading is lost. Same reasoning for the arrows: they walk the candidate list.
-      if (composing.current || event.nativeEvent.isComposing) return;
+      if (composing.current || isImeComposing(event)) return;
       if (keyboard && event.key === "ArrowUp") {
         event.preventDefault();
         stepBy(1, event.shiftKey ? 10 : 1);

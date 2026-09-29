@@ -17,6 +17,7 @@ import {
 } from "../data-entry/select";
 import { buildPageRange } from "./pagination-utils";
 import type { PaginationProp } from "../../props/components/navigation.prop";
+import { isImeComposing } from "../../lib/ime";
 
 export type {
   PaginationProp,
@@ -219,7 +220,7 @@ export function Pagination({
               value={jumperDraft}
               onChange={(event) => setJumperDraft(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key !== "Enter") return;
+                if (event.key !== "Enter" || isImeComposing(event)) return;
                 event.preventDefault();
                 commitJump();
               }}

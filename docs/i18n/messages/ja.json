@@ -537,6 +537,24 @@
       "longIdTitle": "長い識別子と「+N」",
       "ledgerLabel": "台帳ID",
       "ledgerHelper": "71文字の識別子でも行からはみ出さない"
+    },
+    "select": {
+      "createTitle": "タグ: 作成行・onCreate・大文字小文字を区別しない照合",
+      "createDescription": "どの選択肢にも一致しない入力は「作成」行として明示されます。onCreate は新しく作られたテキストだけを通知し、選択肢の ID では発火しません。「bug」と入力すると「Bug」が見つかり、重複は作られません（caseSensitive で完全一致に戻せます）。antd と異なり作成行にはラベルが付き、12 文字を超える入力は allowCreate で拒否しています。",
+      "createField": "ラベル",
+      "createdHelper": "このセッションで作成: {list}",
+      "createdNone": "まだ作成されていません"
+    },
+    "colorPicker": {
+      "presetsTitle": "パレットからタグの色を選ぶ",
+      "presetsDescription": "presets — ピッカーの下に固定スウォッチのグループを表示。グループは折りたためて、自由入力も残る。",
+      "paletteLabel": "ラベルの色",
+      "recommendedGroup": "おすすめ",
+      "recentGroup": "最近使った色",
+      "presetsOnlyTitle": "パレットのみ",
+      "presetsOnlyDescription": "panelRender で Presets だけを返すと、パレットからの選択のみになり任意の HEX は入力できない。",
+      "tagColorLabel": "タグの色",
+      "tagColorHelper": "矢印キーでスウォッチ間を移動し、選択中の色が読み上げられる。"
     }
   },
   "serviceLauncherShowcase": {

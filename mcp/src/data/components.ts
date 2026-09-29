@@ -7587,6 +7587,32 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "antd `tokenSeparators` (multiple/tags) — characters that commit what has been typed. Typing or PASTING 'a,b,c' commits three values in ONE onValueChange. A pasted run is read off the clipboard, so a '\\n' separator works even though a single-line input strips newlines.",
       },
       {
+        name: "allowCreate",
+        type: "boolean | ((text: string) => boolean)",
+        defaultValue: "true",
+        description:
+          'mode="tags" — whether typed text may become a NEW value (gh#1052). false, or a predicate returning false for the text, hides the create row and drops unknown tokenSeparators tokens; values already held stay listed so they can be removed. Not an antd prop.',
+      },
+      {
+        name: "createLabel",
+        type: "(text: string) => React.ReactNode",
+        description:
+          'mode="tags" — the create row\'s content (gh#1052). Default is the localised Create “text” / 「text」を作成 / Tạo “text”. The committed value is the typed text either way. antd shows the bare text instead — a documented deviation.',
+      },
+      {
+        name: "onCreate",
+        type: "(text: string) => void",
+        description:
+          'mode="tags" — fires when a value that NO option carries joins the selection (create row, Enter on it, or a tokenSeparators run), beside onSelect/onValueChange. The way to tell invented text from an option id. Not an antd prop.',
+      },
+      {
+        name: "caseSensitive",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Compare typed text case-sensitively (gh#1053). Default false: the built-in filter, the tags create row and a tokenSeparators run all case-fold, so typing "bug" when "Bug" exists finds Bug instead of offering a duplicate. antd folds its filter but compares the create row exactly; true restores that. A custom filterOption is unaffected.',
+      },
+      {
         name: "maxTagTextLength",
         type: "number",
         description:
@@ -11568,7 +11594,7 @@ export function AvatarField() {
           "The current hex color string (3- or 6-digit, with leading #). Component auto-prepends # if missing. Invalid hex values are discarded and the previous valid value is kept.",
       },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "(hex: string) => void",
         defaultValue: "undefined",
         description:
@@ -11603,17 +11629,27 @@ export function AvatarField() {
           "DOM id applied to the hidden native <input type='color'>. Pass the FormField id here so the label's htmlFor targets this control correctly.",
       },
       {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description: "Fires with the committed hex string.",
+        name: "presets",
+        type: "{ label: ReactNode; colors: string[]; defaultOpen?: boolean; key?: Key }[]",
+        defaultValue: "undefined",
+        description:
+          "antd `presets` (gh#1055) — named groups of fixed hex swatches under the picker. Each group is collapsible (`defaultOpen`, default true) and is an APG radio group: one tab stop, arrow keys move and select, each swatch is named by its hex and the one equal to `value` is checked. An empty `colors` shows the localized 'Empty' line. Hex only (#rgb/#rrggbb) — antd also accepts colour objects and gradients, which this picker has no model for.",
+      },
+      {
+        name: "panelRender",
+        type: "(panel: ReactNode, extra: { components: { Picker: FC; Presets: FC } }) => ReactNode",
+        defaultValue: "undefined",
+        description:
+          "antd `panelRender` — replaces the picker body. `panel` is the default (swatch + hex row, then presets). PRESETS-ONLY mode (a fixed palette, no free hex): `panelRender={(_, { components: { Presets } }) => <Presets />}`. The hidden `name` input always renders outside the panel.",
       },
     ],
     usage: [
       "DO wrap in FormField when a label or validation message is needed — pass the same id to both FormField and ColorPicker so htmlFor wires up correctly: `<FormField id='brand' label='Brand color'><ColorPicker id='brand' value={v} onValueChange={setV} /></FormField>`.",
-      "DO use controlled mode (value + onChange) — there is no defaultValue/uncontrolled path; always supply value.",
+      "Use it controlled (value + onValueChange) or uncontrolled (defaultValue + onValueChange); both paths commit only validated hex.",
       "DON'T pass an invalid or empty string to value — the component will flash the invalid color on the preview swatch. Always initialize state to a valid 3- or 6-digit hex (e.g. '#2563eb').",
-      "The hex Input is a live draft field — onChange is NOT called until the user presses Enter or blurs; only then is the value validated and the parent notified. Do not rely on onChange firing on every keystroke.",
+      "The hex Input is a live draft field — onValueChange is NOT called until the user presses Enter or blurs; only then is the value validated and the parent notified. Do not rely on onValueChange firing on every keystroke.",
       "Set showHexInput={false} only for compact/inline contexts (icon pickers, table cells) where space is tight and keyboard hex entry is not needed.",
+      "DO use `presets` when the value must come from a fixed palette (tag / label colours) — add `panelRender={(_, { components: { Presets } }) => <Presets />}` to remove free hex entry entirely. NEVER rebuild a palette from a ToggleGroup of swatches.",
       "NEVER hand-roll a color picker with raw <input type='color'> — always use this component; it normalizes hex, debounces draft state, and respects the design-token control styles.",
     ],
     useCases: [
@@ -11626,7 +11662,7 @@ export function AvatarField() {
     ],
     related: [
       "Input — use for plain text/number entry; use ColorPicker when the value is specifically a color hex code and you want a visual swatch.",
-      "Select / SearchSelect — use for choosing from a fixed palette of named colors (e.g. 'Red', 'Blue'); use ColorPicker for freeform hex color entry.",
+      "Select / SearchSelect — use for choosing from a list of colour NAMES (e.g. 'Red', 'Blue'); for a fixed palette of visible swatches use ColorPicker `presets` (presets-only via `panelRender`).",
     ],
     example: `import { useState } from "react";
 import { ColorPicker, FormField } from "@godxjp/ui/data-entry";
@@ -11649,6 +11685,22 @@ export function BrandColorField() {
 export function SwatchOnly() {
   const [color, setColor] = useState("#16a34a");
   return <ColorPicker value={color} onValueChange={setColor} showHexInput={false} />;
+}
+
+// Fixed palette only (gh#1055): tags pick from presets, never free hex
+export function TagColorField() {
+  const [color, setColor] = useState("#2563eb");
+  return (
+    <FormField id="tag-color" label="Tag colour">
+      <ColorPicker
+        id="tag-color"
+        value={color}
+        onValueChange={setColor}
+        presets={[{ label: "Palette", colors: ["#dc2626", "#16a34a", "#2563eb", "#9333ea"] }]}
+        panelRender={(_, { components: { Presets } }) => <Presets />}
+      />
+    </FormField>
+  );
 }
 
 // Disabled state

@@ -537,6 +537,24 @@
       "longIdTitle": "Định danh dài và +N",
       "ledgerLabel": "Mã sổ cái",
       "ledgerHelper": "Định danh 71 ký tự vẫn nằm trong khung"
+    },
+    "select": {
+      "createTitle": "Tags: dòng tạo mới, onCreate và so khớp không phân biệt hoa thường",
+      "createDescription": "Văn bản gõ vào không khớp tùy chọn nào được đưa ra thành dòng “Tạo” rõ ràng. onCreate chỉ báo văn bản mới tạo, không bao giờ báo id của tùy chọn. Gõ “bug” sẽ tìm thấy “Bug” thay vì tạo bản trùng (caseSensitive trả lại so khớp chính xác). Khác antd, dòng tạo có nhãn và văn bản dài hơn 12 ký tự bị allowCreate từ chối.",
+      "createField": "Nhãn",
+      "createdHelper": "Đã tạo trong phiên này: {list}",
+      "createdNone": "Chưa tạo gì"
+    },
+    "colorPicker": {
+      "presetsTitle": "Màu thẻ chọn từ bảng màu",
+      "presetsDescription": "presets — các nhóm ô màu cố định dưới bộ chọn; mỗi nhóm thu gọn được, bộ chọn tự do vẫn còn.",
+      "paletteLabel": "Màu nhãn",
+      "recommendedGroup": "Đề xuất",
+      "recentGroup": "Dùng gần đây",
+      "presetsOnlyTitle": "Chỉ bảng màu",
+      "presetsOnlyDescription": "panelRender chỉ trả về Presets — người dùng chọn trong bảng màu, không gõ được mã hex tuỳ ý.",
+      "tagColorLabel": "Màu thẻ",
+      "tagColorHelper": "Phím mũi tên di chuyển giữa các ô màu; ô đang chọn được đọc lên."
     }
   },
   "serviceLauncherShowcase": {

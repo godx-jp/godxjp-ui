@@ -2148,6 +2148,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp"],
   },
+  ColorPickerPresetProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["LabelProp", "DefaultOpenProp"],
+  },
   SearchSelectBaseProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -2188,6 +2193,19 @@ export const COMPONENT_PROP_REGISTRY = {
       "MaxTagPlaceholderProp",
     ],
     note: 'Internal — the `mode="multiple"` value shape of `<Select options>`; use Select.',
+  },
+  SelectTagsCreateProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "onCreate",
+        local: true,
+        reason:
+          "An EVENT, not a value channel: fires once per invented text as it joins the selection, beside onSelect/onValueChange, so a consumer can tell typed-new text from an option id (antd has no equivalent, gh#1052).",
+      },
+    ],
+    note: 'Internal — `mode="tags"` create-row knobs (allowCreate / createLabel / onCreate, gh#1052) shared by both multi-value shapes of `<Select options>`.',
   },
   SearchSelectProp: {
     group: "data-entry",

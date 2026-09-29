@@ -23,6 +23,7 @@ import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-
 import { Calendar } from "./calendar";
 import type { DatePickerProp } from "../../props/components/data-entry.prop";
 import { dateTimeFormat, numberFormat } from "../../lib/intl-cache";
+import { isImeComposing } from "../../lib/ime";
 
 export type {
   DatePickerProp,
@@ -372,6 +373,8 @@ export function DatePicker(props: DatePickerProp) {
    */
   const keyHandlers = (onEnter: () => void) => ({
     onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+      // gh#1054: while an IME composes, Enter/Escape/arrows belong to the candidate window.
+      if (isImeComposing(event)) return;
       if (event.key === "ArrowDown") {
         event.preventDefault();
         setOpen(true);

@@ -2,6 +2,7 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { useExitAnimation } from "@react-aria/utils";
 import { FocusScope } from "react-aria";
+import { isImeComposing } from "../../lib/ime";
 
 /*
  * Lớp NON-MODAL dùng chung cho `Dialog modal={false}` (gh#696) và `Sheet modal={false}` (gh#701).
@@ -36,7 +37,7 @@ export function useNonModalPortal(isOpen: boolean, enabled: boolean) {
 export function closeOnEscape(close: () => void) {
   return (event: React.KeyboardEvent<HTMLElement>) => {
     // Popover / menu lồng bên trong tự `stopPropagation` Esc của chúng.
-    if (event.key === "Escape" && !event.defaultPrevented && !event.nativeEvent.isComposing) {
+    if (event.key === "Escape" && !event.defaultPrevented && !isImeComposing(event)) {
       event.preventDefault();
       event.stopPropagation();
       close();

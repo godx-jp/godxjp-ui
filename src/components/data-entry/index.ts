@@ -64,7 +64,7 @@ export type { DatePickerProps } from "./date-picker";
 export { TimePicker } from "./time-picker";
 export type { TimePickerProps } from "./time-picker";
 export { ColorPicker } from "./color-picker";
-export type { ColorPickerProps } from "./color-picker";
+export type { ColorPickerProps, ColorPickerPresetProps } from "./color-picker";
 // Searchable / async single-select is the data-driven `Select` (showSearch / loadOptions);
 // `SearchSelect` is its internal engine and is intentionally not part of the public API.
 export type { SelectProp, SelectProp as SelectProps } from "./select";
