@@ -6,6 +6,7 @@ import {
   CardTitle,
   Progress,
 } from "@godxjp/ui/data-display";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -13,6 +14,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t, locale } = useTranslation();
   return (
     <PageContainer title="Progress" subtitle="0–100 bar · optional label + semantic tone">
       <Flex direction="col" gap="lg">
@@ -37,11 +39,10 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>shape=&quot;ring&quot;</CardTitle>
             <CardDescription>
-              同じメーターを弧で描きます。バーと同じ value / tone / size / ARIA
-              のまま、label がリングの内側に入ります。狭いアプリバーで「18 / 42
-              件」を見出しの横に出したいとき、バー＋キャプションの 2
-              段ではなく 1 マスで済むのが理由です。数値が重要なときではなく、
-              場所が正方形のときに選びます。
+              同じメーターを弧で描きます。バーと同じ value / tone / size / ARIA のまま、label
+              がリングの内側に入ります。狭いアプリバーで「18 / 42
+              件」を見出しの横に出したいとき、バー＋キャプションの 2 段ではなく 1
+              マスで済むのが理由です。数値が重要なときではなく、 場所が正方形のときに選びます。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -68,7 +69,10 @@ export default function Demo() {
               1 つの合計を状態ごとに分割します。割合ではなく実数を渡すと、各スライスの比率は
               コンポーネントが計算します。メーターより背の高いトラックになるのは、0.5rem の pill
               上に 3 色を並べると比率が読めなくなるためです。role=&quot;img&quot;
-              として、全スライスを 1 つの名前で読み上げます。
+              として、全スライスを 1 つの名前で読み上げます。total を渡すと全体は合計ではなく total
+              になり、残りはトラックのまま「残り」として読み上げます（antd の percent +
+              success.percent と同じく、未塗りのトラックが残り。antd の全体は常に 100
+              ですが、ここは実数の単位で total を指定します）。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -88,6 +92,20 @@ export default function Demo() {
                   { value: 6, tone: "success", label: "対応済" },
                 ]}
                 label="みどり農産株式会社（0 件のスライスは幅 0）"
+              />
+              {/* total を渡すと、スライスは合計ではなく total に対して描かれ、残りはトラックのまま。
+                  読み上げには残り（remainderLabel）が Intl 形式の数値で入ります。 */}
+              <Progress
+                segments={[
+                  { value: 3, tone: "success", label: t("progressDocs.testRun.passed") },
+                  { value: 1, tone: "destructive", label: t("progressDocs.testRun.failed") },
+                  { value: 2, tone: "warning", label: t("progressDocs.testRun.blocked") },
+                ]}
+                total={400}
+                remainderLabel={t("progressDocs.testRun.notRun")}
+                label={t("progressDocs.testRun.caption", {
+                  total: new Intl.NumberFormat(locale).format(400),
+                })}
               />
             </Flex>
           </CardContent>

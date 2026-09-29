@@ -12428,6 +12428,14 @@
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {
+          "name": "remainderLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/progress.tsx"]
+        },
+        {
           "name": "segments",
           "origin": "owned",
           "required": false,
@@ -12457,6 +12465,14 @@
           "required": false,
           "type": "ProgressTone | undefined",
           "values": ["warning", "success", "destructive"],
+          "declaredIn": ["src/components/data-display/progress.tsx"]
+        },
+        {
+          "name": "total",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {

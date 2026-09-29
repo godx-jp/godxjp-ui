@@ -1469,5 +1469,14 @@
         "other": "Load {count} more"
       }
     }
+  },
+  "progressDocs": {
+    "testRun": {
+      "passed": "Passed",
+      "failed": "Failed",
+      "blocked": "Blocked",
+      "notRun": "Not run",
+      "caption": "Regression suite — {total} cases"
+    }
   }
 }

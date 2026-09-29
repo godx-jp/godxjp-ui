@@ -1462,5 +1462,14 @@
         "other": "Tải thêm {count} ca"
       }
     }
+  },
+  "progressDocs": {
+    "testRun": {
+      "passed": "Đạt",
+      "failed": "Lỗi",
+      "blocked": "Bị chặn",
+      "notRun": "Chưa chạy",
+      "caption": "Bộ kiểm thử hồi quy — {total} ca"
+    }
   }
 }
