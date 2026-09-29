@@ -1462,5 +1462,14 @@
         "other": "さらに {count} 件を読み込む"
       }
     }
+  },
+  "progressDocs": {
+    "testRun": {
+      "passed": "合格",
+      "failed": "失敗",
+      "blocked": "ブロック",
+      "notRun": "未実施",
+      "caption": "回帰テスト — 全 {total} 件"
+    }
   }
 }

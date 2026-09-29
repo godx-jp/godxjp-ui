@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { numberFormat } from "../../lib/intl-cache";
 import { cn } from "../../lib/utils";
 
 export type ProgressTone = "success" | "warning" | "destructive";
@@ -116,6 +117,22 @@ type ProgressMeterProps = ProgressBase & {
  */
 type ProgressBreakdownProps = ProgressBase & {
   segments: ProgressSegment[];
+  /**
+   * The WHOLE the slices are drawn against, in the same unit as their `value`s. Omit it and the
+   * whole is the sum of the slices (the bar is always full). Pass it when part of the whole has
+   * no state yet — 3 passed of 400 test cases — and the rest stays the TRACK, exactly as antd's
+   * `percent` leaves the unfilled track as the remainder of 100. A `total` below the sum is
+   * ignored (the sum wins), so the slices never overflow the bar.
+   *
+   * The remainder is spoken as part of the `role="img"` name, Intl-formatted in the active
+   * locale, under `remainderLabel`.
+   */
+  total?: number;
+  /**
+   * What the remainder is called in the spoken breakdown (e.g. `未実施`). Defaults to the
+   * catalogue's "Remaining" / 残り / Còn lại. Only read when `total` is set.
+   */
+  remainderLabel?: string;
   value?: never;
   tone?: never;
   over?: never;
@@ -133,6 +150,8 @@ export type ProgressProps = ProgressMeterProps | ProgressBreakdownProps;
  */
 type ProgressInternalProps = ProgressBase & {
   segments?: ProgressSegment[];
+  total?: number;
+  remainderLabel?: string;
   value?: number;
   tone?: ProgressTone;
   over?: boolean;
@@ -140,12 +159,14 @@ type ProgressInternalProps = ProgressBase & {
 };
 
 export function Progress(props: ProgressProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const labelId = React.useId();
   const {
     label,
     className,
     segments,
+    total: wholeTotal,
+    remainderLabel,
     value,
     tone,
     size,
@@ -172,11 +193,24 @@ export function Progress(props: ProgressProps) {
     // Negative amounts cannot be drawn on a partition; they are clamped rather than rejected so a
     // bad row degrades to an empty slice instead of taking the screen down.
     const amounts = segments.map((segment) => Math.max(0, segment.value));
-    const total = amounts.reduce((sum, amount) => sum + amount, 0);
+    const sliceSum = amounts.reduce((sum, amount) => sum + amount, 0);
+    // Without `total` the whole is the sum and the readout stays exactly as it always was. With
+    // it, the unclaimed rest is the track (drawn by nothing) and is spoken as its own part.
+    const hasWhole = wholeTotal !== undefined;
+    const total = hasWhole ? Math.max(sliceSum, wholeTotal) : sliceSum;
+    const formatAmount = hasWhole
+      ? (amount: number) => numberFormat(locale).format(amount)
+      : (amount: number) => String(amount);
     const separator = t("dataDisplay.progress.breakdownSeparator");
-    const spoken = segments
-      .map((segment, index) => `${segment.label} ${amounts[index]}`)
-      .join(separator);
+    const parts = segments.map(
+      (segment, index) => `${segment.label} ${formatAmount(amounts[index])}`,
+    );
+    if (hasWhole) {
+      parts.push(
+        `${remainderLabel ?? t("dataDisplay.progress.remainder")} ${formatAmount(total - sliceSum)}`,
+      );
+    }
+    const spoken = parts.join(separator);
 
     return (
       <div

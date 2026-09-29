@@ -344,7 +344,8 @@
     },
     "progress": {
       "ariaLabel": "Tiến độ",
-      "breakdownSeparator": ", "
+      "breakdownSeparator": ", ",
+      "remainder": "Còn lại"
     },
     "scrollArea": {
       "region": "Vùng có thể cuộn"

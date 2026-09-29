@@ -350,7 +350,8 @@
     },
     "progress": {
       "ariaLabel": "Progress",
-      "breakdownSeparator": ", "
+      "breakdownSeparator": ", ",
+      "remainder": "Remaining"
     },
     "scrollArea": {
       "region": "Scrollable region"

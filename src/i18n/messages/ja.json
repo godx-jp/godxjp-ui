@@ -343,7 +343,8 @@
     },
     "progress": {
       "ariaLabel": "進捗",
-      "breakdownSeparator": "、"
+      "breakdownSeparator": "、",
+      "remainder": "残り"
     },
     "scrollArea": {
       "region": "スクロール可能な領域"

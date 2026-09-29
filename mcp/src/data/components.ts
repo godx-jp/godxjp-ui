@@ -5636,6 +5636,18 @@ import { Flex } from "@godxjp/ui/layout";
           'BREAKDOWN mode: one total split into slices. Pass ABSOLUTE amounts in one unit (counts, bytes, yen) — the bar computes each share, so three numbers never have to be rounded into 100. Renders role="img" named from every slice (a partition is not three progressbars), on a taller track (--progress-breakdown-block-size 1.375rem, --progress-breakdown-radius var(--radius)) because three abutting fills on the meter\'s 0.5rem pill read as a coloured hairline. `label` on each slice is REQUIRED — colour alone never carries meaning (WCAG 1.4.1). Mutually exclusive with value/tone/over.',
       },
       {
+        name: "total",
+        type: "number",
+        description:
+          'BREAKDOWN mode: the WHOLE the slices are drawn against, in the same unit as their values. Omit it and the whole is the sum of the slices (the bar is always full). Pass it when part of the whole has no state yet — 3 passed of 400 test cases — and the rest stays the neutral TRACK, the antd `percent` model where the unfilled track is the remainder. The remainder is spoken in the role="img" name, Intl-formatted in the active locale. A total below the slice sum is ignored (the sum wins), so slices never overflow.',
+      },
+      {
+        name: "remainderLabel",
+        type: "string",
+        description:
+          "BREAKDOWN mode, with `total`: what the remainder is called in the spoken breakdown (e.g. 未実施). Defaults to the catalogue's Remaining / 残り / Còn lại.",
+      },
+      {
         name: "label",
         type: "string",
         description:
@@ -5677,6 +5689,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DON'T pass children or sub-components — Progress is a single self-contained element (track + bar + label). The `label` prop is the only text injection point; don't wrap it in a custom parent div to add a label alongside it.",
       "DON'T hand-roll a stacked bar out of three divs to show a part-to-whole split — pass `segments`. Hand-rolled slices need a hex fill, an arbitrary height and an arbitrary radius, which ui-audit blocks three ways (no-arbitrary-hex, no-arbitrary-size, no-arbitrary-radius), and they leave the picture with no accessible name at all.",
       "DON'T convert segment amounts to percentages yourself — pass the raw counts. The component divides by the total, so the slices always sum to the whole; pre-rounded percentages do not.",
+      'DO pass `total` when part of the whole has no state yet (a test run: 合格 3 · 失敗 1 of 400) — the rest stays track and is read out as `remainderLabel` (e.g. "未実施"). Leaving it out makes 3 passed of 400 fill the whole bar green.',
       "DO pair a breakdown with `Legend` so each tone is spelled out in words once, instead of repeating the labels on every bar.",
       "DON'T use Progress for editable numeric input or range selection — it has no callbacks, no interactivity, and no form `name` prop. Use Slider (bounded range input) or Input (free-form number) for data-entry scenarios.",
     ],
@@ -5708,6 +5721,14 @@ import { Flex } from "@godxjp/ui/layout";
     { value: 12, tone: "success", label: "対応済" },
   ]}
   aria-labelledby={companyNameId}
+/>
+<Progress
+  segments={[
+    { value: 3, tone: "success", label: "合格" },
+    { value: 1, tone: "destructive", label: "失敗" },
+  ]}
+  total={400}
+  remainderLabel="未実施"
 />`,
     storyPath: "data-display/Progress.stories.tsx",
     rules: [],

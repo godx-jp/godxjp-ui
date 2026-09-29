@@ -155,3 +155,92 @@ describe("Progress breakdown", () => {
     expect(css).toMatch(/\.ui-progress-track\s*\{[^}]*border-radius:\s*var\(\s*--radius-pill\)/);
   });
 });
+
+/**
+ * gh#1047 — `total`: the slices are drawn against a WHOLE the caller names, and what they do not
+ * claim stays the track (antd's `percent` model: the unfilled track IS the rest). Without it a
+ * test run with 3 passed of 400 cases fills the whole bar green, because the whole was the sum.
+ */
+describe("Progress breakdown with total (gh#1047)", () => {
+  const RESULTS = [
+    { value: 3, tone: "success", label: "合格" },
+    { value: 1, tone: "destructive", label: "失敗" },
+  ] as const;
+
+  it("draws each slice as its share of `total`, leaving the rest as track", () => {
+    const { container } = renderIn("en", <Progress segments={[...RESULTS]} total={400} />);
+    const slices = container.querySelectorAll(".ui-progress-segment");
+
+    // 3/400 = 0.75%, 1/400 = 0.25% — not 75% / 25%.
+    expect(slices).toHaveLength(2);
+    expect(slices[0]).toHaveStyle({ inlineSize: "0.75%" });
+    expect(slices[1]).toHaveStyle({ inlineSize: "0.25%" });
+  });
+
+  it("speaks the remainder, Intl-formatted, under the catalogue name", () => {
+    renderIn(
+      "en",
+      <Progress
+        segments={[
+          { value: 1200, tone: "success", label: "Passed" },
+          { value: 34, tone: "destructive", label: "Failed" },
+        ]}
+        total={5000}
+      />,
+    );
+
+    expect(screen.getByRole("img")).toHaveAccessibleName(
+      "Passed 1,200, Failed 34, Remaining 3,766",
+    );
+  });
+
+  it.each([
+    ["ja", "合格 1,200、失敗 34、残り 3,766"],
+    ["vi", "合格 1.200, 失敗 34, Còn lại 3.766"],
+  ] as const)("localises the remainder name and number format in %s", (locale, expected) => {
+    renderIn(
+      locale,
+      <Progress
+        segments={[
+          { value: 1200, tone: "success", label: "合格" },
+          { value: 34, tone: "destructive", label: "失敗" },
+        ]}
+        total={5000}
+      />,
+    );
+
+    expect(screen.getByRole("img")).toHaveAccessibleName(expected);
+  });
+
+  it("lets remainderLabel name the rest for the domain (未実施)", () => {
+    renderIn(
+      "en",
+      <Progress segments={[...RESULTS]} total={400} remainderLabel="未実施" label="回帰テスト" />,
+    );
+
+    expect(screen.getByRole("img")).toHaveAccessibleName("回帰テスト, 合格 3, 失敗 1, 未実施 396");
+  });
+
+  it("lets the slices win when `total` is below their sum, so nothing overflows", () => {
+    const { container } = renderIn("en", <Progress segments={[...RESULTS]} total={2} />);
+    const slices = container.querySelectorAll(".ui-progress-segment");
+
+    expect(slices[0]).toHaveStyle({ inlineSize: "75%" });
+    expect(slices[1]).toHaveStyle({ inlineSize: "25%" });
+    expect(screen.getByRole("img")).toHaveAccessibleName("合格 3, 失敗 1, Remaining 0");
+  });
+
+  it("changes nothing when `total` is absent — sum is the whole, no remainder spoken", () => {
+    renderIn(
+      "en",
+      <Progress
+        segments={[
+          { value: 1200, tone: "success", label: "Passed" },
+          { value: 34, tone: "destructive", label: "Failed" },
+        ]}
+      />,
+    );
+
+    expect(screen.getByRole("img")).toHaveAccessibleName("Passed 1200, Failed 34");
+  });
+});
