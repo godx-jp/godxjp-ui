@@ -225,6 +225,23 @@ export function SearchSelect(props: SearchSelectProp) {
   const hasSelection = multiple ? values.length > 0 : Boolean(value);
 
   const reqId = React.useRef(0);
+  /** Set when a fresh (non-appended) page lands: the next drawn list picks its first row. */
+  const resetActiveRef = React.useRef(false);
+
+  /** The client-side filter — the static list's, and the tags-mode rows for held values'. */
+  const matchesQuery = React.useCallback(
+    (option: SearchSelectOptionProp, needle: string) => {
+      if (filterOption) return filterOption(option, needle);
+      // antd `optionFilterProp` — match ONE named field. Unset keeps this library's
+      // long-standing behaviour (label OR value), which is what every existing call site
+      // expects; antd's own default is `value` alone and would silently narrow them.
+      const haystack: string[] = optionFilterProp
+        ? [String(option[optionFilterProp] ?? "")]
+        : [option.label, option.value];
+      return haystack.some((field) => fold(String(field)).includes(fold(needle)));
+    },
+    [filterOption, optionFilterProp, fold],
+  );
 
   // Provide ONE of `loadOptions` (remote) or `options` (static, client-side filtered). With a
   // static list this becomes a plain searchable combobox — superseding the legacy Autocomplete.
@@ -234,17 +251,7 @@ export function SearchSelect(props: SearchSelectProp) {
       (async ({ query: search }) => {
         const needle = search.trim();
         const list = staticOptions ?? [];
-        const matches = (option: SearchSelectOptionProp) => {
-          if (filterOption) return filterOption(option, needle);
-          // antd `optionFilterProp` — match ONE named field. Unset keeps this library's
-          // long-standing behaviour (label OR value), which is what every existing call site
-          // expects; antd's own default is `value` alone and would silently narrow them.
-          const haystack: string[] = optionFilterProp
-            ? [String(option[optionFilterProp] ?? "")]
-            : [option.label, option.value];
-          return haystack.some((field) => fold(String(field)).includes(fold(needle)));
-        };
-        const kept = needle ? list.filter(matches) : list;
+        const kept = needle ? list.filter((option) => matchesQuery(option, needle)) : list;
         // antd `filterSort` runs AFTER the filter and only on the client — with `loadOptions` the
         // server owns the order, so sorting the page here would fight it. Sort a COPY: `list` is
         // the caller's own `options` array and reordering it in place would mutate a prop.
@@ -255,7 +262,7 @@ export function SearchSelect(props: SearchSelectProp) {
           hasMore: false,
         };
       }),
-    [loadOptions, staticOptions, filterOption, optionFilterProp, filterSort, fold],
+    [loadOptions, staticOptions, matchesQuery, filterSort],
   );
 
   // Debounce the search term — one fetch per pause, not per keystroke.
@@ -273,10 +280,10 @@ export function SearchSelect(props: SearchSelectProp) {
         const result = await resolvedLoad({ query: search, page: nextPage });
         if (ticket !== reqId.current) return; // a newer request superseded this one
         setLoaded((prev) => (append ? [...prev, ...result.options] : result.options));
-        if (!append) {
-          const firstEnabled = result.options.findIndex((option) => !option.disabled);
-          setActiveIndex(firstEnabled >= 0 ? firstEnabled : 0);
-        }
+        // The active row is re-chosen against the rows actually DRAWN (below), not this page:
+        // in `tags` a create row and held values join the list, so this page's index 0 is not
+        // the panel's (gh#1064).
+        if (!append) resetActiveRef.current = true;
         setHasMore(Boolean(result.hasMore));
         setPage(nextPage);
       } catch {
@@ -300,12 +307,17 @@ export function SearchSelect(props: SearchSelectProp) {
   }, [open, debouncedQuery, fetchPage]);
 
   /**
-   * What the panel lists. In `tags` mode that is more than what loaded:
+   * What the panel lists. In `tags` mode that is more than what loaded — in rc-select's order:
    *
    *   • a CREATE row for a query that matches no row, so Enter commits what was typed (antd puts
    *     it first, and so does this);
-   *   • a row for every value already held that the list does not carry — a free-text tag would
-   *     otherwise be unremovable, because the only way to drop one is to toggle its row.
+   *   • while text is typed, an option whose value or label IS that text (case-folded, gh#1053)
+   *     comes next — the best match, so it is the Enter target when no create row is offered;
+   *   • the loaded rows;
+   *   • LAST, a row for every value already held that the list does not carry (filtered by the
+   *     typed text, as rc-select filters its tag rows) — a free-text tag would otherwise be
+   *     unremovable from the panel. Last, not first: a held tag ahead of the create row made it
+   *     the active row, and Enter took it off instead of creating (gh#1064).
    */
   const typedText = query.trim();
   const { displayOptions, createOption } = React.useMemo(() => {
@@ -315,7 +327,8 @@ export function SearchSelect(props: SearchSelectProp) {
     for (const entry of values) {
       if (known.has(entry)) continue;
       known.add(entry);
-      extras.push(pickedOptions[entry] ?? { value: entry, label: entry });
+      const held = pickedOptions[entry] ?? { value: entry, label: entry };
+      if (!typedText || matchesQuery(held, typedText)) extras.push(held);
     }
     // Case-folded by default (gh#1053): "bug" is not new when "Bug" is already an option or held.
     const typed = fold(typedText);
@@ -328,12 +341,32 @@ export function SearchSelect(props: SearchSelectProp) {
       typedText && !exists && canCreate(typedText)
         ? { value: typedText, label: typedText }
         : undefined;
+    const exact = typedText
+      ? loaded.find(
+          (option) =>
+            !values.includes(option.value) &&
+            (fold(option.value) === typed || fold(option.label) === typed),
+        )
+      : undefined;
+    const rest = exact ? loaded.filter((option) => option !== exact) : loaded;
     return {
       displayOptions:
-        create || extras.length ? [...(create ? [create] : []), ...extras, ...loaded] : loaded,
+        create || exact || extras.length
+          ? [...(create ? [create] : []), ...(exact ? [exact] : []), ...rest, ...extras]
+          : loaded,
       createOption: create,
     };
-  }, [tagsMode, loaded, values, typedText, pickedOptions, staticOptions, fold, canCreate]);
+  }, [
+    tagsMode,
+    loaded,
+    values,
+    typedText,
+    pickedOptions,
+    staticOptions,
+    fold,
+    canCreate,
+    matchesQuery,
+  ]);
 
   // Bucket options under optgroup-style headings, preserving first-seen group order, and keep a
   // flat ordering so keyboard navigation (activeIndex) stays correct across groups.
@@ -358,6 +391,18 @@ export function SearchSelect(props: SearchSelectProp) {
     () => grouped.flatMap((group) => group.items.map((entry) => entry.option)),
     [grouped],
   );
+  // rc-select re-activates the first enabled row whenever the search text or a fresh page changes
+  // the list — so while text is typed the active row (the Enter target) is the create row or the
+  // best match, never whatever index the previous list left behind (gh#1064).
+  const lastTypedRef = React.useRef(typedText);
+  React.useEffect(() => {
+    const typedChanged = lastTypedRef.current !== typedText;
+    lastTypedRef.current = typedText;
+    if (!typedChanged && !resetActiveRef.current) return;
+    resetActiveRef.current = false;
+    const firstEnabled = flatOrdered.findIndex((option) => !option.disabled);
+    setActiveIndex(firstEnabled >= 0 ? firstEnabled : 0);
+  }, [flatOrdered, typedText]);
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.searchSelect.placeholder");
   /**

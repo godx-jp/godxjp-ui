@@ -110,7 +110,10 @@ export type SelectProp =
   SelectDataProp | (SelectCompoundProp & { mode?: undefined; labelInValue?: undefined });
 
 function isDataSelect(props: SelectProp): props is SelectDataProp {
-  return "options" in props || "loadOptions" in props;
+  // A multi-value `mode` only exists on the data API — the compound listbox is single-value — so
+  // antd's canonical `<Select mode="tags" />`, with no `options` at all, is a data Select too
+  // (gh#1063: it used to fall through to an empty compound root and render no control).
+  return "options" in props || "loadOptions" in props || props.mode !== undefined;
 }
 
 /**
