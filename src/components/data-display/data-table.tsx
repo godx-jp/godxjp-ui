@@ -1285,6 +1285,7 @@ DataTable.BulkActions = function DataTableBulkActions({
         direction="row"
         align="center"
         gap="sm"
+        wrap
         role="region"
         aria-label={t("dataTable.bulkActions")}
         className={className}

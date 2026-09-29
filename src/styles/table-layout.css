@@ -345,8 +345,13 @@
     block-size: 100%;
   }
 
+  /* The bar wraps like antd `Space wrap` (gh#1065): the count and the action group are two wrap
+   * items, and the group wraps its own buttons. Without it the count + four ja actions stayed on
+   * one line at 390px — the count squeezed to a 20px column and the page scrolled 36px sideways.
+   * A bar that fits still lays out as one row. */
   .ui-data-table-bulk {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--space-inline-sm);
     font-size: var(--font-size-base);
@@ -354,6 +359,7 @@
 
   .ui-data-table-bulk-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--space-inline-sm);
   }

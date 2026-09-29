@@ -540,7 +540,7 @@
     },
     "select": {
       "createTitle": "Tags: dòng tạo mới, onCreate và so khớp không phân biệt hoa thường",
-      "createDescription": "Văn bản gõ vào không khớp tùy chọn nào được đưa ra thành dòng “Tạo” rõ ràng. onCreate chỉ báo văn bản mới tạo, không bao giờ báo id của tùy chọn. Gõ “bug” sẽ tìm thấy “Bug” thay vì tạo bản trùng (caseSensitive trả lại so khớp chính xác). Khác antd, dòng tạo có nhãn và văn bản dài hơn 12 ký tự bị allowCreate từ chối.",
+      "createDescription": "Văn bản gõ vào không khớp tùy chọn nào được đưa ra thành dòng “Tạo” rõ ràng. onCreate chỉ báo văn bản mới tạo, không bao giờ báo id của tùy chọn. Gõ “bug” sẽ tìm thấy “Bug” thay vì tạo bản trùng (caseSensitive trả lại so khớp chính xác). Khác antd, dòng tạo có nhãn và văn bản dài hơn 12 ký tự bị allowCreate từ chối. Khi đang gõ, dòng tạo (hoặc tùy chọn khớp chính xác) là dòng đầu tiên và đang được chọn, nên Enter không bao giờ gỡ một thẻ đã chọn; cũng khác antd, tùy chọn khớp chính xác được đưa lên đầu.",
       "createField": "Nhãn",
       "createdHelper": "Đã tạo trong phiên này: {list}",
       "createdNone": "Chưa tạo gì"
@@ -1261,7 +1261,7 @@
     },
     "search": {
       "title": "Tìm kiếm và nút của nó",
-      "body": "Gõ và chạy là một thao tác liền mạch nên bỏ đường nối. Nút vẫn là Button thật — vòng focus và disabled vẫn hoạt động.",
+      "body": "Gõ và chạy là một thao tác liền mạch nên bỏ đường nối. Nút vẫn là Button thật — vòng focus và disabled vẫn hoạt động. Với `fullWidth`, ô nhập lấp phần còn lại của hàng, nút giữ đúng bề rộng của nó (antd `block`).",
       "row": "Tìm nhân viên",
       "term": "Từ khoá",
       "run": "Chạy tìm kiếm",
