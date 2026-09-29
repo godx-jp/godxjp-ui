@@ -662,6 +662,11 @@ export const VOCABULARY_REGISTRY = {
     category: "navigation",
     description: "Single breadcrumb segment",
   },
+  BreadcrumbItemEllipsisProp: {
+    file: "vocabulary/navigation.prop.ts",
+    category: "navigation",
+    description: "One-line truncation of a breadcrumb segment, with the full label in a tooltip",
+  },
   BreadcrumbProp: {
     file: "vocabulary/navigation.prop.ts",
     category: "navigation",

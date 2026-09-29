@@ -56,7 +56,7 @@
       "type": "ReactNode"
     },
     {
-      "description": "Ordered trail of { label, to? } segments above the title.",
+      "description": "Ordered trail of { label, to?, ellipsis? } segments above the title. `ellipsis: true` on a segment keeps the trail on one line and cuts that label with an ellipsis, the full label in a tooltip on hover and on keyboard focus of the crumb link — same contract as `Breadcrumb` items.",
       "name": "breadcrumb",
       "type": "BreadcrumbItemProp[]"
     },

@@ -6,7 +6,18 @@
     "breakDescription": "Định danh không có chỗ ngắt — địa chỉ email, mã giảm giá, ID đăng nhập — dùng break=\"anywhere\", và cột vẫn nằm gọn trong bề ngang màn hình kể cả trong ô của bảng. whitespace=\"pre-wrap\" dành cho ký tự xuống dòng do người nhập; nó không ngắt được một định danh trong ô bảng.",
     "breakColumnOwner": "Phụ trách",
     "breakColumnEmail": "Địa chỉ email",
-    "breakSampleName": "Sato"
+    "breakSampleName": "Sato",
+    "ellipsisTitle": "ellipsis · toàn văn trong tooltip khi bị cắt",
+    "ellipsisDescription": "ellipsis={{ tooltip: true }} giữ một dòng và hiện toàn văn khi rê chuột và khi bàn phím đưa tiêu điểm tới điều khiển chứa nó (liên kết, mục cây, nút sắp xếp). Tiêu đề vừa chỗ thì không có tooltip, và Text không bao giờ tự thành một điểm dừng Tab.",
+    "ellipsisPlain": "Text thường",
+    "ellipsisLink": "Text asChild · liên kết",
+    "ellipsisTree": "titleRender của Tree",
+    "ellipsisTable": "Bộ kiểm thử",
+    "ellipsisBreadcrumb": "Breadcrumb có cắt chữ",
+    "ellipsisCrumbHome": "Trang chủ",
+    "ellipsisLongTitle": "Kiểm thử tích hợp quý 3 · mô-đun thanh toán · kịch bản xuất lại hoá đơn và rà soát tiêu chí nghiệm thu",
+    "ellipsisShortTitle": "Kiểm thử nhanh đăng nhập",
+    "ellipsisLongHeader": "Tên lần chạy gần nhất (bản ứng viên 2026-09)"
   },
   "themeShowcase": {
     "page": {
@@ -1471,5 +1482,13 @@
       "notRun": "Chưa chạy",
       "caption": "Bộ kiểm thử hồi quy — {total} ca"
     }
+  },
+  "breadcrumbExamples": {
+    "ellipsisTitle": "ellipsis · một đoạn dài trên một dòng",
+    "ellipsisDescription": "ellipsis trên một đoạn giữ breadcrumb trên một dòng và cắt nhãn đó bằng \"…\"; toàn văn hiện trong tooltip khi rê chuột và khi liên kết của đoạn nhận tiêu điểm bàn phím. Breadcrumb của antd không có ellipsis theo từng mục — hình dạng lấy theo Typography. breadcrumb của PageContainer nhận cùng trường này.",
+    "ellipsisAria": "Breadcrumb có cắt chữ",
+    "home": "Trang chủ",
+    "longSuite": "Kiểm thử tích hợp quý 3 · mô-đun thanh toán · kịch bản xuất lại hoá đơn",
+    "longSection": "Rà soát tiêu chí nghiệm thu cho bản ứng viên tháng 9/2026"
   }
 }

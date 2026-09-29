@@ -9,6 +9,7 @@ import {
   CodeBlock,
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Breadcrumb } from "@godxjp/ui/layout";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -25,6 +26,9 @@ const RouterLink = forwardRef<
 });
 
 export default function Demo() {
+  const { t } = useTranslation();
+  const suite = t("breadcrumbExamples.longSuite");
+  const section = t("breadcrumbExamples.longSection");
   return (
     <PageContainer
       title="Breadcrumb"
@@ -175,6 +179,26 @@ export default function Demo() {
                 />
               </div>
             </Flex>
+          </CardContent>
+        </Card>
+
+        {/* gh#1046 — a long segment cut to one line, the full label in a tooltip. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("breadcrumbExamples.ellipsisTitle")}</CardTitle>
+            <CardDescription>{t("breadcrumbExamples.ellipsisDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div id="breadcrumb-ellipsis">
+              <Breadcrumb
+                ariaLabel={t("breadcrumbExamples.ellipsisAria")}
+                items={[
+                  { label: t("breadcrumbExamples.home"), to: "/" },
+                  { label: suite, to: "/suites/412", ellipsis: true },
+                  { label: section, ellipsis: true },
+                ]}
+              />
+            </div>
           </CardContent>
         </Card>
       </Flex>
