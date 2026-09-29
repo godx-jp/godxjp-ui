@@ -1114,7 +1114,9 @@ function DataSelect(props: PlainDataSelectProp) {
             : undefined
         }
         autoClearSearchValue={showSearchConfig?.autoClearSearchValue ?? props.autoClearSearchValue}
-        disabled={props.disabled || (!props.loadOptions && !hasOptions)}
+        // An empty list leaves nothing to pick — except in `tags`, where the typed text IS the
+        // pick (antd's tags field with no options still takes input).
+        disabled={props.disabled || (!props.loadOptions && !hasOptions && props.mode !== "tags")}
         name={resolvedName}
         data-field={resolvedField}
       />

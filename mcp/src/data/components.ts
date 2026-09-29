@@ -7587,6 +7587,32 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "antd `tokenSeparators` (multiple/tags) — characters that commit what has been typed. Typing or PASTING 'a,b,c' commits three values in ONE onValueChange. A pasted run is read off the clipboard, so a '\\n' separator works even though a single-line input strips newlines.",
       },
       {
+        name: "allowCreate",
+        type: "boolean | ((text: string) => boolean)",
+        default: "true",
+        description:
+          'mode="tags" — whether typed text may become a NEW value (gh#1052). false, or a predicate returning false for the text, hides the create row and drops unknown tokenSeparators tokens; values already held stay listed so they can be removed. Not an antd prop.',
+      },
+      {
+        name: "createLabel",
+        type: "(text: string) => React.ReactNode",
+        description:
+          'mode="tags" — the create row\'s content (gh#1052). Default is the localised Create “text” / 「text」を作成 / Tạo “text”. The committed value is the typed text either way. antd shows the bare text instead — a documented deviation.',
+      },
+      {
+        name: "onCreate",
+        type: "(text: string) => void",
+        description:
+          'mode="tags" — fires when a value that NO option carries joins the selection (create row, Enter on it, or a tokenSeparators run), beside onSelect/onValueChange. The way to tell invented text from an option id. Not an antd prop.',
+      },
+      {
+        name: "caseSensitive",
+        type: "boolean",
+        default: "false",
+        description:
+          'Compare typed text case-sensitively (gh#1053). Default false: the built-in filter, the tags create row and a tokenSeparators run all case-fold, so typing "bug" when "Bug" exists finds Bug instead of offering a duplicate. antd folds its filter but compares the create row exactly; true restores that. A custom filterOption is unaffected.',
+      },
+      {
         name: "maxTagTextLength",
         type: "number",
         description:

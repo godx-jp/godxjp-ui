@@ -13657,6 +13657,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "allowCreate",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | ((text: string) => boolean) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "aria-describedby",
           "origin": "owned",
           "required": false,
@@ -13721,6 +13729,14 @@
           "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
+          "name": "caseSensitive",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": false,
@@ -13749,6 +13765,14 @@
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "createLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "((text: string) => React.ReactNode) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -13973,6 +13997,14 @@
           "origin": "owned",
           "required": false,
           "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onCreate",
+          "origin": "owned",
+          "required": false,
+          "type": "((text: string) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },

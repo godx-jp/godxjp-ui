@@ -3,6 +3,7 @@ import { ChevronsUpDown, Loader2, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
+import { isImeComposing } from "../../lib/ime";
 import { cn } from "../../lib/utils";
 import { controlSurfaceTriggerClass } from "../../lib/control-styles";
 import {
@@ -86,6 +87,7 @@ export function SearchSelect(props: SearchSelectProp) {
     onSearchChange,
     filterOption,
     optionFilterProp,
+    caseSensitive = false,
     filterSort,
     autoClearSearchValue = true,
     optionRender,
@@ -129,6 +131,23 @@ export function SearchSelect(props: SearchSelectProp) {
   const maxTagTextLength = props.mode !== undefined ? props.maxTagTextLength : undefined;
   const tokenSeparators = props.mode !== undefined ? props.tokenSeparators : undefined;
   const tagRender = props.mode !== undefined ? props.tagRender : undefined;
+  const allowCreate = props.mode !== undefined ? props.allowCreate : undefined;
+  const createLabel = props.mode !== undefined ? props.createLabel : undefined;
+  const onCreate = props.mode !== undefined ? props.onCreate : undefined;
+  /** gh#1053 — one comparison for the filter, the create row and a token run. */
+  const fold = React.useCallback(
+    (text: string) => (caseSensitive ? text : text.toLowerCase()),
+    [caseSensitive],
+  );
+  /** gh#1052 — may this text become a new value? Only ever in `tags`. */
+  const canCreate = React.useCallback(
+    (text: string) =>
+      tagsMode && (typeof allowCreate === "function" ? allowCreate(text) : allowCreate !== false),
+    [tagsMode, allowCreate],
+  );
+  // Between compositionstart and compositionend the box holds an IME CANDIDATE — a separator in it
+  // is not the user's (gh#1054).
+  const composingRef = React.useRef(false);
   const { t } = useTranslation();
   // under a layout wrapper that the cloneElement contract cannot reach. `{}` when already named.
   const nameFallback = useFieldNameFallback({
@@ -223,9 +242,7 @@ export function SearchSelect(props: SearchSelectProp) {
           const haystack: string[] = optionFilterProp
             ? [String(option[optionFilterProp] ?? "")]
             : [option.label, option.value];
-          return haystack.some((field) =>
-            String(field).toLowerCase().includes(needle.toLowerCase()),
-          );
+          return haystack.some((field) => fold(String(field)).includes(fold(needle)));
         };
         const kept = needle ? list.filter(matches) : list;
         // antd `filterSort` runs AFTER the filter and only on the client — with `loadOptions` the
@@ -238,7 +255,7 @@ export function SearchSelect(props: SearchSelectProp) {
           hasMore: false,
         };
       }),
-    [loadOptions, staticOptions, filterOption, optionFilterProp, filterSort],
+    [loadOptions, staticOptions, filterOption, optionFilterProp, filterSort, fold],
   );
 
   // Debounce the search term — one fetch per pause, not per keystroke.
@@ -290,8 +307,9 @@ export function SearchSelect(props: SearchSelectProp) {
    *   • a row for every value already held that the list does not carry — a free-text tag would
    *     otherwise be unremovable, because the only way to drop one is to toggle its row.
    */
-  const displayOptions = React.useMemo(() => {
-    if (!tagsMode) return loaded;
+  const typedText = query.trim();
+  const { displayOptions, createOption } = React.useMemo(() => {
+    if (!tagsMode) return { displayOptions: loaded, createOption: undefined };
     const known = new Set(loaded.map((option) => option.value));
     const extras: SearchSelectOptionProp[] = [];
     for (const entry of values) {
@@ -299,12 +317,23 @@ export function SearchSelect(props: SearchSelectProp) {
       known.add(entry);
       extras.push(pickedOptions[entry] ?? { value: entry, label: entry });
     }
-    const needle = query.trim();
-    const exists = known.has(needle) || loaded.some((option) => option.label === needle);
-    const create: SearchSelectOptionProp[] =
-      needle && !exists ? [{ value: needle, label: needle }] : [];
-    return create.length || extras.length ? [...create, ...extras, ...loaded] : loaded;
-  }, [tagsMode, loaded, values, query, pickedOptions]);
+    // Case-folded by default (gh#1053): "bug" is not new when "Bug" is already an option or held.
+    const typed = fold(typedText);
+    const exists =
+      [...known].some((entry) => fold(entry) === typed) ||
+      [...(staticOptions ?? []), ...loaded].some(
+        (option) => fold(option.value) === typed || fold(option.label) === typed,
+      );
+    const create: SearchSelectOptionProp | undefined =
+      typedText && !exists && canCreate(typedText)
+        ? { value: typedText, label: typedText }
+        : undefined;
+    return {
+      displayOptions:
+        create || extras.length ? [...(create ? [create] : []), ...extras, ...loaded] : loaded,
+      createOption: create,
+    };
+  }, [tagsMode, loaded, values, typedText, pickedOptions, staticOptions, fold, canCreate]);
 
   // Bucket options under optgroup-style headings, preserving first-seen group order, and keep a
   // flat ordering so keyboard navigation (activeIndex) stays correct across groups.
@@ -378,6 +407,11 @@ export function SearchSelect(props: SearchSelectProp) {
 
   const remember = (option: SearchSelectOptionProp) =>
     setPickedOptions((prev) => ({ ...prev, [option.value]: option }));
+  /** A value no option carries — text the user invented (gh#1052 `onCreate`). */
+  const isInvented = (entry: string) =>
+    tagsMode &&
+    !(staticOptions ?? []).some((option) => option.value === entry) &&
+    !loaded.some((option) => option.value === entry);
 
   const select = (option: SearchSelectOptionProp) => {
     if (option.disabled) return;
@@ -398,7 +432,10 @@ export function SearchSelect(props: SearchSelectProp) {
           .filter((entry): entry is SearchSelectOptionProp => entry !== null),
       );
       if (already) props.onDeselect?.(option.value, option);
-      else props.onSelect?.(option.value, option);
+      else {
+        props.onSelect?.(option.value, option);
+        if (isInvented(option.value)) onCreate?.(option.value);
+      }
       // antd `autoClearSearchValue` (default true): the query is spent once it produced a pick.
       if (autoClearSearchValue) setQuery("");
       // The panel STAYS OPEN — a multi-pick is a run of gestures, and closing after each one
@@ -427,9 +464,16 @@ export function SearchSelect(props: SearchSelectProp) {
     for (const raw of splitByTokenSeparators(text, tokenSeparators ?? [])) {
       const token = raw.trim();
       if (!token) continue;
-      const match = flatOrdered.find((option) => option.value === token || option.label === token);
+      // An exact match wins; failing that a case-folded one (gh#1053), so "bug," picks "Bug".
+      const match =
+        flatOrdered.find((option) => option.value === token || option.label === token) ??
+        flatOrdered.find(
+          (option) =>
+            option !== createOption &&
+            (fold(option.value) === fold(token) || fold(option.label) === fold(token)),
+        );
       // `multiple` only accepts what the list offers; `tags` accepts the text itself.
-      const option = match ?? (tagsMode ? { value: token, label: token } : undefined);
+      const option = match ?? (canCreate(token) ? { value: token, label: token } : undefined);
       if (!option || option.disabled) continue;
       if (next.includes(option.value)) continue;
       if (maxCount !== undefined && next.length >= maxCount) break;
@@ -445,7 +489,10 @@ export function SearchSelect(props: SearchSelectProp) {
         .map((entry) => picked.find((option) => option.value === entry) ?? optionFor(entry))
         .filter((entry): entry is SearchSelectOptionProp => entry != null),
     );
-    for (const option of picked) props.onSelect?.(option.value, option);
+    for (const option of picked) {
+      props.onSelect?.(option.value, option);
+      if (isInvented(option.value)) onCreate?.(option.value);
+    }
   };
 
   /** Take one value off — what a chip's ✕, Backspace and a second click on its row all do. */
@@ -492,6 +539,9 @@ export function SearchSelect(props: SearchSelectProp) {
   };
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // gh#1054: while an IME is composing, Enter confirms the conversion and the arrows move its
+    // candidate — none of them is ours. Acting on that Enter would commit a half-typed reading.
+    if (isImeComposing(event)) return;
     if (event.key === "ArrowDown") {
       event.preventDefault();
       moveActive(1);
@@ -778,6 +828,7 @@ export function SearchSelect(props: SearchSelectProp) {
                     // A separator (typed OR pasted — a paste raises this same change) commits.
                     if (
                       multiple &&
+                      !composingRef.current &&
                       tokenSeparators?.length &&
                       tokenSeparators.some((separator) => next.includes(separator))
                     ) {
@@ -801,6 +852,12 @@ export function SearchSelect(props: SearchSelectProp) {
                     setQuery("");
                   }}
                   onKeyDown={onKeyDown}
+                  onCompositionStart={() => {
+                    composingRef.current = true;
+                  }}
+                  onCompositionEnd={() => {
+                    composingRef.current = false;
+                  }}
                   placeholder={searchPlaceholder ?? t("dataEntry.searchSelect.search")}
                   className="ui-search-select-search-input"
                 />
@@ -859,7 +916,17 @@ export function SearchSelect(props: SearchSelectProp) {
                     >
                       {/* antd's `optionRender(option, { index })` outranks the older
                         `renderOption(option)` — same slot, the newer signature wins. */}
-                      {optionRender ? (
+                      {option === createOption ? (
+                        // gh#1052: the create row SAYS it creates — antd shows the bare text, which
+                        // reads like an existing option.
+                        <div className="ui-search-select-option-body" data-slot="select-create">
+                          <span className="ui-search-select-option-label">
+                            {createLabel
+                              ? createLabel(option.value)
+                              : t("dataEntry.searchSelect.create", { value: option.value })}
+                          </span>
+                        </div>
+                      ) : optionRender ? (
                         <div className="ui-search-select-option-slot">
                           {optionRender(option, { index })}
                         </div>

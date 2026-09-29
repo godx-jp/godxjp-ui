@@ -2,6 +2,7 @@ import * as React from "react";
 import { X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { isImeComposing } from "../../lib/ime";
 import { cn } from "../../lib/utils";
 import {
   applyMaxTagCount,
@@ -148,8 +149,9 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       // the Enter that ends a conversion is "accept this 変換", not "commit this field". Without
       // this guard「とうきょう」→「東京」would land a half-converted reading as a tag and swallow
       // the keystroke the IME needed. `isComposing` is the DOM's own answer (KeyboardEvent.
-      // isComposing, UI Events §5.1.4) and is what NumberInput/SearchInput/Textarea already read.
-      if (e.nativeEvent.isComposing) return;
+      // isComposing, UI Events §5.1.4); `isImeComposing` also reads the legacy keyCode 229 that
+      // Safari reports for the Enter right after compositionend (gh#1054).
+      if (isImeComposing(e)) return;
       // Enter always commits — it is the field's submit gesture, not a separator character.
       if (e.key === "Enter" || tokenSeparators.includes(e.key)) {
         e.preventDefault();
