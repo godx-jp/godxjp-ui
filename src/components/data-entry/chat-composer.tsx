@@ -11,6 +11,7 @@ import { controlSurfaceAttrs, resolveAriaInvalid } from "./control-surface";
 
 import type { ChatComposerProp } from "../../props/components/data-entry.prop";
 import type { ButtonSizeProp } from "../../props/vocabulary";
+import { isImeComposing } from "../../lib/ime";
 
 export type {
   ChatComposerProp,
@@ -133,13 +134,7 @@ export const ChatComposer = React.forwardRef<HTMLTextAreaElement, ChatComposerPr
       if (event.key !== "Enter") return;
       // `isComposing` is the standards answer and `keyCode === 229` the legacy one; the ref covers
       // the browsers (and the test harness) that report neither on the keydown itself.
-      if (
-        composing.current ||
-        event.nativeEvent.isComposing ||
-        (event.nativeEvent as KeyboardEvent).keyCode === 229
-      ) {
-        return;
-      }
+      if (composing.current || isImeComposing(event)) return;
       const wantsSend =
         submitType === "modEnter"
           ? // ⌘ on Apple platforms, Ctrl everywhere else — the other one is left alone, because
@@ -174,7 +169,15 @@ export const ChatComposer = React.forwardRef<HTMLTextAreaElement, ChatComposerPr
      * a ref: a component redeclared on every render would remount on every keystroke (losing
      * focus) the moment a consumer parked one inside `footer`.
      */
-    const liveRef = React.useRef({ actionSize, sendName, cancelName, submit, onCancel, canSubmit, disabled });
+    const liveRef = React.useRef({
+      actionSize,
+      sendName,
+      cancelName,
+      submit,
+      onCancel,
+      canSubmit,
+      disabled,
+    });
     liveRef.current = { actionSize, sendName, cancelName, submit, onCancel, canSubmit, disabled };
     const SubmitButton = React.useMemo(
       () =>
@@ -219,7 +222,8 @@ export const ChatComposer = React.forwardRef<HTMLTextAreaElement, ChatComposerPr
       () => ({ SubmitButton, CancelButton }),
       [SubmitButton, CancelButton],
     );
-    const footerContent = typeof footer === "function" ? footer({ components: actionComponents }) : footer;
+    const footerContent =
+      typeof footer === "function" ? footer({ components: actionComponents }) : footer;
 
     return (
       <div
