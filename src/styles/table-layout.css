@@ -781,7 +781,7 @@
     justify-content: center;
     gap: var(--space-inline-sm);
     padding-block: var(--space-stack-xs);
-    padding-inline: var(--table-cell-space-x);
+    padding-inline: var(--table-cell-space-x, var(--space-section-active));
     border-block-end: var(--stroke-hairline) solid var(--table-border-color, hsl(var(--border)));
     background-color: hsl(var(--muted));
     font-size: var(--font-size-sm);
