@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { X } from "lucide-react";
 
@@ -32,6 +33,7 @@ import { X } from "lucide-react";
  * trigger. Never a raw <select>. Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t, locale } = useTranslation();
   const [status, setStatus] = useState("paid");
   const [currency, setCurrency] = useState("JPY");
   const [priority, setPriority] = useState("medium");
@@ -43,6 +45,8 @@ export default function Demo() {
   const [reviewerLabel, setReviewerLabel] = useState("tanaka");
   const [prefixed, setPrefixed] = useState("JPY");
   const [tags, setTags] = useState<string[]>(["至急", "社内便"]);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [created, setCreated] = useState<string[]>([]);
   // antd `labelInValue`: the record arrives carrying its own label, before any option list loads.
   const [assignedTo, setAssignedTo] = useState<
     { value: string; label: React.ReactNode } | undefined
@@ -476,6 +480,40 @@ export default function Demo() {
                     </Button>
                   </Badge>
                 )}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("showcase.select.createTitle")}</CardTitle>
+            <CardDescription>{t("showcase.select.createDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              id="issue-labels"
+              label={t("showcase.select.createField")}
+              helper={
+                created.length
+                  ? t("showcase.select.createdHelper", {
+                      list: new Intl.ListFormat(locale).format(created),
+                    })
+                  : t("showcase.select.createdNone")
+              }
+            >
+              <Select
+                id="issue-labels"
+                mode="tags"
+                value={labels}
+                onValueChange={setLabels}
+                onCreate={(text) => setCreated((previous) => [...previous, text])}
+                allowCreate={(text) => text.length <= 12}
+                options={[
+                  { value: "bug", label: "Bug" },
+                  { value: "feature", label: "Feature" },
+                  { value: "docs", label: "Docs" },
+                ]}
               />
             </FormField>
           </CardContent>

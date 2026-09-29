@@ -6503,6 +6503,28 @@
         "type": "string[]"
       },
       {
+        "default": "true",
+        "description": "mode=\"tags\" — whether typed text may become a NEW value (gh#1052). false, or a predicate returning false for the text, hides the create row and drops unknown tokenSeparators tokens; values already held stay listed so they can be removed. Not an antd prop.",
+        "name": "allowCreate",
+        "type": "boolean | ((text: string) => boolean)"
+      },
+      {
+        "description": "mode=\"tags\" — the create row's content (gh#1052). Default is the localised Create “text” / 「text」を作成 / Tạo “text”. The committed value is the typed text either way. antd shows the bare text instead — a documented deviation.",
+        "name": "createLabel",
+        "type": "(text: string) => React.ReactNode"
+      },
+      {
+        "description": "mode=\"tags\" — fires when a value that NO option carries joins the selection (create row, Enter on it, or a tokenSeparators run), beside onSelect/onValueChange. The way to tell invented text from an option id. Not an antd prop.",
+        "name": "onCreate",
+        "type": "(text: string) => void"
+      },
+      {
+        "default": "false",
+        "description": "Compare typed text case-sensitively (gh#1053). Default false: the built-in filter, the tags create row and a tokenSeparators run all case-fold, so typing \"bug\" when \"Bug\" exists finds Bug instead of offering a duplicate. antd folds its filter but compares the create row exactly; true restores that. A custom filterOption is unaffected.",
+        "name": "caseSensitive",
+        "type": "boolean"
+      },
+      {
         "description": "antd `maxTagTextLength` (multiple/tags) — cut each chip's TEXT to this many characters (an ellipsis marks the cut). The value keeps its whole label.",
         "name": "maxTagTextLength",
         "type": "number"

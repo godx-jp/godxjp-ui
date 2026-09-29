@@ -1604,6 +1604,14 @@ export type SearchSelectBaseProp = {
    * every call site that has ever relied on the default expects a label search.
    */
   optionFilterProp?: "label" | "value" | "sublabel";
+  /**
+   * Match typed text case-SENSITIVELY (gh#1053). Default `false`: the built-in filter, the
+   * `mode="tags"` create row and a `tokenSeparators` run all compare case-folded, so typing "bug"
+   * when "Bug" exists finds "Bug" and never offers a duplicate. antd's filter folds case too; its
+   * create row compares exactly, which is the deviation `true` restores. A custom `filterOption`
+   * owns its own comparison and is not affected.
+   */
+  caseSensitive?: boolean;
 };
 
 /**
@@ -1681,7 +1689,7 @@ export type SearchSelectMultipleProp = {
    * a token only counts when it matches a row; in `mode="tags"` it is accepted as it stands.
    */
   tokenSeparators?: string[];
-};
+} & SelectTagsCreateProp;
 
 /**
  * antd `labelInValue`, single. The value carries its own label, so a screen that never sees the
@@ -1720,6 +1728,31 @@ export type SelectLabelInValueMultipleProp = {
     index: number;
     disabled: boolean;
   }) => React.ReactNode;
+} & SelectTagsCreateProp;
+
+/**
+ * `mode="tags"` — how typed text becomes a NEW value (gh#1052). antd has no equivalent of these
+ * three: its create row is the bare text and nothing reports that a value was invented. Ignored in
+ * `mode="multiple"`, which never creates.
+ */
+export type SelectTagsCreateProp = {
+  /**
+   * Whether typed text may become a new value. `false` (or a predicate returning `false` for the
+   * text) hides the create row and drops unknown `tokenSeparators` tokens — values already held
+   * stay listed so they can still be removed. Default `true`.
+   */
+  allowCreate?: boolean | ((text: string) => boolean);
+  /**
+   * The create row's content. Default: the localised `Create "{text}"` (「{text}」を作成). The
+   * value committed is the text itself either way; this only changes what the row says.
+   */
+  createLabel?: (text: string) => React.ReactNode;
+  /**
+   * Fired when a value that is NOT one of the options joins the selection — from the create row,
+   * Enter on it, or a `tokenSeparators` run. Fires beside `onSelect`/`onValueChange`, so a consumer
+   * can tell invented text apart from an option id.
+   */
+  onCreate?: (text: string) => void;
 };
 
 /** @see Select — the searchable engine. Single by default; `mode="multiple"` switches the shape. */
@@ -2230,8 +2263,7 @@ export type ChatComposerActionComponents = {
  * {false}` to hide the inline pair and avoid rendering both.
  */
 export type ChatComposerFooterProp =
-  | React.ReactNode
-  | ((info: { components: ChatComposerActionComponents }) => React.ReactNode);
+  React.ReactNode | ((info: { components: ChatComposerActionComponents }) => React.ReactNode);
 
 /**
  * @see ChatComposer — the message input of a conversation (Ant Design X `Sender`; the industry
