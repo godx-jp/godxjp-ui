@@ -555,6 +555,16 @@
       "presetsOnlyDescription": "panelRender で Presets だけを返すと、パレットからの選択のみになり任意の HEX は入力できない。",
       "tagColorLabel": "タグの色",
       "tagColorHelper": "矢印キーでスウォッチ間を移動し、選択中の色が読み上げられる。"
+    },
+    "splitPaneStackOrder": {
+      "title": "stackOrder — 縦積み時にサイドを先頭へ",
+      "lead": "stackOrder=\"aside-first\" は、分割できない幅になったときにサイドをメインの上に置き、DOM でも先頭にするため Tab でも先に届きます。分割できる幅では既定と同じく後方の列に並びます。下の埋め込みは分割幅より狭いため、プロパティがスレッドの上に来ます。",
+      "propertiesTitle": "プロパティ",
+      "status": "ステータス",
+      "statusValue": "対応中",
+      "assignee": "担当者",
+      "threadTitle": "コメント",
+      "threadLead": "スマートフォンでも、長いスレッドがプロパティを画面外へ押し出しません。"
     }
   },
   "serviceLauncherShowcase": {

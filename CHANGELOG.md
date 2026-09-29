@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.9.0] - 2026-09-29
+
+### ✨ SplitPane: `stackOrder="aside-first"` puts the aside first when the panes stack (#1057)
+
+MINOR. On a pane too narrow to split, SplitPane stacked main, then aside. On a phone, a detail
+page's properties / agent card fell below a long comment thread.
+
+- New `stackOrder?: "main-first" | "aside-first"` (default `"main-first"`; markup unchanged).
+- `aside-first` renders the `<aside>` first in the DOM, so in the stacked layout the visual,
+  reading and Tab order agree (WCAG 1.3.2 / 2.4.3). It is not a CSS `order` swap.
+- Once the pane splits, main stays in the leading column and the aside at inline-end, with the
+  same geometry as the default, and correct in RTL. `fill` keeps the flexible row on main in both
+  layouts.
+- `children` never remounts when `stackOrder` changes or the aside closes.
+- antd has no equivalent; Grid `Col` `order` reorders visually only.
+
 ## [31.8.0] - 2026-09-29
 
 ### ✨ Select: tags create row, onCreate / allowCreate, case-insensitive matching (#1052, #1053)

@@ -16044,6 +16044,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/layout/split-pane.tsx"]
+        },
+        {
+          "name": "stackOrder",
+          "origin": "owned",
+          "required": false,
+          "type": "\"main-first\" | \"aside-first\" | undefined",
+          "values": ["main-first", "aside-first"],
+          "declaredIn": ["src/components/layout/split-pane.tsx"]
         }
       ]
     },
