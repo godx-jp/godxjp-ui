@@ -1945,8 +1945,9 @@ export type CascaderProp = FieldA11yProps & {
    */
   showCheckedStrategy?: Exclude<ShowCheckedStrategyProp, "SHOW_ALL">;
   /**
-   * Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no
-   * `children` and `isLeaf !== true` is expanded; push the fetched children into `options`.
+   * Lazy children (antd `loadData`). Called when a branch with no `children` and
+   * `isLeaf !== true` is expanded, and never again once its promise RESOLVES; push the fetched
+   * children into `options`. A REJECTED promise is forgotten, so the next activation asks again.
    */
   loadData?: (selectedOptions: TreeOptionProp[]) => void | Promise<void>;
   /** Render the trigger label from the selected path (antd `displayRender`). */
@@ -2023,8 +2024,10 @@ export type TreeSelectProp = FieldA11yProps & {
   /** Panel open change (antd `onOpenChange`). Fires for both controlled and uncontrolled panels. */
   onOpenChange?: OnOpenChangeProp;
   /**
-   * Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no
-   * `children` and `isLeaf !== true` is expanded; push the fetched children into `treeData`.
+   * Lazy children (antd `loadData`). Called when a branch with no `children` and
+   * `isLeaf !== true` is expanded, and never again once its promise RESOLVES; push the fetched
+   * children into `treeData`. A REJECTED promise folds the branch shut and the next expand asks
+   * again, up to 10 attempts (rc-tree).
    */
   loadData?: (node: TreeOptionProp) => void | Promise<void>;
   /** Render a node's title (antd `treeTitleRender`). */

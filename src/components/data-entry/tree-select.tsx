@@ -18,6 +18,7 @@ import { SearchInput } from "./search-input";
 import { Separator } from "../layout/separator";
 import {
   collectAllExpandableKeys,
+  createLazyLoadLedger,
   filterVisibleTree,
   findNodeByValue,
   flattenVisibleTree,
@@ -167,9 +168,10 @@ function TreeSelectRoot({
     onValueChange?.(checkable || multiple ? next : (next[0] ?? undefined));
   };
 
-  // antd `loadData` fires ONCE per node. Without this ledger, collapsing and re-expanding the same
-  // branch would refetch it every time.
-  const requestedLoads = React.useRef(new Set<string>());
+  // antd `loadData` fires ONCE per node that loaded. Without this ledger, collapsing and
+  // re-expanding the same branch would refetch it every time; a REJECTED load is retried on the
+  // next expand, and its branch folds back shut the way rc-tree does it (gh#1041).
+  const [lazyLoads] = React.useState(createLazyLoadLedger);
   const toggleExpand = (node: NormalizedTreeOption) => {
     const key = node.value;
     const willExpand = !expandedKeys.has(key);
@@ -177,10 +179,18 @@ function TreeSelectRoot({
     // whole contract of `loadData`, and it is what makes a deep org tree loadable one level at a
     // time instead of shipping every node on first paint.
     if (willExpand && loadData && !(node.children?.length ?? 0) && node.isLeaf !== true) {
-      if (!requestedLoads.current.has(key)) {
-        requestedLoads.current.add(key);
-        void loadData(node);
-      }
+      lazyLoads.run(
+        key,
+        () => loadData(node),
+        (ok) => {
+          if (ok) return;
+          setExpandedKeys((prev) => {
+            const next = new Set(prev);
+            next.delete(key);
+            return next;
+          });
+        },
+      );
     }
     setExpandedKeys((prev) => {
       const next = new Set(prev);

@@ -64,6 +64,11 @@
   --tree-node-selected-background-alpha: initial; /* default = 100% at the call site */
   --tree-node-selected-foreground: initial;
 
+  /* Label of a node `filterTreeNode` matched (antd `.filter-node` title: primary colour, strong
+   * weight). A role mirror, so `initial` with the role at the call site.
+   * Documented default: --tree-node-filter-foreground = hsl(var(--primary)). */
+  --tree-node-filter-foreground: initial;
+
   /* Width of the indeterminate bar shown while `loadData` resolves a branch. A fraction, not a
      length: it has to read as "part of a row" at every row width and every density. */
   --tree-loading-bar-inline-size: 40%;

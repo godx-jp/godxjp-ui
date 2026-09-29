@@ -354,7 +354,8 @@
       "collapse": "Thu gọn",
       "loading": "Đang tải nút con…",
       "empty": "Không có gì để hiển thị",
-      "selected": "Đã chọn"
+      "selected": "Đã chọn",
+      "filterMatch": "Khớp bộ lọc"
     },
     "thoughtChain": {
       "label": "Các bước suy luận",

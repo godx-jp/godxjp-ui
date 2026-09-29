@@ -179,7 +179,7 @@
       "type": "boolean"
     },
     {
-      "description": "antd `loadData` — lazy children. Called ONCE per node that has no children and isLeaf !== true, the first time it is expanded; push the fetched children into treeData. Such a node still reads as expandable (aria-expanded + a working expander).",
+      "description": "antd `loadData` — lazy children. Called when a node that has no children and isLeaf !== true is expanded, and never again once its promise resolves; push the fetched children into treeData. A rejected promise folds the branch shut and the next expand asks again, up to 10 attempts (rc-tree, gh#1041). Such a node still reads as expandable (aria-expanded + a working expander).",
       "name": "loadData",
       "type": "(node: TreeOptionProp) => void | Promise<void>"
     },

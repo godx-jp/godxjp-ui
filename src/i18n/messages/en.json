@@ -360,7 +360,8 @@
       "collapse": "Collapse",
       "loading": "Loading child nodes…",
       "empty": "Nothing to show",
-      "selected": "Selected"
+      "selected": "Selected",
+      "filterMatch": "Matches the filter"
     },
     "thoughtChain": {
       "label": "Reasoning steps",

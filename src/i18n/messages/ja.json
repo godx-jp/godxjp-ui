@@ -353,7 +353,8 @@
       "collapse": "折りたたむ",
       "loading": "子ノードを読み込み中…",
       "empty": "表示する項目がありません",
-      "selected": "選択中"
+      "selected": "選択中",
+      "filterMatch": "フィルターに一致"
     },
     "thoughtChain": {
       "label": "思考の手順",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { mergeRefs } from "@react-aria/utils";
 import { ChevronDown, ChevronRight, File as FileIcon, Folder, FolderOpen } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
@@ -7,6 +8,7 @@ import { CheckboxVisual } from "../data-entry/checkbox";
 import { Skeleton } from "../feedback/skeleton";
 import {
   collectAllExpandableKeys,
+  createLazyLoadLedger,
   flattenVisibleTree,
   getDescendantValues,
   normalizeTreeOptions,
@@ -80,6 +82,14 @@ function isRtl(element: HTMLElement): boolean {
   return element.closest("[dir]")?.getAttribute("dir")?.toLowerCase() === "rtl";
 }
 
+/** Rows rendered beyond each edge of the viewport while windowed, so a fast scroll never flashes. */
+const VIRTUAL_OVERSCAN = 6;
+
+/** One line of the FLAT (windowed) outline: a node row, or the placeholder of a loading branch. */
+type FlatRow =
+  | { kind: "node"; node: NormalizedTreeOption; depth: number; setSize: number; posInSet: number }
+  | { kind: "loading"; key: string; depth: number };
+
 /**
  * Tree — the WAI-ARIA APG "Tree View", on a page.
  *
@@ -108,6 +118,9 @@ function TreeRoot({
   defaultExpandAll = false,
   loadData,
   titleRender,
+  filterTreeNode,
+  height,
+  virtual = true,
   showLine = false,
   showIcon = false,
   divided = false,
@@ -173,22 +186,38 @@ function TreeRoot({
     onCheckedValuesChange?.(settled);
   };
 
-  // ── async children (antd loadData) — fires ONCE per node, ever ────────────────────────────
-  const requestedLoads = React.useRef(new Set<string>());
+  // ── async children (antd loadData) — fires ONCE per node that LOADED ───────────────────────
+  /* A rejected load is not a load (gh#1041). The old ledger recorded the node before the promise
+   * settled and never cleared it, so one failed request left the branch unloadable for the life of
+   * the tree. Now, exactly as rc-tree's `onNodeLoad`/`onNodeExpand`: on reject the node leaves the
+   * loading set, is NOT marked loaded, and an UNCONTROLLED branch folds back shut (without firing
+   * `onExpandedValuesChange`, as rc-tree's `setExpandedKeys` does not fire `onExpand`) — so the next
+   * expand asks again, up to `MAX_LAZY_LOAD_RETRIES`. */
+  const [lazyLoads] = React.useState(createLazyLoadLedger);
+  /** Branches whose expansion the controlled-prop effect below has already answered. */
+  const loadedFor = React.useRef<Set<string>>(new Set());
   const [loadingValues, setLoadingValues] = React.useState<Set<string>>(() => new Set());
   const requestLoad = (node: NormalizedTreeOption) => {
     if (!loadData) return;
     if ((node.children?.length ?? 0) > 0 || node.isLeaf === true) return;
-    if (requestedLoads.current.has(node.value)) return;
-    requestedLoads.current.add(node.value);
-    setLoadingValues((prev) => new Set(prev).add(node.value));
-    void Promise.resolve(loadData(node as TreeNodeProp)).finally(() => {
-      setLoadingValues((prev) => {
-        const next = new Set(prev);
-        next.delete(node.value);
-        return next;
-      });
-    });
+    const started = lazyLoads.run(
+      node.value,
+      () => loadData(node as TreeNodeProp),
+      (ok) => {
+        setLoadingValues((prev) => {
+          const next = new Set(prev);
+          next.delete(node.value);
+          return next;
+        });
+        if (ok) return;
+        // A controlled tree that still holds the branch open re-asks on its next expansion.
+        loadedFor.current.delete(node.value);
+        if (!isExpandedControlled) {
+          setInternalExpanded((prev) => prev.filter((entry) => entry !== node.value));
+        }
+      },
+    );
+    if (started) setLoadingValues((prev) => new Set(prev).add(node.value));
   };
 
   /* LAZY CHILDREN FOR A BRANCH THE CONSUMER OPENED, not just one the tree opened itself (gh#910).
@@ -200,8 +229,8 @@ function TreeRoot({
    * It also covers `defaultExpandAll` on a lazy tree, which seeds the expanded set without going
    * through `expandNode` and had the same hole.
    *
-   * `requestLoad` is idempotent per node (`requestedLoads`), so this cannot double-fetch a branch
-   * the tree itself just opened. */
+   * `requestLoad` is idempotent per node (the lazy-load ledger), so this cannot double-fetch a
+   * branch the tree itself just opened. */
   /* Read through a ref rather than silencing the exhaustive-deps rule: `requestLoad` closes over
    * `loadData` and two setters and is re-made every render, so listing it would re-run this on
    * every render, and disabling the rule would hide the next dependency somebody forgets. */
@@ -219,7 +248,6 @@ function TreeRoot({
     walk(options);
     return map;
   }, [options]);
-  const loadedFor = React.useRef<Set<string>>(new Set());
   React.useEffect(() => {
     if (!loadData) return;
     for (const value of expandedSet) {
@@ -242,6 +270,25 @@ function TreeRoot({
     visible[0]?.node.value ??
     null;
 
+  // ── windowing (antd `height` + `virtual`, gh#1042) ───────────────────────────────────────
+  /* With `height`, the tree is its own scroll viewport; unless `virtual={false}` it also renders
+   * the rows in view only — rc-tree's answer to a long child list (it has no "load more" node).
+   * The row height is MEASURED off the first rendered row, never assumed: it follows the `size`
+   * tier and the density. Until it is known (first paint, or a DOM with no layout) every row
+   * renders, so the window can only ever show more than it must, never less. */
+  const isWindowed = height !== undefined && virtual;
+  const treeRef = React.useRef<HTMLDivElement | null>(null);
+  const [scrollTop, setScrollTop] = React.useState(0);
+  const [rowHeight, setRowHeight] = React.useState(0);
+  const [hasFocusWithin, setHasFocusWithin] = React.useState(false);
+  React.useLayoutEffect(() => {
+    if (!isWindowed) return;
+    const firstRow = treeRef.current?.querySelector<HTMLElement>('[role="treeitem"]');
+    const measured = firstRow?.offsetHeight ?? 0;
+    if (measured > 0 && measured !== rowHeight) setRowHeight(measured);
+    // Re-measured when the tier (`size`) changes or rows first arrive (a lazy root).
+  }, [isWindowed, rowHeight, size, visible.length]);
+
   const nodeRefs = React.useRef(new Map<string, HTMLDivElement | null>());
   // Focus is moved only for a move the KEYBOARD asked for — a bare re-render must never steal it.
   const pendingFocus = React.useRef<string | null>(null);
@@ -251,9 +298,24 @@ function TreeRoot({
     pendingFocus.current = null;
     nodeRefs.current.get(target)?.focus();
   });
+  /** Scroll a windowed tree so the row is inside the viewport BEFORE it is focused. */
+  const revealRow = (value: string) => {
+    const element = treeRef.current;
+    const rowIndex = rowIndexOf.get(value);
+    if (!isWindowed || !element || rowHeight <= 0 || rowIndex === undefined) return;
+    const viewport = element.clientHeight || height || 0;
+    const top = rowIndex * rowHeight;
+    let next = element.scrollTop;
+    if (top < next) next = top;
+    else if (top + rowHeight > next + viewport) next = top + rowHeight - viewport;
+    if (next === element.scrollTop) return;
+    element.scrollTop = next;
+    setScrollTop(next);
+  };
   const moveTo = (index: number) => {
     const entry = visible[index];
     if (!entry) return;
+    revealRow(entry.node.value);
     setActiveValue(entry.node.value);
     pendingFocus.current = entry.node.value;
   };
@@ -426,6 +488,157 @@ function TreeRoot({
     }
   };
 
+  /** One `treeitem` row. `groupId` is set only in the nested layout, where the row owns its group. */
+  const renderItem = (
+    node: NormalizedTreeOption,
+    depth: number,
+    setSize: number,
+    posInSet: number,
+    groupId: string | undefined,
+  ): React.ReactNode => {
+    const hasChildren = (node.children?.length ?? 0) > 0 && node.isLeaf !== true;
+    const expandable = expandableOf(node);
+    const isOpen = expandable && expandedSet.has(node.value);
+    const isLoading = loadingValues.has(node.value);
+    const isSelected = selected.includes(node.value);
+    const isFilterMatch = filterTreeNode ? filterTreeNode(node as TreeNodeProp) : false;
+    const checkState = checkableProp ? checkStateOf(node) : "unchecked";
+    const nodeDisabled = disabled || Boolean(node.disabled);
+    const labelId = `${treeId}-${node.value}-label`;
+    const glyph =
+      node.icon ??
+      (variant === "directory" ? (
+        hasChildren ? (
+          isOpen ? (
+            <FolderOpen />
+          ) : (
+            <Folder />
+          )
+        ) : (
+          <FileIcon />
+        )
+      ) : null);
+
+    return (
+      <div
+        key={node.value}
+        ref={(element) => {
+          nodeRefs.current.set(node.value, element);
+        }}
+        role="treeitem"
+        // Named by the LABEL alone, so the sr-only status text below stays a redundancy for the
+        // eye's sake and never turns into part of the node's name.
+        aria-labelledby={labelId}
+        aria-level={depth + 1}
+        aria-setsize={setSize}
+        aria-posinset={posInSet}
+        aria-selected={isSelected}
+        // Only a node that HAS (or can load) children is expandable — APG forbids the attribute
+        // on a leaf, where it would promise an affordance that does not exist.
+        aria-expanded={expandable ? isOpen : undefined}
+        aria-owns={groupId}
+        aria-checked={
+          checkableProp
+            ? checkState === "indeterminate"
+              ? "mixed"
+              : checkState === "checked"
+            : undefined
+        }
+        aria-disabled={nodeDisabled || undefined}
+        aria-busy={isLoading || undefined}
+        tabIndex={rovingValue === node.value ? 0 : -1}
+        onFocus={() => setActiveValue(node.value)}
+        onKeyDown={(event) => onNodeKeyDown(event, node)}
+        onClick={() => {
+          if (nodeDisabled) return;
+          select(node);
+        }}
+        /* THE NODE'S OWN VALUE, PUBLISHED (gh#910). A row already announces its level, position
+         * and expanded state, and said nothing about WHICH node it is — so a consumer who wanted
+         * to bind a key of their own had to map `document.activeElement` back to a node through
+         * the internal label id, which is exactly the fragile thing gh#910 reported doing.
+         *
+         * This is the escape hatch instead of a `spaceAction` prop: the library keeps the APG
+         * key map (`→`/`←` move the hierarchy, Enter/Space activate) and a consumer who wants a
+         * different binding can read the focused row's value off the DOM and drive
+         * `expandedValues` themselves, with no private markup and no second key language shipped
+         * to everyone. */
+        data-value={node.value}
+        data-selected={isSelected ? "true" : undefined}
+        data-disabled={nodeDisabled ? "" : undefined}
+        // antd's `filter-node` class (rc-tree TreeNode), in this package's data-attribute form.
+        data-filter-node={isFilterMatch ? "true" : undefined}
+        className="ui-tree-node ui-focus-ring"
+        style={{ "--tree-node-level": depth } as React.CSSProperties}
+      >
+        {/* Windowed rows have no `role="group"` to hang the `showLine` rail off, so each row draws
+            its own ancestors' rails — rc-tree's indent units, one per level above the row. */}
+        {isWindowed && showLine
+          ? Array.from({ length: depth }, (_, level) => (
+              <span
+                key={`rail-${level}`}
+                aria-hidden="true"
+                className="ui-tree-rail"
+                style={{ "--tree-rail-level": level + 1 } as React.CSSProperties}
+              />
+            ))
+          : null}
+        {/* The disclosure triangle and the tick box are DECORATIVE glyphs, never nested controls:
+            a `<button>` or a real checkbox inside a tree item breaks the one-tab-stop rule and
+            the keyboard semantics with it. Their state rides on aria-expanded / aria-checked
+            above. @see godxjp-ui-interaction-feel §8. */}
+        <span
+          aria-hidden="true"
+          data-leaf={expandable ? undefined : ""}
+          className="ui-tree-switcher"
+          title={
+            expandable
+              ? isOpen
+                ? t("dataDisplay.tree.collapse")
+                : t("dataDisplay.tree.expand")
+              : undefined
+          }
+          onClick={(event) => {
+            event.stopPropagation();
+            if (nodeDisabled || !expandable) return;
+            toggleExpand(node);
+          }}
+        >
+          {expandable ? isOpen ? <ChevronDown /> : <ChevronRight /> : null}
+        </span>
+        {checkableProp ? (
+          <span
+            className="ui-tree-check"
+            onClick={(event) => {
+              event.stopPropagation();
+              toggleCheck(node);
+            }}
+          >
+            <CheckboxVisual
+              checked={checkState === "checked"}
+              indeterminate={checkState === "indeterminate"}
+              disabled={nodeDisabled || Boolean(node.disableCheckbox)}
+            />
+          </span>
+        ) : null}
+        {showIcon && glyph ? (
+          <span aria-hidden="true" className="ui-tree-icon">
+            {glyph}
+          </span>
+        ) : null}
+        <span id={labelId} className="ui-tree-label">
+          {titleRender ? titleRender(node as TreeNodeProp) : node.label}
+        </span>
+        {/* Selection is never colour alone (WCAG 1.4.1) — the state is also words. */}
+        {isSelected ? <span className="sr-only">{t("dataDisplay.tree.selected")}</span> : null}
+        {/* Neither is a filter match: the weight is the second cue, these words the third. */}
+        {isFilterMatch ? (
+          <span className="sr-only">{t("dataDisplay.tree.filterMatch")}</span>
+        ) : null}
+      </div>
+    );
+  };
+
   /**
    * Each node renders as TWO siblings: the `treeitem` row, then — while it is open — its
    * `role="group"`.
@@ -439,128 +652,16 @@ function TreeRoot({
   const renderNodes = (nodes: NormalizedTreeOption[], depth: number): React.ReactNode[] =>
     nodes.flatMap((node, position) => {
       const hasChildren = (node.children?.length ?? 0) > 0 && node.isLeaf !== true;
-      const expandable = expandableOf(node);
-      const isOpen = expandable && expandedSet.has(node.value);
+      const isOpen = expandableOf(node) && expandedSet.has(node.value);
       const isLoading = loadingValues.has(node.value);
-      const isSelected = selected.includes(node.value);
-      const checkState = checkableProp ? checkStateOf(node) : "unchecked";
-      const nodeDisabled = disabled || Boolean(node.disabled);
-      const labelId = `${treeId}-${node.value}-label`;
       const groupId = `${treeId}-${node.value}-group`;
       const showGroup = isOpen && (hasChildren || isLoading);
-      const glyph =
-        node.icon ??
-        (variant === "directory" ? (
-          hasChildren ? (
-            isOpen ? (
-              <FolderOpen />
-            ) : (
-              <Folder />
-            )
-          ) : (
-            <FileIcon />
-          )
-        ) : null);
-
-      const item = (
-        <div
-          key={node.value}
-          ref={(element) => {
-            nodeRefs.current.set(node.value, element);
-          }}
-          role="treeitem"
-          // Named by the LABEL alone, so the sr-only status text below stays a redundancy for the
-          // eye's sake and never turns into part of the node's name.
-          aria-labelledby={labelId}
-          aria-level={depth + 1}
-          aria-setsize={nodes.length}
-          aria-posinset={position + 1}
-          aria-selected={isSelected}
-          // Only a node that HAS (or can load) children is expandable — APG forbids the attribute
-          // on a leaf, where it would promise an affordance that does not exist.
-          aria-expanded={expandable ? isOpen : undefined}
-          aria-owns={showGroup ? groupId : undefined}
-          aria-checked={
-            checkableProp
-              ? checkState === "indeterminate"
-                ? "mixed"
-                : checkState === "checked"
-              : undefined
-          }
-          aria-disabled={nodeDisabled || undefined}
-          aria-busy={isLoading || undefined}
-          tabIndex={rovingValue === node.value ? 0 : -1}
-          onFocus={() => setActiveValue(node.value)}
-          onKeyDown={(event) => onNodeKeyDown(event, node)}
-          onClick={() => {
-            if (nodeDisabled) return;
-            select(node);
-          }}
-          /* THE NODE'S OWN VALUE, PUBLISHED (gh#910). A row already announces its level, position
-           * and expanded state, and said nothing about WHICH node it is — so a consumer who wanted
-           * to bind a key of their own had to map `document.activeElement` back to a node through
-           * the internal label id, which is exactly the fragile thing gh#910 reported doing.
-           *
-           * This is the escape hatch instead of a `spaceAction` prop: the library keeps the APG
-           * key map (`→`/`←` move the hierarchy, Enter/Space activate) and a consumer who wants a
-           * different binding can read the focused row's value off the DOM and drive
-           * `expandedValues` themselves, with no private markup and no second key language shipped
-           * to everyone. */
-          data-value={node.value}
-          data-selected={isSelected ? "true" : undefined}
-          data-disabled={nodeDisabled ? "" : undefined}
-          className="ui-tree-node ui-focus-ring"
-          style={{ "--tree-node-level": depth } as React.CSSProperties}
-        >
-          {/* The disclosure triangle and the tick box are DECORATIVE glyphs, never nested controls:
-              a `<button>` or a real checkbox inside a tree item breaks the one-tab-stop rule and
-              the keyboard semantics with it. Their state rides on aria-expanded / aria-checked
-              above. @see godxjp-ui-interaction-feel §8. */}
-          <span
-            aria-hidden="true"
-            data-leaf={expandable ? undefined : ""}
-            className="ui-tree-switcher"
-            title={
-              expandable
-                ? isOpen
-                  ? t("dataDisplay.tree.collapse")
-                  : t("dataDisplay.tree.expand")
-                : undefined
-            }
-            onClick={(event) => {
-              event.stopPropagation();
-              if (nodeDisabled || !expandable) return;
-              toggleExpand(node);
-            }}
-          >
-            {expandable ? isOpen ? <ChevronDown /> : <ChevronRight /> : null}
-          </span>
-          {checkableProp ? (
-            <span
-              className="ui-tree-check"
-              onClick={(event) => {
-                event.stopPropagation();
-                toggleCheck(node);
-              }}
-            >
-              <CheckboxVisual
-                checked={checkState === "checked"}
-                indeterminate={checkState === "indeterminate"}
-                disabled={nodeDisabled || Boolean(node.disableCheckbox)}
-              />
-            </span>
-          ) : null}
-          {showIcon && glyph ? (
-            <span aria-hidden="true" className="ui-tree-icon">
-              {glyph}
-            </span>
-          ) : null}
-          <span id={labelId} className="ui-tree-label">
-            {titleRender ? titleRender(node as TreeNodeProp) : node.label}
-          </span>
-          {/* Selection is never colour alone (WCAG 1.4.1) — the state is also words. */}
-          {isSelected ? <span className="sr-only">{t("dataDisplay.tree.selected")}</span> : null}
-        </div>
+      const item = renderItem(
+        node,
+        depth,
+        nodes.length,
+        position + 1,
+        showGroup ? groupId : undefined,
       );
 
       if (!showGroup) return [item];
@@ -588,13 +689,84 @@ function TreeRoot({
       ];
     });
 
+  /* THE FLAT OUTLINE, for the windowed layout. A window of a nested DOM cannot be cut, so the
+   * windowed tree is a flat run of `treeitem`s — the shape APG documents for a tree whose nodes
+   * are not all in the DOM: hierarchy rides on `aria-level`, position on `aria-setsize` /
+   * `aria-posinset`, both computed from the DATA, never from what happens to be rendered. */
+  const flatRows: FlatRow[] = [];
+  if (isWindowed) {
+    const walk = (nodes: NormalizedTreeOption[], depth: number) => {
+      nodes.forEach((node, position) => {
+        flatRows.push({
+          kind: "node",
+          node,
+          depth,
+          setSize: nodes.length,
+          posInSet: position + 1,
+        });
+        if (!expandableOf(node) || !expandedSet.has(node.value)) return;
+        if ((node.children?.length ?? 0) > 0 && node.isLeaf !== true)
+          walk(node.children!, depth + 1);
+        else if (loadingValues.has(node.value)) {
+          flatRows.push({ kind: "loading", key: `${node.value}::loading`, depth: depth + 1 });
+        }
+      });
+    };
+    walk(options, 0);
+  }
+  const rowIndexOf = new Map<string, number>();
+  flatRows.forEach((row, index) => {
+    if (row.kind === "node") rowIndexOf.set(row.node.value, index);
+  });
+
+  let windowStart = 0;
+  let windowEnd = flatRows.length;
+  if (isWindowed && rowHeight > 0 && height !== undefined) {
+    const first = Math.floor(scrollTop / rowHeight);
+    windowStart = Math.max(0, first - VIRTUAL_OVERSCAN);
+    windowEnd = Math.min(flatRows.length, first + Math.ceil(height / rowHeight) + VIRTUAL_OVERSCAN);
+    /* The row holding focus is never unmounted from under it: a wheel-scroll away from a focused
+     * row would otherwise drop focus to <body> and throw the keyboard user out of the tree. */
+    const focusedRow = rovingValue === null ? undefined : rowIndexOf.get(rovingValue);
+    if (hasFocusWithin && focusedRow !== undefined) {
+      windowStart = Math.min(windowStart, focusedRow);
+      windowEnd = Math.max(windowEnd, focusedRow + 1);
+    }
+  }
+  const rovingRow = rovingValue === null ? undefined : rowIndexOf.get(rovingValue);
+  /* The one tab stop scrolled out of the window: the tree itself takes Tab and hands focus
+   * straight to that row, so Tab never skips a tree whose active node is off-screen. */
+  const rovingOffscreen =
+    isWindowed && rovingRow !== undefined && (rovingRow < windowStart || rovingRow >= windowEnd);
+
   const isEmpty = visible.length === 0;
+
+  const body = isEmpty
+    ? null
+    : isWindowed
+      ? flatRows.slice(windowStart, windowEnd).map((row) =>
+          row.kind === "node" ? (
+            renderItem(row.node, row.depth, row.setSize, row.posInSet, undefined)
+          ) : (
+            // A windowed tree has no `group` to hold the placeholder, and `role="tree"` may own
+            // only treeitems — so the skeleton is decoration and `aria-busy` on the row speaks.
+            <div
+              key={row.key}
+              aria-hidden="true"
+              className="ui-tree-loading"
+              style={{ "--tree-node-level": row.depth } as React.CSSProperties}
+            >
+              <Skeleton className="ui-tree-loading-bar" />
+            </div>
+          ),
+        )
+      : renderNodes(options, 0);
 
   return (
     <>
       <div
         {...ariaProps}
-        ref={forwardedRef}
+        ref={mergeRefs(forwardedRef, treeRef)}
         id={treeId}
         role="tree"
         aria-multiselectable={multiple || checkableProp}
@@ -604,9 +776,52 @@ function TreeRoot({
         data-show-line={showLine ? "true" : undefined}
         data-divided={divided ? "true" : undefined}
         data-empty={isEmpty ? "true" : undefined}
+        data-virtual={isWindowed ? "true" : undefined}
         className={cn("ui-tree", className)}
+        tabIndex={rovingOffscreen ? 0 : undefined}
+        style={
+          height === undefined
+            ? undefined
+            : {
+                maxBlockSize: height,
+                overflowY: "auto",
+              }
+        }
+        onScroll={isWindowed ? (event) => setScrollTop(event.currentTarget.scrollTop) : undefined}
+        onFocus={(event) => {
+          if (!isWindowed) return;
+          setHasFocusWithin(true);
+          if (event.target === event.currentTarget && rovingValue !== null) {
+            revealRow(rovingValue);
+            pendingFocus.current = rovingValue;
+          }
+        }}
+        onBlur={(event) => {
+          if (!isWindowed) return;
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            setHasFocusWithin(false);
+          }
+        }}
       >
-        {isEmpty ? null : renderNodes(options, 0)}
+        {/* The rows outside the window are ROOM, not DOM: two empty spacers hold the scroll height.
+            Not padding on the tree — under `border-box` a padding taller than `max-block-size`
+            wins, and the viewport would grow to the whole outline. `aria-hidden` and empty, so
+            the tree still owns nothing but treeitems. */}
+        {isWindowed ? (
+          <div
+            aria-hidden="true"
+            className="ui-tree-spacer"
+            style={{ blockSize: windowStart * rowHeight }}
+          />
+        ) : null}
+        {body}
+        {isWindowed ? (
+          <div
+            aria-hidden="true"
+            className="ui-tree-spacer"
+            style={{ blockSize: (flatRows.length - windowEnd) * rowHeight }}
+          />
+        ) : null}
       </div>
       {/* OUTSIDE the tree, deliberately. `role="tree"` may own only `treeitem` and `group`, so a
           notice parked inside it is a disallowed child — axe says so, and a screen reader would
