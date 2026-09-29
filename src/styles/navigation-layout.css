@@ -505,16 +505,44 @@
     box-shadow: none;
   }
 
-  /* The bar row aligns to the JOINED edge when there is a body: `align-items: center` centres the
-   * add button and the `extra` slot against the strip, so anything taller than a tab hangs past
-   * the tabs' joined edge — across the very line the body is joined to. Aligning them to that
-   * edge puts every affordance on the rail, which is where antd's `+` sits too. */
-  [data-slot="tabs"][data-bodied="true"][data-placement="top"] .ui-tabs-bar {
-    align-items: flex-end;
+  /* ── THE BAR ROW OF A BODIED STRIP (gh#1073) ───────────────────────────────────────────────
+   * The bar keeps its `align-items: center`, so `extra` is centred on the tab faces — antd's
+   * `.ant-tabs-nav { align-items: center }`, where `tabBarExtraContent` never touches the content
+   * holder. What keeps the TABS joined to the body is the other half of antd's nav: the nav wrap
+   * is `align-self: stretch` and the nav list a default-`stretch` flex row, so the tabs grow to the
+   * bar's height and their joined edge is always the bar's edge. Ported as-is: the strip and every
+   * tab stretch. (The card list's own `items-end` is a utility, which outranks this layer — hence
+   * `align-self` on the tab rather than `align-items` on the list.)
+   *
+   * This replaced `align-items: flex-end` on the bar. That put every affordance on the joined
+   * edge, and with the body pulled back one border width an `extra` of three default Buttons
+   * landed its bottom ON, and 1px into, the body's border (reported from production).
+   *
+   * THE EXTRA KEEPS ONE BORDER WIDTH OFF EACH BAR EDGE. When it is the tallest item, the bar is
+   * exactly its height, the tabs stretch to that, and the body's pulled-back border would sit
+   * under its last pixel row. Symmetric, so its centre stays the tab faces' centre.
+   *
+   * Only the add button — a tab-shaped control — stays on the rail, like antd's `+`. */
+  [data-slot="tabs"][data-bodied="true"]:is([data-placement="top"], [data-placement="bottom"])
+    .ui-tabs-bar
+    > [data-slot="tabs-list"],
+  [data-slot="tabs"][data-bodied="true"]:is([data-placement="top"], [data-placement="bottom"])
+    .ui-tabs-bar
+    [data-slot="tabs-trigger"] {
+    align-self: stretch;
   }
 
-  [data-slot="tabs"][data-bodied="true"][data-placement="bottom"] .ui-tabs-bar {
-    align-items: flex-start;
+  [data-slot="tabs"][data-bodied="true"]:is([data-placement="top"], [data-placement="bottom"])
+    .ui-tabs-extra {
+    margin-block: var(--tabs-panel-border-width);
+  }
+
+  [data-slot="tabs"][data-bodied="true"][data-placement="top"] .ui-tabs-add {
+    align-self: flex-end;
+  }
+
+  [data-slot="tabs"][data-bodied="true"][data-placement="bottom"] .ui-tabs-add {
+    align-self: flex-start;
   }
 
   /* ── THE TRAILING CONTROL'S EDGE (gh#766) ─────────────────────────────────────────────────
