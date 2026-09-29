@@ -156,7 +156,7 @@ export default function Demo() {
                 key: "action",
                 header: "操作",
                 priority: "actions",
-                width: "104px",
+                // No width: the actions column grows to the text button on its own (gh#1067).
                 render: () => (
                   <Button size="sm" variant="ghost">
                     対応する

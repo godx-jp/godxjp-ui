@@ -890,8 +890,31 @@
   }
 
   .ui-table-collection [data-priority="actions"] {
-    --table-action-collection-column-width: var(--table-action-collection-actions-width);
+    /* gh#1067 — the token measure is a FLOOR, not a cap. `table-layout: fixed` never reads cell
+     * content, so a text button in the actions column overflowed the 3.5rem measure and, being
+     * end-aligned, painted over the previous column. Table measures the content box below and
+     * publishes its width (with the cell inset) only when it does not fit the token, so an
+     * icon-only actions column keeps the token measure exactly. */
+    --table-action-collection-column-width: var(
+      --table-action-collection-actions-content-width,
+      var(--table-action-collection-actions-width)
+    );
     text-align: end;
+  }
+
+  /* Wraps every actions cell's children (TableCell). Outside this preset it is `display:
+   * contents` and lays out nothing. Inside it, it is a shrink-to-content box that does not wrap —
+   * the width Table measures — and, being inline content, any overflow before that measurement
+   * lands at the line box's END edge (CSS Text 3 start-aligns an overflowing line), never over
+   * the previous column. */
+  .ui-table-actions-content {
+    display: contents;
+  }
+
+  .ui-table-collection .ui-table-actions-content {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: top;
   }
 }
 
