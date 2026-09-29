@@ -7250,7 +7250,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "mode",
         type: '"multiple" | "tags"',
         description:
-          "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two. The popup list of either mode renders as `Command split` (rows ruled, list padding 0, gh#699); retune it with --command-item-divider-color / --command-item-divider-width.",
+          'Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd\'s own split between the two. `tags` needs no `options` (`<Select mode="tags" />` works) and only an explicit `disabled` disables it (gh#1063). While text is typed the tags list reads create row, then an exact (case-folded) match, then options, then held values — the first enabled row is the Enter target, never a held tag (gh#1064). The popup list of either mode renders as `Command split` (rows ruled, list padding 0, gh#699); retune it with --command-item-divider-color / --command-item-divider-width.',
       },
       {
         name: "maxCount",

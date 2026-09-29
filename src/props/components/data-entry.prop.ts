@@ -1674,7 +1674,10 @@ export type SearchSelectSingleProp = {
 export type SearchSelectMultipleProp = {
   /**
    * `multiple` picks from the list; `tags` also ACCEPTS what was typed, so a value that is not in
-   * the list can still be committed (antd's own distinction between the two).
+   * the list can still be committed (antd's own distinction between the two). A `tags` Select
+   * needs no `options` at all and is never disabled for having none (gh#1063). While text is
+   * typed its list reads create row → exact match → options → held values, and the first enabled
+   * row is the active (Enter) row (gh#1064).
    */
   mode: "multiple" | "tags";
   /** @see SelectLabelInValueMultipleProp for the `{value,label}` dialect. */
