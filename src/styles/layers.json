@@ -575,6 +575,11 @@
         "icon-layout.css"
       ]
     },
+    "Image": {
+      "layers": [
+        "data-display-layout.css"
+      ]
+    },
     "InfiniteQueryState": {
       "layers": [
         "layout.css",

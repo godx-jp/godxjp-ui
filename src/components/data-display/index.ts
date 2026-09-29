@@ -139,3 +139,13 @@ export type {
   ThoughtChainLineProp,
   ThoughtChainVariantProp,
 } from "./thought-chain";
+export { Image, ImagePreviewGroup } from "./image";
+export type {
+  ImagePreviewConfigProp,
+  ImagePreviewGroupConfigProp,
+  ImagePreviewGroupProp,
+  ImagePreviewGroupProps,
+  ImagePreviewItemProp,
+  ImageProp,
+  ImageProps,
+} from "./image";

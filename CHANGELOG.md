@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.11.0] - 2026-09-30
+
+### ✨ Image + ImagePreviewGroup: antd image preview (#1077)
+
+MINOR. New `Image` and `ImagePreviewGroup` (also `Image.PreviewGroup`) in `@godxjp/ui/data-display`,
+ported from antd `Image`. A Markdown body's screenshots can now be opened large and paged
+(consumer: godx-task #419).
+
+- Click or Enter opens a full-viewport preview: zoom in/out (buttons, wheel, double-click), rotate
+  left/right, flip x/y, reset, drag to pan. `scaleStep` 0.5, `minScale` 1, `maxScale` 50, as in antd.
+- In a group, every `Image` under it at any depth joins one gallery in document order, so a
+  Markdown renderer's `img` override is enough. Prev/next buttons, ←/→ and a "2 / 3" counter.
+- Esc closes. Focus is trapped in the preview and returns to the picture on close.
+- `preview={false}` opts a picture out (and out of its group). Also `fallback`, `placeholder` and
+  `preview.src`. The group takes `items`, `fallback` and a controlled `preview.current` / `onChange`
+  and `preview.visible` / `onVisibleChange`, with antd's `(next, prev)` argument order.
+- Deviations from antd: the thumbnail is a real button and the preview traps and restores focus;
+  ←/→ follow the reading direction; with `items`, a clicked child opens at its own src; `alt` is
+  required; `toolbarRender` / `imageRender` / `countRender`, `movable` and `getContainer` are not
+  ported.
+- Tokens: `--image-*`, `--image-preview-*`.
+- Tests: `image-preview-1077.test.tsx` (behaviour, 17) and `image-preview-browser-1077.test.tsx`
+  (Chromium: full-viewport box, focus trap and restore, arrow paging, focus veil, 4).
+
 ## [31.10.3] - 2026-09-29
 
 ### 🐛 DatePicker `showTime`: Enter in the time box confirms, never drops the pick (#1076)

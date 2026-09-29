@@ -378,6 +378,25 @@
       "statusDone": "Đã xong: ",
       "statusCurrent": "Hiện tại: ",
       "statusPending": "Sắp tới: "
+    },
+    "image": {
+      "preview": "Xem",
+      "previewLabel": "Xem ảnh: {alt}",
+      "previewUnnamed": "Xem ảnh",
+      "dialog": "Xem ảnh",
+      "close": "Đóng xem ảnh",
+      "previous": "Ảnh trước",
+      "next": "Ảnh sau",
+      "counter": "{current} / {total}",
+      "position": "Ảnh {current} trên {total}",
+      "toolbar": "Công cụ ảnh",
+      "flipX": "Lật ngang",
+      "flipY": "Lật dọc",
+      "rotateLeft": "Xoay trái",
+      "rotateRight": "Xoay phải",
+      "zoomIn": "Phóng to",
+      "zoomOut": "Thu nhỏ",
+      "reset": "Đặt lại"
     }
   },
   "ui": {

@@ -4609,6 +4609,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Gutter between the COLUMNS of a `<Form columns={n}>` grid (gh#304). Was ResponsiveGrid's generic 16px stack gap with no way to say otherwise; it is a form's inter-field gutter and a service aligning forms to its design grid needs it as a knob (rule #45). The default keeps the historical 16px, so nothing moves unless a theme opts in. 16px"
   },
   {
+    "name": "--image-mask-background",
+    "value": "initial",
+    "description": "The hover/focus veil over the thumbnail. default = --overlay-background"
+  },
+  {
+    "name": "--image-mask-foreground",
+    "value": "initial",
+    "description": "default = hsl(var(--background))"
+  },
+  {
+    "name": "--image-mask-gap",
+    "value": "var(--space-1)",
+    "description": "IMAGE — a picture that opens large, and its full-viewport preview (`src/components/data-display/image.tsx`, antd `Image` + `Image.PreviewGroup`). The preview is a dark stage whatever the theme, as in antd: a screenshot is judged against a neutral surround, not the page's colour. Its scrim is the shared `--overlay-background`, only denser, so a brand that retunes every overlay's scrim retunes this one too. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--image-radius",
+    "value": "initial",
+    "description": "default = var(--radius)"
+  },
+  {
+    "name": "--image-preview-background-alpha",
+    "value": "85%",
+    "description": "The preview stage."
+  },
+  {
+    "name": "--image-preview-foreground",
+    "value": "initial",
+    "description": "default = hsl(var(--background))"
+  },
+  {
+    "name": "--image-preview-inset",
+    "value": "var(--space-4)",
+    "description": "IMAGE — a picture that opens large, and its full-viewport preview (`src/components/data-display/image.tsx`, antd `Image` + `Image.PreviewGroup`). The preview is a dark stage whatever the theme, as in antd: a screenshot is judged against a neutral surround, not the page's colour. Its scrim is the shared `--overlay-background`, only denser, so a brand that retunes every overlay's scrim retunes this one too. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--image-preview-gap",
+    "value": "var(--space-2)",
+    "description": "IMAGE — a picture that opens large, and its full-viewport preview (`src/components/data-display/image.tsx`, antd `Image` + `Image.PreviewGroup`). The preview is a dark stage whatever the theme, as in antd: a screenshot is judged against a neutral surround, not the page's colour. Its scrim is the shared `--overlay-background`, only denser, so a brand that retunes every overlay's scrim retunes this one too. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--image-preview-button-size",
+    "value": "2.5rem",
+    "description": "Every round control on the stage (close, prev/next, tools). ≥ the 24px WCAG 2.5.8 floor."
+  },
+  {
+    "name": "--image-preview-button-background-alpha",
+    "value": "10%",
+    "description": "IMAGE — a picture that opens large, and its full-viewport preview (`src/components/data-display/image.tsx`, antd `Image` + `Image.PreviewGroup`). The preview is a dark stage whatever the theme, as in antd: a screenshot is judged against a neutral surround, not the page's colour. Its scrim is the shared `--overlay-background`, only denser, so a brand that retunes every overlay's scrim retunes this one too. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--image-preview-button-hover-background-alpha",
+    "value": "20%",
+    "description": "IMAGE — a picture that opens large, and its full-viewport preview (`src/components/data-display/image.tsx`, antd `Image` + `Image.PreviewGroup`). The preview is a dark stage whatever the theme, as in antd: a screenshot is judged against a neutral surround, not the page's colour. Its scrim is the shared `--overlay-background`, only denser, so a brand that retunes every overlay's scrim retunes this one too. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--image-preview-icon-size",
+    "value": "var(--icon-size-lg)",
+    "description": "IMAGE — a picture that opens large, and its full-viewport preview (`src/components/data-display/image.tsx`, antd `Image` + `Image.PreviewGroup`). The preview is a dark stage whatever the theme, as in antd: a screenshot is judged against a neutral surround, not the page's colour. Its scrim is the shared `--overlay-background`, only denser, so a brand that retunes every overlay's scrim retunes this one too. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
     "name": "--legal-document-measure-max-width",
     "value": "46rem",
     "description": "Readable document measure. Caps the header, the section column and the footer so a 1440px viewport still reads at ~75-90 characters per line."

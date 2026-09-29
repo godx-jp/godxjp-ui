@@ -5111,6 +5111,87 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  ImagePreviewItemProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      { field: "src", local: true, reason: "The native img src attribute." },
+      { field: "alt", local: true, reason: "The native img alt attribute." },
+    ],
+  },
+  ImagePreviewConfigProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "OnOpenChangeProp",
+      {
+        field: "visible",
+        local: true,
+        reason: "antd Image `preview.visible`, kept verbatim — the component is a whole antd port.",
+      },
+      {
+        field: "onVisibleChange",
+        local: true,
+        reason: "antd `preview.onVisibleChange(visible, prevVisible)`, kept verbatim.",
+      },
+      { field: "src", local: true, reason: "A different file for the preview than the page's." },
+      { field: "mask", local: true, reason: "antd's hover veil content over the thumbnail." },
+      { field: "scaleStep", local: true, reason: "antd zoom step (fraction added per zoom-in)." },
+      { field: "minScale", local: true, reason: "antd lower zoom bound." },
+      { field: "maxScale", local: true, reason: "antd upper zoom bound." },
+    ],
+  },
+  ImagePreviewGroupConfigProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "OnValueChangeProp",
+      {
+        field: "current",
+        local: true,
+        reason: "antd PreviewGroup `preview.current` (index on show), kept verbatim.",
+      },
+      {
+        field: "onChange",
+        local: true,
+        reason: "antd PreviewGroup `preview.onChange(current, prevCurrent)`, kept verbatim.",
+      },
+    ],
+  },
+  ImageProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      "PlaceholderProp",
+      { field: "src", local: true, reason: "The native img src attribute." },
+      {
+        field: "alt",
+        local: true,
+        reason: "The native img alt contract, made required so it cannot be forgotten.",
+      },
+      { field: "fallback", local: true, reason: "antd Image `fallback` — the src shown on error." },
+      {
+        field: "preview",
+        local: true,
+        reason: "antd Image `preview: boolean | PreviewType` — opt-out or configure the preview.",
+      },
+    ],
+  },
+  ImagePreviewGroupProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      { field: "items", local: true, reason: "antd PreviewGroup `items` — an explicit list." },
+      { field: "fallback", local: true, reason: "antd PreviewGroup `fallback`." },
+      {
+        field: "preview",
+        local: true,
+        reason: "antd PreviewGroup `preview: boolean | { visible, current, onChange, … }`.",
+      },
+    ],
+  },
 } as const;
 
 export type ComponentPropName = keyof typeof COMPONENT_PROP_REGISTRY;
