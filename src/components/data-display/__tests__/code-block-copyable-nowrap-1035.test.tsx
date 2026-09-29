@@ -79,7 +79,11 @@ describe("CodeBlock copyable + wrap={false} geometry (Chromium, gh#1035)", () =>
       });
       for (const r of result) {
         expect(r.scrolls, `${r.id} ${r.edge}`).toBe(true);
-        expect(r.scrolled, `${r.id} ${r.edge}`).toBe(r.edge === "start" ? 0 : r.max);
+        // ±1px: Chromium on Linux can stop an RTL scroll a subpixel short of -max (1774 vs 1775).
+        expect(
+          Math.abs(r.scrolled - (r.edge === "start" ? 0 : r.max)),
+          `${r.id} ${r.edge}`,
+        ).toBeLessThanOrEqual(1);
         expect(r.overlap, `${r.id} ${r.edge}`).toBeLessThanOrEqual(0);
       }
 
