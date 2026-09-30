@@ -3875,6 +3875,16 @@
           "evidence": [
             "docs/data-display/timeline.tsx"
           ]
+        },
+        "density": {
+          "cases": [
+            "default",
+            "compact"
+          ],
+          "evidence": [
+            "docs/data-display/timeline.tsx",
+            "src/components/data-display/__tests__/timeline-density.test.tsx"
+          ]
         }
       }
     },

@@ -399,6 +399,12 @@ bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the 
   would rule every existing tree, including the picker-sized and `size="xs"` outlines where a rule
   every 24px is noise rather than structure. A tree used as page navigation opts in.
 
+- **`Timeline density` has no antd counterpart.** antd's Timeline spaces items with one fixed
+  token (`itemPaddingBottom`, 20px) and offers no size or density prop. godx adds
+  `density?: "default" | "compact"` — the ListRow-shaped subset of `DensityProp` — driving one
+  token, `--timeline-item-gap`: `default` keeps `--space-stack-md` (16px), `compact` is
+  `--space-stack-sm` (8px), the step nearer antd's 20px of the two compact candidates (xs is 4px).
+
 - **`RangeTimeline` nested rows take `Tree`'s spelling, not antd's (gh#724).** antd has no Gantt;
   the nearest names are `Tree expandedKeys` / `defaultExpandedKeys` / `onExpand` and `Table
 expandable.expandedRowKeys` / `onExpandedRowsChange`. This library already mapped the Tree ones

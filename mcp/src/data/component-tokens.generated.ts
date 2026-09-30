@@ -3164,6 +3164,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The current dot's ring is the ONLY chromatic difference from a done dot, so it is `--steps-dot-process-ring-width` token-for-token — the same ring, meaning the same thing. default = var(--stroke-xl), resolved at the call site (gh#906)"
   },
   {
+    "name": "--timeline-item-gap",
+    "value": "initial",
+    "description": "Space between items and between rail and body. `initial` so `Timeline density=\"compact\"` can retune it on the root; default = var(--space-stack-md), compact = --timeline-item-gap-compact (default var(--space-stack-sm)), resolved at the call site."
+  },
+  {
+    "name": "--timeline-item-gap-compact",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--qr-code-foreground",
     "value": "0 0% 0%",
     "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."

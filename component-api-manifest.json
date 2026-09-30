@@ -17915,6 +17915,14 @@
       "group": "data-display",
       "props": [
         {
+          "name": "density",
+          "origin": "owned",
+          "required": false,
+          "type": "TimelineDensity | undefined",
+          "values": ["compact", "default"],
+          "declaredIn": ["src/components/data-display/timeline.tsx"]
+        },
+        {
           "name": "items",
           "origin": "owned",
           "required": true,
