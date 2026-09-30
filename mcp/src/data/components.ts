@@ -3209,7 +3209,7 @@ import { Trash2 } from "lucide-react";
         type: '"normal" | "pre-wrap"',
         defaultValue: '"normal"',
         description:
-          "Whitespace handling. 'normal' is CSS's own behaviour (newlines and space runs collapse) and stays the default. 'pre-wrap' is for text a PERSON typed — a plain-text note, an issue description, a pasted log — where the line breaks and the indentation are CONTENT: it keeps both, still wraps long lines at the container edge, and breaks an over-long unbroken token (a URL, an id) instead of overflowing. Use it INSTEAD of `className=\"whitespace-pre-wrap\"`. Precedence is explicit: `truncate` is a single-line contract and wins (dev builds warn); `clamp` COMPOSES with it, showing the first N preserved lines. Not for rendered Markdown/HTML — that is `Prose`, which styles rendered elements and does nothing to whitespace.",
+          "Whitespace handling. 'normal' is CSS's own behaviour (newlines and space runs collapse) and stays the default; passed explicitly it also releases a `nowrap` the text inherits (a table cell's, gh#1083). 'pre-wrap' is for text a PERSON typed — a plain-text note, an issue description, a pasted log — where the line breaks and the indentation are CONTENT: it keeps both, still wraps long lines at the container edge, and breaks an over-long unbroken token (a URL, an id) instead of overflowing. Use it INSTEAD of `className=\"whitespace-pre-wrap\"`. Precedence is explicit: `truncate` is a single-line contract and wins (dev builds warn); `clamp` COMPOSES with it, showing the first N preserved lines. Not for rendered Markdown/HTML — that is `Prose`, which styles rendered elements and does nothing to whitespace.",
       },
       {
         name: "break",
@@ -4159,9 +4159,9 @@ import { Icon, Text } from "@godxjp/ui/general";
       },
       {
         name: "expandable",
-        type: "{ expandedRowRender?: (row, index, expanded) => ReactNode; rowExpandable?: (row) => boolean; defaultExpandAllRows?: boolean; expandedRowKeys?: string[]; onExpandedRowsChange?: (keys) => void; expandRowByClick?: boolean; columnTitle?: ReactNode }",
+        type: "{ expandedRowRender?: (row, index, expanded) => ReactNode; rowExpandable?: (row) => boolean; defaultExpandAllRows?: boolean; expandedRowKeys?: string[]; onExpandedRowsChange?: (keys) => void; expandRowByClick?: boolean; columnTitle?: ReactNode; flush?: boolean }",
         description:
-          "Expandable detail rows (antd expandable). Supplying expandedRowRender adds a leading expand column before the selection column and renders the panel in a real <tr> spanning every column, so the table's grid semantics survive. rowExpandable gates the affordance per row; expandedRowKeys + onExpandedRowsChange make it controlled.",
+          "Expandable detail rows (antd expandable). Supplying expandedRowRender adds a leading expand column before the selection column and renders the panel in a real <tr> spanning every column, so the table's grid semantics survive. rowExpandable gates the affordance per row; expandedRowKeys + onExpandedRowsChange make it controlled. The detail cell is inset like any cell (antd) and wraps (white-space: normal) — retune the inset with --table-row-expanded-padding; flush: true drops it for a detail that owns its inset (a nested table, a ListRow list). Do NOT wrap the detail in Card/CardContent or Flex pad for spacing (gh#1083).",
       },
       {
         name: "summary",

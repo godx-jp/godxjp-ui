@@ -116,6 +116,10 @@
    * Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint. It fades out as
    * --table-row-striped-alpha comes in: on a striped table the stripe ties the panel to its row. */
   --table-row-expanded-background: initial;
+  /* Inset of the expanded detail cell (gh#1083). `initial` so the default — the cell's own
+   * padding, var(--table-cell-padding-y) var(--table-cell-space-x), which follows density —
+   * re-resolves at the call site. `expandable.flush` drops it. */
+  --table-row-expanded-padding: initial;
   /* Gap between the header checkbox and the `selections` dropdown trigger beside it. */
   --table-selection-menu-gap: var(--space-1);
   /* Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted

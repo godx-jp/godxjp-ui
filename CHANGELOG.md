@@ -6,6 +6,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.17.0] - 2026-10-02
+
+### 🐛 Image: a failed `src` with a `fallback` no longer loops forever (gh#1082)
+
+PATCH-level fix, shipped in this minor. When `src` failed, the `fallback` was shown; the fallback's
+own `load` then marked the picture "loaded", which put the broken `src` back, which failed again —
+an endless error/load cycle. Measured in Chromium on the docs Image frame: **23,062 requests to the
+missing file in 15s**, so the page never reached `networkidle` and the nightly geometry sweep timed
+out at all 8 widths. Now "error" is final for that `src` (a new `src` is tried afresh): 51 requests
+in total, `networkidle` in 716ms.
+
+- Test: `image-preview-1077.test.tsx` — the fallback's `load` keeps the fallback, `onError` fires
+  once, a new `src` after a failure is tried. Fails on 31.14.0.
+
+### ✨ DataTable: the expanded row is inset and wraps, `expandable.flush` opts out (gh#1083)
+
+MINOR, and a visible default change. The expanded detail cell was `flush` and inherited the table
+cell's `white-space: nowrap`: the detail sat against the table edges, and every line of it stayed on
+one line (a `ListRow` title ran under its trailing, an `Alert` pushed the table 79px wide). As antd
+pads `.ant-table-expanded-row > td`, the cell now has the cell padding (so it follows `density`),
+retuned by the new `--table-row-expanded-padding` token, and wraps like a block.
+`expandable.flush: true` keeps the old edge-to-edge detail for one that owns its inset (a nested
+table, a `ListRow` list). **Consumers that padded the detail themselves** (`<Flex pad>` or
+`<Card><CardContent>` inside `expandedRowRender`) should drop that wrapper, or they get the inset
+twice.
+
+Also: an explicit `Text whitespace="normal"` now emits `white-space: normal`, so it releases a
+`nowrap` the Text inherits (a table cell's). Unset still emits nothing; `truncate` still wins.
+
+- MCP `get_component DataTable` / `Text` describe `expandable.flush`, the token and the explicit
+  `normal`.
+- Test: `data-table-expanded-row-inset-1083.test.tsx` (Chromium: padding equals a body cell's,
+  the detail wraps with no table overflow, `flush` is 0, the token retunes it, `whitespace="normal"`
+  releases the cell's nowrap) and `typography-whitespace.test.tsx`. Fails on 31.14.0.
+
 ## [31.16.0] - 2026-10-02
 
 ### ✨ TextDiff — what changed between two versions of a text (#1096)

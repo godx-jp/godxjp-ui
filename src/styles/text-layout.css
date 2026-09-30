@@ -196,8 +196,8 @@
   }
   /* Whitespace a PERSON typed is content, not formatting.
    *
-   * Only the `pre-wrap` value is written: `normal` is CSS's own behaviour, so the default emits no
-   * attribute and there is no rule here to argue with `[data-truncate]`'s `white-space: nowrap`.
+   * The UNSET default emits no attribute (an explicit `normal` has its own rule, above), so there
+   * is no rule here to argue with `[data-truncate]`'s `white-space: nowrap`.
    * The component resolves that precedence instead (truncate wins, and simply does not emit
    * `data-whitespace`), because a fight between two equal-specificity `white-space` declarations is
    * settled by stylesheet insertion order — unreadable from either file.
@@ -218,6 +218,12 @@
    * prop's own documentation promises the break and a consumer reading that sentence should get
    * it. On a block-level box this declaration is inert — `min-width: auto` only resolves to
    * min-content for a flex or grid item — so it costs nothing anywhere else. */
+  /* An EXPLICIT `whitespace="normal"` (gh#1083): `white-space` inherits, so a Text inside a
+   * `nowrap` table cell was nowrap too and the prop did nothing. Unset still emits no attribute. */
+  [data-slot="text"][data-whitespace="normal"] {
+    white-space: normal;
+  }
+
   [data-slot="text"][data-whitespace="pre-wrap"] {
     white-space: pre-wrap;
     overflow-wrap: break-word;

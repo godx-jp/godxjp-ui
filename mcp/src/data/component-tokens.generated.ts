@@ -8184,6 +8184,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Wash behind an expanded detail row, so the panel reads as belonging to the row above it. Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint. It fades out as --table-row-striped-alpha comes in: on a striped table the stripe ties the panel to its row."
   },
   {
+    "name": "--table-row-expanded-padding",
+    "value": "initial",
+    "description": "Inset of the expanded detail cell (gh#1083). `initial` so the default — the cell's own padding, var(--table-cell-padding-y) var(--table-cell-space-x), which follows density — re-resolves at the call site. `expandable.flush` drops it."
+  },
+  {
     "name": "--table-selection-menu-gap",
     "value": "var(--space-1)",
     "description": "Gap between the header checkbox and the `selections` dropdown trigger beside it."

@@ -102,6 +102,7 @@ export type TextAlignProp = "start" | "center" | "end";
  * `normal` is CSS's own behaviour and the default: newlines and runs of spaces collapse. That is
  * right for a label and wrong for text a PERSON typed into a textarea — a plain-text note, a
  * pasted log, an issue description — where the line breaks and the indentation ARE content.
+ * Passed explicitly, `normal` also releases a `nowrap` the text inherits (a table cell's, gh#1083).
  *
  * `pre-wrap` keeps both and still wraps at the container's edge, so the block cannot force a
  * horizontal scrollbar the way `pre` would. It is a closed union rather than a boolean because the

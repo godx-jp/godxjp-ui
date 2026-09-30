@@ -344,7 +344,7 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/data.prop.ts",
     category: "data",
     description:
-      "DataTable expandable-row config — expandedRowRender | rowExpandable | defaultExpandAllRows | expandedRowKeys | onExpandedRowsChange | expandRowByClick (antd/rc-table ExpandableConfig)",
+      "DataTable expandable-row config — expandedRowRender | rowExpandable | defaultExpandAllRows | expandedRowKeys | onExpandedRowsChange | expandRowByClick | flush (antd/rc-table ExpandableConfig; the detail cell is padded by default, gh#1083)",
   },
   TableSummaryProp: {
     file: "vocabulary/data.prop.ts",
