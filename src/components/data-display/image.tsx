@@ -27,6 +27,7 @@ import type {
 import { useOverlayCloseFocus } from "../feedback/overlay-close-focus";
 
 export type {
+  ImageFitProp,
   ImagePreviewConfigProp,
   ImagePreviewGroupConfigProp,
   ImagePreviewGroupProp,
@@ -34,6 +35,7 @@ export type {
   ImagePreviewItemProp,
   ImageProp,
   ImageProp as ImageProps,
+  ImageSizeProp,
 } from "../../props/components/data-display.prop";
 
 /*
@@ -55,6 +57,9 @@ export type {
  * - ←/→ follow the reading direction: in RTL, ← is NEXT. antd ignores `dir`.
  * - With `items`, a clicked child opens at the item whose `src` matches its own (antd opens 0).
  * - `alt` is required, as on `Thumbnail`.
+ * - `width`/`height` size the frame (antd) and the picture fills it; a fixed height crops with
+ *   `fit` (default `cover`, antd stretches). `size` (sm/md/lg on the Thumbnail height scale, 4:3)
+ *   and `caption` (a figcaption held to the picture's width) are godx extensions.
  * - The toolbar render props (`toolbarRender`, `imageRender`, `countRender`), `movable`,
  *   `getContainer` and the `mask` classNames are not ported.
  */
@@ -529,7 +534,22 @@ type ImageStatus = "loading" | "loaded" | "error";
  * the group's other pictures; on its own it previews just itself.
  */
 const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
-  { src, alt, fallback, placeholder, preview = true, className, onLoad, onError, ...imgProps },
+  {
+    src,
+    alt,
+    fallback,
+    placeholder,
+    preview = true,
+    width,
+    height,
+    size,
+    fit,
+    caption,
+    className,
+    onLoad,
+    onError,
+    ...imgProps
+  },
   ref,
 ) {
   const { t } = useTranslation();
@@ -575,12 +595,28 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
   const shownSrc = isError && fallback ? fallback : src;
   const showPlaceholder = placeholder != null && placeholder !== false && status === "loading";
 
+  const sized = size != null || width != null || height != null;
+  const frameFit = fit ?? (size != null || height != null ? "cover" : undefined);
+  const frame = sized
+    ? {
+        "data-sized": "",
+        "data-size": size,
+        style: {
+          ...(width != null ? { "--image-inline-size": cssLength(width) } : null),
+          ...(height != null ? { "--image-block-size": cssLength(height) } : null),
+        } as React.CSSProperties,
+      }
+    : null;
+
   const picture = (
     <>
       <img
         {...imgProps}
+        width={width}
+        height={height}
         ref={setImgRef}
         data-slot="image-img"
+        data-fit={frameFit}
         className="ui-image-img"
         src={shownSrc}
         alt={alt}
@@ -601,20 +637,33 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
     </>
   );
 
+  const withCaption = (image: React.ReactNode) =>
+    caption == null ? (
+      image
+    ) : (
+      <figure data-slot="image-tile" className="ui-image-tile" {...frame}>
+        {image}
+        <figcaption data-slot="image-caption" className="ui-image-caption">
+          {caption}
+        </figcaption>
+      </figure>
+    );
+
   if (!canPreview) {
-    return (
+    return withCaption(
       <span
         ref={wrapperRef}
         data-slot="image"
         data-status={status}
+        {...frame}
         className={cn("ui-image", className)}
       >
         {picture}
-      </span>
+      </span>,
     );
   }
 
-  return (
+  return withCaption(
     <>
       <button
         ref={(node) => {
@@ -624,6 +673,7 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
         data-slot="image"
         data-status={status}
         data-preview=""
+        {...frame}
         className={cn("ui-image ui-focus-ring", className)}
         aria-label={
           alt ? t("dataDisplay.image.previewLabel", { alt }) : t("dataDisplay.image.previewUnnamed")
@@ -654,10 +704,15 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
           maxScale={config.maxScale}
         />
       )}
-    </>
+    </>,
   );
 });
 ImageRoot.displayName = "Image";
+
+/** antd's `width`/`height`: a number is px, a string is any CSS length. */
+function cssLength(value: number | string): string {
+  return typeof value === "number" ? `${value}px` : value;
+}
 
 /** `ImagePreviewGroup` is also reachable as `Image.PreviewGroup`, the antd spelling. */
 export const Image = Object.assign(ImageRoot, { PreviewGroup: ImagePreviewGroup });

@@ -399,6 +399,12 @@ bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the 
   would rule every existing tree, including the picker-sized and `size="xs"` outlines where a rule
   every 24px is noise rather than structure. A tree used as page navigation opts in.
 
+- **`Image size` / `fit` / `caption` have no antd counterpart.** antd's Image takes `width` /
+  `height` on the frame and the picture, and those are ported as antd has them (a fixed height
+  crops with `fit`, default `cover`, where antd stretches). godx adds `size?: "sm" | "md" | "lg"`
+  — the Thumbnail height scale at `--thumbnail-width-ratio` (4 / 3) — `fit?: "cover" | "contain"`,
+  and `caption`, a figcaption held to the picture's width so a file name truncates under it.
+
 - **`Timeline density` has no antd counterpart.** antd's Timeline spaces items with one fixed
   token (`itemPaddingBottom`, 20px) and offers no size or density prop. godx adds
   `density?: "default" | "compact"` — the ListRow-shaped subset of `DensityProp` — driving one

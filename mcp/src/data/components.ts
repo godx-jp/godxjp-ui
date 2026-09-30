@@ -18248,7 +18248,30 @@ const messages: ChatMessageProp[] = [
         type: "ReactNode | boolean",
         description: "Painted over the frame until the picture loads; `true` = a muted block.",
       },
-      { name: "width / height", type: "number | string", description: "Native img attributes." },
+      {
+        name: "width / height",
+        type: "number | string",
+        description:
+          "antd Image: size the FRAME (number = px, or a CSS length); the picture fills it. `width` alone keeps the picture's ratio; a fixed height crops per `fit`. Also set on the img.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        description:
+          "Thumbnail frame on the Thumbnail height scale (64 / 96 / 160px) at `--thumbnail-width-ratio` (4 / 3), cropped to fill. godx extension; `width`/`height` override the side they name.",
+      },
+      {
+        name: "fit",
+        type: '"cover" | "contain"',
+        description:
+          "object-fit inside a fixed frame. Default `cover` once the height is fixed (size or height).",
+      },
+      {
+        name: "caption",
+        type: "ReactNode",
+        description:
+          "Text under the picture in a figure held to the picture's width — a long file name truncates instead of widening the tile. godx extension.",
+      },
       { name: "className", type: "string", description: "Class on the wrapper (the button)." },
       {
         name: "ImagePreviewGroup.items",
@@ -18274,6 +18297,7 @@ const messages: ChatMessageProp[] = [
       "DO use `Image.PreviewGroup` or `ImagePreviewGroup` — the same component.",
       "DON'T hand-roll a lightbox from Dialog + Carousel: it has no zoom, no arrow keys and a 32rem box. That composition is what this replaces.",
       "DON'T nest an Image inside a link or button: the thumbnail is itself a button.",
+      'DO size an attachment gallery with `size="md"` (96px, 4:3, cropped) and put the file name in `caption` — never an inline style reading `--thumbnail-block-size`.',
     ],
     useCases: [
       "Screenshots in a test result or wiki page that the reader opens large and pages through.",

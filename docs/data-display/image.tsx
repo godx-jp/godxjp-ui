@@ -124,6 +124,46 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Thumbnail size · fit · caption</CardTitle>
+            <CardDescription>
+              size puts the frame on the Thumbnail height scale (sm 64px, md 96px, lg 160px) at 4:3,
+              cropped to fill; fit=&quot;contain&quot; letterboxes instead. caption keeps a long
+              file name under the picture, truncated at the picture&apos;s width.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ImagePreviewGroup>
+              <Flex gap="sm" wrap align="start">
+                <Image
+                  src={shotLandscape}
+                  size="md"
+                  alt="Dashboard"
+                  caption={
+                    <Text size="xs" truncate>
+                      dashboard-after-the-fix-2026-09-30-full-resolution.png
+                    </Text>
+                  }
+                />
+                <Image
+                  src={shotPortrait}
+                  size="md"
+                  fit="contain"
+                  alt="List screen"
+                  caption={
+                    <Text size="xs" truncate>
+                      list-screen.png
+                    </Text>
+                  }
+                />
+                <Image src={coverTerrain} size="sm" alt="Cover image" />
+                <Image src={portraitIris} size="lg" alt="Portrait" />
+              </Flex>
+            </ImagePreviewGroup>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

@@ -5158,6 +5158,16 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  ImageSizeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["SizeProp"],
+  },
+  ImageFitProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
   ImageProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
@@ -5175,6 +5185,15 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "preview",
         local: true,
         reason: "antd Image `preview: boolean | PreviewType` — opt-out or configure the preview.",
+      },
+      "SizeProp",
+      { field: "width", local: true, reason: "antd Image `width` — the frame's inline size." },
+      { field: "height", local: true, reason: "antd Image `height` — the frame's block size." },
+      { field: "fit", local: true, reason: "CSS `object-fit` of the picture in a fixed frame." },
+      {
+        field: "caption",
+        local: true,
+        reason: "A figcaption held to the picture's width (godx extension).",
       },
     ],
   },
