@@ -212,7 +212,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Actions | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | ThoughtChain | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | OrgChart | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| Image | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
+| Image | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Attachments | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | Marquee | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Masonry | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |

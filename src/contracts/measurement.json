@@ -13,28 +13,43 @@
         "via": "::after",
         "source": "src/styles/control.css",
         "targetMin": 24,
-        "components": ["badge", "date-picker", "input", "tag-input", "textarea", "time-picker"]
+        "components": [
+          "badge",
+          "date-picker",
+          "input",
+          "tag-input",
+          "textarea",
+          "time-picker"
+        ]
       },
       {
         "selector": ".ui-data-table-sort-button",
         "via": "::after",
         "source": "src/styles/table-layout.css",
         "targetMin": 24,
-        "components": ["data-table"]
+        "components": [
+          "data-table"
+        ]
       },
       {
         "selector": ".ui-number-input-step",
         "via": "::after",
         "source": "src/styles/control.css",
         "targetMin": 24,
-        "components": ["number-input"]
+        "components": [
+          "number-input"
+        ]
       },
       {
         "selector": ".ui-switch",
         "via": ".ui-choice-input",
         "source": "src/styles/control.css",
         "targetMin": 24,
-        "components": ["label", "slider", "switch"]
+        "components": [
+          "label",
+          "slider",
+          "switch"
+        ]
       }
     ]
   },
