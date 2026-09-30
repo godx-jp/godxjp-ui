@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.14.0] - 2026-09-30
+
+### ✨ Image: `width` / `height` size the frame, `size` / `fit` / `caption` for thumbnails
+
+MINOR. `Image` had no size of its own: `width`/`height` were plain img attributes, so a consumer
+building a 96px attachment gallery (godx-task) set two inline `style`s reading
+`--thumbnail-block-size` — one on the picture, one on the tile so a long file name truncated under
+it. Now, as in antd, `width`/`height` size the frame (number = px or a CSS length) and the picture
+fills it; `width` alone keeps the picture's ratio. godx extensions: `size="sm" | "md" | "lg"` puts
+the frame on the Thumbnail height scale (64 / 96 / 160px) at the new `--thumbnail-width-ratio`
+token (4 / 3); `fit="cover" | "contain"` (default `cover` once the height is fixed — antd
+stretches); `caption` renders a `<figure>` held to the picture's width with the caption in a
+`<figcaption>`.
+
+- MCP `get_component Image` lists `size`, `fit`, `caption` and the new `width`/`height` meaning;
+  docs frame has a thumbnail case.
+- Test: `image-size.test.tsx` (frame attributes and vars, fit default, caption figure) and a
+  Chromium case in `image-preview-browser-1077.test.tsx` measuring the 128×96 frame and a caption
+  that does not widen the tile. Fails on 31.13.0.
+
 ## [31.13.0] - 2026-09-30
 
 ### ✨ Timeline: `density="compact"` and the `--timeline-item-gap` token

@@ -38,6 +38,8 @@ createRoot(document.getElementById("root")).render(
       <p><Image src=${JSON.stringify(svg("#33c"))} alt="Blue" width={160} /></p>
     </ImagePreviewGroup>
     <p><a href="#after">After</a></p>
+    <Image src=${JSON.stringify(svg("#999"))} alt="Sized" size="md" preview={false}
+      caption={<span style={{ display: "block", overflow: "hidden", whiteSpace: "nowrap" }} id="cap">a-very-long-file-name-that-would-widen-the-tile-2026-09-30-full-resolution.png</span>} />
   </AppProvider>,
 );
 `;
@@ -52,6 +54,7 @@ beforeAll(async () => {
       <ImagePreviewGroup>
         <Image src="/a.png" alt="A" />
       </ImagePreviewGroup>
+      <Image src="/b.png" alt="B" size="md" preview={false} caption="b.png" />
     </AppProvider>,
   );
   css = await compileRealCss(markup);
@@ -174,6 +177,21 @@ describe("Image preview in Chromium (gh#1077)", () => {
     await page.keyboard.press("Tab");
     const mask = page.locator('[data-slot="image-mask"]').first();
     await expect.poll(() => mask.evaluate((el) => getComputedStyle(el).opacity)).toBe("1");
+    await page.close();
+  });
+
+  it("size=md is a 128×96 frame the picture fills, and a long caption does not widen the tile", async () => {
+    const page = await mount();
+    const frame = (await page.locator('[data-slot="image"][data-size="md"]').boundingBox())!;
+    expect(frame.width).toBeCloseTo(128, 0);
+    expect(frame.height).toBeCloseTo(96, 0);
+    const img = (await page.locator('[data-size="md"] > [data-slot="image-img"]').boundingBox())!;
+    expect(img.width).toBeCloseTo(128, 0);
+    expect(img.height).toBeCloseTo(96, 0);
+    const tile = (await page.locator('[data-slot="image-tile"]').boundingBox())!;
+    expect(tile.width).toBeCloseTo(128, 0);
+    const caption = (await page.locator("#cap").boundingBox())!;
+    expect(caption.width).toBeLessThanOrEqual(128.5);
     await page.close();
   });
 });

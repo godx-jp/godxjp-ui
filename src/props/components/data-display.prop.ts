@@ -1363,8 +1363,37 @@ export type ImageProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt" | 
   placeholder?: React.ReactNode | boolean;
   /** `false` = a plain picture, not clickable, not in its group. Default `true`. */
   preview?: boolean | ImagePreviewConfigProp;
+  /**
+   * antd Image `width`: the frame's inline size (number = px, or any CSS length). The picture
+   * fills it; with no `height` its block size follows the picture's ratio. Also set on the `<img>`.
+   */
+  width?: number | string;
+  /**
+   * antd Image `height`: the frame's block size (number = px, or any CSS length). A fixed height
+   * crops the picture to fill (`fit` defaults to `cover`). Also set on the `<img>`.
+   */
+  height?: number | string;
+  /**
+   * A thumbnail frame on the `Thumbnail` height scale (`--thumbnail-block-size-sm`, `…-size`,
+   * `…-size-lg`: 64 / 96 / 160px) at `--thumbnail-width-ratio` (4 / 3). godx extension — antd has only
+   * `width`/`height`, which override the preset's side they name.
+   */
+  size?: ImageSizeProp;
+  /** How the picture fills a fixed frame (`object-fit`). Default `cover` once the height is fixed. */
+  fit?: ImageFitProp;
+  /**
+   * Text under the picture, held to the picture's width, so a long file name truncates instead of
+   * widening the tile. Renders a `<figure>` with a `<figcaption>`. godx extension.
+   */
+  caption?: React.ReactNode;
   className?: ClassNameProp;
 };
+
+/** `Image` thumbnail frame preset — the `Thumbnail` height scale. */
+export type ImageSizeProp = Extract<SizeProp, "sm" | "md" | "lg">;
+
+/** `Image` `fit` — the picture's `object-fit` inside a fixed frame. */
+export type ImageFitProp = "cover" | "contain";
 
 /**
  * @see ImagePreviewGroup — pages the preview across a set of pictures (antd `Image.PreviewGroup`).

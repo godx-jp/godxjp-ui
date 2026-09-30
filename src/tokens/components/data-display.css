@@ -347,6 +347,7 @@
   --thumbnail-block-size-sm: 4rem; /* 64px — an attachment chip beside its filename. */
   --thumbnail-block-size: 6rem; /* 96px — the default: a gallery row that still shows the shot. */
   --thumbnail-block-size-lg: 10rem; /* 160px — a review screen, where the picture IS the content. */
+  --thumbnail-width-ratio: 4 / 3; /* Image `size` frame: width = the Thumbnail height × this ratio. */
   --thumbnail-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --thumbnail-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
 

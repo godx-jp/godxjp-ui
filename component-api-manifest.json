@@ -8950,6 +8950,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "caption",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "className",
           "origin": "owned",
           "required": false,
@@ -8969,6 +8977,25 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "fit",
+          "origin": "owned",
+          "required": false,
+          "type": "ImageFitProp | undefined",
+          "values": ["cover", "contain"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "height",
+          "origin": "owned",
+          "required": false,
+          "type": "string | number | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
           "name": "placeholder",
           "origin": "owned",
           "required": false,
@@ -8985,10 +9012,29 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "ImageSizeProp | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "src",
           "origin": "owned",
           "required": true,
           "type": "string",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "string | number | undefined",
           "values": [],
           "declaredIn": [
             "node_modules/@types/react/index.d.ts",

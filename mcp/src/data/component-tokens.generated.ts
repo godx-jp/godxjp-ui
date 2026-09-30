@@ -3129,6 +3129,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "160px — a review screen, where the picture IS the content."
   },
   {
+    "name": "--thumbnail-width-ratio",
+    "value": "4 / 3",
+    "description": "Image `size` frame: width = the Thumbnail height × this ratio."
+  },
+  {
     "name": "--thumbnail-border-width",
     "value": "initial",
     "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"

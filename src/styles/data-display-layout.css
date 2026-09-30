@@ -3351,6 +3351,63 @@
     border-radius: inherit;
   }
 
+  /* A sized frame (`width` / `height` / `size`): the button IS the frame and the picture fills it.
+   * Unset sides stay `auto`, so `width` alone keeps the picture's own ratio (antd). `size` puts the
+   * frame on the Thumbnail height scale at `--thumbnail-width-ratio`. */
+  .ui-image[data-sized],
+  .ui-image-tile[data-sized] {
+    inline-size: var(--image-inline-size, auto);
+  }
+
+  .ui-image[data-sized] {
+    block-size: var(--image-block-size, auto);
+  }
+
+  .ui-image[data-sized] > .ui-image-img {
+    inline-size: 100%;
+    max-inline-size: none;
+    block-size: 100%;
+  }
+
+  :is(.ui-image, .ui-image-tile)[data-size="sm"] {
+    --image-block-size: var(--thumbnail-block-size-sm);
+  }
+
+  :is(.ui-image, .ui-image-tile)[data-size="md"] {
+    --image-block-size: var(--thumbnail-block-size);
+  }
+
+  :is(.ui-image, .ui-image-tile)[data-size="lg"] {
+    --image-block-size: var(--thumbnail-block-size-lg);
+  }
+
+  :is(.ui-image, .ui-image-tile)[data-size] {
+    --image-inline-size: calc(var(--image-block-size) * var(--thumbnail-width-ratio));
+  }
+
+  .ui-image-img[data-fit="cover"] {
+    object-fit: cover;
+  }
+
+  .ui-image-img[data-fit="contain"] {
+    object-fit: contain;
+  }
+
+  /* `caption`: the tile is as wide as the picture, so a long caption truncates or wraps under it
+   * rather than widening the tile. */
+  .ui-image-tile {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--space-stack-xs);
+    max-inline-size: 100%;
+    margin: 0;
+    vertical-align: top;
+  }
+
+  .ui-image-caption {
+    min-inline-size: 0;
+  }
+
   .ui-image-placeholder {
     position: absolute;
     inset: 0;
