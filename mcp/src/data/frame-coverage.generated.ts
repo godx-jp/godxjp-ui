@@ -57,9 +57,9 @@ export const FRAME_COVERAGE_POLICY = {
   totals: {
     exports: 303,
     dimensionCells: 4242,
-    covered: 93,
+    covered: 94,
     untested: 2327,
-    notApplicable: 1822,
+    notApplicable: 1821,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -369,7 +369,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"ThoughtChain","group":"data-display","frame":"docs/data-display/thought-chain.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"ThoughtChainItem","group":"data-display","frame":"docs/data-display/thought-chain.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states","variants"],"notApplicable":["density","ownership","shapes","sizes","tones"]},
   {"name":"Thumbnail","group":"data-display","frame":"docs/data-display/thumbnail.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
-  {"name":"Timeline","group":"data-display","frame":"docs/data-display/timeline.tsx","covered":["variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones"]},
+  {"name":"Timeline","group":"data-display","frame":"docs/data-display/timeline.tsx","covered":["density","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones"]},
   {"name":"TimelineGrid","group":"data-display","frame":"docs/data-display/timeline-grid.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"TimePicker","group":"data-entry","frame":"docs/data-entry/time-picker.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states","variants"],"notApplicable":["density","shapes","tones"]},
   {"name":"TimeRangePicker","group":"data-entry","frame":"docs/data-entry/time-range-picker.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states","variants"],"notApplicable":["density","shapes","tones"]},

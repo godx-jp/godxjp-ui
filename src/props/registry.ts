@@ -3700,7 +3700,7 @@ export const COMPONENT_PROP_REGISTRY = {
   TimelineProp: {
     group: "data-display",
     file: "components/data-display/timeline.tsx",
-    vocabulary: ["ClassNameProp"],
+    vocabulary: ["ClassNameProp", "DensityProp"],
   },
   TimelineGridColumnProp: {
     group: "data-display",

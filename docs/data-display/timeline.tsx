@@ -128,6 +128,19 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>密度（density=&quot;compact&quot;）</CardTitle>
+            <CardDescription>
+              項目間の余白を --space-stack-sm（8px）に詰めます。課題の履歴など長いログ向け。antd の
+              Timeline には density がなく、godx 独自の拡張です。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Timeline variant="status" density="compact" items={approvalItems} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>配送ルート進捗</CardTitle>
             <CardDescription>
               variant="ordinal" で各ステップを連番（1,2,3…）で表示し、status

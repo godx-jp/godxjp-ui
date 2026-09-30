@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.13.0] - 2026-09-30
+
+### ✨ Timeline: `density="compact"` and the `--timeline-item-gap` token
+
+MINOR. The space between Timeline items (the body's block-end padding) and between the rail and
+the body was a hard-coded `--space-stack-md` with no token and no prop, so an issue history in
+godx-task could not be tightened. One token, `--timeline-item-gap`, now drives both, and
+`Timeline density="compact"` sets it to `--space-stack-sm` (8px, retune with
+`--timeline-item-gap-compact`). `default` is unchanged (16px). antd's Timeline has no density
+prop — its item spacing is one fixed `itemPaddingBottom` (20px) — so this is a godx extension,
+and the component docs say so.
+
+- MCP `get_component Timeline` lists `density`; docs frame has a compact case.
+- Test: `timeline-density.test.tsx` (root `data-density`, the token at both call sites, compact
+  → `--space-stack-sm`). Fails on 31.12.0.
+
 ## [31.12.0] - 2026-09-30
 
 ### ✨ Audit: one Button size per action row — `mixed-button-size` / `mixed-button-height` (#1084)

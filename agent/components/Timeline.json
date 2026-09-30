@@ -14,6 +14,11 @@
       "description": "Rail glyph strategy (default 'icon'). 'icon' = legacy look (Plane for current, CheckCircle2 otherwise). 'ordinal' = every glyph is its 1-based step number; status sets colour only. 'status' = glyph by status (done → check, current → filled dot, pending → step number).",
       "name": "variant",
       "type": "\"icon\" | \"ordinal\" | \"status\""
+    },
+    {
+      "description": "Item spacing (default 'default'). Sets `--timeline-item-gap` — the space between items and between the rail and the body. 'default' = `--space-stack-md` (16px); 'compact' = `--space-stack-sm` (8px, retune with `--timeline-item-gap-compact`) for a dense activity log / issue history. antd's Timeline has no density prop (one fixed `itemPaddingBottom`, 20px), so this is a godx extension.",
+      "name": "density",
+      "type": "\"default\" | \"compact\""
     }
   ],
   "related": [
@@ -26,10 +31,11 @@
   "storyPath": "data-display/Timeline.stories.tsx",
   "tagline": "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`. The whole progress column is ONE hue: done dot, current dot and travelled line all paint `--primary`, exactly as `Steps` paints `finish` and `process`.",
   "usage": [
-    "DO pass an array of `TimelineItem` objects to `items`. Each item is `{ title, location?, time?, note?, current?, status?, icon? }`. All fields except `title` are optional. The only other prop is `variant`.",
+    "DO pass an array of `TimelineItem` objects to `items`. Each item is `{ title, location?, time?, note?, current?, status?, icon? }`. All fields except `title` are optional. The only other props are `variant` and `density`.",
     "DO mark the in-progress event with `current: true` (or `status: 'current'`). In the default `variant='icon'`, the current item renders a `Plane` icon and every other item a `CheckCircle2`. Use `variant='ordinal'` for a numbered route stepper (1,2,3…) or `variant='status'` for a done→check / current→dot / pending→number tracker. Pass `status: 'done' | 'current' | 'pending'` per item to drive colour and (in the status variant) the glyph; pass `icon` (a LucideIcon) to override the glyph for a single item.",
     "DO pass `ReactNode` to `title`, `location`, `time`, and `note` — you can embed formatted text, `<Badge>`, `<Badge>`, or `<span>` inside those fields. Use `formatDate` to pre-format timestamps before passing them as `time`.",
     "DO NOT hand-roll a vertical event list with divs, icons, and connector lines — that is exactly what Timeline ships. Do not apply extra padding or wrapping outside the component; it manages its own rail and spacing internally.",
+    "DO pass `density=\"compact\"` when the timeline is a long, dense log (issue history, audit trail) and the default 16px between items reads too airy — it drops the item gap to `--space-stack-sm` (8px). Never tighten it with your own padding/margin on the items.",
     "DO NOT use Timeline for user-facing wizard progress (steps the user must complete in order) — use `Steps` for that. Timeline is read-only historical/status display; it has no interactive state, no `onClick`, and no concept of 'go to step'.",
     "DO wrap Timeline in `<CardContent>` when placing it inside a `Card` — bare `Card` has no inner padding, so the rail will render flush against the card edge without `CardContent`.",
     "THE PROGRESS COLUMN IS ONE HUE (gh#731). The done dot, the current dot and the travelled line all default to `hsl(var(--primary))` — the same contract `Steps` uses for `finish` + `process`, and antd's (only `error` leaves the primary hue). The current item is told apart by a ring (`--timeline-dot-current-ring-width`, `--steps-dot-process-ring-width`'s value), by `aria-current=\"step\"` + a localized sr-only prefix, and by a different glyph — never by a second colour role. Re-theme `--primary` and the whole rail follows. Measured light: done 2.18:1 → 6.31:1 against the card, glyph 6.31:1 on the fill; dark 7.22:1 → 9.84:1, glyph 10.72:1.",

@@ -7,6 +7,12 @@ export type TimelineStatus = "done" | "current" | "pending";
 
 export type TimelineVariant = "icon" | "ordinal" | "status";
 
+/**
+ * A Timeline-local subset of the density vocabulary — it has no `comfortable` step, the same shape
+ * as `ListRowDensity`.
+ */
+export type TimelineDensity = "default" | "compact";
+
 export type TimelineItem = {
   title: ReactNode;
   location?: ReactNode;
@@ -27,6 +33,13 @@ export type TimelineProps = {
    * CheckCircle2 otherwise).
    */
   variant?: TimelineVariant;
+  /**
+   * Space between items (and between the rail and the body): `--timeline-item-gap`. `default` is
+   * `--space-stack-md` (16px, today's look); `compact` is `--space-stack-sm` (8px) for a dense
+   * activity log or issue history. antd's Timeline has no density/size prop — its item spacing is
+   * one fixed token (`itemPaddingBottom`, 20px) — so this is a godx extension, not an antd port.
+   */
+  density?: TimelineDensity;
 };
 
 /**
@@ -59,10 +72,10 @@ function resolveStatus(item: TimelineItem): TimelineStatus {
   return "done";
 }
 
-export function Timeline({ items, variant = "icon" }: TimelineProps) {
+export function Timeline({ items, variant = "icon", density = "default" }: TimelineProps) {
   const { t } = useTranslation();
   return (
-    <ol className="ui-timeline" data-variant={variant}>
+    <ol className="ui-timeline" data-variant={variant} data-density={density}>
       {items.map((item, index) => {
         const status = resolveStatus(item);
         const isCurrent = status === "current";
