@@ -3938,6 +3938,58 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  TreeDropPositionProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
+  TreeAllowDropInfoProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "dragNode",
+        local: true,
+        reason: "antd `allowDrop` argument: the node being moved (gh#1093).",
+      },
+      {
+        field: "dropNode",
+        local: true,
+        reason: "antd `allowDrop` argument: the node it would land on or beside.",
+      },
+      {
+        field: "dropPosition",
+        local: true,
+        reason: "antd `allowDrop` argument: -1 before, 0 inside, 1 after.",
+      },
+    ],
+  },
+  TreeDropInfoProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "dragNode",
+        local: true,
+        reason: "antd `onDrop` info: the node being moved (gh#1093).",
+      },
+      {
+        field: "node",
+        local: true,
+        reason: "antd `onDrop` info: the node it landed on or beside.",
+      },
+      {
+        field: "dropPosition",
+        local: true,
+        reason: "antd `onDrop` info, relative: -1 before, 0 inside, 1 after.",
+      },
+      {
+        field: "dropToGap",
+        local: true,
+        reason: "antd `onDrop` info: true when it lands as a sibling, false inside.",
+      },
+    ],
+  },
   TreeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

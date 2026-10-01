@@ -13,6 +13,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { ArrowRightLeft, MessageSquare } from "lucide-react";
 
 /**
  * Timeline — vertical event list with an icon rail; the current item gets a
@@ -29,6 +30,19 @@ const items: TimelineItem[] = [
   { title: "仕訳を作成", location: "システム", time: "10:20" },
   { title: "請求書を発行", location: "営業 グエン", time: "09:50" },
   { title: "受注を登録", location: "営業 グエン", time: "09:30" },
+];
+
+// An activity log (gh#1092): every row already happened, so none is "done" or "upcoming" —
+// `status: "log"` keeps the neutral dot and adds no screen-reader status prefix.
+const logItems: TimelineItem[] = [
+  {
+    title: "田中 がステータスを変更 未対応 → 処理中",
+    time: "10/01 08:12",
+    status: "log",
+    icon: ArrowRightLeft,
+  },
+  { title: "グエン がコメント", time: "10/01 09:30", status: "log", icon: MessageSquare },
+  { title: "田中 が担当者を変更", time: "10/01 10:05", status: "log" },
 ];
 
 // Second shape: a title-only minimal item, and the current step at the END
@@ -136,6 +150,20 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Timeline variant="status" density="compact" items={approvalItems} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>status=&quot;log&quot;（アクティビティログ）</CardTitle>
+            <CardDescription>
+              課題の履歴のように、すべて起きたことの記録には
+              status=&quot;log&quot;。中立の点と細い線で描き、
+              「完了:」「予定:」のような読み上げ接頭辞を付けません（antd の gray item と同じ）。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Timeline density="compact" items={logItems} />
           </CardContent>
         </Card>
 

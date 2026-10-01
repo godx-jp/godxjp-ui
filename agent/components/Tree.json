@@ -91,6 +91,27 @@
       "type": "(node: TreeNodeProp) => void | Promise<void>"
     },
     {
+      "defaultValue": "false",
+      "description": "Move nodes by dragging (antd `draggable`, gh#1093). Dropping on a row's upper / lower quarter lands in the gap before / after it, the middle files it inside. The tree never edits `treeData` — it reports the move via `onDrop` and you persist it. Keyboard equivalent (WCAG 2.5.7): Alt+↑ / Alt+↓ move past the previous / next sibling, Alt+← outdents (after the parent), Alt+→ indents (into the previous sibling, as its last child); every move is announced in a live region and described on the tree. A node never drops into itself or its own subtree.",
+      "name": "draggable",
+      "type": "boolean"
+    },
+    {
+      "description": "Per-node drag gate (antd `draggable.nodeDraggable`). Disabled nodes never drag.",
+      "name": "allowDrag",
+      "type": "(node: TreeNodeProp) => boolean"
+    },
+    {
+      "description": "Per-target drop gate (antd `allowDrop`), asked for pointer AND keyboard moves. Use it for your own rules (max depth, no leaf parents); the self/subtree cycle is already refused.",
+      "name": "allowDrop",
+      "type": "(info: { dragNode: TreeNodeProp; dropNode: TreeNodeProp; dropPosition: -1 | 0 | 1 }) => boolean"
+    },
+    {
+      "description": "A committed move (antd `onDrop`). `dropPosition` is RELATIVE to `node` — -1 before, 0 inside, 1 after (antd reports an absolute index that every antd demo converts back to this). `dropToGap` is true for before/after (sibling of `node`), false for inside (child of `node`). Update `treeData` here.",
+      "name": "onDrop",
+      "type": "(info: { dragNode: TreeNodeProp; node: TreeNodeProp; dropPosition: -1 | 0 | 1; dropToGap: boolean }) => void"
+    },
+    {
       "description": "Render a node's title yourself (antd `titleRender`).",
       "name": "titleRender",
       "type": "(node: TreeNodeProp) => ReactNode"
@@ -179,7 +200,7 @@
     45
   ],
   "storyPath": "data-display/Tree.stories.tsx",
-  "tagline": "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes and async `loadData`. Reach for it whenever nodes expand, collapse or are navigated by keyboard; TreeSelect is the same hierarchy inside a Popover.",
+  "tagline": "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes, async `loadData` and `draggable` reorder/reparent (antd `onDrop`). Reach for it whenever nodes expand, collapse or are navigated by keyboard; TreeSelect is the same hierarchy inside a Popover.",
   "usage": [
     "DO name the tree — pass `aria-label` (through your own `t()`) or `aria-labelledby`. A tree with no name is an unlabelled landmark for every screen reader user.",
     "DO keep SELECTION and CHECKS apart: `value`/`onValueChange` is which node is open in the detail pane; `checkedValues`/`onCheckedValuesChange` is which nodes are ticked. They are two axes, exactly as in antd — never drive one from the other.",

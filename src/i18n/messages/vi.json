@@ -358,7 +358,12 @@
       "loading": "Đang tải nút con…",
       "empty": "Không có gì để hiển thị",
       "selected": "Đã chọn",
-      "filterMatch": "Khớp bộ lọc"
+      "filterMatch": "Khớp bộ lọc",
+      "dragHint": "Alt cùng phím mũi tên di chuyển mục đang chọn: lên và xuống qua mục ngang hàng, trái để lùi cấp, phải để thụt cấp.",
+      "movedBefore": "Đã chuyển {node} lên trước {target}",
+      "movedAfter": "Đã chuyển {node} xuống sau {target}",
+      "movedInside": "Đã chuyển {node} vào trong {target}",
+      "moveRefused": "Không thể chuyển {node} tới đó"
     },
     "thoughtChain": {
       "label": "Các bước suy luận",

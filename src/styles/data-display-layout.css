@@ -715,8 +715,10 @@
       hsl(var(--primary) / 0.2);
   }
 
-  /* pending → muted outline on the surface (no fill). */
-  .ui-timeline-dot[data-status="pending"] {
+  /* pending → muted outline on the surface (no fill). `log` (gh#1092) is the same neutral dot:
+   * an activity-log entry, antd's `color="gray"` item — quiet, with no status to signal. */
+  .ui-timeline-dot[data-status="pending"],
+  .ui-timeline-dot[data-status="log"] {
     border-color: hsl(var(--border));
     background: hsl(var(--background));
     color: hsl(var(--muted-foreground));
@@ -2713,6 +2715,47 @@
   .ui-tree-node[data-disabled] {
     cursor: not-allowed;
     opacity: var(--disabled-opacity);
+  }
+
+  /* DRAG-AND-DROP (gh#1093). The row being dragged dims; the drop target shows WHERE it would
+   * land — a line on the row's block-start / block-end edge for a gap drop (antd's
+   * drop-indicator), an inset frame for a drop inside. Both read `--tree-drop-indicator-color`. */
+  .ui-tree-node[draggable="true"] {
+    cursor: grab;
+  }
+
+  .ui-tree-node[data-dragging="true"] {
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-tree-node[data-drop-position] {
+    position: relative;
+  }
+
+  .ui-tree-node[data-drop-position="before"]::after,
+  .ui-tree-node[data-drop-position="after"]::after {
+    content: "";
+    position: absolute;
+    inset-inline: calc(
+        var(--tree-node-padding-inline) + var(--tree-node-level, 0) * var(--tree-indent-width)
+      )
+      0;
+    block-size: var(--tree-drop-indicator-width, var(--stroke-md));
+    background: var(--tree-drop-indicator-color, hsl(var(--primary)));
+    pointer-events: none;
+  }
+
+  .ui-tree-node[data-drop-position="before"]::after {
+    inset-block-start: 0;
+  }
+
+  .ui-tree-node[data-drop-position="after"]::after {
+    inset-block-end: 0;
+  }
+
+  .ui-tree-node[data-drop-position="inside"] {
+    box-shadow: inset 0 0 0 var(--tree-drop-indicator-width, var(--stroke-md))
+      var(--tree-drop-indicator-color, hsl(var(--primary)));
   }
 
   /* The ring is NOT written here. `.ui-tree-node` carries `ui-focus-ring`, and styles/focus-ring.css

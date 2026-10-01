@@ -3,7 +3,14 @@ import type { ReactNode } from "react";
 import { useTranslation } from "../../i18n/use-translation";
 import { Check, CheckCircle2, type LucideIcon, Plane } from "lucide-react";
 
-export type TimelineStatus = "done" | "current" | "pending";
+/**
+ * `done` / `current` / `pending` are a PROCESS: steps behind, the one you are on, steps ahead.
+ * `log` is not a step at all — it is an entry in an activity log or history (antd's
+ * `<Timeline.Item color="gray">`, GitHub's conversation rail): a neutral dot, a hairline rail and
+ * NO screen-reader status prefix, because a thing that merely happened is neither "completed" nor
+ * "upcoming" (gh#1092).
+ */
+export type TimelineStatus = "done" | "current" | "pending" | "log";
 
 export type TimelineVariant = "icon" | "ordinal" | "status";
 
@@ -20,7 +27,10 @@ export type TimelineItem = {
   note?: ReactNode;
   /** Shorthand for `status: "current"`. `status` wins when both are set. */
   current?: boolean;
-  /** Explicit 3-state. Resolves as `status ?? */
+  /**
+   * Explicit status. Resolves as `status ?? (current ? "current" : "done")`. Use `log` for an
+   * activity-log / history row: neutral look, no "Completed:"/"Upcoming:" prefix.
+   */
   status?: TimelineStatus;
   /** Per-item glyph override; wins over the variant/status auto-glyph. */
   icon?: LucideIcon;
@@ -55,10 +65,12 @@ export type TimelineProps = {
  * own rule — every user-facing string AND every sr-only text goes through it — so a consumer who
  * has already initialised i18n gets Japanese with no call-site change at all.
  */
-const SR_PREFIX_KEY: Record<TimelineStatus, string> = {
+const SR_PREFIX_KEY: Record<TimelineStatus, string | null> = {
   done: "dataDisplay.timeline.statusDone",
   current: "dataDisplay.timeline.statusCurrent",
   pending: "dataDisplay.timeline.statusPending",
+  // A log entry carries no status semantics (antd's items have no prefix at all), gh#1092.
+  log: null,
 };
 
 function resolveStatus(item: TimelineItem): TimelineStatus {
@@ -91,6 +103,9 @@ export function Timeline({ items, variant = "icon", density = "default" }: Timel
         if (item.icon) {
           const Icon = item.icon;
           glyph = <Icon aria-hidden="true" />;
+        } else if (status === "log" && variant !== "ordinal") {
+          // A log entry is a plain neutral dot unless the item brings its own glyph.
+          glyph = <span className="ui-timeline-pip" aria-hidden="true" />;
         } else if (variant === "ordinal") {
           glyph = <span className="ui-timeline-ordinal">{ordinal}</span>;
         } else if (variant === "status") {
@@ -132,7 +147,9 @@ export function Timeline({ items, variant = "icon", density = "default" }: Timel
             <div className="ui-timeline-body">
               <div className="ui-timeline-head">
                 <span className="ui-timeline-title" data-current={isCurrent ? "true" : undefined}>
-                  <span className="sr-only">{t(SR_PREFIX_KEY[status])}</span>
+                  {SR_PREFIX_KEY[status] ? (
+                    <span className="sr-only">{t(SR_PREFIX_KEY[status])}</span>
+                  ) : null}
                   {item.title}
                 </span>
                 {item.time ? <span className="ui-timeline-time">{item.time}</span> : null}

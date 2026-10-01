@@ -5878,14 +5878,14 @@ import remarkGfm from "remark-gfm";
     name: "Timeline",
     group: "data-display",
     tagline:
-      "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`. The whole progress column is ONE hue: done dot, current dot and travelled line all paint `--primary`, exactly as `Steps` paints `finish` and `process`.",
+      "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a `status` (done/current/pending, or `log` for an activity-log entry with no status semantics) plus an optional per-item `icon`. The whole progress column is ONE hue: done dot, current dot and travelled line all paint `--primary`, exactly as `Steps` paints `finish` and `process`.",
     props: [
       {
         name: "items",
         type: "TimelineItem[]",
         required: true,
         description:
-          "Array of `{ title, location?, time?, note?, current?, status?, icon? }`. `status` is the explicit 3-state ('done' | 'current' | 'pending'); `current: true` is shorthand for `status: 'current'`. `icon` (a LucideIcon) overrides the auto-glyph for that item.",
+          "Array of `{ title, location?, time?, note?, current?, status?, icon? }`. `status` is 'done' | 'current' | 'pending' | 'log'; `current: true` is shorthand for `status: 'current'`. 'log' (gh#1092) is an activity-log / history row: the neutral dot + hairline rail `pending` draws, and NO sr-only status prefix (antd's `color=\"gray\"` item). `icon` (a LucideIcon) overrides the auto-glyph for that item.",
       },
       {
         name: "variant",
@@ -5909,6 +5909,7 @@ import remarkGfm from "remark-gfm";
       "DO NOT use Timeline for user-facing wizard progress (steps the user must complete in order) — use `Steps` for that. Timeline is read-only historical/status display; it has no interactive state, no `onClick`, and no concept of 'go to step'.",
       "DO wrap Timeline in `<CardContent>` when placing it inside a `Card` — bare `Card` has no inner padding, so the rail will render flush against the card edge without `CardContent`.",
       "THE PROGRESS COLUMN IS ONE HUE (gh#731). The done dot, the current dot and the travelled line all default to `hsl(var(--primary))` — the same contract `Steps` uses for `finish` + `process`, and antd's (only `error` leaves the primary hue). The current item is told apart by a ring (`--timeline-dot-current-ring-width`, `--steps-dot-process-ring-width`'s value), by `aria-current=\"step\"` + a localized sr-only prefix, and by a different glyph — never by a second colour role. Re-theme `--primary` and the whole rail follows. Measured light: done 2.18:1 → 6.31:1 against the card, glyph 6.31:1 on the fill; dark 7.22:1 → 9.84:1, glyph 10.72:1.",
+      "DO use `status: 'log'` for every row of an activity log / issue history / audit trail (gh#1092). Those rows already HAPPENED and are not steps: `done` paints them primary and prefixes 「Completed:」, `pending` reads 「Upcoming:」 to a screen reader. `log` draws the quiet neutral dot (a plain pip, or the item's `icon`) and hairline rail, with no prefix — antd's gray item.",
       "DON'T expect `--success` on a `status: 'done'` item — `done | current | pending` is POSITION IN A SEQUENCE, not status, and Timeline has no `tone` axis. Put a real status on the item's `title` or `note` with a `<Badge tone=\"success\">`, which is the surface that owns the status green.",
       "TO RESTORE the pre-27.9 green/violet pairing, set the done dot's fill AND its ink together in your theme (global or `[data-tenant]`) — the two roles have opposite ink polarity, so the fill alone leaves a near-white glyph on 若竹 green at 2.18:1 (gh#643): `--timeline-dot-done-background: hsl(var(--success)); --timeline-dot-done-foreground: hsl(var(--success-foreground));`. `--timeline-dot-current-background` and `--timeline-line-completed-background` retint the other two surfaces the same way.",
     ],
@@ -5927,6 +5928,7 @@ import remarkGfm from "remark-gfm";
       "Badge — Badge is a single-item inline indicator; Timeline sequences multiple statuses with connectors. Compose Badge inside a Timeline `title` or `note` field for richer per-event context, but do not replace Timeline with a stack of Badges.",
     ],
     example: `import { Timeline } from "@godxjp/ui/data-display";
+import { ArrowRightLeft, MessageSquare } from "lucide-react";
 
 // Default icon variant
 <Timeline items={[
@@ -5939,6 +5941,12 @@ import remarkGfm from "remark-gfm";
 <Timeline variant="ordinal" items={[
   { title: "集荷", location: "東京 → 名古屋", status: "pending" },
   { title: "幹線輸送", location: "名古屋 → 大阪", status: "pending" },
+]} />
+
+// Activity log / issue history: neutral dots, no status prefix (gh#1092)
+<Timeline density="compact" items={[
+  { title: "Aki がステータスを変更 未対応 → 処理中", time: "10/01 08:12", status: "log", icon: ArrowRightLeft },
+  { title: "Ken がコメント", time: "10/01 09:30", status: "log", icon: MessageSquare },
 ]} />
 
 // Status tracker (Pattern B): done → check, current → dot, pending → number
@@ -13217,7 +13225,7 @@ export function FilterSection() {
     name: "Tree",
     group: "data-display",
     tagline:
-      "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes and async `loadData`. Reach for it whenever nodes expand, collapse or are navigated by keyboard; TreeSelect is the same hierarchy inside a Popover.",
+      "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes, async `loadData` and `draggable` reorder/reparent (antd `onDrop`). Reach for it whenever nodes expand, collapse or are navigated by keyboard; TreeSelect is the same hierarchy inside a Popover.",
     props: [
       {
         name: "treeData",
@@ -13313,6 +13321,31 @@ export function FilterSection() {
         type: "(node: TreeNodeProp) => void | Promise<void>",
         description:
           "Lazy children (antd `loadData`). Called when a branch with no `children` and `isLeaf !== true` is expanded, and never again once its promise RESOLVES; a Skeleton row and `aria-busy` cover the wait. Push the fetched children into `treeData`. A REJECTED promise is not a load (rc-tree, gh#1041): the branch folds back shut (uncontrolled expansion) and the next expand asks again, up to 10 attempts.",
+      },
+      {
+        name: "draggable",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Move nodes by dragging (antd `draggable`, gh#1093). Dropping on a row's upper / lower quarter lands in the gap before / after it, the middle files it inside. The tree never edits `treeData` — it reports the move via `onDrop` and you persist it. Keyboard equivalent (WCAG 2.5.7): Alt+↑ / Alt+↓ move past the previous / next sibling, Alt+← outdents (after the parent), Alt+→ indents (into the previous sibling, as its last child); every move is announced in a live region and described on the tree. A node never drops into itself or its own subtree.",
+      },
+      {
+        name: "allowDrag",
+        type: "(node: TreeNodeProp) => boolean",
+        description:
+          "Per-node drag gate (antd `draggable.nodeDraggable`). Disabled nodes never drag.",
+      },
+      {
+        name: "allowDrop",
+        type: "(info: { dragNode: TreeNodeProp; dropNode: TreeNodeProp; dropPosition: -1 | 0 | 1 }) => boolean",
+        description:
+          "Per-target drop gate (antd `allowDrop`), asked for pointer AND keyboard moves. Use it for your own rules (max depth, no leaf parents); the self/subtree cycle is already refused.",
+      },
+      {
+        name: "onDrop",
+        type: "(info: { dragNode: TreeNodeProp; node: TreeNodeProp; dropPosition: -1 | 0 | 1; dropToGap: boolean }) => void",
+        description:
+          "A committed move (antd `onDrop`). `dropPosition` is RELATIVE to `node` — -1 before, 0 inside, 1 after (antd reports an absolute index that every antd demo converts back to this). `dropToGap` is true for before/after (sibling of `node`), false for inside (child of `node`). Update `treeData` here.",
       },
       {
         name: "titleRender",
