@@ -351,6 +351,18 @@
   --thumbnail-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --thumbnail-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
 
+  /* TextDiff (gh#1096) — the grounds under a removed and an added run. The INK stays the text
+     colour: the mark that carries the meaning is the strike-through / underline plus a spoken
+     label, so the tint only has to separate the run from its neighbours. The grounds read the
+     status surface role (gh#866) and fall back to the tone at these alphas. */
+  --text-diff-removed-background-alpha: 0.12;
+  --text-diff-added-background-alpha: 0.16;
+  /* The underline/strike weight — the resting hairline, so it survives forced-colors as ink. */
+  --text-diff-mark-line-width: var(--stroke-hairline);
+  /* Space between the before and after columns in split mode, and around a folded run. */
+  --text-diff-space-gap: var(--space-3);
+  --text-diff-space-inset: var(--space-2);
+
   /* Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme.
      ONE HUE down the whole progress column (gh#731): done, current and the travelled line all
      default to hsl(var(--primary)), the way Steps paints `finish` and `process`; current is told

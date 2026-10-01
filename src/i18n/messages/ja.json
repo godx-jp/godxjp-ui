@@ -450,6 +450,15 @@
       "copy": "コードをコピー",
       "copied": "コピーしました",
       "copiedAnnounce": "コードをクリップボードにコピーしました"
+    },
+    "textDiff": {
+      "before": "変更前",
+      "after": "変更後",
+      "removedStart": "［削除: ",
+      "removedEnd": "］",
+      "addedStart": "［追加: ",
+      "addedEnd": "］",
+      "showUnchanged": "変更のない{count}行を表示"
     }
   },
   "navigation": {

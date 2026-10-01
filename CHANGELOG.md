@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ TextDiff — what changed between two versions of a text (#1096)
+
+MINOR. godx-task showed a translator how an original changed since their translation by composing
+`Text delete` / `Text mark` over its own LCS. `TextDiff` (from `@godxjp/ui/data-display`) takes
+`before` / `after` and renders removed runs in `<del>` and added runs in `<ins>`, each struck
+through or underlined AND wrapped in a localized visually hidden start/end label, so the change is
+never carried by colour alone. The grounds read the status surface role (`--surface-destructive` /
+`--surface-success`, gh#866) and fall back to `--text-diff-{removed,added}-background-alpha`.
+
+- `mode`: `inline` (default, GitHub's unified view) | `split` (before | after, hunks aligned, column
+  headings `beforeLabel` / `afterLabel`, localized by default).
+- `granularity`: `auto` (default — `Intl.Segmenter` words, CJK runs per character) | `word` |
+  `char` (grapheme clusters) | `line`. `lang` is set on the element and used for segmentation.
+- `collapseUnchanged` (default `true`) + `contextLines` (default `2`) fold long unchanged runs of
+  lines behind a "show N unchanged lines" button.
+- `maxCells` caps the LCS cost; past it the changed middle is one removal plus one addition.
+- `diffText(before, after, { granularity, lang, maxCells })` and `tokenizeText` are exported for
+  callers that need the runs themselves.
+- Test: `text-diff-1096.test.tsx` (CJK per character, words, graphemes, lines, cost cap, del/ins
+  with spoken labels, split sides, folding and reveal). Fails on 31.15.0, which has no `TextDiff`.
+
 ## [31.15.0] - 2026-10-01
 
 ### ✨ Timeline `status: "log"` — a neutral activity-log entry (#1092)

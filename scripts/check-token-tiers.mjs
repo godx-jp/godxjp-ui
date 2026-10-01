@@ -148,6 +148,7 @@ const componentPrefixes = {
     "scroll-area",
     "code-block",
     "prose",
+    "text-diff",
   ],
   // `record-picker` (gh#932) — RecordPicker: một control có Dialog riêng, và token duy nhất của
   // nó là chiều cao tối đa của danh sách bên trong Dialog đó.

@@ -17760,6 +17760,105 @@
         }
       ]
     },
+    "TextDiff": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "after",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "afterLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "before",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "beforeLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "collapseUnchanged",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "contextLines",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "granularity",
+          "origin": "owned",
+          "required": false,
+          "type": "\"line\" | \"auto\" | \"word\" | \"char\" | undefined",
+          "values": ["line", "auto", "word", "char"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "lang",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "maxCells",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "mode",
+          "origin": "owned",
+          "required": false,
+          "type": "\"inline\" | \"split\" | undefined",
+          "values": ["inline", "split"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
     "ThoughtChain": {
       "group": "data-display",
       "props": [
@@ -20884,6 +20983,12 @@
       "signature": "(date: Date, matchers: import(\"react-day-picker\").Matcher | import(\"react-day-picker\").Matcher[], dateLib?: import(\"react-day-picker\").DateLib): boolean",
       "declaredIn": ["node_modules/react-day-picker/dist/esm/utils/dateMatchModifiers.d.ts"]
     },
+    "diffText": {
+      "kind": "function",
+      "subpaths": ["./data-display"],
+      "signature": "(before: string, after: string, options?: { granularity?: import(\"./text-diff\").TextDiffGranularity; lang?: string; maxCells?: number; }): import(\"./text-diff\").TextDiffSegment[]",
+      "declaredIn": ["src/components/data-display/text-diff.tsx"]
+    },
     "flattenItemPages": {
       "kind": "function",
       "subpaths": ["./query"],
@@ -20955,6 +21060,12 @@
       "subpaths": [".", "./admin", "./feedback"],
       "signature": "(message: import(\"react\").ReactNode | (() => React.ReactNode), data?: import(\"sonner\").ExternalToast): string | number",
       "declaredIn": ["node_modules/sonner/dist/index.d.mts"]
+    },
+    "tokenizeText": {
+      "kind": "function",
+      "subpaths": ["./data-display"],
+      "signature": "(text: string, granularity?: import(\"./text-diff\").TextDiffGranularity, lang?: string): string[]",
+      "declaredIn": ["src/components/data-display/text-diff.tsx"]
     },
     "UPLOAD_LIST_IGNORE": {
       "kind": "value",

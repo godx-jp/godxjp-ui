@@ -3144,6 +3144,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
+    "name": "--text-diff-removed-background-alpha",
+    "value": "0.12",
+    "description": "TextDiff (gh#1096) — the grounds under a removed and an added run. The INK stays the text colour: the mark that carries the meaning is the strike-through / underline plus a spoken label, so the tint only has to separate the run from its neighbours. The grounds read the status surface role (gh#866) and fall back to the tone at these alphas."
+  },
+  {
+    "name": "--text-diff-added-background-alpha",
+    "value": "0.16",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--text-diff-mark-line-width",
+    "value": "var(--stroke-hairline)",
+    "description": "The underline/strike weight — the resting hairline, so it survives forced-colors as ink."
+  },
+  {
+    "name": "--text-diff-space-gap",
+    "value": "var(--space-3)",
+    "description": "Space between the before and after columns in split mode, and around a folded run."
+  },
+  {
+    "name": "--text-diff-space-inset",
+    "value": "var(--space-2)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--timeline-dot-done-background",
     "value": "initial",
     "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. ONE HUE down the whole progress column (gh#731): done, current and the travelled line all default to hsl(var(--primary)), the way Steps paints `finish` and `process`; current is told apart by its ring, not by a second role. To restore the pre-27.9 green/violet pairing, set the done dot's FILL and its INK together — the two roles have opposite ink polarity, so the fill alone leaves a near-white glyph on 若竹 green at 2.19:1 (gh#643): --timeline-dot-done-background: hsl(var(--success)); --timeline-dot-done-foreground: hsl(var(--success-foreground));"

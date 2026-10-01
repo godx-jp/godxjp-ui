@@ -1053,6 +1053,11 @@
         "dialog-layout.css"
       ]
     },
+    "TextDiff": {
+      "layers": [
+        "control.css"
+      ]
+    },
     "Textarea": {
       "layers": [
         "control.css"

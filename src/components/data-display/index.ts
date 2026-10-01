@@ -60,6 +60,13 @@ export { EmptyState } from "./empty-state";
 export { Progress } from "./progress";
 export { CodeBlock } from "./code-block";
 export type { CodeBlockProp, CodeBlockProps } from "./code-block";
+export { TextDiff, diffText, tokenizeText } from "./text-diff";
+export type {
+  TextDiffGranularity,
+  TextDiffProp,
+  TextDiffProps,
+  TextDiffSegment,
+} from "./text-diff";
 export { Prose } from "./prose";
 export type { ProseProp, ProseProps } from "./prose";
 export type { ProgressProps, ProgressSegment, ProgressTone } from "./progress";
