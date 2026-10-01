@@ -160,6 +160,27 @@ describe("Tree draggable — pointer (gh#1093)", () => {
     expect(onDrop).toHaveBeenCalledTimes(1);
   });
 
+  it("a drop in the same tick as dragstart still lands (the dragged node is not read from state)", () => {
+    const onDrop = vi.fn();
+    render(<Tree aria-label="Docs" treeData={TREE} draggable onDrop={onDrop} />);
+    const target = item("FAQ");
+    placeRow(target, 0);
+    const source = item("Notes");
+    const transfer = dataTransfer();
+    // One batch: no render between dragstart and drop.
+    act(() => {
+      source.dispatchEvent(
+        Object.assign(new Event("dragstart", { bubbles: true }), { dataTransfer: transfer }),
+      );
+      const drop = Object.assign(new Event("drop", { bubbles: true, cancelable: true }), {
+        dataTransfer: transfer,
+      });
+      Object.defineProperty(drop, "clientY", { value: 2 });
+      target.dispatchEvent(drop);
+    });
+    expect(onDrop).toHaveBeenCalledTimes(1);
+  });
+
   it("a disabled tree never drags", () => {
     render(<Tree aria-label="Docs" treeData={TREE} draggable disabled />);
     expect(item("FAQ")).not.toHaveAttribute("draggable");

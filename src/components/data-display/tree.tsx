@@ -305,6 +305,10 @@ function TreeRoot({
         })
       : true;
   };
+  /* The dragged node lives in a REF; state only paints it. A drop can arrive before the render
+   * that commits dragstart's state (a fast or synthetic drag), and a handler reading state would
+   * see `null` and silently drop the move. */
+  const dragRef = React.useRef<string | null>(null);
   const [dragValue, setDragValue] = React.useState<string | null>(null);
   const [dropTarget, setDropTarget] = React.useState<{
     value: string;
@@ -342,6 +346,7 @@ function TreeRoot({
     return 0;
   };
   const clearDrag = () => {
+    dragRef.current = null;
     setDragValue(null);
     setDropTarget(null);
   };
@@ -737,6 +742,7 @@ function TreeRoot({
                 event.dataTransfer.effectAllowed = "move";
                 // Firefox starts no drag without data.
                 event.dataTransfer.setData("text/plain", node.value);
+                dragRef.current = node.value;
                 setDragValue(node.value);
               }
             : undefined
@@ -744,7 +750,8 @@ function TreeRoot({
         onDragOver={
           isDraggable
             ? (event) => {
-                const dragged = dragValue === null ? undefined : nodesByValue.get(dragValue);
+                const dragged =
+                  dragRef.current === null ? undefined : nodesByValue.get(dragRef.current);
                 if (!dragged) return;
                 const position = dropPositionAt(event);
                 if (!canDrop(dragged, node, position)) {
@@ -772,7 +779,8 @@ function TreeRoot({
           isDraggable
             ? (event) => {
                 event.preventDefault();
-                const dragged = dragValue === null ? undefined : nodesByValue.get(dragValue);
+                const dragged =
+                  dragRef.current === null ? undefined : nodesByValue.get(dragRef.current);
                 const position = dropPositionAt(event);
                 if (dragged && canDrop(dragged, node, position)) {
                   commitDrop(dragged, node, position);
