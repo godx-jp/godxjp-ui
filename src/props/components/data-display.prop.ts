@@ -797,6 +797,32 @@ export type TreeNodeProp = TreeOptionProp & {
  * `checkedValues`/`defaultCheckedValues`/`onCheckedValuesChange`.
  * @see docs/roadmap/tree-components.md §3
  */
+/**
+ * Where a drop lands relative to `node` (gh#1093): `-1` in the gap BEFORE it, `0` INSIDE it (the
+ * dragged node becomes its child), `1` in the gap AFTER it. antd's `onDrop` reports an absolute
+ * index and every antd demo subtracts the node's position back out to get exactly this number, so
+ * the relative form is what a consumer needs.
+ */
+export type TreeDropPositionProp = -1 | 0 | 1;
+
+/** `allowDrop` argument (antd `allowDrop({ dragNode, dropNode, dropPosition })`). */
+export type TreeAllowDropInfoProp = {
+  dragNode: TreeNodeProp;
+  dropNode: TreeNodeProp;
+  dropPosition: TreeDropPositionProp;
+};
+
+/** `onDrop` argument (antd `onDrop({ dragNode, node, dropPosition, dropToGap })`). */
+export type TreeDropInfoProp = {
+  /** The node being moved. */
+  dragNode: TreeNodeProp;
+  /** The node it was dropped on or beside. */
+  node: TreeNodeProp;
+  dropPosition: TreeDropPositionProp;
+  /** `true` when it lands in a gap (becomes a SIBLING of `node`), `false` when it lands inside. */
+  dropToGap: boolean;
+};
+
 export type TreeProp = {
   /** The hierarchy (antd `treeData`). Use `fieldNames` to remap keys off an API response. */
   treeData: readonly TreeNodeProp[];
@@ -867,6 +893,21 @@ export type TreeProp = {
    * capability; see docs/DESIGN-AUTHORITY.md.
    */
   divided?: boolean;
+  /**
+   * Let the reader move nodes by dragging (antd `draggable`, gh#1093): drop on the upper or lower
+   * quarter of a row to land in the gap before / after it, on the middle to file it inside. The
+   * tree never mutates `treeData` — it reports the move through `onDrop` and the consumer persists
+   * it. Keyboard equivalent (WCAG 2.5.7): Alt+↑ / Alt+↓ move past the previous / next sibling,
+   * Alt+← outdents (after its parent), Alt+→ indents (into the previous sibling); each move is
+   * announced through a live region. A node is never dropped into itself or its own subtree.
+   */
+  draggable?: boolean;
+  /** Per-node drag gate (antd `draggable.nodeDraggable`). Disabled nodes never drag. */
+  allowDrag?: (node: TreeNodeProp) => boolean;
+  /** Per-target drop gate (antd `allowDrop`). Asked for pointer AND keyboard moves. */
+  allowDrop?: (info: TreeAllowDropInfoProp) => boolean;
+  /** A move the reader committed (antd `onDrop`). Update `treeData` here. */
+  onDrop?: (info: TreeDropInfoProp) => void;
   /** Draw each node's `icon` (antd `showIcon`). `variant="directory"` supplies folder/file glyphs. */
   showIcon?: boolean;
   /** `directory` is antd's `<DirectoryTree>`: folder/file glyphs and a full-row selected band. */
@@ -879,7 +920,8 @@ export type TreeProp = {
   id?: IdProp;
   /** Accessible name of the `role="tree"` container. Required unless `aria-labelledby` is given. */
   "aria-label"?: string;
-  "aria-labelledby"?: string;
+  "aria-labelledby"?: string; /** Extra description ids; a `draggable` tree appends its own keyboard-move hint. */
+  "aria-describedby"?: string;
 };
 
 /**

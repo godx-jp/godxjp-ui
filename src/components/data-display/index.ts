@@ -118,7 +118,14 @@ export type {
   ChatMessageProp,
 } from "./chat-bubble";
 export { Tree } from "./tree";
-export type { TreeNodeProp, TreeProp, TreeProps } from "./tree";
+export type {
+  TreeAllowDropInfoProp,
+  TreeDropInfoProp,
+  TreeDropPositionProp,
+  TreeNodeProp,
+  TreeProp,
+  TreeProps,
+} from "./tree";
 export { OrgChart } from "./org-chart";
 export type {
   OrgChartNodeProp,

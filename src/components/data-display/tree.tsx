@@ -15,9 +15,16 @@ import {
   reactNodeText,
   type NormalizedTreeOption,
 } from "../../lib/tree";
-import type { TreeNodeProp, TreeProp } from "../../props/components/data-display.prop";
+import type {
+  TreeDropPositionProp,
+  TreeNodeProp,
+  TreeProp,
+} from "../../props/components/data-display.prop";
 
 export type {
+  TreeAllowDropInfoProp,
+  TreeDropInfoProp,
+  TreeDropPositionProp,
   TreeNodeProp,
   TreeProp,
   TreeProp as TreeProps,
@@ -124,6 +131,10 @@ function TreeRoot({
   showLine = false,
   showIcon = false,
   divided = false,
+  draggable = false,
+  allowDrag,
+  allowDrop,
+  onDrop,
   variant = "default",
   size = "md",
   disabled = false,
@@ -135,6 +146,7 @@ function TreeRoot({
   const { t } = useTranslation();
   const reactId = React.useId();
   const treeId = id ?? `${reactId}-tree`;
+  const dragHintId = `${treeId}-drag-hint`;
 
   const options = React.useMemo(
     () => normalizeTreeOptions(treeData as unknown as Record<string, unknown>[], fieldNames),
@@ -257,6 +269,119 @@ function TreeRoot({
       if (node) requestLoadRef.current(node);
     }
   }, [expandedSet, loadData, nodesByValue, requestLoadRef]);
+
+  // ── drag-and-drop (antd draggable / allowDrop / onDrop, gh#1093) ──────────────────────────
+  /* The tree REPORTS a move and never performs it: `treeData` belongs to the consumer, who
+   * persists the move and hands the new hierarchy back, exactly as antd's demos do. */
+  const parentOf = React.useMemo(() => {
+    const map = new Map<string, NormalizedTreeOption | null>();
+    const walk = (list: readonly NormalizedTreeOption[], parent: NormalizedTreeOption | null) => {
+      for (const node of list) {
+        map.set(node.value, parent);
+        if (node.children?.length) walk(node.children, node);
+      }
+    };
+    walk(options, null);
+    return map;
+  }, [options]);
+  const isDraggable = draggable && !disabled;
+  const canDrag = (node: NormalizedTreeOption) =>
+    isDraggable && !node.disabled && (allowDrag ? allowDrag(node as TreeNodeProp) : true);
+  /** A node may never land inside itself or its own subtree — that would cut it off the tree. */
+  const canDrop = (
+    dragNode: NormalizedTreeOption,
+    dropNode: NormalizedTreeOption,
+    dropPosition: TreeDropPositionProp,
+  ) => {
+    for (let cursor: NormalizedTreeOption | null | undefined = dropNode; cursor;) {
+      if (cursor.value === dragNode.value) return false;
+      cursor = parentOf.get(cursor.value);
+    }
+    return allowDrop
+      ? allowDrop({
+          dragNode: dragNode as TreeNodeProp,
+          dropNode: dropNode as TreeNodeProp,
+          dropPosition,
+        })
+      : true;
+  };
+  const [dragValue, setDragValue] = React.useState<string | null>(null);
+  const [dropTarget, setDropTarget] = React.useState<{
+    value: string;
+    position: TreeDropPositionProp;
+  } | null>(null);
+  const [moveAnnouncement, setMoveAnnouncement] = React.useState("");
+  const commitDrop = (
+    dragNode: NormalizedTreeOption,
+    dropNode: NormalizedTreeOption,
+    dropPosition: TreeDropPositionProp,
+  ) => {
+    onDrop?.({
+      dragNode: dragNode as TreeNodeProp,
+      node: dropNode as TreeNodeProp,
+      dropPosition,
+      dropToGap: dropPosition !== 0,
+    });
+    const key =
+      dropPosition === -1
+        ? "dataDisplay.tree.movedBefore"
+        : dropPosition === 1
+          ? "dataDisplay.tree.movedAfter"
+          : "dataDisplay.tree.movedInside";
+    setMoveAnnouncement(
+      t(key, { node: reactNodeText(dragNode.label), target: reactNodeText(dropNode.label) }),
+    );
+  };
+  /** Upper quarter → before, lower quarter → after, the middle → inside (rc-tree's offsets). */
+  const dropPositionAt = (event: React.DragEvent<HTMLDivElement>): TreeDropPositionProp => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    if (rect.height <= 0) return 0;
+    const offset = (event.clientY - rect.top) / rect.height;
+    if (offset < 0.25) return -1;
+    if (offset > 0.75) return 1;
+    return 0;
+  };
+  const clearDrag = () => {
+    setDragValue(null);
+    setDropTarget(null);
+  };
+  /** The keyboard equivalent of a drag (WCAG 2.5.7): Alt+arrows, resolved to the same drop info. */
+  const keyboardMove = (node: NormalizedTreeOption, direction: "up" | "down" | "out" | "in") => {
+    const parent = parentOf.get(node.value) ?? null;
+    const siblings = parent ? (parent.children ?? []) : options;
+    const position = siblings.findIndex((entry) => entry.value === node.value);
+    let target: NormalizedTreeOption | null | undefined;
+    let dropPosition: TreeDropPositionProp;
+    if (direction === "up") {
+      target = siblings[position - 1];
+      dropPosition = -1;
+    } else if (direction === "down") {
+      target = siblings[position + 1];
+      dropPosition = 1;
+    } else if (direction === "out") {
+      target = parent;
+      dropPosition = 1;
+    } else {
+      const previous = siblings[position - 1];
+      const lastChild = previous?.children?.[previous.children.length - 1];
+      // Indent = become the LAST child of the previous sibling: after its last child, or inside
+      // it when it has none yet.
+      target = lastChild ?? previous;
+      dropPosition = lastChild ? 1 : 0;
+    }
+    if (!target || !canDrag(node) || !canDrop(node, target, dropPosition)) {
+      setMoveAnnouncement(t("dataDisplay.tree.moveRefused", { node: reactNodeText(node.label) }));
+      return;
+    }
+    if (direction === "in") {
+      const host = dropPosition === 0 ? target : siblings[position - 1];
+      // Open the new parent so the moved node (and focus) stays visible.
+      if (host && !expandedSet.has(host.value)) commitExpanded([...expanded, host.value]);
+    }
+    commitDrop(node, target, dropPosition);
+    setActiveValue(node.value);
+    pendingFocus.current = node.value;
+  };
 
   // The keyboard's world: every node the user can actually see, in reading order.
   const visible = flattenVisibleTree(options, expandedSet);
@@ -429,6 +554,27 @@ function TreeRoot({
     const inward = rtl ? "ArrowLeft" : "ArrowRight";
     const outward = rtl ? "ArrowRight" : "ArrowLeft";
 
+    if (
+      isDraggable &&
+      event.altKey &&
+      (event.key === "ArrowUp" ||
+        event.key === "ArrowDown" ||
+        event.key === inward ||
+        event.key === outward)
+    ) {
+      event.preventDefault();
+      keyboardMove(
+        node,
+        event.key === "ArrowUp"
+          ? "up"
+          : event.key === "ArrowDown"
+            ? "down"
+            : event.key === inward
+              ? "in"
+              : "out",
+      );
+      return;
+    }
     if (event.key === "ArrowDown") {
       event.preventDefault();
       moveTo(index + 1);
@@ -505,6 +651,8 @@ function TreeRoot({
     const checkState = checkableProp ? checkStateOf(node) : "unchecked";
     const nodeDisabled = disabled || Boolean(node.disabled);
     const labelId = `${treeId}-${node.value}-label`;
+    const nodeDraggable = canDrag(node);
+    const dropHere = dropTarget?.value === node.value ? dropTarget.position : undefined;
     const glyph =
       node.icon ??
       (variant === "directory" ? (
@@ -568,6 +716,72 @@ function TreeRoot({
         data-disabled={nodeDisabled ? "" : undefined}
         // antd's `filter-node` class (rc-tree TreeNode), in this package's data-attribute form.
         data-filter-node={isFilterMatch ? "true" : undefined}
+        draggable={nodeDraggable || undefined}
+        data-dragging={dragValue === node.value ? "true" : undefined}
+        data-drop-position={
+          dropHere === undefined
+            ? undefined
+            : dropHere === -1
+              ? "before"
+              : dropHere === 1
+                ? "after"
+                : "inside"
+        }
+        onDragStart={
+          isDraggable
+            ? (event) => {
+                if (!nodeDraggable) {
+                  event.preventDefault();
+                  return;
+                }
+                event.dataTransfer.effectAllowed = "move";
+                // Firefox starts no drag without data.
+                event.dataTransfer.setData("text/plain", node.value);
+                setDragValue(node.value);
+              }
+            : undefined
+        }
+        onDragOver={
+          isDraggable
+            ? (event) => {
+                const dragged = dragValue === null ? undefined : nodesByValue.get(dragValue);
+                if (!dragged) return;
+                const position = dropPositionAt(event);
+                if (!canDrop(dragged, node, position)) {
+                  if (dropTarget) setDropTarget(null);
+                  return;
+                }
+                // Cancelling dragover is what tells the browser this row accepts the drop.
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "move";
+                if (dropTarget?.value !== node.value || dropTarget.position !== position) {
+                  setDropTarget({ value: node.value, position });
+                }
+              }
+            : undefined
+        }
+        onDragLeave={
+          isDraggable
+            ? (event) => {
+                if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+                if (dropTarget?.value === node.value) setDropTarget(null);
+              }
+            : undefined
+        }
+        onDrop={
+          isDraggable
+            ? (event) => {
+                event.preventDefault();
+                const dragged = dragValue === null ? undefined : nodesByValue.get(dragValue);
+                const position = dropPositionAt(event);
+                if (dragged && canDrop(dragged, node, position)) {
+                  commitDrop(dragged, node, position);
+                }
+                clearDrag();
+              }
+            : undefined
+        }
+        onDragEnd={isDraggable ? clearDrag : undefined}
         className="ui-tree-node ui-focus-ring"
         style={{ "--tree-node-level": depth } as React.CSSProperties}
       >
@@ -766,6 +980,11 @@ function TreeRoot({
     <>
       <div
         {...ariaProps}
+        aria-describedby={
+          isDraggable
+            ? [ariaProps["aria-describedby"], dragHintId].filter(Boolean).join(" ")
+            : ariaProps["aria-describedby"]
+        }
         ref={mergeRefs(forwardedRef, treeRef)}
         id={treeId}
         role="tree"
@@ -826,6 +1045,18 @@ function TreeRoot({
       {/* OUTSIDE the tree, deliberately. `role="tree"` may own only `treeitem` and `group`, so a
           notice parked inside it is a disallowed child — axe says so, and a screen reader would
           be walking a tree whose one "node" is a paragraph. */}
+      {/* The keyboard path of a draggable tree is described, and every move is spoken —
+          outside the tree for the same reason as the empty notice below. */}
+      {isDraggable ? (
+        <>
+          <span id={dragHintId} className="sr-only">
+            {t("dataDisplay.tree.dragHint")}
+          </span>
+          <span role="status" aria-live="polite" className="sr-only">
+            {moveAnnouncement}
+          </span>
+        </>
+      ) : null}
       {isEmpty ? (
         <p role="status" className="ui-tree-empty">
           {t("dataDisplay.tree.empty")}

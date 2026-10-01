@@ -69,6 +69,13 @@
    * Documented default: --tree-node-filter-foreground = hsl(var(--text-brand, var(--primary))). */
   --tree-node-filter-foreground: initial;
 
+  /* Drop indicator of a `draggable` tree (gh#1093): the gap line / inside frame. A role mirror,
+   * so `initial` with the role at the call site.
+   * Documented defaults: --tree-drop-indicator-color = hsl(var(--primary));
+   * --tree-drop-indicator-width = var(--stroke-md). */
+  --tree-drop-indicator-color: initial;
+  --tree-drop-indicator-width: initial;
+
   /* Width of the indeterminate bar shown while `loadData` resolves a branch. A fraction, not a
      length: it has to read as "part of a row" at every row width and every density. */
   --tree-loading-bar-inline-size: 40%;

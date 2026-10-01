@@ -19719,6 +19719,30 @@
       "group": "data-display",
       "props": [
         {
+          "name": "allowDrag",
+          "origin": "owned",
+          "required": false,
+          "type": "((node: TreeNodeProp) => boolean) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "allowDrop",
+          "origin": "owned",
+          "required": false,
+          "type": "((info: TreeAllowDropInfoProp) => boolean) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "aria-describedby",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "aria-label",
           "origin": "owned",
           "required": false,
@@ -19815,6 +19839,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "draggable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "expandedValues",
           "origin": "owned",
           "required": false,
@@ -19875,6 +19907,14 @@
           "origin": "owned",
           "required": false,
           "type": "((values: string[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "onDrop",
+          "origin": "owned",
+          "required": false,
+          "type": "((info: TreeDropInfoProp) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },

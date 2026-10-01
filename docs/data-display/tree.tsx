@@ -10,6 +10,7 @@ import {
   EmptyState,
   ScrollArea,
   Tree,
+  type TreeDropInfoProp,
   type TreeNodeProp,
 } from "@godxjp/ui/data-display";
 import { SearchInput } from "@godxjp/ui/data-entry";
@@ -246,6 +247,40 @@ function labelSuiteTree(
   });
 }
 
+// ── card · draggable (gh#1093) ─────────────────────────────────────────────────────────────
+const movablePagesSeed: TreeNodeProp[] = [
+  {
+    value: "guide",
+    label: "利用ガイド",
+    children: [
+      { value: "guide/start", label: "はじめに" },
+      { value: "guide/setup", label: "初期設定" },
+    ],
+  },
+  { value: "faq", label: "よくある質問" },
+  { value: "notes", label: "リリースノート" },
+];
+
+/** What a consumer does in `onDrop`: take the node out, put it back where the drop says. */
+function moveNode(data: TreeNodeProp[], info: TreeDropInfoProp): TreeNodeProp[] {
+  let moved: TreeNodeProp | undefined;
+  const without = (list: TreeNodeProp[]): TreeNodeProp[] =>
+    list
+      .filter((node) => (node.value === info.dragNode.value ? ((moved = node), false) : true))
+      .map((node) => (node.children ? { ...node, children: without(node.children) } : node));
+  const place = (list: TreeNodeProp[]): TreeNodeProp[] =>
+    list.flatMap((node) => {
+      if (node.value !== info.node.value) {
+        return node.children ? [{ ...node, children: place(node.children) }] : [node];
+      }
+      if (info.dropPosition === 0)
+        return [{ ...node, children: [...(node.children ?? []), moved!] }];
+      return info.dropPosition === -1 ? [moved!, node] : [node, moved!];
+    });
+  const rest = without(data);
+  return moved ? place(rest) : data;
+}
+
 export default function Demo() {
   const { t } = useTranslation();
   // Card 1 — checks are controlled so the readout beside the tree can never disagree with it.
@@ -253,6 +288,8 @@ export default function Demo() {
   // Card 2 — selection is controlled and drives the detail pane.
   const [openFile, setOpenFile] = React.useState<string | undefined>("src/components/tree.tsx");
   // The page index — the tree IS the navigation, so selection is what the reading pane follows.
+  const [movablePages, setMovablePages] = React.useState(movablePagesSeed);
+  const [lastMove, setLastMove] = React.useState("");
   const [openPage, setOpenPage] = React.useState<string | undefined>("handbook/security/passwords");
   // Card 3 — async children land in state, exactly as a real fetch would.
   const [departments, setDepartments] = React.useState<Department[]>(initialDepartments);
@@ -454,6 +491,43 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>
+              ドラッグで並べ替え・親を変更（draggable · allowDrop · onDrop）
+            </CardTitle>
+            <CardDescription>
+              行の上 1/4 に落とすと前へ、下 1/4 で後ろへ、中央でその中（子）へ移動します。Tree は
+              treeData を書き換えず、onDrop で移動を知らせるだけです。キーボードでは Alt+↑ / Alt+↓
+              で兄弟の前後へ、Alt+← で親の後ろへ（階層を上げる）、Alt+→ で直前の兄弟の中へ
+              （階層を下げる）。移動は毎回ライブリージョンで読み上げられます。ここでは allowDrop で
+              「リリースノート」の中へは落とせないようにしています。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <Tree
+                aria-label="並べ替えできるページ一覧"
+                treeData={movablePages}
+                defaultExpandAll
+                draggable
+                allowDrop={({ dropNode, dropPosition }) =>
+                  !(dropNode.value === "notes" && dropPosition === 0)
+                }
+                onDrop={(info) => {
+                  setMovablePages((current) => moveNode(current, info));
+                  setLastMove(
+                    `${String(info.dragNode.label)} → ${String(info.node.label)}（dropPosition ${info.dropPosition}, dropToGap ${info.dropToGap}）`,
+                  );
+                }}
+              />
+              <Text size="sm" tone="muted">
+                最後の移動: {lastMove || "なし"}
+              </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>組織ツリー（loadData · fieldNames · titleRender）</CardTitle>
             <CardDescription>
               API のキーが id / name / units でも fieldNames で読み替えるだけ。子を持たない枝は
@@ -632,6 +706,10 @@ export default function Demo() {
                 },
                 { label: "*", children: "同じ階層の兄弟をすべて展開" },
                 { label: "文字キー", children: "先頭一致で次のノードへジャンプ（type-ahead）" },
+                {
+                  label: "Alt + ↑ / ↓ / ← / →",
+                  children: "draggable のとき：兄弟の前後へ／階層を上げる／階層を下げる",
+                },
               ]}
             />
           </CardContent>

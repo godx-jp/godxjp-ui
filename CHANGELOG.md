@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.15.0] - 2026-10-01
+
+### ✨ Timeline `status: "log"` — a neutral activity-log entry (#1092)
+
+MINOR. An issue history drawn with `Timeline` had two wrong choices: `pending` gave the quiet
+neutral dot but read 「Upcoming:」 to a screen reader for things that already happened, and `done`
+gave the right words but a primary-filled dot and rail. `status: "log"` is antd's gray item: the
+neutral dot and hairline rail `pending` draws, a plain pip unless the item brings its own `icon`,
+not `aria-current`, and NO sr-only status prefix.
+
+- Test: `timeline-log-1092.test.tsx` (no prefix in en/ja, neutral rail, pip vs icon, the neutral CSS
+  rule). Fails on 31.14.0.
+
+### ✨ Tree drag-and-drop: `draggable`, `allowDrag`, `allowDrop`, `onDrop` (#1093)
+
+MINOR. antd `Tree` parity for reordering and reparenting. With `draggable`, a row dropped on the
+upper / lower quarter of another lands in the gap before / after it, on the middle inside it; a
+2px line (gap) or an inset frame (inside) shows where, in `--tree-drop-indicator-color` /
+`--tree-drop-indicator-width`. `onDrop({ dragNode, node, dropPosition, dropToGap })` reports the
+move with `dropPosition` RELATIVE to `node` (-1 / 0 / 1 — the number antd demos compute from its
+absolute index); the tree never edits `treeData`. A node is never dropped into itself or its own
+subtree, and `allowDrop` / `allowDrag` add the consumer's own rules.
+
+Keyboard equivalent (WCAG 2.5.7): Alt+↑ / Alt+↓ move past the previous / next sibling, Alt+←
+outdents (after the parent), Alt+→ indents (last child of the previous sibling, opening it). The
+tree describes these keys, keeps focus on the moved node, and announces every move or refusal in a
+live region (en / ja / vi).
+
+- New types: `TreeDropInfoProp`, `TreeAllowDropInfoProp`, `TreeDropPositionProp`.
+- MCP `get_component Tree` lists the four props; docs frame has a draggable page-list card.
+- Tests: `tree-drag-1093.test.tsx` (pointer quarters, indicator attributes, cycle refusal,
+  `allowDrop` / `allowDrag`, every Alt+arrow move, focus, live region) and a Chromium case in
+  `tree-drag-browser-1093.test.tsx` (real pointer drag, painted indicator). Fail on 31.14.0.
+
 ## [31.14.0] - 2026-09-30
 
 ### ✨ Image: `width` / `height` size the frame, `size` / `fit` / `caption` for thumbnails

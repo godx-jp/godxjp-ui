@@ -357,7 +357,12 @@
       "loading": "子ノードを読み込み中…",
       "empty": "表示する項目がありません",
       "selected": "選択中",
-      "filterMatch": "フィルターに一致"
+      "filterMatch": "フィルターに一致",
+      "dragHint": "Alt キーと矢印キーでフォーカス中の項目を移動します。上下で兄弟の前後へ、左で階層を上げ、右で階層を下げます。",
+      "movedBefore": "{node} を {target} の前に移動しました",
+      "movedAfter": "{node} を {target} の後に移動しました",
+      "movedInside": "{node} を {target} の中に移動しました",
+      "moveRefused": "{node} はそこへ移動できません"
     },
     "thoughtChain": {
       "label": "思考の手順",

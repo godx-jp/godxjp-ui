@@ -364,7 +364,12 @@
       "loading": "Loading child nodes…",
       "empty": "Nothing to show",
       "selected": "Selected",
-      "filterMatch": "Matches the filter"
+      "filterMatch": "Matches the filter",
+      "dragHint": "Alt plus arrow keys move the focused item: up and down past a sibling, left to outdent, right to indent.",
+      "movedBefore": "{node} moved before {target}",
+      "movedAfter": "{node} moved after {target}",
+      "movedInside": "{node} moved into {target}",
+      "moveRefused": "{node} cannot move there"
     },
     "thoughtChain": {
       "label": "Reasoning steps",
