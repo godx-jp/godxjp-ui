@@ -251,15 +251,27 @@ function labelSuiteTree(
 const movablePagesSeed: TreeNodeProp[] = [
   {
     value: "guide",
-    label: "利用ガイド",
+    label: "guide",
     children: [
-      { value: "guide/start", label: "はじめに" },
-      { value: "guide/setup", label: "初期設定" },
+      { value: "guide/start", label: "start" },
+      { value: "guide/setup", label: "setup" },
     ],
   },
-  { value: "faq", label: "よくある質問" },
-  { value: "notes", label: "リリースノート" },
+  { value: "faq", label: "faq" },
+  { value: "notes", label: "notes" },
 ];
+
+/** The seed's labels are catalogue keys (`treeDocs.drag.pages.*`), read in the reader's locale. */
+function labelPages(
+  data: TreeNodeProp[],
+  t: (key: string) => string,
+): TreeNodeProp[] {
+  return data.map((node) => ({
+    ...node,
+    label: t(`treeDocs.drag.pages.${String(node.label)}`),
+    children: node.children ? labelPages(node.children, t) : undefined,
+  }));
+}
 
 /** What a consumer does in `onDrop`: take the node out, put it back where the drop says. */
 function moveNode(data: TreeNodeProp[], info: TreeDropInfoProp): TreeNodeProp[] {
@@ -491,22 +503,14 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>
-              ドラッグで並べ替え・親を変更（draggable · allowDrop · onDrop）
-            </CardTitle>
-            <CardDescription>
-              行の上 1/4 に落とすと前へ、下 1/4 で後ろへ、中央でその中（子）へ移動します。Tree は
-              treeData を書き換えず、onDrop で移動を知らせるだけです。キーボードでは Alt+↑ / Alt+↓
-              で兄弟の前後へ、Alt+← で親の後ろへ（階層を上げる）、Alt+→ で直前の兄弟の中へ
-              （階層を下げる）。移動は毎回ライブリージョンで読み上げられます。ここでは allowDrop で
-              「リリースノート」の中へは落とせないようにしています。
-            </CardDescription>
+            <CardTitle level={2}>{t("treeDocs.drag.title")}</CardTitle>
+            <CardDescription>{t("treeDocs.drag.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">
               <Tree
-                aria-label="並べ替えできるページ一覧"
-                treeData={movablePages}
+                aria-label={t("treeDocs.drag.treeLabel")}
+                treeData={labelPages(movablePages, t)}
                 defaultExpandAll
                 draggable
                 allowDrop={({ dropNode, dropPosition }) =>
@@ -520,7 +524,7 @@ export default function Demo() {
                 }}
               />
               <Text size="sm" tone="muted">
-                最後の移動: {lastMove || "なし"}
+                {t("treeDocs.drag.lastMove", { move: lastMove || t("treeDocs.drag.none") })}
               </Text>
             </Flex>
           </CardContent>
@@ -708,7 +712,7 @@ export default function Demo() {
                 { label: "文字キー", children: "先頭一致で次のノードへジャンプ（type-ahead）" },
                 {
                   label: "Alt + ↑ / ↓ / ← / →",
-                  children: "draggable のとき：兄弟の前後へ／階層を上げる／階層を下げる",
+                  children: t("treeDocs.drag.keys"),
                 },
               ]}
             />

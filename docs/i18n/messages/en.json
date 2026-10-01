@@ -1507,6 +1507,21 @@
         "one": "Load {count} more",
         "other": "Load {count} more"
       }
+    },
+    "drag": {
+      "title": "Drag to reorder or reparent (draggable · allowDrop · onDrop)",
+      "description": "Drop on the upper quarter of a row to land before it, the lower quarter after it, the middle inside it. Tree never edits treeData; onDrop reports the move. From the keyboard: Alt+↑ / Alt+↓ move past a sibling, Alt+← outdents, Alt+→ indents into the previous sibling. Every move is announced in a live region. Here allowDrop refuses dropping inside “Release notes”.",
+      "treeLabel": "Reorderable pages",
+      "lastMove": "Last move: {move}",
+      "none": "none",
+      "keys": "When draggable: past a sibling / outdent / indent",
+      "pages": {
+        "guide": "User guide",
+        "start": "Getting started",
+        "setup": "Setup",
+        "faq": "FAQ",
+        "notes": "Release notes"
+      }
     }
   },
   "progressDocs": {
@@ -1525,5 +1540,14 @@
     "home": "Home",
     "longSuite": "Q3 integration test · payment module · invoice re-issue scenarios",
     "longSection": "Acceptance criteria review for the release candidate of September 2026"
+  },
+  "timelineDocs": {
+    "log": {
+      "title": "status=\"log\" (activity log)",
+      "description": "For a record of things that already happened, such as an issue history, use status=\"log\": a neutral dot and hairline rail, and no “Completed:” / “Upcoming:” prefix read out (antd's gray item).",
+      "status": "Tanaka changed the status Open → In progress",
+      "comment": "Nguyen commented",
+      "assignee": "Tanaka changed the assignee"
+    }
   }
 }

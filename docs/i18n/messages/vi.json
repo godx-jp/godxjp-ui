@@ -1500,6 +1500,21 @@
       "loadMore": {
         "other": "Tải thêm {count} ca"
       }
+    },
+    "drag": {
+      "title": "Kéo để sắp xếp hoặc đổi cha (draggable · allowDrop · onDrop)",
+      "description": "Thả vào 1/4 trên của dòng để đặt trước nó, 1/4 dưới để đặt sau, phần giữa để đặt vào trong. Tree không sửa treeData; onDrop báo nước đi. Bàn phím: Alt+↑ / Alt+↓ qua mục ngang hàng, Alt+← lùi cấp, Alt+→ thụt vào mục liền trước. Mỗi lần di chuyển được đọc qua live region. Ở đây allowDrop không cho thả vào trong “Ghi chú phát hành”.",
+      "treeLabel": "Danh sách trang sắp xếp được",
+      "lastMove": "Lần di chuyển cuối: {move}",
+      "none": "chưa có",
+      "keys": "Khi draggable: qua mục ngang hàng / lùi cấp / thụt cấp",
+      "pages": {
+        "guide": "Hướng dẫn sử dụng",
+        "start": "Bắt đầu",
+        "setup": "Cài đặt",
+        "faq": "Câu hỏi thường gặp",
+        "notes": "Ghi chú phát hành"
+      }
     }
   },
   "progressDocs": {
@@ -1518,5 +1533,14 @@
     "home": "Trang chủ",
     "longSuite": "Kiểm thử tích hợp quý 3 · mô-đun thanh toán · kịch bản xuất lại hoá đơn",
     "longSection": "Rà soát tiêu chí nghiệm thu cho bản ứng viên tháng 9/2026"
+  },
+  "timelineDocs": {
+    "log": {
+      "title": "status=\"log\" (nhật ký hoạt động)",
+      "description": "Với bản ghi những việc đã xảy ra như lịch sử issue, dùng status=\"log\": chấm trung tính, đường mảnh, không đọc tiền tố “Hoàn thành:” / “Sắp tới:” (giống item gray của antd).",
+      "status": "Tanaka đổi trạng thái Mở → Đang xử lý",
+      "comment": "Nguyễn đã bình luận",
+      "assignee": "Tanaka đổi người phụ trách"
+    }
   }
 }
