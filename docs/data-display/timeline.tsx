@@ -32,19 +32,6 @@ const items: TimelineItem[] = [
   { title: "受注を登録", location: "営業 グエン", time: "09:30" },
 ];
 
-// An activity log (gh#1092): every row already happened, so none is "done" or "upcoming" —
-// `status: "log"` keeps the neutral dot and adds no screen-reader status prefix.
-const logItems: TimelineItem[] = [
-  {
-    title: "田中 がステータスを変更 未対応 → 処理中",
-    time: "10/01 08:12",
-    status: "log",
-    icon: ArrowRightLeft,
-  },
-  { title: "グエン がコメント", time: "10/01 09:30", status: "log", icon: MessageSquare },
-  { title: "田中 が担当者を変更", time: "10/01 10:05", status: "log" },
-];
-
 // Second shape: a title-only minimal item, and the current step at the END
 // (so the connector line is omitted on the highlighted item).
 const compactItems: TimelineItem[] = [
@@ -103,6 +90,23 @@ const richItems: TimelineItem[] = [
 
 export default function Demo() {
   const { t, locale } = useTranslation();
+  // An activity log (gh#1092): every row already happened, so none is "done" or "upcoming" —
+  // `status: "log"` keeps the neutral dot and adds no screen-reader status prefix.
+  const logItems: TimelineItem[] = [
+    {
+      title: t("timelineDocs.log.status"),
+      time: "10/01 08:12",
+      status: "log",
+      icon: ArrowRightLeft,
+    },
+    {
+      title: t("timelineDocs.log.comment"),
+      time: "10/01 09:30",
+      status: "log",
+      icon: MessageSquare,
+    },
+    { title: t("timelineDocs.log.assignee"), time: "10/01 10:05", status: "log" },
+  ];
   const dayLabel = (day: number) =>
     new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", timeZone: "UTC" }).format(
       Date.UTC(2026, 8, day),
@@ -155,12 +159,8 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>status=&quot;log&quot;（アクティビティログ）</CardTitle>
-            <CardDescription>
-              課題の履歴のように、すべて起きたことの記録には
-              status=&quot;log&quot;。中立の点と細い線で描き、
-              「完了:」「予定:」のような読み上げ接頭辞を付けません（antd の gray item と同じ）。
-            </CardDescription>
+            <CardTitle level={2}>{t("timelineDocs.log.title")}</CardTitle>
+            <CardDescription>{t("timelineDocs.log.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Timeline density="compact" items={logItems} />

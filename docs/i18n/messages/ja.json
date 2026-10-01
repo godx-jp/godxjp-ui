@@ -1500,6 +1500,21 @@
       "loadMore": {
         "other": "さらに {count} 件を読み込む"
       }
+    },
+    "drag": {
+      "title": "ドラッグで並べ替え・親を変更（draggable · allowDrop · onDrop）",
+      "description": "行の上 1/4 に落とすと前へ、下 1/4 で後ろへ、中央でその中（子）へ移動します。Tree は treeData を書き換えず、onDrop で移動を知らせるだけです。キーボードでは Alt+↑ / Alt+↓ で兄弟の前後へ、Alt+← で階層を上げ、Alt+→ で直前の兄弟の中へ。移動は毎回ライブリージョンで読み上げられます。ここでは allowDrop で「リリースノート」の中へは落とせません。",
+      "treeLabel": "並べ替えできるページ一覧",
+      "lastMove": "最後の移動: {move}",
+      "none": "なし",
+      "keys": "draggable のとき：兄弟の前後へ／階層を上げる／階層を下げる",
+      "pages": {
+        "guide": "利用ガイド",
+        "start": "はじめに",
+        "setup": "初期設定",
+        "faq": "よくある質問",
+        "notes": "リリースノート"
+      }
     }
   },
   "progressDocs": {
@@ -1518,5 +1533,14 @@
     "home": "ホーム",
     "longSuite": "第3四半期 結合テスト 決済モジュール 請求書再発行シナリオ",
     "longSection": "2026年9月 リリース候補の受入基準レビュー"
+  },
+  "timelineDocs": {
+    "log": {
+      "title": "status=\"log\"（アクティビティログ）",
+      "description": "課題の履歴のように、すべて起きたことの記録には status=\"log\"。中立の点と細い線で描き、「完了:」「予定:」のような読み上げ接頭辞を付けません（antd の gray item と同じ）。",
+      "status": "田中 がステータスを変更 未対応 → 処理中",
+      "comment": "グエン がコメント",
+      "assignee": "田中 が担当者を変更"
+    }
   }
 }
