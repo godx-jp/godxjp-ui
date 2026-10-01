@@ -4996,6 +4996,97 @@ import { Flex } from "@godxjp/ui/layout";
     rules: [],
   },
   {
+    name: "TextDiff",
+    group: "data-display",
+    tagline:
+      "What changed between two versions of a text — removed runs in <del>, added runs in <ins>, inline or side by side, per line / word / character, with CJK cut per character and long unchanged runs folded.",
+    props: [
+      {
+        name: "before",
+        type: "string",
+        required: true,
+        description:
+          "The earlier text (the original a translation was written against, the saved version).",
+      },
+      { name: "after", type: "string", required: true, description: "The current text." },
+      {
+        name: "mode",
+        type: '"inline" | "split"',
+        defaultValue: '"inline"',
+        description:
+          "inline — one flow with removals and additions in place (GitHub's unified view). split — two columns, before | after, with changed hunks aligned row by row and localized column headings.",
+      },
+      {
+        name: "granularity",
+        type: '"auto" | "word" | "char" | "line"',
+        defaultValue: '"auto"',
+        description:
+          "The unit a change is measured in. auto = Intl.Segmenter words, with Han/Hiragana/Katakana/Hangul runs cut per character (no spaces to split on, and a dictionary word boundary moves when one particle changes). word = Intl.Segmenter words in `lang`. char = one grapheme cluster per token. line = whole lines.",
+      },
+      {
+        name: "collapseUnchanged",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Fold long unchanged runs of lines behind a localized 'show N unchanged lines' button.",
+      },
+      {
+        name: "contextLines",
+        type: "number",
+        defaultValue: "2",
+        description: "Unchanged lines kept visible beside each change when folding (git's -U<n>).",
+      },
+      {
+        name: "maxCells",
+        type: "number",
+        defaultValue: "4000000",
+        description:
+          "LCS cost cap (tokens before × tokens after). Past it the changed middle is one removal plus one addition instead of freezing the tab.",
+      },
+      {
+        name: "beforeLabel",
+        type: "ReactNode",
+        description: "Heading of the before column in split mode. Default: localized 'Before'.",
+      },
+      {
+        name: "afterLabel",
+        type: "ReactNode",
+        description: "Heading of the after column in split mode. Default: localized 'After'.",
+      },
+      {
+        name: "lang",
+        type: "string",
+        description:
+          "BCP-47 language of the text — set on the element (screen-reader pronunciation, CJK font selection) and used as the Intl.Segmenter locale.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { TextDiff } from "@godxjp/ui/data-display";`',
+      "DO pass the two raw strings — the component tokenizes, diffs (LCS) and renders. Use the exported `diffText(before, after, { granularity, lang })` only when you need the runs themselves (a change count, a plain-text export).",
+      "DO pass `lang` for the text's language, not the UI's: a Japanese original in an English UI still needs lang=\"ja\".",
+      'DO use mode="split" when there is room for two columns and the texts are long; inline for a drawer, a list row or a narrow panel.',
+      "DON'T hand-roll a diff from `Text delete` / `Text mark` — those carry no spoken start/end label, so a screen reader reads the old and new words run together.",
+      "DON'T colour a run without its mark: removals are struck through and additions underlined, plus a visually hidden start/end label — colour is never the only carrier (WCAG 1.4.1).",
+    ],
+    useCases: [
+      "A translation drawer: what changed in the original since this translation was written (old original → current original).",
+      "A document or wiki page revision history: one revision against the previous one.",
+      "A settings or template audit log: the previous value of a long text field against the new one.",
+    ],
+    related: [
+      "CodeBlock — shows ONE preformatted text; TextDiff shows how two versions differ.",
+      "Text — `delete` / `mark` style a run you already chose; TextDiff decides the runs and announces them.",
+      "Timeline — the list of revisions; TextDiff is what one revision changed.",
+    ],
+    example: `import { TextDiff } from "@godxjp/ui/data-display";
+
+<TextDiff before={row.previous_original} after={original} lang="ja" />
+
+<TextDiff mode="split" granularity="line" before={previousBody} after={body} />`,
+    storyPath: "data-display/TextDiff.stories.tsx",
+    rules: [],
+  },
+  {
     name: "FeatureList",
     group: "data-display",
     tagline:

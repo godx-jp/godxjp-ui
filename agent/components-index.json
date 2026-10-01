@@ -253,6 +253,11 @@
   },
   {
     "group": "data-display",
+    "name": "TextDiff",
+    "tagline": "What changed between two versions of a text — removed runs in <del>, added runs in <ins>, inline or side by side, per line / word / character, with CJK cut per character and long unchanged runs folded."
+  },
+  {
+    "group": "data-display",
     "name": "FeatureList",
     "tagline": "A list of STATEMENTS, each with a leading state glyph (included ✓ / limited − / excluded ✗), an optional wrapping description, and the glyph aligned to the first text line."
   },

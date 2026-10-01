@@ -451,6 +451,15 @@
       "copy": "Sao chép mã",
       "copied": "Đã sao chép",
       "copiedAnnounce": "Đã sao chép mã vào bộ nhớ tạm"
+    },
+    "textDiff": {
+      "before": "Trước",
+      "after": "Sau",
+      "removedStart": "[đã xoá: ",
+      "removedEnd": "]",
+      "addedStart": "[đã thêm: ",
+      "addedEnd": "]",
+      "showUnchanged": "Hiện {count} dòng không đổi"
     }
   },
   "navigation": {

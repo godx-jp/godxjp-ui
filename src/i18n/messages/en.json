@@ -457,6 +457,18 @@
       "copy": "Copy code",
       "copied": "Copied",
       "copiedAnnounce": "Code copied to clipboard"
+    },
+    "textDiff": {
+      "before": "Before",
+      "after": "After",
+      "removedStart": "[removed: ",
+      "removedEnd": "]",
+      "addedStart": "[added: ",
+      "addedEnd": "]",
+      "showUnchanged": {
+        "one": "Show {count} unchanged line",
+        "other": "Show {count} unchanged lines"
+      }
     }
   },
   "navigation": {

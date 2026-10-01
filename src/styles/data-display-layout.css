@@ -617,6 +617,62 @@
     block-size: var(--thumbnail-block-size-lg);
   }
 
+  /* TextDiff (gh#1096). Newlines are content, and a long token (a URL, a CJK run) must break
+   * anywhere rather than push the page sideways. A removed run is struck and an added run is
+   * underlined — the mark, not the tint, says which is which, so it holds in forced-colors and
+   * for anyone who cannot tell the two grounds apart (WCAG 1.4.1). */
+  .ui-text-diff {
+    min-inline-size: 0;
+  }
+
+  :is(.ui-text-diff-body, .ui-text-diff-cell) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    min-inline-size: 0;
+  }
+
+  .ui-text-diff-removed {
+    background: var(
+      --surface-destructive,
+      hsl(var(--destructive) / var(--text-diff-removed-background-alpha))
+    );
+    color: inherit;
+    text-decoration-line: line-through;
+    text-decoration-thickness: var(--text-diff-mark-line-width);
+  }
+
+  .ui-text-diff-added {
+    background: var(
+      --surface-success,
+      hsl(var(--success) / var(--text-diff-added-background-alpha))
+    );
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--text-diff-mark-line-width);
+  }
+
+  .ui-text-diff-gap {
+    display: block;
+    padding-block: var(--text-diff-space-inset);
+  }
+
+  .ui-text-diff-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--text-diff-space-gap);
+  }
+
+  .ui-text-diff-split > .ui-text-diff-gap {
+    grid-column: 1 / -1;
+  }
+
+  .ui-text-diff-heading {
+    padding-block-end: var(--text-diff-space-inset);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-sm, var(--font-size-base));
+    font-weight: var(--font-weight-medium);
+  }
+
   .ui-timeline {
     display: flex;
     flex-direction: column;

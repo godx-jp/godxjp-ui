@@ -1452,3 +1452,48 @@ export type ImagePreviewGroupProp = {
   preview?: boolean | ImagePreviewGroupConfigProp;
   children?: React.ReactNode;
 };
+
+/** @see diffText — one run of a diff: kept, taken out of `before`, or put into `after`. */
+export type TextDiffSegment = {
+  kind: "same" | "removed" | "added";
+  text: string;
+};
+
+/**
+ * @see TextDiff — what changed between two versions of a text (gh#1096).
+ *
+ * antd ships no diff, so the shape follows GitHub/GitLab: `<del>`/`<ins>` with a spoken start/end
+ * label (never colour alone), inline ("unified") or split, unchanged runs folded around the
+ * changes. Text keeps its newlines (`pre-wrap`) and a long token breaks anywhere.
+ */
+export type TextDiffProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
+  /** The earlier text — what a translation was written against, the saved version. */
+  before: string;
+  /** The current text. */
+  after: string;
+  /** `inline` (default) — one flow; `split` — two columns, before | after, hunks aligned. */
+  mode?: "inline" | "split";
+  /**
+   * The unit a change is measured in. `auto` (default) is words for alphabetic text and one
+   * character per token for Han / Hiragana / Katakana / Hangul runs, which have no spaces to split
+   * on. `word` is `Intl.Segmenter` word segmentation in `lang` (dictionary words for Japanese),
+   * `char` is one grapheme cluster per token, `line` compares whole lines.
+   */
+  granularity?: "auto" | "word" | "char" | "line";
+  /** Fold long unchanged runs of lines behind a "show N unchanged lines" button. Default `true`. */
+  collapseUnchanged?: boolean;
+  /** Unchanged lines kept visible next to each change when folding. Default `2`. */
+  contextLines?: number;
+  /**
+   * The LCS cost cap (tokens before × tokens after). Past it the changed middle is shown as one
+   * removal and one addition instead of freezing the tab. Default `4_000_000`.
+   */
+  maxCells?: number;
+  /** Heading of the before column in `split` mode. Default: the localized "Before". */
+  beforeLabel?: React.ReactNode;
+  /** Heading of the after column in `split` mode. Default: the localized "After". */
+  afterLabel?: React.ReactNode;
+  /** BCP-47 language of the text — set on the element and used for `Intl.Segmenter`. */
+  lang?: string;
+  className?: ClassNameProp;
+};

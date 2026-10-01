@@ -3566,6 +3566,69 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  TextDiffProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      {
+        field: "before",
+        local: true,
+        reason:
+          "The earlier version of the text being compared — DATA, the left side of a diff (gh#1096).",
+      },
+      {
+        field: "after",
+        local: true,
+        reason:
+          "The current version of the text being compared — DATA, the right side of a diff (gh#1096).",
+      },
+      {
+        field: "mode",
+        local: true,
+        reason:
+          "inline | split — GitHub's unified vs side-by-side diff layout; not a size or tone axis.",
+      },
+      {
+        field: "granularity",
+        local: true,
+        reason:
+          "auto | word | char | line — the token unit, the same word Intl.Segmenter uses for it.",
+      },
+      {
+        field: "collapseUnchanged",
+        local: true,
+        reason: "Positive boolean: fold long unchanged runs of lines behind a reveal button.",
+      },
+      {
+        field: "contextLines",
+        local: true,
+        reason: "Unchanged lines kept beside each change when folding — git's -U<n> context.",
+      },
+      {
+        field: "maxCells",
+        local: true,
+        reason:
+          "Cost cap of the LCS table; past it the changed middle is one removal plus one addition.",
+      },
+      {
+        field: "beforeLabel",
+        local: true,
+        reason: "Heading of the before column in split mode; defaults to the localized word.",
+      },
+      {
+        field: "afterLabel",
+        local: true,
+        reason: "Heading of the after column in split mode; defaults to the localized word.",
+      },
+      {
+        field: "lang",
+        local: true,
+        reason:
+          "The HTML lang attribute, also the Intl.Segmenter locale for word/char segmentation.",
+      },
+    ],
+  },
   FeatureStateProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
