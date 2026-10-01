@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.16.0] - 2026-10-02
+
 ### ✨ TextDiff — what changed between two versions of a text (#1096)
 
 MINOR. godx-task showed a translator how an original changed since their translation by composing
