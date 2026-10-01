@@ -53,7 +53,7 @@ export const UTILITIES: UtilityEntry[] = [
       "Merge class names with Tailwind conflict resolution — `clsx` + `tailwind-merge` in one call. The last conflicting utility wins, so a caller's `className` can always override a component's default.",
     usage: [
       "DO use it for every `className` you compose, including in your own app components — it is why a consumer's `className=\"p-6\"` beats a component's built-in padding instead of both landing in the attribute.",
-      "DO pass conditionals directly: `cn(\"base\", isActive && \"active\", className)`. Falsy entries drop out.",
+      'DO pass conditionals directly: `cn("base", isActive && "active", className)`. Falsy entries drop out.',
       "DON'T hand-write a `cn`/`classNames` helper in your app. Two products in this org each wrote a byte-identical 12-line copy (godx-jp/godxjp-ui#947) because this one could not be found.",
       "DON'T reach for it to override a framework component's look — a token or a documented prop is the supported route (cardinal rules #44/#45).",
     ],
@@ -74,7 +74,7 @@ export const UTILITIES: UtilityEntry[] = [
     tagline:
       "Money from MINOR units through `Intl.NumberFormat` — the amount is in the currency's smallest unit (yen, cents), so nothing arrives pre-divided and no float rounding creeps in.",
     usage: [
-      "DO pass minor units. `formatCurrency(1050, \"USD\")` is $10.50; passing 10.5 gives $1,050.00, and that mistake is invisible in review.",
+      'DO pass minor units. `formatCurrency(1050, "USD")` is $10.50; passing 10.5 gives $1,050.00, and that mistake is invisible in review.',
       "DO pass an ISO 4217 code (`JPY`, `USD`, `VND`) — the number of decimals comes from the code, not from a guess.",
       "DON'T divide by 100 yourself first, and DON'T concatenate a symbol — JPY has no decimals and VND places the symbol differently.",
     ],
@@ -130,7 +130,7 @@ shortId(row.id);   // 3f9c…a41b`,
     tagline:
       "Turn an unknown thrown value into one sentence a person can read — it takes `unknown`, so a string, an `Error`, a rejected fetch or a plain object all resolve to something showable.",
     usage: [
-      "DO use it in a catch block before putting a message on screen. `String(err)` yields \"[object Object]\" often enough to matter.",
+      'DO use it in a catch block before putting a message on screen. `String(err)` yields "[object Object]" often enough to matter.',
       "DON'T show a raw server message straight to a user — it may carry a stack trace or an internal identifier.",
     ],
     related: [
@@ -195,7 +195,7 @@ const { data } = useQuery({ queryKey: ["search", settled], queryFn: () => search
     subpaths: [".", "./admin"],
     signature: "(signal: unknown, ms?: number): boolean",
     tagline:
-      "False, then true once `ms` has passed since `signal` last changed (default 2000) — for the \"this is taking a while\" affordance that must not flash on a fast response.",
+      'False, then true once `ms` has passed since `signal` last changed (default 2000) — for the "this is taking a while" affordance that must not flash on a fast response.',
     usage: [
       "DO use it to delay a spinner or a slow-request notice, so a 90ms response shows nothing at all.",
       "DON'T use it as a general timer — it resets whenever `signal` changes identity.",
@@ -218,7 +218,7 @@ const slow = useTimeoutFlag(isFetching);
     tagline:
       "Sort an unknown query error into the shape a UI decision needs — offline, unauthorised, not found, validation, server — instead of matching on message text.",
     usage: [
-      "DO branch on the returned kind. Matching `err.message.includes(\"401\")` breaks the moment a message is translated.",
+      'DO branch on the returned kind. Matching `err.message.includes("401")` breaks the moment a message is translated.',
       "DO pair it with `isRetryableQueryError` when deciding whether to offer a Retry button.",
       "DON'T show the classification to a user — `humanError` is the display text.",
     ],
@@ -255,8 +255,7 @@ if (info.kind === "unauthorized") redirectToLogin();`,
     name: "flattenItemPages",
     kind: "function",
     subpaths: ["./query"],
-    signature:
-      "<TItem>(data: { pages: { items: TItem[] }[] } | undefined): TItem[]",
+    signature: "<TItem>(data: { pages: { items: TItem[] }[] } | undefined): TItem[]",
     tagline:
       "Flatten `useInfiniteQuery`'s page structure into one list, `undefined` included — the line every infinite list writes, once.",
     usage: [
@@ -395,7 +394,10 @@ const mode = useAppShellNavigationMode();
       "DO use it when the CONTENT has to differ between presentations, not merely the container.",
       "DON'T use it to decide whether to render a Sheet at all; pass `responsive` to the Sheet and let it choose.",
     ],
-    related: ["Sheet — the component; its `responsive` prop covers most cases.", "Dialog — when the surface should always be modal and centred."],
+    related: [
+      "Sheet — the component; its `responsive` prop covers most cases.",
+      "Dialog — when the surface should always be modal and centred.",
+    ],
     example: `import { useSheetResponsiveMode } from "@godxjp/ui/feedback";
 
 const presentation = useSheetResponsiveMode("bottom-on-mobile");`,
@@ -509,7 +511,7 @@ await save({ files: collectUploadCommitActions(items) });`,
     subpaths: ["./data-entry"],
     signature: "unique symbol",
     tagline:
-      "Sentinel returned from an upload hook to say \"drop this file from the list entirely\" — distinct from rejecting it, which leaves a visible failed row.",
+      'Sentinel returned from an upload hook to say "drop this file from the list entirely" — distinct from rejecting it, which leaves a visible failed row.',
     usage: [
       "DO return it when a file should vanish silently, e.g. a duplicate the user already has.",
       "DON'T use it for a validation failure — the user needs to see why a file was refused.",
@@ -547,7 +549,7 @@ beforeUpload: (file) => (alreadyAttached(file) ? UPLOAD_LIST_IGNORE : true)`,
     tagline:
       "`TreeSelect` display strategy: when every child of a node is checked, show the parent alone instead of all its children.",
     usage: [
-      "DO use it when the parent means \"all of these\" to the user — a whole department rather than each member.",
+      'DO use it when the parent means "all of these" to the user — a whole department rather than each member.',
       "DON'T use it when the server needs the leaves; this affects DISPLAY, and the value it emits follows the strategy.",
     ],
     related: ["SHOW_ALL — every checked node.", "SHOW_CHILD — leaves only.", "TreeSelect"],
@@ -560,8 +562,7 @@ beforeUpload: (file) => (alreadyAttached(file) ? UPLOAD_LIST_IGNORE : true)`,
     kind: "value",
     subpaths: ["./data-entry"],
     signature: '"SHOW_CHILD"',
-    tagline:
-      "`TreeSelect` display strategy: show only leaf nodes, never an intermediate parent.",
+    tagline: "`TreeSelect` display strategy: show only leaf nodes, never an intermediate parent.",
     usage: [
       "DO use it when only leaves are real records — people, files, accounts — and parents are just grouping.",
       "DON'T mix strategies across screens that submit to the same endpoint; the emitted value differs.",
@@ -613,6 +614,41 @@ const blocked = dateMatchModifiers(typed, disabledMatchers);`,
     example: `import { CHART_COLORS } from "@godxjp/ui/charts";
 
 <Cell fill={CHART_COLORS[index % CHART_COLORS.length]} />`,
+  },
+  {
+    name: "diffText",
+    kind: "function",
+    subpaths: ["./data-display"],
+    signature:
+      "(before: string, after: string, options?: { granularity?: TextDiffGranularity; lang?: string; maxCells?: number }): TextDiffSegment[]",
+    tagline:
+      'The runs TextDiff renders — a longest-common-subsequence diff over words, CJK characters, graphemes or lines, as `{ kind: "same" | "removed" | "added", text }[]` with adjacent runs merged.',
+    usage: [
+      "DO reach for it only when you need the runs themselves — a change count, a plain-text export. To SHOW a diff, render `<TextDiff before after />`.",
+      "DO pass `lang` for the text's language so `Intl.Segmenter` cuts words the way that language does.",
+    ],
+    related: [
+      "TextDiff — renders these runs with <del>/<ins> and spoken labels.",
+      "tokenizeText — the tokenizer it diffs over.",
+    ],
+    example: `import { diffText } from "@godxjp/ui/data-display";
+
+const changed = diffText(previous, current, { lang: "ja" }).filter((run) => run.kind !== "same").length;`,
+  },
+  {
+    name: "tokenizeText",
+    kind: "function",
+    subpaths: ["./data-display"],
+    signature: "(text: string, granularity?: TextDiffGranularity, lang?: string): string[]",
+    tagline:
+      "Cut a text into diff tokens: `auto` (Intl.Segmenter words, CJK runs per character), `word`, `char` (grapheme clusters) or `line` (lines with their newline).",
+    usage: [
+      "DO use it to count or compare in the same units TextDiff shows; joining the tokens gives back the input exactly.",
+    ],
+    related: ["diffText — the LCS over these tokens.", "TextDiff — the rendered view."],
+    example: `import { tokenizeText } from "@godxjp/ui/data-display";
+
+tokenizeText("東京都", "auto", "ja"); // ["東", "京", "都"]`,
   },
 ];
 
