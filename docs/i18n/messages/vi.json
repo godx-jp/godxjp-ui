@@ -1542,5 +1542,22 @@
       "comment": "Nguyễn đã bình luận",
       "assignee": "Tanaka đổi người phụ trách"
     }
+  },
+  "textDiffDocs": {
+    "subtitle": "Cho thấy điều gì đã đổi giữa hai phiên bản của một văn bản, dưới dạng phần xoá và phần thêm",
+    "source": {
+      "title": "Xem thay đổi của bản gốc",
+      "description": "Bản gốc lúc viết bản dịch so với bản gốc hiện tại. Tiếng Nhật được so từng ký tự, nên đổi một trợ từ không làm cả câu bị đánh dấu."
+    },
+    "policy": {
+      "title": "Sửa đổi quy định (đặt cạnh nhau)",
+      "description": "Các dòng không đổi được thu gọn sau một nút. Phần xoá bị gạch ngang, phần thêm được gạch chân, không chỉ dựa vào màu.",
+      "before": "Trước sửa đổi",
+      "after": "Sau sửa đổi"
+    },
+    "words": {
+      "title": "Văn bản chữ Latinh, theo từng từ",
+      "description": "Ngôn ngữ tách từ bằng dấu cách được so theo từng từ. Truyền granularity=\"line\" để so cả dòng."
+    }
   }
 }
