@@ -1549,5 +1549,22 @@
       "comment": "Nguyen commented",
       "assignee": "Tanaka changed the assignee"
     }
+  },
+  "textDiffDocs": {
+    "subtitle": "Show what changed between two versions of a text, as removals and additions",
+    "source": {
+      "title": "See what changed in the original",
+      "description": "The original a translation was written against, compared with the original now. Japanese is compared character by character, so changing one particle does not mark the whole sentence."
+    },
+    "policy": {
+      "title": "Policy revision (side by side)",
+      "description": "Unchanged lines fold away behind a button. Removals are struck through and additions underlined, so colour is never the only signal.",
+      "before": "Before revision",
+      "after": "After revision"
+    },
+    "words": {
+      "title": "Alphabetic text, word by word",
+      "description": "Languages that separate words with spaces are compared per word. Pass granularity=\"line\" to compare whole lines."
+    }
   }
 }

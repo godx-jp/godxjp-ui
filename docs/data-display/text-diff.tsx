@@ -6,6 +6,7 @@ import {
   CardTitle,
   TextDiff,
 } from "@godxjp/ui/data-display";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 const PREVIOUS_ORIGINAL = "来週の定例会議までに、見積書を承認してください。";
@@ -38,16 +39,14 @@ const CURRENT_POLICY = [
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   return (
-    <PageContainer title="TextDiff" subtitle="二つの版のテキストの差分を、削除と追加で示す">
+    <PageContainer title="TextDiff" subtitle={t("textDiffDocs.subtitle")}>
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle level={2}>原文の変更を見る</CardTitle>
-            <CardDescription>
-              翻訳を書いた時点の原文と、いまの原文の差分です。日本語は一文字ずつ比べるので、
-              助詞ひとつの変更でも文全体が変わったようには見えません。
-            </CardDescription>
+            <CardTitle level={2}>{t("textDiffDocs.source.title")}</CardTitle>
+            <CardDescription>{t("textDiffDocs.source.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <TextDiff before={PREVIOUS_ORIGINAL} after={CURRENT_ORIGINAL} lang="ja" />
@@ -56,11 +55,8 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>規程の改訂（左右に並べる）</CardTitle>
-            <CardDescription>
-              変更のない行は折りたたまれ、ボタンで開けます。削除は取り消し線、追加は下線で示し、
-              色だけに頼りません。
-            </CardDescription>
+            <CardTitle level={2}>{t("textDiffDocs.policy.title")}</CardTitle>
+            <CardDescription>{t("textDiffDocs.policy.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <TextDiff
@@ -68,19 +64,16 @@ export default function Demo() {
               before={PREVIOUS_POLICY}
               after={CURRENT_POLICY}
               lang="ja"
-              beforeLabel="改訂前"
-              afterLabel="改訂後"
+              beforeLabel={t("textDiffDocs.policy.before")}
+              afterLabel={t("textDiffDocs.policy.after")}
             />
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>英文は単語単位で</CardTitle>
-            <CardDescription>
-              スペースで区切られる言語は単語ごとに比べます。行単位にしたい場合は granularity="line"
-              を指定します。
-            </CardDescription>
+            <CardTitle level={2}>{t("textDiffDocs.words.title")}</CardTitle>
+            <CardDescription>{t("textDiffDocs.words.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <TextDiff
