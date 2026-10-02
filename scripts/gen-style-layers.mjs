@@ -339,9 +339,18 @@ function closureOf(file) {
 
 // ── catalog components → defining files ──────────────────────────────────────
 
+/* The packages versioned with the kit (gh#1108 / gh#1109: `@godxjp/markdown`, `@godxjp/editor`) are
+ * catalogued too, under their own `importPath`. They ship their own build and import the kit's
+ * layers through it, so they have no style layer here and no entry barrel under src/. */
+const SIBLING_PACKAGE = /^@godxjp\/(?!ui(?:\/|$))/;
+const siblingComponents = new Map(
+  JSON.parse(readFileSync(join(ROOT, "agent/components.json"), "utf8"))
+    .filter((c) => typeof c.importPath === "string" && SIBLING_PACKAGE.test(c.importPath))
+    .map((c) => [c.name, c.importPath]),
+);
 const catalog = JSON.parse(readFileSync(join(ROOT, "agent/components-index.json"), "utf8"))
   .map((c) => c.name)
-  .filter((n) => /^[A-Z]/.test(n));
+  .filter((n) => /^[A-Z]/.test(n) && !siblingComponents.has(n));
 
 const entryBarrels = [
   "src/index.ts",
@@ -441,6 +450,47 @@ for (const name of catalog) {
     }
   }
 
+  components[name] = {
+    layers: order.filter((f) => layers.has(f)),
+    ...(vendor.size ? { vendor: VENDOR.map((v) => v.file).filter((f) => vendor.has(f)) } : {}),
+  };
+}
+
+/* A SIBLING-PACKAGE COMPONENT RENDERS KIT COMPONENTS (gh#1114). `MarkdownEditor` is the kit's
+ * Textarea, Actions, Segmented, Card, Prose… An app that imports only `@godxjp/editor` names none
+ * of them, so prune-css would strip the layers the editor needs. Its row is the union of the
+ * layers of every kit component its package source imports (a sub-part maps to its root, as in
+ * prune-css). `Markdown` renders bare elements, so its row is empty: the host's Prose brings the
+ * typography. */
+const kitByLength = Object.keys(components).sort((a, b) => b.length - a.length);
+for (const [name, importPath] of siblingComponents) {
+  const dir = join(ROOT, "packages", importPath.replace(/^@godxjp\//, ""), "src");
+  const sources = globSync("**/*.{ts,tsx}", { cwd: dir }).filter(
+    (f) => !/__tests__|\.test\./.test(f),
+  );
+  if (sources.length === 0) {
+    errors.push(`catalog component ${name} (${importPath}) has no source under ${dir}`);
+    continue;
+  }
+  const layers = new Set();
+  const vendor = new Set();
+  for (const f of sources) {
+    const src = readFileSync(join(dir, f), "utf8");
+    for (const m of src.matchAll(
+      /import\s+(?!type\b)\{([^}]*)\}\s*from\s*["']@godxjp\/ui(?:\/[^"']*)?["']/g,
+    )) {
+      for (let entry of m[1].split(",")) {
+        entry = entry.trim();
+        if (!entry || entry.startsWith("type ")) continue;
+        const imported = entry.split(/\s+as\s+/)[0].trim();
+        if (!/^[A-Z]/.test(imported)) continue;
+        const root = kitByLength.find((c) => imported === c || imported.startsWith(c));
+        if (!root) continue;
+        for (const l of components[root].layers) layers.add(l);
+        for (const v of components[root].vendor ?? []) vendor.add(v);
+      }
+    }
+  }
   components[name] = {
     layers: order.filter((f) => layers.has(f)),
     ...(vendor.size ? { vendor: VENDOR.map((v) => v.file).filter((f) => vendor.has(f)) } : {}),

@@ -125,8 +125,10 @@ const byLength = [...componentNames].sort((a, b) => b.length - a.length);
 
 const used = new Set();
 let sawNamespace = false;
+// `@godxjp/editor` / `@godxjp/markdown` too (gh#1114): their components render kit components, and
+// the manifest maps `MarkdownEditor` to the layers those need.
 const IMPORT =
-  /(?:import|export)\s+(type\s+)?([^;'"]*?)\s*from\s*["'](@godxjp\/ui(?:\/[^"']*)?)["']/g;
+  /(?:import|export)\s+(type\s+)?([^;'"]*?)\s*from\s*["'](@godxjp\/(?:ui|editor|markdown)(?:\/[^"']*)?)["']/g;
 for (const file of new Set(sources)) {
   const src = readFileSync(file, "utf8");
   for (const m of src.matchAll(IMPORT)) {

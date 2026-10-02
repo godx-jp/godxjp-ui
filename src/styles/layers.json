@@ -644,6 +644,21 @@
         "logo-layout.css"
       ]
     },
+    "Markdown": {
+      "layers": []
+    },
+    "MarkdownEditor": {
+      "layers": [
+        "layout.css",
+        "control.css",
+        "toggle.css",
+        "card-layout.css",
+        "text-layout.css",
+        "dialog-layout.css",
+        "data-display-layout.css",
+        "navigation-layout.css"
+      ]
+    },
     "Marquee": {
       "layers": [
         "motion.css",

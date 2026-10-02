@@ -119,6 +119,19 @@ describe("prune-css CLI (gh#971)", () => {
     expect(css!.indexOf("vendor-sonner")).toBeLessThan(css!.indexOf("styles/base"));
   });
 
+  it("an app that imports only @godxjp/editor keeps the kit layers the editor renders (gh#1114)", () => {
+    const { status, css } = prune({
+      "src/page.tsx": `import { MarkdownEditor } from "@godxjp/editor";\nexport const x = MarkdownEditor;\n`,
+    });
+    expect(status).toBe(0);
+    const layers = layerImports(css!);
+    // MarkdownEditor is the kit's Textarea + Actions toolbar + Segmented + Card + Prose.
+    expect(layers).toContain("control.css");
+    expect(layers).toContain("card-layout.css");
+    expect(layers).toContain("data-display-layout.css");
+    expect(css).toContain("components detected: MarkdownEditor");
+  });
+
   it("maps compound sub-part imports to their root component", () => {
     const { css } = prune({
       "src/app.tsx": `import { SheetContent, SheetTrigger } from "@godxjp/ui/feedback";`,

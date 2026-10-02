@@ -33,6 +33,10 @@ tooltip and repeats it when pressed, instead of opening the picker.
 - The MCP catalog now has `Markdown` (`@godxjp/markdown`) and `MarkdownEditor` (`@godxjp/editor`)
   entries, so `search_components` / `get_component` find them; `check:mcp-sync` scans the packages.
 - Test: `editor.test.tsx` gains both cases. Fail on 31.18.0.
+- `prune-css` now reads `@godxjp/editor` / `@godxjp/markdown` imports too, and the style-layer
+  manifest maps `MarkdownEditor` to the kit layers it renders (Textarea, Actions, Card, Prose…): an
+  app that imports only the editor no longer has those layers pruned away. Test:
+  `prune-css-cli.test.ts`.
 
 ## [31.18.0] - 2026-10-02
 
