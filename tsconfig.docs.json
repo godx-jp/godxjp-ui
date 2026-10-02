@@ -1,1 +1,13 @@
-{ "extends": "./tsconfig.json", "include": ["docs"] }
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@godxjp/markdown": ["./packages/markdown/src/index.ts"],
+      "@godxjp/editor": ["./packages/editor/src/index.ts"],
+      "@godxjp/ui/i18n": ["./dist/i18n/index.d.ts"],
+      "@godxjp/ui/*": ["./dist/components/*/index.d.ts"]
+    }
+  },
+  "include": ["docs"]
+}

@@ -44,6 +44,13 @@ function packageExportAliases(): Array<{ find: string | RegExp; replacement: str
     });
   }
 
+  // The packages beside the kit (gh#1108 / gh#1109) resolve to their source too, so a docs page
+  // shows the editor and renderer as they are in this checkout, not as last published.
+  entries.push(
+    { find: "@godxjp/markdown", replacement: path.resolve(uiRoot, "packages/markdown/src/index.ts") },
+    { find: "@godxjp/editor", replacement: path.resolve(uiRoot, "packages/editor/src/index.ts") },
+  );
+
   // Longest match first — avoid `@godxjp/ui` swallowing `/data-display` subpaths.
   entries.sort((a, b) => b.find.length - a.find.length);
   return entries;

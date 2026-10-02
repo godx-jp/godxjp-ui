@@ -6,6 +6,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.18.0] - 2026-10-02
+
+### ✨ New packages: `@godxjp/markdown` and `@godxjp/editor` (gh#1108, gh#1109)
+
+MINOR. Two packages beside the kit, versioned and released with it (same number, published by the
+same tag after `@godxjp/ui`), for the content roadmap (godx-task CONTENT-6). godx-task and
+godx-content each carried their own `react-markdown` + `remark-gfm` + `rehype-sanitize` pipeline;
+mailer, chatter and approval would have added more.
+
+- **`@godxjp/markdown`** — `<Markdown>`: GFM (tables, task lists, code, autolinks, footnotes) and
+  GitHub heading anchors, one sanitiser schema (`markdownSchema`, additive `schema` extension, no raw
+  HTML, `http`/`https`/`mailto`/relative URLs only — a scheme split by control characters included),
+  host hooks (`remarkPlugins`, `resolveUrl` before the sanitiser, `headingId`, `components`), and
+  `MARKDOWN_FORMAT` / `RENDERER_VERSION` to record on stored versions. ```mermaid renders as a
+  diagram only after its SVG passes `checkMermaidSvg` (fail-closed: no script, foreignObject, links,
+  images, handlers, external `href`/`url()`, `@import`); `mermaid` is an optional peer. Shared
+  fixture corpus `MARKDOWN_FIXTURES` (14 cases, 5 hostile).
+- **`@godxjp/editor`** — `<MarkdownEditor>`: the kit's `Textarea` with a formatting toolbar (the
+  kit's `Actions`, a WAI-ARIA toolbar), write / preview / side by side, preview through
+  `@godxjp/markdown`, ⌘/Ctrl + B·I·K (never during IME composition), every toolbar edit one native
+  undo step, paste / drop / attach through a host `upload`, `actions` for new block types, ja / en / vi
+  through the kit's catalogue with a `labels` override.
+- Tests: the fixture corpus; the SVG gate against 18 hostile shapes; real mermaid in Chromium (7
+  diagram types render, labels included); the editor's keyboard, IME, upload and preview behaviour;
+  a Chromium layout + undo test at 1280 / 390. Docs pages `data-display/markdown`,
+  `data-entry/markdown-editor`.
+- Release: `scripts/publish-satellites.mjs` publishes both after the kit (idempotent, refuses unless
+  the kit is on the registry, never moves `latest` backwards); `check:mcp-lockstep` holds their
+  version and `~` peer ranges to the kit's.
+
+### ✨ Actions: `items[].disabled` (gh#1109)
+
+A disabled action is `aria-disabled="true"` and ignores its click, but stays focusable and in the
+arrow-key order (WAI-ARIA toolbar: disabled items remain discoverable). The editor's toolbar uses it
+while previewing or read-only. Test: `actions-disabled-item-1109.test.tsx`.
+
 ## [31.17.1] - 2026-10-02
 
 ### ♿ Badge: a cut label's full text opens on keyboard focus too (gh#1105)

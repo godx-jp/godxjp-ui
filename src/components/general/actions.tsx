@@ -131,6 +131,8 @@ export const Actions = React.forwardRef<HTMLDivElement, ActionsProp>(
       keyPath: string[],
       domEvent: React.MouseEvent<HTMLElement>,
     ) => {
+      // A disabled action stays focusable (aria-disabled) but never runs.
+      if (item.disabled) return;
       if (item.onItemClick) {
         item.onItemClick(item);
         return;
@@ -209,6 +211,7 @@ export const Actions = React.forwardRef<HTMLDivElement, ActionsProp>(
             <LabelledIconButton
               key={item.key}
               label={name}
+              aria-disabled={item.disabled || undefined}
               onClick={(event) => dispatch(item, [item.key], event)}
               {...shared}
             >

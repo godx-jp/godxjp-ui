@@ -100,6 +100,25 @@ export default defineConfig({
         },
       },
       {
+        /* The packages beside the kit (gh#1108 / gh#1109: @godxjp/markdown, @godxjp/editor). They
+         * import the kit and each other by PACKAGE name, as a consumer does; here those names
+         * resolve to source, so a test never runs against a stale dist. Scoped to this project so
+         * no test under src/ changes how it resolves anything. */
+        extends: true,
+        resolve: {
+          alias: [
+            { find: /^@godxjp\/markdown$/, replacement: path.resolve(__dirname, "packages/markdown/src/index.ts") },
+            { find: /^@godxjp\/ui\/i18n$/, replacement: path.resolve(__dirname, "src/i18n/index.ts") },
+            { find: /^@godxjp\/ui\/([a-z-]+)$/, replacement: path.resolve(__dirname, "src/components/$1/index.ts") },
+          ],
+        },
+        test: {
+          name: "packages",
+          include: ["packages/*/src/**/*.test.{ts,tsx}"],
+          sequence: { groupOrder: 0 },
+        },
+      },
+      {
         extends: true,
         test: {
           name: "spawns",

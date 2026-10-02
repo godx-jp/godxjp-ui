@@ -2341,6 +2341,14 @@
     border-radius: var(--actions-radius, var(--radius));
   }
 
+  /* A disabled action (ActionsItemsProp.disabled) is `aria-disabled`, not `disabled`, so it keeps
+   * its place in the toolbar's focus order (WAI-ARIA toolbar). The Button rule only reaches
+   * `:disabled`, so the look is given here; the click is refused in Actions' dispatch. */
+  .ui-actions [aria-disabled="true"] {
+    opacity: var(--disabled-opacity);
+    cursor: not-allowed;
+  }
+
   .ui-actions[data-variant="filled"],
   .ui-actions[data-variant="outlined"] {
     padding-block: var(--actions-padding-block);

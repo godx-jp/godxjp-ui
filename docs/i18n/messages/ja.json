@@ -1566,5 +1566,30 @@
       "description": "チップは折り返さず、コンテナより広いラベルは省略記号で切れます（gh#1101）。切れたときは、ホバーでも、チップを囲むリンクや行へのキーボードフォーカスでも、全文がツールチップに出ます（gh#1105）。表のセルでも Card でも追加の指定は要りません。",
       "sample": "チーム経由 · プラットフォーム基盤運用チーム（東日本リージョン・夜間当番ローテーション第二班）"
     }
+  },
+  "markdownDocs": {
+    "subtitle": "@godxjp/markdown · GFM + 見出しアンカー + サニタイズ · renderer v{version}",
+    "page": {
+      "title": "ページ本文",
+      "description": "表・チェックリスト・コード・脚注・Mermaid。Mermaid は生成された SVG が検査を通ったときだけ図になり、それまではコードのまま表示されます。"
+    },
+    "hostile": {
+      "title": "悪意のある本文",
+      "description": "生の HTML は要素にならず、javascript: や data: の URL は取り除かれます。"
+    }
+  },
+  "markdownEditorDocs": {
+    "subtitle": "@godxjp/editor · 書式ツールバー · 編集 / プレビュー / 並べて表示 · 貼り付け・ドロップで添付",
+    "edit": {
+      "title": "ページを編集",
+      "description": "⌘/Ctrl + B・I・K で太字・斜体・リンク。変換中（IME）はショートカットが働きません。",
+      "label": "本文",
+      "save": "保存"
+    },
+    "readOnly": {
+      "title": "読み取り専用",
+      "description": "ツールバーはフォーカスできますが、操作は無効です。",
+      "label": "本文（閲覧のみ）"
+    }
   }
 }

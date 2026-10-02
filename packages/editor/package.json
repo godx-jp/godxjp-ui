@@ -1,0 +1,42 @@
+{
+  "name": "@godxjp/editor",
+  "version": "31.18.0",
+  "description": "Markdown editor for GoDX apps: formatting toolbar, write / preview / side by side with @godxjp/markdown, paste / drop / attach through a host upload function, IME-safe, ja / en / vi.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godx-jp/godxjp-ui.git",
+    "directory": "packages/editor"
+  },
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "@godxjp/markdown": "~31.18.0",
+    "@godxjp/ui": "~31.18.0",
+    "lucide-react": ">=1.0.0",
+    "react": ">=19.0.0"
+  },
+  "keywords": [
+    "markdown",
+    "editor",
+    "godxjp"
+  ]
+}
