@@ -8,6 +8,7 @@ import {
   StatusBadge,
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Star } from "lucide-react";
 
@@ -91,6 +92,7 @@ const statusBadgeTones = [
 ];
 
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer
       title="Badge"
@@ -301,18 +303,12 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Long labels</CardTitle>
-            <CardDescription>
-              チップは折り返さず、コンテナより広いラベルは省略記号で切れます（gh#1101）。切れたときは
-              ホバーで全文が title に出ます。表のセルでも Card でも、追加の指定は要りません。
-            </CardDescription>
+            <CardTitle level={2}>{t("badgeDocs.longLabels.title")}</CardTitle>
+            <CardDescription>{t("badgeDocs.longLabels.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" align="start" gap="xs">
-              <Badge tone="info">
-                チーム経由 ·
-                プラットフォーム基盤運用チーム（東日本リージョン・夜間当番ローテーション第二班）
-              </Badge>
+              <Badge tone="info">{t("badgeDocs.longLabels.sample")}</Badge>
               <Badge status="active" />
             </Flex>
           </CardContent>
