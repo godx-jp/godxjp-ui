@@ -1566,5 +1566,12 @@
       "title": "Alphabetic text, word by word",
       "description": "Languages that separate words with spaces are compared per word. Pass granularity=\"line\" to compare whole lines."
     }
+  },
+  "badgeDocs": {
+    "longLabels": {
+      "title": "Long labels",
+      "description": "A chip never wraps: a label wider than its container ends in an ellipsis (gh#1101), and the full text shows as a title on hover when it was cut. No extra props in a table cell or a Card.",
+      "sample": "Via team · Platform infrastructure operations (East Japan region, night-shift rotation group 2)"
+    }
   }
 }

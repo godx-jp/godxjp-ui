@@ -121,6 +121,30 @@ describe("Image (gh#1077)", () => {
     expect(screen.queryByRole("button")).toBeNull();
   });
 
+  it("keeps the fallback once IT loads — never flips back to the broken src (gh#1082)", () => {
+    // The fallback's own `load` used to mark the picture "loaded", which put the broken `src`
+    // back, which failed again: an endless error/load loop (23,062 requests in 15s in Chromium,
+    // the nightly geometry sweep's networkidle timeout).
+    const onError = vi.fn();
+    renderEn(<Image src="/broken.png" alt="Chart" fallback="/fallback.png" onError={onError} />);
+    const img = () => screen.getByRole("img", { name: "Chart" });
+    fireEvent.error(img());
+    fireEvent.load(img());
+    expect(img().getAttribute("src")).toBe("/fallback.png");
+    fireEvent.load(img());
+    expect(img().getAttribute("src")).toBe("/fallback.png");
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("a new src after a failure starts over — it is tried, not stuck on the fallback", () => {
+    const { rerender } = renderEn(<Image src="/broken.png" alt="Chart" fallback="/fallback.png" />);
+    fireEvent.error(screen.getByRole("img", { name: "Chart" }));
+    fireEvent.load(screen.getByRole("img", { name: "Chart" }));
+    rerender(<Image src="/fixed.png" alt="Chart" fallback="/fallback.png" />);
+    expect(screen.getByRole("img", { name: "Chart" }).getAttribute("src")).toBe("/fixed.png");
+  });
+
   it("paints the placeholder until the picture loads", () => {
     const { container } = renderEn(<Image src="/slow.png" alt="Slow" placeholder />);
     expect(container.querySelector('[data-slot="image-placeholder"]')).not.toBeNull();

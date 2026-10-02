@@ -1060,6 +1060,14 @@
 
     z-index: var(--overlay-z-index);
     min-width: var(--menu-content-min-width);
+    /* AN INTRINSIC WIDTH, NOT SHRINK-TO-FIT (gh#1103). An absolutely positioned box with
+     * `width: auto` is as wide as the room right of its PROVISIONAL `left`. Near the viewport's
+     * right edge that first layout was 200px, React Aria then moved the surface left and it grew
+     * to its natural 208px inside the same ResizeObserver delivery: Chromium raised "ResizeObserver
+     * loop completed with undelivered notifications" on `window`. `max-content` is the same width
+     * wherever `left` lands, so positioning can no longer resize the surface. */
+    width: max-content;
+    max-width: var(--dropdown-content-max-width);
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     border: var(--stroke-hairline) solid hsl(var(--border));
     /* A knob, with the role default resolved HERE (gh#880). `.ui-popover-content` has had one

@@ -44,8 +44,11 @@ const probe = (stress) => {
     if (el.children.length !== 0) return false;
     if (!(el.textContent || "").trim()) return false;
     const cs = getComputedStyle(el);
-    // Only boxes that CLIP. A visible overflow cannot cut anything.
-    const clips = cs.overflow !== "visible" || cs.overflowY !== "visible" || cs.overflowX !== "visible";
+    // Only boxes that clip VERTICALLY — this gate measures ink above/below the box. `overflow-y`
+    // is the computed truth: `hidden`/`auto` on x already turns a `visible` y into `auto`, but
+    // `overflow-x: clip` leaves y `visible` (CSS Overflow 3), which is how a Badge label
+    // ellipsizes without shearing its ascenders (gh#1101).
+    const clips = cs.overflowY !== "visible";
     if (!clips) return false;
     // VISUALLY-HIDDEN text is clipped ON PURPOSE — `.sr-only` is a 1px box whose whole job is to
     // hide ink from the eye while keeping it for a screen reader. Reporting it would be the

@@ -33,9 +33,18 @@ describe("Text — whitespace", () => {
     expect(text.textContent).toBe(note);
   });
 
-  it('omits data-whitespace for an explicit "normal" (the default is inert, not a rule)', () => {
+  it('emits data-whitespace="normal" for an explicit "normal" — it releases an inherited nowrap (gh#1083)', () => {
     render(
       <Text as="p" whitespace="normal">
+        {note}
+      </Text>,
+    );
+    expect(screen.getByText(/一行目/)).toHaveAttribute("data-whitespace", "normal");
+  });
+
+  it('truncate still wins over an explicit "normal"', () => {
+    render(
+      <Text as="p" whitespace="normal" truncate>
         {note}
       </Text>,
     );

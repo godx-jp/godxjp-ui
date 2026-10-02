@@ -835,9 +835,9 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
     // always been, on the element itself.
     "data-truncate": truncating && !block.wrapsContent ? "" : undefined,
     "data-clamp": effectiveClamp !== undefined && !block.wrapsContent ? "" : undefined,
-    // Inert default: `normal` is CSS's own behaviour, so it emits no attribute and there is no
-    // `[data-whitespace="normal"]` rule to lose a specificity argument with anything.
-    "data-whitespace": whitespace === "pre-wrap" && !truncating ? "pre-wrap" : undefined,
+    // Unset emits nothing. An EXPLICIT `normal` is emitted (gh#1083): it releases a `nowrap` the
+    // Text inherits, e.g. from a table cell. `truncate` still wins by emitting nothing.
+    "data-whitespace": whitespace && !truncating ? whitespace : undefined,
     // Same shape and the same precedence as `whitespace`: `normal` is inert, and one line has
     // nowhere to break to, so `truncate` simply does not emit it (gh#927).
     "data-break": breakMode === "anywhere" && !truncating ? "anywhere" : undefined,

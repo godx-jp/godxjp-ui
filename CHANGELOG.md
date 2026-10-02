@@ -6,6 +6,82 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.17.0] - 2026-10-02
+
+### 🐛 Image: a failed `src` with a `fallback` no longer loops forever (gh#1082)
+
+PATCH-level fix, shipped in this minor. When `src` failed, the `fallback` was shown; the fallback's
+own `load` then marked the picture "loaded", which put the broken `src` back, which failed again —
+an endless error/load cycle. Measured in Chromium on the docs Image frame: **23,062 requests to the
+missing file in 15s**, so the page never reached `networkidle` and the nightly geometry sweep timed
+out at all 8 widths. Now "error" is final for that `src` (a new `src` is tried afresh): 51 requests
+in total, `networkidle` in 716ms.
+
+- Test: `image-preview-1077.test.tsx` — the fallback's `load` keeps the fallback, `onError` fires
+  once, a new `src` after a failure is tried. Fails on 31.16.0.
+
+### ✨ DataTable: the expanded row is inset and wraps, `expandable.flush` opts out (gh#1083)
+
+MINOR, and a visible default change. The expanded detail cell was `flush` and inherited the table
+cell's `white-space: nowrap`: the detail sat against the table edges, and every line of it stayed on
+one line (a `ListRow` title ran under its trailing, an `Alert` pushed the table 79px wide). As antd
+pads `.ant-table-expanded-row > td`, the cell now has the cell padding (so it follows `density`),
+retuned by the new `--table-row-expanded-padding` token, and wraps like a block.
+`expandable.flush: true` keeps the old edge-to-edge detail for one that owns its inset (a nested
+table, a `ListRow` list). **Consumers that padded the detail themselves** (`<Flex pad>` or
+`<Card><CardContent>` inside `expandedRowRender`) should drop that wrapper, or they get the inset
+twice.
+
+Also: an explicit `Text whitespace="normal"` now emits `white-space: normal`, so it releases a
+`nowrap` the Text inherits (a table cell's). Unset still emits nothing; `truncate` still wins.
+
+- MCP `get_component DataTable` / `Text` describe `expandable.flush`, the token and the explicit
+  `normal`.
+- Test: `data-table-expanded-row-inset-1083.test.tsx` (Chromium: padding equals a body cell's,
+  the detail wraps with no table overflow, `flush` is 0, the token retunes it, `whitespace="normal"`
+  releases the cell's nowrap) and `typography-whitespace.test.tsx`. Fails on 31.16.0.
+
+### 🐛 Badge: a long label stays inside its cell and Card, and ellipsizes (gh#1101)
+
+PATCH-level fix. A Badge with a long label grew to its full text — **394px in a 242px DataTable
+cell**, past the neighbouring columns and the Card's edge — because the chip had no
+`max-inline-size` and its label could not shrink, so even `<Badge><Text ellipsis>` never truncated.
+The chip is now `max-inline-size: 100%` of its container (border-box) and still never wraps (rule
+#35): the label ellipsizes, and when it was cut the full text appears as a native `title` on hover,
+as antd `Typography ellipsis` does. A caller's own `title` wins. Consumers that made a chip wrap
+with `<Text break="anywhere">` can drop it.
+
+- MCP `get_component Badge` and the Badge docs page describe the long-label contract.
+- Test: `badge-long-label-1101.test.tsx` (Chromium: a 60-character label in a 242px fixed cell and
+  a 200px box ends inside it, ellipsizes, stays one line; the hover title appears only when cut).
+  Fails on 31.16.0 (badge right edge 602.75 vs cell 240.5).
+
+### 🐛 Table `stacked-record-collection`: the card owns the inline inset; empty cells drop out (gh#1102)
+
+PATCH-level fix. Folded into a card, each cell kept the table's inline padding (16px) INSIDE the
+card's own padding, so every value line lost 32px at 320px and a 31-character email broke
+mid-token. Folded cells now have no inline padding of their own (new token
+`--table-stacked-collection-cell-padding-x`, default `0`): at a 260px table the value gets 234px
+instead of 202px. A cell whose content is `null` prints no label either and is hidden in card mode,
+so a read-only row no longer shows `操作` over nothing.
+
+- Test: `table-stacked-cell-inset-1102.test.tsx` (Chromium at 320: inline padding 0, cell content
+  width = card content width, a 214px value fits, the token retunes it, the empty cell is
+  `display: none` with no label). Fails on 31.16.0.
+
+### 🐛 DropdownMenu: the surface's width no longer depends on where it is first placed (gh#1103)
+
+PATCH-level fix. `.ui-dropdown-menu-content` is absolutely positioned and was shrink-to-fit against
+its provisional `left`: near the viewport's right edge it was laid out at 200px, then React Aria
+moved it and it grew to 208px in the same ResizeObserver delivery, so Chromium raised
+"ResizeObserver loop completed with undelivered notifications". The surface is now
+`width: max-content`, capped by the new `--dropdown-content-max-width` (viewport less 12px each
+side). Consumers that set `width="md"` only to stop the resize can drop it.
+
+- Test: `dropdown-menu-intrinsic-width-1103.test.tsx` (Chromium at 768: the same menu is as wide
+  120px from the right edge as at `left: 0`, and a pathological label stays narrower than the
+  viewport). Fails on 31.16.0 (138px vs 202px).
+
 ## [31.16.0] - 2026-10-02
 
 ### ✨ TextDiff — what changed between two versions of a text (#1096)

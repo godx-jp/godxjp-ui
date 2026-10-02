@@ -8,6 +8,7 @@ import {
   StatusBadge,
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Star } from "lucide-react";
 
@@ -91,6 +92,7 @@ const statusBadgeTones = [
 ];
 
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer
       title="Badge"
@@ -295,6 +297,19 @@ export default function Demo() {
                   1811
                 </Badge>
               </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("badgeDocs.longLabels.title")}</CardTitle>
+            <CardDescription>{t("badgeDocs.longLabels.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" align="start" gap="xs">
+              <Badge tone="info">{t("badgeDocs.longLabels.sample")}</Badge>
+              <Badge status="active" />
             </Flex>
           </CardContent>
         </Card>

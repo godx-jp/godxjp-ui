@@ -207,6 +207,21 @@ const badgeToneClass: Record<BadgeTone, string | undefined> = {
   neutral: cn("border-transparent", toneNeutralClass),
 };
 
+/**
+ * A CUT LABEL STAYS READABLE (gh#1101). badge-layout.css ellipsizes a label wider than the chip's
+ * container; like antd `Typography ellipsis`, the full text then appears as a native `title` on
+ * hover. Measured on hover rather than observed, so an untruncated chip carries no `title` and
+ * costs no ResizeObserver. A caller's own `title` on the Badge wins (the handler is not attached).
+ */
+function titleTruncatedLabel(event: React.PointerEvent<HTMLSpanElement>) {
+  const label = event.currentTarget;
+  if (label.scrollWidth > label.clientWidth) {
+    label.title = label.textContent?.replace(/\s+/g, " ").trim() ?? "";
+  } else {
+    label.removeAttribute("title");
+  }
+}
+
 export function Badge({
   as: Element = "div",
   className,
@@ -306,7 +321,11 @@ export function Badge({
           node rides the label visibly low inside the chip. Trim needs a real box: it does not
           reach an anonymous flex item. */}
       {resolvedChildren != null ? (
-        <span ref={labelRef} data-slot="badge-label">
+        <span
+          ref={labelRef}
+          data-slot="badge-label"
+          onPointerEnter={props.title == null ? titleTruncatedLabel : undefined}
+        >
           {resolvedChildren}
         </span>
       ) : null}

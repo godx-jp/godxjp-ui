@@ -13,6 +13,15 @@
      * `align-self` there would top-align the chip instead of centring it on the text. This
      * constrains the width and leaves alignment alone. */
     inline-size: fit-content;
+    /* ...BUT NEVER WIDER THAN ITS CONTAINER (gh#1101). A 60-character team name in a fixed-width
+     * DataTable cell grew the chip to 394px inside a 242px cell and past the Card's edge, because
+     * nothing bounded it. The chip still never wraps (rule #35): the label below ellipsizes
+     * instead, as antd's `Typography ellipsis` does, and badge.tsx puts the full text in a
+     * `title` when it was cut. `min-inline-size: 0` lets a chip that is itself a flex item shrink. */
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    /* The bound includes the chip's own padding and border, whether or not a preflight is loaded. */
+    box-sizing: border-box;
     align-items: center;
     /* Center on the text x-height when the badge sits INLINE with running text (an inline-flex box
      * defaults to baseline → it rides high / "valign top" next to a label). */
@@ -31,6 +40,17 @@
     /* A status chip must read as one unit — never wrap its label across lines, especially inside
      * narrow table cells. */
     white-space: nowrap;
+  }
+
+  /* The label is the part that gives way (gh#1101): a shrinkable flex item that ellipsizes. Only
+   * the inline axis clips — `overflow-y` stays visible so the trimmed line box below never shears
+   * the ascenders and descenders off, and `clip` (not `hidden`) makes no scroll container. Icons
+   * and the × stay `flex-shrink: 0`, so the chip's affordances survive a long label. */
+  [data-slot="badge-label"] {
+    min-inline-size: 0;
+    overflow-x: clip;
+    overflow-y: visible;
+    text-overflow: ellipsis;
   }
 
   /* Optical vertical centering. */

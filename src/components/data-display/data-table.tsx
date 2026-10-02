@@ -2191,7 +2191,9 @@ DataTable.Content = function DataTableContent() {
                         className="ui-data-table-expanded-row hover:bg-transparent"
                         data-expanded-row=""
                       >
-                        <TableCell colSpan={emptyColSpan} flush>
+                        {/* Padded like any cell, as antd pads `.ant-table-expanded-row > td`
+                         * (gh#1083); `expandable.flush` hands the inset to the detail itself. */}
+                        <TableCell colSpan={emptyColSpan} flush={expandable.flush}>
                           {expandable.expandedRowRender(original as never, rowIndex, true)}
                         </TableCell>
                       </TableRow>

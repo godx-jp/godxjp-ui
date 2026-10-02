@@ -303,6 +303,12 @@ export type TableExpandableProp<T> = {
   /** Clicking anywhere on the row toggles it (antd `expandRowByClick`). */
   expandRowByClick?: boolean;
   columnTitle?: React.ReactNode;
+  /**
+   * The detail reaches the cell edges: no inset (gh#1083). Off by default — the expanded cell is
+   * padded like any other cell (antd), retuned by `--table-row-expanded-padding`. Set it for a
+   * detail that owns its inset, such as a nested table or a `ListRow` list.
+   */
+  flush?: FlushProp;
 };
 
 /** Footer totals row — receives the rows currently rendered (antd/rc-table `summary`). */
