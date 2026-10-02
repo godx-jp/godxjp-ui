@@ -6,6 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.20.0] - 2026-10-03
+
+Reported by godx-task adopting 31.18.0.
+
+### ✨ @godxjp/markdown: host control (gh#1116)
+
+- **`schema` widens a rule instead of appending a second one.** The sanitiser reads the first rule
+  for an attribute, so `code: [["className", "math-inline"]]` beside the default
+  `["className", /^language-./]` was ignored and formula classes were stripped. A rule for an
+  attribute the base already constrains is now merged into it; `protocols` are still untouchable.
+- **`allowedElements`, `disallowedElements`, `allowElement`, `unwrapDisallowed`** pass through to
+  react-markdown, so a body can be narrowed (an activity feed showing strong / em / del / code).
+  They only remove.
+- **A host `pre` keeps Mermaid.** Mermaid fences go through the gate before a host `pre` is asked;
+  `mermaid={false}` hands them to the host too.
+- Test: `host-control-1116.test.tsx`. Fails on 31.19.0.
+
+### 🐛 @godxjp/editor (gh#1117)
+
+- `lucide-react` is a regular dependency (it was a `>=1.0.0` peer, undocumented, so an app on 0.x
+  failed to install).
+- Bold / italic on a partly marked selection makes ONE run: `hi** new` selected in `**hi** new`
+  gives `**hi new**`, not `****hi** new**`. Test: `format.test.ts`. Fails on 31.19.0.
+
+### 🔧 Release: one publish run per tag
+
+v31.19.0's tag push started two publish runs a second apart; both staged the same version and the
+second went red with npm E409. `npm-publish.yml` now queues runs for the same tag
+(`concurrency`, never cancelling one mid-publish).
+
 ## [31.19.0] - 2026-10-03
 
 ### ✨ Prose: `measure` caps the reading line (gh#1112)

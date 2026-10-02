@@ -45,15 +45,41 @@ export type SchemaExtension = {
   attributes?: Record<string, NonNullable<SanitizeSchema["attributes"]>[string]>;
 };
 
+type AttributeRule = NonNullable<SanitizeSchema["attributes"]>[string][number];
+
+/** `["className", …]` → "className"; a bare `"id"` → "id". */
+const ruleName = (rule: AttributeRule) => (Array.isArray(rule) ? rule[0] : rule);
+
 /**
  * The schema plus a host's additions. ADDITIVE: an extension can allow a tag or an attribute, never
  * widen `protocols` or bring raw HTML back, so a consumer cannot loosen the URL policy by accident.
- * An attribute list for a tag the base already lists is appended to, not replaced.
+ *
+ * A rule for an attribute the base ALREADY constrains is MERGED into that rule (gh#1116): the
+ * sanitiser reads the first rule it finds for an attribute, so appending `["className",
+ * "math-inline"]` beside the default `["className", /^language-./]` was silently ignored and the
+ * formula class stripped. Merged, it is one rule allowing both. An attribute the base allows with
+ * no value constraint stays unconstrained.
  */
 export function extendSchema(extension: SchemaExtension = {}): SanitizeSchema {
   const attributes = { ...markdownSchema.attributes };
   for (const [tag, list] of Object.entries(extension.attributes ?? {})) {
-    attributes[tag] = [...(attributes[tag] ?? []), ...list];
+    const merged: AttributeRule[] = [...(attributes[tag] ?? [])];
+    for (const rule of list) {
+      const name = ruleName(rule);
+      const at = merged.findIndex((existing) => ruleName(existing) === name);
+      if (at === -1) {
+        merged.push(rule);
+        continue;
+      }
+      const existing = merged[at]!;
+      // A bare name already allows every value; a bare name added over a constrained rule widens
+      // it to every value, which is what the host asked for.
+      if (!Array.isArray(existing)) continue;
+      merged[at] = Array.isArray(rule)
+        ? ([name, ...existing.slice(1), ...rule.slice(1)] as AttributeRule)
+        : rule;
+    }
+    attributes[tag] = merged;
   }
   return {
     ...markdownSchema,

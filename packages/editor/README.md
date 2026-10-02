@@ -5,7 +5,7 @@ rendered by [`@godxjp/markdown`](../markdown) (the same sanitiser as the publish
 pasted, dropped or attached through an upload function **the host** provides.
 
 ```bash
-pnpm add @godxjp/editor @godxjp/markdown @godxjp/ui lucide-react
+pnpm add @godxjp/editor @godxjp/markdown @godxjp/ui
 ```
 
 ```tsx
