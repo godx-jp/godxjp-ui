@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.20.1] - 2026-10-03
+
+### 📝 Docs (gh#1119)
+
+- `@godxjp/markdown`: the `components` JSDoc no longer says a host `pre` replaces Mermaid — since
+  31.20.0 Mermaid fences are drawn first and a host `pre` renders every other fence.
+- README: where install scripts are off (`ignore-scripts=true`), the postinstall never refreshes the
+  MCP pin and agent rules; run `npx @godxjp/ui sync-rules` after each upgrade.
+
 ## [31.20.0] - 2026-10-03
 
 Reported by godx-task adopting 31.18.0.

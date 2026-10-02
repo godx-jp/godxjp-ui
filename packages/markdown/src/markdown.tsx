@@ -38,7 +38,10 @@ export type MarkdownProps = {
   rehypePlugins?: PluggableList;
   /** Tags / attributes a host plugin needs. Additive; cannot widen the URL policy. */
   schema?: SchemaExtension;
-  /** Element overrides (react-markdown `components`). A host `pre` replaces the Mermaid default. */
+  /**
+   * Element overrides (react-markdown `components`). A host `pre` renders every fence EXCEPT
+   * ```mermaid, which is drawn through the gate first; `mermaid={false}` hands those to it too.
+   */
   components?: Components;
   /**
    * Resolves a host-specific URL (`asset:…`, a wiki link) to a real one. Runs before the sanitiser

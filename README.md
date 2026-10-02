@@ -30,6 +30,11 @@ Writes `.mcp.json`, `CLAUDE.md` and `.ai/rules/` into the consumer repo and wire
 **locked to the version on disk** — the failure it prevents is an agent being told a prop does not
 exist because the catalog was two minors behind (gh#789).
 
+The package's postinstall runs this on every install, so an upgrade moves the MCP pin forward by
+itself. **Where install scripts are off** (`npm config get ignore-scripts` is `true`, which some CI
+images and machines set), it never runs: run `npx @godxjp/ui sync-rules` yourself after each upgrade,
+or the agent keeps asking the catalog of the version you first installed.
+
 ### If your agent can only fetch URLs
 
 ChatGPT on the web, Claude.ai, or any client without a local process. The same data is served as
