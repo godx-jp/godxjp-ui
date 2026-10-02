@@ -303,6 +303,16 @@
   },
   {
     "group": "data-display",
+    "name": "Markdown",
+    "tagline": "The one Markdown renderer for GoDX apps (sibling package `@godxjp/markdown`, versioned with the kit): GFM + GitHub heading anchors, one sanitiser schema (no raw HTML; http/https/mailto/relative URLs only), and ```mermaid drawn only after its SVG passes a fail-closed gate (gh#1108). Wrap it in `Prose`."
+  },
+  {
+    "group": "data-entry",
+    "name": "MarkdownEditor",
+    "tagline": "Markdown editor (sibling package `@godxjp/editor`, versioned with the kit): the kit's Textarea with a WAI-ARIA formatting toolbar, write / preview / side by side (preview via `@godxjp/markdown`), IME-safe ⌘/Ctrl+B·I·K, one undo step per toolbar edit, and paste / drop / attach through a host `upload` (gh#1109)."
+  },
+  {
+    "group": "data-display",
     "name": "Prose",
     "tagline": "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from. To RENDER Markdown, use the sibling package `@godxjp/markdown` inside it — `<Prose><Markdown>{body}</Markdown></Prose>` — the one GFM renderer + sanitiser + Mermaid gate shared by every GoDX app; do not assemble react-markdown + rehype-sanitize per app (gh#1108)."
   },

@@ -1,0 +1,64 @@
+{
+  "docPath": "docs/data-display/markdown.tsx",
+  "example": "import { Prose } from \"@godxjp/ui/data-display\";\nimport { Markdown } from \"@godxjp/markdown\";\n\n<Prose measure=\"narrow\">\n  <Markdown resolveUrl={(url) => (url.startsWith(\"asset:\") ? assetUrl(url) : undefined)}>\n    {page.body}\n  </Markdown>\n</Prose>",
+  "group": "data-display",
+  "importPath": "@godxjp/markdown",
+  "name": "Markdown",
+  "props": [
+    {
+      "description": "The Markdown source.",
+      "name": "children",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Host markers (callouts, embeds), run after GFM. Their output is still sanitised — allow marker attributes with `schema`.",
+      "name": "remarkPlugins",
+      "type": "PluggableList"
+    },
+    {
+      "description": "Tags / attributes a host plugin needs. ADDITIVE: it can never widen the URL policy or bring raw HTML back.",
+      "name": "schema",
+      "type": "{ tagNames?: string[]; attributes?: Record<string, …> }"
+    },
+    {
+      "description": "Map a host scheme (`asset:…`, wiki links) to a real URL. Runs BEFORE the sanitiser, which then judges the result.",
+      "name": "resolveUrl",
+      "type": "(url, key) => string | undefined"
+    },
+    {
+      "description": "Server-assigned anchors instead of GitHub slugs.",
+      "name": "headingId",
+      "type": "({ depth, text, index }) => string | undefined"
+    },
+    {
+      "description": "Element overrides (react-markdown). A host `pre` replaces the Mermaid default.",
+      "name": "components",
+      "type": "Components"
+    },
+    {
+      "description": "Run AFTER the sanitiser — presentation only.",
+      "name": "rehypePlugins",
+      "type": "PluggableList"
+    },
+    {
+      "defaultValue": "true",
+      "description": "`false` keeps ```mermaid fences as code. Diagrams need the optional peer `mermaid`.",
+      "name": "mermaid",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Prose — the typography wrapper this renders into.",
+    "MarkdownEditor — editing; its preview is this renderer.",
+    "CodeBlock — a single block of preformatted text, not a document."
+  ],
+  "rules": [],
+  "storyPath": "data-display/markdown.tsx",
+  "tagline": "The one Markdown renderer for GoDX apps (sibling package `@godxjp/markdown`, versioned with the kit): GFM + GitHub heading anchors, one sanitiser schema (no raw HTML; http/https/mailto/relative URLs only), and ```mermaid drawn only after its SVG passes a fail-closed gate (gh#1108). Wrap it in `Prose`.",
+  "usage": [
+    "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
+    "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
+    "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate."
+  ]
+}

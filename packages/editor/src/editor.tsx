@@ -71,7 +71,11 @@ export type MarkdownEditorProps = Omit<
    * (an app's own storage today, the media service later). Omit it and files are not accepted.
    */
   upload?: (file: File) => Promise<MarkdownEditorUploadResult>;
-  /** When set, files are refused with this message (a quota, a read-only space). */
+  /**
+   * When set, files are refused with this message (a quota, a read-only space) — with or without
+   * `upload`. Pasted / dropped files show it; the attach button carries it in its name and tooltip
+   * and shows it when pressed, instead of opening a file picker whose choice would be refused.
+   */
   uploadBlockedReason?: string | null;
   /** The preview. Default: `<Prose><Markdown>{value}</Markdown></Prose>` from `@godxjp/markdown`. */
   renderPreview?: (value: string) => React.ReactNode;
@@ -224,12 +228,18 @@ export const MarkdownEditor = React.forwardRef<HTMLTextAreaElement, MarkdownEdit
     const uploadSeq = React.useRef(0);
     const fileInput = React.useRef<HTMLInputElement>(null);
 
+    // Files are TAKEN (the browser's default is stopped) when there is somewhere to send them OR a
+    // reason why not: a blocked editor must say why, even when the host passes no `upload` at all.
+    const takesFiles = Boolean(upload) || Boolean(uploadBlockedReason);
+
     const acceptFiles = async (files: File[]) => {
-      if (!upload || files.length === 0 || !editable) return;
+      if (files.length === 0 || !editable) return;
+      // The reason comes first: refusing is an answer the user gets with or without `upload`.
       if (uploadBlockedReason) {
         setUploadError(uploadBlockedReason);
         return;
       }
+      if (!upload) return;
       setUploadError(null);
       for (const file of files) {
         // A placeholder per file, unique, so concurrent uploads never replace each other's.
@@ -298,12 +308,17 @@ export const MarkdownEditor = React.forwardRef<HTMLTextAreaElement, MarkdownEdit
       },
       { key: "quote", label: label("quote"), icon: <Quote />, run: () => lines("> ") },
     ];
-    if (upload) {
+    if (takesFiles) {
       builtIn.push({
         key: "attach",
-        label: label("attach"),
+        // A blocked attach says why in its own name and tooltip, BEFORE anyone opens the picker.
+        label: uploadBlockedReason
+          ? `${label("attach")} — ${uploadBlockedReason}`
+          : label("attach"),
         icon: <Paperclip />,
-        run: () => fileInput.current?.click(),
+        // …and a press repeats the reason instead of opening a picker whose choice would be refused.
+        run: () =>
+          uploadBlockedReason ? setUploadError(uploadBlockedReason) : fileInput.current?.click(),
       });
     }
     const all = [...builtIn, ...actions];
@@ -351,7 +366,7 @@ export const MarkdownEditor = React.forwardRef<HTMLTextAreaElement, MarkdownEdit
         onPaste={(event) => {
           onPaste?.(event);
           const files = Array.from(event.clipboardData?.files ?? []);
-          if (!event.defaultPrevented && upload && files.length > 0) {
+          if (!event.defaultPrevented && takesFiles && files.length > 0) {
             event.preventDefault();
             void acceptFiles(files);
           }
@@ -359,7 +374,7 @@ export const MarkdownEditor = React.forwardRef<HTMLTextAreaElement, MarkdownEdit
         onDrop={(event) => {
           onDrop?.(event);
           const files = Array.from(event.dataTransfer?.files ?? []);
-          if (!event.defaultPrevented && upload && files.length > 0) {
+          if (!event.defaultPrevented && takesFiles && files.length > 0) {
             event.preventDefault();
             void acceptFiles(files);
           }
@@ -406,7 +421,7 @@ export const MarkdownEditor = React.forwardRef<HTMLTextAreaElement, MarkdownEdit
             {mode === "preview" ? preview : null}
           </>
         )}
-        {upload ? (
+        {upload && !uploadBlockedReason ? (
           <input
             ref={fileInput}
             type="file"

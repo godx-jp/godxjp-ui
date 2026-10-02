@@ -12671,6 +12671,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "measure",
+          "origin": "owned",
+          "required": false,
+          "type": "FlexMeasureProp | undefined",
+          "values": ["narrow", "medium", "wide"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "size",
           "origin": "owned",
           "required": false,

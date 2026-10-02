@@ -5909,6 +5909,154 @@ import { Flex } from "@godxjp/ui/layout";
     rules: [],
   },
   {
+    name: "Markdown",
+    group: "data-display",
+    importPath: "@godxjp/markdown",
+    tagline:
+      "The one Markdown renderer for GoDX apps (sibling package `@godxjp/markdown`, versioned with the kit): GFM + GitHub heading anchors, one sanitiser schema (no raw HTML; http/https/mailto/relative URLs only), and ```mermaid drawn only after its SVG passes a fail-closed gate (gh#1108). Wrap it in `Prose`.",
+    props: [
+      { name: "children", type: "string", required: true, description: "The Markdown source." },
+      {
+        name: "remarkPlugins",
+        type: "PluggableList",
+        description:
+          "Host markers (callouts, embeds), run after GFM. Their output is still sanitised — allow marker attributes with `schema`.",
+      },
+      {
+        name: "schema",
+        type: "{ tagNames?: string[]; attributes?: Record<string, …> }",
+        description:
+          "Tags / attributes a host plugin needs. ADDITIVE: it can never widen the URL policy or bring raw HTML back.",
+      },
+      {
+        name: "resolveUrl",
+        type: "(url, key) => string | undefined",
+        description:
+          "Map a host scheme (`asset:…`, wiki links) to a real URL. Runs BEFORE the sanitiser, which then judges the result.",
+      },
+      {
+        name: "headingId",
+        type: "({ depth, text, index }) => string | undefined",
+        description: "Server-assigned anchors instead of GitHub slugs.",
+      },
+      {
+        name: "components",
+        type: "Components",
+        description:
+          "Element overrides (react-markdown). A host `pre` replaces the Mermaid default.",
+      },
+      {
+        name: "rehypePlugins",
+        type: "PluggableList",
+        description: "Run AFTER the sanitiser — presentation only.",
+      },
+      {
+        name: "mermaid",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "`false` keeps ```mermaid fences as code. Diagrams need the optional peer `mermaid`.",
+      },
+    ],
+    usage: [
+      "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
+      "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
+      "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate.",
+    ],
+    related: [
+      "Prose — the typography wrapper this renders into.",
+      "MarkdownEditor — editing; its preview is this renderer.",
+      "CodeBlock — a single block of preformatted text, not a document.",
+    ],
+    example: `import { Prose } from "@godxjp/ui/data-display";
+import { Markdown } from "@godxjp/markdown";
+
+<Prose measure="narrow">
+  <Markdown resolveUrl={(url) => (url.startsWith("asset:") ? assetUrl(url) : undefined)}>
+    {page.body}
+  </Markdown>
+</Prose>`,
+    docPath: "docs/data-display/markdown.tsx",
+    storyPath: "data-display/markdown.tsx",
+    rules: [],
+  },
+  {
+    name: "MarkdownEditor",
+    group: "data-entry",
+    importPath: "@godxjp/editor",
+    tagline:
+      "Markdown editor (sibling package `@godxjp/editor`, versioned with the kit): the kit's Textarea with a WAI-ARIA formatting toolbar, write / preview / side by side (preview via `@godxjp/markdown`), IME-safe ⌘/Ctrl+B·I·K, one undo step per toolbar edit, and paste / drop / attach through a host `upload` (gh#1109).",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        description: "Controlled Markdown text (with `onValueChange`).",
+      },
+      { name: "defaultValue", type: "string", description: "Uncontrolled initial text." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Every change: typing, toolbar, uploads, undo.",
+      },
+      {
+        name: "mode",
+        type: '"write" | "preview" | "split"',
+        description:
+          "Controlled view (with `onModeChange`); `defaultMode` for uncontrolled. Default `write`.",
+      },
+      {
+        name: "upload",
+        type: "(file: File) => Promise<{ url: string; name?: string }>",
+        description:
+          "Stores a pasted / dropped / attached file; the HOST decides where. A placeholder becomes `![name](url)` (images) or `[name](url)`; a failure removes it and names the file.",
+      },
+      {
+        name: "uploadBlockedReason",
+        type: "string | null",
+        description:
+          "Refuses files with this message, with or without `upload`; the attach button carries the reason and shows it instead of opening the picker (gh#1114).",
+      },
+      {
+        name: "renderPreview",
+        type: "(value: string) => ReactNode",
+        description: "Replace the preview (an app with its own embeds).",
+      },
+      {
+        name: "actions",
+        type: "{ key, label, icon, run(api) }[]",
+        description:
+          "Extra toolbar actions — the extension point for new block types (`api`: value, selection, edit, insert, focus).",
+      },
+      {
+        name: "labels",
+        type: "Partial<MarkdownEditorLabels>",
+        description: "Override any string (defaults: the kit's ja / en / vi catalogue).",
+      },
+    ],
+    usage: [
+      "DO put it inside `FormField` — `id` / `aria-*` reach the textarea.",
+      "DO keep a host autocomplete (ChatSuggestion) by passing its `onKeyDown`: it runs first, and `preventDefault()` skips the editor's shortcut.",
+      "DON'T build a toolbar over a bare Textarea, or a rich-text surface — this is the shared editor.",
+    ],
+    related: [
+      "Textarea — plain multi-line text; this is Textarea plus Markdown tooling.",
+      "Markdown — rendering a stored body.",
+    ],
+    example: `import { MarkdownEditor } from "@godxjp/editor";
+import { FormField } from "@godxjp/ui/data-entry";
+
+<FormField id="body" label="本文">
+  <MarkdownEditor
+    value={body}
+    onValueChange={setBody}
+    upload={async (file) => ({ url: await storage.put(file), name: file.name })}
+  />
+</FormField>`,
+    docPath: "docs/data-entry/markdown-editor.tsx",
+    storyPath: "data-entry/markdown-editor.tsx",
+    rules: [],
+  },
+  {
     name: "Prose",
     group: "data-display",
     tagline:
@@ -5927,6 +6075,12 @@ import { Flex } from "@godxjp/ui/layout";
         defaultValue: '"fit"',
         description:
           "`fit` scales images to the column; `original` shows them at their authored size and the container scrolls horizontally.",
+      },
+      {
+        name: "measure",
+        type: '"narrow" | "medium" | "wide"',
+        description:
+          "Reading line length (gh#1112): caps the inline size at the `--page-measure-*` token — the same vocabulary and tokens as `Flex measure` / `PageContainer measure` (narrow 42rem, medium 48rem sit in the 45–75 character band). A cap, not a centred column: the body keeps its start edge under its heading. Use it on a document/wiki/decision body instead of narrowing the whole page column; title and metadata stay full width. Unset = full width.",
       },
       { name: "children", type: "ReactNode", description: "The rendered content." },
       { name: "className", type: "string", description: "Extra classes on the container." },
