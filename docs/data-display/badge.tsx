@@ -301,6 +301,25 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Long labels</CardTitle>
+            <CardDescription>
+              チップは折り返さず、コンテナより広いラベルは省略記号で切れます（gh#1101）。切れたときは
+              ホバーで全文が title に出ます。表のセルでも Card でも、追加の指定は要りません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" align="start" gap="xs">
+              <Badge tone="info">
+                チーム経由 ·
+                プラットフォーム基盤運用チーム（東日本リージョン・夜間当番ローテーション第二班）
+              </Badge>
+              <Badge status="active" />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Icon overrides</CardTitle>
             <CardDescription>
               icon replaces the status-mapped icon; icon=&#123;null&#125; suppresses it entirely

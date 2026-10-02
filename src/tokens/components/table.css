@@ -263,6 +263,10 @@
   --table-stacked-collection-card-padding-x: var(--space-inline-md);
   --table-stacked-collection-card-gap: var(--space-stack-sm);
   --table-stacked-collection-cell-padding-y: var(--space-stack-xs);
+  /* Inline inset of a folded cell inside its card (gh#1102). 0: the card's own
+   * --table-stacked-collection-card-padding-x is the inset, so a value line gets the card's full
+   * content width instead of losing the table's cell padding on both sides. */
+  --table-stacked-collection-cell-padding-x: 0;
   --table-stacked-collection-label-font-size: var(
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))

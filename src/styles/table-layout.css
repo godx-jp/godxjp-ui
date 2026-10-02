@@ -759,22 +759,6 @@
    * the full wash, byte-for-byte; on a striped table it is gone, because there the stripe already
    * ties the panel to its record — the detail row wears exactly its record's background, and a
    * second tint on top would make it read as a different row. */
-  /* gh#1083 — the detail is a BLOCK, not a grid cell: it wraps (the cell's `nowrap` inherits into
-   * everything it holds, so a ListRow title ran under its trailing and an Alert pushed the table
-   * 79px wide), and it is inset like any cell, as antd pads `.ant-table-expanded-row > td`.
-   * `expandable.flush` (the cell's `[data-flush]`) keeps the edge-to-edge detail. The default is
-   * the cell's own padding, so it follows `density`. */
-  .ui-data-table-expanded-row > [data-slot="table-cell"] {
-    white-space: normal;
-  }
-
-  .ui-data-table-expanded-row > [data-slot="table-cell"]:not([data-flush]) {
-    padding: var(
-      --table-row-expanded-padding,
-      var(--table-cell-padding-y) var(--table-cell-space-x, var(--space-section-active))
-    );
-  }
-
   .ui-data-table-expanded-row > [data-slot="table-cell"] {
     background-color: color-mix(
       in srgb,
@@ -782,6 +766,22 @@
         calc(100% - var(--table-row-striped-alpha)),
       transparent
     );
+  }
+  /* gh#1083 — the detail is a BLOCK, not a grid cell: it wraps (the cell's `nowrap` inherits into
+   * everything it holds, so a ListRow title ran under its trailing and an Alert pushed the table
+   * 79px wide), and it is inset like any cell, as antd pads `.ant-table-expanded-row > td`.
+   * `expandable.flush` (the cell's `[data-flush]`) keeps the edge-to-edge detail. The default is
+   * the cell's own padding, so it follows `density`. */
+  .ui-data-table-expanded-row > [data-slot="table-cell"]:not([data-flush]) {
+    white-space: normal;
+    padding: var(
+      --table-row-expanded-padding,
+      var(--table-cell-padding-y) var(--table-cell-space-x, var(--space-section-active))
+    );
+  }
+
+  .ui-data-table-expanded-row > [data-slot="table-cell"][data-flush] {
+    white-space: normal;
   }
 
   /* ── antd `summary` — the footer totals row ───────────────────────────── */
@@ -1243,8 +1243,16 @@
     [data-collapse-below="sm"] [data-slot="table-cell"] {
       display: block;
       padding-block: var(--table-stacked-collection-cell-padding-y);
+      /* The CARD owns the inline inset (gh#1102): a folded cell keeping the table's
+       * --table-cell-space-x inside --table-stacked-collection-card-padding-x lost 32px of
+       * every value line at 320px and broke a 31-character email mid-token. */
+      padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
       overflow-wrap: anywhere;
+    }
+
+    [data-collapse-below="sm"] [data-slot="table-cell"]:empty {
+      display: none;
     }
 
     [data-collapse-below="sm"] .ui-table-stacked-collection-label {
@@ -1288,8 +1296,13 @@
     [data-collapse-below="md"] [data-slot="table-cell"] {
       display: block;
       padding-block: var(--table-stacked-collection-cell-padding-y);
+      padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
       overflow-wrap: anywhere;
+    }
+
+    [data-collapse-below="md"] [data-slot="table-cell"]:empty {
+      display: none;
     }
 
     [data-collapse-below="md"] .ui-table-stacked-collection-label {
@@ -1333,8 +1346,13 @@
     [data-collapse-below="lg"] [data-slot="table-cell"] {
       display: block;
       padding-block: var(--table-stacked-collection-cell-padding-y);
+      padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
       overflow-wrap: anywhere;
+    }
+
+    [data-collapse-below="lg"] [data-slot="table-cell"]:empty {
+      display: none;
     }
 
     [data-collapse-below="lg"] .ui-table-stacked-collection-label {
@@ -1378,8 +1396,13 @@
     [data-collapse-below="xl"] [data-slot="table-cell"] {
       display: block;
       padding-block: var(--table-stacked-collection-cell-padding-y);
+      padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
       overflow-wrap: anywhere;
+    }
+
+    [data-collapse-below="xl"] [data-slot="table-cell"]:empty {
+      display: none;
     }
 
     [data-collapse-below="xl"] .ui-table-stacked-collection-label {

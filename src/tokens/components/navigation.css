@@ -328,6 +328,10 @@
   --menu-content-min-width: 10rem;
   /* DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu. */
   --dropdown-content-min-width: 8rem;
+  /* Ceiling of the menu surface's intrinsic width (gh#1103). The surface is `width: max-content`
+   * so its width never depends on the provisional `left` it is first laid out at; this keeps a
+   * long label inside the viewport, less React Aria's default 12px container padding each side. */
+  --dropdown-content-max-width: calc(100vw - 1.5rem);
   /* THE MENU SURFACE (gh#880). `.ui-dropdown-menu-content` painted `hsl(var(--popover))` with no
    * knob, while `.ui-popover-content` — the same kind of floating panel, in the same portal — had
    * `--popover-surface-background`. That asymmetry is the shape of defect this repo keeps paying

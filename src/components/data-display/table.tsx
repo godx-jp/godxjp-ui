@@ -513,7 +513,10 @@ export const TableCell = React.forwardRef<
         }
         {...props}
       >
-        {label !== undefined ? (
+        {/* gh#1102 — an EMPTY cell (a `render` that returned null on a read-only row) prints no
+         * label either: a heading over nothing was a dead line in every stacked card. With neither,
+         * the `<td>` is `:empty` and table-layout.css drops it from the card. */}
+        {label !== undefined && children != null && children !== false && children !== "" ? (
           <span className="ui-table-stacked-collection-label" aria-hidden="true">
             {label}
           </span>

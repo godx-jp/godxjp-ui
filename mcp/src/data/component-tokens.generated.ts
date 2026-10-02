@@ -6009,6 +6009,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
   },
   {
+    "name": "--dropdown-content-max-width",
+    "value": "calc(100vw - 1.5rem)",
+    "description": "Ceiling of the menu surface's intrinsic width (gh#1103). The surface is `width: max-content` so its width never depends on the provisional `left` it is first laid out at; this keeps a long label inside the viewport, less React Aria's default 12px container padding each side."
+  },
+  {
     "name": "--dropdown-content-background",
     "value": "initial",
     "description": "THE MENU SURFACE (gh#880). `.ui-dropdown-menu-content` painted `hsl(var(--popover))` with no knob, while `.ui-popover-content` — the same kind of floating panel, in the same portal — had `--popover-surface-background`. That asymmetry is the shape of defect this repo keeps paying for: the theme reaches two of the three menu surfaces and the third silently stays opaque. A DROPDOWN IS THE MOST OPAQUE MEMBER OF THE FAMILY, by the standard's own rule (docs/GLASSMORPHISM-STANDARD.md §4): it is small, it sits over arbitrary content, and a 7-line menu over a photograph is unreadable at a card's alpha. It therefore gets its OWN fill knob rather than sharing the popover's — the two are meant to be able to differ. default = hsl(var(--popover)) at the call site"
@@ -8327,6 +8332,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-stacked-collection-cell-padding-y",
     "value": "var(--space-stack-xs)",
     "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-stacked-collection-cell-padding-x",
+    "value": "0",
+    "description": "Inline inset of a folded cell inside its card (gh#1102). 0: the card's own --table-stacked-collection-card-padding-x is the inset, so a value line gets the card's full content width instead of losing the table's cell padding on both sides."
   },
   {
     "name": "--table-stacked-collection-label-font-size",
