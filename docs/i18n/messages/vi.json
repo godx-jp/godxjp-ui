@@ -1563,7 +1563,7 @@
   "badgeDocs": {
     "longLabels": {
       "title": "Nhãn dài",
-      "description": "Chip không bao giờ xuống dòng: nhãn rộng hơn khung chứa sẽ kết thúc bằng dấu ba chấm (gh#1101), và khi bị cắt thì toàn văn hiện thành title khi rê chuột. Trong ô bảng hay Card đều không cần thêm prop.",
+      "description": "Chip không bao giờ xuống dòng: nhãn rộng hơn khung chứa sẽ kết thúc bằng dấu ba chấm (gh#1101), và khi bị cắt thì toàn văn hiện trong tooltip khi rê chuột hoặc khi focus bàn phím vào liên kết/hàng chứa chip (gh#1105). Trong ô bảng hay Card đều không cần thêm prop.",
       "sample": "Qua nhóm · Đội vận hành hạ tầng nền tảng (vùng Đông Nhật Bản, ca trực đêm nhóm 2)"
     }
   }

@@ -265,7 +265,11 @@ const FOCUS_HOST =
 /** Is this box clipping its text right now? The clipped box is the content wrapper when there is one. */
 function isClipping(node: HTMLElement): boolean {
   const box = node.querySelector<HTMLElement>(':scope > [data-slot="typography-content"]') ?? node;
-  return box.scrollWidth > box.clientWidth || box.scrollHeight > box.clientHeight;
+  if (box.scrollWidth > box.clientWidth) return true;
+  // Block overflow counts only where it is CLIPPED (a line clamp). A Badge label trims its line box
+  // and keeps `overflow-y: visible` so the glyphs are not sheared, which makes every label
+  // "taller" than its box without hiding a pixel — gh#1105 measured a fitting chip opening a tooltip.
+  return box.scrollHeight > box.clientHeight && getComputedStyle(box).overflowY !== "visible";
 }
 
 /** `:focus-visible`, the same modality rule RAC applies to its own triggers. */

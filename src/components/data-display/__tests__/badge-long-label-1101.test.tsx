@@ -1,6 +1,5 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { fireEvent, render } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { chromium } from "playwright";
 import { describe, expect, it } from "vitest";
@@ -13,8 +12,8 @@ import { Badge } from "../badge";
  * gh#1101 — a Badge with a long label grew to its full text (394px in a 242px DataTable cell) and
  * ran past the cell and the Card: the chip had no `max-inline-size` and its label could not
  * shrink, so even `<Badge><Text ellipsis>` never truncated. Now the chip is bounded by its
- * container and the label ellipsizes (antd `Typography ellipsis`), with the full text as a
- * `title` on hover when it was cut. jsdom does not lay out: Chromium.
+ * container and the label ellipsizes (antd `Typography ellipsis`); the full text opens in a tooltip
+ * when it was cut (badge-label-tooltip-1105.test.tsx). jsdom does not lay out: Chromium.
  */
 const REPO = process.cwd();
 const css = [
@@ -105,34 +104,5 @@ describe("Badge long label (Chromium, gh#1101)", () => {
     } finally {
       await browser.close();
     }
-  });
-});
-
-describe("Badge long label title (gh#1101)", () => {
-  const sized = (el: HTMLElement, scroll: number, client: number) => {
-    Object.defineProperty(el, "scrollWidth", { configurable: true, value: scroll });
-    Object.defineProperty(el, "clientWidth", { configurable: true, value: client });
-  };
-
-  it("shows the full text as a title on hover only when the label was cut", () => {
-    const { container } = render(<Badge>{LONG}</Badge>);
-    const label = container.querySelector<HTMLElement>('[data-slot="badge-label"]')!;
-    expect(label).not.toHaveAttribute("title");
-
-    sized(label, 394, 200);
-    fireEvent.pointerEnter(label);
-    expect(label).toHaveAttribute("title", LONG);
-
-    sized(label, 120, 120);
-    fireEvent.pointerEnter(label);
-    expect(label).not.toHaveAttribute("title");
-  });
-
-  it("leaves a caller's own title alone", () => {
-    const { container } = render(<Badge title="custom">{LONG}</Badge>);
-    const label = container.querySelector<HTMLElement>('[data-slot="badge-label"]')!;
-    sized(label, 394, 200);
-    fireEvent.pointerEnter(label);
-    expect(label).not.toHaveAttribute("title");
   });
 });

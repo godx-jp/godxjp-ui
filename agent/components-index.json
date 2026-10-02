@@ -239,7 +239,7 @@
   {
     "group": "data-display",
     "name": "Badge",
-    "tagline": "Plain or lifecycle badge. Use `variant` for static chips, or `status` to auto-map lifecycle keys to semantic tone + icon. Labels never wrap: a label wider than its container ellipsizes, with the full text as a hover `title` (gh#1101)."
+    "tagline": "Plain or lifecycle badge. Use `variant` for static chips, or `status` to auto-map lifecycle keys to semantic tone + icon. Labels never wrap: a label wider than its container ellipsizes, and its full text opens in a tooltip on hover or on keyboard focus of the control around the chip (gh#1101, gh#1105)."
   },
   {
     "group": "data-display",

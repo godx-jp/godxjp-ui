@@ -6,6 +6,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.17.1] - 2026-10-02
+
+### ♿ Badge: a cut label's full text opens on keyboard focus too (gh#1105)
+
+PATCH. 31.17.0 (gh#1101) put a cut label's full text in a native `title`, set on pointer hover, so
+a keyboard user focusing the link or row around the chip never got it, and neither did touch (WCAG
+2.1.1 / 1.4.13). The label now opens the same tooltip as `Text ellipsis={{ tooltip: true }}`: on
+pointer hover of the label and on keyboard focus of the nearest focusable control around the chip,
+only while it is actually cut. Escape closes it, the chip never becomes a tab stop, and its
+accessible name stays the full text. A caller's own `title` on the Badge turns it off.
+
+Shared fix in that tooltip: it counted block overflow as "cut" even where nothing is clipped. A
+Badge label keeps `overflow-y: visible` over its trimmed line box, so a chip that fits opened a
+tooltip; block overflow now counts only where the box clips it (a line clamp).
+
+- Test: `badge-label-tooltip-1105.test.tsx` (Chromium: focus of the surrounding link and hover open
+  it; a fitting label and a caller `title` do not; no chip is a tab stop). Fails on 31.17.0.
+
+### 🐛 Table stacked cards: a cell whose component renders nothing leaves the card (gh#1106)
+
+PATCH. gh#1102 dropped an empty folded cell only when `render` itself returned `null`. A `render`
+returning an element whose component renders `null` (a read-only row's `<RowActions>`) still printed
+its label over an empty line. A labelled cell now wraps its value in a `display: contents` box and
+the stacked-card rules drop the cell when that box rendered nothing.
+
+- Test: `table-stacked-cell-inset-1102.test.tsx` gains the component-renders-null cell and a
+  component that does render (kept, label and all). Fails on 31.17.0.
+
 ## [31.17.0] - 2026-10-02
 
 ### 🐛 Image: a failed `src` with a `fallback` no longer loops forever (gh#1082)
