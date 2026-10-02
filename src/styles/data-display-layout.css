@@ -1729,6 +1729,21 @@
     font-size: var(--prose-font-size-sm);
   }
 
+  /* `measure` — a reading line length (gh#1112). The page-column tokens Flex and PageContainer
+   * read, so a theme sets every reading column once. A cap, not a centred column: the body keeps
+   * its start edge under its heading. A long code line stays inside the cap (it wraps). */
+  .ui-prose[data-measure="narrow"] {
+    max-inline-size: var(--page-measure-narrow);
+  }
+
+  .ui-prose[data-measure="medium"] {
+    max-inline-size: var(--page-measure-medium);
+  }
+
+  .ui-prose[data-measure="wide"] {
+    max-inline-size: var(--page-measure-wide);
+  }
+
   .ui-prose[data-image-size="original"] {
     overflow-x: auto;
   }

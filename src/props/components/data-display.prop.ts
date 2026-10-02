@@ -35,11 +35,21 @@ export type CodeBlockProp = {
  * @see Prose — typography for rendered content (Markdown, CMS bodies). Styles descendant semantic
  * HTML from the tokens; it has no opinion about where the HTML comes from.
  */
+import type { FlexMeasureProp } from "./layout.prop";
+
 export type ProseProp = {
   /** Body size. `md` is the page body size; `sm` is the compact step. Default `md`. */
   size?: Extract<SizeProp, "sm" | "md">;
   /** `fit` scales images to the column (default); `original` shows them at their authored size. */
   imageSize?: "fit" | "original";
+  /**
+   * Caps the line length for reading (gh#1112): `narrow` / `medium` / `wide` read the same
+   * `--page-measure-*` tokens as `Flex measure` and `PageContainer measure`, so one theme knob sets
+   * every reading column. `narrow` (42rem) and `medium` (48rem) sit in the 45–75 character band.
+   * Unlike Flex it does NOT centre: the body keeps its start edge under the heading beside it.
+   * Unset = the full width of the container.
+   */
+  measure?: FlexMeasureProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };

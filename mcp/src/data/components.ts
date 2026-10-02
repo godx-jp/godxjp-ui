@@ -5928,6 +5928,12 @@ import { Flex } from "@godxjp/ui/layout";
         description:
           "`fit` scales images to the column; `original` shows them at their authored size and the container scrolls horizontally.",
       },
+      {
+        name: "measure",
+        type: '"narrow" | "medium" | "wide"',
+        description:
+          "Reading line length (gh#1112): caps the inline size at the `--page-measure-*` token — the same vocabulary and tokens as `Flex measure` / `PageContainer measure` (narrow 42rem, medium 48rem sit in the 45–75 character band). A cap, not a centred column: the body keeps its start edge under its heading. Use it on a document/wiki/decision body instead of narrowing the whole page column; title and metadata stay full width. Unset = full width.",
+      },
       { name: "children", type: "ReactNode", description: "The rendered content." },
       { name: "className", type: "string", description: "Extra classes on the container." },
     ],

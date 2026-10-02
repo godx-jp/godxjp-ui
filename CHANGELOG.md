@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.19.0] - 2026-10-03
+
+### ✨ Prose: `measure` caps the reading line (gh#1112)
+
+MINOR. A document body rendered full width ran 120+ characters a line on a wide page; godx-task
+(#453) narrowed its whole page column to `46rem` as a stand-in, taking the title and metadata with
+it. `<Prose measure="narrow" | "medium" | "wide">` caps the inline size at the `--page-measure-*`
+tokens `Flex measure` and `PageContainer measure` already read (narrow 42rem, medium 48rem — the
+45–75 character band), so one theme knob sets every reading column. A cap, not a centred column:
+the body keeps its start edge under its heading. A long code line stays inside the cap (it wraps).
+Unset = unchanged. `@godxjp/markdown` and `@godxjp/editor` move to 31.19.0 with the kit
+(lockstep), with no change of their own.
+
+- Test: `prose-measure-1112.test.tsx` (Chromium: 1200px unset, 42rem / 48rem capped, start edge
+  kept, a token override moves it, a long code line stays inside). Fails on 31.18.0.
+
 ## [31.18.0] - 2026-10-02
 
 ### ✨ New packages: `@godxjp/markdown` and `@godxjp/editor` (gh#1108, gh#1109)
