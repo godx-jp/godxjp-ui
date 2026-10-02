@@ -22,6 +22,18 @@ Unset = unchanged. `@godxjp/markdown` and `@godxjp/editor` move to 31.19.0 with 
 - Test: `prose-measure-1112.test.tsx` (Chromium: 1200px unset, 42rem / 48rem capped, start edge
   kept, a token override moves it, a long code line stays inside). Fails on 31.18.0.
 
+### 🐛 MarkdownEditor: a blocked upload says why, up front (gh#1114)
+
+Found by godx-content adopting 31.18.0. `uploadBlockedReason` did nothing without `upload` (files
+were dropped before the reason was checked), and with uploads blocked the attach button still
+opened the file picker, refusing only after a file was chosen. Now a pasted or dropped file shows
+the reason with or without `upload`, and the attach button carries the reason in its name and
+tooltip and repeats it when pressed, instead of opening the picker.
+
+- The MCP catalog now has `Markdown` (`@godxjp/markdown`) and `MarkdownEditor` (`@godxjp/editor`)
+  entries, so `search_components` / `get_component` find them; `check:mcp-sync` scans the packages.
+- Test: `editor.test.tsx` gains both cases. Fail on 31.18.0.
+
 ## [31.18.0] - 2026-10-02
 
 ### ✨ New packages: `@godxjp/markdown` and `@godxjp/editor` (gh#1108, gh#1109)

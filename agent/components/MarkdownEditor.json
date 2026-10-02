@@ -1,0 +1,66 @@
+{
+  "docPath": "docs/data-entry/markdown-editor.tsx",
+  "example": "import { MarkdownEditor } from \"@godxjp/editor\";\nimport { FormField } from \"@godxjp/ui/data-entry\";\n\n<FormField id=\"body\" label=\"本文\">\n  <MarkdownEditor\n    value={body}\n    onValueChange={setBody}\n    upload={async (file) => ({ url: await storage.put(file), name: file.name })}\n  />\n</FormField>",
+  "group": "data-entry",
+  "importPath": "@godxjp/editor",
+  "name": "MarkdownEditor",
+  "props": [
+    {
+      "description": "Controlled Markdown text (with `onValueChange`).",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial text.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Every change: typing, toolbar, uploads, undo.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Controlled view (with `onModeChange`); `defaultMode` for uncontrolled. Default `write`.",
+      "name": "mode",
+      "type": "\"write\" | \"preview\" | \"split\""
+    },
+    {
+      "description": "Stores a pasted / dropped / attached file; the HOST decides where. A placeholder becomes `![name](url)` (images) or `[name](url)`; a failure removes it and names the file.",
+      "name": "upload",
+      "type": "(file: File) => Promise<{ url: string; name?: string }>"
+    },
+    {
+      "description": "Refuses files with this message, with or without `upload`; the attach button carries the reason and shows it instead of opening the picker (gh#1114).",
+      "name": "uploadBlockedReason",
+      "type": "string | null"
+    },
+    {
+      "description": "Replace the preview (an app with its own embeds).",
+      "name": "renderPreview",
+      "type": "(value: string) => ReactNode"
+    },
+    {
+      "description": "Extra toolbar actions — the extension point for new block types (`api`: value, selection, edit, insert, focus).",
+      "name": "actions",
+      "type": "{ key, label, icon, run(api) }[]"
+    },
+    {
+      "description": "Override any string (defaults: the kit's ja / en / vi catalogue).",
+      "name": "labels",
+      "type": "Partial<MarkdownEditorLabels>"
+    }
+  ],
+  "related": [
+    "Textarea — plain multi-line text; this is Textarea plus Markdown tooling.",
+    "Markdown — rendering a stored body."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/markdown-editor.tsx",
+  "tagline": "Markdown editor (sibling package `@godxjp/editor`, versioned with the kit): the kit's Textarea with a WAI-ARIA formatting toolbar, write / preview / side by side (preview via `@godxjp/markdown`), IME-safe ⌘/Ctrl+B·I·K, one undo step per toolbar edit, and paste / drop / attach through a host `upload` (gh#1109).",
+  "usage": [
+    "DO put it inside `FormField` — `id` / `aria-*` reach the textarea.",
+    "DO keep a host autocomplete (ChatSuggestion) by passing its `onKeyDown`: it runs first, and `preventDefault()` skips the editor's shortcut.",
+    "DON'T build a toolbar over a bare Textarea, or a rich-text surface — this is the shared editor."
+  ]
+}

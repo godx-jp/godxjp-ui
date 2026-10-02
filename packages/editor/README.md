@@ -30,7 +30,9 @@ import { FormField } from "@godxjp/ui/data-entry";
   `readOnly`, its actions stay focusable but do nothing (`aria-disabled`).
 - Files: `upload(file) => Promise<{ url, name? }>`. A placeholder marks each upload and is replaced
   by `![name](url)` (images) or `[name](url)`; a failure removes it and says which file failed.
-  `uploadBlockedReason` refuses files with the host's message. Without `upload`, files are ignored.
+  `uploadBlockedReason` refuses files with the host's message — with or without `upload`: a
+  pasted or dropped file shows it, and the attach button names the reason and shows it when
+  pressed instead of opening the picker. With neither prop, files are left to the browser.
 - Strings come from the kit's catalogue in ja / en / vi; `labels` overrides any of them.
 
 ## Props

@@ -203,6 +203,27 @@ describe("MarkdownEditor (gh#1109)", () => {
     expect(upload).not.toHaveBeenCalled();
   });
 
+  it("a blocked editor says why even when the host passes no `upload` (godx-content 31.18.0)", async () => {
+    renderEditor({ uploadBlockedReason: "Uploads are off in this space." });
+    fireEvent.paste(box(), {
+      clipboardData: { files: [new File(["x"], "a.png", { type: "image/png" })] },
+    });
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("Uploads are off in this space."),
+    );
+  });
+
+  it("a blocked attach button names the reason up front and never opens the picker", async () => {
+    const user = userEvent.setup();
+    const upload = vi.fn();
+    const { container } = renderEditor({ upload, uploadBlockedReason: "Storage is full." });
+    const attach = button("Attach a file — Storage is full.");
+    expect(container.querySelector('input[type="file"]')).toBeNull();
+    await user.click(attach);
+    expect(screen.getByRole("alert")).toHaveTextContent("Storage is full.");
+    expect(upload).not.toHaveBeenCalled();
+  });
+
   it("without `upload`, pasted files are left to the browser and there is no attach button", () => {
     renderEditor();
     expect(within(toolbar()).queryByRole("button", { name: "Attach a file" })).toBeNull();
