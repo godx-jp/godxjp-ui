@@ -110,9 +110,4 @@ describe("mermaid option", () => {
       '<pre><code class="language-mermaid">graph TD; A--&gt;B\n</code></pre>',
     );
   });
-
-  it("a host `pre` override replaces the mermaid default", () => {
-    const html = render("```mermaid\nx\n```", { components: { pre: () => <div data-host="" /> } });
-    expect(html).toBe('<div data-host=""></div>');
-  });
 });

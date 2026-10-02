@@ -36,12 +36,36 @@ export function wrapSelection(
       select: { start: outerStart, end: outerStart + selected.length },
     };
   }
-  const body = selected || placeholder;
+  if (!selected) {
+    return {
+      from: start,
+      to: end,
+      insert: `${before}${placeholder}${after}`,
+      select: { start: start + before.length, end: start + before.length + placeholder.length },
+    };
+  }
+  // A selection that overlaps marked text becomes ONE run (gh#1117): `**hi** new` with `hi** new`
+  // selected is `**hi new**`, not `****hi** new**`. The markers inside the selection are absorbed,
+  // and so is an opener just before it or a closer just after it when that marker belongs to a run
+  // crossing the selection's edge (an odd number of markers precede it).
+  const count = (value: string) => (before === after ? value.split(before).length - 1 : 0);
+  let from = start;
+  let to = end;
+  if (
+    text.slice(start - before.length, start) === before &&
+    count(text.slice(0, start)) % 2 === 1
+  ) {
+    from = start - before.length;
+  }
+  if (text.slice(end, end + after.length) === after && count(text.slice(0, end)) % 2 === 1) {
+    to = end + after.length;
+  }
+  const body = text.slice(from, to).split(before).join("").split(after).join("");
   return {
-    from: start,
-    to: end,
+    from,
+    to,
     insert: `${before}${body}${after}`,
-    select: { start: start + before.length, end: start + before.length + body.length },
+    select: { start: from + before.length, end: from + before.length + body.length },
   };
 }
 

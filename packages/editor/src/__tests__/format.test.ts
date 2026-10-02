@@ -74,3 +74,29 @@ describe("text operations (gh#1109)", () => {
     ).toBe("[spec \\[v2\\].pdf](<https://x/a b.pdf>)");
   });
 });
+
+describe("bold toggle on a partly-bold selection (gh#1117)", () => {
+  it("selecting `hi** new` inside `**hi** new` gives one bold run, not nested markers", () => {
+    const text = "**hi** new";
+    expect(run(text, wrapSelection(text, { start: 2, end: 10 }, "**", "**", "text"))).toEqual({
+      text: "**hi new**",
+      selected: "hi new",
+    });
+  });
+
+  it("a selection holding a whole bold run inside it becomes one run", () => {
+    const text = "say **hi** now";
+    expect(run(text, wrapSelection(text, { start: 0, end: 14 }, "**", "**", "text"))).toEqual({
+      text: "**say hi now**",
+      selected: "say hi now",
+    });
+  });
+
+  it("a selection ending inside a bold run absorbs its closer", () => {
+    const text = "new **hi**";
+    expect(run(text, wrapSelection(text, { start: 0, end: 8 }, "**", "**", "text"))).toEqual({
+      text: "**new hi**",
+      selected: "new hi",
+    });
+  });
+});

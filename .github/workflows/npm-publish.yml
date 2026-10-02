@@ -49,6 +49,14 @@ on:
         type: boolean
         default: false
 
+# ONE RELEASE AT A TIME PER TAG. v31.19.0's tag push started two runs a second apart; both staged
+# the same version, the second got npm E409 ("cannot publish over previously staged version") and
+# went red while the first was still releasing. Queue, never cancel: a cancelled release mid-publish
+# leaves recovery state behind, a queued one finds the work done and its steps skip.
+concurrency:
+  group: npm-publish-${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
+  cancel-in-progress: false
+
 permissions:
   contents: read # nothing is pushed: both triggers publish a tag that is already on main
   checks: read # read the CI check-run conclusions for the commit being published

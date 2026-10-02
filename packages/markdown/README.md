@@ -34,15 +34,16 @@ as `react-markdown` + `remark-gfm` + `rehype-sanitize`, which is what the apps r
 
 ## Host extension points
 
-| prop                                | use                                                                                    |
-| ----------------------------------- | -------------------------------------------------------------------------------------- |
-| `remarkPlugins`                     | Host markers (callouts, embeds). Their output is still sanitised.                      |
-| `schema`                            | `{ tagNames, attributes }` the markers need. Additive: it cannot widen the URL policy. |
-| `resolveUrl(url, key)`              | Map a host scheme (`asset:…`) to a real URL before the sanitiser judges it.            |
-| `headingId({ depth, text, index })` | Use server-assigned anchors instead of slugs.                                          |
-| `components`                        | Element overrides; a host `pre` replaces the Mermaid default.                          |
-| `rehypePlugins`                     | Run after the sanitiser — presentation only.                                           |
-| `mermaid={false}`                   | Keep ```mermaid fences as code.                                                        |
+| prop                                   | use                                                                                                                                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `remarkPlugins`                        | Host markers (callouts, embeds). Their output is still sanitised.                                                                                                                     |
+| `schema`                               | `{ tagNames, attributes }` the markers need. A rule for an attribute the base already constrains is merged into it (`code` `className` + `math-inline`). Cannot widen the URL policy. |
+| `resolveUrl(url, key)`                 | Map a host scheme (`asset:…`) to a real URL before the sanitiser judges it.                                                                                                           |
+| `headingId({ depth, text, index })`    | Use server-assigned anchors instead of slugs.                                                                                                                                         |
+| `components`                           | Element overrides. Mermaid fences are drawn before a host `pre` is asked, so a host code renderer keeps Mermaid.                                                                      |
+| `rehypePlugins`                        | Run after the sanitiser — presentation only.                                                                                                                                          |
+| `mermaid={false}`                      | Keep ```mermaid fences as code (or hand them to the host `pre`).                                                                                                                      |
+| `allowedElements` / `unwrapDisallowed` | Narrow a body (an activity feed: `strong`, `em`, `del`, `code`). Only removes.                                                                                                        |
 
 ## Stored versions
 

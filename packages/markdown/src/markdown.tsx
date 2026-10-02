@@ -47,8 +47,22 @@ export type MarkdownProps = {
   resolveUrl?: (url: string, key: "href" | "src" | string) => string | undefined;
   /** Heading anchors: GitHub slugs by default; a host with server-side anchors supplies its own. */
   headingId?: HeadingIdResolver;
-  /** Render ```mermaid fences as gated diagrams (default true). `false` keeps them as code. */
+  /**
+   * Render ```mermaid fences as gated diagrams (default true). They are drawn BEFORE a host `pre`
+   * is consulted, so a host code renderer keeps Mermaid; `false` hands mermaid fences to the host
+   * `pre` (or plain code) as well (gh#1116).
+   */
   mermaid?: boolean;
+  /**
+   * NARROW the elements a body may produce — an activity feed that shows only inline formatting.
+   * react-markdown's own options, applied after the sanitiser; they can only remove, never allow
+   * what the schema strips (gh#1116).
+   */
+  allowedElements?: ReactMarkdownOptions["allowedElements"];
+  disallowedElements?: ReactMarkdownOptions["disallowedElements"];
+  allowElement?: ReactMarkdownOptions["allowElement"];
+  /** With an element filter: keep a removed element's children (its text) instead of dropping it. */
+  unwrapDisallowed?: boolean;
 };
 
 /** Element attributes that carry a URL, by tag. */
@@ -106,18 +120,29 @@ export function Markdown({
   resolveUrl,
   headingId,
   mermaid = true,
+  allowedElements,
+  disallowedElements,
+  allowElement,
+  unwrapDisallowed,
 }: MarkdownProps) {
   const sanitizeSchema = React.useMemo(() => extendSchema(schema), [schema]);
   const merged = React.useMemo<Components>(() => {
-    const base: Components = {};
-    if (mermaid) {
-      base.pre = ({ node, children: inner, ...props }) => {
-        const fence = fenceOf(node as Element | undefined);
-        if (fence?.language === "mermaid") return <MermaidDiagram source={fence.text} />;
-        return <pre {...props}>{inner}</pre>;
-      };
-    }
-    return { ...base, ...components };
+    if (!mermaid) return { ...components };
+    const HostPre = components?.pre;
+    // Mermaid first, then the host's renderer: a host that styles code keeps the gated diagrams.
+    const pre: Components["pre"] = (props) => {
+      const fence = fenceOf(props.node as Element | undefined);
+      if (fence?.language === "mermaid") return <MermaidDiagram source={fence.text} />;
+      if (HostPre)
+        return typeof HostPre === "string" ? (
+          React.createElement(HostPre, props)
+        ) : (
+          <HostPre {...props} />
+        );
+      const { node: _node, children: inner, ...rest } = props;
+      return <pre {...rest}>{inner}</pre>;
+    };
+    return { ...components, pre };
   }, [components, mermaid]);
 
   return (
@@ -131,6 +156,10 @@ export function Markdown({
       ]}
       urlTransform={safeUrl}
       components={merged}
+      allowedElements={allowedElements}
+      disallowedElements={disallowedElements}
+      allowElement={allowElement}
+      unwrapDisallowed={unwrapDisallowed}
     >
       {children}
     </ReactMarkdown>

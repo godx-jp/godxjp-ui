@@ -5926,7 +5926,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "schema",
         type: "{ tagNames?: string[]; attributes?: Record<string, …> }",
         description:
-          "Tags / attributes a host plugin needs. ADDITIVE: it can never widen the URL policy or bring raw HTML back.",
+          "Tags / attributes a host plugin needs. A rule for an attribute the base already constrains is MERGED into it (e.g. `code` `className` + `math-inline`), gh#1116. It can never widen the URL policy or bring raw HTML back.",
       },
       {
         name: "resolveUrl",
@@ -5943,12 +5943,18 @@ import { Flex } from "@godxjp/ui/layout";
         name: "components",
         type: "Components",
         description:
-          "Element overrides (react-markdown). A host `pre` replaces the Mermaid default.",
+          "Element overrides (react-markdown). Mermaid fences are drawn through the gate BEFORE a host `pre` is asked, so a host code renderer keeps Mermaid (gh#1116).",
       },
       {
         name: "rehypePlugins",
         type: "PluggableList",
         description: "Run AFTER the sanitiser — presentation only.",
+      },
+      {
+        name: "allowedElements",
+        type: "string[]",
+        description:
+          "Narrow the elements a body may produce (with `unwrapDisallowed` to keep their text) — an activity feed showing only strong / em / del / code. Only removes; never allows what the schema strips (gh#1116).",
       },
       {
         name: "mermaid",
