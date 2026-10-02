@@ -784,6 +784,13 @@
     white-space: normal;
   }
 
+  /* gh#1106 — the value box TableCell puts around a labelled cell's content. It lays out nothing
+   * (`display: contents`); it exists so the stacked-card rules can ask whether the cell RENDERED
+   * anything (`:empty`), which a `children` check cannot answer for a component returning null. */
+  .ui-table-stacked-collection-value {
+    display: contents;
+  }
+
   /* ── antd `summary` — the footer totals row ───────────────────────────── */
   .ui-data-table-summary {
     background-color: var(--table-summary-background, hsl(var(--muted)));
@@ -1251,7 +1258,9 @@
       overflow-wrap: anywhere;
     }
 
-    [data-collapse-below="sm"] [data-slot="table-cell"]:empty {
+    [data-collapse-below="sm"] [data-slot="table-cell"]:empty,
+    [data-collapse-below="sm"]
+      [data-slot="table-cell"]:has(> .ui-table-stacked-collection-value:empty) {
       display: none;
     }
 
@@ -1301,7 +1310,9 @@
       overflow-wrap: anywhere;
     }
 
-    [data-collapse-below="md"] [data-slot="table-cell"]:empty {
+    [data-collapse-below="md"] [data-slot="table-cell"]:empty,
+    [data-collapse-below="md"]
+      [data-slot="table-cell"]:has(> .ui-table-stacked-collection-value:empty) {
       display: none;
     }
 
@@ -1351,7 +1362,9 @@
       overflow-wrap: anywhere;
     }
 
-    [data-collapse-below="lg"] [data-slot="table-cell"]:empty {
+    [data-collapse-below="lg"] [data-slot="table-cell"]:empty,
+    [data-collapse-below="lg"]
+      [data-slot="table-cell"]:has(> .ui-table-stacked-collection-value:empty) {
       display: none;
     }
 
@@ -1401,7 +1414,9 @@
       overflow-wrap: anywhere;
     }
 
-    [data-collapse-below="xl"] [data-slot="table-cell"]:empty {
+    [data-collapse-below="xl"] [data-slot="table-cell"]:empty,
+    [data-collapse-below="xl"]
+      [data-slot="table-cell"]:has(> .ui-table-stacked-collection-value:empty) {
       display: none;
     }
 

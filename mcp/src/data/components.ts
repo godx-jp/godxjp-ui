@@ -4790,7 +4790,7 @@ import { Button } from "@godxjp/ui/general";
     subParts: ["StatusBadge"],
     group: "data-display",
     tagline:
-      "Plain or lifecycle badge. Use `variant` for static chips, or `status` to auto-map lifecycle keys to semantic tone + icon. Labels never wrap: a label wider than its container ellipsizes, with the full text as a hover `title` (gh#1101).",
+      "Plain or lifecycle badge. Use `variant` for static chips, or `status` to auto-map lifecycle keys to semantic tone + icon. Labels never wrap: a label wider than its container ellipsizes, and its full text opens in a tooltip on hover or on keyboard focus of the control around the chip (gh#1101, gh#1105).",
     props: [
       {
         name: "as",
@@ -4847,7 +4847,7 @@ import { Button } from "@godxjp/ui/general";
         name: "children",
         type: "ReactNode",
         description:
-          'Badge label. When omitted with status, Badge renders the translated lifecycle label or raw status. LONG LABEL CONTRACT (gh#1101): the chip is `max-inline-size: 100%` of its container and never wraps; the label ellipsizes and, when it was cut, shows the full text as a native `title` on hover (antd `Typography ellipsis`). A caller\'s own `title` on the Badge wins. So a Badge in a fixed-width DataTable cell or a narrow Card stays inside it with no extra props; `<Badge><Text ellipsis>` also works. Do not reach for `Text break="anywhere"` to make a chip wrap.',
+          'Badge label. When omitted with status, Badge renders the translated lifecycle label or raw status. LONG LABEL CONTRACT (gh#1101): the chip is `max-inline-size: 100%` of its container and never wraps; the label ellipsizes and, when it was cut, opens the full text in the same tooltip as `Text ellipsis={{ tooltip: true }}` — on pointer hover of the label and on keyboard focus of the nearest focusable control around the chip (a row link, a treeitem, a cell button), only while it is actually cut; the chip never becomes a tab stop (gh#1105). A caller\'s own `title` on the Badge turns the tooltip off. So a Badge in a fixed-width DataTable cell or a narrow Card stays inside it with no extra props; `<Badge><Text ellipsis>` also works. Do not reach for `Text break="anywhere"` to make a chip wrap.',
       },
       {
         name: "onRemove",

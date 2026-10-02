@@ -196,6 +196,7 @@
     },
     "Badge": {
       "layers": [
+        "dialog-layout.css",
         "badge-layout.css"
       ]
     },

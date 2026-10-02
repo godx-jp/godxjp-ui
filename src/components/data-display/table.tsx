@@ -491,6 +491,15 @@ export const TableCell = React.forwardRef<
     ref,
   ) => {
     const preset = React.useContext(TablePresetContext);
+    // gh#1067 — the box `Table preset="action-collection"` measures to size the actions column to
+    // its content (see useActionsColumnFit). Rendered only in that preset (gh#1070): every other
+    // table keeps the plain `td > children` markup.
+    const body =
+      priority === "actions" && preset === "action-collection" ? (
+        <span className="ui-table-actions-content">{children}</span>
+      ) : (
+        children
+      );
     return (
       <td
         ref={ref}
@@ -521,13 +530,14 @@ export const TableCell = React.forwardRef<
             {label}
           </span>
         ) : null}
-        {/* gh#1067 — the box `Table preset="action-collection"` measures to size the actions column
-         * to its content (see useActionsColumnFit). Rendered only in that preset (gh#1070): every
-         * other table keeps the plain `td > children` markup. */}
-        {priority === "actions" && preset === "action-collection" ? (
-          <span className="ui-table-actions-content">{children}</span>
+        {/* gh#1106 — the same rule by RENDERED content: `render: (r) => <RowActions row={r} />`
+         * whose component returns null is a non-null `children`, so the check above cannot see it.
+         * A labelled cell wraps its value in a `display: contents` box; table-layout.css drops the
+         * cell from the card when that box is `:empty`. Unlabelled cells keep `td > children`. */}
+        {label !== undefined ? (
+          <span className="ui-table-stacked-collection-value">{body}</span>
         ) : (
-          children
+          body
         )}
       </td>
     );

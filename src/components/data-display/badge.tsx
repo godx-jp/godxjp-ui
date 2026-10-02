@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { EllipsisTooltip } from "../feedback/tooltip";
 import { cn } from "../../lib/utils";
 import {
   toneDestructiveClass,
@@ -207,21 +208,6 @@ const badgeToneClass: Record<BadgeTone, string | undefined> = {
   neutral: cn("border-transparent", toneNeutralClass),
 };
 
-/**
- * A CUT LABEL STAYS READABLE (gh#1101). badge-layout.css ellipsizes a label wider than the chip's
- * container; like antd `Typography ellipsis`, the full text then appears as a native `title` on
- * hover. Measured on hover rather than observed, so an untruncated chip carries no `title` and
- * costs no ResizeObserver. A caller's own `title` on the Badge wins (the handler is not attached).
- */
-function titleTruncatedLabel(event: React.PointerEvent<HTMLSpanElement>) {
-  const label = event.currentTarget;
-  if (label.scrollWidth > label.clientWidth) {
-    label.title = label.textContent?.replace(/\s+/g, " ").trim() ?? "";
-  } else {
-    label.removeAttribute("title");
-  }
-}
-
 export function Badge({
   as: Element = "div",
   className,
@@ -290,66 +276,75 @@ export function Badge({
   const named = props["aria-label"] != null || props["aria-labelledby"] != null;
   const nameRole = named && props.role === undefined && !onRemove ? "img" : undefined;
 
+  /*
+   * A CUT LABEL STAYS READABLE (gh#1101, gh#1105). badge-layout.css ellipsizes a label wider than
+   * the chip's container; the full text then opens in the same tooltip `Text ellipsis={{ tooltip:
+   * true }}` uses — on pointer hover of the label, and on keyboard focus of the nearest focusable
+   * control around the chip (a row link, a treeitem, a cell button), measured at that moment so a
+   * chip that fits shows none. The chip never becomes a tab stop and its accessible name stays the
+   * full text. A caller's own `title` on the Badge opts out.
+   */
+  const labelTooltip = resolvedChildren != null && props.title == null;
+
   return (
-    <Element
-      data-slot="badge"
-      role={nameRole}
-      data-tone={tinted ? undefined : resolvedTone}
-      data-tinted={tinted ? "" : undefined}
-      data-shape={shape ?? "default"}
-      data-tabular={tabular ? "" : undefined}
-      data-removable={onRemove ? "" : undefined}
-      className={cn(
-        badgeVariants({
-          // A status tone paints the chip itself (`badgeToneClass` below), so the variant must not
-          // also paint one — see the `toned` variant. An EXPLICIT `variant` still wins, which is
-          // how `<Badge variant="outline" tone="success">` keeps its border treatment.
-          variant: tinted
-            ? "tinted"
-            : (variant ?? (resolvedTone === "default" ? "default" : "toned")),
-          shape: shape ?? "default",
-        }),
-        tinted ? undefined : badgeToneClass[resolvedTone],
-        className,
-      )}
-      style={tinted ? { ...style, ["--badge-color" as string]: color } : style}
-      {...props}
-    >
-      {ResolvedIcon ? <ResolvedIcon data-slot="badge-icon" aria-hidden="true" /> : null}
-      {/* Label span so badge-layout.css can text-box-trim the line box — JP faces (Noto Sans JP,
-          M PLUS 2) carry a bottom-heavy em box (ascent ≫ descent), so flex-centering the raw text
-          node rides the label visibly low inside the chip. Trim needs a real box: it does not
-          reach an anonymous flex item. */}
-      {resolvedChildren != null ? (
-        <span
-          ref={labelRef}
-          data-slot="badge-label"
-          onPointerEnter={props.title == null ? titleTruncatedLabel : undefined}
-        >
-          {resolvedChildren}
-        </span>
-      ) : null}
-      {onRemove ? (
-        <button
-          type="button"
-          data-slot="badge-remove"
-          className="ui-control-inline-affix-action ui-badge-remove"
-          aria-label={
-            removeLabelProp ??
-            (removeLabel != null
-              ? t("navigation.filterBar.removeFilter", { label: removeLabel })
-              : t("common.delete"))
-          }
-          onClick={(event) => {
-            event.stopPropagation();
-            onRemove();
-          }}
-          disabled={removeDisabled}
-        >
-          <X aria-hidden="true" />
-        </button>
-      ) : null}
-    </Element>
+    <>
+      <Element
+        data-slot="badge"
+        role={nameRole}
+        data-tone={tinted ? undefined : resolvedTone}
+        data-tinted={tinted ? "" : undefined}
+        data-shape={shape ?? "default"}
+        data-tabular={tabular ? "" : undefined}
+        data-removable={onRemove ? "" : undefined}
+        className={cn(
+          badgeVariants({
+            // A status tone paints the chip itself (`badgeToneClass` below), so the variant must not
+            // also paint one — see the `toned` variant. An EXPLICIT `variant` still wins, which is
+            // how `<Badge variant="outline" tone="success">` keeps its border treatment.
+            variant: tinted
+              ? "tinted"
+              : (variant ?? (resolvedTone === "default" ? "default" : "toned")),
+            shape: shape ?? "default",
+          }),
+          tinted ? undefined : badgeToneClass[resolvedTone],
+          className,
+        )}
+        style={tinted ? { ...style, ["--badge-color" as string]: color } : style}
+        {...props}
+      >
+        {ResolvedIcon ? <ResolvedIcon data-slot="badge-icon" aria-hidden="true" /> : null}
+        {/* Label span so badge-layout.css can text-box-trim the line box — JP faces (Noto Sans JP,
+            M PLUS 2) carry a bottom-heavy em box (ascent ≫ descent), so flex-centering the raw text
+            node rides the label visibly low inside the chip. Trim needs a real box: it does not
+            reach an anonymous flex item. */}
+        {resolvedChildren != null ? (
+          <span ref={labelRef} data-slot="badge-label">
+            {resolvedChildren}
+          </span>
+        ) : null}
+        {onRemove ? (
+          <button
+            type="button"
+            data-slot="badge-remove"
+            className="ui-control-inline-affix-action ui-badge-remove"
+            aria-label={
+              removeLabelProp ??
+              (removeLabel != null
+                ? t("navigation.filterBar.removeFilter", { label: removeLabel })
+                : t("common.delete"))
+            }
+            onClick={(event) => {
+              event.stopPropagation();
+              onRemove();
+            }}
+            disabled={removeDisabled}
+          >
+            <X aria-hidden="true" />
+          </button>
+        ) : null}
+      </Element>
+      {labelTooltip ? <EllipsisTooltip anchorRef={labelRef} title={resolvedChildren} /> : null}
+    </>
   );
 }
 
