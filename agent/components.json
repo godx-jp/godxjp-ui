@@ -5024,7 +5024,7 @@
     ],
     "rules": [],
     "storyPath": "data-display/Prose.stories.tsx",
-    "tagline": "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from.",
+    "tagline": "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from. To RENDER Markdown, use the sibling package `@godxjp/markdown` inside it — `<Prose><Markdown>{body}</Markdown></Prose>` — the one GFM renderer + sanitiser + Mermaid gate shared by every GoDX app; do not assemble react-markdown + rehype-sanitize per app (gh#1108).",
     "usage": [
       "DO import from `@godxjp/ui/data-display`: `import { Prose } from \"@godxjp/ui/data-display\";`",
       "DO wrap the OUTPUT of your Markdown pipeline (react-markdown + remark-gfm + rehype-sanitize), a sanitised CMS string via `dangerouslySetInnerHTML`, or plain JSX. Prose styles descendants: h1..h4, p, ul/ol/li, blockquote, code, pre, table/th/td, a, img, hr.",
@@ -6892,7 +6892,7 @@
     ],
     "rules": [],
     "storyPath": "data-entry/Textarea.stories.tsx",
-    "tagline": "Styled wrapper around native <textarea>. Pair with FormField for labelled fields.",
+    "tagline": "Styled wrapper around native <textarea>. Pair with FormField for labelled fields. For a Markdown body (wiki page, issue description, mail) use the sibling package `@godxjp/editor` `MarkdownEditor` — this Textarea plus a formatting toolbar, preview through `@godxjp/markdown`, and paste/drop upload through a host `upload` function (gh#1109).",
     "usage": [
       "DO reach for `variant=\"ghost\"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.",
       "DO always wrap Textarea in FormField when it appears in a form — FormField clones aria-describedby, aria-required, and aria-invalid onto the child, giving error/helper announcements and screen-reader labelling for free. Pass matching id props to both.",
@@ -15678,7 +15678,7 @@
     "name": "Actions",
     "props": [
       {
-        "description": "The actions: { key, label?, icon?, onItemClick?, danger?, subItems?, actionRender? }. `label` is the accessible name AND the tooltip. `subItems` folds the action into a menu; `actionRender` replaces it entirely.",
+        "description": "The actions: { key, label?, icon?, onItemClick?, disabled?, danger?, subItems?, actionRender? }. `label` is the accessible name AND the tooltip. `disabled` makes a plain action `aria-disabled` and ignores its click, but keeps it focusable and in the arrow-key order (WAI-ARIA toolbar) — use it for a formatting toolbar while previewing or read-only, not to hide an action (gh#1109). `subItems` folds the action into a menu; `actionRender` replaces it entirely.",
         "name": "items",
         "required": true,
         "type": "ActionsItemsProp[]"

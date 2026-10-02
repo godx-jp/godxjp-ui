@@ -1566,5 +1566,30 @@
       "description": "Chip không bao giờ xuống dòng: nhãn rộng hơn khung chứa sẽ kết thúc bằng dấu ba chấm (gh#1101), và khi bị cắt thì toàn văn hiện trong tooltip khi rê chuột hoặc khi focus bàn phím vào liên kết/hàng chứa chip (gh#1105). Trong ô bảng hay Card đều không cần thêm prop.",
       "sample": "Qua nhóm · Đội vận hành hạ tầng nền tảng (vùng Đông Nhật Bản, ca trực đêm nhóm 2)"
     }
+  },
+  "markdownDocs": {
+    "subtitle": "@godxjp/markdown · GFM + neo tiêu đề + sanitize · renderer v{version}",
+    "page": {
+      "title": "Nội dung trang",
+      "description": "Bảng, danh sách việc, mã, chú thích, Mermaid. Khối mermaid chỉ thành sơ đồ khi SVG sinh ra qua được kiểm tra; trước đó hiện dạng mã."
+    },
+    "hostile": {
+      "title": "Nội dung độc hại",
+      "description": "HTML thô không bao giờ thành phần tử; URL javascript: và data: bị loại bỏ."
+    }
+  },
+  "markdownEditorDocs": {
+    "subtitle": "@godxjp/editor · thanh định dạng · soạn / xem trước / song song · dán hoặc kéo thả để đính kèm",
+    "edit": {
+      "title": "Sửa trang",
+      "description": "⌘/Ctrl + B, I, K: đậm, nghiêng, liên kết. Phím tắt không chạy khi đang gõ IME.",
+      "label": "Nội dung",
+      "save": "Lưu"
+    },
+    "readOnly": {
+      "title": "Chỉ đọc",
+      "description": "Thanh công cụ vẫn nhận focus nhưng thao tác bị vô hiệu.",
+      "label": "Nội dung (chỉ xem)"
+    }
   }
 }

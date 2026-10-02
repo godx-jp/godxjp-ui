@@ -62,11 +62,38 @@ if (!mcp.godxUiCompatibility) {
   );
 }
 
+/* THE PACKAGES BESIDE THE KIT (gh#1108 / gh#1109): @godxjp/markdown and @godxjp/editor are
+ * versioned WITH the kit — one release, one number — and published after it by
+ * scripts/publish-satellites.mjs. A satellite left on the previous version would publish nothing
+ * (that version already exists) while its peer range still pointed at the old kit. */
+const SATELLITES = ["packages/markdown/package.json", "packages/editor/package.json"];
+const satellites = SATELLITES.map((file) => ({
+  file,
+  manifest: JSON.parse(readFileSync(join(ROOT, file), "utf8")),
+}));
+const tildeAccepts = (range, version) => {
+  const m = /^~(\d+)\.(\d+)\.(\d+)$/.exec(range ?? "");
+  const v = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
+  return !!m && !!v && m[1] === v[1] && m[2] === v[2] && Number(v[3]) >= Number(m[3]);
+};
+for (const { file, manifest } of satellites) {
+  if (manifest.version !== ui.version) {
+    errors.push(`${manifest.name} (${file}) is ${manifest.version}, but @godxjp/ui is ${ui.version}.`);
+  }
+  for (const peer of ["@godxjp/ui", "@godxjp/markdown"]) {
+    const range = manifest.peerDependencies?.[peer];
+    if (range !== undefined && !tildeAccepts(range, ui.version)) {
+      errors.push(`${manifest.name} declares peer ${peer}@${range}, which does not accept ${ui.version}.`);
+    }
+  }
+}
+
 const report = {
   ui: ui.version,
   mcp: mcp.version,
   godxUiMcp: ui.godxUiMcp ?? null,
   godxUiCompatibility: mcp.godxUiCompatibility ?? null,
+  satellites: Object.fromEntries(satellites.map(({ manifest }) => [manifest.name, manifest.version])),
   inLockstep: errors.length === 0,
   errors,
 };
@@ -83,7 +110,8 @@ if (process.argv.includes("--json")) {
   for (const e of errors) console.error(`  • ${e}`);
   console.error(
     "\nFix: release both together with `pnpm release --ui <bump> --mcp sync`, or reconcile the " +
-      "version / godxUiMcp / godxUiCompatibility fields so they agree.",
+      "version / godxUiMcp / godxUiCompatibility fields so they agree. packages/markdown and " +
+      "packages/editor carry the same version, and their peer ranges are `~<that version>`.",
   );
 }
 

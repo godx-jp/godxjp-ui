@@ -5912,7 +5912,7 @@ import { Flex } from "@godxjp/ui/layout";
     name: "Prose",
     group: "data-display",
     tagline:
-      "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from.",
+      "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from. To RENDER Markdown, use the sibling package `@godxjp/markdown` inside it — `<Prose><Markdown>{body}</Markdown></Prose>` — the one GFM renderer + sanitiser + Mermaid gate shared by every GoDX app; do not assemble react-markdown + rehype-sanitize per app (gh#1108).",
     props: [
       {
         name: "size",
@@ -7980,7 +7980,8 @@ export function PrioritySelect({ value, onValueChange }) {
   {
     name: "Textarea",
     group: "data-entry",
-    tagline: "Styled wrapper around native <textarea>. Pair with FormField for labelled fields.",
+    tagline:
+      "Styled wrapper around native <textarea>. Pair with FormField for labelled fields. For a Markdown body (wiki page, issue description, mail) use the sibling package `@godxjp/editor` `MarkdownEditor` — this Textarea plus a formatting toolbar, preview through `@godxjp/markdown`, and paste/drop upload through a host `upload` function (gh#1109).",
     props: [
       {
         name: "padRaw",
@@ -18121,7 +18122,7 @@ const messages: ChatMessageProp[] = [
         type: "ActionsItemsProp[]",
         required: true,
         description:
-          "The actions: { key, label?, icon?, onItemClick?, danger?, subItems?, actionRender? }. `label` is the accessible name AND the tooltip. `subItems` folds the action into a menu; `actionRender` replaces it entirely.",
+          "The actions: { key, label?, icon?, onItemClick?, disabled?, danger?, subItems?, actionRender? }. `label` is the accessible name AND the tooltip. `disabled` makes a plain action `aria-disabled` and ignores its click, but keeps it focusable and in the arrow-key order (WAI-ARIA toolbar) — use it for a formatting toolbar while previewing or read-only, not to hide an action (gh#1109). `subItems` folds the action into a menu; `actionRender` replaces it entirely.",
       },
       {
         name: "onClick",

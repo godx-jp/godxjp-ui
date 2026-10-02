@@ -741,6 +741,14 @@ export type ActionsItemsProp = {
   /** Per-item handler. When present it WINS over the strip's `onClick`. Ant Design X `onItemClick`. */
   onItemClick?: (item: ActionsItemsProp) => void;
   /** Paint the action as irreversible. Ant Design X `danger`. */
+  /**
+   * The action cannot run right now (a formatting toolbar while previewing, a read-only document).
+   * It stays FOCUSABLE and in the arrow-key order, as the WAI-ARIA toolbar pattern recommends, so a
+   * keyboard or screen-reader user can still find it: it is `aria-disabled="true"` and a click is
+   * ignored, rather than a native `disabled` that would drop it from the toolbar's focus order.
+   * Applies to a plain action; a `subItems` trigger and an `actionRender` own their own state.
+   */
+  disabled?: DisabledProp;
   danger?: boolean;
   /** Nest the action into a menu behind one trigger. Ant Design X `subItems`. */
   subItems?: readonly Omit<ActionsItemsProp, "subItems" | "actionRender">[];

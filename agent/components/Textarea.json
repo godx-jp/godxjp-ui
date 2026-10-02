@@ -104,7 +104,7 @@
   ],
   "rules": [],
   "storyPath": "data-entry/Textarea.stories.tsx",
-  "tagline": "Styled wrapper around native <textarea>. Pair with FormField for labelled fields.",
+  "tagline": "Styled wrapper around native <textarea>. Pair with FormField for labelled fields. For a Markdown body (wiki page, issue description, mail) use the sibling package `@godxjp/editor` `MarkdownEditor` — this Textarea plus a formatting toolbar, preview through `@godxjp/markdown`, and paste/drop upload through a host `upload` function (gh#1109).",
   "usage": [
     "DO reach for `variant=\"ghost\"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.",
     "DO always wrap Textarea in FormField when it appears in a form — FormField clones aria-describedby, aria-required, and aria-invalid onto the child, giving error/helper announcements and screen-reader labelling for free. Pass matching id props to both.",
