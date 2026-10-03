@@ -2335,6 +2335,10 @@
    * bounded variants' chrome, and the optional arrival motion. */
   .ui-actions {
     display: flex;
+    /* A strip wider than its container WRAPS (gh#1121): the @godxjp/editor toolbar is 12 actions,
+     * and at 320px six of them sat outside the strip where no one could reach them. A short strip
+     * (the message-actions row) still fits on one line and is unchanged. */
+    flex-wrap: wrap;
     min-inline-size: 0;
     align-items: center;
     gap: var(--actions-gap);

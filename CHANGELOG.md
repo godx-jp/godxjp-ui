@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.21.1] - 2026-10-04
+
+### 🐛 Actions: a long strip wraps instead of hiding actions (gh#1121)
+
+The nightly geometry sweep went red on `data-entry-markdown-editor` at 320 / 375 / 390: the
+`@godxjp/editor` toolbar is an `Actions` strip of 12 actions, and `Actions` never wrapped, so at 320px
+six of them sat outside the strip where no one could reach them (measured on the built preview:
+actions outside the toolbar 6 → 0 at 320, 4 → 0 at 390). `.ui-actions` now wraps; a short strip (the
+message-actions row) still fits on one line, unchanged. Test: `actions-wrap-1121.test.tsx` (real
+stylesheet) and the editor's Chromium test, now at 320 too. Both fail on 31.21.0.
+
 ## [31.21.0] - 2026-10-04
 
 Requested by godx-task (files on GoDX media).
