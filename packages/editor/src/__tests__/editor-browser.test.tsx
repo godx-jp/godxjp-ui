@@ -104,17 +104,24 @@ const geometry = (page: Page) =>
     const doc = document.documentElement;
     const area = document.querySelector("textarea")!.getBoundingClientRect();
     const preview = document.querySelector('[role="region"]')!.getBoundingClientRect();
-    const toolbar = document.querySelector('[role="toolbar"]')!.getBoundingClientRect();
+    const toolbarEl = document.querySelector('[role="toolbar"]')!;
+    const toolbar = toolbarEl.getBoundingClientRect();
+    // Every action, not just the strip: the strip box can fit while its buttons spill out (gh#1121).
+    const buttonsOutside = [...toolbarEl.querySelectorAll("button")].filter((b) => {
+      const r = b.getBoundingClientRect();
+      return r.right > toolbar.right + 0.5 || r.left < toolbar.left - 0.5;
+    }).length;
     return {
       pageOverflow: doc.scrollWidth - doc.clientWidth,
       sideBySide: Math.abs(area.top - preview.top) < 2 && preview.left >= area.right - 1,
       stacked: preview.top >= area.bottom - 1,
       toolbarInside: toolbar.right <= doc.clientWidth + 0.5,
+      buttonsOutside,
     };
   });
 
 describe("MarkdownEditor in Chromium (gh#1109)", () => {
-  it("side by side at 1280, stacked at 390, never a horizontal page scroll", async () => {
+  it("side by side at 1280, stacked at 390 and 320, never a horizontal page scroll", async () => {
     const wide = await mount(1280);
     try {
       const g = await geometry(wide);
@@ -123,14 +130,19 @@ describe("MarkdownEditor in Chromium (gh#1109)", () => {
     } finally {
       await wide.close();
     }
-    const phone = await mount(390);
-    try {
-      const g = await geometry(phone);
-      expect(g.pageOverflow).toBeLessThanOrEqual(0);
-      expect(g.toolbarInside).toBe(true);
-      expect(g.stacked).toBe(true);
-    } finally {
-      await phone.close();
+    // 320 as well: at 390 this page's editor is wide enough to hold all twelve actions on one
+    // line, so the toolbar overflow the docs card showed (gh#1121) only appears narrower.
+    for (const width of [390, 320]) {
+      const phone = await mount(width);
+      try {
+        const g = await geometry(phone);
+        expect(g.pageOverflow, `page overflow at ${width}`).toBeLessThanOrEqual(0);
+        expect(g.toolbarInside, `toolbar inside at ${width}`).toBe(true);
+        expect(g.buttonsOutside, `actions outside the toolbar at ${width}`).toBe(0);
+        expect(g.stacked, `stacked at ${width}`).toBe(true);
+      } finally {
+        await phone.close();
+      }
     }
   });
 
