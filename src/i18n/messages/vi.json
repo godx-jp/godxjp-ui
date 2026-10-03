@@ -92,7 +92,8 @@
       "rejectSize": "{name}: tệp quá lớn.",
       "rejectCount": "{name}: đã đủ số lượng tệp.",
       "rejectBeforeUpload": "{name}: kiểm tra tệp thất bại.",
-      "readFailed": "Không thể đọc thư mục đã chọn."
+      "readFailed": "Không thể đọc thư mục đã chọn.",
+      "callbackFailed": "Không thể thêm các tệp đã chọn."
     },
     "cascader": {
       "placeholder": "Chọn…",
@@ -401,7 +402,8 @@
       "rotateRight": "Xoay phải",
       "zoomIn": "Phóng to",
       "zoomOut": "Thu nhỏ",
-      "reset": "Đặt lại"
+      "reset": "Đặt lại",
+      "download": "Tải xuống"
     }
   },
   "ui": {

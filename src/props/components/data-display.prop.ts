@@ -1387,6 +1387,13 @@ export type ImagePreviewConfigProp = {
   minScale?: number;
   /** Largest zoom. Default `50`. */
   maxScale?: number;
+  /**
+   * A Download action in the preview toolbar (gh#1122). `true`: a link to the picture on show
+   * (`<a href download>` — a cross-origin URL opens instead, since browsers ignore `download`
+   * there). A function: a button that calls it with the picture on show, for a signed URL or a
+   * streamed blob. Off by default.
+   */
+  download?: boolean | ((info: { src: string; index: number }) => void);
 };
 
 /** @see ImagePreviewGroup — the group's `preview` object (antd `PreviewGroup preview`). */

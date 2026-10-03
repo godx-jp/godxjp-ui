@@ -314,6 +314,22 @@ export function Upload({
     );
     onReject?.({ file, reason, error });
   };
+  /*
+   * A HOST CALLBACK THAT THROWS IS REPORTED, NEVER SWALLOWED (gh#1123). The pick chain, the preview
+   * and the remove callbacks used to end in `.catch(() => {})`, so a bug in the consumer's own
+   * `onValueChange` (godx-task#457: an icon named `File` shadowed the global) vanished with no
+   * console line, no message and no event. `reportError` is the standard way a library hands an
+   * error it cannot handle back to the page: the console AND the window `error` event, so dev
+   * overlays and error trackers see it. The user gets a message in the upload area too.
+   */
+  const reportCallbackError = (error: unknown, visible = true) => {
+    if (typeof globalThis.reportError === "function") globalThis.reportError(error);
+    else
+      setTimeout(() => {
+        throw error;
+      });
+    if (visible && mounted.current) setRejection(t("dataEntry.upload.callbackFailed"));
+  };
   const pickFiles = (fileList: FileList | File[] | null) => {
     if (!fileList?.length || current.current.disabled) return;
     const files = Array.from(fileList);
@@ -390,11 +406,11 @@ export function Upload({
                   ),
                 );
               })
-              .catch(() => {});
+              .catch((error: unknown) => reportCallbackError(error, false));
           if (automatic) void startUpload(item);
         }
       })
-      .catch(() => {});
+      .catch((error: unknown) => reportCallbackError(error));
   };
 
   const removeItem = async (uid: string) => {
@@ -403,7 +419,9 @@ export function Upload({
     if (!target) return;
     try {
       if ((await onRemove?.(target)) === false) return;
-    } catch {
+    } catch (error) {
+      // A throwing onRemove still keeps the item, as before — but the throw is reported now.
+      reportCallbackError(error, false);
       return;
     }
     if (

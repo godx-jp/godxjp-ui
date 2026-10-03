@@ -92,7 +92,8 @@
       "rejectSize": "{name}: ファイルが大きすぎます。",
       "rejectCount": "{name}: ファイル数の上限です。",
       "rejectBeforeUpload": "{name}: ファイルの検証に失敗しました。",
-      "readFailed": "選択したフォルダーを読み取れませんでした。"
+      "readFailed": "選択したフォルダーを読み取れませんでした。",
+      "callbackFailed": "選択したファイルを追加できませんでした。"
     },
     "cascader": {
       "placeholder": "選択…",
@@ -400,7 +401,8 @@
       "rotateRight": "右に回転",
       "zoomIn": "拡大",
       "zoomOut": "縮小",
-      "reset": "リセット"
+      "reset": "リセット",
+      "download": "ダウンロード"
     }
   },
   "ui": {

@@ -92,7 +92,8 @@
       "rejectSize": "{name}: file is too large.",
       "rejectCount": "{name}: file limit reached.",
       "rejectBeforeUpload": "{name}: file validation failed.",
-      "readFailed": "Could not read the selected folder."
+      "readFailed": "Could not read the selected folder.",
+      "callbackFailed": "The selected files could not be added."
     },
     "cascader": {
       "placeholder": "Select…",
@@ -407,7 +408,8 @@
       "rotateRight": "Rotate right",
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
-      "reset": "Reset"
+      "reset": "Reset",
+      "download": "Download"
     }
   },
   "ui": {

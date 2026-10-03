@@ -78,7 +78,7 @@
       "type": "React.ReactNode"
     },
     {
-      "description": "Fires with the current file list.",
+      "description": "Fires with the current file list. If it (or `previewFile` / `onRemove`) THROWS, Upload reports the error through `globalThis.reportError` — the console and the window `error` event — and shows a message in the upload area; it is never swallowed (gh#1123).",
       "name": "onValueChange",
       "type": "(items: UploadFileItemProp[]) => void"
     },
