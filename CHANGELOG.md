@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.21.0] - 2026-10-04
+
+Requested by godx-task (files on GoDX media).
+
+### ✨ Image preview: a Download action (gh#1122)
+
+`preview.download` on `Image` and `ImagePreviewGroup`: `true` puts a link to the picture on show
+in the preview toolbar (`<a href download>`; a cross-origin URL opens instead, since browsers ignore
+`download` there); a function `({ src, index }) => void` puts a button there for a signed URL or a
+streamed blob. Labelled in ja / en / vi. Off by default. Test: `image-preview-download-1122.test.tsx`.
+
+### 🐛 Upload: a throwing callback is reported, never swallowed (gh#1123)
+
+The file-picking chain, `previewFile` and `onRemove` ended in `.catch(() => {})`, so a bug in the
+consumer's own `onValueChange` vanished with no console line, message or event (godx-task#457).
+Upload now hands the error to `globalThis.reportError` (the console and the window `error` event —
+dev overlays and error trackers see it; a rethrow where it is missing) and, for the pick chain,
+shows "The selected files could not be added." A throwing `onRemove` still keeps the item.
+Test: `upload-callback-errors-1123.test.tsx`.
+
 ## [31.20.1] - 2026-10-03
 
 ### 📝 Docs (gh#1119)

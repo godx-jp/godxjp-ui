@@ -11558,7 +11558,8 @@ export function AccountMapping() {
       {
         name: "onValueChange",
         type: "(items: UploadFileItemProp[]) => void",
-        description: "Fires with the current file list.",
+        description:
+          "Fires with the current file list. If it (or `previewFile` / `onRemove`) THROWS, Upload reports the error through `globalThis.reportError` — the console and the window `error` event — and shows a message in the upload area; it is never swallowed (gh#1123).",
       },
       {
         name: "triggerSize",
@@ -18519,9 +18520,9 @@ const messages: ChatMessageProp[] = [
       },
       {
         name: "preview",
-        type: "boolean | { visible?, onVisibleChange?(visible, prevVisible), src?, mask?, scaleStep?, minScale?, maxScale? }",
+        type: "boolean | { visible?, onVisibleChange?(visible, prevVisible), src?, mask?, scaleStep?, minScale?, maxScale?, download? }",
         description:
-          "antd shape. `false` = a plain, non-clickable picture that also leaves its group. `src` shows a different (larger) file in the preview. Defaults: scaleStep 0.5, minScale 1, maxScale 50.",
+          "antd shape. `false` = a plain, non-clickable picture that also leaves its group. `src` shows a different (larger) file in the preview. Defaults: scaleStep 0.5, minScale 1, maxScale 50. `download` adds a Download action to the preview toolbar (gh#1122): `true` = a link to the picture on show (`<a href download>`; a cross-origin URL opens instead), a function `({ src, index }) => void` = a button for a signed URL or a blob. The same key works on `ImagePreviewGroup preview`.",
       },
       {
         name: "fallback",

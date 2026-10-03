@@ -4,6 +4,7 @@ import { Dialog as RacDialog, Modal, ModalOverlay } from "react-aria-components"
 import {
   ChevronLeft,
   ChevronRight,
+  Download,
   Eye,
   FlipHorizontal2,
   FlipVertical2,
@@ -148,6 +149,7 @@ type PreviewDialogProps = {
   scaleStep?: number;
   minScale?: number;
   maxScale?: number;
+  download?: ImagePreviewConfigProp["download"];
 };
 
 /** The full-viewport preview. Internal: reached through `Image` and `ImagePreviewGroup`. */
@@ -161,6 +163,7 @@ function ImagePreviewDialog({
   scaleStep = DEFAULT_SCALE_STEP,
   minScale = DEFAULT_MIN_SCALE,
   maxScale = DEFAULT_MAX_SCALE,
+  download,
 }: PreviewDialogProps) {
   const { t } = useTranslation();
   const portalContainer = useOverlayPortalContainer();
@@ -423,6 +426,36 @@ function ImagePreviewDialog({
               data-slot="image-preview-toolbar"
               className="ui-image-preview-toolbar"
             >
+              {/* gh#1122 — Download: a native link when the host just wants the file, a button that
+               * calls the host when the file needs a signed URL or a blob. */}
+              {download === true && entry ? (
+                <a
+                  href={entry.src}
+                  download=""
+                  data-action="download"
+                  className="ui-image-preview-button ui-focus-ring"
+                  aria-label={t("dataDisplay.image.download")}
+                  title={t("dataDisplay.image.download")}
+                >
+                  <span className="ui-image-preview-icon" aria-hidden="true">
+                    <Download />
+                  </span>
+                </a>
+              ) : null}
+              {typeof download === "function" && entry ? (
+                <button
+                  type="button"
+                  data-action="download"
+                  className="ui-image-preview-button ui-focus-ring"
+                  aria-label={t("dataDisplay.image.download")}
+                  title={t("dataDisplay.image.download")}
+                  onClick={() => download({ src: entry.src, index })}
+                >
+                  <span className="ui-image-preview-icon" aria-hidden="true">
+                    <Download />
+                  </span>
+                </button>
+              ) : null}
               {tools.map((tool) => (
                 <button
                   key={tool.key}
@@ -520,6 +553,7 @@ export function ImagePreviewGroup({
             scaleStep={config.scaleStep}
             minScale={config.minScale}
             maxScale={config.maxScale}
+            download={config.download}
           />
         ) : null}
       </ImageGroupContext.Provider>
@@ -710,6 +744,7 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
           scaleStep={config.scaleStep}
           minScale={config.minScale}
           maxScale={config.maxScale}
+          download={config.download}
         />
       )}
     </>,
