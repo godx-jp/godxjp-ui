@@ -4459,6 +4459,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the device edge (thumb reach / safe area), not a density-scaled gap inside a surface."
   },
   {
+    "name": "--dialog-close-size",
+    "value": "var(--band-height-xl)",
+    "description": "Rule #24 companion for the overlay ✕ (gh#1138): the 24px floor is the WCAG 2.5.8 AA minimum for a mouse; under a finger the target lifts to the 44px tap floor the control ladder already uses. Only the hit area grows (the `::after` above the glyph) — the 16px paint stays put."
+  },
+  {
     "name": "--flex-surface-background",
     "value": "initial",
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
@@ -7957,6 +7962,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-shell-nav-rail-item-size",
     "value": "var(--band-height-xl)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--sidebar-nav-item-height",
+    "value": "var(--band-height-xl)",
+    "description": "And for the Sidebar's own rows (gh#1138): measured 32px under a finger while the Tree rows and SearchInput beside them had already grown to 44 with the control ladder."
   },
   {
     "name": "--mobile-shell-block-size",

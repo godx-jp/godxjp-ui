@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.24.1] - 2026-10-05
+
+### 🐛 44px touch targets for Sidebar rows and the overlay ✕ (gh#1138)
+
+Reported from the pages app's phone navigation. Measured in Chromium with touch emulation at
+390px: Tree rows (44/48) and SearchInput (44) already followed the coarse-pointer control ladder,
+but Sidebar rows stayed 32px and the Sheet/Dialog ✕ hit area stayed ~24px.
+
+- `@media (pointer: coarse)`: `--sidebar-nav-item-height` → `--band-height-xl` (32 → 44px).
+- `@media (pointer: coarse)`: `--dialog-close-size` → `--band-height-xl` (✕ hit area 24 → 44px; the
+  16px glyph paint is unchanged — the target is its `::after`, gh#806).
+- Mouse geometry is unchanged.
+
 ## [31.24.0] - 2026-10-05
 
 ### ✨ Navigation focus and drawer hooks for client-side routing (gh#1133–#1136)

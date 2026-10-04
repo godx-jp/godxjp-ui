@@ -979,6 +979,9 @@
      * and the track widens with the cell so the cell is not clipped by the rail it sits in. */
     --app-shell-nav-rail-width: 3rem;
     --app-shell-nav-rail-item-size: var(--band-height-xl);
+    /* And for the Sidebar's own rows (gh#1138): measured 32px under a finger while the Tree rows
+     * and SearchInput beside them had already grown to 44 with the control ladder. */
+    --sidebar-nav-item-height: var(--band-height-xl);
   }
 }
 

@@ -359,3 +359,12 @@
    * device edge (thumb reach / safe area), not a density-scaled gap inside a surface. */
   --toast-mobile-offset: 16px;
 }
+
+/* Rule #24 companion for the overlay ✕ (gh#1138): the 24px floor is the WCAG 2.5.8 AA minimum for
+ * a mouse; under a finger the target lifts to the 44px tap floor the control ladder already uses.
+ * Only the hit area grows (the `::after` above the glyph) — the 16px paint stays put. */
+@media (pointer: coarse) {
+  :root {
+    --dialog-close-size: var(--band-height-xl);
+  }
+}
