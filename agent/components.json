@@ -5056,6 +5056,12 @@
         "type": "string[]"
       },
       {
+        "defaultValue": "24",
+        "description": "A table cell whose trimmed text has no whitespace and at most this many characters (grapheme clusters) — a code, an id, a date, 優先度 — is stamped data-short, and Prose keeps it on one line (CJK otherwise breaks between ideographs in a narrow column). Sentences still wrap. false stamps nothing (gh#1150). Images in Prose table cells are capped at --prose-cell-image-max-inline-size (20rem) so a narrow table scrolls instead of squashing them.",
+        "name": "shortCellLength",
+        "type": "number | false"
+      },
+      {
         "defaultValue": "true",
         "description": "`false` keeps ```mermaid fences as code. Diagrams need the optional peer `mermaid`.",
         "name": "mermaid",
@@ -5164,6 +5170,12 @@
         "description": "Reading line length (gh#1112): caps the inline size at the `--page-measure-*` token — the same vocabulary and tokens as `Flex measure` / `PageContainer measure` (narrow 42rem, medium 48rem sit in the 45–75 character band). A cap, not a centred column: the body keeps its start edge under its heading. Use it on a document/wiki/decision body instead of narrowing the whole page column; title and metadata stay full width. Unset = full width.",
         "name": "measure",
         "type": "\"narrow\" | \"medium\" | \"wide\""
+      },
+      {
+        "defaultValue": "false",
+        "description": "Open the body's images in the kit image preview: click, Enter or Space on an image opens it, paging through the body's other previewable images in document order. Works on any HTML the body renders (@godxjp/markdown output included) with no img override; an image inside a link stays the link's and a kit Image keeps its own preview (gh#1150).",
+        "name": "imagePreview",
+        "type": "boolean"
       },
       {
         "description": "The rendered content.",

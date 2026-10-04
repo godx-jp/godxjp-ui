@@ -33,8 +33,9 @@ export const MARKDOWN_FIXTURES: MarkdownFixture[] = [
   {
     name: "GFM table with alignment, in its scroll box",
     markdown: "| a | b |\n|:--|--:|\n| 1 | 2 |",
-    // Every table sits in its own scroll box (gh#1131, renderer v2).
-    html: '<div class="ui-prose-table-scroll" data-slot="prose-table-scroll"><table><thead><tr><th style="text-align:left">a</th><th style="text-align:right">b</th></tr></thead><tbody><tr><td style="text-align:left">1</td><td style="text-align:right">2</td></tr></tbody></table></div>',
+    // Every table sits in its own scroll box (gh#1131, renderer v2); a single short token per
+    // cell carries `data-short` (gh#1150, renderer v3).
+    html: '<div class="ui-prose-table-scroll" data-slot="prose-table-scroll"><table><thead><tr><th data-short="" style="text-align:left">a</th><th data-short="" style="text-align:right">b</th></tr></thead><tbody><tr><td data-short="" style="text-align:left">1</td><td data-short="" style="text-align:right">2</td></tr></tbody></table></div>',
   },
   {
     name: "task list stays read-only",

@@ -1876,6 +1876,25 @@
     background: hsl(var(--muted));
   }
 
+  /* A SHORT TOKEN STAYS ON ONE LINE (gh#1150). `overflow-wrap: normal` keeps a Latin word whole,
+   * but CJK breaks between any two ideographs (UAX #14), so 優先度 still split 優先 / 度 in a narrow
+   * column. `@godxjp/markdown` stamps `data-short` on a cell whose trimmed text has no whitespace
+   * and is at most `shortCellLength` characters — a code, an id, a date — and only that cell is
+   * held to one line. A sentence still wraps; `word-break: keep-all` would have stopped a long CJK
+   * sentence wrapping at all. */
+  .ui-prose :is(th, td)[data-short] {
+    white-space: nowrap;
+  }
+
+  .ui-prose :is(th, td) img {
+    max-inline-size: var(--prose-cell-image-max-inline-size);
+  }
+
+  /* `imagePreview`: a body image that opens the kit preview is a control, so it says so. */
+  .ui-prose img[data-prose-preview] {
+    cursor: zoom-in;
+  }
+
   .ui-prose img {
     max-inline-size: 100%;
     block-size: auto;
