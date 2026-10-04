@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.25.1] - 2026-10-05
+
+### 🐛 44×44 touch target for icon-only Buttons and Toggles (gh#1142)
+
+Reported from the pages app (a page-header star toggle). Measured in Chromium with
+`(pointer: coarse)` at 390px: `Button size="icon-sm"` and every `Actions` item 40×40, `Toggle`
+42×44, `Toggle size="sm"` 34×40.
+
+- On coarse pointers those controls get a centred 44×44 `::after` hit area; the painted box keeps
+  the step the call site chose. Mouse geometry is unchanged.
+- Toggle-group items grow on the block axis only, so a tap on one item's edge never presses its
+  neighbour.
+
 ## [31.25.0] - 2026-10-05
 
 ### ✨ AppShell `mobileNavOnCloseAutoFocus` (gh#1140)
