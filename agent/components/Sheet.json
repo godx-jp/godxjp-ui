@@ -26,6 +26,11 @@
       "type": "number | string"
     },
     {
+      "description": "On SheetContent (Radix name, same as DialogContent): fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading after a drawer navigation) to send focus there instead (gh#1134).",
+      "name": "onCloseAutoFocus",
+      "type": "(event: Event) => void"
+    },
+    {
       "defaultValue": "\"side\"",
       "description": "On SheetContent: the responsive drawer / detail-panel contract. \"side\" (default) always renders the physical `side` you named. \"auto\" renders the desktop side panel above --sheet-responsive-breakpoint-width (48rem/768px) and the mobile BOTTOM sheet at/below it, capped by --sheet-bottom-max-height (85dvh). \"bottom\" pins the bottom-sheet presentation.",
       "name": "responsive",

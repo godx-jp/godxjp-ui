@@ -452,6 +452,7 @@ export { createSidebarLink } from "./sidebar-link";
  */
 export function Sidebar({
   ariaLabel: ariaLabelCamel,
+  scrollRef,
   activeId,
   onSelect,
   sections,
@@ -579,6 +580,7 @@ export function Sidebar({
       ) : null}
 
       <nav
+        ref={scrollRef}
         className="sb-nav-scroll"
         aria-label={ariaLabel ?? ariaLabelCamel ?? t("layout.sidebar.ariaLabel")}
       >

@@ -111,6 +111,7 @@ function PageContainerRoot({
   breadcrumbAriaLabel,
   linkComponent: LinkComponent = "a",
   headerLoading = false,
+  titleRef,
   density,
   variant = "default",
   preset = "default",
@@ -127,6 +128,8 @@ function PageContainerRoot({
   const { headerRef, revealed } = useFooterReveal(reveal);
   const { t } = useTranslation();
   const { start: extraStart, end: extraEnd } = resolvePageExtra(extra);
+  // Spread on EVERY `<h1>` branch below, so the ref follows the heading through loading → loaded.
+  const titleFocus = titleRef === undefined ? undefined : { ref: titleRef, tabIndex: -1 };
 
   // `data-measure` caps the HEADER and the BODY to one shared token-owned measure so a header
   // `default` matches no rule in the
@@ -213,16 +216,23 @@ function PageContainerRoot({
             {}
             {/* It BECOMES the placeholder by wearing the library's own `ui-skeleton-block` skin rather than wrapping a `<Skeleton>` element: `<h1>` takes phrasing content, so nesting Skeleton's `<div>` inside it is invalid HTML. The visible name is sr-only text, because a heading rendered as a bare decorative box is an EMPTY heading (axe `empty-heading`, WCAG 1.3.1). */}
             {headerLoading ? (
-              <h1 className="ui-page-title ui-skeleton-block ui-page-title-placeholder">
+              <h1
+                {...titleFocus}
+                className="ui-page-title ui-skeleton-block ui-page-title-placeholder"
+              >
                 <span className="sr-only">{t("layout.pageHeader.loading")}</span>
               </h1>
             ) : status != null ? (
               <div className="ui-page-header-title-row">
-                <h1 className="ui-page-title">{title}</h1>
+                <h1 {...titleFocus} className="ui-page-title">
+                  {title}
+                </h1>
                 <div className="ui-page-header-status">{status}</div>
               </div>
             ) : (
-              <h1 className="ui-page-title">{title}</h1>
+              <h1 {...titleFocus} className="ui-page-title">
+                {title}
+              </h1>
             )}
             {headerLoading ? (
               // Decorative only — the pending state is already announced once by the heading above,

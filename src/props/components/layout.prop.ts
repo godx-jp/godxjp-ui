@@ -97,6 +97,12 @@ export type PageContainerProp = {
    * violation) so the page's heading outline never disappears mid-load.
    */
   headerLoading?: boolean;
+  /**
+   * Ref to the page's `<h1>`. Passing it also makes the heading programmatically focusable
+   * (`tabIndex={-1}`, outside the tab order, no focus ring), so a router can move focus to the new
+   * page's title after a client-side navigation — the pattern screen readers need to announce it.
+   */
+  titleRef?: React.Ref<HTMLHeadingElement>;
   /** @see PageContainerExtraProp */
   extra?: PageContainerExtraProp;
   /**
@@ -624,6 +630,14 @@ export type AppShellProp = {
   mobileNav?: ReactNode;
   /** Accessible title for the mobile navigation drawer. Defaults to the localized "Menu". */
   mobileNavLabel?: string;
+  /**
+   * Visible text beside the drawer trigger's glyph (e.g. "Pages"). It becomes the trigger's
+   * accessible name, replacing the localized "Open navigation" — omit it for the glyph-only
+   * trigger. The drawer closes when a link, a Sidebar row or a menu item inside it is activated,
+   * or on an explicit close (Esc, overlay, close button, `SheetClose`); other controls — a tree's
+   * expand toggle — leave it open.
+   */
+  mobileNavTriggerLabel?: string;
   /** Controlled open state of the mobile drawer. Omit for AppShell-owned (uncontrolled) state. */
   mobileNavOpen?: boolean;
   /** Change handler for the mobile drawer open state (pairs with `mobileNavOpen`). */
@@ -1446,6 +1460,11 @@ export type AppLauncherProp = {
 export type SidebarProp = {
   /** Accessible navigation landmark name; make it unique when multiple sidebars share a document. */
   ariaLabel?: string;
+  /**
+   * Ref to the navigation's scroll container (the element with `overflow-y: auto`), to persist
+   * and restore its `scrollTop` across navigations or remounts.
+   */
+  scrollRef?: React.Ref<HTMLElement>;
   activeId: string;
   onSelect?: (id: string) => void;
   sections?: SidebarSectionProp[];

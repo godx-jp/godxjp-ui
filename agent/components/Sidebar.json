@@ -10,6 +10,11 @@
       "type": "string"
     },
     {
+      "description": "Ref to the navigation's scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136).",
+      "name": "scrollRef",
+      "type": "React.Ref<HTMLElement>"
+    },
+    {
       "description": "The id of the currently active nav item. For group items, the parent is automatically highlighted when any descendant id matches.",
       "name": "activeId",
       "required": true,

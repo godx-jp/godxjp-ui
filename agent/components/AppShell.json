@@ -106,6 +106,11 @@
       "type": "string"
     },
     {
+      "description": "Visible text beside the drawer trigger's glyph (e.g. 'Pages'); it becomes the trigger's accessible name instead of the localized 'Open navigation'. The drawer closes on a link, a Sidebar row or a menu item, or an explicit close (Esc, overlay, close button, SheetClose) — other buttons such as a tree's expand toggle leave it open (gh#1133).",
+      "name": "mobileNavTriggerLabel",
+      "type": "string"
+    },
+    {
       "description": "Controlled open state of the mobile drawer. Omit for AppShell-owned state.",
       "name": "mobileNavOpen",
       "type": "boolean"

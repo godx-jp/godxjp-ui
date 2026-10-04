@@ -764,6 +764,12 @@ export const COMPONENTS: ComponentEntry[] = [
           "Skeletonise the TITLE BAND only while the page's record resolves (title/subtitle placeholders + aria-busy; the <h1> stays in the outline with an sr-only accessible name). Breadcrumbs and `extra` stay live — they come from the route, not the record. This is not a page-wide loading flag; use DataState for the body.",
       },
       {
+        name: "titleRef",
+        type: "React.Ref<HTMLHeadingElement>",
+        description:
+          "Ref to the page's <h1>; passing it also makes the heading programmatically focusable (tabIndex -1, outside the tab order, no focus ring) so a router can focus the new page title after client-side navigation (gh#1135).",
+      },
+      {
         name: "linkComponent",
         type: "React.ElementType",
         description:
@@ -1270,6 +1276,12 @@ import { StatCard } from "@godxjp/ui/data-display";
           "Accessible title for the mobile navigation drawer. Defaults to localized 'Menu'.",
       },
       {
+        name: "mobileNavTriggerLabel",
+        type: "string",
+        description:
+          "Visible text beside the drawer trigger's glyph (e.g. 'Pages'); it becomes the trigger's accessible name instead of the localized 'Open navigation'. The drawer closes on a link, a Sidebar row or a menu item, or an explicit close (Esc, overlay, close button, SheetClose) — other buttons such as a tree's expand toggle leave it open (gh#1133).",
+      },
+      {
         name: "mobileNavOpen",
         type: "boolean",
         description: "Controlled open state of the mobile drawer. Omit for AppShell-owned state.",
@@ -1717,6 +1729,12 @@ export function HandyInbound() {
         type: "string",
         description:
           "Tên khả truy cập của landmark điều hướng. Bắt buộc khi một tài liệu có nhiều hơn một `<nav>`.",
+      },
+      {
+        name: "scrollRef",
+        type: "React.Ref<HTMLElement>",
+        description:
+          "Ref to the navigation's scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136).",
       },
       {
         name: "activeId",
@@ -9105,6 +9123,12 @@ function ConfirmSettlement() {
         type: "number | string",
         description:
           "On SheetContent (side left/right): desired panel width (number→px). Default w-3/4 sm:max-w-md.",
+      },
+      {
+        name: "onCloseAutoFocus",
+        type: "(event: Event) => void",
+        description:
+          "On SheetContent (Radix name, same as DialogContent): fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading after a drawer navigation) to send focus there instead (gh#1134).",
       },
       {
         name: "responsive",
