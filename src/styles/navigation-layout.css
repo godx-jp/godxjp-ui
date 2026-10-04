@@ -1157,6 +1157,28 @@
     color: hsl(var(--foreground));
   }
 
+  /* Rule #24 for the trail (gh#1144): a crumb is one line of 13px text, 21px
+   * tall under a finger. The target grows to the 44px tap floor on the BLOCK axis and the trail
+   * does not move: padding takes the link to 44 and an equal negative margin hands the space back,
+   * so the row's height and every glyph's position are what they are under a mouse.
+   *
+   * Padding, not `::after`: a crumb with `ellipsis` cuts its label with `overflow: hidden` ON THE
+   * LINK, which clips the link's own pseudo-elements — the one crumb a long title produces would
+   * be the one that missed the floor. Padding is inside that clip, so it survives.
+   *
+   * Covers both trails: `<Breadcrumb>` (`.ui-breadcrumb-link`, the menu trigger) and
+   * `PageContainer`'s own (a bare link inside `.ui-breadcrumb-item`). */
+  @media (pointer: coarse) {
+    .ui-breadcrumb-item :is(a[href], .ui-breadcrumb-menu-trigger) {
+      /* Positioned so the grown box paints above the page title that follows the trail by a few
+       * px (PageContainer: measured 40 of 44 without it). A control in that row is positioned and
+       * later in the tree, so it still wins its own pixels. */
+      position: relative;
+      padding-block: max(0px, calc((var(--control-height-default) - 1lh) / 2));
+      margin-block: min(0px, calc((1lh - var(--control-height-default)) / 2));
+    }
+  }
+
   /* Ant Design `arrow`. Radix stamps width/height ATTRIBUTES on its <svg>; a CSS box beats an
    * attribute, so the pointer follows the token instead of Radix's 10×5 constant. */
   .ui-dropdown-menu-arrow {
