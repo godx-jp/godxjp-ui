@@ -6254,6 +6254,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--menu-item-height",
+    "value": "var(--band-height-xl)",
+    "description": "Rule #24 for the two row-shaped surfaces in this file (gh#1146). Measured at 390px with `(pointer: coarse)`: a DropdownMenu / Select row 32px, a tab trigger 34px. Rows sit flush against each other and a horizontal tab list clips its block overflow, so neither can borrow a larger target from a pseudo-element the way an isolated control does — the ROW itself reaches the 44px tap floor, as every touch platform's menus and tab bars do. Tab sizes collapse onto the floor under a finger, exactly as the control ladder's compact/default steps already do."
+  },
+  {
+    "name": "--tabs-trigger-height-sm",
+    "value": "var(--band-height-xl)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-trigger-height-md",
+    "value": "var(--band-height-xl)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-trigger-height-lg",
+    "value": "var(--band-height-xl)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
     "name": "--org-chart-node-inline-size",
     "value": "13rem",
     "description": "The box. A fixed inline size, so siblings line up in even columns and the connector bus has a predictable pitch; long names wrap inside it instead of widening one box."
