@@ -2474,6 +2474,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--search-input-end-padding",
+    "value": "calc( var(--search-input-edge-inset) + var(--touch-target-min) / 2 + var(--band-height-xl) / 2 )",
+    "description": "SearchInput's text stops at the clear ✕'s 44px TARGET, not at its 24px box (gh#1148): edge inset + half the box (where the glyph's centre is) + half the target."
+  },
+  {
     "name": "--textarea-padding-block-start",
     "value": "initial",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."

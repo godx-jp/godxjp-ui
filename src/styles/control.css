@@ -355,16 +355,25 @@
 
   /* The TARGET, separated from the box. WCAG 2.2 SC 2.5.8 asks for 24×24 CSS px of target, not for
    * 24px of ink — so the minimum lives on a pseudo-element that can be larger than the content
-   * without pushing anything around. `inset: 0` + `margin: auto` centres it on BOTH axes with no
-   * physical offset and no translate, so it is correct under dir="rtl" as written (CSS 2.1 §10.3.7
-   * / §10.6.4: auto margins split the over-constrained free space, negative included). */
+   * without pushing anything around.
+   *
+   * Centred by SYMMETRIC NEGATIVE INSETS: each side reaches out by half of what the box lacks, and
+   * by nothing once the box is already big enough. Logical properties, so it is the same under
+   * dir="rtl". This used to be `inset: 0` + `min-*-size` + `margin: auto`, on the belief that auto
+   * margins split negative free space; they do on the block axis (CSS 2.1 §10.6.4) but NOT on the
+   * inline axis — §10.3.7 sets a negative start margin to 0 — so every box narrower than its
+   * target had the whole surplus on its END side (measured 18.5 / 26.5 on a 36.5px Button, gh#1148). */
   .ui-button.ui-button--bare::after {
     content: "";
     position: absolute;
-    inset: 0;
-    min-inline-size: var(--button-bare-target-size, var(--control-height-xs));
-    min-block-size: var(--button-bare-target-size, var(--control-height-xs));
-    margin: auto;
+    inset-block: min(
+      0px,
+      calc((100% - var(--button-bare-target-size, var(--control-height-xs))) / 2)
+    );
+    inset-inline: min(
+      0px,
+      calc((100% - var(--button-bare-target-size, var(--control-height-xs))) / 2)
+    );
   }
 
   .ui-button--default-size {
@@ -451,8 +460,8 @@
    * `Toggle` 42×44, `Toggle size="sm"` 34×40, text Buttons `xs` 36 / `sm` 40 tall, a Segmented
    * option 40 tall (the track's 44 minus its padding). Unlike `icon-xs` above, the BOX keeps its size —
    * a toolbar of `icon-sm` actions is laid out at the step the consumer chose — and the 44px
-   * TARGET lives on `::after`, centred by `inset: 0` + `margin: auto` exactly like
-   * `.ui-button--bare::after` below, so it is RTL-correct with no physical offset.
+   * TARGET lives on `::after`, centred by symmetric negative insets exactly like
+   * `.ui-button--bare::after` below (see there for why not `margin: auto`, gh#1148).
    *
    * `position: relative` goes through `:where()` (zero specificity): a button some component
    * already positions — `absolute` in a corner — must keep its own `position`, whatever the order.
@@ -460,8 +469,8 @@
    * TOGGLE-GROUP ITEMS AND SEGMENTED OPTIONS GROW ON THE BLOCK AXIS ONLY. Group items sit
    * `--space-1` apart and options sit flush, so a 34px item widened to 44 would reach into its
    * neighbour and a tap on one item's edge would press the next. (A Segmented option is the
-   * `<label>` around its radio, so a tap on its `::after` checks it.) A tight row cannot give every item 44px of width without spacing it out; it keeps the
-   * 24px AA floor its gap already clears. */
+   * `<label>` around its radio, so a tap on its `::after` checks it.) A tight row cannot give every
+   * item 44px of width without spacing it out; it keeps the 24px AA floor its gap already clears. */
   @media (pointer: coarse) {
     :where(.ui-button--icon-sm, .ui-button--xs, .ui-button--sm, .ui-toggle) {
       position: relative;
@@ -474,15 +483,13 @@
     .ui-segmented-item::after {
       content: "";
       position: absolute;
-      inset: 0;
-      min-inline-size: var(--control-height-default);
-      min-block-size: var(--control-height-default);
-      margin: auto;
+      inset-block: min(0px, calc((100% - var(--control-height-default)) / 2));
+      inset-inline: min(0px, calc((100% - var(--control-height-default)) / 2));
     }
 
     [data-slot="toggle-group-item"].ui-toggle::after,
     .ui-segmented-item::after {
-      min-inline-size: 0;
+      inset-inline: 0;
     }
 
     /* A Command row sits flush against the next one, so the ROW reaches the floor (gh#1146:
@@ -1411,6 +1418,19 @@
 
   .ui-search-input-clear:hover {
     color: hsl(var(--foreground));
+  }
+
+  /* Rule #24 for the clear ✕ (gh#1148): a 24×24 box, measured, with no coarse rule. Under a finger
+   * its target is 44×44, centred on the glyph, and the field's end padding grows to the target's
+   * outer edge (--search-input-end-padding, tokens/components/control.css) — so the target never
+   * lies over typed text, and a tap meant to place the caret at the end of the text cannot clear it. */
+  @media (pointer: coarse) {
+    .ui-search-input-clear::after {
+      content: "";
+      position: absolute;
+      inset-block: min(0px, calc((100% - var(--control-height-default)) / 2));
+      inset-inline: min(0px, calc((100% - var(--control-height-default)) / 2));
+    }
   }
 
   @keyframes spin {

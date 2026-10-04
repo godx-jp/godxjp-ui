@@ -888,6 +888,11 @@
   :root {
     --control-height-compact: var(--band-height-xl);
     --control-height-default: var(--band-height-xl);
+    /* SearchInput's text stops at the clear ✕'s 44px TARGET, not at its 24px box (gh#1148): edge
+     * inset + half the box (where the glyph's centre is) + half the target. */
+    --search-input-end-padding: calc(
+      var(--search-input-edge-inset) + var(--touch-target-min) / 2 + var(--band-height-xl) / 2
+    );
   }
 }
 
