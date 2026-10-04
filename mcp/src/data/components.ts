@@ -5981,6 +5981,13 @@ import { Flex } from "@godxjp/ui/layout";
           "Narrow the elements a body may produce (with `unwrapDisallowed` to keep their text) — an activity feed showing only strong / em / del / code. Only removes; never allows what the schema strips (gh#1116).",
       },
       {
+        name: "shortCellLength",
+        type: "number | false",
+        defaultValue: "24",
+        description:
+          "A table cell whose trimmed text has no whitespace and at most this many characters (grapheme clusters) — a code, an id, a date, 優先度 — is stamped data-short, and Prose keeps it on one line (CJK otherwise breaks between ideographs in a narrow column). Sentences still wrap. false stamps nothing (gh#1150). Images in Prose table cells are capped at --prose-cell-image-max-inline-size (20rem) so a narrow table scrolls instead of squashing them.",
+      },
+      {
         name: "mermaid",
         type: "boolean",
         defaultValue: "true",
@@ -6111,6 +6118,13 @@ import { FormField } from "@godxjp/ui/data-entry";
         type: '"narrow" | "medium" | "wide"',
         description:
           "Reading line length (gh#1112): caps the inline size at the `--page-measure-*` token — the same vocabulary and tokens as `Flex measure` / `PageContainer measure` (narrow 42rem, medium 48rem sit in the 45–75 character band). A cap, not a centred column: the body keeps its start edge under its heading. Use it on a document/wiki/decision body instead of narrowing the whole page column; title and metadata stay full width. Unset = full width.",
+      },
+      {
+        name: "imagePreview",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Open the body's images in the kit image preview: click, Enter or Space on an image opens it, paging through the body's other previewable images in document order. Works on any HTML the body renders (@godxjp/markdown output included) with no img override; an image inside a link stays the link's and a kit Image keeps its own preview (gh#1150).",
       },
       { name: "children", type: "ReactNode", description: "The rendered content." },
       { name: "className", type: "string", description: "Extra classes on the container." },

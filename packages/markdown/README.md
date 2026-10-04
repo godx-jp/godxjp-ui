@@ -47,6 +47,11 @@ focusable only while it overflows, so a wide table scrolls instead of widening t
 | `rehypePlugins`                        | Run after the sanitiser — presentation only.                                                                                                                                          |
 | `mermaid={false}`                      | Keep ```mermaid fences as code (or hand them to the host `pre`).                                                                                                                      |
 | `allowedElements` / `unwrapDisallowed` | Narrow a body (an activity feed: `strong`, `em`, `del`, `code`). Only removes.                                                                                                        |
+| `shortCellLength`                      | A table cell holding one short token (no whitespace, ≤ 24 characters by default) gets `data-short`; `Prose` keeps it on one line. `false` turns it off.                               |
+
+Images: wrap the body in `<Prose imagePreview>` and every body image opens the kit preview, paging
+through the others — no `img` override needed. Images in table cells keep min(natural width, 20rem),
+so a narrow table scrolls instead of squashing them.
 
 ## Stored versions
 

@@ -23,7 +23,8 @@ type PluggableList = NonNullable<ReactMarkdownOptions["remarkPlugins"]>;
  */
 export const MARKDOWN_FORMAT = "md";
 // 2 — tables render inside a scroll box (gh#1131).
-export const RENDERER_VERSION = 2;
+// 3 — short single-token table cells carry `data-short` (gh#1150).
+export const RENDERER_VERSION = 3;
 
 export type MarkdownProps = {
   /** The Markdown source. */
@@ -68,6 +69,13 @@ export type MarkdownProps = {
   allowElement?: ReactMarkdownOptions["allowElement"];
   /** With an element filter: keep a removed element's children (its text) instead of dropping it. */
   unwrapDisallowed?: boolean;
+  /**
+   * A table cell whose trimmed text has no whitespace and at most this many characters — a code,
+   * an id, a date, 優先度 — is stamped `data-short`, and `Prose` keeps it on one line: CJK otherwise
+   * breaks between any two ideographs in a narrow column (gh#1150). A sentence still wraps.
+   * Characters are user-perceived (grapheme clusters). Default 24; `false` stamps nothing.
+   */
+  shortCellLength?: number | false;
 };
 
 /** Element attributes that carry a URL, by tag. */
@@ -93,6 +101,40 @@ function rehypeResolveUrls(options: { resolve?: MarkdownProps["resolveUrl"] }) {
       if (typeof value !== "string") return;
       const resolved = options.resolve!(value, key!);
       if (resolved !== undefined) node.properties = { ...node.properties, [key!]: resolved };
+    });
+  };
+}
+
+const graphemes =
+  typeof Intl !== "undefined" && "Segmenter" in Intl
+    ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
+    : undefined;
+
+function textOf(node: Element): { text: string; hasImage: boolean } {
+  let text = "";
+  let hasImage = false;
+  visit(node, (child) => {
+    if (child.type === "text") text += child.value;
+    else if (child.type === "element" && child.tagName === "img") hasImage = true;
+  });
+  return { text, hasImage };
+}
+
+/**
+ * rehype plugin, AFTER the sanitiser (presentation only — it adds one data attribute and nothing
+ * the sanitiser would judge): stamps `data-short` on a table cell holding a single short token.
+ */
+function rehypeShortCells(options: { max: number | false }) {
+  return (tree: Root) => {
+    const { max } = options;
+    if (max === false || max <= 0) return;
+    visit(tree, "element", (node: Element) => {
+      if (node.tagName !== "td" && node.tagName !== "th") return;
+      const { text, hasImage } = textOf(node);
+      const token = text.trim();
+      if (hasImage || token === "" || /\s/.test(token)) return;
+      const length = graphemes ? [...graphemes.segment(token)].length : [...token].length;
+      if (length <= max) node.properties = { ...node.properties, dataShort: "" };
     });
   };
 }
@@ -135,6 +177,7 @@ export function Markdown({
   disallowedElements,
   allowElement,
   unwrapDisallowed,
+  shortCellLength = 24,
 }: MarkdownProps) {
   const sanitizeSchema = React.useMemo(() => extendSchema(schema), [schema]);
   const merged = React.useMemo<Components>(() => {
@@ -178,6 +221,7 @@ export function Markdown({
         [rehypeResolveUrls, { resolve: resolveUrl }],
         [rehypeHeadingIds, { resolve: headingId }],
         [rehypeSanitize, sanitizeSchema],
+        [rehypeShortCells, { max: shortCellLength }],
         ...rehypePlugins,
       ]}
       urlTransform={safeUrl}

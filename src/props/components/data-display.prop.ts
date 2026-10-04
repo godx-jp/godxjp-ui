@@ -50,6 +50,13 @@ export type ProseProp = {
    * Unset = the full width of the container.
    */
   measure?: FlexMeasureProp;
+  /**
+   * Open the body's images in the kit image preview (gh#1150): a click, Enter or Space on an image
+   * opens it, paging through every other previewable image of the body in document order. Works
+   * on any HTML the body renders — `@godxjp/markdown` output included — with no `img` override.
+   * An image inside a link stays the link's, and a kit `Image` keeps its own preview.
+   */
+  imagePreview?: boolean;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };

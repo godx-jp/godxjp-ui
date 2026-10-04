@@ -22,6 +22,12 @@
       "type": "\"narrow\" | \"medium\" | \"wide\""
     },
     {
+      "defaultValue": "false",
+      "description": "Open the body's images in the kit image preview: click, Enter or Space on an image opens it, paging through the body's other previewable images in document order. Works on any HTML the body renders (@godxjp/markdown output included) with no img override; an image inside a link stays the link's and a kit Image keeps its own preview (gh#1150).",
+      "name": "imagePreview",
+      "type": "boolean"
+    },
+    {
       "description": "The rendered content.",
       "name": "children",
       "type": "ReactNode"

@@ -47,6 +47,12 @@
       "type": "string[]"
     },
     {
+      "defaultValue": "24",
+      "description": "A table cell whose trimmed text has no whitespace and at most this many characters (grapheme clusters) — a code, an id, a date, 優先度 — is stamped data-short, and Prose keeps it on one line (CJK otherwise breaks between ideographs in a narrow column). Sentences still wrap. false stamps nothing (gh#1150). Images in Prose table cells are capped at --prose-cell-image-max-inline-size (20rem) so a narrow table scrolls instead of squashing them.",
+      "name": "shortCellLength",
+      "type": "number | false"
+    },
+    {
       "defaultValue": "true",
       "description": "`false` keeps ```mermaid fences as code. Diagrams need the optional peer `mermaid`.",
       "name": "mermaid",

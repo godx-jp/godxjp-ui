@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.26.0] - 2026-10-05
+
+### ✨ Short table cells stay whole; table images keep their width; body image preview (gh#1150)
+
+Reported by the pages app, which carried a stopgap `body-cells.tsx`.
+
+- **`@godxjp/markdown` `shortCellLength`** (default 24): a table cell whose trimmed text has no
+  whitespace and at most that many characters (grapheme clusters) is stamped `data-short`, and
+  `Prose` keeps it on one line. `| 優先度 | … |` rendered 優先 / 度 in a narrow column — CJK breaks
+  between any two ideographs; it is now one line, while a sentence beside it still wraps.
+  `RENDERER_VERSION` 2 → 3.
+- **Prose table images** are capped at `--prose-cell-image-max-inline-size` (20rem) instead of
+  100%, so an image's narrowest size is min(natural width, 20rem) and a narrow table scrolls in its
+  box (measured at a 280px column: 188 → 320px for a 480px image; a 100px image stays 100).
+- **`Prose imagePreview`**: every body image (not a link's, not a kit `Image`) opens the kit image
+  preview on click, Enter or Space and pages through the body's other images in document order —
+  on any HTML the body renders, with no `img` override. Focus returns to the image on close.
+
 ## [31.25.4] - 2026-10-05
 
 ### 🐛 Touch targets centred in both directions; wrapped breadcrumbs; SearchInput clear (gh#1148)
