@@ -4670,6 +4670,14 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "allowSpaces",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": true,
@@ -4734,6 +4742,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "onQueryChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((query: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
@@ -4747,6 +4763,22 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "shouldFilter",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "terminator",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5320,7 +5352,7 @@
           "name": "onSelect",
           "origin": "owned",
           "required": true,
-          "type": "(item: CommandPaletteItem) => void",
+          "type": "(item: CommandPaletteItem, modifiers: CommandPaletteSelectModifiers) => void",
           "values": [],
           "declaredIn": ["src/components/data-entry/command-palette.tsx"]
         },
@@ -5344,8 +5376,8 @@
           "name": "shortcut",
           "origin": "owned",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
+          "type": "string | boolean | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-entry/command-palette.tsx"]
         },
         {

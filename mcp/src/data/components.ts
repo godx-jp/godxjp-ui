@@ -16446,9 +16446,17 @@ import { Text } from "@godxjp/ui/general";
       },
       {
         name: "onSelect",
-        type: "(item: CommandPaletteItem) => void",
+        type: "(item: CommandPaletteItem, modifiers: { metaKey, ctrlKey, shiftKey, altKey }) => void",
         required: true,
-        description: "Consumer-owned selection handler.",
+        description:
+          'Consumer-owned selection handler. The second argument carries the modifier keys held on the Enter or click that chose the item — build "open in split / new tab" on ⌘/Ctrl/Shift (gh#1126).',
+      },
+      {
+        name: "shortcut",
+        type: "boolean | string",
+        defaultValue: "true",
+        description:
+          'The global toggle shortcut. `true` = ⌘K / Ctrl+K, `false` = none, or a combo string — `"mod+o"`, `"mod+p"`, `"mod+shift+p"` — so a quick switcher and a command palette can live side by side. `mod` is ⌘ or Ctrl; Shift / Alt must match exactly. Never fires during IME composition; the default trigger shows the combo (gh#1126).',
       },
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
@@ -17876,7 +17884,33 @@ const messages: ChatMessageProp[] = [
         type: "string",
         defaultValue: '"/"',
         description:
-          'The character that opens the list when typed at a word boundary (use "@" for a mention list).',
+          'The character(s) that open the list when typed at a boundary — the start, whitespace, or any non-ASCII character, so `[[` opens right after Japanese text (gh#1127); an ASCII letter still blocks it, so `https://x` opens nothing. Use "@" for mentions, "[[" for a link picker.',
+      },
+      {
+        name: "allowSpaces",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Spaces may appear inside the query (a `[[` link picker searching "Meeting notes"); a line break still ends it (gh#1127).',
+      },
+      {
+        name: "terminator",
+        type: "string",
+        description:
+          "Typing this inside the query finishes the token and closes the list, e.g. `]]` (gh#1127).",
+      },
+      {
+        name: "shouldFilter",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "`false` when the host answers the query itself (async, via `onQueryChange`) and `items` already holds the matches — they are shown as given, not filtered again (gh#1127).",
+      },
+      {
+        name: "onQueryChange",
+        type: "(query: string) => void",
+        description:
+          "The query typed after the trigger, on every change while the list is open — the seam for server-side search (gh#1127).",
       },
       { name: "open", type: "boolean", description: "Controlled open state of the list." },
       { name: "defaultOpen", type: "boolean", description: "Uncontrolled initial open state." },

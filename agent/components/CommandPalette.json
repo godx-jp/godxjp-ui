@@ -17,10 +17,16 @@
       "type": "CommandPaletteLabels"
     },
     {
-      "description": "Consumer-owned selection handler.",
+      "description": "Consumer-owned selection handler. The second argument carries the modifier keys held on the Enter or click that chose the item — build \"open in split / new tab\" on ⌘/Ctrl/Shift (gh#1126).",
       "name": "onSelect",
       "required": true,
-      "type": "(item: CommandPaletteItem) => void"
+      "type": "(item: CommandPaletteItem, modifiers: { metaKey, ctrlKey, shiftKey, altKey }) => void"
+    },
+    {
+      "defaultValue": "true",
+      "description": "The global toggle shortcut. `true` = ⌘K / Ctrl+K, `false` = none, or a combo string — `\"mod+o\"`, `\"mod+p\"`, `\"mod+shift+p\"` — so a quick switcher and a command palette can live side by side. `mod` is ⌘ or Ctrl; Shift / Alt must match exactly. Never fires during IME composition; the default trigger shows the combo (gh#1126).",
+      "name": "shortcut",
+      "type": "boolean | string"
     },
     {
       "description": "Controlled open state.",

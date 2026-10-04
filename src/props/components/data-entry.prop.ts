@@ -2426,8 +2426,22 @@ export type ChatSuggestionProp = {
   items: readonly ChatSuggestionItemProp[];
   /** Fires with the picked row's `value`. The caller owns what that does to the draft text. */
   onValueChange?: OnValueChangeProp<string>;
-  /** The character that opens the list when typed at a word boundary. Default `/`. */
+  /**
+   * The character(s) that open the list when typed at a boundary — the start, whitespace, or any
+   * non-ASCII character (so `[[` opens right after Japanese text). Default `/`.
+   */
   triggerCharacter?: string;
+  /** Spaces may appear inside the query (a `[[` link picker); a line break still ends it (gh#1127). */
+  allowSpaces?: boolean;
+  /** Typing this inside the query finishes the token and closes the list, e.g. `]]` (gh#1127). */
+  terminator?: string;
+  /**
+   * Whether the list filters `items` against the query itself. `false` when the host answers the
+   * query (async, via `onQueryChange`) and `items` already holds the matches (gh#1127). Default `true`.
+   */
+  shouldFilter?: boolean;
+  /** The query typed after the trigger, on every change while the list is open (gh#1127). */
+  onQueryChange?: (query: string) => void;
   /** Controlled open state. */
   open?: OpenProp;
   /** Uncontrolled initial open state. */
