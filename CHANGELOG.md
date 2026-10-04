@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.25.2] - 2026-10-05
+
+### 🐛 44px-tall touch target for breadcrumb links (gh#1144)
+
+Reported from the pages app: breadcrumb links were 21px tall at 390px under `(pointer: coarse)`.
+On coarse pointers every crumb link and the crumb menu trigger — in `<Breadcrumb>` and in
+`PageContainer`'s trail, `ellipsis` crumbs included — now offers a 44px-tall target (measured 22 →
+44). The trail does not move: row height and glyph positions are identical to a mouse. Mouse
+geometry is unchanged.
+
 ## [31.25.1] - 2026-10-05
 
 ### 🐛 44×44 touch target for icon-only Buttons and Toggles (gh#1142)
