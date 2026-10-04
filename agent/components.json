@@ -738,6 +738,11 @@
         "type": "boolean"
       },
       {
+        "description": "Ref to the page's <h1>; passing it also makes the heading programmatically focusable (tabIndex -1, outside the tab order, no focus ring) so a router can focus the new page title after client-side navigation (gh#1135).",
+        "name": "titleRef",
+        "type": "React.Ref<HTMLHeadingElement>"
+      },
+      {
         "description": "Link component used for breadcrumb / header links (e.g. an Inertia or React Router `Link`). Defaults to a native `<a>`.",
         "name": "linkComponent",
         "type": "React.ElementType"
@@ -1192,6 +1197,11 @@
         "type": "string"
       },
       {
+        "description": "Visible text beside the drawer trigger's glyph (e.g. 'Pages'); it becomes the trigger's accessible name instead of the localized 'Open navigation'. The drawer closes on a link, a Sidebar row or a menu item, or an explicit close (Esc, overlay, close button, SheetClose) — other buttons such as a tree's expand toggle leave it open (gh#1133).",
+        "name": "mobileNavTriggerLabel",
+        "type": "string"
+      },
+      {
         "description": "Controlled open state of the mobile drawer. Omit for AppShell-owned state.",
         "name": "mobileNavOpen",
         "type": "boolean"
@@ -1500,6 +1510,11 @@
         "description": "Tên khả truy cập của landmark điều hướng. Bắt buộc khi một tài liệu có nhiều hơn một `<nav>`.",
         "name": "ariaLabel",
         "type": "string"
+      },
+      {
+        "description": "Ref to the navigation's scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136).",
+        "name": "scrollRef",
+        "type": "React.Ref<HTMLElement>"
       },
       {
         "description": "The id of the currently active nav item. For group items, the parent is automatically highlighted when any descendant id matches.",
@@ -7800,6 +7815,11 @@
         "description": "On SheetContent (side left/right): desired panel width (number→px). Default w-3/4 sm:max-w-md.",
         "name": "width",
         "type": "number | string"
+      },
+      {
+        "description": "On SheetContent (Radix name, same as DialogContent): fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading after a drawer navigation) to send focus there instead (gh#1134).",
+        "name": "onCloseAutoFocus",
+        "type": "(event: Event) => void"
       },
       {
         "defaultValue": "\"side\"",

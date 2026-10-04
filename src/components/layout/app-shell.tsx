@@ -39,6 +39,7 @@ export function AppShell({
   navRailLabel,
   mobileNav,
   mobileNavLabel,
+  mobileNavTriggerLabel,
   mobileNavOpen,
   onMobileNavOpenChange,
 }: AppShellProp) {
@@ -94,23 +95,22 @@ export function AppShell({
   const setDrawerOpen = onMobileNavOpenChange ?? setUncontrolledOpen;
 
   /*
-   * Tapping a DESTINATION inside the drawer closes it — the expected mobile pattern. Tapping a
-   * control that OPENS something must not, and the difference is not a list of class names.
+   * Tapping a DESTINATION inside the drawer closes it — the expected mobile pattern. Anything else
+   * leaves it open, and the drawer still closes on its own terms: Esc, the overlay, the close
+   * button, or a `SheetClose` the consumer places around a control of their own.
    *
-   * This shipped as "any button except `.sb-nav-group-trigger`", which was the only disclosure
-   * the drawer had at the time. The moment the rail carried an organization switcher, tapping it
-   * closed the whole drawer out from under the panel it had just opened — reported from a phone,
-   * and the panel is portalled so it took the drawer's dismissal with it.
-   *
-   * A control that opens something SAYS SO, in the attributes it must carry anyway for assistive
-   * tech: `aria-expanded` on a disclosure, `aria-haspopup` on anything that summons a menu,
-   * dialog or listbox. Reading those instead of a class means every future overlay trigger — one
-   * this file has never heard of — is handled the day it is added. The group trigger keeps its
-   * name here only as a belt: it is a disclosure and already carries `aria-expanded`.
+   * This used to be the inverse — close on ANY button, minus the ones that announce they open
+   * something (`aria-expanded`, `aria-haspopup`). That list could never be complete: a collection
+   * tree whose expand toggle carried neither attribute closed the whole drawer on every expand,
+   * reported from the pages app, which had to work around it. Deciding what NAVIGATES is a short,
+   * closed list instead — a link, a Sidebar row (`.sb-nav-item`, link or `onSelect` button) and a
+   * menu item — so a control this file has never heard of now keeps the drawer open rather than
+   * dismissing it. A disclosure inside that list (the group trigger is a `.sb-nav-item`) still
+   * says so and still stays open.
    */
   const handleDrawerClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
-    const hit = target.closest("a[href], button, [role='menuitem']");
+    const hit = target.closest("a[href], .sb-nav-item, [role='menuitem']");
     if (!hit) {
       return;
     }
@@ -279,7 +279,11 @@ export function AppShell({
               <TopbarItem
                 type="button"
                 className="app-mobile-nav-trigger"
-                aria-label={t("layout.appShell.openNav")}
+                /* A visible label IS the accessible name (WCAG 2.5.3 label-in-name), so the
+                 * fixed "open navigation" name is only for the glyph-only trigger. */
+                aria-label={
+                  mobileNavTriggerLabel === undefined ? t("layout.appShell.openNav") : undefined
+                }
                 aria-haspopup="dialog"
               >
                 {/* The hamburger glyph is DELIBERATELY larger than the cell's own --topbar-icon-size:
@@ -301,6 +305,7 @@ export function AppShell({
                  * description already says it is bigger on purpose. One cell overriding the bar's
                  * step through a documented knob is the knob working, not a broken promise. */}
                 <Menu className="size-[var(--app-shell-mobile-nav-icon-size)]" aria-hidden="true" />
+                {mobileNavTriggerLabel}
               </TopbarItem>
             </SheetTrigger>
             <SheetContent

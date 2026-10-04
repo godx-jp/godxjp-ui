@@ -1683,6 +1683,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "mobileNavTriggerLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "navRail",
           "origin": "owned",
           "required": false,
@@ -11386,6 +11394,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "titleRef",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLHeadingElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "toolbar",
           "origin": "owned",
           "required": false,
@@ -15215,6 +15231,14 @@
           "declaredIn": ["src/components/feedback/sheet.tsx"]
         },
         {
+          "name": "onCloseAutoFocus",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
+        },
+        {
           "name": "overlayClassName",
           "origin": "owned",
           "required": false,
@@ -15448,6 +15472,14 @@
           "origin": "owned",
           "required": false,
           "type": "((item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "scrollRef",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLElement> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },

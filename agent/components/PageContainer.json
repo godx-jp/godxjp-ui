@@ -126,6 +126,11 @@
       "type": "boolean"
     },
     {
+      "description": "Ref to the page's <h1>; passing it also makes the heading programmatically focusable (tabIndex -1, outside the tab order, no focus ring) so a router can focus the new page title after client-side navigation (gh#1135).",
+      "name": "titleRef",
+      "type": "React.Ref<HTMLHeadingElement>"
+    },
+    {
       "description": "Link component used for breadcrumb / header links (e.g. an Inertia or React Router `Link`). Defaults to a native `<a>`.",
       "name": "linkComponent",
       "type": "React.ElementType"

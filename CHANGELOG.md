@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.24.0] - 2026-10-05
+
+### ✨ Navigation focus and drawer hooks for client-side routing (gh#1133–#1136)
+
+Reported by the pages app's collection navigation, which had worked around each one.
+
+- **AppShell** `mobileNavTriggerLabel` — visible text beside the drawer glyph (e.g. "Pages"); it
+  becomes the trigger's accessible name. The drawer now closes only on a destination — a link, a
+  Sidebar row (link or `onSelect` button) or a menu item — or an explicit close (Esc, overlay,
+  close button, `SheetClose`). Previously any button without `aria-expanded`/`aria-haspopup`
+  closed it, so a tree's expand toggle dismissed the drawer (gh#1133). A custom `mobileNav` whose
+  plain buttons navigate should wrap them in `SheetClose asChild` or control `mobileNavOpen`.
+- **SheetContent** `onCloseAutoFocus` — same contract as `DialogContent`: `preventDefault()` and
+  focus your own target instead of the trigger (gh#1134).
+- **PageContainer** `titleRef` — a ref to the `<h1>`, which becomes programmatically focusable
+  (`tabIndex={-1}`, no focus ring) for post-navigation focus (gh#1135).
+- **Sidebar** `scrollRef` — a ref to the navigation's scroll container, to persist and restore
+  `scrollTop` (gh#1136).
+
 ## [31.23.0] - 2026-10-05
 
 ### 🐛 Prose tables scroll; cells keep their words whole (gh#1131)

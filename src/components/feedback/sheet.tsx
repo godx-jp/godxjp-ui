@@ -266,6 +266,12 @@ export interface SheetContentProps
    * physical `side` the consumer named, at every viewport.
    */
   responsive?: SheetResponsiveProp;
+  /**
+   * Radix's name, same contract as `DialogContent`: fires on every close, before focus returns to
+   * the trigger. Call `event.preventDefault()` and focus your own target — the page heading after a
+   * navigation, say — to send focus there instead.
+   */
+  onCloseAutoFocus?: (event: Event) => void;
 }
 
 export function SheetContent({
@@ -277,6 +283,7 @@ export function SheetContent({
   forceMount: _forceMount,
   width,
   responsive = "side",
+  onCloseAutoFocus,
   style,
   ref,
   ...props
@@ -302,7 +309,7 @@ export function SheetContent({
   const modal = React.useContext(SheetModalContext);
   const { contentRef, isMounted } = useNonModalPortal(state.isOpen, !modal);
   // Non-modal: tiêu điểm đã Tab sang trang phía sau thì đóng KHÔNG được kéo nó về trigger.
-  useOverlayCloseFocus(state.isOpen, undefined, modal ? undefined : contentRef);
+  useOverlayCloseFocus(state.isOpen, onCloseAutoFocus, modal ? undefined : contentRef);
 
   const overlayPortalContainer = useOverlayPortalContainer();
 

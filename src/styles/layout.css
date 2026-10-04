@@ -1107,6 +1107,13 @@
     min-inline-size: 0;
   }
 
+  /* `titleRef` makes the heading a programmatic focus TARGET (post-navigation announcement), not a
+   * control: it is outside the tab order, so a ring around the page title would mark nothing the
+   * user can operate (the GOV.UK / Reach Router treatment). */
+  .ui-page-title[tabindex="-1"]:focus {
+    outline: none;
+  }
+
   .ui-page-header-title-row > .ui-page-title {
     min-inline-size: 0;
   }
