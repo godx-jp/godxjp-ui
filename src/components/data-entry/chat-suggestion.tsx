@@ -19,7 +19,7 @@ export type {
 } from "../../props/components/data-entry.prop";
 
 /** The trigger token under the caret, or `null` when the caret is not inside one. */
-type TriggerMatch = { query: string };
+type TriggerMatch = { query: string; start: number };
 
 /**
  * Read the trigger token that ENDS at the caret.
@@ -46,11 +46,20 @@ function matchTrigger(
   // A typed terminator (`]]`) means the token is finished — the list closes.
   if (terminator && query.includes(terminator)) return null;
   const preceding = start === 0 ? "" : before[start - 1]!;
-  // A BOUNDARY before the trigger: start of text, whitespace, or any non-ASCII character (gh#1127).
-  // CJK has no word spaces, so `会議[[` must open; an ASCII letter or symbol still blocks it, which
-  // is what keeps `https://x` from opening a slash-command list.
-  if (preceding !== "" && !/\s/.test(preceding) && preceding.charCodeAt(0) < 128) return null;
-  return { query };
+  // A BOUNDARY before a ONE-character trigger: start of text, whitespace, or any non-ASCII
+  // character (gh#1127 — CJK has no word spaces, so `会議/` opens). An ASCII letter or symbol blocks
+  // it, which is what keeps `https://x` from opening a slash-command list. A MULTI-character trigger
+  // (`[[`, `::`) is deliberate and cannot arise inside a URL or a word by accident, so it opens
+  // anywhere — `abc[[` included, as in Obsidian (gh#1129).
+  if (
+    trigger.length === 1 &&
+    preceding !== "" &&
+    !/\s/.test(preceding) &&
+    preceding.charCodeAt(0) < 128
+  ) {
+    return null;
+  }
+  return { query, start };
 }
 
 /** Flatten one level of `children`, honouring the level the user has drilled into. */
@@ -221,11 +230,25 @@ export function ChatSuggestion({
     setActiveId(content?.querySelector('[cmdk-item][aria-selected="true"]')?.id || undefined);
   });
 
+  /*
+   * THE TOKEN ESCAPE DISMISSED (gh#1129). Escape closed the list, and the next keystroke inside the
+   * same token reopened it — so Escape did nothing a user could keep. The dismissed token is
+   * remembered by where its trigger starts: the list stays shut while the caret is still in THAT
+   * token, and comes back for a new trigger, or once the token has ended.
+   */
+  const dismissedStartRef = React.useRef<number | null>(null);
+
   const close = React.useCallback(() => {
+    const node = field();
+    const caret = node ? (node.selectionStart ?? node.value.length) : 0;
+    const hit = node
+      ? matchTrigger(node.value, caret, triggerCharacter, { allowSpaces, terminator })
+      : null;
+    dismissedStartRef.current = hit ? hit.start : null;
     setOpen(false);
     // Escape must never cost the draft: the text is untouched and the caret goes back where it was.
     field()?.focus();
-  }, [field, setOpen]);
+  }, [field, setOpen, triggerCharacter, allowSpaces, terminator]);
 
   /** Re-read the caret and decide whether the list belongs open. */
   const evaluate = React.useCallback(() => {
@@ -234,9 +257,15 @@ export function ChatSuggestion({
     const caret = node.selectionStart ?? node.value.length;
     const hit = matchTrigger(node.value, caret, triggerCharacter, { allowSpaces, terminator });
     if (!hit) {
+      dismissedStartRef.current = null;
       setOpen(false);
       return;
     }
+    if (hit.start === dismissedStartRef.current) {
+      setOpen(false);
+      return;
+    }
+    dismissedStartRef.current = null;
     setQuery(hit.query);
     setOpen(true);
   }, [field, setOpen, triggerCharacter, allowSpaces, terminator]);

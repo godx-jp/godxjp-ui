@@ -18,7 +18,7 @@
     },
     {
       "defaultValue": "\"/\"",
-      "description": "The character(s) that open the list when typed at a boundary — the start, whitespace, or any non-ASCII character, so `[[` opens right after Japanese text (gh#1127); an ASCII letter still blocks it, so `https://x` opens nothing. Use \"@\" for mentions, \"[[\" for a link picker.",
+      "description": "The character(s) that open the list when typed at a boundary — the start, whitespace, or any non-ASCII character, so `/` opens right after Japanese text (gh#1127); an ASCII letter still blocks a ONE-character trigger, so `https://x` opens nothing. A multi-character trigger (`[[`) opens anywhere, `abc[[` included (gh#1129). After Escape the list stays shut until a new trigger is typed. Use \"@\" for mentions, \"[[\" for a link picker.",
       "name": "triggerCharacter",
       "type": "string"
     },

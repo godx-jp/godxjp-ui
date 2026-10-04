@@ -13,6 +13,7 @@ import {
   CommandItem,
   CommandList,
 } from "./command";
+import { isApplePlatform } from "../../lib/platform";
 import { isImeComposing } from "../../lib/ime";
 
 export type CommandPaletteItem = {
@@ -100,7 +101,8 @@ export type CommandPaletteProps = {
    * The global shortcut that toggles the palette (gh#1126). `true` (default) is ⌘K / Ctrl+K;
    * `false` binds none; a combo string — `"mod+o"`, `"mod+p"`, `"mod+shift+p"` — binds that, so two
    * palettes (a quick switcher and a command palette) can live side by side. `mod` is ⌘ on Apple
-   * and Ctrl elsewhere (either is accepted); `shift` and `alt` must match exactly, so `mod+p` and
+   * and Ctrl elsewhere — never both, so Ctrl+O keeps its editing meaning on a Mac; `shift` and
+   * `alt` must match exactly, so `mod+p` and
    * `mod+shift+p` are different shortcuts. Never fires during IME composition.
    */
   shortcut?: boolean | string;
@@ -140,7 +142,9 @@ function shortcutMatches(spec: ShortcutSpec, event: KeyboardEvent): boolean {
     event.key.toLowerCase() === spec.key ||
     (/^[a-z]$/.test(spec.key) && event.code === `Key${spec.key.toUpperCase()}`);
   if (!keyMatches) return false;
-  if (spec.mod && !(event.metaKey || event.ctrlKey)) return false;
+  // `mod` is THE platform's command key (gh#1129): ⌘ on Apple, Ctrl elsewhere — never both. On a
+  // Mac, Ctrl+O / Ctrl+P / Ctrl+K are text-editing keys in every input and must keep that meaning.
+  if (spec.mod && !(isApplePlatform() ? event.metaKey : event.ctrlKey)) return false;
   if (spec.meta && !event.metaKey) return false;
   if (spec.ctrl && !event.ctrlKey) return false;
   return event.shiftKey === spec.shift && event.altKey === spec.alt;
@@ -149,8 +153,8 @@ function shortcutMatches(spec: ShortcutSpec, event: KeyboardEvent): boolean {
 /** The hint the default trigger shows: `mod+shift+p` → `⌘⇧P`. */
 function shortcutHint(spec: ShortcutSpec): string {
   return [
-    spec.mod || spec.meta ? "⌘" : "",
-    spec.ctrl ? "Ctrl+" : "",
+    spec.meta || (spec.mod && isApplePlatform()) ? "⌘" : "",
+    spec.ctrl || (spec.mod && !isApplePlatform()) ? "Ctrl+" : "",
     spec.alt ? "⌥" : "",
     spec.shift ? "⇧" : "",
     spec.key.length === 1 ? spec.key.toUpperCase() : spec.key,

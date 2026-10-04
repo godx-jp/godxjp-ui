@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.22.1] - 2026-10-04
+
+### 🐛 ChatSuggestion + CommandPalette fixes (gh#1129)
+
+Reported by godx-content2 adopting 31.22.0.
+
+- ChatSuggestion: a multi-character trigger (`[[`) opens anywhere, `abc[[` included (as in
+  Obsidian); the word-boundary rule now applies only to one-character triggers, where it keeps
+  `https://x` from opening a slash list.
+- ChatSuggestion: after Escape, the list stays shut while the caret is in the same token; a new
+  trigger (or the token ending) brings it back. Before, the next keystroke reopened it.
+- CommandPalette: `mod` is ⌘ on Apple platforms and Ctrl elsewhere — never both, so Ctrl+O /
+  Ctrl+P keep their editing meaning on a Mac. The default trigger's hint shows the platform's key.
+- Tests: five new cases in `command-palette-shortcut-focus-1126.test.tsx` and
+  `chat-suggestion-link-picker-1127.test.tsx`. Fail on 31.22.0.
+
 ## [31.22.0] - 2026-10-04
 
 Requested by godx-content2 (pages).
