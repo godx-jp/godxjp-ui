@@ -64,8 +64,8 @@ const markup = renderToStaticMarkup(
     <div data-p="tabs">
       <Tabs
         items={[
-          { key: "graph", label: "Graph", children: "g" },
-          { key: "list", label: "List", children: "l" },
+          { value: "graph", label: "Graph", content: "g" },
+          { value: "list", label: "List", content: "l" },
         ]}
       />
     </div>
