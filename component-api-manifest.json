@@ -1675,6 +1675,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "mobileNavOnCloseAutoFocus",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "mobileNavOpen",
           "origin": "owned",
           "required": false,

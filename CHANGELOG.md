@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.25.0] - 2026-10-05
+
+### ✨ AppShell `mobileNavOnCloseAutoFocus` (gh#1140)
+
+Reported by the pages app after adopting 31.24.0: the built-in drawer could not take
+`SheetContent.onCloseAutoFocus` (gh#1134), so focusing the new page's heading after a drawer
+navigation still needed a Sheet of the app's own. `mobileNavOnCloseAutoFocus` is forwarded to the
+drawer's `SheetContent`: `preventDefault()` and focus your target (`PageContainer titleRef`).
+
 ## [31.24.1] - 2026-10-05
 
 ### 🐛 44px touch targets for Sidebar rows and the overlay ✕ (gh#1138)

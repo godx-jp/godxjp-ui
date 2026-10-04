@@ -638,6 +638,12 @@ export type AppShellProp = {
    * expand toggle — leave it open.
    */
   mobileNavTriggerLabel?: string;
+  /**
+   * `SheetContent.onCloseAutoFocus` for the drawer: fires on every close, before focus returns to
+   * the trigger. Call `event.preventDefault()` and focus your own target — the new page's heading
+   * after a drawer navigation (`PageContainer titleRef`) — to send focus there instead.
+   */
+  mobileNavOnCloseAutoFocus?: (event: Event) => void;
   /** Controlled open state of the mobile drawer. Omit for AppShell-owned (uncontrolled) state. */
   mobileNavOpen?: boolean;
   /** Change handler for the mobile drawer open state (pairs with `mobileNavOpen`). */

@@ -1282,6 +1282,12 @@ import { StatCard } from "@godxjp/ui/data-display";
           "Visible text beside the drawer trigger's glyph (e.g. 'Pages'); it becomes the trigger's accessible name instead of the localized 'Open navigation'. The drawer closes on a link, a Sidebar row or a menu item, or an explicit close (Esc, overlay, close button, SheetClose) — other buttons such as a tree's expand toggle leave it open (gh#1133).",
       },
       {
+        name: "mobileNavOnCloseAutoFocus",
+        type: "(event: Event) => void",
+        description:
+          "SheetContent.onCloseAutoFocus for the built-in drawer: fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading via PageContainer titleRef) to send focus there instead (gh#1140).",
+      },
+      {
         name: "mobileNavOpen",
         type: "boolean",
         description: "Controlled open state of the mobile drawer. Omit for AppShell-owned state.",
