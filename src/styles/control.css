@@ -446,6 +446,40 @@
     padding: 0;
   }
 
+  /* Rule #24 for the icon-only controls that stay under 44px on a finger (gh#1142). Measured at
+   * 390px with `(pointer: coarse)`: `icon-sm` 40×40 (and every `Actions` item, which uses it),
+   * `Toggle` 42×44, `Toggle size="sm"` 34×40. Unlike `icon-xs` above, the BOX keeps its size —
+   * a toolbar of `icon-sm` actions is laid out at the step the consumer chose — and the 44px
+   * TARGET lives on `::after`, centred by `inset: 0` + `margin: auto` exactly like
+   * `.ui-button--bare::after` below, so it is RTL-correct with no physical offset.
+   *
+   * `position: relative` goes through `:where()` (zero specificity): a button some component
+   * already positions — `absolute` in a corner — must keep its own `position`, whatever the order.
+   *
+   * TOGGLE-GROUP ITEMS GROW ON THE BLOCK AXIS ONLY. They sit `--space-1` apart, so a 34px item
+   * widened to 44 would reach 5px into its neighbour and a tap on one item's edge would press the
+   * next. A tight row cannot give every item 44px of width without spacing it out; it keeps the
+   * 24px AA floor its gap already clears. */
+  @media (pointer: coarse) {
+    :where(.ui-button--icon-sm, .ui-toggle) {
+      position: relative;
+    }
+
+    .ui-button--icon-sm::after,
+    .ui-toggle::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      min-inline-size: var(--control-height-default);
+      min-block-size: var(--control-height-default);
+      margin: auto;
+    }
+
+    [data-slot="toggle-group-item"].ui-toggle::after {
+      min-inline-size: 0;
+    }
+  }
+
   .ui-button--icon-lg {
     width: var(--control-height-lg);
     height: var(--control-height-lg);
