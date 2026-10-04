@@ -41,10 +41,22 @@ export type CommandPaletteLabels = {
   close?: React.ReactNode;
 };
 
+/** The modifier keys held while an item was chosen (gh#1126). */
+export type CommandPaletteSelectModifiers = {
+  metaKey: boolean;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  altKey: boolean;
+};
+
 export type CommandPaletteProps = {
   groups: CommandPaletteGroup[];
   labels: CommandPaletteLabels;
-  onSelect: (item: CommandPaletteItem) => void;
+  /**
+   * Fires with the chosen item and the modifier keys held while choosing it (gh#1126) — Enter or a
+   * click with ⌘/Ctrl/Shift/Alt — so a host can "open in split" or "open in a new tab".
+   */
+  onSelect: (item: CommandPaletteItem, modifiers: CommandPaletteSelectModifiers) => void;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -84,7 +96,81 @@ export type CommandPaletteProps = {
    * better handler than a consumer's own. A topbar with no width to spare should be able to say so.
    */
   trigger?: React.ReactNode;
-  shortcut?: boolean;
+  /**
+   * The global shortcut that toggles the palette (gh#1126). `true` (default) is ⌘K / Ctrl+K;
+   * `false` binds none; a combo string — `"mod+o"`, `"mod+p"`, `"mod+shift+p"` — binds that, so two
+   * palettes (a quick switcher and a command palette) can live side by side. `mod` is ⌘ on Apple
+   * and Ctrl elsewhere (either is accepted); `shift` and `alt` must match exactly, so `mod+p` and
+   * `mod+shift+p` are different shortcuts. Never fires during IME composition.
+   */
+  shortcut?: boolean | string;
+};
+
+type ShortcutSpec = {
+  key: string;
+  mod: boolean;
+  shift: boolean;
+  alt: boolean;
+  meta: boolean;
+  ctrl: boolean;
+};
+
+/** `"mod+shift+p"` → its parts. `true` is `mod+k`. */
+function parseShortcut(shortcut: boolean | string): ShortcutSpec | null {
+  if (shortcut === false) return null;
+  const parts = (shortcut === true ? "mod+k" : shortcut)
+    .toLowerCase()
+    .split("+")
+    .map((p) => p.trim());
+  const key = parts.pop() ?? "";
+  if (!key) return null;
+  return {
+    key,
+    mod: parts.includes("mod"),
+    meta: parts.includes("meta") || parts.includes("cmd"),
+    ctrl: parts.includes("ctrl"),
+    shift: parts.includes("shift"),
+    alt: parts.includes("alt") || parts.includes("option"),
+  };
+}
+
+function shortcutMatches(spec: ShortcutSpec, event: KeyboardEvent): boolean {
+  // `event.code` too: with ⌥ held on a Mac, `event.key` is a symbol (⌥P is "π"), not the letter.
+  const keyMatches =
+    event.key.toLowerCase() === spec.key ||
+    (/^[a-z]$/.test(spec.key) && event.code === `Key${spec.key.toUpperCase()}`);
+  if (!keyMatches) return false;
+  if (spec.mod && !(event.metaKey || event.ctrlKey)) return false;
+  if (spec.meta && !event.metaKey) return false;
+  if (spec.ctrl && !event.ctrlKey) return false;
+  return event.shiftKey === spec.shift && event.altKey === spec.alt;
+}
+
+/** The hint the default trigger shows: `mod+shift+p` → `⌘⇧P`. */
+function shortcutHint(spec: ShortcutSpec): string {
+  return [
+    spec.mod || spec.meta ? "⌘" : "",
+    spec.ctrl ? "Ctrl+" : "",
+    spec.alt ? "⌥" : "",
+    spec.shift ? "⇧" : "",
+    spec.key.length === 1 ? spec.key.toUpperCase() : spec.key,
+  ].join("");
+}
+
+const modifiersOf = (
+  event: React.KeyboardEvent | React.MouseEvent,
+): CommandPaletteSelectModifiers => ({
+  metaKey: event.metaKey,
+  ctrlKey: event.ctrlKey,
+  shiftKey: event.shiftKey,
+  altKey: event.altKey,
+});
+
+const NO_MODIFIERS: CommandPaletteSelectModifiers = {
+  metaKey: false,
+  ctrlKey: false,
+  shiftKey: false,
+  altKey: false,
 };
 
 /**
@@ -115,6 +201,9 @@ export function CommandPalette({
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
   const [uncontrolledSearch, setUncontrolledSearch] = React.useState(defaultSearch);
   const shortcutRestoreFocusRef = React.useRef<HTMLElement | null>(null);
+  /** The modifier keys of the keystroke or click that chose an item (cmdk passes no event). */
+  const modifiersRef = React.useRef<CommandPaletteSelectModifiers>(NO_MODIFIERS);
+  const shortcutSpec = React.useMemo(() => parseShortcut(shortcut), [shortcut]);
   const open = controlledOpen ?? uncontrolledOpen;
   const search = controlledSearch ?? uncontrolledSearch;
   const setOpen = React.useCallback(
@@ -149,14 +238,10 @@ export function CommandPalette({
   }, [open, search, defaultSearch, setSearch]);
 
   React.useEffect(() => {
-    if (!shortcut) return;
+    if (!shortcutSpec) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        !isImeComposing(event) &&
-        event.key.toLowerCase() === "k" &&
-        (event.metaKey || event.ctrlKey)
-      ) {
+      if (!isImeComposing(event) && shortcutMatches(shortcutSpec, event)) {
         event.preventDefault();
         if (!open && document.activeElement instanceof HTMLElement) {
           shortcutRestoreFocusRef.current = document.activeElement;
@@ -167,7 +252,7 @@ export function CommandPalette({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, setOpen, shortcut]);
+  }, [open, setOpen, shortcutSpec]);
 
   const hasItems = React.useMemo(() => groups.some((group) => group.items.length > 0), [groups]);
 
@@ -179,9 +264,11 @@ export function CommandPalette({
       <Button variant="outline" size="sm" className="ui-command-palette-trigger">
         <Search aria-hidden="true" />
         <span>{labels.open}</span>
-        <span className="kbd" aria-hidden="true">
-          ⌘K
-        </span>
+        {shortcutSpec ? (
+          <span className="kbd" aria-hidden="true">
+            {shortcutHint(shortcutSpec)}
+          </span>
+        ) : null}
       </Button>
     ) : (
       trigger
@@ -215,7 +302,17 @@ export function CommandPalette({
         <Dialog.Description id="ui-command-palette-description" className="sr-only">
           {labels.description}
         </Dialog.Description>
-        <Command label={labels.title} shouldFilter={shouldFilter}>
+        <Command
+          label={labels.title}
+          shouldFilter={shouldFilter}
+          // Record the modifiers BEFORE cmdk handles the Enter / click that selects (capture phase).
+          onKeyDownCapture={(event) => {
+            if (event.key === "Enter") modifiersRef.current = modifiersOf(event);
+          }}
+          onClickCapture={(event) => {
+            modifiersRef.current = modifiersOf(event);
+          }}
+        >
           <CommandInput
             autoFocus
             value={search}
@@ -251,8 +348,10 @@ export function CommandPalette({
                         value={item.searchValue ?? `${item.id} ${String(item.label)}`}
                         disabled={item.disabled}
                         onSelect={() => {
+                          const modifiers = modifiersRef.current;
+                          modifiersRef.current = NO_MODIFIERS;
                           setOpen(false);
-                          onSelect(item);
+                          onSelect(item, modifiers);
                         }}
                       >
                         <span className="ui-command-palette-label">{item.label}</span>

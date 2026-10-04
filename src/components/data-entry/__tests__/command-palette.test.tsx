@@ -42,7 +42,12 @@ describe("CommandPalette", () => {
     expect(screen.getByRole("combobox", { name: "Command palette" })).toHaveFocus();
 
     await user.keyboard("{ArrowDown}{Enter}");
-    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "/services" }));
+    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "/services" }), {
+      metaKey: false,
+      ctrlKey: false,
+      shiftKey: false,
+      altKey: false,
+    });
     await waitFor(() => expect(trigger).toHaveFocus());
 
     await user.keyboard("{Control>}k{/Control}");

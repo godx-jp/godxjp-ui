@@ -18,9 +18,31 @@
     },
     {
       "defaultValue": "\"/\"",
-      "description": "The character that opens the list when typed at a word boundary (use \"@\" for a mention list).",
+      "description": "The character(s) that open the list when typed at a boundary — the start, whitespace, or any non-ASCII character, so `[[` opens right after Japanese text (gh#1127); an ASCII letter still blocks it, so `https://x` opens nothing. Use \"@\" for mentions, \"[[\" for a link picker.",
       "name": "triggerCharacter",
       "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Spaces may appear inside the query (a `[[` link picker searching \"Meeting notes\"); a line break still ends it (gh#1127).",
+      "name": "allowSpaces",
+      "type": "boolean"
+    },
+    {
+      "description": "Typing this inside the query finishes the token and closes the list, e.g. `]]` (gh#1127).",
+      "name": "terminator",
+      "type": "string"
+    },
+    {
+      "defaultValue": "true",
+      "description": "`false` when the host answers the query itself (async, via `onQueryChange`) and `items` already holds the matches — they are shown as given, not filtered again (gh#1127).",
+      "name": "shouldFilter",
+      "type": "boolean"
+    },
+    {
+      "description": "The query typed after the trigger, on every change while the list is open — the seam for server-side search (gh#1127).",
+      "name": "onQueryChange",
+      "type": "(query: string) => void"
     },
     {
       "description": "Controlled open state of the list.",

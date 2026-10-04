@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.22.0] - 2026-10-04
+
+Requested by godx-content2 (pages).
+
+### ✨ CommandPalette: configurable shortcut, modifiers on select (gh#1126)
+
+- `shortcut` takes a combo string — `"mod+o"`, `"mod+p"`, `"mod+shift+p"` — so a quick switcher and a
+  command palette can live side by side (`mod` = ⌘ or Ctrl; Shift / Alt must match exactly, so ⌘P
+  and ⌘⇧P differ). `true` is still ⌘K, `false` none; the default trigger shows the combo.
+- `onSelect(item, { metaKey, ctrlKey, shiftKey, altKey })`: the keys held on the Enter or click that
+  chose the item, for "open in split". Existing `(item) => …` handlers are unaffected.
+- The reported focus-restore problem did not reproduce (three opening paths measured in Chromium);
+  no change ships for it until there is a reproduction.
+- Test: `command-palette-shortcut-focus-1126.test.tsx`. Fails on 31.21.1.
+
+### ✨ ChatSuggestion: a `[[` link picker (gh#1127)
+
+- `allowSpaces`: spaces inside the query (a line break still ends it); `terminator` (e.g. `]]`)
+  closes the list.
+- Any non-ASCII character counts as a boundary before the trigger, so `[[` opens right after
+  Japanese text; an ASCII letter still blocks it (`https://x` opens nothing).
+- `onQueryChange(query)` + `shouldFilter={false}`: the host answers the query and its results are
+  shown as given.
+- Test: `chat-suggestion-link-picker-1127.test.tsx`. Fails on 31.21.1.
+
 ## [31.21.1] - 2026-10-04
 
 ### 🐛 Actions: a long strip wraps instead of hiding actions (gh#1121)

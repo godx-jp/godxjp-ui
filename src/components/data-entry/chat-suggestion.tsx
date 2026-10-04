@@ -30,15 +30,26 @@ type TriggerMatch = { query: string };
  * trigger character ends it. The character before the trigger must itself be a boundary, so a
  * URL's `https://x` never opens a slash-command list.
  */
-function matchTrigger(text: string, caret: number, trigger: string): TriggerMatch | null {
+function matchTrigger(
+  text: string,
+  caret: number,
+  trigger: string,
+  { allowSpaces = false, terminator }: { allowSpaces?: boolean; terminator?: string } = {},
+): TriggerMatch | null {
   if (!trigger) return null;
   const before = text.slice(0, caret);
   const start = before.lastIndexOf(trigger);
   if (start === -1) return null;
   const query = before.slice(start + trigger.length);
-  if (/\s/.test(query)) return null;
-  const preceding = start === 0 ? "" : before[start - 1];
-  if (preceding !== "" && !/\s/.test(preceding)) return null;
+  // `allowSpaces` (gh#1127): a `[[` link picker searches "Meeting notes"; a line break still ends it.
+  if (allowSpaces ? /\n/.test(query) : /\s/.test(query)) return null;
+  // A typed terminator (`]]`) means the token is finished — the list closes.
+  if (terminator && query.includes(terminator)) return null;
+  const preceding = start === 0 ? "" : before[start - 1]!;
+  // A BOUNDARY before the trigger: start of text, whitespace, or any non-ASCII character (gh#1127).
+  // CJK has no word spaces, so `会議[[` must open; an ASCII letter or symbol still blocks it, which
+  // is what keeps `https://x` from opening a slash-command list.
+  if (preceding !== "" && !/\s/.test(preceding) && preceding.charCodeAt(0) < 128) return null;
   return { query };
 }
 
@@ -103,6 +114,10 @@ export function ChatSuggestion({
   listLabel: listLabelProp,
   id,
   className,
+  allowSpaces = false,
+  terminator,
+  shouldFilter = true,
+  onQueryChange,
 }: ChatSuggestionProp) {
   const { t } = useTranslation();
 
@@ -154,8 +169,16 @@ export function ChatSuggestion({
   );
 
   const visible = React.useMemo(() => {
-    return levelItems(items, path).filter((item) => matches(item, query));
-  }, [items, path, query]);
+    // `shouldFilter={false}` (gh#1127): the host answers the query (async) and `items` already holds
+    // the matches — filtering them again against the same string would drop late arrivals.
+    const level = levelItems(items, path);
+    return shouldFilter ? level.filter((item) => matches(item, query)) : level;
+  }, [items, path, query, shouldFilter]);
+
+  // The query under the caret, for a host that fetches its own results.
+  React.useEffect(() => {
+    if (isOpen) onQueryChange?.(query);
+  }, [isOpen, query, onQueryChange]);
 
   // The active row always exists: after a keystroke narrows the list the previously active value
   // may be gone, and a list whose Enter does nothing is worse than one with no highlight at all.
@@ -209,14 +232,14 @@ export function ChatSuggestion({
     const node = field();
     if (!node) return;
     const caret = node.selectionStart ?? node.value.length;
-    const hit = matchTrigger(node.value, caret, triggerCharacter);
+    const hit = matchTrigger(node.value, caret, triggerCharacter, { allowSpaces, terminator });
     if (!hit) {
       setOpen(false);
       return;
     }
     setQuery(hit.query);
     setOpen(true);
-  }, [field, setOpen, triggerCharacter]);
+  }, [field, setOpen, triggerCharacter, allowSpaces, terminator]);
 
   const onTrigger = React.useCallback(
     (next?: string | false) => {

@@ -103,6 +103,7 @@ export type {
   CommandPaletteItem,
   CommandPaletteLabels,
   CommandPaletteProps,
+  CommandPaletteSelectModifiers,
 } from "./command-palette";
 export { PasswordInput } from "./password-input";
 export type { PasswordInputProps, PasswordVisibilityToggleProp } from "./password-input";
