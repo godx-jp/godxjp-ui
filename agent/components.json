@@ -5164,7 +5164,7 @@
     ],
     "rules": [],
     "storyPath": "data-display/Prose.stories.tsx",
-    "tagline": "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from. To RENDER Markdown, use the sibling package `@godxjp/markdown` inside it — `<Prose><Markdown>{body}</Markdown></Prose>` — the one GFM renderer + sanitiser + Mermaid gate shared by every GoDX app; do not assemble react-markdown + rehype-sanitize per app (gh#1108).",
+    "tagline": "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from. To RENDER Markdown, use the sibling package `@godxjp/markdown` inside it — `<Prose><Markdown>{body}</Markdown></Prose>` — the one GFM renderer + sanitiser + Mermaid gate shared by every GoDX app; do not assemble react-markdown + rehype-sanitize per app (gh#1108). Tables: `@godxjp/markdown` wraps each in `.ui-prose-table-scroll`, which Prose scrolls horizontally (focusable only while it overflows), and table cells keep their words whole — a short code like `F02` never breaks (gh#1131).",
     "usage": [
       "DO import from `@godxjp/ui/data-display`: `import { Prose } from \"@godxjp/ui/data-display\";`",
       "DO wrap the OUTPUT of your Markdown pipeline (react-markdown + remark-gfm + rehype-sanitize), a sanitised CMS string via `dangerouslySetInnerHTML`, or plain JSX. Prose styles descendants: h1..h4, p, ul/ol/li, blockquote, code, pre, table/th/td, a, img, hr.",

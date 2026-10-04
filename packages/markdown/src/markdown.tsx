@@ -10,6 +10,7 @@ import { visit } from "unist-util-visit";
 
 import { rehypeHeadingIds, type HeadingIdResolver } from "./headings";
 import { MermaidDiagram } from "./mermaid";
+import { TableScroll } from "./table-scroll";
 import { extendSchema, safeUrl, type SchemaExtension } from "./schema";
 
 type PluggableList = NonNullable<ReactMarkdownOptions["remarkPlugins"]>;
@@ -21,7 +22,8 @@ type PluggableList = NonNullable<ReactMarkdownOptions["remarkPlugins"]>;
  * differently — a schema change, a new default plugin — not on every release.
  */
 export const MARKDOWN_FORMAT = "md";
-export const RENDERER_VERSION = 1;
+// 2 — tables render inside a scroll box (gh#1131).
+export const RENDERER_VERSION = 2;
 
 export type MarkdownProps = {
   /** The Markdown source. */
@@ -95,6 +97,12 @@ function rehypeResolveUrls(options: { resolve?: MarkdownProps["resolveUrl"] }) {
   };
 }
 
+/** react-markdown hands a component its hast `node`; a DOM element must not receive it. */
+function omitNode<T extends { node?: unknown }>(props: T): Omit<T, "node"> {
+  const { node: _node, ...rest } = props;
+  return rest;
+}
+
 function fenceOf(node: Element | undefined): { language?: string; text: string } | undefined {
   const code = node?.children?.[0];
   if (!code || code.type !== "element" || code.tagName !== "code") return undefined;
@@ -130,7 +138,22 @@ export function Markdown({
 }: MarkdownProps) {
   const sanitizeSchema = React.useMemo(() => extendSchema(schema), [schema]);
   const merged = React.useMemo<Components>(() => {
-    if (!mermaid) return { ...components };
+    // Every table in its own scroll box (gh#1131). A host `table` override still wins.
+    const HostTable = components?.table;
+    const table: Components["table"] = (props) => (
+      <TableScroll>
+        {HostTable ? (
+          typeof HostTable === "string" ? (
+            React.createElement(HostTable, props)
+          ) : (
+            <HostTable {...props} />
+          )
+        ) : (
+          <table {...omitNode(props)} />
+        )}
+      </TableScroll>
+    );
+    if (!mermaid) return { ...components, table };
     const HostPre = components?.pre;
     // Mermaid first, then the host's renderer: a host that styles code keeps the gated diagrams.
     const pre: Components["pre"] = (props) => {
@@ -145,7 +168,7 @@ export function Markdown({
       const { node: _node, children: inner, ...rest } = props;
       return <pre {...rest}>{inner}</pre>;
     };
-    return { ...components, pre };
+    return { ...components, table, pre };
   }, [components, mermaid]);
 
   return (
