@@ -1852,11 +1852,23 @@
     border-collapse: collapse;
   }
 
+  /* A WIDE TABLE SCROLLS IN ITS OWN BOX (gh#1131). `@godxjp/markdown` wraps every rendered table in
+   * `.ui-prose-table-scroll`; without it a wide table widened the page or crushed its columns. The
+   * box, not the table, is the scroll container, so the table keeps its table semantics. */
+  .ui-prose .ui-prose-table-scroll {
+    max-inline-size: 100%;
+    overflow-x: auto;
+  }
+
   .ui-prose :is(th, td) {
     border: var(--stroke-hairline) solid hsl(var(--border));
     padding: var(--table-cell-padding-y) var(--table-cell-space-x, var(--space-section-active));
     text-align: start;
     vertical-align: top;
+    /* A cell keeps its words whole (gh#1131): `.ui-prose`'s `overflow-wrap: anywhere` broke a short
+     * code like "F02" into "F0" / "2" in a narrow column. A long cell now widens the table, which
+     * scrolls in its box instead. */
+    overflow-wrap: normal;
   }
 
   .ui-prose th {

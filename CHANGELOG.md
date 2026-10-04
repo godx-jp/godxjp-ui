@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.23.0] - 2026-10-05
+
+### 🐛 Prose tables scroll; cells keep their words whole (gh#1131)
+
+Reported by godx-content2 (a stopgap in pages). A wide Markdown table in `Prose` had no scroll
+container — it widened the page or crushed its columns — and `.ui-prose`'s `overflow-wrap: anywhere`
+reached the cells, so a short code like `F02` broke into `F0` / `2` in a narrow column (measured: 3
+lines → 1).
+
+- `@godxjp/markdown` wraps every rendered table in a scroll box, keyboard-focusable only while it
+  overflows. Renderer output changed for tables: `RENDERER_VERSION` 1 → 2.
+- `Prose` gives the box `overflow-x: auto` and resets cells to `overflow-wrap: normal`.
+- Test: `table-scroll-browser.test.tsx` (Chromium, 320px: page overflow 60px → 0, the wide box
+  scrolls and is focusable, a fitting table adds no tab stop, `F02` on one line). Fails on 31.22.1.
+
 ## [31.22.1] - 2026-10-04
 
 ### 🐛 ChatSuggestion + CommandPalette fixes (gh#1129)

@@ -22,6 +22,9 @@ GFM — tables, task lists (read-only), fenced code with `language-*` classes, a
 strikethrough — and an `id` on every heading (GitHub slugs, de-duplicated). The output is the same
 as `react-markdown` + `remark-gfm` + `rehype-sanitize`, which is what the apps rendered before.
 
+Every table renders inside a scroll box (`.ui-prose-table-scroll`, styled by `Prose`), keyboard-
+focusable only while it overflows, so a wide table scrolls instead of widening the page.
+
 ## Safety
 
 - **No raw HTML.** HTML in the source is dropped, never parsed into elements.
