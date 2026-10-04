@@ -40,6 +40,7 @@ export function AppShell({
   mobileNav,
   mobileNavLabel,
   mobileNavTriggerLabel,
+  mobileNavOnCloseAutoFocus,
   mobileNavOpen,
   onMobileNavOpenChange,
 }: AppShellProp) {
@@ -313,6 +314,7 @@ export function AppShell({
               width="var(--app-shell-mobile-nav-width)"
               className="app-mobile-nav-drawer"
               overlayClassName="app-mobile-nav-overlay"
+              onCloseAutoFocus={mobileNavOnCloseAutoFocus}
             >
               <SheetHeader title={mobileNavLabel ?? t("layout.appShell.navLabel")} />
               {/* The inset is a documented knob (--app-shell-mobile-nav-inset); a custom `mobileNav` that wants the full chrome inset sets it to var(--space-6) once in the service theme. Passed as a utility (not CSS) because *-layout.css is `@layer components`, where SheetBody's own px-* utility would win. */}

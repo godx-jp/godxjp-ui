@@ -1202,6 +1202,11 @@
         "type": "string"
       },
       {
+        "description": "SheetContent.onCloseAutoFocus for the built-in drawer: fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading via PageContainer titleRef) to send focus there instead (gh#1140).",
+        "name": "mobileNavOnCloseAutoFocus",
+        "type": "(event: Event) => void"
+      },
+      {
         "description": "Controlled open state of the mobile drawer. Omit for AppShell-owned state.",
         "name": "mobileNavOpen",
         "type": "boolean"
