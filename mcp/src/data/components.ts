@@ -16456,7 +16456,7 @@ import { Text } from "@godxjp/ui/general";
         type: "boolean | string",
         defaultValue: "true",
         description:
-          'The global toggle shortcut. `true` = ⌘K / Ctrl+K, `false` = none, or a combo string — `"mod+o"`, `"mod+p"`, `"mod+shift+p"` — so a quick switcher and a command palette can live side by side. `mod` is ⌘ or Ctrl; Shift / Alt must match exactly. Never fires during IME composition; the default trigger shows the combo (gh#1126).',
+          'The global toggle shortcut. `true` = ⌘K / Ctrl+K, `false` = none, or a combo string — `"mod+o"`, `"mod+p"`, `"mod+shift+p"` — so a quick switcher and a command palette can live side by side. `mod` is ⌘ on Apple platforms and Ctrl elsewhere — never both, so Ctrl+O / Ctrl+P keep their editing meaning on a Mac (gh#1129); Shift / Alt must match exactly. Never fires during IME composition; the default trigger shows the combo (gh#1126).',
       },
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
@@ -17884,7 +17884,7 @@ const messages: ChatMessageProp[] = [
         type: "string",
         defaultValue: '"/"',
         description:
-          'The character(s) that open the list when typed at a boundary — the start, whitespace, or any non-ASCII character, so `[[` opens right after Japanese text (gh#1127); an ASCII letter still blocks it, so `https://x` opens nothing. Use "@" for mentions, "[[" for a link picker.',
+          'The character(s) that open the list when typed at a boundary — the start, whitespace, or any non-ASCII character, so `/` opens right after Japanese text (gh#1127); an ASCII letter still blocks a ONE-character trigger, so `https://x` opens nothing. A multi-character trigger (`[[`) opens anywhere, `abc[[` included (gh#1129). After Escape the list stays shut until a new trigger is typed. Use "@" for mentions, "[[" for a link picker.',
       },
       {
         name: "allowSpaces",

@@ -48,6 +48,27 @@ describe("ChatSuggestion link picker (gh#1127)", () => {
     await waitFor(() => expect(rows()).toHaveLength(2));
   });
 
+  it("a multi-character trigger opens right after ASCII text too (`abc[[`, as in Obsidian) — gh#1129", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<Harness />);
+    await user.type(field(), literal("abc[["));
+    await waitFor(() => expect(rows()).toHaveLength(2));
+  });
+
+  it("after Escape the list stays shut while typing in the same token; a new trigger reopens it — gh#1129", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<Harness />);
+    await user.type(field(), literal("[[De"));
+    await waitFor(() => expect(rows()).toHaveLength(1));
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("listbox")).toBeNull());
+    await user.type(field(), "s");
+    await settle();
+    expect(screen.queryByRole("listbox")).toBeNull();
+    await user.type(field(), literal(" [["));
+    await waitFor(() => expect(rows()).toHaveLength(2));
+  });
+
   it("an ASCII letter before the trigger still blocks it (a URL stays a URL)", async () => {
     const user = userEvent.setup();
     renderWithUi(<Harness triggerCharacter="/" />);

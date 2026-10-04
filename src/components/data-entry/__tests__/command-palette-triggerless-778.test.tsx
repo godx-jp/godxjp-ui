@@ -56,7 +56,8 @@ describe("CommandPalette trigger (gh#778)", () => {
     );
 
     expect(screen.queryByRole("dialog")).toBeNull();
-    await userEvent.keyboard("{Meta>}k{/Meta}");
+    // jsdom is not an Apple platform, so `mod` is Ctrl here (gh#1129).
+    await userEvent.keyboard("{Control>}k{/Control}");
 
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });

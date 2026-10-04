@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/editor",
-  "version": "31.22.0",
+  "version": "31.22.1",
   "description": "Markdown editor for GoDX apps: formatting toolbar, write / preview / side by side with @godxjp/markdown, paste / drop / attach through a host upload function, IME-safe, ja / en / vi.",
   "type": "module",
   "main": "./dist/index.js",
@@ -32,8 +32,8 @@
     "lucide-react": "^1.37.0"
   },
   "peerDependencies": {
-    "@godxjp/markdown": "~31.22.0",
-    "@godxjp/ui": "~31.22.0",
+    "@godxjp/markdown": "~31.22.1",
+    "@godxjp/ui": "~31.22.1",
     "react": ">=19.0.0"
   },
   "keywords": [
