@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.25.4] - 2026-10-05
+
+### 🐛 Touch targets centred in both directions; wrapped breadcrumbs; SearchInput clear (gh#1148)
+
+From the pages app's re-sweep of 31.25.3 at 390px with `(pointer: coarse)`:
+
+- **Targets were not centred on narrow controls.** The `::after` targets used `inset: 0` +
+  `min-*-size` + `margin: auto`; auto margins split negative space on the block axis but not the
+  inline one (CSS 2.1 §10.3.7), so a box narrower than 44px had the whole surplus on its end side
+  (measured 18.5 / 26.5 on a 36.5px Button). Now symmetric negative insets — Button `icon-sm` /
+  `xs` / `sm`, Toggle, Segmented, the `bare` Button's 24px target, and the Dialog/Sheet ✕, whose
+  physical `translate` on a logical anchor also sat a box-width off the glyph under `dir="rtl"`.
+- **Wrapped breadcrumb rows overlapped.** Rows 25px apart let row 2's 44px link boxes cover row
+  1's (first crumb's target 25px). On coarse pointers the trail's row gap makes the row pitch
+  exactly 44. One-row trails are unchanged.
+- **SearchInput's clear ✕** (24×24) gets a centred 44×44 target on coarse pointers, and the field's
+  end padding grows to the target's edge so it never lies over typed text.
+
 ## [31.25.3] - 2026-10-05
 
 ### 🐛 44px touch targets: menus, listboxes, command rows, small Buttons, Segmented, Tabs (gh#1146)

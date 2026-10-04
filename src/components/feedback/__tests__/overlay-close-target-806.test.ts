@@ -43,21 +43,24 @@ describe("the overlay close button's TARGET reaches 24px (gh#806)", () => {
     expect(rule).toBeTruthy();
   });
 
-  it.each(["min-inline-size", "min-block-size"])("floors %s at the target token", (prop) => {
-    expect(rule).toMatch(new RegExp(`${prop}:\\s*var\\(\\s*--dialog-close-size\\)`));
+  /* The target is the box grown by half of what it lacks on EACH side — `min(0px, …)` — so it
+   * floors at the token and centres on the glyph in one declaration per axis (gh#1148). Logical
+   * properties only: the `inset-inline-start: 50%` + `translate: -50%` this replaced shifted a
+   * logical anchor physically and sat a box-width off the glyph under dir="rtl". Whitespace is
+   * normalised so a formatter reflow cannot decide the result. */
+  const flat = rule.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+  it.each(["inset-block", "inset-inline"])("floors %s at the target token, centred", (prop) => {
+    expect(flat).toContain(`${prop}: min(0px, calc((100% - var(--dialog-close-size)) / 2))`);
   });
 
-  it("is centred on the glyph, not anchored to a corner", () => {
-    expect(rule).toContain("inset-block-start: 50%");
-    expect(rule).toContain("inset-inline-start: 50%");
-    expect(rule).toContain("translate: -50% -50%");
+  it("is centred on the glyph with no physical shift", () => {
+    expect(flat).not.toMatch(/translate|\bleft:|\bright:|\btop:|\bbottom:/);
   });
 
-  /* `inline-size: 100%` keeps a WIDER button's target its own width; `min-*` only ever raises a
-   * small one. Without it a future padded close button would have its target SHRUNK to 24px. */
+  /* `min(0px, …)` is never positive: a button already larger than the token keeps its own box as
+   * its target instead of having it SHRUNK to 24px. */
   it("never shrinks a button that is already larger", () => {
-    expect(rule).toContain("inline-size: 100%");
-    expect(rule).toContain("block-size: 100%");
+    expect(flat.match(/min\(0px,/g)).toHaveLength(2);
   });
 
   /* Rule #47 forbids a consumer re-sizing package internals, so the floor has to be a token they

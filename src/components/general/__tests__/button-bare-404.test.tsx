@@ -45,16 +45,13 @@ describe("Button variant=bare (gh#404)", () => {
     // The knob is read WITH the live ladder step as its fallback, not as a bare `var()`. The
     // reason is in mobile-shell-control-ladder.test.ts: an alias declared at :root freezes there,
     // and this is the one token in that shape that is a touch target.
-    expect(rule).toContain(
-      "min-inline-size: var(--button-bare-target-size, var(--control-height-xs));",
-    );
-    expect(rule).toContain(
-      "min-block-size: var(--button-bare-target-size, var(--control-height-xs));",
-    );
-    // `inset: 0` + `margin: auto` centres on both axes with no physical offset and no translate.
-    expect(rule).toContain("inset: 0;");
-    expect(rule).toContain("margin: auto;");
-    expect(rule).not.toMatch(/translate:|\bleft:|\bright:/);
+    // Symmetric negative insets centre the target on both axes with no physical offset and no
+    // translate (gh#1148 — `inset: 0` + `margin: auto` left the inline surplus on one side).
+    const flat = rule.replace(/\s+/g, " ");
+    const target = "var(--button-bare-target-size, var(--control-height-xs))";
+    expect(flat).toContain(`inset-block: min( 0px, calc((100% - ${target}) / 2) )`);
+    expect(flat).toContain(`inset-inline: min( 0px, calc((100% - ${target}) / 2) )`);
+    expect(rule).not.toMatch(/translate:|\bleft:|\bright:|margin:/);
     // The target measure is the tier this package documents as its WCAG 2.2 SC 2.5.8 floor, and
     // the knob is declared `initial` so that tier re-resolves at the button rather than at :root.
     expect(read("../../../tokens/components/control.css")).toMatch(

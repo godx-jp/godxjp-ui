@@ -229,13 +229,11 @@
   :is(.ui-dialog-close, .ui-sheet-close)::after {
     content: "";
     position: absolute;
-    inset-block-start: 50%;
-    inset-inline-start: 50%;
-    translate: -50% -50%;
-    min-inline-size: var(--dialog-close-size);
-    min-block-size: var(--dialog-close-size);
-    inline-size: 100%;
-    block-size: 100%;
+    /* Symmetric negative insets (gh#1148). The `inset-inline-start: 50%` + `translate: -50%` this
+     * replaced is a PHYSICAL shift on a LOGICAL anchor: under dir="rtl" the anchor flips to the
+     * right and the translate does not, so the target sat a whole box-width off the glyph. */
+    inset-block: min(0px, calc((100% - var(--dialog-close-size)) / 2));
+    inset-inline: min(0px, calc((100% - var(--dialog-close-size)) / 2));
   }
 
   .ui-dialog-close:hover {

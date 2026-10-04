@@ -1169,6 +1169,14 @@
    * Covers both trails: `<Breadcrumb>` (`.ui-breadcrumb-link`, the menu trigger) and
    * `PageContainer`'s own (a bare link inside `.ui-breadcrumb-item`). */
   @media (pointer: coarse) {
+    /* A WRAPPED trail: the next row must start where this row's 44px targets end, or row 2's link
+     * boxes cover the bottom of row 1's (measured: rows 25px apart, row 1's target cut to 25,
+     * gh#1148). A row pitch of exactly 44 — one line plus this gap — makes them abut. One-row
+     * trails are untouched: a row gap only exists between rows. */
+    .ui-breadcrumb-list {
+      row-gap: max(var(--space-inline-xs), calc(var(--control-height-default) - 1lh));
+    }
+
     .ui-breadcrumb-item :is(a[href], .ui-breadcrumb-menu-trigger) {
       /* Positioned so the grown box paints above the page title that follows the trail by a few
        * px (PageContainer: measured 40 of 44 without it). A control in that row is positioned and

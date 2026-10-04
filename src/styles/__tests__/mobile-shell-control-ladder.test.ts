@@ -96,12 +96,9 @@ describe("MobileShell — the control ladder follows the shell's tier", () => {
    */
   it("reads the bare Button's TARGET from the live ladder step, not a :root alias", () => {
     const bare = ruleBody(controlStyles, ".ui-button.ui-button--bare::after");
-    expect(bare).toMatch(
-      /min-inline-size:\s*var\(\s*--button-bare-target-size,\s*var\(\s*--control-height-xs\)\);/,
-    );
-    expect(bare).toMatch(
-      /min-block-size:\s*var\(\s*--button-bare-target-size,\s*var\(\s*--control-height-xs\)\);/,
-    );
+    // Both axes of the centred target (gh#1148) read the knob with the live step as its fallback.
+    const target = /var\(\s*--button-bare-target-size,\s*var\(\s*--control-height-xs\)\)/g;
+    expect(bare.match(target)).toHaveLength(2);
     expect(declared(allRootBodies(controlTokens), "--button-bare-target-size")).toBe("initial");
   });
 });
