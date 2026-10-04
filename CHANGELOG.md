@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.25.3] - 2026-10-05
+
+### 🐛 44px touch targets: menus, listboxes, command rows, small Buttons, Segmented, Tabs (gh#1146)
+
+From the pages app's consolidated coarse-pointer sweep. Measured in Chromium at 390px with
+`(pointer: coarse)`, block axis, before → after:
+
+| target | before | after | how |
+| --- | --- | --- | --- |
+| DropdownMenu / Select row | 32 | 44 | `--menu-item-height` → `--band-height-xl` (rows sit flush: the row grows) |
+| Command row | 40 | 44 | row `min-block-size` |
+| Tabs trigger (sm/md/lg) | 34 | 44 | `--tabs-trigger-height-*` → `--band-height-xl` (the list clips block overflow) |
+| Button `xs` / `sm` (text) | 36 / 40 | 44 | `::after` target, box unchanged |
+| Segmented option | 40 | 44 | `::after` on the option's `<label>`, block axis only |
+
+Mouse geometry is unchanged. TagInput needed no change: a tap anywhere on its 44px field focuses
+the inner input.
+
 ## [31.25.2] - 2026-10-05
 
 ### 🐛 44px-tall touch target for breadcrumb links (gh#1144)
