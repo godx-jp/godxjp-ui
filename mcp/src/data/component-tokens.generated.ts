@@ -2794,6 +2794,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "An image in a table cell is capped at a LENGTH, not at 100% (gh#1150): a percentage of an auto-width column lets the column squash the image to nothing, while a length makes the image's narrowest size min(natural width, this) — the table then scrolls in its box."
   },
   {
+    "name": "--prose-columns-gap",
+    "value": "var(--space-6)",
+    "description": "Grammar v1 blocks (gh#1156). Columns sit this far apart and stack below 40rem; a toggle's summary is the control that opens it. Callouts reuse the <Callout> geometry (--callout-*)."
+  },
+  {
     "name": "--prose-code-radius",
     "value": "initial",
     "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"

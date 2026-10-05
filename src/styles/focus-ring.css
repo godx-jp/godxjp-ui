@@ -98,6 +98,7 @@
     .ui-carousel-dot,
     .ui-rating-star,
     .ui-prose img[data-prose-preview],
+    .ui-prose .ui-prose-toggle-summary,
     a.ui-list-row,
     /* `Card asChild` (gh#740): the card box IS the control, so the mark belongs on the card box
      * and not on anything inside it. Keyed on the ELEMENT, so only a card that borrowed an `<a>`
@@ -223,6 +224,7 @@
       .ui-carousel-dot,
       .ui-rating-star,
       .ui-prose img[data-prose-preview],
+      .ui-prose .ui-prose-toggle-summary,
       a.ui-list-row,
       a[data-slot="card"],
       button[data-slot="card"],

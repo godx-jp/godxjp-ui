@@ -12,6 +12,8 @@ import { rehypeHeadingIds, type HeadingIdResolver } from "./headings";
 import { MermaidDiagram } from "./mermaid";
 import { TableScroll } from "./table-scroll";
 import { extendSchema, safeUrl, type SchemaExtension } from "./schema";
+import { remarkKitSyntax } from "./directives";
+import type { CalloutKind } from "./codec/model";
 
 type PluggableList = NonNullable<ReactMarkdownOptions["remarkPlugins"]>;
 
@@ -24,7 +26,8 @@ type PluggableList = NonNullable<ReactMarkdownOptions["remarkPlugins"]>;
 export const MARKDOWN_FORMAT = "md";
 // 2 — tables render inside a scroll box (gh#1131).
 // 3 — short single-token table cells carry `data-short` (gh#1150).
-export const RENDERER_VERSION = 3;
+// 4 — grammar v1: callouts, toggles, columns; CJK-friendly emphasis (gh#1156).
+export const RENDERER_VERSION = 4;
 
 export type MarkdownProps = {
   /** The Markdown source. */
@@ -76,6 +79,11 @@ export type MarkdownProps = {
    * Characters are user-perceived (grapheme clusters). Default 24; `false` stamps nothing.
    */
   shortCellLength?: number | false;
+  /**
+   * Visible callout titles per kind when a callout has none of its own (`> [!WARNING]`). English by
+   * default — this package carries no i18n; a host passes its localized strings.
+   */
+  calloutTitles?: Partial<Record<CalloutKind, string>>;
 };
 
 /** Element attributes that carry a URL, by tag. */
@@ -178,8 +186,10 @@ export function Markdown({
   allowElement,
   unwrapDisallowed,
   shortCellLength = 24,
+  calloutTitles,
 }: MarkdownProps) {
   const sanitizeSchema = React.useMemo(() => extendSchema(schema), [schema]);
+  const kitSyntax = React.useMemo(() => remarkKitSyntax({ calloutTitles }), [calloutTitles]);
   const merged = React.useMemo<Components>(() => {
     // Every table in its own scroll box (gh#1131). A host `table` override still wins.
     const HostTable = components?.table;
@@ -216,7 +226,7 @@ export function Markdown({
 
   return (
     <ReactMarkdown
-      remarkPlugins={[remarkGfm, ...remarkPlugins]}
+      remarkPlugins={[remarkGfm, kitSyntax, ...remarkPlugins]}
       rehypePlugins={[
         [rehypeResolveUrls, { resolve: resolveUrl }],
         [rehypeHeadingIds, { resolve: headingId }],

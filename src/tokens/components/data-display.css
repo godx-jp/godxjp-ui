@@ -99,6 +99,9 @@
    * auto-width column lets the column squash the image to nothing, while a length makes the
    * image's narrowest size min(natural width, this) — the table then scrolls in its box. */
   --prose-cell-image-max-inline-size: 20rem;
+  /* Grammar v1 blocks (gh#1156). Columns sit this far apart and stack below 40rem; a toggle's
+   * summary is the control that opens it. Callouts reuse the <Callout> geometry (--callout-*). */
+  --prose-columns-gap: var(--space-6);
   --prose-code-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   /* The link ink. `initial` — not `var(--primary)` — because the default IS a tenant-scoped role:
    * a `:root` binding computes against the root's --primary and inherits that frozen value down, so
