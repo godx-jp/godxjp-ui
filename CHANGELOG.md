@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.26.2] - 2026-10-05
+
+### 🐛 A table-cell image with a percentage `width` keeps its floor at phone width (gh#1154)
+
+Reported by the pages app on production (12 images in a two-column table, 129px each at 390px).
+A percentage `width` attribute on a cell image made its narrowest size 0 in an auto-width column,
+so the 20rem cap never acted as a floor and the table never overflowed into its scroll box. Prose
+now ignores a percentage `width` attribute on a cell image: measured at 390px, 146 → 320px and the
+table scrolls. A pixel `width` (a thumbnail) is kept as written.
+
 ## [31.26.1] - 2026-10-05
 
 ### 🐛 Nested `Prose imagePreview` opens one dialog (gh#1152)

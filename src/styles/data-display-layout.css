@@ -1890,6 +1890,16 @@
     max-inline-size: var(--prose-cell-image-max-inline-size);
   }
 
+  /* A PERCENTAGE `width` ATTRIBUTE in a cell defeats the cap above (gh#1154): a percentage of an
+   * auto-width column makes the image's narrowest size 0, so at 390px every picture of a two-column
+   * table shrank to 129px and the table never overflowed into its scroll box. The attribute is
+   * only a presentational hint, so this rule outranks it and the image falls back to its natural
+   * width, capped — min(natural, 20rem). A pixel `width` an author set (a thumbnail) is left as
+   * written. */
+  .ui-prose :is(th, td) img[width$="%"] {
+    inline-size: auto;
+  }
+
   /* `imagePreview`: a body image that opens the kit preview is a control, so it says so. */
   .ui-prose img[data-prose-preview] {
     cursor: zoom-in;
