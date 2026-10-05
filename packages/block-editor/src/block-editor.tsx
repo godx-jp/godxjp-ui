@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { Editor, Range } from "@tiptap/core";
+import { getMarkRange, type Editor, type Range } from "@tiptap/core";
 import { EditorContent, useEditor } from "@tiptap/react";
 import type { SuggestionKeyDownProps, SuggestionProps } from "@tiptap/suggestion";
 import { FileText } from "lucide-react";
@@ -26,6 +26,7 @@ import {
 } from "./messages";
 import { SuggestionMenu, type SuggestionMenuItem } from "./suggestion-menu";
 import { FormatToolbar } from "./toolbar";
+import { EditDrawer, type EditTarget } from "./edit-drawer";
 import { calloutNode, columnsNode, embedNode, rawBlockNode, uploadNode } from "./views";
 
 /** What the host's storage returns for one file — the same shape as MarkdownEditor's. */
@@ -213,6 +214,9 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
       null,
     );
     const fileInput = React.useRef<HTMLInputElement | null>(null);
+    const [editTarget, setEditTarget] = React.useState<EditTarget | null>(null);
+    // Set while the file picker is open to REPLACE an image (its position), not to insert one.
+    const replacing = React.useRef<number | null>(null);
 
     // Live props, read from inside long-lived editor callbacks.
     const live = React.useRef({
@@ -364,6 +368,76 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
       fileInput.current?.click();
     }, []);
 
+    // ── link / image drawer ───────────────────────────────────────────────────────────────────
+    /** The link under `pos` (its whole range), or — with a text selection — a link to create. */
+    const linkTargetAt = React.useCallback(
+      (
+        editor: Editor,
+        pos: number,
+        selection?: { from: number; to: number },
+      ): EditTarget | null => {
+        const { state } = editor;
+        const type = state.schema.marks.link!;
+        const $pos = state.doc.resolve(pos);
+        const range = getMarkRange($pos, type);
+        if (range) {
+          const mark =
+            $pos.marks().find((m) => m.type === type) ??
+            state.doc.nodeAt(range.from)?.marks.find((m) => m.type === type);
+          return {
+            kind: "link",
+            from: range.from,
+            to: range.to,
+            text: state.doc.textBetween(range.from, range.to),
+            href: (mark?.attrs.href as string | undefined) ?? "",
+            title: (mark?.attrs.title as string | null | undefined) ?? "",
+          };
+        }
+        if (selection && selection.from !== selection.to) {
+          return {
+            kind: "link",
+            from: selection.from,
+            to: selection.to,
+            text: state.doc.textBetween(selection.from, selection.to),
+            href: "",
+            title: "",
+          };
+        }
+        return null;
+      },
+      [],
+    );
+
+    const editLinkAtSelection = React.useCallback(() => {
+      const editor = editorRef.current;
+      if (!editor) return;
+      const { from, to } = editor.state.selection;
+      const target = linkTargetAt(editor, from, { from, to });
+      if (target) setEditTarget(target);
+    }, [linkTargetAt]);
+
+    const replaceImage = React.useCallback((pos: number) => {
+      const editor = editorRef.current;
+      if (!editor) return;
+      const pick = live.current.pickMedia;
+      if (pick) {
+        void pick().then((media) => {
+          const node = editor.state.doc.nodeAt(pos);
+          if (!media || node?.type.name !== "image") return;
+          editor.view.dispatch(
+            editor.state.tr.setNodeMarkup(pos, undefined, {
+              ...node.attrs,
+              src: media.url,
+              alt: media.name ?? node.attrs.alt,
+            }),
+          );
+        });
+        return;
+      }
+      replacing.current = pos;
+      fileInput.current?.click();
+    }, []);
+
     // ── commands ─────────────────────────────────────────────────────────────────────────────────
     const canInsertImage = Boolean(pickMedia || upload);
     const commands = React.useMemo<BlockEditorCommand[]>(() => {
@@ -454,7 +528,10 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
           resolveUrl,
         }),
         uploadNode(uploadActions),
-        BlockKeys.configure({ openMenu: (start) => setMenuRequest({ start, nonce: Date.now() }) }),
+        BlockKeys.configure({
+          openMenu: (start) => setMenuRequest({ start, nonce: Date.now() }),
+          editLink: () => editLinkRef.current(),
+        }),
         suggestionTrigger("slashMenu", "/", slash.bridge),
         // A Japanese keyboard types the full-width slash; it opens the same menu.
         suggestionTrigger("slashMenuWide", "／", slash.bridge),
@@ -467,6 +544,9 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [],
     );
+
+    const editLinkRef = React.useRef(editLinkAtSelection);
+    editLinkRef.current = editLinkAtSelection;
 
     const editor = useEditor({
       extensions,
@@ -484,6 +564,27 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
             ? { "aria-labelledby": ariaLabelledby }
             : { "aria-label": ariaLabel ?? label("editor") }),
           ...(ariaDescribedby ? { "aria-describedby": ariaDescribedby } : {}),
+        },
+        // A click on a link or an image opens its settings drawer (text / URL / title; src / alt /
+        // title). Read-only, links behave as links.
+        handleClick: (view, pos) => {
+          const instance = editorRef.current;
+          if (!instance || !view.editable) return false;
+          const target = linkTargetAt(instance, pos);
+          if (!target) return false;
+          setEditTarget(target);
+          return true;
+        },
+        handleClickOn: (view, pos, node) => {
+          if (!view.editable || node.type.name !== "image") return false;
+          setEditTarget({
+            kind: "image",
+            pos,
+            src: (node.attrs.src as string) ?? "",
+            alt: (node.attrs.alt as string) ?? "",
+            title: (node.attrs.title as string | null) ?? "",
+          });
+          return true;
         },
         // Copy writes Markdown, so a block pasted into a plain-text field reads as the body does.
         clipboardTextSerializer: (slice) =>
@@ -582,7 +683,14 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
                 onAddBelow={openSlashBelow}
                 menuRequest={menuRequest}
               />
-              <FormatToolbar editor={editor} />
+              <FormatToolbar editor={editor} onEditLink={editLinkAtSelection} />
+              <EditDrawer
+                editor={editor}
+                target={editTarget}
+                onClose={() => setEditTarget(null)}
+                resolveUrl={resolveUrl}
+                replaceImage={pickMedia || upload ? replaceImage : null}
+              />
             </>
           ) : null}
           <EditorContent editor={editor} />
@@ -645,7 +753,18 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
               onChange={(event) => {
                 const files = [...(event.currentTarget.files ?? [])];
                 event.currentTarget.value = "";
-                if (editor) startUploads(editor, files);
+                if (!editor) return;
+                const at = replacing.current;
+                replacing.current = null;
+                if (at != null && files.length) {
+                  const node = editor.state.doc.nodeAt(at);
+                  if (node?.type.name === "image") {
+                    editor.view.dispatch(editor.state.tr.delete(at, at + node.nodeSize));
+                  }
+                  startUploads(editor, files.slice(0, 1), at);
+                  return;
+                }
+                startUploads(editor, files);
               }}
             />
           ) : null}

@@ -4131,6 +4131,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       "IdProp",
       {
+        field: "expandAction",
+        local: true,
+        reason:
+          "antd DirectoryTree's `expandAction` (false | click | doubleClick): whether a ROW click / double click also toggles a parent's expansion, beside the switcher (gh#1162). An interaction mode of the tree, not an OpenProp.",
+      },
+      {
         field: "divided",
         local: true,
         reason:

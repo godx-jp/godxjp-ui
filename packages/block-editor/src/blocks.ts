@@ -103,10 +103,13 @@ export function startBlockDrag(editor: Editor, start: number, event: DragEvent):
 }
 
 /** Alt+Shift+↑/↓ moves the block; Mod+/ opens its menu (the handle, from the keyboard). */
-export const BlockKeys = Extension.create<{ openMenu: (start: number) => void }>({
+export const BlockKeys = Extension.create<{
+  openMenu: (start: number) => void;
+  editLink: () => void;
+}>({
   name: "blockKeys",
   addOptions() {
-    return { openMenu: () => undefined };
+    return { openMenu: () => undefined, editLink: () => undefined };
   },
   addKeyboardShortcuts() {
     const move = (direction: -1 | 1) => () => {
@@ -116,6 +119,11 @@ export const BlockKeys = Extension.create<{ openMenu: (start: number) => void }>
     return {
       "Alt-Shift-ArrowUp": move(-1),
       "Alt-Shift-ArrowDown": move(1),
+      // The link drawer for the link under the caret, or a new link on the selection.
+      "Mod-k": () => {
+        this.options.editLink();
+        return true;
+      },
       "Mod-/": () => {
         const start = selectionBlockStart(this.editor);
         if (start == null) return false;

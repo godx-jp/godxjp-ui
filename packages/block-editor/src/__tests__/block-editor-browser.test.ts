@@ -308,19 +308,27 @@ describe("BlockEditor (Chromium, gh#1156)", () => {
   });
 
   it("adds, sizes and removes columns, laid side by side", async () => {
-    const { page, errors } = await open("::::columns\n:::column\nA\n:::\n\n:::column\nB\n:::\n::::");
+    const { page, errors } = await open(
+      "::::columns\n:::column\nA\n:::\n\n:::column\nB\n:::\n::::",
+    );
     await editable(page).locator(".ui-prose-column p").first().click();
     const add = page.getByRole("button", { name: "列を追加" });
     await add.waitFor();
-    const [a, b] = await page.locator(".ui-prose-column").evaluateAll((els) =>
-      els.map((el) => el.getBoundingClientRect().top),
-    );
+    const [a, b] = await page
+      .locator(".ui-prose-column")
+      .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().top));
     expect(Math.abs(a! - b!)).toBeLessThan(1); // one row
     await add.click();
-    await expectValue(page, "::::columns\n:::column\nA\n:::\n\n:::column\nB\n:::\n\n:::column\n:::\n::::\n");
+    await expectValue(
+      page,
+      "::::columns\n:::column\nA\n:::\n\n:::column\nB\n:::\n\n:::column\n:::\n::::\n",
+    );
     await page.getByRole("combobox", { name: "この列の幅" }).click();
     await page.getByRole("option", { name: "33%" }).click();
-    await expectValue(page, "::::columns\n:::column{width=33}\nA\n:::\n\n:::column\nB\n:::\n\n:::column\n:::\n::::\n");
+    await expectValue(
+      page,
+      "::::columns\n:::column{width=33}\nA\n:::\n\n:::column\nB\n:::\n\n:::column\n:::\n::::\n",
+    );
     await page.getByRole("button", { name: "この列を削除" }).click();
     await expectValue(page, "::::columns\n:::column\nB\n:::\n\n:::column\n:::\n::::\n");
     expect(errors).toEqual([]);

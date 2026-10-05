@@ -1212,8 +1212,40 @@ action per view; status uses the FIXED semantic mapping (success/warning/info/
 attention/danger) — never recolor a wa-iro hue into a role, never use --primary for
 status. Pick density up front (compact 28 heavy-table / default 32 / comfortable 44
 login-mobile) and don't mix it mid-page. Hierarchy from type weight+size+color
-(20/18/14/13 × 400/500/700), not colored background blocks. Mobile-first: default one
-column, add columns only at md:/lg: when each keeps ≥14px body at ≥~280px width.`,
+(20/18/14/13 × 400/500/700), not colored background blocks.`,
+      },
+      {
+        id: "screen-anatomy",
+        title: "Screen anatomy — where things go (edit, read, folder, header)",
+        tagline:
+          "Edit = content + settings sidebar; one primary action + ONE overflow menu; preferences in menus; long reads get a TOC; folders list their children.",
+        body: `These are not taste calls; a screen that breaks one reads as unfinished.
+
+EDIT SCREEN (a page, a post, a record with a body): TWO columns on a desktop, like WordPress —
+the editor owns the main column (the BlockEditor/MarkdownEditor, nothing else stacked into it);
+a settings SIDEBAR on the inline end holds everything ABOUT the page: status, appearance (cover,
+icon), aliases / slug, tags, template, permissions. Below the 900px step the sidebar becomes a
+Sheet opened from the header ("Page settings"), never a pile under the editor. Metadata fields
+are NEVER placed inside or between editor blocks.
+
+PAGE HEADER ACTIONS: exactly ONE primary action (Edit / Save / Publish), at most two secondary
+buttons, and EVERYTHING else in ONE overflow DropdownMenu ("…") — new sub-page, history, make
+template, duplicate, delete (destructive last, separated). Two "…" menus in one header is a bug.
+
+PREFERENCES ARE NOT FEATURES: a display language, a view mode, a density toggle goes in a menu or
+the overflow (or a small Select in the header end) — never a full-width Segmented above the
+content as if it were the page's main control.
+
+READING PAGE: a long body (more than ~3 headings) gets a TABLE OF CONTENTS — the kit's Anchor in a
+sticky inline-end column on a desktop, a collapsible block above the body on a phone — built from
+\`outline(markdown)\` (@godxjp/markdown/codec), whose ids are the ones the renderer writes.
+
+FOLDER / INDEX PAGE: the children are DATA — list them from the tree (title, updated, author,
+child count) with totals (pages, sub-folders, last change). An authored "table of contents" table
+in the body is a stale copy of the tree; never make it the folder's content.
+
+COLUMNS: mobile-first means one column on a PHONE — on a desktop the layout above applies. Add a
+column only when each keeps ≥14px body at ≥~280px width.`,
       },
       {
         id: "state-and-a11y",

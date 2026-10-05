@@ -123,6 +123,7 @@ function TreeRoot({
   defaultExpandedValues,
   onExpandedValuesChange,
   defaultExpandAll = false,
+  expandAction = false,
   loadData,
   titleRender,
   filterTreeNode,
@@ -705,6 +706,10 @@ function TreeRoot({
         onClick={() => {
           if (nodeDisabled) return;
           select(node);
+          if (expandAction === "click" && expandable) toggleExpand(node);
+        }}
+        onDoubleClick={() => {
+          if (!nodeDisabled && expandAction === "doubleClick" && expandable) toggleExpand(node);
         }}
         /* THE NODE'S OWN VALUE, PUBLISHED (gh#910). A row already announces its level, position
          * and expanded state, and said nothing about WHICH node it is — so a consumer who wanted
