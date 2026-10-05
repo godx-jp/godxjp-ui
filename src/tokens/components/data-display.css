@@ -106,6 +106,10 @@
    * surface's minimum height (an empty body is still a target you can click into). */
   --block-editor-gutter-inline-size: calc(2 * var(--control-height-xs) + var(--space-2));
   --block-editor-min-height: var(--band-height-3xl);
+  /* The `/` and `[[` menus: wide enough for a label and its description, tall enough for ~8 rows
+   * before the list scrolls. */
+  --block-editor-menu-inline-size: 16rem;
+  --block-editor-menu-max-block-size: 20rem;
   --prose-code-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   /* The link ink. `initial` — not `var(--primary)` — because the default IS a tenant-scoped role:
    * a `:root` binding computes against the root's --primary and inherits that frozen value down, so

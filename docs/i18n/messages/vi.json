@@ -1609,6 +1609,11 @@
       "title": "Chỉ xem",
       "description": "Không có tay nắm, không có menu; nội dung hiển thị bằng Prose.",
       "label": "Nội dung (chỉ xem)"
+    },
+    "pages": {
+      "guide": "Hướng dẫn thiết kế",
+      "setup": "Cài đặt",
+      "release": "Các bước phát hành"
     }
   }
 }
