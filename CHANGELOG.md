@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.28.1] - 2026-10-05
+
+### 🐛 Plain `npm install @godxjp/ui` no longer fails with ERESOLVE (gh#1111)
+
+`@hookform/resolvers` is no longer a declared peer. npm checked its optional peers even when
+nothing installed them, and one chain wanted zod 3, which collided with our `zod: ^4.4.0`. Measured
+against packed tarballs: a bare `npm install @godxjp/ui react react-dom` now succeeds; zod 3 is still
+refused by our own zod peer; zod 4 + react-hook-form + `@hookform/resolvers@5` installs. Keep
+`@hookform/resolvers` at ^5.2 yourself (docs/FORMS.md); npm no longer checks it.
+
 ## [31.28.0] - 2026-10-05
 
 ### ✨ Page chrome, EmojiPicker, BlockEditor phase 2, front matter + outline (gh#1159–gh#1164)
