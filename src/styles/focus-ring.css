@@ -391,8 +391,10 @@
    * into it on open and the PANEL is the focused thing. Marking the input inside an already-marked
    * panel drew two indicators for one focus. Named as an exception in
    * src/tokens/__tests__/focus-ring-contrast.test.ts so the gate cannot be satisfied by quietly
-   * adding more of these. */
-  .ui-command-input:focus-visible {
+   * adding more of these. Select's search field is the same case: the open trigger already carries
+   * the mark, and a second ring made the search read as another field under it. */
+  .ui-command-input:focus-visible,
+  .ui-search-select-search-input:focus-visible {
     --focus-field-shadow: none;
     --focus-ring-weight: 0px;
     outline: none;

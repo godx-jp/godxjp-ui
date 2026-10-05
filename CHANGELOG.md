@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.28.3] - 2026-10-06
+
+### 🐛 Select multiple / tags popup reads as a picker (gh#1181)
+
+Reported from godx-task, measured in Chromium:
+
+- **One focus ring.** The search field drew its own outline beside the open trigger's ring, so two
+  rings showed at once. It is now zeroed beside the command palette's input; the trigger keeps the
+  only ring.
+- **Selected ≠ active.** In a multi-value list, the selected row no longer shares the active fill.
+  `menuItemSelectedIcon` now defaults to a check in `multiple` / `tags` (as in antd), plus weight;
+  the background means pointer/keyboard position only. Pass `menuItemSelectedIcon={null}` to drop
+  the check. A single-value Select is unchanged.
+- **Capped list.** A dead `max-block-size: none` overrode the cap, so `listHeight` and
+  `--search-select-list-max-height` did nothing. The token now defaults to 16rem (antd's 256px),
+  and the list scrolls inside.
+- **Compact, unruled rows.** The popup no longer renders as `Command split` in multiple mode. Rows
+  went from 39.8px plus a hairline each to ~33.5px with no dividers (new
+  `--search-select-option-line-height`, default tight). A facet list that wants ruled rows still
+  composes `Command split` (gh#699).
+
 ## [31.28.2] - 2026-10-05
 
 ### 🐛 Prose headings below h2 read as headings

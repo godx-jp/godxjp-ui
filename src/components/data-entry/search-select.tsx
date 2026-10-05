@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronsUpDown, Loader2, X } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
@@ -128,6 +128,15 @@ export function SearchSelect(props: SearchSelectProp) {
   const multiple = props.mode === "multiple" || props.mode === "tags";
   /** antd `mode="tags"` — what is TYPED counts, not only what the list offers. */
   const tagsMode = props.mode === "tags";
+  /** antd `menuItemSelectedIcon`: a check by default in a multi-value list; `null` opts out. */
+  const rowSelectedIcon =
+    menuItemSelectedIcon === undefined ? (
+      multiple ? (
+        <Check className="size-[var(--menu-icon-size)]" />
+      ) : null
+    ) : (
+      menuItemSelectedIcon
+    );
   const maxTagTextLength = props.mode !== undefined ? props.maxTagTextLength : undefined;
   const tokenSeparators = props.mode !== undefined ? props.tokenSeparators : undefined;
   const tagRender = props.mode !== undefined ? props.tagRender : undefined;
@@ -853,15 +862,10 @@ export function SearchSelect(props: SearchSelectProp) {
           }
         >
           <PopupRender render={popupRender}>
-            {/* A multi-value panel is a checklist the user works down, so its rows are ruled
-                (`split`, gh#699); a single-value pick closes on the first click and keeps the
-                palette rows. */}
-            <Command
-              value={value}
-              shouldFilter={false}
-              className="ui-search-select-command"
-              split={multiple}
-            >
+            {/* Picker rows, not a records list: compact and unruled for every mode, like the
+                industry pickers (Linear and GitHub labels, antd tags). A facet list that wants
+                ruled rows composes `Command split` (gh#699) itself. */}
+            <Command value={value} shouldFilter={false} className="ui-search-select-command">
               {/* The search field is FLUSH inside the panel — borderless with a single bottom
                 separator (the panel frames it). A boxed/padded input here double-borders. */}
               <div className="ui-search-select-search">
@@ -956,10 +960,12 @@ export function SearchSelect(props: SearchSelectProp) {
                       }
                       className={cn(
                         "ui-command-item",
-                        // Selected = persistent bg-accent + medium weight (NO check icon — saves width),
-                        // matching the plain SelectItem's `data-[state=checked]` convention; active =
-                        // hover/keyboard accent. Same bg so selection stays coherent across both Selects.
-                        isSelected(option.value) && "bg-accent text-foreground font-medium",
+                        // The background means pointer/keyboard POSITION. In a multi-value list the
+                        // selection is the check mark plus weight, so the selected row and the active
+                        // row never look alike. A single-value pick closes on click, so it keeps the
+                        // plain SelectItem's persistent fill.
+                        isSelected(option.value) &&
+                          (multiple ? "font-medium" : "bg-accent text-foreground font-medium"),
                         activeIndex === index && "bg-accent text-accent-foreground",
                       )}
                       onMouseEnter={() => !option.disabled && setActiveIndex(index)}
@@ -1001,16 +1007,16 @@ export function SearchSelect(props: SearchSelectProp) {
                           </div>
                         </div>
                       )}
-                      {/* antd `menuItemSelectedIcon` — opt-in, because this library marks the picked
-                        row with fill + weight, which costs no width. Decorative: `aria-selected`
-                        on the row is what a screen reader reads. */}
-                      {menuItemSelectedIcon && isSelected(option.value) ? (
+                      {/* antd `menuItemSelectedIcon`: a check by default in multiple / tags (as in
+                        antd), opt-in for a single pick. Decorative: `aria-selected` on the row is
+                        what a screen reader reads. */}
+                      {rowSelectedIcon && isSelected(option.value) ? (
                         <span
                           data-slot="search-select-selected-icon"
                           className="ui-search-select-selected-icon"
                           aria-hidden="true"
                         >
-                          {menuItemSelectedIcon}
+                          {rowSelectedIcon}
                         </span>
                       ) : null}
                     </div>

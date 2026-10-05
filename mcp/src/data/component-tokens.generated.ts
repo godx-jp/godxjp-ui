@@ -1755,8 +1755,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--search-select-list-max-height",
-    "value": "none",
-    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win."
+    "value": "16rem",
+    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win. antd listHeight 256px; the list scrolls inside"
   },
   {
     "name": "--search-select-footer-space-inset",
@@ -1767,6 +1767,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--search-select-option-space-gap",
     "value": "var(--space-2)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--search-select-option-line-height",
+    "value": "var(--line-height-tight)",
+    "description": "Picker rows read compact (~34px), like Linear / GitHub label pickers, not body-text rows."
   },
   {
     "name": "--search-select-option-font-size",

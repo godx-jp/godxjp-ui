@@ -470,9 +470,11 @@
   --search-select-panel-viewport-inset: var(--space-6);
   --search-select-list-space-inset: var(--space-1);
   /* antd `listHeight` writes this per instance; `none` lets the panel's own available height win. */
-  --search-select-list-max-height: none;
+  --search-select-list-max-height: 16rem; /* antd listHeight 256px; the list scrolls inside */
   --search-select-footer-space-inset: var(--space-1);
   --search-select-option-space-gap: var(--space-2);
+  /* Picker rows read compact (~34px), like Linear / GitHub label pickers, not body-text rows. */
+  --search-select-option-line-height: var(--line-height-tight);
   --search-select-option-font-size: var(--font-size-sm, var(--font-size-base));
   --search-select-option-sublabel-font-size: var(
     --font-size-xs,
