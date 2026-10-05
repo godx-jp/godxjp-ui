@@ -17,7 +17,7 @@ const { adoptAlreadyStagedTargets, assertFreshTargets, STAGE_TAG } =
 /**
  * A RELEASE THAT PUBLISHED EVERYTHING AND HAD NO WAY TO FINISH (gh#737).
  *
- * `verify-published-versions` waits up to 300s for npm's read-after-write to catch up. Measured
+ * `verify-published-versions` waits up to 600s for npm's read-after-write to catch up. Measured
  * twice here: 348s (v30.5.2) and 334s (v30.6.0). Both had already published both tarballs, so they
  * aborted with `godx-staging` on the new version and `latest` a release behind.
  *

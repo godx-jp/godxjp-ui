@@ -1833,7 +1833,7 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
 describe("registry verification waits long enough for npm to catch up", () => {
   const source = readFileSync(resolve(process.cwd(), "scripts/release-core.mjs"), "utf8");
 
-  it("budgets at least 30s of read-after-write lag by default", () => {
+  it("budgets at least 600s of read-after-write lag by default", () => {
     const attempts = Number(
       source.match(/registryVerificationAttempts = ([\d_]+)/)?.[1]?.replace(/_/g, ""),
     );
@@ -1844,8 +1844,10 @@ describe("registry verification waits long enough for npm to catch up", () => {
     expect(
       attempts * delay,
       `10s exhausted on run 34700604086, then 60s exhausted on BOTH 27.9.0 (run 35282153407) and ` +
-        `27.10.0 (run 35352248890) — each published and left unpromoted; got ${attempts} x ${delay}ms`,
-    ).toBeGreaterThanOrEqual(300_000);
+        `27.10.0 (run 35352248890) — each published and left unpromoted; then 300s exhausted on ` +
+        `31.28.2 (run 37298689660, 336s lag) and the satellites never published; got ` +
+        `${attempts} x ${delay}ms`,
+    ).toBeGreaterThanOrEqual(600_000);
   });
 
   it("still retries rather than asserting once", () => {
