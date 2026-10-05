@@ -104,6 +104,9 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--control-inline-affix-icon-size": ["1rem", "1rem", "1rem"],
   "--empty-state-icon-glyph-size": ["1.5rem", "1.5rem", "1.5rem"],
   "--empty-state-icon-size": ["3rem", "3rem", "3rem"],
+  // EmojiPicker cell glyph and the page icon over a cover (gh#1164, gh#1160): fixed steps.
+  "--emoji-picker-glyph-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--page-icon-size": ["3rem", "3rem", "3rem"],
   // The validation-feedback glyph (gh#820). It was UNSIZED — an inherited lucide default at the
   // full control height beside 12px text — and the fix had to mint a token rather than a literal,
   // because the row is `--form-feedback-*` geometry a service retunes once. `--icon-size-sm`, the

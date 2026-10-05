@@ -3,7 +3,7 @@ import type { Editor } from "@tiptap/core";
 import { useEditorState } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import { Bold, Code, Italic, Link2, Strikethrough } from "lucide-react";
-import { Input, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
+import { ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
 
 import { useLabel } from "./labels";

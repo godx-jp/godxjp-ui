@@ -1,4 +1,3 @@
-import { join } from "node:path";
 import { TextEncoder as NodeTextEncoder } from "node:util";
 
 import { chromium, type Browser } from "playwright";

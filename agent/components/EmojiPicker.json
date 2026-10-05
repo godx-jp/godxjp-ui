@@ -1,0 +1,63 @@
+{
+  "docPath": "docs/data-entry/emoji-picker.tsx",
+  "example": "import { EmojiPicker } from \"@godxjp/ui/data-entry\";\n\n<EmojiPicker value={icon} onValueChange={setIcon} />",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "EmojiPicker",
+  "props": [
+    {
+      "description": "The chosen emoji (controlled with onValueChange).",
+      "name": "value",
+      "type": "string | null"
+    },
+    {
+      "description": "Uncontrolled initial emoji.",
+      "name": "defaultValue",
+      "type": "string | null"
+    },
+    {
+      "description": "Picked emoji, or null from \"remove icon\".",
+      "name": "onValueChange",
+      "type": "(emoji: string | null) => void"
+    },
+    {
+      "description": "The popover.",
+      "name": "open / defaultOpen / onOpenChange",
+      "type": "boolean / boolean / (open) => void"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Offer \"remove icon\" while a value is set.",
+      "name": "removable",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"godxjp-ui:emoji-recents\"",
+      "description": "localStorage key for the per-user recents.",
+      "name": "recentsKey",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Trigger size.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Replace the default trigger (e.g. the page icon drawn large).",
+      "name": "trigger",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "PageContainer — `icon` slot.",
+    "CommandPalette — items can carry an emoji `icon`."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/emoji-picker.tsx",
+  "tagline": "Page icon / reaction picker in a Popover (gh#1164): search by the active language's CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and \"remove icon\". No skin tones.",
+  "usage": [
+    "DO use it for a page icon next to PageContainer `icon` — pass the icon itself as `trigger`.",
+    "The data loads on first open (one locale, ~100 KB gzip); nothing ships in your main bundle."
+  ]
+}

@@ -1615,5 +1615,21 @@
       "setup": "Cài đặt",
       "release": "Các bước phát hành"
     }
+  },
+  "pageCoverDocs": {
+    "title": "Ghi chú kế hoạch quý",
+    "icon": "Biểu tượng trang",
+    "reposition": "Chỉnh vị trí",
+    "done": "Xong",
+    "body": "Khi đang chỉnh vị trí, kéo ảnh bìa hoặc dùng phím mũi tên; bấm biểu tượng để mở bộ chọn emoji.",
+    "position": "Tiêu điểm: {value}% tính từ trên"
+  },
+  "emojiPickerDocs": {
+    "subtitle": "Tìm theo ngôn ngữ · danh mục · dùng gần đây · điều khiển bằng bàn phím",
+    "title": "Chọn biểu tượng trang",
+    "description": "Gõ từ khoá theo ngôn ngữ hiện tại hoặc duyệt danh mục. Phím mũi tên để di chuyển, Enter để chọn.",
+    "label": "Biểu tượng",
+    "chosen": "Đã chọn: {icon}",
+    "none": "Không có biểu tượng"
   }
 }

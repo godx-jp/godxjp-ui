@@ -1,0 +1,70 @@
+{
+  "docPath": "docs/layout/page-cover.tsx",
+  "example": "import { PageContainer, PageCover } from \"@godxjp/ui/layout\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<PageContainer\n  title={page.title}\n  headerScale=\"display\"\n  icon={<span aria-hidden=\"true\">{page.icon}</span>}\n  cover={\n    <PageCover\n      src={page.cover}\n      alt=\"\"\n      positionY={y}\n      onPositionChange={setY}\n      repositioning={moving}\n      onRepositioningChange={setMoving}\n      actions={<Button size=\"sm\" variant=\"secondary\" onClick={() => setMoving(true)}>Reposition</Button>}\n    />\n  }\n>\n  {body}\n</PageContainer>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "PageCover",
+  "props": [
+    {
+      "description": "Image URL.",
+      "name": "src",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Alternative text; \"\" for a decorative cover.",
+      "name": "alt",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "defaultValue": "50",
+      "description": "Vertical focal point, 0 top – 100 bottom.",
+      "name": "positionY",
+      "type": "number"
+    },
+    {
+      "description": "New focal point while repositioning.",
+      "name": "onPositionChange",
+      "type": "(positionY: number) => void"
+    },
+    {
+      "description": "Reposition mode (controlled): the image becomes a slider.",
+      "name": "repositioning",
+      "type": "boolean"
+    },
+    {
+      "description": "Enter / Escape ended the mode.",
+      "name": "onRepositioningChange",
+      "type": "(repositioning: boolean) => void"
+    },
+    {
+      "defaultValue": "\"banner\"",
+      "description": "Banner above the header, or eyecatch in the reading column.",
+      "name": "variant",
+      "type": "\"banner\" | \"eyecatch\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Banner height step; token-owned, scales phone → desktop.",
+      "name": "height",
+      "type": "\"md\" | \"lg\""
+    },
+    {
+      "description": "Change / reposition / remove controls: over the bottom edge on a wide screen, BELOW the image on a phone (never on the focal area).",
+      "name": "actions",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "PageContainer — `cover`, `icon`, headerScale=\"display\" for an article title.",
+    "Image — an image that opens a preview."
+  ],
+  "rules": [],
+  "storyPath": "layout/page-cover.tsx",
+  "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
+  "usage": [
+    "DO pass it as PageContainer `cover` with the page `icon` — the container places it and overlaps the icon.",
+    "DO wire a Reposition button in `actions` that sets `repositioning`, and persist positionY from onPositionChange."
+  ]
+}

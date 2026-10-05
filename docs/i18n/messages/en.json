@@ -1622,5 +1622,21 @@
       "setup": "Setup",
       "release": "Release steps"
     }
+  },
+  "pageCoverDocs": {
+    "title": "Quarterly planning notes",
+    "icon": "Page icon",
+    "reposition": "Reposition",
+    "done": "Done",
+    "body": "Drag the cover while repositioning, or use the arrow keys; the icon opens the emoji picker.",
+    "position": "Focal point: {value}% from the top"
+  },
+  "emojiPickerDocs": {
+    "subtitle": "Search in your language · categories · recents · keyboard grid",
+    "title": "Choose a page icon",
+    "description": "Type a keyword in the current language, or browse the categories. Arrow keys move through the grid; Enter picks.",
+    "label": "Icon",
+    "chosen": "Chosen: {icon}",
+    "none": "No icon"
   }
 }

@@ -93,7 +93,7 @@
       "defaultValue": "\"document\"",
       "description": "What the page's top row IS, which decides the `<h1>`'s type step. \"document\" (default) = the row is the page's TITLE (a record, a form, a collection, a report): --page-title-font-size (h1, 20px) with the existing responsive step down at 720px; no attribute is emitted, so an existing page is byte-identical. \"chrome\" = the row is the surface's own furniture — a chat channel name, a mail subject line, an IDE tab — naming the thing the user is already INSIDE instead of announcing a document; the h1 takes --page-title-font-size-chrome (--heading-h3 = the 14px body step) at EVERY width, including below 720px where the document-scale step would otherwise pull it back UP. The heading stays an `<h1>` either way — this moves the type step only, never the element, so the screen-reader outline is untouched.",
       "name": "headerScale",
-      "type": "\"document\" | \"chrome\""
+      "type": "\"document\" | \"chrome\" | \"display\""
     },
     {
       "defaultValue": "\"default\"",
@@ -124,6 +124,16 @@
       "description": "Skeletonise the TITLE BAND only while the page's record resolves (title/subtitle placeholders + aria-busy; the <h1> stays in the outline with an sr-only accessible name). Breadcrumbs and `extra` stay live — they come from the route, not the record. This is not a page-wide loading flag; use DataState for the body.",
       "name": "headerLoading",
       "type": "boolean"
+    },
+    {
+      "description": "The page's icon (an emoji or glyph) drawn large above the title, riding over a banner `cover`'s bottom edge — Notion's page icon (gh#1160). Add aria-hidden unless it is itself a control.",
+      "name": "icon",
+      "type": "ReactNode"
+    },
+    {
+      "description": "A PageCover: the banner variant spans the page edge to edge above the header; the eyecatch variant sits in the reading column above the title (gh#1160).",
+      "name": "cover",
+      "type": "ReactNode (a PageCover)"
     },
     {
       "description": "Ref to the page's <h1>; passing it also makes the heading programmatically focusable (tabIndex -1, outside the tab order, no focus ring) so a router can focus the new page title after client-side navigation (gh#1135).",

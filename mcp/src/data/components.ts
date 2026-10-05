@@ -724,7 +724,7 @@ export const COMPONENTS: ComponentEntry[] = [
       },
       {
         name: "headerScale",
-        type: '"document" | "chrome"',
+        type: '"document" | "chrome" | "display"',
         defaultValue: '"document"',
         description:
           "What the page's top row IS, which decides the `<h1>`'s type step. \"document\" (default) = the row is the page's TITLE (a record, a form, a collection, a report): --page-title-font-size (h1, 20px) with the existing responsive step down at 720px; no attribute is emitted, so an existing page is byte-identical. \"chrome\" = the row is the surface's own furniture — a chat channel name, a mail subject line, an IDE tab — naming the thing the user is already INSIDE instead of announcing a document; the h1 takes --page-title-font-size-chrome (--heading-h3 = the 14px body step) at EVERY width, including below 720px where the document-scale step would otherwise pull it back UP. The heading stays an `<h1>` either way — this moves the type step only, never the element, so the screen-reader outline is untouched.",
@@ -762,6 +762,18 @@ export const COMPONENTS: ComponentEntry[] = [
         defaultValue: "false",
         description:
           "Skeletonise the TITLE BAND only while the page's record resolves (title/subtitle placeholders + aria-busy; the <h1> stays in the outline with an sr-only accessible name). Breadcrumbs and `extra` stay live — they come from the route, not the record. This is not a page-wide loading flag; use DataState for the body.",
+      },
+      {
+        name: "icon",
+        type: "ReactNode",
+        description:
+          "The page's icon (an emoji or glyph) drawn large above the title, riding over a banner `cover`'s bottom edge — Notion's page icon (gh#1160). Add aria-hidden unless it is itself a control.",
+      },
+      {
+        name: "cover",
+        type: "ReactNode (a PageCover)",
+        description:
+          "A PageCover: the banner variant spans the page edge to edge above the header; the eyecatch variant sits in the reading column above the title (gh#1160).",
       },
       {
         name: "titleRef",
@@ -835,6 +847,92 @@ export default function OrdersPage() {
 }`,
     storyPath: "layout/PageContainer.stories.tsx",
     rules: [23],
+  },
+  {
+    name: "PageCover",
+    group: "layout",
+    tagline:
+      "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
+    props: [
+      { name: "src", type: "string", required: true, description: "Image URL." },
+      {
+        name: "alt",
+        type: "string",
+        required: true,
+        description: 'Alternative text; "" for a decorative cover.',
+      },
+      {
+        name: "positionY",
+        type: "number",
+        defaultValue: "50",
+        description: "Vertical focal point, 0 top – 100 bottom.",
+      },
+      {
+        name: "onPositionChange",
+        type: "(positionY: number) => void",
+        description: "New focal point while repositioning.",
+      },
+      {
+        name: "repositioning",
+        type: "boolean",
+        description: "Reposition mode (controlled): the image becomes a slider.",
+      },
+      {
+        name: "onRepositioningChange",
+        type: "(repositioning: boolean) => void",
+        description: "Enter / Escape ended the mode.",
+      },
+      {
+        name: "variant",
+        type: '"banner" | "eyecatch"',
+        defaultValue: '"banner"',
+        description: "Banner above the header, or eyecatch in the reading column.",
+      },
+      {
+        name: "height",
+        type: '"md" | "lg"',
+        defaultValue: '"md"',
+        description: "Banner height step; token-owned, scales phone → desktop.",
+      },
+      {
+        name: "actions",
+        type: "ReactNode",
+        description:
+          "Change / reposition / remove controls: over the bottom edge on a wide screen, BELOW the image on a phone (never on the focal area).",
+      },
+    ],
+    usage: [
+      "DO pass it as PageContainer `cover` with the page `icon` — the container places it and overlaps the icon.",
+      "DO wire a Reposition button in `actions` that sets `repositioning`, and persist positionY from onPositionChange.",
+    ],
+    related: [
+      'PageContainer — `cover`, `icon`, headerScale="display" for an article title.',
+      "Image — an image that opens a preview.",
+    ],
+    example: `import { PageContainer, PageCover } from "@godxjp/ui/layout";
+import { Button } from "@godxjp/ui/general";
+
+<PageContainer
+  title={page.title}
+  headerScale="display"
+  icon={<span aria-hidden="true">{page.icon}</span>}
+  cover={
+    <PageCover
+      src={page.cover}
+      alt=""
+      positionY={y}
+      onPositionChange={setY}
+      repositioning={moving}
+      onRepositioningChange={setMoving}
+      actions={<Button size="sm" variant="secondary" onClick={() => setMoving(true)}>Reposition</Button>}
+    />
+  }
+>
+  {body}
+</PageContainer>`,
+    docPath: "docs/layout/page-cover.tsx",
+    storyPath: "layout/page-cover.tsx",
+    rules: [],
   },
   {
     name: "Flex",
@@ -6002,6 +6100,7 @@ import { Flex } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      "Table of contents: outline(markdown) from @godxjp/markdown/codec returns { depth, text, id }[] with exactly the ids <Markdown> writes — feed it to the kit Anchor. YAML front matter is kept verbatim and never rendered; frontmatterOf(markdown) returns it (gh#1163).",
       "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
       "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
       "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate.",
@@ -6153,6 +6252,13 @@ import { FormField } from "@godxjp/ui/data-entry";
           "Resolves a stored image URL (`asset:<id>`) for display; the body keeps the original.",
       },
       {
+        name: "appearance",
+        type: '"framed" | "plain"',
+        defaultValue: '"framed"',
+        description:
+          "framed: a field's border, padding and focus colour, so the editor reads as an editor inside a form; plain: the borderless Notion-style canvas for a full-page editor.",
+      },
+      {
         name: "actions",
         type: "BlockEditorAction[]",
         description:
@@ -6170,6 +6276,8 @@ import { FormField } from "@godxjp/ui/data-entry";
       },
     ],
     usage: [
+      "Clicking a link (or Mod+K) opens a settings drawer: text, URL, title, open / remove. Clicking an image opens one for src, alt, title, replace (pickMedia / upload) and remove. Markdown stores no link target, so there is no target field. A link in the editor never navigates mid-edit.",
+      "YAML front matter shows as a Properties block at the top and round-trips verbatim; read it with frontmatterOf() from @godxjp/markdown/codec.",
       "DO store the Markdown it emits — it is already canonical; compute `normalize()` server-side from the same codec to verify.",
       "DO give it a name: wrap in `FormField` or pass `aria-label` / `aria-labelledby` (the editable is a named `textbox`).",
       "DO pass `upload` (and `pickMedia` for a library) instead of handling paste yourself.",
@@ -13716,6 +13824,13 @@ export function FilterSection() {
         description: "Start with every branch open. Seeded once on mount, never re-applied.",
       },
       {
+        name: "expandAction",
+        type: 'false | "click" | "doubleClick"',
+        defaultValue: "false",
+        description:
+          'Expand a parent by clicking its ROW, not only its switcher (antd DirectoryTree): "click" selects AND toggles — a page tree where choosing a folder opens it; "doubleClick" toggles on a double click (gh#1162). Keyboard keeps the APG map.',
+      },
+      {
         name: "loadData",
         type: "(node: TreeNodeProp) => void | Promise<void>",
         description:
@@ -16585,6 +16700,12 @@ import { Text } from "@godxjp/ui/general";
         description: "Grouped command items.",
       },
       {
+        name: "groups[].items[].icon",
+        type: "ReactNode",
+        description:
+          "Decorative glyph before an item's label — a folder, a file, an emoji (gh#1159). Menu-row icon size (--menu-icon-size), aria-hidden: the label stays the option's name.",
+      },
+      {
         name: "labels",
         type: "CommandPaletteLabels",
         required: true,
@@ -16663,6 +16784,64 @@ import { Text } from "@godxjp/ui/general";
   onSelect={(item) => navigate(item.id)}
 />`,
     storyPath: "data-entry/CommandPalette.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "EmojiPicker",
+    group: "data-entry",
+    tagline:
+      'Page icon / reaction picker in a Popover (gh#1164): search by the active language\'s CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and "remove icon". No skin tones.',
+    props: [
+      {
+        name: "value",
+        type: "string | null",
+        description: "The chosen emoji (controlled with onValueChange).",
+      },
+      { name: "defaultValue", type: "string | null", description: "Uncontrolled initial emoji." },
+      {
+        name: "onValueChange",
+        type: "(emoji: string | null) => void",
+        description: 'Picked emoji, or null from "remove icon".',
+      },
+      {
+        name: "open / defaultOpen / onOpenChange",
+        type: "boolean / boolean / (open) => void",
+        description: "The popover.",
+      },
+      {
+        name: "removable",
+        type: "boolean",
+        defaultValue: "true",
+        description: 'Offer "remove icon" while a value is set.',
+      },
+      {
+        name: "recentsKey",
+        type: "string",
+        defaultValue: '"godxjp-ui:emoji-recents"',
+        description: "localStorage key for the per-user recents.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Trigger size.",
+      },
+      {
+        name: "trigger",
+        type: "ReactNode",
+        description: "Replace the default trigger (e.g. the page icon drawn large).",
+      },
+    ],
+    usage: [
+      "DO use it for a page icon next to PageContainer `icon` — pass the icon itself as `trigger`.",
+      "The data loads on first open (one locale, ~100 KB gzip); nothing ships in your main bundle.",
+    ],
+    related: ["PageContainer — `icon` slot.", "CommandPalette — items can carry an emoji `icon`."],
+    example: `import { EmojiPicker } from "@godxjp/ui/data-entry";
+
+<EmojiPicker value={icon} onValueChange={setIcon} />`,
+    docPath: "docs/data-entry/emoji-picker.tsx",
+    storyPath: "data-entry/emoji-picker.tsx",
     rules: [],
   },
   {

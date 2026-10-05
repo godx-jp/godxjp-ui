@@ -51,6 +51,12 @@
       "type": "(url: string) => string | undefined"
     },
     {
+      "defaultValue": "\"framed\"",
+      "description": "framed: a field's border, padding and focus colour, so the editor reads as an editor inside a form; plain: the borderless Notion-style canvas for a full-page editor.",
+      "name": "appearance",
+      "type": "\"framed\" | \"plain\""
+    },
+    {
       "description": "Extra `/` rows ({ key, label, icon, keywords?, run(api) }) — `api.insertMarkdown` inserts through the codec.",
       "name": "actions",
       "type": "BlockEditorAction[]"
@@ -74,6 +80,8 @@
   "storyPath": "data-entry/block-editor.tsx",
   "tagline": "Notion / note.com style block editor (sibling package `@godxjp/block-editor`, versioned with the kit) that reads and writes MARKDOWN through `@godxjp/markdown/codec`: what onValueChange returns is byte-for-byte normalize(body). `/` block menu at the caret, ⋮⋮ handle (drag, turn into, duplicate, move, delete), floating format toolbar, `[[` wikilink suggestions, paste / drop uploads through the host, IME-safe, ja / en / vi (gh#1156).",
   "usage": [
+    "Clicking a link (or Mod+K) opens a settings drawer: text, URL, title, open / remove. Clicking an image opens one for src, alt, title, replace (pickMedia / upload) and remove. Markdown stores no link target, so there is no target field. A link in the editor never navigates mid-edit.",
+    "YAML front matter shows as a Properties block at the top and round-trips verbatim; read it with frontmatterOf() from @godxjp/markdown/codec.",
     "DO store the Markdown it emits — it is already canonical; compute `normalize()` server-side from the same codec to verify.",
     "DO give it a name: wrap in `FormField` or pass `aria-label` / `aria-labelledby` (the editable is a named `textbox`).",
     "DO pass `upload` (and `pickMedia` for a library) instead of handling paste yourself.",

@@ -1,21 +1,21 @@
 {
   "counts": {
     "anti-ai-tells": 26,
-    "components": 182,
+    "components": 184,
     "patterns": 21,
     "rules": 50,
-    "tokens": 2142,
+    "tokens": 2155,
     "vocabulary": 14
   },
   "files": [
     {
       "file": "components-index.json",
-      "note": "50 KB — name + group + tagline for all 182. FETCH THIS FIRST, then fetch only the components you chose.",
+      "note": "51 KB — name + group + tagline for all 184. FETCH THIS FIRST, then fetch only the components you chose.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json"
     },
     {
       "file": "components/<Name>.json",
-      "note": "One file per component (1 KB–36 KB, median 6 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.2 MB blob.",
+      "note": "One file per component (1 KB–36 KB, median 6 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.3 MB blob.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/<Name>.json"
     },
     {
@@ -48,19 +48,19 @@
   "note": "Pin to the tag that matches the @godxjp/ui version you installed. A catalog newer than your package describes props you do not have; older, and it hides props you do.",
   "read": {
     "live": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json",
-    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v31.27.0/agent/index.json"
+    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v31.28.0/agent/index.json"
   },
   "source": "mcp/src/data — the same data @godxjp/ui-mcp serves — plus the foundation and semantic token tiers, read from src/tokens/*.css",
   "start": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md",
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1827,
+      "component": 1832,
       "foundation": 211,
-      "semantic": 104
+      "semantic": 112
     },
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",
     "semantic": "named roles that follow the seeds — --ring, --text-link, --overlay-background"
   },
-  "version": "31.27.0"
+  "version": "31.28.0"
 }

@@ -11,6 +11,11 @@
       "type": "CommandPaletteGroup[]"
     },
     {
+      "description": "Decorative glyph before an item's label — a folder, a file, an emoji (gh#1159). Menu-row icon size (--menu-icon-size), aria-hidden: the label stays the option's name.",
+      "name": "groups[].items[].icon",
+      "type": "ReactNode"
+    },
+    {
       "description": "Localized dialog and search copy.",
       "name": "labels",
       "required": true,

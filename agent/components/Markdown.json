@@ -73,6 +73,7 @@
   "storyPath": "data-display/markdown.tsx",
   "tagline": "The one Markdown renderer for GoDX apps (sibling package `@godxjp/markdown`, versioned with the kit): GFM + GitHub heading anchors, one sanitiser schema (no raw HTML; http/https/mailto/relative URLs only), and ```mermaid drawn only after its SVG passes a fail-closed gate (gh#1108). Wrap it in `Prose`.",
   "usage": [
+    "Table of contents: outline(markdown) from @godxjp/markdown/codec returns { depth, text, id }[] with exactly the ids <Markdown> writes — feed it to the kit Anchor. YAML front matter is kept verbatim and never rendered; frontmatterOf(markdown) returns it (gh#1163).",
     "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
     "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
     "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate."

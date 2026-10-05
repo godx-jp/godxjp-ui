@@ -71,6 +71,7 @@ const OWNERS = {
   "layout.css": [
     "Flex",
     "PageContainer",
+    "PageCover",
     "ResponsiveGrid",
     "SpaceCompact",
     "Separator",
@@ -109,6 +110,7 @@ const OWNERS = {
     "Calendar",
     "Command",
     "CommandPalette",
+    "EmojiPicker",
     "Transfer",
     "Select",
     "Cascader",

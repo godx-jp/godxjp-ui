@@ -273,7 +273,7 @@
   --page-title-line-height-display: 1.4;
   /* The page icon above the title (gh#1160): emoji or glyph, and how far it rides up over a
    * banner cover's bottom edge. */
-  --page-icon-size: 3rem;
+  --page-icon-size: var(--icon-size-4xl);
   --page-icon-cover-overlap: calc(var(--page-icon-size) * 0.6);
   /* PageCover (gh#1160). A banner's height scales with the viewport between a phone floor and a
    * desktop ceiling — one knob per step, no media query; an eyecatch keeps note.com's ~1.91:1. */
