@@ -209,6 +209,26 @@
       "openDialog": "Chọn từ danh sách",
       "openSearch": "Tìm kiếm",
       "suggestions": "Gợi ý"
+    },
+    "emojiPicker": {
+      "trigger": "Chọn biểu tượng",
+      "search": "Tìm emoji",
+      "recent": "Dùng gần đây",
+      "remove": "Gỡ biểu tượng",
+      "empty": "Không tìm thấy emoji",
+      "loading": "Đang tải emoji…",
+      "grid": "Emoji",
+      "categories": {
+        "smileys": "Mặt cười & cảm xúc",
+        "people": "Con người & cơ thể",
+        "animals": "Động vật & thiên nhiên",
+        "food": "Đồ ăn & thức uống",
+        "travel": "Du lịch & địa điểm",
+        "activities": "Hoạt động",
+        "objects": "Đồ vật",
+        "symbols": "Ký hiệu",
+        "flags": "Cờ"
+      }
     }
   },
   "feedback": {

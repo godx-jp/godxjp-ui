@@ -884,6 +884,19 @@
   --control-status-warning-outline-color: initial; /* default at the call site — freeze rule */
 }
 
+/* EmojiPicker (gh#1164): the panel width, an emoji cell (a touch-sized square), the glyph inside
+ * it, and how tall the grid gets before it scrolls. */
+:root {
+  --emoji-picker-cell-size: var(--control-height-default);
+  /* Eight cells plus the popover's inset — derived, so 44px touch cells (coarse pointer) still fit
+   * eight to a row (8 × 44 + insets = 376px, inside a 390px phone). */
+  --emoji-picker-panel-inline-size: calc(
+    8 * var(--emoji-picker-cell-size) + 2 * var(--popover-space-inset, var(--space-3))
+  );
+  --emoji-picker-glyph-size: 1.25rem;
+  --emoji-picker-grid-max-block-size: 16rem;
+}
+
 @media (pointer: coarse) {
   :root {
     --control-height-compact: var(--band-height-xl);

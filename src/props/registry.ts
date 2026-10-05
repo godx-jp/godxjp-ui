@@ -4119,6 +4119,38 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  EmojiPickerProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "OpenProp",
+      "DefaultOpenProp",
+      "OnOpenChangeProp",
+      "SizeProp",
+      "DisabledProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "removable",
+        local: true,
+        reason: "Whether \"remove icon\" is offered while a value is set — a picker for an OPTIONAL icon (gh#1164), not AllowClearProp's inline ✕ on a field.",
+      },
+      {
+        field: "recentsKey",
+        local: true,
+        reason: "localStorage key the per-user recents are kept under, so two pickers (page icons, reactions) can keep separate lists.",
+      },
+      {
+        field: "trigger",
+        local: true,
+        reason: "Replaces the default trigger button (a page icon drawn large, a reaction chip) — a ReactNode slot, not a TriggerProp mode.",
+      },
+      { field: "aria-label", local: true, reason: "Accessible name of the trigger and the popover." },
+    ],
+  },
   TreeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

@@ -1327,6 +1327,75 @@
     min-width: 0;
   }
 
+  /* EMOJI PICKER (gh#1164). The panel width is the popover's own knob; the grid is eight touch-sized
+   * cells wide and scrolls inside the panel. */
+  .ui-emoji-picker {
+    --popover-surface-inline-size: var(--emoji-picker-panel-inline-size);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .ui-emoji-picker-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .ui-emoji-picker-head > :first-child {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .ui-emoji-picker-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-0-5, var(--space-1));
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+    padding-block-end: var(--space-1);
+  }
+
+  .ui-emoji-picker-tabs [data-state="active"] {
+    background-color: hsl(var(--accent));
+  }
+
+  .ui-emoji-picker-grid {
+    display: flex;
+    flex-direction: column;
+    max-block-size: var(--emoji-picker-grid-max-block-size);
+    overflow-y: auto;
+  }
+
+  .ui-emoji-picker-row {
+    display: grid;
+    grid-template-columns: repeat(8, var(--emoji-picker-cell-size));
+  }
+
+  .ui-emoji-picker-cell {
+    display: grid;
+    place-items: center;
+    inline-size: var(--emoji-picker-cell-size);
+    block-size: var(--emoji-picker-cell-size);
+    border-radius: calc(var(--radius) / var(--radius-ratio));
+    font-size: var(--emoji-picker-glyph-size);
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .ui-emoji-picker-cell:hover,
+  .ui-emoji-picker-cell[aria-selected="true"] {
+    background-color: hsl(var(--accent));
+  }
+
+  .ui-emoji-picker-state {
+    padding-block: var(--space-4);
+    text-align: center;
+  }
+
+  .ui-emoji-picker-trigger[data-has-value] {
+    font-size: var(--emoji-picker-glyph-size);
+  }
+
   /* An item's decorative icon (gh#1159): the menu row's icon size, never shrunk by a long label. */
   .ui-command-palette-icon {
     display: inline-flex;

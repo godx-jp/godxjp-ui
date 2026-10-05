@@ -212,6 +212,26 @@
       "openDialog": "Choose from list",
       "openSearch": "Search",
       "suggestions": "Suggestions"
+    },
+    "emojiPicker": {
+      "trigger": "Choose an icon",
+      "search": "Search emoji",
+      "recent": "Recently used",
+      "remove": "Remove icon",
+      "empty": "No emoji found",
+      "loading": "Loading emoji…",
+      "grid": "Emoji",
+      "categories": {
+        "smileys": "Smileys & emotion",
+        "people": "People & body",
+        "animals": "Animals & nature",
+        "food": "Food & drink",
+        "travel": "Travel & places",
+        "activities": "Activities",
+        "objects": "Objects",
+        "symbols": "Symbols",
+        "flags": "Flags"
+      }
     }
   },
   "feedback": {
