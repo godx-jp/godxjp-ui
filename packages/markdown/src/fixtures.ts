@@ -140,4 +140,12 @@ export const MARKDOWN_FIXTURES: MarkdownFixture[] = [
     markdown: "See [[Page#Intro|intro]] at 10:30.\n\n![[Diagram]]",
     html: "<p>See [[Page#Intro|intro]] at 10:30.</p>\n<p>![[Diagram]]</p>",
   },
+  {
+    // Renderer v5 (gh#1163): YAML front matter is metadata, not body. Before v5 it rendered as an
+    // <hr> plus a setext <h2> holding the YAML text.
+    name: "YAML front matter renders nothing",
+    markdown: "---\ntitle: Spec\ntags: [a]\n---\n\n# Heading\n\nBody",
+    html: '<h1 id="heading">Heading</h1>\n<p>Body</p>',
+    forbidden: ["title: Spec", "<hr"],
+  },
 ];

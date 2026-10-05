@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.28.4] - 2026-10-06
+
+### 🐛 `@godxjp/markdown` `RENDERER_VERSION` 4 → 5
+
+31.28.0 changed what the renderer produces for a document that starts with YAML front matter, but
+left `RENDERER_VERSION` at 4. Stored renders could not tell the two apart. Measured against the
+registry packages, 31.27.0 rendered `---\ntitle: …\n---` as an `<hr/>` plus a setext
+`<h2 id="title-…">` holding the YAML text; 31.28.x renders nothing for it. The version is now 5,
+and a front-matter fixture joins the shared corpus, so the next change to that output fails a test.
+Unchanged by default, and therefore not part of v5: link output (`externalLinks` is opt-in, default
+`"same-tab"`), heading ids (`outline()` only reads them), and the Prose heading scale (CSS only).
+
 ## [31.28.3] - 2026-10-06
 
 ### 🐛 Select multiple / tags popup reads as a picker (gh#1181)
