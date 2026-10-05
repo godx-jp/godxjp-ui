@@ -900,6 +900,7 @@ export default function OrdersPage() {
         description:
           "Change / reposition / remove controls: over the bottom edge on a wide screen, BELOW the image on a phone (never on the focal area).",
       },
+      { name: "id", type: "string", description: "Id on the cover frame." },
     ],
     usage: [
       "DO pass it as PageContainer `cover` with the page `icon` — the container places it and overlaps the icon.",
@@ -16843,6 +16844,13 @@ import { Text } from "@godxjp/ui/general";
         type: "ReactNode",
         description: "Replace the default trigger (e.g. the page icon drawn large).",
       },
+      { name: "disabled", type: "boolean", description: "Disables the trigger." },
+      {
+        name: "aria-label",
+        type: "string",
+        description: 'Accessible name for the trigger; defaults to the localized "Choose an icon".',
+      },
+      { name: "id", type: "string", description: "Id on the trigger button." },
     ],
     usage: [
       "DO use it for a page icon next to PageContainer `icon` — pass the icon itself as `trigger`.",

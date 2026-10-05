@@ -191,6 +191,34 @@ describe("BlockEditor (Chromium, gh#1156)", { timeout: 40_000 }, () => {
     );
     await page.keyboard.press("Home");
     for (let i = 0; i < 5; i++) await page.keyboard.press("Shift+ArrowRight");
+    // ProseMirror reads a keyboard selection from `selectionchange`, which lags under load, and the
+    // toolbar follows ProseMirror's state, not the DOM. Wait for the state (Tiptap puts the editor
+    // on its root element), so a slow runner waits instead of racing the bubble menu's debounce.
+    await page
+      .waitForFunction(
+        () => {
+          const root = document.querySelector(".ProseMirror") as
+            (Element & { editor?: { state: { selection: { from: number; to: number } } } }) | null;
+          const selection = root?.editor?.state.selection;
+          return !!selection && selection.to - selection.from === 5;
+        },
+        undefined,
+        { polling: 100 },
+      )
+      .catch(async (error: Error) => {
+        // If it never arrives, say which side is behind: the DOM selection or ProseMirror's.
+        const where = await page.evaluate(() => {
+          const root = document.querySelector(".ProseMirror") as
+            (Element & { editor?: { state: { selection: { from: number; to: number } } } }) | null;
+          const pm = root?.editor?.state.selection;
+          return {
+            dom: String(window.getSelection()),
+            pm: pm ? [pm.from, pm.to] : null,
+            active: document.activeElement?.className,
+          };
+        });
+        throw new Error(`${error.message}\nselection: ${JSON.stringify(where)}`);
+      });
     const bold = page.getByRole("button", { name: "太字" });
     await bold.waitFor();
     await bold.click();
