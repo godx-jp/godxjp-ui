@@ -2134,6 +2134,86 @@
     margin-block-start: var(--space-2);
   }
 
+  /* Phase 2 (gh#1161): the editable callout / columns / toggle. A node view puts its content one
+   * element deeper (`[data-node-view-content-react]`), so the column ROW is that element. */
+  .ui-block-editor-callout-head,
+  .ui-block-editor-columns-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    margin-block-end: var(--space-2);
+  }
+
+  .ui-block-editor-callout-title {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-block-editor-columns {
+    margin-block: var(--prose-space-block);
+  }
+
+  .ui-block-editor-columns-content > [data-node-view-content-react] {
+    display: flex;
+    gap: var(--prose-columns-gap);
+  }
+
+  @media (width < 40rem) {
+    .ui-block-editor-columns-content > [data-node-view-content-react] {
+      flex-direction: column;
+    }
+  }
+
+  .ui-block-editor-content [data-type="details"] {
+    display: flex;
+    gap: var(--space-1);
+    margin-block: var(--prose-space-block);
+  }
+
+  .ui-block-editor-content [data-type="details"] > div {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .ui-block-editor-content [data-type="detailsSummary"],
+  .ui-block-editor-content [data-type="details"] summary {
+    font-weight: var(--font-weight-medium);
+    list-style: none;
+  }
+
+  /* The disclosure triangle: points along the reading direction closed, down open. */
+  .ui-block-editor-toggle-button {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--control-height-xs);
+    block-size: var(--control-height-xs);
+    padding: 0;
+    border: 0;
+    border-radius: calc(var(--radius) / var(--radius-ratio));
+    background: transparent;
+    color: hsl(var(--muted-foreground));
+    cursor: pointer;
+  }
+
+  .ui-block-editor-toggle-button::before {
+    content: "";
+    border-block: var(--stroke-lg) solid transparent;
+    border-inline-start: calc(var(--stroke-lg) * 1.5) solid currentColor;
+    transition: rotate var(--duration-fast);
+  }
+
+  [data-type="details"].is-open > .ui-block-editor-toggle-button::before {
+    rotate: 90deg;
+  }
+
+  .ui-block-editor-toggle-button:hover {
+    background-color: hsl(var(--accent));
+  }
+
   /* `imagePreview`: a body image that opens the kit preview is a control, so it says so. */
   .ui-prose img[data-prose-preview] {
     cursor: zoom-in;

@@ -16,7 +16,7 @@ import {
   type BlockEditorCommand,
   type SuggestionBridge,
 } from "./commands";
-import { schemaExtensions } from "./extensions";
+import { Callout, Columns, schemaExtensions } from "./extensions";
 import { BlockHandle } from "./handle";
 import { LabelsContext, type LabelFn } from "./labels";
 import {
@@ -26,7 +26,7 @@ import {
 } from "./messages";
 import { SuggestionMenu, type SuggestionMenuItem } from "./suggestion-menu";
 import { FormatToolbar } from "./toolbar";
-import { embedNode, rawBlockNode, uploadNode } from "./views";
+import { calloutNode, columnsNode, embedNode, rawBlockNode, uploadNode } from "./views";
 
 /** What the host's storage returns for one file — the same shape as MarkdownEditor's. */
 export type BlockEditorUploadResult = { url: string; name?: string };
@@ -448,6 +448,9 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
           },
           embed: embedNode(renderEmbed),
           rawBlock: rawBlockNode(),
+          callout: calloutNode(Callout),
+          columns: columnsNode(Columns),
+          toggleLabel: (open) => labelRef.current(open ? "collapseToggle" : "expandToggle"),
           resolveUrl,
         }),
         uploadNode(uploadActions),

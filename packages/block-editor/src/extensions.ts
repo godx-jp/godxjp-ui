@@ -349,6 +349,10 @@ export function schemaExtensions(options: {
   rawBlock?: Node;
   /** Resolves a stored image URL (`asset:<id>`) to one the browser can load; the doc keeps the original. */
   resolveUrl?: (url: string) => string | undefined;
+  callout?: Node;
+  columns?: Node;
+  /** The toggle button's accessible name, open and closed. */
+  toggleLabel?: (open: boolean) => string;
 }): Extensions {
   const resolve = options.resolveUrl;
   return [
@@ -379,11 +383,21 @@ export function schemaExtensions(options: {
         ];
       },
     }).configure({ inline: true, allowBase64: false }),
-    Details.configure({ persist: false }),
+    Details.configure({
+      persist: false,
+      renderToggleButton: ({ element, isOpen }) => {
+        element.className = "ui-block-editor-toggle-button";
+        element.setAttribute("aria-expanded", String(isOpen));
+        element.setAttribute(
+          "aria-label",
+          options.toggleLabel?.(isOpen) ?? (isOpen ? "Collapse" : "Expand"),
+        );
+      },
+    }),
     DetailsSummary,
     DetailsContent,
-    Callout.configure({ titles: options.calloutTitles }),
-    Columns,
+    (options.callout ?? Callout).configure({ titles: options.calloutTitles }),
+    options.columns ?? Columns,
     Column,
     Wikilink,
     EmbedInline,

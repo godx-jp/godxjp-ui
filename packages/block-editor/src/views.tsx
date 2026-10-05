@@ -1,9 +1,21 @@
 import * as React from "react";
 import { Node, mergeAttributes } from "@tiptap/core";
-import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
-import { LoaderCircle, TriangleAlert } from "lucide-react";
+import {
+  NodeViewContent,
+  NodeViewWrapper,
+  ReactNodeViewRenderer,
+  type NodeViewProps,
+} from "@tiptap/react";
+import { ChevronDown, LoaderCircle, TriangleAlert } from "lucide-react";
 import { parse } from "@godxjp/markdown/codec";
-import { Textarea } from "@godxjp/ui/data-entry";
+import { Input, Select, Textarea } from "@godxjp/ui/data-entry";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@godxjp/ui/navigation";
 import { Button, Text } from "@godxjp/ui/general";
 
 import { Embed, RawBlock } from "./extensions";
@@ -167,4 +179,172 @@ export function uploadNode(actions: {
     },
     addNodeView: () => ReactNodeViewRenderer(UploadView, { as: "span" }),
   }) as Node;
+}
+
+const CALLOUT_KINDS = ["note", "tip", "important", "warning", "caution"] as const;
+type CalloutKind = (typeof CALLOUT_KINDS)[number];
+const kindLabelKey = {
+  note: "calloutNote",
+  tip: "calloutTip",
+  important: "calloutImportant",
+  warning: "calloutWarning",
+  caution: "calloutCaution",
+} as const;
+
+/**
+ * A callout you can retype and retitle in place (phase 2): the kind is a menu of the five GitHub
+ * alert kinds (a radio group — one is current), the title an inline field whose placeholder is the
+ * kind's default title. Read-only, it draws exactly what the renderer draws.
+ */
+function CalloutView({ node, updateAttributes, editor }: NodeViewProps) {
+  const label = useLabel();
+  const kind = node.attrs.kind as CalloutKind;
+  const title = (node.attrs.title as string | null) ?? "";
+  const defaultTitle = label(kindLabelKey[kind] ?? "calloutNote");
+  return (
+    <NodeViewWrapper className="ui-prose-callout" data-type="callout" data-kind={kind} role="note">
+      {editor.isEditable ? (
+        <div className="ui-block-editor-callout-head" contentEditable={false}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="xs"
+                variant="ghost"
+                aria-label={`${label("calloutKind")}: ${defaultTitle}`}
+              >
+                {defaultTitle}
+                <ChevronDown aria-hidden="true" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" aria-label={label("calloutKind")}>
+              <DropdownMenuRadioGroup
+                value={kind}
+                onValueChange={(next) => updateAttributes({ kind: next })}
+              >
+                {CALLOUT_KINDS.map((k) => (
+                  <DropdownMenuRadioItem key={k} value={k}>
+                    {label(kindLabelKey[k])}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Input
+            size="sm"
+            className="ui-block-editor-callout-title"
+            aria-label={label("calloutTitle")}
+            placeholder={defaultTitle}
+            value={title}
+            onValueChange={(next) => updateAttributes({ title: next.trim() === "" ? null : next })}
+          />
+        </div>
+      ) : (
+        <p className="ui-prose-callout-title" contentEditable={false}>
+          {title || defaultTitle}
+        </p>
+      )}
+      <NodeViewContent className="ui-block-editor-callout-body" />
+    </NodeViewWrapper>
+  );
+}
+
+export function calloutNode(base: Node): Node {
+  return base.extend({ addNodeView: () => ReactNodeViewRenderer(CalloutView) }) as Node;
+}
+
+const WIDTHS = [25, 33, 50, 67, 75] as const;
+
+/**
+ * A column row you can reshape (phase 2): while the caret is inside, a bar offers Add a column
+ * (up to 4), Remove this column (down to 2) and this column's width (auto, or a share of the row)
+ * — the keyboard path to what a drag would do.
+ */
+function ColumnsView({ node, editor, getPos }: NodeViewProps) {
+  const label = useLabel();
+  const [current, setCurrent] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    const read = () => {
+      const pos = getPos();
+      if (typeof pos !== "number") return setCurrent(null);
+      const { $from } = editor.state.selection;
+      for (let depth = $from.depth; depth > 0; depth--) {
+        if ($from.node(depth).type.name === "columns" && $from.before(depth) === pos) {
+          return setCurrent($from.index(depth));
+        }
+      }
+      setCurrent(null);
+    };
+    read();
+    editor.on("selectionUpdate", read);
+    editor.on("update", read);
+    return () => {
+      editor.off("selectionUpdate", read);
+      editor.off("update", read);
+    };
+  }, [editor, getPos]);
+
+  const columnPos = (index: number) => {
+    const pos = getPos();
+    if (typeof pos !== "number") return null;
+    let at = pos + 1;
+    for (let i = 0; i < index; i++) at += node.child(i).nodeSize;
+    return at;
+  };
+
+  const addColumn = () => {
+    const pos = getPos();
+    if (typeof pos !== "number" || node.childCount >= 4) return;
+    const end = pos + node.nodeSize - 1;
+    const column = editor.schema.nodes.column!.create(
+      null,
+      editor.schema.nodes.paragraph!.create(),
+    );
+    editor.view.dispatch(editor.state.tr.insert(end, column));
+  };
+  const removeColumn = () => {
+    if (current == null || node.childCount <= 2) return;
+    const at = columnPos(current);
+    if (at == null) return;
+    editor.view.dispatch(editor.state.tr.delete(at, at + node.child(current).nodeSize));
+  };
+  const setWidth = (value: string) => {
+    if (current == null) return;
+    const at = columnPos(current);
+    if (at == null) return;
+    const width = value === "auto" ? null : Number(value);
+    editor.view.dispatch(editor.state.tr.setNodeAttribute(at, "width", width));
+  };
+
+  const width =
+    current == null ? null : ((node.child(current).attrs.width as number | null) ?? null);
+  return (
+    <NodeViewWrapper className="ui-block-editor-columns" data-type="columns">
+      {editor.isEditable && current != null ? (
+        <div className="ui-block-editor-columns-bar" contentEditable={false}>
+          <Button size="xs" variant="ghost" disabled={node.childCount >= 4} onClick={addColumn}>
+            {label("addColumn")}
+          </Button>
+          <Button size="xs" variant="ghost" disabled={node.childCount <= 2} onClick={removeColumn}>
+            {label("removeColumn")}
+          </Button>
+          <Select
+            size="xs"
+            aria-label={label("columnWidth")}
+            value={width == null ? "auto" : String(width)}
+            onValueChange={setWidth}
+            options={[
+              { value: "auto", label: label("widthAuto") },
+              ...WIDTHS.map((w) => ({ value: String(w), label: `${w}%` })),
+            ]}
+          />
+        </div>
+      ) : null}
+      <NodeViewContent className="ui-block-editor-columns-content" />
+    </NodeViewWrapper>
+  );
+}
+
+export function columnsNode(base: Node): Node {
+  return base.extend({ addNodeView: () => ReactNodeViewRenderer(ColumnsView) }) as Node;
 }
