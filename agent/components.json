@@ -5142,6 +5142,16 @@
         "type": "number | false"
       },
       {
+        "description": "Default 'same-tab'. Renderer policy for links to another origin (an absolute http(s) URL whose origin differs from `origin`). 'new-tab' adds target=\"_blank\" rel=\"noopener noreferrer\"; relative links, #anchors, resolved wikilinks and mailto: stay in the tab. Markdown cannot store target, so this replaces it.",
+        "name": "externalLinks",
+        "type": "'same-tab' | 'new-tab'"
+      },
+      {
+        "description": "The page origin externalLinks compares against; defaults to location.origin. Pass it for server rendering, or every absolute link counts as external there.",
+        "name": "origin",
+        "type": "string"
+      },
+      {
         "description": "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@1, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
         "name": "calloutTitles",
         "type": "Partial<Record<'note' | 'tip' | 'important' | 'warning' | 'caution', string>>"

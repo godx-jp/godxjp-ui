@@ -30,6 +30,9 @@ For the pages app's Notion / note.com screens.
   hides it, and the BlockEditor shows it as a "Properties (YAML)" block. New codec exports
   `outline(markdown)` (headings with ids identical to the renderer's, for a table of contents
   with `Anchor`) and `frontmatterOf(markdown)`.
+- **`Markdown` `externalLinks="new-tab"`** (+ `origin`): links to another origin open in a new tab
+  with `rel="noopener noreferrer"`; same-origin, relative, anchor and wikilink targets stay. Off by
+  default. Markdown cannot store `target`, so this is a renderer policy.
 - **`EmojiPicker`** (new, gh#1164): emojibase-data with ja / en / vi keywords loaded lazily per
   locale, category tabs, an APG grid with a roving tabindex, recents, and "remove icon". Adds the
   `emojibase-data` dependency.

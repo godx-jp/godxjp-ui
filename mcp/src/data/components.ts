@@ -6086,6 +6086,18 @@ import { Flex } from "@godxjp/ui/layout";
           "A table cell whose trimmed text has no whitespace and at most this many characters (grapheme clusters) — a code, an id, a date, 優先度 — is stamped data-short, and Prose keeps it on one line (CJK otherwise breaks between ideographs in a narrow column). Sentences still wrap. false stamps nothing (gh#1150). Images in Prose table cells are capped at --prose-cell-image-max-inline-size (20rem) so a narrow table scrolls instead of squashing them.",
       },
       {
+        name: "externalLinks",
+        type: "'same-tab' | 'new-tab'",
+        description:
+          "Default 'same-tab'. Renderer policy for links to another origin (an absolute http(s) URL whose origin differs from `origin`). 'new-tab' adds target=\"_blank\" rel=\"noopener noreferrer\"; relative links, #anchors, resolved wikilinks and mailto: stay in the tab. Markdown cannot store target, so this replaces it.",
+      },
+      {
+        name: "origin",
+        type: "string",
+        description:
+          "The page origin externalLinks compares against; defaults to location.origin. Pass it for server rendering, or every absolute link counts as external there.",
+      },
+      {
         name: "calloutTitles",
         type: "Partial<Record<'note' | 'tip' | 'important' | 'warning' | 'caution', string>>",
         description:

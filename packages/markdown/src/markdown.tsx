@@ -84,6 +84,19 @@ export type MarkdownProps = {
    * default — this package carries no i18n; a host passes its localized strings.
    */
   calloutTitles?: Partial<Record<CalloutKind, string>>;
+  /**
+   * Where an EXTERNAL link opens. An external link is an absolute http(s) URL whose origin differs
+   * from `origin`. `"new-tab"` gives it `target="_blank"` and `rel="noopener noreferrer"`. Relative
+   * links, `#anchors`, wikilinks resolved to a path, and `mailto:` stay in the tab. The default,
+   * `"same-tab"`, changes nothing. Markdown has no syntax for `target`, so this is a renderer policy.
+   */
+  externalLinks?: "same-tab" | "new-tab";
+  /**
+   * The page origin that `externalLinks` compares against. Defaults to `location.origin`. Pass it
+   * when rendering on the server, or every absolute link counts as external there and hydration
+   * disagrees on same-origin ones.
+   */
+  origin?: string;
 };
 
 /** Element attributes that carry a URL, by tag. */
@@ -147,6 +160,30 @@ function rehypeShortCells(options: { max: number | false }) {
   };
 }
 
+/**
+ * rehype plugin, AFTER the sanitiser (presentation only: it adds `target` / `rel`, never a URL):
+ * opens links to another origin in a new tab.
+ */
+function rehypeExternalLinks(options: { policy: "same-tab" | "new-tab"; origin?: string }) {
+  return (tree: Root) => {
+    if (options.policy !== "new-tab") return;
+    const origin = options.origin ?? globalThis.location?.origin;
+    visit(tree, "element", (node: Element) => {
+      if (node.tagName !== "a") return;
+      const href = node.properties?.href;
+      if (typeof href !== "string" || !/^https?:\/\//i.test(href)) return;
+      let target: URL;
+      try {
+        target = new URL(href);
+      } catch {
+        return;
+      }
+      if (origin && target.origin === origin) return;
+      node.properties = { ...node.properties, target: "_blank", rel: ["noopener", "noreferrer"] };
+    });
+  };
+}
+
 /** react-markdown hands a component its hast `node`; a DOM element must not receive it. */
 function omitNode<T extends { node?: unknown }>(props: T): Omit<T, "node"> {
   const { node: _node, ...rest } = props;
@@ -187,6 +224,8 @@ export function Markdown({
   unwrapDisallowed,
   shortCellLength = 24,
   calloutTitles,
+  externalLinks = "same-tab",
+  origin,
 }: MarkdownProps) {
   const sanitizeSchema = React.useMemo(() => extendSchema(schema), [schema]);
   const kitSyntax = React.useMemo(() => remarkKitSyntax({ calloutTitles }), [calloutTitles]);
@@ -232,6 +271,7 @@ export function Markdown({
         [rehypeHeadingIds, { resolve: headingId }],
         [rehypeSanitize, sanitizeSchema],
         [rehypeShortCells, { max: shortCellLength }],
+        [rehypeExternalLinks, { policy: externalLinks, origin }],
         ...rehypePlugins,
       ]}
       urlTransform={safeUrl}
