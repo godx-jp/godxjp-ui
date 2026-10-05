@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.28.2] - 2026-10-05
+
+### 🐛 Prose headings below h2 read as headings
+
+Hosts that keep the page title as the screen's one h1 shift body headings down a level (`#` → h2), so
+h3–h6 carry real section titles. On 31.28.0 a Prose h3 was body size at weight 500 (semibold is 500
+here), h4 was smaller than body, and h5/h6 had no rule, so they rendered as plain paragraphs. The
+long-form scale now keeps every level at or above body: measured at a 14px body, h1 19.8 · h2 17.6 ·
+h3 15.7 (500), and h4 / h5 / h6 at 14 in bold (700), with h6 muted. h1–h6 all share the heading
+weight, spacing and `text-wrap: balance`. The `--heading-h*` knobs still win where a service sets
+them; the `Heading` component's own scale is unchanged.
+
 ## [31.28.1] - 2026-10-05
 
 ### 🐛 Plain `npm install @godxjp/ui` no longer fails with ERESOLVE (gh#1111)
