@@ -9,6 +9,13 @@ export type { ProseProp, ProseProp as ProseProps };
 
 /** A body image `imagePreview` can open: not a link's, and not already a kit `Image`. */
 const PREVIEWABLE = "img:not(a img):not(button img):not(.ui-image-img)";
+const PREVIEWING = '[data-slot="prose"][data-image-preview]';
+
+/**
+ * An image belongs to the NEAREST previewing Prose (gh#1152). A Prose nested in another — an
+ * embed — owns its own images: the outer one neither marks them nor pages through them.
+ */
+const ownedBy = (host: Element, img: Element) => img.closest(PREVIEWING) === host;
 
 /**
  * `imagePreview` marks every previewable image as the control it now is — reachable by Tab, named,
@@ -26,7 +33,7 @@ function useMarkedImages(
     if (!enabled || !host) return undefined;
     const mark = () => {
       for (const img of host.querySelectorAll<HTMLImageElement>(PREVIEWABLE)) {
-        if (img.hasAttribute("data-prose-preview")) continue;
+        if (img.hasAttribute("data-prose-preview") || !ownedBy(host, img)) continue;
         img.setAttribute("data-prose-preview", "");
         img.setAttribute("tabindex", "0");
         img.setAttribute("role", "button");
@@ -71,10 +78,18 @@ export const Prose = React.forwardRef<
   );
   useMarkedImages(root, imagePreview, label);
 
-  const open = (target: EventTarget) => {
-    if (!imagePreview || !(target instanceof HTMLImageElement)) return false;
-    if (!target.hasAttribute("data-prose-preview")) return false;
-    const images = [...root.current!.querySelectorAll<HTMLImageElement>("img[data-prose-preview]")];
+  // An inner Prose that handled the event marks it handled; an outer one then stays out (gh#1152).
+  const open = (event: React.SyntheticEvent) => {
+    const target = event.target;
+    if (!imagePreview || event.defaultPrevented || !(target instanceof HTMLImageElement)) {
+      return false;
+    }
+    const host = root.current!;
+    if (!target.hasAttribute("data-prose-preview") || !ownedBy(host, target)) return false;
+    event.preventDefault();
+    const images = [...host.querySelectorAll<HTMLImageElement>("img[data-prose-preview]")].filter(
+      (img) => ownedBy(host, img),
+    );
     setPreview({
       items: images.map((img) => ({ src: img.currentSrc || img.src, alt: img.alt })),
       current: Math.max(images.indexOf(target), 0),
@@ -93,16 +108,15 @@ export const Prose = React.forwardRef<
       data-size={size === "md" ? undefined : size}
       data-image-size={imageSize === "fit" ? undefined : imageSize}
       data-measure={measure}
+      data-image-preview={imagePreview ? "" : undefined}
       className={cn("ui-prose", className)}
       onClick={(event) => {
         onClick?.(event);
-        open(event.target);
+        open(event);
       }}
       onKeyDown={(event) => {
         onKeyDown?.(event);
-        if ((event.key === "Enter" || event.key === " ") && open(event.target)) {
-          event.preventDefault();
-        }
+        if (event.key === "Enter" || event.key === " ") open(event);
       }}
       {...rest}
     >

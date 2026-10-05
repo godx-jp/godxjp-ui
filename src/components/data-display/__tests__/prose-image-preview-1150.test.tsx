@@ -81,4 +81,43 @@ describe("Prose imagePreview (gh#1150)", () => {
     expect(document.querySelector("[data-prose-preview]")).toBeNull();
     expect(document.querySelector('img[src$="a.png"]')).not.toHaveAttribute("role");
   });
+
+  /* gh#1152 — an embed: a previewing Prose inside another. The innermost owns its images, and one
+   * click opens exactly one dialog, paging only through that body's images. */
+  it("lets the innermost Prose own its images when one is nested in another", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <Prose imagePreview>
+        <img src="https://example.com/outer-1.png" alt="Outer 1" />
+        <Prose imagePreview>
+          <img src="https://example.com/inner-1.png" alt="Inner 1" />
+          <img src="https://example.com/inner-2.png" alt="Inner 2" />
+        </Prose>
+        <img src="https://example.com/outer-2.png" alt="Outer 2" />
+      </Prose>,
+    );
+    await user.click(screen.getByRole("button", { name: /Inner 2/ }));
+    await waitFor(() => expect(screen.getAllByRole("dialog")).toHaveLength(1));
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.querySelector("img")).toHaveAttribute("src", "https://example.com/inner-2.png");
+    // Inner gallery only: Inner 2 is its last picture, so "next" is disabled.
+    expect(dialog.querySelector('[data-slot="image-preview-next"]')).toBeDisabled();
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+
+    // And the outer body pages through its own two, skipping the embed's.
+    await user.click(screen.getByRole("button", { name: /Outer 1/ }));
+    await waitFor(() => expect(screen.getAllByRole("dialog")).toHaveLength(1));
+    await user.click(
+      screen
+        .getByRole("dialog")
+        .querySelector<HTMLButtonElement>('[data-slot="image-preview-next"]')!,
+    );
+    await waitFor(() =>
+      expect(screen.getByRole("dialog").querySelector("img")).toHaveAttribute(
+        "src",
+        "https://example.com/outer-2.png",
+      ),
+    );
+  });
 });

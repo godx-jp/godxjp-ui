@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.26.1] - 2026-10-05
+
+### 🐛 Nested `Prose imagePreview` opens one dialog (gh#1152)
+
+Reported by the pages app (embeds). A previewing `Prose` inside another opened two preview dialogs
+per click, and the outer body also marked and paged through the inner body's images. An image now
+belongs to its nearest previewing `Prose`; the handler that opens marks the event handled
+(`preventDefault`) and an outer one skips a handled event. Measured: dialogs per click 2 → 1; the
+inner gallery holds only the embed's images and the outer one only its own.
+
 ## [31.26.0] - 2026-10-05
 
 ### ✨ Short table cells stay whole; table images keep their width; body image preview (gh#1150)
