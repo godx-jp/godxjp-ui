@@ -1616,6 +1616,11 @@
       "title": "Read-only",
       "description": "No handle, no menus; the body renders as Prose.",
       "label": "Body (view only)"
+    },
+    "pages": {
+      "guide": "Design guide",
+      "setup": "Setup",
+      "release": "Release steps"
     }
   }
 }

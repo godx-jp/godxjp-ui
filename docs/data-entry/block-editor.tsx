@@ -28,11 +28,12 @@ const initial = `# 議事録 2026-10-05
 :::
 `;
 
+/** The host's page index — targets are ids, labels are localized like any other copy. */
 const PAGES = [
-  { target: "Guide", label: "設計ガイド" },
-  { target: "Setup", label: "セットアップ" },
-  { target: "Release", label: "リリース手順" },
-];
+  { target: "Guide", labelKey: "blockEditorDocs.pages.guide" },
+  { target: "Setup", labelKey: "blockEditorDocs.pages.setup" },
+  { target: "Release", labelKey: "blockEditorDocs.pages.release" },
+] as const;
 
 /** Stands in for the host's storage: a real app uploads the file and returns `asset:<id>`. */
 async function demoUpload(file: File) {
@@ -64,7 +65,7 @@ export default function Demo() {
                   onValueChange={setBody}
                   upload={demoUpload}
                   suggestWikilinks={(query) =>
-                    PAGES.filter((p) =>
+                    PAGES.map((p) => ({ target: p.target, label: t(p.labelKey) })).filter((p) =>
                       `${p.target} ${p.label}`.toLowerCase().includes(query.toLowerCase()),
                     )
                   }

@@ -2809,6 +2809,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--block-editor-menu-inline-size",
+    "value": "16rem",
+    "description": "The `/` and `[[` menus: wide enough for a label and its description, tall enough for ~8 rows before the list scrolls."
+  },
+  {
+    "name": "--block-editor-menu-max-block-size",
+    "value": "20rem",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--prose-code-radius",
     "value": "initial",
     "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"

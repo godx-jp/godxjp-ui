@@ -2026,11 +2026,11 @@
   }
 
   .ui-block-editor-menu {
-    --popover-surface-inline-size: 16rem;
+    --popover-surface-inline-size: var(--block-editor-menu-inline-size);
   }
 
   .ui-block-editor-menu [cmdk-list] {
-    max-block-size: 20rem;
+    max-block-size: var(--block-editor-menu-max-block-size);
   }
 
   .ui-block-editor-menu-icon {
