@@ -109,4 +109,35 @@ export const MARKDOWN_FIXTURES: MarkdownFixture[] = [
     html: '<p><img alt="x"/> <img alt="y"/></p>',
     forbidden: ["data:", "javascript:"],
   },
+  // Grammar v1 (gh#1156, renderer v4): the constructs the codec and @godxjp/block-editor model.
+  {
+    name: "CJK-friendly emphasis next to 、。「」（）",
+    markdown: "の**「強調」**です。（*注*）「[リンク](https://example.com/)」、**太字**。",
+    html: '<p>の<strong>「強調」</strong>です。（<em>注</em>）「<a href="https://example.com/">リンク</a>」、<strong>太字</strong>。</p>',
+  },
+  {
+    name: "callout with a title, and one without",
+    markdown: "> [!WARNING] Careful\n> Body\n\n> [!tip]\n> No title",
+    html: '<div class="ui-prose-callout" data-kind="warning" role="note">\n<p class="ui-prose-callout-title">Careful</p>\n<p>Body</p>\n</div>\n<div class="ui-prose-callout" data-kind="tip" role="note">\n<p class="ui-prose-callout-title">Tip</p>\n<p>No title</p>\n</div>',
+  },
+  {
+    name: "a fold marker or unknown kind stays a quote",
+    markdown: "> [!NOTE]- folded\n\n> [!INFO] unknown",
+    html: "<blockquote>\n<p>[!NOTE]- folded</p>\n</blockquote>\n<blockquote>\n<p>[!INFO] unknown</p>\n</blockquote>",
+  },
+  {
+    name: "toggle with an inline summary",
+    markdown: ":::toggle[Read *more*]\nBody\n:::",
+    html: '<details class="ui-prose-toggle"><summary class="ui-prose-toggle-summary">Read <em>more</em></summary><p>Body</p></details>',
+  },
+  {
+    name: "columns with a width and an equal share",
+    markdown: "::::columns\n:::column{width=40}\nLeft\n:::\n\n:::column\nRight\n:::\n::::",
+    html: '<div class="ui-prose-columns"><div class="ui-prose-column" style="--prose-column-grow:40"><p>Left</p></div><div class="ui-prose-column" style="--prose-column-grow:60"><p>Right</p></div></div>',
+  },
+  {
+    name: "wikilinks, embeds and times stay text",
+    markdown: "See [[Page#Intro|intro]] at 10:30.\n\n![[Diagram]]",
+    html: "<p>See [[Page#Intro|intro]] at 10:30.</p>\n<p>![[Diagram]]</p>",
+  },
 ];

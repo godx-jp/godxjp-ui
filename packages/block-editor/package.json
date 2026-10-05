@@ -1,0 +1,60 @@
+{
+  "name": "@godxjp/block-editor",
+  "version": "31.27.0",
+  "description": "Block editor for GoDX apps (Notion / note.com style) on Tiptap: slash menu, block handles, floating format toolbar; reads and writes Markdown through @godxjp/markdown/codec, IME-safe, ja / en / vi.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godx-jp/godxjp-ui.git",
+    "directory": "packages/block-editor"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@floating-ui/dom": "^1.8.0",
+    "@tiptap/core": "3.31.4",
+    "@tiptap/extension-bubble-menu": "3.31.4",
+    "@tiptap/extension-details": "3.31.4",
+    "@tiptap/extension-image": "3.31.4",
+    "@tiptap/extension-list": "3.31.4",
+    "@tiptap/extension-table": "3.31.4",
+    "@tiptap/extension-text-style": "3.31.4",
+    "@tiptap/extensions": "3.31.4",
+    "@tiptap/pm": "3.31.4",
+    "@tiptap/react": "3.31.4",
+    "@tiptap/starter-kit": "3.31.4",
+    "@tiptap/suggestion": "3.31.4",
+    "lucide-react": "^1.37.0"
+  },
+  "peerDependencies": {
+    "@godxjp/markdown": "~31.27.0",
+    "@godxjp/ui": "~31.27.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
+  },
+  "keywords": [
+    "markdown",
+    "editor",
+    "block-editor",
+    "tiptap",
+    "godxjp"
+  ]
+}

@@ -47,8 +47,21 @@ function packageExportAliases(): Array<{ find: string | RegExp; replacement: str
   // The packages beside the kit (gh#1108 / gh#1109) resolve to their source too, so a docs page
   // shows the editor and renderer as they are in this checkout, not as last published.
   entries.push(
-    { find: "@godxjp/markdown", replacement: path.resolve(uiRoot, "packages/markdown/src/index.ts") },
+    // The codec subpath first: a string alias also matches `@godxjp/markdown/…` and would graft
+    // `/codec` onto the renderer's index file.
+    {
+      find: "@godxjp/markdown/codec",
+      replacement: path.resolve(uiRoot, "packages/markdown/src/codec/index.ts"),
+    },
+    {
+      find: "@godxjp/markdown",
+      replacement: path.resolve(uiRoot, "packages/markdown/src/index.ts"),
+    },
     { find: "@godxjp/editor", replacement: path.resolve(uiRoot, "packages/editor/src/index.ts") },
+    {
+      find: "@godxjp/block-editor",
+      replacement: path.resolve(uiRoot, "packages/block-editor/src/index.ts"),
+    },
   );
 
   // Longest match first — avoid `@godxjp/ui` swallowing `/data-display` subpaths.

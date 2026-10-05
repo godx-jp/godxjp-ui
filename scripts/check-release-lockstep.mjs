@@ -66,7 +66,11 @@ if (!mcp.godxUiCompatibility) {
  * versioned WITH the kit — one release, one number — and published after it by
  * scripts/publish-satellites.mjs. A satellite left on the previous version would publish nothing
  * (that version already exists) while its peer range still pointed at the old kit. */
-const SATELLITES = ["packages/markdown/package.json", "packages/editor/package.json"];
+const SATELLITES = [
+  "packages/markdown/package.json",
+  "packages/editor/package.json",
+  "packages/block-editor/package.json",
+];
 const satellites = SATELLITES.map((file) => ({
   file,
   manifest: JSON.parse(readFileSync(join(ROOT, file), "utf8")),
@@ -78,12 +82,38 @@ const tildeAccepts = (range, version) => {
 };
 for (const { file, manifest } of satellites) {
   if (manifest.version !== ui.version) {
-    errors.push(`${manifest.name} (${file}) is ${manifest.version}, but @godxjp/ui is ${ui.version}.`);
+    errors.push(
+      `${manifest.name} (${file}) is ${manifest.version}, but @godxjp/ui is ${ui.version}.`,
+    );
   }
   for (const peer of ["@godxjp/ui", "@godxjp/markdown"]) {
     const range = manifest.peerDependencies?.[peer];
     if (range !== undefined && !tildeAccepts(range, ui.version)) {
-      errors.push(`${manifest.name} declares peer ${peer}@${range}, which does not accept ${ui.version}.`);
+      errors.push(
+        `${manifest.name} declares peer ${peer}@${range}, which does not accept ${ui.version}.`,
+      );
+    }
+  }
+}
+
+/* REACT IS ALWAYS THE APP'S (gh#1156). A @godxjp package that listed react or react-dom as a
+ * dependency would install its own copy beside the app's — two React instances, and every hook in
+ * the kit throws "invalid hook call". They are peers, everywhere, and nothing here bundles them. */
+for (const { file, manifest } of [{ file: "package.json", manifest: ui }, ...satellites]) {
+  for (const name of ["react", "react-dom"]) {
+    for (const field of [
+      "dependencies",
+      "optionalDependencies",
+      "bundleDependencies",
+      "bundledDependencies",
+    ]) {
+      const listed = Array.isArray(manifest[field])
+        ? manifest[field].includes(name)
+        : manifest[field]?.[name];
+      if (listed)
+        errors.push(
+          `${manifest.name} (${file}) lists ${name} in ${field}; it must be a peerDependency only.`,
+        );
     }
   }
 }
@@ -93,7 +123,9 @@ const report = {
   mcp: mcp.version,
   godxUiMcp: ui.godxUiMcp ?? null,
   godxUiCompatibility: mcp.godxUiCompatibility ?? null,
-  satellites: Object.fromEntries(satellites.map(({ manifest }) => [manifest.name, manifest.version])),
+  satellites: Object.fromEntries(
+    satellites.map(({ manifest }) => [manifest.name, manifest.version]),
+  ),
   inLockstep: errors.length === 0,
   errors,
 };
@@ -110,8 +142,9 @@ if (process.argv.includes("--json")) {
   for (const e of errors) console.error(`  • ${e}`);
   console.error(
     "\nFix: release both together with `pnpm release --ui <bump> --mcp sync`, or reconcile the " +
-      "version / godxUiMcp / godxUiCompatibility fields so they agree. packages/markdown and " +
-      "packages/editor carry the same version, and their peer ranges are `~<that version>`.",
+      "version / godxUiMcp / godxUiCompatibility fields so they agree. packages/markdown, " +
+      "packages/editor and packages/block-editor carry the same version, their peer ranges are " +
+      "`~<that version>`, and react / react-dom are peers only.",
   );
 }
 

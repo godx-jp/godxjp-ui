@@ -36,6 +36,27 @@ export const markdownSchema: SanitizeSchema = {
     h4: [...(defaultSchema.attributes?.h4 ?? []), "id"],
     h5: [...(defaultSchema.attributes?.h5 ?? []), "id"],
     h6: [...(defaultSchema.attributes?.h6 ?? []), "id"],
+    // Grammar v1 (gh#1156): the renderer's own callout / toggle / column markup. Every value is
+    // pinned — a body cannot mint any other class, kind, role or inline style through these.
+    div: [
+      ...(defaultSchema.attributes?.div ?? []),
+      [
+        "className",
+        "ui-prose-callout",
+        "ui-prose-columns",
+        "ui-prose-column",
+        "ui-prose-directive",
+      ],
+      ["dataKind", "note", "tip", "important", "warning", "caution"],
+      ["role", "note"],
+      ["style", /^--prose-column-grow:\d+(?:\.\d+)?$/],
+    ],
+    p: [...(defaultSchema.attributes?.p ?? []), ["className", "ui-prose-callout-title"]],
+    details: [...(defaultSchema.attributes?.details ?? []), ["className", "ui-prose-toggle"]],
+    summary: [
+      ...(defaultSchema.attributes?.summary ?? []),
+      ["className", "ui-prose-toggle-summary"],
+    ],
   },
 };
 

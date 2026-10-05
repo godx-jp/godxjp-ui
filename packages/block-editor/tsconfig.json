@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@godxjp/markdown": ["../markdown/src/index.ts"],
+      "@godxjp/markdown/codec": ["../markdown/src/codec/index.ts"],
+      "@godxjp/ui/i18n": ["../../src/i18n/index.ts"],
+      "@godxjp/ui/*": ["../../src/components/*/index.ts"],
+      "@/*": ["../../src/*"]
+    }
+  },
+  "include": ["src", "../../src/test/jest-dom.d.ts"]
+}

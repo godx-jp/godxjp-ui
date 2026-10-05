@@ -1519,7 +1519,7 @@
     background: hsl(var(--muted));
     padding: var(--code-block-space-inset);
     color: var(--code-block-foreground, hsl(var(--foreground)));
-    font-family: var(--font-mono);
+    font-family: var(--font-family-mono);
     font-size: var(--code-block-font-size);
     line-height: var(--code-block-line-height);
     white-space: pre-wrap;
@@ -1825,7 +1825,7 @@
   }
 
   .ui-prose :not(pre) > code {
-    font-family: var(--font-mono);
+    font-family: var(--font-family-mono);
     font-size: var(--prose-code-font-size);
     background: hsl(var(--muted));
     padding-inline: var(--prose-code-space-inline);
@@ -1898,6 +1898,240 @@
    * written. */
   .ui-prose :is(th, td) img[width$="%"] {
     inline-size: auto;
+  }
+
+  /* GRAMMAR v1 BLOCKS (gh#1156) — what `@godxjp/markdown` renders for `> [!KIND]`, `:::toggle` and
+   * `::::columns`. A callout is the <Callout> aside: the same rail-and-fill geometry from the same
+   * --callout-* knobs, and the same tone colours as Alert, so a body callout and a component callout
+   * of one tone agree. GitHub's five kinds map onto the kit's tones: note info, tip success,
+   * important primary, warning warning, caution destructive. */
+  .ui-prose .ui-prose-callout {
+    margin-block: var(--callout-space-stack);
+    padding-block: var(--callout-space-inset-block);
+    padding-inline: var(--callout-space-inset-inline);
+    border-inline-start: var(--callout-rail-width) solid hsl(var(--info));
+    border-start-end-radius: var(--callout-radius, var(--alert-radius, var(--card-radius, calc(var(--radius) * var(--radius-ratio)))));
+    border-end-end-radius: var(--callout-radius, var(--alert-radius, var(--card-radius, calc(var(--radius) * var(--radius-ratio)))));
+    background-color: var(--surface-info, hsl(var(--info) / var(--alert-bg-alpha)));
+  }
+
+  .ui-prose .ui-prose-callout[data-kind="tip"] {
+    border-inline-start-color: hsl(var(--success));
+    background-color: var(--surface-success, hsl(var(--success) / var(--alert-bg-alpha)));
+  }
+
+  .ui-prose .ui-prose-callout[data-kind="important"] {
+    border-inline-start-color: hsl(var(--primary));
+    background-color: hsl(var(--primary) / var(--alert-bg-alpha));
+  }
+
+  .ui-prose .ui-prose-callout[data-kind="warning"] {
+    border-inline-start-color: hsl(var(--warning));
+    background-color: var(--surface-warning, hsl(var(--warning) / var(--alert-bg-alpha)));
+  }
+
+  .ui-prose .ui-prose-callout[data-kind="caution"] {
+    border-inline-start-color: hsl(var(--destructive));
+    background-color: var(--surface-destructive, hsl(var(--destructive) / var(--alert-bg-alpha)));
+  }
+
+  .ui-prose .ui-prose-callout-title {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-prose :is(.ui-prose-callout, .ui-prose-column, .ui-prose-toggle) > :first-child {
+    margin-block-start: 0;
+  }
+
+  .ui-prose :is(.ui-prose-callout, .ui-prose-column, .ui-prose-toggle) > :last-child {
+    margin-block-end: 0;
+  }
+
+  .ui-prose .ui-prose-toggle {
+    margin-block: var(--prose-space-block);
+  }
+
+  .ui-prose .ui-prose-toggle-summary {
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-prose .ui-prose-toggle[open] > .ui-prose-toggle-summary {
+    margin-block-end: var(--prose-space-block);
+  }
+
+  /* Each column's share arrives as `--prose-column-grow` (the renderer computes it from the
+   * `width` attributes); `min-inline-size: 0` lets a long word wrap inside its column instead of
+   * widening the row. Below 40rem the row stacks, reading order unchanged. */
+  .ui-prose .ui-prose-columns {
+    display: flex;
+    gap: var(--prose-columns-gap);
+    margin-block: var(--prose-space-block);
+  }
+
+  .ui-prose .ui-prose-column {
+    flex: var(--prose-column-grow, 1) 1 0;
+    min-inline-size: 0;
+  }
+
+  @media (width < 40rem) {
+    .ui-prose .ui-prose-columns {
+      flex-direction: column;
+    }
+  }
+
+  /* BLOCK EDITOR (@godxjp/block-editor, gh#1156). The editing surface IS `.ui-prose`, so a body
+   * looks the way the published page draws it; these rules are only what editing adds: the handle
+   * gutter, the empty-block hint, a selected block, and the atoms the codec keeps verbatim. */
+  .ui-block-editor {
+    position: relative;
+    padding-inline-start: var(--block-editor-gutter-inline-size);
+  }
+
+  .ui-block-editor-content {
+    min-block-size: var(--block-editor-min-height);
+    outline: none;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  /* The hint shows in the empty block holding the caret (Tiptap's Placeholder marks it). */
+  .ui-block-editor-content .is-empty::before {
+    content: attr(data-placeholder);
+    float: inline-start;
+    block-size: 0;
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  .ui-block-editor-handle {
+    position: absolute;
+    inset-inline-start: 0;
+    z-index: 1;
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  /* Out of the way until the editor is being used; always there on a touch screen (no hover). */
+  @media (hover: hover) {
+    .ui-block-editor:not(:hover):not(:focus-within) .ui-block-editor-handle {
+      opacity: 0;
+    }
+  }
+
+  .ui-block-editor-content .ProseMirror-selectednode {
+    outline: var(--stroke-md) solid hsl(var(--ring));
+    outline-offset: var(--stroke-md);
+    border-radius: calc(var(--radius) / var(--radius-ratio));
+  }
+
+  .ui-block-editor-menu {
+    --popover-surface-inline-size: 16rem;
+  }
+
+  .ui-block-editor-menu [cmdk-list] {
+    max-block-size: 20rem;
+  }
+
+  .ui-block-editor-menu-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .ui-block-editor-menu-icon svg,
+  .ui-block-editor-toolbar svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+  }
+
+  .ui-block-editor-menu-text {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+  }
+
+  .ui-block-editor-menu-description {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-xs, var(--font-size-sm));
+  }
+
+  /* The floating format toolbar: the popover SURFACE (same tokens as PopoverContent) around a
+   * kit ToggleGroup and Button. */
+  .ui-block-editor-toolbar {
+    z-index: var(--overlay-z-index);
+    padding: var(--space-1);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--popover-radius, var(--radius));
+    background-color: hsl(var(--popover) / var(--popover-alpha, 100%));
+    color: hsl(var(--popover-foreground));
+    box-shadow: var(--popover-shadow, var(--shadow-md));
+  }
+
+  .ui-block-editor-toolbar-row,
+  .ui-block-editor-toolbar-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .ui-block-editor-wikilink {
+    color: hsl(var(--prose-link-color, var(--text-link, var(--primary))));
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+  }
+
+  .ui-block-editor-embed-inline,
+  .ui-block-editor-raw-inline {
+    font-family: var(--font-family-mono);
+    font-size: var(--prose-code-font-size);
+  }
+
+  .ui-block-editor-embed,
+  .ui-block-editor-raw-block {
+    margin-block: var(--prose-space-block);
+    padding: var(--space-2) var(--space-3);
+    border: var(--stroke-hairline) dashed hsl(var(--border));
+    border-radius: calc(var(--radius) / var(--radius-ratio));
+  }
+
+  .ui-block-editor-raw-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .ui-block-editor-raw-block-source {
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: var(--font-family-mono);
+    font-size: var(--prose-code-font-size);
+  }
+
+  .ui-block-editor-upload {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    vertical-align: middle;
+  }
+
+  .ui-block-editor-upload svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+  }
+
+  .ui-block-editor-upload-spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ui-block-editor-upload-spinner {
+      animation: none;
+    }
+  }
+
+  .ui-block-editor-status {
+    margin-block-start: var(--space-2);
   }
 
   /* `imagePreview`: a body image that opens the kit preview is a control, so it says so. */

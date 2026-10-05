@@ -1591,5 +1591,24 @@
       "description": "Thanh công cụ vẫn nhận focus nhưng thao tác bị vô hiệu.",
       "label": "Nội dung (chỉ xem)"
     }
+  },
+  "blockEditorDocs": {
+    "subtitle": "@godxjp/block-editor · menu khối / · tay nắm kéo · thanh định dạng · lưu Markdown",
+    "edit": {
+      "title": "Sửa trang",
+      "description": "Gõ / để chèn khối, chọn chữ để định dạng, kéo ⋮⋮ để di chuyển khối (bàn phím: Alt+Shift+↑↓).",
+      "label": "Nội dung",
+      "save": "Lưu"
+    },
+    "markdown": {
+      "title": "Nội dung được lưu",
+      "description": "Markdown chuẩn hoá — đúng kết quả normalize() của @godxjp/markdown/codec.",
+      "label": "Markdown"
+    },
+    "readOnly": {
+      "title": "Chỉ xem",
+      "description": "Không có tay nắm, không có menu; nội dung hiển thị bằng Prose.",
+      "label": "Nội dung (chỉ xem)"
+    }
   }
 }

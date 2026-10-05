@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.27.0] - 2026-10-05
+
+### ✨ @godxjp/block-editor phase 1, the Markdown codec, renderer v4 (gh#1156)
+
+Owner-approved (Tiptap v3, MIT parts only), built for the pages app's Notion / note.com editor.
+
+- **`@godxjp/markdown/codec`** (new subpath) — pure, DOM-free (runs in Workers): `CODEC_ID`
+  `kit-md@1`, `parse` (Markdown → Tiptap-shaped JSON), `serialize` (canonical Markdown),
+  `normalize`. Idempotent and render-lossless on the fixture corpus and on all 247 of the pages
+  app's real bodies.
+- **Grammar v1**, shared by the codec, the renderer and the editor: GitHub-alert callouts
+  (`> [!NOTE]` … `[!CAUTION]`, optional title), `:::toggle[summary]`, `::::columns` /
+  `:::column{width=N}` (2–4, no nesting), CJK-friendly emphasis (`の**「強調」**です`), wikilinks /
+  embeds / `asset:` images verbatim, raw blocks for anything unmodelled. Spec in the
+  `@godxjp/markdown` README.
+- **Renderer** `RENDERER_VERSION` 4 draws callouts, toggles and columns; new `calloutTitles` prop.
+  Prose styles them (Callout geometry + Alert tones; columns stack below 40rem).
+- **`@godxjp/block-editor`** (new package, versioned with the kit): `/` block menu, ⋮⋮ handle (drag,
+  turn into, duplicate, move, delete; Alt+Shift+↑↓, Mod+/), floating format toolbar, `[[`
+  wikilink suggestions, paste / drop uploads with progress and retry, raw-Markdown blocks, IME-safe,
+  ja / en / vi. Its schema round-trips every fixture exactly: `serialize(getJSON()) === normalize()`.
+- Release lockstep now also fails if any `@godxjp/*` manifest lists react / react-dom outside
+  `peerDependencies`.
+
 ## [31.26.2] - 2026-10-05
 
 ### 🐛 A table-cell image with a percentage `width` keeps its floor at phone width (gh#1154)

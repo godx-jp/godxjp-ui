@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * PUBLISH THE PACKAGES BESIDE THE KIT (gh#1108 / gh#1109): @godxjp/markdown, then @godxjp/editor.
+ * PUBLISH THE PACKAGES BESIDE THE KIT (gh#1108 / gh#1109 / gh#1156): @godxjp/markdown, then
+ * @godxjp/editor and @godxjp/block-editor.
  *
  * They are versioned with @godxjp/ui (check-release-lockstep.mjs) and published AFTER it, by the
  * same tag, from the same commit. Kept out of scripts/release-core.mjs on purpose: that script's
@@ -21,7 +22,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = process.cwd();
-const SATELLITES = ["packages/markdown", "packages/editor"];
+const SATELLITES = ["packages/markdown", "packages/editor", "packages/block-editor"];
 const args = process.argv.slice(2);
 const tag = args[args.indexOf("--tag") + 1];
 const dryRun = args.includes("--dry-run");

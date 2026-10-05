@@ -1598,5 +1598,24 @@
       "description": "The toolbar stays focusable, but its actions do nothing.",
       "label": "Body (view only)"
     }
+  },
+  "blockEditorDocs": {
+    "subtitle": "@godxjp/block-editor · / block menu · drag handle · format toolbar · saves Markdown",
+    "edit": {
+      "title": "Edit a page",
+      "description": "Type / for blocks, select text for formatting, drag ⋮⋮ to move a block (Alt+Shift+↑↓ from the keyboard).",
+      "label": "Body",
+      "save": "Save"
+    },
+    "markdown": {
+      "title": "What it saves",
+      "description": "The canonical Markdown — exactly what normalize() from @godxjp/markdown/codec returns.",
+      "label": "Markdown"
+    },
+    "readOnly": {
+      "title": "Read-only",
+      "description": "No handle, no menus; the body renders as Prose.",
+      "label": "Body (view only)"
+    }
   }
 }
