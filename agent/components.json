@@ -862,6 +862,11 @@
         "description": "Change / reposition / remove controls: over the bottom edge on a wide screen, BELOW the image on a phone (never on the focal area).",
         "name": "actions",
         "type": "ReactNode"
+      },
+      {
+        "description": "Id on the cover frame.",
+        "name": "id",
+        "type": "string"
       }
     ],
     "related": [
@@ -14502,6 +14507,21 @@
         "description": "Replace the default trigger (e.g. the page icon drawn large).",
         "name": "trigger",
         "type": "ReactNode"
+      },
+      {
+        "description": "Disables the trigger.",
+        "name": "disabled",
+        "type": "boolean"
+      },
+      {
+        "description": "Accessible name for the trigger; defaults to the localized \"Choose an icon\".",
+        "name": "aria-label",
+        "type": "string"
+      },
+      {
+        "description": "Id on the trigger button.",
+        "name": "id",
+        "type": "string"
       }
     ],
     "related": [
