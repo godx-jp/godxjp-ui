@@ -1756,17 +1756,24 @@
     margin-block-start: var(--prose-space-block);
   }
 
-  .ui-prose :is(h1, h2, h3, h4) {
+  /* Long-form scale: every level sits at or above body size. A host that keeps the page title as
+   * the screen's one h1 shifts body headings down (`#` → h2), so h3–h6 carry real section titles.
+   * h1–h3 step DOWN in size; h4–h6 sit at body size and the WEIGHT carries them, at bold, because
+   * this system's semibold is 500 and 500 beside 400 body does not read as a heading. h6 is muted
+   * to tell it from h5. The --heading-h* knobs still win where a service sets them; the defaults
+   * here differ from the Heading component's (h3 = base, h4 = xs), which sizes UI chrome, not
+   * documents. */
+  .ui-prose :is(h1, h2, h3, h4, h5, h6) {
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-tight);
     text-wrap: balance;
   }
 
-  .ui-prose > :is(h1, h2, h3, h4) + * {
+  .ui-prose > :is(h1, h2, h3, h4, h5, h6) + * {
     margin-block-start: var(--prose-space-block);
   }
 
-  .ui-prose > * + :is(h1, h2, h3, h4) {
+  .ui-prose > * + :is(h1, h2, h3, h4, h5, h6) {
     margin-block-start: var(--prose-heading-space-block-start);
   }
 
@@ -1788,14 +1795,23 @@
   }
 
   .ui-prose h3 {
-    font-size: var(--heading-h3, var(--font-size-base));
+    font-size: var(--heading-h3, calc(var(--prose-font-size) * var(--font-size-ratio)));
   }
 
   .ui-prose h4 {
-    font-size: var(
-      --heading-h4,
-      var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))
-    );
+    font-size: var(--heading-h4, var(--prose-font-size));
+  }
+
+  .ui-prose :is(h5, h6) {
+    font-size: var(--prose-font-size);
+  }
+
+  .ui-prose :is(h4, h5, h6) {
+    font-weight: var(--font-weight-bold);
+  }
+
+  .ui-prose h6 {
+    color: hsl(var(--muted-foreground));
   }
 
   .ui-prose :is(ul, ol) {
@@ -1910,8 +1926,14 @@
     padding-block: var(--callout-space-inset-block);
     padding-inline: var(--callout-space-inset-inline);
     border-inline-start: var(--callout-rail-width) solid hsl(var(--info));
-    border-start-end-radius: var(--callout-radius, var(--alert-radius, var(--card-radius, calc(var(--radius) * var(--radius-ratio)))));
-    border-end-end-radius: var(--callout-radius, var(--alert-radius, var(--card-radius, calc(var(--radius) * var(--radius-ratio)))));
+    border-start-end-radius: var(
+      --callout-radius,
+      var(--alert-radius, var(--card-radius, calc(var(--radius) * var(--radius-ratio))))
+    );
+    border-end-end-radius: var(
+      --callout-radius,
+      var(--alert-radius, var(--card-radius, calc(var(--radius) * var(--radius-ratio))))
+    );
     background-color: var(--surface-info, hsl(var(--info) / var(--alert-bg-alpha)));
   }
 
