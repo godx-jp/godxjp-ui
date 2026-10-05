@@ -249,5 +249,11 @@ export function serialize(doc: Doc | DocNode): string {
   // An empty paragraph serializes to nothing; drop the blank lines it would leave.
   const markdown = toMarkdown(root, toMarkdownOptions());
   if (markdown.trim() === "") return "";
-  return decodeAttentionReferences(markdown.replace(/\n{3,}/g, "\n\n"));
+  // Empty paragraphs (an editor keeps one at the end, and after a deleted block) serialize to
+  // nothing; neither they nor the blank lines around them belong in the stored body.
+  const tidy = markdown
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/^\n+/, "")
+    .replace(/\n+$/, "\n");
+  return decodeAttentionReferences(tidy);
 }

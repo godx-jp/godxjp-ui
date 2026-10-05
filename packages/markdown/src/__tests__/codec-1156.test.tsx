@@ -174,4 +174,21 @@ describe("codec (gh#1156)", () => {
       "## 見出し\n\nの**「強調」**です [[Page|x]]\n\n> [!NOTE]\n>\n> body\n",
     );
   });
+
+  /* From the pages app's run over 247 real document bodies. */
+  it("keeps a table's header width: excess cells GFM hides stay hidden", () => {
+    expect(normalize("| a | b |\n|---|---|\n| 1 | 2 | 3 |\n")).toBe(
+      "| a | b |\n| - | - |\n| 1 | 2 |\n",
+    );
+    // A pipe inside inline code splits the cell under GFM too — and still adds no column.
+    const piped = "| `x|y` | 2 |\n| --- | - |\n| a | b |";
+    expect(html(normalize(piped))).toBe(html(piped));
+    expect(normalize(normalize(piped))).toBe(normalize(piped));
+  });
+
+  it("pads table cells by display width, so CJK columns line up", () => {
+    expect(normalize("| 列 | b |\n|---|---|\n| 優先度 | 2 |")).toBe(
+      "| 列     | b |\n| ------ | - |\n| 優先度 | 2 |\n",
+    );
+  });
 });

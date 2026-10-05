@@ -215,13 +215,16 @@ function block(node: RootContent, depth: { columns: boolean }): DocNode[] {
         ? [{ type: "orderedList", attrs: { start: node.start ?? 1, tight }, content: items }]
         : [{ type: "bulletList", attrs: { tight }, content: items }];
     }
-    case "table":
+    case "table": {
+      // GFM ignores cells beyond the header's count; keeping them would turn hidden text into a
+      // visible column on the next save (a render change), so the header fixes the width.
+      const width = node.children[0]?.children.length ?? 0;
       return [
         {
           type: "table",
           content: node.children.map((row, r) => ({
             type: "tableRow",
-            content: row.children.map((cell, c) => {
+            content: row.children.slice(0, width).map((cell, c) => {
               const content = inline(cell.children);
               return {
                 type: r === 0 ? "tableHeader" : "tableCell",
@@ -232,6 +235,7 @@ function block(node: RootContent, depth: { columns: boolean }): DocNode[] {
           })),
         },
       ];
+    }
     case "containerDirective":
       return [directiveBlock(node, depth)];
     default:
