@@ -779,9 +779,12 @@ describe("PageContainer", () => {
       );
       expect(presetRule).not.toMatch(/gap:/);
       // Exactly one band cancels the gap. The header, the body and the footer keep the container's
-      // rhythm — a page of three document blocks is what that rhythm is FOR.
+      // rhythm — a page of three document blocks is what that rhythm is FOR. Only negations of a GAP
+      // token count: the page icon riding up over a banner cover (gh#1160) negates
+      // --page-icon-cover-overlap, which is an overlap into the image, not a cancelled gap.
       const rules = layoutCss.replace(/\/\*[\s\S]*?\*\//g, "");
-      const cancelling = [...rules.matchAll(/margin-block[^;]*calc\(-1 \*/g)].map((match) => {
+      const gapNegation = /margin-block[^;]*calc\(-1 \* var\(\s*--(?:page-band-gap|space-)/g;
+      const cancelling = [...rules.matchAll(gapNegation)].map((match) => {
         const open = rules.lastIndexOf("{", match.index);
         return rules.slice(rules.lastIndexOf("}", open) + 1, open).trim();
       });

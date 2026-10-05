@@ -1,10 +1,11 @@
 {
-  "total": 46,
-  "components": 8,
+  "total": 52,
+  "components": 9,
   "files": {
     "src/components/data-entry/cascader.tsx": 6,
     "src/components/data-entry/chat-suggestion.tsx": 7,
     "src/components/data-entry/date-picker.tsx": 5,
+    "src/components/data-entry/emoji-picker.tsx": 6,
     "src/components/data-entry/search-select.tsx": 7,
     "src/components/data-entry/time-picker.tsx": 5,
     "src/components/data-entry/tree-select.tsx": 7,
