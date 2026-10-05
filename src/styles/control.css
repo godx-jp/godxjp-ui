@@ -1327,6 +1327,21 @@
     min-width: 0;
   }
 
+  /* An item's decorative icon (gh#1159): the menu row's icon size, never shrunk by a long label. */
+  .ui-command-palette-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--menu-icon-size);
+    line-height: 1;
+  }
+
+  .ui-command-palette-icon svg {
+    inline-size: var(--menu-icon-size);
+    block-size: var(--menu-icon-size);
+  }
+
   .ui-command-palette-label {
     min-width: 0;
   }

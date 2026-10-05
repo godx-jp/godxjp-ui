@@ -61,7 +61,7 @@ export type PageContainerMeasureProp = "default" | "narrow" | "medium";
  * What the page's top row IS — the question that decides its type step, not how big you want it.
  * `document` (default) — the row is the page's TITLE: a record, a form, a collection, a report.
  */
-export type PageContainerHeaderScaleProp = "document" | "chrome";
+export type PageContainerHeaderScaleProp = "document" | "chrome" | "display";
 
 /**
  * @see PageContainer — the header's trailing slot, one node or two named sub-slots.
@@ -138,9 +138,22 @@ export type PageContainerProp = {
   /**
    * Whether the page's top row is a DOCUMENT TITLE or the surface's own CHROME. Pass `chrome` when
    * the row names the thing the user is already inside rather than announcing a document: a chat
-   * channel, a mail thread, an IDE tab.
+   * channel, a mail thread, an IDE tab. Pass `display` for an ARTICLE whose title is the page's
+   * headline (a Notion / note.com page): a larger, token-owned step that scales from phone to
+   * desktop, a CJK-friendly line height, and balanced wrapping (gh#1160).
    */
   headerScale?: PageContainerHeaderScaleProp;
+  /**
+   * The page's icon — an emoji or a glyph — drawn large above the title, overlapping a banner
+   * `cover`'s bottom edge (gh#1160). Decorative by default reading: give it `aria-hidden` unless
+   * it is itself a control (a "change icon" button).
+   */
+  icon?: React.ReactNode;
+  /**
+   * A `PageCover`. The banner variant spans the page edge to edge above the header; the
+   * `eyecatch` variant sits inside the header's reading column, above the title (gh#1160).
+   */
+  cover?: React.ReactNode;
   /**
    * Bounded page measure shared by the header and the body. `narrow` (624px surface) / `medium`
    * (720px surface) cap BOTH bands to one token-owned measure (`--page-measure-{narrow,medium}`),
@@ -1028,6 +1041,42 @@ export type ErrorSurfaceMaintenanceProp = {
  * All product COPY stays consumer-owned (`title` / `description` / `action` come from the app's own
  * `t()`); the surface owns only its own metadata labels, which it localizes itself.
  */
+/** @see PageCover — banner across the page top, or an article's eyecatch in the reading column. */
+export type PageCoverVariantProp = "banner" | "eyecatch";
+/** @see PageCover — the banner's token-owned height step (phone → desktop). */
+export type PageCoverHeightProp = "md" | "lg";
+
+/**
+ * @see PageCover — a page's cover image (gh#1160): Notion's banner above the title, or note.com's
+ * eyecatch in the reading column. The focal point is a vertical position, and the cover can be
+ * repositioned by drag OR keyboard: while `repositioning`, the image is a WAI-ARIA slider.
+ */
+export type PageCoverProp = {
+  /** The image URL. */
+  src: string;
+  /** Alternative text; `""` for a purely decorative cover. */
+  alt: string;
+  /** Vertical focal point, 0 (top) – 100 (bottom): the image's `object-position` y. Default 50. */
+  positionY?: number;
+  /** Called while repositioning with the new focal point (drag, arrows, Home / End). */
+  onPositionChange?: (positionY: number) => void;
+  /** Reposition mode: the image becomes a vertical slider (drag + keyboard). Controlled. */
+  repositioning?: boolean;
+  /** Reposition mode ended from inside the cover (Enter / Escape). */
+  onRepositioningChange?: (repositioning: boolean) => void;
+  /** `banner` (default) spans the page above the header; `eyecatch` sits in the reading column. */
+  variant?: PageCoverVariantProp;
+  /** Banner height step, token-owned for phone and desktop. Default `md`. */
+  height?: PageCoverHeightProp;
+  /**
+   * Cover actions (change / reposition / remove). Over the cover's bottom edge on a wide screen,
+   * BELOW the image on a narrow one, so they never sit on the focal area.
+   */
+  actions?: React.ReactNode;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
 export type ErrorSurfaceProp = {
   /** Where the surface lives — `application` = AppShell body (400/403/404), `system` = own page (500/503). */
   mode: ErrorSurfaceModeProp;

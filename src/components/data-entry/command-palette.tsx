@@ -19,6 +19,11 @@ import { isImeComposing } from "../../lib/ime";
 export type CommandPaletteItem = {
   id: string;
   label: React.ReactNode;
+  /**
+   * Decorative glyph before the label — a folder, a file, an emoji (gh#1159). Sized like a menu
+   * row's icon (`--menu-icon-size`) and hidden from assistive tech: the label is the name.
+   */
+  icon?: React.ReactNode;
   searchValue?: string;
   meta?: React.ReactNode;
   disabled?: boolean;
@@ -358,6 +363,11 @@ export function CommandPalette({
                           onSelect(item, modifiers);
                         }}
                       >
+                        {item.icon != null ? (
+                          <span className="ui-command-palette-icon" aria-hidden="true">
+                            {item.icon}
+                          </span>
+                        ) : null}
                         <span className="ui-command-palette-label">{item.label}</span>
                         {item.meta != null ? (
                           <span className="ui-command-palette-meta">{item.meta}</span>

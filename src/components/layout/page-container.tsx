@@ -117,6 +117,8 @@ function PageContainerRoot({
   preset = "default",
   headerLayout = "stack",
   headerScale = "document",
+  icon,
+  cover,
   measure = "default",
   stickyFooter = false,
   footerReveal = "always",
@@ -130,6 +132,14 @@ function PageContainerRoot({
   const { start: extraStart, end: extraEnd } = resolvePageExtra(extra);
   // Spread on EVERY `<h1>` branch below, so the ref follows the heading through loading → loaded.
   const titleFocus = titleRef === undefined ? undefined : { ref: titleRef, tabIndex: -1 };
+  // A banner cover spans the page edge to edge above the header; an eyecatch sits in the header's
+  // reading column. Read off the PageCover element itself, so one `cover` slot takes either.
+  const coverVariant =
+    cover == null || cover === false
+      ? undefined
+      : isValidElement<{ variant?: string }>(cover) && cover.props.variant === "eyecatch"
+        ? "eyecatch"
+        : "banner";
 
   // `data-measure` caps the HEADER and the BODY to one shared token-owned measure so a header
   // `default` matches no rule in the
@@ -141,7 +151,8 @@ function PageContainerRoot({
     <div
       data-preset={preset}
       data-measure={measure}
-      data-header-scale={headerScale === "chrome" ? "chrome" : undefined}
+      data-header-scale={headerScale === "document" ? undefined : headerScale}
+      data-cover={coverVariant}
       data-revealed={revealed ? "true" : undefined}
       className={cn(
         "ui-page-container",
@@ -155,7 +166,7 @@ function PageContainerRoot({
         className,
       )}
     >
-      {}
+      {coverVariant === "banner" ? <div className="ui-page-cover-slot">{cover}</div> : null}
       <header
         ref={headerRef}
         className="ui-page-header"
@@ -211,8 +222,12 @@ function PageContainerRoot({
             </ol>
           </nav>
         )}
+        {coverVariant === "eyecatch" ? <div className="ui-page-cover-slot">{cover}</div> : null}
         <div className="ui-page-header-row">
           <div className="ui-page-header-heading">
+            {icon != null && icon !== false ? (
+              <div className="ui-page-header-icon">{icon}</div>
+            ) : null}
             {}
             {/* It BECOMES the placeholder by wearing the library's own `ui-skeleton-block` skin rather than wrapping a `<Skeleton>` element: `<h1>` takes phrasing content, so nesting Skeleton's `<div>` inside it is invalid HTML. The visible name is sr-only text, because a heading rendered as a bare decorative box is an EMPTY heading (axe `empty-heading`, WCAG 1.3.1). */}
             {headerLoading ? (

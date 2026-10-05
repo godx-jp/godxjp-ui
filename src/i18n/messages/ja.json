@@ -294,6 +294,11 @@
     },
     "draggablePanel": {
       "moveLabel": "パネルを移動。矢印キーで移動、Shift キーを押しながらで大きく移動します。"
+    },
+    "pageCover": {
+      "position": "カバー画像の位置",
+      "hint": "画像をドラッグするか矢印キーで位置を調整",
+      "valueText": "上から {value}%"
     }
   },
   "dataDisplay": {

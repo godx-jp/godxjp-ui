@@ -875,7 +875,19 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "headerScale",
         local: true,
         reason:
-          "What the page's top row IS — a document title or the surface's own chrome (document | chrome) — which selects the title's type step via --page-title-font-size-chrome AND opens the page flush with the frame via --page-pad-block-start-chrome (chrome sits on the edge; a document title gets the page's top margin). A fourth orthogonal axis: PageContainerVariantProp owns chrome WEIGHT (ghost drops the divider and header pad), headerLayout owns the header ARRANGEMENT, measure owns the inline cap; none of them can say that the h1 is a channel name rather than a headline.",
+          "What the page's top row IS — a document title, the surface's own chrome, or an article headline (document | chrome | display; display = gh#1160) — which selects the title's type step via --page-title-font-size-chrome AND opens the page flush with the frame via --page-pad-block-start-chrome (chrome sits on the edge; a document title gets the page's top margin). A fourth orthogonal axis: PageContainerVariantProp owns chrome WEIGHT (ghost drops the divider and header pad), headerLayout owns the header ARRANGEMENT, measure owns the inline cap; none of them can say that the h1 is a channel name rather than a headline.",
+      },
+      {
+        field: "icon",
+        local: true,
+        reason:
+          "The PAGE's icon (an emoji or glyph) drawn large above the h1 and over a banner cover's edge — a page identity slot, not the small IconProp glyph a control carries (gh#1160).",
+      },
+      {
+        field: "cover",
+        local: true,
+        reason:
+          "Slot for a PageCover; the container reads its variant to place it full-bleed above the header (banner) or in the reading column (eyecatch) (gh#1160).",
       },
       {
         field: "measure",
@@ -1364,6 +1376,60 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason:
           "Server-sent 0–100 completion of the maintenance window; deriving it from the client clock would break hydration.",
+      },
+    ],
+  },
+  PageCoverVariantProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  PageCoverHeightProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  PageCoverProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "IdProp",
+      "ClassNameProp",
+      { field: "src", local: true, reason: "The native img src attribute." },
+      { field: "alt", local: true, reason: "The native img alt attribute." },
+      {
+        field: "positionY",
+        local: true,
+        reason:
+          "The cover's vertical FOCAL POINT, 0–100, applied as object-position y — a geometric value of this image, not a ValueProp a form submits (gh#1160).",
+      },
+      {
+        field: "onPositionChange",
+        local: true,
+        reason:
+          "Paired change handler of positionY, named after the value it reports (drag / slider keys).",
+      },
+      {
+        field: "repositioning",
+        local: true,
+        reason:
+          "Controlled MODE flag: while true the image is a vertical WAI-ARIA slider. Not OpenProp — nothing opens; the cover becomes a control.",
+      },
+      {
+        field: "onRepositioningChange",
+        local: true,
+        reason:
+          "Paired change handler of repositioning, called when Enter / Escape ends the mode from inside.",
+      },
+      {
+        field: "variant",
+        local: true,
+        reason:
+          "PageCoverVariantProp (banner | eyecatch) — WHERE the cover sits and its shape, not a tone or a visual style variant.",
+      },
+      {
+        field: "height",
+        local: true,
+        reason:
+          "PageCoverHeightProp (md | lg) — the banner's token-owned viewport-scaled height step; SizeProp means control density, not this.",
+      },
+      {
+        field: "actions",
+        local: true,
+        reason:
+          "Slot for the host's cover controls (change / reposition / remove), laid out off the focal area — a ReactNode slot, not the ActionsProp item list.",
       },
     ],
   },

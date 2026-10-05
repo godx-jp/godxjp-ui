@@ -295,6 +295,11 @@
     },
     "draggablePanel": {
       "moveLabel": "Di chuyển bảng. Dùng phím mũi tên để dời, giữ Shift để bước dài hơn."
+    },
+    "pageCover": {
+      "position": "Vị trí ảnh bìa",
+      "hint": "Kéo ảnh hoặc dùng phím mũi tên để chỉnh vị trí",
+      "valueText": "{value}% tính từ trên"
     }
   },
   "dataDisplay": {

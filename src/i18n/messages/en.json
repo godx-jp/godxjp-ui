@@ -301,6 +301,11 @@
     },
     "draggablePanel": {
       "moveLabel": "Move panel. Use the arrow keys to move it, or hold Shift for larger steps."
+    },
+    "pageCover": {
+      "position": "Cover position",
+      "hint": "Drag the image, or use the arrow keys, to reposition it",
+      "valueText": "{value}% from the top"
     }
   },
   "dataDisplay": {
