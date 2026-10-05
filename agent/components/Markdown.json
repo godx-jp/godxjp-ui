@@ -53,6 +53,16 @@
       "type": "number | false"
     },
     {
+      "description": "Default 'same-tab'. Renderer policy for links to another origin (an absolute http(s) URL whose origin differs from `origin`). 'new-tab' adds target=\"_blank\" rel=\"noopener noreferrer\"; relative links, #anchors, resolved wikilinks and mailto: stay in the tab. Markdown cannot store target, so this replaces it.",
+      "name": "externalLinks",
+      "type": "'same-tab' | 'new-tab'"
+    },
+    {
+      "description": "The page origin externalLinks compares against; defaults to location.origin. Pass it for server rendering, or every absolute link counts as external there.",
+      "name": "origin",
+      "type": "string"
+    },
+    {
       "description": "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@1, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
       "name": "calloutTitles",
       "type": "Partial<Record<'note' | 'tip' | 'important' | 'warning' | 'caution', string>>"
@@ -73,6 +83,7 @@
   "storyPath": "data-display/markdown.tsx",
   "tagline": "The one Markdown renderer for GoDX apps (sibling package `@godxjp/markdown`, versioned with the kit): GFM + GitHub heading anchors, one sanitiser schema (no raw HTML; http/https/mailto/relative URLs only), and ```mermaid drawn only after its SVG passes a fail-closed gate (gh#1108). Wrap it in `Prose`.",
   "usage": [
+    "Table of contents: outline(markdown) from @godxjp/markdown/codec returns { depth, text, id }[] with exactly the ids <Markdown> writes — feed it to the kit Anchor. YAML front matter is kept verbatim and never rendered; frontmatterOf(markdown) returns it (gh#1163).",
     "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
     "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
     "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate."

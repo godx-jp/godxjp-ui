@@ -86,6 +86,12 @@
       "type": "boolean"
     },
     {
+      "defaultValue": "false",
+      "description": "Expand a parent by clicking its ROW, not only its switcher (antd DirectoryTree): \"click\" selects AND toggles — a page tree where choosing a folder opens it; \"doubleClick\" toggles on a double click (gh#1162). Keyboard keeps the APG map.",
+      "name": "expandAction",
+      "type": "false | \"click\" | \"doubleClick\""
+    },
+    {
       "description": "Lazy children (antd `loadData`). Called when a branch with no `children` and `isLeaf !== true` is expanded, and never again once its promise RESOLVES; a Skeleton row and `aria-busy` cover the wait. Push the fetched children into `treeData`. A REJECTED promise is not a load (rc-tree, gh#1041): the branch folds back shut (uncontrolled expansion) and the next expand asks again, up to 10 attempts.",
       "name": "loadData",
       "type": "(node: TreeNodeProp) => void | Promise<void>"

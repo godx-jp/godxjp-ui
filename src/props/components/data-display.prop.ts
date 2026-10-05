@@ -872,6 +872,12 @@ export type TreeProp = {
   /** Start with every branch open (antd `defaultExpandAll`). Seeded once, never re-applied. */
   defaultExpandAll?: boolean;
   /**
+   * Expand a parent by clicking its ROW, not only its switcher (antd `DirectoryTree expandAction`,
+   * gh#1162): `"click"` selects AND toggles, `"doubleClick"` toggles on a double click. Default
+   * `false` — the switcher alone expands. The keyboard keeps the APG map (→ / ← expand).
+   */
+  expandAction?: false | "click" | "doubleClick";
+  /**
    * Lazy children (antd `loadData`). Called when a branch with no `children` and
    * `isLeaf !== true` is expanded, and never again once its promise RESOLVES; push the fetched
    * children into `treeData`. A REJECTED promise is not a load: the branch folds back shut

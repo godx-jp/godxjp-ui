@@ -98,6 +98,8 @@ export {
 } from "./command";
 export type { CommandProps } from "./command";
 export { CommandPalette } from "./command-palette";
+export { EmojiPicker } from "./emoji-picker";
+export type { EmojiPickerProp, EmojiPickerProps } from "./emoji-picker";
 export type {
   CommandPaletteGroup,
   CommandPaletteItem,

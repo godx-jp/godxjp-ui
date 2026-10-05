@@ -261,6 +261,27 @@
    * that never passes `headerScale` never reads this token (rule #44). */
   --page-title-font-size-chrome: var(--heading-h3, var(--font-size-base));
 
+  /* PageContainer `headerScale="display"` (gh#1160) — an ARTICLE's headline (a Notion / note.com
+   * page). The 4xl display step, which already scales with the viewport through
+   * `--font-size-display`'s clamp (≈25px on a phone → 42px wide), so one knob covers phone and
+   * desktop and the compact step below does not apply. CJK titles need more leading than Latin
+   * ones at this size: 1.4, not the tight 1.25 a short Latin headline gets. */
+  --page-title-font-size-display: var(
+    --font-size-4xl,
+    calc(var(--font-size-display) / var(--font-size-display-ratio))
+  );
+  --page-title-line-height-display: 1.4;
+  /* The page icon above the title (gh#1160): emoji or glyph, and how far it rides up over a
+   * banner cover's bottom edge. */
+  --page-icon-size: var(--icon-size-4xl);
+  --page-icon-cover-overlap: calc(var(--page-icon-size) * 0.6);
+  /* PageCover (gh#1160). A banner's height scales with the viewport between a phone floor and a
+   * desktop ceiling — one knob per step, no media query; an eyecatch keeps note.com's ~1.91:1. */
+  --page-cover-block-size-md: clamp(8rem, 24vw, 15rem);
+  --page-cover-block-size-lg: clamp(10rem, 32vw, 20rem);
+  --page-cover-eyecatch-aspect-ratio: 1.91;
+  --page-cover-radius: initial; /* default = var(--card-radius) at the call site (gh#888) */
+
   /* The SUBTITLE step of the same fact. Measured against the reference chat screen, the chrome
    * title and the chrome subtitle were rendering at the SAME step (both --font-size-base), which
    * is not a hierarchy — a channel name and the channel's purpose line read as one undifferentiated

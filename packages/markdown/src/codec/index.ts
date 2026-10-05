@@ -2,6 +2,8 @@ import { parse } from "./parse";
 import { serialize } from "./serialize";
 
 export { parse } from "./parse";
+export { outline, frontmatterOf } from "./outline";
+export type { OutlineEntry } from "./outline";
 export { serialize } from "./serialize";
 export type { Doc, DocNode, Mark, CalloutKind } from "./model";
 export { CALLOUT_KINDS, COLUMNS_MAX, COLUMNS_MIN } from "./model";

@@ -2543,3 +2543,31 @@ export type AttachmentsRefProp = {
   upload: (file: File) => void;
   select: (options?: { accept?: string; multiple?: boolean }) => void;
 };
+
+/**
+ * @see EmojiPicker — a page icon / reaction picker (gh#1164): search by ja / en / vi keywords
+ * (emojibase-data, loaded for the active locale on first open), categories, per-user recents, a
+ * WAI-ARIA grid, and "remove icon". No skin tones.
+ */
+export type EmojiPickerProp = {
+  /** The chosen emoji (a Unicode string), or null for none. Controlled with `onValueChange`. */
+  value?: ValueProp<string | null>;
+  defaultValue?: DefaultValueProp<string | null>;
+  /** Called with the picked emoji, or null when "remove icon" is chosen. */
+  onValueChange?: OnValueChangeProp<string | null>;
+  open?: OpenProp;
+  defaultOpen?: DefaultOpenProp;
+  onOpenChange?: OnOpenChangeProp;
+  /** Offer "remove icon" while a value is set. Default true. */
+  removable?: boolean;
+  /** localStorage key for the per-user recents. Default `godxjp-ui:emoji-recents`. */
+  recentsKey?: string;
+  size?: SizeProp;
+  disabled?: DisabledProp;
+  /** Replace the default trigger button (it must accept a ref and onClick). */
+  trigger?: React.ReactNode;
+  "aria-label"?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+

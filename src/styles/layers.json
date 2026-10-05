@@ -217,10 +217,14 @@
     },
     "BlockEditor": {
       "layers": [
+        "layout.css",
         "control.css",
         "toggle.css",
         "text-layout.css",
         "dialog-layout.css",
+        "alert-layout.css",
+        "data-display-layout.css",
+        "form-layout.css",
         "navigation-layout.css"
       ]
     },
@@ -467,6 +471,13 @@
       "layers": [
         "dialog-layout.css",
         "navigation-layout.css"
+      ]
+    },
+    "EmojiPicker": {
+      "layers": [
+        "control.css",
+        "text-layout.css",
+        "dialog-layout.css"
       ]
     },
     "EmptyState": {
@@ -734,6 +745,11 @@
       "layers": [
         "layout.css",
         "dialog-layout.css"
+      ]
+    },
+    "PageCover": {
+      "layers": [
+        "layout.css"
       ]
     },
     "Pagination": {

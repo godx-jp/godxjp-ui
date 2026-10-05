@@ -43,6 +43,8 @@ const CASES = [
   "[![img](https://example.com/a.png)](https://example.com/)",
   "![[B#見出し]]\n\n![[img.png|300]]",
   "**a\\\nb**",
+  // YAML front matter, the page's properties (gh#1163).
+  "---\ntitle: 見積\ntags: [spec]\n---\n\n# 本文",
   "",
 ];
 

@@ -215,6 +215,8 @@ function block(node: DocNode): RootContent[] {
       return [{ type: "html", value: `![[${String(attrs.target)}]]` }];
     case "rawBlock":
       return [{ type: "html", value: String(attrs.source) }];
+    case "frontmatter":
+      return [{ type: "yaml", value: String(attrs.source) } as RootContent];
     default:
       return [];
   }

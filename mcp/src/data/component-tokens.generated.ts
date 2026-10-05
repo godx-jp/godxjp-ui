@@ -2464,6 +2464,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "THE SAME AMBER, AS A TRIPLET — and it has to be a triplet, not a colour. The focus mark is composed as `hsl(var(--focus-outline-color) / var(--focus-ring-opacity))`, so a token that already resolves to `hsl(...)` nests one `hsl()` inside another: the declaration is then invalid at computed-value time and the WHOLE `outline` shorthand falls back to its initial value. Measured in Chromium on a focused `status=\"warning\"` Textarea before this line existed: `outline-style: none`, `outline-width: 3px` (`medium`, the initial) — i.e. a warned field had no focus mark at all while the switch was on. It carried `--warning` (山吹 #f8b500) before, which is the hue the note above rejects for a state edge at 1.85:1; `--text-warning` is the darkened amber that measures 5.4:1 and is what the boundary already paints, so the edge and the mark cannot drift apart. default at the call site — freeze rule"
   },
   {
+    "name": "--emoji-picker-cell-size",
+    "value": "var(--control-height-default)",
+    "description": "EmojiPicker (gh#1164): the panel width, an emoji cell (a touch-sized square), the glyph inside it, and how tall the grid gets before it scrolls."
+  },
+  {
+    "name": "--emoji-picker-panel-inline-size",
+    "value": "calc( 8 * var(--emoji-picker-cell-size) + 2 * var(--popover-space-inset, var(--space-3)) )",
+    "description": "Eight cells plus the popover's inset — derived, so 44px touch cells (coarse pointer) still fit eight to a row (8 × 44 + insets = 376px, inside a 390px phone)."
+  },
+  {
+    "name": "--emoji-picker-glyph-size",
+    "value": "var(--icon-size-lg)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--emoji-picker-grid-max-block-size",
+    "value": "16rem",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--control-height-compact",
     "value": "var(--band-height-xl)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -2809,9 +2829,14 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--block-editor-frame-padding",
+    "value": "var(--space-3)",
+    "description": "`appearance=\"framed\"`: the inset between the frame and the text (the handle gutter is extra)."
+  },
+  {
     "name": "--block-editor-menu-inline-size",
     "value": "16rem",
-    "description": "The `/` and `[[` menus: wide enough for a label and its description, tall enough for ~8 rows before the list scrolls."
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
     "name": "--block-editor-menu-max-block-size",

@@ -705,7 +705,7 @@
         "defaultValue": "\"document\"",
         "description": "What the page's top row IS, which decides the `<h1>`'s type step. \"document\" (default) = the row is the page's TITLE (a record, a form, a collection, a report): --page-title-font-size (h1, 20px) with the existing responsive step down at 720px; no attribute is emitted, so an existing page is byte-identical. \"chrome\" = the row is the surface's own furniture — a chat channel name, a mail subject line, an IDE tab — naming the thing the user is already INSIDE instead of announcing a document; the h1 takes --page-title-font-size-chrome (--heading-h3 = the 14px body step) at EVERY width, including below 720px where the document-scale step would otherwise pull it back UP. The heading stays an `<h1>` either way — this moves the type step only, never the element, so the screen-reader outline is untouched.",
         "name": "headerScale",
-        "type": "\"document\" | \"chrome\""
+        "type": "\"document\" | \"chrome\" | \"display\""
       },
       {
         "defaultValue": "\"default\"",
@@ -736,6 +736,16 @@
         "description": "Skeletonise the TITLE BAND only while the page's record resolves (title/subtitle placeholders + aria-busy; the <h1> stays in the outline with an sr-only accessible name). Breadcrumbs and `extra` stay live — they come from the route, not the record. This is not a page-wide loading flag; use DataState for the body.",
         "name": "headerLoading",
         "type": "boolean"
+      },
+      {
+        "description": "The page's icon (an emoji or glyph) drawn large above the title, riding over a banner `cover`'s bottom edge — Notion's page icon (gh#1160). Add aria-hidden unless it is itself a control.",
+        "name": "icon",
+        "type": "ReactNode"
+      },
+      {
+        "description": "A PageCover: the banner variant spans the page edge to edge above the header; the eyecatch variant sits in the reading column above the title (gh#1160).",
+        "name": "cover",
+        "type": "ReactNode (a PageCover)"
       },
       {
         "description": "Ref to the page's <h1>; passing it also makes the heading programmatically focusable (tabIndex -1, outside the tab order, no focus ring) so a router can focus the new page title after client-side navigation (gh#1135).",
@@ -794,6 +804,76 @@
       "A chat / messaging detail page where the message list should scroll inside the page and the composer stays pinned at the bottom — use `fill` so the body occupies the full shell height, with `footer={<Composer/>}` + `stickyFooter`. Without `fill` the page would top-pack and the composer would float mid-screen on a tall viewport.",
       "A Slack-like chat channel, a mail thread, or an IDE-style tab view whose top row is the SURFACE's name rather than a document title — `headerScale='chrome'` (usually with `variant='ghost'`) puts the `<h1>` on the body type step so the header reads as a channel label and the band collapses to roughly the height of one control row, leaving the vertical space to the conversation.",
       "A chat channel page where a fixed band (channel workflow / pinned-message / connection status) must sit between the page header and the scrolling transcript — `toolbar={<Toolbar>…</Toolbar>}` with `fill` + `footer={<Composer/>}` + `stickyFooter`. The band is outside the scroller, so the transcript never travels under it and the composer stays pinned; a collection page uses the same slot for its filter strip above a full-bleed DataTable (`variant='flush'`)."
+    ]
+  },
+  {
+    "docPath": "docs/layout/page-cover.tsx",
+    "example": "import { PageContainer, PageCover } from \"@godxjp/ui/layout\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<PageContainer\n  title={page.title}\n  headerScale=\"display\"\n  icon={<span aria-hidden=\"true\">{page.icon}</span>}\n  cover={\n    <PageCover\n      src={page.cover}\n      alt=\"\"\n      positionY={y}\n      onPositionChange={setY}\n      repositioning={moving}\n      onRepositioningChange={setMoving}\n      actions={<Button size=\"sm\" variant=\"secondary\" onClick={() => setMoving(true)}>Reposition</Button>}\n    />\n  }\n>\n  {body}\n</PageContainer>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "PageCover",
+    "props": [
+      {
+        "description": "Image URL.",
+        "name": "src",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "description": "Alternative text; \"\" for a decorative cover.",
+        "name": "alt",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "defaultValue": "50",
+        "description": "Vertical focal point, 0 top – 100 bottom.",
+        "name": "positionY",
+        "type": "number"
+      },
+      {
+        "description": "New focal point while repositioning.",
+        "name": "onPositionChange",
+        "type": "(positionY: number) => void"
+      },
+      {
+        "description": "Reposition mode (controlled): the image becomes a slider.",
+        "name": "repositioning",
+        "type": "boolean"
+      },
+      {
+        "description": "Enter / Escape ended the mode.",
+        "name": "onRepositioningChange",
+        "type": "(repositioning: boolean) => void"
+      },
+      {
+        "defaultValue": "\"banner\"",
+        "description": "Banner above the header, or eyecatch in the reading column.",
+        "name": "variant",
+        "type": "\"banner\" | \"eyecatch\""
+      },
+      {
+        "defaultValue": "\"md\"",
+        "description": "Banner height step; token-owned, scales phone → desktop.",
+        "name": "height",
+        "type": "\"md\" | \"lg\""
+      },
+      {
+        "description": "Change / reposition / remove controls: over the bottom edge on a wide screen, BELOW the image on a phone (never on the focal area).",
+        "name": "actions",
+        "type": "ReactNode"
+      }
+    ],
+    "related": [
+      "PageContainer — `cover`, `icon`, headerScale=\"display\" for an article title.",
+      "Image — an image that opens a preview."
+    ],
+    "rules": [],
+    "storyPath": "layout/page-cover.tsx",
+    "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
+    "usage": [
+      "DO pass it as PageContainer `cover` with the page `icon` — the container places it and overlaps the icon.",
+      "DO wire a Reposition button in `actions` that sets `repositioning`, and persist positionY from onPositionChange."
     ]
   },
   {
@@ -5062,6 +5142,16 @@
         "type": "number | false"
       },
       {
+        "description": "Default 'same-tab'. Renderer policy for links to another origin (an absolute http(s) URL whose origin differs from `origin`). 'new-tab' adds target=\"_blank\" rel=\"noopener noreferrer\"; relative links, #anchors, resolved wikilinks and mailto: stay in the tab. Markdown cannot store target, so this replaces it.",
+        "name": "externalLinks",
+        "type": "'same-tab' | 'new-tab'"
+      },
+      {
+        "description": "The page origin externalLinks compares against; defaults to location.origin. Pass it for server rendering, or every absolute link counts as external there.",
+        "name": "origin",
+        "type": "string"
+      },
+      {
         "description": "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@1, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
         "name": "calloutTitles",
         "type": "Partial<Record<'note' | 'tip' | 'important' | 'warning' | 'caution', string>>"
@@ -5082,6 +5172,7 @@
     "storyPath": "data-display/markdown.tsx",
     "tagline": "The one Markdown renderer for GoDX apps (sibling package `@godxjp/markdown`, versioned with the kit): GFM + GitHub heading anchors, one sanitiser schema (no raw HTML; http/https/mailto/relative URLs only), and ```mermaid drawn only after its SVG passes a fail-closed gate (gh#1108). Wrap it in `Prose`.",
     "usage": [
+      "Table of contents: outline(markdown) from @godxjp/markdown/codec returns { depth, text, id }[] with exactly the ids <Markdown> writes — feed it to the kit Anchor. YAML front matter is kept verbatim and never rendered; frontmatterOf(markdown) returns it (gh#1163).",
       "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
       "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
       "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate."
@@ -5206,6 +5297,12 @@
         "type": "(url: string) => string | undefined"
       },
       {
+        "defaultValue": "\"framed\"",
+        "description": "framed: a field's border, padding and focus colour, so the editor reads as an editor inside a form; plain: the borderless Notion-style canvas for a full-page editor.",
+        "name": "appearance",
+        "type": "\"framed\" | \"plain\""
+      },
+      {
         "description": "Extra `/` rows ({ key, label, icon, keywords?, run(api) }) — `api.insertMarkdown` inserts through the codec.",
         "name": "actions",
         "type": "BlockEditorAction[]"
@@ -5229,6 +5326,8 @@
     "storyPath": "data-entry/block-editor.tsx",
     "tagline": "Notion / note.com style block editor (sibling package `@godxjp/block-editor`, versioned with the kit) that reads and writes MARKDOWN through `@godxjp/markdown/codec`: what onValueChange returns is byte-for-byte normalize(body). `/` block menu at the caret, ⋮⋮ handle (drag, turn into, duplicate, move, delete), floating format toolbar, `[[` wikilink suggestions, paste / drop uploads through the host, IME-safe, ja / en / vi (gh#1156).",
     "usage": [
+      "Clicking a link (or Mod+K) opens a settings drawer: text, URL, title, open / remove. Clicking an image opens one for src, alt, title, replace (pickMedia / upload) and remove. Markdown stores no link target, so there is no target field. A link in the editor never navigates mid-edit.",
+      "YAML front matter shows as a Properties block at the top and round-trips verbatim; read it with frontmatterOf() from @godxjp/markdown/codec.",
       "DO store the Markdown it emits — it is already canonical; compute `normalize()` server-side from the same codec to verify.",
       "DO give it a name: wrap in `FormField` or pass `aria-label` / `aria-labelledby` (the editable is a named `textbox`).",
       "DO pass `upload` (and `pickMedia` for a library) instead of handling paste yourself.",
@@ -11478,6 +11577,12 @@
         "type": "boolean"
       },
       {
+        "defaultValue": "false",
+        "description": "Expand a parent by clicking its ROW, not only its switcher (antd DirectoryTree): \"click\" selects AND toggles — a page tree where choosing a folder opens it; \"doubleClick\" toggles on a double click (gh#1162). Keyboard keeps the APG map.",
+        "name": "expandAction",
+        "type": "false | \"click\" | \"doubleClick\""
+      },
+      {
         "description": "Lazy children (antd `loadData`). Called when a branch with no `children` and `isLeaf !== true` is expanded, and never again once its promise RESOLVES; a Skeleton row and `aria-busy` cover the wait. Push the fetched children into `treeData`. A REJECTED promise is not a load (rc-tree, gh#1041): the branch folds back shut (uncontrolled expansion) and the next expand asks again, up to 10 attempts.",
         "name": "loadData",
         "type": "(node: TreeNodeProp) => void | Promise<void>"
@@ -14266,6 +14371,11 @@
         "type": "CommandPaletteGroup[]"
       },
       {
+        "description": "Decorative glyph before an item's label — a folder, a file, an emoji (gh#1159). Menu-row icon size (--menu-icon-size), aria-hidden: the label stays the option's name.",
+        "name": "groups[].items[].icon",
+        "type": "ReactNode"
+      },
+      {
         "description": "Localized dialog and search copy.",
         "name": "labels",
         "required": true,
@@ -14341,6 +14451,69 @@
       "Use either `open` plus `onOpenChange` or `defaultOpen`; do not mirror both state models.",
       "Search-as-you-type against an API: read the query from `onSearchChange`, pass the results back as `groups`, and set `shouldFilter={false}` so the rows are not scored a second time against the same string.",
       "The empty-state contract: with `shouldFilter` (default) cmdk decides — items exist, the query matches none. With `shouldFilter={false}` the PALETTE decides from props — `labels.empty` renders when `groups` carries no items, and never while `loading` or `error` is set. Hold `loading` for the whole in-flight window: a request that has not answered yet is not an empty result, and asserting over cmdk's own empty node races an async group that populates a frame late."
+    ]
+  },
+  {
+    "docPath": "docs/data-entry/emoji-picker.tsx",
+    "example": "import { EmojiPicker } from \"@godxjp/ui/data-entry\";\n\n<EmojiPicker value={icon} onValueChange={setIcon} />",
+    "group": "data-entry",
+    "importPath": "@godxjp/ui/data-entry",
+    "name": "EmojiPicker",
+    "props": [
+      {
+        "description": "The chosen emoji (controlled with onValueChange).",
+        "name": "value",
+        "type": "string | null"
+      },
+      {
+        "description": "Uncontrolled initial emoji.",
+        "name": "defaultValue",
+        "type": "string | null"
+      },
+      {
+        "description": "Picked emoji, or null from \"remove icon\".",
+        "name": "onValueChange",
+        "type": "(emoji: string | null) => void"
+      },
+      {
+        "description": "The popover.",
+        "name": "open / defaultOpen / onOpenChange",
+        "type": "boolean / boolean / (open) => void"
+      },
+      {
+        "defaultValue": "true",
+        "description": "Offer \"remove icon\" while a value is set.",
+        "name": "removable",
+        "type": "boolean"
+      },
+      {
+        "defaultValue": "\"godxjp-ui:emoji-recents\"",
+        "description": "localStorage key for the per-user recents.",
+        "name": "recentsKey",
+        "type": "string"
+      },
+      {
+        "defaultValue": "\"md\"",
+        "description": "Trigger size.",
+        "name": "size",
+        "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+      },
+      {
+        "description": "Replace the default trigger (e.g. the page icon drawn large).",
+        "name": "trigger",
+        "type": "ReactNode"
+      }
+    ],
+    "related": [
+      "PageContainer — `icon` slot.",
+      "CommandPalette — items can carry an emoji `icon`."
+    ],
+    "rules": [],
+    "storyPath": "data-entry/emoji-picker.tsx",
+    "tagline": "Page icon / reaction picker in a Popover (gh#1164): search by the active language's CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and \"remove icon\". No skin tones.",
+    "usage": [
+      "DO use it for a page icon next to PageContainer `icon` — pass the icon itself as `trigger`.",
+      "The data loads on first open (one locale, ~100 KB gzip); nothing ships in your main bundle."
     ]
   },
   {

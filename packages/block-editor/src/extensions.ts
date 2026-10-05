@@ -312,6 +312,29 @@ export const Embed = Node.create({
   },
 });
 
+/** YAML front matter — the page's properties, kept verbatim (gh#1163). The component gives it a view. */
+export const Frontmatter = Node.create({
+  name: "frontmatter",
+  group: "block",
+  atom: true,
+  addAttributes() {
+    return { source: { default: "" } };
+  },
+  parseHTML() {
+    return [{ tag: "pre[data-frontmatter]" }];
+  },
+  renderHTML({ node, HTMLAttributes }) {
+    return [
+      "pre",
+      mergeAttributes(HTMLAttributes, {
+        "data-frontmatter": "",
+        class: "ui-block-editor-raw-block",
+      }),
+      node.attrs.source as string,
+    ];
+  },
+});
+
 /**
  * Markdown the document does not model (raw HTML, a footnote definition, a malformed directive),
  * kept as its source so nothing is lost. The component gives it an editable node view.
@@ -349,6 +372,11 @@ export function schemaExtensions(options: {
   rawBlock?: Node;
   /** Resolves a stored image URL (`asset:<id>`) to one the browser can load; the doc keeps the original. */
   resolveUrl?: (url: string) => string | undefined;
+  callout?: Node;
+  columns?: Node;
+  frontmatter?: Node;
+  /** The toggle button's accessible name, open and closed. */
+  toggleLabel?: (open: boolean) => string;
 }): Extensions {
   const resolve = options.resolveUrl;
   return [
@@ -379,17 +407,28 @@ export function schemaExtensions(options: {
         ];
       },
     }).configure({ inline: true, allowBase64: false }),
-    Details.configure({ persist: false }),
+    Details.configure({
+      persist: false,
+      renderToggleButton: ({ element, isOpen }) => {
+        element.className = "ui-block-editor-toggle-button";
+        element.setAttribute("aria-expanded", String(isOpen));
+        element.setAttribute(
+          "aria-label",
+          options.toggleLabel?.(isOpen) ?? (isOpen ? "Collapse" : "Expand"),
+        );
+      },
+    }),
     DetailsSummary,
     DetailsContent,
-    Callout.configure({ titles: options.calloutTitles }),
-    Columns,
+    (options.callout ?? Callout).configure({ titles: options.calloutTitles }),
+    options.columns ?? Columns,
     Column,
     Wikilink,
     EmbedInline,
     RawInline,
     options.embed ?? Embed,
     options.rawBlock ?? RawBlock,
+    options.frontmatter ?? Frontmatter,
     Placeholder.configure({
       includeChildren: true,
       placeholder: ({ node }) => {

@@ -6,6 +6,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.28.0] - 2026-10-05
+
+### ✨ Page chrome, EmojiPicker, BlockEditor phase 2, front matter + outline (gh#1159–gh#1164)
+
+For the pages app's Notion / note.com screens.
+
+- **`CommandPalette`** items take an `icon` (gh#1159).
+- **`PageCover`** (new) and **`PageContainer` `icon` / `cover` / `headerScale="display"`** (gh#1160):
+  a banner or eyecatch cover, with keyboard and pointer repositioning (`role="slider"`, arrows,
+  PageUp/PageDown, Home/End); a page icon that overlaps the cover; a balanced display-size title.
+- **`@godxjp/block-editor` phase 2** (gh#1161): callouts have an editable kind and title; columns
+  can be added or removed and have a width (auto / 25–75%); the toggle button has a localised
+  label and `aria-expanded`.
+- **Link and image settings drawer.** Clicking a link, or pressing Mod+K, opens a Sheet for its
+  text, URL and title, with Open and Remove. Clicking an image opens one for src, alt, title,
+  Replace and Remove. Clicking a link while editing no longer navigates away. Shortcuts now read
+  the live DOM selection, so they no longer act on the previous selection. New
+  `appearance="framed" | "plain"` (framed by default), so the editing area reads as an editor.
+- **`Tree` `expandAction`** — `false | "click" | "doubleClick"`: a click on a folder row can open
+  it (gh#1162).
+- **YAML front matter** (gh#1163): the codec preserves it as a `frontmatter` node, the renderer
+  hides it, and the BlockEditor shows it as a "Properties (YAML)" block. New codec exports
+  `outline(markdown)` (headings with ids identical to the renderer's, for a table of contents
+  with `Anchor`) and `frontmatterOf(markdown)`.
+- **`Markdown` `externalLinks="new-tab"`** (+ `origin`): links to another origin open in a new tab
+  with `rel="noopener noreferrer"`; same-origin, relative, anchor and wikilink targets stay. Off by
+  default. Markdown cannot store `target`, so this is a renderer policy.
+- **`EmojiPicker`** (new, gh#1164): emojibase-data with ja / en / vi keywords loaded lazily per
+  locale, category tabs, an APG grid with a roving tabindex, recents, and "remove icon". Adds the
+  `emojibase-data` dependency.
+
 ## [31.27.0] - 2026-10-05
 
 ### ✨ @godxjp/block-editor phase 1, the Markdown codec, renderer v4 (gh#1156)
@@ -93,13 +124,13 @@ From the pages app's re-sweep of 31.25.3 at 390px with `(pointer: coarse)`:
 From the pages app's consolidated coarse-pointer sweep. Measured in Chromium at 390px with
 `(pointer: coarse)`, block axis, before → after:
 
-| target | before | after | how |
-| --- | --- | --- | --- |
-| DropdownMenu / Select row | 32 | 44 | `--menu-item-height` → `--band-height-xl` (rows sit flush: the row grows) |
-| Command row | 40 | 44 | row `min-block-size` |
-| Tabs trigger (sm/md/lg) | 34 | 44 | `--tabs-trigger-height-*` → `--band-height-xl` (the list clips block overflow) |
-| Button `xs` / `sm` (text) | 36 / 40 | 44 | `::after` target, box unchanged |
-| Segmented option | 40 | 44 | `::after` on the option's `<label>`, block axis only |
+| target                    | before  | after | how                                                                            |
+| ------------------------- | ------- | ----- | ------------------------------------------------------------------------------ |
+| DropdownMenu / Select row | 32      | 44    | `--menu-item-height` → `--band-height-xl` (rows sit flush: the row grows)      |
+| Command row               | 40      | 44    | row `min-block-size`                                                           |
+| Tabs trigger (sm/md/lg)   | 34      | 44    | `--tabs-trigger-height-*` → `--band-height-xl` (the list clips block overflow) |
+| Button `xs` / `sm` (text) | 36 / 40 | 44    | `::after` target, box unchanged                                                |
+| Segmented option          | 40      | 44    | `::after` on the option's `<label>`, block axis only                           |
 
 Mouse geometry is unchanged. TagInput needed no change: a tap anywhere on its 44px field focuses
 the inner input.

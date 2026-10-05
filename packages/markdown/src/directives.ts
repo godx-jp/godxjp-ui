@@ -40,7 +40,8 @@ export function remarkKitSyntax(
   return function (this: unknown) {
     const data = (this as { data(): Data }).data();
     (data.micromarkExtensions ??= []).push(...micromarkExtensions().slice(1)); // gfm comes from remark-gfm
-    (data.fromMarkdownExtensions ??= []).push(fromMarkdownExtensions()[1]); // directives
+    // directives + front matter (GFM's comes from remark-gfm)
+    (data.fromMarkdownExtensions ??= []).push(...fromMarkdownExtensions().slice(1));
     // Depth-first, parents before children, carrying whether we are inside a column (columns
     // never nest). Children are read AFTER the parent is rewritten, so a callout inside a column
     // or a toggle inside a callout is still found.
@@ -51,7 +52,11 @@ export function remarkKitSyntax(
       const isColumn = node.type === "containerDirective" && node.name === "column";
       for (const child of node.children as Nodes[]) walk(child, inColumn || isColumn);
     };
-    return (tree: Root) => walk(tree, false);
+    return (tree: Root) => {
+      // Front matter is the page's properties, not its prose: never rendered (gh#1163).
+      tree.children = tree.children.filter((node) => (node.type as string) !== "yaml");
+      walk(tree, false);
+    };
   };
 }
 

@@ -2,7 +2,7 @@ import type { Info, Options, State } from "mdast-util-to-markdown";
 import type { Paragraph, Root, RootContent } from "mdast";
 import type { ContainerDirective } from "mdast-util-directive";
 
-import { toMarkdownGfm } from "./syntax";
+import { toMarkdownFrontmatter, toMarkdownGfm } from "./syntax";
 
 /**
  * Container directives, written by hand: `mdast-util-directive`'s own serializer also registers
@@ -62,6 +62,7 @@ export function toMarkdownOptions(): Options {
     resourceLink: false,
     extensions: [
       toMarkdownGfm(),
+      toMarkdownFrontmatter(),
       { handlers: { containerDirective: containerDirective as never } },
     ],
   };

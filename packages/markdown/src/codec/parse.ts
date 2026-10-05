@@ -252,6 +252,9 @@ function block(node: RootContent, depth: { columns: boolean }): DocNode[] {
     }
     case "containerDirective":
       return [directiveBlock(node, depth)];
+    case "yaml":
+      // Front matter: the page's own properties, verbatim (gh#1163).
+      return [{ type: "frontmatter", attrs: { source: node.value } }];
     default:
       // html, definition, footnoteDefinition, and anything else the document does not model
       return [raw(node, false)];

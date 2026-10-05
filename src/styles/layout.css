@@ -1140,6 +1140,129 @@
     font-size: var(--page-title-font-size-chrome);
   }
 
+  /* `headerScale="display"` — an article headline (gh#1160). Declared with the extra
+   * `[data-header-scale]` weight so the compact-viewport step below never shrinks it: the display
+   * step already scales with the viewport. */
+  .ui-page-container[data-header-scale="display"] .ui-page-title,
+  .ui-page-container[data-header-scale="display"] .ui-page-header .ui-page-title {
+    font-size: var(--page-title-font-size-display);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--page-title-line-height-display);
+    text-wrap: balance;
+    overflow-wrap: normal;
+  }
+
+  /* The page icon above the title (gh#1160). An emoji is text, so its size is the font size; a
+   * glyph is an svg, sized to match. Under a banner cover it rides up over the cover's edge. */
+  .ui-page-header-icon {
+    display: flex;
+    align-items: center;
+    margin-block-end: var(--space-2);
+    font-size: var(--page-icon-size);
+    line-height: 1;
+  }
+
+  .ui-page-header-icon svg {
+    inline-size: var(--page-icon-size);
+    block-size: var(--page-icon-size);
+  }
+
+  .ui-page-container[data-cover="banner"] {
+    padding-block-start: 0;
+  }
+
+  .ui-page-container[data-cover="banner"] .ui-page-header-icon {
+    position: relative;
+    margin-block-start: calc(-1 * var(--page-icon-cover-overlap));
+  }
+
+  .ui-page-header .ui-page-cover-slot {
+    margin-block-end: var(--space-4);
+  }
+
+  /* PAGECOVER (gh#1160). The frame crops the image (`object-fit: cover`) at the focal point the
+   * component writes as `object-position`. While repositioning the frame is a slider: the pointer
+   * says it can be dragged, and a hint sits over the picture. */
+  .ui-page-cover {
+    position: relative;
+  }
+
+  .ui-page-cover-frame {
+    position: relative;
+    overflow: hidden;
+    block-size: var(--page-cover-block-size-md);
+    background-color: hsl(var(--muted));
+  }
+
+  .ui-page-cover[data-height="lg"] .ui-page-cover-frame {
+    block-size: var(--page-cover-block-size-lg);
+  }
+
+  .ui-page-cover[data-variant="eyecatch"] .ui-page-cover-frame {
+    block-size: auto;
+    aspect-ratio: var(--page-cover-eyecatch-aspect-ratio);
+    border-radius: var(--page-cover-radius, var(--card-radius, var(--radius)));
+  }
+
+  .ui-page-cover-image {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    user-select: none;
+  }
+
+  .ui-page-cover[data-repositioning] .ui-page-cover-frame {
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .ui-page-cover[data-repositioning] .ui-page-cover-frame:active {
+    cursor: grabbing;
+  }
+
+  .ui-page-cover-hint {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline: 0;
+    margin-inline: auto;
+    inline-size: fit-content;
+    max-inline-size: calc(100% - 2 * var(--space-4));
+    translate: 0 -50%;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    background-color: hsl(var(--background) / 0.85);
+    color: hsl(var(--foreground));
+    font-size: var(--font-size-sm, var(--font-size-base));
+    text-align: center;
+    pointer-events: none;
+  }
+
+  /* Actions sit over the cover's bottom edge on a wide screen; below the image on a narrow one,
+   * where the frame is too short for anything to sit on it without covering the focal area. */
+  .ui-page-cover-actions {
+    position: absolute;
+    inset-block-end: var(--space-3);
+    inset-inline-end: var(--space-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  @media (hover: hover) and (width >= 40rem) {
+    .ui-page-cover:not(:hover):not(:focus-within) .ui-page-cover-actions {
+      opacity: 0;
+    }
+  }
+
+  @media (width < 40rem) {
+    .ui-page-cover-actions {
+      position: static;
+      justify-content: flex-end;
+      padding: var(--space-2) var(--space-page-active-x, var(--space-4)) 0;
+    }
+  }
+
   /* Compact viewports use a responsive type step, not compact density: body/control text and touch
    * targets remain readable while page chrome stops competing with primary actions. */
   @media (max-width: 720px) {

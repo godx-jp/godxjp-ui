@@ -10,7 +10,7 @@
  * and the kit's own:
  *   callout{kind,title} · details · detailsSummary · detailsContent · columns · column{width} ·
  *   embed{target} (block `![[x]]`) · wikilink{target,heading,label} · embedInline{target} ·
- *   rawBlock{source} · rawInline{source}
+ *   rawBlock{source} · rawInline{source} · frontmatter{source} (YAML, first block only)
  * Marks: bold · italic · strike · code · link{href,title}.
  */
 export type Mark =
