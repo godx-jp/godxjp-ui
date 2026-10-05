@@ -148,7 +148,10 @@ describe("Command split — behaviour", () => {
     expect(option.closest(".ui-command")).toHaveAttribute("data-split", "");
   });
 
-  it("Select mode=multiple opens a split list by default; a single-value Select does not", async () => {
+  // Select is a PICKER: compact, unruled rows in every mode, like Linear / GitHub label pickers and
+  // antd tags. godx-task's owner called the ruled multi-value popup a records list. Ruled rows stay
+  // available to a facet list through `Command split` itself.
+  it("Select opens an unruled list in every mode, multiple included", async () => {
     const user = userEvent.setup();
     const options = [
       { value: "tanaka", label: "Tanaka" },
@@ -159,7 +162,7 @@ describe("Command split — behaviour", () => {
     );
     await user.click(screen.getByRole("combobox", { name: "Reviewers" }));
     const row = await screen.findByRole("option", { name: "Tanaka" });
-    expect(row.closest(".ui-command")).toHaveAttribute("data-split", "");
+    expect(row.closest(".ui-command")).not.toHaveAttribute("data-split");
     multi.unmount();
 
     renderWithUi(<Select showSearch aria-label="Owner" options={options} />);

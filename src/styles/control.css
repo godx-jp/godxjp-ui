@@ -1264,6 +1264,14 @@
     color: hsl(var(--accent-foreground));
   }
 
+  /* In a multi-value listbox `aria-selected` is the SELECTION, not cmdk's active row, so it must not
+   * borrow the active fill: there the check mark and weight say "picked", and the background says
+   * only where the pointer or the keyboard is. */
+  .ui-search-select-list[aria-multiselectable="true"] .ui-command-item[aria-selected="true"] {
+    background: transparent;
+    color: inherit;
+  }
+
   .ui-command-item[data-disabled="true"] {
     pointer-events: none;
     opacity: 0.5;
@@ -2415,14 +2423,18 @@
   }
 
   /* The panel itself is the focused surface, so the inner search field suppresses its own RING
-   * (this replaces a `focus-visible:ring-0` utility). */
+   * (this replaces a `focus-visible:ring-0` utility). Its OUTLINE is zeroed in focus-ring.css, beside
+   * the command palette's input, for the same reason: the open trigger keeps the one mark. */
   .ui-search-select-search-input:focus-visible {
     box-shadow: none;
   }
 
+  .ui-search-select-list .ui-command-item {
+    line-height: var(--search-select-option-line-height);
+  }
+
   .ui-search-select-list {
     max-block-size: var(--search-select-list-max-height);
-    max-block-size: none;
     min-block-size: 0;
     flex: 1 1 0%;
     overflow-y: auto;

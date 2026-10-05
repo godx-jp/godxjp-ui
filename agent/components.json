@@ -6658,7 +6658,7 @@
     "name": "Select",
     "props": [
       {
-        "description": "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two. `tags` needs no `options` (`<Select mode=\"tags\" />` works) and only an explicit `disabled` disables it (gh#1063). While text is typed the tags list reads create row, then an exact (case-folded) match, then options, then held values — the first enabled row is the Enter target, never a held tag (gh#1064). The popup list of either mode renders as `Command split` (rows ruled, list padding 0, gh#699); retune it with --command-item-divider-color / --command-item-divider-width.",
+        "description": "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two. `tags` needs no `options` (`<Select mode=\"tags\" />` works) and only an explicit `disabled` disables it (gh#1063). While text is typed the tags list reads create row, then an exact (case-folded) match, then options, then held values — the first enabled row is the Enter target, never a held tag (gh#1064). The popup is a picker: compact unruled rows (--search-select-option-line-height), a list capped at --search-select-list-max-height (16rem, antd listHeight 256) that scrolls inside, the search as the panel header line with no ring of its own, and the picked rows marked by a check (menuItemSelectedIcon default) + weight while the row background means pointer/keyboard position only. A facet list that wants ruled rows composes `Command split` (gh#699) itself.",
         "name": "mode",
         "type": "\"multiple\" | \"tags\""
       },
@@ -6907,7 +6907,7 @@
         "type": "(option: SearchSelectOptionProp, info: { index: number }) => React.ReactNode"
       },
       {
-        "description": "antd `menuItemSelectedIcon` — a decorative mark on the picked row. Off by default: the picked row is already marked by fill + weight, which costs no width.",
+        "description": "antd `menuItemSelectedIcon` — a decorative mark on the picked row. In mode multiple / tags it defaults to a check (as in antd), because there the row background means pointer/keyboard position, not selection; pass `null` to drop it. A single-value Select shows none by default.",
         "name": "menuItemSelectedIcon",
         "type": "React.ReactNode"
       },
@@ -10901,7 +10901,7 @@
       },
       {
         "defaultValue": "false",
-        "description": "antd List `split`. Draws the list as ONE ruled box: group/list padding 0, rows full-bleed to the panel edge with a square highlight, a hairline border-block-end between rows and none after the last visible row, row content aligned with CommandInput's leading glyph. Sets `data-split` on the root; the parts need no prop. Tokens: --command-list-split-padding, --command-list-split-inset, --command-item-divider-width, --command-item-divider-color. Select mode=multiple / mode=tags renders its popup split by default.",
+        "description": "antd List `split`. Draws the list as ONE ruled box: group/list padding 0, rows full-bleed to the panel edge with a square highlight, a hairline border-block-end between rows and none after the last visible row, row content aligned with CommandInput's leading glyph. Sets `data-split` on the root; the parts need no prop. Tokens: --command-list-split-padding, --command-list-split-inset, --command-item-divider-width, --command-item-divider-color. Select does NOT render its popup split (it is a picker; compact unruled rows).",
         "name": "split",
         "type": "boolean"
       },

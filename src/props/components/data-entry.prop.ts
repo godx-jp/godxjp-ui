@@ -1549,8 +1549,9 @@ export type SearchSelectBaseProp = {
    */
   optionRender?: (option: SearchSelectOptionProp, info: { index: number }) => React.ReactNode;
   /**
-   * Node rendered on the SELECTED row (antd `menuItemSelectedIcon`). Off by default: this library's
-   * selected row is marked by fill + weight, which costs no width.
+   * Node rendered on the SELECTED row (antd `menuItemSelectedIcon`). In `multiple` / `tags` it
+   * defaults to a check mark (as in antd), because the row background there means pointer/keyboard
+   * position, not selection; pass `null` to drop it. A single-value Select shows none by default.
    */
   menuItemSelectedIcon?: React.ReactNode;
   /** Node shown when the list has nothing to offer (antd `notFoundContent`). Beats `emptyMessage`. */
@@ -2570,4 +2571,3 @@ export type EmojiPickerProp = {
   id?: IdProp;
   className?: ClassNameProp;
 };
-

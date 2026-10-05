@@ -55,7 +55,7 @@
     },
     {
       "defaultValue": "false",
-      "description": "antd List `split`. Draws the list as ONE ruled box: group/list padding 0, rows full-bleed to the panel edge with a square highlight, a hairline border-block-end between rows and none after the last visible row, row content aligned with CommandInput's leading glyph. Sets `data-split` on the root; the parts need no prop. Tokens: --command-list-split-padding, --command-list-split-inset, --command-item-divider-width, --command-item-divider-color. Select mode=multiple / mode=tags renders its popup split by default.",
+      "description": "antd List `split`. Draws the list as ONE ruled box: group/list padding 0, rows full-bleed to the panel edge with a square highlight, a hairline border-block-end between rows and none after the last visible row, row content aligned with CommandInput's leading glyph. Sets `data-split` on the root; the parts need no prop. Tokens: --command-list-split-padding, --command-list-split-inset, --command-item-divider-width, --command-item-divider-color. Select does NOT render its popup split (it is a picker; compact unruled rows).",
       "name": "split",
       "type": "boolean"
     },
