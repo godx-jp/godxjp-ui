@@ -100,3 +100,21 @@ describe("optional peers and core isolation agree (gh#546)", () => {
     }
   });
 });
+
+describe("@hookform/resolvers is not a peer (gh#1111)", () => {
+  // npm's resolver evaluates the optional peers of an optional peer even when nothing installs them.
+  // @hookform/resolvers declares ~25 optional peers; one chain (@typeschema/main → @typeschema/zod)
+  // wants zod ^3, so npm pins a virtual zod@3 and then rejects our `zod: ^4.4.0`. A bare
+  // `npm install @godxjp/ui react react-dom` failed with ERESOLVE while installing nothing extra.
+  // Measured against packed tarballs: without this peer a bare install succeeds, zod@3 is still
+  // refused by our own zod peer, and zod@4 + react-hook-form + @hookform/resolvers@5 installs.
+  // The ^5.2 requirement stays documented in docs/FORMS.md.
+  it("is not declared, so npm never walks its optional peer set", () => {
+    expect(pkg.peerDependencies).not.toHaveProperty("@hookform/resolvers");
+    expect(pkg.peerDependenciesMeta).not.toHaveProperty("@hookform/resolvers");
+  });
+
+  it("zod stays a peer, so an app on zod 3 is still refused", () => {
+    expect(pkg.peerDependencies.zod).toBe("^4.4.0");
+  });
+});

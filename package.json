@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "31.28.0",
-  "godxUiMcp": "31.28.0",
+  "version": "31.28.1",
+  "godxUiMcp": "31.28.1",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -438,7 +438,6 @@
     "check:frame-token-scope": "node scripts/check-frame-token-scope.mjs"
   },
   "peerDependencies": {
-    "@hookform/resolvers": "^5.2.0",
     "@tanstack/react-query": ">=5.0.0",
     "playwright": "*",
     "react": ">=19.0.0",
@@ -450,9 +449,6 @@
     "zod": "^4.4.0"
   },
   "peerDependenciesMeta": {
-    "@hookform/resolvers": {
-      "optional": true
-    },
     "@tanstack/react-query": {
       "optional": true
     },

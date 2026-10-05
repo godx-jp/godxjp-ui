@@ -10,6 +10,11 @@ All forms in admin apps **must** use:
 
 Import from `@godxjp/ui/form` — **never** call `useForm()` without `zodResolver`.
 
+Install all three with the kit: `npm i @godxjp/ui react-hook-form zod @hookform/resolvers`.
+`@hookform/resolvers` is deliberately **not** a declared peer, so npm will not check its version
+for you: keep it at ^5.2 (the first line with Zod 4 support). Declaring it made a plain
+`npm install @godxjp/ui` fail with ERESOLVE, because npm walks its own optional peers (gh#1111).
+
 ## Quick start
 
 ```tsx
