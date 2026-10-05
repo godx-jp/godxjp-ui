@@ -1591,5 +1591,24 @@
       "description": "ツールバーはフォーカスできますが、操作は無効です。",
       "label": "本文（閲覧のみ）"
     }
+  },
+  "blockEditorDocs": {
+    "subtitle": "@godxjp/block-editor · 「/」でブロック · ドラッグハンドル · 書式ツールバー · Markdown で保存",
+    "edit": {
+      "title": "ページを編集",
+      "description": "「/」でブロックを挿入、文字を選ぶと書式、⋮⋮ でブロックを移動（キーボードは Alt+Shift+↑↓）。",
+      "label": "本文",
+      "save": "保存"
+    },
+    "markdown": {
+      "title": "保存される内容",
+      "description": "正規化された Markdown — @godxjp/markdown/codec の normalize() と同じ結果です。",
+      "label": "Markdown"
+    },
+    "readOnly": {
+      "title": "閲覧のみ",
+      "description": "ハンドルもメニューも出ません。本文は Prose で表示されます。",
+      "label": "本文（閲覧のみ）"
+    }
   }
 }

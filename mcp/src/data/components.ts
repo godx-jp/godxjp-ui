@@ -6100,6 +6100,102 @@ import { FormField } from "@godxjp/ui/data-entry";
     rules: [],
   },
   {
+    name: "BlockEditor",
+    group: "data-entry",
+    importPath: "@godxjp/block-editor",
+    tagline:
+      "Notion / note.com style block editor (sibling package `@godxjp/block-editor`, versioned with the kit) that reads and writes MARKDOWN through `@godxjp/markdown/codec`: what onValueChange returns is byte-for-byte normalize(body). `/` block menu at the caret, ⋮⋮ handle (drag, turn into, duplicate, move, delete), floating format toolbar, `[[` wikilink suggestions, paste / drop uploads through the host, IME-safe, ja / en / vi (gh#1156).",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        description: "Controlled Markdown body (with `onValueChange`).",
+      },
+      { name: "defaultValue", type: "string", description: "Uncontrolled initial body." },
+      {
+        name: "onValueChange",
+        type: "(markdown: string) => void",
+        description:
+          "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@1).",
+      },
+      {
+        name: "upload",
+        type: "(file: File, options: { signal: AbortSignal }) => Promise<{ url: string; name?: string }>",
+        description:
+          "Stores a pasted / dropped / chosen file (return `asset:<id>` if you like). An inline placeholder shows progress; failure offers Retry / Remove; deleting the placeholder aborts `signal`. Images become `![name](url)`, other files a link.",
+      },
+      {
+        name: "pickMedia",
+        type: "() => Promise<{ url: string; name?: string } | null>",
+        description:
+          "The host's media library; the `/` Image row opens it instead of a file picker.",
+      },
+      {
+        name: "uploadBlockedReason",
+        type: "string | null",
+        description: "Refuse files with this message.",
+      },
+      {
+        name: "suggestWikilinks",
+        type: "(query: string) => WikilinkSuggestion[] | Promise<WikilinkSuggestion[]>",
+        description:
+          "`[[` suggestions from the host's page index; picking inserts `[[target|label]]`.",
+      },
+      {
+        name: "renderEmbed",
+        type: "(target: string) => ReactNode",
+        description: "Renders a block embed `![[target]]`; default is a labelled placeholder.",
+      },
+      {
+        name: "resolveUrl",
+        type: "(url: string) => string | undefined",
+        description:
+          "Resolves a stored image URL (`asset:<id>`) for display; the body keeps the original.",
+      },
+      {
+        name: "actions",
+        type: "BlockEditorAction[]",
+        description:
+          "Extra `/` rows ({ key, label, icon, keywords?, run(api) }) — `api.insertMarkdown` inserts through the codec.",
+      },
+      {
+        name: "labels",
+        type: "Partial<BlockEditorLabels>",
+        description: "Override any string (defaults: kit ja / en / vi).",
+      },
+      {
+        name: "disabled / readOnly",
+        type: "boolean",
+        description: "Not editable; the body still renders as Prose.",
+      },
+    ],
+    usage: [
+      "DO store the Markdown it emits — it is already canonical; compute `normalize()` server-side from the same codec to verify.",
+      "DO give it a name: wrap in `FormField` or pass `aria-label` / `aria-labelledby` (the editable is a named `textbox`).",
+      "DO pass `upload` (and `pickMedia` for a library) instead of handling paste yourself.",
+      "DON'T render Markdown into it via HTML — pass `value`; HTML paste from other apps is handled by the schema.",
+      "Keyboard: `/` menu (↑↓ Enter Esc), Alt+Shift+↑/↓ moves a block, Mod+/ opens the block menu, Markdown shortcuts (`# `, `- `, `> `, ```` ``` ````, `---`).",
+    ],
+    related: [
+      "MarkdownEditor — a Textarea with Markdown tooling, for raw-Markdown editing.",
+      "Markdown — rendering a stored body (same grammar, renderer v4).",
+    ],
+    example: `import { BlockEditor } from "@godxjp/block-editor";
+import { FormField } from "@godxjp/ui/data-entry";
+
+<FormField id="body" label="本文">
+  <BlockEditor
+    value={body}
+    onValueChange={setBody}
+    upload={async (file, { signal }) => ({ url: await media.put(file, { signal }), name: file.name })}
+    suggestWikilinks={(q) => pages.search(q)}
+  />
+</FormField>`,
+    docPath: "docs/data-entry/block-editor.tsx",
+    storyPath: "data-entry/block-editor.tsx",
+    rules: [],
+  },
+  {
     name: "Prose",
     group: "data-display",
     tagline:

@@ -85,9 +85,12 @@ export function BlockHandle({
     };
     editor.on("selectionUpdate", onSelection);
     editor.on("update", onSelection);
+    // A tap's selection can land before focus does; place again once the editor has it.
+    editor.on("focus", onSelection);
     return () => {
       editor.off("selectionUpdate", onSelection);
       editor.off("update", onSelection);
+      editor.off("focus", onSelection);
     };
   }, [editor, menuOpen, place]);
 

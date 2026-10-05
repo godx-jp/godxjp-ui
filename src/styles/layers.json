@@ -215,6 +215,15 @@
         "chart-layout.css"
       ]
     },
+    "BlockEditor": {
+      "layers": [
+        "control.css",
+        "toggle.css",
+        "text-layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
+      ]
+    },
     "BranchScopePicker": {
       "layers": [
         "layout.css",

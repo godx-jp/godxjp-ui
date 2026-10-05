@@ -1,0 +1,83 @@
+{
+  "docPath": "docs/data-entry/block-editor.tsx",
+  "example": "import { BlockEditor } from \"@godxjp/block-editor\";\nimport { FormField } from \"@godxjp/ui/data-entry\";\n\n<FormField id=\"body\" label=\"本文\">\n  <BlockEditor\n    value={body}\n    onValueChange={setBody}\n    upload={async (file, { signal }) => ({ url: await media.put(file, { signal }), name: file.name })}\n    suggestWikilinks={(q) => pages.search(q)}\n  />\n</FormField>",
+  "group": "data-entry",
+  "importPath": "@godxjp/block-editor",
+  "name": "BlockEditor",
+  "props": [
+    {
+      "description": "Controlled Markdown body (with `onValueChange`).",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial body.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@1).",
+      "name": "onValueChange",
+      "type": "(markdown: string) => void"
+    },
+    {
+      "description": "Stores a pasted / dropped / chosen file (return `asset:<id>` if you like). An inline placeholder shows progress; failure offers Retry / Remove; deleting the placeholder aborts `signal`. Images become `![name](url)`, other files a link.",
+      "name": "upload",
+      "type": "(file: File, options: { signal: AbortSignal }) => Promise<{ url: string; name?: string }>"
+    },
+    {
+      "description": "The host's media library; the `/` Image row opens it instead of a file picker.",
+      "name": "pickMedia",
+      "type": "() => Promise<{ url: string; name?: string } | null>"
+    },
+    {
+      "description": "Refuse files with this message.",
+      "name": "uploadBlockedReason",
+      "type": "string | null"
+    },
+    {
+      "description": "`[[` suggestions from the host's page index; picking inserts `[[target|label]]`.",
+      "name": "suggestWikilinks",
+      "type": "(query: string) => WikilinkSuggestion[] | Promise<WikilinkSuggestion[]>"
+    },
+    {
+      "description": "Renders a block embed `![[target]]`; default is a labelled placeholder.",
+      "name": "renderEmbed",
+      "type": "(target: string) => ReactNode"
+    },
+    {
+      "description": "Resolves a stored image URL (`asset:<id>`) for display; the body keeps the original.",
+      "name": "resolveUrl",
+      "type": "(url: string) => string | undefined"
+    },
+    {
+      "description": "Extra `/` rows ({ key, label, icon, keywords?, run(api) }) — `api.insertMarkdown` inserts through the codec.",
+      "name": "actions",
+      "type": "BlockEditorAction[]"
+    },
+    {
+      "description": "Override any string (defaults: kit ja / en / vi).",
+      "name": "labels",
+      "type": "Partial<BlockEditorLabels>"
+    },
+    {
+      "description": "Not editable; the body still renders as Prose.",
+      "name": "disabled / readOnly",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "MarkdownEditor — a Textarea with Markdown tooling, for raw-Markdown editing.",
+    "Markdown — rendering a stored body (same grammar, renderer v4)."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/block-editor.tsx",
+  "tagline": "Notion / note.com style block editor (sibling package `@godxjp/block-editor`, versioned with the kit) that reads and writes MARKDOWN through `@godxjp/markdown/codec`: what onValueChange returns is byte-for-byte normalize(body). `/` block menu at the caret, ⋮⋮ handle (drag, turn into, duplicate, move, delete), floating format toolbar, `[[` wikilink suggestions, paste / drop uploads through the host, IME-safe, ja / en / vi (gh#1156).",
+  "usage": [
+    "DO store the Markdown it emits — it is already canonical; compute `normalize()` server-side from the same codec to verify.",
+    "DO give it a name: wrap in `FormField` or pass `aria-label` / `aria-labelledby` (the editable is a named `textbox`).",
+    "DO pass `upload` (and `pickMedia` for a library) instead of handling paste yourself.",
+    "DON'T render Markdown into it via HTML — pass `value`; HTML paste from other apps is handled by the schema.",
+    "Keyboard: `/` menu (↑↓ Enter Esc), Alt+Shift+↑/↓ moves a block, Mod+/ opens the block menu, Markdown shortcuts (`# `, `- `, `> `, ```` ``` ````, `---`)."
+  ]
+}

@@ -118,8 +118,10 @@ export function uploadNode(actions: {
       status: UploadState["status"];
     };
     return (
-      <NodeViewWrapper
-        as="span"
+      // A plain span, not NodeViewWrapper: Tiptap's wrapper spreads its `as` prop onto the DOM as an
+      // invalid attribute, and this inline view needs nothing else it adds (no drag).
+      <span
+        data-node-view-wrapper=""
         className="ui-block-editor-upload"
         data-status={status}
         contentEditable={false}
@@ -145,7 +147,7 @@ export function uploadNode(actions: {
             </Button>
           </>
         )}
-      </NodeViewWrapper>
+      </span>
     );
   }
   return Node.create({

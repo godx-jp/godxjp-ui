@@ -148,6 +148,8 @@ const componentPrefixes = {
     "scroll-area",
     "code-block",
     "prose",
+    // @godxjp/block-editor's surface is Prose; its two geometry knobs live beside Prose's (gh#1156).
+    "block-editor",
     "text-diff",
   ],
   // `record-picker` (gh#932) — RecordPicker: một control có Dialog riêng, và token duy nhất của
