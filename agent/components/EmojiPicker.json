@@ -47,6 +47,21 @@
       "description": "Replace the default trigger (e.g. the page icon drawn large).",
       "name": "trigger",
       "type": "ReactNode"
+    },
+    {
+      "description": "Disables the trigger.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Accessible name for the trigger; defaults to the localized \"Choose an icon\".",
+      "name": "aria-label",
+      "type": "string"
+    },
+    {
+      "description": "Id on the trigger button.",
+      "name": "id",
+      "type": "string"
     }
   ],
   "related": [

@@ -54,6 +54,11 @@
       "description": "Change / reposition / remove controls: over the bottom edge on a wide screen, BELOW the image on a phone (never on the focal area).",
       "name": "actions",
       "type": "ReactNode"
+    },
+    {
+      "description": "Id on the cover frame.",
+      "name": "id",
+      "type": "string"
     }
   ],
   "related": [
