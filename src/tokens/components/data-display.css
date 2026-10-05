@@ -108,6 +108,8 @@
   --block-editor-min-height: var(--band-height-3xl);
   /* The `/` and `[[` menus: wide enough for a label and its description, tall enough for ~8 rows
    * before the list scrolls. */
+  /* `appearance="framed"`: the inset between the frame and the text (the handle gutter is extra). */
+  --block-editor-frame-padding: var(--space-3);
   --block-editor-menu-inline-size: 16rem;
   --block-editor-menu-max-block-size: 20rem;
   --prose-code-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */

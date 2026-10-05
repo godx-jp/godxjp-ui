@@ -18,7 +18,7 @@ import {
 } from "@godxjp/ui/navigation";
 import { Button, Text } from "@godxjp/ui/general";
 
-import { Embed, RawBlock } from "./extensions";
+import { Embed, Frontmatter, RawBlock } from "./extensions";
 import { useLabel } from "./labels";
 
 /**
@@ -90,6 +90,65 @@ function RawBlockView({ node, editor, getPos, updateAttributes, selected }: Node
 
 export function rawBlockNode(): Node {
   return RawBlock.extend({ addNodeView: () => ReactNodeViewRenderer(RawBlockView) }) as Node;
+}
+
+/**
+ * The page's properties (YAML front matter, gh#1163): shown at the top as "Properties", editable
+ * as YAML. It stays front matter — never re-parsed into blocks.
+ */
+function FrontmatterView({ node, updateAttributes, editor, selected }: NodeViewProps) {
+  const label = useLabel();
+  const [editing, setEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState(node.attrs.source as string);
+  const commit = () => {
+    setEditing(false);
+    updateAttributes({ source: draft });
+  };
+  return (
+    <NodeViewWrapper
+      className="ui-block-editor-raw-block"
+      data-frontmatter=""
+      data-selected={selected ? "" : undefined}
+    >
+      <div className="ui-block-editor-raw-block-head" contentEditable={false}>
+        <Text size="xs" tone="muted">
+          {label("properties")}
+        </Text>
+        {editor.isEditable ? (
+          <Button
+            size="xs"
+            variant="ghost"
+            onClick={() =>
+              editing ? commit() : (setDraft(node.attrs.source as string), setEditing(true))
+            }
+          >
+            {editing ? label("done") : label("editSource")}
+          </Button>
+        ) : null}
+      </div>
+      {editing ? (
+        <Textarea
+          aria-label={label("properties")}
+          value={draft}
+          rows={Math.min(12, Math.max(3, draft.split("\n").length))}
+          onValueChange={setDraft}
+          onKeyDown={(event) => {
+            event.stopPropagation();
+            if (event.key === "Escape") commit();
+          }}
+          autoFocus
+        />
+      ) : (
+        <pre className="ui-block-editor-raw-block-source" contentEditable={false}>
+          {node.attrs.source as string}
+        </pre>
+      )}
+    </NodeViewWrapper>
+  );
+}
+
+export function frontmatterNode(): Node {
+  return Frontmatter.extend({ addNodeView: () => ReactNodeViewRenderer(FrontmatterView) }) as Node;
 }
 
 export function embedNode(render: ((target: string) => React.ReactNode) | undefined): Node {

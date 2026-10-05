@@ -18,8 +18,29 @@ export function blockStartAt(editor: Editor, pos: number): number | null {
   return $pos.before(1);
 }
 
+/**
+ * The selection the user HAS, not the one ProseMirror last synced. ProseMirror reads the DOM
+ * selection on `selectionchange`, which lands after a click or a Shift+→; a shortcut pressed in
+ * that gap (Alt+Shift+↑, Mod+K, Mod+/) would act on the previous caret. `posAtDOM` is public API.
+ */
+export function liveSelection(editor: Editor): { from: number; to: number } {
+  let { from, to } = editor.state.selection;
+  const dom = editor.view.dom.ownerDocument.getSelection();
+  if (dom?.anchorNode && dom.focusNode && editor.view.dom.contains(dom.anchorNode)) {
+    try {
+      const anchor = editor.view.posAtDOM(dom.anchorNode, dom.anchorOffset);
+      const head = editor.view.posAtDOM(dom.focusNode, dom.focusOffset);
+      from = Math.min(anchor, head);
+      to = Math.max(anchor, head);
+    } catch {
+      // A node outside the document's mapping (a node view's chrome): keep the synced selection.
+    }
+  }
+  return { from, to };
+}
+
 export function selectionBlockStart(editor: Editor): number | null {
-  return blockStartAt(editor, editor.state.selection.from);
+  return blockStartAt(editor, liveSelection(editor).from);
 }
 
 function nodeAt(editor: Editor, start: number) {

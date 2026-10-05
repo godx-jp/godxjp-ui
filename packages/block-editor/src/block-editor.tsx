@@ -7,7 +7,7 @@ import { normalize, parse, serialize, type DocNode } from "@godxjp/markdown/code
 import { Text } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
 
-import { BlockKeys, insertParagraphAfter } from "./blocks";
+import { BlockKeys, insertParagraphAfter, liveSelection } from "./blocks";
 import {
   builtinCommands,
   filterCommands,
@@ -27,7 +27,14 @@ import {
 import { SuggestionMenu, type SuggestionMenuItem } from "./suggestion-menu";
 import { FormatToolbar } from "./toolbar";
 import { EditDrawer, type EditTarget } from "./edit-drawer";
-import { calloutNode, columnsNode, embedNode, rawBlockNode, uploadNode } from "./views";
+import {
+  calloutNode,
+  columnsNode,
+  embedNode,
+  frontmatterNode,
+  rawBlockNode,
+  uploadNode,
+} from "./views";
 
 /** What the host's storage returns for one file — the same shape as MarkdownEditor's. */
 export type BlockEditorUploadResult = { url: string; name?: string };
@@ -81,6 +88,11 @@ export type BlockEditorProps = {
   actions?: readonly BlockEditorAction[];
   /** Override any string the editor renders (defaults: the kit's ja / en / vi catalogue). */
   labels?: Partial<BlockEditorLabels>;
+  /**
+   * `framed` (default): a field's border and padding, so the editor reads as an editor inside a
+   * form. `plain`: no frame — the borderless Notion-style canvas for a full-page editor.
+   */
+  appearance?: "framed" | "plain";
   disabled?: boolean;
   readOnly?: boolean;
   autoFocus?: boolean;
@@ -187,6 +199,7 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
       resolveUrl,
       actions = [],
       labels,
+      appearance = "framed",
       disabled = false,
       readOnly = false,
       autoFocus = false,
@@ -411,7 +424,7 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
     const editLinkAtSelection = React.useCallback(() => {
       const editor = editorRef.current;
       if (!editor) return;
-      const { from, to } = editor.state.selection;
+      const { from, to } = liveSelection(editor);
       const target = linkTargetAt(editor, from, { from, to });
       if (target) setEditTarget(target);
     }, [linkTargetAt]);
@@ -522,6 +535,7 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
           },
           embed: embedNode(renderEmbed),
           rawBlock: rawBlockNode(),
+          frontmatter: frontmatterNode(),
           callout: calloutNode(Callout),
           columns: columnsNode(Columns),
           toggleLabel: (open) => labelRef.current(open ? "collapseToggle" : "expandToggle"),
@@ -564,6 +578,17 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
             ? { "aria-labelledby": ariaLabelledby }
             : { "aria-label": ariaLabel ?? label("editor") }),
           ...(ariaDescribedby ? { "aria-describedby": ariaDescribedby } : {}),
+        },
+        // While editing, a link is TEXT, not a way out: the browser follows an <a href> even inside
+        // contenteditable, which left the page mid-edit and lost the work. Cancel the navigation and
+        // let ProseMirror see the click (it opens the link drawer). Read-only, links navigate.
+        handleDOMEvents: {
+          click: (view, event) => {
+            if (view.editable && (event.target as HTMLElement | null)?.closest?.("a[href]")) {
+              event.preventDefault();
+            }
+            return false;
+          },
         },
         // A click on a link or an image opens its settings drawer (text / URL / title; src / alt /
         // title). Read-only, links behave as links.
@@ -672,6 +697,7 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
             setHost(node);
           }}
           className={["ui-block-editor", className].filter(Boolean).join(" ")}
+          data-appearance={appearance}
           data-disabled={disabled ? "" : undefined}
         >
           {editor ? (

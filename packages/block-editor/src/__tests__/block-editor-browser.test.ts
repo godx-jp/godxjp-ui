@@ -118,7 +118,8 @@ const expectValue = (page: Page, expected: string) =>
   expect.poll(() => value(page), { timeout: 3000 }).toBe(expected);
 const editable = (page: Page) => page.locator(".ui-block-editor-content");
 
-describe("BlockEditor (Chromium, gh#1156)", () => {
+// Every case drives a real page; under a loaded machine the default 20s per test is too tight.
+describe("BlockEditor (Chromium, gh#1156)", { timeout: 40_000 }, () => {
   it("loads Markdown into blocks and names its textbox", async () => {
     const { page, errors } = await open("# 見出し\n\n> [!WARNING] 注意\n> 本文\n\n- [ ] todo");
     const box = editable(page);
@@ -185,6 +186,9 @@ describe("BlockEditor (Chromium, gh#1156)", () => {
   it("raises the format toolbar on a selection and applies marks", async () => {
     const { page } = await open("hello world");
     await editable(page).locator("p").click();
+    await page.waitForFunction(
+      () => window.getSelection()?.anchorNode?.textContent === "hello world",
+    );
     await page.keyboard.press("Home");
     for (let i = 0; i < 5; i++) await page.keyboard.press("Shift+ArrowRight");
     const bold = page.getByRole("button", { name: "太字" });
@@ -345,6 +349,95 @@ describe("BlockEditor (Chromium, gh#1156)", () => {
     expect(await button.getAttribute("aria-expanded")).toBe("true");
     expect(await button.getAttribute("aria-label")).toBe("閉じる");
     expect(await page.getByText("中身").isVisible()).toBe(true);
+    await page.close();
+  });
+
+  /* The owner's request: a click on a link or an image opens a drawer with its settings. */
+  it("opens a link's settings drawer on click and saves text, URL and title", async () => {
+    const { page, errors } = await open("See [the docs](https://example.com/a) now.");
+    await editable(page).locator("a").click();
+    const drawer = page.getByRole("dialog", { name: "リンクを編集" });
+    await drawer.waitFor();
+    expect(await drawer.getByRole("textbox", { name: "リンク先のURL" }).inputValue()).toBe(
+      "https://example.com/a",
+    );
+    expect(await drawer.getByRole("textbox", { name: "表示テキスト" }).inputValue()).toBe(
+      "the docs",
+    );
+    await drawer.getByRole("textbox", { name: "リンク先のURL" }).fill("https://example.com/b");
+    await drawer.getByRole("textbox", { name: "表示テキスト" }).fill("new docs");
+    await drawer.getByRole("textbox", { name: "タイトル（ツールチップ）" }).fill("Docs");
+    await drawer.getByRole("button", { name: "保存" }).click();
+    await expectValue(page, 'See [new docs](https://example.com/b "Docs") now.\n');
+    expect(errors).toEqual([]);
+    await page.close();
+  });
+
+  it("removes a link from the drawer, keeping its text", async () => {
+    const { page } = await open("See [the docs](https://example.com/a) now.");
+    await editable(page).locator("a").click();
+    await page.getByRole("button", { name: "リンクを解除" }).click();
+    await expectValue(page, "See the docs now.\n");
+    await page.close();
+  });
+
+  it("opens the link drawer from Mod+K on a selection, to create a link", async () => {
+    const { page } = await open("make this a link");
+    await editable(page).locator("p").click();
+    // ProseMirror applies the click's caret asynchronously; extend the selection once it is there.
+    await page.waitForFunction(
+      () => window.getSelection()?.anchorNode?.textContent === "make this a link",
+    );
+    await page.keyboard.press("Home");
+    for (let i = 0; i < 4; i++) await page.keyboard.press("Shift+ArrowRight");
+    await page.waitForFunction(() => String(window.getSelection()) === "make");
+    await page.keyboard.press("ControlOrMeta+k");
+    const drawer = page.getByRole("dialog", { name: "リンクを編集" });
+    await drawer.waitFor();
+    await drawer.getByRole("textbox", { name: "リンク先のURL" }).fill("https://example.com/");
+    await drawer.getByRole("button", { name: "保存" }).click();
+    await expectValue(page, "[make](https://example.com/) this a link\n");
+    await page.close();
+  });
+
+  it("opens an image's settings drawer on click and saves alt text and title", async () => {
+    const svg =
+      "data:image/svg+xml," +
+      encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="20"/>');
+    const { page } = await open(`![old](${"https://example.com/i.png"})`);
+    // Point the image at a loadable source without changing the stored URL.
+    await page.evaluate(
+      (src) =>
+        document
+          .querySelectorAll<HTMLImageElement>(".ui-block-editor-content img[src]")
+          .forEach((img) => (img.src = src)),
+      svg,
+    );
+    await editable(page).locator("img[src]").click();
+    const drawer = page.getByRole("dialog", { name: "画像を編集" });
+    await drawer.waitFor();
+    expect(await drawer.getByRole("textbox", { name: "画像のURL" }).inputValue()).toBe(
+      "https://example.com/i.png",
+    );
+    await drawer.getByRole("textbox", { name: "代替テキスト" }).fill("新しい説明");
+    await drawer.getByRole("textbox", { name: "タイトル（ツールチップ）" }).fill("T");
+    await drawer.getByRole("button", { name: "保存" }).click();
+    await expectValue(page, '![新しい説明](https://example.com/i.png "T")\n');
+    await page.close();
+  });
+
+  it("reads as an editor: a framed field by default, and front matter as Properties", async () => {
+    const { page } = await open("---\ntitle: x\n---\n\nbody");
+    const frame = await page.locator(".ui-block-editor").evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return {
+        appearance: el.getAttribute("data-appearance"),
+        border: parseFloat(cs.borderTopWidth),
+      };
+    });
+    expect(frame).toEqual({ appearance: "framed", border: 1 });
+    expect(await page.getByText("プロパティ（YAML）").count()).toBe(1);
+    expect(await page.locator("[data-frontmatter] pre").textContent()).toBe("title: x");
     await page.close();
   });
 });

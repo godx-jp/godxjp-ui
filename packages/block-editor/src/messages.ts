@@ -78,6 +78,7 @@ export const BLOCK_EDITOR_MESSAGES = {
     imageTitle: "タイトル（ツールチップ）",
     replaceImage: "画像を差し替え",
     removeImage: "画像を削除",
+    properties: "プロパティ（YAML）",
   },
   en: {
     editor: "Editor",
@@ -152,6 +153,7 @@ export const BLOCK_EDITOR_MESSAGES = {
     imageTitle: "Title (tooltip)",
     replaceImage: "Replace image",
     removeImage: "Remove image",
+    properties: "Properties (YAML)",
   },
   vi: {
     editor: "Trình soạn thảo",
@@ -225,6 +227,7 @@ export const BLOCK_EDITOR_MESSAGES = {
     imageTitle: "Tiêu đề (chú giải)",
     replaceImage: "Thay ảnh",
     removeImage: "Xoá ảnh",
+    properties: "Thuộc tính (YAML)",
   },
 } as const;
 

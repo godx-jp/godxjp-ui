@@ -1988,6 +1988,25 @@
     padding-inline-start: var(--block-editor-gutter-inline-size);
   }
 
+  /* `appearance="framed"` (default): it reads as a FIELD — the control border, radius and surface,
+   * the focus colour on the border while it holds the caret. `plain` keeps the bare canvas. */
+  .ui-block-editor[data-appearance="framed"] {
+    padding-block: var(--block-editor-frame-padding);
+    padding-inline-end: var(--block-editor-frame-padding);
+    border: var(--stroke-hairline) solid hsl(var(--input));
+    border-radius: var(--control-radius, var(--radius));
+    background-color: hsl(var(--background));
+    transition: border-color var(--duration-fast);
+  }
+
+  .ui-block-editor[data-appearance="framed"]:focus-within {
+    border-color: hsl(var(--ring));
+  }
+
+  .ui-block-editor[data-appearance="framed"][data-disabled] {
+    background-color: hsl(var(--muted));
+  }
+
   .ui-block-editor-content {
     min-block-size: var(--block-editor-min-height);
     outline: none;
