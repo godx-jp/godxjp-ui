@@ -55,7 +55,7 @@ so a narrow table scrolls instead of squashing them.
 
 ## Grammar v1 and the codec (`@godxjp/markdown/codec`)
 
-The renderer (`RENDERER_VERSION` 4), the codec and `@godxjp/block-editor` read one syntax, from one
+The renderer (`RENDERER_VERSION` 5), the codec and `@godxjp/block-editor` read one syntax, from one
 set of parsers, so a body means the same thing in the editor, on a server and on the page.
 
 ### Syntax

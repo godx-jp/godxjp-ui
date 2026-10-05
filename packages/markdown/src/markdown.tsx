@@ -27,7 +27,8 @@ export const MARKDOWN_FORMAT = "md";
 // 2 — tables render inside a scroll box (gh#1131).
 // 3 — short single-token table cells carry `data-short` (gh#1150).
 // 4 — grammar v1: callouts, toggles, columns; CJK-friendly emphasis (gh#1156).
-export const RENDERER_VERSION = 4;
+// 5 — YAML front matter renders nothing (was an <hr> + a setext <h2> of the YAML) (gh#1163).
+export const RENDERER_VERSION = 5;
 
 export type MarkdownProps = {
   /** The Markdown source. */
