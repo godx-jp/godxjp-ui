@@ -10,13 +10,14 @@ import { join } from "node:path";
 
 const ROOT = process.cwd();
 // packages/*/src: the packages versioned with the kit (gh#1108 / gh#1109) are catalogued too, under
-// their own `importPath` (`@godxjp/markdown`, `@godxjp/editor`).
+// their own `importPath` (`@godxjp/markdown`, `@godxjp/editor`, `@godxjp/block-editor`).
 const SCAN_DIRS = [
   "src/components",
   "src/app",
   "src/form",
   "packages/markdown/src",
   "packages/editor/src",
+  "packages/block-editor/src",
 ].map((d) => join(ROOT, d));
 const MCP_DATA = join(ROOT, "mcp/src/data/components.ts");
 

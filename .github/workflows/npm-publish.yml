@@ -110,11 +110,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # `gh api` reads the commit's check runs
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-      # The packages versioned with the kit (gh#1108 / gh#1109): @godxjp/markdown, @godxjp/editor.
+      # The packages versioned with the kit (gh#1108 / gh#1109 / gh#1156): @godxjp/markdown,
+      # @godxjp/editor, @godxjp/block-editor.
       # After the kit, never before — they depend on it. `always()` so a rerun whose release step
       # finds the kit already out still reaches this; the script itself refuses unless
       # @godxjp/ui@<version> is on the registry, and skips any package already published.
-      - name: Publish the packages beside the kit (markdown, editor)
+      - name: Publish the packages beside the kit (markdown, editor, block-editor)
         if: ${{ always() }}
         run: node scripts/publish-satellites.mjs --tag "$RELEASE_TAG"
         env:

@@ -90,7 +90,7 @@ set of parsers, so a body means the same thing in the editor, on a server and on
   (`::name`) directives — `10:30` is prose.
 
 - **Wikilinks and embeds, verbatim** — `[[target]]`, `[[target#heading]]`, `[[target|label]]`,
-  `![[embed]]` (a block when alone on its line). Inside a table cell write `[[x\|label]]`.
+  `![[embed]]` (a block when alone on its line; the inner text is kept verbatim — `![[B#見出し]]`, `![[img.png|300]]`). Marks around them survive (`**[[x]]**`). Inside a table cell write `[[x\|label]]`.
 - **`asset:` images** — `![alt](asset:id)` round-trips as written (the renderer resolves it through
   `resolveUrl`).
 - **Raw blocks** — anything the document does not model (raw HTML, footnote definitions, link

@@ -4,7 +4,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@godxjp/markdown": ["./packages/markdown/src/index.ts"],
+      "@godxjp/markdown/codec": ["./packages/markdown/src/codec/index.ts"],
       "@godxjp/editor": ["./packages/editor/src/index.ts"],
+      "@godxjp/block-editor": ["./packages/block-editor/src/index.ts"],
       "@godxjp/ui/i18n": ["./dist/i18n/index.d.ts"],
       "@godxjp/ui/*": ["./dist/components/*/index.d.ts"]
     }

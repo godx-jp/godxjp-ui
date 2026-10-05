@@ -191,4 +191,28 @@ describe("codec (gh#1156)", () => {
       "| 列     | b |\n| ------ | - |\n| 優先度 | 2 |\n",
     );
   });
+
+  it("keeps an embed's inner text verbatim — heading and size included", () => {
+    for (const embed of ["![[B#見出し]]", "![[img.png|300]]", "See ![[B#見出し]] inline."]) {
+      expect(normalize(embed)).toBe(`${embed}\n`);
+    }
+    expect(parse("![[B#見出し]]").content[0]).toMatchObject({
+      type: "embed",
+      attrs: { target: "B#見出し" },
+    });
+  });
+
+  it("keeps the marks around a wikilink, an embed, an image and a line break", () => {
+    for (const marked of [
+      "**[[強調リンク]]**",
+      "*[[Page|label]]* and ~~[[x]]~~",
+      "[![img](https://example.com/a.png)](https://example.com/)",
+      "**a\\\nb**",
+      "**see ![[inline]]**",
+    ]) {
+      const once = normalize(marked);
+      expect(once.trimEnd(), marked).toBe(marked);
+      expect(html(once), marked).toBe(html(marked));
+    }
+  });
 });

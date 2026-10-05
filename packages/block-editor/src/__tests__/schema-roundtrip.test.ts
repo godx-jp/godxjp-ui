@@ -16,7 +16,13 @@ const editor = () =>
       placeholder: "",
       headingPlaceholder: () => "",
       togglePlaceholder: "",
-      calloutTitles: { note: "Note", tip: "Tip", important: "Important", warning: "Warning", caution: "Caution" },
+      calloutTitles: {
+        note: "Note",
+        tip: "Tip",
+        important: "Important",
+        warning: "Warning",
+        caution: "Caution",
+      },
     }),
   });
 
@@ -32,6 +38,11 @@ const CASES = [
   "- [ ] todo\n- [x] done\n  - nested\n\n1. one\n2. two\n\n- loose\n\n- list",
   "```ts\nconst a = 1\n```\n\n```js title=x\nmeta\n```\n\n---\n\n## H2\n\n###### H6",
   "line one\\\nline two",
+  // Marks around inline atoms, and embeds with a heading or a size (pages' findings).
+  "**[[強調リンク]]**, *[[Page|label]]*, **see ![[inline]]**",
+  "[![img](https://example.com/a.png)](https://example.com/)",
+  "![[B#見出し]]\n\n![[img.png|300]]",
+  "**a\\\nb**",
   "",
 ];
 

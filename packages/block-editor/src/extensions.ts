@@ -1,4 +1,4 @@
-import { Extension, Node, mergeAttributes, type Extensions } from "@tiptap/core";
+import { Extension, Node, mergeAttributes, nodeInputRule, type Extensions } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
 import StarterKit from "@tiptap/starter-kit";
@@ -62,7 +62,13 @@ export const Callout = Node.create<{ titles: CalloutTitles }>({
   defining: true,
   addOptions() {
     return {
-      titles: { note: "Note", tip: "Tip", important: "Important", warning: "Warning", caution: "Caution" },
+      titles: {
+        note: "Note",
+        tip: "Tip",
+        important: "Important",
+        warning: "Warning",
+        caution: "Caution",
+      },
     };
   },
   addAttributes() {
@@ -112,7 +118,11 @@ export const Columns = Node.create({
     return [{ tag: 'div[data-type="columns"]' }];
   },
   renderHTML({ HTMLAttributes }) {
-    return ["div", mergeAttributes(HTMLAttributes, { "data-type": "columns", class: "ui-prose-columns" }), 0];
+    return [
+      "div",
+      mergeAttributes(HTMLAttributes, { "data-type": "columns", class: "ui-prose-columns" }),
+      0,
+    ];
   },
   addProseMirrorPlugins() {
     // The renderer writes each column's share as `--prose-column-grow`; the editor does the same
@@ -157,7 +167,11 @@ export const Column = Node.create({
     return [{ tag: 'div[data-type="column"]' }];
   },
   renderHTML({ HTMLAttributes }) {
-    return ["div", mergeAttributes(HTMLAttributes, { "data-type": "column", class: "ui-prose-column" }), 0];
+    return [
+      "div",
+      mergeAttributes(HTMLAttributes, { "data-type": "column", class: "ui-prose-column" }),
+      0,
+    ];
   },
 });
 
@@ -175,16 +189,41 @@ export const Wikilink = Node.create({
     return [{ tag: "span[data-wikilink]" }];
   },
   renderHTML({ node, HTMLAttributes }) {
-    const { target, heading, label } = node.attrs as { target: string; heading: string | null; label: string | null };
+    const { target, heading, label } = node.attrs as {
+      target: string;
+      heading: string | null;
+      label: string | null;
+    };
     return [
       "span",
-      mergeAttributes(HTMLAttributes, { "data-wikilink": target, class: "ui-block-editor-wikilink" }),
+      mergeAttributes(HTMLAttributes, {
+        "data-wikilink": target,
+        class: "ui-block-editor-wikilink",
+      }),
       label ?? (heading ? `${target}#${heading}` : target),
     ];
   },
   renderText({ node }) {
-    const { target, heading, label } = node.attrs as { target: string; heading: string | null; label: string | null };
+    const { target, heading, label } = node.attrs as {
+      target: string;
+      heading: string | null;
+      label: string | null;
+    };
     return `[[${target}${heading ? `#${heading}` : ""}${label ? `|${label}` : ""}]]`;
+  },
+  addInputRules() {
+    // Typing the closing `]]` turns `[[target#heading|label]]` into the link, as the codec reads it.
+    return [
+      nodeInputRule({
+        find: /(?<!!)\[\[([^[\]\n|#]+)(?:#([^[\]\n|]+))?(?:\|([^[\]\n]+))?\]\]$/,
+        type: this.type,
+        getAttributes: (match) => ({
+          target: match[1]!.trim(),
+          heading: match[2]?.trim() ?? null,
+          label: match[3] ?? null,
+        }),
+      }),
+    ];
   },
 });
 
@@ -202,12 +241,24 @@ export const EmbedInline = Node.create({
   renderHTML({ node, HTMLAttributes }) {
     return [
       "span",
-      mergeAttributes(HTMLAttributes, { "data-embed": node.attrs.target, class: "ui-block-editor-embed-inline" }),
+      mergeAttributes(HTMLAttributes, {
+        "data-embed": node.attrs.target,
+        class: "ui-block-editor-embed-inline",
+      }),
       `![[${node.attrs.target as string}]]`,
     ];
   },
   renderText({ node }) {
     return `![[${node.attrs.target as string}]]`;
+  },
+  addInputRules() {
+    return [
+      nodeInputRule({
+        find: /!\[\[([^[\]\n|#]+)\]\]$/,
+        type: this.type,
+        getAttributes: (match) => ({ target: match[1]!.trim() }),
+      }),
+    ];
   },
 });
 
@@ -225,7 +276,10 @@ export const RawInline = Node.create({
   renderHTML({ node, HTMLAttributes }) {
     return [
       "code",
-      mergeAttributes(HTMLAttributes, { "data-raw-inline": "", class: "ui-block-editor-raw-inline" }),
+      mergeAttributes(HTMLAttributes, {
+        "data-raw-inline": "",
+        class: "ui-block-editor-raw-inline",
+      }),
       node.attrs.source as string,
     ];
   },
@@ -249,7 +303,10 @@ export const Embed = Node.create({
   renderHTML({ node, HTMLAttributes }) {
     return [
       "div",
-      mergeAttributes(HTMLAttributes, { "data-embed": node.attrs.target, class: "ui-block-editor-embed" }),
+      mergeAttributes(HTMLAttributes, {
+        "data-embed": node.attrs.target,
+        class: "ui-block-editor-embed",
+      }),
       `![[${node.attrs.target as string}]]`,
     ];
   },
@@ -290,7 +347,10 @@ export function schemaExtensions(options: {
   /** Node views the component owns (React); omitted, the nodes render as plain HTML. */
   embed?: Node;
   rawBlock?: Node;
+  /** Resolves a stored image URL (`asset:<id>`) to one the browser can load; the doc keeps the original. */
+  resolveUrl?: (url: string) => string | undefined;
 }): Extensions {
+  const resolve = options.resolveUrl;
   return [
     StarterKit.configure({
       underline: false,
@@ -310,7 +370,15 @@ export function schemaExtensions(options: {
     TableHeader,
     TableCell,
     CellAlignment,
-    Image.configure({ inline: true, allowBase64: false }),
+    Image.extend({
+      renderHTML({ HTMLAttributes }) {
+        const src = HTMLAttributes.src as string | undefined;
+        return [
+          "img",
+          mergeAttributes(HTMLAttributes, src && resolve ? { src: resolve(src) ?? src } : {}),
+        ];
+      },
+    }).configure({ inline: true, allowBase64: false }),
     Details.configure({ persist: false }),
     DetailsSummary,
     DetailsContent,
@@ -325,7 +393,8 @@ export function schemaExtensions(options: {
     Placeholder.configure({
       includeChildren: true,
       placeholder: ({ node }) => {
-        if (node.type.name === "heading") return options.headingPlaceholder(node.attrs.level as number);
+        if (node.type.name === "heading")
+          return options.headingPlaceholder(node.attrs.level as number);
         if (node.type.name === "detailsSummary") return options.togglePlaceholder;
         return options.placeholder;
       },

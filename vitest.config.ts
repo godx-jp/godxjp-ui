@@ -108,10 +108,22 @@ export default defineConfig({
         extends: true,
         resolve: {
           alias: [
-            { find: /^@godxjp\/markdown$/, replacement: path.resolve(__dirname, "packages/markdown/src/index.ts") },
-            { find: /^@godxjp\/markdown\/codec$/, replacement: path.resolve(__dirname, "packages/markdown/src/codec/index.ts") },
-            { find: /^@godxjp\/ui\/i18n$/, replacement: path.resolve(__dirname, "src/i18n/index.ts") },
-            { find: /^@godxjp\/ui\/([a-z-]+)$/, replacement: path.resolve(__dirname, "src/components/$1/index.ts") },
+            {
+              find: /^@godxjp\/markdown$/,
+              replacement: path.resolve(__dirname, "packages/markdown/src/index.ts"),
+            },
+            {
+              find: /^@godxjp\/markdown\/codec$/,
+              replacement: path.resolve(__dirname, "packages/markdown/src/codec/index.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/i18n$/,
+              replacement: path.resolve(__dirname, "src/i18n/index.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/([a-z-]+)$/,
+              replacement: path.resolve(__dirname, "src/components/$1/index.ts"),
+            },
           ],
         },
         test: {

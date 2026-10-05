@@ -8,8 +8,11 @@ import { readCallout, readColumns, readToggle } from "./readers";
 import { fromMarkdownExtensions, micromarkExtensions } from "./syntax";
 import { toMarkdownOptions } from "./options";
 
-/** `[[target]]`, `[[target#heading]]`, `[[target|label]]`, `![[embed]]` — Obsidian/wiki form. */
-const WIKILINK = /(!?)\[\[([^[\]\n|#]+)(?:#([^[\]\n|]+))?(?:\|([^[\]\n]+))?\]\]/g;
+/**
+ * `![[embed]]` (inner text verbatim — `![[B#見出し]]`, `![[img.png|300]]`) or a wikilink:
+ * `[[target]]`, `[[target#heading]]`, `[[target|label]]`. Obsidian/wiki form.
+ */
+const WIKILINK = /!\[\[([^[\]\n]+)\]\]|\[\[([^[\]\n|#]+)(?:#([^[\]\n|]+))?(?:\|([^[\]\n]+))?\]\]/g;
 
 export function parseMdast(markdown: string): Root {
   return fromMarkdown(markdown, {
@@ -35,23 +38,31 @@ function text(value: string, marks: Mark[]): DocNode[] {
   for (const match of value.matchAll(WIKILINK)) {
     const at = match.index!;
     if (at > last) out.push(leafText(value.slice(last, at), marks));
-    const [, bang, target, heading, label] = match;
+    const [, embed, target, heading, label] = match;
     out.push(
-      bang
-        ? { type: "embedInline", attrs: { target: target!.trim() } }
-        : {
-            type: "wikilink",
-            attrs: {
-              target: target!.trim(),
-              heading: heading?.trim() ?? null,
-              label: label ?? null,
+      withMarks(
+        embed !== undefined
+          ? { type: "embedInline", attrs: { target: embed } }
+          : {
+              type: "wikilink",
+              attrs: {
+                target: target!.trim(),
+                heading: heading?.trim() ?? null,
+                label: label ?? null,
+              },
             },
-          },
+        marks,
+      ),
     );
     last = at + match[0].length;
   }
   if (last < value.length) out.push(leafText(value.slice(last), marks));
   return out;
+}
+
+/** An inline atom keeps the marks around it: `**[[x]]**`, `[![img](a)](b)`, `**a  \nb**`. */
+function withMarks(node: DocNode, marks: Mark[]): DocNode {
+  return marks.length ? { ...node, marks } : node;
 }
 
 function leafText(value: string, marks: Mark[]): DocNode {
@@ -78,16 +89,19 @@ function inline(nodes: PhrasingContent[], marks: Mark[] = []): DocNode[] {
         );
       case "image":
         return [
-          {
-            type: "image",
-            attrs: { src: node.url, alt: node.alt ?? "", title: node.title ?? null },
-          },
+          withMarks(
+            {
+              type: "image",
+              attrs: { src: node.url, alt: node.alt ?? "", title: node.title ?? null },
+            },
+            marks,
+          ),
         ];
       case "break":
-        return [{ type: "hardBreak" }];
+        return [withMarks({ type: "hardBreak" }, marks)];
       default:
         // inline HTML, footnote / link / image references
-        return [raw(node, true)];
+        return [withMarks(raw(node, true), marks)];
     }
   });
 }
@@ -95,7 +109,7 @@ function inline(nodes: PhrasingContent[], marks: Mark[] = []): DocNode[] {
 function paragraph(node: Paragraph): DocNode[] {
   const content = inline(node.children);
   // `![[x]]` alone in its paragraph is a BLOCK embed.
-  if (content.length === 1 && content[0]!.type === "embedInline") {
+  if (content.length === 1 && content[0]!.type === "embedInline" && !content[0]!.marks) {
     return [{ type: "embed", attrs: { ...content[0]!.attrs } }];
   }
   return [content.length ? { type: "paragraph", content } : { type: "paragraph" }];
