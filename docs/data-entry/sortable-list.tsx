@@ -10,7 +10,9 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * reordered by dragging a grip or by the keyboard, every step announced.
  */
 export default function Demo() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const list = new Intl.ListFormat(locale, { style: "narrow", type: "unit" });
+  const ordinal = new Intl.NumberFormat(locale);
   const widgets = [
     { value: "calendar", label: t("sortableListDocs.calendar") },
     { value: "mail", label: t("sortableListDocs.mail") },
@@ -44,16 +46,16 @@ export default function Demo() {
                   <Flex direction="col" gap="xs">
                     <Text weight="medium">{item.label}</Text>
                     <Text size="sm" tone="muted">
-                      {t("sortableListDocs.slot", { position: index + 1 })}
+                      {t("sortableListDocs.slot", { position: ordinal.format(index + 1) })}
                     </Text>
                   </Flex>
                 )}
               />
               <Text size="sm" tone="muted">
                 {t("sortableListDocs.saved", {
-                  order: order
-                    .map((key) => widgets.find((w) => w.value === key)?.label)
-                    .join(" → "),
+                  order: list.format(
+                    order.map((key) => widgets.find((w) => w.value === key)?.label ?? key),
+                  ),
                 })}
               </Text>
             </Flex>
