@@ -16865,6 +16865,73 @@ import { Text } from "@godxjp/ui/general";
     rules: [],
   },
   {
+    name: "SortableList",
+    group: "data-entry",
+    tagline:
+      'Reorder a flat list or a grid of tiles (gh#1173). Each item has a grip: drag it with a pointer (touch included — the grip sets touch-action: none), or focus it and press Space/Enter to lift, the arrows (Home / End) to move, Space/Enter to drop, Esc to cancel. Every step is spoken in a polite live region ("2 of 3"). The order is the value.',
+    props: [
+      {
+        name: "items",
+        type: "{ value: string; label: string; disabled?: boolean }[]",
+        required: true,
+        description:
+          "The rows to order. `label` is spoken in the grip's name and the announcements; a disabled item's grip is inert.",
+      },
+      {
+        name: "value",
+        type: "string[]",
+        description: "The item keys in order (controlled with onValueChange).",
+      },
+      { name: "defaultValue", type: "string[]", description: "Uncontrolled initial order." },
+      {
+        name: "onValueChange",
+        type: "(keys: string[]) => void",
+        description: "Called ONCE per drop with the new order — not on every preview step.",
+      },
+      {
+        name: "renderItem",
+        type: "(item, { index, dragging }) => ReactNode",
+        description: "Draws an item's content beside its grip. Default: the label.",
+      },
+      {
+        name: "layout",
+        type: '"list" | "grid"',
+        defaultValue: '"list"',
+        description:
+          "Stacked rows, or tiles auto-filled into columns (--sortable-list-grid-item-min-inline-size). The keyboard order is the same either way.",
+      },
+      { name: "disabled", type: "boolean", description: "Every grip is inert." },
+      { name: "aria-label", type: "string", description: "Accessible name of the list." },
+      { name: "id", type: "string", description: "Id on the root." },
+      { name: "className", type: "string", description: "Class on the root." },
+    ],
+    usage: [
+      "DO persist the order in onValueChange — it fires once per drop, so it is safe to save there.",
+      "DO give every item a human `label`: a screen reader hears it on lift, every move and drop.",
+      "DON'T nest SortableList, and don't put another drag gesture inside an item: the grip is the one drag surface.",
+      "Hierarchy (move INTO another node) is Tree `draggable`, not SortableList — this orders a flat list.",
+    ],
+    useCases: [
+      'Desktop / dashboard editor: reorder widget tiles (layout="grid").',
+      "Settings: order of tabs, columns, menu entries.",
+    ],
+    related: [
+      "Tree — `draggable` for moving nodes within a hierarchy.",
+      "Transfer — choose items, not order them.",
+    ],
+    example: `import { SortableList } from "@godxjp/ui/data-entry";
+
+<SortableList
+  aria-label="Widgets"
+  items={[{ value: "cal", label: "Calendar" }, { value: "mail", label: "Mail" }]}
+  value={order}
+  onValueChange={setOrder}
+/>`,
+    docPath: "docs/data-entry/sortable-list.tsx",
+    storyPath: "data-entry/sortable-list.tsx",
+    rules: [],
+  },
+  {
     name: "TwoFactorSetup",
     group: "feedback",
     tagline:

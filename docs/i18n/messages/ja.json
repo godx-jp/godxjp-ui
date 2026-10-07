@@ -1631,5 +1631,22 @@
     "label": "アイコン",
     "chosen": "選択中: {icon}",
     "none": "アイコンなし"
+  },
+  "sortableListDocs": {
+    "subtitle": "つまみをドラッグ、または Space・矢印・Space・Esc — 移動のたびに読み上げます",
+    "widgetsTitle": "ホームのウィジェット",
+    "widgetsDescription": "デスクトップのタイルを並べ替えます。順序は置いたときに一度だけ保存されます。",
+    "calendar": "カレンダー",
+    "mail": "メール",
+    "tasks": "タスク",
+    "notes": "メモ",
+    "slot": "{position} 番目",
+    "saved": "保存された順序: {order}",
+    "tabsTitle": "プロジェクトのタブ",
+    "tabsDescription": "リスト表示です。請求はプランで固定されているため持ち上げられませんが、ほかの項目はその前後に移動できます。",
+    "overview": "概要",
+    "members": "メンバー",
+    "billing": "請求",
+    "audit": "監査ログ"
   }
 }

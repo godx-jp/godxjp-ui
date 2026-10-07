@@ -4119,6 +4119,41 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  SortableListItemProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ValueProp", "LabelProp", "DisabledProp"],
+  },
+  SortableListProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "items",
+        local: true,
+        reason:
+          "The rows to order — key + spoken label + per-item disabled; not select options (nothing is chosen, the order is the value).",
+      },
+      {
+        field: "renderItem",
+        local: true,
+        reason: "Draws an item's content beside the grip, with its index and whether it is held.",
+      },
+      {
+        field: "layout",
+        local: true,
+        reason:
+          "list (stacked rows) vs grid (auto-filled tiles) — the same keyboard order either way; not OrientationProp, a grid is neither axis.",
+      },
+      { field: "aria-label", local: true, reason: "Accessible name of the list." },
+    ],
+  },
   EmojiPickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -4136,19 +4171,26 @@ export const COMPONENT_PROP_REGISTRY = {
       {
         field: "removable",
         local: true,
-        reason: "Whether \"remove icon\" is offered while a value is set — a picker for an OPTIONAL icon (gh#1164), not AllowClearProp's inline ✕ on a field.",
+        reason:
+          'Whether "remove icon" is offered while a value is set — a picker for an OPTIONAL icon (gh#1164), not AllowClearProp\'s inline ✕ on a field.',
       },
       {
         field: "recentsKey",
         local: true,
-        reason: "localStorage key the per-user recents are kept under, so two pickers (page icons, reactions) can keep separate lists.",
+        reason:
+          "localStorage key the per-user recents are kept under, so two pickers (page icons, reactions) can keep separate lists.",
       },
       {
         field: "trigger",
         local: true,
-        reason: "Replaces the default trigger button (a page icon drawn large, a reaction chip) — a ReactNode slot, not a TriggerProp mode.",
+        reason:
+          "Replaces the default trigger button (a page icon drawn large, a reaction chip) — a ReactNode slot, not a TriggerProp mode.",
       },
-      { field: "aria-label", local: true, reason: "Accessible name of the trigger and the popover." },
+      {
+        field: "aria-label",
+        local: true,
+        reason: "Accessible name of the trigger and the popover.",
+      },
     ],
   },
   TreeProp: {
