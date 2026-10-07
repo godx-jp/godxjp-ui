@@ -444,7 +444,7 @@
    * `muted`/`neutral` already read a text-tier neutral and stay where they are. */
   /* A data colour (gh#1189), set per item as --legend-swatch-color. */
   .ui-legend-swatch[data-color="true"] {
-    background: var(--legend-swatch-color);
+    background: var(--legend-swatch-color, hsl(var(--muted-foreground)));
   }
 
   .ui-legend-swatch[data-tone="default"] {
