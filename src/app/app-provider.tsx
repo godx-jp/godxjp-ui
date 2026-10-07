@@ -33,6 +33,7 @@ import {
 import { resolveDefaultTimeFormat } from "./time-format-labels";
 import { resolveDefaultTimezone, resolveHydrationSafeTimezone } from "./timezones";
 import {
+  APP_LOCALES,
   APP_REQUEST_HEADER_DATE_FORMAT,
   APP_REQUEST_HEADER_LOCALE,
   APP_REQUEST_HEADER_TIME_FORMAT,
@@ -158,13 +159,47 @@ export function AppProvider({
     [persistKey],
   );
 
+  /*
+   * Whether the viewer PICKED the date / time format (setDateFormat / setTimeFormat), as opposed to
+   * it being derived from the locale. Only a picked format is stored, with its flag, and only a
+   * derived one follows a language switch: storing a derived format froze it, so a page once seen in
+   * English kept printing MM/DD/YYYY under ja forever.
+   */
+  const formatChosenRef = React.useRef({ dateFormat: false, timeFormat: false });
+
   const commitPreferences = React.useCallback(() => {
     if (persistedAxes.size === 0) return;
-    writeStoredPreferences(storageKey, pickPersistedAxes(prefsRef.current, persistedAxes));
+    const out = pickPersistedAxes(prefsRef.current, persistedAxes);
+    if (out.dateFormat !== undefined) {
+      if (formatChosenRef.current.dateFormat) out.dateFormatChosen = true;
+      else delete out.dateFormat;
+    }
+    if (out.timeFormat !== undefined) {
+      if (formatChosenRef.current.timeFormat) out.timeFormatChosen = true;
+      else delete out.timeFormat;
+    }
+    writeStoredPreferences(storageKey, out);
   }, [persistedAxes, storageKey]);
 
   React.useEffect(() => {
-    const stored = pickPersistedAxes(readStoredPreferences(storageKey), persistedAxes);
+    const raw = readStoredPreferences(storageKey);
+    const stored = pickPersistedAxes(raw, persistedAxes);
+    // A stored format counts only when it was picked. An older kit stored derived ones too, with no
+    // flag: such a value is kept only when NO locale derives it (e.g. `iso`), because then it can
+    // only have been chosen; a value some locale defaults to (`mdy`, `24h`) is ambiguous and
+    // treated as derived, so it follows the language again.
+    if (!raw.dateFormatChosen && stored.dateFormat !== undefined) {
+      const derivable = APP_LOCALES.some((l) => resolveDefaultDateFormat(l) === stored.dateFormat);
+      if (derivable) delete stored.dateFormat;
+    }
+    if (!raw.timeFormatChosen && stored.timeFormat !== undefined) {
+      const derivable = APP_LOCALES.some((l) => resolveDefaultTimeFormat(l) === stored.timeFormat);
+      if (derivable) delete stored.timeFormat;
+    }
+    formatChosenRef.current = {
+      dateFormat: stored.dateFormat !== undefined,
+      timeFormat: stored.timeFormat !== undefined,
+    };
     const nextLocale = stored.locale ?? defaultLocale;
     const nextTimezone = stored.timezone ?? resolveDefaultTimezone(defaultTimezone, systemTimezone);
     const nextTimeFormat = resolveInitialTimeFormat(
@@ -258,10 +293,21 @@ export function AppProvider({
     (next: AppLocale) => {
       prefsRef.current = { ...prefsRef.current, locale: next };
       setLocaleState(next);
+      // A format the viewer never picked follows the language (gh#1202).
+      if (!formatChosenRef.current.dateFormat && defaultDateFormat === "locale") {
+        const derived = resolveDefaultDateFormat(next);
+        prefsRef.current = { ...prefsRef.current, dateFormat: derived };
+        setDateFormatState(derived);
+      }
+      if (!formatChosenRef.current.timeFormat && defaultTimeFormat === "locale") {
+        const derived = resolveDefaultTimeFormat(next);
+        prefsRef.current = { ...prefsRef.current, timeFormat: derived };
+        setTimeFormatState(derived);
+      }
       onLocaleChange?.(next);
       commitPreferences();
     },
-    [onLocaleChange, commitPreferences],
+    [onLocaleChange, commitPreferences, defaultDateFormat, defaultTimeFormat],
   );
 
   const setTimezone = React.useCallback(
@@ -276,6 +322,7 @@ export function AppProvider({
 
   const setTimeFormat = React.useCallback(
     (next: AppTimeFormat) => {
+      formatChosenRef.current.timeFormat = true;
       prefsRef.current = { ...prefsRef.current, timeFormat: next };
       setTimeFormatState(next);
       onTimeFormatChange?.(next);
@@ -286,6 +333,7 @@ export function AppProvider({
 
   const setDateFormat = React.useCallback(
     (next: AppDateFormat) => {
+      formatChosenRef.current.dateFormat = true;
       prefsRef.current = { ...prefsRef.current, dateFormat: next };
       setDateFormatState(next);
       onDateFormatChange?.(next);

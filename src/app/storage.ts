@@ -27,6 +27,13 @@ export type StoredAppPreferences = {
   fontSize?: AppFontSize;
   /** Continuous global size multiplier; `null` defers to the density preset. */
   scaling?: number | null;
+  /**
+   * The viewer PICKED the stored date / time format. A format derived from the locale is never
+   * stored as a choice, so it follows the next language switch; a value without this flag (written
+   * by an older kit) is treated as derived, not chosen.
+   */
+  dateFormatChosen?: boolean;
+  timeFormatChosen?: boolean;
 };
 
 /**
@@ -97,6 +104,8 @@ export function readStoredPreferences(storageKey: string): StoredAppPreferences 
         typeof parsed.scaling === "number" && Number.isFinite(parsed.scaling)
           ? parsed.scaling
           : undefined,
+      dateFormatChosen: parsed.dateFormatChosen === true ? true : undefined,
+      timeFormatChosen: parsed.timeFormatChosen === true ? true : undefined,
     };
   } catch {
     return {};

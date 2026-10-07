@@ -111,6 +111,9 @@ describe("AppProvider", () => {
       timezone: "UTC",
       timeFormat: "12h",
       dateFormat: "mdy",
+      // Picked by the viewer, so stored as chosen (gh#1202); a derived format is not stored at all.
+      timeFormatChosen: true,
+      dateFormatChosen: true,
       theme: "light",
       density: "default",
       fontSize: "default",
@@ -124,6 +127,8 @@ describe("AppProvider", () => {
       timezone: "Asia/Singapore",
       timeFormat: "12h",
       dateFormat: "iso",
+      timeFormatChosen: true,
+      dateFormatChosen: true,
     });
 
     const { result } = renderHook(() => useAppContext(), {

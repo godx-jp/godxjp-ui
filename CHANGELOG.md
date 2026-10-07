@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.3] - 2026-10-08
+
+### 🐛 Dates print in the page's language again (gh#1202)
+
+A Japanese user saw `10/02/2026`. Two causes, both fixed:
+
+- **The date / time format froze across a language switch.** `AppProvider` derived it from the
+  locale only at mount, and `persist` stored the derived value as if the viewer had chosen it, so a
+  browser once used in English kept MM/DD/YYYY under ja forever. A format now follows the language
+  until the viewer picks one with `setDateFormat` / `setTimeFormat`. Only a picked format is
+  stored, with a `dateFormatChosen` / `timeFormatChosen` flag. A value an older kit stored without
+  the flag is kept only when no locale derives it (e.g. `iso`, which can only have been chosen);
+  an ambiguous one such as `mdy` follows the language again, which heals the reported browser.
+- **With no `AppProvider`, formatting assumed `vi`.** The unsynced datetime context now reads
+  `<html lang>` at call time (region dropped, ja / en / vi), and keeps the provider default only
+  for a language the kit does not ship.
+
 ## [31.31.2] - 2026-10-08
 
 ### 🐛 `visual-audit` no longer reports screen-reader-only text as starved (gh#1200)
