@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.1] - 2026-10-07
+
+### 🐛 Four fixes from godx-task (gh#1198)
+
+- **`visual-audit` ran nothing through a symlinked `node_modules`.** Its main-module guard compared
+  `import.meta.url` with the unresolved `argv[1]`, so in a worktree whose `node_modules` is a
+  symlink it exited 0 and audited nothing, which reads exactly like a clean run. It now compares
+  real paths on both sides.
+- **`visual-audit` flagged the kit's own `EmptyState`** (`role="status"`) as
+  `alert-controls-misplaced`. The banner anatomy check now skips the EmptyState region.
+- **A `Segmented` inside a `FormField` was announced twice** ("区分 区分"). It received both the
+  visible label (`aria-labelledby`) and the same text as `aria-label`, and React Aria then prefixed
+  its own id. The visible label now wins, as it does for every other field control.
+- **`RecordPicker shape="inline"`: Enter submitted the surrounding form.** Enter now searches inside
+  the picker (it opens the search dialog with the typed text, like the 「検索」 button). An IME
+  commit is left alone.
+
 ## [31.31.0] - 2026-10-07
 
 ### ✨ RangeTimeline schedules: milestones, dependencies, baselines

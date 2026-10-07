@@ -143,6 +143,8 @@ export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(functio
     name,
     id,
     className,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
     ...props
   },
   ref,
@@ -164,6 +166,12 @@ export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(functio
       onChange={onValueChange}
       isDisabled={disabled}
       name={name}
+      // One name, never two. A FormField hands the group both its visible label (aria-labelledby)
+      // and the same text as aria-label; with both present React Aria prefixes the group's own id
+      // to aria-labelledby and a screen reader announces "区分 区分". The visible label wins, the
+      // same rule resolveFieldA11y applies to every other field control.
+      aria-labelledby={ariaLabelledBy}
+      aria-label={ariaLabelledBy ? undefined : ariaLabel}
       {...props}
     >
       {options.map((option) => (
