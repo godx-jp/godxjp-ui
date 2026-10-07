@@ -724,7 +724,9 @@
     "childRows": "子の行",
     "outsideAfter": "表示範囲より後",
     "outsideBefore": "表示範囲より前",
-    "schedule": "スケジュール"
+    "schedule": "スケジュール",
+    "noDates": "日付なし",
+    "resizeLabel": "ラベル列の幅を変更"
   },
   "chat": {
     "bubble": {

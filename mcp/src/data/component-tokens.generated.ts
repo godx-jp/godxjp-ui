@@ -3434,6 +3434,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--range-timeline-resizer-inline-size",
+    "value": "var(--space-6)",
+    "description": "Label-column resize divider (gh#1189): the hit area straddles the column border and meets WCAG 2.5.8's 24px; the visible rule is the border itself, thickened on hover/focus."
+  },
+  {
+    "name": "--range-timeline-resizer-active-width",
+    "value": "var(--stroke-md, 2px)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-busy-body-alpha",
+    "value": "0.55",
+    "description": "`busy` (gh#1189): how far the body dims while a new range loads, and the progress line."
+  },
+  {
+    "name": "--range-timeline-busy-line-block-size",
+    "value": "var(--stroke-md, 2px)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--range-timeline-unit-width",
     "value": "var(--range-timeline-unit-width-default)",
     "description": "Floor for ONE axis unit, so a day column never collapses; the live knob the canvas reads. `density` re-points it per instance at the three steps below — set THIS one in a theme to move every step's baseline, set a step to retune one density."

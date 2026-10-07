@@ -725,7 +725,9 @@
     "childRows": "Hàng con",
     "outsideAfter": "Sau khoảng đang xem",
     "outsideBefore": "Trước khoảng đang xem",
-    "schedule": "Lịch công việc"
+    "schedule": "Lịch công việc",
+    "noDates": "Chưa có ngày",
+    "resizeLabel": "Đổi độ rộng cột nhãn"
   },
   "chat": {
     "bubble": {

@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.30.0] - 2026-10-07
+
+### ✨ RangeTimeline: resizable label column, busy, rows without dates (gh#1189)
+
+For godx-task's Gantt, where the label column truncated titles and nothing could widen it.
+
+- **`resizableLabel`** (`true` or `{ min, max }`, default 160–640 px), with `labelWidth` /
+  `defaultLabelWidth` / `onLabelWidthChange`. It draws a `role="separator"` divider on the label
+  column's edge in the header: aria-valuenow/min/max, pointer drag, ArrowLeft/Right (Shift for a
+  32px step), Home/End, RTL-aware, and a 24px hit area. The width lands on
+  `--range-timeline-label-width`, so the header and every row widen together, and the token stays
+  the default until the user drags. Persist the width per user from `onLabelWidthChange`.
+- **`busy`**: `aria-busy`, a dimmed body (`--range-timeline-busy-body-alpha`) and an indeterminate
+  line under the header (static under `prefers-reduced-motion`), while the previous rows stay.
+- **Rows without dates**: `RangeTimelineRow.start` / `end` accept `null`. Such a row draws no bar and
+  no handles, and shows a muted "no dates" hint (ja / en / vi).
+
 ## [31.29.0] - 2026-10-07
 
 ### ✨ New

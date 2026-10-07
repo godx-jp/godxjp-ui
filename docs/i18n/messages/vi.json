@@ -1682,5 +1682,13 @@
   },
   "sidebarDocs": {
     "newEntry": "Thêm bút toán"
+  },
+  "rangeTimelineDocs": {
+    "resizeTitle": "Cột nhãn đổi độ rộng, đang tải, hàng chưa có ngày",
+    "resizeDescription": "Kéo vạch ngăn ở header (hoặc focus rồi dùng phím mũi tên, Shift để bước lớn, Home/End) để mở rộng cột nhãn. Độ rộng là prop controlled nên app có thể lưu theo từng người dùng. Công tắc đánh dấu đang tải khoảng mới; hàng chưa có ngày hiện gợi ý thay cho thanh.",
+    "busyToggle": "Đang tải khoảng mới",
+    "longTask": "EXSELI-81 Làm lại form liên hệ và email xác nhận",
+    "undatedTask": "EXSELI-82 Chưa lên lịch",
+    "width": "Cột nhãn: {width}px"
   }
 }

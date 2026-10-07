@@ -471,6 +471,13 @@
 
 :root {
   --range-timeline-label-width: var(--app-shell-sidebar-width);
+  /* Label-column resize divider (gh#1189): the hit area straddles the column border and meets
+   * WCAG 2.5.8's 24px; the visible rule is the border itself, thickened on hover/focus. */
+  --range-timeline-resizer-inline-size: var(--space-6);
+  --range-timeline-resizer-active-width: var(--stroke-md, 2px);
+  /* `busy` (gh#1189): how far the body dims while a new range loads, and the progress line. */
+  --range-timeline-busy-body-alpha: 0.55;
+  --range-timeline-busy-line-block-size: var(--stroke-md, 2px);
   /* Floor for ONE axis unit, so a day column never collapses; the live knob the canvas reads.
    * `density` re-points it per instance at the three steps below — set THIS one in a theme to
    * move every step's baseline, set a step to retune one density. */

@@ -749,7 +749,9 @@
     "childRows": "Child rows",
     "outsideAfter": "After the visible range",
     "outsideBefore": "Before the visible range",
-    "schedule": "Schedule"
+    "schedule": "Schedule",
+    "noDates": "No dates",
+    "resizeLabel": "Resize the label column"
   },
   "chat": {
     "bubble": {

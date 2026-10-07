@@ -1689,5 +1689,13 @@
   },
   "sidebarDocs": {
     "newEntry": "New journal entry"
+  },
+  "rangeTimelineDocs": {
+    "resizeTitle": "Resizable label column, loading, undated rows",
+    "resizeDescription": "Drag the divider in the header (or focus it and use the arrow keys, Shift for bigger steps, Home/End) to widen the label column. The width is controlled, so an app can remember it per user. The switch marks a range as loading; a row without dates shows a hint instead of a bar.",
+    "busyToggle": "Loading a new range",
+    "longTask": "EXSELI-81 Rebuild the contact form and its confirmation email",
+    "undatedTask": "EXSELI-82 Not scheduled yet",
+    "width": "Label column: {width}px"
   }
 }

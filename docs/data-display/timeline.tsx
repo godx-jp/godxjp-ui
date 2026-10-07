@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 
 import { useTranslation } from "@godxjp/ui/i18n";
 import {
@@ -11,6 +11,7 @@ import {
   RangeTimeline,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
+import { Switch } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { ArrowRightLeft, MessageSquare } from "lucide-react";
@@ -90,6 +91,7 @@ const richItems: TimelineItem[] = [
 
 export default function Demo() {
   const { t, locale } = useTranslation();
+  const [gantt, setGantt] = useState({ width: 280, busy: false });
   // An activity log (gh#1092): every row already happened, so none is "done" or "upcoming" —
   // `status: "log"` keeps the neutral dot and adds no screen-reader status prefix.
   const logItems: TimelineItem[] = [
@@ -268,6 +270,55 @@ export default function Demo() {
                 endLabel: dayLabel(row.end + 1),
               }))}
             />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("rangeTimelineDocs.resizeTitle")}</CardTitle>
+            <CardDescription>{t("rangeTimelineDocs.resizeDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <Switch
+                checked={gantt.busy}
+                onCheckedChange={(busy) => setGantt((state) => ({ ...state, busy }))}
+                aria-label={t("rangeTimelineDocs.busyToggle")}
+              />
+              <RangeTimeline
+                label={t("rangeTimeline.schedule")}
+                columns={Array.from({ length: 14 }, (_, index) => ({
+                  label: new Intl.NumberFormat(locale).format(index + 1),
+                  units: 1,
+                }))}
+                rows={[
+                  {
+                    id: "r1",
+                    label: t("rangeTimelineDocs.longTask"),
+                    start: 1,
+                    end: 6,
+                    startLabel: "",
+                    endLabel: "",
+                  },
+                  {
+                    id: "r2",
+                    label: t("rangeTimelineDocs.undatedTask"),
+                    start: null,
+                    end: null,
+                    startLabel: "",
+                    endLabel: "",
+                  },
+                ]}
+                resizableLabel={{ min: 180, max: 520 }}
+                labelWidth={gantt.width}
+                onLabelWidthChange={(width) => setGantt((state) => ({ ...state, width }))}
+                busy={gantt.busy}
+              />
+              <Text size="sm" tone="muted">
+                {t("rangeTimelineDocs.width", {
+                  width: new Intl.NumberFormat(locale).format(gantt.width),
+                })}
+              </Text>
+            </Flex>
           </CardContent>
         </Card>
 

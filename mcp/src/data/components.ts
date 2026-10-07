@@ -560,7 +560,7 @@ export const COMPONENTS: ComponentEntry[] = [
         type: "RangeTimelineRow[]",
         required: true,
         description:
-          "Each row has id, label, inclusive start/end unit offsets, and localized startLabel/endLabel including current values. Optional `depth` (0 = top level) nests rows: pass them flat and depth-first (a parent, then its descendants); a row is a parent when the row after it is deeper. The component indents the label cell by `--range-timeline-indent-width` per level (logical padding, so RTL indents from the right; the label column keeps its width) and gives each parent a disclosure button. With no `depth > 0` anywhere the markup is unchanged.",
+          'Each row has id, label, inclusive start/end unit offsets (`null` for either = the row has no dates: no bar, no handles, a muted "no dates" hint, gh#1189), and localized startLabel/endLabel including current values. Optional `depth` (0 = top level) nests rows: pass them flat and depth-first (a parent, then its descendants); a row is a parent when the row after it is deeper. The component indents the label cell by `--range-timeline-indent-width` per level (logical padding, so RTL indents from the right; the label column keeps its width) and gives each parent a disclosure button. With no `depth > 0` anywhere the markup is unchanged.',
       },
       { name: "today", type: "number | null", description: "Optional current unit marker." },
       {
@@ -607,6 +607,37 @@ export const COMPONENTS: ComponentEntry[] = [
         defaultValue: "false",
         description:
           "antd Table `sticky` — keep the axis header (bands + ticks) on screen while the PAGE scrolls a long schedule. `offsetHeader` is px from the top of the scrolling viewport (the height of a fixed app topbar). The header moves out of the horizontal scroller and follows its scrollLeft; the section becomes `overflow: clip` and the body scroller takes the keyboard tab stop. Like antd, it needs no clipping ancestor between the timeline and the page scroller: `Card` is `overflow: hidden`, so a sticky timeline goes in the page as its own section, not inside a Card. antd's `offsetScroll` / `getContainer` (sticky horizontal scrollbar) are not ported.",
+      },
+      {
+        name: "resizableLabel",
+        type: "boolean | { min?: number; max?: number }",
+        defaultValue: "false",
+        description:
+          "Let the user resize the label column by dragging a divider on its inline-end edge in the header (gh#1189): role=separator, aria-orientation vertical, aria-valuenow/min/max, ArrowLeft/Right (Shift = 32px step, else 8px), Home/End to min/max, RTL-aware, pointer drag. `true` = min 160 / max 640 px. The width lands on --range-timeline-label-width, so the token stays the default until the user drags.",
+      },
+      {
+        name: "labelWidth",
+        type: "number",
+        description:
+          "Controlled label-column width in px. Persist it per user from onLabelWidthChange.",
+      },
+      {
+        name: "defaultLabelWidth",
+        type: "number",
+        description: "Uncontrolled initial label-column width in px. Omitted: the token's width.",
+      },
+      {
+        name: "onLabelWidthChange",
+        type: "(width: number) => void",
+        description:
+          "Fires with the next label-column width (px, clamped) while dragging and on every key step.",
+      },
+      {
+        name: "busy",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "A new range is loading while the previous rows stay on screen: dims the body (--range-timeline-busy-body-alpha), draws an indeterminate line under the header (static under prefers-reduced-motion) and sets aria-busy.",
       },
     ],
     example:

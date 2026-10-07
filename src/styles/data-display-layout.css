@@ -2532,6 +2532,52 @@
   .ui-range-timeline-header {
     background: hsl(var(--muted));
   }
+  /* Label-column resizer (gh#1189). The label cell is already a positioned (sticky) box, so the
+   * divider sits on its inline-end edge, straddling the column border. */
+  .ui-range-timeline-label-resizer {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: calc(var(--range-timeline-resizer-inline-size) / -2);
+    z-index: 2;
+    inline-size: var(--range-timeline-resizer-inline-size);
+    cursor: col-resize;
+    touch-action: none;
+  }
+  .ui-range-timeline-label-resizer::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    inline-size: var(--range-timeline-resizer-active-width);
+    translate: -50% 0;
+    background: transparent;
+  }
+  .ui-range-timeline-label-resizer:hover::after,
+  .ui-range-timeline-label-resizer:focus-visible::after {
+    background: hsl(var(--primary));
+  }
+  .ui-range-timeline-label-resizer:focus-visible {
+    outline: none;
+  }
+  /* `busy` (gh#1189): the previous rows stay readable but recede, and a line under the header says
+   * a new range is on its way. */
+  .ui-range-timeline[data-busy="true"] .ui-range-timeline-body {
+    opacity: var(--range-timeline-busy-body-alpha);
+  }
+  .ui-range-timeline-busy {
+    position: relative;
+    overflow: hidden;
+    block-size: var(--range-timeline-busy-line-block-size);
+    background: hsl(var(--primary) / 0.2);
+  }
+  .ui-range-timeline-busy::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inline-size: 30%;
+    background: hsl(var(--primary));
+    animation: ui-range-timeline-busy var(--duration-slow, 1.2s) ease-in-out infinite;
+  }
   .ui-range-timeline-label {
     position: sticky;
     inset-inline-start: 0;
@@ -4098,5 +4144,23 @@
 
   .ui-image-preview-icon {
     display: contents;
+  }
+}
+
+@keyframes ui-range-timeline-busy {
+  from {
+    inset-inline-start: -30%;
+  }
+  to {
+    inset-inline-start: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-range-timeline-busy::before {
+    animation: none;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    opacity: 0.6;
   }
 }
