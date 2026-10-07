@@ -1696,6 +1696,9 @@
     "busyToggle": "Loading a new range",
     "longTask": "EXSELI-81 Rebuild the contact form and its confirmation email",
     "undatedTask": "EXSELI-82 Not scheduled yet",
-    "width": "Label column: {width}px"
+    "width": "Label column: {width}px",
+    "doneTask": "EXSELI-79 Release notes (done)",
+    "lateTask": "EXSELI-80 Data migration (overdue)",
+    "plannedTask": "EXSELI-84 Payment API (plan 3–7, actual 3–10)"
   }
 }

@@ -3484,6 +3484,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--range-timeline-bar-muted-alpha",
+    "value": "0.45",
+    "description": "Per-row bar state (gh#1189 follow-up): a done row recedes, an overdue row gets a danger edge that keeps its status colour. `--range-timeline-bar-color` / `-ink` are set per row from data."
+  },
+  {
+    "name": "--range-timeline-bar-overdue-width",
+    "value": "var(--stroke-md)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-plan-border-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Planned vs actual (予定 / 実績): the ghost outline of the plan, the overrun segment past it, and the early marker where the actual ends before it."
+  },
+  {
+    "name": "--range-timeline-early-marker-inline-size",
+    "value": "var(--stroke-md)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--range-timeline-border-color",
     "value": "var(--border)",
     "description": "The OUTER FRAME of the timeline and its label-column divider — the --border tier, the same rule weight a Card edge and a DataTable row use. The grid INSIDE it now reads the same tier (see --range-timeline-grid-color), which is the point of gh#730: the day grid may never be heavier than the frame around it, and at one tier it cannot become so under any theme."

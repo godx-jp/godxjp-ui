@@ -17,8 +17,9 @@ import { AppProvider } from "./src/app/app-provider";
 import { RangeTimeline } from "./src/components/data-display/range-timeline";
 const columns = Array.from({ length: 14 }, (_, d) => ({ label: String(d + 1), units: 1 }));
 const rows = [
-  { id: "a", label: "EXSELI-81 問い合わせフォームの改修", start: 1, end: 4, startLabel: "s", endLabel: "e" },
+  { id: "a", label: "EXSELI-81 問い合わせフォームの改修", start: 1, end: 4, startLabel: "s", endLabel: "e", color: "#fde68a", overdue: true },
   { id: "b", label: "EXSELI-82", start: null, end: null, startLabel: "s", endLabel: "e" },
+  { id: "c", label: "EXSELI-83", start: 2, end: 8, plan: { start: 2, end: 5 }, startLabel: "s", endLabel: "e" },
 ];
 createRoot(document.getElementById("root")).render(
   <AppProvider defaultLocale="ja" persist={false}>
@@ -93,6 +94,49 @@ describe("RangeTimeline label resize (Chromium, gh#1189)", { timeout: 40_000 }, 
     await page.mouse.move(box2.x + 500, y, { steps: 4 });
     await page.mouse.up();
     expect(new Set(await widths())).toEqual(new Set([400]));
+    await page.close();
+  });
+
+  it("paints the data colour, black ink on a light fill, and an overdue edge", async () => {
+    const page = await browser.newPage({ viewport: { width: 1200, height: 600 } });
+    await page.setContent(
+      `<!doctype html><html lang="ja"><head><style>${css}</style></head><body style="margin:0"><div id="root"></div><script>${js}</script></body></html>`,
+    );
+    await page.locator(".ui-range-timeline-bar").first().waitFor();
+    const m = await page.evaluate(() => {
+      const bar = document.querySelector<HTMLElement>(".ui-range-timeline-bar")!;
+      const style = getComputedStyle(bar);
+      return { background: style.backgroundColor, color: style.color, shadow: style.boxShadow };
+    });
+    expect(m.background).toBe("rgb(253, 230, 138)");
+    expect(m.color).toBe("rgb(0, 0, 0)");
+    expect(m.shadow).toContain("inset");
+    expect(m.shadow).not.toBe("none");
+    await page.close();
+  });
+
+  it("paints the plan as a dashed ghost and the overrun in the destructive tone", async () => {
+    const page = await browser.newPage({ viewport: { width: 1200, height: 600 } });
+    await page.setContent(
+      `<!doctype html><html lang="ja"><head><style>${css}</style></head><body style="margin:0"><div id="root"></div><script>${js}</script></body></html>`,
+    );
+    await page.locator(".ui-range-timeline-plan").waitFor();
+    const m = await page.evaluate(() => {
+      const plan = getComputedStyle(document.querySelector(".ui-range-timeline-plan")!);
+      const overrun = document.querySelector<HTMLElement>(".ui-range-timeline-overrun")!;
+      return {
+        planBorder: plan.borderTopStyle,
+        planBackground: plan.backgroundColor,
+        overrunBackground: getComputedStyle(overrun).backgroundColor,
+        overrunWidth: overrun.getBoundingClientRect().width,
+        label: overrun.textContent,
+      };
+    });
+    expect(m.planBorder).toBe("dashed");
+    expect(m.planBackground).toBe("rgba(0, 0, 0, 0)");
+    expect(m.overrunBackground).not.toBe("rgba(0, 0, 0, 0)");
+    expect(m.overrunWidth).toBeGreaterThan(0);
+    expect(m.label).toContain("+3日");
     await page.close();
   });
 });

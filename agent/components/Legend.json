@@ -5,7 +5,7 @@
   "name": "Legend",
   "props": [
     {
-      "description": "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents.",
+      "description": "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents. Each item is `{ tone, label }` or `{ color, label }`: `color` is a hex from data (user-chosen status colours, the same contract as Badge color and RangeTimelineRow color, gh#1189).",
       "name": "items",
       "required": true,
       "type": "{ tone: \"default\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"muted\" | \"neutral\"; label: ReactNode }[]"

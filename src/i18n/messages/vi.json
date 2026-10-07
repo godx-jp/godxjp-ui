@@ -743,7 +743,11 @@
     "outsideBefore": "Trước khoảng đang xem",
     "schedule": "Lịch công việc",
     "noDates": "Chưa có ngày",
-    "resizeLabel": "Đổi độ rộng cột nhãn"
+    "resizeLabel": "Đổi độ rộng cột nhãn",
+    "overdue": "Quá hạn",
+    "overrun": "Vượt kế hoạch",
+    "early": "Sớm hơn kế hoạch",
+    "lateBy": "+{n} ngày"
   },
   "chat": {
     "bubble": {

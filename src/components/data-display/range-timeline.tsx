@@ -2,6 +2,8 @@ import * as React from "react";
 import { useTranslation } from "../../i18n/use-translation";
 import { ChevronDown, ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
 import { Button } from "../general/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
+import { CONTRAST_PIVOT, relativeLuminance } from "../../app/tenant-theme";
 import { Text } from "../general/typography";
 import type { DensityProp } from "../../props/vocabulary";
 import { cn } from "../../lib/utils";
@@ -23,7 +25,44 @@ export type RangeTimelineRow = {
    * indent (`--range-timeline-indent-width` per level) and the disclosure.
    */
   depth?: number;
+  /**
+   * The bar's fill, a hex colour from data (the same contract as `Badge color`), e.g. the issue
+   * status colour. The grips' ink flips black or white from the colour's luminance, the same pivot
+   * `tenantTheme` uses for `--primary-foreground`; a value that is not a hex keeps the default ink.
+   */
+  color?: string;
+  /** De-emphasise a closed / done row's bar (`--range-timeline-bar-muted-alpha`), nothing else. */
+  muted?: boolean;
+  /**
+   * Mark the bar overdue: a destructive edge on its inline end that keeps `color`, plus a localized
+   * screen-reader "overdue" so the colour is never the only carrier.
+   */
+  overdue?: boolean;
+  /**
+   * Shown on hover and on keyboard focus of the bar (key, title, status, assignee, start → due).
+   * The bar gains a focusable layer named by the row label; the grips stay separate buttons.
+   */
+  tooltip?: React.ReactNode;
+  /**
+   * The PLANNED range (予定), drawn as a dashed ghost bar; `start` / `end` are then the ACTUAL range
+   * (実績), drawn solid. Past the planned end the actual bar carries a destructive overrun segment;
+   * ending before it, a small early marker. Both are also spoken.
+   */
+  plan?: { start: number | null; end: number | null } | null;
+  /**
+   * Text after an overrun segment. Default: the overrun in axis units, localized as days
+   * ("+3日" / "+3d" / "+3 ngày"), since a Gantt's unit is the day. `false` shows none.
+   */
+  varianceLabel?: React.ReactNode | false;
 };
+
+/** Black or white ink for a hex fill; `undefined` when the value cannot be measured. */
+function inkOn(color: string | undefined): string | undefined {
+  if (!color) return undefined;
+  const luminance = relativeLuminance(color);
+  if (luminance == null) return undefined;
+  return luminance > CONTRAST_PIVOT ? "black" : "white";
+}
 
 export type RangeTimelineProps = React.HTMLAttributes<HTMLElement> & {
   label: string;
@@ -341,6 +380,15 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
           const end = Math.max(rowStart, rowEnd + (preview?.edge === "end" ? delta : 0));
           const left = Math.max(0, start),
             right = Math.min(units, end + 1);
+          const plan =
+            dated && row.plan && row.plan.start !== null && row.plan.end !== null
+              ? (row.plan as { start: number; end: number })
+              : null;
+          const planLeft = plan ? Math.max(0, plan.start) : 0,
+            planRight = plan ? Math.min(units, plan.end + 1) : 0;
+          const overrun = plan !== null && end > plan.end;
+          const early = plan !== null && end < plan.end;
+          const overrunLeft = overrun ? Math.max(left, Math.min(units, plan!.end + 1)) : 0;
           return (
             <div
               className="ui-range-timeline-row"
@@ -387,7 +435,13 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                   </div>
                 </div>
               ) : (
-                <div className="ui-range-timeline-label">{row.label}</div>
+                <div
+                  className="ui-range-timeline-label"
+                  // Only a tooltip needs the label as a name, so the markup is unchanged otherwise.
+                  id={row.tooltip != null ? `${idBase}-label` : undefined}
+                >
+                  {row.label}
+                </div>
               )}
               <div className="ui-range-timeline-track">
                 {today != null && today >= 0 && today < units && (
@@ -421,14 +475,70 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                       <ChevronRight aria-hidden="true" className="ui-range-timeline-outside-icon" />
                     </span>
                   ))}
+                {plan && planRight > planLeft && (
+                  <span
+                    aria-hidden="true"
+                    className="ui-range-timeline-plan"
+                    style={{
+                      insetInlineStart: `${(planLeft / units) * 100}%`,
+                      inlineSize: `${((planRight - planLeft) / units) * 100}%`,
+                    }}
+                  />
+                )}
+                {overrun && right > overrunLeft && (
+                  <span
+                    className="ui-range-timeline-overrun"
+                    style={{
+                      insetInlineStart: `${(overrunLeft / units) * 100}%`,
+                      inlineSize: `${((right - overrunLeft) / units) * 100}%`,
+                    }}
+                  >
+                    <span className="sr-only">{t("rangeTimeline.overrun")}</span>
+                    {row.varianceLabel !== false && (
+                      <span className="ui-range-timeline-variance">
+                        {row.varianceLabel ??
+                          t("rangeTimeline.lateBy", { n: String(end - plan!.end) })}
+                      </span>
+                    )}
+                  </span>
+                )}
+                {early && right > left && right <= units && (
+                  <span
+                    className="ui-range-timeline-early"
+                    style={{ insetInlineStart: `${(right / units) * 100}%` }}
+                  >
+                    <span className="sr-only">{t("rangeTimeline.early")}</span>
+                  </span>
+                )}
                 {dated && right > left && (
                   <div
                     className="ui-range-timeline-bar"
-                    style={{
-                      insetInlineStart: `${(left / units) * 100}%`,
-                      inlineSize: `${((right - left) / units) * 100}%`,
-                    }}
+                    data-muted={row.muted ? "true" : undefined}
+                    data-overdue={row.overdue ? "true" : undefined}
+                    style={
+                      {
+                        insetInlineStart: `${(left / units) * 100}%`,
+                        inlineSize: `${((right - left) / units) * 100}%`,
+                        ...(row.color && {
+                          "--range-timeline-bar-color": row.color,
+                          "--range-timeline-bar-ink": inkOn(row.color),
+                        }),
+                      } as React.CSSProperties
+                    }
                   >
+                    {row.tooltip != null && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span
+                            className="ui-range-timeline-bar-hit ui-focus-ring"
+                            tabIndex={0}
+                            aria-labelledby={`${idBase}-label`}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>{row.tooltip}</TooltipContent>
+                      </Tooltip>
+                    )}
+                    {row.overdue && <span className="sr-only">{t("rangeTimeline.overdue")}</span>}
                     {onRangeChange &&
                       (right - left) * Math.max(1, columns.length) >= units &&
                       (["start", "end"] as const)

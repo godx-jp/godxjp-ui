@@ -493,6 +493,14 @@
   --range-timeline-unit-width-comfortable: calc(var(--control-height-sm) * 2.5);
   --range-timeline-row-height: var(--control-height-lg);
   --range-timeline-bar-height: var(--control-height-sm);
+  /* Per-row bar state (gh#1189 follow-up): a done row recedes, an overdue row gets a danger edge
+   * that keeps its status colour. `--range-timeline-bar-color` / `-ink` are set per row from data. */
+  --range-timeline-bar-muted-alpha: 0.45;
+  --range-timeline-bar-overdue-width: var(--stroke-md);
+  /* Planned vs actual (予定 / 実績): the ghost outline of the plan, the overrun segment past it, and
+   * the early marker where the actual ends before it. */
+  --range-timeline-plan-border-width: var(--stroke-hairline);
+  --range-timeline-early-marker-inline-size: var(--stroke-md);
   /* The OUTER FRAME of the timeline and its label-column divider — the --border tier, the same
    * rule weight a Card edge and a DataTable row use. The grid INSIDE it now reads the same tier
    * (see --range-timeline-grid-color), which is the point of gh#730: the day grid may never be

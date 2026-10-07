@@ -1689,6 +1689,9 @@
     "busyToggle": "Đang tải khoảng mới",
     "longTask": "EXSELI-81 Làm lại form liên hệ và email xác nhận",
     "undatedTask": "EXSELI-82 Chưa lên lịch",
-    "width": "Cột nhãn: {width}px"
+    "width": "Cột nhãn: {width}px",
+    "doneTask": "EXSELI-79 Ghi chú phát hành (xong)",
+    "lateTask": "EXSELI-80 Chuyển dữ liệu (quá hạn)",
+    "plannedTask": "EXSELI-84 API thanh toán (kế hoạch 3–7, thực tế 3–10)"
   }
 }

@@ -1,7 +1,12 @@
+import type * as React from "react";
 import { cn } from "../../lib/utils";
 import type { LegendProp } from "../../props/components/data-display.prop";
 
-export type { LegendItemProp, LegendProp, LegendProp as LegendProps } from "../../props/components/data-display.prop";
+export type {
+  LegendItemProp,
+  LegendProp,
+  LegendProp as LegendProps,
+} from "../../props/components/data-display.prop";
 
 /**
  * Legend — the KEY for a set of tones: which colour means what.
@@ -22,7 +27,17 @@ export function Legend({ items, className, ...props }: LegendProp) {
           list read top to bottom rather than a collection that reorders. */}
       {items.map((item, index) => (
         <li key={index} className="ui-legend-item">
-          <span className="ui-legend-swatch" data-tone={item.tone} aria-hidden="true" />
+          <span
+            className="ui-legend-swatch"
+            data-tone={item.color ? undefined : item.tone}
+            data-color={item.color ? "true" : undefined}
+            style={
+              item.color
+                ? ({ "--legend-swatch-color": item.color } as React.CSSProperties)
+                : undefined
+            }
+            aria-hidden="true"
+          />
           {item.label}
         </li>
       ))}

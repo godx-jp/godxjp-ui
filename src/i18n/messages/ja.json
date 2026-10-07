@@ -742,7 +742,11 @@
     "outsideBefore": "表示範囲より前",
     "schedule": "スケジュール",
     "noDates": "日付なし",
-    "resizeLabel": "ラベル列の幅を変更"
+    "resizeLabel": "ラベル列の幅を変更",
+    "overdue": "期限超過",
+    "overrun": "予定超過",
+    "early": "予定より早く完了",
+    "lateBy": "+{n}日"
   },
   "chat": {
     "bubble": {

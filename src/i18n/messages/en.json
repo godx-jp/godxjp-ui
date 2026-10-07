@@ -767,7 +767,11 @@
     "outsideBefore": "Before the visible range",
     "schedule": "Schedule",
     "noDates": "No dates",
-    "resizeLabel": "Resize the label column"
+    "resizeLabel": "Resize the label column",
+    "overdue": "Overdue",
+    "overrun": "Over the plan",
+    "early": "Ahead of the plan",
+    "lateBy": "+{n}d"
   },
   "chat": {
     "bubble": {

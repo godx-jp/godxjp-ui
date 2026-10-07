@@ -442,6 +442,11 @@
    * be the same colour as the bar. On FILL it measured 1.74:1 (warning) / 2.18:1 (success) on a
    * light card and 2.95:1 (destructive) on a dark one, all below the 3:1 non-text floor.
    * `muted`/`neutral` already read a text-tier neutral and stay where they are. */
+  /* A data colour (gh#1189), set per item as --legend-swatch-color. */
+  .ui-legend-swatch[data-color="true"] {
+    background: var(--legend-swatch-color);
+  }
+
   .ui-legend-swatch[data-tone="default"] {
     background: hsl(
       var(
@@ -2713,10 +2718,70 @@
       --radius-sm,
       calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
     );
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    background: var(--range-timeline-bar-color, hsl(var(--primary)));
+    color: var(--range-timeline-bar-ink, hsl(var(--primary-foreground)));
+  }
+  /* Planned vs actual. The plan is a dashed ghost the same height as the bar, behind it; the
+   * overrun covers the actual bar from the planned end on; the early marker is a notch at the actual
+   * end. All three share the bar's vertical centring. */
+  .ui-range-timeline-plan,
+  .ui-range-timeline-overrun,
+  .ui-range-timeline-early {
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    block-size: var(--range-timeline-bar-height);
+  }
+  .ui-range-timeline-plan {
+    border: var(--range-timeline-plan-border-width) dashed hsl(var(--foreground) / 0.45);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
+  }
+  .ui-range-timeline-overrun {
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: visible;
+    background: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+    pointer-events: none;
+  }
+  .ui-range-timeline-variance {
+    position: absolute;
+    inset-inline-start: 100%;
+    padding-inline: var(--space-1);
+    color: hsl(var(--text-error));
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+  }
+  .ui-range-timeline-early {
+    z-index: 1;
+    inline-size: var(--range-timeline-early-marker-inline-size);
+    background: hsl(var(--success));
+    pointer-events: none;
+  }
+  .ui-range-timeline-bar[data-muted="true"] {
+    opacity: var(--range-timeline-bar-muted-alpha);
+  }
+  .ui-range-timeline-bar[data-overdue="true"] {
+    box-shadow: inset calc(-1 * var(--range-timeline-bar-overdue-width)) 0 0 hsl(var(--destructive));
+  }
+  [dir="rtl"] .ui-range-timeline-bar[data-overdue="true"] {
+    box-shadow: inset var(--range-timeline-bar-overdue-width) 0 0 hsl(var(--destructive));
+  }
+  /* The tooltip's focus target (gh#1189): a layer over the bar BESIDE the grips, never around
+   * them, so no interactive element nests another. The grips sit above it. */
+  .ui-range-timeline-bar-hit {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
   }
   .ui-range-timeline-handle {
+    z-index: 1;
     position: absolute;
     inset-block: 0;
     min-inline-size: 0;

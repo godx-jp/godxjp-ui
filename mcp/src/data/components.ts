@@ -560,7 +560,7 @@ export const COMPONENTS: ComponentEntry[] = [
         type: "RangeTimelineRow[]",
         required: true,
         description:
-          'Each row has id, label, inclusive start/end unit offsets (`null` for either = the row has no dates: no bar, no handles, a muted "no dates" hint, gh#1189), and localized startLabel/endLabel including current values. Optional `depth` (0 = top level) nests rows: pass them flat and depth-first (a parent, then its descendants); a row is a parent when the row after it is deeper. The component indents the label cell by `--range-timeline-indent-width` per level (logical padding, so RTL indents from the right; the label column keeps its width) and gives each parent a disclosure button. With no `depth > 0` anywhere the markup is unchanged.',
+          'Each row has id, label, inclusive start/end unit offsets (`null` for either = the row has no dates: no bar, no handles, a muted "no dates" hint, gh#1189), optional `color` (hex from data, e.g. a status colour; grip ink flips black/white by luminance; non-hex keeps the default ink), `muted` (a done row recedes, --range-timeline-bar-muted-alpha), `overdue` (destructive inline-end edge that keeps the colour, plus a localized sr-only "overdue"), `tooltip` (ReactNode on hover and keyboard focus of a focusable bar layer named by the row label, beside the grips, never around them), `plan` ({ start, end } | null — the PLANNED range 予定, a dashed ghost bar behind the solid ACTUAL bar 実績; past the planned end a destructive overrun segment with a localized "+N日" label (override with `varianceLabel`, `false` hides it); ending before it a small success early marker; both also spoken; the ghost is never draggable), and localized startLabel/endLabel including current values. Optional `depth` (0 = top level) nests rows: pass them flat and depth-first (a parent, then its descendants); a row is a parent when the row after it is deeper. The component indents the label cell by `--range-timeline-indent-width` per level (logical padding, so RTL indents from the right; the label column keeps its width) and gives each parent a disclosure button. With no `depth > 0` anywhere the markup is unchanged.',
       },
       { name: "today", type: "number | null", description: "Optional current unit marker." },
       {
@@ -5071,7 +5071,7 @@ import { Button } from "@godxjp/ui/general";
         type: '{ tone: "default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"; label: ReactNode }[]',
         required: true,
         description:
-          "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents.",
+          "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents. Each item is `{ tone, label }` or `{ color, label }`: `color` is a hex from data (user-chosen status colours, the same contract as Badge color and RangeTimelineRow color, gh#1189).",
       },
       {
         name: "className",
@@ -15298,8 +15298,9 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       },
       {
         name: "labels",
-        type: "{ weak: string; fair: string; strong: string }",
-        description: "Text labels for the three score buckets.",
+        type: "{ weak?: string; fair?: string; strong?: string; rules?: Partial<Record<PasswordRule, string>>; passed?: string; failed?: string; announcement?: (strength: string) => string }",
+        description:
+          "Every visible and screen-reader string, each optional (gh#1191). Unset entries come from the kit's own ja / en / vi catalogue for the active locale, so most apps pass nothing: the score words, the checklist line per rule (length / upper / lower / number / symbol), the sr-only passed / failed prefixes, and the polite live-region sentence (`announcement(strength)`). Pass only the ones your product words differently.",
       },
     ],
     usage: [

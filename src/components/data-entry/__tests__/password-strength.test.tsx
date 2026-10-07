@@ -3,10 +3,11 @@ import { render as rtlRender, renderHook, screen } from "@testing-library/react"
 import type * as React from "react";
 
 import { AppProvider } from "../../../app/app-provider";
+import type { AppLocale } from "../../../app/types";
 import { PasswordStrength, usePasswordStrength } from "../password-strength";
 
 // The strings come from the kit catalogue for the active locale (gh#1191); these cases read English.
-const render = (ui: React.ReactElement, locale = "en") =>
+const render = (ui: React.ReactElement, locale: AppLocale = "en") =>
   rtlRender(
     <AppProvider persist={false} defaultLocale={locale} fallbackLocale="en">
       {ui}
