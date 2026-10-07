@@ -501,6 +501,19 @@
    * the early marker where the actual ends before it. */
   --range-timeline-plan-border-width: var(--stroke-hairline);
   --range-timeline-early-marker-inline-size: var(--stroke-md);
+  /* Schedules: a milestone diamond, a finish-only tick, a one-sided plan tick, an open end's fade,
+   * a cancelled hatch, dependency connectors and the row emphasis accent. */
+  --range-timeline-milestone-size: var(--range-timeline-bar-height);
+  --range-timeline-finish-inline-size: calc(var(--stroke-md) * 2);
+  --range-timeline-plan-tick-inline-size: var(--stroke-md);
+  --range-timeline-open-end-fade-inline-size: var(--space-6);
+  --range-timeline-cancelled-hatch-gap: var(--space-1);
+  --range-timeline-cancelled-hatch-line-width: var(--stroke-md);
+  --range-timeline-cancelled-hatch-color: initial; /* default = hsl(var(--foreground) / 0.45), resolved at the call site */
+  --range-timeline-link-color: initial; /* default = hsl(var(--muted-foreground)), resolved at the call site */
+  --range-timeline-link-width: var(--stroke-hairline);
+  --range-timeline-link-violation-size: var(--space-6);
+  --range-timeline-emphasis-width: var(--stroke-md);
   /* The OUTER FRAME of the timeline and its label-column divider — the --border tier, the same
    * rule weight a Card edge and a DataTable row use. The grid INSIDE it now reads the same tier
    * (see --range-timeline-grid-color), which is the point of gh#730: the day grid may never be

@@ -747,7 +747,17 @@
     "overdue": "Quá hạn",
     "overrun": "Vượt kế hoạch",
     "early": "Sớm hơn kế hoạch",
-    "lateBy": "+{n} ngày"
+    "lateBy": "+{n} ngày",
+    "startUnknown": "Chưa rõ ngày bắt đầu",
+    "openEnd": "Chưa ghi nhận hoàn thành",
+    "cancelled": "Đã hủy",
+    "overrunVs": "Chậm {n} ngày so với {plan}",
+    "earlyVs": "Sớm {n} ngày so với {plan}",
+    "earlyBy": "-{n} ngày",
+    "dependencyViolated": "Vi phạm phụ thuộc",
+    "dependencyViolatedWith": "Vi phạm phụ thuộc: {label}",
+    "emphasisWarning": "Có rủi ro",
+    "emphasisCritical": "Đường găng"
   },
   "chat": {
     "bubble": {

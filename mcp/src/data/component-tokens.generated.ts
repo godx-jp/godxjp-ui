@@ -3504,6 +3504,61 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--range-timeline-milestone-size",
+    "value": "var(--range-timeline-bar-height)",
+    "description": "Schedules: a milestone diamond, a finish-only tick, a one-sided plan tick, an open end's fade, a cancelled hatch, dependency connectors and the row emphasis accent."
+  },
+  {
+    "name": "--range-timeline-finish-inline-size",
+    "value": "calc(var(--stroke-md) * 2)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-plan-tick-inline-size",
+    "value": "var(--stroke-md)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-open-end-fade-inline-size",
+    "value": "var(--space-6)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-cancelled-hatch-gap",
+    "value": "var(--space-1)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-cancelled-hatch-line-width",
+    "value": "var(--stroke-md)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-cancelled-hatch-color",
+    "value": "initial",
+    "description": "default = hsl(var(--foreground) / 0.45), resolved at the call site"
+  },
+  {
+    "name": "--range-timeline-link-color",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground)), resolved at the call site"
+  },
+  {
+    "name": "--range-timeline-link-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-link-violation-size",
+    "value": "var(--space-6)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-emphasis-width",
+    "value": "var(--stroke-md)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--range-timeline-border-color",
     "value": "var(--border)",
     "description": "The OUTER FRAME of the timeline and its label-column divider — the --border tier, the same rule weight a Card edge and a DataTable row use. The grid INSIDE it now reads the same tier (see --range-timeline-grid-color), which is the point of gh#730: the day grid may never be heavier than the frame around it, and at one tier it cannot become so under any theme."

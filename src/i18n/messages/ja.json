@@ -746,7 +746,17 @@
     "overdue": "期限超過",
     "overrun": "予定超過",
     "early": "予定より早く完了",
-    "lateBy": "+{n}日"
+    "lateBy": "+{n}日",
+    "startUnknown": "開始日不明",
+    "openEnd": "完了未記録",
+    "cancelled": "中止",
+    "overrunVs": "{plan}より{n}日遅れ",
+    "earlyVs": "{plan}より{n}日早い",
+    "earlyBy": "-{n}日",
+    "dependencyViolated": "依存関係の違反",
+    "dependencyViolatedWith": "依存関係の違反：{label}",
+    "emphasisWarning": "要注意",
+    "emphasisCritical": "クリティカルパス"
   },
   "chat": {
     "bubble": {
