@@ -3434,6 +3434,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--range-timeline-label-max-inline-size",
+    "value": "60cqi",
+    "description": "The most of the timeline's own width the label column may take (a cqi share), so bars and the resize divider stay on screen on a phone."
+  },
+  {
     "name": "--range-timeline-resizer-inline-size",
     "value": "var(--space-6)",
     "description": "Label-column resize divider (gh#1189): the hit area straddles the column border and meets WCAG 2.5.8's 24px; the visible rule is the border itself, thickened on hover/focus."

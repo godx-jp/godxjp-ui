@@ -139,4 +139,24 @@ describe("RangeTimeline label resize (Chromium, gh#1189)", { timeout: 40_000 }, 
     expect(m.label).toContain("+3日");
     await page.close();
   });
+
+  it("caps the label column on a phone so the bars and the resize divider stay on screen", async () => {
+    // gh#1184 geometry sweep: a 240px column on a narrower timeline put the divider, which lives in
+    // the sticky label cell, beyond any scroll. The column now takes at most 60% of the timeline.
+    const page = await browser.newPage({ viewport: { width: 320, height: 600 } });
+    await page.setContent(
+      `<!doctype html><html lang="ja"><head><style>${css}</style></head><body style="margin:0;padding:8px"><div id="root"></div><script>${js}</script></body></html>`,
+    );
+    const separator = page.getByRole("separator");
+    await separator.waitFor();
+    const m = await page.evaluate(() => {
+      const section = document.querySelector(".ui-range-timeline")!.getBoundingClientRect();
+      const label = document.querySelector(".ui-range-timeline-label")!.getBoundingClientRect();
+      const handle = document.querySelector('[role="separator"]')!.getBoundingClientRect();
+      return { section, label, handle };
+    });
+    expect(m.label.width).toBeLessThanOrEqual(m.section.width * 0.6 + 1);
+    expect(m.handle.right).toBeLessThanOrEqual(m.section.right + 1);
+    await page.close();
+  });
 });

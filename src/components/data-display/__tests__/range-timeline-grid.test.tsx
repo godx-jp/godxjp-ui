@@ -182,7 +182,7 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
     expect(grid).toMatch(/pointer-events:\s*none;/);
     // Same template as the header/row, so the track region starts at the same x.
     expect(grid).toContain(
-      "grid-template-columns: var(--range-timeline-label-width) minmax(0, 1fr);",
+      "grid-template-columns: var(--range-timeline-label-track) minmax(0, 1fr);",
     );
   });
 
