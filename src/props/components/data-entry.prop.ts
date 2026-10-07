@@ -2545,6 +2545,42 @@ export type AttachmentsRefProp = {
   select: (options?: { accept?: string; multiple?: boolean }) => void;
 };
 
+/** One row of a {@link SortableListProp}: its key (`value`), and the name the announcements speak. */
+export type SortableListItemProp = {
+  /** Stable key — the order is reported as these keys. */
+  value: string;
+  /** Spoken in the handle's name and the live announcements; rendered when there is no `renderItem`. */
+  label: string;
+  /** This item's grip is inert; other items still move past it. */
+  disabled?: boolean;
+};
+
+/**
+ * @see SortableList — reorder a flat list or a grid of tiles (gh#1173): pointer drag on each
+ * item's grip, or the keyboard (Space/Enter lift, arrows / Home / End move, Space/Enter drop, Esc
+ * cancel), with every step announced politely ("2 / 3"). The order is the value.
+ */
+export type SortableListProp = {
+  items: SortableListItemProp[];
+  /** The item keys in order. Controlled with `onValueChange`; keys not in `items` are ignored. */
+  value?: ValueProp<string[]>;
+  defaultValue?: DefaultValueProp<string[]>;
+  /** Called once per drop with the keys in their new order (not on every preview step). */
+  onValueChange?: OnValueChangeProp<string[]>;
+  /** Draws an item's content beside its grip. Default: the item's `label`. */
+  renderItem?: (
+    item: SortableListItemProp,
+    state: { index: number; dragging: boolean },
+  ) => React.ReactNode;
+  /** `list` stacks rows; `grid` flows tiles into auto-filled columns. Default `list`. */
+  layout?: "list" | "grid";
+  disabled?: DisabledProp;
+  /** Accessible name of the list. */
+  "aria-label"?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
 /**
  * @see EmojiPicker — a page icon / reaction picker (gh#1164): search by ja / en / vi keywords
  * (emojibase-data, loaded for the active locale on first open), categories, per-user recents, a

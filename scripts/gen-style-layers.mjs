@@ -111,6 +111,7 @@ const OWNERS = {
     "Command",
     "CommandPalette",
     "EmojiPicker",
+    "SortableList",
     "Transfer",
     "Select",
     "Cascader",

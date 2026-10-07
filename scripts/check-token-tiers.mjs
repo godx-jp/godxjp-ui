@@ -88,6 +88,7 @@ const componentPrefixes = {
     "color-picker",
     "command",
     "emoji-picker",
+    "sortable-list",
     "search-input",
     "toggle",
     "button",

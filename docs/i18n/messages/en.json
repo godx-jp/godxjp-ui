@@ -1646,5 +1646,22 @@
     "dialogTitle": "All desktops",
     "dialogDescription": "A 60rem dialog holding a three-column grid.",
     "desktop": "Desktop {n}"
+  },
+  "sortableListDocs": {
+    "subtitle": "Drag a grip, or Space · arrows · Space · Esc — every move is announced",
+    "widgetsTitle": "Home widgets",
+    "widgetsDescription": "Order the tiles on your desktop. The order is saved once, when you drop.",
+    "calendar": "Calendar",
+    "mail": "Mail",
+    "tasks": "Tasks",
+    "notes": "Notes",
+    "slot": "Slot {position}",
+    "saved": "Saved order: {order}",
+    "tabsTitle": "Project tabs",
+    "tabsDescription": "A list layout. Billing is locked by your plan, so it cannot be picked up — the others still move past it.",
+    "overview": "Overview",
+    "members": "Members",
+    "billing": "Billing",
+    "audit": "Audit log"
   }
 }

@@ -897,6 +897,13 @@
   );
   --emoji-picker-glyph-size: var(--icon-size-lg);
   --emoji-picker-grid-max-block-size: 16rem;
+
+  /* SortableList (gh#1173): the space between items, an item's inset, its corner, and the
+   * narrowest a grid tile may get before the grid drops a column. */
+  --sortable-list-gap: var(--space-2);
+  --sortable-list-item-padding: var(--space-2);
+  --sortable-list-item-radius: var(--control-radius);
+  --sortable-list-grid-item-min-inline-size: 12rem;
 }
 
 @media (pointer: coarse) {

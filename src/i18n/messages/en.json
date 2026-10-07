@@ -232,6 +232,14 @@
         "symbols": "Symbols",
         "flags": "Flags"
       }
+    },
+    "sortableList": {
+      "handle": "Reorder {label}",
+      "hint": "Press Space to pick up, the arrow keys to move, Space to drop, Escape to cancel.",
+      "lifted": "Picked up {label}. Position {position} of {count}.",
+      "moved": "{label}: position {position} of {count}.",
+      "dropped": "Dropped {label} at position {position} of {count}.",
+      "cancelled": "Move cancelled. {label} is back at position {position} of {count}."
     }
   },
   "feedback": {

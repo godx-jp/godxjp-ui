@@ -1639,5 +1639,22 @@
     "dialogTitle": "Tất cả màn hình làm việc",
     "dialogDescription": "Hộp thoại 60rem chứa một lưới ba cột.",
     "desktop": "Màn hình {n}"
+  },
+  "sortableListDocs": {
+    "subtitle": "Kéo tay nắm, hoặc Space · mũi tên · Space · Esc — mỗi lần di chuyển đều được đọc",
+    "widgetsTitle": "Widget trang chủ",
+    "widgetsDescription": "Sắp xếp các ô trên màn hình. Thứ tự được lưu một lần khi bạn thả.",
+    "calendar": "Lịch",
+    "mail": "Thư",
+    "tasks": "Công việc",
+    "notes": "Ghi chú",
+    "slot": "Ô {position}",
+    "saved": "Thứ tự đã lưu: {order}",
+    "tabsTitle": "Tab dự án",
+    "tabsDescription": "Dạng danh sách. Thanh toán bị khoá theo gói nên không nhấc được — các mục khác vẫn di chuyển qua nó.",
+    "overview": "Tổng quan",
+    "members": "Thành viên",
+    "billing": "Thanh toán",
+    "audit": "Nhật ký kiểm tra"
   }
 }

@@ -228,6 +228,14 @@
         "symbols": "記号",
         "flags": "旗"
       }
+    },
+    "sortableList": {
+      "handle": "{label} を並べ替え",
+      "hint": "Space で持ち上げ、矢印キーで移動、Space で確定、Esc で取り消します。",
+      "lifted": "{label} を持ち上げました。{count} 件中 {position} 番目です。",
+      "moved": "{label}: {count} 件中 {position} 番目。",
+      "dropped": "{label} を {count} 件中 {position} 番目に置きました。",
+      "cancelled": "移動を取り消しました。{label} は {count} 件中 {position} 番目に戻りました。"
     }
   },
   "feedback": {
