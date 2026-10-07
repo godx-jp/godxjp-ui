@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.4] - 2026-10-08
+
+### 🐛 RangeTimeline's label column stays usable on a phone
+
+The full geometry sweep (gh#1184's nightly lane) caught it at 320 / 375 / 390 px. A label column
+wider than the timeline put the bars off screen, and the resize divider out of reach entirely: it
+lives in the sticky label cell, which sideways scrolling never moves. The column is now capped at
+`--range-timeline-label-max-inline-size` (default `60cqi`, 60% of the timeline's own width). The
+timeline is a size container for that unit. Desktop widths are unchanged.
+
 ## [31.31.3] - 2026-10-08
 
 ### 🐛 Dates print in the page's language again (gh#1202)

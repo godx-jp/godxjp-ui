@@ -2501,7 +2501,17 @@
 }
 
 @layer components {
+  /* The label column never takes more than a share of the timeline's OWN width
+   * (--range-timeline-label-max-inline-size, 60cqi), so on a phone the bars stay visible and the
+   * resize divider, which lives in the sticky label cell that sideways scrolling never moves, stays
+   * on screen (gh#1184 geometry sweep: a 280px column on a 230px timeline put it out of reach). The
+   * section is the size container the cqi unit resolves against. */
   .ui-range-timeline {
+    container-type: inline-size;
+    --range-timeline-label-track: min(
+      var(--range-timeline-label-width),
+      var(--range-timeline-label-max-inline-size)
+    );
     overflow: auto;
     border: var(--stroke-hairline) solid hsl(var(--range-timeline-border-color));
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
@@ -2524,14 +2534,14 @@
   }
   .ui-range-timeline-canvas {
     min-inline-size: calc(
-      var(--range-timeline-label-width) + var(--range-timeline-columns, 1) *
+      var(--range-timeline-label-track) + var(--range-timeline-columns, 1) *
         var(--range-timeline-unit-width)
     );
   }
   .ui-range-timeline-header,
   .ui-range-timeline-row {
     display: grid;
-    grid-template-columns: var(--range-timeline-label-width) minmax(0, 1fr);
+    grid-template-columns: var(--range-timeline-label-track) minmax(0, 1fr);
     min-block-size: var(--range-timeline-row-height);
   }
   .ui-range-timeline-header {
@@ -2641,7 +2651,7 @@
     inset: 0;
     z-index: -1;
     display: grid;
-    grid-template-columns: var(--range-timeline-label-width) minmax(0, 1fr);
+    grid-template-columns: var(--range-timeline-label-track) minmax(0, 1fr);
     pointer-events: none;
   }
   .ui-range-timeline-grid-column {
@@ -2892,7 +2902,7 @@
     inset: 0;
     z-index: 0;
     display: grid;
-    grid-template-columns: var(--range-timeline-label-width) minmax(0, 1fr);
+    grid-template-columns: var(--range-timeline-label-track) minmax(0, 1fr);
     pointer-events: none;
   }
   .ui-range-timeline-links-track {

@@ -471,6 +471,9 @@
 
 :root {
   --range-timeline-label-width: var(--app-shell-sidebar-width);
+  /* The most of the timeline's own width the label column may take (a cqi share), so bars and the
+   * resize divider stay on screen on a phone. */
+  --range-timeline-label-max-inline-size: 60cqi;
   /* Label-column resize divider (gh#1189): the hit area straddles the column border and meets
    * WCAG 2.5.8's 24px; the visible rule is the border itself, thickened on hover/focus. */
   --range-timeline-resizer-inline-size: var(--space-6);
