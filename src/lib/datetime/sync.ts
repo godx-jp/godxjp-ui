@@ -1,5 +1,5 @@
 import type { Locale } from "date-fns";
-import { getDateFnsLocale } from "../../app/locales";
+import { getDateFnsLocale, isAppLocale } from "../../app/locales";
 import { resolveDefaultDateFormat } from "../../app/date-format-labels";
 import { resolveHydrationSafeTimezone } from "../../app/timezones";
 import type { AppLocale, AppTimeFormat, AppDateFormat } from "../../app/types";
@@ -22,15 +22,30 @@ const DEFAULT_LOCALE: AppLocale = "vi";
  * `systemTimezone`), taken from the same function, so the two cannot drift again (gh#968). It was a
  * hard-coded `Asia/Ho_Chi_Minh`, which disagreed with the provider AND looked plausible when wrong.
  */
-const defaultContext = (): DatetimeContext => ({
-  locale: DEFAULT_LOCALE,
-  dateFnsLocale: getDateFnsLocale(DEFAULT_LOCALE),
-  timezone: resolveHydrationSafeTimezone("browser"),
-  timeFormat: "24h",
-  dateFormat: resolveDefaultDateFormat(DEFAULT_LOCALE),
-});
+/*
+ * With no AppProvider synced, the page's own `<html lang>` is the best evidence of its language
+ * (gh#1202): a fixed locale silently printed another locale's date format (vi's DD/MM/YYYY on a
+ * Japanese page). Read at CALL time, since `lang` is often set after this module loads. Only a lang
+ * the kit ships (ja / en / vi, region dropped) is used; anything else keeps the provider's default.
+ */
+function pageLocale(): AppLocale {
+  if (typeof document === "undefined") return DEFAULT_LOCALE;
+  const lang = (document.documentElement.lang || "").toLowerCase().split("-")[0];
+  return isAppLocale(lang) ? lang : DEFAULT_LOCALE;
+}
 
-let syncedContext: DatetimeContext = defaultContext();
+const defaultContext = (): DatetimeContext => {
+  const locale = pageLocale();
+  return {
+    locale,
+    dateFnsLocale: getDateFnsLocale(locale),
+    timezone: resolveHydrationSafeTimezone("browser"),
+    timeFormat: "24h",
+    dateFormat: resolveDefaultDateFormat(locale),
+  };
+};
+
+let syncedContext: DatetimeContext | null = null;
 let liveRelativeFormattingEnabled = true;
 
 /** Sync module-level datetime prefs from AppProvider (mirrors syncI18nLocale). */
@@ -51,7 +66,7 @@ export function syncDatetimeContext(
 }
 
 export function getDatetimeContext(): Readonly<DatetimeContext> {
-  return syncedContext;
+  return syncedContext ?? defaultContext();
 }
 
 export function enableLiveRelativeFormatting(): void {
@@ -68,6 +83,6 @@ export function canUseLiveRelativeFormatting(): boolean {
 
 /** Vitest only — reset to defaults between cases. */
 export function resetDatetimeContextForTests(): void {
-  syncedContext = defaultContext();
+  syncedContext = null;
   liveRelativeFormattingEnabled = true;
 }
