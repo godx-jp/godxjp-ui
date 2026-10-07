@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.2] - 2026-10-08
+
+### 🐛 `visual-audit` no longer reports screen-reader-only text as starved (gh#1200)
+
+`row-content-starved` measured the kit's own visually-hidden text (a Button `countLabel`, a
+`VisuallyHidden` field label: absolute, 1px, overflow hidden) as a label squeezed to 1px. The
+collector now skips visually-hidden text, both by class (`.sr-only`,
+`[data-slot=visually-hidden]`) and by geometry (absolute, at most 1×1). Reported by godx-task: 5
+false findings on one screen.
+
 ## [31.31.1] - 2026-10-07
 
 ### 🐛 Four fixes from godx-task (gh#1198)
