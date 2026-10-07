@@ -354,6 +354,104 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("rangeTimelineDocs.schedulesTitle")}</CardTitle>
+            <CardDescription>{t("rangeTimelineDocs.schedulesDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RangeTimeline
+              label={t("rangeTimeline.schedule")}
+              planLabel={t("rangeTimelineDocs.baseline")}
+              columns={Array.from({ length: 14 }, (_, index) => ({
+                label: new Intl.NumberFormat(locale).format(index + 1),
+                units: 1,
+              }))}
+              rows={[
+                {
+                  id: "phase",
+                  label: t("rangeTimelineDocs.phase"),
+                  start: null,
+                  end: null,
+                  startLabel: "",
+                  endLabel: "",
+                  emptyHint: false,
+                },
+                {
+                  id: "design",
+                  label: t("rangeTimelineDocs.design"),
+                  start: 0,
+                  end: 3,
+                  startLabel: "",
+                  endLabel: "",
+                  color: "#16a34a",
+                  plan: { start: 0, end: 4 },
+                },
+                {
+                  id: "build",
+                  label: t("rangeTimelineDocs.build"),
+                  start: 4,
+                  end: 9,
+                  startLabel: "",
+                  endLabel: "",
+                  color: "#2563eb",
+                  plan: { start: 4, end: 7 },
+                  emphasis: "critical",
+                },
+                {
+                  id: "release",
+                  label: t("rangeTimelineDocs.release"),
+                  start: null,
+                  end: 10,
+                  startLabel: "",
+                  endLabel: "",
+                  shape: "milestone",
+                  color: "#7c3aed",
+                  plan: { start: null, end: 8 },
+                },
+                {
+                  id: "ops",
+                  label: t("rangeTimelineDocs.ops"),
+                  start: 6,
+                  end: 12,
+                  startLabel: "",
+                  endLabel: "",
+                  openEnd: true,
+                  emphasis: "warning",
+                },
+                {
+                  id: "legacy",
+                  label: t("rangeTimelineDocs.legacy"),
+                  start: 2,
+                  end: 5,
+                  startLabel: "",
+                  endLabel: "",
+                  cancelled: true,
+                },
+                {
+                  id: "audit",
+                  label: t("rangeTimelineDocs.audit"),
+                  start: null,
+                  end: 5,
+                  startLabel: "",
+                  endLabel: "",
+                },
+              ]}
+              links={[
+                { id: "design-build", from: "design", to: "build" },
+                {
+                  id: "build-release",
+                  from: "build",
+                  to: "release",
+                  type: "FF",
+                  violated: true,
+                  label: t("rangeTimelineDocs.violation"),
+                },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
         {/* sticky sits OUTSIDE a Card on purpose: Card clips (`overflow: hidden`), and a clipping
             ancestor becomes the box the header sticks to — the same limit as antd Table sticky. */}
         <Card>

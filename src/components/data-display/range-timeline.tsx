@@ -64,6 +64,66 @@ export type RangeTimelineRow = {
    * issue whose end is "today" passes `{ end: false }`, keeping the start grip. `false` removes both.
    */
   editable?: boolean | { start?: boolean; end?: boolean };
+  /**
+   * What an undated row (no `start` / `end`) says in its track. Default: the localized "no dates"
+   * hint. `false` says nothing: a pure context row (a phase heading, a group label).
+   */
+  emptyHint?: React.ReactNode | false;
+  /**
+   * Spoken with a FINISH-ONLY row (`start: null`, `end` set): a finish was recorded without a known
+   * start, drawn as a finish tick at `end`. Default: the localized "start unknown".
+   */
+  startUnknownLabel?: string;
+  /**
+   * The row started but its completion is not recorded: the bar runs to `end` (pass the as-of
+   * unit), its inline end fades out, and it has no end grip.
+   */
+  openEnd?: boolean;
+  /** Spoken with an `openEnd` bar. Default: the localized "completion not recorded". */
+  openEndLabel?: string;
+  /**
+   * `milestone` draws a diamond at `end` (`start` is ignored); its `plan` is a hollow diamond at
+   * `plan.end`; overrun / early and their labels apply as for a bar; one grip moves it, reported
+   * as `onRangeChange(id, "end", delta)`.
+   */
+  shape?: "bar" | "milestone";
+  /**
+   * What the ghost means for this row, e.g. "ベースライン" (a frozen baseline) or "予定" (the live
+   * plan), used in the spoken overrun / early text. Overrides the timeline's `planLabel`.
+   */
+  planLabel?: string;
+  /**
+   * Text after the early marker. Default: how early, localized as days ("-2日" / "-2d" / "-2 ngày").
+   * `false` shows none.
+   */
+  earlyLabel?: React.ReactNode | false;
+  /** Cancelled (中止): a hatched bar, distinct from `muted`, spoken, and without grips. */
+  cancelled?: boolean;
+  /**
+   * An accent on the row's inline start plus a spoken label, so colour is never the only cue:
+   * `warning` (at risk, e.g. a late predecessor) or `critical` (on the critical path).
+   */
+  emphasis?: "warning" | "critical";
+};
+
+/**
+ * A dependency between two rows, drawn as an elbow connector over the body. `FS` (the default)
+ * runs from the predecessor's finish to the successor's start; `SS` start to start, `FF` finish to
+ * finish, `SF` start to finish. A milestone's endpoint is its diamond.
+ */
+export type RangeTimelineLink = {
+  id: string;
+  /** The predecessor row's id. */
+  from: string;
+  /** The successor row's id. */
+  to: string;
+  type?: "FS" | "SS" | "FF" | "SF";
+  /**
+   * The schedule breaks this dependency: the connector turns destructive and its head gets a
+   * focusable marker (with `label` in a tooltip), also listed for screen readers.
+   */
+  violated?: boolean;
+  label?: string;
 };
 
 /** Black or white ink for a hex fill; `undefined` when the value cannot be measured. */
@@ -132,6 +192,16 @@ export type RangeTimelineProps = React.HTMLAttributes<HTMLElement> & {
    * indeterminate line under the header and sets `aria-busy` (gh#1189).
    */
   busy?: boolean;
+  /**
+   * What the plan ghost means on every row (a row's own `planLabel` wins), e.g. "ベースライン",
+   * used in the spoken overrun / early text: "ベースラインより3日遅れ".
+   */
+  planLabel?: string;
+  /**
+   * Dependency connectors between rows (FS / SS / FF / SF). Only rows that are visible and dated at
+   * the needed endpoint are connected; an endpoint outside the range is clamped to the edge.
+   */
+  links?: RangeTimelineLink[];
 };
 
 const LABEL_WIDTH_STEP = 8;
@@ -158,6 +228,8 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       defaultLabelWidth,
       onLabelWidthChange,
       busy = false,
+      planLabel: timelinePlanLabel,
+      links,
       className,
       ...props
     },
@@ -266,6 +338,10 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       const row = rows.find((row) => row.id === current.id);
       const delta = deltaAt(event.clientX);
       cancel();
+      if (row?.shape === "milestone") {
+        if (row.end !== null && delta) onRangeChange?.(row.id, "end", delta);
+        return;
+      }
       if (!row || row.start === null || row.end === null) return;
       const bounded =
         current.edge === "start"
@@ -273,6 +349,44 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
           : Math.max(delta, row.start - row.end);
       if (bounded) onRangeChange?.(row.id, current.edge, bounded);
     };
+    // Dependency links need each visible row's vertical centre, measured after layout (a wrapped
+    // label makes a row taller), and the direction, since SVG coordinates are physical.
+    const rowElements = React.useRef(new Map<string, HTMLDivElement>());
+    const bodyRef = React.useRef<HTMLDivElement>(null);
+    const [rowCentres, setRowCentres] = React.useState<{
+      rtl: boolean;
+      y: Record<string, number>;
+    } | null>(null);
+    const hasLinks = Boolean(links && links.length > 0);
+    const measureRows = React.useCallback(() => {
+      const body = bodyRef.current;
+      if (!body) return;
+      const y: Record<string, number> = {};
+      rowElements.current.forEach((element, id) => {
+        y[id] = element.offsetTop + element.offsetHeight / 2;
+      });
+      const rtl = getComputedStyle(body).direction === "rtl";
+      setRowCentres((previous) => {
+        if (
+          previous &&
+          previous.rtl === rtl &&
+          Object.keys(previous.y).length === Object.keys(y).length &&
+          Object.keys(y).every((id) => previous.y[id] === y[id])
+        )
+          return previous;
+        return { rtl, y };
+      });
+    }, []);
+    React.useLayoutEffect(() => {
+      if (hasLinks) measureRows();
+    });
+    React.useEffect(() => {
+      const body = bodyRef.current;
+      if (!hasLinks || !body || typeof ResizeObserver === "undefined") return;
+      const observer = new ResizeObserver(() => measureRows());
+      observer.observe(body);
+      return () => observer.disconnect();
+    }, [hasLinks, measureRows]);
     const canvasStyle = {
       "--range-timeline-columns": Math.max(1, columns.length),
       "--range-timeline-units": units,
@@ -360,8 +474,114 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
         {busy && <div className="ui-range-timeline-busy" aria-hidden="true" />}
       </>
     );
+    // A unit offset as a fraction of the track, clamped to it; a milestone's endpoint is its diamond.
+    const fractionOf = (row: RangeTimelineRow, edge: "start" | "end") => {
+      if (row.end === null) return null;
+      if (row.shape === "milestone") return Math.min(1, Math.max(0, (row.end + 0.5) / units));
+      if (edge === "start")
+        return row.start === null ? null : Math.min(1, Math.max(0, row.start / units));
+      return Math.min(1, Math.max(0, (row.end + 1) / units));
+    };
+    const visibleIds = new Set(visibleRows.map((row) => row.id));
+    const drawnLinks = hasLinks
+      ? links!.flatMap((link) => {
+          const from = rows.find((row) => row.id === link.from);
+          const to = rows.find((row) => row.id === link.to);
+          if (!from || !to || !visibleIds.has(from.id) || !visibleIds.has(to.id)) return [];
+          const type = link.type ?? "FS";
+          const x1 = fractionOf(from, type[0] === "F" ? "end" : "start");
+          const x2 = fractionOf(to, type[1] === "F" ? "end" : "start");
+          const y1 = rowCentres?.y[from.id];
+          const y2 = rowCentres?.y[to.id];
+          if (x1 === null || x2 === null || y1 === undefined || y2 === undefined) return [];
+          return [{ link, from, to, type, x1, x2, y1, y2 }];
+        })
+      : [];
+    const markerBase = `${reactId.replace(/[^a-zA-Z0-9_-]/g, "")}-link-head`;
+    const physical = (fraction: number) => `${(rowCentres?.rtl ? 1 - fraction : fraction) * 100}%`;
+    const violatedLinks = drawnLinks.filter((drawn) => drawn.link.violated);
+    const linkLayer = hasLinks ? (
+      <div className="ui-range-timeline-links">
+        <div />
+        <div className="ui-range-timeline-links-track">
+          <svg className="ui-range-timeline-links-svg" aria-hidden="true" focusable="false">
+            <defs>
+              {(["normal", "violated"] as const).map((kind) => (
+                <marker
+                  key={kind}
+                  id={`${markerBase}-${kind}`}
+                  className="ui-range-timeline-link-head"
+                  data-violated={kind === "violated" ? "true" : undefined}
+                  markerWidth="8"
+                  markerHeight="8"
+                  refX="8"
+                  refY="4"
+                  orient="auto"
+                  markerUnits="userSpaceOnUse"
+                >
+                  <path d="M0,0 L8,4 L0,8 z" />
+                </marker>
+              ))}
+            </defs>
+            {drawnLinks.map((drawn) => {
+              const middle = (drawn.x1 + drawn.x2) / 2;
+              const head = `url(#${markerBase}-${drawn.link.violated ? "violated" : "normal"})`;
+              return (
+                <g
+                  key={drawn.link.id}
+                  className="ui-range-timeline-link"
+                  data-link-id={drawn.link.id}
+                  data-violated={drawn.link.violated ? "true" : undefined}
+                >
+                  <line x1={physical(drawn.x1)} y1={drawn.y1} x2={physical(middle)} y2={drawn.y1} />
+                  <line x1={physical(middle)} y1={drawn.y1} x2={physical(middle)} y2={drawn.y2} />
+                  <line
+                    x1={physical(middle)}
+                    y1={drawn.y2}
+                    x2={physical(drawn.x2)}
+                    y2={drawn.y2}
+                    markerEnd={head}
+                  />
+                </g>
+              );
+            })}
+          </svg>
+          {violatedLinks.map((drawn) => {
+            const name = drawn.link.label
+              ? t("rangeTimeline.dependencyViolatedWith", { label: drawn.link.label })
+              : t("rangeTimeline.dependencyViolated");
+            return (
+              <Tooltip key={drawn.link.id}>
+                <TooltipTrigger asChild>
+                  <span
+                    className="ui-range-timeline-link-violation ui-focus-ring"
+                    tabIndex={0}
+                    aria-label={name}
+                    style={{
+                      insetInlineStart: `${drawn.x2 * 100}%`,
+                      insetBlockStart: `${drawn.y2}px`,
+                    }}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>{name}</TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+        {violatedLinks.length > 0 && (
+          <ul className="sr-only">
+            {violatedLinks.map((drawn) => (
+              <li key={drawn.link.id}>
+                {t("rangeTimeline.dependencyViolated")} <span>{drawn.from.label}</span> →{" "}
+                <span>{drawn.to.label}</span> ({drawn.type})
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    ) : null;
     const body = (
-      <div className="ui-range-timeline-body" role={nested ? "list" : undefined}>
+      <div ref={bodyRef} className="ui-range-timeline-body" role={nested ? "list" : undefined}>
         {(bordered || columns.some((column) => column.muted)) && (
           // Decorative: the same unit tracks as the header columns, laid once behind every row so
           // each vertical rule runs the full body height exactly under its header column.
@@ -382,27 +602,170 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
         {visibleRows.map((row, index) => {
           // Ids from the row's position, never from `row.id` (which may hold spaces).
           const idBase = `${reactId}-row-${rows.indexOf(row)}`;
-          const dated = row.start !== null && row.end !== null;
-          const rowStart = row.start ?? 0,
-            rowEnd = row.end ?? 0;
+          const milestone = row.shape === "milestone";
+          // A finish recorded without a start: a tick at `end`, no bar.
+          const finishOnly = !milestone && row.start === null && row.end !== null;
+          const dated = milestone ? row.end !== null : row.start !== null && row.end !== null;
+          const point = milestone || finishOnly;
+          const rowEnd = row.end ?? 0;
+          const rowStart = point ? rowEnd : (row.start ?? 0);
           const delta = preview?.id === row.id ? preview.delta : 0;
-          const start = Math.min(rowEnd, rowStart + (preview?.edge === "start" ? delta : 0));
-          const end = Math.max(rowStart, rowEnd + (preview?.edge === "end" ? delta : 0));
+          const start = point
+            ? rowEnd + (preview?.edge === "end" ? delta : 0)
+            : Math.min(rowEnd, rowStart + (preview?.edge === "start" ? delta : 0));
+          const end = point
+            ? start
+            : Math.max(rowStart, rowEnd + (preview?.edge === "end" ? delta : 0));
           const left = Math.max(0, start),
             right = Math.min(units, end + 1);
+          const planStart = row.plan?.start ?? null,
+            planEndKnown = row.plan?.end ?? null;
+          // A bar's full plan is a ghost bar; a bar's one-sided plan is a due tick; a milestone's
+          // plan is a hollow diamond.
           const plan =
-            dated && row.plan && row.plan.start !== null && row.plan.end !== null
-              ? (row.plan as { start: number; end: number })
+            dated && !milestone && planStart !== null && planEndKnown !== null
+              ? { start: planStart, end: planEndKnown }
+              : null;
+          const planEnd = dated ? (milestone ? (planEndKnown ?? planStart) : planEndKnown) : null;
+          const planTick =
+            dated && !milestone && !plan && (planStart !== null || planEndKnown !== null)
+              ? planEndKnown !== null
+                ? planEndKnown + 1
+                : planStart!
               : null;
           const planLeft = plan ? Math.max(0, plan.start) : 0,
             planRight = plan ? Math.min(units, plan.end + 1) : 0;
-          const overrun = plan !== null && end > plan.end;
-          const early = plan !== null && end < plan.end;
-          const overrunLeft = overrun ? Math.max(left, Math.min(units, plan!.end + 1)) : 0;
+          const overrun = planEnd !== null && end > planEnd;
+          const early = planEnd !== null && end < planEnd;
+          const clampUnit = (value: number) => Math.min(units, Math.max(0, value));
+          // A bar's overrun runs from the planned end to its own end; a milestone's runs between
+          // the two diamonds' centres.
+          const overrunLeft = !overrun
+            ? 0
+            : milestone
+              ? clampUnit(planEnd! + 0.5)
+              : Math.max(left, Math.min(units, planEnd! + 1));
+          const overrunRight = milestone ? clampUnit(end + 0.5) : right;
+          const earlyAt = milestone ? end + 0.5 : right;
+          const rowPlanLabel = row.planLabel ?? timelinePlanLabel;
+          const overrunText = rowPlanLabel
+            ? t("rangeTimeline.overrunVs", { plan: rowPlanLabel, n: String(end - (planEnd ?? 0)) })
+            : t("rangeTimeline.overrun");
+          const earlyText = rowPlanLabel
+            ? t("rangeTimeline.earlyVs", { plan: rowPlanLabel, n: String((planEnd ?? 0) - end) })
+            : t("rangeTimeline.early");
+          const barStyle = (inset: React.CSSProperties) =>
+            ({
+              ...inset,
+              ...(row.color && {
+                "--range-timeline-bar-color": row.color,
+                "--range-timeline-bar-ink": inkOn(row.color),
+              }),
+            }) as React.CSSProperties;
+          const allowsEdge = (edge: "start" | "end") =>
+            !row.cancelled &&
+            !(row.openEnd && edge === "end") &&
+            (row.editable === undefined || row.editable === true
+              ? true
+              : row.editable === false
+                ? false
+                : row.editable[edge] !== false);
+          const grip = (edge: "start" | "end") => (
+            <Button
+              key={edge}
+              variant="ghost"
+              size="icon-xs"
+              className="ui-range-timeline-handle"
+              data-edge={edge}
+              aria-label={edge === "start" ? row.startLabel : row.endLabel}
+              onPointerDown={(event) => {
+                const width = track.current?.getBoundingClientRect().width ?? 0;
+                if (!width || event.button !== 0) return;
+                event.currentTarget.setPointerCapture(event.pointerId);
+                drag.current = {
+                  id: row.id,
+                  edge,
+                  x: event.clientX,
+                  width,
+                  direction: getComputedStyle(event.currentTarget).direction === "rtl" ? -1 : 1,
+                };
+              }}
+              onPointerMove={(event) => {
+                if (drag.current)
+                  setPreview({
+                    id: drag.current.id,
+                    edge: drag.current.edge,
+                    delta: deltaAt(event.clientX),
+                  });
+              }}
+              onPointerUp={complete}
+              onPointerCancel={cancel}
+              onLostPointerCapture={cancel}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  cancel();
+                  return;
+                }
+                const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                if (!step) return;
+                event.preventDefault();
+                const direction =
+                  getComputedStyle(event.currentTarget).direction === "rtl" ? -1 : 1;
+                const delta = step * direction;
+                if (
+                  milestone ||
+                  (edge === "start" ? rowStart + delta <= rowEnd : rowEnd + delta >= rowStart)
+                )
+                  onRangeChange?.(row.id, edge, delta);
+              }}
+            >
+              <GripVertical aria-hidden="true" />
+            </Button>
+          );
+          const tooltipHit =
+            row.tooltip != null ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    className="ui-range-timeline-bar-hit ui-focus-ring"
+                    tabIndex={0}
+                    aria-labelledby={`${idBase}-label`}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>{row.tooltip}</TooltipContent>
+              </Tooltip>
+            ) : null;
+          const stateTexts = (
+            <>
+              {row.overdue && <span className="sr-only">{t("rangeTimeline.overdue")}</span>}
+              {row.cancelled && <span className="sr-only">{t("rangeTimeline.cancelled")}</span>}
+              {row.openEnd && !milestone && (
+                <span className="sr-only">{row.openEndLabel ?? t("rangeTimeline.openEnd")}</span>
+              )}
+            </>
+          );
+          const emphasisText = row.emphasis ? (
+            <span className="sr-only">
+              {t(
+                row.emphasis === "critical"
+                  ? "rangeTimeline.emphasisCritical"
+                  : "rangeTimeline.emphasisWarning",
+              )}
+            </span>
+          ) : null;
           return (
             <div
               className="ui-range-timeline-row"
               key={row.id}
+              data-emphasis={row.emphasis}
+              ref={
+                links && links.length > 0
+                  ? (element: HTMLDivElement | null) => {
+                      if (element) rowElements.current.set(row.id, element);
+                      else rowElements.current.delete(row.id);
+                    }
+                  : undefined
+              }
               {...(nested && {
                 role: "listitem",
                 "aria-level": depthOf(row) + 1,
@@ -443,6 +806,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                   <div id={`${idBase}-label`} className="ui-range-timeline-label-content">
                     {row.label}
                   </div>
+                  {emphasisText}
                 </div>
               ) : (
                 <div
@@ -451,6 +815,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                   id={row.tooltip != null ? `${idBase}-label` : undefined}
                 >
                   {row.label}
+                  {emphasisText}
                 </div>
               )}
               <div className="ui-range-timeline-track">
@@ -461,14 +826,14 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                     style={{ insetInlineStart: `${((today + 0.5) / units) * 100}%` }}
                   />
                 )}
-                {!dated && (
+                {!dated && !finishOnly && row.emptyHint !== false && (
                   <span className="ui-range-timeline-outside" data-direction="none">
                     <Text size="xs" tone="muted">
-                      {t("rangeTimeline.noDates")}
+                      {row.emptyHint ?? t("rangeTimeline.noDates")}
                     </Text>
                   </span>
                 )}
-                {dated &&
+                {(dated || finishOnly) &&
                   right <= left &&
                   (end < 0 ? (
                     <span className="ui-range-timeline-outside" data-direction="before">
@@ -485,6 +850,16 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                       <ChevronRight aria-hidden="true" className="ui-range-timeline-outside-icon" />
                     </span>
                   ))}
+                {finishOnly && right > left && (
+                  <span
+                    className="ui-range-timeline-finish"
+                    style={barStyle({ insetInlineStart: `${(right / units) * 100}%` })}
+                  >
+                    <span className="sr-only">
+                      {row.startUnknownLabel ?? t("rangeTimeline.startUnknown")}
+                    </span>
+                  </span>
+                )}
                 {plan && planRight > planLeft && (
                   <span
                     aria-hidden="true"
@@ -495,144 +870,108 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                     }}
                   />
                 )}
-                {overrun && right > overrunLeft && (
+                {planTick !== null && planTick >= 0 && planTick <= units && (
+                  <span
+                    aria-hidden="true"
+                    className="ui-range-timeline-plan-tick"
+                    style={{ insetInlineStart: `${(planTick / units) * 100}%` }}
+                  />
+                )}
+                {milestone && planEnd !== null && planEnd >= 0 && planEnd < units && (
+                  <span
+                    aria-hidden="true"
+                    className="ui-range-timeline-plan-diamond"
+                    style={{ insetInlineStart: `${((planEnd + 0.5) / units) * 100}%` }}
+                  />
+                )}
+                {overrun && overrunRight > overrunLeft && (
                   <span
                     className="ui-range-timeline-overrun"
                     style={{
                       insetInlineStart: `${(overrunLeft / units) * 100}%`,
-                      inlineSize: `${((right - overrunLeft) / units) * 100}%`,
+                      inlineSize: `${((overrunRight - overrunLeft) / units) * 100}%`,
                     }}
                   >
-                    <span className="sr-only">{t("rangeTimeline.overrun")}</span>
+                    <span className="sr-only">{overrunText}</span>
                     {row.varianceLabel !== false && (
                       <span className="ui-range-timeline-variance">
                         {row.varianceLabel ??
-                          t("rangeTimeline.lateBy", { n: String(end - plan!.end) })}
+                          t("rangeTimeline.lateBy", { n: String(end - planEnd!) })}
                       </span>
                     )}
                   </span>
                 )}
-                {dated && !plan && row.planNote != null && right > left && (
-                  <span
-                    className="ui-range-timeline-plan-note"
-                    style={{ insetInlineStart: `${(right / units) * 100}%` }}
-                  >
-                    {row.planNote}
-                  </span>
-                )}
-                {early && right > left && right <= units && (
+                {dated &&
+                  planStart === null &&
+                  planEndKnown === null &&
+                  row.planNote != null &&
+                  right > left && (
+                    <span
+                      className="ui-range-timeline-plan-note"
+                      style={{ insetInlineStart: `${(right / units) * 100}%` }}
+                    >
+                      {row.planNote}
+                    </span>
+                  )}
+                {early && right > left && earlyAt <= units && (
                   <span
                     className="ui-range-timeline-early"
-                    style={{ insetInlineStart: `${(right / units) * 100}%` }}
+                    style={{ insetInlineStart: `${(earlyAt / units) * 100}%` }}
                   >
-                    <span className="sr-only">{t("rangeTimeline.early")}</span>
+                    <span className="sr-only">{earlyText}</span>
                   </span>
                 )}
-                {dated && right > left && (
+                {/* A sibling, not a child, of the 2px marker: the label needs a box of its own. */}
+                {early && right > left && earlyAt <= units && row.earlyLabel !== false && (
+                  <span
+                    className="ui-range-timeline-early-label"
+                    style={{ insetInlineStart: `${(earlyAt / units) * 100}%` }}
+                  >
+                    {row.earlyLabel ?? t("rangeTimeline.earlyBy", { n: String(planEnd! - end) })}
+                  </span>
+                )}
+                {milestone && dated && right > left && (
+                  <span
+                    className="ui-range-timeline-milestone"
+                    data-muted={row.muted ? "true" : undefined}
+                    data-overdue={row.overdue ? "true" : undefined}
+                    data-cancelled={row.cancelled ? "true" : undefined}
+                    style={barStyle({ insetInlineStart: `${((end + 0.5) / units) * 100}%` })}
+                  >
+                    {tooltipHit}
+                    {stateTexts}
+                    {onRangeChange && allowsEdge("end") && grip("end")}
+                  </span>
+                )}
+                {!milestone && dated && right > left && (
                   <div
                     className="ui-range-timeline-bar"
                     data-muted={row.muted ? "true" : undefined}
                     data-overdue={row.overdue ? "true" : undefined}
-                    style={
-                      {
-                        insetInlineStart: `${(left / units) * 100}%`,
-                        inlineSize: `${((right - left) / units) * 100}%`,
-                        ...(row.color && {
-                          "--range-timeline-bar-color": row.color,
-                          "--range-timeline-bar-ink": inkOn(row.color),
-                        }),
-                      } as React.CSSProperties
-                    }
+                    data-cancelled={row.cancelled ? "true" : undefined}
+                    data-open-end={row.openEnd ? "true" : undefined}
+                    style={barStyle({
+                      insetInlineStart: `${(left / units) * 100}%`,
+                      inlineSize: `${((right - left) / units) * 100}%`,
+                    })}
                   >
-                    {row.tooltip != null && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span
-                            className="ui-range-timeline-bar-hit ui-focus-ring"
-                            tabIndex={0}
-                            aria-labelledby={`${idBase}-label`}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent>{row.tooltip}</TooltipContent>
-                      </Tooltip>
-                    )}
-                    {row.overdue && <span className="sr-only">{t("rangeTimeline.overdue")}</span>}
+                    {tooltipHit}
+                    {stateTexts}
                     {onRangeChange &&
                       (right - left) * Math.max(1, columns.length) >= units &&
                       (["start", "end"] as const)
                         .filter((edge) =>
                           edge === "start" ? start >= 0 && start < units : end >= 0 && end < units,
                         )
-                        .filter((edge) =>
-                          row.editable === undefined || row.editable === true
-                            ? true
-                            : row.editable === false
-                              ? false
-                              : row.editable[edge] !== false,
-                        )
-                        .map((edge) => (
-                          <Button
-                            key={edge}
-                            variant="ghost"
-                            size="icon-xs"
-                            className="ui-range-timeline-handle"
-                            data-edge={edge}
-                            aria-label={edge === "start" ? row.startLabel : row.endLabel}
-                            onPointerDown={(event) => {
-                              const width = track.current?.getBoundingClientRect().width ?? 0;
-                              if (!width || event.button !== 0) return;
-                              event.currentTarget.setPointerCapture(event.pointerId);
-                              drag.current = {
-                                id: row.id,
-                                edge,
-                                x: event.clientX,
-                                width,
-                                direction:
-                                  getComputedStyle(event.currentTarget).direction === "rtl"
-                                    ? -1
-                                    : 1,
-                              };
-                            }}
-                            onPointerMove={(event) => {
-                              if (drag.current)
-                                setPreview({
-                                  id: drag.current.id,
-                                  edge: drag.current.edge,
-                                  delta: deltaAt(event.clientX),
-                                });
-                            }}
-                            onPointerUp={complete}
-                            onPointerCancel={cancel}
-                            onLostPointerCapture={cancel}
-                            onKeyDown={(event) => {
-                              if (event.key === "Escape") {
-                                cancel();
-                                return;
-                              }
-                              const step =
-                                event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-                              if (!step) return;
-                              event.preventDefault();
-                              const direction =
-                                getComputedStyle(event.currentTarget).direction === "rtl" ? -1 : 1;
-                              const delta = step * direction;
-                              if (
-                                edge === "start"
-                                  ? rowStart + delta <= rowEnd
-                                  : rowEnd + delta >= rowStart
-                              )
-                                onRangeChange(row.id, edge, delta);
-                            }}
-                          >
-                            <GripVertical aria-hidden="true" />
-                          </Button>
-                        ))}
+                        .filter(allowsEdge)
+                        .map(grip)}
                   </div>
                 )}
               </div>
             </div>
           );
         })}
+        {linkLayer}
       </div>
     );
     const sectionProps = {

@@ -13343,6 +13343,14 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "links",
+          "origin": "owned",
+          "required": false,
+          "type": "RangeTimelineLink[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "onExpandedValuesChange",
           "origin": "owned",
           "required": false,
@@ -13363,6 +13371,14 @@
           "origin": "owned",
           "required": false,
           "type": "((id: string, edge: \"start\" | \"end\", delta: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "planLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },

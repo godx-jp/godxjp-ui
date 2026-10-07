@@ -1699,6 +1699,17 @@
     "width": "Label column: {width}px",
     "doneTask": "EXSELI-79 Release notes (done)",
     "lateTask": "EXSELI-80 Data migration (overdue)",
-    "plannedTask": "EXSELI-84 Payment API (plan 3–7, actual 3–10)"
+    "plannedTask": "EXSELI-84 Payment API (plan 3–7, actual 3–10)",
+    "schedulesTitle": "Schedules: milestones, dependencies, baselines",
+    "schedulesDescription": "A phase heading row with no hint, bars against a baseline (overrun and early labels), a milestone diamond with its hollow baseline, an open-ended row with no end grip, a cancelled row, a finish recorded without a start, and dependency arrows: a violated one gets a focusable marker. Emphasis marks the critical path and an at-risk row.",
+    "baseline": "the baseline",
+    "phase": "Phase 1: Launch",
+    "design": "Design",
+    "build": "Build",
+    "release": "Release",
+    "ops": "Operations (in progress)",
+    "legacy": "Legacy migration (cancelled)",
+    "audit": "Security review (finish only)",
+    "violation": "Release cannot finish before the build"
   }
 }

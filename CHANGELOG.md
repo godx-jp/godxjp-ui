@@ -6,6 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.0] - 2026-10-07
+
+### ✨ RangeTimeline schedules: milestones, dependencies, baselines
+
+For godx-task's multi-phase Gantt (工程). All additive: a timeline without the new props renders
+the same markup as before.
+
+- **Label-only rows**: `emptyHint` (a `ReactNode`, or `false` to show nothing) controls what an
+  undated row says. The default is still the localized "no dates".
+- **Finish-only rows** (`start: null` with `end` set): a finish tick at `end`, no bar and no grips,
+  spoken as `startUnknownLabel` (default 「開始日不明」).
+- **`openEnd`**: a started row whose completion is not recorded runs to `end` with a faded inline
+  end and no end grip, spoken as `openEndLabel` (default 「完了未記録」).
+- **Milestones**: `shape: "milestone"` draws a diamond at `end`, and `start` is ignored. Its `plan`
+  is a hollow diamond, and overrun / early with their labels work as they do for a bar. A single
+  grip reports `onRangeChange(id, "end", delta)`, and a tooltip makes it focusable.
+- **One-sided plans**: when only `plan.start` or `plan.end` is known, the row draws a dashed due
+  tick. A known `plan.end` still measures overrun and early.
+- **`planLabel`** (on the timeline or per row) names what the ghost is in the spoken text:
+  「ベースラインより3日遅れ」.
+- **`earlyLabel`**: an early finish now shows how early ("-2日" / "-2d" / "-2 ngày"). Pass `false`
+  to hide it.
+- **`cancelled`**: a hatched bar, distinct from `muted`, spoken 「中止」, with no grips.
+- **`links`** (FS / SS / FF / SF): elbow connectors in one decorative SVG over the body, positioned
+  from measured row centres so a wrapped label never shears a line. A folded endpoint hides the
+  link, and an off-range one is clamped. A `violated` link turns destructive, gets a focusable 24px
+  marker with a tooltip at its head, and is listed for screen readers.
+- **`emphasis`** (`"warning"` | `"critical"`): an inline-start accent on the row from the mark tier,
+  plus a spoken label, for at-risk rows and the critical path.
+
 ## [31.30.1] - 2026-10-07
 
 ### 🐛 `PasswordStrength` `minLength` (gh#1193)

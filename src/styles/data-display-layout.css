@@ -2783,6 +2783,179 @@
   [dir="rtl"] .ui-range-timeline-bar[data-overdue="true"] {
     box-shadow: inset var(--range-timeline-bar-overdue-width) 0 0 hsl(var(--destructive));
   }
+  /* SCHEDULES. A finish-only row's tick and a one-sided plan's due tick sit centred on a unit
+   * boundary; an open-ended bar fades out at its inline end; a cancelled bar is hatched over its
+   * colour; a milestone is a diamond (its plan a hollow one) centred on its unit. */
+  .ui-range-timeline-finish,
+  .ui-range-timeline-plan-tick {
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translate(-50%, -50%);
+    block-size: var(--range-timeline-bar-height);
+  }
+  [dir="rtl"] .ui-range-timeline-finish,
+  [dir="rtl"] .ui-range-timeline-plan-tick {
+    transform: translate(50%, -50%);
+  }
+  .ui-range-timeline-finish {
+    inline-size: var(--range-timeline-finish-inline-size);
+    border-radius: var(--range-timeline-finish-inline-size);
+    background: var(--range-timeline-bar-color, hsl(var(--primary)));
+  }
+  .ui-range-timeline-plan-tick {
+    inline-size: 0;
+    border-inline-start: var(--range-timeline-plan-tick-inline-size) dashed
+      hsl(var(--foreground) / 0.45);
+  }
+  .ui-range-timeline-bar[data-open-end="true"] {
+    mask-image: linear-gradient(
+      to right,
+      black calc(100% - var(--range-timeline-open-end-fade-inline-size)),
+      transparent
+    );
+  }
+  [dir="rtl"] .ui-range-timeline-bar[data-open-end="true"] {
+    mask-image: linear-gradient(
+      to left,
+      black calc(100% - var(--range-timeline-open-end-fade-inline-size)),
+      transparent
+    );
+  }
+  .ui-range-timeline-bar[data-cancelled="true"],
+  .ui-range-timeline-milestone[data-cancelled="true"]::before {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent 0 var(--range-timeline-cancelled-hatch-gap),
+      var(--range-timeline-cancelled-hatch-color, hsl(var(--foreground) / 0.45))
+        var(--range-timeline-cancelled-hatch-gap)
+        calc(
+          var(--range-timeline-cancelled-hatch-gap) +
+            var(--range-timeline-cancelled-hatch-line-width)
+        )
+    );
+  }
+  .ui-range-timeline-milestone,
+  .ui-range-timeline-plan-diamond {
+    position: absolute;
+    inset-block-start: 50%;
+    inline-size: var(--range-timeline-milestone-size);
+    block-size: var(--range-timeline-milestone-size);
+    transform: translate(-50%, -50%);
+  }
+  [dir="rtl"] .ui-range-timeline-milestone,
+  [dir="rtl"] .ui-range-timeline-plan-diamond {
+    transform: translate(50%, -50%);
+  }
+  .ui-range-timeline-milestone::before,
+  .ui-range-timeline-plan-diamond::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--range-timeline-milestone-size) * 0.15);
+    rotate: 45deg;
+  }
+  .ui-range-timeline-milestone {
+    color: var(--range-timeline-bar-ink, hsl(var(--primary-foreground)));
+  }
+  .ui-range-timeline-milestone::before {
+    background-color: var(--range-timeline-bar-color, hsl(var(--primary)));
+  }
+  .ui-range-timeline-milestone[data-muted="true"] {
+    opacity: var(--range-timeline-bar-muted-alpha);
+  }
+  .ui-range-timeline-milestone[data-overdue="true"]::before {
+    box-shadow: 0 0 0 var(--range-timeline-bar-overdue-width) hsl(var(--destructive));
+  }
+  .ui-range-timeline-plan-diamond::before {
+    border: var(--range-timeline-plan-border-width) dashed hsl(var(--foreground) / 0.45);
+  }
+  /* The milestone's one grip covers the diamond: the diamond IS the handle. */
+  .ui-range-timeline-milestone > .ui-range-timeline-handle {
+    inset-inline: 0;
+    inline-size: 100%;
+  }
+  .ui-range-timeline-early-label {
+    z-index: 1;
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    padding-inline: var(--space-1);
+    color: hsl(var(--text-success));
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+  }
+  /* Dependency connectors: one decorative SVG over the body's track column, above the bars and
+   * below the sticky labels; only a violated link's marker takes the pointer and the focus. */
+  .ui-range-timeline-links {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: grid;
+    grid-template-columns: var(--range-timeline-label-width) minmax(0, 1fr);
+    pointer-events: none;
+  }
+  .ui-range-timeline-links-track {
+    position: relative;
+    min-inline-size: 0;
+  }
+  .ui-range-timeline-links-svg {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: visible;
+  }
+  .ui-range-timeline-link line {
+    fill: none;
+    stroke: var(--range-timeline-link-color, hsl(var(--muted-foreground)));
+    stroke-width: var(--range-timeline-link-width);
+  }
+  .ui-range-timeline-link[data-violated="true"] line {
+    stroke: hsl(var(--mark-destructive, var(--text-error)));
+  }
+  .ui-range-timeline-link-head path {
+    fill: var(--range-timeline-link-color, hsl(var(--muted-foreground)));
+  }
+  .ui-range-timeline-link-head[data-violated="true"] path {
+    fill: hsl(var(--mark-destructive, var(--text-error)));
+  }
+  /* The violated link's marker: a 24px target (WCAG 2.5.8) around a small destructive dot. */
+  .ui-range-timeline-link-violation {
+    position: absolute;
+    inline-size: var(--range-timeline-link-violation-size);
+    block-size: var(--range-timeline-link-violation-size);
+    translate: -50% -50%;
+    border-radius: var(--radius-full, 9999px);
+    pointer-events: auto;
+  }
+  [dir="rtl"] .ui-range-timeline-link-violation {
+    translate: 50% -50%;
+  }
+  .ui-range-timeline-link-violation::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--range-timeline-link-violation-size) * 0.3);
+    border-radius: inherit;
+    background: hsl(var(--mark-destructive, var(--text-error)));
+  }
+  /* Row emphasis: an accent on the row's inline start (the mark tier), spoken in the label. */
+  .ui-range-timeline-row[data-emphasis="warning"] > .ui-range-timeline-label {
+    box-shadow: inset var(--range-timeline-emphasis-width) 0 0
+      hsl(var(--mark-warning, var(--text-warning)));
+  }
+  .ui-range-timeline-row[data-emphasis="critical"] > .ui-range-timeline-label {
+    box-shadow: inset var(--range-timeline-emphasis-width) 0 0
+      hsl(var(--mark-destructive, var(--text-error)));
+  }
+  [dir="rtl"] .ui-range-timeline-row[data-emphasis="warning"] > .ui-range-timeline-label {
+    box-shadow: inset calc(-1 * var(--range-timeline-emphasis-width)) 0 0
+      hsl(var(--mark-warning, var(--text-warning)));
+  }
+  [dir="rtl"] .ui-range-timeline-row[data-emphasis="critical"] > .ui-range-timeline-label {
+    box-shadow: inset calc(-1 * var(--range-timeline-emphasis-width)) 0 0
+      hsl(var(--mark-destructive, var(--text-error)));
+  }
   /* The tooltip's focus target (gh#1189): a layer over the bar BESIDE the grips, never around
    * them, so no interactive element nests another. The grips sit above it. */
   .ui-range-timeline-bar-hit {

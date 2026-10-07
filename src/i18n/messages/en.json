@@ -771,7 +771,17 @@
     "overdue": "Overdue",
     "overrun": "Over the plan",
     "early": "Ahead of the plan",
-    "lateBy": "+{n}d"
+    "lateBy": "+{n}d",
+    "startUnknown": "Start unknown",
+    "openEnd": "Completion not recorded",
+    "cancelled": "Cancelled",
+    "overrunVs": "{n}d behind {plan}",
+    "earlyVs": "{n}d ahead of {plan}",
+    "earlyBy": "-{n}d",
+    "dependencyViolated": "Dependency violated",
+    "dependencyViolatedWith": "Dependency violated: {label}",
+    "emphasisWarning": "At risk",
+    "emphasisCritical": "Critical path"
   },
   "chat": {
     "bubble": {

@@ -1692,6 +1692,17 @@
     "width": "Cột nhãn: {width}px",
     "doneTask": "EXSELI-79 Ghi chú phát hành (xong)",
     "lateTask": "EXSELI-80 Chuyển dữ liệu (quá hạn)",
-    "plannedTask": "EXSELI-84 API thanh toán (kế hoạch 3–7, thực tế 3–10)"
+    "plannedTask": "EXSELI-84 API thanh toán (kế hoạch 3–7, thực tế 3–10)",
+    "schedulesTitle": "Lịch trình: mốc, phụ thuộc, đường cơ sở",
+    "schedulesDescription": "Một hàng tiêu đề không có gợi ý, các thanh so với đường cơ sở (nhãn trễ và sớm), một mốc hình thoi với đường cơ sở rỗng, một hàng chưa ghi nhận hoàn thành không có tay nắm cuối, một hàng đã hủy, một hàng chỉ có ngày hoàn thành, và các mũi tên phụ thuộc: mũi tên vi phạm có điểm đánh dấu có thể focus. Nhấn mạnh đánh dấu đường găng và hàng có rủi ro.",
+    "baseline": "đường cơ sở",
+    "phase": "Giai đoạn 1: Ra mắt",
+    "design": "Thiết kế",
+    "build": "Phát triển",
+    "release": "Phát hành",
+    "ops": "Vận hành (đang chạy)",
+    "legacy": "Chuyển hệ thống cũ (đã hủy)",
+    "audit": "Đánh giá bảo mật (chỉ ngày hoàn thành)",
+    "violation": "Không thể phát hành trước khi phát triển xong"
   }
 }
