@@ -279,6 +279,16 @@
             "src/components/layout/__tests__/app-launcher.test.tsx",
             "src/components/layout/__tests__/app-launcher-placement.test.tsx"
           ]
+        },
+        "footer": {
+          "cases": [
+            "secondary links row below the grid, after the tiles in focus order",
+            "omitted — no footer node"
+          ],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher-footer-1172.test.tsx"
+          ]
         }
       }
     },
