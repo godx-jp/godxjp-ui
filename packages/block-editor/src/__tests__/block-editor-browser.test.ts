@@ -117,6 +117,24 @@ const value = (page: Page) =>
 const expectValue = (page: Page, expected: string) =>
   expect.poll(() => value(page), { timeout: 3000 }).toBe(expected);
 const editable = (page: Page) => page.locator(".ui-block-editor-content");
+/**
+ * Select [start, end) of the first paragraph's text with a DOM Range: the same `selectionchange`
+ * path a mouse or keyboard selection takes. N Shift+ArrowRight presses are not deterministic: on a
+ * loaded CI runner one press was dropped and BOTH the DOM and ProseMirror held "hell" (2026-10-07).
+ */
+const selectText = (page: Page, start: number, end: number) =>
+  page.evaluate(
+    ([from, to]) => {
+      const text = document.querySelector(".ProseMirror p")!.firstChild!;
+      const range = document.createRange();
+      range.setStart(text, from!);
+      range.setEnd(text, to!);
+      const selection = window.getSelection()!;
+      selection.removeAllRanges();
+      selection.addRange(range);
+    },
+    [start, end],
+  );
 
 // Every case drives a real page; under a loaded machine the default 20s per test is too tight.
 describe("BlockEditor (Chromium, gh#1156)", { timeout: 40_000 }, () => {
@@ -189,11 +207,9 @@ describe("BlockEditor (Chromium, gh#1156)", { timeout: 40_000 }, () => {
     await page.waitForFunction(
       () => window.getSelection()?.anchorNode?.textContent === "hello world",
     );
-    await page.keyboard.press("Home");
-    for (let i = 0; i < 5; i++) await page.keyboard.press("Shift+ArrowRight");
-    // ProseMirror reads a keyboard selection from `selectionchange`, which lags under load, and the
-    // toolbar follows ProseMirror's state, not the DOM. Wait for the state (Tiptap puts the editor
-    // on its root element), so a slow runner waits instead of racing the bubble menu's debounce.
+    await selectText(page, 0, 5);
+    // The toolbar follows ProseMirror's state, not the DOM, and ProseMirror reads the selection on
+    // `selectionchange`. Wait for the state (Tiptap puts the editor on its root element).
     await page
       .waitForFunction(
         () => {
@@ -416,8 +432,7 @@ describe("BlockEditor (Chromium, gh#1156)", { timeout: 40_000 }, () => {
     await page.waitForFunction(
       () => window.getSelection()?.anchorNode?.textContent === "make this a link",
     );
-    await page.keyboard.press("Home");
-    for (let i = 0; i < 4; i++) await page.keyboard.press("Shift+ArrowRight");
+    await selectText(page, 0, 4);
     await page.waitForFunction(() => String(window.getSelection()) === "make");
     await page.keyboard.press("ControlOrMeta+k");
     const drawer = page.getByRole("dialog", { name: "リンクを編集" });
