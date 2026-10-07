@@ -79,6 +79,11 @@
       "description": "Open-state callback.",
       "name": "onOpenChange",
       "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Secondary links under the grid — \"Request access\", \"All apps\" (the Workspace / Okta / My Apps row, gh#1172). Pass the links; the launcher draws the row (hairline above, small type, --app-launcher-footer-*) outside the scrolling grid, after the tiles in focus order, in every state including empty/loading/error. Not a tile: never fake it as a one-tile group.",
+      "name": "footer",
+      "type": "ReactNode"
     }
   ],
   "related": [

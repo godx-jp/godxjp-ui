@@ -53,6 +53,11 @@
       "type": "ReactNode | ((collapsed: boolean) => ReactNode)"
     },
     {
+      "description": "The rail's ONE primary action (Linear \"New issue\", Jira \"+ Create\", Notion \"New page\"), rendered between the brand header and the scrolling nav and never scrolling with it (gh#1185). Put exactly one primary control here: a Button full width (fullWidth) when expanded, icon-only with aria-label + Tooltip when collapsed. PASS A FUNCTION for the same reason brand and footer take one: it receives the EFFECTIVE collapsed value, so AppShell's mobile drawer (which never collapses) gets the full button from the same Sidebar node. Inset: --sidebar-action-padding (inline matches the nav rows). Do NOT put the action in `brand` - that slot is the product lockup.",
+      "name": "action",
+      "type": "ReactNode | ((collapsed: boolean) => ReactNode)"
+    },
+    {
       "description": "Slot pinned to the bottom of the sidebar below the scrollable nav area. Commonly used for user identity, online status, or a mode switch. PASS A FUNCTION for the same reason brand takes one, and it is the same reason twice: both slots sit INSIDE the collapsible rail, so both need the EFFECTIVE collapsed value, which a node built outside the component cannot see. Reading your own `collapsed` boolean renders a glyph-only footer inside AppShell's full-width drawer (the drawer un-collapses the rail); building a second Sidebar for AppShell's `mobileNav` is exactly the override that switches railInDrawer off; doing neither leaves the expanded footer to reflow inside a 64px rail (measured: a two-line identity block went 255x66 docked to 63x111 collapsed, wrapping the name over three lines). A plain ReactNode still works unchanged.",
       "name": "footer",
       "type": "ReactNode | ((collapsed: boolean) => ReactNode)"

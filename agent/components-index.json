@@ -807,6 +807,11 @@
     "tagline": "Page icon / reaction picker in a Popover (gh#1164): search by the active language's CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and \"remove icon\". No skin tones."
   },
   {
+    "group": "data-entry",
+    "name": "SortableList",
+    "tagline": "Reorder a flat list or a grid of tiles (gh#1173). Each item has a grip: drag it with a pointer (touch included — the grip sets touch-action: none), or focus it and press Space/Enter to lift, the arrows (Home / End) to move, Space/Enter to drop, Esc to cancel. Every step is spoken in a polite live region (\"2 of 3\"). The order is the value."
+  },
+  {
     "group": "feedback",
     "name": "TwoFactorSetup",
     "tagline": "Canonical two-factor enrollment dialog for QR/manual-key verification and recovery-code acknowledgement."

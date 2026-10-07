@@ -1679,5 +1679,8 @@
     "fitTitle": "ロゴ：fit=\"contain\"",
     "fitDescription": "cover（既定）は枠いっぱいに切り抜きます（顔写真向け）。contain は横長・透過のロゴを切らずに全体表示します。",
     "logo": "Acme ロゴ"
+  },
+  "sidebarDocs": {
+    "newEntry": "仕訳を追加"
   }
 }

@@ -20,7 +20,7 @@
       "type": "BreakpointProp"
     },
     {
-      "description": "Overlaid count; does not change the bar cell width. Not rendered with asChild.",
+      "description": "Overlaid count; does not change the bar cell width. Rendered under asChild too (gh#1171): the pill goes inside the child element after its children, so `<TopbarItem asChild badge={3}><a href=\"/notifications\">…</a></TopbarItem>` keeps its count.",
       "name": "badge",
       "type": "ReactNode"
     },

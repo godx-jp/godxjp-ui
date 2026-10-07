@@ -337,6 +337,9 @@
    * default resolves at the call site. Default = calc(var(--radius) - 1px). */
   --sidebar-nav-item-radius: initial;
   --sidebar-nav-scroll-padding: var(--space-3) var(--space-2);
+  /* Sidebar `action` (gh#1185): the inline inset matches the nav's, so the button's edges line up
+   * with the rows; the block end is 0 because the nav's own top padding supplies the gap below. */
+  --sidebar-action-padding: var(--space-3) var(--space-2) 0;
   --sidebar-section-gap: var(--space-4);
   --sidebar-section-label-padding-x: var(--space-2);
   --sidebar-section-label-padding-bottom: var(--space-1);

@@ -1686,5 +1686,8 @@
     "fitTitle": "Logos: fit=\"contain\"",
     "fitDescription": "cover (the default) crops to fill — right for a face. contain shows a wide or transparent logo whole.",
     "logo": "Acme logo"
+  },
+  "sidebarDocs": {
+    "newEntry": "New journal entry"
   }
 }

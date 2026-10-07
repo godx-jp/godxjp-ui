@@ -1679,5 +1679,8 @@
     "fitTitle": "Logo: fit=\"contain\"",
     "fitDescription": "cover (mặc định) cắt cho đầy khung — hợp với ảnh khuôn mặt. contain hiện trọn logo rộng hoặc trong suốt.",
     "logo": "Logo Acme"
+  },
+  "sidebarDocs": {
+    "newEntry": "Thêm bút toán"
   }
 }

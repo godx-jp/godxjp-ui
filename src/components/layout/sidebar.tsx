@@ -459,6 +459,7 @@ export function Sidebar({
   product,
   onProductClick,
   brand,
+  action,
   collapsed = false,
   children,
   linkComponent,
@@ -499,6 +500,8 @@ export function Sidebar({
    * effective value, and a consumer who learnt the shape once should not learn it twice.
    */
   const footerNode = typeof footer === "function" ? footer(collapsed) : footer;
+  /* `action` (gh#1185) is the third slot inside the collapsible rail, so it reads the same value. */
+  const actionNode = typeof action === "function" ? action(collapsed) : action;
 
   return (
     <div className="sb-root" data-collapsed={collapsed ? "true" : undefined}>
@@ -577,6 +580,12 @@ export function Sidebar({
             </div>
           );
         })()
+      ) : null}
+
+      {actionNode ? (
+        <div className="sb-action" data-slot="sidebar-action">
+          {actionNode}
+        </div>
       ) : null}
 
       <nav

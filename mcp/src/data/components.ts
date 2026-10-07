@@ -1214,7 +1214,7 @@ import { FormField, NumberInput, Select } from "@godxjp/ui/data-entry";
         type: "boolean",
         defaultValue: "false",
         description:
-          "Dense packing (grid-auto-flow: row dense): later small cells back-fill the holes a wide or tall cell leaves — a widget board of 1×1 / 2×1 / 1×2 cells (gh#1175). Visual order only; DOM and focus order stay as written, so use it for independent widgets/tiles, not reading order. Ignored under flow=\"columns\".",
+          'Dense packing (grid-auto-flow: row dense): later small cells back-fill the holes a wide or tall cell leaves — a widget board of 1×1 / 2×1 / 1×2 cells (gh#1175). Visual order only; DOM and focus order stay as written, so use it for independent widgets/tiles, not reading order. Ignored under flow="columns".',
       },
       {
         name: "children",
@@ -1895,6 +1895,12 @@ export function HandyInbound() {
           "Custom brand slot rendered above the nav scroll area. When provided, the product chip is not rendered. PASS A FUNCTION and it is called with the EFFECTIVE collapsed value, which is what a plain node cannot see: AppShell reuses this same Sidebar for the mobile drawer and the drawer un-collapses the rows, so a lockup built from the consumer's own `collapsed` boolean renders glyph-only inside a full-width drawer. The workaround consumers reach for — a second hand-built Sidebar passed as AppShell's `mobileNav` — is exactly the override that switches off `railInDrawer`, silently dropping the `navRail` from mobile. This slot is APP scope (the product lockup); a PLATFORM switch does not go here.",
       },
       {
+        name: "action",
+        type: "ReactNode | ((collapsed: boolean) => ReactNode)",
+        description:
+          'The rail\'s ONE primary action (Linear "New issue", Jira "+ Create", Notion "New page"), rendered between the brand header and the scrolling nav and never scrolling with it (gh#1185). Put exactly one primary control here: a Button full width (fullWidth) when expanded, icon-only with aria-label + Tooltip when collapsed. PASS A FUNCTION for the same reason brand and footer take one: it receives the EFFECTIVE collapsed value, so AppShell\'s mobile drawer (which never collapses) gets the full button from the same Sidebar node. Inset: --sidebar-action-padding (inline matches the nav rows). Do NOT put the action in `brand` - that slot is the product lockup.',
+      },
+      {
         name: "footer",
         type: "ReactNode | ((collapsed: boolean) => ReactNode)",
         description:
@@ -2186,7 +2192,7 @@ import { PanelLeftClose, Search } from "lucide-react";
         name: "badge",
         type: "ReactNode",
         description:
-          "Overlaid count; does not change the bar cell width. Rendered under asChild too (gh#1171): the pill goes inside the child element after its children, so `<TopbarItem asChild badge={3}><a href=\"/notifications\">…</a></TopbarItem>` keeps its count.",
+          'Overlaid count; does not change the bar cell width. Rendered under asChild too (gh#1171): the pill goes inside the child element after its children, so `<TopbarItem asChild badge={3}><a href="/notifications">…</a></TopbarItem>` keeps its count.',
       },
       {
         name: "badgeTone",
@@ -17428,7 +17434,7 @@ import { Badge } from "@godxjp/ui/data-display";
         name: "footer",
         type: "ReactNode",
         description:
-          "Secondary links under the grid — \"Request access\", \"All apps\" (the Workspace / Okta / My Apps row, gh#1172). Pass the links; the launcher draws the row (hairline above, small type, --app-launcher-footer-*) outside the scrolling grid, after the tiles in focus order, in every state including empty/loading/error. Not a tile: never fake it as a one-tile group.",
+          'Secondary links under the grid — "Request access", "All apps" (the Workspace / Okta / My Apps row, gh#1172). Pass the links; the launcher draws the row (hairline above, small type, --app-launcher-footer-*) outside the scrolling grid, after the tiles in focus order, in every state including empty/loading/error. Not a tile: never fake it as a one-tile group.',
       },
     ],
     usage: [

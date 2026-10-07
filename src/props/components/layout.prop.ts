@@ -1550,6 +1550,14 @@ export type SidebarProp = {
    * not belong here — see AppShell's `navRail` for where it goes and why.
    */
   brand?: ReactNode | ((collapsed: boolean) => ReactNode);
+  /**
+   * The rail's ONE primary action ("New issue", "+ Create", "New page"), rendered between `brand`
+   * and the scrolling nav and never scrolling with it. Put exactly one primary control here: a
+   * `Button` (variant primary) full width when expanded, icon-only with an `aria-label` + tooltip
+   * when collapsed. It takes a function for the same reason `brand` and `footer` do: it receives the
+   * EFFECTIVE collapsed value, so the mobile drawer (which never collapses) gets the full button.
+   */
+  action?: ReactNode | ((collapsed: boolean) => ReactNode);
   collapsed?: boolean;
   children?: ChildrenProp;
   /**

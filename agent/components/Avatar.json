@@ -69,6 +69,7 @@
   "tagline": "Radix Avatar wrapper with image and fallback slots for users, teams, and entities.",
   "usage": [
     "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+    "DO pass `fit=\"contain\"` on AvatarImage for a logo or app icon that is wide, transparent or off-centre — the default `cover` crops to fill, right for a face (gh#1176). A full-bleed square icon (the GoDX service icon set) keeps the default.",
     "DO use `presence` for who is reachable RIGHT NOW — a chat member list, a DM row, a message-stream author, the topbar account mark. It is the only supported way to put a status dot on an avatar: the dot's inset is a function of the mark's own --avatar-* radius/size and of the root's clip, neither of which a page can read, which is why the hand-rolled `<span className=\"relative\"><Avatar/><span className=\"absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full bg-green-500 ring-2 ring-background\"/></span>` wrapper can never be got right from outside (and fails the DS audit on the raw palette).",
     "DON'T announce a presence CHANGE from the avatar — it carries no aria-live on purpose. A roster of 40 marks resyncing over a socket would flood a screen reader; announce the change in the consumer's own live region if the product wants it.",
     "DON'T reach for `Badge status` for presence, or `presence` for lifecycle. Presence is volatile, per-person and realtime and renders as a dot; a lifecycle status is a record's state and renders as a labelled chip.",

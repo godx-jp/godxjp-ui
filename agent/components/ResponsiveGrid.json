@@ -38,6 +38,12 @@
       "type": "\"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\""
     },
     {
+      "defaultValue": "false",
+      "description": "Dense packing (grid-auto-flow: row dense): later small cells back-fill the holes a wide or tall cell leaves — a widget board of 1×1 / 2×1 / 1×2 cells (gh#1175). Visual order only; DOM and focus order stay as written, so use it for independent widgets/tiles, not reading order. Ignored under flow=\"columns\".",
+      "name": "dense",
+      "type": "boolean"
+    },
+    {
       "description": "Grid items — typically Card or StatCard.",
       "name": "children",
       "required": true,
@@ -58,6 +64,7 @@
   "tagline": "Container-responsive card grid with configurable base, sm, md and lg columns.",
   "usage": [
     "ResponsiveGrid.Item span={2} owns a responsive column span; an object {base:1,lg:2} sets explicit steps, clamped to the parent columns.",
+    "ResponsiveGrid.Item rowSpan={2} spans two rows — the tall (1×2) widget (gh#1175). Same shape as span: a number applies from sm up and is 1 at base (the single stacked column), an object sets each step. Pair with `dense` so the cells after it fill the space beside it.",
     "KANBAN LANES: <ScrollArea orientation=\"horizontal\"><ResponsiveGrid flow=\"columns\" align=\"stretch\">{lanes.map(lane => <Card onDragOver onDrop>…<Card draggable>…</Card></Card>)}</ResponsiveGrid></ScrollArea>. align=\"stretch\" keeps an empty lane as tall as the fullest one, so it stays a full-height drop target; a Select inside a draggable card does not enlarge the drag image.",
     "DO place StatCard tiles directly as immediate children — StatCard IS already a bordered card; never wrap it in an extra <Card><CardContent>. The canonical pattern is <ResponsiveGrid columns={4}><StatCard .../><StatCard .../></ResponsiveGrid>.",
     "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. Use columns={{ base: 2, sm: 4 }} for two mobile columns and four wider-container columns; no consumer CSS is needed.",

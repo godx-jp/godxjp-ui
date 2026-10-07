@@ -23,6 +23,8 @@ import {
   CardTitle,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@godxjp/ui/feedback";
+import { useTranslation } from "@godxjp/ui/i18n";
 import {
   LayoutDashboard,
   FileText,
@@ -207,6 +209,7 @@ const COMPOSED_ITEMS: SidebarItemData[] = [
 ];
 
 export default function Demo() {
+  const { t } = useTranslation();
   const [activeId, setActiveId] = useState("journal");
   const [collapsed, setCollapsed] = useState(false);
   const [brandActiveId, setBrandActiveId] = useState("projects");
@@ -235,6 +238,27 @@ export default function Demo() {
        * を読むと、AppShell が同じ Sidebar をドロワーにも渡す（ドロワーは展開表示に戻す）ため
        * 全幅のドロワーの中でアイコンだけの足元になります。
        */
+      /*
+       * action · the rail's ONE primary action (gh#1185), above the scrolling nav. Full width
+       * when expanded; icon-only with a tooltip in the collapsed rail.
+       */
+      action={(railCollapsed) =>
+        railCollapsed ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="sm" aria-label={t("sidebarDocs.newEntry")}>
+                <Plus />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">{t("sidebarDocs.newEntry")}</TooltipContent>
+          </Tooltip>
+        ) : (
+          <Button size="sm" fullWidth>
+            <Plus />
+            {t("sidebarDocs.newEntry")}
+          </Button>
+        )
+      }
       footer={(railCollapsed) =>
         railCollapsed ? (
           <Flex justify="center">
