@@ -64,7 +64,7 @@ describe("TopbarItem badge (gh#398)", () => {
     expect(badgeOf(loud)).toHaveAttribute("data-tone", "destructive");
   });
 
-  it("is ignored under asChild, where Slot borrows the child's single element", () => {
+  it("is drawn under asChild too, inside the borrowed element (gh#1171)", () => {
     const { container } = renderWithUi(
       <TopbarItem asChild badge={5}>
         <a href="/notifications" aria-label="通知">
@@ -72,8 +72,9 @@ describe("TopbarItem badge (gh#398)", () => {
         </a>
       </TopbarItem>,
     );
-    expect(container.querySelector("a")).toHaveClass("ui-topbar-item");
-    expect(badgeOf(container)).toBeNull();
+    const link = container.querySelector("a")!;
+    expect(link).toHaveClass("ui-topbar-item");
+    expect(badgeOf(container)?.parentElement).toBe(link);
   });
 
   it("anchors the pill to the glyph through tokens, on logical axes", () => {

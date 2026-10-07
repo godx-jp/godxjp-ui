@@ -11,6 +11,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Button, Icon, Text } from "@godxjp/ui/general";
 import { AppShell, Flex, PageContainer, Sidebar, Topbar, TopbarItem } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
 import type { SidebarSectionProp } from "@godxjp/ui/layout";
 import {
   DropdownMenu,
@@ -51,6 +52,7 @@ const SECTIONS: SidebarSectionProp[] = [
 ];
 
 export default function Demo() {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -198,6 +200,15 @@ export default function Demo() {
                   <>
                     <TopbarItem asChild icon={<Target aria-hidden="true" />}>
                       <a href="#topbar-item-goals">目標</a>
+                    </TopbarItem>
+                    {/* gh#1171: a bell that is a LINK keeps its count under asChild. */}
+                    <TopbarItem asChild badge={3} icon={<Bell aria-hidden="true" />}>
+                      <a
+                        href="#topbar-item-notifications"
+                        aria-label={t("topbarItemDocs.notificationsUnread", { count: 3 })}
+                      >
+                        {t("topbarItemDocs.notifications")}
+                      </a>
                     </TopbarItem>
                     <TopbarItem
                       asChild

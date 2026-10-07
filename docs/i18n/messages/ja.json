@@ -1631,5 +1631,28 @@
     "label": "アイコン",
     "chosen": "選択中: {icon}",
     "none": "アイコンなし"
+  },
+  "topbarItemDocs": {
+    "notifications": "通知",
+    "notificationsUnread": "通知（未読 {count} 件）"
+  },
+  "appLauncherDocs": {
+    "requestAccess": "アクセスをリクエスト",
+    "allApps": "すべてのアプリ"
+  },
+  "responsiveGridDocs": {
+    "boardTitle": "ウィジェットボード（rowSpan + dense）",
+    "boardDescription": "2×1 のセル、縦長 1×2 のセル（ResponsiveGrid.Item rowSpan={2}）、1×1 のセル。dense で小さなセルが横長・縦長セルの隣の空きを埋めます。",
+    "revenue": "月次売上",
+    "tasks": "未完了タスク",
+    "members": "メンバー",
+    "invoices": "請求書",
+    "services": "サービス",
+    "invitations": "招待"
+  },
+  "avatarDocs": {
+    "fitTitle": "ロゴ：fit=\"contain\"",
+    "fitDescription": "cover（既定）は枠いっぱいに切り抜きます（顔写真向け）。contain は横長・透過のロゴを切らずに全体表示します。",
+    "logo": "Acme ロゴ"
   }
 }

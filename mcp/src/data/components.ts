@@ -1210,6 +1210,13 @@ import { FormField, NumberInput, Select } from "@godxjp/ui/data-entry";
           'Token gap between cells, the same steps as Flex. "none" is a DELIBERATE zero for tiles that must read as one continuous surface (a segmented bar, a seamless tile strip) — not a way to opt out of the token scale.',
       },
       {
+        name: "dense",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Dense packing (grid-auto-flow: row dense): later small cells back-fill the holes a wide or tall cell leaves — a widget board of 1×1 / 2×1 / 1×2 cells (gh#1175). Visual order only; DOM and focus order stay as written, so use it for independent widgets/tiles, not reading order. Ignored under flow=\"columns\".",
+      },
+      {
         name: "children",
         type: "ReactNode",
         required: true,
@@ -1218,6 +1225,7 @@ import { FormField, NumberInput, Select } from "@godxjp/ui/data-entry";
     ],
     usage: [
       "ResponsiveGrid.Item span={2} owns a responsive column span; an object {base:1,lg:2} sets explicit steps, clamped to the parent columns.",
+      "ResponsiveGrid.Item rowSpan={2} spans two rows — the tall (1×2) widget (gh#1175). Same shape as span: a number applies from sm up and is 1 at base (the single stacked column), an object sets each step. Pair with `dense` so the cells after it fill the space beside it.",
       'KANBAN LANES: <ScrollArea orientation="horizontal"><ResponsiveGrid flow="columns" align="stretch">{lanes.map(lane => <Card onDragOver onDrop>…<Card draggable>…</Card></Card>)}</ResponsiveGrid></ScrollArea>. align="stretch" keeps an empty lane as tall as the fullest one, so it stays a full-height drop target; a Select inside a draggable card does not enlarge the drag image.',
       "DO place StatCard tiles directly as immediate children — StatCard IS already a bordered card; never wrap it in an extra <Card><CardContent>. The canonical pattern is <ResponsiveGrid columns={4}><StatCard .../><StatCard .../></ResponsiveGrid>.",
       "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. Use columns={{ base: 2, sm: 4 }} for two mobile columns and four wider-container columns; no consumer CSS is needed.",
@@ -2178,7 +2186,7 @@ import { PanelLeftClose, Search } from "lucide-react";
         name: "badge",
         type: "ReactNode",
         description:
-          "Overlaid count; does not change the bar cell width. Not rendered with asChild.",
+          "Overlaid count; does not change the bar cell width. Rendered under asChild too (gh#1171): the pill goes inside the child element after its children, so `<TopbarItem asChild badge={3}><a href=\"/notifications\">…</a></TopbarItem>` keeps its count.",
       },
       {
         name: "badgeTone",
@@ -14316,6 +14324,7 @@ import { fetchInvoice } from "@/api/invoices";
     ],
     usage: [
       "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+      'DO pass `fit="contain"` on AvatarImage for a logo or app icon that is wide, transparent or off-centre — the default `cover` crops to fill, right for a face (gh#1176). A full-bleed square icon (the GoDX service icon set) keeps the default.',
       'DO use `presence` for who is reachable RIGHT NOW — a chat member list, a DM row, a message-stream author, the topbar account mark. It is the only supported way to put a status dot on an avatar: the dot\'s inset is a function of the mark\'s own --avatar-* radius/size and of the root\'s clip, neither of which a page can read, which is why the hand-rolled `<span className="relative"><Avatar/><span className="absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full bg-green-500 ring-2 ring-background"/></span>` wrapper can never be got right from outside (and fails the DS audit on the raw palette).',
       "DON'T announce a presence CHANGE from the avatar — it carries no aria-live on purpose. A roster of 40 marks resyncing over a socket would flood a screen reader; announce the change in the consumer's own live region if the product wants it.",
       "DON'T reach for `Badge status` for presence, or `presence` for lifecycle. Presence is volatile, per-person and realtime and renders as a dot; a lifecycle status is a record's state and renders as a labelled chip.",
@@ -17345,6 +17354,12 @@ import { Badge } from "@godxjp/ui/data-display";
         name: "onOpenChange",
         type: "(open: boolean) => void",
         description: "Open-state callback.",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description:
+          "Secondary links under the grid — \"Request access\", \"All apps\" (the Workspace / Okta / My Apps row, gh#1172). Pass the links; the launcher draws the row (hairline above, small type, --app-launcher-footer-*) outside the scrolling grid, after the tiles in focus order, in every state including empty/loading/error. Not a tile: never fake it as a one-tile group.",
       },
     ],
     usage: [

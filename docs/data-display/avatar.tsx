@@ -11,9 +11,11 @@ import {
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Building2, KeyRound, ShieldCheck, Sparkles } from "lucide-react";
 
 import portraitAmber from "../assets/portrait-amber.svg";
+import shotLandscape from "../assets/shot-landscape.svg";
 import portraitClay from "../assets/portrait-clay.svg";
 import portraitIndigo from "../assets/portrait-indigo.svg";
 import portraitIris from "../assets/portrait-iris.svg";
@@ -39,9 +41,39 @@ import portraitSlate from "../assets/portrait-slate.svg";
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer title="Avatar" subtitle="Identity image with a readable fallback">
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("avatarDocs.fitTitle")}</CardTitle>
+            <CardDescription>{t("avatarDocs.fitDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* gh#1176: a wide logo — cover crops it, contain shows it whole. */}
+            <Flex direction="row" wrap align="center" gap="md">
+              <Flex direction="col" align="center" gap="xs">
+                <Avatar shape="square" size="lg">
+                  <AvatarImage src={shotLandscape} alt={t("avatarDocs.logo")} />
+                  <AvatarFallback>AC</AvatarFallback>
+                </Avatar>
+                <Text size="sm" tone="muted">
+                  cover
+                </Text>
+              </Flex>
+              <Flex direction="col" align="center" gap="xs">
+                <Avatar shape="square" size="lg">
+                  <AvatarImage src={shotLandscape} alt={t("avatarDocs.logo")} fit="contain" />
+                  <AvatarFallback>AC</AvatarFallback>
+                </Avatar>
+                <Text size="sm" tone="muted">
+                  contain
+                </Text>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle level={2}>Image + fallback</CardTitle>

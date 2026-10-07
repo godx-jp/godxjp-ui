@@ -83,6 +83,11 @@
     object-fit: cover;
   }
 
+  /* `fit="contain"` (gh#1176): a wide or transparent logo shows whole instead of being cropped. */
+  .ui-avatar-image[data-fit="contain"] {
+    object-fit: contain;
+  }
+
   .ui-avatar-fallback {
     display: flex;
     width: 100%;
