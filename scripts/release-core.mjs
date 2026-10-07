@@ -896,7 +896,7 @@ export function assertFreshTargets(uiRegistry, mcpRegistry) {
 /**
  * THE RELEASE THAT PUBLISHED EVERYTHING AND COULD NOT FINISH (gh#737).
  *
- * `verify-published-versions` polls the registry for up to 600s after publishing, because npm is
+ * `verify-published-versions` polls the registry for up to 1500s after publishing, because npm is
  * read-after-write eventual. Measured twice on this repo: 348s (v30.5.2) and 334s (v30.6.0). Both
  * runs had ALREADY published both tarballs, so they aborted with `godx-staging` on the new version
  * and `latest` a release behind — "COMPLETE but unpromoted", in the script's own words.
@@ -1242,8 +1242,13 @@ export function createReleaseRuntime({
    * one also split the lockstep set: publish-satellites refused because the kit was not yet
    * visible, so @godxjp/ui sat at 31.28.2 while markdown / editor / block-editor stayed on 31.28.1
    * until a rerun. The observed ceiling is ~350s, and 600s leaves room above it.
+   *
+   * 300 x 5s = 1500s. 600s was exhausted on 31.31.0 (run 37627799860): `+ @godxjp/ui@31.31.0` at
+   * 13:22:39, abort at 13:33:43, and the registry still answered 404 at 13:36. Each exhaustion costs
+   * two hand reruns (the second refuses as "partial" until the kit is visible), so the budget follows
+   * the worst measured lag with room to spare; the happy path still returns on the first read.
    */
-  registryVerificationAttempts = 120,
+  registryVerificationAttempts = 300,
   registryVerificationDelayMs = 5_000,
 }) {
   const cwdFor = (location) => (location === "mcp" ? join(repositoryRoot, "mcp") : repositoryRoot);
