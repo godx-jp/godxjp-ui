@@ -121,11 +121,22 @@ import type { TreeFieldNamesProp, TreeOptionProp } from "./data-entry.prop";
  * never carries meaning (WCAG 1.4.1), and a legend whose entries could be wordless would be a
  * component that lets a caller build the exact failure it exists to prevent.
  */
-export type LegendItemProp = {
-  /** The tone this key explains — the SAME tone the marks it stands for are drawn in. */
-  tone: ToneProp;
-  label: LabelProp;
-};
+export type LegendItemProp =
+  | {
+      /** The tone this key explains — the SAME tone the marks it stands for are drawn in. */
+      tone: ToneProp;
+      color?: never;
+      label: LabelProp;
+    }
+  | {
+      /**
+       * A hex colour from data (the same contract as `Badge color` / `RangeTimelineRow color`),
+       * for keys whose colours are user-chosen, e.g. a project's status colours (gh#1189).
+       */
+      color: string;
+      tone?: never;
+      label: LabelProp;
+    };
 
 /** @see Legend — the key for a colour-coded surface: a breakdown bar, a chart, a status column. */
 export type LegendProp = Omit<React.HTMLAttributes<HTMLUListElement>, "children"> & {

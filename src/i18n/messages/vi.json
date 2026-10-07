@@ -237,6 +237,22 @@
       "moved": "{label}: vị trí {position}/{count}.",
       "dropped": "Đã thả {label} ở vị trí {position}/{count}.",
       "cancelled": "Đã huỷ di chuyển. {label} trở lại vị trí {position}/{count}."
+    },
+    "passwordStrength": {
+      "weak": "Yếu",
+      "fair": "Trung bình",
+      "strong": "Mạnh",
+      "meter": "Độ mạnh mật khẩu {score} trên 4",
+      "passed": "Đạt: ",
+      "failed": "Chưa đạt: ",
+      "announcement": "Độ mạnh mật khẩu: {strength}",
+      "rules": {
+        "length": "Tối thiểu 8 ký tự",
+        "upper": "Có chữ in hoa",
+        "lower": "Có chữ thường",
+        "number": "Có chữ số",
+        "symbol": "Có ký hiệu"
+      }
     }
   },
   "feedback": {
@@ -725,7 +741,13 @@
     "childRows": "Hàng con",
     "outsideAfter": "Sau khoảng đang xem",
     "outsideBefore": "Trước khoảng đang xem",
-    "schedule": "Lịch công việc"
+    "schedule": "Lịch công việc",
+    "noDates": "Chưa có ngày",
+    "resizeLabel": "Đổi độ rộng cột nhãn",
+    "overdue": "Quá hạn",
+    "overrun": "Vượt kế hoạch",
+    "early": "Sớm hơn kế hoạch",
+    "lateBy": "+{n} ngày"
   },
   "chat": {
     "bubble": {

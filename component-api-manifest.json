@@ -13271,6 +13271,14 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "busy",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "columns",
           "origin": "owned",
           "required": true,
@@ -13283,6 +13291,14 @@
           "origin": "owned",
           "required": false,
           "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "defaultLabelWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
@@ -13311,6 +13327,14 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "labelWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "onExpandedValuesChange",
           "origin": "owned",
           "required": false,
@@ -13319,10 +13343,26 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "onLabelWidthChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((width: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "onRangeChange",
           "origin": "owned",
           "required": false,
           "type": "((id: string, edge: \"start\" | \"end\", delta: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "resizableLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { min?: number; max?: number; } | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },

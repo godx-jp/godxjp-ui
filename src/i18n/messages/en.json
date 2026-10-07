@@ -240,6 +240,22 @@
       "moved": "{label}: position {position} of {count}.",
       "dropped": "Dropped {label} at position {position} of {count}.",
       "cancelled": "Move cancelled. {label} is back at position {position} of {count}."
+    },
+    "passwordStrength": {
+      "weak": "Weak",
+      "fair": "Fair",
+      "strong": "Strong",
+      "meter": "Password strength {score} of 4",
+      "passed": "Passed: ",
+      "failed": "Not yet: ",
+      "announcement": "Password strength: {strength}",
+      "rules": {
+        "length": "8+ characters",
+        "upper": "Contains uppercase letter",
+        "lower": "Contains lowercase letter",
+        "number": "Contains number",
+        "symbol": "Contains symbol"
+      }
     }
   },
   "feedback": {
@@ -749,7 +765,13 @@
     "childRows": "Child rows",
     "outsideAfter": "After the visible range",
     "outsideBefore": "Before the visible range",
-    "schedule": "Schedule"
+    "schedule": "Schedule",
+    "noDates": "No dates",
+    "resizeLabel": "Resize the label column",
+    "overdue": "Overdue",
+    "overrun": "Over the plan",
+    "early": "Ahead of the plan",
+    "lateBy": "+{n}d"
   },
   "chat": {
     "bubble": {

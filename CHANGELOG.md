@@ -6,6 +6,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.30.0] - 2026-10-07
+
+### ✨ RangeTimeline: resizable label column, busy, rows without dates (gh#1189)
+
+For godx-task's Gantt, where the label column truncated titles and nothing could widen it.
+
+- **`resizableLabel`** (`true` or `{ min, max }`, default 160–640 px), with `labelWidth` /
+  `defaultLabelWidth` / `onLabelWidthChange`. It draws a `role="separator"` divider on the label
+  column's edge in the header: aria-valuenow/min/max, pointer drag, ArrowLeft/Right (Shift for a
+  32px step), Home/End, RTL-aware, and a 24px hit area. The width lands on
+  `--range-timeline-label-width`, so the header and every row widen together, and the token stays
+  the default until the user drags. Persist the width per user from `onLabelWidthChange`.
+- **`busy`**: `aria-busy`, a dimmed body (`--range-timeline-busy-body-alpha`) and an indeterminate
+  line under the header (static under `prefers-reduced-motion`), while the previous rows stay.
+- **Rows without dates**: `RangeTimelineRow.start` / `end` accept `null`. Such a row draws no bar and
+  no handles, and shows a muted "no dates" hint (ja / en / vi).
+- **Per-row bar state**: `color` (a data hex such as a status colour; the grips' ink flips black or
+  white by luminance), `muted` (a done row recedes), `overdue` (a destructive inline-end edge that
+  keeps the colour, plus a spoken "overdue") and `tooltip` (on hover and keyboard focus of a
+  focusable bar layer named by the row label, beside the grips, never around them).
+- **Planned vs actual (予定 / 実績)**: `plan: { start, end }` draws the plan as a dashed ghost bar
+  behind the solid actual bar. Past the planned end, a destructive overrun segment carries a
+  localized "+N日" / "+Nd" label (`varianceLabel` overrides it, `false` hides it). Ending before the
+  plan shows a small success early marker. Both are spoken, and the ghost is never draggable.
+- **Per-row `editable`** (`true` | `false` | `{ start?, end? }`): which grips a row offers, e.g. no
+  end grip for a started issue whose end is "today". **`planNote`**: muted text after the bar for a
+  row without a plan.
+- **`Legend` items take `{ color, label }`** as well as `{ tone, label }`, for user-chosen colours.
+
+### 🐛 `PasswordStrength` speaks the page's language (gh#1191)
+
+The rule checklist ("8+ characters"…), the sr-only "Passed:" / "Failed:" prefixes, the live-region
+sentence and the meter's name were hard-coded English. They now come from the kit catalogue
+(ja / en / vi) for the active locale, and every string can be overridden through `labels`: `weak` /
+`fair` / `strong`, `rules`, `passed`, `failed`, and `announcement(strength)`. All of them are now
+optional.
+
 ## [31.29.0] - 2026-10-07
 
 ### ✨ New

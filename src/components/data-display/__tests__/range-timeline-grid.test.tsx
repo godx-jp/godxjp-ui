@@ -148,7 +148,9 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
    */
   const rule = (selector: string) => {
     const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
-    const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
+    // Anchored to the START of a selector, so `.x .ui-range-timeline-body` never answers for
+    // `.ui-range-timeline-body` (the busy rule, gh#1189, is such a compound selector).
+    const match = css.match(new RegExp(`(?:^|[\\n};])\\s*${escaped}\\s*\\{([^}]*)\\}`));
     if (!match) throw new Error(`rule not found: ${selector}`);
     return match[1].replace(/\s+/g, " ");
   };

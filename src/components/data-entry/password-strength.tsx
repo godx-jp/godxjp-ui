@@ -1,17 +1,25 @@
 import { Check, X } from "lucide-react";
+import { useTranslation } from "../../i18n/use-translation";
 
 const DEFAULT_PASSWORD_RULES = ["length", "upper", "lower", "number", "symbol"] as const;
-const DEFAULT_LABELS = {
-  weak: "Weak",
-  fair: "Fair",
-  strong: "Strong",
-} as const;
 
 export type PasswordRule = (typeof DEFAULT_PASSWORD_RULES)[number];
+/**
+ * Every visible and screen-reader string, each optional (gh#1191). Unset entries come from the
+ * kit's own ja / en / vi catalogue for the active locale, so most apps pass nothing.
+ */
 export type PasswordStrengthLabels = {
-  weak: string;
-  fair: string;
-  strong: string;
+  weak?: string;
+  fair?: string;
+  strong?: string;
+  /** Checklist line per rule. */
+  rules?: Partial<Record<PasswordRule, string>>;
+  /** Screen-reader prefix before a met rule (e.g. "Passed: "). */
+  passed?: string;
+  /** Screen-reader prefix before an unmet rule (e.g. "Not yet: "). */
+  failed?: string;
+  /** The polite live-region sentence, given the strength word. */
+  announcement?: (strength: string) => string;
 };
 
 export type PasswordStrengthProps = {
@@ -50,29 +58,37 @@ function scoreTone(score: number) {
   return "success";
 }
 
-function scoreLabel(score: number, labels: PasswordStrengthLabels) {
-  if (score <= 1) return labels.weak;
-  if (score <= 3) return labels.fair;
-  return labels.strong;
+function scoreKey(score: number): "weak" | "fair" | "strong" {
+  if (score <= 1) return "weak";
+  if (score <= 3) return "fair";
+  return "strong";
 }
 
 export function PasswordStrength({
   value,
   rules = [...DEFAULT_PASSWORD_RULES],
   showChecklist = true,
-  labels = DEFAULT_LABELS,
+  labels = {},
 }: PasswordStrengthProps) {
+  const { t } = useTranslation();
   const normalizedRules = [...new Set(rules)];
   const { score, checks } = usePasswordStrength(value, normalizedRules);
   const tone = scoreTone(score);
   const segments = Array.from({ length: 5 });
+  const key = scoreKey(score);
+  const strength = labels[key] ?? t(`dataEntry.passwordStrength.${key}`);
+  const ruleLabel = (rule: PasswordRule) =>
+    labels.rules?.[rule] ?? t(`dataEntry.passwordStrength.rules.${rule}`);
+  const announcement = labels.announcement
+    ? labels.announcement(strength)
+    : t("dataEntry.passwordStrength.announcement", { strength });
 
   return (
     <div className="ui-password-strength">
       <div
         className="ui-password-strength-track"
         role="img"
-        aria-label={`Password strength ${score}/4`}
+        aria-label={t("dataEntry.passwordStrength.meter", { score: String(score) })}
       >
         {segments.map((_, index) => {
           const filled = index < score + 1;
@@ -88,7 +104,7 @@ export function PasswordStrength({
         })}
       </div>
       <div className="ui-password-strength-meta">
-        <span className="ui-password-strength-label">{scoreLabel(score, labels)}</span>
+        <span className="ui-password-strength-label">{strength}</span>
         <span className="ui-password-strength-score" aria-hidden="true">
           {score}/4
         </span>
@@ -103,32 +119,19 @@ export function PasswordStrength({
               data-state={checks[rule] ? "passed" : "failed"}
             >
               {checks[rule] ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}
-              <span className="sr-only">{checks[rule] ? "Passed: " : "Failed: "}</span>
-              <span>{labelForRule(rule)}</span>
+              <span className="sr-only">
+                {checks[rule]
+                  ? (labels.passed ?? t("dataEntry.passwordStrength.passed"))
+                  : (labels.failed ?? t("dataEntry.passwordStrength.failed"))}
+              </span>
+              <span>{ruleLabel(rule)}</span>
             </li>
           ))}
         </ul>
       ) : null}
       <span className="sr-only" aria-live="polite">
-        {scoreLabel(score, labels)} password strength
+        {announcement}
       </span>
     </div>
   );
-}
-
-function labelForRule(rule: PasswordRule) {
-  switch (rule) {
-    case "length":
-      return "8+ characters";
-    case "upper":
-      return "Contains uppercase letter";
-    case "lower":
-      return "Contains lowercase letter";
-    case "number":
-      return "Contains number";
-    case "symbol":
-      return "Contains symbol";
-    default:
-      return rule;
-  }
 }

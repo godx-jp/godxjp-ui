@@ -549,7 +549,7 @@
         "type": "{ label: string; units: number }[]"
       },
       {
-        "description": "Each row has id, label, inclusive start/end unit offsets, and localized startLabel/endLabel including current values. Optional `depth` (0 = top level) nests rows: pass them flat and depth-first (a parent, then its descendants); a row is a parent when the row after it is deeper. The component indents the label cell by `--range-timeline-indent-width` per level (logical padding, so RTL indents from the right; the label column keeps its width) and gives each parent a disclosure button. With no `depth > 0` anywhere the markup is unchanged.",
+        "description": "Each row has id, label, inclusive start/end unit offsets (`null` for either = the row has no dates: no bar, no handles, a muted \"no dates\" hint, gh#1189), optional `color` (hex from data, e.g. a status colour; grip ink flips black/white by luminance; non-hex keeps the default ink), `muted` (a done row recedes, --range-timeline-bar-muted-alpha), `overdue` (destructive inline-end edge that keeps the colour, plus a localized sr-only \"overdue\"), `tooltip` (ReactNode on hover and keyboard focus of a focusable bar layer named by the row label, beside the grips, never around them), `plan` ({ start, end } | null — the PLANNED range 予定, a dashed ghost bar behind the solid ACTUAL bar 実績; past the planned end a destructive overrun segment with a localized \"+N日\" label (override with `varianceLabel`, `false` hides it); ending before it a small success early marker; both also spoken; the ghost is never draggable), `planNote` (muted text after the bar for a row WITHOUT a plan, e.g. \"baseline後に追加\"), `editable` (true | false | { start?, end? }: which grips a row offers when onRangeChange is set; a started-but-open issue whose end is \"today\" passes { end: false }), and localized startLabel/endLabel including current values. Optional `depth` (0 = top level) nests rows: pass them flat and depth-first (a parent, then its descendants); a row is a parent when the row after it is deeper. The component indents the label cell by `--range-timeline-indent-width` per level (logical padding, so RTL indents from the right; the label column keeps its width) and gives each parent a disclosure button. With no `depth > 0` anywhere the markup is unchanged.",
         "name": "rows",
         "required": true,
         "type": "RangeTimelineRow[]"
@@ -596,6 +596,33 @@
         "description": "antd Table `sticky` — keep the axis header (bands + ticks) on screen while the PAGE scrolls a long schedule. `offsetHeader` is px from the top of the scrolling viewport (the height of a fixed app topbar). The header moves out of the horizontal scroller and follows its scrollLeft; the section becomes `overflow: clip` and the body scroller takes the keyboard tab stop. Like antd, it needs no clipping ancestor between the timeline and the page scroller: `Card` is `overflow: hidden`, so a sticky timeline goes in the page as its own section, not inside a Card. antd's `offsetScroll` / `getContainer` (sticky horizontal scrollbar) are not ported.",
         "name": "sticky",
         "type": "boolean | { offsetHeader?: number }"
+      },
+      {
+        "defaultValue": "false",
+        "description": "Let the user resize the label column by dragging a divider on its inline-end edge in the header (gh#1189): role=separator, aria-orientation vertical, aria-valuenow/min/max, ArrowLeft/Right (Shift = 32px step, else 8px), Home/End to min/max, RTL-aware, pointer drag. `true` = min 160 / max 640 px. The width lands on --range-timeline-label-width, so the token stays the default until the user drags.",
+        "name": "resizableLabel",
+        "type": "boolean | { min?: number; max?: number }"
+      },
+      {
+        "description": "Controlled label-column width in px. Persist it per user from onLabelWidthChange.",
+        "name": "labelWidth",
+        "type": "number"
+      },
+      {
+        "description": "Uncontrolled initial label-column width in px. Omitted: the token's width.",
+        "name": "defaultLabelWidth",
+        "type": "number"
+      },
+      {
+        "description": "Fires with the next label-column width (px, clamped) while dragging and on every key step.",
+        "name": "onLabelWidthChange",
+        "type": "(width: number) => void"
+      },
+      {
+        "defaultValue": "false",
+        "description": "A new range is loading while the previous rows stay on screen: dims the body (--range-timeline-busy-body-alpha), draws an indeterminate line under the header (static under prefers-reduced-motion) and sets aria-busy.",
+        "name": "busy",
+        "type": "boolean"
       }
     ],
     "rules": [],
@@ -4250,7 +4277,7 @@
     "name": "Legend",
     "props": [
       {
-        "description": "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents.",
+        "description": "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents. Each item is `{ tone, label }` or `{ color, label }`: `color` is a hex from data (user-chosen status colours, the same contract as Badge color and RangeTimelineRow color, gh#1189).",
         "name": "items",
         "required": true,
         "type": "{ tone: \"default\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"muted\" | \"neutral\"; label: ReactNode }[]"
@@ -13011,9 +13038,9 @@
         "type": "boolean"
       },
       {
-        "description": "Text labels for the three score buckets.",
+        "description": "Every visible and screen-reader string, each optional (gh#1191). Unset entries come from the kit's own ja / en / vi catalogue for the active locale, so most apps pass nothing: the score words, the checklist line per rule (length / upper / lower / number / symbol), the sr-only passed / failed prefixes, and the polite live-region sentence (`announcement(strength)`). Pass only the ones your product words differently.",
         "name": "labels",
-        "type": "{ weak: string; fair: string; strong: string }"
+        "type": "{ weak?: string; fair?: string; strong?: string; rules?: Partial<Record<PasswordRule, string>>; passed?: string; failed?: string; announcement?: (strength: string) => string }"
       }
     ],
     "related": [

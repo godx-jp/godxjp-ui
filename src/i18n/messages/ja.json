@@ -236,6 +236,22 @@
       "moved": "{label}: {count} 件中 {position} 番目。",
       "dropped": "{label} を {count} 件中 {position} 番目に置きました。",
       "cancelled": "移動を取り消しました。{label} は {count} 件中 {position} 番目に戻りました。"
+    },
+    "passwordStrength": {
+      "weak": "弱い",
+      "fair": "普通",
+      "strong": "強い",
+      "meter": "パスワードの強度 4 段階中 {score}",
+      "passed": "達成: ",
+      "failed": "未達成: ",
+      "announcement": "パスワードの強度: {strength}",
+      "rules": {
+        "length": "8 文字以上",
+        "upper": "大文字を含む",
+        "lower": "小文字を含む",
+        "number": "数字を含む",
+        "symbol": "記号を含む"
+      }
     }
   },
   "feedback": {
@@ -724,7 +740,13 @@
     "childRows": "子の行",
     "outsideAfter": "表示範囲より後",
     "outsideBefore": "表示範囲より前",
-    "schedule": "スケジュール"
+    "schedule": "スケジュール",
+    "noDates": "日付なし",
+    "resizeLabel": "ラベル列の幅を変更",
+    "overdue": "期限超過",
+    "overrun": "予定超過",
+    "early": "予定より早く完了",
+    "lateBy": "+{n}日"
   },
   "chat": {
     "bubble": {

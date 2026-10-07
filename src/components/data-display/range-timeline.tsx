@@ -2,6 +2,8 @@ import * as React from "react";
 import { useTranslation } from "../../i18n/use-translation";
 import { ChevronDown, ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
 import { Button } from "../general/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
+import { CONTRAST_PIVOT, relativeLuminance } from "../../app/tenant-theme";
 import { Text } from "../general/typography";
 import type { DensityProp } from "../../props/vocabulary";
 import { cn } from "../../lib/utils";
@@ -9,8 +11,12 @@ import { cn } from "../../lib/utils";
 export type RangeTimelineRow = {
   id: string;
   label: React.ReactNode;
-  start: number;
-  end: number;
+  /**
+   * First and last unit of the bar. `null` (either) means the row has no dates yet: no bar, a
+   * muted "no dates" hint in its track, and no resize handles (gh#1189).
+   */
+  start: number | null;
+  end: number | null;
   startLabel: string;
   endLabel: string;
   /**
@@ -19,7 +25,54 @@ export type RangeTimelineRow = {
    * indent (`--range-timeline-indent-width` per level) and the disclosure.
    */
   depth?: number;
+  /**
+   * The bar's fill, a hex colour from data (the same contract as `Badge color`), e.g. the issue
+   * status colour. The grips' ink flips black or white from the colour's luminance, the same pivot
+   * `tenantTheme` uses for `--primary-foreground`; a value that is not a hex keeps the default ink.
+   */
+  color?: string;
+  /** De-emphasise a closed / done row's bar (`--range-timeline-bar-muted-alpha`), nothing else. */
+  muted?: boolean;
+  /**
+   * Mark the bar overdue: a destructive edge on its inline end that keeps `color`, plus a localized
+   * screen-reader "overdue" so the colour is never the only carrier.
+   */
+  overdue?: boolean;
+  /**
+   * Shown on hover and on keyboard focus of the bar (key, title, status, assignee, start → due).
+   * The bar gains a focusable layer named by the row label; the grips stay separate buttons.
+   */
+  tooltip?: React.ReactNode;
+  /**
+   * The PLANNED range (予定), drawn as a dashed ghost bar; `start` / `end` are then the ACTUAL range
+   * (実績), drawn solid. Past the planned end the actual bar carries a destructive overrun segment;
+   * ending before it, a small early marker. Both are also spoken.
+   */
+  plan?: { start: number | null; end: number | null } | null;
+  /**
+   * Text after an overrun segment. Default: the overrun in axis units, localized as days
+   * ("+3日" / "+3d" / "+3 ngày"), since a Gantt's unit is the day. `false` shows none.
+   */
+  varianceLabel?: React.ReactNode | false;
+  /**
+   * A muted note shown after the bar when the row has no `plan`, e.g. "baseline後に追加". Nothing
+   * is drawn for a row without a plan unless this is set.
+   */
+  planNote?: React.ReactNode;
+  /**
+   * Which grips this row offers when `onRangeChange` is set. Default `true` (both). A started-but-open
+   * issue whose end is "today" passes `{ end: false }`, keeping the start grip. `false` removes both.
+   */
+  editable?: boolean | { start?: boolean; end?: boolean };
 };
+
+/** Black or white ink for a hex fill; `undefined` when the value cannot be measured. */
+function inkOn(color: string | undefined): string | undefined {
+  if (!color) return undefined;
+  const luminance = relativeLuminance(color);
+  if (luminance == null) return undefined;
+  return luminance > CONTRAST_PIVOT ? "black" : "white";
+}
 
 export type RangeTimelineProps = React.HTMLAttributes<HTMLElement> & {
   label: string;
@@ -61,7 +114,28 @@ export type RangeTimelineProps = React.HTMLAttributes<HTMLElement> & {
    * scroller. antd's `offsetScroll` / `getContainer` (a sticky horizontal scrollbar) are not ported.
    */
   sticky?: boolean | { offsetHeader?: number };
+  /**
+   * Let the user resize the label column by dragging a divider in the header (gh#1189): a
+   * `role="separator"` with aria-valuenow/min/max, ArrowLeft/Right (Shift = a bigger step),
+   * Home/End, RTL-aware. `true` uses min 160 / max 640 px. The width lands on
+   * `--range-timeline-label-width`, so the token stays the default until the user drags.
+   */
+  resizableLabel?: boolean | { min?: number; max?: number };
+  /** Controlled label-column width in px. Persist it per user from `onLabelWidthChange`. */
+  labelWidth?: number;
+  /** Uncontrolled initial label-column width in px. Omitted: the token's width. */
+  defaultLabelWidth?: number;
+  /** Fires with the next label-column width (px) while dragging and on every key step. */
+  onLabelWidthChange?: (width: number) => void;
+  /**
+   * A new range is loading while the previous rows stay on screen: dims the body, draws an
+   * indeterminate line under the header and sets `aria-busy` (gh#1189).
+   */
+  busy?: boolean;
 };
+
+const LABEL_WIDTH_STEP = 8;
+const LABEL_WIDTH_BIG_STEP = 32;
 
 /** A horizontal range axis. Units and labels are data; the design system owns all geometry. */
 export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
@@ -79,12 +153,36 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       defaultExpandedValues,
       onExpandedValuesChange,
       sticky = false,
+      resizableLabel = false,
+      labelWidth,
+      defaultLabelWidth,
+      onLabelWidthChange,
+      busy = false,
       className,
       ...props
     },
     ref,
   ) {
     const { t } = useTranslation();
+    const resize = resizableLabel
+      ? {
+          min: (typeof resizableLabel === "object" && resizableLabel.min) || 160,
+          max: (typeof resizableLabel === "object" && resizableLabel.max) || 640,
+        }
+      : null;
+    const [ownLabelWidth, setOwnLabelWidth] = React.useState<number | undefined>(defaultLabelWidth);
+    const currentLabelWidth = labelWidth ?? ownLabelWidth;
+    const labelCell = React.useRef<HTMLDivElement>(null);
+    const labelDrag = React.useRef<{ x: number; width: number; direction: number } | null>(null);
+    const setLabelWidth = (next: number) => {
+      if (!resize) return;
+      const bounded = Math.round(Math.min(resize.max, Math.max(resize.min, next)));
+      if (labelWidth === undefined) setOwnLabelWidth(bounded);
+      onLabelWidthChange?.(bounded);
+    };
+    // Before the first drag the column is whatever the token resolves to, so read it from layout.
+    const measuredLabelWidth = () =>
+      currentLabelWidth ?? Math.round(labelCell.current?.getBoundingClientRect().width ?? 0);
     const reactId = React.useId();
     const depthOf = (row: RangeTimelineRow) => Math.max(0, Math.floor(row.depth ?? 0));
     // Without any depth the timeline is flat and renders exactly as it did before nesting existed.
@@ -168,7 +266,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       const row = rows.find((row) => row.id === current.id);
       const delta = deltaAt(event.clientX);
       cancel();
-      if (!row) return;
+      if (!row || row.start === null || row.end === null) return;
       const bounded =
         current.edge === "start"
           ? Math.min(delta, row.end - row.start)
@@ -200,8 +298,52 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
           </div>
         )}
         <div className="ui-range-timeline-header">
-          <div className="ui-range-timeline-label">
+          <div className="ui-range-timeline-label" ref={labelCell}>
             <Text weight="bold">{label}</Text>
+            {resize && (
+              <div
+                role="separator"
+                tabIndex={0}
+                className="ui-range-timeline-label-resizer"
+                aria-orientation="vertical"
+                aria-label={t("rangeTimeline.resizeLabel")}
+                aria-valuemin={resize.min}
+                aria-valuemax={resize.max}
+                aria-valuenow={currentLabelWidth ?? undefined}
+                onPointerDown={(event) => {
+                  if (event.button !== 0) return;
+                  event.preventDefault();
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  labelDrag.current = {
+                    x: event.clientX,
+                    width: measuredLabelWidth(),
+                    direction: getComputedStyle(event.currentTarget).direction === "rtl" ? -1 : 1,
+                  };
+                }}
+                onPointerMove={(event) => {
+                  const current = labelDrag.current;
+                  if (current)
+                    setLabelWidth(current.width + (event.clientX - current.x) * current.direction);
+                }}
+                onPointerUp={() => (labelDrag.current = null)}
+                onPointerCancel={() => (labelDrag.current = null)}
+                onLostPointerCapture={() => (labelDrag.current = null)}
+                onKeyDown={(event) => {
+                  const step = event.shiftKey ? LABEL_WIDTH_BIG_STEP : LABEL_WIDTH_STEP;
+                  const direction =
+                    getComputedStyle(event.currentTarget).direction === "rtl" ? -1 : 1;
+                  let next: number | null = null;
+                  if (event.key === "ArrowRight") next = measuredLabelWidth() + step * direction;
+                  else if (event.key === "ArrowLeft")
+                    next = measuredLabelWidth() - step * direction;
+                  else if (event.key === "Home") next = resize.min;
+                  else if (event.key === "End") next = resize.max;
+                  if (next === null) return;
+                  event.preventDefault();
+                  setLabelWidth(next);
+                }}
+              />
+            )}
           </div>
           <div className="ui-range-timeline-columns" ref={track}>
             {columns.map((column, index) => (
@@ -215,6 +357,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
             ))}
           </div>
         </div>
+        {busy && <div className="ui-range-timeline-busy" aria-hidden="true" />}
       </>
     );
     const body = (
@@ -239,11 +382,23 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
         {visibleRows.map((row, index) => {
           // Ids from the row's position, never from `row.id` (which may hold spaces).
           const idBase = `${reactId}-row-${rows.indexOf(row)}`;
+          const dated = row.start !== null && row.end !== null;
+          const rowStart = row.start ?? 0,
+            rowEnd = row.end ?? 0;
           const delta = preview?.id === row.id ? preview.delta : 0;
-          const start = Math.min(row.end, row.start + (preview?.edge === "start" ? delta : 0));
-          const end = Math.max(row.start, row.end + (preview?.edge === "end" ? delta : 0));
+          const start = Math.min(rowEnd, rowStart + (preview?.edge === "start" ? delta : 0));
+          const end = Math.max(rowStart, rowEnd + (preview?.edge === "end" ? delta : 0));
           const left = Math.max(0, start),
             right = Math.min(units, end + 1);
+          const plan =
+            dated && row.plan && row.plan.start !== null && row.plan.end !== null
+              ? (row.plan as { start: number; end: number })
+              : null;
+          const planLeft = plan ? Math.max(0, plan.start) : 0,
+            planRight = plan ? Math.min(units, plan.end + 1) : 0;
+          const overrun = plan !== null && end > plan.end;
+          const early = plan !== null && end < plan.end;
+          const overrunLeft = overrun ? Math.max(left, Math.min(units, plan!.end + 1)) : 0;
           return (
             <div
               className="ui-range-timeline-row"
@@ -290,7 +445,13 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                   </div>
                 </div>
               ) : (
-                <div className="ui-range-timeline-label">{row.label}</div>
+                <div
+                  className="ui-range-timeline-label"
+                  // Only a tooltip needs the label as a name, so the markup is unchanged otherwise.
+                  id={row.tooltip != null ? `${idBase}-label` : undefined}
+                >
+                  {row.label}
+                </div>
               )}
               <div className="ui-range-timeline-track">
                 {today != null && today >= 0 && today < units && (
@@ -300,7 +461,15 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                     style={{ insetInlineStart: `${((today + 0.5) / units) * 100}%` }}
                   />
                 )}
-                {right <= left &&
+                {!dated && (
+                  <span className="ui-range-timeline-outside" data-direction="none">
+                    <Text size="xs" tone="muted">
+                      {t("rangeTimeline.noDates")}
+                    </Text>
+                  </span>
+                )}
+                {dated &&
+                  right <= left &&
                   (end < 0 ? (
                     <span className="ui-range-timeline-outside" data-direction="before">
                       <ChevronLeft aria-hidden="true" className="ui-range-timeline-outside-icon" />
@@ -316,19 +485,90 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                       <ChevronRight aria-hidden="true" className="ui-range-timeline-outside-icon" />
                     </span>
                   ))}
-                {right > left && (
-                  <div
-                    className="ui-range-timeline-bar"
+                {plan && planRight > planLeft && (
+                  <span
+                    aria-hidden="true"
+                    className="ui-range-timeline-plan"
                     style={{
-                      insetInlineStart: `${(left / units) * 100}%`,
-                      inlineSize: `${((right - left) / units) * 100}%`,
+                      insetInlineStart: `${(planLeft / units) * 100}%`,
+                      inlineSize: `${((planRight - planLeft) / units) * 100}%`,
+                    }}
+                  />
+                )}
+                {overrun && right > overrunLeft && (
+                  <span
+                    className="ui-range-timeline-overrun"
+                    style={{
+                      insetInlineStart: `${(overrunLeft / units) * 100}%`,
+                      inlineSize: `${((right - overrunLeft) / units) * 100}%`,
                     }}
                   >
+                    <span className="sr-only">{t("rangeTimeline.overrun")}</span>
+                    {row.varianceLabel !== false && (
+                      <span className="ui-range-timeline-variance">
+                        {row.varianceLabel ??
+                          t("rangeTimeline.lateBy", { n: String(end - plan!.end) })}
+                      </span>
+                    )}
+                  </span>
+                )}
+                {dated && !plan && row.planNote != null && right > left && (
+                  <span
+                    className="ui-range-timeline-plan-note"
+                    style={{ insetInlineStart: `${(right / units) * 100}%` }}
+                  >
+                    {row.planNote}
+                  </span>
+                )}
+                {early && right > left && right <= units && (
+                  <span
+                    className="ui-range-timeline-early"
+                    style={{ insetInlineStart: `${(right / units) * 100}%` }}
+                  >
+                    <span className="sr-only">{t("rangeTimeline.early")}</span>
+                  </span>
+                )}
+                {dated && right > left && (
+                  <div
+                    className="ui-range-timeline-bar"
+                    data-muted={row.muted ? "true" : undefined}
+                    data-overdue={row.overdue ? "true" : undefined}
+                    style={
+                      {
+                        insetInlineStart: `${(left / units) * 100}%`,
+                        inlineSize: `${((right - left) / units) * 100}%`,
+                        ...(row.color && {
+                          "--range-timeline-bar-color": row.color,
+                          "--range-timeline-bar-ink": inkOn(row.color),
+                        }),
+                      } as React.CSSProperties
+                    }
+                  >
+                    {row.tooltip != null && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span
+                            className="ui-range-timeline-bar-hit ui-focus-ring"
+                            tabIndex={0}
+                            aria-labelledby={`${idBase}-label`}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>{row.tooltip}</TooltipContent>
+                      </Tooltip>
+                    )}
+                    {row.overdue && <span className="sr-only">{t("rangeTimeline.overdue")}</span>}
                     {onRangeChange &&
                       (right - left) * Math.max(1, columns.length) >= units &&
                       (["start", "end"] as const)
                         .filter((edge) =>
                           edge === "start" ? start >= 0 && start < units : end >= 0 && end < units,
+                        )
+                        .filter((edge) =>
+                          row.editable === undefined || row.editable === true
+                            ? true
+                            : row.editable === false
+                              ? false
+                              : row.editable[edge] !== false,
                         )
                         .map((edge) => (
                           <Button
@@ -378,8 +618,8 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                               const delta = step * direction;
                               if (
                                 edge === "start"
-                                  ? row.start + delta <= row.end
-                                  : row.end + delta >= row.start
+                                  ? rowStart + delta <= rowEnd
+                                  : rowEnd + delta >= rowStart
                               )
                                 onRangeChange(row.id, edge, delta);
                             }}
@@ -403,7 +643,17 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       // Only a NON-default step scopes the unit-width knob, so a theme that narrows
       // --range-timeline-unit-width globally still owns the default timeline (gh#730).
       "data-density": density === "default" ? undefined : density,
+      "data-busy": busy ? "true" : undefined,
+      "aria-busy": busy || undefined,
       "aria-label": label,
+      // Only once a width exists does it override the token, so a theme's width stays the default.
+      style:
+        currentLabelWidth !== undefined
+          ? ({
+              ...props.style,
+              "--range-timeline-label-width": `${currentLabelWidth}px`,
+            } as React.CSSProperties)
+          : props.style,
     };
     if (!sticky) {
       return (

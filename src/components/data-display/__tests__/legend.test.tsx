@@ -86,4 +86,22 @@ describe("Legend", () => {
     expect(scoped).toMatch(/block-size:\s*var\(\s*--legend-swatch-size\)/);
     expect(scoped).toMatch(/border-radius:\s*var\(\s*--legend-swatch-radius\)/);
   });
+
+  it("fills a swatch from a data hex, for user-chosen colours (gh#1189)", () => {
+    const { container } = render(
+      <Legend
+        items={[
+          { color: "#2563eb", label: "対応中" },
+          { tone: "success", label: "完了" },
+        ]}
+      />,
+    );
+    const [hex, tone] = [...container.querySelectorAll<HTMLElement>(".ui-legend-swatch")];
+    expect(hex).toHaveAttribute("data-color", "true");
+    expect(hex).not.toHaveAttribute("data-tone");
+    expect(hex!.style.getPropertyValue("--legend-swatch-color")).toBe("#2563eb");
+    expect(tone).toHaveAttribute("data-tone", "success");
+    expect(tone!.style.getPropertyValue("--legend-swatch-color")).toBe("");
+    expect(screen.getByText("対応中")).toBeInTheDocument();
+  });
 });
