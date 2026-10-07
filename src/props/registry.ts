@@ -3012,6 +3012,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ConfirmVariantProp",
       "ClassNameProp",
       "ChildrenProp",
+      "WidthProp",
       {
         field: "showCloseButton",
         local: true,

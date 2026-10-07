@@ -53,6 +53,16 @@
   --sheet-close-rest-alpha: 0.7;
   --sheet-header-close-space-inline-end: var(--space-8);
   --dialog-width-default: 32rem;
+  /* Per-instance width, set by DialogContent `width` (gh#1174) — `initial`, so the default above
+   * resolves at the call site; the viewport cap (minus --dialog-viewport-inset) always wins. */
+  --dialog-width: initial;
+  /* ENTER / EXIT TIMING (gh#1178). `initial`, default `var(--duration-fast)` (150ms) at the call
+   * site, so a scoped motion retune reaches them. A full-screen overlay that takes half a second to
+   * arrive reads as lag; `prefers-reduced-motion: reduce` stops the animation outright
+   * (styles/dialog-layout.css, unlayered block). */
+  --dialog-motion-duration: initial;
+  --sheet-enter-duration: initial;
+  --sheet-exit-duration: initial;
   --dialog-viewport-inset: 1.5rem;
   --dialog-overlay-background: initial;
   /* A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886) — the miss that was

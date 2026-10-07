@@ -1631,5 +1631,13 @@
     "label": "アイコン",
     "chosen": "選択中: {icon}",
     "none": "アイコンなし"
+  },
+  "dialogWidthDocs": {
+    "title": "幅の広いダイアログ（width）",
+    "description": "DialogContent の width で一覧グリッド向けに幅を広げます。画面幅から余白を引いた幅が上限なので、スマートフォンでもはみ出しません。",
+    "open": "一覧を開く",
+    "dialogTitle": "すべてのデスクトップ",
+    "dialogDescription": "3 列のグリッドを収めた 60rem のダイアログです。",
+    "desktop": "デスクトップ {n}"
   }
 }

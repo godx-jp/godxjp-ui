@@ -1631,5 +1631,13 @@
     "label": "Biểu tượng",
     "chosen": "Đã chọn: {icon}",
     "none": "Không có biểu tượng"
+  },
+  "dialogWidthDocs": {
+    "title": "Hộp thoại rộng (width)",
+    "description": "width của DialogContent nới rộng bảng cho một lưới tổng quan; bị giới hạn bằng chiều rộng màn hình trừ lề, nên vẫn vừa điện thoại.",
+    "open": "Mở tổng quan",
+    "dialogTitle": "Tất cả màn hình làm việc",
+    "dialogDescription": "Hộp thoại 60rem chứa một lưới ba cột.",
+    "desktop": "Màn hình {n}"
   }
 }

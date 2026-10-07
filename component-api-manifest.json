@@ -6799,6 +6799,14 @@
           "type": "ConfirmVariantProp | undefined",
           "values": ["default", "destructive"],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
     },

@@ -1638,5 +1638,13 @@
     "label": "Icon",
     "chosen": "Chosen: {icon}",
     "none": "No icon"
+  },
+  "dialogWidthDocs": {
+    "title": "Wide dialog (width)",
+    "description": "DialogContent width sizes the panel for an overview grid; it is capped at the viewport minus the inset, so it still fits a phone.",
+    "open": "Open the overview",
+    "dialogTitle": "All desktops",
+    "dialogDescription": "A 60rem dialog holding a three-column grid.",
+    "desktop": "Desktop {n}"
   }
 }
