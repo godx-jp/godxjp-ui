@@ -246,7 +246,7 @@
       "failed": "未達成: ",
       "announcement": "パスワードの強度: {strength}",
       "rules": {
-        "length": "8 文字以上",
+        "length": "{n} 文字以上",
         "upper": "大文字を含む",
         "lower": "小文字を含む",
         "number": "数字を含む",

@@ -24,6 +24,11 @@ export type PasswordStrengthLabels = {
 
 export type PasswordStrengthProps = {
   value: string;
+  /**
+   * The length rule's threshold (gh#1193), so the checklist matches the server's policy, e.g. 12 for
+   * Laravel `Password::min(12)`. Default 8. It drives the check, the score and the rule text.
+   */
+  minLength?: number;
   rules?: PasswordRule[];
   showChecklist?: boolean;
   labels?: PasswordStrengthLabels;
@@ -37,10 +42,11 @@ export type PasswordStrengthReturn = {
 export function usePasswordStrength(
   value: string,
   rules: PasswordRule[] = [...DEFAULT_PASSWORD_RULES],
+  minLength = 8,
 ): PasswordStrengthReturn {
   const uniqueRules = [...new Set(rules)];
   const checks: Record<PasswordRule, boolean> = {
-    length: value.length >= 8,
+    length: value.length >= minLength,
     upper: /[A-Z]/.test(value),
     lower: /[a-z]/.test(value),
     number: /\d/.test(value),
@@ -66,19 +72,20 @@ function scoreKey(score: number): "weak" | "fair" | "strong" {
 
 export function PasswordStrength({
   value,
+  minLength = 8,
   rules = [...DEFAULT_PASSWORD_RULES],
   showChecklist = true,
   labels = {},
 }: PasswordStrengthProps) {
   const { t } = useTranslation();
   const normalizedRules = [...new Set(rules)];
-  const { score, checks } = usePasswordStrength(value, normalizedRules);
+  const { score, checks } = usePasswordStrength(value, normalizedRules, minLength);
   const tone = scoreTone(score);
   const segments = Array.from({ length: 5 });
   const key = scoreKey(score);
   const strength = labels[key] ?? t(`dataEntry.passwordStrength.${key}`);
   const ruleLabel = (rule: PasswordRule) =>
-    labels.rules?.[rule] ?? t(`dataEntry.passwordStrength.rules.${rule}`);
+    labels.rules?.[rule] ?? t(`dataEntry.passwordStrength.rules.${rule}`, { n: String(minLength) });
   const announcement = labels.announcement
     ? labels.announcement(strength)
     : t("dataEntry.passwordStrength.announcement", { strength });

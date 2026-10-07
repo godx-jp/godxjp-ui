@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.30.1] - 2026-10-07
+
+### 🐛 `PasswordStrength` `minLength` (gh#1193)
+
+The length rule was hard-wired to 8, so against a 12-character server policy a 10-character password
+showed 「8 文字以上」 ✓ and read as strong, then was rejected. `minLength` (default 8, unchanged for
+everyone else) now drives the check, the score and the localized rule text ("{n} 文字以上" /
+"{n}+ characters" / "Tối thiểu {n} ký tự"). `usePasswordStrength(value, rules, minLength)` takes it too.
+
 ## [31.30.0] - 2026-10-07
 
 ### ✨ RangeTimeline: resizable label column, busy, rows without dates (gh#1189)

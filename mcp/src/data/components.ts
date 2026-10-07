@@ -15297,6 +15297,13 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         description: "Render an optional checklist of rule checks below the bar.",
       },
       {
+        name: "minLength",
+        type: "number",
+        defaultValue: "8",
+        description:
+          'The length rule\'s threshold (gh#1193): drives the check, the score and the localized rule text ("{n} 文字以上" / "{n}+ characters"). Match the server\'s policy, e.g. 12 for Laravel Password::min(12), so the checklist never shows a password the server rejects as met.',
+      },
+      {
         name: "labels",
         type: "{ weak?: string; fair?: string; strong?: string; rules?: Partial<Record<PasswordRule, string>>; passed?: string; failed?: string; announcement?: (strength: string) => string }",
         description:

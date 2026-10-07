@@ -250,7 +250,7 @@
       "failed": "Not yet: ",
       "announcement": "Password strength: {strength}",
       "rules": {
-        "length": "8+ characters",
+        "length": "{n}+ characters",
         "upper": "Contains uppercase letter",
         "lower": "Contains lowercase letter",
         "number": "Contains number",
