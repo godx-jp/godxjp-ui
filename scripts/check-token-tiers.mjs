@@ -23,7 +23,7 @@ const publicRawRamp = /--(?:color-)?(?:gray|blue)-\d+\b/;
 const hexThemeColor = /^\s*--color-[\w-]+:\s*#/m;
 const componentToken = /^src\/tokens\/components\/([a-z0-9-]+)\.css$/;
 const componentNameShape =
-  /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|glow|tint|gradient|alpha|align|inset|offset|translate|max|overflow|display)(?:-[a-z0-9]+)*:/;
+  /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|glow|tint|gradient|alpha|align|inset|offset|translate|max|overflow|display|duration)(?:-[a-z0-9]+)*:/;
 /**
  * Custom-property declarations that are not inside a rule body.
  *

@@ -230,7 +230,7 @@ const SHEET_OVERLAY_CLASS =
  * element (dialog-layout.css). The ink stays a utility: nothing competes for `color` here, and
  * losing it is the 1.03:1 defect above. */
 const sheetVariants = cva(
-  "ui-sheet-panel fixed flex flex-col gap-[var(--space-chrome-gap)] text-foreground px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
+  "ui-sheet-panel fixed flex flex-col gap-[var(--space-chrome-gap)] text-foreground px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] transition ease-in-out data-[state=closed]:animate-out data-[state=open]:animate-in",
   {
     variants: {
       // `side` is a deliberately PHYSICAL API (left/right/top/bottom) — a sheet

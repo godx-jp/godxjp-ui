@@ -60,7 +60,13 @@
     top: 50%;
     z-index: var(--overlay-z-index);
     display: grid;
-    width: min(var(--dialog-width-default), calc(100% - var(--dialog-viewport-inset)));
+    width: min(
+      var(--dialog-width, var(--dialog-width-default)),
+      calc(100% - var(--dialog-viewport-inset))
+    );
+    /* tw-animate reads --tw-animation-duration before --tw-duration, so the token sets the timing
+     * of the zoom/fade without a utility class a theme could not reach (gh#1178). */
+    --tw-animation-duration: var(--dialog-motion-duration, var(--duration-fast));
     max-width: none;
     transform: translate(-50%, -50%);
     gap: var(--dialog-space-gap);
@@ -545,6 +551,15 @@
 
   .ui-sheet-overlay {
     inset: 0;
+  }
+
+  /* Enter / exit timing as tokens (gh#1178) — read by tw-animate before any duration utility. */
+  .ui-sheet-panel[data-state="open"] {
+    --tw-animation-duration: var(--sheet-enter-duration, var(--duration-fast));
+  }
+
+  .ui-sheet-panel[data-state="closed"] {
+    --tw-animation-duration: var(--sheet-exit-duration, var(--duration-fast));
   }
 
   .ui-sheet-panel {

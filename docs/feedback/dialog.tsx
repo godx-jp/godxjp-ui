@@ -21,7 +21,8 @@ import {
   CardTitle,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 /** Every branch of DialogHeader's `tone`, in the order the vocabulary declares them. */
 const headerTones = [
@@ -49,6 +50,8 @@ const yen = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" 
  * Use DialogFooter for primary/cancel actions.
  */
 export default function Demo() {
+  const { t } = useTranslation();
+  const [wideOpen, setWideOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(true);
   const [detailOpen, setDetailOpen] = useState(false);
   const [toneOpen, setToneOpen] = useState(false);
@@ -123,6 +126,39 @@ export default function Demo() {
                   </Button>
                   <Button onClick={() => setCreateOpen(false)}>保存</Button>
                 </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("dialogWidthDocs.title")}</CardTitle>
+            <CardDescription>{t("dialogWidthDocs.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Dialog open={wideOpen} onOpenChange={setWideOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  {t("dialogWidthDocs.open")}
+                </Button>
+              </DialogTrigger>
+              <DialogContent width="60rem">
+                <DialogHeader>
+                  <DialogTitle>{t("dialogWidthDocs.dialogTitle")}</DialogTitle>
+                  <DialogDescription>{t("dialogWidthDocs.dialogDescription")}</DialogDescription>
+                </DialogHeader>
+                <DialogBody>
+                  <ResponsiveGrid columns={{ base: 1, sm: 3 }}>
+                    {[1, 2, 3, 4, 5, 6].map((n) => (
+                      <Card key={n}>
+                        <CardContent>
+                          <Text>{t("dialogWidthDocs.desktop", { n: String(n) })}</Text>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </ResponsiveGrid>
+                </DialogBody>
               </DialogContent>
             </Dialog>
           </CardContent>

@@ -7,7 +7,7 @@ import { AlertCircle, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { isDevelopment } from "../../lib/dev";
 import { Slot } from "../../lib/slot";
-import type { ConfirmVariantProp, ToneProp } from "../../props/vocabulary";
+import type { ConfirmVariantProp, ToneProp, WidthProp } from "../../props/vocabulary";
 import { overlayHeaderToneClass } from "./overlay-header-tone";
 import { useOverlayCloseFocus } from "./overlay-close-focus";
 import { closeOnEscape, NonModalPortal, useNonModalPortal } from "./non-modal-layer";
@@ -243,7 +243,7 @@ const DialogModalContext = React.createContext(true);
 const OVERLAY_CLASS =
   "ui-dialog-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0";
 const CONTENT_CLASS =
-  "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 duration-200 outline-none";
+  "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 outline-none";
 
 interface DialogShellProps extends Omit<React.ComponentPropsWithRef<"section">, "role"> {
   /** `"alertdialog"` cho nhánh AlertDialog. */
@@ -449,6 +449,12 @@ interface DialogContentProps
   forceMount?: true;
   /** Giữ tên prop của Radix — xem `useCloseAutoFocus`. */
   onCloseAutoFocus?: (event: Event) => void;
+  /**
+   * Panel width (antd Modal `width`, the same vocabulary as SheetContent `width`). A number is px;
+   * a string is any CSS length. Capped at the viewport minus `--dialog-viewport-inset`, so a wide
+   * dialog never leaves a phone screen. Omit to keep `--dialog-width-default` (32rem).
+   */
+  width?: WidthProp;
 }
 
 function DialogContent({
@@ -459,6 +465,8 @@ function DialogContent({
   overlayClassName,
   variant: variantProp,
   forceMount: _forceMount,
+  width,
+  style,
   ...props
 }: DialogContentProps) {
   const { t } = useTranslation();
@@ -469,6 +477,13 @@ function DialogContent({
   // Dấu ✕ là một lối đóng-không-chủ-đích, cùng họ với click ra ngoài — nên nó theo `variant`, và
   // `<DialogContent variant="destructive">` trùng khít `<AlertDialogContent>`.
   const showCloseButton = showCloseButtonProp ?? showClose ?? !isDestructive;
+  const mergedStyle =
+    width == null
+      ? style
+      : ({
+          ...style,
+          ["--dialog-width" as string]: typeof width === "number" ? `${width}px` : width,
+        } as React.CSSProperties);
 
   return (
     <DialogVariantContext.Provider value={variant}>
@@ -478,6 +493,7 @@ function DialogContent({
         data-variant={variant}
         className={className}
         overlayClassName={overlayClassName}
+        style={mergedStyle}
         {...props}
       >
         {children}
