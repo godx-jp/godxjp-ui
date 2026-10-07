@@ -8,7 +8,7 @@ import { useTranslation } from "../../i18n/use-translation";
 import { useImageLoadingStatus, type ImageLoadingStatus } from "../../lib/image-loading-status";
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
-import type { AvatarProp } from "../../props/components/data-display.prop";
+import type { AvatarImageFitProp, AvatarProp } from "../../props/components/data-display.prop";
 
 type AvatarContextValue = {
   imageLoadingStatus: ImageLoadingStatus;
@@ -103,8 +103,10 @@ export const AvatarImage = React.forwardRef<
   React.ComponentPropsWithoutRef<"img"> & {
     asChild?: boolean;
     onLoadingStatusChange?: (status: ImageLoadingStatus) => void;
+    /** `cover` (default) crops to fill; `contain` shows a logo or app icon whole (gh#1176). */
+    fit?: AvatarImageFitProp;
   }
->(({ className, src, onLoadingStatusChange, asChild = false, ...props }, ref) => {
+>(({ className, src, onLoadingStatusChange, asChild = false, fit, ...props }, ref) => {
   const { imageLoadingStatus, setImageLoadingStatus } = useAvatarContext("AvatarImage");
   const status = useImageLoadingStatus(src, {
     referrerPolicy: props.referrerPolicy,
@@ -139,6 +141,8 @@ export const AvatarImage = React.forwardRef<
     <Comp
       ref={ref}
       data-slot="avatar-image"
+      // Absent at the default, so an image that never sets it renders the node it always did.
+      data-fit={fit === "contain" ? "contain" : undefined}
       className={cn("ui-avatar-image", className)}
       {...props}
       src={src}

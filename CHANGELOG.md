@@ -6,6 +6,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.29.0] - 2026-10-07
+
+### ✨ New
+
+- **`SortableList`** (gh#1173): reorder by dragging a grip or by the keyboard. Space/Enter lifts,
+  arrows/Home/End move, Space/Enter drops, Esc cancels, and each step is announced politely
+  ("moved to 2 of 3", localized, positions via `Intl`). The grip carries `touch-action: none`
+  through a class. `value` / `defaultValue` / `onValueChange` carry ordered keys and fire once per
+  drop. `layout="list" | "grid"`, `renderItem`.
+- **`Sidebar` `action`** (gh#1185): the rail's one primary action ("New issue"), between the brand
+  and the scrolling nav, never scrolling with it. Like `brand` and `footer` it takes a function and
+  receives the effective collapsed value. Inset: `--sidebar-action-padding`.
+- **`DialogContent` `width`** (gh#1174): a number (px) or any CSS length, the same vocabulary as
+  Sheet. It is capped at the viewport minus `--dialog-viewport-inset`; the default stays 32rem.
+- **`AppLauncher` `footer`** (gh#1172): a secondary-links row below the grid, after the tiles in
+  focus order, in every surface and state.
+- **`ResponsiveGrid.Item` `rowSpan`** and **`ResponsiveGrid` `dense`** (gh#1175): tall widgets
+  (1×2), with holes back-filled when `dense` is set.
+- **`AvatarImage` `fit="contain"`** (gh#1176): a square or wide logo shows whole. The default stays
+  `cover`.
+
+### 🐛 Fixed
+
+- **`TopbarItem` `badge` under `asChild`** (gh#1171): a notification bell that is a link now shows
+  its count, which joins the accessible name the same way it does on the button form.
+- **Overlay motion is tokens, 150ms** (gh#1178): Sheet's hard-coded 500ms enter / 300ms exit and
+  Dialog's 200ms are now `--sheet-enter-duration`, `--sheet-exit-duration` and
+  `--dialog-motion-duration`, defaulting to `--duration-fast`. `prefers-reduced-motion` still stops
+  the animation, and a test now locks that.
+- **Nightly token-scope sweep** (gh#1184): `--page-title-font-size-display` read
+  `--font-size-display` at `:root`, which froze it there. It is now `initial`, with the formula at
+  the call site.
+
+### 🧪 Guards
+
+- DropdownMenu with a label wider than the menu (gh#1180, fixed in 31.17.0 by gh#1103): a Chromium
+  test at 390 and 1440px, red with the old CSS (17 ResizeObserver loop errors).
+- Button tap target (gh#1177): under a finger the default size measures 44px and `lg` 48px; under a
+  mouse, desk geometry.
+
 ## [31.28.4] - 2026-10-06
 
 ### 🐛 `@godxjp/markdown` `RENDERER_VERSION` 4 → 5

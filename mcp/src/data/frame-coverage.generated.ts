@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 306,
-    dimensionCells: 4284,
+    exports: 307,
+    dimensionCells: 4298,
     covered: 94,
-    untested: 2353,
-    notApplicable: 1837,
+    untested: 2362,
+    notApplicable: 1842,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -348,6 +348,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"SkeletonStat","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"SkeletonTable","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Slider","group":"data-entry","frame":"docs/data-entry/slider.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
+  {"name":"SortableList","group":"data-entry","frame":"docs/data-entry/sortable-list.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"SpaceCompact","group":"layout","frame":"docs/layout/space-compact.tsx","covered":[],"untested":["accessibleName","async","contentStress","density","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones","variants"]},
   {"name":"SplitPane","group":"layout","frame":"docs/layout/split-pane.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"StatCard","group":"data-display","frame":"docs/data-display/card/index.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},

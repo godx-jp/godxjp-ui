@@ -21,6 +21,7 @@ import type {
   SizeProp,
   ToneProp,
   TitleProp,
+  WidthProp,
 } from "../vocabulary";
 
 /**
@@ -60,6 +61,11 @@ export type DialogContentProp = {
   showClose?: boolean;
   /** Semantic class for the scrim the surface owns (RAC nests overlay → modal → dialog). */
   overlayClassName?: ClassNameProp;
+  /**
+   * Panel width (antd Modal `width`; same vocabulary as SheetContent `width`): number = px, string
+   * = any CSS length. Capped at the viewport minus `--dialog-viewport-inset`. Default 32rem.
+   */
+  width?: WidthProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };

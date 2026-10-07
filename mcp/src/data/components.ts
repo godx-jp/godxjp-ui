@@ -1210,6 +1210,13 @@ import { FormField, NumberInput, Select } from "@godxjp/ui/data-entry";
           'Token gap between cells, the same steps as Flex. "none" is a DELIBERATE zero for tiles that must read as one continuous surface (a segmented bar, a seamless tile strip) — not a way to opt out of the token scale.',
       },
       {
+        name: "dense",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Dense packing (grid-auto-flow: row dense): later small cells back-fill the holes a wide or tall cell leaves — a widget board of 1×1 / 2×1 / 1×2 cells (gh#1175). Visual order only; DOM and focus order stay as written, so use it for independent widgets/tiles, not reading order. Ignored under flow="columns".',
+      },
+      {
         name: "children",
         type: "ReactNode",
         required: true,
@@ -1218,6 +1225,7 @@ import { FormField, NumberInput, Select } from "@godxjp/ui/data-entry";
     ],
     usage: [
       "ResponsiveGrid.Item span={2} owns a responsive column span; an object {base:1,lg:2} sets explicit steps, clamped to the parent columns.",
+      "ResponsiveGrid.Item rowSpan={2} spans two rows — the tall (1×2) widget (gh#1175). Same shape as span: a number applies from sm up and is 1 at base (the single stacked column), an object sets each step. Pair with `dense` so the cells after it fill the space beside it.",
       'KANBAN LANES: <ScrollArea orientation="horizontal"><ResponsiveGrid flow="columns" align="stretch">{lanes.map(lane => <Card onDragOver onDrop>…<Card draggable>…</Card></Card>)}</ResponsiveGrid></ScrollArea>. align="stretch" keeps an empty lane as tall as the fullest one, so it stays a full-height drop target; a Select inside a draggable card does not enlarge the drag image.',
       "DO place StatCard tiles directly as immediate children — StatCard IS already a bordered card; never wrap it in an extra <Card><CardContent>. The canonical pattern is <ResponsiveGrid columns={4}><StatCard .../><StatCard .../></ResponsiveGrid>.",
       "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. Use columns={{ base: 2, sm: 4 }} for two mobile columns and four wider-container columns; no consumer CSS is needed.",
@@ -1887,6 +1895,12 @@ export function HandyInbound() {
           "Custom brand slot rendered above the nav scroll area. When provided, the product chip is not rendered. PASS A FUNCTION and it is called with the EFFECTIVE collapsed value, which is what a plain node cannot see: AppShell reuses this same Sidebar for the mobile drawer and the drawer un-collapses the rows, so a lockup built from the consumer's own `collapsed` boolean renders glyph-only inside a full-width drawer. The workaround consumers reach for — a second hand-built Sidebar passed as AppShell's `mobileNav` — is exactly the override that switches off `railInDrawer`, silently dropping the `navRail` from mobile. This slot is APP scope (the product lockup); a PLATFORM switch does not go here.",
       },
       {
+        name: "action",
+        type: "ReactNode | ((collapsed: boolean) => ReactNode)",
+        description:
+          'The rail\'s ONE primary action (Linear "New issue", Jira "+ Create", Notion "New page"), rendered between the brand header and the scrolling nav and never scrolling with it (gh#1185). Put exactly one primary control here: a Button full width (fullWidth) when expanded, icon-only with aria-label + Tooltip when collapsed. PASS A FUNCTION for the same reason brand and footer take one: it receives the EFFECTIVE collapsed value, so AppShell\'s mobile drawer (which never collapses) gets the full button from the same Sidebar node. Inset: --sidebar-action-padding (inline matches the nav rows). Do NOT put the action in `brand` - that slot is the product lockup.',
+      },
+      {
         name: "footer",
         type: "ReactNode | ((collapsed: boolean) => ReactNode)",
         description:
@@ -2178,7 +2192,7 @@ import { PanelLeftClose, Search } from "lucide-react";
         name: "badge",
         type: "ReactNode",
         description:
-          "Overlaid count; does not change the bar cell width. Not rendered with asChild.",
+          'Overlaid count; does not change the bar cell width. Rendered under asChild too (gh#1171): the pill goes inside the child element after its children, so `<TopbarItem asChild badge={3}><a href="/notifications">…</a></TopbarItem>` keeps its count.',
       },
       {
         name: "badgeTone",
@@ -9102,6 +9116,8 @@ export function BillingFields() {
       "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
       "DO wrap tall/scrolling content in `DialogBody` (the ring-safe scroll slot, max-height ~60vh). It insets the content to match the dialog padding so a full-width control's focus ring never clips against the scroll container — mirror of SheetBody.",
       "DO set `modal={false}` when the user must keep working on the page behind an open dialog (edit a list while a payment or detail dialog stays open). Control `open` yourself: an outside press no longer closes it, so give it a visible close action. Escape closes it only while focus is inside the dialog.",
+      'DO pass `width` on `DialogContent` for a wide dialog (an overview grid, a comparison): `<DialogContent width="60rem">` (number = px, string = any CSS length; antd Modal `width`, same vocabulary as SheetContent `width`). It is capped at the viewport minus --dialog-viewport-inset, so it never leaves a phone screen. Default 32rem (--dialog-width-default). Do NOT switch to a full-width Sheet to get room (gh#1174).',
+      "Enter/exit timing is a token: --dialog-motion-duration (and --sheet-enter-duration / --sheet-exit-duration on Sheet), default var(--duration-fast) = 150ms. Under prefers-reduced-motion both surfaces do not animate at all (gh#1178).",
     ],
     useCases: [
       "Inline form dialog — create or edit a record (invoice line, supplier, coupon) without navigating away. Place `FormField`/`Input`/`Select` inside `DialogContent`, wire the submit button to your mutation, and hold `open` while `pending` to prevent double-submit.",
@@ -14316,6 +14332,7 @@ import { fetchInvoice } from "@/api/invoices";
     ],
     usage: [
       "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+      'DO pass `fit="contain"` on AvatarImage for a logo or app icon that is wide, transparent or off-centre — the default `cover` crops to fill, right for a face (gh#1176). A full-bleed square icon (the GoDX service icon set) keeps the default.',
       'DO use `presence` for who is reachable RIGHT NOW — a chat member list, a DM row, a message-stream author, the topbar account mark. It is the only supported way to put a status dot on an avatar: the dot\'s inset is a function of the mark\'s own --avatar-* radius/size and of the root\'s clip, neither of which a page can read, which is why the hand-rolled `<span className="relative"><Avatar/><span className="absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full bg-green-500 ring-2 ring-background"/></span>` wrapper can never be got right from outside (and fails the DS audit on the raw palette).',
       "DON'T announce a presence CHANGE from the avatar — it carries no aria-live on purpose. A roster of 40 marks resyncing over a socket would flood a screen reader; announce the change in the consumer's own live region if the product wants it.",
       "DON'T reach for `Badge status` for presence, or `presence` for lifecycle. Presence is volatile, per-person and realtime and renders as a dot; a lifecycle status is a record's state and renders as a labelled chip.",
@@ -16865,6 +16882,73 @@ import { Text } from "@godxjp/ui/general";
     rules: [],
   },
   {
+    name: "SortableList",
+    group: "data-entry",
+    tagline:
+      'Reorder a flat list or a grid of tiles (gh#1173). Each item has a grip: drag it with a pointer (touch included — the grip sets touch-action: none), or focus it and press Space/Enter to lift, the arrows (Home / End) to move, Space/Enter to drop, Esc to cancel. Every step is spoken in a polite live region ("2 of 3"). The order is the value.',
+    props: [
+      {
+        name: "items",
+        type: "{ value: string; label: string; disabled?: boolean }[]",
+        required: true,
+        description:
+          "The rows to order. `label` is spoken in the grip's name and the announcements; a disabled item's grip is inert.",
+      },
+      {
+        name: "value",
+        type: "string[]",
+        description: "The item keys in order (controlled with onValueChange).",
+      },
+      { name: "defaultValue", type: "string[]", description: "Uncontrolled initial order." },
+      {
+        name: "onValueChange",
+        type: "(keys: string[]) => void",
+        description: "Called ONCE per drop with the new order — not on every preview step.",
+      },
+      {
+        name: "renderItem",
+        type: "(item, { index, dragging }) => ReactNode",
+        description: "Draws an item's content beside its grip. Default: the label.",
+      },
+      {
+        name: "layout",
+        type: '"list" | "grid"',
+        defaultValue: '"list"',
+        description:
+          "Stacked rows, or tiles auto-filled into columns (--sortable-list-grid-item-min-inline-size). The keyboard order is the same either way.",
+      },
+      { name: "disabled", type: "boolean", description: "Every grip is inert." },
+      { name: "aria-label", type: "string", description: "Accessible name of the list." },
+      { name: "id", type: "string", description: "Id on the root." },
+      { name: "className", type: "string", description: "Class on the root." },
+    ],
+    usage: [
+      "DO persist the order in onValueChange — it fires once per drop, so it is safe to save there.",
+      "DO give every item a human `label`: a screen reader hears it on lift, every move and drop.",
+      "DON'T nest SortableList, and don't put another drag gesture inside an item: the grip is the one drag surface.",
+      "Hierarchy (move INTO another node) is Tree `draggable`, not SortableList — this orders a flat list.",
+    ],
+    useCases: [
+      'Desktop / dashboard editor: reorder widget tiles (layout="grid").',
+      "Settings: order of tabs, columns, menu entries.",
+    ],
+    related: [
+      "Tree — `draggable` for moving nodes within a hierarchy.",
+      "Transfer — choose items, not order them.",
+    ],
+    example: `import { SortableList } from "@godxjp/ui/data-entry";
+
+<SortableList
+  aria-label="Widgets"
+  items={[{ value: "cal", label: "Calendar" }, { value: "mail", label: "Mail" }]}
+  value={order}
+  onValueChange={setOrder}
+/>`,
+    docPath: "docs/data-entry/sortable-list.tsx",
+    storyPath: "data-entry/sortable-list.tsx",
+    rules: [],
+  },
+  {
     name: "TwoFactorSetup",
     group: "feedback",
     tagline:
@@ -17345,6 +17429,12 @@ import { Badge } from "@godxjp/ui/data-display";
         name: "onOpenChange",
         type: "(open: boolean) => void",
         description: "Open-state callback.",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description:
+          'Secondary links under the grid — "Request access", "All apps" (the Workspace / Okta / My Apps row, gh#1172). Pass the links; the launcher draws the row (hairline above, small type, --app-launcher-footer-*) outside the scrolling grid, after the tiles in focus order, in every state including empty/loading/error. Not a tile: never fake it as a one-tile group.',
       },
     ],
     usage: [

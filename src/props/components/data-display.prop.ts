@@ -374,6 +374,16 @@ export type AvatarPresenceProp = "online" | "away" | "busy" | "offline";
  */
 export type AvatarAppearanceProp = "default" | "tinted";
 
+/**
+ * How an `AvatarImage` fills its frame (`object-fit`). `cover` (default) fills the frame and crops
+ * — right for a photo of a face. `contain` shows the whole image inside the frame — right for a
+ * logo or an app icon that is wide, transparent or not centred, which `cover` would cut off
+ * (gh#1176). A full-bleed square icon (the GoDX service icon set) wants `cover`.
+ *
+ * @see Avatar
+ */
+export type AvatarImageFitProp = "cover" | "contain";
+
 /** @see Badge */
 export type BadgeProp = {
   /**

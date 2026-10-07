@@ -229,6 +229,14 @@
         "symbols": "Ký hiệu",
         "flags": "Cờ"
       }
+    },
+    "sortableList": {
+      "handle": "Sắp xếp lại {label}",
+      "hint": "Nhấn Space để nhấc, phím mũi tên để di chuyển, Space để thả, Esc để huỷ.",
+      "lifted": "Đã nhấc {label}. Vị trí {position}/{count}.",
+      "moved": "{label}: vị trí {position}/{count}.",
+      "dropped": "Đã thả {label} ở vị trí {position}/{count}.",
+      "cancelled": "Đã huỷ di chuyển. {label} trở lại vị trí {position}/{count}."
     }
   },
   "feedback": {

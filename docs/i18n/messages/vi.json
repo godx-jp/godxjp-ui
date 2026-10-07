@@ -1631,5 +1631,56 @@
     "label": "Biểu tượng",
     "chosen": "Đã chọn: {icon}",
     "none": "Không có biểu tượng"
+  },
+  "dialogWidthDocs": {
+    "title": "Hộp thoại rộng (width)",
+    "description": "width của DialogContent nới rộng bảng cho một lưới tổng quan; bị giới hạn bằng chiều rộng màn hình trừ lề, nên vẫn vừa điện thoại.",
+    "open": "Mở tổng quan",
+    "dialogTitle": "Tất cả màn hình làm việc",
+    "dialogDescription": "Hộp thoại 60rem chứa một lưới ba cột.",
+    "desktop": "Màn hình {n}"
+  },
+  "sortableListDocs": {
+    "subtitle": "Kéo tay nắm, hoặc Space · mũi tên · Space · Esc — mỗi lần di chuyển đều được đọc",
+    "widgetsTitle": "Widget trang chủ",
+    "widgetsDescription": "Sắp xếp các ô trên màn hình. Thứ tự được lưu một lần khi bạn thả.",
+    "calendar": "Lịch",
+    "mail": "Thư",
+    "tasks": "Công việc",
+    "notes": "Ghi chú",
+    "slot": "Ô {position}",
+    "saved": "Thứ tự đã lưu: {order}",
+    "tabsTitle": "Tab dự án",
+    "tabsDescription": "Dạng danh sách. Thanh toán bị khoá theo gói nên không nhấc được — các mục khác vẫn di chuyển qua nó.",
+    "overview": "Tổng quan",
+    "members": "Thành viên",
+    "billing": "Thanh toán",
+    "audit": "Nhật ký kiểm tra"
+  },
+  "topbarItemDocs": {
+    "notifications": "Thông báo",
+    "notificationsUnread": "Thông báo, {count} chưa đọc"
+  },
+  "appLauncherDocs": {
+    "requestAccess": "Yêu cầu quyền truy cập",
+    "allApps": "Tất cả ứng dụng"
+  },
+  "responsiveGridDocs": {
+    "boardTitle": "Bảng widget (rowSpan + dense)",
+    "boardDescription": "Một ô 2×1, một ô cao 1×2 (ResponsiveGrid.Item rowSpan={2}) và các ô 1×1. dense cho các ô nhỏ lấp chỗ trống cạnh ô rộng và ô cao.",
+    "revenue": "Doanh thu tháng",
+    "tasks": "Công việc đang mở",
+    "members": "Thành viên",
+    "invoices": "Hoá đơn",
+    "services": "Dịch vụ",
+    "invitations": "Lời mời"
+  },
+  "avatarDocs": {
+    "fitTitle": "Logo: fit=\"contain\"",
+    "fitDescription": "cover (mặc định) cắt cho đầy khung — hợp với ảnh khuôn mặt. contain hiện trọn logo rộng hoặc trong suốt.",
+    "logo": "Logo Acme"
+  },
+  "sidebarDocs": {
+    "newEntry": "Thêm bút toán"
   }
 }

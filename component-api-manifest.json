@@ -1387,6 +1387,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "footer",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "groups",
           "origin": "owned",
           "required": false,
@@ -2679,6 +2687,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        },
+        {
+          "name": "fit",
+          "origin": "owned",
+          "required": false,
+          "type": "AvatarImageFitProp | undefined",
+          "values": ["cover", "contain"],
           "declaredIn": ["src/components/ui/avatar.tsx"]
         },
         {
@@ -6799,6 +6815,14 @@
           "type": "ConfirmVariantProp | undefined",
           "values": ["default", "destructive"],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
     },
@@ -13685,6 +13709,14 @@
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
+          "name": "dense",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/layout/responsive-grid.tsx"]
+        },
+        {
           "name": "flow",
           "origin": "owned",
           "required": false,
@@ -15622,6 +15654,14 @@
       "group": "layout",
       "props": [
         {
+          "name": "action",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode | ((collapsed: boolean) => ReactNode)",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "activeId",
           "origin": "owned",
           "required": true,
@@ -16387,6 +16427,91 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
+    "SortableList": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "SortableListItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "layout",
+          "origin": "owned",
+          "required": false,
+          "type": "\"grid\" | \"list\" | undefined",
+          "values": ["grid", "list"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "OnValueChangeProp<string[]> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderItem",
+          "origin": "owned",
+          "required": false,
+          "type": "((item: SortableListItemProp, state: { index: number; dragging: boolean; }) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string[] | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]

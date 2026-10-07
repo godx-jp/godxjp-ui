@@ -1506,6 +1506,16 @@ export type AppLauncherProp = {
    */
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
+  /**
+   * Secondary links UNDER the grid — "Request access", "All apps", "Add apps": the row Google
+   * Workspace, Okta and Microsoft My Apps put below their launcher grid (gh#1172). Pass the links
+   * themselves (`<a>` or a router link); the launcher draws the row (a hairline above it, the
+   * small type step, `--app-launcher-footer-*`) outside the scrolling grid, so it stays in view and
+   * comes after the tiles in focus order. Rendered in every state — loading, error and empty
+   * included — because "request access" is most needed when there is nothing to open. Not a tile:
+   * a link dressed as an app reads as an app.
+   */
+  footer?: ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   className?: ClassNameProp;
@@ -1540,6 +1550,14 @@ export type SidebarProp = {
    * not belong here — see AppShell's `navRail` for where it goes and why.
    */
   brand?: ReactNode | ((collapsed: boolean) => ReactNode);
+  /**
+   * The rail's ONE primary action ("New issue", "+ Create", "New page"), rendered between `brand`
+   * and the scrolling nav and never scrolling with it. Put exactly one primary control here: a
+   * `Button` (variant primary) full width when expanded, icon-only with an `aria-label` + tooltip
+   * when collapsed. It takes a function for the same reason `brand` and `footer` do: it receives the
+   * EFFECTIVE collapsed value, so the mobile drawer (which never collapses) gets the full button.
+   */
+  action?: ReactNode | ((collapsed: boolean) => ReactNode);
   collapsed?: boolean;
   children?: ChildrenProp;
   /**
@@ -1699,6 +1717,10 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
    *
    * The count is not an accessible name: give the cell an `aria-label` that says what the number
    * means (`aria-label={t("topbar.notifications.unread", { count })}`).
+   *
+   * Drawn under `asChild` too (gh#1171): the pill goes inside the child element, after its own
+   * children, so a bell that is a link (`<TopbarItem asChild badge={3}><a …/></TopbarItem>`) keeps
+   * its count.
    */
   badge?: ReactNode;
   /**

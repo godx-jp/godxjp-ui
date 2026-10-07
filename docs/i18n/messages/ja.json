@@ -1631,5 +1631,56 @@
     "label": "アイコン",
     "chosen": "選択中: {icon}",
     "none": "アイコンなし"
+  },
+  "dialogWidthDocs": {
+    "title": "幅の広いダイアログ（width）",
+    "description": "DialogContent の width で一覧グリッド向けに幅を広げます。画面幅から余白を引いた幅が上限なので、スマートフォンでもはみ出しません。",
+    "open": "一覧を開く",
+    "dialogTitle": "すべてのデスクトップ",
+    "dialogDescription": "3 列のグリッドを収めた 60rem のダイアログです。",
+    "desktop": "デスクトップ {n}"
+  },
+  "sortableListDocs": {
+    "subtitle": "つまみをドラッグ、または Space・矢印・Space・Esc — 移動のたびに読み上げます",
+    "widgetsTitle": "ホームのウィジェット",
+    "widgetsDescription": "デスクトップのタイルを並べ替えます。順序は置いたときに一度だけ保存されます。",
+    "calendar": "カレンダー",
+    "mail": "メール",
+    "tasks": "タスク",
+    "notes": "メモ",
+    "slot": "{position} 番目",
+    "saved": "保存された順序: {order}",
+    "tabsTitle": "プロジェクトのタブ",
+    "tabsDescription": "リスト表示です。請求はプランで固定されているため持ち上げられませんが、ほかの項目はその前後に移動できます。",
+    "overview": "概要",
+    "members": "メンバー",
+    "billing": "請求",
+    "audit": "監査ログ"
+  },
+  "topbarItemDocs": {
+    "notifications": "通知",
+    "notificationsUnread": "通知（未読 {count} 件）"
+  },
+  "appLauncherDocs": {
+    "requestAccess": "アクセスをリクエスト",
+    "allApps": "すべてのアプリ"
+  },
+  "responsiveGridDocs": {
+    "boardTitle": "ウィジェットボード（rowSpan + dense）",
+    "boardDescription": "2×1 のセル、縦長 1×2 のセル（ResponsiveGrid.Item rowSpan={2}）、1×1 のセル。dense で小さなセルが横長・縦長セルの隣の空きを埋めます。",
+    "revenue": "月次売上",
+    "tasks": "未完了タスク",
+    "members": "メンバー",
+    "invoices": "請求書",
+    "services": "サービス",
+    "invitations": "招待"
+  },
+  "avatarDocs": {
+    "fitTitle": "ロゴ：fit=\"contain\"",
+    "fitDescription": "cover（既定）は枠いっぱいに切り抜きます（顔写真向け）。contain は横長・透過のロゴを切らずに全体表示します。",
+    "logo": "Acme ロゴ"
+  },
+  "sidebarDocs": {
+    "newEntry": "仕訳を追加"
   }
 }

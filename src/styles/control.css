@@ -1367,6 +1367,62 @@
     background-color: hsl(var(--accent));
   }
 
+  /* SortableList (gh#1173). The list owns no frame: items are the consumer's rows or tiles, each
+   * with the grip at its inline start. */
+  .ui-sortable-list-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sortable-list-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-sortable-list[data-layout="grid"] .ui-sortable-list-items {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(min(100%, var(--sortable-list-grid-item-min-inline-size)), 1fr)
+    );
+  }
+
+  .ui-sortable-list-item {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--sortable-list-gap);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--sortable-list-item-radius);
+    background: hsl(var(--card));
+    padding: var(--sortable-list-item-padding);
+  }
+
+  /* The held item is lifted: an elevation and the ring colour, never colour alone — the grip is
+   * also aria-pressed and the move is announced. */
+  .ui-sortable-list-item[data-dragging] {
+    position: relative;
+    z-index: 1;
+    border-color: hsl(var(--ring));
+    box-shadow: var(--shadow-md);
+  }
+
+  .ui-sortable-list-content {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+  }
+
+  /* The grip takes the pointer whole: no scroll or pinch starts on it, so a touch drag is a drag.
+   * Only the grip — the rest of the item still scrolls the page. */
+  .ui-sortable-list-handle {
+    flex-shrink: 0;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .ui-sortable-list-item[data-dragging] .ui-sortable-list-handle {
+    cursor: grabbing;
+  }
+
   .ui-emoji-picker-grid {
     display: flex;
     flex-direction: column;

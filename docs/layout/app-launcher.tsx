@@ -11,6 +11,7 @@ import {
   ResponsiveGrid,
   Topbar,
 } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 const apps = [
   { id: "console", name: "Console", href: "/console", icon: <BarChart3 />, current: true },
@@ -62,6 +63,7 @@ const labels: AppLauncherLabels = {
  *   width (the Slack shape). Shipping both puts one scope in two places.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [error, setError] = useState<string | undefined>("アプリ一覧を取得できませんでした。");
 
   return (
@@ -82,7 +84,21 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               <Topbar
                 start={<Text weight="medium">Acme Console</Text>}
-                end={<AppLauncher apps={apps} groups={groups} labels={labels} />}
+                end={
+                  <AppLauncher
+                    apps={apps}
+                    groups={groups}
+                    labels={labels}
+                    footer={
+                      <>
+                        <a href="#app-launcher-request-access">
+                          {t("appLauncherDocs.requestAccess")}
+                        </a>
+                        <a href="#app-launcher-all-apps">{t("appLauncherDocs.allApps")}</a>
+                      </>
+                    }
+                  />
+                }
               />
               <Text size="sm" tone="muted">
                 current のアプリだけが `aria-current=&quot;page&quot;` を持ちます。

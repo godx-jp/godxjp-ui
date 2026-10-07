@@ -2489,6 +2489,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--sortable-list-gap",
+    "value": "var(--space-2)",
+    "description": "SortableList (gh#1173): the space between items, an item's inset, its corner, and the narrowest a grid tile may get before the grid drops a column."
+  },
+  {
+    "name": "--sortable-list-item-padding",
+    "value": "var(--space-2)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--sortable-list-item-radius",
+    "value": "var(--control-radius)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--sortable-list-grid-item-min-inline-size",
+    "value": "12rem",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--control-height-compact",
     "value": "var(--band-height-xl)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -4016,6 +4036,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dialog-width-default",
     "value": "32rem",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--dialog-width",
+    "value": "initial",
+    "description": "Per-instance width, set by DialogContent `width` (gh#1174) — `initial`, so the default above resolves at the call site; the viewport cap (minus --dialog-viewport-inset) always wins."
+  },
+  {
+    "name": "--dialog-motion-duration",
+    "value": "initial",
+    "description": "ENTER / EXIT TIMING (gh#1178). `initial`, default `var(--duration-fast)` (150ms) at the call site, so a scoped motion retune reaches them. A full-screen overlay that takes half a second to arrive reads as lag; `prefers-reduced-motion: reduce` stops the animation outright (styles/dialog-layout.css, unlayered block)."
+  },
+  {
+    "name": "--sheet-enter-duration",
+    "value": "initial",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--sheet-exit-duration",
+    "value": "initial",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
@@ -7074,6 +7114,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--sidebar-action-padding",
+    "value": "var(--space-3) var(--space-2) 0",
+    "description": "Sidebar `action` (gh#1185): the inline inset matches the nav's, so the button's edges line up with the rows; the block end is 0 because the nav's own top padding supplies the gap below."
+  },
+  {
     "name": "--sidebar-section-gap",
     "value": "var(--space-4)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
@@ -7411,6 +7456,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-launcher-state-min-height",
     "value": "8rem",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--app-launcher-footer-space-block",
+    "value": "var(--space-2)",
+    "description": "The secondary-link row under the grid (gh#1172): hairline above, small type, inline gap."
+  },
+  {
+    "name": "--app-launcher-footer-gap",
+    "value": "var(--space-3)",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--app-launcher-footer-font-size",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {

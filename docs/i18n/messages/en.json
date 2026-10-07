@@ -1638,5 +1638,56 @@
     "label": "Icon",
     "chosen": "Chosen: {icon}",
     "none": "No icon"
+  },
+  "dialogWidthDocs": {
+    "title": "Wide dialog (width)",
+    "description": "DialogContent width sizes the panel for an overview grid; it is capped at the viewport minus the inset, so it still fits a phone.",
+    "open": "Open the overview",
+    "dialogTitle": "All desktops",
+    "dialogDescription": "A 60rem dialog holding a three-column grid.",
+    "desktop": "Desktop {n}"
+  },
+  "sortableListDocs": {
+    "subtitle": "Drag a grip, or Space · arrows · Space · Esc — every move is announced",
+    "widgetsTitle": "Home widgets",
+    "widgetsDescription": "Order the tiles on your desktop. The order is saved once, when you drop.",
+    "calendar": "Calendar",
+    "mail": "Mail",
+    "tasks": "Tasks",
+    "notes": "Notes",
+    "slot": "Slot {position}",
+    "saved": "Saved order: {order}",
+    "tabsTitle": "Project tabs",
+    "tabsDescription": "A list layout. Billing is locked by your plan, so it cannot be picked up — the others still move past it.",
+    "overview": "Overview",
+    "members": "Members",
+    "billing": "Billing",
+    "audit": "Audit log"
+  },
+  "topbarItemDocs": {
+    "notifications": "Notifications",
+    "notificationsUnread": "Notifications, {count} unread"
+  },
+  "appLauncherDocs": {
+    "requestAccess": "Request access",
+    "allApps": "All apps"
+  },
+  "responsiveGridDocs": {
+    "boardTitle": "Widget board (rowSpan + dense)",
+    "boardDescription": "A 2×1 cell, a tall 1×2 cell (ResponsiveGrid.Item rowSpan={2}) and 1×1 cells. dense lets the small cells fill the space beside the wide and tall ones.",
+    "revenue": "Monthly revenue",
+    "tasks": "Open tasks",
+    "members": "Members",
+    "invoices": "Invoices",
+    "services": "Services",
+    "invitations": "Invitations"
+  },
+  "avatarDocs": {
+    "fitTitle": "Logos: fit=\"contain\"",
+    "fitDescription": "cover (the default) crops to fill — right for a face. contain shows a wide or transparent logo whole.",
+    "logo": "Acme logo"
+  },
+  "sidebarDocs": {
+    "newEntry": "New journal entry"
   }
 }

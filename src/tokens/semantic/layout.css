@@ -265,11 +265,11 @@
    * page). The 4xl display step, which already scales with the viewport through
    * `--font-size-display`'s clamp (≈25px on a phone → 42px wide), so one knob covers phone and
    * desktop and the compact step below does not apply. CJK titles need more leading than Latin
-   * ones at this size: 1.4, not the tight 1.25 a short Latin headline gets. */
-  --page-title-font-size-display: var(
-    --font-size-4xl,
-    calc(var(--font-size-display) / var(--font-size-display-ratio))
-  );
+   * ones at this size: 1.4, not the tight 1.25 a short Latin headline gets.
+   * `initial` with the formula at the call site: it reads `--font-size-display`, a seed a consumer
+   * may re-scope, and a :root formula would compute once on <html> (docs/TOKENS.md · "Role-mirror
+   * knobs MUST be initial"). */
+  --page-title-font-size-display: initial; /* = the 4xl display step, resolved at the call site */
   --page-title-line-height-display: 1.4;
   /* The page icon above the title (gh#1160): emoji or glyph, and how far it rides up over a
    * banner cover's bottom edge. */

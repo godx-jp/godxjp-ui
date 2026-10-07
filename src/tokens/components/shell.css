@@ -337,6 +337,9 @@
    * default resolves at the call site. Default = calc(var(--radius) - 1px). */
   --sidebar-nav-item-radius: initial;
   --sidebar-nav-scroll-padding: var(--space-3) var(--space-2);
+  /* Sidebar `action` (gh#1185): the inline inset matches the nav's, so the button's edges line up
+   * with the rows; the block end is 0 because the nav's own top padding supplies the gap below. */
+  --sidebar-action-padding: var(--space-3) var(--space-2) 0;
   --sidebar-section-gap: var(--space-4);
   --sidebar-section-label-padding-x: var(--space-2);
   --sidebar-section-label-padding-bottom: var(--space-1);
@@ -537,6 +540,10 @@
   );
   --app-launcher-group-label-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   --app-launcher-state-min-height: 8rem;
+  /* The secondary-link row under the grid (gh#1172): hairline above, small type, inline gap. */
+  --app-launcher-footer-space-block: var(--space-2);
+  --app-launcher-footer-gap: var(--space-3);
+  --app-launcher-footer-font-size: var(--font-size-sm, var(--font-size-base));
 
   /* LAUNCHPAD — the full-viewport surface (`AppLauncher responsive="fullscreen"`).
    *

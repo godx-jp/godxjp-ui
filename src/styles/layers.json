@@ -1035,6 +1035,11 @@
         "control.css"
       ]
     },
+    "SortableList": {
+      "layers": [
+        "control.css"
+      ]
+    },
     "SpaceCompact": {
       "layers": [
         "layout.css"
