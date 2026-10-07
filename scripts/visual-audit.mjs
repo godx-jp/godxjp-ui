@@ -314,6 +314,15 @@ export function collectInPage() {
       if (!visible(t) || t.children.length) continue;
       const cs = getComputedStyle(t);
       if (cs.overflow !== "hidden" && cs.textOverflow !== "ellipsis") continue;
+      // Screen-reader-only text is clipped to 1px ON PURPOSE (a Button countLabel, a VisuallyHidden
+      // field label); it is not starved content (gh#1200). Skip it by class and by geometry, so any
+      // sr-only variant (absolute, at most 1×1) is covered.
+      const box = t.getBoundingClientRect();
+      if (
+        t.closest(".sr-only, [data-slot=visually-hidden]") ||
+        (cs.position === "absolute" && box.width <= 1 && box.height <= 1)
+      )
+        continue;
       rowTexts.push({
         text: (t.textContent || "").trim().slice(0, 30),
         visible: Math.round(t.clientWidth),
