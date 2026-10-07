@@ -3,7 +3,8 @@
  * godxjp-ui VISUAL audit — the runtime counterpart to the static ui-audit.mjs. Static audit
  * (ui-audit.mjs) reads SOURCE with regexes — zero deps, fast, runs on every save.
  */
-import { pathToFileURL } from "node:url";
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import {
   VISUAL_RULES,
   isOversaturated,
@@ -84,7 +85,7 @@ export function exitCodeFor(result, { strict = false } = {}) {
 
 /** Collect raw measurements from the rendered page; the PURE rules run back in node. */
 /* c8 ignore start — runs inside the browser, exercised in the consumer/CI env. */
-function collectInPage() {
+export function collectInPage() {
   const rgb = (s) => {
     const m = s && s.match(/rgba?\(([^)]+)\)/);
     if (!m) return null;
@@ -178,6 +179,9 @@ function collectInPage() {
     "[role=alert], [role=status], [data-slot=alert], [class*=banner], [class*=notification]",
   )) {
     if (!visible(el)) continue;
+    // The kit's EmptyState is a polite status region, not a banner: it has no Alert anatomy to get
+    // wrong, so the banner checks do not apply to it (gh#1198).
+    if (el.closest("[data-slot=empty-state]")) continue;
     const box = el.getBoundingClientRect();
     const icons = el.querySelectorAll("svg, img").length;
     const btns = [...el.querySelectorAll("button, [role=button], a[href]")];
@@ -558,9 +562,24 @@ async function main() {
 }
 /* c8 ignore stop */
 
+/** True when `argvPath` (the script node was asked to run) is this module, symlinks resolved. */
+export function isMainModule(argvPath, moduleUrl) {
+  const real = (p) => {
+    try {
+      return realpathSync(p);
+    } catch {
+      return p;
+    }
+  };
+  return real(argvPath) === real(fileURLToPath(moduleUrl));
+}
+
 // Run only as a CLI — importing this module (for unit tests) must NOT execute.
 /* c8 ignore start */
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Compare REAL paths on both sides (gh#1198): through a symlinked node_modules, argv[1] is the
+// link and import.meta.url the target, and a plain comparison skipped the audit and exited 0 — a
+// silent no-op that reads exactly like a clean run.
+if (process.argv[1] && isMainModule(process.argv[1], import.meta.url)) {
   main().catch((e) => {
     const asJson =
       process.argv.indexOf("--format") !== -1 &&

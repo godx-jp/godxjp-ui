@@ -24,6 +24,7 @@ import {
 } from "../feedback/dialog";
 import { Command, CommandGroup } from "./command";
 import { Input } from "./input";
+import { isImeComposing } from "../../lib/ime";
 import { Select } from "./select";
 
 export type { RecordPickerProp, RecordPickerProp as RecordPickerProps };
@@ -399,6 +400,14 @@ const InlinePicker = React.forwardRef<HTMLInputElement, InlinePickerProps>(funct
               setOpenSuggest(true);
             }}
             onFocus={() => setOpenSuggest(true)}
+            onKeyDown={(event) => {
+              // Enter searches INSIDE the picker and never submits the surrounding form (gh#1198):
+              // it opens the search dialog with what was typed, exactly like the 「検索」 button. An
+              // IME commit (Enter while composing) is left alone.
+              if (event.key !== "Enter" || isImeComposing(event)) return;
+              event.preventDefault();
+              if (!disabled) setDialogQuery(query);
+            }}
             className="ui-record-picker-inline-input"
             id={id}
             data-field={fieldName}
