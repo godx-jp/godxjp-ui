@@ -39,9 +39,11 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
   // The count pill is OVERLAID on the glyph rather than placed beside it, so a bar whose end
   // cluster is `flex: 0 0 auto` keeps its width when the count crosses a digit boundary
   // (gh#398). Empty string is treated as absent, exactly like the Sidebar row's own badge.
-  // Ignored under `asChild`: Slot borrows the child's single element and has nowhere to put a
-  // sibling — the same rule `Button`'s `count` follows.
-  const showBadge = !asChild && badge !== undefined && badge !== "";
+  // Under `asChild` the pill goes INSIDE the borrowed element, after its children, exactly where
+  // the icon box goes (gh#1171): that element is the cell, so the overlay anchors to it and the
+  // count joins its content the same way it does on the button. A bell that is a link is the
+  // common case, and dropping its count left nothing but an `aria-label` to carry it.
+  const showBadge = badge !== undefined && badge !== "";
   // The glyph goes in a box the CELL owns, so it keeps the bar's step however the consumer wraps
   // it (gh#712). Under `asChild` the box goes INSIDE the borrowed element, ahead of that element's
   // own children (gh#726): the element is still the cell, so `.ui-topbar-item-icon svg` sizes the
@@ -76,12 +78,6 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
   // stays the rendered root and still receives every prop Slot merges onto it. Anything that is
   // not a single valid element goes to Slot untouched, so it fails exactly the way every other
   // `asChild` in this library does — Button's included — rather than in a way of its own.
-  const slotted =
-    asChild &&
-    (iconNode !== null || labelHideBelow !== undefined) &&
-    React.isValidElement<{ children?: React.ReactNode }>(children)
-      ? React.cloneElement(children, undefined, iconNode, labelOf(children.props.children))
-      : children;
   const badgeNode = showBadge ? (
     <span
       data-slot="topbar-item-badge"
@@ -92,6 +88,18 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
       {badge}
     </span>
   ) : null;
+  const slotted =
+    asChild &&
+    (iconNode !== null || labelHideBelow !== undefined || badgeNode !== null) &&
+    React.isValidElement<{ children?: React.ReactNode }>(children)
+      ? React.cloneElement(
+          children,
+          undefined,
+          iconNode,
+          labelOf(children.props.children),
+          badgeNode,
+        )
+      : children;
   return (
     <Comp
       ref={ref}

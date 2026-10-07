@@ -2093,6 +2093,23 @@
     font-weight: var(--font-weight-medium);
   }
 
+  /* Secondary links under the grid (gh#1172) — a row of links, not a tile. Outside the scrolling
+   * panel, so a long grid never pushes it out of view. */
+  .ui-app-launcher-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--app-launcher-footer-gap);
+    margin-block-start: var(--app-launcher-footer-space-block);
+    padding-block-start: var(--app-launcher-footer-space-block);
+    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
+    font-size: var(--app-launcher-footer-font-size);
+  }
+
+  .ui-app-launcher-launchpad .ui-app-launcher-footer {
+    justify-content: center;
+  }
+
   .ui-app-launcher-state {
     display: flex;
     min-height: var(--app-launcher-state-min-height);

@@ -537,6 +537,10 @@
   );
   --app-launcher-group-label-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   --app-launcher-state-min-height: 8rem;
+  /* The secondary-link row under the grid (gh#1172): hairline above, small type, inline gap. */
+  --app-launcher-footer-space-block: var(--space-2);
+  --app-launcher-footer-gap: var(--space-3);
+  --app-launcher-footer-font-size: var(--font-size-sm, var(--font-size-base));
 
   /* LAUNCHPAD — the full-viewport surface (`AppLauncher responsive="fullscreen"`).
    *

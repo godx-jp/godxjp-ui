@@ -535,6 +535,12 @@
     align-items: start;
   }
 
+  /* `dense` (gh#1175): later small cells back-fill the holes a wide or tall cell leaves. The
+   * component never sets it under `flow="columns"`. Visual order only — DOM order is unchanged. */
+  .ui-responsive-grid[data-dense] {
+    grid-auto-flow: row dense;
+  }
+
   /* `align` prop (antd `Row align`) — after the flow rule so an explicit value wins in either flow. */
   .ui-responsive-grid[data-align="start"] {
     align-items: start;
@@ -2328,22 +2334,27 @@
   .ui-master-detail[data-rail-width="wide"] {
     --master-detail-rail-size: var(--master-detail-rail-wide);
   }
+  /* `rowSpan` (gh#1175) rides the same container steps as the column span; unset it is 1. */
   .ui-responsive-grid-item {
     grid-column: span min(var(--responsive-grid-base, 1), var(--responsive-grid-item-base, 1));
+    grid-row: span var(--responsive-grid-item-row-base, 1);
   }
   @container responsive-grid (min-width: 40rem) {
     .ui-responsive-grid-item {
       grid-column: span min(var(--responsive-grid-sm, 1), var(--responsive-grid-item-sm, 1));
+      grid-row: span var(--responsive-grid-item-row-sm, 1);
     }
   }
   @container responsive-grid (min-width: 48rem) {
     .ui-responsive-grid-item {
       grid-column: span min(var(--responsive-grid-md, 1), var(--responsive-grid-item-md, 1));
+      grid-row: span var(--responsive-grid-item-row-md, 1);
     }
   }
   @container responsive-grid (min-width: 64rem) {
     .ui-responsive-grid-item {
       grid-column: span min(var(--responsive-grid-lg, 1), var(--responsive-grid-item-lg, 1));
+      grid-row: span var(--responsive-grid-item-row-lg, 1);
     }
   }
   .ui-separator[data-label-size="2xs"] .ui-separator-label {

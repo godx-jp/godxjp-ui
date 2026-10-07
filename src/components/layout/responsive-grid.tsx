@@ -32,6 +32,14 @@ export type ResponsiveGridProps = {
    * to strip its old `columns` prop.
    */
   preset?: ResponsiveGridPresetProp;
+  /**
+   * Dense packing (`grid-auto-flow: row dense`): a later, smaller cell back-fills the hole a wide
+   * or tall cell left earlier in the row — a widget board of 1×1 / 2×1 / 1×2 cells without gaps
+   * (gh#1175). It changes VISUAL order only; DOM and focus order stay as written, so use it where
+   * the cells are independent (widgets, tiles), not where reading order matters. Ignored under
+   * `flow="columns"`, whose sequence is the point.
+   */
+  dense?: boolean;
   children: ReactNode;
 };
 
@@ -98,6 +106,7 @@ export function ResponsiveGrid({
   pad,
   padRaw,
   preset,
+  dense = false,
   className,
   children,
 }: ResponsiveGridProps) {
@@ -112,6 +121,7 @@ export function ResponsiveGrid({
         data-gap={gap}
         data-flow={flow === "columns" ? "columns" : undefined}
         data-align={align}
+        data-dense={dense && flow !== "columns" ? "" : undefined}
         style={{ ...toStyle(resolved), ...padStyle(pad, padRaw) }}
         data-pad-raw={padRaw === undefined ? undefined : ""}
       >
@@ -121,21 +131,44 @@ export function ResponsiveGrid({
   );
 }
 
+/** One container step per breakpoint: a bare number keeps `base` at 1, where the grid stacks. */
+function resolveSpan(span: ResponsiveGridColumnsProp) {
+  return typeof span === "number"
+    ? { base: 1, sm: span, md: span, lg: span }
+    : resolveColumns(span);
+}
+
 /** A grid item owns its responsive span; no extra implicit columns on a narrow container. */
 export function ResponsiveGridItem({
   span = 1,
+  rowSpan,
   children,
   className,
 }: {
   span?: ResponsiveGridColumnsProp;
+  /**
+   * Rows the cell spans — the tall (1×2) widget of a board (gh#1175). Same shape as `span`: a
+   * number spans that many rows from the `sm` step up and one row at `base`, where the grid is a
+   * single stacked column and a tall cell would only stretch; an object sets each step. Pair with
+   * `ResponsiveGrid dense` so the cells after it fill the space beside it.
+   */
+  rowSpan?: ResponsiveGridColumnsProp;
   children?: ReactNode;
   className?: string;
 }) {
-  const steps =
-    typeof span === "number" ? { base: 1, sm: span, md: span, lg: span } : resolveColumns(span);
-  const style = Object.fromEntries(
-    Object.entries(steps).map(([step, value]) => [`--responsive-grid-item-${step}`, value]),
-  ) as CSSProperties;
+  const style = Object.fromEntries([
+    ...Object.entries(resolveSpan(span)).map(([step, value]) => [
+      `--responsive-grid-item-${step}`,
+      value,
+    ]),
+    // Only when asked: an item without `rowSpan` renders the style it always had.
+    ...(rowSpan === undefined
+      ? []
+      : Object.entries(resolveSpan(rowSpan)).map(([step, value]) => [
+          `--responsive-grid-item-row-${step}`,
+          value,
+        ])),
+  ]) as CSSProperties;
   return (
     <div className={cn("ui-responsive-grid-item", className)} style={style}>
       {children}

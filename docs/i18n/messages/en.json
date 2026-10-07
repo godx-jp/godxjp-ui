@@ -1663,5 +1663,28 @@
     "members": "Members",
     "billing": "Billing",
     "audit": "Audit log"
+  },
+  "topbarItemDocs": {
+    "notifications": "Notifications",
+    "notificationsUnread": "Notifications, {count} unread"
+  },
+  "appLauncherDocs": {
+    "requestAccess": "Request access",
+    "allApps": "All apps"
+  },
+  "responsiveGridDocs": {
+    "boardTitle": "Widget board (rowSpan + dense)",
+    "boardDescription": "A 2×1 cell, a tall 1×2 cell (ResponsiveGrid.Item rowSpan={2}) and 1×1 cells. dense lets the small cells fill the space beside the wide and tall ones.",
+    "revenue": "Monthly revenue",
+    "tasks": "Open tasks",
+    "members": "Members",
+    "invoices": "Invoices",
+    "services": "Services",
+    "invitations": "Invitations"
+  },
+  "avatarDocs": {
+    "fitTitle": "Logos: fit=\"contain\"",
+    "fitDescription": "cover (the default) crops to fill — right for a face. contain shows a wide or transparent logo whole.",
+    "logo": "Acme logo"
   }
 }

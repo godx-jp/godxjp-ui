@@ -17,6 +17,7 @@ import {
 } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 /**
  * ResponsiveGrid · equal-width multi-column tile grid with automatic responsive
@@ -44,6 +45,7 @@ const KANBAN_TASKS: { id: string; title: string; lane: KanbanLane; priority: str
 ];
 
 export default function Demo() {
+  const { t } = useTranslation();
   // Kanban: which lane each card is in, moved by native drag and drop.
   const [tasks, setTasks] = useState(KANBAN_TASKS);
   const moveTask = (id: string, lane: KanbanLane) =>
@@ -54,6 +56,27 @@ export default function Demo() {
       subtitle="等幅タイルグリッド · KPI・カード比較・ダッシュボード行"
     >
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("responsiveGridDocs.boardTitle")}</CardTitle>
+            <CardDescription>{t("responsiveGridDocs.boardDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* gh#1175: a widget board — 2×1, 1×2 (rowSpan) and 1×1 cells, packed dense. */}
+            <ResponsiveGrid columns={4} dense>
+              <ResponsiveGrid.Item span={2}>
+                <StatCard label={t("responsiveGridDocs.revenue")} value="¥12,400,000" />
+              </ResponsiveGrid.Item>
+              <ResponsiveGrid.Item rowSpan={2}>
+                <StatCard label={t("responsiveGridDocs.tasks")} value="18" />
+              </ResponsiveGrid.Item>
+              <StatCard label={t("responsiveGridDocs.members")} value="14" />
+              <StatCard label={t("responsiveGridDocs.invoices")} value="2" />
+              <StatCard label={t("responsiveGridDocs.services")} value="3" />
+              <StatCard label={t("responsiveGridDocs.invitations")} value="0" />
+            </ResponsiveGrid>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle level={2}>Compact mobile metrics</CardTitle>

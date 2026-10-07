@@ -1656,5 +1656,28 @@
     "members": "Thành viên",
     "billing": "Thanh toán",
     "audit": "Nhật ký kiểm tra"
+  },
+  "topbarItemDocs": {
+    "notifications": "Thông báo",
+    "notificationsUnread": "Thông báo, {count} chưa đọc"
+  },
+  "appLauncherDocs": {
+    "requestAccess": "Yêu cầu quyền truy cập",
+    "allApps": "Tất cả ứng dụng"
+  },
+  "responsiveGridDocs": {
+    "boardTitle": "Bảng widget (rowSpan + dense)",
+    "boardDescription": "Một ô 2×1, một ô cao 1×2 (ResponsiveGrid.Item rowSpan={2}) và các ô 1×1. dense cho các ô nhỏ lấp chỗ trống cạnh ô rộng và ô cao.",
+    "revenue": "Doanh thu tháng",
+    "tasks": "Công việc đang mở",
+    "members": "Thành viên",
+    "invoices": "Hoá đơn",
+    "services": "Dịch vụ",
+    "invitations": "Lời mời"
+  },
+  "avatarDocs": {
+    "fitTitle": "Logo: fit=\"contain\"",
+    "fitDescription": "cover (mặc định) cắt cho đầy khung — hợp với ảnh khuôn mặt. contain hiện trọn logo rộng hoặc trong suốt.",
+    "logo": "Logo Acme"
   }
 }

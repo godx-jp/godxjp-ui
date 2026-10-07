@@ -291,6 +291,7 @@ export function AppLauncher({
   appearance = "bar",
   side,
   align,
+  footer,
   open,
   onOpenChange,
   className,
@@ -347,18 +348,27 @@ export function AppLauncher({
         <Grip aria-hidden="true" />
       </Button>
     );
+  // The footer row sits OUTSIDE the scrolling panel (gh#1172): it stays in view under a long grid,
+  // follows the tiles in focus order, and shows in the loading / error / empty states too.
   const panel = (
-    <AppLauncherPanel
-      apps={apps}
-      groups={groups}
-      labels={labels}
-      columns={columns}
-      linkComponent={linkComponent}
-      loading={loading}
-      error={error}
-      onRetry={onRetry}
-      close={close}
-    />
+    <>
+      <AppLauncherPanel
+        apps={apps}
+        groups={groups}
+        labels={labels}
+        columns={columns}
+        linkComponent={linkComponent}
+        loading={loading}
+        error={error}
+        onRetry={onRetry}
+        close={close}
+      />
+      {footer != null && footer !== false ? (
+        <div data-slot="app-launcher-footer" className="ui-app-launcher-footer">
+          {footer}
+        </div>
+      ) : null}
+    </>
   );
 
   /*
