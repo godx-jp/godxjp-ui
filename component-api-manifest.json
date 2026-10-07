@@ -12368,6 +12368,14 @@
           "declaredIn": ["src/components/data-entry/password-strength.tsx"]
         },
         {
+          "name": "minLength",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/password-strength.tsx"]
+        },
+        {
           "name": "rules",
           "origin": "owned",
           "required": false,
@@ -21587,7 +21595,7 @@
     "usePasswordStrength": {
       "kind": "hook",
       "subpaths": ["./data-entry"],
-      "signature": "(value: string, rules?: import(\"./password-strength\").PasswordRule[]): import(\"./password-strength\").PasswordStrengthReturn",
+      "signature": "(value: string, rules?: import(\"./password-strength\").PasswordRule[], minLength?: number): import(\"./password-strength\").PasswordStrengthReturn",
       "declaredIn": ["src/components/data-entry/password-strength.tsx"]
     },
     "useSheetResponsiveMode": {

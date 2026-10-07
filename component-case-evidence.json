@@ -2384,6 +2384,15 @@
             "docs/data-entry/password-strength.tsx",
             "src/components/data-entry/__tests__/password-strength.test.tsx"
           ]
+        },
+        "minLength": {
+          "cases": [
+            "omitted — 8, the default threshold",
+            "12 — a server policy (Laravel Password::min(12)); a 10-character value fails the rule and the text reads 12"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/password-strength.test.tsx"
+          ]
         }
       }
     },

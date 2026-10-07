@@ -247,7 +247,7 @@
       "failed": "Chưa đạt: ",
       "announcement": "Độ mạnh mật khẩu: {strength}",
       "rules": {
-        "length": "Tối thiểu 8 ký tự",
+        "length": "Tối thiểu {n} ký tự",
         "upper": "Có chữ in hoa",
         "lower": "Có chữ thường",
         "number": "Có chữ số",

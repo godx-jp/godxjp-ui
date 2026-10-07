@@ -124,4 +124,29 @@ describe("PasswordStrength", () => {
     expect(screen.getAllByText("NG：").length).toBeGreaterThan(0);
     expect(screen.getByText("強度はふつうです")).toBeInTheDocument();
   });
+
+  it("follows a server's minimum length in the check, the score and the text (gh#1193)", () => {
+    // A 10-character password the server (min 12) rejects must not read as met.
+    render(<PasswordStrength value="abcdefghij" minLength={12} />, "ja");
+    const rule = screen.getByText("12 文字以上").closest("li");
+    expect(rule).toHaveAttribute("data-state", "failed");
+    expect(screen.queryByText("8 文字以上")).toBeNull();
+  });
+
+  it("keeps 8 as the default threshold", () => {
+    render(<PasswordStrength value="abcdefgh" />);
+    expect(screen.getByText("8+ characters").closest("li")).toHaveAttribute("data-state", "passed");
+  });
+});
+
+describe("usePasswordStrength minLength (gh#1193)", () => {
+  it("scores the length rule against minLength", () => {
+    expect(
+      renderHook(() => usePasswordStrength("abcdefghij", ["length"], 12)).result.current.checks
+        .length,
+    ).toBe(false);
+    expect(
+      renderHook(() => usePasswordStrength("abcdefghijkl", ["length"], 12)).result.current.score,
+    ).toBe(1);
+  });
 });
