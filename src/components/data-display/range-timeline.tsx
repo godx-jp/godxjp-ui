@@ -54,6 +54,16 @@ export type RangeTimelineRow = {
    * ("+3日" / "+3d" / "+3 ngày"), since a Gantt's unit is the day. `false` shows none.
    */
   varianceLabel?: React.ReactNode | false;
+  /**
+   * A muted note shown after the bar when the row has no `plan`, e.g. "baseline後に追加". Nothing
+   * is drawn for a row without a plan unless this is set.
+   */
+  planNote?: React.ReactNode;
+  /**
+   * Which grips this row offers when `onRangeChange` is set. Default `true` (both). A started-but-open
+   * issue whose end is "today" passes `{ end: false }`, keeping the start grip. `false` removes both.
+   */
+  editable?: boolean | { start?: boolean; end?: boolean };
 };
 
 /** Black or white ink for a hex fill; `undefined` when the value cannot be measured. */
@@ -502,6 +512,14 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                     )}
                   </span>
                 )}
+                {dated && !plan && row.planNote != null && right > left && (
+                  <span
+                    className="ui-range-timeline-plan-note"
+                    style={{ insetInlineStart: `${(right / units) * 100}%` }}
+                  >
+                    {row.planNote}
+                  </span>
+                )}
                 {early && right > left && right <= units && (
                   <span
                     className="ui-range-timeline-early"
@@ -544,6 +562,13 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                       (["start", "end"] as const)
                         .filter((edge) =>
                           edge === "start" ? start >= 0 && start < units : end >= 0 && end < units,
+                        )
+                        .filter((edge) =>
+                          row.editable === undefined || row.editable === true
+                            ? true
+                            : row.editable === false
+                              ? false
+                              : row.editable[edge] !== false,
                         )
                         .map((edge) => (
                           <Button

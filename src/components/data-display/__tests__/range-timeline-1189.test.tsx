@@ -263,3 +263,52 @@ describe("RangeTimeline planned vs actual (予定 / 実績)", () => {
     expect(q(container, ".ui-range-timeline-overrun")).toHaveLength(0);
   });
 });
+
+describe("RangeTimeline per-row editable and plan note", () => {
+  const grips = () => screen.queryAllByRole("button").map((b) => b.getAttribute("aria-label"));
+
+  it("drops only the end grip with editable={{ end: false }}, both with false", () => {
+    const { rerender } = render(
+      <RangeTimeline
+        label="Schedule"
+        columns={columns}
+        rows={[{ ...row, editable: { end: false } }]}
+        onRangeChange={() => undefined}
+      />,
+    );
+    expect(grips()).toEqual([row.startLabel]);
+    rerender(
+      <RangeTimeline
+        label="Schedule"
+        columns={columns}
+        rows={[{ ...row, editable: false }]}
+        onRangeChange={() => undefined}
+      />,
+    );
+    expect(grips()).toEqual([]);
+    rerender(
+      <RangeTimeline
+        label="Schedule"
+        columns={columns}
+        rows={[row]}
+        onRangeChange={() => undefined}
+      />,
+    );
+    expect(grips()).toEqual([row.startLabel, row.endLabel]);
+  });
+
+  it("shows a plan note only for a row without a plan", () => {
+    render(
+      <RangeTimeline
+        label="Schedule"
+        columns={columns}
+        rows={[
+          { ...row, id: "a", planNote: "baseline後に追加" },
+          { ...row, id: "b", planNote: "planned", plan: { start: 1, end: 3 } },
+        ]}
+      />,
+    );
+    expect(screen.getByText("baseline後に追加")).toBeInTheDocument();
+    expect(screen.queryByText("planned")).toBeNull();
+  });
+});

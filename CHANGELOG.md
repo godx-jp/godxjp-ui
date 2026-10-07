@@ -30,6 +30,9 @@ For godx-task's Gantt, where the label column truncated titles and nothing could
   behind the solid actual bar. Past the planned end, a destructive overrun segment carries a
   localized "+N日" / "+Nd" label (`varianceLabel` overrides it, `false` hides it). Ending before the
   plan shows a small success early marker. Both are spoken, and the ghost is never draggable.
+- **Per-row `editable`** (`true` | `false` | `{ start?, end? }`): which grips a row offers, e.g. no
+  end grip for a started issue whose end is "today". **`planNote`**: muted text after the bar for a
+  row without a plan.
 - **`Legend` items take `{ color, label }`** as well as `{ tone, label }`, for user-chosen colours.
 
 ### 🐛 `PasswordStrength` speaks the page's language (gh#1191)

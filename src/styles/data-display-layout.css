@@ -2758,6 +2758,16 @@
     font-weight: var(--font-weight-medium);
     white-space: nowrap;
   }
+  .ui-range-timeline-plan-note {
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    padding-inline: var(--space-1);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+    white-space: nowrap;
+    pointer-events: none;
+  }
   .ui-range-timeline-early {
     z-index: 1;
     inline-size: var(--range-timeline-early-marker-inline-size);
