@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godx
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Typography · design-token foundation. Real semantic <h1>-<h6> elements (no
+ * Type scale · design-token foundation. Real semantic <h1>-<h6> elements (no
  * faked sizes): the base heading layer renders the reference-design scale and keeps
  * the document outline SEO/accessibility correct. Composed only from real
  * @godxjp/ui components.
@@ -10,7 +10,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 export default function Demo() {
   return (
     <PageContainer
-      title="Typography"
+      title="Type scale"
       subtitle="Noto Sans JP (M PLUS 2 fallback) · 14 / 1.7 body · headings 20/18/14/13 @ 500 · three weights only"
     >
       <Flex direction="col" gap="lg">

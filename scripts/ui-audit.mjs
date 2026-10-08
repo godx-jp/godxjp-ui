@@ -1825,8 +1825,11 @@ for (const dir of SCAN_DIRS) {
     scannedFiles.push(rel);
     // A primitive implements native controls; asking Input to render Input recurses.
     // Consumer applications and executable docs still receive these composition checks.
+    // `src/lab/` holds primitives too — the opt-in tier (v32 #1223), same gates as core.
     const fileRules =
-      SELF && !args.includes("--consumer") && rel.startsWith("src/components/")
+      SELF &&
+      !args.includes("--consumer") &&
+      (rel.startsWith("src/components/") || rel.startsWith("src/lab/"))
         ? ACTIVE_RULES.filter((rule) => rule.scope !== "consumer-control")
         : ACTIVE_RULES;
     const content = readFileSync(file, "utf8");
