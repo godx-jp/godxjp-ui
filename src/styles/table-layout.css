@@ -1041,8 +1041,16 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor. */
-      min-inline-size: var(--table-action-collection-min-inline-size-compact);
+      /* The legibility floor — plus whatever the measured actions content (gh#1067) takes over
+       * the token, so the other columns keep their floors and the wrapper scrolls (gh#1207). */
+      min-inline-size: calc(
+        var(--table-action-collection-min-inline-size-compact) +
+          max(
+            0px,
+            var(--table-action-collection-actions-content-width, 0px) -
+              var(--table-action-collection-actions-width)
+          )
+      );
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -1088,8 +1096,16 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor. */
-      min-inline-size: var(--table-action-collection-min-inline-size-compact);
+      /* The legibility floor — plus whatever the measured actions content (gh#1067) takes over
+       * the token, so the other columns keep their floors and the wrapper scrolls (gh#1207). */
+      min-inline-size: calc(
+        var(--table-action-collection-min-inline-size-compact) +
+          max(
+            0px,
+            var(--table-action-collection-actions-content-width, 0px) -
+              var(--table-action-collection-actions-width)
+          )
+      );
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -1135,8 +1151,16 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor. */
-      min-inline-size: var(--table-action-collection-min-inline-size-compact);
+      /* The legibility floor — plus whatever the measured actions content (gh#1067) takes over
+       * the token, so the other columns keep their floors and the wrapper scrolls (gh#1207). */
+      min-inline-size: calc(
+        var(--table-action-collection-min-inline-size-compact) +
+          max(
+            0px,
+            var(--table-action-collection-actions-content-width, 0px) -
+              var(--table-action-collection-actions-width)
+          )
+      );
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -1182,8 +1206,16 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor. */
-      min-inline-size: var(--table-action-collection-min-inline-size-compact);
+      /* The legibility floor — plus whatever the measured actions content (gh#1067) takes over
+       * the token, so the other columns keep their floors and the wrapper scrolls (gh#1207). */
+      min-inline-size: calc(
+        var(--table-action-collection-min-inline-size-compact) +
+          max(
+            0px,
+            var(--table-action-collection-actions-content-width, 0px) -
+              var(--table-action-collection-actions-width)
+          )
+      );
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
