@@ -102,13 +102,6 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  Carousel,
-  CarouselContent,
-  CarouselDots,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  ChatBubble,
   CredentialReveal,
   Descriptions,
   Legend,
@@ -129,9 +122,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  ThoughtChain,
   Timeline,
-  Welcome,
   type BadgeTone,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
@@ -154,7 +145,6 @@ import {
   Select,
   Slider,
   Switch,
-  TagInput,
 } from "@godxjp/ui/data-entry";
 import {
   Alert,
@@ -165,7 +155,16 @@ import {
   TooltipTrigger,
 } from "@godxjp/ui/feedback";
 import { AuthDivider, Flex, PageContainer, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
-import { AppSettingPicker, AppSettingToggle, Steps, Tabs } from "@godxjp/ui/navigation";
+import { AppSettingPicker, Steps, Tabs } from "@godxjp/ui/navigation";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselDots,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@godxjp/ui/lab";
+import { ChatBubble, ThoughtChain, Welcome } from "@godxjp/chat";
 
 /* ────────────────────────────────────────────────────────────────────────────────────────────
  * THE ENTIRE THEME LAYER. One scoped block per palette, one per corner step. No component CSS,
@@ -398,7 +397,7 @@ export default function ThemeCustomizationShowcase() {
           end: (
             <Flex align="center" gap="sm" wrap>
               <AppSettingPicker kind="locale" appearance="bar" />
-              <AppSettingToggle kind="theme" appearance="bar" />
+              <AppSettingPicker menu={false} kind="theme" appearance="bar" />
             </Flex>
           ),
         }}
@@ -643,7 +642,9 @@ function ComponentsBoard(props: {
             />
           </FormField>
           <FormField id="board-labels" label={t("themeShowcase.form.labels")}>
-            <TagInput
+            <Select
+              mode="tags"
+              open={false}
               id="board-labels"
               value={labels}
               onValueChange={setLabels}

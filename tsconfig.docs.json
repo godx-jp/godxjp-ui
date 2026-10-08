@@ -7,7 +7,14 @@
       "@godxjp/markdown/codec": ["./packages/markdown/src/codec/index.ts"],
       "@godxjp/editor": ["./packages/editor/src/index.ts"],
       "@godxjp/block-editor": ["./packages/block-editor/src/index.ts"],
+      "@godxjp/chat": ["./packages/chat/src/index.ts"],
       "@godxjp/ui/i18n": ["./dist/i18n/index.d.ts"],
+      "@godxjp/ui/lab": ["./dist/lab/index.d.ts"],
+      "@godxjp/ui/hooks": ["./dist/lib/hooks.d.ts"],
+      "@godxjp/ui/lib/utils": ["./dist/lib/utils.d.ts"],
+      "@godxjp/ui/datetime": ["./dist/lib/datetime/index.d.ts"],
+      "@godxjp/ui/props/components": ["./dist/props/components/index.d.ts"],
+      "@godxjp/ui/props/vocabulary": ["./dist/props/vocabulary/index.d.ts"],
       "@godxjp/ui/themes/godx": ["./dist/themes/godx.d.ts"],
       "@godxjp/ui/*": ["./dist/components/*/index.d.ts"]
     }

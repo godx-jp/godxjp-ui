@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { SortableList } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { SortableList } from "@godxjp/ui/lab";
 
 /**
  * SortableList (gh#1173) — a desktop editor's widget order (tiles) and a settings list of tabs,

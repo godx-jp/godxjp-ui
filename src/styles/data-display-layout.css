@@ -596,37 +596,6 @@
     font-size: var(--feature-list-description-font-size);
   }
 
-  /* Thumbnail — a framed picture at a fixed BLOCK size and its own intrinsic inline size, for a
-   * wrapping row of pictures whose ratios differ.
-   *
-   * The frame is on the `<img>` itself: a wrapper would need the picture's width to hug it, and
-   * that width does not exist until the bytes land. A border on the replaced element is flush at
-   * every ratio, with no wrapper to pad it away from the image (which is what Card would do). */
-  .ui-thumbnail {
-    display: block;
-    /* `auto` is the whole point: AspectRatio spans 100% and pins a ratio; this keeps each
-     * picture's own ratio and equalises only the height. */
-    inline-size: auto;
-    /* …but never past the container, or one panorama scrolls the page sideways. When the clamp
-     * bites, `contain` letterboxes inside the frame rather than distorting the picture. */
-    max-inline-size: 100%;
-    block-size: var(--thumbnail-block-size);
-    border: var(--thumbnail-border-width, var(--stroke-hairline)) solid hsl(var(--border));
-    border-radius: var(--thumbnail-radius, var(--radius));
-    /* A light screenshot on a light card needs something behind it while it loads, and a
-     * transparent PNG needs it for good. */
-    background: hsl(var(--muted));
-    object-fit: contain;
-  }
-
-  .ui-thumbnail[data-size="sm"] {
-    block-size: var(--thumbnail-block-size-sm);
-  }
-
-  .ui-thumbnail[data-size="lg"] {
-    block-size: var(--thumbnail-block-size-lg);
-  }
-
   /* TextDiff (gh#1096). Newlines are content, and a long token (a URL, a CJK run) must break
    * anywhere rather than push the page sideways. A removed run is struck and an added run is
    * underlined — the mark, not the tint, says which is which, so it holds in forced-colors and
@@ -4202,6 +4171,24 @@
 
   :is(.ui-image, .ui-image-tile)[data-size] {
     --image-inline-size: calc(var(--image-block-size) * var(--thumbnail-width-ratio));
+  }
+
+  /* `fit="intrinsic"` — the former Thumbnail (v32 #1223): the `size` height at the picture's OWN
+   * width. The hairline frame and the muted backdrop sit on the frame, which hugs the picture; the
+   * picture keeps its ratio from its `width`/`height` attributes before it loads, and a panorama
+   * wider than the column is clamped and letterboxed rather than scrolling the page sideways. */
+  .ui-image[data-fit="intrinsic"] {
+    inline-size: auto;
+    border: var(--thumbnail-border-width, var(--stroke-hairline)) solid hsl(var(--border));
+    border-radius: var(--thumbnail-radius, var(--radius));
+    background: hsl(var(--muted));
+  }
+
+  .ui-image[data-fit="intrinsic"] > .ui-image-img {
+    inline-size: auto;
+    max-inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
   }
 
   .ui-image-img[data-fit="cover"] {

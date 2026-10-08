@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { Toolbar, ToolbarGroup } from "../filter-bar";
+import { Toolbar, ToolbarGroup } from "../toolbar";
 import { PageContainer } from "../../layout/page-container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
 

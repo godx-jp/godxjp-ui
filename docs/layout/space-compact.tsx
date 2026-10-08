@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flex, PageContainer, SpaceCompact } from "@godxjp/ui/layout";
+import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   Card,
   CardContent,
@@ -71,7 +71,7 @@ export default function SpaceCompactShowcase() {
                 label={t("spaceCompactDocs.recur.label")}
                 helper={t("spaceCompactDocs.recur.helper")}
               >
-                <SpaceCompact>
+                <Flex attached>
                   <NumberInput
                     value={every}
                     onValueChange={(next) => setEvery(next ?? 1)}
@@ -85,7 +85,7 @@ export default function SpaceCompactShowcase() {
                     options={weekUnits}
                     aria-label={t("spaceCompactDocs.recur.unit")}
                   />
-                </SpaceCompact>
+                </Flex>
               </FormField>
 
               <Descriptions
@@ -110,7 +110,7 @@ export default function SpaceCompactShowcase() {
             <CardDescription>{t("spaceCompactDocs.search.body")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <SpaceCompact fullWidth aria-label={t("spaceCompactDocs.search.row")}>
+            <Flex attached fullWidth aria-label={t("spaceCompactDocs.search.row")}>
               <SearchInput
                 value={query}
                 onValueChange={setQuery}
@@ -120,7 +120,7 @@ export default function SpaceCompactShowcase() {
               <Button aria-label={t("spaceCompactDocs.search.run")}>
                 <Search aria-hidden="true" />
               </Button>
-            </SpaceCompact>
+            </Flex>
           </CardContent>
         </Card>
 
@@ -131,7 +131,7 @@ export default function SpaceCompactShowcase() {
           </CardHeader>
           <CardContent>
             <FormField label={t("spaceCompactDocs.amount.label")}>
-              <SpaceCompact fullWidth>
+              <Flex attached fullWidth>
                 <NumberInput
                   value={amount}
                   onValueChange={(next) => setAmount(next ?? 0)}
@@ -147,7 +147,7 @@ export default function SpaceCompactShowcase() {
                   options={CURRENCIES}
                   aria-label={t("spaceCompactDocs.amount.currency")}
                 />
-              </SpaceCompact>
+              </Flex>
             </FormField>
           </CardContent>
         </Card>
@@ -159,7 +159,7 @@ export default function SpaceCompactShowcase() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">
-              <SpaceCompact orientation="vertical" aria-label={t("spaceCompactDocs.vertical.row")}>
+              <Flex attached direction="col" aria-label={t("spaceCompactDocs.vertical.row")}>
                 <Textarea
                   value={note}
                   onValueChange={setNote}
@@ -170,7 +170,7 @@ export default function SpaceCompactShowcase() {
                   <Send aria-hidden="true" />
                   {t("spaceCompactDocs.vertical.send")}
                 </Button>
-              </SpaceCompact>
+              </Flex>
               <Text tone="muted" size="sm">
                 {t("spaceCompactDocs.vertical.alias")}
               </Text>

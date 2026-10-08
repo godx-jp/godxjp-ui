@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { fireEvent, renderWithUi, screen, userEvent } from "@/test/render";
 
 import { ColorPicker } from "../color-picker";
-import { TagInput } from "../tag-input";
+import { Select } from "../select";
 
 /**
  * THE CONTROLLED-WITHOUT-A-HANDLER FREEZE, pinned.
@@ -93,7 +93,9 @@ describe("ColorPicker — native form submission", () => {
 describe("TagInput — IME composition", () => {
   it("the Enter that CONFIRMS a conversion does not commit a tag", () => {
     const onValueChange = vi.fn();
-    renderWithUi(<TagInput aria-label="タグ" onValueChange={onValueChange} />);
+    renderWithUi(
+      <Select mode="tags" open={false} aria-label="タグ" onValueChange={onValueChange} />,
+    );
     const field = screen.getByRole("textbox");
 
     fireEvent.focus(field);
@@ -107,7 +109,9 @@ describe("TagInput — IME composition", () => {
 
   it("the Enter AFTER the conversion is confirmed commits the converted text", () => {
     const onValueChange = vi.fn();
-    renderWithUi(<TagInput aria-label="タグ" onValueChange={onValueChange} />);
+    renderWithUi(
+      <Select mode="tags" open={false} aria-label="タグ" onValueChange={onValueChange} />,
+    );
     const field = screen.getByRole("textbox");
 
     fireEvent.focus(field);
@@ -124,7 +128,13 @@ describe("TagInput — IME composition", () => {
   it("Backspace mid-conversion does not eat the previous tag", () => {
     const onValueChange = vi.fn();
     renderWithUi(
-      <TagInput aria-label="タグ" defaultValue={["東京"]} onValueChange={onValueChange} />,
+      <Select
+        mode="tags"
+        open={false}
+        aria-label="タグ"
+        defaultValue={["東京"]}
+        onValueChange={onValueChange}
+      />,
     );
     const field = screen.getByRole("textbox");
 
@@ -138,7 +148,7 @@ describe("TagInput — IME composition", () => {
 
 describe("TagInput — allowClear + readOnly", () => {
   it("no clear ✕ by default (antd's own default for a tags field)", () => {
-    renderWithUi(<TagInput aria-label="タグ" defaultValue={["a", "b"]} />);
+    renderWithUi(<Select mode="tags" open={false} aria-label="タグ" defaultValue={["a", "b"]} />);
     expect(screen.queryByRole("button", { name: "Xóa" })).not.toBeInTheDocument();
   });
 
@@ -147,7 +157,9 @@ describe("TagInput — allowClear + readOnly", () => {
     const onValueChange = vi.fn();
     const onClear = vi.fn();
     renderWithUi(
-      <TagInput
+      <Select
+        mode="tags"
+        open={false}
         aria-label="タグ"
         defaultValue={["a", "b"]}
         allowClear
@@ -162,7 +174,13 @@ describe("TagInput — allowClear + readOnly", () => {
 
   it("the allowClear OBJECT form overrides the accessible label", () => {
     renderWithUi(
-      <TagInput aria-label="タグ" defaultValue={["a"]} allowClear={{ label: "Reset tags" }} />,
+      <Select
+        mode="tags"
+        open={false}
+        aria-label="タグ"
+        defaultValue={["a"]}
+        allowClear={{ label: "Reset tags" }}
+      />,
     );
     expect(screen.getByRole("button", { name: "Reset tags" })).toBeInTheDocument();
   });
@@ -171,7 +189,9 @@ describe("TagInput — allowClear + readOnly", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <TagInput
+      <Select
+        mode="tags"
+        open={false}
         aria-label="タグ"
         defaultValue={["東京"]}
         readOnly
@@ -193,7 +213,14 @@ describe("TagInput — allowClear + readOnly", () => {
 
   it("readOnly still submits its value natively", () => {
     const { container } = renderWithUi(
-      <TagInput aria-label="タグ" name="tags" defaultValue={["a", "b"]} readOnly />,
+      <Select
+        mode="tags"
+        open={false}
+        aria-label="タグ"
+        name="tags"
+        defaultValue={["a", "b"]}
+        readOnly
+      />,
     );
     expect(container.querySelector('input[type="hidden"][name="tags"]')).toHaveValue("a,b");
   });

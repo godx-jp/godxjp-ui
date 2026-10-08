@@ -25,7 +25,12 @@ import {
 import { useOptionalAppContext } from "../../app/app-provider";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
-import type { AppSettingKind, AppSettingPickerProp } from "../../props/components/app.prop";
+import type {
+  AppSettingKind,
+  AppSettingPickerMenuProp,
+  AppSettingPickerProp,
+} from "../../props/components/app.prop";
+import { AppSettingCycle } from "./app-setting-cycle";
 import {
   Select,
   SelectContent,
@@ -36,8 +41,11 @@ import {
 
 export type {
   AppSettingKind,
+  AppSettingCycleKind,
   AppSettingPickerProp,
   AppSettingPickerProp as AppSettingPickerProps,
+  AppSettingPickerMenuProp,
+  AppSettingPickerCycleProp,
 } from "../../props/components/app.prop";
 
 const ICON: Record<AppSettingKind, LucideIcon> = {
@@ -66,13 +74,27 @@ const ARIA_KEY: Record<AppSettingKind, string> = {
 const BRAND_NONE = "__app__";
 
 /**
- * One provider-bound Select for any single AppProvider setting — locale / timezone /
+ * One provider-bound control for any single AppProvider setting — locale / timezone /
  * date-format / time-format and the four theme axes (theme / brand / density / fontSize).
  * Mount under `<AppProvider>` and it reads/writes the matching context (`kind`); or pass
  * value + onValueChange to control it.
+ *
+ * `menu={false}` (theme / density / fontSize / timeFormat only) swaps the open-then-choose menu
+ * for ONE button that steps to the next value on each tap and shows that value as its glyph — the
+ * former `AppSettingToggle` (v32 #1223).
  */
 export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPickerProp>(
-  function AppSettingPicker(
+  function AppSettingPicker(props, ref) {
+    return props.menu === false ? (
+      <AppSettingCycle ref={ref} {...props} />
+    ) : (
+      <AppSettingMenu ref={ref} {...props} />
+    );
+  },
+);
+
+const AppSettingMenu = React.forwardRef<HTMLButtonElement, AppSettingPickerMenuProp>(
+  function AppSettingMenu(
     { kind, appearance, compact = false, className, disabled, id, name, value, onValueChange },
     ref,
   ) {

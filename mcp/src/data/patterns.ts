@@ -658,7 +658,7 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
       "centeredshell",
     ],
     code: `// @godxjp/ui SHIPS <ErrorSurface>. Do NOT hand-compose an error page from
-// AuthShell + a generic Card + a local ".canonical-auth-card" — that workaround IS the regression.
+// the auth CenteredShell + a generic Card + a local ".canonical-auth-card" — that workaround IS the regression.
 //
 //    403 / 404  → mode="application": the surface is the BODY of the AppShell you ALREADY render
 //                 (sidebar + topbar + breadcrumb are PRESERVED, never reconstructed)
@@ -753,7 +753,7 @@ export function MaintenancePage() {
 //   --error-surface-max-width | -gap | -padding-block(-compact) | -meta-gap | -meta-row-gap |
 //   --error-surface-meta-border (default 'none', rule #44) | --error-surface-progress-max-width
 //
-// ANTI-PATTERNS: AuthShell + a generic Card (the workaround; AuthShell is the
+// ANTI-PATTERNS: the auth CenteredShell + a generic Card (the workaround; it is the
 // UNAUTHENTICATED root with auth-card geometry) · rebuilding nav on the 403 page · two CTAs ·
 // className="min-h-dvh flex …" · a hand-built "18:00 - 20:00 JST" string · writing the request id
 // into 'description' as prose instead of using the semantic slot.`,
@@ -1055,7 +1055,7 @@ export function OrganizationMemberships({
       "scr-008",
     ],
     tagline:
-      'Signed-OUT password recovery + sign-in MFA challenge panels (SCR-008). There is NO PasswordRecoveryPanel and NO MfaChallengePanel — compose Card + AuthStack + FormField/InputOTP + Button inside AuthShell preset="account-recovery" (the 432px token-owned measure).',
+      'Signed-OUT password recovery + sign-in MFA challenge panels (SCR-008). There is NO PasswordRecoveryPanel and NO MfaChallengePanel — compose Card + AuthStack + FormField/InputOTP + Button inside CenteredShell variant="auth-canonical" preset="account-recovery" (the 432px token-owned measure).',
     tags: [
       "auth",
       "authshell",
@@ -1071,7 +1071,7 @@ export function OrganizationMemberships({
     ],
     code: `// ⚠️ There is NO <PasswordRecoveryPanel state=…/> and NO <MfaChallengePanel state=…/> in
 // @godxjp/ui. What the package owns is the MEASURE:
-//    <AuthShell variant="canonical" preset="account-recovery">   ← 432px panel, 15px gutter at 390
+//    <CenteredShell variant="auth-canonical" preset="account-recovery">   ← 432px panel, 15px gutter at 390
 // Docs page: docs/layout/auth-recovery/
 //
 // PRESENTATION ONLY. No route, no reset semantics, no OTP verification, no recovery-code
@@ -1081,7 +1081,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godx
 import { FormField, Input, InputOTP, InputOTPGroup, InputOTPSlot, PasswordInput, PasswordStrength } from "@godxjp/ui/data-entry";
 import { Alert, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
 import { Button, Reveal } from "@godxjp/ui/general";
-import { AuthFooter, AuthShell, AuthStack, Flex } from "@godxjp/ui/layout";
+import { AuthFooter, CenteredShell, AuthStack, Flex } from "@godxjp/ui/layout";
 
 // ── THE CANONICAL PANEL ANATOMY — identical for ALL SEVEN states ───────────────────────
 //   Card > CardHeader(CardTitle + CardDescription)   ← title/description INSIDE the surface
@@ -1102,8 +1102,7 @@ import { AuthFooter, AuthShell, AuthStack, Flex } from "@godxjp/ui/layout";
 // stop. Six <Input>s would put six stops in the ring and break paste of a 6-digit code.
 export function MfaChallengePage({ code, onCodeChange, error, pending, onVerify }) {
   return (
-    <AuthShell
-      variant="canonical"
+    <CenteredShell variant="auth-canonical"
       preset="account-recovery"
       brand={brand}
       footer={<AuthFooter product="GoDX ID" terms={termsLink} privacy={privacyLink} locale={localePicker} />}
@@ -1134,7 +1133,7 @@ export function MfaChallengePage({ code, onCodeChange, error, pending, onVerify 
           </CardContent>
         </Card>
       </Reveal>
-    </AuthShell>
+    </CenteredShell>
   );
 }
 
@@ -1247,7 +1246,7 @@ export function AccountRecoverySettings({ email, phone, backupCodesSupported, ba
   );
 }
 // The signed-OUT recovery journey (forgot password → email link → reset) is a separate flow on the
-// auth screens (AuthShell), NOT part of these signed-in settings. Do not surface it here.`,
+// auth screens (CenteredShell variant="auth"), NOT part of these signed-in settings. Do not surface it here.`,
   },
   {
     name: "transactional-email",

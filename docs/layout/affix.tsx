@@ -10,7 +10,7 @@ import {
   Descriptions,
   ScrollArea,
 } from "@godxjp/ui/data-display";
-import { Button, Heading, Paragraph, Text } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import { Affix, Flex, PageContainer } from "@godxjp/ui/layout";
 import { Check, Filter } from "lucide-react";
 
@@ -44,10 +44,10 @@ function Filler({ id, title, lines }: { id: string; title: string; lines: number
         {title}
       </Heading>
       {Array.from({ length: lines }, (_, line) => (
-        <Paragraph key={line}>
+        <Text as="p" key={line}>
           スクロールしてください。Scroll on, and keep scrolling: the bar above only becomes
           interesting once the page has gone far enough past it for the pin to fire.
-        </Paragraph>
+        </Text>
       ))}
     </section>
   );

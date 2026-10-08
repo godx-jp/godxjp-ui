@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * SpaceCompact welds its children through a box it owns — and the three facts below are the ones a
+ * `Flex attached` (formerly SpaceCompact) welds its children through a box it owns — and the three facts below are the ones a
  * browser measured, so they are pinned as CSS text rather than left to jsdom (which lays nothing
  * out and would pass on any of the three being wrong).
  *
@@ -37,7 +37,9 @@ describe("space-compact item box", () => {
       /\.ui-space-compact(?:\[[^\]]*\])*\s*>\s*\*(?![\w-])/.test(line),
     );
     expect(bareChildSelectors).toEqual([]);
-    expect(spaceCompactRules.some((l) => l.includes('[data-slot="space-compact-item"]'))).toBe(true);
+    expect(spaceCompactRules.some((l) => l.includes('[data-slot="space-compact-item"]'))).toBe(
+      true,
+    );
   });
 
   it("stretches the item's own child, or a Button in a vertical stack keeps its content width", () => {

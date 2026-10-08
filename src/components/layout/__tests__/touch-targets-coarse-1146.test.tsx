@@ -6,7 +6,7 @@ import { AppProvider } from "../../../app/app-provider";
 import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
 import { Command, CommandItem, CommandList } from "../../data-entry/command";
 import { Segmented } from "../../data-entry/segmented";
-import { TagInput } from "../../data-entry/tag-input";
+import { Select } from "../../data-entry/select";
 import { Button } from "../../general/button";
 import { Tabs } from "../../navigation/tabs";
 
@@ -70,7 +70,7 @@ const markup = renderToStaticMarkup(
       />
     </div>
     <div data-p="tag">
-      <TagInput aria-label="Aliases" />
+      <Select mode="tags" open={false} aria-label="Aliases" />
     </div>
   </AppProvider>,
 );

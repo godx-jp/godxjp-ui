@@ -1,13 +1,7 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  TextDiff,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { TextDiff } from "@godxjp/ui/lab";
 
 const PREVIOUS_ORIGINAL = "来週の定例会議までに、見積書を承認してください。";
 const CURRENT_ORIGINAL = "今週金曜までに、見積書と請求書を却下してください。";

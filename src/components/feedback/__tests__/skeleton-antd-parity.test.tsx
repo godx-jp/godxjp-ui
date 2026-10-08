@@ -2,15 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { renderWithUi } from "@/test/render";
 import { ruleSelectors } from "@/test/css-selector";
-import {
-  Skeleton,
-  SkeletonArticle,
-  SkeletonAvatar,
-  SkeletonButton,
-  SkeletonImage,
-  SkeletonInput,
-  SkeletonNode,
-} from "../skeleton";
+import { Skeleton, SkeletonArticle, SkeletonInput } from "../skeleton";
 
 const lines = (container: HTMLElement) => [
   ...container.querySelectorAll<HTMLElement>(".ui-skeleton-article-line"),
@@ -193,47 +185,32 @@ describe("Skeleton `active` sheen", () => {
 });
 
 describe("Skeleton element presets", () => {
-  it("carry their kind, and the antd namespace is the same component", () => {
-    expect(Skeleton.Avatar).toBe(SkeletonAvatar);
-    expect(Skeleton.Button).toBe(SkeletonButton);
+  it("the antd namespace is the same component (Avatar/Button/Node/Image retired in v32 #1223)", () => {
     expect(Skeleton.Input).toBe(SkeletonInput);
-    expect(Skeleton.Node).toBe(SkeletonNode);
-    expect(Skeleton.Image).toBe(SkeletonImage);
     expect(Skeleton.Article).toBe(SkeletonArticle);
+    expect(Object.keys(Skeleton).sort()).toEqual(["Article", "Input"]);
   });
 
-  it("map size / shape / block onto the block that stands in for the control", () => {
+  it("map size / block onto the block that stands in for the control", () => {
     const { container } = renderWithUi(
       <>
-        <SkeletonButton size="lg" shape="pill" block />
         <SkeletonInput size="sm" />
-        <SkeletonAvatar shape="square" size="xs" />
-        <SkeletonNode>inner</SkeletonNode>
+        <SkeletonInput size="lg" block />
       </>,
     );
-    const button = container.querySelector("[data-skeleton-element='button']")!;
-    expect(button).toHaveAttribute("data-size", "lg");
-    expect(button).toHaveAttribute("data-shape", "pill");
-    expect(button).toHaveAttribute("data-block");
+    const [small, wide] = container.querySelectorAll("[data-skeleton-element='input']");
+    expect(small).toHaveAttribute("data-size", "sm");
+    expect(small).not.toHaveAttribute("data-block");
+    expect(wide).toHaveAttribute("data-size", "lg");
+    expect(wide).toHaveAttribute("data-block");
+  });
 
-    const input = container.querySelector("[data-skeleton-element='input']")!;
-    expect(input).toHaveAttribute("data-size", "sm");
-    expect(input).not.toHaveAttribute("data-block");
-
+  it("the article's avatar keeps its size and shape", () => {
+    const { container } = renderWithUi(
+      <SkeletonArticle avatar={{ shape: "square", size: "xs" }} />,
+    );
     const avatar = container.querySelector("[data-skeleton-element='avatar']")!;
     expect(avatar).toHaveAttribute("data-shape", "square");
     expect(avatar).toHaveAttribute("data-size", "xs");
-
-    expect(container.querySelector("[data-skeleton-element='node']")).toHaveTextContent("inner");
-  });
-
-  it("hides SkeletonImage's glyph from the accessibility tree", () => {
-    const { container } = renderWithUi(<SkeletonImage />);
-    const glyph = container.querySelector(".ui-skeleton-image-glyph")!;
-    expect(glyph).toHaveAttribute("aria-hidden", "true");
-    expect(container.querySelector("[data-skeleton-element='image']")).toHaveAttribute(
-      "aria-busy",
-      "true",
-    );
   });
 });

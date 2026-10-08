@@ -12,7 +12,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Checkbox, Field } from "@godxjp/ui/data-entry";
 import { Button, Logo, Reveal, Text } from "@godxjp/ui/general";
-import { AuthFooter, AuthIdentity, AuthShell, Flex } from "@godxjp/ui/layout";
+import { AuthFooter, AuthIdentity, CenteredShell, Flex } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
@@ -45,8 +45,8 @@ const ORGANIZATIONS = [
 
 export default function Demo() {
   return (
-    <AuthShell
-      variant="canonical"
+    <CenteredShell
+      variant="auth-canonical"
       preset="context-selection"
       brand={
         <Flex align="center" gap="sm">
@@ -98,6 +98,6 @@ export default function Demo() {
       <Field id="auth-remember-context" label="次回からこの組織を既定にする">
         <Checkbox id="auth-remember-context" />
       </Field>
-    </AuthShell>
+    </CenteredShell>
   );
 }

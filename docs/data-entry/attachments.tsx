@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { Attachments, type AttachmentsItemProp } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import {
   AppShell,
@@ -11,6 +10,8 @@ import {
   Topbar,
 } from "@godxjp/ui/layout";
 import { Bot, MessageSquare, Paperclip, Settings, Users } from "lucide-react";
+import { Attachments } from "@godxjp/chat";
+import type { AttachmentsItemProp } from "@godxjp/chat";
 
 /**
  * Attachments — the file collection that rides a chat surface (Ant Design X `Attachments`).

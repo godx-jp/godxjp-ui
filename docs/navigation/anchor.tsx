@@ -10,9 +10,10 @@ import {
   Descriptions,
   ScrollArea,
 } from "@godxjp/ui/data-display";
-import { Heading, Paragraph, Text } from "@godxjp/ui/general";
+import { Heading, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { Anchor, type AnchorItemProp } from "@godxjp/ui/navigation";
+import { Anchor } from "@godxjp/ui/lab";
+import type { AnchorItemProp } from "@godxjp/ui/lab";
 
 /**
  * Anchor — Ant Design `Anchor` (6.6.5). The in-page section navigation, and the only thing in the
@@ -112,11 +113,11 @@ function Chapter({ id, title, lines }: { id: string; title: string; lines: numbe
         {title}
       </Heading>
       {Array.from({ length: lines }, (_, line) => (
-        <Paragraph key={line}>
+        <Text as="p" key={line}>
           本条は{title}について定めます。The clause is deliberately long enough that a reader spends
           several scroll gestures inside it, which is the case an IntersectionObserver band cannot
           answer and a decision line can.
-        </Paragraph>
+        </Text>
       ))}
     </section>
   );

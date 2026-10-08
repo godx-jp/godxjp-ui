@@ -32,6 +32,7 @@ import type { FieldA11yProps } from "../../lib/field-a11y";
 import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import { radixSurfaceState, toPlacement } from "../navigation/dropdown-menu";
 import { SearchSelect } from "./search-select";
+import { SelectTagsInline } from "./select-tags-inline";
 import { useTranslation } from "../../i18n/use-translation";
 import { normalizeSelectOptions } from "../../lib/select-options";
 import type {
@@ -287,6 +288,13 @@ function SelectRoot({
  * optgroup grouping, and `renderOption`.
  */
 export function Select(props: SelectProp) {
+  // antd spells "a tags field whose list never opens" as `mode="tags" open={false}`. There is no
+  // list to show, so it is drawn as the INLINE chip field — the presentation that was the public
+  // `TagInput` until v32 folded it in here (#1223). `labelInValue` keeps the searchable engine,
+  // which is the only one that reads `{ value, label }`.
+  if (props.mode === "tags" && props.open === false && !props.labelInValue) {
+    return <SelectTagsInline {...(props as React.ComponentProps<typeof SelectTagsInline>)} />;
+  }
   if (isDataSelect(props)) {
     // antd `labelInValue` is a DIALECT of the value, not a second component: it is translated here
     // and everything below this line only ever sees plain string values.

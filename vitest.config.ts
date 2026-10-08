@@ -120,6 +120,28 @@ export default defineConfig({
               find: /^@godxjp\/ui\/i18n$/,
               replacement: path.resolve(__dirname, "src/i18n/index.ts"),
             },
+            // @godxjp/chat (v32 #1223) — and the non-group kit subpaths it imports, which the
+            // generic `@godxjp/ui/<group>` rule below would send to a missing src/components dir.
+            {
+              find: /^@godxjp\/chat$/,
+              replacement: path.resolve(__dirname, "packages/chat/src/index.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/hooks$/,
+              replacement: path.resolve(__dirname, "src/lib/hooks.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/lib\/utils$/,
+              replacement: path.resolve(__dirname, "src/lib/utils.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/datetime$/,
+              replacement: path.resolve(__dirname, "src/lib/datetime/index.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/props\/(components|vocabulary)$/,
+              replacement: path.resolve(__dirname, "src/props/$1/index.ts"),
+            },
             {
               find: /^@godxjp\/ui\/([a-z-]+)$/,
               replacement: path.resolve(__dirname, "src/components/$1/index.ts"),

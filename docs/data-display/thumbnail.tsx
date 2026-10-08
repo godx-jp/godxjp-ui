@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Thumbnail,
+  Image,
 } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -26,7 +26,7 @@ const SHOTS = [
 ];
 
 /**
- * Thumbnail — 高さは固定、幅は画像そのものの比率。囲みは画像に直接かかる hairline。
+ * Image fit="intrinsic"（旧 Thumbnail）— 高さは固定、幅は画像そのものの比率。囲みは画像に直接かかる hairline。
  *
  * AspectRatio は比率を固定して幅 100% に広げるので、比率の違う数枚を並べるとレターボックスか
  * 切り抜きになる。Avatar は人・組織の識別マーク、Card は囲みと画像のあいだに padding を入れる、
@@ -34,7 +34,10 @@ const SHOTS = [
  */
 export default function Demo() {
   return (
-    <PageContainer title="Thumbnail" subtitle="高さ固定・幅は実寸比 · 画像に直接かかる hairline">
+    <PageContainer
+      title="Image · intrinsic"
+      subtitle="高さ固定・幅は実寸比 · 画像に直接かかる hairline"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
@@ -47,7 +50,7 @@ export default function Demo() {
           <CardContent>
             <Flex gap="sm" wrap align="start">
               {SHOTS.map((shot) => (
-                <Thumbnail key={shot.alt} size="lg" {...shot} />
+                <Image fit="intrinsic" preview={false} key={shot.alt} size="lg" {...shot} />
               ))}
             </Flex>
           </CardContent>
@@ -64,16 +67,16 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               <Flex gap="sm" wrap align="start">
-                <Thumbnail size="sm" {...SHOTS[0]} />
-                <Thumbnail size="sm" {...SHOTS[1]} />
+                <Image fit="intrinsic" preview={false} size="sm" {...SHOTS[0]} />
+                <Image fit="intrinsic" preview={false} size="sm" {...SHOTS[1]} />
               </Flex>
               <Flex gap="sm" wrap align="start">
-                <Thumbnail {...SHOTS[0]} />
-                <Thumbnail {...SHOTS[1]} />
+                <Image fit="intrinsic" preview={false} {...SHOTS[0]} />
+                <Image fit="intrinsic" preview={false} {...SHOTS[1]} />
               </Flex>
               <Flex gap="sm" wrap align="start">
-                <Thumbnail size="lg" {...SHOTS[0]} />
-                <Thumbnail size="lg" {...SHOTS[1]} />
+                <Image fit="intrinsic" preview={false} size="lg" {...SHOTS[0]} />
+                <Image fit="intrinsic" preview={false} size="lg" {...SHOTS[1]} />
               </Flex>
             </Flex>
           </CardContent>
@@ -90,13 +93,17 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex gap="sm" wrap align="start">
-              <Thumbnail
+              <Image
+                fit="intrinsic"
+                preview={false}
                 src={shotPortrait}
                 width={360}
                 height={640}
                 alt="幅を先に確保した縦長の画面"
               />
-              <Thumbnail
+              <Image
+                fit="intrinsic"
+                preview={false}
                 src={shotLandscape}
                 width={960}
                 height={540}
@@ -118,7 +125,14 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex gap="sm" wrap align="start">
-              <Thumbnail src={coverTerrain} width={480} height={270} alt="" />
+              <Image
+                fit="intrinsic"
+                preview={false}
+                src={coverTerrain}
+                width={480}
+                height={270}
+                alt=""
+              />
             </Flex>
           </CardContent>
         </Card>

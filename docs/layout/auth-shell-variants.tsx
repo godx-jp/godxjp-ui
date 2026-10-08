@@ -7,20 +7,20 @@ import {
   AuthDivider,
   AuthFooter,
   AuthIdentity,
-  AuthShell,
+  CenteredShell,
   AuthStack,
   Flex,
 } from "@godxjp/ui/layout";
-import type { AuthShellProps } from "@godxjp/ui/layout";
+import type { CenteredShellAuthProp } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
-type AuthShellVariant = NonNullable<AuthShellProps["variant"]>;
-type AuthShellDensity = NonNullable<AuthShellProps["density"]>;
+type AuthShellVariant = CenteredShellAuthProp["variant"];
+type AuthShellDensity = NonNullable<CenteredShellAuthProp["density"]>;
 
 /**
  * AuthShell の 2 つの直交軸: `variant`（シェルの寸法）と `density`（操作要素の段）。
  *
- * `variant="default"` は素の中央寄せシェル、`variant="canonical"` は GoDX ID の正準寸法。
+ * `variant="auth"` は素の中央寄せシェル、`variant="auth-canonical"` は GoDX ID の正準寸法。
  * `density` は独立した別軸で、既定は variant から導出されます（canonical なら compact、
  * default なら comfortable = 44px の WCAG タッチ下限）。明示的に渡せばその導出を上書きでき、
  * 4 通りの組み合わせがすべて成立します。
@@ -28,18 +28,18 @@ type AuthShellDensity = NonNullable<AuthShellProps["density"]>;
  * このページは AuthShell を 1 つだけ描画します。AuthShell は banner / main / contentinfo の
  * ランドマークをページ全体に張るため、比較のために 2 つ並べるとランドマークが重複し、
  * それ自体がアクセシビリティ違反になります。そこで軸はページ内のラジオで切り替えます。
- * 初期表示は `variant="default"` × `density="comfortable"`（=素の AuthShell そのもの）。
+ * 初期表示は `variant="auth"` × `density="comfortable"`（=素の AuthShell そのもの）。
  *
  * SCR-001 の正準ログイン（preset="login"）は Auth Shell ページ、preset の各フローは
  * Auth Shell Device / Auth Shell Context / Auth Recovery ページが受け持ちます。
  * ここに幅・余白・色の指定は 1 つもありません。すべてトークンが所有しています。
  */
 export default function Demo() {
-  const [variant, setVariant] = useState<AuthShellVariant>("default");
+  const [variant, setVariant] = useState<AuthShellVariant>("auth");
   const [density, setDensity] = useState<AuthShellDensity>("comfortable");
 
   return (
-    <AuthShell
+    <CenteredShell
       variant={variant}
       density={density}
       brand={
@@ -102,15 +102,15 @@ export default function Demo() {
                   id="auth-axis-variant"
                   label="variant · シェルの寸法"
                   layout="vertical"
-                  helper="canonical は GoDX ID の正準寸法、default は素の中央寄せシェル。"
+                  helper="auth-canonical は GoDX ID の正準寸法、auth は素の中央寄せシェル。"
                 >
                   <RadioGroup
                     orientation="horizontal"
                     value={variant}
                     onValueChange={(next) => setVariant(next as AuthShellVariant)}
                     options={[
-                      { value: "default", label: "default（既定）" },
-                      { value: "canonical", label: "canonical（正準）" },
+                      { value: "auth", label: "auth（既定）" },
+                      { value: "auth-canonical", label: "auth-canonical（正準）" },
                     ]}
                   />
                 </FormField>
@@ -138,6 +138,6 @@ export default function Demo() {
           </CardContent>
         </Card>
       </Flex>
-    </AuthShell>
+    </CenteredShell>
   );
 }

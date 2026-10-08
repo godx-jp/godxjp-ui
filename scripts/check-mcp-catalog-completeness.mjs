@@ -34,7 +34,7 @@
  * Checked in both directions. A `subParts` name that is no longer exported is an error too, or the
  * lists rot into claims about components that left.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 import ts from "typescript";
 
@@ -141,7 +141,26 @@ const exportedNames = new Set(exported.map((c) => c.name));
 
 const uncatalogued = exported.filter((c) => !entryNames.has(c.name) && !claimed.has(c.name));
 const contested = [...claimed].filter(([, owners]) => owners.length > 1);
-const stale = [...claimed].filter(([part]) => !exportedNames.has(part) && !entryNames.has(part));
+/* A sub-part of an entry that lives in a SIBLING package (`@godxjp/chat` — `ActionsItem` under
+ * `Actions`, v32 #1223) is exported by that package's barrel, not by a kit subpath. */
+const siblingNames = new Set();
+for (const pkg of readdirSync(join(ROOT, "packages"))) {
+  const index = join(ROOT, "packages", pkg, "src/index.ts");
+  if (!existsSync(index)) continue;
+  for (const m of readFileSync(index, "utf8").matchAll(/export\s+\{([^}]+)\}/g)) {
+    for (const part of m[1].split(",")) {
+      const name = part
+        .trim()
+        .split(/\s+as\s+/)
+        .pop()
+        ?.trim();
+      if (name && /^[A-Z]/.test(name)) siblingNames.add(name);
+    }
+  }
+}
+const stale = [...claimed].filter(
+  ([part]) => !exportedNames.has(part) && !entryNames.has(part) && !siblingNames.has(part),
+);
 const shadowed = [...claimed].filter(([part]) => entryNames.has(part));
 
 const failed =

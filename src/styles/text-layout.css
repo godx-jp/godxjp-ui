@@ -412,18 +412,6 @@
  * ───────────────────────────────────────────────────────────────────────────────────────────── */
 
 @layer components {
-  /* Title level 5 — the one step `Heading` does not have. Levels 1..4 are shared with `Heading`
-   * by the `[data-slot="heading"]` rules above; only the fifth needs its own line. */
-  [data-slot="heading"][data-level="5"] {
-    font-size: var(
-      --heading-h5,
-      var(
-        --font-size-2xs,
-        calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
-      )
-    );
-  }
-
   /* `disabled` — antd paints the disabled ink, forbids the cursor and forbids selection. All three
    * matter together: the colour alone reads as "muted", not "unavailable". */
   [data-slot="text"][data-disabled],
@@ -603,12 +591,6 @@
     inset-block-end: var(--space-1);
     color: hsl(var(--muted-foreground));
     pointer-events: none;
-  }
-
-  /* The prose container. It owns nothing but the block rhythm between the runs inside it. */
-  .ui-typography {
-    color: hsl(var(--foreground));
-    overflow-wrap: break-word;
   }
 }
 

@@ -27,7 +27,7 @@ import {
   AuthDivider,
   AuthFooter,
   AuthIdentity,
-  AuthShell,
+  CenteredShell,
   AuthStack,
   Flex,
 } from "@godxjp/ui/layout";
@@ -111,8 +111,8 @@ export default function Demo() {
     // the mark INSIDE the column as `AuthIdentity`, above the card, and pass no top brand bar.
     // Pass one here and the whole column is pushed down by the bar's height, so every offset read
     // off this page would be wrong and the preset's canonical card anchor would silently miss.
-    <AuthShell
-      variant="canonical"
+    <CenteredShell
+      variant="auth-canonical"
       preset="registration"
       footer={
         <AuthFooter
@@ -333,6 +333,6 @@ export default function Demo() {
           </Button>
         ))}
       </Flex>
-    </AuthShell>
+    </CenteredShell>
   );
 }

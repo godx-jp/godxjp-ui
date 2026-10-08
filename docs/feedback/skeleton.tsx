@@ -1,12 +1,8 @@
 import {
   Skeleton,
   SkeletonArticle,
-  SkeletonAvatar,
-  SkeletonButton,
   SkeletonDetail,
-  SkeletonImage,
   SkeletonInput,
-  SkeletonNode,
   SkeletonRows,
   SkeletonStat,
   SkeletonTable,
@@ -21,7 +17,7 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
  *   SkeletonStat · StatCard/KPI tile placeholder (no props; use in ResponsiveGrid).
  *   SkeletonDetail · single-record detail placeholder (title + metadata rows, no props).
  *   SkeletonArticle · avatar + heading + paragraph (Ant Design's own Skeleton shape).
- *   SkeletonAvatar/Button/Input/Node/Image · the shaped presets, also on the Skeleton namespace.
+ *   SkeletonInput · the control-box preset, also on the Skeleton namespace (Skeleton.Input).
  * Never use a spinner overlay on skeletonable content.
  */
 export default function Demo() {
@@ -78,29 +74,21 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Shaped presets · the boxes the controls occupy</CardTitle>
+            <CardTitle level={2}>Input preset · the box a field occupies</CardTitle>
             <CardDescription>
-              Each preset carries the box of the control it stands in for, from the --control-height
-              tier · SkeletonButton is two heights wide, SkeletonInput five. Reachable as named
-              exports or through the Skeleton namespace (Skeleton.Button…).
+              SkeletonInput carries the box of the Input it stands in for, from the --control-height
+              tier, five heights wide; block fills the column. Reachable as a named export or as
+              Skeleton.Input. (antd&apos;s Avatar/Button/Node/Image presets were retired in v32.)
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Flex direction="row" gap="sm" align="center" wrap>
-                <SkeletonAvatar size="sm" />
-                <SkeletonAvatar />
-                <SkeletonAvatar size="lg" shape="square" />
-                <SkeletonButton size="sm" />
-                <SkeletonButton />
-                <SkeletonButton size="lg" shape="pill" active />
                 <SkeletonInput size="sm" />
+                <SkeletonInput />
+                <SkeletonInput size="lg" active />
               </Flex>
               <SkeletonInput block />
-              <Flex direction="row" gap="sm" align="center" wrap>
-                <SkeletonNode />
-                <SkeletonImage active />
-              </Flex>
             </Flex>
           </CardContent>
         </Card>

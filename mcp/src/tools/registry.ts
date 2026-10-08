@@ -16,6 +16,8 @@ import { dirname, join, resolve } from "node:path";
 import {
   COMPONENTS,
   componentsByGroup,
+  componentsInTier,
+  type ComponentTierFilter,
   findComponent,
   findSubPartOwner,
   type ComponentGroup,
@@ -78,10 +80,16 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_primitives",
     description:
-      "List every @godxjp/ui primitive/composite/shell (group + tagline per entry). Optionally filter by group. Then `get_component` for one's full API.",
+      'List every @godxjp/ui primitive/composite/shell (group + tagline per entry). Optionally filter by group. Then `get_component` for one\'s full API. Core only by default — pass tier="lab" for the opt-in @godxjp/ui/lab components.',
     inputSchema: {
       type: "object",
       properties: {
+        tier: {
+          type: "string",
+          enum: ["core", "lab", "all"],
+          description:
+            'Default "core". "lab" lists the opt-in `@godxjp/ui/lab` components (niche, kept and tested, not in the default context); "all" lists both.',
+        },
         group: {
           type: "string",
           enum: [
@@ -387,10 +395,19 @@ export const TOOL_DEFINITIONS = [
   },
   {
     name: "search_components",
-    description: "Fuzzy-search primitives by name / tagline / prop. Returns ranked matches.",
+    description:
+      'Fuzzy-search primitives by name / tagline / prop. Returns ranked matches. Core only by default; pass tier="lab" or "all" to include the opt-in @godxjp/ui/lab components.',
     inputSchema: {
       type: "object",
-      properties: { query: { type: "string" } },
+      properties: {
+        query: { type: "string" },
+        tier: {
+          type: "string",
+          enum: ["core", "lab", "all"],
+          description:
+            'Default "core". "lab" lists the opt-in `@godxjp/ui/lab` components (niche, kept and tested, not in the default context); "all" lists both.',
+        },
+      },
       required: ["query"],
     },
   },
@@ -505,7 +522,10 @@ async function answerTool(name: string, args: Record<string, unknown>): Promise<
     case "list_skills":
       return listSkills();
     case "list_primitives":
-      return listPrimitives(args.group as ComponentGroup | undefined);
+      return listPrimitives(
+        args.group as ComponentGroup | undefined,
+        args.tier as ComponentTierFilter | undefined,
+      );
     case "list_utilities":
       return listUtilities(args.kind as UtilityKind | undefined);
     case "list_patterns":
@@ -552,7 +572,10 @@ async function answerTool(name: string, args: Record<string, unknown>): Promise<
     case "suggest_primitive":
       return suggestPrimitive(String(args.use_case ?? ""));
     case "search_components":
-      return searchComponents(String(args.query ?? ""));
+      return searchComponents(
+        String(args.query ?? ""),
+        args.tier as ComponentTierFilter | undefined,
+      );
     case "get_frame_coverage":
       return getFrameCoverage(args.name === undefined ? undefined : String(args.name));
     // Lint
@@ -845,14 +868,20 @@ function checkCompatibility(installed?: string): string {
   );
 }
 
-function listPrimitives(group?: ComponentGroup): string {
-  const list = group ? componentsByGroup(group) : COMPONENTS;
+function listPrimitives(group?: ComponentGroup, tier: ComponentTierFilter = "core"): string {
+  const list = componentsInTier(group ? componentsByGroup(group) : COMPONENTS, tier);
   if (list.length === 0) return `No components${group ? ` in group "${group}"` : ""}.`;
   const grouped = list.reduce<Record<string, typeof list>>((acc, c) => {
     (acc[c.group] ??= []).push(c);
     return acc;
   }, {});
-  let out = `# @godxjp/ui primitives${group ? ` — ${group}` : ""}\n\n${list.length} components.\n\n`;
+  let out = `# @godxjp/ui primitives${group ? ` — ${group}` : ""}${tier === "core" ? "" : ` (${tier})`}\n\n${list.length} components.\n\n`;
+  if (tier === "core") {
+    const lab = componentsInTier(group ? componentsByGroup(group) : COMPONENTS, "lab").length;
+    if (lab) {
+      out += `_${lab} opt-in \`@godxjp/ui/lab\` component${lab === 1 ? "" : "s"} not listed — pass tier="lab" to see them._\n\n`;
+    }
+  }
   for (const [g, items] of Object.entries(grouped)) {
     out += `## ${g}\n\n`;
     for (const c of items) out += `- **${c.name}** — ${c.tagline}\n`;
@@ -992,7 +1021,6 @@ const TOKEN_PREFIXES: Record<string, string[]> = {
   Badge: ["badge"],
   Button: ["button"],
   Toggle: ["toggle"],
-  TagInput: ["tag-input"],
   Card: ["card"],
   StatCard: ["stat-card"],
   Table: ["table"],
@@ -1001,7 +1029,7 @@ const TOKEN_PREFIXES: Record<string, string[]> = {
   AlertDialog: ["dialog"],
   Sheet: ["dialog"],
   Drawer: ["dialog"],
-  Alert: ["alert"],
+  Alert: ["alert", "banner", "callout"],
   EmptyState: ["empty-state"],
   Skeleton: ["skeleton"],
   Pagination: ["pagination"],
@@ -1031,7 +1059,7 @@ const TOKEN_PREFIXES: Record<string, string[]> = {
   Input: ["control"],
   Textarea: ["control"],
   NumberInput: ["control"],
-  Select: ["control", "search-input"],
+  Select: ["control", "search-input", "tag-input"],
   Cascader: ["control"],
   DatePicker: ["control"],
   TimePicker: ["control"],
@@ -1115,7 +1143,7 @@ export const FORM_RULES =
   `**FORM RULES** — enforced by ui-audit (\`formfield-needs-form\`, \`dialog-form-too-big\`, \`select-width-hint\`):\n` +
   `- Wrap fields in \`<Form layout="horizontal" labelWidth controlWidth>\` — never a group of FormFields without it, never a hand-rolled \`<Flex>\` row of fields.\n` +
   `- Size each control for its content (GOV.UK text-input width): \`controlWidth\` per field or once on the Form — a port ~7rem, a short enum ~10rem.\n` +
-  `- Fields that belong on one row: \`<SpaceCompact>\` or \`<Form columns>\`.\n` +
+  `- Fields that belong on one row: \`<Flex attached>\` or \`<Form columns>\`.\n` +
   `- Three or more fields is a page (own route), not a Dialog.\n` +
   `- A case these do not cover: open an issue on godx-jp/godxjp-ui, use the nearest valid composition with \`// TODO(godxjp-ui#<n>)\` — never hand-roll.\n`;
 
@@ -1154,6 +1182,9 @@ function getComponent(name: string, verbose = false): string {
   let out = `# ${c.name}\n\n**Group:** ${c.group}`;
   const importPath = c.importPath ?? `@godxjp/ui/${c.group === "providers" ? "app" : c.group}`;
   out += `  ·  **Import:** \`import { ${c.name} } from "${importPath}"\`\n\n`;
+  if (c.tier === "lab") {
+    out += `> 🧪 **LAB tier** — ships from the opt-in \`@godxjp/ui/lab\` subpath: kept, tested and semver'd like core, but niche, so it is not in the default listings. Promoted to core once two repos import it.\n\n`;
+  }
   if (c.deprecated) {
     out += `> ⚠️ **DEPRECATED.** Kept catalogued so you're steered to the replacement — see the tagline / Related below. Do not use in new code.\n\n`;
   }
@@ -1205,7 +1236,7 @@ function getComponent(name: string, verbose = false): string {
     out += `\n`;
   }
   if (c.docPath) out += `**Reference doc:** \`docs/reference/${c.docPath}\`\n\n`;
-  out += `**Storybook:** \`src/stories/${c.storyPath}\`\n\n`;
+  if (c.storyPath) out += `**Docs page:** \`docs/${c.storyPath}\`\n\n`;
   if (c.rules.length) {
     out += `**Cardinal rules:**\n`;
     for (const n of c.rules) {
@@ -1428,46 +1459,48 @@ function suggestPrimitive(useCase: string): string {
   return out;
 }
 
-function searchComponents(query: string): string {
+function searchComponents(query: string, tier: ComponentTierFilter = "core"): string {
   const q = query.trim().toLowerCase();
-  if (!q) return listPrimitives();
+  if (!q) return listPrimitives(undefined, tier);
   // Tokenize → khớp theo TỪNG từ (query nhiều từ như "async searchable select" trước đây
   // khớp cả cụm liền nên hiếm trúng). Bỏ token quá ngắn (nhiễu). Ghi điểm qua nhiều
   // trường — quan trọng nhất: name/tagline + useCases (người dùng search theo Ý ĐỊNH, vd
   // "confirm delete" / "date range"), rồi usage/related/group/props.
   const tokens = q.split(/\s+/).filter((t) => t.length >= 2);
   const terms = tokens.length ? tokens : [q];
-  const matches = COMPONENTS.map((c) => {
-    const name = c.name.toLowerCase();
-    const tagline = c.tagline.toLowerCase();
-    const useCases = (c.useCases ?? []).join(" ").toLowerCase();
-    const usage = (c.usage ?? []).join(" ").toLowerCase();
-    const related = (c.related ?? []).join(" ").toLowerCase();
-    const props = c.props.map((p) => p.name.toLowerCase());
-    // Sub-part names are SEARCHABLE TEXT of their parent. Someone hunting "status badge" or
-    // "card cover" is hunting a real export, and the entry that documents it is the right hit.
-    const subParts = (c.subParts ?? []).join(" ").toLowerCase();
-    // ABSORBED names are the strongest signal there is. Someone typing "combobox" is not browsing;
-    // they have decided what they want and are one empty result away from building it themselves.
-    // Ranked above an exact sub-part match for that reason: a wrong answer here costs a component.
-    const absorbed = (c.absorbed ?? []).join(" ").toLowerCase();
-    let score = 0;
-    if (name === q) score += 100; // exact-name → luôn lên đầu
-    if (absorbed.split(" ").includes(q)) score += 95;
-    if (subParts.split(" ").includes(q)) score += 90; // exact sub-part name → its parent, near the top
-    for (const t of terms) {
-      if (name.includes(t)) score += 5;
-      if (absorbed.includes(t)) score += 5;
-      if (subParts.includes(t)) score += 4;
-      if (tagline.includes(t)) score += 3;
-      if (useCases.includes(t)) score += 2;
-      if (usage.includes(t)) score += 1;
-      if (related.includes(t)) score += 1;
-      if (c.group.includes(t)) score += 1;
-      if (props.some((p) => p.includes(t))) score += 1;
-    }
-    return { c, score };
-  })
+  const pool = componentsInTier(COMPONENTS, tier);
+  const matches = pool
+    .map((c) => {
+      const name = c.name.toLowerCase();
+      const tagline = c.tagline.toLowerCase();
+      const useCases = (c.useCases ?? []).join(" ").toLowerCase();
+      const usage = (c.usage ?? []).join(" ").toLowerCase();
+      const related = (c.related ?? []).join(" ").toLowerCase();
+      const props = c.props.map((p) => p.name.toLowerCase());
+      // Sub-part names are SEARCHABLE TEXT of their parent. Someone hunting "status badge" or
+      // "card cover" is hunting a real export, and the entry that documents it is the right hit.
+      const subParts = (c.subParts ?? []).join(" ").toLowerCase();
+      // ABSORBED names are the strongest signal there is. Someone typing "combobox" is not browsing;
+      // they have decided what they want and are one empty result away from building it themselves.
+      // Ranked above an exact sub-part match for that reason: a wrong answer here costs a component.
+      const absorbed = (c.absorbed ?? []).join(" ").toLowerCase();
+      let score = 0;
+      if (name === q) score += 100; // exact-name → luôn lên đầu
+      if (absorbed.split(" ").includes(q)) score += 95;
+      if (subParts.split(" ").includes(q)) score += 90; // exact sub-part name → its parent, near the top
+      for (const t of terms) {
+        if (name.includes(t)) score += 5;
+        if (absorbed.includes(t)) score += 5;
+        if (subParts.includes(t)) score += 4;
+        if (tagline.includes(t)) score += 3;
+        if (useCases.includes(t)) score += 2;
+        if (usage.includes(t)) score += 1;
+        if (related.includes(t)) score += 1;
+        if (c.group.includes(t)) score += 1;
+        if (props.some((p) => p.includes(t))) score += 1;
+      }
+      return { c, score };
+    })
     .filter((m) => m.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 12);
@@ -1481,14 +1514,33 @@ function searchComponents(query: string): string {
    * not have `cn` sitting between two of them.
    */
   const utilityMatches = searchUtilities(query);
+  // The lab tier is out of the default context, not out of reach: a query that only a lab entry
+  // answers must still say so, or "no match" reads as "build it yourself".
+  const labHits =
+    tier === "core"
+      ? componentsInTier(COMPONENTS, "lab").filter((c) =>
+          terms.some(
+            (t) =>
+              c.name.toLowerCase().includes(t) ||
+              c.tagline.toLowerCase().includes(t) ||
+              (c.absorbed ?? []).join(" ").toLowerCase().includes(t),
+          ),
+        )
+      : [];
+  const labHint = labHits.length
+    ? `\n_Also in the opt-in \`@godxjp/ui/lab\` tier (not in the default context): ${labHits
+        .map((c) => `**${c.name}**`)
+        .join(", ")} — pass tier="lab" to search it, or \`get_component\` by name._\n`
+    : "";
   if (!matches.length && !utilityMatches.length)
-    return `No matches for "${query}". Try \`list_primitives\`, \`list_utilities\`, or a broader term (e.g. a use-case word like "date", "select", "confirm").`;
+    return `No matches for "${query}". Try \`list_primitives\`, \`list_utilities\`, or a broader term (e.g. a use-case word like "date", "select", "confirm").${labHint}`;
   let out = `# Search "${query}" — ${matches.length} component match${matches.length === 1 ? "" : "es"}`;
   out += utilityMatches.length
     ? `, ${utilityMatches.length} utility match${utilityMatches.length === 1 ? "" : "es"}\n\n`
     : `\n\n`;
   for (const { c, score } of matches)
     out += `- **${c.name}** (${c.group}, ${score}) — ${c.tagline}\n`;
+  out += labHint;
   if (matches.some(({ c }) => c.group === "data-entry")) out += `\n${FORM_RULES}`;
   if (utilityMatches.length) {
     out += `\n## Utilities — not components, no props\n\n`;

@@ -426,7 +426,7 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
     description:
-      "AuthShell named flow geometry — default | login (stable SCR-001 identity/card/footer anchor) | registration (360px SCR-002 sign-up measure, start-aligned long-form scroll, own footer clearance, 15px mobile gutter) | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile) | account-recovery (432px SCR-008 recovery/MFA panel, 15px mobile gutter)",
+      "CenteredShell variant=auth named flow geometry (the former AuthShell) — default | login (stable SCR-001 identity/card/footer anchor) | registration (360px SCR-002 sign-up measure, start-aligned long-form scroll, own footer clearance, 15px mobile gutter) | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile) | account-recovery (432px SCR-008 recovery/MFA panel, 15px mobile gutter)",
   },
   GapProp: {
     file: "vocabulary/layout.prop.ts",
@@ -461,11 +461,11 @@ export const VOCABULARY_REGISTRY = {
     description:
       "AppSettingPicker trigger presentation: labeled (icon + value) | icon (square icon-only topbar trigger) | inline (compact text footer trigger)",
   },
-  AppSettingToggleAppearanceProp: {
+  AppSettingCycleAppearanceProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
     description:
-      "AppSettingToggle box: bar (default — a full-height CELL of the bar, TopbarItem shape) | icon (square --control-height ghost button for anywhere that is not a bar)",
+      "AppSettingPicker menu={false} box: bar (default — a full-height CELL of the bar, TopbarItem shape) | icon (square --control-height ghost button for anywhere that is not a bar)",
   },
   ShapeProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -528,12 +528,6 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description:
       "antd Typography `type` — secondary | success | warning | danger. The narrower spelling of TextToneProp, accepted alongside it; `tone` wins when both are passed (secondary → muted, danger → destructive)",
-  },
-  TitleLevelProp: {
-    file: "vocabulary/interaction.prop.ts",
-    category: "interaction",
-    description:
-      "antd Typography.Title `level` — 1..5. Wider than HeadingLevelProp (1..4) because antd has a fifth step; level 5 reads --heading-h5, bound to the existing --font-size-2xs step",
   },
   TypographyCopyConfigProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -786,7 +780,9 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/app.prop.ts",
     vocabulary: ["ChildrenProp", "ClassNameProp", "IdProp"],
   },
-  AppSettingPickerProp: {
+  /** Union alias: `AppSettingPickerMenuProp | AppSettingPickerCycleProp`, discriminated by `menu`. */
+  AppSettingPickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: [] },
+  AppSettingPickerMenuProp: {
     group: "app",
     file: "components/app.prop.ts",
     vocabulary: [
@@ -802,9 +798,15 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "Trigger DENSITY for the picker only (sm control tier + content-hugging width) — orthogonal to `appearance`, and not the page-level DensityProp scope.",
       },
+      {
+        field: "menu",
+        local: true,
+        reason:
+          "AppSettingPicker presentation discriminant — true (default) is the open-then-choose menu.",
+      },
     ],
   },
-  AppSettingToggleProp: {
+  AppSettingPickerCycleProp: {
     group: "app",
     file: "components/app.prop.ts",
     vocabulary: [
@@ -813,7 +815,13 @@ export const COMPONENT_PROP_REGISTRY = {
       "DisabledProp",
       "IdProp",
       "ClassNameProp",
-      "AppSettingToggleAppearanceProp",
+      "AppSettingCycleAppearanceProp",
+      {
+        field: "menu",
+        local: true,
+        reason:
+          "AppSettingPicker presentation discriminant — false is the one-tap cycler (the former AppSettingToggle, v32 #1223).",
+      },
     ],
   },
   PageContainerHeaderLayoutProp: {
@@ -941,27 +949,19 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           'The CENTRED, CAPPED column (narrow | medium | wide), backed by --page-measure-* — the inner half of "full-bleed outside, measured column inside" (gh#839). Same word and same three token steps as PageContainer `measure`, on the primitive a full-bleed <section> can actually use: PageContainer owns page padding and a header scaffold, which is why measure="wide" was refused there, and the refusal left the centred column with no owner at all — three showcases hand-wrote the same four declarations. It adds NO gutter (that is `pad`), and an explicit `width` wins over it.',
       },
-    ],
-  },
-  SpaceCompactProp: {
-    group: "layout",
-    file: "components/layout.prop.ts",
-    vocabulary: [
-      "OrientationProp",
       {
-        field: "vertical",
+        field: "attached",
         local: true,
-        reason: 'antd\'s boolean spelling of orientation="vertical"; orientation wins over it.',
+        reason:
+          "antd Space.Compact as a Flex axis (v32 #1223 folded SpaceCompact in): children welded into one control, inner radii zeroed, shared border collapsed.",
       },
       {
         field: "fullWidth",
         local: true,
         reason:
-          "antd Space.Compact `block`, renamed to match the existing Button.block → fullWidth rename (same axis, same word everywhere it appears).",
+          "`attached` only — antd Space.Compact `block`, renamed to match Button.block → fullWidth (same axis, same word).",
       },
       "DensityProp",
-      "IdProp",
-      "ClassNameProp",
     ],
   },
   ResponsiveGridFlowProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
@@ -1195,7 +1195,7 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
-  AuthShellProp: {
+  CenteredShellAuthProp: {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
@@ -1204,7 +1204,8 @@ export const COMPONENT_PROP_REGISTRY = {
       {
         field: "variant",
         local: true,
-        reason: "Auth-shell geometry preset; canonical selects the shared DXS token contract.",
+        reason:
+          "CenteredShell shape discriminant; auth-canonical selects the shared DXS token contract.",
       },
       {
         field: "density",
@@ -1339,7 +1340,9 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: ["DisabledProp", "ClassNameProp"],
     local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction"],
   },
-  CenteredShellProp: {
+  /** Union alias: `CenteredShellPageProp | CenteredShellAuthProp`, discriminated by `variant`. */
+  CenteredShellProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  CenteredShellPageProp: {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
@@ -1348,6 +1351,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "CenteredShellWidthProp",
       "CenteredShellAlignProp",
       "CenteredShellPresetProp",
+      {
+        field: "variant",
+        local: true,
+        reason: "CenteredShell shape discriminant; page is the authenticated centred column.",
+      },
     ],
   },
   ErrorSurfaceMaintenanceProp: {
@@ -1936,20 +1944,6 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
-  TypographyProp: {
-    group: "general",
-    file: "components/general.prop.ts",
-    vocabulary: [
-      "ClassNameProp",
-      "ChildrenProp",
-      {
-        field: "component",
-        local: true,
-        reason:
-          "antd `component` — the rendered element. An ALIAS of `as`, kept so antd code pastes in unchanged; `as` wins when both are passed.",
-      },
-    ],
-  },
   TypographyBlockProp: {
     group: "general",
     file: "components/general.prop.ts",
@@ -1961,23 +1955,6 @@ export const COMPONENT_PROP_REGISTRY = {
       "TypographyEllipsisConfigProp",
       "DisabledProp",
     ],
-  },
-  TypographyTitleProp: {
-    group: "general",
-    file: "components/general.prop.ts",
-    vocabulary: [
-      "TitleLevelProp",
-      "TextToneProp",
-      "TextAlignProp",
-      "FontWeightProp",
-      "TypographyEllipsisConfigProp",
-      "ClassNameProp",
-    ],
-  },
-  ParagraphProp: {
-    group: "general",
-    file: "components/general.prop.ts",
-    vocabulary: ["TypographyEllipsisConfigProp", "TextToneProp", "TextSizeProp", "ClassNameProp"],
   },
   LinkProp: {
     group: "general",
@@ -3134,22 +3111,13 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/feedback.prop.ts",
     vocabulary: [
       "AlertVariantProp",
+      "CalloutKindProp",
       "ToneProp",
       "IconProp",
       "OnValueChangeProp",
       "ClassNameProp",
       "ChildrenProp",
     ],
-  },
-  BannerProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["ToneProp", "IconProp", "OnValueChangeProp", "ClassNameProp", "ChildrenProp"],
-  },
-  CalloutProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["CalloutKindProp", "ToneProp", "IconProp", "ClassNameProp", "ChildrenProp"],
   },
   AlertTitleProp: {
     group: "feedback",
@@ -3178,16 +3146,6 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/feedback.prop.ts",
     vocabulary: ["ClassNameProp", "ChildrenProp"],
   },
-  SkeletonAvatarProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["SizeProp", "ClassNameProp"],
-  },
-  SkeletonButtonProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["SizeProp", "ShapeProp", "ClassNameProp"],
-  },
   SkeletonFormProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",
@@ -3198,15 +3156,10 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/feedback.prop.ts",
     vocabulary: ["SizeProp", "ClassNameProp"],
   },
-  SkeletonNodeProp: {
+  SkeletonArticleAvatarProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",
-    vocabulary: ["ChildrenProp", "ClassNameProp"],
-  },
-  SkeletonImageProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["ClassNameProp"],
+    vocabulary: ["SizeProp", "AvatarShapeProp"],
   },
   SkeletonArticleProp: {
     group: "feedback",
@@ -3478,7 +3431,7 @@ export const COMPONENT_PROP_REGISTRY = {
   // prop-vocabulary guard governs them too (their fields are mostly Radix/native passthroughs).
   ToggleProp: {
     group: "data-entry",
-    file: "components/ui/toggle.tsx",
+    file: "components/data-entry/toggle.tsx",
     vocabulary: [
       "SizeProp",
       // The control `ShapeProp` verbatim — same three values, same two radius tokens as Button and
@@ -3501,7 +3454,7 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   ToggleGroupProp: {
     group: "data-entry",
-    file: "components/ui/toggle-group.tsx",
+    file: "components/data-entry/toggle-group.tsx",
     vocabulary: [
       "ValueProp",
       "DefaultValueProp",
@@ -3526,7 +3479,7 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   ToggleGroupItemProp: {
     group: "data-entry",
-    file: "components/ui/toggle-group.tsx",
+    file: "components/data-entry/toggle-group.tsx",
     vocabulary: [
       "SizeProp",
       // Reaches the item through the group's context, exactly as `variant`/`size` do (gh#734).
@@ -3557,12 +3510,12 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   RatingProp: {
     group: "data-entry",
-    file: "components/ui/rating.tsx",
+    file: "components/data-entry/rating.tsx",
     vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
   },
   SegmentedProp: {
     group: "data-entry",
-    file: "components/ui/segmented.tsx",
+    file: "components/data-entry/segmented.tsx",
     vocabulary: [
       "ValueProp",
       "DefaultValueProp",
@@ -3573,30 +3526,14 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
-  TagInputProp: {
-    group: "data-entry",
-    file: "components/ui/tag-input.tsx",
-    vocabulary: [
-      "ValueProp",
-      "OnValueChangeProp",
-      "PlaceholderProp",
-      "IdProp",
-      "ClassNameProp",
-      "ControlStatusProp",
-      "ControlVariantProp",
-      "SizeProp",
-      "MaxTagCountProp",
-      "MaxTagPlaceholderProp",
-    ],
-  },
   PasswordInputProp: {
     group: "data-entry",
-    file: "components/ui/password-input.tsx",
+    file: "components/data-entry/password-input.tsx",
     vocabulary: ["ClassNameProp"],
   },
   PasswordVisibilityToggleProp: {
     group: "data-entry",
-    file: "components/ui/password-input.tsx",
+    file: "components/data-entry/password-input.tsx",
     vocabulary: [],
   },
   PasswordStrengthProp: {
@@ -3801,25 +3738,6 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "Optional close/move strings for embeds that cannot mount AppProvider without restyling the host page (gh#606).",
       },
-    ],
-  },
-  ThumbnailSizeProp: {
-    group: "data-display",
-    file: "components/data-display.prop.ts",
-    vocabulary: ["SizeProp"],
-  },
-  ThumbnailProp: {
-    group: "data-display",
-    file: "components/data-display.prop.ts",
-    vocabulary: [
-      "SizeProp",
-      "ClassNameProp",
-      {
-        field: "alt",
-        local: true,
-        reason: "The native img alt contract, made required so it cannot be forgotten.",
-      },
-      { field: "src", local: true, reason: "The native img src attribute." },
     ],
   },
   CodeBlockProp: {
@@ -4384,7 +4302,7 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   RangeTimelineProp: {
     group: "data-display",
-    file: "components/data-display/range-timeline.tsx",
+    file: "lab/range-timeline.tsx",
     vocabulary: [
       "LabelProp",
       // The CANONICAL three-step axis, the same type DataTable takes — not a local subset. It

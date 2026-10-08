@@ -1,5 +1,5 @@
 /*
- * ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`).
+ * ORG CHART — boxes joined by lines, top-down (`src/lab/org-chart.tsx`).
  *
  * Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet
  * reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline

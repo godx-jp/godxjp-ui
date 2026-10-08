@@ -8,13 +8,13 @@ import {
   CardHeader,
   CardTitle,
   Timeline,
-  RangeTimeline,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
 import { Switch } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { ArrowRightLeft, MessageSquare } from "lucide-react";
+import { RangeTimeline } from "@godxjp/ui/lab";
 
 /**
  * Timeline — vertical event list with an icon rail; the current item gets a

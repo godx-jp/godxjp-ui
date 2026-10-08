@@ -1,0 +1,45 @@
+{
+  "name": "@godxjp/chat",
+  "version": "31.31.8",
+  "description": "Conversational UI for GoDX apps on @godxjp/ui: message bubbles and lists, the composer with slash / mention suggestions, the conversation list, thought chains, the welcome block, attachments and the message action bar — IME-safe, ja / en / vi.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godx-jp/godxjp-ui.git",
+    "directory": "packages/chat"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "lucide-react": "^1.37.0"
+  },
+  "peerDependencies": {
+    "@godxjp/ui": "~31.31.8",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
+  },
+  "keywords": [
+    "chat",
+    "conversation",
+    "ai",
+    "godxjp"
+  ]
+}

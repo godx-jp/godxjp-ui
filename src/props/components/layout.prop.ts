@@ -398,57 +398,25 @@ export type FlexProp = React.HTMLAttributes<HTMLElement> & {
    * geometry; a Flex that is a row of controls has no business carrying it.
    */
   measure?: FlexMeasureProp;
-};
-
-/**
- * @see SpaceCompact — antd `Space.Compact`, a row of controls welded into one visual unit: the
- * inner corner radii are zeroed and the shared border is collapsed so two boxes read as one,
- * while each child keeps its own focus ring and its own `size`.
- *
- * ## Deviations from `antd/es/space/Compact.d.ts` (read at `@ant-design/x` install time, not
- * from memory — see the PR for the exact checkout), each written down per `DESIGN-AUTHORITY.md`
- *
- * - **No `Space`.** antd's `Space.Compact` is a static member of `Space`; this library has no
- *   `Space` at all, and does not gain one here — `Space`'s only other job (gaps between siblings)
- *   already lives on `Flex`/`ResponsiveGrid` `gap`, so a `Space` built only to host `.Compact`
- *   would duplicate that primitive for nothing (`docs/roadmap/parity-audit-layout-navigation-
- *   general.md` §4.2 marks bare `Space` a composition, not a gap). `SpaceCompact` ships standalone
- *   — the same flat-export shape as `CheckboxGroup`/`ToggleGroup`/`SearchSelect`/`TagInput`, not a
- *   `Space.Compact` dotted member.
- * - **`size` → `density`, not forwarded.** antd's `size?: SizeType` (`small|middle|large`) is the
- *   `ConfigProvider` ambient-size cascade (`SpaceCompactItemContext`/`useCompactItemContext`,
- *   read by antd's own `Input`/`Select`/`Button`) — the exact capability this library already
- *   owns under `density` (`compact|default|comfortable`, `docs/DESIGN-AUTHORITY.md` "A capability
- *   this library already has keeps its own name"). `density` scopes `--scaling` to this row via
- *   `.ui-density-*` (the same class `Form.density`/`FormRoot.density` already emit), and each
- *   child keeps its OWN `size` (`SizeProp`) exactly as it does anywhere else — a second axis
- *   would be the duplicate spelling `check:prop-vocabulary` exists to prevent.
- * - **`direction` not ported, only `orientation`.** The installed `SpaceCompactProps.direction` is
- *   itself `@deprecated please use \`orientation\` instead`; only the current, non-deprecated name
- *   is carried, reusing the vocabulary `OrientationProp` already shared by `Separator`/`Steps`/
- *   `RadioGroup`/`Toolbar` rather than a second `"horizontal" | "vertical"` spelling.
- * - **`block` → `fullWidth`.** Same rename already applied to `Button.block`
- *   (`ButtonProp.fullWidth`) for the same reason — "this library's controlled vocabulary wins on
- *   values" — so one word means the same thing on both components.
- * - **No `prefixCls`/`rootClassName`.** Plumbing for antd's `prefixCls`-rooted styling system,
- *   which this library does not have; every component here takes one `className`.
- */
-export type SpaceCompactProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
-  /** The controls to weld into one row — antd `Space.Compact` children. */
-  children?: ChildrenProp;
-  /** Layout axis. Default `horizontal` (antd `orientation`, `direction` deprecated upstream). */
-  orientation?: OrientationProp;
-  /** antd's boolean spelling of `orientation="vertical"`. `orientation` wins when both are set. */
-  vertical?: boolean;
   /**
-   * Row fills its parent's inline size (antd `block`, renamed to match `Button.fullWidth`). Field
-   * children grow to fill it; a Button (any non-field child) keeps its content width (gh#1062).
+   * WELD the children into one control — antd `Space.Compact` (v32 #1223 folded `SpaceCompact`
+   * in here). Each child gets a flex-item wrapper of its own, the inner corner radii are zeroed and
+   * the shared border collapses into one seam, while every child keeps its own focus ring, name
+   * and `size`. `direction` picks the axis (`"row"` default, `"col"`; a responsive object reads
+   * its `base`); `gap`, `wrap`, `pad` and the other layout knobs do not apply — a seam has no gap.
+   *
+   * The corner zeroing covers the INLINE seam only: the Input and trigger families expose
+   * inline-start/-end radius knobs and no block-axis pair yet, so a `"col"` stack collapses its
+   * shared border but each child keeps its own four corners.
+   */
+  attached?: boolean;
+  /**
+   * `attached` only: the joined row fills its parent's inline size (antd `block`). Field children
+   * grow to fill it; a Button (any non-field child) keeps its content width (gh#1062).
    */
   fullWidth?: boolean;
-  /** Scoped control density for the whole row (antd `Space.Compact` `size`). */
+  /** `attached` only: scoped control density for the whole joined row (antd `size`). */
   density?: DensityProp;
-  id?: IdProp;
-  className?: ClassNameProp;
 };
 
 /** Container column counts; omitted steps inherit from the previous step. Base defaults to 1. */
@@ -664,14 +632,22 @@ export type AppShellProp = {
 };
 
 /**
- * @see AuthShell — centred auth/login page shell (login · mfa · passkey · device · reset). A
+ * @see CenteredShell `variant="auth" | "auth-canonical"` — the centred auth/login page shell
+ * (login · mfa · passkey · device · reset; the former `AuthShell`, folded in by v32 #1223). A
  * top brand bar, a centred `main` that holds the auth `Card`, and an optional footer, over a
  * `min-h-dvh` surface. The shell scopes `--control-height` to the comfortable tier (44px, the WCAG
  * touch floor) and bumps the auth heading size so forms read at the right density — replacing
  * consumers' hand-rolled `.auth-shell-*` / `.ui-auth-scope` classes. Motion is delegated to
  * `Reveal` (wrap the card) so `prefers-reduced-motion` is honoured at one place.
  */
-export type AuthShellProp = {
+export type CenteredShellAuthProp = {
+  /**
+   * `"auth"` is the unauthenticated root (login/mfa/reset): a brand bar, a vertically centred auth
+   * card, an optional footer. `"auth-canonical"` is the same shell on the shared DXS compact
+   * geometry (36px controls, 22.5rem card measure, responsive page insets) through component
+   * tokens — what `AuthShell variant="canonical"` was.
+   */
+  variant: "auth" | "auth-canonical";
   /** Centred content — typically a single auth `<Card>` with the form. */
   children: ReactNode;
   /** Brand bar slot pinned to the top (e.g. a `<Logo>` / product mark). */
@@ -685,11 +661,6 @@ export type AuthShellProp = {
   actions?: ActionProp;
   /** Footer slot pinned to the bottom (legal links, locale switch, support). */
   footer?: ReactNode;
-  /**
-   * Visual contract for the auth surface. `"canonical"` applies the shared DXS compact geometry
-   * (36px controls, 22.5rem card measure, and responsive page insets) through component tokens.
-   */
-  variant?: "default" | "canonical";
   /**
    * Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the
    * auth card's max-width plus the desktop and mobile page gutters, all owned by component tokens
@@ -963,7 +934,12 @@ export type AuthAccountSummaryProp = {
  * account page needs ZERO custom CSS and never hand-rolls a bar (the `.ui-topbar` zero-inset
  * footgun). Layout-only; delegate motion to `Reveal`.
  */
-export type CenteredShellProp = {
+export type CenteredShellPageProp = {
+  /**
+   * `"page"` (default): the authenticated, no-sidebar, centred-column page. `"auth"` /
+   * `"auth-canonical"` switch to the unauthenticated auth shell ({@link CenteredShellAuthProp}).
+   */
+  variant?: "page";
   /** Centred column content — page sections (identity hero, org picker, service grid, team list). */
   children: ReactNode;
   /**
@@ -991,6 +967,14 @@ export type CenteredShellProp = {
   preset?: CenteredShellPresetProp;
   className?: ClassNameProp;
 };
+
+/**
+ * @see CenteredShell — ONE centred root shell in two shapes (v32 #1223): the authenticated
+ * centred-column page (`variant="page"`, default) and the unauthenticated auth shell
+ * (`variant="auth" | "auth-canonical"`, the former `AuthShell`). The variant decides which props
+ * apply, so a page-only prop on an auth shell (or the reverse) is a type error.
+ */
+export type CenteredShellProp = CenteredShellPageProp | CenteredShellAuthProp;
 
 /**
  * @see ErrorSurface — the optional maintenance / planned-outage timing slot (503, occasionally a
@@ -1486,7 +1470,7 @@ export type AppLauncherProp = {
    */
   responsive?: "auto" | "popover" | "sheet" | "fullscreen";
   /**
-   * The BOX the trigger takes — the same split `AppSettingToggle` draws, and for the same reason.
+   * The BOX the trigger takes — the same split `AppSettingPicker menu={false}` draws, and for the same reason.
    * `bar` (default) is a `TopbarItem`: a cell as tall as the bar, whose hover is the bar's own
    * surface. `icon` is a square ghost `Button`, for chrome that is NOT a bar — a nav rail, a card
    * header, a toolbar. A `TopbarItem` outside a bar has nothing to bleed to: it stretches to a

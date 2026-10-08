@@ -45,9 +45,10 @@ src/styles/        CSS that styles components by [data-slot] + density.css (the 
 src/components/    React components, grouped (data-display, data-entry, layout, …)
 src/props/         Prop type system — vocabulary/ (atomic) + components/ + registry.ts
 src/lib/           cn(), control-styles, variants — shared helpers
-examples/          *.preview.tsx — Storybook-style stories (preview app)
-docs/primitives/   <component>/index.tsx demo + examples/ + generated .md
-preview/           The preview app (vite) on :6008 that renders examples + docs
+src/lab/           The opt-in @godxjp/ui/lab components (v32) — same gates as src/components
+packages/          Sibling packages versioned with the kit (markdown, editor, block-editor, chat)
+docs/<group>/      <component>.tsx demo, or <component>/index.tsx + examples/*.tsx for real screens
+preview/           The preview app (vite) on :6008 that renders docs/ (/isolate/<group>-<name>)
 ```
 
 **Token → utility flow:** a value is defined once as a CSS var in `tokens/foundation.css` (e.g. `--primary`), mapped to a Tailwind utility in the `@theme` block of `styles/index.css` (`--color-primary: hsl(var(--primary))`), and consumed as `bg-primary` / `hsl(var(--primary))`. Never skip a layer with a literal.
@@ -104,11 +105,15 @@ Document the decision (which promotion criteria it met) so review can check it �
 
 A change isn't done until its documentation reflects it:
 
-1. **Preview story** — `examples/<group>/<Component>.preview.tsx` (Storybook-style). New props get a story (see `examples/data-display/Card.preview.tsx`: Surfaces / Density / AccentEdges). 2. **Docs demo** — `docs/primitives/<group>/<component>/index.tsx` shows the new capability; `examples/` holds focused per-feature demos. 3. **Regenerate props docs** — `pnpm docs:sync-primitives` regenerates the `.md` from source. Run it after prop changes so the tables stay accurate.
+1. **Docs page** — `docs/<group>/<component>.tsx`, or `docs/<group>/<component>/index.tsx` with
+   focused per-feature screens in `docs/<group>/<component>/examples/*.tsx`. The preview serves each
+   at `/isolate/<group>-<component>`; new props get a demo there. 2. **Catalog** — the
+   `mcp/src/data/components.ts` entry, whose `storyPath` points at that page (relative to `docs/`)
+   and is checked to exist by `check:mcp-guidance`.
 
-> Docs are mid-migration to the `<component>/index.tsx (+ examples/)` shape. Do **not**
-> resurrect flat `docs/primitives/<component>.tsx` demos — they were dead orphans and
-> were removed.
+> There is no top-level `examples/` directory and no `docs/primitives/`: the Storybook-style
+> `*.preview.tsx` stories were removed, and `storyPath`s that still pointed at them were repointed
+> or dropped in v32 (#1223).
 
 ---
 
@@ -124,15 +129,15 @@ A change isn't done until its documentation reflects it:
 Every number below was measured on this repo, on an M-series Mac, warm. **Measure again before you
 believe them; a cost you assumed is how you end up optimising the wrong thing.**
 
-| command                    | cost            | scope                                      |
-| -------------------------- | --------------- | ------------------------------------------ |
-| `check:token-tiers`        | **0.2s**        | whole repo                                 |
-| `audit`                    | **0.5s**        | whole repo (~600 files)                    |
-| `typecheck:docs`           | **0.7s**        | whole `docs/` program                      |
-| `typecheck`                | **1.3s**        | whole `src/` program                       |
-| `build`                    | **1.5s**        | whole package                              |
-| `preview:build`            | **1.9s**        | whole preview                              |
-| `lint`                     | **12.9s**       | whole repo                                 |
+| command                    | cost                                                  | scope                                      |
+| -------------------------- | ----------------------------------------------------- | ------------------------------------------ |
+| `check:token-tiers`        | **0.2s**                                              | whole repo                                 |
+| `audit`                    | **0.5s**                                              | whole repo (~600 files)                    |
+| `typecheck:docs`           | **0.7s**                                              | whole `docs/` program                      |
+| `typecheck`                | **1.3s**                                              | whole `src/` program                       |
+| `build`                    | **1.5s**                                              | whole package                              |
+| `preview:build`            | **1.9s**                                              | whole preview                              |
+| `lint`                     | **12.9s**                                             | whole repo                                 |
 | **`check:frame-overflow`** | **52s** (was 339s before it was parallelised, gh#851) | **199 frames x 2 viewports, in a browser** |
 
 **The lesson is the opposite of the intuition.** "Typecheck the whole system" sounds wasteful and

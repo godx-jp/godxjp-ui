@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { render } from "@testing-library/react";
 
-import { Heading, Link, Paragraph, Text } from "../typography";
+import { Heading, Link, Text } from "../typography";
 
 /**
  * gh#826 — the display type ramp had four tokens and NO public API, so every marketing page wrote
@@ -120,12 +120,7 @@ describe("Heading — `size` overrides the ramp, `level` keeps the outline (gh#8
   });
 });
 
-describe("Paragraph / Link — the widened ladder reaches them too (gh#826)", () => {
-  it.each(DISPLAY_STEPS)("Paragraph size=%s emits the step", (size) => {
-    const { container } = render(<Paragraph size={size}>引用</Paragraph>);
-    expect(container.querySelector('[data-slot="text"]')).toHaveAttribute("data-size", size);
-  });
-
+describe("Link — the widened ladder reaches it too (gh#826)", () => {
   it.each(DISPLAY_STEPS)("Link size=%s emits the step and stays a link", (size) => {
     const { container } = render(
       <Link href="#x" size={size}>

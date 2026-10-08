@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
 
 /**
  * `ToggleGroup type="single"` — the emptiness rule DECIDES the role (gh#744).

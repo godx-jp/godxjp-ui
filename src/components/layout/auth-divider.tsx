@@ -1,5 +1,5 @@
 import { cn } from "../../lib/utils";
-import { Separator } from "../ui/separator";
+import { Separator } from "./separator";
 import type { AuthDividerProp } from "../../props/components/layout.prop";
 
 export type {

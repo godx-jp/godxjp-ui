@@ -62,9 +62,6 @@ import {
   TableHeader,
   TableRow,
   Timeline,
-  TimelineGrid,
-  type TimelineGridColumnProp,
-  type TimelineGridEventProp,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
 import { Calendar, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
@@ -84,6 +81,8 @@ import {
   Sidebar,
   type SidebarSectionProp,
 } from "@godxjp/ui/layout";
+import { TimelineGrid } from "@godxjp/ui/lab";
+import type { TimelineGridColumnProp, TimelineGridEventProp } from "@godxjp/ui/lab";
 
 // ── Shift-type palette ────────────────────────────────────────────────────────
 // The 7-color shift palette uses wa-iro DECORATIVE tokens (charts/tags/tenant) —

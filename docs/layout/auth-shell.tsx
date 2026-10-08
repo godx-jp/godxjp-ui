@@ -5,7 +5,7 @@ import {
   AuthDivider,
   AuthFooter,
   AuthIdentity,
-  AuthShell,
+  CenteredShell,
   AuthStack,
   Flex,
 } from "@godxjp/ui/layout";
@@ -29,7 +29,7 @@ export default function Demo() {
         : "Attendance is requesting sign in";
 
   return (
-    <AuthShell variant="canonical" preset="login">
+    <CenteredShell variant="auth-canonical" preset="login">
       <AuthIdentity title="Acme ID" requester={requester} />
       <Card>
         <CardContent solo>
@@ -54,6 +54,6 @@ export default function Demo() {
         </CardContent>
       </Card>
       <AuthFooter product="Acme ID" terms="利用規約" privacy="プライバシー" />
-    </AuthShell>
+    </CenteredShell>
   );
 }

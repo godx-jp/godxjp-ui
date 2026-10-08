@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { renderWithUi } from "@/test/render";
 import { ruleSelector } from "@/test/css-selector";
 import { AuthIdentity } from "../auth-identity";
-import { AuthShell } from "../auth-shell";
+import { CenteredShell } from "../centered-shell";
 import { Topbar } from "../topbar";
 
 /** Structural selectors in shell-layout.css against really rendered DOM. */
@@ -21,9 +21,9 @@ describe("shell-layout.css structural selectors select the rendered DOM", () => 
       '.ui-auth-shell[data-preset="login"] .ui-auth-requester > :last-child',
     );
     const { container } = renderWithUi(
-      <AuthShell preset="login" brand={<span>EXSELI</span>}>
+      <CenteredShell variant="auth" preset="login" brand={<span>EXSELI</span>}>
         <AuthIdentity title="ログイン" requester="very-long-requester@example.com" />
-      </AuthShell>,
+      </CenteredShell>,
     );
 
     const requester = container.querySelector(".ui-auth-requester")!;

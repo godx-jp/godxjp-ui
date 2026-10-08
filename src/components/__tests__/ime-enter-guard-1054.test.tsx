@@ -2,8 +2,6 @@ import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 
-import { ChatComposer } from "../data-entry/chat-composer";
-import { ChatSuggestion } from "../data-entry/chat-suggestion";
 import { CommandPalette } from "../data-entry/command-palette";
 import { DatePicker } from "../data-entry/date-picker";
 import { NumberInput } from "../data-entry/number-input";
@@ -111,60 +109,6 @@ describe.each(COMPOSING)("gh#1054 — a composing key is the IME's (%s)", (_labe
     fireEvent.keyDown(textarea, { key: "Enter" });
     fireEvent.keyUp(textarea, { key: "Enter" });
     expect(onChange).toHaveBeenCalledWith("新しい件名");
-  });
-
-  it("ChatSuggestion: Enter does not pick the active suggestion (nor send)", async () => {
-    const user = userEvent.setup();
-    const onValueChange = vi.fn();
-    const onSubmit = vi.fn();
-    function Harness() {
-      const [draft, setDraft] = React.useState("");
-      return (
-        <ChatSuggestion
-          items={[{ value: "summarize", label: "要約する" }]}
-          onValueChange={onValueChange}
-        >
-          {({ onTrigger, onKeyDown }) => (
-            <ChatComposer
-              aria-label="メッセージ"
-              value={draft}
-              onValueChange={(next) => {
-                setDraft(next);
-                onTrigger(next);
-              }}
-              onKeyDown={onKeyDown}
-              onSubmit={onSubmit}
-            />
-          )}
-        </ChatSuggestion>
-      );
-    }
-    renderWithUi(<Harness />);
-    const field = screen.getByRole("textbox", { name: "メッセージ" });
-    await user.type(field, "/");
-    await waitFor(() => expect(screen.getAllByRole("option")).toHaveLength(1));
-
-    fireEvent.keyDown(field, { key: "Enter", ...composing });
-    fireEvent.keyDown(field, { key: "Tab", ...composing });
-    expect(onValueChange).not.toHaveBeenCalled();
-    expect(onSubmit).not.toHaveBeenCalled();
-
-    fireEvent.keyDown(field, { key: "Enter" });
-    expect(onValueChange).toHaveBeenCalledWith("summarize");
-  });
-
-  it("ChatComposer: Enter does not send", () => {
-    const onSubmit = vi.fn();
-    renderWithUi(
-      <ChatComposer aria-label="メッセージ" defaultValue="日本語" onSubmit={onSubmit} />,
-    );
-    const field = screen.getByRole("textbox", { name: "メッセージ" });
-
-    fireEvent.keyDown(field, { key: "Enter", ...composing });
-    expect(onSubmit).not.toHaveBeenCalled();
-
-    fireEvent.keyDown(field, { key: "Enter" });
-    expect(onSubmit).toHaveBeenCalledWith("日本語");
   });
 
   it("NumberInput: Enter does not commit (clamp) the draft", () => {

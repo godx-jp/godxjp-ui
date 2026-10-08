@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-import { Heading, Link, Paragraph, Text, Title, Typography } from "../typography";
+import { Link, Text } from "../typography";
 
 /**
  * antd `Typography` parity — the surface that is NOT copy/edit/ellipsis (those have their own
@@ -78,52 +78,6 @@ describe("Typography — disabled", () => {
   });
 });
 
-describe("Title — antd Typography.Title", () => {
-  it("renders h1..h5 and sizes each from its own level token", () => {
-    for (const level of [1, 2, 3, 4, 5] as const) {
-      const { unmount } = render(<Title level={level}>請求サマリー</Title>);
-      const heading = screen.getByRole("heading", { level });
-      expect(heading.tagName).toBe(`H${level}`);
-      expect(heading).toHaveAttribute("data-level", String(level));
-      unmount();
-    }
-  });
-
-  it("defaults to level 1 — antd's default, not Heading's 2", () => {
-    render(<Title>見出し</Title>);
-    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
-  });
-
-  it("falls back to h1 for a level outside 1..5, the way antd does", () => {
-    // A runtime value from an API must not produce `<h7>`, which the browser treats as an unknown
-    // inline element with no heading semantics at all.
-    render(<Title level={7 as never}>壊れたレベル</Title>);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveAttribute("data-level", "1");
-  });
-
-  it("leaves Heading untouched — four levels, level 2 default, no antd behaviour", () => {
-    // The backward-compatibility contract: Heading is this library's own and did not move.
-    render(<Heading>既存の見出し</Heading>);
-    const heading = screen.getByRole("heading", { level: 2 });
-    expect(heading).toHaveAttribute("data-slot", "heading");
-    expect(heading).not.toHaveAttribute("data-ellipsis");
-  });
-});
-
-describe("Paragraph — antd Typography.Paragraph", () => {
-  it("renders a <div>, because an editor and an action cluster are block content", () => {
-    // antd's own choice. A <p> may not legally contain a <div>, and the parser would split it —
-    // the actions would end up OUTSIDE the paragraph they belong to.
-    const { container } = render(<Paragraph>段落</Paragraph>);
-    expect(container.querySelector("div[data-slot='text']")).toHaveTextContent("段落");
-  });
-
-  it("still renders a <p> when the content is known to be phrasing-only", () => {
-    const { container } = render(<Paragraph as="p">段落</Paragraph>);
-    expect(container.querySelector("p")).toHaveTextContent("段落");
-  });
-});
-
 describe("Link — antd Typography.Link", () => {
   it("renders an anchor that already carries the link affordance", () => {
     render(<Link href="/issues/PKG-1">ログイン画面の余白</Link>);
@@ -150,26 +104,5 @@ describe("Link — antd Typography.Link", () => {
       </Link>,
     );
     expect(screen.getByRole("link")).toHaveAttribute("rel", "external");
-  });
-});
-
-describe("Typography — the compound export", () => {
-  it("hangs the family off the root so an antd paste compiles unchanged", () => {
-    expect(Typography.Text).toBe(Text);
-    expect(Typography.Title).toBe(Title);
-    expect(Typography.Paragraph).toBe(Paragraph);
-    expect(Typography.Link).toBe(Link);
-  });
-
-  it("renders an <article> wrapper carrying no emphasis of its own", () => {
-    const { container } = render(<Typography>本文</Typography>);
-    const root = container.querySelector('[data-slot="typography"]');
-    expect(root?.tagName).toBe("ARTICLE");
-    expect(root).not.toHaveAttribute("data-tone");
-  });
-
-  it("takes antd's private `component` as an alias for `as`", () => {
-    const { container } = render(<Typography component="section">本文</Typography>);
-    expect(container.querySelector('[data-slot="typography"]')?.tagName).toBe("SECTION");
   });
 });

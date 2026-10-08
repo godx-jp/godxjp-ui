@@ -5,8 +5,6 @@ export type {
   BreadcrumbItem,
   BreadcrumbItemProp,
 } from "./page-container";
-export { PageCover } from "./page-cover";
-export type { PageCoverProp, PageCoverProps } from "./page-cover";
 export { Flex } from "./flex";
 export type {
   FlexAlignProp,
@@ -15,8 +13,6 @@ export type {
   FlexProp,
   FlexProps,
 } from "./flex";
-export { SpaceCompact } from "./space-compact";
-export type { SpaceCompactProp, SpaceCompactProps } from "./space-compact";
 export { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "./resizable";
 export { NavList } from "./nav-list";
 export type { NavListProp, NavListProps } from "./nav-list";
@@ -37,8 +33,6 @@ export type {
   OrgSwitcherProp,
   OrgSwitcherProps,
 } from "./org-switcher";
-export { AuthShell } from "./auth-shell";
-export type { AuthShellProp, AuthShellProps } from "./auth-shell";
 export type { AuthShellPresetProp } from "../../props/vocabulary";
 export { AuthDivider } from "./auth-divider";
 export type { AuthDividerProp, AuthDividerProps } from "./auth-divider";
@@ -56,7 +50,12 @@ export { MobileShell } from "./mobile-shell";
 export type { MobileShellProp, MobileShellProps } from "./mobile-shell";
 export type { MobileShellHeightProp } from "../../props/vocabulary";
 export { CenteredShell } from "./centered-shell";
-export type { CenteredShellProp, CenteredShellProps } from "./centered-shell";
+export type {
+  CenteredShellProp,
+  CenteredShellProps,
+  CenteredShellAuthProp,
+  CenteredShellPageProp,
+} from "./centered-shell";
 export type { CenteredShellWidthProp, CenteredShellAlignProp } from "../../props/vocabulary";
 export { ErrorSurface } from "./error-surface";
 export type {
@@ -89,25 +88,9 @@ export { MasterDetail } from "./master-detail";
 export type { MasterDetailProps } from "./master-detail";
 export { SplitPane } from "./split-pane";
 export type { SplitPaneProps } from "./split-pane";
-export { DraggablePanel } from "./draggable-panel";
-export type {
-  DraggablePanelProp,
-  DraggablePanelProps,
-  DraggablePanelPlacementProp,
-  DraggablePanelPositionProp,
-  DraggablePanelLabels,
-  DragAxisProp,
-  DragBoundsProp,
-} from "./draggable-panel";
 export { Separator } from "./separator";
 export type { SeparatorProp, SeparatorProps } from "./separator";
 export { AspectRatio } from "./aspect-ratio";
-export { LegalDocumentShell } from "./legal-document-shell";
-export type {
-  LegalDocumentSectionProp,
-  LegalDocumentShellProp,
-  LegalDocumentShellProps,
-} from "./legal-document-shell";
 export { ServiceRolePanel } from "./service-role-panel";
 export type {
   ServiceRoleItemProp,
@@ -116,14 +99,5 @@ export type {
 } from "./service-role-panel";
 
 export { useAppShellNavigationMode } from "./app-shell";
-export { Masonry } from "./masonry";
-export type {
-  MasonryColumnsProp,
-  MasonryGapProp,
-  MasonryItemProp,
-  MasonryLayoutEntryProp,
-  MasonryProp,
-  MasonryProps,
-} from "./masonry";
 export { Affix } from "./affix";
 export type { AffixProp, AffixProps, AffixTargetProp } from "./affix";

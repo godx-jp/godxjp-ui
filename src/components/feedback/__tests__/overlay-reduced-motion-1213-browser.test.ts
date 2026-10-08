@@ -19,7 +19,7 @@ import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./src/components/navigation";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./src/components/feedback";
-import { HoverCard, HoverCardTrigger, HoverCardContent, Popover, PopoverTrigger, PopoverContent } from "./src/components/data-display";
+import { Popover, PopoverTrigger, PopoverContent } from "./src/components/data-display";
 import { Button } from "./src/components/general";
 function App() {
   const kind = new URLSearchParams(location.search).get("kind");
@@ -35,7 +35,7 @@ function App() {
         ) : kind === "tooltip" ? (
           <Tooltip open={open} onOpenChange={setOpen}><TooltipTrigger asChild>{trigger}</TooltipTrigger><TooltipContent>Tip</TooltipContent></Tooltip>
         ) : kind === "hover-card" ? (
-          <HoverCard open={open} onOpenChange={setOpen}><HoverCardTrigger asChild>{trigger}</HoverCardTrigger><HoverCardContent>Card</HoverCardContent></HoverCard>
+          <Popover openOn="hover" open={open} onOpenChange={setOpen}><PopoverTrigger asChild>{trigger}</PopoverTrigger><PopoverContent>Card</PopoverContent></Popover>
         ) : (
           <Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild>{trigger}</PopoverTrigger><PopoverContent>Panel</PopoverContent></Popover>
         )}

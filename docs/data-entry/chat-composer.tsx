@@ -10,13 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import {
-  ChatComposer,
-  ChatSuggestion,
-  FormField,
-  Select,
-  type ChatSuggestionItemProp,
-} from "@godxjp/ui/data-entry";
+import { FormField, Select } from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { isApplePlatform } from "@godxjp/ui/lib/utils";
@@ -30,6 +24,8 @@ import {
   Topbar,
 } from "@godxjp/ui/layout";
 import { Bot, MessageSquare, Paperclip, Settings, Smile, Sparkles, Users } from "lucide-react";
+import { ChatComposer, ChatSuggestion } from "@godxjp/chat";
+import type { ChatSuggestionItemProp } from "@godxjp/chat";
 
 /**
  * ChatComposer — the message input of a conversation, and ChatSuggestion, the trigger-character

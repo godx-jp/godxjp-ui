@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { ChatBubbleList, type ChatMessageProp } from "@godxjp/ui/data-display";
-import { ChatComposer } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import {
   AppShell,
@@ -12,8 +10,9 @@ import {
   type SidebarSectionProp,
   Topbar,
 } from "@godxjp/ui/layout";
-import { Conversations, type ConversationsEntryProp } from "@godxjp/ui/navigation";
 import { Bot, MessageSquare, Pencil, Settings, Trash2, Users } from "lucide-react";
+import { ChatBubbleList, ChatComposer, Conversations } from "@godxjp/chat";
+import type { ChatMessageProp, ConversationsEntryProp } from "@godxjp/chat";
 
 /**
  * Conversations — the session rail of a chat surface (Ant Design X `Conversations`).

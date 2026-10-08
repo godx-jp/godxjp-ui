@@ -4,15 +4,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  StatCard,
+} from "@godxjp/ui/data-display";
+import { Flex, PageContainer } from "@godxjp/ui/layout";
+import {
   Carousel,
   CarouselContent,
   CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  StatCard,
-} from "@godxjp/ui/data-display";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
+} from "@godxjp/ui/lab";
 
 /**
  * Carousel — Embla-backed stepping list with prev/next controls.

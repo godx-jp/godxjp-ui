@@ -4,7 +4,7 @@
 import { describe, expect, it } from "vitest";
 
 import { renderWithUi, screen } from "@/test/render";
-import { FilterBar, FilterBarGroup } from "../filter-bar";
+import { FilterBar, FilterBarGroup } from "../toolbar";
 import { Select } from "../../data-entry/select";
 
 const OPTIONS = [
