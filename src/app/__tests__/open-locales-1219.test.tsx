@@ -109,16 +109,22 @@ describe("registerLocale with no date-fns pack — everything from Intl", () => 
   });
 
   it("the built-ins keep exactly what they had", () => {
-    expect([resolveDefaultDateFormat("vi"), resolveDefaultDateFormat("en")]).toEqual(["dmy", "mdy"]);
+    expect([resolveDefaultDateFormat("vi"), resolveDefaultDateFormat("en")]).toEqual([
+      "dmy",
+      "mdy",
+    ]);
     expect(resolveDefaultDateFormat("ja")).toBe("ymd");
-    expect([resolveDefaultTimeFormat("vi"), resolveDefaultTimeFormat("ja")]).toEqual(["24h", "24h"]);
+    expect([resolveDefaultTimeFormat("vi"), resolveDefaultTimeFormat("ja")]).toEqual([
+      "24h",
+      "24h",
+    ]);
     expect(resolveDefaultTimeFormat("en")).toBe("12h");
     expect(getLocaleDatePattern("vi")).toBe("dd/MM/yyyy");
     expect(getLocaleDatePattern("en")).toBe("MM/dd/yyyy");
     expect(getLocaleDatePattern("ja")).toBe("yyyy/MM/dd");
-    expect([getLocaleWeekStart("vi"), getLocaleWeekStart("en"), getLocaleWeekStart("ja")]).toEqual(
-      [1, 0, 0],
-    );
+    expect([getLocaleWeekStart("vi"), getLocaleWeekStart("en"), getLocaleWeekStart("ja")]).toEqual([
+      1, 0, 0,
+    ]);
   });
 
   it("falls back to the pack, then the region, when the engine has no getWeekInfo", () => {
@@ -211,7 +217,9 @@ describe("AppPreset precedence: prop > preset > neutral default", () => {
   const preset: AppPreset = { name: "acme", defaultLocale: "ja", timeZone: "Asia/Tokyo" };
   function Probe() {
     const { locale, timezone } = useAppContext();
-    return <span data-testid="probe">{`${locale}|${timezone}|${useAppPreset()?.name ?? "-"}`}</span>;
+    return (
+      <span data-testid="probe">{`${locale}|${timezone}|${useAppPreset()?.name ?? "-"}`}</span>
+    );
   }
   const probe = () => screen.getByTestId("probe").textContent;
 

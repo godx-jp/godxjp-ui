@@ -61,7 +61,11 @@ export function formatCalendarDate(
   if (!value) return EMPTY;
   const resolved = resolveOptions(options);
   const zoned = calendarDateToTZDate(value, resolved.timezone);
-  return formatTZDate(zoned, getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag), resolved);
+  return formatTZDate(
+    zoned,
+    getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag),
+    resolved,
+  );
 }
 
 /** Date-only from ISO instant or `yyyy-MM-dd` string — date part in app timezone. */
@@ -73,12 +77,20 @@ export function formatAppDate(
   if (typeof value === "string" && isDateOnlyString(value)) {
     const [year, month, day] = value.split("-").map(Number);
     const zoned = new TZDate(year, month - 1, day, resolved.timezone);
-    return formatTZDate(zoned, getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag), resolved);
+    return formatTZDate(
+      zoned,
+      getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag),
+      resolved,
+    );
   }
   const parsed = parseDateInput(value);
   if (!parsed) return EMPTY;
   const zoned = instantToTZDate(parsed, resolved.timezone);
-  return formatTZDate(zoned, getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag), resolved);
+  return formatTZDate(
+    zoned,
+    getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag),
+    resolved,
+  );
 }
 
 /** Date + time in app timezone. */

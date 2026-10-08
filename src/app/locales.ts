@@ -12,7 +12,6 @@ import {
   isBuiltInLocale,
   markLocaleRegistered,
   resolveDefaultLocale,
-  resolvePageLocale,
   resolveRegisteredLocale,
   warnUnknownLocale,
 } from "../i18n/locale-tags";
