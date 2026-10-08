@@ -84,7 +84,7 @@
     }
   ],
   "rules": [],
-  "storyPath": "data-entry/CommandPalette.stories.tsx",
+  "storyPath": "data-entry/command-palette.tsx",
   "tagline": "Searchable command dialog with controlled or uncontrolled open state and consumer-owned selection.",
   "usage": [
     "Provide localized labels and real command groups; the component does not fetch commands.",

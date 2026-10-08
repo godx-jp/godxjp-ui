@@ -74,7 +74,7 @@
     6,
     23
   ],
-  "storyPath": "data-entry/Segmented.stories.tsx",
+  "storyPath": "data-entry/segmented.tsx",
   "tagline": "One-of-N from a small, closed, always-visible set — the enterprise Segmented / filter bar drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
   "usage": [
     "DO use it for a closed set of 2-4 peer choices that are cheap to show — theme, view mode, a date range preset.",

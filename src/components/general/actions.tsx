@@ -1,28 +1,29 @@
 import * as React from "react";
 import { Check, Copy, MoreHorizontal, ThumbsDown, ThumbsUp, TriangleAlert } from "lucide-react";
 
-import { useTranslation } from "@godxjp/ui/i18n";
-import { cn } from "@godxjp/ui/lib/utils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@godxjp/ui/feedback";
+import { useTranslation } from "../../i18n/use-translation";
+import { cn } from "../../lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@godxjp/ui/navigation";
-import { Button } from "@godxjp/ui/general";
-import { VisuallyHidden } from "@godxjp/ui/general";
+} from "../navigation/dropdown-menu";
+import { Button } from "./button";
+import { VisuallyHidden } from "./visually-hidden";
 
 import type {
   ActionsCopyProp,
   ActionsFeedbackProp,
   ActionsItemProp,
   ActionsItemsProp,
-  ActionsBarProp as ActionsProp,
-} from "@godxjp/ui/props/components";
+  ActionsProp,
+} from "../../props/components/general.prop";
 
-export type { ActionsProp, ActionsProp as ActionsProps };
 export type {
+  ActionsProp,
+  ActionsProp as ActionsProps,
   ActionsItemsProp,
   ActionsItemProp,
   ActionsItemProp as ActionsItemProps,
@@ -33,7 +34,7 @@ export type {
   ActionsVariantProp,
   ActionsStatusProp,
   ActionsFeedbackValueProp,
-} from "@godxjp/ui/props/components";
+} from "../../props/components/general.prop";
 
 /**
  * Direction at the STRIP. An assistant answering in Arabic inside an otherwise LTR admin still

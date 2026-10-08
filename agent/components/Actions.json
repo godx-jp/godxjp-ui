@@ -1,6 +1,6 @@
 {
   "docPath": "general/actions.tsx",
-  "example": "import { Actions, ActionsCopy, ActionsFeedback } from \"@godxjp/ui/general\";\nimport { RefreshCw, Share2 } from \"lucide-react\";\n\n<Actions\n  label=\"回答の操作\"\n  items={[\n    { key: \"retry\", label: \"やり直す\", icon: <RefreshCw />, onItemClick: () => regenerate() },\n    {\n      key: \"more\",\n      label: \"その他\",\n      subItems: [{ key: \"share\", label: \"共有\", icon: <Share2 /> }],\n    },\n    { key: \"copy\", actionRender: <ActionsCopy text={answer} /> },\n    { key: \"feedback\", actionRender: <ActionsFeedback value={vote} onChange={setVote} /> },\n  ]}\n  onClick={({ key }) => run(key)}\n/>",
+  "example": "import { Actions, ActionsCopy, ActionsFeedback } from \"@godxjp/chat\";\nimport { RefreshCw, Share2 } from \"lucide-react\";\n\n<Actions\n  label=\"回答の操作\"\n  items={[\n    { key: \"retry\", label: \"やり直す\", icon: <RefreshCw />, onItemClick: () => regenerate() },\n    {\n      key: \"more\",\n      label: \"その他\",\n      subItems: [{ key: \"share\", label: \"共有\", icon: <Share2 /> }],\n    },\n    { key: \"copy\", actionRender: <ActionsCopy text={answer} /> },\n    { key: \"feedback\", actionRender: <ActionsFeedback value={vote} onChange={setVote} /> },\n  ]}\n  onClick={({ key }) => run(key)}\n/>",
   "group": "general",
   "importPath": "@godxjp/ui/general",
   "name": "Actions",
@@ -56,7 +56,7 @@
     44,
     45
   ],
-  "storyPath": "general/Actions.stories.tsx",
+  "storyPath": "general/actions.tsx",
   "subParts": [
     "ActionsItem",
     "ActionsCopy",

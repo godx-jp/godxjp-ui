@@ -192,3 +192,15 @@ describe("package.json files covers every docs path the consumer guidance reads"
     expect(isShipped("docs/TOKENS.md", ["docs/TOKENS.md"])).toBe(true);
   });
 });
+
+describe("subpathsMentioned reads file-like subpaths whole (v32)", () => {
+  it("keeps the extension of `styles/fonts.css` and drops a sentence-ending period", async () => {
+    // @ts-expect-error — plain .mjs script module, no types
+    const { subpathsMentioned } = await import("../../../scripts/check-agent-api-names.mjs");
+    expect(subpathsMentioned('@import "@godxjp/ui/styles/fonts.css";')).toEqual([
+      "./styles/fonts.css",
+    ]);
+    expect(subpathsMentioned("import from @godxjp/ui/themes/godx.")).toEqual(["./themes/godx"]);
+    expect(subpathsMentioned("see `@godxjp/ui/data-entry`")).toEqual(["./data-entry"]);
+  });
+});

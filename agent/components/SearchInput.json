@@ -83,7 +83,7 @@
   "rules": [
     23
   ],
-  "storyPath": "data-entry/SearchInput.stories.tsx",
+  "storyPath": "data-entry/search-input.tsx",
   "tagline": "Debounced search box with a clear button. Fires onSearch (NOT onChange) after the debounce. Controlled (value) or uncontrolled (defaultValue).",
   "usage": [
     "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",

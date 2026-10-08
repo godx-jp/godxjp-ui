@@ -42,14 +42,14 @@
     }
   ],
   "related": [
-    "AuthShell — pairs with Reveal for the auth card entrance; AuthShell delegates all motion to Reveal.",
+    "CenteredShell (auth shape) — pairs with Reveal for the auth card entrance; the auth shape delegates all motion to Reveal.",
     "Card — the most common thing to wrap in <Reveal> (dashboard cards, auth card, settings sections).",
     "ResponsiveGrid — combine with `<Reveal delay={n}>` (or `asChild`) per grid item for a staggered grid reveal.",
     "Carousel — wrap the WHOLE Carousel in one `<Reveal on=\"view\">`, never each CarouselItem: the rail clips its slides, so a per-slide observer never fires for the ones outside the window.",
     "ScrollArea — same rule as Carousel: reveal the scroller, not the children it clips."
   ],
   "rules": [],
-  "storyPath": "general/Reveal.stories.tsx",
+  "storyPath": "general/reveal.tsx",
   "tagline": "The official entrance-motion primitive (staggered fade-up) — reads DS motion tokens and honours prefers-reduced-motion, replacing hand-rolled @keyframes + .app-reveal/.d1..d6 classes.",
   "usage": [
     "DO use <Reveal> INSTEAD of hand-rolling `@keyframes auth-fade-up` + `.app-reveal` + `.d1..d6` in a consumer global.css — that repeats literal durations/delays and violates the tokens-only rule. Reveal reads `--duration-slow` / `--ease-emphasized` / `--reveal-distance` / `--reveal-stagger-step`.",
@@ -65,7 +65,7 @@
     "DO NOT set a raw ms delay or a literal translate distance — the whole point is that `delay` is a controlled ordinal and the distance/duration come from tokens."
   ],
   "useCases": [
-    "Auth card entrance: `<AuthShell><Reveal><Card/></Reveal></AuthShell>` — the sign-in card fades up on load, respecting reduced-motion.",
+    "Auth card entrance: `<CenteredShell variant=\"auth\"><Reveal><Card/></Reveal></CenteredShell>` — the sign-in card fades up on load, respecting reduced-motion.",
     "Staggered dashboard: map stat cards with `<Reveal delay={i + 1}>` so the row cascades in.",
     "Section reveal on a settings/detail page — wrap each Card in <Reveal> for a calm entrance without hand-written CSS.",
     "asChild on a grid item: `<Reveal asChild delay={2}><ResponsiveGrid.Item/></Reveal>` keeps the grid cell intact while animating it in.",

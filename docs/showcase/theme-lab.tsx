@@ -315,11 +315,9 @@ import {
   Attachments,
   ChatComposer,
   ChatSuggestion,
-  Actions,
-  ActionsCopy,
-  ActionsFeedback,
   Conversations,
 } from "@godxjp/chat";
+import { Actions, ActionsCopy, ActionsFeedback } from "@godxjp/ui/general";
 import type { ChatMessageProp } from "@godxjp/chat";
 
 /* ── The components that CANNOT appear here, and the reason for each ─────────────────────────

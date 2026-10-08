@@ -121,7 +121,7 @@
     }
   ],
   "related": [
-    "MultiSelect — picks multiple values from a dropdown; prefer when the option set is large and a panel layout is not needed.",
+    "Select mode=\"multiple\" — picks multiple values from a dropdown; prefer it when the option set is large and a two-panel layout is not needed.",
     "Checkbox (list) — use for a simple flat multi-select without a shuttle/move metaphor.",
     "Select (compound) — single or multi-value dropdown; not a dual-panel component.",
     "Tree — hierarchical item display; combine with Transfer's dataSource if items have a tree structure but the shuttle UX is still needed."
@@ -130,7 +130,7 @@
     23,
     31
   ],
-  "storyPath": "data-entry/Transfer.stories.tsx",
+  "storyPath": "data-entry/transfer.tsx",
   "tagline": "Dual-list shuttle that moves items between source and target via Checkbox selection — you own targetKeys state; never hand-roll a two-panel picker.",
   "usage": [
     "DO own `targetKeys` in state and update it inside `onChange`: `const [targetKeys, setTargetKeys] = useState<string[]>([]); onValueChange={(next) => setTargetKeys(next)}`.",

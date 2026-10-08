@@ -115,7 +115,7 @@
     3,
     6
   ],
-  "storyPath": "data-entry/InputOTP.stories.tsx",
+  "storyPath": "data-entry/input-otp.tsx",
   "subParts": [
     "InputOTPGroup",
     "InputOTPSeparator",
@@ -129,7 +129,7 @@
     "For device codes, set `appearance='grouped'` on each InputOTPGroup to render one outline per group while preserving the single hidden input, paste, caret, keyboard and screen-reader behavior.",
     "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
     "DO widen the slots with `--otp-slot-size` when a challenge row must fill a wide auth panel — it defaults to the live `--control-height` tier, so re-scoping `--control-height` on the card instead would also resize the submit button and every other input in it. Set a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
-    "DO use `--otp-slot-inline-size` / `--otp-slot-block-size` when the code field is NOT square — a device-grant slot is taller than it is wide. They win over the `--otp-slot-size` shorthand and fall back to it, so setting neither keeps the square control tier. You rarely set them by hand inside `AuthShell preset=\"device-authorization\"`: that preset already owns its code-field measure.",
+    "DO use `--otp-slot-inline-size` / `--otp-slot-block-size` when the code field is NOT square — a device-grant slot is taller than it is wide. They win over the `--otp-slot-size` shorthand and fall back to it, so setting neither keeps the square control tier. You rarely set them by hand inside `the auth CenteredShell preset=\"device-authorization\"`: that preset already owns its code-field measure.",
     "DO drive the sign-in MFA challenge from FormField: `error` wires aria-invalid + aria-errormessage + a role=alert message onto the single field, and the slot borders turn destructive. State is never colour-only."
   ],
   "useCases": [

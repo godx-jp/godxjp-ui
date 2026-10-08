@@ -49,7 +49,7 @@
   "rules": [
     40
   ],
-  "storyPath": "layout/AccountChip.stories.tsx",
+  "storyPath": "layout/account-chip.tsx",
   "tagline": "Signed-in user for a PageContainer extra slot, Topbar or footer row: avatar, name and one ghost action at the control tier height — never a hand-rolled rounded-full border div.",
   "usage": [
     "Put it in PageContainer `extra` beside Buttons and a Select width=\"auto\": every control in that row shares --control-height.",

@@ -33,13 +33,13 @@
     },
     {
       "defaultValue": "false",
-      "description": "On CollapsibleTrigger only — merges Radix trigger behaviour onto the single child element (e.g. a godx-ui Button) instead of rendering a default button. The child must accept onClick and aria-* props.",
+      "description": "On CollapsibleTrigger only — merges the trigger behaviour onto the single child element (e.g. a godx-ui Button) instead of rendering a default button. The child must accept onClick and aria-* props.",
       "name": "asChild (CollapsibleTrigger)",
       "type": "boolean"
     }
   ],
   "related": [
-    "Accordion (from @godxjp/ui/data-entry or Radix) — use Accordion when only ONE section can be open at a time across a group; use Collapsible when each section is independent and can be open simultaneously.",
+    "Accordion (@godxjp/ui/data-display) — use Accordion when only ONE section can be open at a time across a group; use Collapsible when each section is independent and can be open simultaneously.",
     "Popover — use Popover when the revealed content should float above the layout in a portal overlay; use Collapsible when the content should push surrounding content down inline.",
     "Dialog/Sheet — use Dialog or Sheet for modal or slide-over panels that demand full user attention; Collapsible stays in-flow and non-modal.",
     "Tree (@godxjp/ui/data-display) — use Tree for hierarchical data that expands, collapses and is navigated by keyboard; use Collapsible for ad-hoc single-level toggle regions."
@@ -49,7 +49,7 @@
     6,
     23
   ],
-  "storyPath": "data-display/Collapsible.stories.tsx",
+  "storyPath": "data-display/collapsible.tsx",
   "subParts": [
     "CollapsibleContent",
     "CollapsibleTrigger"
@@ -60,7 +60,7 @@
     "DO use asChild on CollapsibleTrigger when you want a godx-ui Button (or any styled element) to act as the trigger: <CollapsibleTrigger asChild><Button>Toggle</Button></CollapsibleTrigger>. Without asChild the trigger renders its own plain button.",
     "DO pass defaultOpen={true} (uncontrolled) when the section should auto-expand on mount — for example, a sidebar nav group whose active child matches the current route.",
     "DO use controlled mode (open + onOpenChange) when external UI — a separate button, route change, or search filter — needs to drive the open state independently of the trigger.",
-    "DON'T add hidden native <details>/<summary> as a fallback — the Radix primitive is already accessible (aria-expanded, aria-controls) out of the box.",
+    "DON'T add hidden native <details>/<summary> as a fallback — the primitive is already accessible (aria-expanded, aria-controls) out of the box.",
     "DON'T put interactive controls (Buttons, links, inputs) inside CollapsibleTrigger itself unless using asChild — nested focusable elements break keyboard navigation. Put them inside CollapsibleContent instead."
   ],
   "useCases": [

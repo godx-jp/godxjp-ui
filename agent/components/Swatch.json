@@ -22,7 +22,7 @@
     "Badge — a chip that labels a thing (and can carry the entity's own `color` as a wash). Swatch is the colour itself, with no chip around it."
   ],
   "rules": [],
-  "storyPath": "data-display/Swatch.stories.tsx",
+  "storyPath": "data-display/swatch.tsx",
   "tagline": "A READ-ONLY sample of ONE colour a person chose — a brand's primary_color, a calendar category, a tag tint. The colour is a VALUE on the element, never a token in a stylesheet.",
   "usage": [
     "DO import from `@godxjp/ui/data-display`: `import { Swatch } from \"@godxjp/ui/data-display\";`",

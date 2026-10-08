@@ -69,7 +69,7 @@
   "rules": [
     40
   ],
-  "storyPath": "data-display/ServiceLauncherCard.stories.tsx",
+  "storyPath": "data-display/service-launcher-card.tsx",
   "subParts": [
     "ServiceLauncherCardSkeleton"
   ],

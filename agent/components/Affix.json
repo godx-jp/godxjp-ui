@@ -58,7 +58,7 @@
     44,
     45
   ],
-  "storyPath": "layout/Affix.stories.tsx",
+  "storyPath": "layout/affix.tsx",
   "tagline": "Ant Design `Affix` (6.6.5): pin an element to its scrollport once the page scrolls past it, and REPORT that it is pinned. `position: sticky` pins and then says nothing, so a sticky header cannot shrink, swap its logo or raise its shadow; this one exposes the boolean as `data-affixed` for CSS and `onChange` for JavaScript, and holds the flow open with a MEASURED placeholder so the page does not jump by the bar's height at the moment it pins.",
   "usage": [
     "DO use it whenever the pinned state has to be VISIBLE — a header that condenses, a toolbar that gains a shadow over the rows sliding under it, a filter rail that swaps to a compact form. That state is the entire reason this exists; if you need none of it, plain `position: sticky` is lighter and correct.",

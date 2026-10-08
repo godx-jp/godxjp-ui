@@ -101,7 +101,6 @@
     "DataTable — use when exact per-row figures matter more than the trend shape."
   ],
   "rules": [],
-  "storyPath": "charts/LineChart.stories.tsx",
   "tagline": "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot.",
   "usage": [
     "DO import from the tree-shaken charts entry: `import { LineChart } from \"@godxjp/ui/charts\";`. Importing any other subpath never pulls in recharts.",

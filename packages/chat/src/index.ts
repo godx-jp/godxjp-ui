@@ -64,18 +64,3 @@ export type {
 } from "./thought-chain";
 export { Welcome } from "./welcome";
 export type { WelcomeProp, WelcomeProps, WelcomeVariantProp } from "./welcome";
-export { Actions, ActionsItem, ActionsCopy, ActionsFeedback } from "./actions";
-export type {
-  ActionsProp,
-  ActionsProps,
-  ActionsItemsProp,
-  ActionsItemProp,
-  ActionsItemProps,
-  ActionsCopyProp,
-  ActionsCopyProps,
-  ActionsFeedbackProp,
-  ActionsFeedbackProps,
-  ActionsVariantProp,
-  ActionsStatusProp,
-  ActionsFeedbackValueProp,
-} from "./actions";

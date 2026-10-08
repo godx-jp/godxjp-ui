@@ -24,8 +24,8 @@
     2,
     3
   ],
-  "storyPath": "layout/AspectRatio.stories.tsx",
-  "tagline": "Radix AspectRatio wrapper for stable media and preview frames.",
+  "storyPath": "layout/aspect-ratio.tsx",
+  "tagline": "Fixed-ratio box (CSS aspect-ratio) for stable media and preview frames.",
   "usage": [
     "DO use AspectRatio for media, maps, charts, or previews that must not jump during load.",
     "DON'T use it for unconstrained text content."

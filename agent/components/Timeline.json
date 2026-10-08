@@ -28,7 +28,7 @@
     "Badge — Badge is a single-item inline indicator; Timeline sequences multiple statuses with connectors. Compose Badge inside a Timeline `title` or `note` field for richer per-event context, but do not replace Timeline with a stack of Badges."
   ],
   "rules": [],
-  "storyPath": "data-display/Timeline.stories.tsx",
+  "storyPath": "data-display/timeline.tsx",
   "tagline": "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a `status` (done/current/pending, or `log` for an activity-log entry with no status semantics) plus an optional per-item `icon`. The whole progress column is ONE hue: done dot, current dot and travelled line all paint `--primary`, exactly as `Steps` paints `finish` and `process`.",
   "usage": [
     "DO pass an array of `TimelineItem` objects to `items`. Each item is `{ title, location?, time?, note?, current?, status?, icon? }`. All fields except `title` are optional. The only other props are `variant` and `density`.",

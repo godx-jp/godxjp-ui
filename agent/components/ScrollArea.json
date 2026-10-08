@@ -72,11 +72,11 @@
     24,
     31
   ],
-  "storyPath": "data-display/ScrollArea.stories.tsx",
+  "storyPath": "data-display/scroll-area.tsx",
   "subParts": [
     "ScrollBar"
   ],
-  "tagline": "A native scrolling box (no Radix since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
+  "tagline": "A native scrolling box (no scroll library since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
   "usage": [
     "DO set an explicit height or max-height on ScrollArea via className (e.g. `className=\"h-64\"` or `className=\"max-h-[min(300px,50vh)]\"`). Without a height constraint the viewport grows to fit content and the scrollbar is never rendered.",
     "DO wrap content in a single child element inside ScrollArea — the Viewport observes its single child's size to decide whether overflow exists.",

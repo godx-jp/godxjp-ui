@@ -20,13 +20,13 @@
   "related": [
     "AppProvider — required peer that seeds locale, timezone, dateFormat, and timeFormat into the module-level context that `formatDate` reads. Must be mounted once at app root; omitting it means `formatDate` silently falls back to Vietnamese/Ho Chi Minh City defaults.",
     "DatePicker — the corresponding input control for calendar dates. Use `DatePicker` to capture a date from the user; use `formatDate(value, { calendar: true })` to display the picked `Date` object back as a string.",
-    "DateFormatPicker / TimeFormatPicker / TimezonePicker — preference pickers that update AppProvider context; their selections are automatically picked up by subsequent `formatDate` calls with no extra wiring needed.",
+    "AppSettingPicker — `kind=\"dateFormat\" | \"timeFormat\" | \"timezone\"` updates AppProvider context, and subsequent `formatDate` calls pick the selection up with no extra wiring.",
     "TimePicker — the corresponding input control for HH:mm time values. Use `TimePicker` to capture time; use `formatDate(hhmm)` (auto-detects `'time'` kind) to display the stored `HH:mm` string respecting the user's 12h/24h preference."
   ],
   "rules": [
     5
   ],
-  "storyPath": "app/formatDate.stories.tsx",
+  "storyPath": "providers/format-date.tsx",
   "tagline": "MANDATORY for all date/time display. Auto-detects ISO date / HH:mm / instant; reads AppProvider context. Import from @godxjp/ui/datetime.",
   "usage": [
     "DO import from `@godxjp/ui/datetime` — NOT from `date-fns` or any other datetime utility. `formatDate` is the single mandatory display entry point; calling `date-fns/format` directly bypasses AppProvider locale/timezone/dateFormat/timeFormat context and produces inconsistent output across the app.",

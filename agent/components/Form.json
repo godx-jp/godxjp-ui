@@ -67,7 +67,7 @@
     23,
     24
   ],
-  "storyPath": "data-entry/Form.stories.tsx",
+  "storyPath": "data-entry/form.tsx",
   "tagline": "Ant-style layout container — renders <form> and pushes layout (vertical/horizontal), labelWidth/controlWidth, label alignment, responsive collapse, and multi-column grid down to every FormField (overridable per field).",
   "usage": [
     "DO set `layout`, `labelWidth`, `controlWidth` ONCE on `<Form>` — every `<FormField>` inside inherits them. Override a single field by passing the same prop on that `<FormField>` (Form → FormField priority).",

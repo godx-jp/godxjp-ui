@@ -50,7 +50,7 @@
   "rules": [
     45
   ],
-  "storyPath": "layout/AuthAccountSummary.stories.tsx",
+  "storyPath": "layout/auth-account-summary.tsx",
   "tagline": "Compact signed-in account row for hosted auth: avatar fallback, authoritative email and switch action.",
   "usage": [
     "Pass only the authoritative signed-in email; AuthAccountSummary never fetches or invents identity data.",

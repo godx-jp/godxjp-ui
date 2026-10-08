@@ -20,7 +20,7 @@ import "@godxjp/ui/styles.css"; // precompiled, no Tailwind needed
 
 ```css
 @import "@godxjp/ui/styles"; /* Tailwind v4: every component layer, NO font files */
-@import "@godxjp/ui/styles/fonts"; /* optional, after the styles import: the bundled faces */
+@import "@godxjp/ui/styles/fonts.css"; /* optional, after the styles import: the bundled faces */
 ```
 
 Since v32 the styles entry no longer bundles fonts. A Japanese app that wants the bundled faces

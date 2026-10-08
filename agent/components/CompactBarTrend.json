@@ -83,7 +83,7 @@
     "Progress — one ratio against a target, not a series over time."
   ],
   "rules": [],
-  "storyPath": "charts/CompactBarTrend.stories.tsx",
+  "storyPath": "charts/compact-bar-trend.tsx",
   "tagline": "DEPENDENCY-FREE compact vertical bar trend for dashboard summary cards — N category/value pairs, muted marks plus ONE emphasized 'current' bar, all geometry from --chart-trend-* tokens. Needs NO recharts. Sparkline / micro-chart / activity pulse / KPI trend strip.",
   "usage": [
     "DO import from the isolated entry: `import { CompactBarTrend } from \"@godxjp/ui/charts/compact-bar-trend\";` — unlike the charts barrel, this path never links modules that require the optional `recharts` peer.",

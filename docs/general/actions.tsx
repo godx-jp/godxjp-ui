@@ -19,8 +19,9 @@ import {
   Users,
   Volume2,
 } from "lucide-react";
-import { ChatBubble, Actions, ActionsCopy, ActionsFeedback, ActionsItem } from "@godxjp/chat";
-import type { ActionsFeedbackValueProp } from "@godxjp/chat";
+import { ChatBubble } from "@godxjp/chat";
+import { Actions, ActionsCopy, ActionsFeedback, ActionsItem } from "@godxjp/ui/general";
+import type { ActionsFeedbackValueProp } from "@godxjp/ui/general";
 
 /**
  * Actions — the strip of actions under an assistant message (Ant Design X `Actions`).

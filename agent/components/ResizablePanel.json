@@ -46,7 +46,7 @@
     3,
     6
   ],
-  "storyPath": "layout/ResizablePanel.stories.tsx",
+  "storyPath": "layout/resizable-panel.tsx",
   "subParts": [
     "ResizableHandle",
     "ResizablePanelGroup"

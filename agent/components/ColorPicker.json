@@ -73,7 +73,7 @@
     6,
     13
   ],
-  "storyPath": "data-entry/ColorPicker.stories.tsx",
+  "storyPath": "data-entry/color-picker.tsx",
   "tagline": "Native color-swatch picker with an optional editable hex input — always pass a valid 3- or 6-digit hex `value`; invalid hex is silently ignored and the previous value is restored.",
   "usage": [
     "DO wrap in FormField when a label or validation message is needed — pass the same id to both FormField and ColorPicker so htmlFor wires up correctly: `<FormField id='brand' label='Brand color'><ColorPicker id='brand' value={v} onValueChange={setV} /></FormField>`.",

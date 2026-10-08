@@ -23,7 +23,6 @@
   "rules": [
     1
   ],
-  "storyPath": "data-entry/Upload.stories.tsx",
   "tagline": "Bridge Inertia multipart visits to Upload progress, cancellation, retry and error recovery.",
   "usage": [
     "Pass the returned callback to Upload.onUpload. Spread callbacks into router.post options; they enable multipart and independent async requests.",

@@ -1,7 +1,7 @@
 {
-  "example": "import { TextDiff } from \"@godxjp/ui/data-display\";\n\n<TextDiff before={row.previous_original} after={original} lang=\"ja\" />\n\n<TextDiff mode=\"split\" granularity=\"line\" before={previousBody} after={body} />",
+  "example": "import { TextDiff } from \"@godxjp/ui/lab\";\n\n<TextDiff before={row.previous_original} after={original} lang=\"ja\" />\n\n<TextDiff mode=\"split\" granularity=\"line\" before={previousBody} after={body} />",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/ui/lab",
   "name": "TextDiff",
   "props": [
     {
@@ -68,10 +68,11 @@
     "Timeline — the list of revisions; TextDiff is what one revision changed."
   ],
   "rules": [],
-  "storyPath": "data-display/TextDiff.stories.tsx",
+  "storyPath": "data-display/text-diff.tsx",
   "tagline": "What changed between two versions of a text — removed runs in <del>, added runs in <ins>, inline or side by side, per line / word / character, with CJK cut per character and long unchanged runs folded.",
+  "tier": "lab",
   "usage": [
-    "DO import from `@godxjp/ui/data-display`: `import { TextDiff } from \"@godxjp/ui/data-display\";`",
+    "DO import from `@godxjp/ui/lab` (the opt-in lab subpath): `import { TextDiff } from \"@godxjp/ui/lab\";`",
     "DO pass the two raw strings — the component tokenizes, diffs (LCS) and renders. Use the exported `diffText(before, after, { granularity, lang })` only when you need the runs themselves (a change count, a plain-text export).",
     "DO pass `lang` for the text's language, not the UI's: a Japanese original in an English UI still needs lang=\"ja\".",
     "DO use mode=\"split\" when there is room for two columns and the texts are long; inline for a drawer, a list row or a narrow panel.",

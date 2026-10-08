@@ -39,7 +39,7 @@
     "Avatar — a person or an entity, not an icon; it brings its own box and must not be squeezed into an icon measure."
   ],
   "rules": [],
-  "storyPath": "general/Icon.stories.tsx",
+  "storyPath": "general/icon.tsx",
   "tagline": "A glyph on the --icon-size-* scale, and the ONLY supported way to render a standalone one. A lucide component ships width=\"24\" height=\"24\"; only four rules in this library override that (.ui-button svg, the menu row, the topbar cell, the ListRow leading slot), so everywhere else a glyph draws at 24px beside 14px text.",
   "usage": [
     "DO use <Icon> for ANY glyph that is not already inside Button / DropdownMenuItem / TopbarItem / a ListRow leading slot — in a Text, a table cell, an <a>, a Flex. Those four are the only contexts in the library that size a glyph for you; everywhere else a bare lucide icon renders at 24px.",

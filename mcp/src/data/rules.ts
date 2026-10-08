@@ -18,6 +18,13 @@ export interface CardinalRule {
   body: string;
 }
 
+/**
+ * Rule numbers retired in v32 (gh#1217): they named Storybook, Radix, i18next, a submodule and
+ * paths that no longer exist. A retired number is never reused, so a citation like "rule #12" in a
+ * component entry, a consumer repo or an agent's memory keeps pointing at the same rule.
+ */
+export const RETIRED_RULE_NUMBERS: readonly number[] = [4, 11, 17, 18, 22, 30, 34];
+
 export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 1,

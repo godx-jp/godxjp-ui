@@ -62,7 +62,7 @@
     5,
     6
   ],
-  "storyPath": "layout/TopbarItem.stories.tsx",
+  "storyPath": "layout/topbar-item.tsx",
   "tagline": "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
   "usage": [
     "DO put bar triggers in a Topbar slot as TopbarItem, not as Button — that is the difference between chrome and a control that landed in the chrome.",

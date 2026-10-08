@@ -22,7 +22,6 @@
     "ErrorSurface — the whole-page error surface; a session expiry is neither a page error nor an inline one."
   ],
   "rules": [],
-  "storyPath": "query/DataState.stories.tsx",
   "tagline": "App-root handler for an expired session (401 / invalid or expired token): every DataState / InfiniteQueryState / AlertMutationFeedback / AlertQueryError calls it automatically, once, and shows a neutral pending state instead of an error alert. Also exported from @godxjp/ui.",
   "usage": [
     "DO: mount it ONCE near the root, inside the QueryClientProvider/AppProvider, and redirect to the IdP with the current URL as the return target. The IdP returns immediately while its own session is alive — the SSO norm (Google/Microsoft apps, OIDC SPA guidance): no page-level error for an expired session.",

@@ -1160,7 +1160,7 @@ import { Button } from "@godxjp/ui/general";
       "Form sub-sections where a vertical group needs stretched children or centered helper content beyond what a plain column Flex provides.",
       "Badge, chip, or tag clusters where wrapping is required but the caller also needs explicit gap control.",
       "Low-level layout composition inside custom components where raw flex classes would duplicate the primitive.",
-      "ATTACHED: 定期課題 (recurring issue) interval row: 毎 [NumberInput] [Select 週/月/日 ▾] ごと, fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.",
+      "ATTACHED: a recurring-issue interval row, \"毎 [NumberInput] [Select 週/月/日 ▾] ごと\", fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.",
       "ATTACHED: A currency amount: [Select 通貨 ▾][NumberInput 金額] welded so the currency reads as part of the amount field, not a separate control beside it.",
       "ATTACHED: A filtered search bar: [Select scope][SearchInput query] as one visual field, `fullWidth` inside a page toolbar.",
     ],
@@ -17604,7 +17604,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "Actions",
-    importPath: "@godxjp/chat",
+    importPath: "@godxjp/ui/general",
     group: "general",
     tagline:
       "The strip of actions under an assistant message (Ant Design X Actions): copy, retry, like, and a menu for the rest \u2014 a WAI-ARIA toolbar with ONE tab stop, where Ant X's own strip is <div onClick> with no role and no accessible name.",
@@ -17668,7 +17668,7 @@ const messages: ChatMessageProp[] = [
       "CredentialReveal \u2014 a copy affordance for a SECRET field; ActionsCopy copies message text.",
     ],
     example: [
-      'import { Actions, ActionsCopy, ActionsFeedback } from "@godxjp/chat";',
+      'import { Actions, ActionsCopy, ActionsFeedback } from "@godxjp/ui/general";',
       'import { RefreshCw, Share2 } from "lucide-react";',
       "",
       "<Actions",

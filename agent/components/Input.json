@@ -102,7 +102,7 @@
     "Select — use instead of Input when the value must come from a fixed or async option list; never render a plain Input and parse free text when the set of valid values is enumerable."
   ],
   "rules": [],
-  "storyPath": "data-entry/Input.stories.tsx",
+  "storyPath": "data-entry/input.tsx",
   "tagline": "Styled wrapper around native <input>; accepts all HTML input attributes. Pair with FormField for labelled fields.",
   "usage": [
     "DO always wrap Input in FormField when the field needs a label, helper text, or validation error — FormField injects aria-describedby and aria-invalid onto Input automatically; never wire these attributes by hand.",

@@ -38,7 +38,6 @@
   "rules": [
     9
   ],
-  "storyPath": "data-display/Card.stories.tsx",
   "tagline": "Inline card toolbar with scoped inset and divider edges.",
   "usage": [
     "Compose inside Card. Unset border follows its position; explicit border prevents double rules in stacked bars."

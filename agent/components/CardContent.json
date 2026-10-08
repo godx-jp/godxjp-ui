@@ -30,7 +30,6 @@
     37,
     38
   ],
-  "storyPath": "data-display/Card.stories.tsx",
   "tagline": "Card body. flush = edge-to-edge (for DataTable/tabs); tight = no top gap; solo = no header above. NEVER put a Toolbar inside flush (it loses padding).",
   "usage": [
     "DO: Always wrap body content in <CardContent> — a bare <Card> has no internal padding, so any child placed directly inside it renders flush against the card edges.",

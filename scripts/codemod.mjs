@@ -23,7 +23,120 @@ import path from "node:path";
  * name is renamed with it. Moves that change props (Banner → Alert variant) carry `note`, which is
  * reported for the human to finish.
  */
-export const RENAMES = [];
+const UI = (group) => [`@godxjp/ui/${group}`, "@godxjp/ui"];
+const rename = (groups, from, toMod, to, note) => ({ from: [groups, from], to: [toMod, to], note });
+const move = (groups, toMod, names) => names.map((n) => rename(groups, n, toMod, n));
+
+export const RENAMES = [
+  rename(UI("feedback"), "Banner", "@godxjp/ui/feedback", "Alert", 'add variant="banner"'),
+  rename(UI("feedback"), "Callout", "@godxjp/ui/feedback", "Alert", 'add variant="callout"'),
+  rename(
+    UI("data-entry"),
+    "TagInput",
+    "@godxjp/ui/data-entry",
+    "Select",
+    'add mode="tags" open={false}; Select takes no ref',
+  ),
+  rename(
+    UI("data-display"),
+    "Thumbnail",
+    "@godxjp/ui/data-display",
+    "Image",
+    'add fit="intrinsic" preview={false}',
+  ),
+  rename(
+    UI("data-display"),
+    "HoverCard",
+    "@godxjp/ui/data-display",
+    "Popover",
+    'add openOn="hover"',
+  ),
+  rename(UI("data-display"), "HoverCardTrigger", "@godxjp/ui/data-display", "PopoverTrigger"),
+  rename(UI("data-display"), "HoverCardContent", "@godxjp/ui/data-display", "PopoverContent"),
+  rename(
+    UI("layout"),
+    "AuthShell",
+    "@godxjp/ui/layout",
+    "CenteredShell",
+    'add variant="auth" (variant="canonical" becomes "auth-canonical")',
+  ),
+  rename(
+    UI("layout"),
+    "SpaceCompact",
+    "@godxjp/ui/layout",
+    "Flex",
+    'add attached; orientation/vertical becomes direction="col"',
+  ),
+  rename(
+    UI("navigation"),
+    "AppSettingToggle",
+    "@godxjp/ui/navigation",
+    "AppSettingPicker",
+    "add menu={false}",
+  ),
+  rename(
+    UI("general"),
+    "Title",
+    "@godxjp/ui/general",
+    "Heading",
+    "Title (antd shim) was removed; check level/size",
+  ),
+  rename(
+    UI("general"),
+    "Paragraph",
+    "@godxjp/ui/general",
+    "Text",
+    'add as="p"; ellipsis.rows becomes clamp',
+  ),
+  rename(
+    UI("general"),
+    "Typography",
+    "@godxjp/ui/data-display",
+    "Prose",
+    "Typography (antd shim) was removed",
+  ),
+  ...move(UI("general"), "@godxjp/ui/lab", ["FloatButton"]),
+  ...move(UI("layout"), "@godxjp/ui/lab", [
+    "DraggablePanel",
+    "PageCover",
+    "Masonry",
+    "LegalDocumentShell",
+  ]),
+  ...move(UI("data-display"), "@godxjp/ui/lab", [
+    "Marquee",
+    "TextDiff",
+    "diffText",
+    "tokenizeText",
+    "OrgChart",
+    "TimelineGrid",
+    "RangeTimeline",
+    "Carousel",
+    "CarouselContent",
+    "CarouselItem",
+    "CarouselPrevious",
+    "CarouselNext",
+    "useCarousel",
+  ]),
+  ...move(UI("data-entry"), "@godxjp/ui/lab", ["EmojiPicker", "SortableList"]),
+  ...move(UI("navigation"), "@godxjp/ui/lab", ["MegaMenu", "Anchor"]),
+  ...move(UI("data-display"), "@godxjp/chat", [
+    "ChatBubble",
+    "ChatBubbleList",
+    "ThoughtChain",
+    "ThoughtChainItem",
+    "Welcome",
+  ]),
+  ...move(UI("data-entry"), "@godxjp/chat", ["ChatComposer", "ChatSuggestion", "Attachments"]),
+  ...move(UI("navigation"), "@godxjp/chat", ["Conversations"]),
+];
+
+/** Removed with no replacement: reported, never rewritten. */
+export const REMOVED = {
+  SkeletonAvatar: "use SkeletonArticle avatar, or a sized Skeleton",
+  SkeletonButton: "use a sized Skeleton",
+  SkeletonImage: "use a sized Skeleton",
+  SkeletonNode: "use a sized Skeleton",
+};
 
 const SKIP_DIRS = new Set([
   "node_modules",
@@ -81,28 +194,76 @@ export function transformSource(file, source, { godx = false } = {}) {
       out = addImport(out, 'import { godxPreset } from "@godxjp/ui/themes/godx";');
     }
   }
-  if (!isCss) {
-    for (const r of RENAMES) {
-      const [fromMod, fromName] = r.from;
+  if (!isCss) out = applyRenames(out, notes);
+  return { out, changed: out !== source, notes };
+}
+
+const IMPORT_RE =
+  /import\s*(type\s+)?\{([^}]*)\}\s*from\s*(["'])(@godxjp\/[\w-]+(?:\/[\w-]+)?)\3\s*;?/g;
+
+function applyRenames(source, notes) {
+  let out = source;
+  const moved = new Map(); // toMod -> [{ spec, typeOnly }]
+  const jsxRenames = [];
+  out = out.replace(IMPORT_RE, (stmt, typeKw, body, q, mod) => {
+    const keep = [];
+    let touched = false;
+    for (const raw of body
+      .split(",")
+      .map((x) => x.trim())
+      .filter(Boolean)) {
+      const inlineType = raw.startsWith("type ");
+      const spec = raw.replace(/^type\s+/, "");
+      const [name, alias] = spec.split(/\s+as\s+/);
+      const removed = REMOVED[name];
+      if (removed && mod.startsWith("@godxjp/ui"))
+        notes.push(`${name} was removed in v32: ${removed}`);
+      const r = RENAMES.find((x) => x.from[1] === name && x.from[0].includes(mod));
+      if (!r) {
+        keep.push(raw);
+        continue;
+      }
+      touched = true;
       const [toMod, toName] = r.to;
-      const importRe = new RegExp(
-        `import\\s*\\{([^}]*)\\b${fromName}\\b([^}]*)\\}\\s*from\\s*(["'])${fromMod.replace(/[/.]/g, "\\$&")}\\3`,
+      const newSpec = alias ? `${toName} as ${alias}` : toName;
+      const list = moved.get(toMod) ?? [];
+      list.push({ spec: newSpec, typeOnly: Boolean(typeKw) || inlineType });
+      moved.set(toMod, list);
+      if (!alias && toName !== name) jsxRenames.push([name, toName]);
+      if (r.note) notes.push(`${name} → ${toName}${toMod !== mod ? ` (${toMod})` : ""}: ${r.note}`);
+    }
+    if (!touched) return stmt;
+    return keep.length ? `import ${typeKw ?? ""}{ ${keep.join(", ")} } from ${q}${mod}${q};` : "";
+  });
+  for (const [from, to] of jsxRenames)
+    out = out.replace(new RegExp(`(</?)${from}(?=[\\s>./])`, "g"), `$1${to}`);
+  for (const [toMod, specs] of moved) {
+    for (const typeOnly of [false, true]) {
+      const names = specs.filter((x) => x.typeOnly === typeOnly).map((x) => x.spec);
+      if (!names.length) continue;
+      const existing = new RegExp(
+        `import\\s*${typeOnly ? "type\\s+" : ""}\\{([^}]*)\\}\\s*from\\s*(["'])${toMod.replace(/[/]/g, "\\/")}\\2\\s*;?`,
       );
-      if (!importRe.test(out)) continue;
-      out = out.replace(importRe, (all, before, after, q) => {
-        const rest = `${before}${after}`
+      const m = out.match(existing);
+      if (m) {
+        const have = m[1]
           .split(",")
-          .map((s) => s.trim())
+          .map((x) => x.trim())
           .filter(Boolean);
-        const kept = rest.length ? `import { ${rest.join(", ")} } from ${q}${fromMod}${q};\n` : "";
-        return `${kept}import { ${toName} } from ${q}${toMod}${q}`;
-      });
-      if (fromName !== toName)
-        out = out.replace(new RegExp(`(</?)${fromName}\\b`, "g"), `$1${toName}`);
-      if (r.note) notes.push(`${fromName} → ${toName}: ${r.note}`);
+        const merged = [...new Set([...have, ...names])];
+        out = out.replace(
+          m[0],
+          `import ${typeOnly ? "type " : ""}{ ${merged.join(", ")} } from ${m[2]}${toMod}${m[2]};`,
+        );
+      } else {
+        out = addImport(
+          out,
+          `import ${typeOnly ? "type " : ""}{ ${[...new Set(names)].join(", ")} } from "${toMod}";`,
+        );
+      }
     }
   }
-  return { out, changed: out !== source, notes };
+  return out.replace(/\n{3,}/g, "\n\n");
 }
 
 function addImport(source, line) {

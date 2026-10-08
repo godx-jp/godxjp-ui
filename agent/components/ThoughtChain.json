@@ -1,8 +1,8 @@
 {
   "docPath": "data-display/thought-chain.tsx",
-  "example": "import { ThoughtChain } from \"@godxjp/ui/data-display\";\n\n<ThoughtChain\n  label=\"思考の手順\"\n  defaultExpandedKeys={[\"search\"]}\n  items={[\n    { key: \"read\", title: \"資料を読む\", description: \"3件\", status: \"success\" },\n    {\n      key: \"search\",\n      title: \"社内規程を検索\",\n      status: \"loading\",\n      collapsible: true,\n      blink: true,\n      content: <pre>{hits}</pre>,\n    },\n    { key: \"write\", title: \"下書きを書く\", status: \"abort\" },\n  ]}\n/>",
+  "example": "import { ThoughtChain } from \"@godxjp/chat\";\n\n<ThoughtChain\n  label=\"思考の手順\"\n  defaultExpandedKeys={[\"search\"]}\n  items={[\n    { key: \"read\", title: \"資料を読む\", description: \"3件\", status: \"success\" },\n    {\n      key: \"search\",\n      title: \"社内規程を検索\",\n      status: \"loading\",\n      collapsible: true,\n      blink: true,\n      content: <pre>{hits}</pre>,\n    },\n    { key: \"write\", title: \"下書きを書く\", status: \"abort\" },\n  ]}\n/>",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/chat",
   "name": "ThoughtChain",
   "props": [
     {
@@ -55,7 +55,7 @@
     44,
     45
   ],
-  "storyPath": "data-display/ThoughtChain.stories.tsx",
+  "storyPath": "data-display/thought-chain.tsx",
   "subParts": [
     "ThoughtChainItem"
   ],

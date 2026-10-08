@@ -89,7 +89,7 @@
     23,
     31
   ],
-  "storyPath": "layout/Sidebar.preview.tsx",
+  "storyPath": "layout/sidebar.tsx",
   "subParts": [
     "SidebarHeader",
     "SidebarItem",

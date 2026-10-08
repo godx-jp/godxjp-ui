@@ -1,5 +1,5 @@
 {
-  "example": "import { Toggle } from \"@godxjp/ui/data-entry\";\n\n<Toggle aria-label=\"Bold\">B</Toggle>\n\n// A counted filter chip — one control, one accessible name (\"Unread, 12 items\").\n// Drive the state with the usual Radix pair: pressed / defaultPressed / onPressedChange.\n// variant=\"soft\" + shape=\"pill\" is the antd Tag.CheckableTag shape: it has a RESTING fill, so\n// the chip is legible before it is pressed.\n<Toggle\n  variant=\"soft\"\n  shape=\"pill\"\n  onPressedChange={setUnreadOnly}\n  count={12}\n  countLabel={t(\"common.items\")}\n>\n  {t(\"inbox.unread\")}\n</Toggle>",
+  "example": "import { Toggle } from \"@godxjp/ui/data-entry\";\n\n<Toggle aria-label=\"Bold\">B</Toggle>\n\n// A counted filter chip — one control, one accessible name (\"Unread, 12 items\").\n// Drive the state with the usual pair: pressed / defaultPressed / onPressedChange.\n// variant=\"soft\" + shape=\"pill\" is the antd Tag.CheckableTag shape: it has a RESTING fill, so\n// the chip is legible before it is pressed.\n<Toggle\n  variant=\"soft\"\n  shape=\"pill\"\n  onPressedChange={setUnreadOnly}\n  count={12}\n  countLabel={t(\"common.items\")}\n>\n  {t(\"inbox.unread\")}\n</Toggle>",
   "group": "data-entry",
   "importPath": "@godxjp/ui/data-entry",
   "name": "Toggle",
@@ -65,8 +65,8 @@
     13,
     45
   ],
-  "storyPath": "data-entry/Toggle.stories.tsx",
-  "tagline": "Radix Toggle wrapper with default/outline variants and tokenized sizes.",
+  "storyPath": "data-entry/toggle.tsx",
+  "tagline": "React Aria toggle button with default/outline/soft variants and tokenized sizes.",
   "usage": [
     "DO provide an accessible label when the toggle only contains an icon.",
     "DON'T use Toggle for multi-option selection; use ToggleGroup.",

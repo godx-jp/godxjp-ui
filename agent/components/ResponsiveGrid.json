@@ -52,7 +52,7 @@
   ],
   "related": [
     "Flex — use Flex (direction col or row) for sequential blocks of mixed-width content (forms, description lists, button rows). Use ResponsiveGrid only when you want equal-width, auto-reflowing tile columns.",
-    "SplitPane — use SplitPane for a fixed two-panel side-by-side layout with a defined primary/secondary ratio that does NOT collapse to stacked tiles. Use ResponsiveGrid when you want automatic column count collapse on narrow screens.",
+    "SplitPane — a main column beside a FIXED-rem aside that splits at the pane's own 48rem and stacks below it (a user-draggable ratio is ResizablePanel). Use ResponsiveGrid when you want automatic column count collapse on narrow screens.",
     "StatCard — the canonical direct child of ResponsiveGrid for KPI tiles. StatCard is self-contained (draws its own bordered card); never wrap it in Card/CardContent when placing it inside ResponsiveGrid.",
     "SkeletonStat — the loading-state sibling of StatCard, used as a drop-in placeholder child of ResponsiveGrid with the same columns count while KPI data is in flight."
   ],
@@ -60,7 +60,7 @@
     24,
     40
   ],
-  "storyPath": "layout/ResponsiveGrid.stories.tsx",
+  "storyPath": "layout/responsive-grid.tsx",
   "tagline": "Container-responsive card grid with configurable base, sm, md and lg columns.",
   "usage": [
     "ResponsiveGrid.Item span={2} owns a responsive column span; an object {base:1,lg:2} sets explicit steps, clamped to the parent columns.",

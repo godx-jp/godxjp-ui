@@ -2,7 +2,7 @@
   "docPath": "docs/data-display/timeline.tsx",
   "example": "<RangeTimeline label=\"Schedule\" columns={[{ label: \"Week\", units: 7 }]} rows={[{ id: \"task\", label: \"Task\", start: 0, end: 6, startLabel: \"Start: day 1\", endLabel: \"End: day 7\" }]} />",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/ui/lab",
   "name": "RangeTimeline",
   "props": [
     {
@@ -112,6 +112,7 @@
   "rules": [],
   "storyPath": "data-display/timeline.tsx",
   "tagline": "Horizontal intervals with token-owned geometry and optional endpoint editing.",
+  "tier": "lab",
   "usage": [
     "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",
     "An interval wholly outside the columns shows a localized direction indicator at that edge of its row: a chevron plus \"before\" at the inline-start edge, \"after\" plus a chevron at the inline-end edge; the chevrons mirror under RTL.",

@@ -12,7 +12,7 @@
     },
     {
       "defaultValue": "\"glyph\"",
-      "description": "\"godx-lockup\" renders the FULL master lockup — identity mark + the drawn \"GoDX\" logotype as one artwork (4.787:1, so the `size` tier drives HEIGHT and width follows); pair it with `productSuffix` for \"GoDX | ID\". \"godx\" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (AuthShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size-{xs,sm,md,lg} driven by the `size` prop, pinnable at every tier via --logo-godx-size; --logo-godx-color, defaulting to the --brand IDENTITY role = canonical emerald #009766, never --primary and never the --success status green) and it drops the boxed fill/radius. \"glyph\" keeps the configurable boxed-glyph treatment.",
+      "description": "\"godx-lockup\" renders the FULL master lockup — identity mark + the drawn \"GoDX\" logotype as one artwork (4.787:1, so the `size` tier drives HEIGHT and width follows); pair it with `productSuffix` for \"GoDX | ID\". \"godx\" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (the auth CenteredShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size-{xs,sm,md,lg} driven by the `size` prop, pinnable at every tier via --logo-godx-size; --logo-godx-color, defaulting to the --brand IDENTITY role = canonical emerald #009766, never --primary and never the --success status green) and it drops the boxed fill/radius. \"glyph\" keeps the configurable boxed-glyph treatment.",
       "name": "mark",
       "type": "\"glyph\" | \"godx\" | \"godx-lockup\""
     },
@@ -50,7 +50,7 @@
     }
   ],
   "related": [
-    "AuthIdentity (@godxjp/ui/layout) — the canonical auth heading block; it already renders the GoDX mark, so don't add a second Logo above it.",
+    "AuthIdentity (@godxjp/ui/layout) — the auth heading block. It draws `brand`, else the active preset's `brandMark` (the GoDX mark under `<AppProvider preset={godxPreset}>`), else no mark — so don't add a second Logo above it.",
     "Text / Heading — only for a bespoke lockup the `wordmark` prop cannot express; for the ordinary mark + product name, use `wordmark` (it owns the gap, face and brand colour as tokens).",
     "Avatar — use Avatar for a PERSON/entity image or initials; use Logo for the PRODUCT brand mark. They look similar (square/rounded glyph) but carry different meaning."
   ],
@@ -58,7 +58,7 @@
     45,
     46
   ],
-  "storyPath": "general/Logo.stories.tsx",
+  "storyPath": "general/logo.tsx",
   "tagline": "The product brand mark — a glyph/identity box, or (with `wordmark`) the full mark + wordmark LOCKUP. Tokenised size/radius/type/gap, and `size` scales every branch (boxed glyph, identity mark, lockup); the boxed fill reads --primary, while the GoDX identity mark and wordmark read the --brand IDENTITY role instead, so an action-colour re-theme never recolours the brand.",
   "usage": [
     "DO import from `@godxjp/ui/general`: `import { Logo } from \"@godxjp/ui/general\";`",
@@ -70,6 +70,7 @@
     "DO use `<Logo mark=\"godx-lockup\" productSuffix=\"ID\" />` for a product surface branded \"GoDX | ID\" — the divider, the gaps, the `size` scale and the light/dark master are the package's. DON'T inline the kit's flattened \"GoDX | ID\" SVG in the app: it is a second master in its own coordinate system, with global `id=\"title\"`/`id=\"desc\"` that collide across instances, a hardcoded `#0B0F3B` ink with no dark variant, and a hardcoded `#C5C8D6` rule (gh#649).",
     "DON'T typeset the suffix yourself as `<Logo mark=\"godx-lockup\" /><Text>ID</Text>` — that has no divider and the spacing is not the lockup's token.",
     "DON'T re-tint via `className=\"bg-*\"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.",
+    "GoDX LOOK = THE PRESET (v32): the package defaults are neutral (ink `--primary`, no product mark). A GoDX surface gets the violet identity, the fonts and the GoDX mark in AuthIdentity from `import \"@godxjp/ui/themes/godx.css\"` (after the base stylesheet) plus `import { godxPreset } from \"@godxjp/ui/themes/godx\"` and `<AppProvider preset={godxPreset}>`. `mark=\"godx\"` / `\"godx-lockup\"` still render the GoDX artwork wherever you place them explicitly.",
     "DO use `mark=\"godx\"` for the canonical GoDX identity mark on hosted-identity screens — it is ALREADY in the package as real inline vector artwork. DON'T pass a hand-drawn brand SVG as `glyph`, and don't ship a brand asset in the app, to reproduce it.",
     "DO make the brand a link with `asChild`, not with a wrapper: `<Logo asChild mark=\"godx\" wordmark=\"GoDX\"><Link href=\"/\" /></Logo>`. Writing `<a className=\"flex\"><Logo …/></a>` instead is the exact shape ui-audit rejects (no-utility-layout), and dropping the `flex` misaligns the mark."
   ],
@@ -78,7 +79,7 @@
     "Auth screen — a standalone labelled mark above the sign-in form: `<Logo label=\"CoreBooks\" size=\"lg\" />`.",
     "Tenant/workspace switcher row — a small `size=\"sm\"` mark as the leading slot of a ListRow or menu item.",
     "Custom SVG brand — pass an inline `<svg>` as `glyph` to render a real logomark on the primary fill instead of a letter.",
-    "Hosted GoDX identity surface — `<Logo mark=\"godx\" tone=\"success\" />` in an AuthShell `brand` bar or inside <AuthIdentity>: the canonical GoDX mark the package already owns. There is no separate identity-mark component and no asset to import.",
+    "Hosted GoDX identity surface — `<Logo mark=\"godx\" tone=\"success\" />` in an auth CenteredShell `brand` bar or inside <AuthIdentity>: the canonical GoDX mark the package already owns. There is no separate identity-mark component and no asset to import.",
     "Brand lockup in a shell header / auth brand bar — `<Logo mark=\"godx\" tone=\"success\" wordmark=\"GoDX\" />`: one element, brand-green, no wrapper div and no page CSS.",
     "Product-branded surface (\"GoDX ID\" legal pages, a Console/Admin topbar) — `<Logo mark=\"godx-lockup\" productSuffix=\"ID\" />`: the master lockup, the package's divider, and one accessible name, \"GoDX ID\"."
   ]

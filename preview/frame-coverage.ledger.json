@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-09-12",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 307,
-    "dimensionCells": 4298,
+    "exports": 261,
+    "dimensionCells": 3654,
     "covered": 94,
-    "untested": 2363,
-    "notApplicable": 1841,
+    "untested": 2007,
+    "notApplicable": 1565,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -845,10 +845,10 @@
       "baseline": {
         "covered": 2,
         "notApplicable": 5,
-        "untested": 7
+        "untested": 8
       },
       "dimensions": {
-        "variants": "covered:prop-evidence:variant",
+        "variants": "untested",
         "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -1396,34 +1396,6 @@
         "reducedMotion": "untested"
       }
     },
-    "Anchor": {
-      "group": "navigation",
-      "owner": "navigation/anchor",
-      "frames": [
-        "docs/navigation/anchor.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "AppLauncher": {
       "group": "layout",
       "owner": "layout/app-launcher",
@@ -1457,34 +1429,6 @@
       "owner": "navigation/app-setting-picker",
       "frames": [
         "docs/navigation/app-setting-picker.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "AppSettingToggle": {
-      "group": "navigation",
-      "owner": "navigation/app-setting-toggle",
-      "frames": [
-        "docs/navigation/app-setting-toggle.tsx"
       ],
       "baseline": {
         "covered": 0,
@@ -1584,34 +1528,6 @@
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Attachments": {
-      "group": "data-entry",
-      "owner": "data-entry/attachments",
-      "frames": [
-        "docs/data-entry/attachments.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -1761,34 +1677,6 @@
         "reducedMotion": "untested"
       }
     },
-    "AuthShell": {
-      "group": "layout",
-      "owner": "layout/auth-shell",
-      "frames": [
-        "docs/layout/auth-shell.tsx"
-      ],
-      "baseline": {
-        "covered": 2,
-        "notApplicable": 5,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "covered:prop-evidence:variant",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "covered:prop-evidence:density",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "AuthStack": {
       "group": "layout",
       "owner": "layout/auth-stack",
@@ -1917,34 +1805,6 @@
         "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "covered:prop-evidence:shape",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Banner": {
-      "group": "feedback",
-      "owner": "feedback/banner",
-      "frames": [
-        "docs/feedback/banner.tsx"
-      ],
-      "baseline": {
-        "covered": 1,
-        "notApplicable": 6,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "covered:prop-evidence:tone",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
@@ -2117,34 +1977,6 @@
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Callout": {
-      "group": "feedback",
-      "owner": "feedback/callout",
-      "frames": [
-        "docs/feedback/callout.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "untested",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -2407,175 +2239,6 @@
         "reducedMotion": "untested"
       }
     },
-    "Carousel": {
-      "group": "data-display",
-      "owner": "data-display/carousel",
-      "frames": [
-        "docs/data-display/carousel.tsx"
-      ],
-      "embeddable": true,
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "CarouselContent": {
-      "group": "data-display",
-      "owner": "data-display/carousel",
-      "frames": [
-        "docs/data-display/carousel.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "CarouselDots": {
-      "group": "data-display",
-      "owner": "data-display/carousel",
-      "frames": [
-        "docs/data-display/carousel.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "CarouselItem": {
-      "group": "data-display",
-      "owner": "data-display/carousel",
-      "frames": [
-        "docs/data-display/carousel.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "CarouselNext": {
-      "group": "data-display",
-      "owner": "data-display/carousel",
-      "frames": [
-        "docs/data-display/carousel.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "CarouselPrevious": {
-      "group": "data-display",
-      "owner": "data-display/carousel",
-      "frames": [
-        "docs/data-display/carousel.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "Cascader": {
       "group": "data-entry",
       "owner": "data-entry/cascader",
@@ -2612,128 +2275,16 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "ChatBubble": {
-      "group": "data-display",
-      "owner": "data-display/chat-bubble",
-      "frames": [
-        "docs/data-display/chat-bubble.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 3,
-        "untested": 11
+        "notApplicable": 5,
+        "untested": 9
       },
       "dimensions": {
         "variants": "untested",
-        "tones": "untested",
-        "sizes": "untested",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "ChatBubbleList": {
-      "group": "data-display",
-      "owner": "data-display/chat-bubble",
-      "frames": [
-        "docs/data-display/chat-bubble.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
+        "density": "untested",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "ChatComposer": {
-      "group": "data-entry",
-      "owner": "data-entry/chat-composer",
-      "frames": [
-        "docs/data-entry/chat-composer.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 4,
-        "untested": 10
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "ChatSuggestion": {
-      "group": "data-entry",
-      "owner": "data-entry/chat-suggestion",
-      "frames": [
-        "docs/data-entry/chat-suggestion.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -3151,34 +2702,6 @@
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Conversations": {
-      "group": "navigation",
-      "owner": "navigation/conversations",
-      "frames": [
-        "docs/navigation/conversations.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -3725,34 +3248,6 @@
         "reducedMotion": "untested"
       }
     },
-    "DraggablePanel": {
-      "group": "layout",
-      "owner": "layout/draggable-panel",
-      "frames": [
-        "docs/layout/draggable-panel.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "DropdownMenu": {
       "group": "navigation",
       "owner": "navigation/dropdown-menu",
@@ -4173,34 +3668,6 @@
         "reducedMotion": "untested"
       }
     },
-    "EmojiPicker": {
-      "group": "data-entry",
-      "owner": "data-entry/emoji-picker",
-      "frames": [
-        "docs/data-entry/emoji-picker.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 4,
-        "untested": 10
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "EmptyState": {
       "group": "data-display",
       "owner": "data-display/empty-state",
@@ -4316,7 +3783,7 @@
     },
     "FilterBar": {
       "group": "navigation",
-      "owner": "navigation/filter-bar",
+      "owner": "navigation/toolbar",
       "frames": [
         "docs/navigation/toolbar.tsx"
       ],
@@ -4344,7 +3811,7 @@
     },
     "FilterBarGroup": {
       "group": "navigation",
-      "owner": "navigation/filter-bar",
+      "owner": "navigation/toolbar",
       "frames": [
         "docs/navigation/toolbar.tsx"
       ],
@@ -4378,45 +3845,17 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "FloatButton": {
-      "group": "general",
-      "owner": "general/float-button",
-      "frames": [
-        "docs/general/float-button.tsx"
-      ],
-      "baseline": {
-        "covered": 1,
-        "notApplicable": 5,
+        "notApplicable": 6,
         "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
-        "shapes": "covered:prop-evidence:shape",
-        "density": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "untested",
         "ownership": "not-applicable:api-manifest",
-        "states": "untested",
+        "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -4553,90 +3992,6 @@
         "variants": "not-applicable:api-manifest",
         "tones": "covered:prop-evidence:tone",
         "sizes": "covered:prop-evidence:size",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "HoverCard": {
-      "group": "data-display",
-      "owner": "data-display/hover-card",
-      "frames": [
-        "docs/data-display/hover-card.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "HoverCardContent": {
-      "group": "data-display",
-      "owner": "data-display/hover-card",
-      "frames": [
-        "docs/data-display/hover-card.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "HoverCardTrigger": {
-      "group": "data-display",
-      "owner": "data-display/hover-card",
-      "frames": [
-        "docs/data-display/hover-card.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -4930,34 +4285,6 @@
         "reducedMotion": "untested"
       }
     },
-    "LegalDocumentShell": {
-      "group": "layout",
-      "owner": "layout/legal-document-shell",
-      "frames": [
-        "docs/layout/legal-document-shell/index.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "Legend": {
       "group": "data-display",
       "owner": "data-display/legend",
@@ -5099,62 +4426,6 @@
         "reducedMotion": "untested"
       }
     },
-    "Marquee": {
-      "group": "data-display",
-      "owner": "data-display/marquee",
-      "frames": [
-        "docs/data-display/marquee.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Masonry": {
-      "group": "layout",
-      "owner": "layout/masonry",
-      "frames": [
-        "docs/layout/masonry.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "MasterDetail": {
       "group": "layout",
       "owner": "layout/master-detail",
@@ -5173,34 +4444,6 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "MegaMenu": {
-      "group": "navigation",
-      "owner": "navigation/mega-menu",
-      "frames": [
-        "docs/navigation/mega-menu.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -5295,34 +4538,6 @@
         "reducedMotion": "untested"
       }
     },
-    "OrgChart": {
-      "group": "data-display",
-      "owner": "data-display/org-chart",
-      "frames": [
-        "docs/data-display/org-chart.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "OrgSwitcher": {
       "group": "layout",
       "owner": "layout/org-switcher",
@@ -5368,34 +4583,6 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "covered:prop-evidence:density",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "PageCover": {
-      "group": "layout",
-      "owner": "layout/page-cover",
-      "frames": [
-        "docs/layout/page-cover.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "untested",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
         "async": "untested",
@@ -5591,34 +4778,6 @@
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Paragraph": {
-      "group": "general",
-      "owner": "general/typography",
-      "frames": [
-        "docs/general/typography.tsx"
-      ],
-      "baseline": {
-        "covered": 1,
-        "notApplicable": 4,
-        "untested": 9
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "untested",
-        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -6156,34 +5315,6 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "RangeTimeline": {
-      "group": "data-display",
-      "owner": "data-display/range-timeline",
-      "frames": [
-        "docs/data-display/timeline.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "untested",
-        "ownership": "not-applicable:api-manifest",
         "states": "untested",
         "async": "untested",
         "responsive": "untested",
@@ -7399,62 +6530,6 @@
         "reducedMotion": "untested"
       }
     },
-    "SkeletonAvatar": {
-      "group": "feedback",
-      "owner": "feedback/skeleton",
-      "frames": [
-        "docs/feedback/skeleton.tsx"
-      ],
-      "baseline": {
-        "covered": 2,
-        "notApplicable": 5,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "covered:prop-evidence:size",
-        "shapes": "covered:prop-evidence:shape",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "SkeletonButton": {
-      "group": "feedback",
-      "owner": "feedback/skeleton",
-      "frames": [
-        "docs/feedback/skeleton.tsx"
-      ],
-      "baseline": {
-        "covered": 2,
-        "notApplicable": 5,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "covered:prop-evidence:size",
-        "shapes": "covered:prop-evidence:shape",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "SkeletonDetail": {
       "group": "feedback",
       "owner": "feedback/skeleton",
@@ -7511,34 +6586,6 @@
         "reducedMotion": "untested"
       }
     },
-    "SkeletonImage": {
-      "group": "feedback",
-      "owner": "feedback/skeleton",
-      "frames": [
-        "docs/feedback/skeleton.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "SkeletonInput": {
       "group": "feedback",
       "owner": "feedback/skeleton",
@@ -7554,34 +6601,6 @@
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "SkeletonNode": {
-      "group": "feedback",
-      "owner": "feedback/skeleton",
-      "frames": [
-        "docs/feedback/skeleton.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -7698,62 +6717,6 @@
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
         "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "SortableList": {
-      "group": "data-entry",
-      "owner": "data-entry/sortable-list",
-      "frames": [
-        "docs/data-entry/sortable-list.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "SpaceCompact": {
-      "group": "layout",
-      "owner": "layout/space-compact",
-      "frames": [
-        "docs/layout/space-compact.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "untested",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -8212,34 +7175,6 @@
         "reducedMotion": "untested"
       }
     },
-    "TagInput": {
-      "group": "data-entry",
-      "owner": "data-entry/tag-input",
-      "frames": [
-        "docs/data-entry/tag-input.tsx"
-      ],
-      "baseline": {
-        "covered": 2,
-        "notApplicable": 3,
-        "untested": 9
-      },
-      "dimensions": {
-        "variants": "covered:prop-evidence:variant",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "covered:prop-evidence:size",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "Text": {
       "group": "general",
       "owner": "general/typography",
@@ -8296,118 +7231,6 @@
         "reducedMotion": "untested"
       }
     },
-    "TextDiff": {
-      "group": "data-display",
-      "owner": "data-display/text-diff",
-      "frames": [
-        "docs/data-display/text-diff.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "ThoughtChain": {
-      "group": "data-display",
-      "owner": "data-display/thought-chain",
-      "frames": [
-        "docs/data-display/thought-chain.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "ThoughtChainItem": {
-      "group": "data-display",
-      "owner": "data-display/thought-chain",
-      "frames": [
-        "docs/data-display/thought-chain.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
-      },
-      "dimensions": {
-        "variants": "untested",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Thumbnail": {
-      "group": "data-display",
-      "owner": "data-display/thumbnail",
-      "frames": [
-        "docs/data-display/thumbnail.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "Timeline": {
       "group": "data-display",
       "owner": "data-display/timeline",
@@ -8426,34 +7249,6 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "covered:prop-evidence:density",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "TimelineGrid": {
-      "group": "data-display",
-      "owner": "data-display/timeline-grid",
-      "frames": [
-        "docs/data-display/timeline-grid.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
         "async": "untested",
@@ -8511,34 +7306,6 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
-        "states": "untested",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Title": {
-      "group": "general",
-      "owner": "general/typography",
-      "frames": [
-        "docs/general/typography.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "untested",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
         "states": "untested",
         "async": "untested",
         "responsive": "untested",
@@ -8663,7 +7430,7 @@
     },
     "Toolbar": {
       "group": "navigation",
-      "owner": "navigation/filter-bar",
+      "owner": "navigation/toolbar",
       "frames": [
         "docs/navigation/toolbar.tsx"
       ],
@@ -8692,7 +7459,7 @@
     },
     "ToolbarGroup": {
       "group": "navigation",
-      "owner": "navigation/filter-bar",
+      "owner": "navigation/toolbar",
       "frames": [
         "docs/navigation/toolbar.tsx"
       ],
@@ -8998,34 +7765,6 @@
         "reducedMotion": "untested"
       }
     },
-    "Typography": {
-      "group": "general",
-      "owner": "general/typography",
-      "frames": [
-        "docs/general/typography.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "Upload": {
       "group": "data-entry",
       "owner": "data-entry/upload",
@@ -9095,34 +7834,6 @@
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
-    "Welcome": {
-      "group": "data-display",
-      "owner": "data-display/welcome",
-      "frames": [
-        "docs/data-display/welcome.tsx"
-      ],
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",

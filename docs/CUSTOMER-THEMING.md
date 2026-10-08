@@ -122,7 +122,7 @@ pnpm add @fontsource/noto-sans-jp @fontsource/m-plus-2
 
 ```css
 @import "@godxjp/ui/styles";
-@import "@godxjp/ui/styles/fonts"; /* after the styles import: Noto Sans JP + M PLUS 2 */
+@import "@godxjp/ui/styles/fonts.css"; /* after the styles import: Noto Sans JP + M PLUS 2 */
 ```
 
 The GoDX preset adds the fonts import for you. The font sheet declares the faces and sets `--font-sans-base` to the bundled stack; if you supply the face yourself, skip it and name the family directly:

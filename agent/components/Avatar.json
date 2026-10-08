@@ -23,16 +23,6 @@
       "type": "\"default\" | \"tinted\""
     },
     {
-      "description": "Which side of the trigger the panel opens on. Defaults from `appearance` — a bar drops the grid below, anything else opens to the inline-end. State it when the chrome can be RE-DOCKED: `appearance` says the trigger is not in a bar but cannot say which way is out, and a rail pinned to the top edge still opens downward. Ignored by responsive=\"fullscreen\" and by the Sheet surface, which are not anchored to the trigger.",
-      "name": "side",
-      "type": "\"top\" | \"right\" | \"bottom\" | \"left\""
-    },
-    {
-      "description": "How the panel aligns to the trigger. Defaults from `appearance` — end in a bar, start otherwise. Same rule as `side`: state it only for chrome that knows its own orientation.",
-      "name": "align",
-      "type": "\"start\" | \"center\" | \"end\""
-    },
-    {
       "description": "Realtime reachability, drawn as an indicator at the block-end/inline-end corner of the mark. Ships the dot, its geometry tokens and a localized sr-only label TOGETHER, so presence is never colour-only (WCAG 1.4.1): each value also has its own silhouette — online = filled disc (--success), away = half-filled (--warning), busy = filled + a horizontal do-not-disturb bar (--destructive), offline = hollow ring (--muted-foreground). OMIT the prop for an entity with no presence concept (an organization mark, a capability medallion): no node and no attribute are emitted. `presence=\"offline\"` is the DIFFERENT, positive statement \"known to be unreachable\" — the same distinction ListRow draws between an omitted and a `false` `unread`.",
       "name": "presence",
       "type": "\"online\" | \"away\" | \"busy\" | \"offline\""
@@ -61,12 +51,12 @@
     3,
     35
   ],
-  "storyPath": "data-display/Avatar.stories.tsx",
+  "storyPath": "data-display/avatar.tsx",
   "subParts": [
     "AvatarFallback",
     "AvatarImage"
   ],
-  "tagline": "Radix Avatar wrapper with image and fallback slots for users, teams, and entities.",
+  "tagline": "Avatar mark with image and fallback slots for users, teams, and entities.",
   "usage": [
     "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
     "DO pass `fit=\"contain\"` on AvatarImage for a logo or app icon that is wide, transparent or off-centre — the default `cover` crops to fill, right for a face (gh#1176). A full-bleed square icon (the GoDX service icon set) keeps the default.",

@@ -24,7 +24,7 @@
     "Legend — the key that says what a COLOUR means across other marks; a FeatureList makes statements of its own."
   ],
   "rules": [],
-  "storyPath": "data-display/FeatureList.stories.tsx",
+  "storyPath": "data-display/feature-list.tsx",
   "tagline": "A list of STATEMENTS, each with a leading state glyph (included ✓ / limited − / excluded ✗), an optional wrapping description, and the glyph aligned to the first text line.",
   "usage": [
     "DO import from `@godxjp/ui/data-display`: `import { FeatureList } from \"@godxjp/ui/data-display\";`",

@@ -40,7 +40,7 @@
     13,
     23
   ],
-  "storyPath": "data-entry/UploadCropDialog.stories.tsx",
+  "storyPath": "data-entry/upload-crop-dialog.tsx",
   "tagline": "Modal crop dialog for a single image file — always controlled (open + file + onConfirm required); do NOT use standalone when Upload variant=\"avatar-crop\" already embeds it.",
   "usage": [
     "DO pass a File object selected by the user (e.g. from an <input type='file'> or drag-drop handler) to `file`; the dialog creates and revokes its own object URL — never create one yourself before passing.",

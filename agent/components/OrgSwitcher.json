@@ -77,7 +77,7 @@
     "Sidebar — APP scope, and therefore NOT where this goes. Its `brand` slot is the app's own lockup; putting the organization switcher there mixes two scopes in one header."
   ],
   "rules": [],
-  "storyPath": "layout/OrgSwitcher.stories.tsx",
+  "storyPath": "layout/org-switcher.tsx",
   "tagline": "Searchable organization switcher with canonical trigger geometry, desktop popover, and mobile sheet.",
   "usage": [
     "Provide only organizations the current user may select; the component does not authorize or fetch tenants.",

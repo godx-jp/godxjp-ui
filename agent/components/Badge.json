@@ -70,7 +70,7 @@
   "rules": [
     35
   ],
-  "storyPath": "data-display/Badge.stories.tsx",
+  "storyPath": "data-display/badge.tsx",
   "subParts": [
     "StatusBadge"
   ],

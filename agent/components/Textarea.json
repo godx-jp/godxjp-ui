@@ -103,7 +103,7 @@
     "Select with showSearch or SearchSelect — if the multi-line field is actually a tag/token input or a constrained lookup, prefer Select (showSearch) or SearchSelect over a Textarea that the user types into freely."
   ],
   "rules": [],
-  "storyPath": "data-entry/Textarea.stories.tsx",
+  "storyPath": "data-entry/textarea.tsx",
   "tagline": "Styled wrapper around native <textarea>. Pair with FormField for labelled fields. For a Markdown body (wiki page, issue description, mail) use the sibling package `@godxjp/editor` `MarkdownEditor` — this Textarea plus a formatting toolbar, preview through `@godxjp/markdown`, and paste/drop upload through a host `upload` function (gh#1109).",
   "usage": [
     "DO reach for `variant=\"ghost\"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.",

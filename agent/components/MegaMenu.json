@@ -1,8 +1,8 @@
 {
   "docPath": "navigation/mega-menu.tsx",
-  "example": "import { MegaMenu } from \"@godxjp/ui/navigation\";\n\n<MegaMenu\n  label=\"メインナビゲーション\"\n  value={route}\n  onValueChange={setRoute}\n  triggerAction=\"hover\"\n  items={[\n    {\n      key: \"products\",\n      label: \"製品\",\n      panel: {\n        groups: [\n          {\n            key: \"core\",\n            label: \"コア\",\n            description: \"毎日使う業務アプリ\",\n            links: [\n              { key: \"hr\", label: \"人事管理\", href: \"/hr\", description: \"従業員台帳と異動\" },\n              { key: \"payroll\", label: \"給与計算\", href: \"/payroll\" },\n            ],\n          },\n        ],\n        footer: <a href=\"/products\">すべての製品を見る</a>,\n      },\n    },\n    { key: \"pricing\", label: \"料金\", href: \"/pricing\" },\n  ]}\n/>",
+  "example": "import { MegaMenu } from \"@godxjp/ui/lab\";\n\n<MegaMenu\n  label=\"メインナビゲーション\"\n  value={route}\n  onValueChange={setRoute}\n  triggerAction=\"hover\"\n  items={[\n    {\n      key: \"products\",\n      label: \"製品\",\n      panel: {\n        groups: [\n          {\n            key: \"core\",\n            label: \"コア\",\n            description: \"毎日使う業務アプリ\",\n            links: [\n              { key: \"hr\", label: \"人事管理\", href: \"/hr\", description: \"従業員台帳と異動\" },\n              { key: \"payroll\", label: \"給与計算\", href: \"/payroll\" },\n            ],\n          },\n        ],\n        footer: <a href=\"/products\">すべての製品を見る</a>,\n      },\n    },\n    { key: \"pricing\", label: \"料金\", href: \"/pricing\" },\n  ]}\n/>",
   "group": "navigation",
-  "importPath": "@godxjp/ui/navigation",
+  "importPath": "@godxjp/ui/lab",
   "name": "MegaMenu",
   "props": [
     {
@@ -100,8 +100,9 @@
     44,
     45
   ],
-  "storyPath": "navigation/MegaMenu.stories.tsx",
+  "storyPath": "navigation/mega-menu.tsx",
   "tagline": "A primary site navigation whose top-level items disclose a full-width panel of grouped links (Ant Design `Menu mode=\"horizontal\"` whose SubMenu renders through popupRender). Implements the WAI-ARIA APG Disclosure Navigation pattern — NOT menu/menubar roles — with a roving tabindex across the bar, hover intent, Escape-to-trigger, and a narrow layout where the same disclosure lays out in flow.",
+  "tier": "lab",
   "usage": [
     "DO reach for this INSTEAD of DropdownMenu for a site nav. DropdownMenu is react-aria-components Menu, i.e. role=\"menu\" / role=\"menuitem\": a row of them announces a desktop application menubar for what is actually a set of links, and Tab then leaves the whole widget instead of walking the links. That is the classic megamenu a11y defect and it is why this component exists.",
     "DO give the bar its landmark name through `label` when a page has more than one nav (a primary bar plus a footer nav): two unnamed <nav> landmarks are indistinguishable in a landmark list.",

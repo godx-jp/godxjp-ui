@@ -18,7 +18,7 @@ npm i @godxjp/ui
 
 <!-- agent-catalog-counts:start -->
 
-The catalog — 185 components, 2188 tokens, 43 cardinal rules — is published in two forms from one
+The catalog — 161 components, 2183 tokens, 43 cardinal rules — is published in two forms from one
 source. **Entry point for either: [`AGENTS.md`](AGENTS.md).**
 <!-- agent-catalog-counts:end -->
 
@@ -52,10 +52,10 @@ static files straight from this public repo — no hosting, no deploy step:
 | [`agent/START-HERE.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md) | 11 KB | **read first** — self-contained: the four rules, the token override model, a page that passes review |
 | [`agent/llms.txt`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/llms.txt) | 3 KB | the [llms.txt](https://llmstxt.org/) entry point |
 | [`agent/index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json) | 3 KB | manifest: version, counts, every file's URL |
-| [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 51 KB | all 185 as name + group + tagline — **fetch this first** |
+| [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 47 KB | all 161 as name + group + tagline — **fetch this first** |
 | [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1 KB–36 KB | one file per component, each with its `importPath` — **this is the route to take** |
-| [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.3 MB | all 185 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
-| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 843 KB | all 2188 design tokens, their values and why they exist |
+| [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.2 MB | all 161 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
+| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 841 KB | all 2183 design tokens, their values and why they exist |
 | [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json) | 7 KB | the controlled prop vocabulary |
 | [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json) | 21 KB | the 43 cardinal rules |
 <!-- prettier-ignore-end -->
@@ -119,22 +119,22 @@ A value is defined **once** as a CSS var (`--primary`), mapped to a utility in t
 
 ## Component groups
 
-| Group              | Import                    | Examples                                                                                                                                                                                                                    |
-| ------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Layout**         | `@godxjp/ui/layout`       | `Flex`, `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Breadcrumb`, `Separator`, `AspectRatio`, `ResizablePanelGroup`                                                                                           |
-| **General**        | `@godxjp/ui/general`      | `Button`                                                                                                                                                                                                                    |
-| **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `Field`, `DatePicker`, `TimePicker`, `Switch`, `Toggle`, `Upload`, `Cascader`, `TreeSelect`, `ColorPicker`, `Slider`, `PasswordInput`, `PasswordStrength`, `InputOTP`, `Rating`, `TagInput` |
-| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `QrCode`, `CredentialReveal`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible`             |
-| **Feedback**       | `@godxjp/ui/feedback`     | `Dialog`, `AlertDialog`, `Sheet` (side or bottom), `Toaster` / `toast`, `Skeleton`, `Alert`, `Tooltip`                                                                                                                      |
-| **Query**          | `@godxjp/ui/query`        | `DataState`, `InfiniteQueryState` (adapter subpath — pulls TanStack Query; no router)                                                                                                                                       |
-| **React Router**   | `@godxjp/ui/react-router` | `PrefetchLink` — imports the optional `react-router-dom` peer, so it is kept out of `/query` (gh#996)                                                                                                                       |
-| **Navigation**     | `@godxjp/ui/navigation`   | `Tabs`, `Toolbar`, `DropdownMenu`, `Steps`, `Pagination`, `AppSettingPicker`                                                                                                                                                |
-| **App**            | `@godxjp/ui/app`          | `AppProvider`, `useDateTime` (adapter — i18n/datetime singleton)                                                                                                                                                            |
-| **Datetime**       | `@godxjp/ui/datetime`     | `formatDate` (mandatory for display)                                                                                                                                                                                        |
-| **Form**           | `@godxjp/ui/form`         | `useZodForm`, `FormRoot` (adapter subpath — pulls react-hook-form)                                                                                                                                                          |
-| **Hooks**          | `@godxjp/ui/hooks`        | `useIsMobile`, `useMediaQuery`                                                                                                                                                                                              |
-| **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports (tree-shakeable)                                                                                                                                                                   |
-| **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                                                                                                                                                                      |
+| Group              | Import                    | Examples                                                                                                                                                                                                        |
+| ------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Layout**         | `@godxjp/ui/layout`       | `Flex`, `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Breadcrumb`, `Separator`, `AspectRatio`, `ResizablePanelGroup`                                                                               |
+| **General**        | `@godxjp/ui/general`      | `Button`                                                                                                                                                                                                        |
+| **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `Field`, `DatePicker`, `TimePicker`, `Switch`, `Toggle`, `Upload`, `Cascader`, `TreeSelect`, `ColorPicker`, `Slider`, `PasswordInput`, `PasswordStrength`, `InputOTP`, `Rating` |
+| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `QrCode`, `CredentialReveal`, `Accordion`, `Popover`, `Collapsible`                          |
+| **Feedback**       | `@godxjp/ui/feedback`     | `Dialog`, `AlertDialog`, `Sheet` (side or bottom), `Toaster` / `toast`, `Skeleton`, `Alert`, `Tooltip`                                                                                                          |
+| **Query**          | `@godxjp/ui/query`        | `DataState`, `InfiniteQueryState` (adapter subpath — pulls TanStack Query; no router)                                                                                                                           |
+| **React Router**   | `@godxjp/ui/react-router` | `PrefetchLink` — imports the optional `react-router-dom` peer, so it is kept out of `/query` (gh#996)                                                                                                           |
+| **Navigation**     | `@godxjp/ui/navigation`   | `Tabs`, `Toolbar`, `DropdownMenu`, `Steps`, `Pagination`, `AppSettingPicker`                                                                                                                                    |
+| **App**            | `@godxjp/ui/app`          | `AppProvider`, `useDateTime` (adapter — i18n/datetime singleton)                                                                                                                                                |
+| **Datetime**       | `@godxjp/ui/datetime`     | `formatDate` (mandatory for display)                                                                                                                                                                            |
+| **Form**           | `@godxjp/ui/form`         | `useZodForm`, `FormRoot` (adapter subpath — pulls react-hook-form)                                                                                                                                              |
+| **Hooks**          | `@godxjp/ui/hooks`        | `useIsMobile`, `useMediaQuery`                                                                                                                                                                                  |
+| **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports (tree-shakeable)                                                                                                                                                       |
+| **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                                                                                                                                                          |
 
 ---
 
@@ -142,23 +142,23 @@ A value is defined **once** as a CSS var (`--primary`), mapped to a utility in t
 
 Replace these at the call site:
 
-| Removed / renamed (≤ v8)                  | Replacement (v11)                                   |
-| ----------------------------------------- | --------------------------------------------------- |
-| `Stack`                                   | `Flex direction="col"`                              |
-| `Inline`                                  | `Flex` (default `direction="row"`)                  |
-| `Autocomplete`                            | `Select` with `showSearch` + `options`              |
-| `CountrySelect`                           | `AppSettingPicker kind="country"`                   |
-| `LocalePicker`                            | `AppSettingPicker kind="language"`                  |
-| `CountryOptionLabel`                      | `Intl.DisplayNames` (ISO 3166-1 α-2) — no component |
-| `SwitchField`                             | `Field` + `Switch`                                  |
-| `CardStat`                                | `StatCard`                                          |
-| `KeyValueGrid`                            | `Descriptions`                                      |
-| `ProgressMeter`                           | `Progress`                                          |
-| `FilterBar`                               | `Toolbar`                                           |
-| `ChoiceField`                             | `Field`                                             |
-| `SkeletonCard`                            | `SkeletonStat`                                      |
-| `StatusBadge`                             | `Badge` (`status` / `tone`)                         |
-| `DialogConfirm` / `Dialog mode="confirm"` | `AlertDialog`                                       |
+| Removed / renamed (≤ v8)                | Replacement (v11)                                   |
+| --------------------------------------- | --------------------------------------------------- |
+| `Stack`                                 | `Flex direction="col"`                              |
+| `Inline`                                | `Flex` (default `direction="row"`)                  |
+| `Autocomplete`                          | `Select` with `showSearch` + `options`              |
+| `CountrySelect`                         | `AppSettingPicker kind="country"`                   |
+| `LocalePicker`                          | `AppSettingPicker kind="language"`                  |
+| `CountryOptionLabel`                    | `Intl.DisplayNames` (ISO 3166-1 α-2) — no component |
+| `SwitchField`                           | `Field` + `Switch`                                  |
+| `CardStat`                              | `StatCard`                                          |
+| `KeyValueGrid`                          | `Descriptions`                                      |
+| `ProgressMeter`                         | `Progress`                                          |
+| `FilterBar` (still exported, an alias)  | `Toolbar`                                           |
+| `ChoiceField`                           | `Field`                                             |
+| `SkeletonCard`                          | `SkeletonStat`                                      |
+| `StatusBadge` (still exported)          | `Badge` (`status` / `tone`)                         |
+| `DialogConfirm` (a confirm-mode dialog) | `AlertDialog`                                       |
 
 The full data-grid feature set (sort / search / column visibility / paging) is now built into the one `DataTable` (`@godxjp/ui/data-display`) — TanStack-powered, with the lean `data` + `columns` API for the common case and the compound parts (`DataTable.Search` / `.ViewOptions` / `.Pagination` …) for the rich chrome. The former separate data-grid subpath is gone: there is one `DataTable`.
 
@@ -195,7 +195,7 @@ pnpm add @fontsource/noto-sans-jp @fontsource/m-plus-2
 ```
 
 ```css
-@import "@godxjp/ui/styles/fonts"; /* after the styles import */
+@import "@godxjp/ui/styles/fonts.css"; /* after the styles import */
 ```
 
 Skip it to use your own face or a system stack: name it with `--font-sans-base` (see

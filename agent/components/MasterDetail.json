@@ -73,7 +73,7 @@
     24,
     40
   ],
-  "storyPath": "layout/MasterDetail.stories.tsx",
+  "storyPath": "layout/master-detail.tsx",
   "tagline": "Responsive master-detail composition: a fluid list beside a token-owned 300px/320px fixed rail, with a themeable collapse threshold. `rail` picks which region is fixed — default `detail` (the canonical 1fr/320px list + detail rail); `master` for a leading navigator rail.",
   "usage": [
     "DO use MasterDetail for team, member, service or settings screens where a selectable collection drives a detail surface. Default `rail=\"detail\"` gives the canonical fluid list + 320px detail rail; pass `rail=\"master\"` for a leading navigator rail.",

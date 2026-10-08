@@ -28,13 +28,13 @@
     },
     {
       "defaultValue": "false",
-      "description": "When true, the tooltip closes as soon as the pointer leaves the trigger (content is not hoverable). Passed through to Radix Root.",
+      "description": "No effect on the React Aria base (kept for API compatibility): React Aria tooltips are never hoverable content, so they already close when the pointer leaves the trigger.",
       "name": "disableHoverableContent",
       "type": "boolean"
     },
     {
       "defaultValue": "\"top\"",
-      "description": "On TooltipContent — preferred side for the tooltip panel. Radix flips automatically when there is not enough space.",
+      "description": "On TooltipContent — preferred side for the tooltip panel. It flips automatically when there is not enough space.",
       "name": "side",
       "type": "'top' | 'right' | 'bottom' | 'left'"
     },
@@ -76,8 +76,8 @@
   ],
   "related": [
     "Popover — use Popover (also @godxjp/ui/feedback) when the floating panel needs interactive content (forms, links, action menus) rather than read-only text. Tooltip is read-only; Popover is interactive.",
-    "HoverCard — for rich preview cards (user profiles, link previews) that appear on hover with more complex layout. Tooltip is for short text hints only.",
-    "Badge / StatusChip — for persistent, always-visible short labels inline with text; not hover-triggered. Use Tooltip when the hint should be hidden until hovered."
+    "Popover — `openOn=\"hover\"` for rich preview cards (user profiles, link previews) that appear on hover with more complex layout. Tooltip is for short text hints only.",
+    "Badge — for persistent, always-visible short labels inline with text; not hover-triggered. Use Tooltip when the hint should be hidden until hovered."
   ],
   "rules": [
     3,
@@ -85,20 +85,20 @@
     23,
     39
   ],
-  "storyPath": "feedback/Tooltip.stories.tsx",
+  "storyPath": "feedback/tooltip.tsx",
   "subParts": [
     "TooltipContent",
     "TooltipProvider",
     "TooltipTrigger"
   ],
-  "tagline": "Radix-based hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time.",
+  "tagline": "React Aria hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time.",
   "usage": [
     "DO compose the full three-part structure every time: <Tooltip> wraps <TooltipTrigger> (the element that triggers the tip) and <TooltipContent> (the floating panel). Omitting any part silently produces nothing.",
-    "DO NOT add an app-level <TooltipProvider> — every <Tooltip> self-provides its own Radix Provider. Only add <TooltipProvider> at a subtree root when you need a shared delayDuration different from the default 200ms across many tooltips.",
+    "DO NOT add an app-level <TooltipProvider> — every <Tooltip> self-provides its own provider. Only add <TooltipProvider> at a subtree root when you need a shared delayDuration different from the default 200ms across many tooltips.",
     "DO use asChild on TooltipTrigger when the trigger is already a Button, IconButton, or other interactive element — this avoids nesting a <button> inside a <button>, which is invalid HTML and breaks keyboard focus.",
-    "DON'T put non-interactive elements (plain <div>, <span>) as the direct TooltipTrigger child without asChild — Radix needs a focusable element for keyboard accessibility. Wrap the target in a <span tabIndex={0}> or use a Button.",
+    "DON'T put non-interactive elements (plain <div>, <span>) as the direct TooltipTrigger child without asChild — the trigger needs a focusable element for keyboard accessibility. Wrap the target in a <span tabIndex={0}> or use a Button.",
     "For controlled usage (e.g. programmatic show/hide or testing), pass open + onOpenChange to <Tooltip>. For typical hover/focus behaviour, leave both unset (uncontrolled).",
-    "TooltipContent renders inside a Radix Portal appended to document.body — z-index and overflow:hidden on ancestors do NOT clip it. Use className to extend max width beyond the built-in max-w-xs if long text is expected."
+    "TooltipContent renders in a portal appended to document.body — z-index and overflow:hidden on ancestors do NOT clip it. Use className to extend max width beyond the built-in max-w-xs if long text is expected."
   ],
   "useCases": [
     "Explaining an icon-only Button action (e.g. a trash icon, a copy-to-clipboard icon) in a DataTable action column — show the label on hover without cluttering the row.",

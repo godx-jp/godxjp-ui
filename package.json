@@ -70,6 +70,10 @@
       "import": "./dist/themes/godx.js"
     },
     "./themes/godx.css": "./dist/themes/godx.css",
+    "./lab": {
+      "types": "./dist/lab/index.d.ts",
+      "import": "./dist/lab/index.js"
+    },
     "./styles": "./dist/styles/index.css",
     "./styles/core": "./dist/styles/core.css",
     "./styles/core-with-fallbacks": "./dist/styles/core-with-fallbacks.css",
@@ -265,8 +269,8 @@
       "import": "./dist/components/data-entry/cascader.js"
     },
     "./ui/carousel": {
-      "types": "./dist/components/data-display/carousel.d.ts",
-      "import": "./dist/components/data-display/carousel.js"
+      "types": "./dist/lab/carousel.d.ts",
+      "import": "./dist/lab/carousel.js"
     },
     "./ui/tree-select": {
       "types": "./dist/components/data-entry/tree-select.d.ts",
@@ -338,7 +342,7 @@
     "audit:component-cases": "node scripts/check-component-case-evidence.mjs",
     "audit:examples": "node scripts/ui-audit.mjs docs",
     "build": "tsup && tsc -p tsconfig.build.json && node scripts/copy-styles.mjs && node scripts/fix-esm-extensions.mjs && node scripts/add-use-client.mjs && node scripts/build-precompiled-css.mjs",
-    "build:packages": "cd packages/markdown && node ../../node_modules/tsup/dist/cli-default.js && cd ../editor && node ../../node_modules/tsup/dist/cli-default.js && cd ../block-editor && node ../../node_modules/tsup/dist/cli-default.js",
+    "build:packages": "cd packages/markdown && node ../../node_modules/tsup/dist/cli-default.js && cd ../editor && node ../../node_modules/tsup/dist/cli-default.js && cd ../block-editor && node ../../node_modules/tsup/dist/cli-default.js && cd ../chat && node ../../node_modules/tsup/dist/cli-default.js",
     "build:jis-level1-fonts": "node scripts/build-jis-level1-fonts.mjs",
     "capture:voiceover": "node scripts/capture-voiceover-evidence.mjs",
     "check:agent-catalog": "node scripts/gen-agent-catalog.mjs --check",
@@ -440,14 +444,14 @@
     "test:visual:topbar-collision": "node scripts/topbar-collision-visual.mjs",
     "test:watch": "vitest",
     "typecheck": "node node_modules/typescript-7/bin/tsc --noEmit -p tsconfig.json && pnpm typecheck:packages",
-    "typecheck:packages": "node node_modules/typescript-7/bin/tsc --noEmit -p packages/markdown/tsconfig.json && node node_modules/typescript-7/bin/tsc --noEmit -p packages/editor/tsconfig.json && node node_modules/typescript-7/bin/tsc --noEmit -p packages/block-editor/tsconfig.json",
+    "typecheck:packages": "node node_modules/typescript-7/bin/tsc --noEmit -p packages/markdown/tsconfig.json && node node_modules/typescript-7/bin/tsc --noEmit -p packages/editor/tsconfig.json && node node_modules/typescript-7/bin/tsc --noEmit -p packages/block-editor/tsconfig.json && node node_modules/typescript-7/bin/tsc --noEmit -p packages/chat/tsconfig.json",
     "typecheck:docs": "node node_modules/typescript-7/bin/tsc --noEmit -p tsconfig.docs.json",
     "typecheck:mcp": "node node_modules/typescript-7/bin/tsc --noEmit -p mcp/tsconfig.json",
     "typecheck:ts6": "tsc --noEmit -p tsconfig.json",
     "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:token-width-wins && pnpm check:no-external-assets && pnpm check:token-scale-bypass && pnpm check:radix-surface && pnpm check:dist-tokens-resolve && pnpm check:no-hardcoded-geometry && pnpm check:no-hardcoded-css-values && pnpm check:disclosure-duplication && pnpm check:no-inline-magic-numbers && pnpm check:no-tailwind-class-assertions && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:doc-prop-existence && pnpm check:mcp-catalog-coverage && pnpm check:mcp-orphans && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm check:frame-coverage && pnpm test",
     "verify:browser": "pnpm check:contrast && pnpm check:text-ink-clip && pnpm check:frame-overflow && pnpm check:font-fallback-metrics && pnpm check:visual-audit",
     "verify:ci": "pnpm verify:ci:static && pnpm check:frame-contracts && pnpm test",
-    "verify:ci:static:gates": "pnpm build && pnpm check:agent-api-names && pnpm check:consumer-english && pnpm check:packed-public-contract && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:registry && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:token-width-wins && pnpm check:no-external-assets && pnpm check:token-scale-bypass && pnpm check:no-antd-runtime && pnpm check:radix-surface && pnpm check:dist-tokens-resolve && pnpm check:no-hardcoded-geometry && pnpm check:no-hardcoded-css-values && pnpm check:disclosure-duplication && pnpm check:no-inline-magic-numbers && pnpm check:no-tailwind-class-assertions && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-lockstep && pnpm check:measurement-contract && pnpm check:mcp-token-sync && pnpm check:email-token-sync && pnpm check:mcp-sync && pnpm check:doc-prop-existence && pnpm check:mcp-catalog-coverage && pnpm check:mcp-orphans && pnpm check:mcp-catalog-completeness && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm run audit && pnpm check:frame-coverage-report && pnpm check:gate-coverage && pnpm check:mcp-prop-sync && pnpm check:catalog-contradictions && pnpm check:catalog-snippets && pnpm check:absorbed-names && pnpm check:agent-catalog && pnpm check:style-layers",
+    "verify:ci:static:gates": "pnpm build && pnpm check:agent-api-names && pnpm check:consumer-english && pnpm check:mcp-guidance && pnpm check:packed-public-contract && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:registry && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:token-width-wins && pnpm check:no-external-assets && pnpm check:token-scale-bypass && pnpm check:no-antd-runtime && pnpm check:radix-surface && pnpm check:dist-tokens-resolve && pnpm check:no-hardcoded-geometry && pnpm check:no-hardcoded-css-values && pnpm check:disclosure-duplication && pnpm check:no-inline-magic-numbers && pnpm check:no-tailwind-class-assertions && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-lockstep && pnpm check:measurement-contract && pnpm check:mcp-token-sync && pnpm check:email-token-sync && pnpm check:mcp-sync && pnpm check:doc-prop-existence && pnpm check:mcp-catalog-coverage && pnpm check:mcp-orphans && pnpm check:mcp-catalog-completeness && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm run audit && pnpm check:frame-coverage-report && pnpm check:gate-coverage && pnpm check:mcp-prop-sync && pnpm check:catalog-contradictions && pnpm check:catalog-snippets && pnpm check:absorbed-names && pnpm check:agent-catalog && pnpm check:style-layers",
     "verify:ci:static": "node scripts/run-gate-list.mjs verify:ci:static:gates",
     "verify:publish-tree": "pnpm build && pnpm check:packed-public-contract && pnpm check:use-client && pnpm check:dist-tokens-resolve",
     "verify:release": "pnpm verify:static && pnpm check:frame-contracts && pnpm check:frame-coverage",
@@ -461,7 +465,8 @@
     "check:frame-token-scope": "node scripts/check-frame-token-scope.mjs",
     "build:styles-css": "node scripts/build-precompiled-css.mjs",
     "check:agent-api-names": "node scripts/check-agent-api-names.mjs",
-    "check:consumer-english": "node scripts/check-consumer-english.mjs"
+    "check:consumer-english": "node scripts/check-consumer-english.mjs",
+    "check:mcp-guidance": "node scripts/check-mcp-guidance.mjs"
   },
   "peerDependencies": {
     "@tanstack/react-query": ">=5.0.0",

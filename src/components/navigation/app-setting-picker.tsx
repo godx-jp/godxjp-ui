@@ -14,6 +14,7 @@ import {
 import { APP_DATE_FORMAT_OPTIONS, getDateFormatLabel } from "../../app/date-format-labels";
 import { APP_TIME_FORMAT_OPTIONS, getTimeFormatLabel } from "../../app/time-format-labels";
 import { getTimezoneLabel, resolveTimezonePickerOptions } from "../../app/timezones";
+import { getRegisteredLocales } from "../../app/locales";
 import { APP_LOCALES } from "../../app/types";
 import {
   APP_BRANDS,
@@ -39,6 +40,15 @@ import {
   SelectValue,
 } from "../data-entry/select";
 
+/** A language named in itself ("de" → "Deutsch"), or undefined where Intl.DisplayNames is missing. */
+function localeEndonym(code: string): string | undefined {
+  try {
+    const name = new Intl.DisplayNames([code], { type: "language" }).of(code);
+    return name ? name.charAt(0).toLocaleUpperCase(code) + name.slice(1) : undefined;
+  } catch {
+    return undefined;
+  }
+}
 export type {
   AppSettingKind,
   AppSettingCycleKind,
@@ -125,7 +135,16 @@ const AppSettingMenu = React.forwardRef<HTMLButtonElement, AppSettingPickerMenuP
     const items = React.useMemo<{ value: string; label: React.ReactNode }[]>(() => {
       switch (kind) {
         case "locale":
-          return APP_LOCALES.map((code) => ({ value: code, label: t(`locale.${code}`) }));
+          // Every REGISTERED locale (v32, gh#1219), not just the three built-ins: a host that
+          // registers `de` gets it in the picker. Built-ins keep their translated label; others
+          // are named in their own language (an endonym: "Deutsch"), the convention for a
+          // language picker, via Intl.DisplayNames (BCP-47).
+          return getRegisteredLocales().map((code) => ({
+            value: code,
+            label: (APP_LOCALES as readonly string[]).includes(code)
+              ? t(`locale.${code}`)
+              : (localeEndonym(code) ?? code),
+          }));
         case "timezone":
           return resolveTimezonePickerOptions(ctx?.timezoneOptions, current ?? "").map((tz) => ({
             value: tz,

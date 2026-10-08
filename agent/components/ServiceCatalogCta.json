@@ -31,7 +31,6 @@
   "rules": [
     40
   ],
-  "storyPath": "data-display/ServiceLauncherCard.stories.tsx",
   "tagline": "Dashed companion tile that closes a launcher grid with the real catalog/add route — same Card geometry as ServiceLauncherCard, no status or metadata.",
   "usage": [
     "DO render it as the LAST child of the same ResponsiveGrid that holds the ServiceLauncherCards, so it inherits the 3→2→1 ladder and lines up with the tiles it follows.",

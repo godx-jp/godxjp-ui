@@ -17,7 +17,7 @@
           "badge",
           "date-picker",
           "input",
-          "tag-input",
+          "select-tags-inline",
           "textarea",
           "time-picker"
         ]

@@ -234,7 +234,7 @@
     6,
     23
   ],
-  "storyPath": "data-entry/Calendar.stories.tsx",
+  "storyPath": "data-entry/calendar.tsx",
   "subParts": [
     "DayButton"
   ],

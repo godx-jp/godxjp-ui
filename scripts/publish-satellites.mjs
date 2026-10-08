@@ -22,7 +22,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = process.cwd();
-const SATELLITES = ["packages/markdown", "packages/editor", "packages/block-editor"];
+const SATELLITES = ["packages/markdown", "packages/editor", "packages/block-editor", "packages/chat"];
 const args = process.argv.slice(2);
 const tag = args[args.indexOf("--tag") + 1];
 const dryRun = args.includes("--dry-run");

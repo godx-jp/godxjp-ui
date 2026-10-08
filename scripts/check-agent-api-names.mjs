@@ -186,9 +186,12 @@ export function importsInFences(markdown) {
 /** Every `@godxjp/ui/<subpath>` mentioned anywhere in the text, as an export-map key. */
 export function subpathsMentioned(text) {
   const out = new Set();
-  for (const m of text.matchAll(/@godxjp\/ui((?:\/[a-z0-9][a-z0-9-]*)+)(?![\w-])/g)) {
+  // A segment may carry a dot (`styles/fonts.css`, `themes/godx.css`): stopping at the dot read
+  // `@godxjp/ui/styles/fonts.css` as `./styles/fonts`, a key the export map does not have.
+  for (const m of text.matchAll(/@godxjp\/ui((?:\/[a-z0-9][a-z0-9.-]*)+)(?![\w-])/g)) {
+    const sub = m[1].replace(/\.+$/, ""); // a sentence-ending period is not part of the path
     // `@godxjp/ui/dist/...`, `/agent/...`, `/scripts/...` and `/docs/...` are FILE paths inside the package
-    if (!/^\/(dist|agent|scripts|docs)(\/|$)/.test(m[1])) out.add("." + m[1]);
+    if (!/^\/(dist|agent|scripts|docs)(\/|$)/.test(sub)) out.add("." + sub);
   }
   return [...out];
 }

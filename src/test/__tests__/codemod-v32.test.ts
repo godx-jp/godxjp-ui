@@ -59,3 +59,48 @@ describe("codemod v32", () => {
     expect(transformSource("b.tsx", src, { godx: true }).changed).toBe(false);
   });
 });
+
+describe("codemod v32 renames and moves (gh#1223)", () => {
+  it("merges a renamed component into an existing import of the target and renames JSX", () => {
+    const src = `import { Alert, Banner } from "@godxjp/ui/feedback";\nexport const A = () => <><Alert /><Banner title="x" /></>;\n`;
+    const { out, notes } = transformSource("a.tsx", src);
+    expect(out).toContain('import { Alert } from "@godxjp/ui/feedback";');
+    expect(out).not.toContain("Banner");
+    expect(out).toContain('<Alert title="x" />');
+    expect(notes.join("\n")).toMatch(/variant="banner"/);
+  });
+
+  it("renames compound members (Callout.Title → Alert.Title) and keeps an alias", () => {
+    const src = `import { Callout, HoverCard as HC } from "@godxjp/ui";\nexport const A = () => <><Callout><Callout.Title>t</Callout.Title></Callout><HC /></>;\n`;
+    const { out } = transformSource("a.tsx", src);
+    expect(out).toContain("<Alert><Alert.Title>t</Alert.Title></Alert>");
+    expect(out).toContain("Popover as HC");
+    expect(out).toContain("<HC />");
+  });
+
+  it("moves lab and chat components to their new packages, keeping the rest in place", () => {
+    const src = `import { Card, Carousel, ChatBubble } from "@godxjp/ui/data-display";\n`;
+    const { out } = transformSource("a.tsx", src);
+    expect(out).toContain('import { Card } from "@godxjp/ui/data-display";');
+    expect(out).toContain('import { Carousel } from "@godxjp/ui/lab";');
+    expect(out).toContain('import { ChatBubble } from "@godxjp/chat";');
+  });
+
+  it("keeps type-only imports type-only, and reports removed parts without rewriting them", () => {
+    const src = `import type { SpaceCompactProp } from "@godxjp/ui/layout";\nimport { SkeletonAvatar, Skeleton } from "@godxjp/ui/feedback";\n`;
+    const { out, notes } = transformSource("a.tsx", src);
+    expect(out).toContain("SkeletonAvatar");
+    expect(notes.join("\n")).toMatch(/SkeletonAvatar was removed/);
+  });
+
+  it("does not touch a same-named export of another package", () => {
+    const src = `import { Banner } from "some-other-lib";\nexport const A = () => <Banner />;\n`;
+    expect(transformSource("a.tsx", src).changed).toBe(false);
+  });
+
+  it("is idempotent after renames", () => {
+    const src = `import { Banner, TagInput } from "@godxjp/ui";\nexport const A = () => <><Banner /><TagInput /></>;\n`;
+    const once = transformSource("a.tsx", src).out;
+    expect(transformSource("a.tsx", once).changed).toBe(false);
+  });
+});

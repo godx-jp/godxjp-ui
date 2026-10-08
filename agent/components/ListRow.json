@@ -70,7 +70,7 @@
     42,
     44
   ],
-  "storyPath": "data-display/ListRow.stories.tsx",
+  "storyPath": "data-display/list-row.tsx",
   "tagline": "Single-line entity row (leading · title/description · trailing action) for SHORT lists inside a Card — sessions, API tokens, linked accounts, passkeys, MFA factors, invitations.",
   "usage": [
     "DO use ListRow for a SHORT (≈2–8 item) list of entities inside a Card where each row is one line with an action — account sessions, API keys, linked identities, passkeys. Stack rows in a `<Card><CardContent flush>` so the rows draw their own quiet dividers edge-to-edge.",

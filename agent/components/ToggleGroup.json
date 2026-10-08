@@ -75,7 +75,7 @@
     3,
     13
   ],
-  "storyPath": "data-entry/ToggleGroup.stories.tsx",
+  "storyPath": "data-entry/toggle-group.tsx",
   "subParts": [
     "ToggleGroupItem"
   ],

@@ -112,7 +112,6 @@
     23,
     31
   ],
-  "storyPath": "data-entry/Form.stories.tsx",
   "tagline": "Bind a typed field to RHF or a server adapter, with shared FormField presentation and validation.",
   "usage": [
     "Use inside the documented form composition; do not nest native form elements.",

@@ -137,7 +137,7 @@
     3,
     6
   ],
-  "storyPath": "data-entry/NumberInput.stories.tsx",
+  "storyPath": "data-entry/number-input.tsx",
   "tagline": "WAI-ARIA spinbutton for localized numeric entry — composes the real Input (role=spinbutton, inputMode=decimal) with stacked increment/decrement step Buttons. Type freely, Arrow/Shift-Arrow step, value commits clamped to min/max + rounded to precision.",
   "usage": [
     "DO use NumberInput (not `<Input type='number'>`) whenever numeric entry wants steppers, min/max clamping, precision rounding, or a ¥/% affix — it is the canonical numeric primitive. Plain Input has no stepper and no clamp.",

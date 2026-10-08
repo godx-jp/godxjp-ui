@@ -29,7 +29,6 @@
   "rules": [
     23
   ],
-  "storyPath": "data-entry/FormErrors.stories.tsx",
   "subParts": [
     "FormErrorsProvider"
   ],

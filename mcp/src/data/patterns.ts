@@ -388,6 +388,70 @@ import { Flex } from "@godxjp/ui/layout";
   },
 
   {
+    name: "pricing-plans",
+    aliases: ["pricing-table", "plan-picker", "pricing-card"],
+    tagline:
+      "Pricing plan cards — ResponsiveGrid preset + Card featured + FeatureList + tabular price. A composition, not a component (dxs-platform/pkg-ui#14).",
+    tags: ["pricing", "plans", "billing", "card", "composition"],
+    code: `import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Badge, FeatureList } from "@godxjp/ui/data-display";
+import { ResponsiveGrid } from "@godxjp/ui/layout";
+import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
+
+type Plan = {
+  id: string;
+  name: string;
+  summary: string;
+  /** Minor units of the ISO 4217 currency; formatted with Intl, never hand-built. */
+  price: number;
+  currency: string;
+  recommended?: boolean;
+  current?: boolean;
+  features: { state: "included" | "excluded" | "limited"; label: string; description?: string }[];
+};
+
+export function PricingPlans({ plans, onChoose }: { plans: Plan[]; onChoose: (id: string) => void }) {
+  const { t, locale } = useTranslation();
+  return (
+    // 3 columns from the sm container step, 1 below it — the geometry is the preset's, not yours.
+    <ResponsiveGrid preset="pricing-plans" gap="md">
+      {plans.map((plan) => {
+        const money = new Intl.NumberFormat(locale, { style: "currency", currency: plan.currency });
+        const digits = money.resolvedOptions().maximumFractionDigits ?? 0;
+        return (
+          // "featured" is the one recommended plan: a brand-toned perimeter, not a bigger card.
+          <Card key={plan.id} variant={plan.recommended ? "featured" : "default"}>
+            <CardHeader>
+              <CardTitle>{plan.name}</CardTitle>
+              <CardDescription>{plan.summary}</CardDescription>
+              {plan.current ? <Badge tone="success">{t("billing.currentPlan")}</Badge> : null}
+            </CardHeader>
+            <CardContent>
+              <Text size="xl" weight="semibold" tabular>
+                {money.format(plan.price / 10 ** digits)}
+              </Text>
+              {/* FeatureList owns the included / limited / excluded glyph, colour and sr-only prefix. */}
+              <FeatureList items={plan.features} />
+            </CardContent>
+            <CardFooter>
+              <Button
+                fullWidth
+                variant={plan.recommended ? "default" : "outline"}
+                disabled={plan.current}
+                onClick={() => onChoose(plan.id)}
+              >
+                {plan.current ? t("billing.currentPlan") : t("billing.choosePlan")}
+              </Button>
+            </CardFooter>
+          </Card>
+        );
+      })}
+    </ResponsiveGrid>
+  );
+}`,
+  },
+
+  {
     name: "confirm-destructive",
     tagline:
       "Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).",

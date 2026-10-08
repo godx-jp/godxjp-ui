@@ -31,7 +31,7 @@
   "rules": [
     5
   ],
-  "storyPath": "app/ThemeScope.stories.tsx",
+  "storyPath": "providers/theme-scope.tsx",
   "tagline": "Makes a themed REGION reach the overlays it opens. Every overlay portals to document.body, so custom-property inheritance stops at the portal boundary and a tenant-themed region's Dialog, Select listbox, Popover and Toast paint the package defaults. Wrap the region in ThemeScope and they carry the region's tokens.",
   "usage": [
     "DO wrap the region, then theme it the way you already do — `style={tenantTheme(hex).vars}`, `data-tenant=\"acme\"`, `className=\"dark\"`, or a stylesheet rule that never mentions React. ThemeScope reads the COMPUTED tokens at its own element, so all of those paths behave identically; it has no theme prop and needs none.",

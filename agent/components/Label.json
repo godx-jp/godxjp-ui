@@ -22,11 +22,11 @@
     "Checkbox — the most common bare-Label partner; pair with Label via shared useId() id/htmlFor when Field's layout is too heavy."
   ],
   "rules": [],
-  "storyPath": "data-entry/Label.stories.tsx",
-  "tagline": "Styled Radix Label; use htmlFor to associate with a control.",
+  "storyPath": "data-entry/label.tsx",
+  "tagline": "Styled React Aria Label; use htmlFor to associate with a control.",
   "usage": [
     "DO: always pass `htmlFor` matching the `id` of the associated control — this is the entire purpose of the component. Without it, clicking the label text does NOT focus or toggle the control, breaking a11y and UX.",
-    "DO: import from `@godxjp/ui/data-entry` (not shadcn or Radix directly). The godx-ui Label extends Radix's LabelPrimitive with `data-slot=\"label\"`, `select-none`, and `group-data-[disabled]` opacity-50 — hand-rolling a `<label>` loses all of these.",
+    "DO: import from `@godxjp/ui/data-entry` (not shadcn or a primitive library directly). The godx-ui Label extends React Aria's Label with `data-slot=\"label\"`, `select-none`, and `group-data-[disabled]` opacity-50 — hand-rolling a `<label>` loses all of these.",
     "DON'T: use Label as a standalone visible heading or section title. It is a form-control association primitive. For page/section headings use semantic HTML (`<h2>`, etc.) or a typography class instead.",
     "DON'T: wrap Label around a control that is already labelled internally. FormField, Field, and CheckboxGroup all render Label internally — adding a second Label creates a duplicate association and redundant screen-reader announcement.",
     "DO: pair Label with Checkbox or Switch when NOT using the compound wrapper (Field). In that case generate the shared id with `React.useId()` and pass it to both `id` on the control and `htmlFor` on Label.",

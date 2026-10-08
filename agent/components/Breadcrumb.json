@@ -33,7 +33,7 @@
     "PrefetchLink — if ancestor breadcrumb segments should prefetch their destination query on hover/focus, consider pairing the `to` values with `PrefetchLink` in a custom breadcrumb or pre-warming the cache on mount; Breadcrumb's internal links are plain react-router-dom `<Link>` with no prefetch behaviour."
   ],
   "rules": [],
-  "storyPath": "layout/Breadcrumb.stories.tsx",
+  "storyPath": "navigation/breadcrumb.tsx",
   "tagline": "Standalone breadcrumb nav rendering an ordered trail of page segments.",
   "usage": [
     "DO import from `@godxjp/ui/layout` (not from a navigation or general sub-path) and pass a single `items` prop — an ordered array of `{ label, to? }` objects. No children, no sub-components, no render-prop API.",

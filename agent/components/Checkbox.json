@@ -48,7 +48,7 @@
     "Field — the internal layout primitive (control slot + Label + description) that Checkbox.Group renders per item. Use it directly only when you need a one-off labelled checkbox or radio item outside of a group, and you want the consistent indent/description layout without the group's value-management overhead."
   ],
   "rules": [],
-  "storyPath": "data-entry/Checkbox.stories.tsx",
+  "storyPath": "data-entry/checkbox.tsx",
   "subParts": [
     "CheckboxVisual"
   ],

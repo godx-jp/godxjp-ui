@@ -1,4 +1,8 @@
 {
+  "absorbed": [
+    "Paragraph",
+    "Typography"
+  ],
   "example": "import { Text } from \"@godxjp/ui/general\";\n\n<Text size=\"xs\" tone=\"muted\">補助テキスト</Text>\n<Text weight=\"medium\" tabular>¥1,240,000</Text>\n<Text size=\"xs\" mono tone=\"muted\">RC-204881</Text>\n\n// A link in running content — the affordance, composed onto a router link.\n<Text asChild link><Link href=\"/view/PKG-12\">ログイン画面の余白</Link></Text>",
   "group": "general",
   "importPath": "@godxjp/ui/general",
@@ -132,7 +136,7 @@
       "type": "boolean | { text, editing, icon, tooltip, onStart, onChange, onCancel, onEnd, maxLength, autoSize, triggerType, enterIcon, tabIndex }"
     },
     {
-      "description": "Single-line truncation, antd's spelling. antd drops `rows` / `expandable` / `onExpand` on `Text` — an inline run has no second line to expand into — and that omission is ported; reach for `Paragraph` when you want them. It is the SAME axis as `truncate` / `clamp` and OUTRANKS both (dev builds warn), because it is the only spelling that can also carry a suffix or a tooltip. `tooltip: true` (the children) or a node shows the full text in a Tooltip ONLY while the run is actually clipped — on pointer hover, and on keyboard focus of the Text itself (`asChild` link) or of the nearest focusable control around it (a Tree `treeitem`, a DataTable sort button, a link); the Text never becomes a tab stop of its own and its accessible name stays the full text. With `asChild` the child element is the truncated box (one `<a>`, not `<a><a>`). A `<Text ellipsis>` in `ColumnDef.header` truncates inside its column like a cell.",
+      "description": "Single-line truncation, antd's spelling. antd drops `rows` / `expandable` / `onExpand` on `Text` — an inline run has no second line to expand into — and that omission is ported; for a multi-line run use `clamp` (antd's `Paragraph` was retired in v32). It is the SAME axis as `truncate` / `clamp` and OUTRANKS both (dev builds warn), because it is the only spelling that can also carry a suffix or a tooltip. `tooltip: true` (the children) or a node shows the full text in a Tooltip ONLY while the run is actually clipped — on pointer hover, and on keyboard focus of the Text itself (`asChild` link) or of the nearest focusable control around it (a Tree `treeitem`, a DataTable sort button, a link); the Text never becomes a tab stop of its own and its accessible name stays the full text. With `asChild` the child element is the truncated box (one `<a>`, not `<a><a>`). A `<Text ellipsis>` in `ColumnDef.header` truncates inside its column like a cell.",
       "name": "ellipsis",
       "type": "boolean | { suffix, symbol, defaultExpanded, expanded, onEllipsis, tooltip }"
     },

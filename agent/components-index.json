@@ -42,7 +42,8 @@
   {
     "group": "data-display",
     "name": "RangeTimeline",
-    "tagline": "Horizontal intervals with token-owned geometry and optional endpoint editing."
+    "tagline": "Horizontal intervals with token-owned geometry and optional endpoint editing.",
+    "tier": "lab"
   },
   {
     "group": "layout",
@@ -52,17 +53,16 @@
   {
     "group": "layout",
     "name": "PageCover",
-    "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish."
+    "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
+    "tier": "lab"
   },
   {
+    "absorbed": [
+      "SpaceCompact"
+    ],
     "group": "layout",
     "name": "Flex",
-    "tagline": "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls."
-  },
-  {
-    "group": "layout",
-    "name": "SpaceCompact",
-    "tagline": "Weld a row (or column) of controls into one visual unit — antd Space.Compact. Inner corner radii are zeroed and the shared border collapses to one hairline; each child keeps its own focus ring and its own size."
+    "tagline": "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls — and, with `attached`, a row of controls welded into ONE visual unit (antd Space.Compact)."
   },
   {
     "group": "layout",
@@ -76,16 +76,12 @@
   },
   {
     "absorbed": [
+      "AuthShell",
       "OrganizationChoiceList"
     ],
     "group": "layout",
-    "name": "AuthShell",
-    "tagline": "Centred auth/login page shell — brand bar (top) + centred card (main) + footer, over min-h-dvh, at comfortable control density."
-  },
-  {
-    "group": "layout",
     "name": "CenteredShell",
-    "tagline": "Authenticated, no-sidebar, centred-column page shell (hosted-ID My Page / account / standalone settings) — padded topbar with real actions + a width-tiered centred column, zero custom CSS."
+    "tagline": "The centred root shell, two shapes: `variant=\"page\"` (default) — authenticated, no-sidebar, centred-column page (hosted-ID My Page / account / standalone settings) with a padded topbar; `variant=\"auth\"` / `\"auth-canonical\"` — the unauthenticated login/mfa/reset shell (brand bar + vertically centred auth card + footer). Zero custom CSS either way."
   },
   {
     "group": "layout",
@@ -120,7 +116,8 @@
   {
     "group": "layout",
     "name": "DraggablePanel",
-    "tagline": "A floating surface the person using it can MOVE — drag it by the title-bar handle, or focus the handle and nudge it with the arrow keys. Bounded to the viewport, position reported through onPositionChange and never stored by the library."
+    "tagline": "A floating surface the person using it can MOVE — drag it by the title-bar handle, or focus the handle and nudge it with the arrow keys. Bounded to the viewport, position reported through onPositionChange and never stored by the library.",
+    "tier": "lab"
   },
   {
     "group": "layout",
@@ -135,7 +132,8 @@
   {
     "group": "layout",
     "name": "LegalDocumentShell",
-    "tagline": "Long-form legal/policy document surface (terms, privacy, DPA, cookie policy, SLA) — semantic article/nav/section landmarks, real anchors, a sticky table-of-contents rail, scroll-spy aria-current, hash deep links with a token-driven scroll offset and focus handoff. All legal text stays consumer-owned."
+    "tagline": "Long-form legal/policy document surface (terms, privacy, DPA, cookie policy, SLA) — semantic article/nav/section landmarks, real anchors, a sticky table-of-contents rail, scroll-spy aria-current, hash deep links with a token-driven scroll offset and focus handoff. All legal text stays consumer-owned.",
+    "tier": "lab"
   },
   {
     "group": "layout",
@@ -145,37 +143,30 @@
   {
     "group": "general",
     "name": "FloatButton",
-    "tagline": "Ant Design's corner action, ported whole — a control pinned to the viewport above the page, with FloatButton.Group (a stack, or a menu behind one trigger) and FloatButton.BackTop. The corner insets are tokens, so a service moves the mark without a media query."
+    "tagline": "Ant Design's corner action, ported whole — a control pinned to the viewport above the page, with FloatButton.Group (a stack, or a menu behind one trigger) and FloatButton.BackTop. The corner insets are tokens, so a service moves the mark without a media query.",
+    "tier": "lab"
   },
   {
     "group": "general",
     "name": "Button",
-    "tagline": "Core button with variant + size presets, built on cva and Radix Slot (asChild)."
+    "tagline": "Core button with variant + size presets, built on cva with the kit's own Slot (asChild)."
   },
   {
+    "absorbed": [
+      "Paragraph",
+      "Typography"
+    ],
     "group": "general",
     "name": "Text",
     "tagline": "Typographic primitive — use INSTEAD of a hand-rolled `<span className=\"text-[13px] font-medium text-muted-foreground\">`. Size is a type-scale step (never px); tone/weight are tokens."
   },
   {
+    "absorbed": [
+      "Title"
+    ],
     "group": "general",
     "name": "Heading",
     "tagline": "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>; `size` overrides the size alone, and its top three steps are the display ramp a marketing hero needs."
-  },
-  {
-    "group": "general",
-    "name": "Typography",
-    "tagline": "antd's prose container — a plain <article> that Title / Paragraph / Text / Link sit inside, and the compound root so `<Typography.Text>` from an antd codebase compiles here unchanged."
-  },
-  {
-    "group": "general",
-    "name": "Title",
-    "tagline": "antd Typography.Title — a heading with five levels and the antd block behaviours (copyable, editable, ellipsis, the decorations). A SIBLING of `Heading`, which is this library's own four-level heading and is unchanged."
-  },
-  {
-    "group": "general",
-    "name": "Paragraph",
-    "tagline": "antd Typography.Paragraph — a block of body text with the full ellipsis contract (rows + an expand control) and the antd block behaviours. Renders a <div>, matching antd."
   },
   {
     "group": "general",
@@ -259,17 +250,13 @@
   {
     "group": "data-display",
     "name": "TextDiff",
-    "tagline": "What changed between two versions of a text — removed runs in <del>, added runs in <ins>, inline or side by side, per line / word / character, with CJK cut per character and long unchanged runs folded."
+    "tagline": "What changed between two versions of a text — removed runs in <del>, added runs in <ins>, inline or side by side, per line / word / character, with CJK cut per character and long unchanged runs folded.",
+    "tier": "lab"
   },
   {
     "group": "data-display",
     "name": "FeatureList",
     "tagline": "A list of STATEMENTS, each with a leading state glyph (included ✓ / limited − / excluded ✗), an optional wrapping description, and the glyph aligned to the first text line."
-  },
-  {
-    "group": "data-display",
-    "name": "Thumbnail",
-    "tagline": "A framed picture at a FIXED height with its own INTRINSIC width — the shape a wrapping row of screenshots with different aspect ratios needs."
   },
   {
     "group": "data-display",
@@ -334,7 +321,8 @@
   {
     "group": "data-display",
     "name": "TimelineGrid",
-    "tagline": "The time-axis half of the Timeline family: a vertical hour axis, one column per day (or room, or machine) and event blocks placed by start time and duration. Overlapping events are laid out side by side automatically. NOT a calendar — no month view, no navigation, no drag-to-create, no recurrence, no timezone conversion."
+    "tagline": "The time-axis half of the Timeline family: a vertical hour axis, one column per day (or room, or machine) and event blocks placed by start time and duration. Overlapping events are laid out side by side automatically. NOT a calendar — no month view, no navigation, no drag-to-create, no recurrence, no timezone conversion.",
+    "tier": "lab"
   },
   {
     "group": "data-display",
@@ -398,7 +386,8 @@
       "CountrySelect",
       "SearchSelect",
       "Typeahead",
-      "AsyncSelect"
+      "AsyncSelect",
+      "TagInput"
     ],
     "group": "data-entry",
     "name": "Select",
@@ -417,7 +406,7 @@
   {
     "group": "data-entry",
     "name": "Label",
-    "tagline": "Styled Radix Label; use htmlFor to associate with a control."
+    "tagline": "Styled React Aria Label; use htmlFor to associate with a control."
   },
   {
     "group": "data-entry",
@@ -449,38 +438,17 @@
   },
   {
     "group": "feedback",
-    "name": "AlertDialogRoot",
-    "tagline": "Compound alertdialog Root — the role=\"alertdialog\" mirror of Dialog's root. Wraps Radix AlertDialog.Root and supplies the context AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel read. Parts: AlertDialogTrigger/AlertDialogPortal/AlertDialogOverlay/AlertDialogContent/AlertDialogHeader/AlertDialogFooter/AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel."
-  },
-  {
-    "group": "feedback",
     "name": "Sheet",
-    "tagline": "Side-panel drawer / responsive detail panel (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom, responsive=auto|side|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter."
+    "tagline": "Side-panel drawer / responsive detail panel (React Aria modal dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom, responsive=auto|side|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter."
   },
   {
+    "absorbed": [
+      "Banner",
+      "Callout"
+    ],
     "group": "feedback",
     "name": "Alert",
-    "tagline": "Inline alert banner with variant-aware icon + optional dismiss. Parts: Alert/AlertTitle/AlertDescription/AlertActions/AlertQueryError."
-  },
-  {
-    "group": "feedback",
-    "name": "Banner",
-    "tagline": "Full-bleed page/shell attention strip (past-due subscription, support session, maintenance). Parts: Banner.Title/Description/Content/Actions."
-  },
-  {
-    "group": "feedback",
-    "name": "Callout",
-    "tagline": "Static aside INSIDE a document body (docs admonition, CMS note, GitHub `> [!NOTE]`). role=\"note\", never a live region. Parts: Callout.Title/Description/Content/Actions."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonTable",
-    "tagline": "Loading placeholder matching the DataTable layout (header + N rows). Drop-in while data loads (deferred props)."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonRows",
-    "tagline": "Repeated flat loading lines on a responsive grid — the list-shaped placeholder when the final layout is rows of short bars, not a table header, not avatar + prose."
+    "tagline": "Status message with a tone icon and optional dismiss, in three presentations: inline card, full-bleed page/shell strip (`variant=\"banner\"`), or a non-live aside inside a document (`variant=\"callout\"`, GitHub `> [!NOTE]`). Parts: Alert.Title/Description/Content/Actions/QueryError."
   },
   {
     "group": "feedback",
@@ -490,7 +458,7 @@
   {
     "group": "navigation",
     "name": "Tabs",
-    "tagline": "Radix tab container with optional Ant-style `items` API. Pass items for the common full TabsList/TabsContent set, or compose TabsList/TabsTrigger/TabsContent manually when you need per-panel control."
+    "tagline": "React Aria tab container with optional Ant-style `items` API. Pass items for the common full TabsList/TabsContent set, or compose TabsList/TabsTrigger/TabsContent manually when you need per-panel control."
   },
   {
     "group": "navigation",
@@ -510,7 +478,7 @@
   {
     "group": "navigation",
     "name": "Toolbar",
-    "tagline": "List-page filter strip (the framework FilterBar) — SearchInput + labelled ToolbarGroup filter slots + a clear-all affordance, optionally sticky."
+    "tagline": "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. `FilterBar`/`FilterBarGroup` are the same components under their alias names."
   },
   {
     "group": "providers",
@@ -570,7 +538,7 @@
   {
     "group": "data-entry",
     "name": "Slider",
-    "tagline": "Numeric slider on react-aria-components with the antd 6 API — one thumb over a point, or `range` for a span. `value` takes a plain number (antd) or a number[] (the Radix-era spelling); both still work."
+    "tagline": "Numeric slider on react-aria-components with the antd 6 API — one thumb over a point, or `range` for a span. `value` takes a plain number (antd) or a number[] (the v22-era array spelling); both still work."
   },
   {
     "group": "data-entry",
@@ -593,14 +561,19 @@
     "tagline": "Radio group on react-aria-components, with an options-array shorthand — always use Radio.Group, never a bare radio input. `role=\"radio\"` is the real `<input>`; the painted dot is the `<label>` around it and carries `data-state`."
   },
   {
+    "absorbed": [
+      "HoverCard",
+      "HoverCardTrigger",
+      "HoverCardContent"
+    ],
     "group": "data-display",
     "name": "Popover",
-    "tagline": "Radix-backed floating panel anchored to a trigger — always compose with PopoverTrigger + PopoverContent; never use a raw div overlay."
+    "tagline": "React Aria floating panel anchored to a trigger — always compose with PopoverTrigger + PopoverContent; never use a raw div overlay."
   },
   {
     "group": "data-display",
     "name": "ScrollArea",
-    "tagline": "A native scrolling box (no Radix since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor)."
+    "tagline": "A native scrolling box (no scroll library since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor)."
   },
   {
     "group": "data-display",
@@ -615,7 +588,7 @@
   {
     "group": "feedback",
     "name": "Tooltip",
-    "tagline": "Radix-based hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time."
+    "tagline": "React Aria hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time."
   },
   {
     "group": "data-display",
@@ -625,7 +598,7 @@
   {
     "group": "data-display",
     "name": "Avatar",
-    "tagline": "Radix Avatar wrapper with image and fallback slots for users, teams, and entities."
+    "tagline": "Avatar mark with image and fallback slots for users, teams, and entities."
   },
   {
     "group": "layout",
@@ -633,59 +606,20 @@
     "tagline": "Tokenized horizontal or vertical rule, optionally INTERRUPTED by a localized label (day divider, unread watermark, auth conjunction)."
   },
   {
+    "absorbed": [
+      "SkeletonAvatar",
+      "SkeletonButton",
+      "SkeletonNode",
+      "SkeletonImage"
+    ],
     "group": "feedback",
     "name": "Skeleton",
-    "tagline": "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article)."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonDetail",
-    "tagline": "Fixed-shape placeholder for a RECORD page — title, subtitle, then a bordered box of six label/value pairs. Takes no props: the shape IS the contract, so every detail screen loads identically."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonStat",
-    "tagline": "Fixed-shape placeholder for ONE KPI tile — label, big value, caption. Takes no props, so a row of tiles loads at a uniform height and nothing reflows when the numbers arrive."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonArticle",
-    "tagline": "Avatar + heading line + paragraph placeholder — Ant Design's own <Skeleton> shape, for a comment, a profile block or a feed item."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonAvatar",
-    "tagline": "Avatar-shaped placeholder (also Skeleton.Avatar) sized from the --control-height tier."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonButton",
-    "tagline": "Button-shaped placeholder (also Skeleton.Button) — two control-heights wide."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonInput",
-    "tagline": "Field-shaped placeholder (also Skeleton.Input) — five control-heights wide."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonForm",
-    "tagline": "The skeleton of a `Form columns={N}` — label + control PAIRS on the form's own ResponsiveGrid, not the flat line list SkeletonRows draws."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonNode",
-    "tagline": "Square media/custom placeholder (also Skeleton.Node); children centre inside it."
-  },
-  {
-    "group": "feedback",
-    "name": "SkeletonImage",
-    "tagline": "SkeletonNode carrying the image glyph (also Skeleton.Image)."
+    "tagline": "Base pulsing skeleton block, the namespace the presets hang off (Skeleton.Input / .Article), and the ONE entry for every loading shape: SkeletonTable / SkeletonRows / SkeletonDetail / SkeletonStat / SkeletonArticle / SkeletonInput / SkeletonForm."
   },
   {
     "group": "data-entry",
     "name": "Toggle",
-    "tagline": "Radix Toggle wrapper with default/outline variants and tokenized sizes."
+    "tagline": "React Aria toggle button with default/outline/soft variants and tokenized sizes."
   },
   {
     "group": "data-entry",
@@ -695,17 +629,12 @@
   {
     "group": "layout",
     "name": "AspectRatio",
-    "tagline": "Radix AspectRatio wrapper for stable media and preview frames."
+    "tagline": "Fixed-ratio box (CSS aspect-ratio) for stable media and preview frames."
   },
   {
     "group": "data-display",
     "name": "Accordion",
-    "tagline": "Radix accordion — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent."
-  },
-  {
-    "group": "data-display",
-    "name": "HoverCard",
-    "tagline": "Radix hover card — a rich popover shown on hover/focus of a trigger (for sighted-pointer affordances; not a replacement for Tooltip's short text)."
+    "tagline": "React Aria disclosure group — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent."
   },
   {
     "group": "data-entry",
@@ -733,11 +662,6 @@
     "tagline": "One-of-N from a small, closed, always-visible set — the enterprise Segmented / filter bar drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen."
   },
   {
-    "group": "data-entry",
-    "name": "TagInput",
-    "tagline": "Chips/tags input — type + Enter (or comma) to add a tag, Backspace to remove the last; controlled via value/onValueChange (string[])."
-  },
-  {
     "group": "layout",
     "name": "ResizablePanel",
     "tagline": "Resizable panel group/child/handle primitives from react-resizable-panels."
@@ -745,7 +669,8 @@
   {
     "group": "data-display",
     "name": "Carousel",
-    "tagline": "Embla-backed carousel primitives: previous/next controls, CarouselDots indicators, and a context API."
+    "tagline": "Embla-backed carousel primitives: previous/next controls, CarouselDots indicators, and a context API.",
+    "tier": "lab"
   },
   {
     "absorbed": [
@@ -755,16 +680,12 @@
       "DateFormatPicker",
       "TimeFormatPicker",
       "ThemePicker",
-      "DensityPicker"
+      "DensityPicker",
+      "AppSettingToggle"
     ],
     "group": "navigation",
     "name": "AppSettingPicker",
     "tagline": "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat | theme | brand | density | fontSize) — covers locale/format AND the four theme axes. Throws if used without AppProvider AND without controlled value+onValueChange."
-  },
-  {
-    "group": "navigation",
-    "name": "AppSettingToggle",
-    "tagline": "ONE button that steps a single AppProvider setting to its NEXT value and shows that value as its glyph — theme (Sun/Moon/Monitor), density, fontSize, timeFormat. The no-menu counterpart to AppSettingPicker: same binding contract, same option order, one tap instead of open-then-choose. Renders disabled (never throws) outside AppProvider when uncontrolled."
   },
   {
     "group": "data-entry",
@@ -804,12 +725,14 @@
   {
     "group": "data-entry",
     "name": "EmojiPicker",
-    "tagline": "Page icon / reaction picker in a Popover (gh#1164): search by the active language's CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and \"remove icon\". No skin tones."
+    "tagline": "Page icon / reaction picker in a Popover (gh#1164): search by the active language's CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and \"remove icon\". No skin tones.",
+    "tier": "lab"
   },
   {
     "group": "data-entry",
     "name": "SortableList",
-    "tagline": "Reorder a flat list or a grid of tiles (gh#1173). Each item has a grip: drag it with a pointer (touch included — the grip sets touch-action: none), or focus it and press Space/Enter to lift, the arrows (Home / End) to move, Space/Enter to drop, Esc to cancel. Every step is spoken in a polite live region (\"2 of 3\"). The order is the value."
+    "tagline": "Reorder a flat list or a grid of tiles (gh#1173). Each item has a grip: drag it with a pointer (touch included — the grip sets touch-action: none), or focus it and press Space/Enter to lift, the arrows (Home / End) to move, Space/Enter to drop, Esc to cancel. Every step is spoken in a polite live region (\"2 of 3\"). The order is the value.",
+    "tier": "lab"
   },
   {
     "group": "feedback",
@@ -857,11 +780,6 @@
     "tagline": "Nine-dot topbar app grid — the platform-standard way to switch app (the Google Workspace shape)."
   },
   {
-    "group": "navigation",
-    "name": "FilterBar",
-    "tagline": "Domain-neutral list-page filter toolbar with optional clear action and labelled groups."
-  },
-  {
     "group": "data-display",
     "name": "PermissionMatrix",
     "tagline": "Domain data is 100% consumer-supplied."
@@ -904,7 +822,8 @@
   {
     "group": "navigation",
     "name": "MegaMenu",
-    "tagline": "A primary site navigation whose top-level items disclose a full-width panel of grouped links (Ant Design `Menu mode=\"horizontal\"` whose SubMenu renders through popupRender). Implements the WAI-ARIA APG Disclosure Navigation pattern — NOT menu/menubar roles — with a roving tabindex across the bar, hover intent, Escape-to-trigger, and a narrow layout where the same disclosure lays out in flow."
+    "tagline": "A primary site navigation whose top-level items disclose a full-width panel of grouped links (Ant Design `Menu mode=\"horizontal\"` whose SubMenu renders through popupRender). Implements the WAI-ARIA APG Disclosure Navigation pattern — NOT menu/menubar roles — with a roving tabindex across the bar, hover intent, Escape-to-trigger, and a narrow layout where the same disclosure lays out in flow.",
+    "tier": "lab"
   },
   {
     "group": "data-display",
@@ -924,9 +843,13 @@
   {
     "group": "data-display",
     "name": "OrgChart",
-    "tagline": "An organization chart: boxes (avatar, name, title, extra) joined by CSS connector lines, top-down; `agent` nodes are dashed. Scrolls horizontally in its own named region when wider than its container, and turns into an indented Tree when the CONTAINER is under 40rem. APG tree view (tree/treeitem/group, roving tabindex, arrow keys)."
+    "tagline": "An organization chart: boxes (avatar, name, title, extra) joined by CSS connector lines, top-down; `agent` nodes are dashed. Scrolls horizontally in its own named region when wider than its container, and turns into an indented Tree when the CONTAINER is under 40rem. APG tree view (tree/treeitem/group, roving tabindex, arrow keys).",
+    "tier": "lab"
   },
   {
+    "absorbed": [
+      "Thumbnail"
+    ],
     "group": "data-display",
     "name": "Image",
     "tagline": "antd `Image` + `Image.PreviewGroup`: a picture that opens in a full-viewport preview (zoom in/out by button, wheel or double-click; rotate; flip; reset; drag to pan). Inside an `ImagePreviewGroup` every Image at any depth joins one gallery in document order — prev/next buttons, ←/→, a \"2 / 3\" counter. Esc closes; focus is trapped and returned to the picture."
@@ -939,12 +862,14 @@
   {
     "group": "data-display",
     "name": "Marquee",
-    "tagline": "A track of content that travels continuously, carrying the WCAG 2.2.2 pause control that makes it conformant. The clone count is MEASURED against the viewport and re-measured on resize; under prefers-reduced-motion it does not move at all."
+    "tagline": "A track of content that travels continuously, carrying the WCAG 2.2.2 pause control that makes it conformant. The clone count is MEASURED against the viewport and re-measured on resize; under prefers-reduced-motion it does not move at all.",
+    "tier": "lab"
   },
   {
     "group": "layout",
     "name": "Masonry",
-    "tagline": "Ant Design `Masonry` (6.0.0): tiles of UNEQUAL height packed into columns, each tile dropped into whichever column is shortest when its turn comes. DOM order stays `items` order at every width, so the reading order never follows the packing."
+    "tagline": "Ant Design `Masonry` (6.0.0): tiles of UNEQUAL height packed into columns, each tile dropped into whichever column is shortest when its turn comes. DOM order stays `items` order at every width, so the reading order never follows the packing.",
+    "tier": "lab"
   },
   {
     "group": "layout",
@@ -954,6 +879,7 @@
   {
     "group": "navigation",
     "name": "Anchor",
-    "tagline": "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`."
+    "tagline": "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`.",
+    "tier": "lab"
   }
 ]

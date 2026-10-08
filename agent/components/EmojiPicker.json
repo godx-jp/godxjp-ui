@@ -1,8 +1,8 @@
 {
   "docPath": "docs/data-entry/emoji-picker.tsx",
-  "example": "import { EmojiPicker } from \"@godxjp/ui/data-entry\";\n\n<EmojiPicker value={icon} onValueChange={setIcon} />",
+  "example": "import { EmojiPicker } from \"@godxjp/ui/lab\";\n\n<EmojiPicker value={icon} onValueChange={setIcon} />",
   "group": "data-entry",
-  "importPath": "@godxjp/ui/data-entry",
+  "importPath": "@godxjp/ui/lab",
   "name": "EmojiPicker",
   "props": [
     {
@@ -71,6 +71,7 @@
   "rules": [],
   "storyPath": "data-entry/emoji-picker.tsx",
   "tagline": "Page icon / reaction picker in a Popover (gh#1164): search by the active language's CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and \"remove icon\". No skin tones.",
+  "tier": "lab",
   "usage": [
     "DO use it for a page icon next to PageContainer `icon` — pass the icon itself as `trigger`.",
     "The data loads on first open (one locale, ~100 KB gzip); nothing ships in your main bundle."

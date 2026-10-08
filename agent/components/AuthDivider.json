@@ -23,7 +23,7 @@
     44,
     45
   ],
-  "storyPath": "layout/AuthDivider.stories.tsx",
+  "storyPath": "layout/auth-divider.tsx",
   "tagline": "The auth-scoped PRESET over `Separator label` — a localized conjunction between two equal rules.",
   "usage": [
     "DO use AuthDivider only INSIDE an auth form. It is a thin preset over `<Separator label>`: it re-points the --separator-* knobs at the --auth-shell-divider-* layer (the 11px auth micro-scale, the auth rule/label colours), so using it elsewhere drags auth geometry into an unrelated screen.",

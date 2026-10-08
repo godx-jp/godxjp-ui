@@ -70,6 +70,7 @@ const SATELLITES = [
   "packages/markdown/package.json",
   "packages/editor/package.json",
   "packages/block-editor/package.json",
+  "packages/chat/package.json",
 ];
 const satellites = SATELLITES.map((file) => ({
   file,

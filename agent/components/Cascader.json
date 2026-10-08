@@ -193,7 +193,7 @@
     23,
     31
   ],
-  "storyPath": "data-entry/Cascader.stories.tsx",
+  "storyPath": "data-entry/cascader.tsx",
   "tagline": "Multi-level hierarchical path picker (Popover + cascading columns); value is always a string[] path, never a flat ID — passing a bare string breaks it.",
   "usage": [
     "DO pass a string[] path as value in single mode (e.g. ['country','region','city']). DON'T pass a flat string ID — the component treats value as an ordered path array and will render nothing if you pass a bare string.",

@@ -1,8 +1,8 @@
 {
   "docPath": "general/float-button.tsx",
-  "example": "import { FloatButton } from \"@godxjp/ui/general\";\nimport { MessageCircle, Share2 } from \"lucide-react\";\n\n<FloatButton.Group trigger=\"click\" type=\"primary\" icon={<MessageCircle />} aria-label=\"Trợ lý\">\n  <FloatButton tooltip=\"Hỏi trợ lý\" badge={{ count: 3 }} />\n  <FloatButton tooltip=\"Chia sẻ\" icon={<Share2 />} />\n  <FloatButton.BackTop />\n</FloatButton.Group>",
+  "example": "import { FloatButton } from \"@godxjp/ui/lab\";\nimport { MessageCircle, Share2 } from \"lucide-react\";\n\n<FloatButton.Group trigger=\"click\" type=\"primary\" icon={<MessageCircle />} aria-label=\"Trợ lý\">\n  <FloatButton tooltip=\"Hỏi trợ lý\" badge={{ count: 3 }} />\n  <FloatButton tooltip=\"Chia sẻ\" icon={<Share2 />} />\n  <FloatButton.BackTop />\n</FloatButton.Group>",
   "group": "general",
-  "importPath": "@godxjp/ui/general",
+  "importPath": "@godxjp/ui/lab",
   "name": "FloatButton",
   "props": [
     {
@@ -67,14 +67,15 @@
   "related": [
     "Button — the same control IN the layout flow. A float button is a Button that gave up its place in the page and took a corner instead.",
     "Popover — anchors a panel to a trigger; it does not place the trigger.",
-    "Banner — a full-bleed strip, not a corner mark.",
+    "Alert — `variant=\"banner\"` is a full-bleed strip, not a corner mark.",
     "Toolbar / PageContainer extra — where an action belongs when it IS part of this page's content."
   ],
   "rules": [],
-  "storyPath": "general/FloatButton.stories.tsx",
+  "storyPath": "general/float-button.tsx",
   "tagline": "Ant Design's corner action, ported whole — a control pinned to the viewport above the page, with FloatButton.Group (a stack, or a menu behind one trigger) and FloatButton.BackTop. The corner insets are tokens, so a service moves the mark without a media query.",
+  "tier": "lab",
   "usage": [
-    "DO import from `@godxjp/ui/general`: `import { FloatButton } from \"@godxjp/ui/general\";`",
+    "DO import from `@godxjp/ui/lab` (the opt-in lab subpath): `import { FloatButton } from \"@godxjp/ui/lab\";`",
     "DO give every float button a name — `tooltip` as a plain string is enough, since it becomes the aria-label too.",
     "DO move the mark with the `--float-button-offset-block-end` / `--float-button-offset-inline-end` tokens when a sticky action bar or a mobile tab bar is already in that corner.",
     "DO pass `target={() => element}` to FloatButton.BackTop inside a shell that owns its own scroll region, so it watches that region rather than the document.",

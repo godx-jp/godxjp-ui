@@ -3,7 +3,6 @@
   "compilerOptions": {
     "paths": {
       "@godxjp/markdown": ["../markdown/src/index.ts"],
-      "@godxjp/chat": ["../chat/src/index.ts"],
       "@godxjp/ui/hooks": ["../../src/lib/hooks.ts"],
       "@godxjp/ui/lib/utils": ["../../src/lib/utils.ts"],
       "@godxjp/ui/datetime": ["../../src/lib/datetime/index.ts"],

@@ -1,8 +1,8 @@
 {
   "docPath": "data-entry/chat-composer.tsx",
-  "example": "import { ChatComposer } from \"@godxjp/ui/data-entry\";\n\nconst [draft, setDraft] = useState(\"\");\nconst [streaming, setStreaming] = useState(false);\n\n<ChatComposer\n  value={draft}\n  onValueChange={setDraft}\n  onSubmit={(text) => { send(text); setDraft(\"\"); }}\n  loading={streaming}\n  onCancel={() => setStreaming(false)}\n  placeholder={t(\"chat.placeholder\")}\n  footer={t(\"dataEntry.chatComposer.hintEnter\")}\n/>",
+  "example": "import { ChatComposer } from \"@godxjp/chat\";\n\nconst [draft, setDraft] = useState(\"\");\nconst [streaming, setStreaming] = useState(false);\n\n<ChatComposer\n  value={draft}\n  onValueChange={setDraft}\n  onSubmit={(text) => { send(text); setDraft(\"\"); }}\n  loading={streaming}\n  onCancel={() => setStreaming(false)}\n  placeholder={t(\"chat.placeholder\")}\n  footer={t(\"dataEntry.chatComposer.hintEnter\")}\n/>",
   "group": "data-entry",
-  "importPath": "@godxjp/ui/data-entry",
+  "importPath": "@godxjp/chat",
   "name": "ChatComposer",
   "props": [
     {
@@ -139,7 +139,7 @@
     43,
     45
   ],
-  "storyPath": "data-entry/ChatComposer.stories.tsx",
+  "storyPath": "data-entry/chat-composer.tsx",
   "tagline": "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter / Shift+Enter / ⌘-or-Ctrl+Enter is configurable and never fires during an IME conversion.",
   "usage": [
     "DO pair a controlled `value` with `onValueChange` — a controlled value with no synchronised handler is the classic frozen-input bug, and it freezes the whole conversation.",

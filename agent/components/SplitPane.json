@@ -49,7 +49,7 @@
   "rules": [
     24
   ],
-  "storyPath": "layout/SplitPane.stories.tsx",
+  "storyPath": "layout/split-pane.tsx",
   "tagline": "Two-column layout with a main content area and a fixed-width aside panel.",
   "usage": [
     "DO: pass all right-panel content via the `aside` prop — it renders inside a semantic `<aside>` element at a fixed rem width (sm=20rem, md=22rem). The `children` prop fills the main `1fr` column. Both accept any ReactNode.",

@@ -101,7 +101,6 @@
     "DataTable — exact tabular figures."
   ],
   "rules": [],
-  "storyPath": "charts/BarChart.stories.tsx",
   "tagline": "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram.",
   "usage": [
     "DO import from the charts entry: `import { BarChart } from \"@godxjp/ui/charts\";` (recharts optional peer required).",

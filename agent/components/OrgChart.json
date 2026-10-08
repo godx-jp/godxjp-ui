@@ -1,8 +1,8 @@
 {
   "docPath": "data-display/org-chart.tsx",
-  "example": "import { Avatar, AvatarFallback, Badge, OrgChart } from \"@godxjp/ui/data-display\";\n\n<OrgChart\n  label=\"Company org chart\"\n  data={[\n    {\n      key: \"ceo\", name: \"Haruka Tanaka\", title: \"CEO\",\n      avatar: <Avatar size=\"sm\"><AvatarFallback>HT</AvatarFallback></Avatar>,\n      children: [\n        { key: \"cto\", name: \"Kenji Watanabe\", title: \"CTO\" },\n        { key: \"bot\", name: \"Review Agent\", title: \"Code review\", variant: \"agent\",\n          extra: <Badge tone=\"success\">Running</Badge> },\n      ],\n    },\n  ]}\n/>",
+  "example": "import { Avatar, AvatarFallback, Badge } from \"@godxjp/ui/data-display\";\nimport { OrgChart } from \"@godxjp/ui/lab\";\n\n<OrgChart\n  label=\"Company org chart\"\n  data={[\n    {\n      key: \"ceo\", name: \"Haruka Tanaka\", title: \"CEO\",\n      avatar: <Avatar size=\"sm\"><AvatarFallback>HT</AvatarFallback></Avatar>,\n      children: [\n        { key: \"cto\", name: \"Kenji Watanabe\", title: \"CTO\" },\n        { key: \"bot\", name: \"Review Agent\", title: \"Code review\", variant: \"agent\",\n          extra: <Badge tone=\"success\">Running</Badge> },\n      ],\n    },\n  ]}\n/>",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/ui/lab",
   "name": "OrgChart",
   "props": [
     {
@@ -43,8 +43,9 @@
     44,
     45
   ],
-  "storyPath": "data-display/OrgChart.stories.tsx",
+  "storyPath": "data-display/org-chart.tsx",
   "tagline": "An organization chart: boxes (avatar, name, title, extra) joined by CSS connector lines, top-down; `agent` nodes are dashed. Scrolls horizontally in its own named region when wider than its container, and turns into an indented Tree when the CONTAINER is under 40rem. APG tree view (tree/treeitem/group, roving tabindex, arrow keys).",
+  "tier": "lab",
   "usage": [
     "DO mark AI agents with `variant: \"agent\"` — the box is dashed AND its accessible name ends in a localized \"AI agent\", so the kind is never carried by the stroke alone.",
     "DO give it the width it has; the breakpoint is a container query, so a chart in a narrow side panel switches to the Tree form on a wide screen too.",

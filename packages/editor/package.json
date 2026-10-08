@@ -32,7 +32,6 @@
     "lucide-react": "^1.37.0"
   },
   "peerDependencies": {
-    "@godxjp/chat": "~31.31.8",
     "@godxjp/markdown": "~31.31.8",
     "@godxjp/ui": "~31.31.8",
     "react": ">=19.0.0"

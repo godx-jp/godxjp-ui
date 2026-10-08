@@ -1,4 +1,10 @@
 {
+  "absorbed": [
+    "SkeletonAvatar",
+    "SkeletonButton",
+    "SkeletonNode",
+    "SkeletonImage"
+  ],
   "example": "import { Skeleton } from \"@godxjp/ui/feedback\";\n\n<Skeleton className=\"h-6 w-48\" />\n\n// The same component is the antd namespace:\n<Skeleton.Button size=\"sm\" />",
   "group": "feedback",
   "importPath": "@godxjp/ui/feedback",
@@ -22,24 +28,32 @@
     }
   ],
   "related": [
-    "SkeletonArticle",
-    "SkeletonRows",
-    "SkeletonTable",
-    "SkeletonStat",
-    "SkeletonButton",
-    "SkeletonInput",
-    "SkeletonAvatar",
-    "SkeletonNode",
-    "SkeletonImage",
     "Activity — the ambient 'working…' mark. Skeleton is a SHAPE standing in for content that has not arrived; Activity is motion beside content that is already there."
   ],
   "rules": [
     3,
     31
   ],
-  "storyPath": "feedback/Skeleton.stories.tsx",
-  "tagline": "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
+  "storyPath": "feedback/skeleton.tsx",
+  "subParts": [
+    "SkeletonTable",
+    "SkeletonRows",
+    "SkeletonDetail",
+    "SkeletonStat",
+    "SkeletonArticle",
+    "SkeletonInput",
+    "SkeletonForm"
+  ],
+  "tagline": "Base pulsing skeleton block, the namespace the presets hang off (Skeleton.Input / .Article), and the ONE entry for every loading shape: SkeletonTable / SkeletonRows / SkeletonDetail / SkeletonStat / SkeletonArticle / SkeletonInput / SkeletonForm.",
   "usage": [
+    "THE SHAPES (one family, one entry): SkeletonTable — Loading placeholder matching the DataTable layout (header + N rows). Drop-in while data loads (deferred props).",
+    "SkeletonRows — Repeated flat loading lines on a responsive grid — the list-shaped placeholder when the final layout is rows of short bars, not a table header, not avatar + prose.",
+    "SkeletonDetail — Fixed-shape placeholder for a RECORD page — title, subtitle, then a bordered box of six label/value pairs. Takes no props: the shape IS the contract, so every detail screen loads identically.",
+    "SkeletonStat — Fixed-shape placeholder for ONE KPI tile — label, big value, caption. Takes no props, so a row of tiles loads at a uniform height and nothing reflows when the numbers arrive.",
+    "SkeletonArticle — Avatar + heading line + paragraph placeholder — Ant Design's own <Skeleton> shape, for a comment, a profile block or a feed item.",
+    "SkeletonInput — Field-shaped placeholder (also Skeleton.Input) — five control-heights wide.",
+    "SkeletonForm — The skeleton of a `Form columns={N}` — label + control PAIRS on the form's own ResponsiveGrid, not the flat line list SkeletonRows draws.",
+    "antd's Skeleton.Avatar / .Button / .Node / .Image presets are not components here (retired in v32, 0 users): the avatar box lives on as `SkeletonArticle avatar`, the control box as `SkeletonInput`; a media slot is a sized `Skeleton` block.",
     "DO use Skeleton for a custom block when SkeletonRows/Table/Stat/Article do not match the final layout.",
     "DO reach for a shaped preset before sizing a bare block by hand: SkeletonButton, SkeletonInput, SkeletonAvatar, SkeletonNode and SkeletonImage already carry the box of the control they stand in for, from the --control-height tier.",
     "DON'T use a spinner overlay for skeletonable page content.",

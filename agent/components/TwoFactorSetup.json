@@ -70,7 +70,7 @@
     }
   ],
   "rules": [],
-  "storyPath": "feedback/TwoFactorSetup.stories.tsx",
+  "storyPath": "feedback/two-factor-setup.tsx",
   "tagline": "Canonical two-factor enrollment dialog for QR/manual-key verification and recovery-code acknowledgement.",
   "usage": [
     "Keep enrollment, verification, persistence, and secret lifecycle in the consumer; this component is presentational.",
