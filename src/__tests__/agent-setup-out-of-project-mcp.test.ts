@@ -13,7 +13,7 @@ import { findOutOfProjectUiMcp, outOfProjectUiMcpReport } from "../../scripts/_a
  * project's pinned one. sync-rules must REPORT it, never touch it. Every test runs against a fake
  * HOME in a temp dir; the real home directory is never read.
  */
-const POSTINSTALL = join(process.cwd(), "scripts/postinstall.mjs");
+const CLI = join(process.cwd(), "scripts/cli.mjs");
 const dirs: string[] = [];
 
 function tmp(prefix: string) {
@@ -45,7 +45,7 @@ function syncRules(root: string, home: string) {
   delete env.CI;
   delete env.GODXJP_UI_SKIP_SETUP;
   delete env.CLAUDE_CONFIG_DIR;
-  const r = spawnSync(process.execPath, [POSTINSTALL], { cwd: root, env, encoding: "utf8" });
+  const r = spawnSync(process.execPath, [CLI, "sync-rules"], { cwd: root, env, encoding: "utf8" });
   return { status: r.status, stdout: r.stdout, stderr: r.stderr };
 }
 
@@ -146,7 +146,7 @@ describe("sync-rules reports an out-of-project @godxjp/ui-mcp it will not touch 
     const home = fakeHome(
       JSON.stringify({ mcpServers: { g: { command: "npx", args: ["@godxjp/ui-mcp@21.0.0"] } } }),
     );
-    const r = spawnSync(process.execPath, [POSTINSTALL], {
+    const r = spawnSync(process.execPath, [CLI, "sync-rules"], {
       cwd: root,
       env: { ...process.env, HOME: home, INIT_CWD: root, CI: "1" },
       encoding: "utf8",

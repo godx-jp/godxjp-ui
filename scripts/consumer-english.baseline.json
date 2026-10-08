@@ -1,0 +1,15 @@
+{
+  "agent/anti-ai-tells.json": 1,
+  "agent/components/BranchScopePicker.json": 3,
+  "agent/components/CheckboxGroup.json": 1,
+  "agent/components/FormField.json": 2,
+  "agent/components/Heading.json": 1,
+  "agent/components/Legend.json": 1,
+  "agent/components/PageContainer.json": 1,
+  "agent/components/Pagination.json": 1,
+  "agent/components/RadioGroup.json": 1,
+  "agent/components/ServiceRolePanel.json": 2,
+  "agent/components/Sidebar.json": 1,
+  "agent/components/SpaceCompact.json": 1,
+  "agent/tokens.json": 7
+}

@@ -19,8 +19,13 @@
       "esbuild": ">=0.28.1"
     }
   },
-  "sideEffects": false,
-  "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "description": "React UI framework built on design tokens: accessible components, a controlled prop vocabulary, and a machine-readable catalog for coding agents.",
   "files": [
     "LICENSE",
     "agent",
@@ -40,7 +45,17 @@
     "scripts/_agent-setup.mjs",
     "scripts/cli.mjs",
     "scripts/explain-token.mjs",
-    "docs"
+    "docs/COMPOSITION-VS-COMPONENT.md",
+    "docs/CONSUMER-RULES.md",
+    "docs/CUSTOMER-THEMING.md",
+    "docs/DESIGN-AUTHORITY.md",
+    "docs/FORMS.md",
+    "docs/GLASSMORPHISM-STANDARD.md",
+    "docs/SPACING.md",
+    "docs/STANDARDS-vocabulary-tokens.md",
+    "docs/TOKEN-RESOLUTION.md",
+    "docs/TOKENS.md",
+    "docs/migrations"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -53,6 +68,8 @@
     "./styles/core": "./dist/styles/core.css",
     "./styles/core-with-fallbacks": "./dist/styles/core-with-fallbacks.css",
     "./styles/core-with-jis-level1": "./dist/styles/core-with-jis-level1.css",
+    "./styles.css": "./dist/styles.css",
+    "./styles/fonts.css": "./dist/styles/fonts.css",
     "./styles/*": "./dist/styles/*.css",
     "./theme/*": "./dist/theme/*",
     "./tokens": "./dist/tokens/base.css",
@@ -314,7 +331,7 @@
     "audit": "node scripts/ui-audit.mjs",
     "audit:component-cases": "node scripts/check-component-case-evidence.mjs",
     "audit:examples": "node scripts/ui-audit.mjs docs",
-    "build": "tsup && tsc -p tsconfig.build.json && node scripts/copy-styles.mjs && node scripts/fix-esm-extensions.mjs && node scripts/add-use-client.mjs",
+    "build": "tsup && tsc -p tsconfig.build.json && node scripts/copy-styles.mjs && node scripts/fix-esm-extensions.mjs && node scripts/add-use-client.mjs && node scripts/build-precompiled-css.mjs",
     "build:packages": "cd packages/markdown && node ../../node_modules/tsup/dist/cli-default.js && cd ../editor && node ../../node_modules/tsup/dist/cli-default.js && cd ../block-editor && node ../../node_modules/tsup/dist/cli-default.js",
     "build:jis-level1-fonts": "node scripts/build-jis-level1-fonts.mjs",
     "capture:voiceover": "node scripts/capture-voiceover-evidence.mjs",
@@ -424,7 +441,7 @@
     "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:token-width-wins && pnpm check:no-external-assets && pnpm check:token-scale-bypass && pnpm check:radix-surface && pnpm check:dist-tokens-resolve && pnpm check:no-hardcoded-geometry && pnpm check:no-hardcoded-css-values && pnpm check:disclosure-duplication && pnpm check:no-inline-magic-numbers && pnpm check:no-tailwind-class-assertions && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:doc-prop-existence && pnpm check:mcp-catalog-coverage && pnpm check:mcp-orphans && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm check:frame-coverage && pnpm test",
     "verify:browser": "pnpm check:contrast && pnpm check:text-ink-clip && pnpm check:frame-overflow && pnpm check:font-fallback-metrics && pnpm check:visual-audit",
     "verify:ci": "pnpm verify:ci:static && pnpm check:frame-contracts && pnpm test",
-    "verify:ci:static:gates": "pnpm build && pnpm check:packed-public-contract && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:registry && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:token-width-wins && pnpm check:no-external-assets && pnpm check:token-scale-bypass && pnpm check:no-antd-runtime && pnpm check:radix-surface && pnpm check:dist-tokens-resolve && pnpm check:no-hardcoded-geometry && pnpm check:no-hardcoded-css-values && pnpm check:disclosure-duplication && pnpm check:no-inline-magic-numbers && pnpm check:no-tailwind-class-assertions && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-lockstep && pnpm check:measurement-contract && pnpm check:mcp-token-sync && pnpm check:email-token-sync && pnpm check:mcp-sync && pnpm check:doc-prop-existence && pnpm check:mcp-catalog-coverage && pnpm check:mcp-orphans && pnpm check:mcp-catalog-completeness && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm run audit && pnpm check:frame-coverage-report && pnpm check:gate-coverage && pnpm check:mcp-prop-sync && pnpm check:catalog-contradictions && pnpm check:catalog-snippets && pnpm check:absorbed-names && pnpm check:agent-catalog && pnpm check:style-layers",
+    "verify:ci:static:gates": "pnpm build && pnpm check:agent-api-names && pnpm check:consumer-english && pnpm check:packed-public-contract && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:registry && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:token-width-wins && pnpm check:no-external-assets && pnpm check:token-scale-bypass && pnpm check:no-antd-runtime && pnpm check:radix-surface && pnpm check:dist-tokens-resolve && pnpm check:no-hardcoded-geometry && pnpm check:no-hardcoded-css-values && pnpm check:disclosure-duplication && pnpm check:no-inline-magic-numbers && pnpm check:no-tailwind-class-assertions && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-lockstep && pnpm check:measurement-contract && pnpm check:mcp-token-sync && pnpm check:email-token-sync && pnpm check:mcp-sync && pnpm check:doc-prop-existence && pnpm check:mcp-catalog-coverage && pnpm check:mcp-orphans && pnpm check:mcp-catalog-completeness && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm run audit && pnpm check:frame-coverage-report && pnpm check:gate-coverage && pnpm check:mcp-prop-sync && pnpm check:catalog-contradictions && pnpm check:catalog-snippets && pnpm check:absorbed-names && pnpm check:agent-catalog && pnpm check:style-layers",
     "verify:ci:static": "node scripts/run-gate-list.mjs verify:ci:static:gates",
     "verify:publish-tree": "pnpm build && pnpm check:packed-public-contract && pnpm check:use-client && pnpm check:dist-tokens-resolve",
     "verify:release": "pnpm verify:static && pnpm check:frame-contracts && pnpm check:frame-coverage",
@@ -435,7 +452,10 @@
     "check:control-glyph-tier": "node scripts/check-control-glyph-tier.mjs",
     "check:frame-overflow": "node scripts/check-frame-overflow.mjs",
     "check:frame-token-wins": "node scripts/check-frame-token-wins.mjs",
-    "check:frame-token-scope": "node scripts/check-frame-token-scope.mjs"
+    "check:frame-token-scope": "node scripts/check-frame-token-scope.mjs",
+    "build:styles-css": "node scripts/build-precompiled-css.mjs",
+    "check:agent-api-names": "node scripts/check-agent-api-names.mjs",
+    "check:consumer-english": "node scripts/check-consumer-english.mjs"
   },
   "peerDependencies": {
     "@tanstack/react-query": ">=5.0.0",
@@ -446,7 +466,9 @@
     "react-router-dom": ">=7.0.0",
     "recharts": "^2.13.0 || ^3.0.0",
     "tailwindcss": ">=4.0.0",
-    "zod": "^4.4.0"
+    "zod": "^4.4.0",
+    "@fontsource/m-plus-2": "^5.3.0",
+    "@fontsource/noto-sans-jp": "^5.3.0"
   },
   "peerDependenciesMeta": {
     "@tanstack/react-query": {
@@ -466,12 +488,16 @@
     },
     "zod": {
       "optional": true
+    },
+    "@fontsource/m-plus-2": {
+      "optional": true
+    },
+    "@fontsource/noto-sans-jp": {
+      "optional": true
     }
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",
-    "@fontsource/m-plus-2": "^5.3.0",
-    "@fontsource/noto-sans-jp": "^5.3.0",
     "@react-aria/utils": "^3.34.1",
     "@tanstack/react-table": "^9.2.4",
     "class-variance-authority": "^0.7.1",
@@ -483,11 +509,11 @@
     "input-otp": "^1.5.0",
     "lucide-react": "^1.37.0",
     "qrcode.react": "4.2.0",
-    "react-aria": "3.52.1",
-    "react-aria-components": "^1.21.1",
+    "react-aria": "3.53.0",
+    "react-aria-components": "1.22.0",
     "react-day-picker": "^10.0.1",
     "react-resizable-panels": "^4.12.3",
-    "react-stately": "3.50.0",
+    "react-stately": "3.51.0",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
@@ -572,7 +598,9 @@
     "unist-util-visit": "^5.1.0",
     "vite": "^8.2.2",
     "vitest": "^4.1.11",
-    "zod": "^4.5.4"
+    "zod": "^4.5.4",
+    "@fontsource/m-plus-2": "^5.3.0",
+    "@fontsource/noto-sans-jp": "^5.3.0"
   },
   "bin": {
     "godxjp-ui": "scripts/cli.mjs"

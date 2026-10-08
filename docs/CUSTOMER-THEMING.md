@@ -99,28 +99,33 @@ hand in the generated file, and an explicit value always beats a derived default
 ## Internal apps — zero config
 
 ```ts
-import "@godxjp/ui/styles";
+import "@godxjp/ui/styles.css"; // precompiled, no Tailwind needed
 ```
 
-That single import ships everything: colors, the bundled fonts (**Noto Sans JP** as the default face — including the Vietnamese coverage — with **M PLUS 2** as the fallback, self-bundled & subsetted), the golden-ratio type scale, spacing grid, radius scale, shadow ramp, and all component CSS. Nothing else to configure. Pick density per surface with `<PageContainer density="compact | default | comfortable">`.
+With Tailwind v4, import the source entry instead and keep your `@source` lines:
+
+```css
+@import "@godxjp/ui/styles";
+```
+
+Either import ships colors, the golden-ratio type scale, spacing grid, radius scale, shadow ramp, and all component CSS. **It ships no font files** (opt-in since v32, below). Nothing else to configure. Pick density per surface with `<PageContainer density="compact | default | comfortable">`.
 
 ---
 
-## CSS entries — `styles`, `styles/core`, `styles/core-with-fallbacks`, `styles/core-with-jis-level1`, nothing smaller
+## CSS entries and fonts — `styles.css`, `styles`, `styles/fonts`, nothing smaller
 
-`@godxjp/ui/styles` bundles every component's CSS plus the fonts: **729 woff2 subsets, ~11.7 MB on disk** at the current @fontsource versions (issue #535 measured 737 files / 13 MB in a real consumer build). When you manage fonts yourself (next/font, a system stack, a browser extension that must not ship font files), load the same layers without the faces:
+`@godxjp/ui/styles` carries every component's CSS and **no `@font-face`**. Fonts are a separate, opt-in sheet, so an app that manages its own faces (next/font, a system stack, a browser extension that must not ship font files) pays for none of them:
 
-```css
-@import "@godxjp/ui/styles/core"; /* every component layer, no @font-face */
+```bash
+pnpm add @fontsource/noto-sans-jp @fontsource/m-plus-2
 ```
 
-`core` carries **zero** `@font-face` — `grep -c '@font-face' node_modules/@godxjp/ui/dist/styles/core.css` → `0` — and that number is the point of it. If you supply Noto Sans JP yourself and also want the cold-visit swap to stop reflowing the page (issue #475), take the third entry: `core` plus the six metric-matched fallback faces, every one `local()`-only, so the extra cost over `core` is **zero network bytes**.
-
 ```css
-@import "@godxjp/ui/styles/core-with-fallbacks"; /* core + 6 local()-only faces */
+@import "@godxjp/ui/styles";
+@import "@godxjp/ui/styles/fonts"; /* after the styles import: Noto Sans JP + M PLUS 2 */
 ```
 
-It declares the faces and nothing else — name the family yourself, directly after your own face:
+The GoDX preset adds the fonts import for you. The font sheet declares the faces and sets `--font-sans-base` to the bundled stack; if you supply the face yourself, skip it and name the family directly:
 
 ```css
 :root {
@@ -128,50 +133,9 @@ It declares the faces and nothing else — name the family yourself, directly af
 }
 ```
 
-### A Japanese app that wants the bundled face anyway
+Keep `"Noto Sans JP Fallback"` directly after your own Noto Sans JP: it is the metric-matched local face that stops the cold-visit swap from reflowing the page (issue #475).
 
-The slicing is what costs the round-trips: a browser cannot know which of the 729 faces it needs
-until it has laid out and measured the text, so every new screen discovers a new handful. The
-fourth entry replaces them with **one merged file per weight**, JIS X 0208 level 1 — 2965 kanji
-plus kana, symbols, Cyrillic, Latin and Vietnamese, 3861 code points:
-
-```css
-@import "@godxjp/ui/styles/core-with-jis-level1"; /* core + fallbacks + 3 merged faces */
-```
-
-Measured against the sliced entry, Noto Sans JP only, weights 400/500/700:
-
-| distinct Japanese characters on screen        |                   `styles` |   `core-with-jis-level1` |
-| --------------------------------------------- | -------------------------: | -----------------------: |
-| 448 — this package's own `ja` labels, no data |  99 requests · 1,051,268 B | 3 requests · 1,534,636 B |
-| 694 — labels plus names, addresses, prose     | 150 requests · 1,772,728 B | 3 requests · 1,534,636 B |
-| 772 — a little more prose                     | 216 requests · 3,491,840 B | 3 requests · 1,534,636 B |
-
-The left column grows with your content and is paid again on every screen that renders a character
-no earlier screen did; the right column does not move. **Below roughly 620 distinct characters the
-slices are fewer bytes** (in ~100 requests), so an app that renders less Japanese than this
-package's own menu labels should stay on `styles`.
-
-What is deliberately not in it: **JIS level 2** (rows 48–84), which would roughly double the bytes
-to cover kanji that appear in rare surnames — those resolve from the platform Japanese face, so
-name one after ours. **M PLUS 2**, which sits behind Noto Sans JP in every stack this package ships
-and is therefore never downloaded today either; merging it would add 1,089,676 bytes for nothing.
-And **no `unicode-range`** on the merged faces, because per-range discovery is the mechanism the
-entry exists to remove — the cost of that is a Latin-only screen downloading its weight's ~500 KB
-rather than the ~25 KB of Latin inside it.
-
-Like `core-with-fallbacks`, it declares faces and does not set `--font-sans-base`; name a platform
-Japanese face after ours so level 2 kanji have somewhere to land:
-
-```css
-:root {
-  --font-sans-base:
-    "Noto Sans JP", "Noto Sans JP Fallback", "Hiragino Sans", "Yu Gothic Medium", Meiryo, system-ui,
-    sans-serif;
-}
-```
-
-The per-layer files (`control`, `card-layout`, `navigation-layout`, …) are the package's internal structure, **not a public menu**. Layers share rules — a Select's rows and a menu's surface, a form's rhythm, a card's header type — so a page that loads a subset renders naked menus and unsized rows with no error. The runtime `visual-audit` reports it as `css-layers-missing`.
+The per-layer files (`control`, `card-layout`, `navigation-layout`, …) are the package's internal structure, **not a public menu**. Layers share rules — a Select's rows and a menu's surface, a form's rhythm, a card's header type — so a page that loads a subset renders naked menus and unsized rows with no error. The runtime `visual-audit` reports it as `css-layers-missing`. The one supported way to ship less than the full entry is `npx godxjp-ui prune-css`, which slices along the dependency graph the package ships.
 
 ---
 

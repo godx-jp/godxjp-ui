@@ -488,6 +488,79 @@ for (const name of ["START-HERE.md", "llms.txt"]) {
   files[name] = body;
 }
 
+/* THE README QUOTES THESE NUMBERS, SO THE README IS GENERATED TOO (v32 #1217).
+ *
+ * It said "165 components, 1616 tokens, 47 cardinal rules" while the catalog held 185 / 2188 / 50,
+ * because the figures were typed by hand into a file no gate compared. The two blocks between the
+ * markers below are the only places the README states a count or a file size; both are rewritten
+ * from the data just produced. Edit the blocks HERE, never in the README. Only the default output
+ * directory touches the README: a scratch `agent/` elsewhere must not rewrite it.
+ */
+const README_PATH = join(ROOT, "README.md");
+const README_TARGET = OUT === join(ROOT, "agent") && existsSync(README_PATH);
+const fileSize = (name) => kb(Buffer.byteLength(files[name]));
+const rawLink = (name, label = name) => `[\`agent/${label}\`](${rawBase("main")}/${name})`;
+const nComponents = data["components.json"].length;
+const catalogRows = [
+  [
+    rawLink("START-HERE.md"),
+    fileSize("START-HERE.md"),
+    "**read first** — self-contained: the four rules, the token override model, a page that passes review",
+  ],
+  [rawLink("llms.txt"), fileSize("llms.txt"), "the [llms.txt](https://llmstxt.org/) entry point"],
+  [rawLink("index.json"), fileSize("index.json"), "manifest: version, counts, every file's URL"],
+  [
+    rawLink("components-index.json"),
+    fileSize("components-index.json"),
+    `all ${nComponents} as name + group + tagline — **fetch this first**`,
+  ],
+  [
+    rawLink("components/Select.json", "components/<Name>.json"),
+    size.perComponent.replace(/, median.*/, ""),
+    "one file per component, each with its `importPath` — **this is the route to take**",
+  ],
+  [
+    rawLink("components.json"),
+    fileSize("components.json"),
+    `all ${nComponents} entries in one file — most URL fetchers truncate this silently; prefer the per-component files`,
+  ],
+  [
+    rawLink("tokens.json"),
+    fileSize("tokens.json"),
+    `all ${data["tokens.json"].length} design tokens, their values and why they exist`,
+  ],
+  [rawLink("vocabulary.json"), fileSize("vocabulary.json"), "the controlled prop vocabulary"],
+  [
+    rawLink("rules.json"),
+    fileSize("rules.json"),
+    `the ${data["rules.json"].length} cardinal rules`,
+  ],
+];
+const readmeBlocks = {
+  "agent-catalog-counts":
+    `The catalog — ${nComponents} components, ${data["tokens.json"].length} tokens, ` +
+    `${data["rules.json"].length} cardinal rules — is published in two forms from one\nsource. ` +
+    "**Entry point for either: [`AGENTS.md`](AGENTS.md).**",
+  "agent-catalog-files":
+    "<!-- prettier-ignore-start -->\n| file | size | what it is |\n| --- | --- | --- |\n" +
+    catalogRows.map((r) => `| ${r.join(" | ")} |`).join("\n") +
+    "\n<!-- prettier-ignore-end -->",
+};
+if (README_TARGET) {
+  let readme = readFileSync(README_PATH, "utf8");
+  for (const [id, body] of Object.entries(readmeBlocks)) {
+    const marker = new RegExp(`(<!-- ${id}:start[^>]*-->\\n)[\\s\\S]*?(\\n<!-- ${id}:end -->)`);
+    if (!marker.test(readme)) {
+      console.error(
+        `✗ gen-agent-catalog — README.md has no <!-- ${id}:start --> … <!-- ${id}:end --> block.`,
+      );
+      process.exit(1);
+    }
+    readme = readme.replace(marker, (_m, open, close) => `${open}\n${body}${close}`);
+  }
+  files["../README.md"] = readme; /* join(OUT, "../README.md") is the repo README */
+}
+
 mkdirSync(OUT, { recursive: true });
 let stale = 0;
 for (const [file, body] of Object.entries(files)) {

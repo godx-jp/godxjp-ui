@@ -98,6 +98,13 @@ jobs:
           printf 'registry=https://registry.npmjs.org/\n//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}\n' > "$RUNNER_TEMP/.npmrc"
           echo "NPM_CONFIG_USERCONFIG=$RUNNER_TEMP/.npmrc" >> "$GITHUB_ENV"
 
+      # gh#1218 — a NEW MAJOR needs an English migration note (docs/migrations/vN.md) and one
+      # major per quarter (owner approval recorded in the note overrides). Patch/minor pass through.
+      - name: Compatibility gate for a new major
+        run: node scripts/check-major-release.mjs --tag "$RELEASE_TAG"
+        env:
+          RELEASE_TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
+
       - name: Release (verify tag → verify CI green → publish → promote)
         run: |
           set -euo pipefail
