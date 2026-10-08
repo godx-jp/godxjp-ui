@@ -73,7 +73,12 @@ export interface ComponentEntry {
   tier?: "lab";
   example: string;
   docPath?: string;
-  storyPath: string;
+  /**
+   * The entry's preview page, relative to `docs/` (the catalog the preview serves at
+   * `/isolate/<group>-<name>`). Omitted when no page exists — `check:mcp-guidance` fails on a path
+   * that is not there (v32 #1223 found 169 of 185 pointing at a Storybook that was removed).
+   */
+  storyPath?: string;
   rules: number[];
 }
 
@@ -103,7 +108,6 @@ export const COMPONENTS: ComponentEntry[] = [
     example:
       'import { inertiaUpload } from "@godxjp/ui/inertia";\nconst upload = inertiaUpload((file, callbacks) => router.post(endpoint, { file }, callbacks), t("Upload failed"));\n<Upload onUpload={upload} />;',
     docPath: "FORMS.md",
-    storyPath: "data-entry/Upload.stories.tsx",
     rules: [1],
     related: ["Upload", "FormRoot"],
   },
@@ -210,7 +214,7 @@ export const COMPONENTS: ComponentEntry[] = [
     docPath: "docs/data-entry/form-root.tsx",
     group: "data-entry",
     importPath: "@godxjp/ui/form",
-    storyPath: "data-entry/Form.stories.tsx",
+    storyPath: "data-entry/form-root.tsx",
     rules: [23, 31],
     usage: [
       "Use inside the documented form composition; do not nest native form elements.",
@@ -316,7 +320,6 @@ export const COMPONENTS: ComponentEntry[] = [
     docPath: "docs/data-entry/form-root.tsx",
     group: "data-entry",
     importPath: "@godxjp/ui/form",
-    storyPath: "data-entry/Form.stories.tsx",
     rules: [23, 31],
     usage: [
       "Use inside the documented form composition; do not nest native form elements.",
@@ -351,7 +354,6 @@ export const COMPONENTS: ComponentEntry[] = [
     docPath: "docs/FORMS.md",
     group: "data-entry",
     importPath: "@godxjp/ui/form",
-    storyPath: "data-entry/Form.stories.tsx",
     rules: [23, 31],
     usage: [
       "Use inside the documented form composition; do not nest native form elements.",
@@ -382,7 +384,6 @@ export const COMPONENTS: ComponentEntry[] = [
     docPath: "docs/FORMS.md",
     group: "data-entry",
     importPath: "@godxjp/ui/form",
-    storyPath: "data-entry/Form.stories.tsx",
     rules: [23, 31],
     usage: [
       "Use inside the documented form composition; do not nest native form elements.",
@@ -423,7 +424,6 @@ export const COMPONENTS: ComponentEntry[] = [
         description: "Override positional divider edges for stacked bars.",
       },
     ],
-    storyPath: "data-display/Card.stories.tsx",
     docPath: "docs/data-display/card/index.tsx",
     rules: [9],
     usage: [
@@ -873,9 +873,9 @@ export const COMPONENTS: ComponentEntry[] = [
       "A dashboard page with KPI cards and chart sections — use `variant='default'` with `children={<Flex direction='col' gap='lg'>…</Flex>}` to vertically stack multiple Card/StatCard sections beneath the page title.",
       "Any deep-nav page in a multi-level admin (e.g. Accounting > Ledger > Journal Entry #42) where a 3-segment breadcrumb trail provides back-navigation without browser history dependence.",
       "A high-density data reconciliation page where an analyst needs to see maximum rows — use `density='compact'` to tighten all spacing across the DataTable, Toolbar, and controls in a single prop.",
-      "A chat / messaging detail page where the message list should scroll inside the page and the composer stays pinned at the bottom — use `fill` so the body occupies the full shell height, with `footer={<Composer/>}` + `stickyFooter`. Without `fill` the page would top-pack and the composer would float mid-screen on a tall viewport.",
+      "A chat / messaging detail page where the message list should scroll inside the page and the composer stays pinned at the bottom — use `fill` so the body occupies the full shell height, with `footer={<ChatComposer />}` (@godxjp/chat) + `stickyFooter`. Without `fill` the page would top-pack and the composer would float mid-screen on a tall viewport.",
       "A Slack-like chat channel, a mail thread, or an IDE-style tab view whose top row is the SURFACE's name rather than a document title — `headerScale='chrome'` (usually with `variant='ghost'`) puts the `<h1>` on the body type step so the header reads as a channel label and the band collapses to roughly the height of one control row, leaving the vertical space to the conversation.",
-      "A chat channel page where a fixed band (channel workflow / pinned-message / connection status) must sit between the page header and the scrolling transcript — `toolbar={<Toolbar>…</Toolbar>}` with `fill` + `footer={<Composer/>}` + `stickyFooter`. The band is outside the scroller, so the transcript never travels under it and the composer stays pinned; a collection page uses the same slot for its filter strip above a full-bleed DataTable (`variant='flush'`).",
+      "A chat channel page where a fixed band (channel workflow / pinned-message / connection status) must sit between the page header and the scrolling transcript — `toolbar={<Toolbar>…</Toolbar>}` with `fill` + `footer={<ChatComposer />}` (@godxjp/chat) + `stickyFooter`. The band is outside the scroller, so the transcript never travels under it and the composer stays pinned; a collection page uses the same slot for its filter strip above a full-bleed DataTable (`variant='flush'`).",
     ],
     related: [
       "PageContainer.Inset — use INSIDE a `variant='flush'` PageContainer to re-introduce horizontal padding for strips like Toolbar or intro text that should align with the page header, while the surrounding DataTable stays full-bleed. Not a standalone page shell.",
@@ -898,7 +898,7 @@ export default function OrdersPage() {
     </PageContainer>
   );
 }`,
-    storyPath: "layout/PageContainer.stories.tsx",
+    storyPath: "layout/page-container.tsx",
     rules: [23],
   },
   {
@@ -1180,7 +1180,7 @@ import { Button } from "@godxjp/ui/general";
     <Button>適用</Button>
   </Flex>
 </Flex>`,
-    storyPath: "layout/Flex.stories.tsx",
+    storyPath: "layout/flex.tsx",
     rules: [2, 40],
   },
   {
@@ -1258,7 +1258,7 @@ import { Button } from "@godxjp/ui/general";
     ],
     related: [
       "Flex — use Flex (direction col or row) for sequential blocks of mixed-width content (forms, description lists, button rows). Use ResponsiveGrid only when you want equal-width, auto-reflowing tile columns.",
-      "SplitPane — use SplitPane for a fixed two-panel side-by-side layout with a defined primary/secondary ratio that does NOT collapse to stacked tiles. Use ResponsiveGrid when you want automatic column count collapse on narrow screens.",
+      "SplitPane — a main column beside a FIXED-rem aside that splits at the pane's own 48rem and stacks below it (a user-draggable ratio is ResizablePanel). Use ResponsiveGrid when you want automatic column count collapse on narrow screens.",
       "StatCard — the canonical direct child of ResponsiveGrid for KPI tiles. StatCard is self-contained (draws its own bordered card); never wrap it in Card/CardContent when placing it inside ResponsiveGrid.",
       "SkeletonStat — the loading-state sibling of StatCard, used as a drop-in placeholder child of ResponsiveGrid with the same columns count while KPI data is in flight.",
     ],
@@ -1271,7 +1271,7 @@ import { StatCard } from "@godxjp/ui/data-display";
   <StatCard label="月間利用数" value="3,210" />
   <StatCard label="割引総額" value="¥480,000" />
 </ResponsiveGrid>`,
-    storyPath: "layout/ResponsiveGrid.stories.tsx",
+    storyPath: "layout/responsive-grid.tsx",
     rules: [24, 40],
   },
   {
@@ -1423,7 +1423,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       "DO rely on AppShell's OWNED mobile drawer at or below 900px (NOT the Tailwind `lg` 1024px step — the shipped media query is `width <= 56.25rem`): it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
       'DO set `responsiveNavigation="docked"` only when the approved product contract retains its sidebar below 900px. AppShell keeps the same sidebar/footer/active navigation in a token-sized grid track and removes the redundant drawer trigger; never reproduce this with consumer media queries.',
       "DO let the drawer nav own its own inset: AppShell renders `mobileNav` in a Sheet body whose inline padding is the `--app-shell-mobile-nav-inset` token (near-zero by default) instead of the generic 24px sheet chrome inset, so a <Sidebar> in the drawer is not double-padded (its own --sidebar-nav-scroll-padding already insets each row). If a custom `mobileNav` node needs the full chrome inset, set `--app-shell-mobile-nav-inset: var(--space-6)` in the service theme — never patch the drawer with a `[data-slot='sheet-body']` selector in app CSS.",
-      "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — `topbarLeft`/`topbarRight` are then ignored (they are slots of the DEFAULT bar layout, and a custom `topbar` IS replacing that layout; a dev-mode warning names them). `logo` is NOT one of them: it is always rendered, because brand identity belongs to the frame rather than to the bar's contents. Two repos passed both for months and got no logo at all — no error, no warning, and a bar that still looked right because it had other content.",
+      "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar start={…} center={…} end={…}> to the `topbar` prop when you need live controls (an entity switcher, search, notifications, the user avatar) — Topbar has those three slots and no per-control props — `topbarLeft`/`topbarRight` are then ignored (they are slots of the DEFAULT bar layout, and a custom `topbar` IS replacing that layout; a dev-mode warning names them). `logo` is NOT one of them: it is always rendered, because brand identity belongs to the frame rather than to the bar's contents. Two repos passed both for months and got no logo at all — no error, no warning, and a bar that still looked right because it had other content.",
       "DO pass `logo` and let the shell place it — do NOT put the lockup in `Sidebar`'s `brand` slot or hand-position it in a `Topbar` slot. THE TOP-LEFT CORNER BELONGS TO WHOEVER `topbarSpan` SAYS: under `content` the rail runs the full window height and the brand sits at the sidebar's head, aligned to that track; under `full` the bar runs edge to edge and the brand goes in the bar with the rest of the space-level chrome. Placing it yourself pins it to one of those answers, and the axis then moves the rest of the shell out from under it (measured on a shipped consumer: the logo floating in the content column at x=280, indented 24px past the rail it should have sat above).",
       'DO give a wide brand lockup a narrow-bar answer with `logoCompact` instead of cropping your own artwork in the app: `<AppShell topbarSpan="full" logo={<FullLockup />} logoCompact={<MarkOnly />} />` swaps the NODE below the `sm` step, which is the only way to change a `viewBox` (no stylesheet can set an attribute). Without it the brand cell still gives room back — it is capped at --app-shell-brand-compact-max-inline-size below that step and cropped from the inline-end — where before it kept its intrinsic width at every viewport: measured with a 6:1 lockup at 390px, brand 143.7px, `.ui-topbar` 150.3px, `.ui-topbar-start` width 0 and the end cluster\'s last cell painting at x=384.8 on a 390px viewport (gh#728).',
       "DO build a chat / mail / IDE shell by omitting ALL FOUR bar slots (`topbar`, `topbarLeft`, `topbarRight`, `logo`) — a shell whose PAGE owns the top row. AppShell then renders no `<header class='app-topbar'>` and marks its root `data-topbar='none'`, so the bar's grid row collapses to zero and the page header IS the first row of chrome. Keeping an empty bar instead costs a fixed `--app-shell-bar-height` band plus its border and card background, stacking a second row of chrome (~48px + the page header) over exactly the region a transcript or an editor needs most. The mobile drawer survives: at or below 900px the header returns carrying the hamburger alone.",
@@ -1444,12 +1444,11 @@ import { StatCard } from "@godxjp/ui/data-display";
       "App-level footer (e.g. version/build info, compliance notice): pass a <footer> node to AppShell's `footer` prop — it renders outside `<main>` so it stays pinned below the scroll area.",
       "Rapid prototype or internal tool where you want a branded shell with minimal topbar: skip the `topbar` prop entirely and use `logo`, `topbarLeft`, `topbarRight` to build the rail declaratively without instantiating <Topbar>.",
       "Breadcrumb-aware shell: pass a <Breadcrumb items={…}> node to AppShell's `breadcrumb` prop so the breadcrumb strip appears above all page content without each page having to render it separately.",
-      "Chat / mail / IDE shell: a channel rail in `sidebar`, no bar slots at all, and a <PageContainer fill toolbar={…} footer={<Composer/>} stickyFooter> as children — the page's own header is the top row and the shell reserves no band above it, while the 900px drawer still reaches the channel list.",
+      "Chat / mail / IDE shell: a channel rail in `sidebar`, no bar slots at all, and a <PageContainer fill toolbar={…} footer={<ChatComposer />} stickyFooter> (ChatComposer from @godxjp/chat) as children — the page's own header is the top row and the shell reserves no band above it, while the 900px drawer still reaches the channel list.",
     ],
     related: [
-      "AppShell — opinionated wrapper that composes AppShell + a frozen default Topbar in three props (menu, children, breadcrumb). Use AppShell for quick scaffolding when the default GodX product chip and no-op search/notification handlers are acceptable; switch to AppShell directly the moment you need a custom entity switcher, real onSearchOpen, user slot, or any topbar configuration.",
       "Sidebar — the canonical node to pass as AppShell's `sidebar` prop; owns activeId, collapsible submenu groups, collapsed icon-only mode, and section labels. Never hand-roll a nav list inside the sidebar slot.",
-      "Topbar — the structured topbar component to pass to AppShell's `topbar` prop when you need live product/project chip switchers, search, notifications, sidebar toggle, user avatar, or rightSlot extras. A custom `topbar` replaces the DEFAULT bar layout, so `topbarLeft`/`topbarRight` are ignored — but `logo` is not: the shell always renders it, and `topbarSpan` decides whether it lands in the bar or at the sidebar's head.",
+      "Topbar — the bar to pass to AppShell's `topbar` prop when it needs live controls: compose a switcher, search, notifications or the user avatar into its `start` / `center` / `end` slots. A custom `topbar` replaces the DEFAULT bar layout, so `topbarLeft`/`topbarRight` are ignored — but `logo` is not: the shell always renders it, and `topbarSpan` decides whether it lands in the bar or at the sidebar's head.",
       "PageContainer — the mandatory direct child inside AppShell's `children` for every page; provides title, subtitle, extra actions, breadcrumb, footer, variant (flush/narrow/ghost), and density. Never render raw content directly as AppShell's child without a PageContainer wrapper.",
     ],
     example: `import { AppShell, Sidebar } from "@godxjp/ui/layout";
@@ -1471,7 +1470,7 @@ const sidebar = (
 export function CrmLayout({ children }: { children: React.ReactNode }) {
   return <AppShell sidebar={sidebar}>{children}</AppShell>;
 }`,
-    storyPath: "layout/AppShell.stories.tsx",
+    storyPath: "layout/app-shell.tsx",
     rules: [23],
   },
   {
@@ -1584,7 +1583,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       "AUTH SHAPE: DO NOT nest the auth CenteredShell inside AppShell (or vice-versa) — the auth CenteredShell is the ROOT shell for unauthenticated pages (login/mfa/passkey/device/reset); AppShell is for the authenticated app.",
     ],
     useCases: [
-      'Hosted GoDX ID \'My Page\': <CenteredShell topbar={<Topbar start={<Brand/>} end={<><AppSettingPicker kind="locale"/><UserMenu/></>}/>} footer={<Footer/>} width="md"> with an identity hero, an org picker, a service-launcher grid and a team list.',
+      'Hosted GoDX ID \'My Page\': <CenteredShell topbar={<Topbar start={<Logo />} end={<><AppSettingPicker kind="locale"/>{yourUserMenu}</>}/>} footer={<AuthFooter … />} width="md"> with an identity hero, an org picker, a service-launcher grid and a team list.',
       "Account / self-service settings surface (no admin sidebar): stacked <Card> sections (profile, security, sessions) in a centred `md` column under a topbar with a user menu.",
       'Standalone single settings page: `width="sm"` with one <Card> of <Field>s and a save action.',
       'System error / maintenance page (500 · 503): `<CenteredShell align="center" width="sm">` around the canonical error body (status code <Text mono tabular> + <EmptyState icon tone title description action> + optional request-ID / maintenance line). See the `error-pages` pattern.',
@@ -1643,7 +1642,7 @@ export function MyPage() {
     </CenteredShell>
   );
 }`,
-    storyPath: "layout/CenteredShell.stories.tsx",
+    storyPath: "layout/centered-shell.tsx",
     rules: [23],
   },
   {
@@ -1762,7 +1761,7 @@ export function HandyInbound() {
     </MobileShell>
   );
 }`,
-    storyPath: "layout/MobileShell.stories.tsx",
+    storyPath: "layout/mobile-shell.tsx",
     rules: [23, 24, 45],
   },
   {
@@ -1978,7 +1977,7 @@ export default function Shell() {
   );
 }\`}
 `,
-    storyPath: "layout/Sidebar.preview.tsx",
+    storyPath: "layout/sidebar.tsx",
     rules: [3, 6, 23, 31],
   },
   {
@@ -2096,7 +2095,7 @@ import { PanelLeftClose, Search } from "lucide-react";
 >
   {children}
 </AppShell>`,
-    storyPath: "layout/Topbar.stories.tsx",
+    storyPath: "layout/topbar.tsx",
     rules: [2, 3, 5, 6],
   },
   {
@@ -2191,7 +2190,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
     </DropdownMenu>
   }
 />`,
-    storyPath: "layout/TopbarItem.stories.tsx",
+    storyPath: "layout/topbar-item.tsx",
     rules: [2, 3, 5, 6],
   },
   {
@@ -2267,7 +2266,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
     { id: "appearance", label: "Appearance", icon: Palette, href: "/settings/appearance" },
   ]}
 />`,
-    storyPath: "layout/NavList.stories.tsx",
+    storyPath: "layout/nav-list.tsx",
     rules: [2, 3, 5, 6],
   },
   {
@@ -2395,7 +2394,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
 >
   <MemberDetail member={selected} />
 </MasterDetail>`,
-    storyPath: "layout/MasterDetail.stories.tsx",
+    storyPath: "layout/master-detail.tsx",
     rules: [24, 40],
   },
   {
@@ -2529,7 +2528,7 @@ function Assistant() {
   );
 }`,
     docPath: "layout/draggable-panel.tsx",
-    storyPath: "layout/DraggablePanel.stories.tsx",
+    storyPath: "layout/draggable-panel.tsx",
     rules: [23, 44],
   },
   {
@@ -2608,7 +2607,7 @@ function Assistant() {
 <SplitPane asideLabel="Thread" aside={threadOpen ? <Thread /> : null}>
   <MessageList />
 </SplitPane>`,
-    storyPath: "layout/SplitPane.stories.tsx",
+    storyPath: "layout/split-pane.tsx",
     rules: [24],
   },
   {
@@ -2782,7 +2781,7 @@ export function MaintenancePage() {
     />
   );
 }`,
-    storyPath: "layout/ErrorSurface.stories.tsx",
+    storyPath: "layout/error-surface/index.tsx",
     rules: [23, 24],
   },
   {
@@ -2872,7 +2871,7 @@ export function MaintenancePage() {
       "DO NOT expect a viewport media query: the shell owns its query container, so the one-column ⇄ two-column split (56rem) is decided by the SHELL's own width. Below it the contents are a STATIC compact block (never pinned on a phone); above it they are a sticky rail.",
     ],
     useCases: [
-      'Hosted legal terms/privacy screen (SCR-005): <CenteredShell width="lg" topbar={<Topbar …/>}><LegalDocumentShell title="利用規約" version="2.4" effectiveDate="2026-04-01" contentsLabel="目次" sections={sections} activeSection={active} onActiveSectionChange={setActive} documentNavigation={<DocumentSwitcher/>} footerAction={<Button>同意する</Button>} /></CenteredShell>',
+      'Hosted legal terms/privacy screen (SCR-005): <CenteredShell width="lg" topbar={<Topbar …/>}><LegalDocumentShell title="利用規約" version="2.4" effectiveDate="2026-04-01" contentsLabel="目次" sections={sections} activeSection={active} onActiveSectionChange={setActive} documentNavigation={yourDocumentSwitcher} footerAction={<Button>同意する</Button>} /></CenteredShell>',
       "In-app policy viewer inside a Dialog/Sheet during onboarding: the same `sections` with `footerAction` carrying the accept button; the shell stays single-column because its container is narrow.",
       "Deep-linkable DPA / sub-processor document: link to /legal/dpa#data-retention — the shell selects, scrolls to (with the scroll offset) and focuses that section on arrival.",
       "Multi-document legal set (Terms · Privacy · Cookies): render the switcher in `documentNavigation` so it sits above the contents in the sticky rail.",
@@ -2916,7 +2915,7 @@ export function TermsPage() {
     </CenteredShell>
   );
 }`,
-    storyPath: "layout/LegalDocumentShell.stories.tsx",
+    storyPath: "layout/legal-document-shell/index.tsx",
     rules: [23, 24],
   },
   {
@@ -2979,7 +2978,7 @@ export function TermsPage() {
   { label: "会員管理", to: "/members" },
   { label: "田中 太郎" },
 ]} />`,
-    storyPath: "layout/Breadcrumb.stories.tsx",
+    storyPath: "navigation/breadcrumb.tsx",
     rules: [],
   },
 
@@ -3077,7 +3076,7 @@ export function TermsPage() {
     related: [
       "Button — the same control IN the layout flow. A float button is a Button that gave up its place in the page and took a corner instead.",
       "Popover — anchors a panel to a trigger; it does not place the trigger.",
-      "Banner — a full-bleed strip, not a corner mark.",
+      'Alert — `variant="banner"` is a full-bleed strip, not a corner mark.',
       "Toolbar / PageContainer extra — where an action belongs when it IS part of this page's content.",
     ],
     example: `import { FloatButton } from "@godxjp/ui/lab";
@@ -3089,14 +3088,15 @@ import { MessageCircle, Share2 } from "lucide-react";
   <FloatButton.BackTop />
 </FloatButton.Group>`,
     docPath: "general/float-button.tsx",
-    storyPath: "general/FloatButton.stories.tsx",
+    storyPath: "general/float-button.tsx",
     rules: [],
   },
   {
     name: "Button",
     subParts: ["ButtonRefetch"],
     group: "general",
-    tagline: "Core button with variant + size presets, built on cva and Radix Slot (asChild).",
+    tagline:
+      "Core button with variant + size presets, built on cva with the kit's own Slot (asChild).",
     props: [
       {
         name: "variant",
@@ -3149,7 +3149,7 @@ import { MessageCircle, Share2 } from "lucide-react";
         name: "asChild",
         type: "boolean",
         defaultValue: "false",
-        description: "Render as Radix Slot — merge props onto the child (<a>/<Link>).",
+        description: "Render as the kit's Slot — merge props onto the child (<a>/<Link>).",
       },
       { name: "disabled", type: "boolean", description: "Disable the button." },
       {
@@ -3231,7 +3231,7 @@ import { Trash2 } from "lucide-react";
   <Button variant="outline" size="sm">編集</Button>
   <Button variant="ghost" size="icon-sm"><Trash2 className="size-4" /></Button>
 </>`,
-    storyPath: "general/Button.stories.tsx",
+    storyPath: "general/button/index.tsx",
     rules: [23],
   },
   {
@@ -3620,7 +3620,7 @@ import { Trash2 } from "lucide-react";
       "Text / Heading — only for a bespoke lockup the `wordmark` prop cannot express; for the ordinary mark + product name, use `wordmark` (it owns the gap, face and brand colour as tokens).",
       "Avatar — use Avatar for a PERSON/entity image or initials; use Logo for the PRODUCT brand mark. They look similar (square/rounded glyph) but carry different meaning.",
     ],
-    storyPath: "general/Logo.stories.tsx",
+    storyPath: "general/logo.tsx",
     rules: [45, 46],
     example: `import { Logo } from "@godxjp/ui/general";
 
@@ -3741,7 +3741,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
 <Reveal on="view" amount={0.25} once={false}>
   <Card><CardContent>…</CardContent></Card>
 </Reveal>`,
-    storyPath: "general/Reveal.stories.tsx",
+    storyPath: "general/reveal.tsx",
     rules: [],
   },
   {
@@ -3834,7 +3834,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
 
 // a reconnect notice that must actually be heard, announced once and politely
 <Activity announce="polite" tone="warning" label={t("realtime.reconnecting")} />`,
-    storyPath: "general/Activity.stories.tsx",
+    storyPath: "general/activity.tsx",
     rules: [],
   },
   {
@@ -3908,7 +3908,7 @@ import { Icon, Text } from "@godxjp/ui/general";
 
 // the glyph IS the value — give it a name
 <Icon as={ShieldCheck} size="md" tone="success" label={t("session.secure")} />`,
-    storyPath: "general/Icon.stories.tsx",
+    storyPath: "general/icon.tsx",
     rules: [],
   },
   // ─── data-display ───────────────────────────────────────────────────────
@@ -4276,7 +4276,7 @@ export default function InvoiceList({
     </DataTable>
   );
 }`,
-    storyPath: "data-display/DataTable.stories.tsx",
+    storyPath: "data-display/data-table/index.tsx",
     rules: [24, 31, 35, 37],
   },
   {
@@ -4405,7 +4405,7 @@ export default function InvoiceList({
   <CardHeader><CardTitle>注文サマリー</CardTitle></CardHeader>
   <CardContent>総売上: ¥1,234,567</CardContent>
 </Card>`,
-    storyPath: "data-display/Card.stories.tsx",
+    storyPath: "data-display/card/index.tsx",
     rules: [],
   },
   {
@@ -4459,7 +4459,6 @@ export default function InvoiceList({
     <DataTable data={rows} columns={columns} />
   </CardContent>
 </Card>`,
-    storyPath: "data-display/Card.stories.tsx",
     rules: [37, 38],
   },
   {
@@ -4543,7 +4542,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
 
 // ❌ Double border — do NOT wrap StatCard in a Card:
 // <Card><CardContent><StatCard label="x" value="1" /></CardContent></Card>`,
-    storyPath: "data-display/StatCard.stories.tsx",
+    storyPath: "data-display/stat-card.tsx",
     rules: [],
   },
   {
@@ -4672,7 +4671,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     action={<Button variant="outline">{t("viewCatalog")}</Button>}
   />
 </ResponsiveGrid>`,
-    storyPath: "data-display/ServiceLauncherCard.stories.tsx",
+    storyPath: "data-display/service-launcher-card.tsx",
     rules: [40],
   },
   {
@@ -4728,7 +4727,6 @@ import { Button } from "@godxjp/ui/general";
     </Button>
   }
 />`,
-    storyPath: "data-display/ServiceLauncherCard.stories.tsx",
     rules: [40],
   },
   {
@@ -4835,7 +4833,7 @@ import { Button } from "@godxjp/ui/general";
 <Badge status="active">公開中</Badge>
 <Badge status="プレミアム" tone="success" icon={null}>プレミアム</Badge>
 <Badge shape="pill" color="#4488c5">処理中</Badge>`,
-    storyPath: "data-display/Badge.stories.tsx",
+    storyPath: "data-display/badge.tsx",
     rules: [35],
   },
   {
@@ -4888,7 +4886,7 @@ import { Button } from "@godxjp/ui/general";
     ]}
   />
 </CardAction>`,
-    storyPath: "data-display/Legend.stories.tsx",
+    storyPath: "data-display/legend.tsx",
     rules: [],
   },
   {
@@ -4938,7 +4936,7 @@ import { Flex } from "@godxjp/ui/layout";
   <Swatch color={brand.primary_color} aria-label={\`プライマリカラー: \${brand.primary_color}\`} />
   <Text weight="medium">{brand.name}</Text>
 </Flex>`,
-    storyPath: "data-display/Swatch.stories.tsx",
+    storyPath: "data-display/swatch.tsx",
     rules: [],
   },
   {
@@ -5031,7 +5029,7 @@ import { Flex } from "@godxjp/ui/layout";
 <TextDiff before={row.previous_original} after={original} lang="ja" />
 
 <TextDiff mode="split" granularity="line" before={previousBody} after={body} />`,
-    storyPath: "data-display/TextDiff.stories.tsx",
+    storyPath: "data-display/text-diff.tsx",
     rules: [],
   },
   {
@@ -5084,7 +5082,7 @@ import { Flex } from "@godxjp/ui/layout";
   ]}
 />`,
     docPath: "data-display/feature-list.tsx",
-    storyPath: "data-display/FeatureList.stories.tsx",
+    storyPath: "data-display/feature-list.tsx",
     rules: [],
   },
   {
@@ -5244,7 +5242,7 @@ import { Flex } from "@godxjp/ui/layout";
   </CardContent>
 </Card>
 </Flex>`,
-    storyPath: "data-display/ListRow.stories.tsx",
+    storyPath: "data-display/list-row.tsx",
     rules: [42, 44],
   },
   {
@@ -5369,7 +5367,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@godxjp/ui/fee
     />
   </DialogContent>
 </Dialog>`,
-    storyPath: "data-display/CredentialReveal.stories.tsx",
+    storyPath: "data-display/credential-reveal.tsx",
     rules: [3, 6, 23],
   },
   {
@@ -5433,7 +5431,7 @@ import { Flex } from "@godxjp/ui/layout";
     defaultRevealed
   />
 </Flex>`,
-    storyPath: "data-display/QrCode.stories.tsx",
+    storyPath: "data-display/qr-code.tsx",
     rules: [6, 7, 23, 24],
   },
   {
@@ -5511,7 +5509,7 @@ import { Flex } from "@godxjp/ui/layout";
   <Descriptions.Item label="プラン">{member.plan}</Descriptions.Item>
   <Descriptions.Item label="メモ" span={2}>{member.note}</Descriptions.Item>
 </Descriptions>`,
-    storyPath: "data-display/Descriptions.stories.tsx",
+    storyPath: "data-display/descriptions.tsx",
     rules: [],
   },
   {
@@ -5581,7 +5579,7 @@ import { Flex } from "@godxjp/ui/layout";
     example: `import { EmptyState } from "@godxjp/ui/data-display";
 
 <EmptyState title="該当データがありません" description="検索条件を変更してください。" />`,
-    storyPath: "data-display/EmptyState.stories.tsx",
+    storyPath: "data-display/empty-state.tsx",
     rules: [],
   },
   {
@@ -5698,7 +5696,7 @@ import { Flex } from "@godxjp/ui/layout";
   total={400}
   remainderLabel="未実施"
 />`,
-    storyPath: "data-display/Progress.stories.tsx",
+    storyPath: "data-display/progress.tsx",
     rules: [],
   },
   {
@@ -5773,7 +5771,7 @@ import { Flex } from "@godxjp/ui/layout";
 <CodeBlock maxHeight="sm" language="json" aria-label="Response body">{body}</CodeBlock>
 <CodeBlock size="xs" maxHeight="md" aria-label="Console">{consoleText}</CodeBlock>
 <CodeBlock copyable language="bash">pnpm add @godxjp/ui</CodeBlock>`,
-    storyPath: "data-display/CodeBlock.stories.tsx",
+    storyPath: "data-display/code-block.tsx",
     rules: [],
   },
   {
@@ -6128,7 +6126,7 @@ import remarkGfm from "remark-gfm";
 <Prose size="sm">
   <Markdown remarkPlugins={[remarkGfm]}>{issue.description}</Markdown>
 </Prose>`,
-    storyPath: "data-display/Prose.stories.tsx",
+    storyPath: "data-display/prose.tsx",
     rules: [],
   },
   {
@@ -6212,7 +6210,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
   { title: "承認待ち", status: "current" },
   { title: "消費税を計上", status: "pending" },
 ]} />`,
-    storyPath: "data-display/Timeline.stories.tsx",
+    storyPath: "data-display/timeline.tsx",
     rules: [],
   },
   {
@@ -6321,7 +6319,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
   ]}
   onEventSelect={(event) => openShift(event.id)}
 />`,
-    storyPath: "data-display/TimelineGrid.stories.tsx",
+    storyPath: "data-display/timeline-grid.tsx",
     rules: [42, 45],
   },
   {
@@ -6450,7 +6448,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
     <TableRow><TableCell flush colSpan={2}><ShippingBreakdown /></TableCell></TableRow>
   </TableBody>
 </Table>`,
-    storyPath: "data-display/Table.stories.tsx",
+    storyPath: "data-display/table.tsx",
     rules: [],
   },
   {
@@ -6507,7 +6505,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
       "DO: expect a background refetch over existing data to keep the content on screen with a polite sr-only busy status — it does not flash the skeleton. Only the initial fetch (isPending) shows the skeleton.",
     ],
     useCases: [
-      "A detail page that loads a single invoice/journal entry via `useQuery` — DataState renders the skeleton row while fetching, an error alert with retry if the API fails, and the `<InvoiceCard>` only when data is confirmed non-null.",
+      "A detail page that loads a single invoice/journal entry via `useQuery` — DataState renders the skeleton row while fetching, an error alert with retry if the API fails, and your invoice card only when data is confirmed non-null.",
       "A list page that shows a `DataTable` of members/partners — wrap the table in DataState so the skeleton matches the column count while loading and `EmptyState` appears when the filtered result set is empty.",
       "A sidebar panel that lazily loads related transactions for the selected entity — DataState keeps the panel in skeleton state during the background fetch without any manual `isPending` branching in the parent.",
       "A dashboard stat card that calls a summary API — DataState handles the loading/error/empty lifecycle so `<StatCard>` is only rendered with fully resolved numbers, preventing NaN or undefined rendering.",
@@ -6531,7 +6529,7 @@ const membersQuery = useQuery<MembersPage>({ queryKey: ["members"], queryFn: fet
 <DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d) => d.items.length === 0} empty={<EmptyState title="会員なし" />}>
   {(d) => <MemberTable items={d.items} />}
 </DataState>`,
-    storyPath: "query/DataState.stories.tsx",
+    storyPath: "query/data-state.tsx",
     rules: [],
   },
   {
@@ -6582,7 +6580,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </AuthExpiryProvider>
   );
 }`,
-    storyPath: "query/DataState.stories.tsx",
     rules: [],
   },
   {
@@ -6662,7 +6659,7 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
 <InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages} isEmpty={(it) => it.length === 0}>
   {(items) => items.map((a) => <ActivityRow key={a.id} activity={a} />)}
 </InfiniteQueryState>`,
-    storyPath: "query/InfiniteQueryState.stories.tsx",
+    storyPath: "query/infinite-query-state.tsx",
     rules: [],
   },
 
@@ -6756,7 +6753,7 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
   <FormField id="last" label="名"><Input id="last" /></FormField>
   <FormField id="address" label="住所" colSpan={2}><Input id="address" /></FormField>
 </Form>`,
-    storyPath: "data-entry/Form.stories.tsx",
+    storyPath: "data-entry/form.tsx",
     rules: [23, 24],
   },
   {
@@ -6865,17 +6862,17 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
     usage: [
       "DO pass the same string to both `id` on `<FormField>` and `id` on the child control — the component wires `<Label htmlFor={id}>`, and builds `{id}-helper` / `{id}-error` ids for `aria-describedby`. If the ids diverge the label click and screen-reader announcements break.",
       "DO pass a SINGLE React element as `children`. FormField calls `React.cloneElement` on it to inject `aria-describedby`, `aria-required`, and `aria-invalid` — if you pass a fragment or multiple nodes, cloneElement silently skips the injection and a11y attributes are lost.",
-      "COMPOSITE CHILD: when the single child is a layout wrapper — a `Flex` holding a range from/to pair or a 年/月 input+select combo — the label still reaches every control inside. FormField publishes its label through FieldNameContext and each control's semantic focus target (Input's `<input>`, Select/SearchSelect's `role=combobox` trigger, and everything composed on them) adopts it as a LAST-RESORT accessible name; a control's own `aria-label`/`aria-labelledby` always wins, so set a per-control `aria-label` (e.g. 開始日/終了日) when the two halves should announce distinct names. The wrapper itself renders as a named `role='group'` (see Flex).",
+      "COMPOSITE CHILD: when the single child is a layout wrapper — a `Flex` holding a range from/to pair or a 年/月 input+select combo — the label still reaches every control inside. FormField publishes its label through FieldNameContext and each control's semantic focus target (Input's `<input>`, Select's `role=combobox` trigger, and everything composed on them) adopts it as a LAST-RESORT accessible name; a control's own `aria-label`/`aria-labelledby` always wins, so set a per-control `aria-label` (e.g. 開始日/終了日) when the two halves should announce distinct names. The wrapper itself renders as a named `role='group'` (see Flex).",
       "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",
       "WIDTH: a FormField FILLS its container in vertical/horizontal layout — like the conventional Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
       "DO use the `error` prop (not a hand-rolled `<p>`) for validation messages — it renders with `role='alert'` and `text-destructive` styling and overrides `helper` automatically. Never render an error paragraph alongside FormField.",
       "DO use `labelAddon` (a ReactNode rendered after the label text, in the label row) for supplementary controls such as a tooltip trigger, a 'copy' icon button or a short text action ('Assign to myself'); in a horizontal/inline layout the label row wraps, so an addon that does not fit beside the label drops under it inside the label column rather than overlapping the control — never insert such controls as siblings outside FormField, which breaks layout.",
       'DON\'T wrap `Switch` in FormField — use `Field` instead. Field owns the inline row: `label`, `labelAddon`, `description`, and `error` (which wires aria-invalid / aria-errormessage / aria-describedby onto the control, gh#812). It renders no hidden input of its own — `Switch name="…"` is what submits natively — and it has no `required`, `helper` or layout knobs.',
       "DON'T use FormField for checkbox-beside-label or radio-beside-label patterns — use `Field` (single checkbox/radio with description) or `CheckboxGroup` / `RadioGroup` (multiple options), which have their own integrated labelling.",
-      "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/SearchSelect/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, `DatePicker range` (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",
+      "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, `DatePicker range` (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",
       "FIELD IDENTITY / AUTOMATION: FormField also injects a `data-field` — the field's stable MACHINE key, resolved as `field` → `name` → `id` — onto the same semantic focus target the ARIA relationships land on, and onto every option of a RadioGroup/CheckboxGroup. Use it (not a generated id, and never the visible Japanese label) as the selector in e2e tests and screen automation. It reaches NESTED controls too: when the direct child is a layout wrapper (a Flex holding a from/to pair, a 年/月 combo, a value beside a 「不明」 checkbox) cloneElement stops on that wrapper, so FormField also publishes the field through context and each control inside resolves its own key from its OWN `id` \u2014 which is what keeps `search_billing_date_from` and `..._to` distinct instead of collapsing onto one shared key. A nested control with NO id of its own deliberately gets nothing: a fabricated key is worse than a missing one, because automation binds to it and breaks silently. Two companion pieces: a `Select`'s trigger also carries `data-value` = the selected CODE (the trigger shows the option LABEL, and Radix keeps the value in an aria-hidden 1x1px native `<select>`), and each RadioGroup/CheckboxGroup option gets a deterministic `{groupId}-{optionValue}` id instead of a per-mount `React.useId()` token. Nothing here is opt-in and no DOM structure changed. A `data-field` written on the control itself always wins.",
       "NATIVE `name` IS OPT-IN: FormField emits the same key as a real `name` attribute ONLY when the app set `<AppProvider emitFieldNames>`. It is off by default because `name` decides what a native `<form>` submit sends — turning it on globally in a shared package would make every consumer start posting new keys to its backend on an upgrade. Turn it on in apps that need native form posts or a screen-automation contract; a `name` written on the control itself always wins.",
-      "NATIVE FORM PARTICIPATION: pass `name` to a control for HTML form submission — Input/Textarea/NumberInput/Select submit natively; SearchSelect submits via a hidden input; DatePicker/TimePicker emit ISO strings (`yyyy-MM-dd` / 24h `HH:mm`); the range pickers emit `${name}_from` / `${name}_to`. `required`/`readOnly`/`disabled` map to the underlying control. Cascader/TreeSelect/Transfer submit named values via hidden inputs; Upload appends staged local files to FormData when named. Disabled controls are excluded.",
+      "NATIVE FORM PARTICIPATION: pass `name` to a control for HTML form submission — Input/Textarea/NumberInput/Select submit natively; a searchable Select submits via a hidden input; DatePicker/TimePicker emit ISO strings (`yyyy-MM-dd` / 24h `HH:mm`); the range pickers emit `${name}_from` / `${name}_to`. `required`/`readOnly`/`disabled` map to the underlying control. Cascader/TreeSelect/Transfer submit named values via hidden inputs; Upload appends staged local files to FormData when named. Disabled controls are excluded.",
       "ERROR TIMING & RECOVERY: pass `error` only after a field is dirty or the form is submitted (don't show errors on pristine mount). The error node renders with `role='alert'` so it is announced live the moment it appears; clearing `error` (e.g. after the user corrects the value or a server round-trip succeeds) removes aria-invalid and restores the helper. On submit, focus the first invalid control and/or render an error summary that links to each field by `id`.",
     ],
     useCases: [
@@ -6883,11 +6880,11 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
       "Wrapping a `Select` or `DatePicker` inside a multi-field filter panel where each control needs a visible label, helper hint (e.g. 'YYYY/MM/DD'), and inline error state.",
       "Adding a `labelAddon` tooltip button next to a 'Tax rate' label in an accounting form to explain when different rates apply, without breaking the label–control association.",
       "Enclosing a `DatePicker range` or `TimePicker` in an admin settings page where the field needs a label, a muted hint ('Inclusive of start and end date'), and conditional error display.",
-      "Wrapping a `SearchSelect` or `Select` (with `showSearch`) control for vendor/account lookup in a journal-entry form where the `id` must be kept consistent for programmatic focus management.",
+      "Wrapping a `Select` (with `showSearch`) control for vendor/account lookup in a journal-entry form where the `id` must be kept consistent for programmatic focus management.",
       "Providing structured error feedback for a `Cascader` or `TreeSelect` in a multi-level category assignment screen, replacing ad-hoc error rendering with the standardised `role='alert'` pattern.",
     ],
     related: [
-      "Label — the bare Radix label component. Use directly only when you are building a fully custom layout that cannot accept FormField's stack wrapper, and you will manage aria-describedby/aria-invalid yourself. FormField is always preferred for standard form controls.",
+      "Label — the bare label component. Use directly only when you are building a fully custom layout that cannot accept FormField's stack wrapper, and you will manage aria-describedby/aria-invalid yourself. FormField is always preferred for standard form controls.",
       'Field — the inline row for a boolean control: label and control side by side, with `labelAddon`, `description` and `error` (gh#812 added the last two slots; `error` wires aria-invalid / aria-errormessage / aria-describedby onto the control, so a validated boolean no longer has to be hand-wired). It still renders NO hidden `<input name>` — `Switch name="…"` submits itself — and it has no `required`, `helper`, error-bag `name` binding or layout/width knobs. Still: never wrap a bare `Switch` in FormField.',
       "Field — pairs a single checkbox or radio with a label and optional description in a horizontal layout (control beside text). Use Field instead of FormField when the control and its label sit side-by-side rather than stacked.",
       "CheckboxGroup / RadioGroup — for groups of options where FormField is not needed per-item; the group component handles its own legend/label and option layout.",
@@ -6897,7 +6894,7 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
 <FormField id="coupon-name" label="クーポン名" required error={errors.name} helper="最大50文字">
   <Input id="coupon-name" placeholder="春の花粉症対策15%OFF" value={name} onValueChange={(v) => setName(v)} />
 </FormField>`,
-    storyPath: "data-entry/FormField.stories.tsx",
+    storyPath: "data-entry/form-field/index.tsx",
     rules: [23],
   },
   {
@@ -6954,7 +6951,6 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     </FormField>
   </form>
 </Form>`,
-    storyPath: "data-entry/FormErrors.stories.tsx",
     rules: [23],
   },
   {
@@ -7072,7 +7068,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     example: `import { Input } from "@godxjp/ui/data-entry";
 
 <Input id="qty" type="number" placeholder="例: 500" value={value} onValueChange={(v) => setValue(v)} />`,
-    storyPath: "data-entry/Input.stories.tsx",
+    storyPath: "data-entry/input.tsx",
     rules: [],
   },
   {
@@ -7225,7 +7221,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "FormField — compose NumberInput inside FormField (matching id) for label/helper/error a11y wiring.",
       "TimePicker — the HH:mm time sibling; NumberInput is for plain numbers, TimePicker for clock times.",
     ],
-    storyPath: "data-entry/NumberInput.stories.tsx",
+    storyPath: "data-entry/number-input.tsx",
     rules: [3, 6],
     example: `import { NumberInput } from "@godxjp/ui/data-entry";
 
@@ -7337,7 +7333,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     example: `import { SearchInput } from "@godxjp/ui/data-entry";
 
 <SearchInput placeholder="クーポン名・IDで検索" value={search} onSearch={setSearch} />`,
-    storyPath: "data-entry/SearchInput.stories.tsx",
+    storyPath: "data-entry/search-input.tsx",
     rules: [23],
   },
   {
@@ -7477,7 +7473,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "DataTable — for displaying and acting on records rather than picking one.",
       "Dialog — the over-threshold branch; `RecordPicker` opens one for you.",
     ],
-    storyPath: "data-entry/RecordPicker.stories.tsx",
+    storyPath: "data-entry/record-picker.tsx",
     example: `import { RecordPicker } from "@godxjp/ui/data-entry";
 
 <RecordPicker
@@ -7950,11 +7946,11 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     ],
     related: [
       "Segmented — the same choice when the option set is small and worth showing at once. Select hides its options behind a trigger; Segmented lays them out, which reads better for 2-4 mutually exclusive options.",
-      "SearchSelect — the combobox engine Select delegates to when showSearch=true or loadOptions is set. Prefer Select with showSearch instead of reaching for SearchSelect directly (SearchSelect is now deprecated as a public API).",
+      "Select showSearch / loadOptions — the searchable combobox is a MODE of this component (an internal engine, not a public SearchSelect export); never build your own.",
       "TreeSelect — use when options are hierarchical (parent/child tree). Not a drop-in for Select; has expand/collapse and a separate treeData prop.",
       "Select with showSearch — use Select (with the `showSearch` prop) for typeahead/autocomplete lookup patterns instead of the removed Autocomplete component.",
       "RadioGroup — use instead of Select when there are 2-4 mutually exclusive choices that must all be visible at once without opening a popover.",
-      "Combobox (if present) — compound cmdk-powered combobox for free-text + suggestion; Select is for strict value lists only.",
+      "Command — the cmdk-powered list for free-text command search (a palette, a slash menu); a value-picking combobox is Select showSearch — there is no Combobox component.",
     ],
     example: `import {
   Select,
@@ -8055,7 +8051,7 @@ export function PrioritySelect({ value, onValueChange }) {
     </Select>
   );
 }`,
-    storyPath: "data-entry/Select.stories.tsx",
+    storyPath: "data-entry/select.tsx",
     rules: [3, 6, 23],
   },
   {
@@ -8144,7 +8140,7 @@ export function PrioritySelect({ value, onValueChange }) {
 <Field id="stackable" label="他クーポンとの併用を許可" description="会計時に自動で合算されます">
   <Switch id="stackable" checked={stackable} onCheckedChange={setStackable} />
 </Field>`,
-    storyPath: "data-entry/Switch.stories.tsx",
+    storyPath: "data-entry/switch.tsx",
     rules: [],
   },
   {
@@ -8272,20 +8268,20 @@ export function PrioritySelect({ value, onValueChange }) {
 
 // Chat / comment composer — grows with its content, scrolls past 8 rows, collapses on send.
 <Textarea autoGrow minRows={1} maxRows={8} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="メッセージを入力..." />`,
-    storyPath: "data-entry/Textarea.stories.tsx",
+    storyPath: "data-entry/textarea.tsx",
     rules: [],
   },
   {
     name: "Label",
     group: "data-entry",
-    tagline: "Styled Radix Label; use htmlFor to associate with a control.",
+    tagline: "Styled React Aria Label; use htmlFor to associate with a control.",
     props: [
       { name: "htmlFor", type: "string", description: "Id of the associated control." },
       { name: "children", type: "ReactNode", description: "Label content." },
     ],
     usage: [
       "DO: always pass `htmlFor` matching the `id` of the associated control — this is the entire purpose of the component. Without it, clicking the label text does NOT focus or toggle the control, breaking a11y and UX.",
-      'DO: import from `@godxjp/ui/data-entry` (not shadcn or Radix directly). The godx-ui Label extends Radix\'s LabelPrimitive with `data-slot="label"`, `select-none`, and `group-data-[disabled]` opacity-50 — hand-rolling a `<label>` loses all of these.',
+      'DO: import from `@godxjp/ui/data-entry` (not shadcn or a primitive library directly). The godx-ui Label extends React Aria\'s Label with `data-slot="label"`, `select-none`, and `group-data-[disabled]` opacity-50 — hand-rolling a `<label>` loses all of these.',
       "DON'T: use Label as a standalone visible heading or section title. It is a form-control association primitive. For page/section headings use semantic HTML (`<h2>`, etc.) or a typography class instead.",
       "DON'T: wrap Label around a control that is already labelled internally. FormField, Field, and CheckboxGroup all render Label internally — adding a second Label creates a duplicate association and redundant screen-reader announcement.",
       "DO: pair Label with Checkbox or Switch when NOT using the compound wrapper (Field). In that case generate the shared id with `React.useId()` and pass it to both `id` on the control and `htmlFor` on Label.",
@@ -8308,7 +8304,7 @@ export function PrioritySelect({ value, onValueChange }) {
     example: `import { Label } from "@godxjp/ui/data-entry";
 
 <Label htmlFor="stackable">併用を許可</Label>`,
-    storyPath: "data-entry/Label.stories.tsx",
+    storyPath: "data-entry/label.tsx",
     rules: [],
   },
   {
@@ -8386,7 +8382,7 @@ export function PrioritySelect({ value, onValueChange }) {
 <Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(v === true)}>
   利用規約に同意する
 </Checkbox>`,
-    storyPath: "data-entry/Checkbox.stories.tsx",
+    storyPath: "data-entry/checkbox.tsx",
     rules: [],
   },
   {
@@ -8449,7 +8445,7 @@ export function PrioritySelect({ value, onValueChange }) {
     ],
     usage: [
       "DO use the `options` prop for the data-driven path: pass `{ label, value, disabled?, description? }[]` and RadioGroup renders every option as a correctly labelled Field automatically — never hand-roll Radio.Item + Label pairs in a loop yourself.",
-      "DO provide `name` whenever the group lives inside an HTML form: Radix renders a hidden `<input name={name}>` carrying the selected string value, making the field natively form-submittable without a separate hidden input.",
+      "DO provide `name` whenever the group lives inside an HTML form: the group renders a hidden `<input name={name}>` carrying the selected string value, making the field natively form-submittable without a separate hidden input.",
       "DO use controlled mode (`value` + `onValueChange`) for any form managed by useForm or a state manager. Use `defaultValue` only for truly uncontrolled UI where you never need to read the value in code.",
       "DO NOT reach for children / manual composition unless the options list is dynamic-JSX (e.g. each item needs a custom rendered label with an icon). When you do compose children manually, wrap each Radio.Item in a Field — rendering a bare Radio.Item without Field skips the label and breaks a11y.",
       "DO NOT use RadioGroup when the user may select zero or multiple items — that is CheckboxGroup. RadioGroup enforces exactly one selection at all times (or none before first interaction when uncontrolled).",
@@ -8475,7 +8471,7 @@ export function PrioritySelect({ value, onValueChange }) {
   { label: "初回購入", value: "first_purchase" },
   { label: "誕生日", value: "birthday" },
 ]} />`,
-    storyPath: "data-entry/RadioGroup.stories.tsx",
+    storyPath: "data-entry/radio-group.tsx",
     rules: [23],
   },
   {
@@ -8791,7 +8787,7 @@ export function BillingFields() {
     </Flex>
   );
 }`,
-    storyPath: "data-entry/DatePicker.stories.tsx",
+    storyPath: "data-entry/date-picker.tsx",
     rules: [3, 6, 13, 31],
   },
 
@@ -8848,7 +8844,7 @@ export function BillingFields() {
       'DO reach for `variant="destructive"` for a dangerous confirmation, INCLUDING one that needs a form inside it (a required reason, a typed challenge). It gives the alertdialog role and the non-dismissable scrim without giving up the freeform body. The separate `AlertDialog*` parts remain for existing code and still work, but they are the older way in.',
       "DO leave `variant` alone for everything that is not destructive. The prop is a danger level, not a colour knob: to tint only the header band use `DialogHeader tone`, which is a separate axis with seven values.",
       "DO always control open state via `open` + `onOpenChange`. Dialog has no uncontrolled shortcut — omitting `open` means the trigger alone drives state, which is fine for simple trigger-only cases, but any async submission flow must use controlled state so you can hold the dialog open while `pending=true` and close it only on success.",
-      "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
+      "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. a dialog needs an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
       "DO wrap tall/scrolling content in `DialogBody` (the ring-safe scroll slot, max-height ~60vh). It insets the content to match the dialog padding so a full-width control's focus ring never clips against the scroll container — mirror of SheetBody.",
       "DO set `modal={false}` when the user must keep working on the page behind an open dialog (edit a list while a payment or detail dialog stays open). Control `open` yourself: an outside press no longer closes it, so give it a visible close action. Escape closes it only while focus is inside the dialog.",
       'DO pass `width` on `DialogContent` for a wide dialog (an overview grid, a comparison): `<DialogContent width="60rem">` (number = px, string = any CSS length; antd Modal `width`, same vocabulary as SheetContent `width`). It is capped at the viewport minus --dialog-viewport-inset, so it never leaves a phone screen. Default 32rem (--dialog-width-default). Do NOT switch to a full-width Sheet to get room (gh#1174).',
@@ -8892,7 +8888,7 @@ function CreateDialog() {
     </Dialog>
   );
 }`,
-    storyPath: "feedback/Dialog.stories.tsx",
+    storyPath: "feedback/dialog.tsx",
     rules: [23, 3],
   },
   {
@@ -8979,9 +8975,9 @@ function CreateDialog() {
     usage: [
       "COMPOUND (AlertDialogRoot): Reach for the flat `AlertDialog` preset FIRST — it already covers title/description/confirm/cancel, the typed `challenge`, `stepUp` re-auth and `pending`. Use `AlertDialogRoot` only when the confirm body needs content the preset does not model (an impact summary, a diff, a nested list).",
       "COMPOUND (AlertDialogRoot): DO name it `AlertDialogRoot`, not `AlertDialog` — the `AlertDialog` export is the flat preset and takes a completely different (non-compound) prop API.",
-      "COMPOUND (AlertDialogRoot): DO include `AlertDialogHeader` with `AlertDialogTitle` inside every `AlertDialogContent` — Radix requires an accessible title for `role=alertdialog`; omitting it warns in the console and breaks screen-reader announcement. `AlertDialogHeader` also takes the prop-driven `title`/`subtitle`/`extra`/`tone` form, where `subtitle` renders the `AlertDialogDescription`.",
+      "COMPOUND (AlertDialogRoot): DO include `AlertDialogHeader` with `AlertDialogTitle` inside every `AlertDialogContent` — `role=alertdialog` needs an accessible title; omitting it warns in the console and breaks screen-reader announcement. `AlertDialogHeader` also takes the prop-driven `title`/`subtitle`/`extra`/`tone` form, where `subtitle` renders the `AlertDialogDescription`.",
       "COMPOUND (AlertDialogRoot): DO portal explicitly: `AlertDialogContent` does NOT self-portal (unlike `DialogContent`). Wrap it in `AlertDialogPortal` with a sibling `AlertDialogOverlay`, or the scrim and stacking context are wrong.",
-      "COMPOUND (AlertDialogRoot): DO use `AlertDialogAction` / `AlertDialogCancel` for the footer buttons — they carry the button styling AND the Radix close semantics. Do not wrap them in `asChild` `<Button variant=…>`: the Root's button classes and the child's would both land on the element and the variant would not win.",
+      "COMPOUND (AlertDialogRoot): DO use `AlertDialogAction` / `AlertDialogCancel` for the footer buttons — they carry the button styling AND the close semantics. Do not wrap them in `asChild` `<Button variant=…>`: the Root's button classes and the child's would both land on the element and the variant would not win.",
       "COMPOUND (AlertDialogRoot): DO NOT import `@radix-ui/react-alert-dialog` directly in a consumer app. Everything the compound needs is exported from `@godxjp/ui/feedback`.",
       "Use `AlertDialog` for destructive/irreversible actions (delete, void, unpublish, archive, etc.).",
       "Use `confirmPhrase`/`challenge` for high-friction operations (e.g. typing an org slug) to reduce accidental confirmation — both force the destructive shape: the destructive confirm button plus a leading status glyph beside the title, which is Ant Design `Modal.confirm` parity. The header surface stays UNTINTED — antd signals danger with the glyph and never tints a modal header (its soft `colorErrorBg` belongs to Alert/Tag/message). To tint the band anyway, set `DialogHeader tone` yourself; it is a separate seven-value axis the preset no longer imposes.",
@@ -9013,7 +9009,7 @@ function CreateDialog() {
   }}
   variant="destructive"
 />`,
-    storyPath: "feedback/AlertDialog.stories.tsx",
+    storyPath: "feedback/alert-dialog.tsx",
     rules: [23, 3],
   },
   {
@@ -9032,7 +9028,7 @@ function CreateDialog() {
     ],
     group: "feedback",
     tagline:
-      "Side-panel drawer / responsive detail panel (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom, responsive=auto|side|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter.",
+      "Side-panel drawer / responsive detail panel (React Aria modal dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom, responsive=auto|side|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter.",
     props: [
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
@@ -9057,7 +9053,7 @@ function CreateDialog() {
         name: "onCloseAutoFocus",
         type: "(event: Event) => void",
         description:
-          "On SheetContent (Radix name, same as DialogContent): fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading after a drawer navigation) to send focus there instead (gh#1134).",
+          "On SheetContent (same name as on DialogContent): fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading after a drawer navigation) to send focus there instead (gh#1134).",
       },
       {
         name: "responsive",
@@ -9078,14 +9074,14 @@ function CreateDialog() {
       "DO set `width` on SheetContent for a wider/narrower panel (e.g. width={480}); it caps at the viewport so small screens still get a full-width panel.",
       'DO use responsive="auto" for a record detail panel / drawer that must be a desktop side panel and a mobile bottom sheet — ONE <Sheet>, no page-local media query. The breakpoint is the --sheet-responsive-breakpoint-width token, so a service moves the line once for every overlay. `width` is ignored while the bottom presentation is active (a bottom sheet is full-bleed).',
       'DON\'T hardcode an overlay breakpoint in app code (useMediaQuery("(max-width: 390px)")). If a composite must swap a desktop surface for a mobile sheet (a Popover→Sheet switcher, for example), call the exported useSheetResponsiveMode("auto") hook so it reads the same themeable token.',
-      "DO use all named sub-parts in order: Sheet (root) > SheetTrigger (opener) > SheetContent (panel) > SheetHeader > SheetTitle (required for a11y — maps to Radix DialogPrimitive.Title, announced as the accessible name) > optional SheetDescription > body content > SheetFooter. Never skip SheetTitle inside an open SheetContent.",
+      "DO use all named sub-parts in order: Sheet (root) > SheetTrigger (opener) > SheetContent (panel) > SheetHeader > SheetTitle (required for a11y — it is the dialog's heading, announced as the accessible name) > optional SheetDescription > body content > SheetFooter. Never skip SheetTitle inside an open SheetContent.",
       "DO control state explicitly with open + onOpenChange on Sheet root when you need to close programmatically (e.g. after form submit). Uncontrolled (no props) works for simple trigger-only cases but gives you no hook to reset form state on close.",
       "DO use SheetTrigger asChild to wrap a Button or other interactive element — this avoids a nested <button> in the DOM. Never render a raw <button> as a direct child of SheetTrigger.",
       "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
       "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
       "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
-      "DON'T put a Sheet inside a Dialog (nested Radix portals conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
+      "DON'T put a Sheet inside a Dialog (nested modal overlays conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
     ],
     useCases: [
       "Filter/search panel: slide in from the right with filter FormFields (Select, `DatePicker range`, CheckboxGroup) that affect a DataTable — preferred over a Dialog because filters do not require confirmation and benefit from seeing the table behind the overlay.",
@@ -9111,7 +9107,7 @@ import { Button } from "@godxjp/ui/general";
     {/* filter fields */}
   </SheetContent>
 </Sheet>`,
-    storyPath: "feedback/Sheet.stories.tsx",
+    storyPath: "feedback/sheet.tsx",
     rules: [3],
   },
   {
@@ -9197,7 +9193,7 @@ import { Button } from "@godxjp/ui/general";
   <AlertTitle>3 件の打刻漏れがあります</AlertTitle>
   <AlertDescription>本日中に確認してください。</AlertDescription>
 </Alert>`,
-    storyPath: "feedback/Alert.stories.tsx",
+    storyPath: "feedback/alert.tsx",
     rules: [],
   },
   {
@@ -9242,7 +9238,6 @@ import { Toaster } from "@godxjp/ui/feedback";
 import { toast } from "sonner";
 toast.success("クーポンを公開しました");
 toast.error("保存に失敗しました");`,
-    storyPath: "feedback/Toaster.stories.tsx",
     rules: [],
   },
 
@@ -9252,7 +9247,7 @@ toast.error("保存に失敗しました");`,
     subParts: ["TabsContent", "TabsList", "TabsTrigger"],
     group: "navigation",
     tagline:
-      "Radix tab container with optional Ant-style `items` API. Pass items for the common full TabsList/TabsContent set, or compose TabsList/TabsTrigger/TabsContent manually when you need per-panel control.",
+      "React Aria tab container with optional Ant-style `items` API. Pass items for the common full TabsList/TabsContent set, or compose TabsList/TabsTrigger/TabsContent manually when you need per-panel control.",
     props: [
       {
         name: "items",
@@ -9428,7 +9423,7 @@ toast.error("保存に失敗しました");`,
     related: [
       "Steps (@godxjp/ui/navigation) — sequential wizard/progress indicator. Use Steps when order and completion state matter (multi-step forms, onboarding flows); use Tabs when panels are non-sequential and any tab can be visited freely.",
       "Toolbar / ToolbarGroup (@godxjp/ui/navigation) — horizontal filter chip row. Visually resembles `line`-variant tabs but is semantically different: Toolbar filters a dataset, it does not switch content panels. Never use Tabs as a filter control.",
-      "DropdownMenu (@godxjp/ui/navigation) — use for space-constrained contexts where showing all tab triggers at once is impractical (e.g. mobile overflow menu). If only 2-3 options exist and screen space is tight, a DropdownSidebar is a lighter alternative to a full tab strip.",
+      "DropdownMenu (@godxjp/ui/navigation) — use for space-constrained contexts where showing all tab triggers at once is impractical (e.g. mobile overflow menu). If only 2-3 options exist and screen space is tight, a Segmented control is a lighter alternative to a full tab strip.",
     ],
     example: `import { Tabs } from "@godxjp/ui/navigation";
 
@@ -9439,7 +9434,7 @@ toast.error("保存に失敗しました");`,
     { value: "history", label: "履歴", content: "履歴コンテンツ" },
   ]}
 />`,
-    storyPath: "navigation/Tabs.stories.tsx",
+    storyPath: "navigation/tabs.tsx",
     rules: [],
   },
   {
@@ -9569,7 +9564,7 @@ toast.error("保存に失敗しました");`,
     example: `import { Pagination } from "@godxjp/ui/navigation";
 
 <Pagination value={page} total={filtered.length} pageSize={10} showTotal onValueChange={(p) => setPage(p)} />`,
-    storyPath: "navigation/Pagination.stories.tsx",
+    storyPath: "navigation/pagination.tsx",
     rules: [40],
   },
   {
@@ -9694,7 +9689,7 @@ import { Button } from "@godxjp/ui/general";
     <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>`,
-    storyPath: "navigation/DropdownMenu.stories.tsx",
+    storyPath: "navigation/dropdown-menu.tsx",
     rules: [],
   },
   {
@@ -9793,7 +9788,7 @@ import { Button } from "@godxjp/ui/general";
     example: `import { Steps } from "@godxjp/ui/navigation";
 
 <Steps value={1} items={[{ title: "申請" }, { title: "審査中" }, { title: "完了" }]} />`,
-    storyPath: "navigation/Steps.stories.tsx",
+    storyPath: "navigation/steps.tsx",
     rules: [],
   },
   {
@@ -10035,25 +10030,25 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
       "`AppPresetContext` is the React context AppProvider's `preset` prop fills; read it with `useAppPreset()` (the active `AppPreset`, or undefined for the neutral defaults). Don't provide it yourself — pass `preset` to AppProvider.",
       'DO drive the four theme axes (theme / brand / density / fontSize) from AppProvider props ONLY — they are written to <html data-*> and read by every component via tokens. Never hand-set --font-size-base or .ui-density-* in app CSS; that bypasses persistence + the runtime switchers. For runtime switching mount `<AppSettingPicker kind="density" | "fontSize" | "theme" | "brand" >` or call setDensity/setFontSize/setTheme/setBrand from useAppContext().',
       'DO mount AppProvider ONCE at the application root (e.g. in app.tsx or the Inertia layout), wrapping ALL children — every `AppSettingPicker` (kind="locale" / "timezone" / "dateFormat" / "timeFormat"), every formatDate call, and the Toaster all rely on the single context it provides. Nesting two AppProviders creates split contexts; inner pickers silently read the wrong one.',
-      "DO NOT omit AppProvider and then try to use LocalePicker, TimezonePicker, or formatDate standalone — useAppContext() throws 'useAppContext must be used within <AppProvider>' at runtime. The only exception is using those pickers in fully controlled mode (value + onChange) which reads useOptionalAppContext() and returns null safely.",
+      "DO NOT omit AppProvider and then try to use AppSettingPicker or formatDate standalone — useAppContext() throws 'useAppContext must be used within <AppProvider>' at runtime. The only exception is using those pickers in fully controlled mode (value + onChange) which reads useOptionalAppContext() and returns null safely.",
       "DO use `persist={false}` on AppProvider for isolated tests and standalone settings forms where localStorage must not be read or written. With the default `persist={true}` the provider reads localStorage key `godxjp.app` on mount (after first render), so initial state may differ between SSR and client.",
       'DO NOT reach for `persist={false}` because the SERVER owns the locale — pass the axes the BROWSER owns instead: `persist={["theme", "brand", "density", "fontSize", "scaling"]}`. Storage is read after the props, so a stored `locale` overrides the one the server just resolved; turning persistence off wholesale fixes that and silently takes the viewer\'s theme with it, which is how a hosted app shipped a theme toggle that reset on every reload.',
       "DO set `defaultTimezone='system'` together with `systemTimezone={serverTimezone}` when your backend knows the legal entity's canonical timezone (e.g. 'Asia/Ho_Chi_Minh'). Use `defaultTimezone='browser'` (the default) only when you want the user's browser clock. Do NOT pass a raw IANA string to `defaultTimezone` if the user may be in a different zone — use the named aliases.",
       "DO wire `onLocaleChange`, `onTimezoneChange`, `onTimeFormatChange`, `onDateFormatChange` to persist changes server-side (e.g. patch user profile via Inertia router) in addition to the automatic localStorage write. These callbacks fire after state is set, so the new value is already reflected in context.",
       "DO set `emitFieldNames` on AppProvider when the app is driven by screen automation (RPA) or posts native forms \u2014 every control under a FormField then carries a real `name` taken from the field key, and legacy automation that addressed controls by `name` keeps working after a rewrite. Leave it off (the default) otherwise: it changes what a native submit sends. The `data-field` attribute is emitted either way, so e2e selectors do not depend on this flag.",
-      "DO restrict the timezone dropdown by passing `timezoneOptions={APP_TIMEZONE_PRESET}` (an exported constant) to AppProvider — all TimezonePicker instances that omit their own `options` prop will inherit this restricted list automatically from context. Without it, TimezonePicker renders the full IANA list (~600 entries).",
+      'DO restrict the timezone dropdown by passing `timezoneOptions={APP_TIMEZONE_PRESET}` (an exported constant) to AppProvider — every `AppSettingPicker kind="timezone"` inherits this restricted list from context. Without it the picker offers the full IANA list (~600 entries).',
     ],
     useCases: [
       "App bootstrap in a multi-locale SaaS admin (ja/en/vi) — mount AppProvider at the root with the tenant's preferred locale and IANA timezone so every DataTable date column, every formatDate call, and every picker renders consistently in the user's locale without any per-component configuration.",
-      "User settings page — render LocalePicker, TimezonePicker, DateFormatPicker, and TimeFormatPicker as zero-prop children inside the existing AppProvider; each picker reads and writes context automatically. Wire `onLocaleChange` to an Inertia form submit to persist the change to the server profile.",
+      'User settings page — render `<AppSettingPicker kind="locale" />`, `kind="timezone"`, `kind="dateFormat"` and `kind="timeFormat"` inside the existing AppProvider; each reads and writes context automatically. Wire `onLocaleChange` to an Inertia form submit to persist the change to the server profile.',
       "Server-rendered Inertia app with SSR hydration — pass `defaultTimezone='system'` and `systemTimezone={sharedProps.timezone}` (injected via HandleInertiaRequests) so the initial render is timezone-deterministic and avoids hydration mismatches caused by browser-timezone detection.",
       "Multi-entity accounting dashboard — use `timezoneOptions` to restrict the picker to the legal entity's permissible zones (e.g. Southeast Asian IANA ids only), preventing users from accidentally switching to an out-of-scope timezone that would misrepresent transaction timestamps.",
       "Isolated preview / Storybook story — wrap a single component in `<AppProvider persist={false} defaultLocale='en'>` to give it a stable context without polluting localStorage between stories.",
       "Test harness — wrap the component under test in `<AppProvider persist={false} defaultLocale='ja' defaultDateFormat='iso'>` to assert locale-sensitive formatting output deterministically, independent of whatever the browser or stored preferences report.",
     ],
     related: [
-      "LocalePicker — the language-selector control that reads/writes AppProvider locale context automatically when used as a zero-prop child. Prefer LocalePicker over calling setLocale from useAppContext() directly in UI.",
-      "TimezonePicker — the timezone-selector control; inherits `timezoneOptions` from AppProvider context when its own `options` prop is omitted. Both pickers require AppProvider to be in the tree unless controlled props are passed.",
+      'AppSettingPicker — `kind="locale"` is the language selector that reads/writes AppProvider locale context automatically when used with no value props. Prefer it over calling setLocale from useAppContext() directly in UI.',
+      'AppSettingPicker `kind="timezone"` — the timezone selector; inherits `timezoneOptions` from AppProvider context. Every kind needs AppProvider in the tree unless value + onValueChange are passed.',
       "formatDate — the MANDATORY date/time formatter that reads locale, timezone, timeFormat, and dateFormat from AppProvider context. Do NOT call date-fns or Intl.DateTimeFormat directly; formatDate is the single source of truth for display.",
       "AppShell — the authenticated layout (sidebar + topbar + main). It does NOT mount AppProvider: mount AppProvider once at the application root, ABOVE AppShell (and above any CenteredShell/MobileShell), so every shell and page reads the same context.",
       "OverlayPortalProvider — the other root-level provider, and the one to reach for when this library is mounted inside a SHADOW ROOT. Every overlay here (Popover, Dialog, Sheet, Tooltip, DropdownMenu, HoverCard) portals to `document.body` by default, which is correct on an ordinary page and wrong in a shadow root: the panel lands outside the tree carrying the stylesheet and renders with none of it — measured on an embedded bar as border 0, radius 0, a transparent background, and the anchor maths 40px off. `<OverlayPortalProvider container={shadowRoot}>` moves all of them at once; a per-component prop cannot, because a component that owns its own overlay (AppLauncher) is unreachable from the outside.",
@@ -10063,7 +10058,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
 <AppProvider defaultLocale="ja" defaultTimezone="Asia/Tokyo" defaultDateFormat="iso" defaultTimeFormat="24h">
   {children}
 </AppProvider>`,
-    storyPath: "app/AppProvider.stories.tsx",
+    storyPath: "providers/app-provider.tsx",
     rules: [5],
   },
   {
@@ -10112,7 +10107,6 @@ const shadowRoot = host.attachShadow({ mode: "open" });
 <OverlayPortalProvider container={shadowRoot}>
   <AppProvider defaultLocale="ja">{children}</AppProvider>
 </OverlayPortalProvider>`,
-    storyPath: "app/OverlayPortalProvider.stories.tsx",
     rules: [5],
   },
   {
@@ -10169,7 +10163,7 @@ const shadowRoot = host.attachShadow({ mode: "open" });
     <DialogContent><DialogTitle>Review</DialogTitle></DialogContent>
   </Dialog>
 </ThemeScope>`,
-    storyPath: "app/ThemeScope.stories.tsx",
+    storyPath: "providers/theme-scope.tsx",
     rules: [5],
   },
   {
@@ -10210,14 +10204,14 @@ const shadowRoot = host.attachShadow({ mode: "open" });
     related: [
       "AppProvider — required peer that seeds locale, timezone, dateFormat, and timeFormat into the module-level context that `formatDate` reads. Must be mounted once at app root; omitting it means `formatDate` silently falls back to Vietnamese/Ho Chi Minh City defaults.",
       "DatePicker — the corresponding input control for calendar dates. Use `DatePicker` to capture a date from the user; use `formatDate(value, { calendar: true })` to display the picked `Date` object back as a string.",
-      "DateFormatPicker / TimeFormatPicker / TimezonePicker — preference pickers that update AppProvider context; their selections are automatically picked up by subsequent `formatDate` calls with no extra wiring needed.",
+      'AppSettingPicker — `kind="dateFormat" | "timeFormat" | "timezone"` updates AppProvider context, and subsequent `formatDate` calls pick the selection up with no extra wiring.',
       "TimePicker — the corresponding input control for HH:mm time values. Use `TimePicker` to capture time; use `formatDate(hhmm)` (auto-detects `'time'` kind) to display the stored `HH:mm` string respecting the user's 12h/24h preference.",
     ],
     example: `import { formatDate } from "@godxjp/ui/datetime";
 
 formatDate(coupon.validFrom);                       // "2026-05-01"
 formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
-    storyPath: "app/formatDate.stories.tsx",
+    storyPath: "providers/format-date.tsx",
     rules: [5],
   },
   // ─── backfill 2026-06 (Tooltip, pickers, advanced data-entry, query helpers) ───
@@ -10440,7 +10434,7 @@ export function CutoffTimeForm() {
     </form>
   );
 }`,
-    storyPath: "data-entry/TimePicker.stories.tsx",
+    storyPath: "data-entry/time-picker.tsx",
     rules: [3, 6, 13, 23],
   },
   {
@@ -10747,7 +10741,7 @@ function MultiRegionPicker() {
   onValueChange={(v) => console.log("path", v)}
 />
 \`}`,
-    storyPath: "data-entry/Cascader.stories.tsx",
+    storyPath: "data-entry/cascader.tsx",
     rules: [3, 6, 23, 31],
   },
   {
@@ -11055,7 +11049,7 @@ export function DepartmentFilter() {
     />
   );
 }`,
-    storyPath: "data-entry/TreeSelect.stories.tsx",
+    storyPath: "data-entry/tree-select.tsx",
     rules: [3, 6, 13, 23],
   },
   {
@@ -11205,7 +11199,7 @@ export function DepartmentFilter() {
       "Permission set builder in an admin UI: shuttle individual API scopes from 'available' to 'granted' for an API key or OAuth client.",
     ],
     related: [
-      "MultiSelect — picks multiple values from a dropdown; prefer when the option set is large and a panel layout is not needed.",
+      'Select mode="multiple" — picks multiple values from a dropdown; prefer it when the option set is large and a two-panel layout is not needed.',
       "Checkbox (list) — use for a simple flat multi-select without a shuttle/move metaphor.",
       "Select (compound) — single or multi-value dropdown; not a dual-panel component.",
       "Tree — hierarchical item display; combine with Transfer's dataSource if items have a tree structure but the shuttle UX is still needed.",
@@ -11234,7 +11228,7 @@ export function AccountMapping() {
     />
   );
 }`,
-    storyPath: "data-entry/Transfer.stories.tsx",
+    storyPath: "data-entry/transfer.tsx",
     rules: [23, 31],
   },
   {
@@ -11535,7 +11529,7 @@ export function DocumentUploadDropzone() {
     />
   );
 }`,
-    storyPath: "data-entry/Upload.stories.tsx",
+    storyPath: "data-entry/upload.tsx",
     rules: [3, 23],
   },
   {
@@ -11625,7 +11619,7 @@ export function AvatarField() {
     </>
   );
 }\`}`,
-    storyPath: "data-entry/UploadCropDialog.stories.tsx",
+    storyPath: "data-entry/upload-crop-dialog.tsx",
     rules: [3, 13, 23],
   },
   {
@@ -11757,14 +11751,14 @@ export function TagColorField() {
 export function DisabledColor() {
   return <ColorPicker value="#6b7280" disabled />;
 }`,
-    storyPath: "data-entry/ColorPicker.stories.tsx",
+    storyPath: "data-entry/color-picker.tsx",
     rules: [2, 3, 6, 13],
   },
   {
     name: "Slider",
     group: "data-entry",
     tagline:
-      "Numeric slider on react-aria-components with the antd 6 API — one thumb over a point, or `range` for a span. `value` takes a plain number (antd) or a number[] (the Radix-era spelling); both still work.",
+      "Numeric slider on react-aria-components with the antd 6 API — one thumb over a point, or `range` for a span. `value` takes a plain number (antd) or a number[] (the v22-era array spelling); both still work.",
     props: [
       {
         name: "value / defaultValue",
@@ -11987,7 +11981,7 @@ function PlanSlider() {
     </FormField>
   );
 }\`}`,
-    storyPath: "data-entry/Slider.stories.tsx",
+    storyPath: "data-entry/slider.tsx",
     rules: [3, 6, 31],
   },
   {
@@ -12318,7 +12312,7 @@ export function ReportRangeFilter() {
     </Popover>
   );
 }`,
-    storyPath: "data-entry/Calendar.stories.tsx",
+    storyPath: "data-entry/calendar.tsx",
     rules: [3, 5, 6, 23],
   },
   {
@@ -12462,7 +12456,7 @@ export function ReportRangeFilter() {
     ],
     usage: [
       "DO compose the full tree: Command > CommandInput + CommandList > (CommandEmpty | CommandGroup > CommandItem | CommandItem). Every interactive element must live inside CommandList; items outside it are invisible to the keyboard engine.",
-      "DO set shouldFilter={false} and manage filtering yourself when the options list comes from a server/async source (e.g. SearchSelect pattern). With shouldFilter=true the default client-side scoring runs over all rendered items automatically.",
+      "DO set shouldFilter={false} and manage filtering yourself when the options list comes from a server/async source (e.g. Select `loadOptions`). With shouldFilter=true the default client-side scoring runs over all rendered items automatically.",
       "DO always provide a stable explicit value prop on CommandItem when the item's text content can change between renders — relying on inferred textContent with dynamic labels causes selection bugs.",
       "DO include CommandEmpty inside CommandList to show a no-results message. It renders automatically only when the filtered count is zero; do not conditionally render it yourself.",
       "DO use split for checkbox/option lists (a filter facet, a picker: Popover + PopoverContent flush + Command split) — rows get a divider between them and 0 list padding, so they read as one box. Keep the default (unsplit) for a command palette. Never re-create the look with page CSS (border on items, padding 0 on the group): retune --command-item-divider-color / --command-item-divider-width instead.",
@@ -12471,13 +12465,13 @@ export function ReportRangeFilter() {
     ],
     useCases: [
       "Command palette / global action launcher (Cmd+K menu): wraps Command + CommandInput + grouped CommandItems for quick navigation across pages or actions.",
-      "Popover-based combobox with server-side search: Command with shouldFilter={false} inside a Popover, managing the query state externally and filtering options before rendering — this is exactly how SearchSelect is built internally.",
-      "Tree/cascader search panel: inject Command + CommandInput as a search header above a custom scroll area (no CommandList needed for the tree body) to get a styled, accessible search input — as used by CascaderSelect and TreeSelect.",
+      "Popover-based combobox with server-side search: Command with shouldFilter={false} inside a Popover, managing the query state externally and filtering options before rendering — this is exactly how Select `showSearch` is built internally.",
+      "Tree/cascader search panel: inject Command + CommandInput as a search header above a custom scroll area (no CommandList needed for the tree body) to get a styled, accessible search input — as Cascader and TreeSelect do.",
       "Multi-group option picker: use CommandGroup with heading to visually separate option categories (e.g. 'Accounts', 'Contacts', 'Documents') inside one dropdown with a single search box.",
       "Keyboard-first admin shortcut bar: embed Command with loop={true} and vimBindings={true} in a persistent sidebar for power-user keyboard navigation without page reloads.",
     ],
     related: [
-      "SearchSelect — higher-level compound component that composes Command + Popover + server search; use SearchSelect for a fully managed async combobox instead of building your own with Command.",
+      "Select — `showSearch` / `loadOptions` is the fully managed (async) combobox built on Command + Popover; use it instead of building your own with Command.",
       "Select — simple dropdown for static option lists without type-to-filter; use Select when there are fewer than ~10 options and no search is needed.",
       "SearchInput — standalone text input with a search icon; use SearchInput for filtering visible page content (tables, lists) not for selecting from a command menu.",
       "CommandInput (sub-part) — the styled search input that only works inside a Command root; never use it alone as a general search field.",
@@ -12517,7 +12511,7 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
     </Command>
   );
 }\`}`,
-    storyPath: "data-entry/Command.stories.tsx",
+    storyPath: "data-entry/command.tsx",
     rules: [2, 3, 6, 23],
   },
   {
@@ -12650,7 +12644,6 @@ export function ControlledExample() {
     />
   );
 }`,
-    storyPath: "data-entry/CheckboxGroup.stories.tsx",
     rules: [3, 6, 23, 31],
   },
   {
@@ -12782,7 +12775,6 @@ function CustomRadioGroup() {
     </Radio.Group>
   );
 }\`}`,
-    storyPath: "data-entry/Radio.stories.tsx",
     rules: [3, 6, 13, 23],
   },
   {
@@ -12798,7 +12790,7 @@ function CustomRadioGroup() {
     ],
     group: "data-display",
     tagline:
-      "Radix-backed floating panel anchored to a trigger — always compose with PopoverTrigger + PopoverContent; never use a raw div overlay.",
+      "React Aria floating panel anchored to a trigger — always compose with PopoverTrigger + PopoverContent; never use a raw div overlay.",
     props: [
       {
         name: "open",
@@ -12822,7 +12814,7 @@ function CustomRadioGroup() {
         type: "boolean",
         defaultValue: "false",
         description:
-          "When true, interaction outside the popover is blocked and focus is trapped inside (Radix Root prop).",
+          "When true, interaction outside the popover is blocked and focus is trapped inside (React Aria modal popover).",
       },
       {
         name: "openOn",
@@ -12876,14 +12868,14 @@ function CustomRadioGroup() {
         type: "boolean",
         defaultValue: "false",
         description:
-          "PopoverContent prop. The panel's CONTENT owns its inset: the popover zeroes its own --popover-space-inset so a Command list, a menu or a table runs edge to edge and draws its separators across the full width. Reach for it whenever the child already paints its own rows; leave it off for prose panels, which want the panel padding.",
+          'PopoverContent prop. The panel\'s CONTENT owns its inset: the popover zeroes its own --popover-space-inset so a Command list, a menu or a table runs edge to edge and draws its separators across the full width. Reach for it whenever the child already paints its own rows; leave it off for prose panels, which want the panel padding. Ignored under openOn="hover" (a hover card keeps its own measure).',
       },
       {
         name: "width",
         type: '"panel" | "auto" | "trigger"',
         defaultValue: '"panel"',
         description:
-          'PopoverContent prop. How the panel is MEASURED across the inline axis. "panel" (default) is the popover\'s own --popover-width (18rem) — right for prose and for a list the panel sizes itself. "auto" lets the CONTENT decide, the only correct answer for something with a width of its own (a two-month Calendar is far wider than 18rem and was being clipped by it). "trigger" matches the anchor. It is the counterpart of `flush`: both set a token the panel already reads, so a service theme keeps owning them, where a `w-*` utility on className is a per-call-site constant nothing can retune.',
+          'PopoverContent prop. How the panel is MEASURED across the inline axis. "panel" (default) is the popover\'s own --popover-width (18rem) — right for prose and for a list the panel sizes itself. "auto" lets the CONTENT decide, the only correct answer for something with a width of its own (a two-month Calendar is far wider than 18rem and was being clipped by it). "trigger" matches the anchor. It is the counterpart of `flush`: both set a token the panel already reads, so a service theme keeps owning them, where a `w-*` utility on className is a per-call-site constant nothing can retune. Ignored under openOn="hover" (a hover card keeps its own measure).',
       },
       {
         name: "className",
@@ -12901,7 +12893,7 @@ function CustomRadioGroup() {
       "DO use controlled mode (open + onOpenChange) when external code must open/close the popover programmatically (e.g., form validation reveal, keyboard shortcut). For toggle-only interactions, uncontrolled (defaultOpen) is simpler.",
       "DO structure panel content with PopoverHeader > PopoverTitle + PopoverDescription for labelled panels. This is purely presentational but establishes the correct font-weight and muted-foreground on the description.",
       "DON'T hand-roll a floating div or use a CSS show/hide toggle — Popover provides portal rendering, focus trap, Escape-to-close, and ARIA automatically.",
-      "DON'T place a Popover inside a Dialog without setting modal={false} on the Popover — nested modals conflict with Radix's focus management and produce stuck focus.",
+      "DON'T place a Popover inside a Dialog without setting modal={false} on the Popover — nested modals conflict in focus management and produce stuck focus.",
     ],
     useCases: [
       'User/profile preview on an @mention, or an entity (customer/account) preview on a table cell — `openOn="hover"`.',
@@ -12968,7 +12960,7 @@ export function ControlledPopover() {
     </Popover>
   );
 }`,
-    storyPath: "data-display/Popover.stories.tsx",
+    storyPath: "data-display/popover.tsx",
     rules: [3, 23, 31, 35],
   },
   {
@@ -12976,7 +12968,7 @@ export function ControlledPopover() {
     subParts: ["ScrollBar"],
     group: "data-display",
     tagline:
-      "A native scrolling box (no Radix since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
+      "A native scrolling box (no scroll library since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
     props: [
       {
         name: "className",
@@ -13134,7 +13126,7 @@ const [atNewest, setAtNewest] = React.useState(true);
 >
   {t("chat.jumpToNewest")}
 </Button>`,
-    storyPath: "data-display/ScrollArea.stories.tsx",
+    storyPath: "data-display/scroll-area.tsx",
     rules: [2, 3, 24, 31],
   },
   {
@@ -13180,7 +13172,7 @@ const [atNewest, setAtNewest] = React.useState(true);
         type: "boolean",
         defaultValue: "false",
         description:
-          "On CollapsibleTrigger only — merges Radix trigger behaviour onto the single child element (e.g. a godx-ui Button) instead of rendering a default button. The child must accept onClick and aria-* props.",
+          "On CollapsibleTrigger only — merges the trigger behaviour onto the single child element (e.g. a godx-ui Button) instead of rendering a default button. The child must accept onClick and aria-* props.",
       },
     ],
     usage: [
@@ -13188,7 +13180,7 @@ const [atNewest, setAtNewest] = React.useState(true);
       "DO use asChild on CollapsibleTrigger when you want a godx-ui Button (or any styled element) to act as the trigger: <CollapsibleTrigger asChild><Button>Toggle</Button></CollapsibleTrigger>. Without asChild the trigger renders its own plain button.",
       "DO pass defaultOpen={true} (uncontrolled) when the section should auto-expand on mount — for example, a sidebar nav group whose active child matches the current route.",
       "DO use controlled mode (open + onOpenChange) when external UI — a separate button, route change, or search filter — needs to drive the open state independently of the trigger.",
-      "DON'T add hidden native <details>/<summary> as a fallback — the Radix primitive is already accessible (aria-expanded, aria-controls) out of the box.",
+      "DON'T add hidden native <details>/<summary> as a fallback — the primitive is already accessible (aria-expanded, aria-controls) out of the box.",
       "DON'T put interactive controls (Buttons, links, inputs) inside CollapsibleTrigger itself unless using asChild — nested focusable elements break keyboard navigation. Put them inside CollapsibleContent instead.",
     ],
     useCases: [
@@ -13200,7 +13192,7 @@ const [atNewest, setAtNewest] = React.useState(true);
       "Audit log detail: a compact log entry row that expands to show full diff, user, timestamp, and before/after values.",
     ],
     related: [
-      "Accordion (from @godxjp/ui/data-entry or Radix) — use Accordion when only ONE section can be open at a time across a group; use Collapsible when each section is independent and can be open simultaneously.",
+      "Accordion (@godxjp/ui/data-display) — use Accordion when only ONE section can be open at a time across a group; use Collapsible when each section is independent and can be open simultaneously.",
       "Popover — use Popover when the revealed content should float above the layout in a portal overlay; use Collapsible when the content should push surrounding content down inline.",
       "Dialog/Sheet — use Dialog or Sheet for modal or slide-over panels that demand full user attention; Collapsible stays in-flow and non-modal.",
       "Tree (@godxjp/ui/data-display) — use Tree for hierarchical data that expands, collapses and is navigated by keyboard; use Collapsible for ad-hoc single-level toggle regions.",
@@ -13267,7 +13259,7 @@ export function FilterSection() {
     </Collapsible>
   );
 }\`}`,
-    storyPath: "data-display/Collapsible.stories.tsx",
+    storyPath: "data-display/collapsible.tsx",
     rules: [3, 6, 23],
   },
   {
@@ -13547,7 +13539,7 @@ export function PermissionTree() {
   );
 }`,
     docPath: "docs/data-display/tree.tsx",
-    storyPath: "data-display/Tree.stories.tsx",
+    storyPath: "data-display/tree.tsx",
     rules: [2, 6, 23, 31, 44, 45],
   },
   {
@@ -13555,7 +13547,7 @@ export function PermissionTree() {
     subParts: ["TooltipContent", "TooltipProvider", "TooltipTrigger"],
     group: "feedback",
     tagline:
-      "Radix-based hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time.",
+      "React Aria hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time.",
     props: [
       {
         name: "delayDuration",
@@ -13587,14 +13579,14 @@ export function PermissionTree() {
         type: "boolean",
         defaultValue: "false",
         description:
-          "When true, the tooltip closes as soon as the pointer leaves the trigger (content is not hoverable). Passed through to Radix Root.",
+          "No effect on the React Aria base (kept for API compatibility): React Aria tooltips are never hoverable content, so they already close when the pointer leaves the trigger.",
       },
       {
         name: "side",
         type: "'top' | 'right' | 'bottom' | 'left'",
         defaultValue: '"top"',
         description:
-          "On TooltipContent — preferred side for the tooltip panel. Radix flips automatically when there is not enough space.",
+          "On TooltipContent — preferred side for the tooltip panel. It flips automatically when there is not enough space.",
       },
       {
         name: "sideOffset",
@@ -13637,11 +13629,11 @@ export function PermissionTree() {
     ],
     usage: [
       "DO compose the full three-part structure every time: <Tooltip> wraps <TooltipTrigger> (the element that triggers the tip) and <TooltipContent> (the floating panel). Omitting any part silently produces nothing.",
-      "DO NOT add an app-level <TooltipProvider> — every <Tooltip> self-provides its own Radix Provider. Only add <TooltipProvider> at a subtree root when you need a shared delayDuration different from the default 200ms across many tooltips.",
+      "DO NOT add an app-level <TooltipProvider> — every <Tooltip> self-provides its own provider. Only add <TooltipProvider> at a subtree root when you need a shared delayDuration different from the default 200ms across many tooltips.",
       "DO use asChild on TooltipTrigger when the trigger is already a Button, IconButton, or other interactive element — this avoids nesting a <button> inside a <button>, which is invalid HTML and breaks keyboard focus.",
-      "DON'T put non-interactive elements (plain <div>, <span>) as the direct TooltipTrigger child without asChild — Radix needs a focusable element for keyboard accessibility. Wrap the target in a <span tabIndex={0}> or use a Button.",
+      "DON'T put non-interactive elements (plain <div>, <span>) as the direct TooltipTrigger child without asChild — the trigger needs a focusable element for keyboard accessibility. Wrap the target in a <span tabIndex={0}> or use a Button.",
       "For controlled usage (e.g. programmatic show/hide or testing), pass open + onOpenChange to <Tooltip>. For typical hover/focus behaviour, leave both unset (uncontrolled).",
-      "TooltipContent renders inside a Radix Portal appended to document.body — z-index and overflow:hidden on ancestors do NOT clip it. Use className to extend max width beyond the built-in max-w-xs if long text is expected.",
+      "TooltipContent renders in a portal appended to document.body — z-index and overflow:hidden on ancestors do NOT clip it. Use className to extend max width beyond the built-in max-w-xs if long text is expected.",
     ],
     useCases: [
       "Explaining an icon-only Button action (e.g. a trash icon, a copy-to-clipboard icon) in a DataTable action column — show the label on hover without cluttering the row.",
@@ -13653,7 +13645,7 @@ export function PermissionTree() {
     related: [
       "Popover — use Popover (also @godxjp/ui/feedback) when the floating panel needs interactive content (forms, links, action menus) rather than read-only text. Tooltip is read-only; Popover is interactive.",
       'Popover — `openOn="hover"` for rich preview cards (user profiles, link previews) that appear on hover with more complex layout. Tooltip is for short text hints only.',
-      "Badge / StatusChip — for persistent, always-visible short labels inline with text; not hover-triggered. Use Tooltip when the hint should be hidden until hovered.",
+      "Badge — for persistent, always-visible short labels inline with text; not hover-triggered. Use Tooltip when the hint should be hidden until hovered.",
     ],
     example: `import {
   Tooltip,
@@ -13693,7 +13685,7 @@ export function ControlledExample() {
     </Tooltip>
   );
 }`,
-    storyPath: "feedback/Tooltip.stories.tsx",
+    storyPath: "feedback/tooltip.tsx",
     rules: [3, 6, 23, 39],
   },
   {
@@ -13782,14 +13774,14 @@ import { fetchInvoice } from "@/api/invoices";
 >
   {invoice.number}
 </PrefetchLink>`,
-    storyPath: "data-display/PrefetchLink.stories.tsx",
+    storyPath: "react-router/prefetch-link.tsx",
     rules: [2, 3, 31],
   },
   {
     name: "Avatar",
     subParts: ["AvatarFallback", "AvatarImage"],
     group: "data-display",
-    tagline: "Radix Avatar wrapper with image and fallback slots for users, teams, and entities.",
+    tagline: "Avatar mark with image and fallback slots for users, teams, and entities.",
     props: [
       {
         name: "shape",
@@ -13811,18 +13803,6 @@ import { fetchInvoice } from "@/api/invoices";
         defaultValue: '"default"',
         description:
           'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on.',
-      },
-      {
-        name: "side",
-        type: '"top" | "right" | "bottom" | "left"',
-        description:
-          'Which side of the trigger the panel opens on. Defaults from `appearance` — a bar drops the grid below, anything else opens to the inline-end. State it when the chrome can be RE-DOCKED: `appearance` says the trigger is not in a bar but cannot say which way is out, and a rail pinned to the top edge still opens downward. Ignored by responsive="fullscreen" and by the Sheet surface, which are not anchored to the trigger.',
-      },
-      {
-        name: "align",
-        type: '"start" | "center" | "end"',
-        description:
-          "How the panel aligns to the trigger. Defaults from `appearance` — end in a bar, start otherwise. Same rule as `side`: state it only for chrome that knows its own orientation.",
       },
       {
         name: "presence",
@@ -13884,7 +13864,7 @@ import { fetchInvoice } from "@/api/invoices";
   <AvatarImage src="/rei.png" alt="佐藤 玲" />
   <AvatarFallback>佐</AvatarFallback>
 </Avatar>`,
-    storyPath: "data-display/Avatar.stories.tsx",
+    storyPath: "data-display/avatar.tsx",
     rules: [3, 35],
   },
   {
@@ -13967,7 +13947,7 @@ import { Separator } from "@godxjp/ui/layout";
 
 // Unread watermark: content, not decoration — announced once as the separator's name.
 <Separator label={t("chat.newMessages")} tone="primary" />`,
-    storyPath: "layout/Separator.stories.tsx",
+    storyPath: "layout/separator.tsx",
     rules: [2, 3, 44, 45],
   },
   {
@@ -14029,13 +14009,13 @@ import { Separator } from "@godxjp/ui/layout";
 
 // The same component is the antd namespace:
 <Skeleton.Button size="sm" />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
+    storyPath: "feedback/skeleton.tsx",
     rules: [3, 31],
   },
   {
     name: "Toggle",
     group: "data-entry",
-    tagline: "Radix Toggle wrapper with default/outline variants and tokenized sizes.",
+    tagline: "React Aria toggle button with default/outline/soft variants and tokenized sizes.",
     props: [
       { name: "pressed", type: "boolean", description: "Controlled pressed state." },
       {
@@ -14121,7 +14101,7 @@ import { Separator } from "@godxjp/ui/layout";
 <Toggle aria-label="Bold">B</Toggle>
 
 // A counted filter chip — one control, one accessible name ("Unread, 12 items").
-// Drive the state with the usual Radix pair: pressed / defaultPressed / onPressedChange.
+// Drive the state with the usual pair: pressed / defaultPressed / onPressedChange.
 // variant="soft" + shape="pill" is the antd Tag.CheckableTag shape: it has a RESTING fill, so
 // the chip is legible before it is pressed.
 <Toggle
@@ -14133,7 +14113,7 @@ import { Separator } from "@godxjp/ui/layout";
 >
   {t("inbox.unread")}
 </Toggle>`,
-    storyPath: "data-entry/Toggle.stories.tsx",
+    storyPath: "data-entry/toggle.tsx",
     rules: [3, 13, 45],
   },
   {
@@ -14238,13 +14218,13 @@ import { Separator } from "@godxjp/ui/layout";
   <ToggleGroupItem value="left">Left</ToggleGroupItem>
   <ToggleGroupItem value="center">Center</ToggleGroupItem>
 </ToggleGroup>`,
-    storyPath: "data-entry/ToggleGroup.stories.tsx",
+    storyPath: "data-entry/toggle-group.tsx",
     rules: [3, 13],
   },
   {
     name: "AspectRatio",
     group: "layout",
-    tagline: "Radix AspectRatio wrapper for stable media and preview frames.",
+    tagline: "Fixed-ratio box (CSS aspect-ratio) for stable media and preview frames.",
     props: [
       {
         name: "ratio",
@@ -14263,7 +14243,7 @@ import { Separator } from "@godxjp/ui/layout";
     example: `import { AspectRatio } from "@godxjp/ui/layout";
 
 <AspectRatio ratio={16 / 9}>...</AspectRatio>`,
-    storyPath: "layout/AspectRatio.stories.tsx",
+    storyPath: "layout/aspect-ratio.tsx",
     rules: [2, 3],
   },
   {
@@ -14271,7 +14251,7 @@ import { Separator } from "@godxjp/ui/layout";
     subParts: ["AccordionContent", "AccordionItem", "AccordionTrigger"],
     group: "data-display",
     tagline:
-      "Radix accordion — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent.",
+      "React Aria disclosure group — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent.",
     props: [
       {
         name: "type",
@@ -14319,7 +14299,7 @@ import { Separator } from "@godxjp/ui/layout";
     <AccordionContent>3〜5営業日でお届けします。</AccordionContent>
   </AccordionItem>
 </Accordion>`,
-    storyPath: "data-display/Accordion.stories.tsx",
+    storyPath: "data-display/accordion.tsx",
     rules: [3, 6],
   },
   {
@@ -14388,7 +14368,7 @@ import { Separator } from "@godxjp/ui/layout";
     example: `import { PasswordInput } from "@godxjp/ui/data-entry";
 
 <PasswordInput name="password" autoComplete="current-password" placeholder="パスワード" />`,
-    storyPath: "data-entry/PasswordInput.stories.tsx",
+    storyPath: "data-entry/password-input.tsx",
     rules: [3, 6],
   },
   {
@@ -14450,7 +14430,7 @@ export default function PasswordBlock() {
     </div>
   );
 }`,
-    storyPath: "data-entry/PasswordStrength.stories.tsx",
+    storyPath: "data-entry/password-strength.tsx",
     rules: [3, 6],
   },
   {
@@ -14577,7 +14557,7 @@ export default function PasswordBlock() {
     <InputOTPSlot index={3} /><InputOTPSlot index={4} /><InputOTPSlot index={5} />
   </InputOTPGroup>
 </InputOTP>`,
-    storyPath: "data-entry/InputOTP.stories.tsx",
+    storyPath: "data-entry/input-otp.tsx",
     rules: [3, 6],
   },
   {
@@ -14652,7 +14632,7 @@ export default function PasswordBlock() {
     example: `import { Rating } from "@godxjp/ui/data-entry";
 
 <Rating name="score" defaultValue={4} onValueChange={(v) => console.log(v)} />`,
-    storyPath: "data-entry/Rating.stories.tsx",
+    storyPath: "data-entry/rating.tsx",
     rules: [3, 6, 23],
   },
   {
@@ -14749,7 +14729,7 @@ export default function PasswordBlock() {
     { value: "active", label: "Active", count: 96 },
   ]}
 />`,
-    storyPath: "data-entry/Segmented.stories.tsx",
+    storyPath: "data-entry/segmented.tsx",
     rules: [3, 6, 23],
   },
   {
@@ -14816,7 +14796,7 @@ export default function PasswordBlock() {
       "Stacked vertical split (orientation='vertical') such as a results table over a live JSON/log preview in a data-import tool.",
       "Three-pane workbench (nav | content | inspector) where each boundary is independently draggable and layout is persisted via id + onResize.",
     ],
-    storyPath: "layout/ResizablePanel.stories.tsx",
+    storyPath: "layout/resizable-panel.tsx",
     rules: [3, 6],
     example: `import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@godxjp/ui/layout";
 
@@ -14875,7 +14855,7 @@ export default function PasswordBlock() {
       "Horizontal stepping list of compact KPI or announcement cards that overflow the viewport width.",
       "Product/plan comparison cards on a marketing page where swiping between a few options is acceptable (not the primary action).",
     ],
-    storyPath: "data-display/Carousel.stories.tsx",
+    storyPath: "data-display/carousel.tsx",
     rules: [3, 6],
     example: `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from "@godxjp/ui/lab";
 
@@ -15019,7 +14999,7 @@ export function TopbarLocale() {
   // "bar" inside a Topbar slot; "icon" everywhere else.
   return <Topbar end={<AppSettingPicker kind="locale" appearance="bar" />} />;
 }\`}`,
-    storyPath: "navigation/AppSettingPicker.stories.tsx",
+    storyPath: "navigation/app-setting-picker.tsx",
     rules: [3, 5, 6, 23],
   },
   {
@@ -15084,7 +15064,6 @@ export function NotifyRow() {
     </Field>
   );
 }\`}`,
-    storyPath: "data-entry/Field.stories.tsx",
     rules: [23],
   },
   // ─── charts (tree-shaken `@godxjp/ui/charts`; needs the `recharts` optional peer) ───
@@ -15224,7 +15203,6 @@ export function NotifyRow() {
   ]}
   numberFormat={{ style: "currency", currency: "JPY" }}
 />`,
-    storyPath: "charts/LineChart.stories.tsx",
     rules: [],
   },
   {
@@ -15351,7 +15329,6 @@ export function NotifyRow() {
   series={[{ dataKey: "sales", label: t("metric.sales") }]}
   numberFormat={{ notation: "compact" }}
 />`,
-    storyPath: "charts/BarChart.stories.tsx",
     rules: [],
   },
   {
@@ -15465,7 +15442,7 @@ import { Text } from "@godxjp/ui/general";
   size="xs"
   footer={<Text size="xs" tone="muted">{t("dashboard.lastUpdated", { at: new Date().toISOString() })}</Text>}
 />`,
-    storyPath: "charts/CompactBarTrend.stories.tsx",
+    storyPath: "charts/compact-bar-trend.tsx",
     rules: [],
   },
   {
@@ -15601,7 +15578,6 @@ import { Text } from "@godxjp/ui/general";
   ]}
   stacked
 />`,
-    storyPath: "charts/AreaChart.stories.tsx",
     rules: [],
   },
   {
@@ -15707,7 +15683,6 @@ import { Text } from "@godxjp/ui/general";
   numberFormat={{ style: "currency", currency: "JPY" }}
   donut
 />`,
-    storyPath: "charts/PieChart.stories.tsx",
     rules: [],
   },
   {
@@ -15806,7 +15781,7 @@ import { Text } from "@godxjp/ui/general";
   labels={{ open: "Open commands", title: "Commands", description: "Choose a command", placeholder: "Search", empty: "No results" }}
   onSelect={(item) => navigate(item.id)}
 />`,
-    storyPath: "data-entry/CommandPalette.stories.tsx",
+    storyPath: "data-entry/command-palette.tsx",
     rules: [],
   },
   {
@@ -16024,7 +15999,7 @@ import { Text } from "@godxjp/ui/general";
   onAcknowledge={finish}
   labels={labels}
 />`,
-    storyPath: "feedback/TwoFactorSetup.stories.tsx",
+    storyPath: "feedback/two-factor-setup.tsx",
     rules: [],
   },
   {
@@ -16052,7 +16027,7 @@ import { Text } from "@godxjp/ui/general";
     example: `import { AuthDivider } from "@godxjp/ui/layout";
 
 <AuthDivider label="or" />`,
-    storyPath: "layout/AuthDivider.stories.tsx",
+    storyPath: "layout/auth-divider.tsx",
     rules: [44, 45],
   },
   {
@@ -16096,7 +16071,7 @@ import { Text } from "@godxjp/ui/general";
     example: `import { AuthFooter } from "@godxjp/ui/layout";
 
 <AuthFooter product="Acme ID" terms={<a href="/terms">Terms</a>} privacy={<a href="/privacy">Privacy</a>} locale="English" />`,
-    storyPath: "layout/AuthFooter.stories.tsx",
+    storyPath: "layout/auth-footer.tsx",
     rules: [45],
   },
   {
@@ -16138,7 +16113,7 @@ import { Logo } from "@godxjp/ui/general";
 
 // The product's own lockup, with no artwork in the consumer's repo:
 <AuthIdentity title="GoDX ID" brand={<Logo mark="godx-lockup" productSuffix="ID" />} />`,
-    storyPath: "layout/AuthIdentity.stories.tsx",
+    storyPath: "layout/auth-identity.tsx",
     rules: [45],
   },
   {
@@ -16185,7 +16160,7 @@ import { Logo } from "@godxjp/ui/general";
     example: `import { AccountChip } from "@godxjp/ui/layout";
 
 <PageContainer title="Bug report" extra={<><Button variant="outline">History</Button><AccountChip name={user.name} email={user.email} actionLabel={t("auth.signOut")} onAction={signOut} /><Button>Send</Button></>}>…</PageContainer>`,
-    storyPath: "layout/AccountChip.stories.tsx",
+    storyPath: "layout/account-chip.tsx",
     rules: [40],
   },
   {
@@ -16241,7 +16216,7 @@ import { Logo } from "@godxjp/ui/general";
     example: `import { AuthAccountSummary } from "@godxjp/ui/layout";
 
 <AuthAccountSummary email={user.email} actionLabel={t("auth.switchAccount")} onAction={switchAccount} />`,
-    storyPath: "layout/AuthAccountSummary.stories.tsx",
+    storyPath: "layout/auth-account-summary.tsx",
     rules: [45],
   },
   {
@@ -16255,7 +16230,7 @@ import { Logo } from "@godxjp/ui/general";
     example: `import { AuthStack } from "@godxjp/ui/layout";
 
 <AuthStack><PasskeyAction /><CredentialsForm /></AuthStack>`,
-    storyPath: "layout/AuthStack.stories.tsx",
+    storyPath: "layout/auth-stack.tsx",
     rules: [],
   },
   {
@@ -16340,7 +16315,7 @@ import { Badge } from "@godxjp/ui/data-display";
   onValueChange={setOrganizationId}
   labels={labels}
 />`,
-    storyPath: "layout/OrgSwitcher.stories.tsx",
+    storyPath: "layout/org-switcher.tsx",
     related: [
       "AppShell (navRail) — WHERE this control goes when switching organization is constant: the rail is the docked platform-scope column, and its own prop doc is the authority on which of the three columns owns which scope. Pass the collapsed trigger; the rail is 3.5rem.",
       "AppLauncher — the OTHER platform-scope control: which APP, not which ORGANIZATION. They compose (a launcher in the bar and a switcher in the rail is one coherent platform surface); neither replaces the other.",
@@ -16468,7 +16443,7 @@ import { Badge } from "@godxjp/ui/data-display";
     />
   }
 />`,
-    storyPath: "layout/AppLauncher.stories.tsx",
+    storyPath: "layout/app-launcher.tsx",
     rules: [],
   },
   // ─── RBAC composites ────────────────────────
@@ -16569,7 +16544,7 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
   </CardContent>
 </Card>`,
     docPath: "data-display/permission-matrix.tsx",
-    storyPath: "data-display/PermissionMatrix.stories.tsx",
+    storyPath: "data-display/permission-matrix.tsx",
     rules: [24],
   },
   {
@@ -16684,7 +16659,7 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
   />
 </FormField>`,
     docPath: "data-entry/branch-scope-picker.tsx",
-    storyPath: "data-entry/BranchScopePicker.stories.tsx",
+    storyPath: "data-entry/branch-scope-picker.tsx",
     rules: [24],
   },
   {
@@ -16786,7 +16761,7 @@ import { ServiceRolePanel } from "@godxjp/ui/layout";
   }
 </ServiceRolePanel>`,
     docPath: "layout/service-role-panel.tsx",
-    storyPath: "layout/ServiceRolePanel.stories.tsx",
+    storyPath: "layout/service-role-panel.tsx",
     rules: [24, 40],
   },
   {
@@ -16913,7 +16888,7 @@ import { formatAppTime } from "@godxjp/ui/datetime";
   {draft}
 </ChatBubble>`,
     docPath: "data-display/chat-bubble.tsx",
-    storyPath: "data-display/ChatBubble.stories.tsx",
+    storyPath: "data-display/chat-bubble.tsx",
     rules: [6, 23, 44, 45],
   },
   {
@@ -16994,7 +16969,7 @@ const messages: ChatMessageProp[] = [
   }}
 />`,
     docPath: "data-display/chat-bubble.tsx",
-    storyPath: "data-display/ChatBubbleList.stories.tsx",
+    storyPath: "data-display/chat-bubble.tsx",
     rules: [6, 23, 44, 45],
   },
   {
@@ -17174,7 +17149,7 @@ const messages: ChatMessageProp[] = [
       "/>",
     ].join("\n"),
     docPath: "data-entry/chat-composer.tsx",
-    storyPath: "data-entry/ChatComposer.stories.tsx",
+    storyPath: "data-entry/chat-composer.tsx",
     rules: [2, 6, 43, 45],
   },
   {
@@ -17300,7 +17275,7 @@ const messages: ChatMessageProp[] = [
       "</ChatSuggestion>",
     ].join("\n"),
     docPath: "data-entry/chat-composer.tsx",
-    storyPath: "data-entry/ChatSuggestion.stories.tsx",
+    storyPath: "data-entry/chat-composer.tsx",
     rules: [2, 3, 6],
   },
   {
@@ -17403,7 +17378,7 @@ const messages: ChatMessageProp[] = [
       "/>",
     ].join("\n"),
     docPath: "navigation/conversations.tsx",
-    storyPath: "navigation/Conversations.stories.tsx",
+    storyPath: "navigation/conversations.tsx",
     rules: [2, 6, 23, 44, 45],
   },
   {
@@ -17556,7 +17531,7 @@ const messages: ChatMessageProp[] = [
       "/>",
     ].join("\n"),
     docPath: "navigation/mega-menu.tsx",
-    storyPath: "navigation/MegaMenu.stories.tsx",
+    storyPath: "navigation/mega-menu.tsx",
     rules: [2, 6, 23, 44, 45],
   },
   {
@@ -17624,7 +17599,7 @@ const messages: ChatMessageProp[] = [
       "/>",
     ].join("\n"),
     docPath: "data-display/welcome.tsx",
-    storyPath: "data-display/Welcome.stories.tsx",
+    storyPath: "data-display/welcome.tsx",
     rules: [2, 6, 44, 45],
   },
   {
@@ -17712,7 +17687,7 @@ const messages: ChatMessageProp[] = [
       "/>",
     ].join("\n"),
     docPath: "general/actions.tsx",
-    storyPath: "general/Actions.stories.tsx",
+    storyPath: "general/actions.tsx",
     rules: [2, 6, 23, 44, 45],
   },
   {
@@ -17794,7 +17769,7 @@ const messages: ChatMessageProp[] = [
       "/>",
     ].join("\n"),
     docPath: "data-display/thought-chain.tsx",
-    storyPath: "data-display/ThoughtChain.stories.tsx",
+    storyPath: "data-display/thought-chain.tsx",
     rules: [2, 6, 23, 44, 45],
   },
   {
@@ -17862,7 +17837,7 @@ const messages: ChatMessageProp[] = [
       "/>",
     ].join("\n"),
     docPath: "data-display/org-chart.tsx",
-    storyPath: "data-display/OrgChart.stories.tsx",
+    storyPath: "data-display/org-chart.tsx",
     rules: [2, 6, 23, 44, 45],
   },
   {
@@ -17952,7 +17927,7 @@ const messages: ChatMessageProp[] = [
       "A product or evidence gallery with zoom and rotate.",
     ],
     related: [
-      "Thumbnail — a framed picture at a fixed height, with no preview.",
+      'Image `fit="intrinsic" preview={false}` — a framed picture at a fixed height and its own width, with no preview (the former Thumbnail).',
       "Prose — the Markdown body the group usually wraps.",
       "Carousel — slides on the page itself, not a full-viewport preview.",
     ],
@@ -17968,7 +17943,7 @@ const messages: ChatMessageProp[] = [
       "</ImagePreviewGroup>",
     ].join("\n"),
     docPath: "data-display/image.tsx",
-    storyPath: "data-display/Image.stories.tsx",
+    storyPath: "data-display/image.tsx",
     rules: [2, 6, 23, 44, 45],
   },
   {
@@ -18068,7 +18043,7 @@ const messages: ChatMessageProp[] = [
   maxCount={5}
 />`,
     docPath: "data-entry/attachments.tsx",
-    storyPath: "data-entry/Attachments.stories.tsx",
+    storyPath: "data-entry/attachments.tsx",
     rules: [6, 44, 45],
   },
   {
@@ -18171,7 +18146,7 @@ import { Text } from "@godxjp/ui/general";
   ))}
 </Marquee>`,
     docPath: "data-display/marquee.tsx",
-    storyPath: "data-display/Marquee.stories.tsx",
+    storyPath: "data-display/marquee.tsx",
     rules: [2, 44, 45],
   },
   {
@@ -18269,7 +18244,7 @@ const notes: Note[] = useNotes();
   onLayoutChange={(layout) => console.log(layout.length, "tiles placed")}
 />`,
     docPath: "layout/masonry.tsx",
-    storyPath: "layout/Masonry.stories.tsx",
+    storyPath: "layout/masonry.tsx",
     rules: [2, 40, 44, 45],
   },
   {
@@ -18351,7 +18326,7 @@ const [pinned, setPinned] = useState(false);
   </Flex>
 </Affix>`,
     docPath: "layout/affix.tsx",
-    storyPath: "layout/Affix.stories.tsx",
+    storyPath: "layout/affix.tsx",
     rules: [2, 40, 44, 45],
   },
   {
@@ -18493,7 +18468,7 @@ const [pinned, setPinned] = useState(false);
   onValueChange={(href) => console.log("reading", href)}
 />`,
     docPath: "navigation/anchor.tsx",
-    storyPath: "navigation/Anchor.stories.tsx",
+    storyPath: "navigation/anchor.tsx",
     rules: [2, 6, 40, 44, 45],
   },
 ];

@@ -1236,7 +1236,7 @@ function getComponent(name: string, verbose = false): string {
     out += `\n`;
   }
   if (c.docPath) out += `**Reference doc:** \`docs/reference/${c.docPath}\`\n\n`;
-  out += `**Storybook:** \`src/stories/${c.storyPath}\`\n\n`;
+  if (c.storyPath) out += `**Docs page:** \`docs/${c.storyPath}\`\n\n`;
   if (c.rules.length) {
     out += `**Cardinal rules:**\n`;
     for (const n of c.rules) {

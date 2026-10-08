@@ -74,11 +74,11 @@ describe("component catalog — every entry is structurally complete", () => {
       expect(typeof c.example).toBe("string");
       expect(c.example.trim().length, `${c.name} example`).toBeGreaterThan(0);
 
-      expect(typeof c.storyPath).toBe("string");
-      // Most entries point at a `.stories.tsx`, but a few share a typography/
-      // preview surface (e.g. general/typography.tsx, *.preview.tsx) — accept
-      // any `.tsx` under a group folder.
-      expect(c.storyPath, `${c.name} storyPath`).toMatch(/^[\w-]+\/[\w.-]+\.tsx$/);
+      // Optional since v32 (#1223): a docs page under `docs/`, or absent. That the page EXISTS is
+      // `check:mcp-guidance`'s job; here only the shape.
+      if (c.storyPath !== undefined) {
+        expect(c.storyPath, `${c.name} storyPath`).toMatch(/^[\w-]+(?:\/[\w.-]+)+\.tsx$/);
+      }
 
       expect(Array.isArray(c.rules), `${c.name} rules`).toBe(true);
       for (const n of c.rules) {
