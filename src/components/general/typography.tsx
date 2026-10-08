@@ -8,11 +8,8 @@ import { Textarea } from "../data-entry/textarea";
 import type {
   HeadingProp,
   LinkProp,
-  ParagraphProp,
   TextProp,
   TypographyBlockProp,
-  TypographyProp,
-  TypographyTitleProp,
 } from "../../props/components/general.prop";
 import type {
   TypographyCopyConfigProp,
@@ -25,13 +22,7 @@ export type {
   TextProp as TextProps,
   HeadingProp,
   HeadingProp as HeadingProps,
-  TypographyProp,
-  TypographyProp as TypographyProps,
   TypographyBlockProp,
-  TypographyTitleProp,
-  TypographyTitleProp as TitleProps,
-  ParagraphProp,
-  ParagraphProp as ParagraphProps,
   LinkProp,
   LinkProp as LinkProps,
 } from "../../props/components/general.prop";
@@ -376,7 +367,7 @@ function TypographyEditor({
 }
 
 /* ────────────────────────────────────────────────────────────────────────────────────────────
- * The shared antd block behaviour, consumed by Text / Title / Paragraph / Link.
+ * The shared antd block behaviour, consumed by Text / Link.
  * ──────────────────────────────────────────────────────────────────────────────────────────── */
 
 type BlockBehaviour = TypographyBlockProp & { children?: React.ReactNode };
@@ -408,7 +399,7 @@ type BlockRender = {
   showsEllipsisTooltip: boolean;
 };
 
-function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRender {
+function useTypographyBlock(props: BlockBehaviour): BlockRender {
   const { t } = useTranslation();
   const { children, copyable, editable, ellipsis, actions, disabled } = props;
   const placement = actions?.placement ?? "end";
@@ -471,14 +462,13 @@ function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRen
 
   // ── Ellipsis ────────────────────────────────────────────────────────────────────────────────
   const [enableEllipsis, ellipsisConfig] = useMergedConfig<TypographyEllipsisConfigProp>(ellipsis);
-  const [expanded, setExpanded] = useControlledFlag(
+  const [expanded] = useControlledFlag(
     ellipsisConfig.defaultExpanded ?? false,
     ellipsisConfig.expanded,
   );
-  const rows = allowRows ? (ellipsisConfig.rows ?? 1) : 1;
-  const expandable = allowRows ? ellipsisConfig.expandable : undefined;
-  // antd: once expanded, the clamp is released unless the caller asked to keep a collapse control.
-  const clamping = enableEllipsis && (!expanded || expandable === "collapsible");
+  // antd: once expanded, the clamp is released. (The expand CONTROL was Paragraph's, which v32
+  // retired with the antd shims (#1223); an inline run has no second line to expand into.)
+  const clamping = enableEllipsis && !expanded;
 
   const [isEllipsis, setIsEllipsis] = React.useState(false);
   const elementRef = React.useRef<HTMLElement | null>(null);
@@ -496,14 +486,13 @@ function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRen
   const measure = React.useCallback(() => {
     const node = elementRef.current;
     if (!node || !enableEllipsis) return;
-    const next =
-      rows > 1 ? node.scrollHeight > node.clientHeight : node.scrollWidth > node.clientWidth;
+    const next = node.scrollWidth > node.clientWidth || node.scrollHeight > node.clientHeight;
     setIsEllipsis((prev) => {
       if (prev === next) return prev;
       onEllipsisRef.current?.(next);
       return next;
     });
-  }, [enableEllipsis, rows]);
+  }, [enableEllipsis]);
 
   const measureRef = React.useCallback<React.RefCallback<HTMLElement>>((node) => {
     elementRef.current = node;
@@ -524,12 +513,6 @@ function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRen
       observer.disconnect();
     };
   }, [measure, enableEllipsis]);
-
-  const onExpandClick = (event: React.MouseEvent<HTMLElement>) => {
-    const next = !expanded;
-    setExpanded(next);
-    ellipsisConfig.onExpand?.(event, { expanded: next });
-  };
 
   // ── Render the pieces ───────────────────────────────────────────────────────────────────────
   const copyLabels = toCopyConfigList(copyConfig.tooltips);
@@ -578,29 +561,7 @@ function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRen
       </ActionTooltip>
     ) : null;
 
-  // antd hides the expand control when the text is not actually clipped; the measurement above is
-  // what decides. `expanded` keeps a `collapsible` control reachable once it has been opened.
-  const showExpand = Boolean(expandable) && (isEllipsis || expanded);
-  const expandSymbol =
-    typeof ellipsisConfig.symbol === "function"
-      ? ellipsisConfig.symbol(expanded)
-      : (ellipsisConfig.symbol ??
-        (expanded ? t("ui.typography.collapse") : t("ui.typography.expand")));
-  const expandNode = showExpand ? (
-    <TypographyAction
-      key="expand"
-      slot={expanded ? "typography-collapse" : "typography-expand"}
-      // WAI-ARIA APG owns interaction semantics here (docs/DESIGN-AUTHORITY.md, layer 1), and it
-      // outranks antd, which ships only an aria-label. A disclosure button states its own state.
-      aria-expanded={expanded}
-      aria-label={expanded ? t("ui.typography.collapse") : t("ui.typography.expand")}
-      onClick={onExpandClick}
-    >
-      {expandSymbol}
-    </TypographyAction>
-  ) : null;
-
-  const hasActions = Boolean(copyNode || editNode || expandNode);
+  const hasActions = Boolean(copyNode || editNode);
   const actionsNode = hasActions ? (
     <span
       key="actions"
@@ -608,7 +569,6 @@ function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRen
       data-placement={placement}
       className="ui-typography-actions"
     >
-      {expandNode}
       {editNode}
       {copyNode}
     </span>
@@ -622,8 +582,7 @@ function useTypographyBlock(props: BlockBehaviour, allowRows: boolean): BlockRen
 
   const suffix = ellipsisConfig.suffix;
   // Neither the actions nor the suffix may live INSIDE a `-webkit-line-clamp` box: the clamp eats
-  // everything past the last visible line, so an expand button would disappear at exactly the
-  // moment it is needed. When either is present the TEXT takes its own wrapper, the clamp moves
+  // everything past the last visible line, so an action button would disappear with it. When either is present the TEXT takes its own wrapper, the clamp moves
   // onto that wrapper, and these stay siblings of it.
   const wrapsContent = clamping && Boolean(hasActions || suffix !== undefined);
 
@@ -707,17 +666,8 @@ function composeRefs(
   };
 }
 
-/**
- * `Text` and `Paragraph` are the same renderer.
- *
- * The ONLY difference is antd's own: `Typography.Text` drops `rows` / `expandable` / `onExpand`
- * from its `ellipsis` (an inline run has no second line to expand into) while
- * `Typography.Paragraph` keeps them. `allowRows` is that one switch, kept internal so the public
- * surface stays antd's two components rather than one with a mode flag.
- */
-type TextBaseProp = TextProp & { allowRows?: boolean };
-
-const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
+/** The renderer behind `Text` and `Link`. */
+const TextBase = React.forwardRef<HTMLElement, TextProp>((props, ref) => {
   const {
     as,
     component,
@@ -742,7 +692,6 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
     className,
     style,
     children,
-    allowRows = false,
     // antd block behaviour — read by `useTypographyBlock`, never spread onto the DOM.
     copyable: _copyable,
     editable: _editable,
@@ -765,7 +714,6 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
     asChild && React.isValidElement<{ children?: React.ReactNode }>(children) ? children : null;
   const block = useTypographyBlock(
     asChildElement ? { ...props, children: asChildElement.props.children } : props,
-    allowRows,
   );
   const element = as ?? (component as TextProp["as"]) ?? "span";
 
@@ -935,36 +883,13 @@ export const Text = React.forwardRef<HTMLElement, TextProp>((props, ref) => (
 Text.displayName = "Text";
 
 /**
- * Paragraph — antd `Typography.Paragraph`.
- *
- * Renders a `<div>`, matching antd, because the editing textarea and the action cluster are block
- * content that a `<p>` may not legally contain — a `<p>` would be split by the parser and the
- * actions would end up OUTSIDE the paragraph. Pass `as="p"` when the content is phrasing-only.
- *
- * The one difference from `Text` is antd's: `ellipsis` here keeps `rows`, `expandable` and
- * `onExpand`.
- */
-export const Paragraph = React.forwardRef<HTMLElement, ParagraphProp>(
-  ({ as = "div", className, ...rest }, ref) => (
-    <TextBase
-      ref={ref}
-      as={as}
-      allowRows
-      className={cn("ui-typography-paragraph", className)}
-      {...(rest as TextProp)}
-    />
-  ),
-);
-Paragraph.displayName = "Paragraph";
-
-/**
  * Link — antd `Typography.Link`.
  *
  * `Text link` is the same affordance and is unchanged; `Link` is antd's anchor-by-default flavour
  * of it. It adds antd's `rel` guard: a `target="_blank"` with no explicit `rel` gets
  * `noopener noreferrer`, because the opened document otherwise keeps a live handle on
  * `window.opener`. antd restricts `ellipsis` to a boolean on `Link`, and that restriction is ported
- * by the type — `allowRows` stays off.
+ * by the type.
  */
 export const Link = React.forwardRef<HTMLElement, LinkProp>(
   ({ as = "a", rel, target, className, ...rest }, ref) => (
@@ -987,8 +912,8 @@ Link.displayName = "Link";
  * and override the SIZE alone with `size` — the same ten-step ladder `Text` reads, whose top three
  * steps are the display ramp a marketing hero needs (gh#826).
  *
- * UNCHANGED by the antd port. antd's heading is `Title`, which is the sibling below; `Heading` is
- * this library's own and keeps its four levels, its props and its markup exactly as they shipped.
+ * antd's `Typography.Title` was a sibling until v32 retired the antd shims (#1223): `Heading` is
+ * the one heading, and its `size` axis covers antd's fifth level.
  */
 export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProp>(
   (
@@ -1021,148 +946,3 @@ export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProp>(
     }),
 );
 Heading.displayName = "Heading";
-
-/**
- * Title — antd `Typography.Title`.
- *
- * A SIBLING of `Heading`, not a replacement: five levels instead of four, plus the antd block
- * behaviours (`copyable`, `editable`, `ellipsis`, the decorations). antd omits `strong` here
- * because a heading already renders at the strong weight, and that omission is ported.
- */
-export const Title = React.forwardRef<HTMLElement, TypographyTitleProp>((props, ref) => {
-  const {
-    level = 1,
-    as,
-    component,
-    tone,
-    type,
-    align,
-    truncate,
-    weight = "medium",
-    className,
-    style,
-    children: _children,
-    ellipsis,
-    copyable: _copyable,
-    editable: _editable,
-    actions: _actions,
-    disabled,
-    code: _code,
-    mark: _mark,
-    underline: _underline,
-    delete: _delete,
-    keyboard: _keyboard,
-    italic: _italic,
-    ...rest
-  } = props;
-
-  const block = useTypographyBlock(props, true);
-  // antd clamps `level` to 1..5 and falls back to h1. Ported, so a runtime `level={7}` renders a
-  // heading rather than an `<h7>` the browser would treat as an unknown inline element.
-  const safeLevel = level >= 1 && level <= 5 ? level : 1;
-  const element = as ?? (component as string) ?? `h${safeLevel}`;
-
-  const ellipsisRowCount = ellipsis ? ellipsisRows(ellipsis) : 0;
-  const effectiveClamp = ellipsisRowCount > 1 ? ellipsisRowCount : undefined;
-  const truncating = (truncate === true || ellipsisRowCount === 1) && effectiveClamp === undefined;
-  const clampStyle =
-    effectiveClamp !== undefined
-      ? ({ ...style, "--text-clamp": effectiveClamp } as React.CSSProperties)
-      : style;
-
-  if (block.editing) return block.editor;
-
-  // The clamped box holds ONLY the text. `leading` and `trailing` — the action cluster and the
-  // suffix — are its siblings, because `-webkit-line-clamp` clips everything inside its own box.
-  const body = (
-    <>
-      {block.leading}
-      {block.wrapsContent ? (
-        <span
-          data-slot="typography-content"
-          data-truncate={truncating ? "" : undefined}
-          data-clamp={effectiveClamp !== undefined ? "" : undefined}
-          className="ui-typography-content"
-          style={clampStyle}
-        >
-          {block.text}
-        </span>
-      ) : (
-        block.text
-      )}
-      {block.trailing}
-    </>
-  );
-
-  const rendered = React.createElement(
-    element,
-    {
-      ref: composeRefs(block.measureRef, ref),
-      "data-slot": "heading",
-      "data-level": safeLevel,
-      "data-tone": tone ?? (type ? TYPE_TO_TONE[type] : undefined) ?? "default",
-      "data-align": align,
-      "data-weight": weight,
-      "data-truncate": truncating && !block.wrapsContent ? "" : undefined,
-      "data-clamp": effectiveClamp !== undefined && !block.wrapsContent ? "" : undefined,
-      "aria-disabled": disabled ? true : undefined,
-      style: clampStyle,
-      ...block.attrs,
-      onClick: block.onTextClick,
-      className: cn("ui-heading", "ui-typography-title", className),
-      ...rest,
-    },
-    body,
-  );
-
-  if (!block.showsEllipsisTooltip) return rendered;
-  return (
-    <>
-      {rendered}
-      <EllipsisTooltip anchorRef={block.anchorRef} title={block.ellipsisTooltip} />
-    </>
-  );
-});
-Title.displayName = "Title";
-
-/**
- * Typography — antd's plain wrapper for a run of prose.
- *
- * It renders an `<article>` and carries no emphasis of its own. It exists so `Title`, `Paragraph`,
- * `Text` and `Link` have a container with the reading measure and the block rhythm on it, and so
- * the compound spelling every antd codebase is written in — `<Typography.Text>` — works here
- * unchanged.
- */
-const TypographyRoot = React.forwardRef<HTMLElement, TypographyProp>(
-  ({ as, component, className, children, ...rest }, ref) =>
-    React.createElement(
-      as ?? component ?? "article",
-      {
-        ref,
-        "data-slot": "typography",
-        className: cn("ui-typography", className),
-        ...rest,
-      },
-      children,
-    ),
-);
-TypographyRoot.displayName = "Typography";
-
-type TypographyCompound = typeof TypographyRoot & {
-  Text: typeof Text;
-  Title: typeof Title;
-  Paragraph: typeof Paragraph;
-  Link: typeof Link;
-};
-
-/**
- * The compound export. `Typography.Text` and the bare `Text` are the SAME component — there is no
- * second, poorer Text — so a paste from an antd codebase and a call written in this library's own
- * style compile to the same thing.
- */
-export const Typography = Object.assign(TypographyRoot, {
-  Text,
-  Title,
-  Paragraph,
-  Link,
-}) as TypographyCompound;

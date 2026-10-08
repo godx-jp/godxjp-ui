@@ -42,13 +42,9 @@ describe("the manifest admits a component that takes no props (gh#957)", () => {
     const family = [
       "Skeleton",
       "SkeletonArticle",
-      "SkeletonAvatar",
-      "SkeletonButton",
       "SkeletonDetail",
       "SkeletonForm",
-      "SkeletonImage",
       "SkeletonInput",
-      "SkeletonNode",
       "SkeletonRows",
       "SkeletonStat",
       "SkeletonTable",

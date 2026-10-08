@@ -3216,6 +3216,7 @@ import { Trash2 } from "lucide-react";
   },
   {
     name: "Text",
+    absorbed: ["Paragraph", "Typography"],
     group: "general",
     tagline:
       'Typographic primitive — use INSTEAD of a hand-rolled `<span className="text-[13px] font-medium text-muted-foreground">`. Size is a type-scale step (never px); tone/weight are tokens.',
@@ -3354,7 +3355,7 @@ import { Trash2 } from "lucide-react";
         name: "ellipsis",
         type: "boolean | { suffix, symbol, defaultExpanded, expanded, onEllipsis, tooltip }",
         description:
-          "Single-line truncation, antd's spelling. antd drops `rows` / `expandable` / `onExpand` on `Text` — an inline run has no second line to expand into — and that omission is ported; reach for `Paragraph` when you want them. It is the SAME axis as `truncate` / `clamp` and OUTRANKS both (dev builds warn), because it is the only spelling that can also carry a suffix or a tooltip. `tooltip: true` (the children) or a node shows the full text in a Tooltip ONLY while the run is actually clipped — on pointer hover, and on keyboard focus of the Text itself (`asChild` link) or of the nearest focusable control around it (a Tree `treeitem`, a DataTable sort button, a link); the Text never becomes a tab stop of its own and its accessible name stays the full text. With `asChild` the child element is the truncated box (one `<a>`, not `<a><a>`). A `<Text ellipsis>` in `ColumnDef.header` truncates inside its column like a cell.",
+          "Single-line truncation, antd's spelling. antd drops `rows` / `expandable` / `onExpand` on `Text` — an inline run has no second line to expand into — and that omission is ported; for a multi-line run use `clamp` (antd's `Paragraph` was retired in v32). It is the SAME axis as `truncate` / `clamp` and OUTRANKS both (dev builds warn), because it is the only spelling that can also carry a suffix or a tooltip. `tooltip: true` (the children) or a node shows the full text in a Tooltip ONLY while the run is actually clipped — on pointer hover, and on keyboard focus of the Text itself (`asChild` link) or of the nearest focusable control around it (a Tree `treeitem`, a DataTable sort button, a link); the Text never becomes a tab stop of its own and its accessible name stays the full text. With `asChild` the child element is the truncated box (one `<a>`, not `<a><a>`). A `<Text ellipsis>` in `ColumnDef.header` truncates inside its column like a cell.",
       },
       {
         name: "actions",
@@ -3421,6 +3422,7 @@ import { Trash2 } from "lucide-react";
   },
   {
     name: "Heading",
+    absorbed: ["Title"],
     group: "general",
     tagline:
       "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>; `size` overrides the size alone, and its top three steps are the display ramp a marketing hero needs.",
@@ -3476,142 +3478,6 @@ import { Trash2 } from "lucide-react";
 <Heading level={1} size="5xl" align="center">Ship it everywhere</Heading>`,
   },
   {
-    name: "Typography",
-    group: "general",
-    tagline:
-      "antd's prose container — a plain <article> that Title / Paragraph / Text / Link sit inside, and the compound root so `<Typography.Text>` from an antd codebase compiles here unchanged.",
-    props: [
-      {
-        name: "as",
-        type: "string",
-        defaultValue: '"article"',
-        description: "Rendered element.",
-      },
-      {
-        name: "component",
-        type: "string",
-        description:
-          "antd's private alias for `as`. Accepted so antd code pastes in unchanged; `as` wins when both are passed.",
-      },
-    ],
-    usage: [
-      "DO reach for it when you have a RUN of prose — a heading, some paragraphs, a link — rather than one label. A single caption is just `<Text>`.",
-      "DO use the compound spelling when porting from antd: `Typography.Text`, `Typography.Title`, `Typography.Paragraph` and `Typography.Link` ARE the flat `Text` / `Title` / `Paragraph` / `Link` exports, not poorer copies of them.",
-      "DON'T use it as a layout box. It carries type, not spacing — sections are spaced by `PageContainer` and groups by `Flex` / `ResponsiveGrid`.",
-    ],
-    useCases: [
-      "A release-note body: a `Title`, two `Paragraph`s and a `Link`, wrapped so the block rhythm is owned in one place.",
-      "Pasting an antd screen in unchanged, `Typography.Paragraph` and all.",
-    ],
-    related: ["Text", "Title", "Paragraph", "Link", "Heading", "Prose"],
-    storyPath: "general/typography.tsx",
-    rules: [2, 23],
-    example: `import { Typography } from "@godxjp/ui/general";
-
-<Typography>
-  <Typography.Title level={3}>リリースノート</Typography.Title>
-  <Typography.Paragraph>請求書の一括ダウンロードに対応しました。</Typography.Paragraph>
-  <Typography.Link href="/changelog">変更履歴</Typography.Link>
-</Typography>`,
-  },
-  {
-    name: "Title",
-    group: "general",
-    tagline:
-      "antd Typography.Title — a heading with five levels and the antd block behaviours (copyable, editable, ellipsis, the decorations). A SIBLING of `Heading`, which is this library's own four-level heading and is unchanged.",
-    props: [
-      {
-        name: "level",
-        type: "1 | 2 | 3 | 4 | 5",
-        defaultValue: "1",
-        description:
-          "Sets BOTH the --heading-h{1..5} size token and the semantic <h1>..<h5>. Level 5 reads --heading-h5, which is bound to the existing --font-size-2xs step rather than being a new number. A value outside 1..5 falls back to h1, the way antd does — an <h7> from a runtime value would have no heading semantics at all. NOTE the default is antd's 1, while `Heading` defaults to 2.",
-      },
-      {
-        name: "as",
-        type: '"h1" | "h2" | "h3" | "h4" | "h5" | "div"',
-        description: "Override the rendered element — a visual h2 that is a real <h1>.",
-      },
-      {
-        name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
-        defaultValue: '"default"',
-        description: "Semantic foreground colour. Outranks antd's `type`.",
-      },
-      { name: "align", type: '"start" | "center" | "end"', description: "Logical text alignment." },
-      {
-        name: "truncate",
-        type: "boolean",
-        description: "Single-line ellipsis. `ellipsis` outranks it when both are passed.",
-      },
-      {
-        name: "weight",
-        type: '"regular" | "medium" | "semibold" | "bold"',
-        defaultValue: '"medium"',
-        description: "Font weight, from the three-weight canon.",
-      },
-      {
-        name: "ellipsis",
-        type: "boolean | { rows, expandable, suffix, symbol, defaultExpanded, expanded, onExpand, onEllipsis, tooltip }",
-        description:
-          "Truncation. `true` is one line; `rows` clamps to N. `expandable` adds an expand control, `symbol` relabels it, `onEllipsis` fires when the measured overflow flips.",
-      },
-    ],
-    usage: [
-      "DO use `Title` when you want antd's spelling, a fifth level, or a heading that is copyable / editable.",
-      "DO use `Heading` for everything else. It is the four-level heading the rest of this library is written in, and `CardTitle` / `PageContainer` already render one for you.",
-      "DON'T set `level` to pick a SIZE. It sets the semantic element too, so skipping from h1 to h4 for looks breaks the document outline — override the element with `as` instead.",
-    ],
-    useCases: [
-      "A project name a user can rename in place: `<Title level={2} editable={{ onChange: rename }}>{name}</Title>`.",
-      "A dense sub-label below the body step, where `Heading` has no level left: `<Title level={5}>内訳</Title>`.",
-    ],
-    related: ["Heading", "Typography", "Text", "CardTitle"],
-    storyPath: "general/typography.tsx",
-    rules: [2, 23],
-    example: `import { Title } from "@godxjp/ui/general";
-
-<Title level={2}>請求書一覧</Title>
-<Title level={3} editable={{ onChange: rename }}>{projectName}</Title>`,
-  },
-  {
-    name: "Paragraph",
-    group: "general",
-    tagline:
-      "antd Typography.Paragraph — a block of body text with the full ellipsis contract (rows + an expand control) and the antd block behaviours. Renders a <div>, matching antd.",
-    props: [
-      {
-        name: "as",
-        type: '"div" | "p" | "span"',
-        defaultValue: '"div"',
-        description:
-          'Rendered element. The default is antd\'s <div>, not <p>, because the editing textarea and the action cluster are BLOCK content: inside a <p> the parser would split the paragraph and leave the actions outside it. Pass `as="p"` when the content is known to be phrasing-only.',
-      },
-      {
-        name: "ellipsis",
-        type: "boolean | { rows, expandable, suffix, symbol, defaultExpanded, expanded, onExpand, onEllipsis, tooltip }",
-        description:
-          'Truncation. `rows` clamps to N lines; `expandable` adds an expand control ("collapsible" keeps a collapse one); `symbol` relabels it; `suffix` pins text after the ellipsis; `onEllipsis` fires when the measured overflow flips. This is the antd spelling of `clamp` and outranks it. One deviation from antd: the expand control is a sibling AFTER the clamped box rather than inline at the end of the last line, because the truncation is done by CSS line-clamping here (antd re-slices the text in JavaScript, which drops any element after the cut).',
-      },
-    ],
-    usage: [
-      "DO use `Paragraph` for a block of body copy that may need to be clamped with a way to read the rest. `Text clamp={n}` clamps but has no expand control.",
-      "DO keep the default <div>. Change it to a <p> only when you know the content holds no interactive parts.",
-      'DON\'T stack Paragraphs and then space them by hand — put them in a `<Flex direction="col" gap>`; never write `mb-4` on your own element.',
-    ],
-    useCases: [
-      "An issue description clamped to three lines with a 続きを読む control: `<Paragraph ellipsis={{ rows: 3, expandable: true }}>{body}</Paragraph>`.",
-      "A release note whose text can be edited in place by an admin.",
-    ],
-    related: ["Text", "Typography", "Prose", "Title"],
-    storyPath: "general/typography.tsx",
-    rules: [2, 23],
-    example: `import { Paragraph } from "@godxjp/ui/general";
-
-<Paragraph ellipsis={{ rows: 3, expandable: true }}>{description}</Paragraph>
-<Paragraph copyable>{ticketBody}</Paragraph>`,
-  },
-  {
     name: "Link",
     group: "general",
     tagline:
@@ -3639,7 +3505,7 @@ import { Trash2 } from "lucide-react";
       'A documentation link at the end of a helper line: `<Link href="/docs/billing">請求の設定</Link>`.',
       'An external link that must not leak the opener: `<Link href="https://example.com" target="_blank">外部サイト</Link>`.',
     ],
-    related: ["Text", "Typography", "Button", "PrefetchLink"],
+    related: ["Text", "Button", "PrefetchLink"],
     storyPath: "general/typography.tsx",
     rules: [2, 6, 23],
     example: `import { Link } from "@godxjp/ui/general";
@@ -9008,6 +8874,7 @@ function CreateDialog() {
   {
     name: "AlertDialog",
     subParts: [
+      "AlertDialogRoot",
       "AlertDialogAction",
       "AlertDialogCancel",
       "AlertDialogContent",
@@ -9086,6 +8953,12 @@ function CreateDialog() {
       },
     ],
     usage: [
+      "COMPOUND (AlertDialogRoot): Reach for the flat `AlertDialog` preset FIRST — it already covers title/description/confirm/cancel, the typed `challenge`, `stepUp` re-auth and `pending`. Use `AlertDialogRoot` only when the confirm body needs content the preset does not model (an impact summary, a diff, a nested list).",
+      "COMPOUND (AlertDialogRoot): DO name it `AlertDialogRoot`, not `AlertDialog` — the `AlertDialog` export is the flat preset and takes a completely different (non-compound) prop API.",
+      "COMPOUND (AlertDialogRoot): DO include `AlertDialogHeader` with `AlertDialogTitle` inside every `AlertDialogContent` — Radix requires an accessible title for `role=alertdialog`; omitting it warns in the console and breaks screen-reader announcement. `AlertDialogHeader` also takes the prop-driven `title`/`subtitle`/`extra`/`tone` form, where `subtitle` renders the `AlertDialogDescription`.",
+      "COMPOUND (AlertDialogRoot): DO portal explicitly: `AlertDialogContent` does NOT self-portal (unlike `DialogContent`). Wrap it in `AlertDialogPortal` with a sibling `AlertDialogOverlay`, or the scrim and stacking context are wrong.",
+      "COMPOUND (AlertDialogRoot): DO use `AlertDialogAction` / `AlertDialogCancel` for the footer buttons — they carry the button styling AND the Radix close semantics. Do not wrap them in `asChild` `<Button variant=…>`: the Root's button classes and the child's would both land on the element and the variant would not win.",
+      "COMPOUND (AlertDialogRoot): DO NOT import `@radix-ui/react-alert-dialog` directly in a consumer app. Everything the compound needs is exported from `@godxjp/ui/feedback`.",
       "Use `AlertDialog` for destructive/irreversible actions (delete, void, unpublish, archive, etc.).",
       "Use `confirmPhrase`/`challenge` for high-friction operations (e.g. typing an org slug) to reduce accidental confirmation — both force the destructive shape: the destructive confirm button plus a leading status glyph beside the title, which is Ant Design `Modal.confirm` parity. The header surface stays UNTINTED — antd signals danger with the glyph and never tints a modal header (its soft `colorErrorBg` belongs to Alert/Tag/message). To tint the band anyway, set `DialogHeader tone` yourself; it is a separate seven-value axis the preset no longer imposes.",
       "Pass `stepUp` for a passkey/2FA re-auth gate that must resolve truthy before `onConfirm` runs (refunds, org deletion).",
@@ -9116,78 +8989,6 @@ function CreateDialog() {
   }}
   variant="destructive"
 />`,
-    storyPath: "feedback/AlertDialog.stories.tsx",
-    rules: [23, 3],
-  },
-  {
-    name: "AlertDialogRoot",
-    group: "feedback",
-    tagline:
-      'Compound alertdialog Root — the role="alertdialog" mirror of Dialog\'s root. Wraps Radix AlertDialog.Root and supplies the context AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel read. Parts: AlertDialogTrigger/AlertDialogPortal/AlertDialogOverlay/AlertDialogContent/AlertDialogHeader/AlertDialogFooter/AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel.',
-    props: [
-      { name: "open", type: "boolean", description: "Controlled open state." },
-      {
-        name: "defaultOpen",
-        type: "boolean",
-        description: "Uncontrolled initial open state (use with AlertDialogTrigger).",
-      },
-      {
-        name: "onOpenChange",
-        type: "(open: boolean) => void",
-        description: "Open-state change handler.",
-      },
-      {
-        name: "children",
-        type: "React.ReactNode",
-        description: "The trigger and the portalled alertdialog parts.",
-      },
-    ],
-    usage: [
-      "Reach for the flat `AlertDialog` preset FIRST — it already covers title/description/confirm/cancel, the typed `challenge`, `stepUp` re-auth and `pending`. Use `AlertDialogRoot` only when the confirm body needs content the preset does not model (an impact summary, a diff, a nested list).",
-      "DO name it `AlertDialogRoot`, not `AlertDialog` — the `AlertDialog` export is the flat preset and takes a completely different (non-compound) prop API.",
-      "DO include `AlertDialogHeader` with `AlertDialogTitle` inside every `AlertDialogContent` — Radix requires an accessible title for `role=alertdialog`; omitting it warns in the console and breaks screen-reader announcement. `AlertDialogHeader` also takes the prop-driven `title`/`subtitle`/`extra`/`tone` form, where `subtitle` renders the `AlertDialogDescription`.",
-      "DO portal explicitly: `AlertDialogContent` does NOT self-portal (unlike `DialogContent`). Wrap it in `AlertDialogPortal` with a sibling `AlertDialogOverlay`, or the scrim and stacking context are wrong.",
-      "DO use `AlertDialogAction` / `AlertDialogCancel` for the footer buttons — they carry the button styling AND the Radix close semantics. Do not wrap them in `asChild` `<Button variant=…>`: the Root's button classes and the child's would both land on the element and the variant would not win.",
-      "DO NOT import `@radix-ui/react-alert-dialog` directly in a consumer app. Everything the compound needs is exported from `@godxjp/ui/feedback`.",
-    ],
-    useCases: [
-      "Confirm-with-impact-summary — a destructive confirmation that must show what will be affected (a list of 3 downstream jobs, a table of invoices) before the user commits. The flat preset only takes a string `description`.",
-      "Batch-close confirmation whose body renders a rich breakdown (counts, totals, per-tenant rows) alongside the standard confirm/cancel pair.",
-      "Any confirmation that must keep `role=alertdialog` semantics (focus trap, no dismiss-on-outside-click) but needs freeform children — use Dialog only when the flow is non-destructive.",
-    ],
-    related: [
-      "AlertDialog — the flat preset. Prefer it; it is the canonical destructive-confirm recipe and needs no compound markup.",
-      "Dialog — compound modal for form-style, non-destructive flows. `role=dialog`, dismissible on outside click.",
-      "AlertDialogHeader — the header band; `tone` tints only the background (default | success | warning | destructive | info | muted | neutral).",
-    ],
-    example: `import {
-  AlertDialogRoot, AlertDialogTrigger, AlertDialogPortal, AlertDialogOverlay,
-  AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription,
-  AlertDialogFooter, AlertDialogAction, AlertDialogCancel,
-} from "@godxjp/ui/feedback";
-import { Button } from "@godxjp/ui/general";
-
-function ConfirmSettlement() {
-  return (
-    <AlertDialogRoot>
-      <AlertDialogTrigger asChild><Button variant="outline" size="sm">支払を確定</Button></AlertDialogTrigger>
-      <AlertDialogPortal>
-        <AlertDialogOverlay />
-        <AlertDialogContent className="max-w-md">
-          <AlertDialogHeader>
-            <AlertDialogTitle>2026年7月分の支払を確定しますか？</AlertDialogTitle>
-            <AlertDialogDescription>確定すると振込データが生成されます。</AlertDialogDescription>
-          </AlertDialogHeader>
-          {/* freeform impact summary goes here */}
-          <AlertDialogFooter>
-            <AlertDialogCancel>戻る</AlertDialogCancel>
-            <AlertDialogAction>確定する</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogPortal>
-    </AlertDialogRoot>
-  );
-}`,
     storyPath: "feedback/AlertDialog.stories.tsx",
     rules: [23, 3],
   },
@@ -9374,97 +9175,6 @@ import { Button } from "@godxjp/ui/general";
 </Alert>`,
     storyPath: "feedback/Alert.stories.tsx",
     rules: [],
-  },
-  {
-    name: "SkeletonTable",
-    group: "feedback",
-    tagline:
-      "Loading placeholder matching the DataTable layout (header + N rows). Drop-in while data loads (deferred props).",
-    props: [
-      { name: "rows", type: "number", defaultValue: "8", description: "Body skeleton rows." },
-      {
-        name: "columns",
-        type: "number",
-        defaultValue: "5",
-        description: "Columns in header + body.",
-      },
-    ],
-    usage: [
-      "DO use SkeletonTable as the pre-mount placeholder — either as a ternary fallback (`{!data ? <SkeletonTable rows={10} columns={6} /> : <DataTable … />}`) for Inertia deferred props, or as the `skeleton` prop of `DataState` (`<DataState query={q} skeleton={<SkeletonTable />} …>`). It is NOT for in-table loading; once DataTable has mounted use its own `loading` prop instead.",
-      "DO match rows/columns to the final DataTable layout: pass `rows` equal to your expected page size and `columns` equal to your column count so the skeleton doesn't visually jump on hydration. Defaults are rows=8, columns=5.",
-      "DO NOT use SkeletonTable when data is already present but refetching — use `DataTable loading={isFetching}` for in-table refetch states. SkeletonTable is only for the initial pre-mount gap before DataTable is rendered.",
-      "DO NOT wrap SkeletonTable in a Card — it renders its own header + body structure matching DataTable's DOM. Placing it inside CardContent adds unwanted padding around the skeleton rail.",
-      'The root element carries `aria-busy="true"` automatically — do not add a second aria-busy on a wrapper. Screen readers announce the loading state correctly without extra markup.',
-      "Import from `@godxjp/ui/feedback` (not `@godxjp/ui/admin`). Both paths resolve but the canonical export is `feedback`.",
-    ],
-    useCases: [
-      "Inertia deferred props: the server streams the page shell immediately and defers the table data; render SkeletonTable until the prop arrives (`{!invoices ? <SkeletonTable rows={20} columns={7} /> : <DataTable data={invoices} columns={columns} />}`).",
-      "TanStack Query initial load via DataState: pass SkeletonTable as the `skeleton` prop so DataState shows the correct table shape during the query's loading state before switching to the populated DataTable.",
-      "Filter / search reset that unmounts and remounts DataTable: briefly show SkeletonTable while the new dataset fetches, preventing a flash of the empty state before results arrive.",
-      "Admin list pages (invoices, journal entries, partners) where the table has a known column count — tune `columns` to match so column widths feel stable and don't reflow on hydration.",
-      "Page-level Suspense boundaries: use SkeletonTable as the `fallback` of a React Suspense wrapping a lazy-loaded data table component.",
-      "Route prefetch / navigation transitions: render SkeletonTable in the destination slot while Inertia visits are in-flight, keeping perceived layout stable.",
-    ],
-    related: [
-      "DataTable — sibling component that SkeletonTable precedes. Once DataTable mounts, use its `loading` prop (renders an in-table loading row) for subsequent refetches rather than swapping back to SkeletonTable. Pick SkeletonTable only for the pre-mount gap.",
-      "DataState — query lifecycle widget from `@godxjp/ui/query`; accepts SkeletonTable as its `skeleton` prop and handles loading/empty/error transitions automatically. Prefer DataState + SkeletonTable over a hand-rolled ternary when the data comes from a useQuery hook.",
-      "SkeletonStat — sibling skeleton shaped like a StatCard tile; use inside a ResponsiveGrid to placeholder KPI dashboard cards, not tabular data.",
-      "DataTable — when data is already mounted but re-fetching (e.g. pagination, filter change), set `loading={true}` on DataTable directly instead of unmounting it and swapping in SkeletonTable; avoids layout shift and preserves scroll position.",
-    ],
-    example: `import { SkeletonTable } from "@godxjp/ui/feedback";
-
-{!coupons ? <SkeletonTable rows={10} columns={6} /> : <DataTable data={coupons} columns={columns} />}`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [],
-  },
-  {
-    name: "SkeletonRows",
-    group: "feedback",
-    tagline:
-      "Repeated flat loading lines on a responsive grid — the list-shaped placeholder when the final layout is rows of short bars, not a table header, not avatar + prose.",
-    props: [
-      {
-        name: "rows",
-        type: "number",
-        defaultValue: "6",
-        description: "How many skeleton lines to draw.",
-      },
-      {
-        name: "columns",
-        type: "number",
-        defaultValue: "4",
-        description:
-          "Columns per row on the internal ResponsiveGrid — match the loaded list's column count so nothing reflows on hydration.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Root class override.",
-      },
-    ],
-    usage: [
-      "DO use SkeletonRows for a flat list of short bars — activity feeds without avatars, settings rows, filter result lists.",
-      "DO match `rows` and `columns` to the loaded layout so the skeleton does not jump when data arrives.",
-      "DON'T use it for tabular data with a header row — SkeletonTable matches DataTable's chrome.",
-      "DON'T use it for a form — SkeletonForm draws label + control pairs on the form's column grid.",
-      "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages.",
-    ],
-    useCases: [
-      "Card body while a simple list deferred prop resolves",
-      "Stacked settings rows before the record loads",
-      "Generic repeated rows when SkeletonArticle's avatar + prose rhythm is wrong",
-    ],
-    related: [
-      "SkeletonTable — tabular placeholder with a header band; not a flat line list.",
-      "SkeletonForm — label + control pairs on a form grid.",
-      "SkeletonArticle — avatar beside prose lines.",
-      "Skeleton — the bare block this preset is built from.",
-    ],
-    example: `import { SkeletonRows } from "@godxjp/ui/feedback";
-
-<SkeletonRows rows={6} columns={3} />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
   },
   {
     name: "Toaster",
@@ -14238,9 +13948,19 @@ import { Separator } from "@godxjp/ui/layout";
   },
   {
     name: "Skeleton",
+    subParts: [
+      "SkeletonTable",
+      "SkeletonRows",
+      "SkeletonDetail",
+      "SkeletonStat",
+      "SkeletonArticle",
+      "SkeletonInput",
+      "SkeletonForm",
+    ],
+    absorbed: ["SkeletonAvatar", "SkeletonButton", "SkeletonNode", "SkeletonImage"],
     group: "feedback",
     tagline:
-      "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
+      "Base pulsing skeleton block, the namespace the presets hang off (Skeleton.Input / .Article), and the ONE entry for every loading shape: SkeletonTable / SkeletonRows / SkeletonDetail / SkeletonStat / SkeletonArticle / SkeletonInput / SkeletonForm.",
     props: [
       { name: "className", type: "string", description: "Size and layout classes for the block." },
       {
@@ -14258,6 +13978,14 @@ import { Separator } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      "THE SHAPES (one family, one entry): SkeletonTable — Loading placeholder matching the DataTable layout (header + N rows). Drop-in while data loads (deferred props).",
+      "SkeletonRows — Repeated flat loading lines on a responsive grid — the list-shaped placeholder when the final layout is rows of short bars, not a table header, not avatar + prose.",
+      "SkeletonDetail — Fixed-shape placeholder for a RECORD page — title, subtitle, then a bordered box of six label/value pairs. Takes no props: the shape IS the contract, so every detail screen loads identically.",
+      "SkeletonStat — Fixed-shape placeholder for ONE KPI tile — label, big value, caption. Takes no props, so a row of tiles loads at a uniform height and nothing reflows when the numbers arrive.",
+      "SkeletonArticle — Avatar + heading line + paragraph placeholder — Ant Design's own <Skeleton> shape, for a comment, a profile block or a feed item.",
+      "SkeletonInput — Field-shaped placeholder (also Skeleton.Input) — five control-heights wide.",
+      "SkeletonForm — The skeleton of a `Form columns={N}` — label + control PAIRS on the form's own ResponsiveGrid, not the flat line list SkeletonRows draws.",
+      "antd's Skeleton.Avatar / .Button / .Node / .Image presets are not components here (retired in v32, 0 users): the avatar box lives on as `SkeletonArticle avatar`, the control box as `SkeletonInput`; a media slot is a sized `Skeleton` block.",
       "DO use Skeleton for a custom block when SkeletonRows/Table/Stat/Article do not match the final layout.",
       "DO reach for a shaped preset before sizing a bare block by hand: SkeletonButton, SkeletonInput, SkeletonAvatar, SkeletonNode and SkeletonImage already carry the box of the control they stand in for, from the --control-height tier.",
       "DON'T use a spinner overlay for skeletonable page content.",
@@ -14269,15 +13997,6 @@ import { Separator } from "@godxjp/ui/layout";
       "Inline metadata placeholder",
     ],
     related: [
-      "SkeletonArticle",
-      "SkeletonRows",
-      "SkeletonTable",
-      "SkeletonStat",
-      "SkeletonButton",
-      "SkeletonInput",
-      "SkeletonAvatar",
-      "SkeletonNode",
-      "SkeletonImage",
       "Activity — the ambient 'working…' mark. Skeleton is a SHAPE standing in for content that has not arrived; Activity is motion beside content that is already there.",
     ],
     example: `import { Skeleton } from "@godxjp/ui/feedback";
@@ -14286,329 +14005,6 @@ import { Separator } from "@godxjp/ui/layout";
 
 // The same component is the antd namespace:
 <Skeleton.Button size="sm" />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonDetail",
-    group: "feedback",
-    tagline:
-      "Fixed-shape placeholder for a RECORD page — title, subtitle, then a bordered box of six label/value pairs. Takes no props: the shape IS the contract, so every detail screen loads identically.",
-    props: [],
-    usage: [
-      "DO use it while a single record's data resolves — a detail page, a drawer showing one entity, a Descriptions block.",
-      "DO leave it propless. It has no `rows` knob on purpose: a record page that loads with a different number of lines each time reads as a layout bug, and `Skeleton` is there for a bespoke shape.",
-      "DON'T use it for a list or a table — SkeletonRows draws flat lines, SkeletonTable draws a header band.",
-      "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages.",
-    ],
-    useCases: [
-      "Detail page body before the record arrives",
-      "Drawer or sheet opened on a row while its full entity loads",
-      "Descriptions block placeholder",
-    ],
-    related: [
-      "SkeletonStat — the same propless treatment for a KPI tile.",
-      "SkeletonRows — flat list lines, not label/value pairs.",
-      "SkeletonTable — tabular placeholder with a header band.",
-      "Skeleton — the bare block this preset is built from; reach for it when you need a shape this one does not draw.",
-      "Descriptions — the component this placeholder is standing in for.",
-    ],
-    example: `import { SkeletonDetail } from "@godxjp/ui/feedback";
-
-<SkeletonDetail />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonStat",
-    group: "feedback",
-    tagline:
-      "Fixed-shape placeholder for ONE KPI tile — label, big value, caption. Takes no props, so a row of tiles loads at a uniform height and nothing reflows when the numbers arrive.",
-    props: [],
-    usage: [
-      "DO render one per StatCard while the figures load, inside the same grid the loaded tiles use.",
-      "DO leave it propless — it mirrors StatCard's three-line rhythm exactly, which is what stops the row jumping on hydration.",
-      "DON'T wrap it in a Card yourself if the loaded state uses StatCard; put it where the StatCard goes so the surface is identical.",
-      "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages.",
-    ],
-    useCases: [
-      "Dashboard KPI row before the metrics query resolves",
-      "A single figure on a detail page loading separately from the record",
-      "Placeholder inside a ResponsiveGrid of StatCards",
-    ],
-    related: [
-      "StatCard — the loaded component this stands in for; match the grid, not just the size.",
-      "SkeletonDetail — the same propless treatment for a record page.",
-      "SkeletonRows — flat list lines.",
-      "Skeleton — the bare block this preset is built from.",
-    ],
-    example: `import { SkeletonStat } from "@godxjp/ui/feedback";
-import { ResponsiveGrid } from "@godxjp/ui/layout";
-
-<ResponsiveGrid columns={{ base: 1, sm: 2, lg: 4 }} gap="md">
-  {Array.from({ length: 4 }).map((_, i) => (
-    <SkeletonStat key={i} />
-  ))}
-</ResponsiveGrid>`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonArticle",
-    group: "feedback",
-    tagline:
-      "Avatar + heading line + paragraph placeholder — Ant Design's own <Skeleton> shape, for a comment, a profile block or a feed item.",
-    props: [
-      {
-        name: "avatar",
-        type: "boolean | { size?: 'xs' | 'sm' | 'md' | 'lg'; shape?: 'circle' | 'square' }",
-        defaultValue: "false",
-        description:
-          "Leading avatar placeholder. `true` takes the antd default matrix: a large circle, or a large SQUARE when there is a title but no paragraph (an entity header rather than a person).",
-      },
-      {
-        name: "title",
-        type: "boolean | { width?: number | string }",
-        defaultValue: "true",
-        description:
-          "The heading LINE — not a string. `false` drops it; `{ width }` re-measures it. The default measure follows antd: 38% with a paragraph and no avatar, 50% with both, full width otherwise.",
-      },
-      {
-        name: "paragraph",
-        type: "boolean | { rows?: number; width?: number | string | (number | string)[] }",
-        defaultValue: "true",
-        description:
-          "The body lines. Default rows follow antd: 3 with a title and no avatar, else 2. A single `width` measures the LAST row; an array measures row by row. A number is read as pixels.",
-      },
-      {
-        name: "round",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Pill corners on every line.",
-      },
-      {
-        name: "active",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Travelling sheen instead of the resting pulse; descends to every line.",
-      },
-      {
-        name: "loading",
-        type: "boolean",
-        description: "Pass `false` to render `children` in place of the placeholder.",
-      },
-      { name: "className", type: "string", description: "Extra classes on the article root." },
-    ],
-    usage: [
-      "DO use SkeletonArticle where the loaded content is 'a person/entity beside a block of prose' — a comment, an activity item, a profile header, a notification row.",
-      "DO match `paragraph.rows` to the copy you expect so the layout does not jump on hydration.",
-      "DON'T use it for a table (SkeletonTable), a KPI tile (SkeletonStat) or a record page (SkeletonDetail) — those house shapes already match their targets.",
-      "DON'T nest it in a Card just to get a border; it draws no surface of its own.",
-    ],
-    useCases: [
-      "Comment thread loading state",
-      "Notification / activity feed placeholder",
-      "Profile header while the account record resolves",
-      "Chat or review list pre-mount placeholder",
-    ],
-    related: [
-      "SkeletonDetail — the house record-page shape (title + metadata pairs); SkeletonArticle is the avatar + prose shape.",
-      "SkeletonRows — repeated flat rows with no avatar or prose rhythm.",
-      "Skeleton — the bare block SkeletonArticle is built from.",
-    ],
-    example: `import { SkeletonArticle } from "@godxjp/ui/feedback";
-
-<SkeletonArticle avatar active paragraph={{ rows: 3 }} />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonAvatar",
-    group: "feedback",
-    tagline:
-      "Avatar-shaped placeholder (also Skeleton.Avatar) sized from the --control-height tier.",
-    props: [
-      {
-        name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
-        defaultValue: '"md"',
-        description: "Box, from the same height tier the real Avatar sizes from.",
-      },
-      {
-        name: "shape",
-        type: '"circle" | "square"',
-        defaultValue: '"circle"',
-        description:
-          "Circle for a person, square for an entity/service mark — Avatar's vocabulary.",
-      },
-      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
-      { name: "className", type: "string", description: "Extra classes." },
-    ],
-    usage: [
-      "DO pair the `shape` with the Avatar it replaces so the swap does not change the silhouette.",
-      "DON'T hand-size a bare Skeleton into a circle — this preset already carries the tier box.",
-    ],
-    useCases: ["Member list loading rows", "Comment author placeholder", "Org switcher loading"],
-    related: ["Avatar", "SkeletonArticle", "Skeleton"],
-    example: `import { SkeletonAvatar } from "@godxjp/ui/feedback";
-
-<SkeletonAvatar size="lg" shape="square" />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonButton",
-    group: "feedback",
-    tagline: "Button-shaped placeholder (also Skeleton.Button) — two control-heights wide.",
-    props: [
-      {
-        name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
-        defaultValue: '"md"',
-        description: "Height, from the --control-height tier Button sizes from.",
-      },
-      {
-        name: "shape",
-        type: '"default" | "pill" | "sharp"',
-        defaultValue: '"default"',
-        description: "Corner, in Button's own vocabulary. `pill` is Ant Design's shape=\"round\".",
-      },
-      {
-        name: "block",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Fill the inline axis instead of holding the control's own measure.",
-      },
-      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
-      { name: "className", type: "string", description: "Extra classes." },
-    ],
-    usage: [
-      "DO use it in a toolbar or card footer whose actions depend on data that has not arrived.",
-      "DO pass `block` when the real Button spans its column, so the row does not reflow on swap.",
-      "DON'T render a disabled Button as a loading state — a disabled control announces a different thing.",
-    ],
-    useCases: ["Toolbar actions pre-mount", "Card footer CTA placeholder", "Form submit row"],
-    related: ["Button", "SkeletonInput", "Skeleton"],
-    example: `import { SkeletonButton } from "@godxjp/ui/feedback";
-
-<SkeletonButton size="sm" shape="pill" />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonInput",
-    group: "feedback",
-    tagline: "Field-shaped placeholder (also Skeleton.Input) — five control-heights wide.",
-    props: [
-      {
-        name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
-        defaultValue: '"md"',
-        description: "Height, from the --control-height tier Input sizes from.",
-      },
-      {
-        name: "block",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Fill the inline axis — the usual choice inside a FormField column.",
-      },
-      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
-      { name: "className", type: "string", description: "Extra classes." },
-    ],
-    usage: [
-      "DO use it for a form whose initial values are still loading, one per field.",
-      "DON'T render a real Input with a spinner inside it; an empty field invites typing that will be overwritten.",
-    ],
-    useCases: ["Edit form before the record resolves", "Filter bar pre-mount", "Settings panel"],
-    related: ["Input", "FormField", "SkeletonButton", "Skeleton"],
-    example: `import { SkeletonInput } from "@godxjp/ui/feedback";
-
-<SkeletonInput block />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonForm",
-    group: "feedback",
-    tagline:
-      "The skeleton of a `Form columns={N}` — label + control PAIRS on the form's own ResponsiveGrid, not the flat line list SkeletonRows draws.",
-    props: [
-      {
-        name: "columns",
-        type: "number",
-        defaultValue: "1",
-        description:
-          "Columns of the form this stands in for. Passed straight to ResponsiveGrid, so it is the SAME value and the SAME breakpoint ladder the Form uses — that shared source is the point of the component.",
-      },
-      {
-        name: "fields",
-        type: "number",
-        defaultValue: "6",
-        description: "How many label+control pairs to draw.",
-      },
-      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
-      { name: "className", type: "string", description: "Extra classes." },
-    ],
-    usage: [
-      "DO pass the same `columns` the Form takes. Anything else and the layout jumps when the data lands.",
-      "DO use it instead of SkeletonRows for a form: a field is a short label stacked on a full-width control, and SkeletonRows has no idea a cell has an inside.",
-      "DON'T hand-assemble SkeletonInput inside a ResponsiveGrid to approximate one — that is what this replaces, and 'close enough' drifts the first time someone changes the Form's columns.",
-    ],
-    useCases: [
-      "An edit form before the record resolves",
-      "A multi-column settings panel on first paint",
-      "A wizard step whose defaults arrive from the server",
-    ],
-    related: [
-      "Form — the thing this stands in for; give both the same `columns`.",
-      "FormField — the label+control pair each cell here draws.",
-      "SkeletonRows — a FLAT list of lines, for a list. Not a form.",
-      "SkeletonInput — one field's control on its own, when you are composing something else.",
-    ],
-    example: `import { SkeletonForm } from "@godxjp/ui/feedback";
-
-{loading ? <SkeletonForm columns={4} fields={8} /> : <Form columns={4}>…</Form>}`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonNode",
-    group: "feedback",
-    tagline: "Square media/custom placeholder (also Skeleton.Node); children centre inside it.",
-    props: [
-      { name: "children", type: "ReactNode", description: "Centred content, e.g. a glyph." },
-      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
-      { name: "className", type: "string", description: "Extra classes." },
-    ],
-    usage: [
-      "DO use it as the generic square when no other preset matches — a chart slot, a map tile, a QR code.",
-      "DON'T put text in it; it is a shape, and its container is already aria-busy.",
-    ],
-    useCases: ["Chart panel placeholder", "Map / canvas slot", "QR or barcode slot"],
-    related: ["SkeletonImage", "Skeleton"],
-    example: `import { SkeletonNode } from "@godxjp/ui/feedback";
-
-<SkeletonNode />`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [3, 31],
-  },
-  {
-    name: "SkeletonImage",
-    group: "feedback",
-    tagline: "SkeletonNode carrying the image glyph (also Skeleton.Image).",
-    props: [
-      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
-      { name: "className", type: "string", description: "Extra classes." },
-    ],
-    usage: [
-      "DO use it where the loaded content is a picture, so the placeholder says WHICH kind of content is coming.",
-      "DON'T use it for a generic square — that is SkeletonNode.",
-    ],
-    useCases: ["Gallery grid loading", "Product thumbnail", "Attachment preview"],
-    related: ["SkeletonNode", "Skeleton"],
-    example: `import { SkeletonImage } from "@godxjp/ui/feedback";
-
-<SkeletonImage active />`,
     storyPath: "feedback/Skeleton.stories.tsx",
     rules: [3, 31],
   },

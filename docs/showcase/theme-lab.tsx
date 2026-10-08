@@ -227,12 +227,8 @@ import {
   SheetTitle,
   Skeleton,
   SkeletonArticle,
-  SkeletonAvatar,
-  SkeletonButton,
   SkeletonForm,
-  SkeletonImage,
   SkeletonInput,
-  SkeletonNode,
   SkeletonRows,
   SkeletonTable,
   Toaster,
@@ -253,11 +249,8 @@ import {
   Icon,
   Link,
   Logo,
-  Paragraph,
   Reveal,
   Text,
-  Title,
-  Typography,
   VisuallyHidden,
 } from "@godxjp/ui/general";
 import {
@@ -804,8 +797,8 @@ export default function ThemeLabShowcase() {
             >
               <Flex direction="col" gap="sm">
                 <Heading level={3}>{t("themeLab.sample.headline")}</Heading>
-                <Title level={4}>{t("themeLab.sample.alpha")}</Title>
-                <Paragraph>{t("themeLab.sample.long")}</Paragraph>
+                <Heading level={4}>{t("themeLab.sample.alpha")}</Heading>
+                <Text as="p">{t("themeLab.sample.long")}</Text>
                 <Text size="sm" tone="muted">
                   {t("themeLab.sample.short")}
                 </Text>
@@ -816,12 +809,12 @@ export default function ThemeLabShowcase() {
                   {new Intl.NumberFormat(undefined, { notation: "standard" }).format(1240000)}
                 </Text>
                 <Link href="#type">{t("themeLab.sample.linkLabel")}</Link>
-                <Typography>
-                  <Typography.Title level={5}>{t("themeLab.sample.beta")}</Typography.Title>
-                  <Typography.Paragraph>{t("themeLab.sample.short")}</Typography.Paragraph>
-                </Typography>
+                <Heading level={4} size="2xs">
+                  {t("themeLab.sample.beta")}
+                </Heading>
+                <Text as="p">{t("themeLab.sample.short")}</Text>
                 <Prose size="sm">
-                  <Typography.Paragraph>{t("themeLab.sample.long")}</Typography.Paragraph>
+                  <p>{t("themeLab.sample.long")}</p>
                 </Prose>
                 <CodeBlock size="xs" maxHeight="sm" aria-label={t("themeLab.sample.codeLabel")}>
                   {`[data-theme-style="flat"] {\n  --card-radius: 0;\n}`}
@@ -1735,11 +1728,7 @@ export default function ThemeLabShowcase() {
               />
               <Row2 label={t("themeLab.label.skeletons")}>
                 <Skeleton />
-                <SkeletonAvatar size="lg" />
-                <SkeletonButton size="sm" />
                 <SkeletonInput />
-                <SkeletonNode />
-                <SkeletonImage active />
               </Row2>
               <SkeletonArticle avatar active paragraph={{ rows: 2 }} />
               <SkeletonForm columns={2} fields={4} />

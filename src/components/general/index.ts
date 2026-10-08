@@ -1,18 +1,12 @@
 export { Button, buttonVariants } from "./button";
 export type { ButtonProps } from "./button";
-export { Text, Heading, Typography, Title, Paragraph, Link } from "./typography";
+export { Text, Heading, Link } from "./typography";
 export type {
   TextProps,
   HeadingProps,
   TextProp,
   HeadingProp,
-  TypographyProp,
-  TypographyProps,
   TypographyBlockProp,
-  TypographyTitleProp,
-  TitleProps,
-  ParagraphProp,
-  ParagraphProps,
   LinkProp,
   LinkProps,
 } from "./typography";

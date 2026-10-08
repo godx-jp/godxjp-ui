@@ -529,12 +529,6 @@ export const VOCABULARY_REGISTRY = {
     description:
       "antd Typography `type` — secondary | success | warning | danger. The narrower spelling of TextToneProp, accepted alongside it; `tone` wins when both are passed (secondary → muted, danger → destructive)",
   },
-  TitleLevelProp: {
-    file: "vocabulary/interaction.prop.ts",
-    category: "interaction",
-    description:
-      "antd Typography.Title `level` — 1..5. Wider than HeadingLevelProp (1..4) because antd has a fifth step; level 5 reads --heading-h5, bound to the existing --font-size-2xs step",
-  },
   TypographyCopyConfigProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -1950,20 +1944,6 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
-  TypographyProp: {
-    group: "general",
-    file: "components/general.prop.ts",
-    vocabulary: [
-      "ClassNameProp",
-      "ChildrenProp",
-      {
-        field: "component",
-        local: true,
-        reason:
-          "antd `component` — the rendered element. An ALIAS of `as`, kept so antd code pastes in unchanged; `as` wins when both are passed.",
-      },
-    ],
-  },
   TypographyBlockProp: {
     group: "general",
     file: "components/general.prop.ts",
@@ -1975,23 +1955,6 @@ export const COMPONENT_PROP_REGISTRY = {
       "TypographyEllipsisConfigProp",
       "DisabledProp",
     ],
-  },
-  TypographyTitleProp: {
-    group: "general",
-    file: "components/general.prop.ts",
-    vocabulary: [
-      "TitleLevelProp",
-      "TextToneProp",
-      "TextAlignProp",
-      "FontWeightProp",
-      "TypographyEllipsisConfigProp",
-      "ClassNameProp",
-    ],
-  },
-  ParagraphProp: {
-    group: "general",
-    file: "components/general.prop.ts",
-    vocabulary: ["TypographyEllipsisConfigProp", "TextToneProp", "TextSizeProp", "ClassNameProp"],
   },
   LinkProp: {
     group: "general",
@@ -3183,16 +3146,6 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/feedback.prop.ts",
     vocabulary: ["ClassNameProp", "ChildrenProp"],
   },
-  SkeletonAvatarProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["SizeProp", "ClassNameProp"],
-  },
-  SkeletonButtonProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["SizeProp", "ShapeProp", "ClassNameProp"],
-  },
   SkeletonFormProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",
@@ -3203,15 +3156,10 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/feedback.prop.ts",
     vocabulary: ["SizeProp", "ClassNameProp"],
   },
-  SkeletonNodeProp: {
+  SkeletonArticleAvatarProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",
-    vocabulary: ["ChildrenProp", "ClassNameProp"],
-  },
-  SkeletonImageProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["ClassNameProp"],
+    vocabulary: ["SizeProp", "AvatarShapeProp"],
   },
   SkeletonArticleProp: {
     group: "feedback",

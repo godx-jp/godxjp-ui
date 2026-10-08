@@ -9,19 +9,15 @@
 // `styles` by name. antd's wrapper-div-plus-inner-span per element is dropped for the same reason:
 // it exists to hang two generated class sets, and one element carries both here.
 import * as React from "react";
-import { ImageIcon } from "lucide-react";
 
 import { ResponsiveGrid } from "../layout/responsive-grid";
 import { cn } from "../../lib/utils";
 import { tableCellPaddingClass, tableRowHeightClass } from "../../lib/control-styles";
 import type {
+  SkeletonArticleAvatarProp,
   SkeletonArticleProp,
-  SkeletonAvatarProp,
-  SkeletonButtonProp,
   SkeletonFormProp,
-  SkeletonImageProp,
   SkeletonInputProp,
-  SkeletonNodeProp,
   SkeletonProp,
   SkeletonWidth,
 } from "../../props/components/feedback.prop";
@@ -34,16 +30,9 @@ export type {
   SkeletonWidth,
   SkeletonArticleProp,
   SkeletonArticleProp as SkeletonArticleProps,
-  SkeletonAvatarProp,
-  SkeletonAvatarProp as SkeletonAvatarProps,
-  SkeletonButtonProp,
-  SkeletonButtonProp as SkeletonButtonProps,
+  SkeletonArticleAvatarProp,
   SkeletonInputProp,
   SkeletonInputProp as SkeletonInputProps,
-  SkeletonNodeProp,
-  SkeletonNodeProp as SkeletonNodeProps,
-  SkeletonImageProp,
-  SkeletonImageProp as SkeletonImageProps,
 } from "../../props/components/feedback.prop";
 
 /** A measure reaches the DOM as a custom property, never as a raw `width` (rule #45). */
@@ -71,9 +60,11 @@ function SkeletonBlock({ active, loading, className, children, ...props }: Skele
 }
 
 /**
- * The five antd element presets are ONE block with a geometry attribute — they differ only in the
- * box they stand in for, and every box is derived from the `--control-height` tier the real
- * control sizes from (antd's `Element.tsx` does the same from `controlHeight`).
+ * The element presets are ONE block with a geometry attribute — they differ only in the box they
+ * stand in for, and every box is derived from the `--control-height` tier the real control sizes
+ * from (antd's `Element.tsx` does the same from `controlHeight`). v32 (#1223) retired antd's
+ * Avatar/Button/Node/Image presets as public components (0 users); the avatar box stays as the
+ * article's leading mark, the input box stays as `SkeletonInput`.
  */
 function SkeletonElement({
   kind,
@@ -84,8 +75,8 @@ function SkeletonElement({
   className,
   children,
 }: {
-  kind: "avatar" | "button" | "input" | "node" | "image";
-  size?: SkeletonAvatarProp["size"];
+  kind: "avatar" | "input";
+  size?: SkeletonArticleAvatarProp["size"];
   shape?: string;
   block?: boolean;
   active?: boolean;
@@ -106,31 +97,9 @@ function SkeletonElement({
   );
 }
 
-/** Stands in for an `Avatar` — circle for a person, square for an entity mark. */
-export function SkeletonAvatar({ size, shape = "circle", active, className }: SkeletonAvatarProp) {
-  return (
-    <SkeletonElement
-      kind="avatar"
-      size={size}
-      shape={shape}
-      active={active}
-      className={className}
-    />
-  );
-}
-
-/** Stands in for a `Button` — two control-heights wide, like antd's `controlHeight * 2`. */
-export function SkeletonButton({ size, shape, block, active, className }: SkeletonButtonProp) {
-  return (
-    <SkeletonElement
-      kind="button"
-      size={size}
-      shape={shape}
-      block={block}
-      active={active}
-      className={className}
-    />
-  );
+/** The article's leading mark — circle for a person, square for an entity (an `Avatar` box). */
+function ArticleAvatar({ size, shape = "circle" }: SkeletonArticleAvatarProp) {
+  return <SkeletonElement kind="avatar" size={size} shape={shape} />;
 }
 
 /** Stands in for an `Input` — five control-heights wide, like antd's `controlHeight * 5`. */
@@ -140,27 +109,9 @@ export function SkeletonInput({ size, block, active, className }: SkeletonInputP
   );
 }
 
-/** A square placeholder for a media or custom slot; `children` centre inside it. */
-export function SkeletonNode({ active, children, className }: SkeletonNodeProp) {
-  return (
-    <SkeletonElement kind="node" active={active} className={className}>
-      {children}
-    </SkeletonElement>
-  );
-}
-
-/** `SkeletonNode` carrying the image glyph — antd ships its own path; here it is the DS icon. */
-export function SkeletonImage({ active, className }: SkeletonImageProp) {
-  return (
-    <SkeletonElement kind="image" active={active} className={className}>
-      <ImageIcon aria-hidden="true" focusable="false" className="ui-skeleton-image-glyph" />
-    </SkeletonElement>
-  );
-}
-
 /* The three default matrices below are antd's `Skeleton.tsx`, value for value. */
 
-function avatarDefaults(hasTitle: boolean, hasParagraph: boolean): SkeletonAvatarProp {
+function avatarDefaults(hasTitle: boolean, hasParagraph: boolean): SkeletonArticleAvatarProp {
   if (hasTitle && !hasParagraph) return { size: "lg", shape: "square" };
   return { size: "lg", shape: "circle" };
 }
@@ -237,7 +188,7 @@ export function SkeletonArticle({
     >
       {hasAvatar ? (
         <div className="ui-skeleton-article-header">
-          <SkeletonAvatar {...avatarProps} />
+          <ArticleAvatar {...avatarProps} />
         </div>
       ) : null}
       {hasTitle || hasParagraph ? (
@@ -265,16 +216,11 @@ export function SkeletonArticle({
 }
 
 /**
- * Skeleton — the placeholder BLOCK, and the namespace antd hangs its element presets on. The
- * statics are the antd spelling (`Skeleton.Button`); the same components are also named exports, so
- * a consumer importing `SkeletonButton` finds it in the catalog.
+ * Skeleton — the placeholder BLOCK, and the namespace the presets hang off (`Skeleton.Input`,
+ * `Skeleton.Article`, antd's spelling); the same components are also named exports.
  */
 export const Skeleton = Object.assign(SkeletonBlock, {
-  Avatar: SkeletonAvatar,
-  Button: SkeletonButton,
   Input: SkeletonInput,
-  Node: SkeletonNode,
-  Image: SkeletonImage,
   Article: SkeletonArticle,
 });
 

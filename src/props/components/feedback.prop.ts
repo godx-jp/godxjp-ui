@@ -17,7 +17,6 @@ import type {
   OpenProp,
   OnOpenChangeProp,
   PendingProp,
-  ShapeProp,
   SizeProp,
   ToneProp,
   TitleProp,
@@ -223,43 +222,17 @@ export type SkeletonProp = React.HTMLAttributes<HTMLDivElement> & {
   loading?: boolean;
 };
 
-/** @see SkeletonAvatar */
-export type SkeletonAvatarProp = {
+/** The leading avatar box of a {@link SkeletonArticleProp} (`avatar={{ size, shape }}`). */
+export type SkeletonArticleAvatarProp = {
   /** Box, from the `--control-height` tier — the same tier the real `Avatar` sizes from. */
   size?: SizeProp;
   shape?: AvatarShapeProp;
-  active?: boolean;
-  className?: ClassNameProp;
-};
-
-/** @see SkeletonButton */
-export type SkeletonButtonProp = {
-  size?: SizeProp;
-  /** Corner, in `Button`'s own vocabulary: `pill` is antd's `shape="round"`. */
-  shape?: ShapeProp;
-  /** Fill the inline axis, for a button that spans its column (antd's `block`). */
-  block?: boolean;
-  active?: boolean;
-  className?: ClassNameProp;
 };
 
 /** @see SkeletonInput */
 export type SkeletonInputProp = {
   size?: SizeProp;
   block?: boolean;
-  active?: boolean;
-  className?: ClassNameProp;
-};
-
-/** @see SkeletonNode — a square standing in for a media/custom slot; `children` centres in it. */
-export type SkeletonNodeProp = {
-  active?: boolean;
-  children?: ChildrenProp;
-  className?: ClassNameProp;
-};
-
-/** @see SkeletonImage */
-export type SkeletonImageProp = {
   active?: boolean;
   className?: ClassNameProp;
 };
@@ -271,7 +244,7 @@ export type SkeletonImageProp = {
  * renders.
  */
 export type SkeletonArticleProp = {
-  avatar?: boolean | Pick<SkeletonAvatarProp, "size" | "shape">;
+  avatar?: boolean | SkeletonArticleAvatarProp;
   /** The heading line. NOT a string title — `false` drops the line, `{ width }` re-measures it. */
   title?: boolean | { width?: SkeletonWidth };
   /** `width` as an array measures each row; as a single value it measures the LAST row. */

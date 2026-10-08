@@ -86,7 +86,6 @@ export type {
   TextWhitespaceProp,
   TextBreakProp,
   TypographyTypeProp,
-  TitleLevelProp,
   TypographyCopyConfigProp,
   TypographyEditConfigProp,
   TypographyEllipsisConfigProp,

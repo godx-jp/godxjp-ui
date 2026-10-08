@@ -60,11 +60,7 @@ export {
   SkeletonDetail,
   SkeletonStat,
   SkeletonArticle,
-  SkeletonAvatar,
-  SkeletonButton,
   SkeletonInput,
-  SkeletonNode,
-  SkeletonImage,
 } from "./skeleton";
 export type {
   SkeletonProp,
@@ -72,18 +68,11 @@ export type {
   SkeletonWidth,
   SkeletonArticleProp,
   SkeletonArticleProps,
-  SkeletonAvatarProp,
-  SkeletonAvatarProps,
-  SkeletonButtonProp,
-  SkeletonButtonProps,
+  SkeletonArticleAvatarProp,
   SkeletonFormProp,
   SkeletonFormProps,
   SkeletonInputProp,
   SkeletonInputProps,
-  SkeletonNodeProp,
-  SkeletonNodeProps,
-  SkeletonImageProp,
-  SkeletonImageProps,
 } from "./skeleton";
 export {
   Alert,
