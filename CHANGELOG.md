@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.7] - 2026-10-08
+
+### 🐛 A wide actions column no longer narrows the other columns (gh#1207, second fix)
+
+31.31.6 grew the compact floor by `measured − token`, which assumes the actions column stays at
+its token width. Under `table-layout: fixed`, though, any width beyond the column measures is
+shared by every column in proportion, so a wide actions column took back a large share. On GoDX
+ID's /admin/devices table (three text buttons with icons, a 40rem floor, ja, 390px) the meta
+columns stayed at 89px and 「シリアル番号」 still wrapped 3+3. The fit now measures how wide
+the table must be for the other columns to get back the width they had before the fit, and
+publishes it as `--table-action-collection-actions-fit-min-inline-size`. The compact floor is
+`max(floor, that)`. Devices table: 794 → 818px, meta column 89.5 → 92.2px, header 2 lines → 1.
+The two-button case from 31.31.6 goes from 674 → 680px, meta 91.4 → 92.2px.
+
 ## [31.31.6] - 2026-10-08
 
 ### 🐛 Table action columns fit their buttons below the collapse step (gh#1206, gh#1207)

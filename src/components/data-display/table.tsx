@@ -104,6 +104,11 @@ export function scrollRegionLabel(
 
 /** The custom property `useActionsColumnFit` publishes on the collection wrapper (gh#1067). */
 const ACTIONS_CONTENT_WIDTH = "--table-action-collection-actions-content-width";
+/**
+ * gh#1207 — the table width at which the OTHER columns get back the room they had before the
+ * actions column was fitted. Below the collapse step it raises the compact floor.
+ */
+const ACTIONS_FIT_MIN_INLINE_SIZE = "--table-action-collection-actions-fit-min-inline-size";
 
 /**
  * gh#1067 — the `actions` column of `preset="action-collection"` sizes to its CONTENT when that
@@ -138,10 +143,19 @@ function useActionsColumnFit(ref: React.RefObject<HTMLDivElement | null>, enable
       // Measure against the TOKEN measure, never against a width this hook published earlier —
       // otherwise a column that once grew could never shrink back when its content does.
       box.style.removeProperty(ACTIONS_CONTENT_WIDTH);
+      box.style.removeProperty(ACTIONS_FIT_MIN_INLINE_SIZE);
+      const table = box.querySelector<HTMLElement>(":scope > table");
+      const baseTableWidth = table?.getBoundingClientRect().width ?? 0;
+      let actionsCell: HTMLElement | null = null;
+      let baseActionsWidth = 0;
       let needed = 0;
       box.querySelectorAll<HTMLElement>(".ui-table-actions-content").forEach((content) => {
         const cell = content.parentElement;
         if (!cell) return;
+        if (!actionsCell) {
+          actionsCell = cell;
+          baseActionsWidth = cell.getBoundingClientRect().width;
+        }
         const style = getComputedStyle(cell);
         const inset = parseFloat(style.paddingInlineStart) + parseFloat(style.paddingInlineEnd);
         const rect = content.getBoundingClientRect();
@@ -170,7 +184,29 @@ function useActionsColumnFit(ref: React.RefObject<HTMLDivElement | null>, enable
             : 0;
         needed = Math.max(needed, Math.ceil(width + edges));
       });
-      if (needed > 0) box.style.setProperty(ACTIONS_CONTENT_WIDTH, `${needed}px`);
+      if (needed === 0) return;
+      box.style.setProperty(ACTIONS_CONTENT_WIDTH, `${needed}px`);
+      /*
+       * gh#1207 — the wider actions column must not come out of the other columns. 31.31.6 grew the
+       * floor by `measured − token`, which holds only if the actions column stays at its token
+       * width. It does not: `table-layout: fixed` spreads any width beyond the column measures over
+       * EVERY column in proportion, so a wide actions column takes a large share of the growth
+       * back. On GoDX ID's devices table (three text buttons, a 40rem floor) a meta column fell
+       * from ~92px to 89px and 「シリアル番号」 wrapped 3+3. So the growth is MEASURED: whatever
+       * share the other columns get at width T1, they get the same share at any width, so the
+       * width that returns them their base total is T1 × base / now.
+       */
+      const fitted = actionsCell as HTMLElement | null;
+      if (!table || !fitted) return;
+      const baseOthers = baseTableWidth - baseActionsWidth;
+      const tableWidth = table.getBoundingClientRect().width;
+      const others = tableWidth - fitted.getBoundingClientRect().width;
+      if (others > 0 && others < baseOthers - 0.5) {
+        box.style.setProperty(
+          ACTIONS_FIT_MIN_INLINE_SIZE,
+          `${Math.ceil((tableWidth * baseOthers) / others)}px`,
+        );
+      }
     };
 
     // gh#1069 — every re-measure (rows changed, a box resized) is coalesced into ONE frame: a

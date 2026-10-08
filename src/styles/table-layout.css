@@ -1041,15 +1041,12 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor — plus whatever the measured actions content (gh#1067) takes over
-       * the token, so the other columns keep their floors and the wrapper scrolls (gh#1207). */
-      min-inline-size: calc(
-        var(--table-action-collection-min-inline-size-compact) +
-          max(
-            0px,
-            var(--table-action-collection-actions-content-width, 0px) -
-              var(--table-action-collection-actions-width)
-          )
+      /* The legibility floor — or, when the measured actions content (gh#1067) is wider than
+       * the token, the width the fit measured for the other columns to keep the room they had
+       * (gh#1207); the wrapper scrolls instead of the columns shrinking. */
+      min-inline-size: max(
+        var(--table-action-collection-min-inline-size-compact),
+        var(--table-action-collection-actions-fit-min-inline-size, 0px)
       );
     }
 
@@ -1096,15 +1093,12 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor — plus whatever the measured actions content (gh#1067) takes over
-       * the token, so the other columns keep their floors and the wrapper scrolls (gh#1207). */
-      min-inline-size: calc(
-        var(--table-action-collection-min-inline-size-compact) +
-          max(
-            0px,
-            var(--table-action-collection-actions-content-width, 0px) -
-              var(--table-action-collection-actions-width)
-          )
+      /* The legibility floor — or, when the measured actions content (gh#1067) is wider than
+       * the token, the width the fit measured for the other columns to keep the room they had
+       * (gh#1207); the wrapper scrolls instead of the columns shrinking. */
+      min-inline-size: max(
+        var(--table-action-collection-min-inline-size-compact),
+        var(--table-action-collection-actions-fit-min-inline-size, 0px)
       );
     }
 
@@ -1151,15 +1145,12 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor — plus whatever the measured actions content (gh#1067) takes over
-       * the token, so the other columns keep their floors and the wrapper scrolls (gh#1207). */
-      min-inline-size: calc(
-        var(--table-action-collection-min-inline-size-compact) +
-          max(
-            0px,
-            var(--table-action-collection-actions-content-width, 0px) -
-              var(--table-action-collection-actions-width)
-          )
+      /* The legibility floor — or, when the measured actions content (gh#1067) is wider than
+       * the token, the width the fit measured for the other columns to keep the room they had
+       * (gh#1207); the wrapper scrolls instead of the columns shrinking. */
+      min-inline-size: max(
+        var(--table-action-collection-min-inline-size-compact),
+        var(--table-action-collection-actions-fit-min-inline-size, 0px)
       );
     }
 
@@ -1206,15 +1197,12 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor — plus whatever the measured actions content (gh#1067) takes over
-       * the token, so the other columns keep their floors and the wrapper scrolls (gh#1207). */
-      min-inline-size: calc(
-        var(--table-action-collection-min-inline-size-compact) +
-          max(
-            0px,
-            var(--table-action-collection-actions-content-width, 0px) -
-              var(--table-action-collection-actions-width)
-          )
+      /* The legibility floor — or, when the measured actions content (gh#1067) is wider than
+       * the token, the width the fit measured for the other columns to keep the room they had
+       * (gh#1207); the wrapper scrolls instead of the columns shrinking. */
+      min-inline-size: max(
+        var(--table-action-collection-min-inline-size-compact),
+        var(--table-action-collection-actions-fit-min-inline-size, 0px)
       );
     }
 
