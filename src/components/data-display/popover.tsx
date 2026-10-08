@@ -420,6 +420,47 @@ export function PopoverContent({
   useOverlayCloseFocus(root.open, onCloseAutoFocus, contentRef);
 
   /*
+   * A STALE SCROLL MUST NOT CLOSE THE PANEL (gh#1208). RAC closes a non-modal popover when any
+   * scroll container around its trigger scrolls; Radix, which this replaced, never did. A browser
+   * delivers `scroll` on the NEXT frame, so scrolling the trigger into view and clicking it in one
+   * frame (what Playwright and Pest do, and what a hurried user does) opens the panel and then
+   * closes it on the event of the scroll that came BEFORE it. Measured in a Sheet opened from a
+   * DropdownMenu: the scroll body's `scroll` landed 7ms after open, 6 of 6 runs, and focus fell
+   * back to the trigger. So the offsets are recorded at open, and a close raised by a scroll whose
+   * container has not moved since is ignored. A real scroll after opening moves it and still closes.
+   */
+  const scrollAtOpenRef = React.useRef(new Map<Element, readonly [number, number]>());
+  const { open: isOpen, triggerRef: openTriggerRef, anchorRef: openAnchorRef } = root;
+  React.useLayoutEffect(() => {
+    const offsets = scrollAtOpenRef.current;
+    offsets.clear();
+    if (!isOpen) return;
+    const start = (root.anchored ? openAnchorRef : openTriggerRef).current;
+    for (let el: Element | null = start ?? null; el; el = el.parentElement) {
+      offsets.set(el, [el.scrollTop, el.scrollLeft]);
+    }
+    const page = document.scrollingElement;
+    if (page) offsets.set(page, [page.scrollTop, page.scrollLeft]);
+  }, [isOpen, root.anchored, openAnchorRef, openTriggerRef]);
+  const onAriaOpenChange = (next: boolean) => {
+    // `window.event` is the event being dispatched right now: here, the `scroll` RAC reacts to.
+    const event = typeof window === "undefined" ? undefined : window.event;
+    if (!next && event?.type === "scroll") {
+      const target = event.target === document ? document.scrollingElement : event.target;
+      const at = target instanceof Element ? scrollAtOpenRef.current.get(target) : undefined;
+      if (
+        at &&
+        target instanceof Element &&
+        target.scrollTop === at[0] &&
+        target.scrollLeft === at[1]
+      ) {
+        return;
+      }
+    }
+    root.setOpen(next);
+  };
+
+  /*
    * Radix đưa tiêu điểm vào panel khi mở và cho consumer chặn bằng `onOpenAutoFocus`; RAC ở chế độ
    * non-modal không làm gì cả. Chép tay lại, vì Escape của RAC nằm trên CHÍNH thẻ panel — không có
    * tiêu điểm bên trong thì không có phím nào tới nơi.
@@ -477,7 +518,7 @@ export function PopoverContent({
     <AriaPopover
       UNSTABLE_portalContainer={overlayPortalContainer}
       isOpen={root.open}
-      onOpenChange={root.setOpen}
+      onOpenChange={onAriaOpenChange}
       isNonModal={root.isNonModal}
       triggerRef={root.anchored ? root.anchorRef : root.triggerRef}
       placement={toPlacement(side, align)}

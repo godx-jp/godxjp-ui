@@ -18,6 +18,17 @@ measures 74px. That measured width also grows the compact-tier minimum inline si
 (table 640 → 674px, meta column 86.8 → 91.4px). The
 `--table-action-collection-min-inline-size-compact` default becomes `0px` so the `calc()` resolves.
 
+### 🐛 A Select inside a scrolled Sheet stays open when clicked (gh#1208, second cause)
+
+31.31.5 fixed one cause; GoDX ID still saw its `loadOptions` picker close at once. The picker sits
+far down a Sheet opened from a DropdownMenu, so clicking it first scrolls the Sheet body. The
+browser delivers that `scroll` on the next frame, after the panel has opened, and the react-aria
+Popover closes a non-modal panel whenever a container around its trigger scrolls; focus fell back to
+the trigger. It closed in 6 of 6 runs. The Popover now records scroll offsets when it opens and
+ignores a close raised by a scroll whose container has not moved since: 6 of 6 stay open. A real
+scroll after opening still closes the panel. The Chromium test reproduces the GoDX ID screen
+(red on 31.31.5) and covers the real-scroll case.
+
 ### 🔧 `check:frame-overflow` no longer passes when it could not look (gh#1210)
 
 When every navigation failed (for example `ERR_UNSAFE_PORT`), the gate logged a warning per frame
