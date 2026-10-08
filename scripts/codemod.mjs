@@ -24,77 +24,55 @@ import path from "node:path";
  * reported for the human to finish.
  */
 const UI = (group) => [`@godxjp/ui/${group}`, "@godxjp/ui"];
-const rename = (groups, from, toMod, to, note) => ({ from: [groups, from], to: [toMod, to], note });
+/**
+ * `add`: props written onto every opening tag of the renamed component (unless that prop is already
+ * there). `map`: prop values rewritten in the same tag. `note`: what only a person can finish.
+ */
+const rename = (groups, from, toMod, to, extra = {}) => ({
+  from: [groups, from],
+  to: [toMod, to],
+  ...(typeof extra === "string" ? { note: extra } : extra),
+});
 const move = (groups, toMod, names) => names.map((n) => rename(groups, n, toMod, n));
 
 export const RENAMES = [
-  rename(UI("feedback"), "Banner", "@godxjp/ui/feedback", "Alert", 'add variant="banner"'),
-  rename(UI("feedback"), "Callout", "@godxjp/ui/feedback", "Alert", 'add variant="callout"'),
-  rename(
-    UI("data-entry"),
-    "TagInput",
-    "@godxjp/ui/data-entry",
-    "Select",
-    'add mode="tags" open={false}; Select takes no ref',
-  ),
-  rename(
-    UI("data-display"),
-    "Thumbnail",
-    "@godxjp/ui/data-display",
-    "Image",
-    'add fit="intrinsic" preview={false}',
-  ),
-  rename(
-    UI("data-display"),
-    "HoverCard",
-    "@godxjp/ui/data-display",
-    "Popover",
-    'add openOn="hover"',
-  ),
+  rename(UI("feedback"), "Banner", "@godxjp/ui/feedback", "Alert", { add: { variant: "banner" } }),
+  rename(UI("feedback"), "Callout", "@godxjp/ui/feedback", "Alert", {
+    add: { variant: "callout" },
+  }),
+  rename(UI("data-entry"), "TagInput", "@godxjp/ui/data-entry", "Select", {
+    add: { mode: "tags", open: "{false}" },
+    note: "Select takes no ref; move a ref to a wrapper element",
+  }),
+  rename(UI("data-display"), "Thumbnail", "@godxjp/ui/data-display", "Image", {
+    add: { fit: "intrinsic", preview: "{false}" },
+  }),
+  rename(UI("data-display"), "HoverCard", "@godxjp/ui/data-display", "Popover", {
+    add: { openOn: "hover" },
+  }),
   rename(UI("data-display"), "HoverCardTrigger", "@godxjp/ui/data-display", "PopoverTrigger"),
   rename(UI("data-display"), "HoverCardContent", "@godxjp/ui/data-display", "PopoverContent"),
-  rename(
-    UI("layout"),
-    "AuthShell",
-    "@godxjp/ui/layout",
-    "CenteredShell",
-    'add variant="auth" (variant="canonical" becomes "auth-canonical")',
-  ),
-  rename(
-    UI("layout"),
-    "SpaceCompact",
-    "@godxjp/ui/layout",
-    "Flex",
-    'add attached; orientation/vertical becomes direction="col"',
-  ),
-  rename(
-    UI("navigation"),
-    "AppSettingToggle",
-    "@godxjp/ui/navigation",
-    "AppSettingPicker",
-    "add menu={false}",
-  ),
-  rename(
-    UI("general"),
-    "Title",
-    "@godxjp/ui/general",
-    "Heading",
-    "Title (antd shim) was removed; check level/size",
-  ),
-  rename(
-    UI("general"),
-    "Paragraph",
-    "@godxjp/ui/general",
-    "Text",
-    'add as="p"; ellipsis.rows becomes clamp',
-  ),
-  rename(
-    UI("general"),
-    "Typography",
-    "@godxjp/ui/data-display",
-    "Prose",
-    "Typography (antd shim) was removed",
-  ),
+  rename(UI("layout"), "AuthShell", "@godxjp/ui/layout", "CenteredShell", {
+    add: { variant: "auth" },
+    map: { variant: { canonical: "auth-canonical" } },
+  }),
+  rename(UI("layout"), "SpaceCompact", "@godxjp/ui/layout", "Flex", {
+    add: { attached: true },
+    note: 'orientation="vertical" / vertical becomes direction="col"',
+  }),
+  rename(UI("navigation"), "AppSettingToggle", "@godxjp/ui/navigation", "AppSettingPicker", {
+    add: { menu: "{false}" },
+  }),
+  rename(UI("general"), "Title", "@godxjp/ui/general", "Heading", {
+    note: "Title (antd shim) was removed: check level / size on Heading",
+  }),
+  rename(UI("general"), "Paragraph", "@godxjp/ui/general", "Text", {
+    add: { as: "p" },
+    note: "ellipsis.rows becomes clamp",
+  }),
+  rename(UI("general"), "Typography", "@godxjp/ui/data-display", "Prose", {
+    note: "Typography (antd shim) was removed: check the children render as prose",
+  }),
   ...move(UI("general"), "@godxjp/ui/lab", ["FloatButton"]),
   ...move(UI("layout"), "@godxjp/ui/lab", [
     "DraggablePanel",
@@ -195,6 +173,7 @@ export function transformSource(file, source, { godx = false } = {}) {
     }
   }
   if (!isCss) out = applyRenames(out, notes);
+  if (!isCss) out = narrowLocaleType(out, notes, godx);
   return { out, changed: out !== source, notes };
 }
 
@@ -229,14 +208,39 @@ function applyRenames(source, notes) {
       const list = moved.get(toMod) ?? [];
       list.push({ spec: newSpec, typeOnly: Boolean(typeKw) || inlineType });
       moved.set(toMod, list);
-      if (!alias && toName !== name) jsxRenames.push([name, toName]);
+      if (!alias && (toName !== name || r.add || r.map)) jsxRenames.push([name, toName, r]);
       if (r.note) notes.push(`${name} → ${toName}${toMod !== mod ? ` (${toMod})` : ""}: ${r.note}`);
     }
     if (!touched) return stmt;
     return keep.length ? `import ${typeKw ?? ""}{ ${keep.join(", ")} } from ${q}${mod}${q};` : "";
   });
-  for (const [from, to] of jsxRenames)
-    out = out.replace(new RegExp(`(</?)${from}(?=[\\s>./])`, "g"), `$1${to}`);
+  for (const [from, to, r] of jsxRenames) {
+    // Opening tags first, so the props the merge needs land on the element itself.
+    out = out.replace(
+      new RegExp(`<${from}(?=[\\s>/])([^>]*?)(/?)>`, "g"),
+      (_all, attrs, selfClose) => {
+        let a = attrs;
+        for (const [prop, values] of Object.entries(r.map ?? {})) {
+          for (const [oldValue, newValue] of Object.entries(values)) {
+            a = a.replace(new RegExp(`\\b${prop}=(["'])${oldValue}\\1`), `${prop}="${newValue}"`);
+          }
+        }
+        for (const [prop, value] of Object.entries(r.add ?? {})) {
+          if (new RegExp(`(^|\\s)${prop}(=|\\s|$)`).test(a)) continue;
+          const written =
+            value === true
+              ? prop
+              : String(value).startsWith("{")
+                ? `${prop}=${value}`
+                : `${prop}="${value}"`;
+          a = ` ${written}${a}`;
+        }
+        return `<${to}${a}${selfClose}>`;
+      },
+    );
+    // Closing tags and compound members (`</Callout>`, `<Callout.Title>`).
+    out = out.replace(new RegExp(`(</|<)${from}(?=[.>])`, "g"), `$1${to}`);
+  }
   for (const [toMod, specs] of moved) {
     for (const typeOnly of [false, true]) {
       const names = specs.filter((x) => x.typeOnly === typeOnly).map((x) => x.spec);
@@ -264,6 +268,26 @@ function applyRenames(source, notes) {
     }
   }
   return out.replace(/\n{3,}/g, "\n\n");
+}
+
+/**
+ * gh#1219: `AppLocale` widened from "vi" | "en" | "ja" to any BCP-47 string; the old union is now
+ * `BuiltInLocale`. Code that indexes a { ja, en, vi } copy table with an AppLocale stops compiling.
+ * A GoDX product only uses the built-ins, so under --godx the type is renamed (behaviour unchanged).
+ * Otherwise it is reported: the app decides whether it will register other locales.
+ */
+function narrowLocaleType(source, notes, godx) {
+  const imp = source.match(
+    /import\s*(type\s+)?\{[^}]*\bAppLocale\b[^}]*\}\s*from\s*["']@godxjp\/ui(?:\/app)?["']/,
+  );
+  if (!imp) return source;
+  if (!godx) {
+    notes.push(
+      "AppLocale is any BCP-47 string since v32; indexing a { ja, en, vi } table with it no longer type-checks. Use BuiltInLocale for such tables, or rerun with --godx.",
+    );
+    return source;
+  }
+  return source.replace(/\bAppLocale\b/g, "BuiltInLocale");
 }
 
 function addImport(source, line) {

@@ -66,14 +66,15 @@ describe("codemod v32 renames and moves (gh#1223)", () => {
     const { out, notes } = transformSource("a.tsx", src);
     expect(out).toContain('import { Alert } from "@godxjp/ui/feedback";');
     expect(out).not.toContain("Banner");
-    expect(out).toContain('<Alert title="x" />');
-    expect(notes.join("\n")).toMatch(/variant="banner"/);
+    // The merge's own prop is written onto the element, not left as a note.
+    expect(out).toContain('<Alert variant="banner" title="x" />');
+    expect(notes).toEqual([]);
   });
 
   it("renames compound members (Callout.Title → Alert.Title) and keeps an alias", () => {
     const src = `import { Callout, HoverCard as HC } from "@godxjp/ui";\nexport const A = () => <><Callout><Callout.Title>t</Callout.Title></Callout><HC /></>;\n`;
     const { out } = transformSource("a.tsx", src);
-    expect(out).toContain("<Alert><Alert.Title>t</Alert.Title></Alert>");
+    expect(out).toContain('<Alert variant="callout"><Alert.Title>t</Alert.Title></Alert>');
     expect(out).toContain("Popover as HC");
     expect(out).toContain("<HC />");
   });
@@ -102,5 +103,43 @@ describe("codemod v32 renames and moves (gh#1223)", () => {
     const src = `import { Banner, TagInput } from "@godxjp/ui";\nexport const A = () => <><Banner /><TagInput /></>;\n`;
     const once = transformSource("a.tsx", src).out;
     expect(transformSource("a.tsx", once).changed).toBe(false);
+  });
+
+  it("writes the merge props: maps AuthShell canonical, adds booleans and expressions, never duplicates", () => {
+    const src = [
+      'import { AuthShell, SpaceCompact } from "@godxjp/ui/layout";',
+      'import { TagInput } from "@godxjp/ui/data-entry";',
+      "export const A = () => (",
+      "  <>",
+      '    <AuthShell title="t">x</AuthShell>',
+      '    <AuthShell variant="canonical" title="t">x</AuthShell>',
+      "    <SpaceCompact><b /></SpaceCompact>",
+      "    <TagInput value={v} />",
+      '    <TagInput mode="tags" />',
+      "  </>",
+      ");",
+    ].join("\n");
+    const { out, notes } = transformSource("a.tsx", src);
+    expect(out).toContain('<CenteredShell variant="auth" title="t">x</CenteredShell>');
+    expect(out).toContain('<CenteredShell variant="auth-canonical" title="t">x</CenteredShell>');
+    expect(out).toContain("<Flex attached><b /></Flex>");
+    expect(out).toContain('<Select open={false} mode="tags" value={v} />');
+    // An element that already carries the prop keeps its own value.
+    expect(out).toContain('<Select open={false} mode="tags" />');
+    expect(out).not.toMatch(/mode="tags"[^>]*mode=/);
+    expect(notes.join("\n")).toMatch(/Select takes no ref/);
+    expect(transformSource("a.tsx", out).changed).toBe(false);
+  });
+
+  it("narrows AppLocale to BuiltInLocale under --godx, and only reports it otherwise (gh#1219)", () => {
+    const src = `import { useAppLocale, type AppLocale } from "@godxjp/ui/app";\nconst copy = { ja: "a", en: "b", vi: "c" };\nexport const f = (l: string) => copy[l as AppLocale];\n`;
+    const godx = transformSource("a.tsx", src, { godx: true });
+    expect(godx.out).toContain("type BuiltInLocale }");
+    expect(godx.out).toContain("copy[l as BuiltInLocale]");
+    expect(godx.out).not.toMatch(/\bAppLocale\b/);
+    const plain = transformSource("a.tsx", src);
+    expect(plain.out).toContain("AppLocale");
+    expect(plain.notes.join("\n")).toMatch(/BuiltInLocale/);
+    expect(transformSource("a.tsx", godx.out, { godx: true }).changed).toBe(false);
   });
 });
