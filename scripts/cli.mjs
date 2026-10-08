@@ -6,6 +6,7 @@
  *   audit          static UI audit (regex over source)
  *   visual-audit   runtime audit (Playwright + axe-core) against a running app
  *   prune-css      emit a stylesheet with only the CSS layers the app uses (gh#971)
+ *   codemod v32    apply the mechanical half of the v32 upgrade (docs/migrations/v32.md)
  */
 import { spawnSync } from "node:child_process";
 import { dirname, join } from "node:path";
@@ -17,6 +18,7 @@ const MAP = {
   audit: "ui-audit.mjs",
   "visual-audit": "visual-audit.mjs",
   "prune-css": "prune-css.mjs",
+  codemod: "codemod.mjs",
 };
 
 // `<command> --help` is answered HERE: the scripts take free positional arguments, so a `--help`
@@ -67,6 +69,15 @@ const HELP = {
   Import the emitted file INSTEAD of "@godxjp/ui/styles". Re-run when your component usage
   changes and after every upgrade; it refuses on a package/manifest version mismatch.
   Hand cherry-picking *-layout.css stays forbidden — this tool is the only thing allowed to slice.`,
+  codemod: `godxjp-ui codemod v32 [paths…] [--godx] [--dry-run]
+
+  Apply the mechanical half of the v32 upgrade (docs/migrations/v32.md). Idempotent.
+    paths …     files or directories to rewrite (default ".")
+    --godx      a GoDX product: keep today's look with the GoDX preset (violet, the GoDX mark,
+                vi default locale, Japanese fonts)
+    --dry-run   list every change without writing
+  What it cannot decide (a component move that changes props, an AppProvider that relied on the
+  old vi default) is printed as a "note" for you to finish.`,
   "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] <baseUrl> [route …]
 
   Runtime audit (Playwright + axe-core) against an app you are ALREADY running locally.

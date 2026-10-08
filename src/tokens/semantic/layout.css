@@ -231,7 +231,7 @@
    * `medium` at 768px. 72rem sits between the two measured values and is a step the industry
    * already ships (Tailwind `--container-6xl`); the wide-container cluster runs 1136–1320px
    * (Radix Container 4 = 1136, Primer/Tailwind = 1280, Bootstrap = 1320). No `PageContainer`
-   * branch reads it yet — see docs/roadmap/website-components.md §5.9 — so today this is the
+   * branch reads it yet (the website-components roadmap, §5.9), so today this is the
    * VOCABULARY a marketing composition caps its own shell with, as `--gradient-hero` is. */
   --page-measure-wide: 72rem; /* 1152px outer → 1104px surface */
 
