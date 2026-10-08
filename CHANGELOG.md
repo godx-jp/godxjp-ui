@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.5] - 2026-10-08
+
+### 🐛 A searchable Select works inside a Sheet or Dialog again (gh#1208)
+
+Production: GoDX ID admins could not pick an OAuth client in the catalog's edit Sheet; the picker
+opened and closed within ~5ms. The search field carried `autoFocus`, which fired during mount,
+before the panel's focus scope had registered. The Sheet's (or Dialog's) modal focus scope saw focus
+leave it and pulled it back to the trigger. Measured focus sequence: `search → trigger → search`,
+and on a real page that bounce closed the panel. The field no longer uses `autoFocus`; the Popover's
+open-autofocus effect focuses it once the scope exists. A Chromium test inside a Sheet and a Dialog
+asserts focus never returns to the trigger, and that the typed query filters (red on the old code).
+
 ## [31.31.4] - 2026-10-08
 
 ### 🐛 RangeTimeline's label column stays usable on a phone
