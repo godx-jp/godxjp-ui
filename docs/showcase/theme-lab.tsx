@@ -119,19 +119,16 @@ import {
   Descriptions,
   EmptyState,
   FeatureList,
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Legend,
   ListRow,
   Marquee,
   PermissionMatrix,
-  Popover,
-  PopoverContent,
   PopoverDescription,
   PopoverHeader,
   PopoverTitle,
-  PopoverTrigger,
   Progress,
   Prose,
   QrCode,
@@ -1071,14 +1068,14 @@ export default function ThemeLabShowcase() {
                       </CollapsibleContent>
                     </Flex>
                   </Collapsible>
-                  {/* No `asChild`. HoverCardTrigger is a react-aria `Focusable`, and a `Button`
+                  {/* No `asChild`. A hover-mode PopoverTrigger is a react-aria `Focusable`, and a `Button`
                       handed to it through `asChild` warned "<Focusable> child must forward its ref
                       to a DOM element" on every render. The catalogue's own example is a bare
                       trigger, and that is what this uses. */}
-                  <HoverCard>
-                    <HoverCardTrigger>{t("themeLab.sample.one")}</HoverCardTrigger>
-                    <HoverCardContent>{t("themeLab.sample.short")}</HoverCardContent>
-                  </HoverCard>
+                  <Popover openOn="hover">
+                    <PopoverTrigger>{t("themeLab.sample.one")}</PopoverTrigger>
+                    <PopoverContent>{t("themeLab.sample.short")}</PopoverContent>
+                  </Popover>
                 </Flex>
               </ResponsiveGrid>
               <Card>

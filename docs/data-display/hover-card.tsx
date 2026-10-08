@@ -7,23 +7,23 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
- * HoverCard — a rich popover shown on hover/focus of a trigger (sighted-pointer
+ * Popover openOn="hover" (formerly HoverCard) — a rich popover shown on hover/focus of a trigger (sighted-pointer
  * affordance; not a replacement for Tooltip). Composed only from real
  * @godxjp/ui components. Touch layouts must keep essential identity/actions visible in the
- * trigger or destination; never make HoverCard the only route to required information.
+ * trigger or destination; never make a hover card the only route to required information.
  */
 export default function Demo() {
   return (
     <PageContainer
-      title="HoverCard"
+      title="Popover · hover"
       subtitle="Rich preview on hover/focus · entity peek, user card, positioning & delay"
     >
       <Flex direction="col" gap="lg">
@@ -37,11 +37,11 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <HoverCard>
-              <HoverCardTrigger asChild>
+            <Popover openOn="hover">
+              <PopoverTrigger asChild>
                 <Button variant="link">株式会社ベトヤ</Button>
-              </HoverCardTrigger>
-              <HoverCardContent>
+              </PopoverTrigger>
+              <PopoverContent>
                 <Flex direction="row" gap="md" align="center">
                   <Avatar>
                     <AvatarFallback>VB</AvatarFallback>
@@ -53,8 +53,8 @@ export default function Demo() {
                     </Text>
                   </Flex>
                 </Flex>
-              </HoverCardContent>
-            </HoverCard>
+              </PopoverContent>
+            </Popover>
           </CardContent>
         </Card>
 
@@ -67,11 +67,11 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <HoverCard>
-              <HoverCardTrigger asChild>
+            <Popover openOn="hover">
+              <PopoverTrigger asChild>
                 <Button variant="link">田中 美咲</Button>
-              </HoverCardTrigger>
-              <HoverCardContent>
+              </PopoverTrigger>
+              <PopoverContent>
                 <Flex direction="row" gap="md" align="center">
                   <Avatar>
                     <AvatarImage src="/avatars/tanaka.png" alt="田中 美咲" />
@@ -87,8 +87,8 @@ export default function Demo() {
                     </Text>
                   </Flex>
                 </Flex>
-              </HoverCardContent>
-            </HoverCard>
+              </PopoverContent>
+            </Popover>
           </CardContent>
         </Card>
 
@@ -104,41 +104,41 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-              <HoverCard>
-                <HoverCardTrigger asChild>
+              <Popover openOn="hover">
+                <PopoverTrigger asChild>
                   <Button variant="link">side=top</Button>
-                </HoverCardTrigger>
-                <HoverCardContent side="top">
+                </PopoverTrigger>
+                <PopoverContent side="top">
                   <Text>上に表示（align=center）</Text>
-                </HoverCardContent>
-              </HoverCard>
+                </PopoverContent>
+              </Popover>
 
-              <HoverCard>
-                <HoverCardTrigger asChild>
+              <Popover openOn="hover">
+                <PopoverTrigger asChild>
                   <Button variant="link">side=right</Button>
-                </HoverCardTrigger>
-                <HoverCardContent side="right" align="start">
+                </PopoverTrigger>
+                <PopoverContent side="right" align="start">
                   <Text>右に表示（align=start）</Text>
-                </HoverCardContent>
-              </HoverCard>
+                </PopoverContent>
+              </Popover>
 
-              <HoverCard>
-                <HoverCardTrigger asChild>
+              <Popover openOn="hover">
+                <PopoverTrigger asChild>
                   <Button variant="link">side=bottom</Button>
-                </HoverCardTrigger>
-                <HoverCardContent side="bottom" align="end">
+                </PopoverTrigger>
+                <PopoverContent side="bottom" align="end">
                   <Text>下に表示（align=end）</Text>
-                </HoverCardContent>
-              </HoverCard>
+                </PopoverContent>
+              </Popover>
 
-              <HoverCard>
-                <HoverCardTrigger asChild>
+              <Popover openOn="hover">
+                <PopoverTrigger asChild>
                   <Button variant="link">side=left</Button>
-                </HoverCardTrigger>
-                <HoverCardContent side="left" sideOffset={12}>
+                </PopoverTrigger>
+                <PopoverContent side="left" sideOffset={12}>
                   <Text>左に表示（sideOffset=12）</Text>
-                </HoverCardContent>
-              </HoverCard>
+                </PopoverContent>
+              </Popover>
             </ResponsiveGrid>
           </CardContent>
         </Card>
@@ -155,23 +155,23 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="lg" wrap>
-              <HoverCard openDelay={700} closeDelay={150}>
-                <HoverCardTrigger asChild>
+              <Popover openOn="hover" openDelay={700} closeDelay={150}>
+                <PopoverTrigger asChild>
                   <Button variant="link">openDelay=700ms</Button>
-                </HoverCardTrigger>
-                <HoverCardContent>
+                </PopoverTrigger>
+                <PopoverContent>
                   <Text>待ってから表示。意図しないホバーで開きません。</Text>
-                </HoverCardContent>
-              </HoverCard>
+                </PopoverContent>
+              </Popover>
 
-              <HoverCard openDelay={0} closeDelay={600}>
-                <HoverCardTrigger asChild>
+              <Popover openOn="hover" openDelay={0} closeDelay={600}>
+                <PopoverTrigger asChild>
                   <Button variant="link">closeDelay=600ms</Button>
-                </HoverCardTrigger>
-                <HoverCardContent>
+                </PopoverTrigger>
+                <PopoverContent>
                   <Text>即座に表示し、離れても少し残るのでカード内に移動できます。</Text>
-                </HoverCardContent>
-              </HoverCard>
+                </PopoverContent>
+              </Popover>
             </Flex>
           </CardContent>
         </Card>

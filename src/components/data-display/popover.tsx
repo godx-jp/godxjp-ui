@@ -178,6 +178,16 @@ type PopoverRootValue = {
   registerTitle: (present: boolean) => void;
   registerDescription: (present: boolean) => void;
   triggerId: string;
+  /** `"hover"` (v32 #1223, the former HoverCard): pointer timers + focus open the panel. */
+  openOn: "click" | "hover";
+  /** Hover mode: open/close NOW, clearing any pending timer — keyboard focus and blur. */
+  setOpenImmediately: (open: boolean) => void;
+  /** Hover mode: open after `openDelay`. */
+  scheduleOpen: () => void;
+  /** Hover mode: close after `closeDelay`; a later `scheduleOpen`/`cancelClose` cancels it. */
+  scheduleClose: () => void;
+  /** Hover mode: cancel a pending close — the pointer left the trigger but reached the panel. */
+  cancelClose: () => void;
 };
 
 const PopoverRootContext = React.createContext<PopoverRootValue | null>(null);
@@ -199,6 +209,18 @@ interface PopoverProps {
   onOpenChange?: (open: boolean) => void;
   /** Khoá tương tác ngoài panel và giam tiêu điểm, đúng như `modal` của Radix. */
   modal?: boolean;
+  /**
+   * What opens the panel. `"click"` (default): the trigger toggles a dialog panel. `"hover"`: a
+   * HOVER CARD — rich, non-modal preview content that opens when the pointer rests on the trigger
+   * for `openDelay` and closes `closeDelay` after it leaves (moving onto the card cancels the
+   * close); keyboard focus opens it and blur closes it immediately; touch never opens it. The
+   * panel is then not a dialog and takes no focus. This is what `HoverCard` was (v32 #1223).
+   */
+  openOn?: "click" | "hover";
+  /** `openOn="hover"` only: pointer rest before opening, in ms. Default 200. */
+  openDelay?: number;
+  /** `openOn="hover"` only: delay after the pointer leaves before closing, in ms. Default 100. */
+  closeDelay?: number;
 }
 
 export function Popover({
@@ -206,6 +228,9 @@ export function Popover({
   defaultOpen,
   onOpenChange,
   modal = false,
+  openOn = "click",
+  openDelay = 200,
+  closeDelay = 100,
   children,
 }: React.PropsWithChildren<PopoverProps>) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen ?? false);
@@ -230,8 +255,61 @@ export function Popover({
     [open, onOpenChange],
   );
 
+  /*
+   * HOVER TIMERS (the former HoverCard, kept verbatim). React Aria has no hover card and its
+   * `Popover` does not open on hover, so the pointer schedule is written here: `openDelay` /
+   * `closeDelay` timers, an immediate open on focus, and a pending close cancelled when the pointer
+   * crosses from the trigger onto the card — what Radix HoverCard does, no more. The defaults are a
+   * SNAPPY 200ms / 100ms (Radix's raw 700/300 felt laggy).
+   */
+  const openTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hover = React.useMemo(() => {
+    const clearOpen = () => {
+      if (openTimer.current) clearTimeout(openTimer.current);
+      openTimer.current = null;
+    };
+    const clearClose = () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    };
+    return {
+      setOpenImmediately: (next: boolean) => {
+        clearOpen();
+        clearClose();
+        setOpen(next);
+      },
+      scheduleOpen: () => {
+        clearClose();
+        if (openTimer.current) return;
+        openTimer.current = setTimeout(() => {
+          openTimer.current = null;
+          setOpen(true);
+        }, openDelay);
+      },
+      scheduleClose: () => {
+        clearOpen();
+        if (closeTimer.current) return;
+        closeTimer.current = setTimeout(() => {
+          closeTimer.current = null;
+          setOpen(false);
+        }, closeDelay);
+      },
+      cancelClose: clearClose,
+    };
+  }, [setOpen, openDelay, closeDelay]);
+  React.useEffect(
+    () => () => {
+      if (openTimer.current) clearTimeout(openTimer.current);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    },
+    [],
+  );
+
   const value = React.useMemo<PopoverRootValue>(
     () => ({
+      openOn,
+      ...hover,
       open: isOpen,
       setOpen,
       contentId,
@@ -249,6 +327,8 @@ export function Popover({
       triggerId,
     }),
     [
+      openOn,
+      hover,
       isOpen,
       setOpen,
       contentId,
@@ -270,7 +350,12 @@ interface PopoverTriggerProps extends React.ComponentPropsWithRef<"button"> {
   asChild?: boolean;
 }
 
-export function PopoverTrigger({ asChild, onClick, ref, ...props }: PopoverTriggerProps) {
+export function PopoverTrigger(props: PopoverTriggerProps) {
+  const root = usePopoverRoot("PopoverTrigger");
+  return root.openOn === "hover" ? <HoverTrigger {...props} /> : <ClickTrigger {...props} />;
+}
+
+function ClickTrigger({ asChild, onClick, ref, ...props }: PopoverTriggerProps) {
   const root = usePopoverRoot("PopoverTrigger");
   const Comp = (asChild ? Slot : "button") as React.ElementType;
 
@@ -288,6 +373,45 @@ export function PopoverTrigger({ asChild, onClick, ref, ...props }: PopoverTrigg
       {...props}
       ref={mergeRefs(ref, root.triggerRef)}
       onClick={chain(onClick, () => root.setOpen(!root.open))}
+    />
+  );
+}
+
+/**
+ * The hover-mode trigger (the former HoverCardTrigger): no click toggle and no dialog semantics —
+ * the content it reveals is supplementary, so the trigger keeps its own role and name. Without
+ * `asChild` it renders an `<a>`, the element a hover card usually decorates (a name, a link).
+ */
+function HoverTrigger({
+  asChild,
+  onPointerEnter,
+  onPointerLeave,
+  onFocus,
+  onBlur,
+  ref,
+  ...props
+}: PopoverTriggerProps) {
+  const root = usePopoverRoot("PopoverTrigger");
+  const Comp = (asChild ? Slot : "a") as React.ElementType;
+
+  return (
+    <Comp
+      data-state={root.open ? "open" : "closed"}
+      {...props}
+      ref={mergeRefs(ref, root.triggerRef)}
+      /* `pointerType === "touch"` is ignored, as in Radix: touch has no hover state, and opening
+       * the card there would swallow the user's first tap. */
+      onPointerEnter={chain(onPointerEnter, (event: React.PointerEvent) => {
+        if (event.pointerType === "touch") return;
+        root.scheduleOpen();
+      })}
+      onPointerLeave={chain(onPointerLeave, (event: React.PointerEvent) => {
+        if (event.pointerType === "touch") return;
+        root.scheduleClose();
+      })}
+      /* Keyboard: open/close NOW — never make a keyboard user wait for a pointer timer. */
+      onFocus={chain(onFocus, () => root.setOpenImmediately(true))}
+      onBlur={chain(onBlur, () => root.setOpenImmediately(false))}
     />
   );
 }
@@ -385,7 +509,12 @@ interface PopoverContentProps extends React.ComponentPropsWithRef<"div">, Popove
   onCloseAutoFocus?: (event: Event) => void;
 }
 
-export function PopoverContent({
+export function PopoverContent(props: PopoverContentProps) {
+  const root = usePopoverRoot("PopoverContent");
+  return root.openOn === "hover" ? <HoverContent {...props} /> : <ClickContent {...props} />;
+}
+
+function ClickContent({
   className,
   style,
   children,
@@ -595,6 +724,94 @@ export function PopoverContent({
                 ...(width && POPOVER_SURFACE_INLINE_SIZE[width]
                   ? { "--popover-surface-inline-size": POPOVER_SURFACE_INLINE_SIZE[width] }
                   : null),
+              } as React.CSSProperties
+            }
+          >
+            {children}
+          </div>
+        );
+      }}
+    />
+  );
+}
+
+/**
+ * The hover-mode panel (the former HoverCardContent, markup kept so every `hover-card` token and
+ * selector still reaches it): non-modal, not a dialog, takes no focus, and the pointer moving onto
+ * it cancels the pending close.
+ */
+function HoverContent({
+  className,
+  style,
+  children,
+  ref,
+  flush: _flush,
+  width: _width,
+  side = "bottom",
+  align = "center",
+  sideOffset = 4,
+  alignOffset,
+  avoidCollisions = true,
+  collisionPadding,
+  sticky: _sticky,
+  hideWhenDetached: _hideWhenDetached,
+  forceMount: _forceMount,
+  onOpenAutoFocus: _onOpenAutoFocus,
+  onCloseAutoFocus: _onCloseAutoFocus,
+  portalContainer,
+  onPointerEnter,
+  onPointerLeave,
+  ...props
+}: PopoverContentProps) {
+  const root = usePopoverRoot("PopoverContent");
+  const overlayPortalContainer = useOverlayPortalContainer(portalContainer);
+
+  return (
+    <AriaPopover
+      UNSTABLE_portalContainer={overlayPortalContainer}
+      isOpen={root.open}
+      onOpenChange={root.setOpenImmediately}
+      isNonModal
+      triggerRef={root.anchored ? root.anchorRef : root.triggerRef}
+      placement={toPlacement(side, align)}
+      offset={sideOffset}
+      crossOffset={alignOffset}
+      shouldFlip={avoidCollisions}
+      containerPadding={toContainerPadding(collisionPadding)}
+      render={(racProps, { isExiting }) => {
+        const {
+          className: _racClassName,
+          "data-rac": _rac,
+          ref: racRef,
+          style: racStyle,
+          ...rest
+        } = racProps as RacDomProps;
+
+        return (
+          <div
+            {...rest}
+            data-slot="hover-card-content"
+            data-side={side}
+            data-align={align}
+            data-state={isExiting ? "closed" : "open"}
+            {...props}
+            ref={mergeRefs(ref, racRef)}
+            /* The pointer crossed from the trigger onto the card: cancel the pending close. */
+            onPointerEnter={chain(onPointerEnter, () => root.cancelClose())}
+            onPointerLeave={chain(onPointerLeave, () => root.scheduleClose())}
+            className={cn(
+              "ui-hover-card-content origin-[var(--radix-hover-card-content-transform-origin)]",
+              "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+              "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+              "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
+              "data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2",
+              className,
+            )}
+            style={
+              {
+                ...racStyle,
+                "--radix-hover-card-content-transform-origin": "var(--trigger-anchor-point)",
+                ...style,
               } as React.CSSProperties
             }
           >

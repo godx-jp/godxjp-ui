@@ -13090,6 +13090,7 @@ function CustomRadioGroup() {
   },
   {
     name: "Popover",
+    absorbed: ["HoverCard", "HoverCardTrigger", "HoverCardContent"],
     subParts: [
       "PopoverAnchor",
       "PopoverContent",
@@ -13125,6 +13126,25 @@ function CustomRadioGroup() {
         defaultValue: "false",
         description:
           "When true, interaction outside the popover is blocked and focus is trapped inside (Radix Root prop).",
+      },
+      {
+        name: "openOn",
+        type: '"click" | "hover"',
+        defaultValue: '"click"',
+        description:
+          'What opens the panel. "click": the trigger toggles a dialog panel. "hover": a HOVER CARD — rich, non-modal preview content that opens when the pointer rests on the trigger for `openDelay` and closes `closeDelay` after it leaves (moving onto the card cancels the close); keyboard focus opens it and blur closes it at once; touch never opens it. In hover mode the panel is not a dialog and takes no focus, and a trigger without `asChild` renders an `<a>`. This is what `HoverCard` was (v32).',
+      },
+      {
+        name: "openDelay",
+        type: "number",
+        defaultValue: "200",
+        description: '`openOn="hover"` only: ms the pointer rests on the trigger before opening.',
+      },
+      {
+        name: "closeDelay",
+        type: "number",
+        defaultValue: "100",
+        description: '`openOn="hover"` only: ms after the pointer leaves before closing.',
       },
       {
         name: "align",
@@ -13176,6 +13196,7 @@ function CustomRadioGroup() {
       },
     ],
     usage: [
+      "HOVER CARD: `<Popover openOn=\"hover\"><PopoverTrigger asChild><a href=…>@yamada</a></PopoverTrigger><PopoverContent>…</PopoverContent></Popover>` for RICH preview content (an avatar + bio, an entity summary). For a short plain-text hint use Tooltip. DON'T put essential information only in a hover card — touch never opens it; make the same content reachable from the trigger's destination. There is no `HoverCard` component.",
       "DO compose: <Popover> → <PopoverTrigger asChild> → <Button/> and <PopoverContent>. All four parts are required for any popover to function; omitting PopoverTrigger or PopoverContent produces nothing.",
       'DO set `<PopoverContent width="auto">` when the child brings its own measure — a Calendar, a chart, a fixed-width preview. The panel\'s own 18rem clips them, and a `w-*` utility on className is a per-call-site constant no service theme can retune, which is exactly what `flush` exists to avoid on the padding axis. `width="trigger"` matches the anchor, the shape every select-like control wants.',
       "DO set `<PopoverContent flush>` when the panel holds a Command list, a menu or a table — the child owns its own inset, so its rows and separators reach the panel edges. Never zero the padding with a utility on className: that is a per-call-site constant no service theme can retune, while `flush` keeps the inset on --popover-space-inset.",
@@ -13186,6 +13207,7 @@ function CustomRadioGroup() {
       "DON'T place a Popover inside a Dialog without setting modal={false} on the Popover — nested modals conflict with Radix's focus management and produce stuck focus.",
     ],
     useCases: [
+      'User/profile preview on an @mention, or an entity (customer/account) preview on a table cell — `openOn="hover"`.',
       "Advanced filter panel: a Filters Button triggers a Popover containing filter inputs (date range, status selects); panel measured with `<PopoverContent width='auto'>` so the filters set the width, or `width='trigger'` to match the button.",
       "Row action menu overflow: when a DataTable row has too many actions for inline display, a Popover holds the secondary actions (Edit, Archive, Delete) without navigating away.",
       "Contextual help / tooltip-rich: a small '?' icon button opens a Popover with PopoverTitle + PopoverDescription explaining a form field — richer than a Tooltip but less intrusive than a Dialog.",
@@ -13933,7 +13955,7 @@ export function PermissionTree() {
     ],
     related: [
       "Popover — use Popover (also @godxjp/ui/feedback) when the floating panel needs interactive content (forms, links, action menus) rather than read-only text. Tooltip is read-only; Popover is interactive.",
-      "HoverCard — for rich preview cards (user profiles, link previews) that appear on hover with more complex layout. Tooltip is for short text hints only.",
+      'Popover — `openOn="hover"` for rich preview cards (user profiles, link previews) that appear on hover with more complex layout. Tooltip is for short text hints only.',
       "Badge / StatusChip — for persistent, always-visible short labels inline with text; not hover-triggered. Use Tooltip when the hint should be hidden until hovered.",
     ],
     example: `import {
@@ -14915,56 +14937,6 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
   </AccordionItem>
 </Accordion>`,
     storyPath: "data-display/Accordion.stories.tsx",
-    rules: [3, 6],
-  },
-  {
-    name: "HoverCard",
-    subParts: ["HoverCardContent", "HoverCardTrigger"],
-    group: "data-display",
-    tagline:
-      "Radix hover card — a rich popover shown on hover/focus of a trigger (for sighted-pointer affordances; not a replacement for Tooltip's short text).",
-    props: [
-      {
-        name: "openDelay",
-        type: "number",
-        defaultValue: "700",
-        description: "ms before opening on hover.",
-      },
-      {
-        name: "closeDelay",
-        type: "number",
-        defaultValue: "300",
-        description: "ms before closing.",
-      },
-      { name: "open", type: "boolean", description: "Controlled open state." },
-      {
-        name: "onOpenChange",
-        type: "(open: boolean) => void",
-        description: "Open-state callback.",
-      },
-    ],
-    usage: [
-      "DO compose HoverCard > HoverCardTrigger > HoverCardContent.",
-      "DO use for RICH preview content (a card, avatar + bio); for short plain-text hints use Tooltip.",
-      "DON'T rely on it for essential info — hover isn't available on touch; provide the same content on click/tap elsewhere.",
-    ],
-    useCases: [
-      "User/profile preview on @mention hover",
-      "Entity preview (customer/account) on a table cell",
-      "Glossary term definitions",
-      "Commit/PR preview links",
-    ],
-    related: [
-      "Tooltip (short text label, not rich content)",
-      "Popover (click-triggered, interactive content)",
-    ],
-    example: `import { HoverCard, HoverCardTrigger, HoverCardContent } from "@godxjp/ui/data-display";
-
-<HoverCard>
-  <HoverCardTrigger>@yamada</HoverCardTrigger>
-  <HoverCardContent>山田太郎 — 経理部</HoverCardContent>
-</HoverCard>`,
-    storyPath: "data-display/HoverCard.stories.tsx",
     rules: [3, 6],
   },
   {
