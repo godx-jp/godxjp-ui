@@ -34,7 +34,8 @@
       "identityNote": "The identity colour deliberately stays where it is: a tenant that changes its action colour does not retint its logo."
     },
     "palette": {
-      "godx": "GoDX",
+      "neutral": "Neutral (default)",
+      "godx": "GoDX preset",
       "indigo": "Indigo",
       "teal": "Teal",
       "amber": "Amber",

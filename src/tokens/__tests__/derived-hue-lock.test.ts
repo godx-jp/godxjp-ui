@@ -36,6 +36,20 @@ import { channelsOf, hsl, relative, triplet } from "./wcag-contrast";
 
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
 const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
+/** The GoDX preset (v32, gh#1220) carries its own violet fallback for engines without relative colour. */
+const godx = readFileSync(join(process.cwd(), "src/themes/godx.css"), "utf8");
+
+/** The theme's block inside a sheet's `@supports not (relative colour)` fallback. */
+function fallbackBlock(css: string, selector: string): string {
+  const at = css.indexOf("@supports not (color");
+  if (at === -1) throw new Error("no @supports fallback block");
+  const tail = css.slice(at);
+  const open = tail.indexOf(
+    "{",
+    selector === ":root {" ? tail.indexOf("  :root {") : tail.indexOf("  .dark,"),
+  );
+  return tail.slice(open + 1, tail.indexOf("}", open));
+}
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(css: string, selector: string): string {
@@ -88,13 +102,24 @@ describe.each(THEMES)("the derived tier is on the seed's hue ($theme)", ({ selec
     for (const token of PRIMARY_FAMILY) {
       expect(live).not.toMatch(new RegExp(`--${token}:\\s*[\\d.]+\\s+[\\d.]+%`));
     }
-    // The fallback for engines without relative colour IS literal, and must at least be ours.
-    const fallback = derived.slice(derived.indexOf("@supports not (color"));
+    // The fallback for engines without relative colour IS literal, and must at least be ours —
+    // the THEME's own block, since v32's neutral seeds differ in hue between themes (gh#1220).
+    const fallback = fallbackBlock(derived, selector);
     const seedHue = hsl(block(foundation, selector), "primary")[0];
     for (const token of PRIMARY_FAMILY) {
-      for (const m of fallback.matchAll(new RegExp(`--${token}:\\s*([\\d.]+)\\s`, "g"))) {
-        expect(Math.abs(Number(m[1]) - seedHue)).toBeLessThanOrEqual(HUE_TOLERANCE_DEGREES);
-      }
+      const m = fallback.match(new RegExp(`--${token}:\\s*([\\d.]+)\\s`));
+      expect(m, `fallback --${token}`).not.toBeNull();
+      expect(Math.abs(Number(m![1]) - seedHue)).toBeLessThanOrEqual(HUE_TOLERANCE_DEGREES);
+    }
+  });
+
+  it("the GoDX preset's own fallback is on the preset seed's hue (gh#1220)", () => {
+    const fallback = fallbackBlock(godx, selector);
+    const seedHue = hsl(block(godx, selector), "primary")[0];
+    for (const token of PRIMARY_FAMILY) {
+      const m = fallback.match(new RegExp(`--${token}:\\s*([\\d.]+)\\s`));
+      expect(m, `preset fallback --${token}`).not.toBeNull();
+      expect(Math.abs(Number(m![1]) - seedHue)).toBeLessThanOrEqual(HUE_TOLERANCE_DEGREES);
     }
   });
 

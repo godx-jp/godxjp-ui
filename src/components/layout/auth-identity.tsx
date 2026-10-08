@@ -1,9 +1,12 @@
 import { Clock } from "lucide-react";
 import { isValidElement } from "react";
 
+import { useAppPreset } from "../../app/preset";
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
-import { Heading, Logo, Text } from "../general";
+// The typography module directly, not the `../general` barrel: the barrel also re-exports `Logo`,
+// and with it the GoDX artwork this block must not pull into a neutral bundle (gh#1220).
+import { Heading, Text } from "../general/typography";
 import type { AuthIdentityProp } from "../../props/components/layout.prop";
 
 export type { AuthIdentityProp } from "../../props/components/layout.prop";
@@ -11,6 +14,14 @@ export type { AuthIdentityProp as AuthIdentityProps } from "../../props/componen
 
 /** Canonical hosted-identity mark, heading and optional real requesting-client context. */
 export function AuthIdentity({ title, brand, requester, className }: AuthIdentityProp) {
+  /*
+   * NO ARTWORK BY DEFAULT (v32, gh#1220). An omitted `brand` takes the active preset's mark
+   * (`<AppProvider preset>` — the GoDX preset supplies the GoDX mark) and otherwise renders
+   * nothing: a neutral package draws no product's logo. `null` is an explicit "no mark", preset
+   * or not.
+   */
+  const presetMark = useAppPreset()?.brandMark;
+  const mark = brand === undefined ? presetMark : brand;
   /*
    * THE ARTWORK SLOT IS DECORATIVE, WHATEVER FILLS IT (gh#652).
    *
@@ -35,12 +46,10 @@ export function AuthIdentity({ title, brand, requester, className }: AuthIdentit
    * on screen; that half of gh#652 is a separate decision and is deliberately not taken here.
    */
   const artwork =
-    brand === undefined || brand === null ? (
-      <Logo mark="godx" tone="success" />
-    ) : isValidElement(brand) ? (
-      <Slot aria-hidden="true">{brand}</Slot>
+    mark === undefined || mark === null || mark === false ? null : isValidElement(mark) ? (
+      <Slot aria-hidden="true">{mark}</Slot>
     ) : (
-      <span aria-hidden="true">{brand}</span>
+      <span aria-hidden="true">{mark}</span>
     );
 
   return (
