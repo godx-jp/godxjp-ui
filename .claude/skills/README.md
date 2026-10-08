@@ -25,6 +25,7 @@ Chain them in this order; each links to the next.
 | **godxjp-ui-behavioral-test**  | the **codify** discipline (browser MCP → user-event tests)                                                               | Proving an interaction works and locking it as a regression test beside the component                 |
 | **godxjp-ui-example-page**     | the **Audit Evidence Ledger** + docs-page completeness                                                                   | Writing/auditing a `docs/**` catalogue page                                             |
 | **godxjp-ui-best-ux**          | **Layout hygiene · Interaction hygiene · reference-design DNA** (渋み/間/簡素)                                           | Judging taste/UX on any repo surface                                                    |
+| **godxjp-ui-premium-craft**    | the **upgrade procedure** for a flat component: craft lenses, motion spec, reject list, motion probe                      | A component "feels boring", or someone hands you a "premium UI" reference to learn from |
 | **godxjp-ui-design-handoff**   | implementing a Claude Design bundle as a **showcase in `docs/`**                                                         | Turning a `claude.ai/design` export into repo showcases                                 |
 | **godxjp-ui-mcp-catalog-sync** | keeping the **MCP catalog + tests** in sync with the public API                                                          | Any change to a component/vocab/token/rule/pattern                                      |
 | **godxjp-ui-performance**      | the **measure-first perf playbook** (longtask/Profiler/bundle probes) + lib per-import budget + proven consumer patterns | Anything feels slow, a `[Violation]` appears, or bundle size is questioned — lib OR app |
@@ -34,6 +35,7 @@ Chain them in this order; each links to the next.
 - _Real-primitives / no-raw-HTML_ → **component**
 - _Refined interaction behaviours_ → **interaction-feel**
 - _Layout/Interaction hygiene + reference-design DNA_ → **best-ux**
+- _Upgrading a flat component (craft lenses, motion spec, reject list)_ → **premium-craft**
 - _Audit Evidence Ledger_ → **example-page**
 
 Every CORE skill carries: a `🛠️ AUDIENCE: CORE` banner · a DO/DON'T table · a follow-map · a
