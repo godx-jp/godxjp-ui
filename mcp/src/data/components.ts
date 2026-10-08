@@ -980,10 +980,31 @@ import { Button } from "@godxjp/ui/general";
   },
   {
     name: "Flex",
+    absorbed: ["SpaceCompact"],
     group: "layout",
     tagline:
-      "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls.",
+      "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls — and, with `attached`, a row of controls welded into ONE visual unit (antd Space.Compact).",
     props: [
+      {
+        name: "attached",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Weld the children into one control — antd Space.Compact (v32 folded `SpaceCompact` in here). Each child gets its own flex-item wrapper, inner corner radii are zeroed and the shared border collapses to one hairline; each child keeps its own focus ring, name and `size`. `direction` picks the axis ("row" default, "col"); `gap`/`wrap`/`pad` and the other layout knobs do not apply (a seam has no gap). Named (aria-label/-labelledby, e.g. by a wrapping FormField) it becomes role="group".',
+      },
+      {
+        name: "fullWidth",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "`attached` only. The joined row fills its parent's inline size (antd `block`, renamed to match Button.fullWidth). Field children grow to fill it; a Button keeps its content width (gh#1062).",
+      },
+      {
+        name: "density",
+        type: '"compact" | "default" | "comfortable"',
+        description:
+          "`attached` only. Scoped control density for the whole joined row (antd Space.Compact `size`). Each child still carries its OWN `size` prop.",
+      },
       {
         name: "reveal",
         type: '"hover"',
@@ -1111,6 +1132,13 @@ import { Button } from "@godxjp/ui/general";
       'Flex is a plain div with React.HTMLAttributes<HTMLDivElement>; pass `id`, `role`, `aria-*`, `data-*`, and structural className values as needed, but do not use it as a semantic form or button wrapper. When the parent only accepts phrasing content — a TabsTrigger, PopoverTrigger or Button, all of which render a <button> — pass `as="span"` rather than reaching for a raw `<span className="flex …">`.',
       'SEMANTIC LIST: a list of rows is `<Flex as="ul" marker="none" direction="col" gap="none">` with `<ListRow as="li">` children — never a raw `<ul>` (no gap token), never `<div role="list">` + `<div role="listitem">` (ARIA re-describing markup HTML already has), and never a wrapper around each row: the divider is `:not(:last-child)` among SIBLINGS, so a row alone in its own wrapper loses it silently. `ui-audit` flags all three as `no-hand-rolled-list`.',
       "NAMED FLEX = GROUP: a role-less div may not carry a naming attribute (axe aria-allowed-attr), so a Flex given `aria-label`/`aria-labelledby` — e.g. by FormField wrapping a composite range/年月 field — automatically renders `role='group'`, folds `aria-errormessage` into `aria-describedby`, and drops the widget-only `aria-required`/`aria-invalid`. Passing an explicit `role` opts out of all of this and the caller owns the attribute set.",
+      'ATTACHED: DO reach for it when two or more controls must read as ONE field — a number + a unit ("毎 [2] [週 ▾] ごと"), a currency Select welded to an amount Input, a search field with an attached filter Select. `ResponsiveGrid columns={2}` puts them in separate cells (which collapses to ONE column on a narrow form card); `Flex attached` keeps them fused on one line regardless of the grid.',
+      'ATTACHED: ONE label for the pair vs per-control: wrap the WHOLE `Flex attached` in a single `FormField label="…"` when the pair reads as one field ("繰り返し間隔" over a number+unit row) — a role-less `<div>` cannot carry a cloned `aria-label`/`aria-labelledby` (axe `aria-allowed-attr`), so a NAMED `Flex attached` with no explicit `role` promotes itself to `role="group"` automatically, the same contract `Flex` already honours for a range/年月 pair. Give each CHILD its own `aria-label` instead only when the two controls are independently meaningful outside the row (rare — prefer the one-label pattern for a welded control).',
+      "ATTACHED: DON'T reach for `className=\"rounded-none\"` / `[&>*:not(:first-child)]` utilities to join controls yourself — `ui-audit`'s `no-utility-layout` rule blocks exactly that, and it is precisely the corner-radius seam this component owns.",
+      "ATTACHED: DO set `size` on each CHILD individually, not on `Flex attached` — the row has no size prop of its own by design (see `density`); every control already owns its own `size` axis (`xs|sm|md|lg`).",
+      "ATTACHED: DO use `fullWidth` inside a narrow form card so the joined row spans the field column, exactly like a lone Input would.",
+      'ATTACHED: `fullWidth` is antd `Space.Compact block` (gh#1062): in a row, a FIELD child (Input and its affix/Password/Search forms, NumberInput, Textarea, TagInput, the Date/Time pickers, and the Select/Cascader/TreeSelect/SearchSelect trigger) grows to fill the row, and every other child — a Button, an icon button — keeps its content width. So `[Input][+ Add]` is a full-width field with its submit at content width, and two fields (NumberInput + Select) share the row evenly between them. Deviation from antd, written down: antd grows only its Input family (`width: 100%`); Select/InputNumber/DatePicker keep their own width there. Here every field grows, so two fields never leave an empty tail. `direction="col"` + `fullWidth` stacks full-width children as before.',
+      'ATTACHED: DON\'T expect corner-radius welding on `direction="col"` yet — the shared border still collapses, but each child keeps all four of its own corners rounded until a block-axis radius knob exists on the Input/trigger families (documented gap, not a silent one).',
     ],
     useCases: [
       "Toolbar internals where controls should sit in a row, wrap on narrow widths, and stay vertically centered.",
@@ -1119,6 +1147,9 @@ import { Button } from "@godxjp/ui/general";
       "Form sub-sections where a vertical group needs stretched children or centered helper content beyond what a plain column Flex provides.",
       "Badge, chip, or tag clusters where wrapping is required but the caller also needs explicit gap control.",
       "Low-level layout composition inside custom components where raw flex classes would duplicate the primitive.",
+      "ATTACHED: 定期課題 (recurring issue) interval row: 毎 [NumberInput] [Select 週/月/日 ▾] ごと, fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.",
+      "ATTACHED: A currency amount: [Select 通貨 ▾][NumberInput 金額] welded so the currency reads as part of the amount field, not a separate control beside it.",
+      "ATTACHED: A filtered search bar: [Select scope][SearchInput query] as one visual field, `fullWidth` inside a page toolbar.",
     ],
     related: [
       "Flex `direction='col'` — the standard pattern for ordinary vertical block spacing; use explicit `align`, `justify`, or `wrap` props when you need more control.",
@@ -1138,81 +1169,6 @@ import { Button } from "@godxjp/ui/general";
 </Flex>`,
     storyPath: "layout/Flex.stories.tsx",
     rules: [2, 40],
-  },
-  {
-    name: "SpaceCompact",
-    group: "layout",
-    tagline:
-      "Weld a row (or column) of controls into one visual unit — antd Space.Compact. Inner corner radii are zeroed and the shared border collapses to one hairline; each child keeps its own focus ring and its own size.",
-    props: [
-      {
-        name: "orientation",
-        type: '"horizontal" | "vertical"',
-        defaultValue: '"horizontal"',
-        description:
-          "Layout axis (antd `orientation`; the installed antd `direction` prop is itself @deprecated in favour of this, so only `orientation` is ported).",
-      },
-      {
-        name: "vertical",
-        type: "boolean",
-        description:
-          'antd\'s boolean spelling of orientation="vertical". `orientation` wins when both are given.',
-      },
-      {
-        name: "fullWidth",
-        type: "boolean",
-        defaultValue: "false",
-        description:
-          "The row fills its parent's inline size (antd `block`, renamed to match Button.fullWidth — the same rename, the same reason: this library's controlled vocabulary wins on values). Field children grow to fill it; a Button keeps its content width.",
-      },
-      {
-        name: "density",
-        type: '"compact" | "default" | "comfortable"',
-        description:
-          "Scoped control density for the whole row (antd Space.Compact `size`, small|middle|large — the ConfigProvider ambient-size cascade this library already owns under `density`; see `Form.density`). Each child still carries its OWN `size` prop.",
-      },
-      { name: "id", type: "string", description: "DOM id of the row." },
-    ],
-    usage: [
-      'DO reach for it when two or more controls must read as ONE field — a number + a unit ("毎 [2] [週 ▾] ごと"), a currency Select welded to an amount Input, a search field with an attached filter Select. `ResponsiveGrid columns={2}` puts them in separate cells (which collapses to ONE column on a narrow form card); SpaceCompact keeps them fused on one line regardless of the grid.',
-      'ONE label for the pair vs per-control: wrap the WHOLE `SpaceCompact` in a single `FormField label="…"` when the pair reads as one field ("繰り返し間隔" over a number+unit row) — a role-less `<div>` cannot carry a cloned `aria-label`/`aria-labelledby` (axe `aria-allowed-attr`), so a NAMED SpaceCompact with no explicit `role` promotes itself to `role="group"` automatically, the same contract `Flex` already honours for a range/年月 pair. Give each CHILD its own `aria-label` instead only when the two controls are independently meaningful outside the row (rare — prefer the one-label pattern for a welded control).',
-      "DON'T reach for `className=\"rounded-none\"` / `[&>*:not(:first-child)]` utilities to join controls yourself — `ui-audit`'s `no-utility-layout` rule blocks exactly that, and it is precisely the corner-radius seam this component owns.",
-      "DO set `size` on each CHILD individually, not on SpaceCompact — the row has no size prop of its own by design (see `density`); every control already owns its own `size` axis (`xs|sm|md|lg`).",
-      "DO use `fullWidth` inside a narrow form card so the joined row spans the field column, exactly like a lone Input would.",
-      '`fullWidth` is antd `Space.Compact block` (gh#1062): in a row, a FIELD child (Input and its affix/Password/Search forms, NumberInput, Textarea, TagInput, the Date/Time pickers, and the Select/Cascader/TreeSelect/SearchSelect trigger) grows to fill the row, and every other child — a Button, an icon button — keeps its content width. So `[Input][+ Add]` is a full-width field with its submit at content width, and two fields (NumberInput + Select) share the row evenly between them. Deviation from antd, written down: antd grows only its Input family (`width: 100%`); Select/InputNumber/DatePicker keep their own width there. Here every field grows, so two fields never leave an empty tail. `orientation="vertical"` + `fullWidth` stacks full-width children as before.',
-      'DON\'T expect corner-radius welding on `orientation="vertical"` yet — the shared border still collapses, but each child keeps all four of its own corners rounded until a block-axis radius knob exists on the Input/trigger families (documented gap, not a silent one).',
-    ],
-    useCases: [
-      "定期課題 (recurring issue) interval row: 毎 [NumberInput] [Select 週/月/日 ▾] ごと, fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.",
-      "A currency amount: [Select 通貨 ▾][NumberInput 金額] welded so the currency reads as part of the amount field, not a separate control beside it.",
-      "A filtered search bar: [Select scope][SearchInput query] as one visual field, `fullWidth` inside a page toolbar.",
-    ],
-    related: [
-      "Flex `gap` — siblings that stay visually SEPARATE (a normal control row with spacing between items). SpaceCompact is the opposite case: controls that must read as ONE box.",
-      "ResponsiveGrid — equal-width form CELLS; SpaceCompact welds controls WITHIN one cell (or one row) into a single unit.",
-      "FormField — wraps the whole SpaceCompact with one label when the pair is one field.",
-      "NumberInput, Select — the two controls the shipping use case welds; either composes cleanly inside SpaceCompact because both already expose the radius knob it reads (`--input-radius-*`, `--control-trigger-radius-*`).",
-    ],
-    example: `import { SpaceCompact } from "@godxjp/ui/layout";
-import { FormField, NumberInput, Select } from "@godxjp/ui/data-entry";
-
-<FormField label="繰り返し間隔">
-  <SpaceCompact>
-    <NumberInput aria-label="間隔の数" min={1} defaultValue={2} />
-    <Select
-      aria-label="単位"
-      defaultValue="week"
-      options={[
-        { value: "day", label: "日" },
-        { value: "week", label: "週" },
-        { value: "month", label: "月" },
-      ]}
-    />
-  </SpaceCompact>
-</FormField>`,
-    docPath: "layout/space-compact.tsx",
-    storyPath: "layout/SpaceCompact.stories.tsx",
-    rules: [2],
   },
   {
     name: "ResponsiveGrid",

@@ -2,7 +2,7 @@ import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
-import { SpaceCompact } from "../space-compact";
+import { Flex } from "../flex";
 import { NumberInput } from "../../data-entry/number-input";
 import { Select } from "../../data-entry/select";
 import { FormField } from "../../data-entry/form-field";
@@ -20,10 +20,10 @@ function group() {
 describe("SpaceCompact — the antd Space.Compact port", () => {
   it("defaults to a role-less horizontal row (a visual join, not a semantic group)", () => {
     renderWithUi(
-      <SpaceCompact>
+      <Flex attached>
         <NumberInput aria-label="間隔" defaultValue={2} />
         <Select aria-label="単位" defaultValue="week" options={UNITS} />
-      </SpaceCompact>,
+      </Flex>,
     );
     expect(group()).toHaveAttribute("data-orientation", "horizontal");
     expect(group()).not.toHaveAttribute("role");
@@ -33,10 +33,10 @@ describe("SpaceCompact — the antd Space.Compact port", () => {
     const user = userEvent.setup();
     const onNumberChange = vi.fn();
     renderWithUi(
-      <SpaceCompact>
+      <Flex attached>
         <NumberInput aria-label="間隔" defaultValue={2} onValueChange={onNumberChange} />
         <Select aria-label="単位" defaultValue="week" options={UNITS} />
-      </SpaceCompact>,
+      </Flex>,
     );
 
     const numberField = screen.getByRole("spinbutton", { name: "間隔" });
@@ -49,45 +49,45 @@ describe("SpaceCompact — the antd Space.Compact port", () => {
     expect(onNumberChange).toHaveBeenCalled();
   });
 
-  it("`vertical` sets the vertical orientation; an explicit `orientation` wins over it", () => {
+  it('`direction="col"` is the vertical seam, `"row"` the horizontal one', () => {
     const { rerender } = renderWithUi(
-      <SpaceCompact vertical>
+      <Flex attached direction="col">
         <NumberInput aria-label="間隔" />
-      </SpaceCompact>,
+      </Flex>,
     );
     expect(group()).toHaveAttribute("data-orientation", "vertical");
 
     rerender(
-      <SpaceCompact vertical orientation="horizontal">
+      <Flex attached direction="row">
         <NumberInput aria-label="間隔" />
-      </SpaceCompact>,
+      </Flex>,
     );
     expect(group()).toHaveAttribute("data-orientation", "horizontal");
   });
 
   it("`fullWidth` marks the row so it fills its parent (antd `block`)", () => {
     renderWithUi(
-      <SpaceCompact fullWidth>
+      <Flex attached fullWidth>
         <NumberInput aria-label="間隔" />
-      </SpaceCompact>,
+      </Flex>,
     );
     expect(group()).toHaveAttribute("data-full-width", "true");
   });
 
   it("omitted `fullWidth` emits no attribute at all", () => {
     renderWithUi(
-      <SpaceCompact>
+      <Flex attached>
         <NumberInput aria-label="間隔" />
-      </SpaceCompact>,
+      </Flex>,
     );
     expect(group()).not.toHaveAttribute("data-full-width");
   });
 
   it("`density` scopes a `.ui-density-*` class, the same one Form/FormRoot already emit", () => {
     renderWithUi(
-      <SpaceCompact density="compact">
+      <Flex attached density="compact">
         <NumberInput aria-label="間隔" />
-      </SpaceCompact>,
+      </Flex>,
     );
     expect(group().className).toContain("ui-density-compact");
   });
@@ -95,10 +95,10 @@ describe("SpaceCompact — the antd Space.Compact port", () => {
   it("FormField wrapping SpaceCompact — ONE label for the pair (antd 毎[N][週▾]ごと row)", () => {
     renderWithUi(
       <FormField label="繰り返し間隔">
-        <SpaceCompact>
+        <Flex attached>
           <NumberInput aria-label="間隔の数" defaultValue={2} />
           <Select aria-label="単位" defaultValue="week" options={UNITS} />
-        </SpaceCompact>
+        </Flex>
       </FormField>,
     );
     // A role-less div cannot carry a naming attribute AT reads (axe aria-allowed-attr): FormField
@@ -110,21 +110,21 @@ describe("SpaceCompact — the antd Space.Compact port", () => {
     expect(screen.getByRole("combobox", { name: "単位" })).toBeInTheDocument();
   });
 
-  it("an explicit `role` opts out of the auto role=\"group\" promotion", () => {
+  it('an explicit `role` opts out of the auto role="group" promotion', () => {
     renderWithUi(
-      <SpaceCompact role="presentation" aria-label="間隔">
+      <Flex attached role="presentation" aria-label="間隔">
         <NumberInput aria-label="間隔" />
-      </SpaceCompact>,
+      </Flex>,
     );
     expect(group()).toHaveAttribute("role", "presentation");
   });
 
-  it("wraps each child in exactly one `[data-slot=\"space-compact-item\"]` box, even when a child's own root is `display: contents` (gh#919)", () => {
+  it('wraps each child in exactly one `[data-slot="space-compact-item"]` box, even when a child\'s own root is `display: contents` (gh#919)', () => {
     renderWithUi(
-      <SpaceCompact fullWidth>
+      <Flex attached fullWidth>
         <NumberInput aria-label="間隔" defaultValue={2} />
         <Select aria-label="単位" defaultValue="week" options={UNITS} />
-      </SpaceCompact>,
+      </Flex>,
     );
     // Exactly one wrapper per React child — `.ui-select-root` (display: contents) and its
     // `<template>` sibling must NOT show up as extra direct children the `> *` CSS used to hit.

@@ -8,7 +8,7 @@ import { Input } from "../../data-entry/input";
 import { NumberInput } from "../../data-entry/number-input";
 import { Select } from "../../data-entry/select";
 import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
-import { SpaceCompact } from "../space-compact";
+import { Flex } from "../flex";
 
 /**
  * gh#1062 — `SpaceCompact fullWidth` is antd `Space.Compact block`: the FIELD grows to fill the
@@ -25,7 +25,7 @@ const UNITS = [
 async function measure() {
   const row = (id: string, dir: "ltr" | "rtl", fullWidth: boolean, pair: "button" | "fields") => (
     <div id={id} dir={dir} style={{ inlineSize: ROW }}>
-      <SpaceCompact fullWidth={fullWidth}>
+      <Flex attached fullWidth={fullWidth}>
         {pair === "button"
           ? [
               <Input key="input" aria-label="Item" />,
@@ -37,7 +37,7 @@ async function measure() {
               <NumberInput key="number" aria-label="Interval" defaultValue={2} />,
               <Select key="select" aria-label="Unit" defaultValue="week" options={UNITS} />,
             ]}
-      </SpaceCompact>
+      </Flex>
     </div>
   );
   const markup = renderToStaticMarkup(
