@@ -39,8 +39,23 @@ export const REPO_ROOT = path.resolve(HERE, "..");
  * 1000 ports from 6008, keyed on the absolute path. An explicit `PREVIEW_BASE` still wins, so CI
  * jobs that already pin one are unaffected.
  */
+/**
+ * Ports Chromium and Node's fetch refuse (ERR_UNSAFE_PORT) inside the 6008–7007 range. A checkout
+ * whose hash landed on 6669 got a preview no browser could open (gh#1210).
+ */
+export const UNSAFE_PORTS = new Set([6566, 6665, 6666, 6667, 6668, 6669, 6679, 6697]);
+
+/** The next port at or above `port` that a browser will open. */
+export function safePort(port) {
+  let p = port;
+  while (UNSAFE_PORTS.has(p)) p += 1;
+  return p;
+}
+
 const checkoutPort = () =>
-  6008 + (parseInt(createHash("sha1").update(REPO_ROOT).digest("hex").slice(0, 8), 16) % 1000);
+  safePort(
+    6008 + (parseInt(createHash("sha1").update(REPO_ROOT).digest("hex").slice(0, 8), 16) % 1000),
+  );
 
 export const DEFAULT_BASE = process.env.PREVIEW_BASE || `http://localhost:${checkoutPort()}`;
 

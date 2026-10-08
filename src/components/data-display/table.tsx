@@ -144,8 +144,20 @@ function useActionsColumnFit(ref: React.RefObject<HTMLDivElement | null>, enable
         if (!cell) return;
         const style = getComputedStyle(cell);
         const inset = parseFloat(style.paddingInlineStart) + parseFloat(style.paddingInlineEnd);
-        const width = content.getBoundingClientRect().width;
-        measuredWidths.set(content, width);
+        const rect = content.getBoundingClientRect();
+        measuredWidths.set(content, rect.width);
+        // gh#1206 — below the collapse step everything in the cell wraps, so the box shrinks to
+        // the cell and its buttons overflow it — end-aligned, out of its START edge, where
+        // `scrollWidth` cannot see them. Measure the extent of what the box holds instead.
+        let start = rect.left;
+        let end = rect.right;
+        content.querySelectorAll("*").forEach((child) => {
+          const r = child.getBoundingClientRect();
+          if (r.width === 0) return;
+          start = Math.min(start, r.left);
+          end = Math.max(end, r.right);
+        });
+        const width = end - start;
         // Fits the cell's PADDING box: it reaches no neighbour. The inset is the gutter an icon
         // target has always been allowed to use — the docs' xs `…` trigger is 26.7px in a 24px
         // content box — so an icon-only column keeps its exact token measure.
