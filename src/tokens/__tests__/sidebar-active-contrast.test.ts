@@ -142,12 +142,12 @@ const onTint = (theme: (typeof THEMES)[number], seed: Hsl, ground: Rgb, alpha: n
  */
 const MEASURED: Record<string, Record<string, { shipped: number; atCeiling: number }>> = {
   light: {
-    card: { shipped: 16.16, atCeiling: 14.81 },
-    background: { shipped: 16.16, atCeiling: 14.81 },
+    card: { shipped: 11.97, atCeiling: 10.97 },
+    background: { shipped: 11.97, atCeiling: 10.97 },
   },
   dark: {
-    card: { shipped: 9.53, atCeiling: 8.32 },
-    background: { shipped: 10.57, atCeiling: 9.23 },
+    card: { shipped: 8.3, atCeiling: 7.25 },
+    background: { shipped: 9.21, atCeiling: 8.04 },
   },
 };
 

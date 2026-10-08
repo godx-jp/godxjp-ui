@@ -94,10 +94,15 @@ export const AA_LARGE_TEXT = 3;
  * step would run off the top of the ramp (derived.css explains the number).
  */
 const STEPS = {
-  darken: { hover: (l: number) => l - 8.4, active: (l: number) => l - 15.5 },
+  // Below 12% L the darken steps turn UP (+9.6 / +4.8), above 94% L the lighten steps turn DOWN
+  // (v32, gh#1220): at the ends of the ramp the conventional step had no room and hover vanished.
+  darken: {
+    hover: (l: number) => (l < 12 ? l + 9.6 : l - 8.4),
+    active: (l: number) => (l < 12 ? l + 4.8 : l - 15.5),
+  },
   lighten: {
-    hover: (l: number) => l + 5.8,
-    active: (l: number) => (l > 83.4 ? l - 5.8 : l + 11.6),
+    hover: (l: number) => (l > 94 ? l - 5.8 : l + 5.8),
+    active: (l: number) => (l > 94 ? l - 11.6 : l > 83.4 ? l - 5.8 : l + 11.6),
   },
 } as const;
 

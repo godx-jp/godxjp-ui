@@ -88,8 +88,7 @@
    * `aria-invalid:border-destructive` already paints, and cannot drift into a second red.
    *
    * The warning halo borrows the ERROR halo's alpha rather than inventing a second opacity: antd
-   * derives both from one `colorXxxOutline` recipe and the generated file carries only the error
-   * one (scripts/gen-antd-tokens.mjs). */
+   * derives both from one `colorXxxOutline` recipe, and only the error one is defined in this tier. */
   --control-status-warning-border-color: var(--warning);
   --control-status-warning-glow-color: var(--warning);
   --control-status-warning-glow-alpha: var(--control-outline-error-alpha);
