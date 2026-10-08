@@ -157,8 +157,13 @@ const styleContracts = [
   {
     subpath: "./styles",
     target: "./dist/styles/index.css",
-    // The bundled entry is the one that DOES carry the 737 subsets — pinned so a "fix" that
-    // quietly drops the fonts from the zero-config entry is a failure, not a silent behaviour swap.
+    // v32 (#1221): fonts are OPT-IN. The zero-config entry carries no faces; `./styles/fonts.css`
+    // does. Pinned both ways so neither entry can quietly change what it pulls in.
+    expect: { faces: 0, fontsource: false },
+  },
+  {
+    subpath: "./styles/fonts.css",
+    target: "./dist/styles/fonts.css",
     expect: { faces: 6, fontsource: true },
   },
   {
