@@ -213,8 +213,6 @@ import {
   AlertDescription,
   AlertDialog,
   AlertTitle,
-  Banner,
-  Callout,
   Dialog,
   DialogBody,
   DialogClose,
@@ -1716,16 +1714,16 @@ export default function ThemeLabShowcase() {
                 <AlertTitle>{t("themeLab.tone.destructive")}</AlertTitle>
                 <AlertDescription>{t("themeLab.sample.short")}</AlertDescription>
               </Alert>
-              <Banner tone="warning">
-                <Banner.Content>
-                  <Banner.Title>{t("themeLab.tone.warning")}</Banner.Title>
-                  <Banner.Description>{t("themeLab.sample.short")}</Banner.Description>
-                </Banner.Content>
-              </Banner>
-              <Callout kind="warning">
-                <Callout.Title>{t("themeLab.tone.warning")}</Callout.Title>
-                <Callout.Description>{t("themeLab.sample.long")}</Callout.Description>
-              </Callout>
+              <Alert variant="banner" tone="warning">
+                <Alert.Content>
+                  <Alert.Title>{t("themeLab.tone.warning")}</Alert.Title>
+                  <Alert.Description>{t("themeLab.sample.short")}</Alert.Description>
+                </Alert.Content>
+              </Alert>
+              <Alert variant="callout" kind="warning">
+                <Alert.Title>{t("themeLab.tone.warning")}</Alert.Title>
+                <Alert.Description>{t("themeLab.sample.long")}</Alert.Description>
+              </Alert>
               <EmptyState
                 title={t("themeLab.label.noResults")}
                 description={t("themeLab.sample.short")}

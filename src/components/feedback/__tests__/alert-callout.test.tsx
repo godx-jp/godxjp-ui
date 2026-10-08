@@ -1,7 +1,7 @@
 import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen } from "@/test/render";
-import { Callout, type CalloutProp, type CalloutProps } from "../callout";
+import { Alert } from "../alert";
 
 /**
  * Callout — the aside INSIDE a document body (gh#765).
@@ -11,13 +11,13 @@ import { Callout, type CalloutProp, type CalloutProps } from "../callout";
  * share is live-region politeness, and that is the whole reason it exists — a wiki page with three
  * callouts must not announce three times on load.
  */
-describe("Callout", () => {
+describe("Alert variant=callout (formerly Callout, v32 #1223)", () => {
   it("renders as the alert primitive with the callout structural variant fixed", () => {
     renderWithUi(
-      <Callout>
-        <Callout.Title>補足</Callout.Title>
-        <Callout.Description>この設定は次回のログインから有効になります。</Callout.Description>
-      </Callout>,
+      <Alert variant="callout">
+        <Alert.Title>補足</Alert.Title>
+        <Alert.Description>この設定は次回のログインから有効になります。</Alert.Description>
+      </Alert>,
     );
     const callout = screen.getByRole("note");
     expect(callout).toHaveAttribute("data-slot", "alert");
@@ -35,9 +35,9 @@ describe("Callout", () => {
     "kind=%s is never a live region — no consumer role override required",
     (kind) => {
       renderWithUi(
-        <Callout kind={kind}>
-          <Callout.Title>Static aside</Callout.Title>
-        </Callout>,
+        <Alert variant="callout" kind={kind}>
+          <Alert.Title>Static aside</Alert.Title>
+        </Alert>,
       );
       expect(screen.getByRole("note")).toHaveAttribute("data-variant", "callout");
       expect(screen.queryByRole("alert")).toBeNull();
@@ -48,9 +48,9 @@ describe("Callout", () => {
   it("stays non-live even when the tone is one that makes an Alert assertive", () => {
     // tone drives colour here and NOTHING else. On an Alert, `destructive` means role="alert".
     renderWithUi(
-      <Callout tone="destructive">
-        <Callout.Title>Danger</Callout.Title>
-      </Callout>,
+      <Alert variant="callout" tone="destructive">
+        <Alert.Title>Danger</Alert.Title>
+      </Alert>,
     );
     expect(screen.getByRole("note")).toHaveAttribute("data-tone", "destructive");
     expect(screen.queryByRole("alert")).toBeNull();
@@ -64,9 +64,9 @@ describe("Callout", () => {
     ["caution", "destructive"],
   ] as const)("kind=%s resolves tone=%s", (kind, tone) => {
     renderWithUi(
-      <Callout kind={kind}>
-        <Callout.Title>{kind}</Callout.Title>
-      </Callout>,
+      <Alert variant="callout" kind={kind}>
+        <Alert.Title>{kind}</Alert.Title>
+      </Alert>,
     );
     expect(screen.getByRole("note")).toHaveAttribute("data-tone", tone);
   });
@@ -74,9 +74,9 @@ describe("Callout", () => {
   it("gives each kind its OWN glyph, so the five are told apart without colour (WCAG 1.4.1)", () => {
     const glyphs = (["note", "tip", "important", "warning", "caution"] as const).map((kind) => {
       const { unmount } = renderWithUi(
-        <Callout kind={kind}>
-          <Callout.Title>{kind}</Callout.Title>
-        </Callout>,
+        <Alert variant="callout" kind={kind}>
+          <Alert.Title>{kind}</Alert.Title>
+        </Alert>,
       );
       const icon = screen.getByRole("note").querySelector('[data-slot="alert-icon"]');
       const shape = icon?.innerHTML ?? "";
@@ -89,9 +89,9 @@ describe("Callout", () => {
 
   it("the leading glyph is decorative — the copy carries the meaning", () => {
     renderWithUi(
-      <Callout kind="caution">
-        <Callout.Title>Destructive</Callout.Title>
-      </Callout>,
+      <Alert variant="callout" kind="caution">
+        <Alert.Title>Destructive</Alert.Title>
+      </Alert>,
     );
     const icon = screen.getByRole("note").querySelector('[data-slot="alert-icon"]');
     expect(icon).toHaveAttribute("aria-hidden", "true");
@@ -99,9 +99,9 @@ describe("Callout", () => {
 
   it("tone and icon override the kind preset per instance", () => {
     renderWithUi(
-      <Callout kind="tip" tone="muted" icon={false}>
-        <Callout.Title>Quiet</Callout.Title>
-      </Callout>,
+      <Alert variant="callout" kind="tip" tone="muted" icon={false}>
+        <Alert.Title>Quiet</Alert.Title>
+      </Alert>,
     );
     const callout = screen.getByRole("note");
     expect(callout).toHaveAttribute("data-tone", "muted");
@@ -111,19 +111,19 @@ describe("Callout", () => {
   it("forwards ref and className, and spreads the rest onto the surface", () => {
     const ref = createRef<HTMLDivElement>();
     renderWithUi(
-      <Callout ref={ref} className="consumer-aside" id="release-note" data-testid="callout">
-        <Callout.Title>Note</Callout.Title>
-      </Callout>,
+      <Alert
+        variant="callout"
+        ref={ref}
+        className="consumer-aside"
+        id="release-note"
+        data-testid="callout"
+      >
+        <Alert.Title>Note</Alert.Title>
+      </Alert>,
     );
     const callout = screen.getByTestId("callout");
     expect(ref.current).toBe(callout);
     expect(callout).toHaveClass("consumer-aside");
     expect(callout).toHaveAttribute("id", "release-note");
-  });
-
-  it("exports the prop type under both spellings", () => {
-    const asProp: CalloutProp = { kind: "tip" };
-    const asProps: CalloutProps = { kind: "tip" };
-    expect(asProp.kind).toBe(asProps.kind);
   });
 });

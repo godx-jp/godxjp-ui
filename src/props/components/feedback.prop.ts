@@ -116,32 +116,24 @@ export type AuthExpiryProviderProp = {
 
 /** @see Alert */
 export type AlertProp = React.HTMLAttributes<HTMLDivElement> & {
+  /**
+   * `default` (inline status), `banner` (full-bleed page/shell strip; actions wrap below 640px) or
+   * `callout` (an aside INSIDE a document body: `role="note"`, never a live region). v32 #1223
+   * folded the former `Banner` and `Callout` components into these two values.
+   */
   variant?: AlertVariantProp;
+  /**
+   * `variant="callout"` only: the GitHub/Obsidian admonition preset — `note` (default), `tip`,
+   * `important`, `warning`, `caution`. Resolves `tone` + the leading glyph; pass `tone` or `icon`
+   * to override either per instance (gh#765).
+   */
+  kind?: CalloutKindProp;
   tone?: ToneProp;
   /** Pass `false` to hide the default variant icon. */
   icon?: IconProp | false;
   onDismiss?: HandlerProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
-};
-
-/**
- * @see Banner — the full-bleed attention strip (`<Alert variant="banner">` with the variant fixed).
- * Same contract as {@link AlertProp} minus `variant`: `tone` owns colour + live-region politeness,
- * `icon`/`icon={false}` owns the leading glyph, `onDismiss` renders the built-in dismiss button.
- */
-export type BannerProp = Omit<AlertProp, "variant">;
-
-/**
- * @see Callout — the in-prose aside (`<Alert variant="callout">` with the variant fixed).
- *
- * Same contract as {@link AlertProp} minus `variant` and `onDismiss`: a callout is part of the
- * document the reader is reading, so it is never a live region and never dismissible. `kind` is
- * the GitHub/Obsidian admonition preset and resolves `tone` + the leading glyph; pass `tone` or
- * `icon` to override either per instance (gh#765).
- */
-export type CalloutProp = Omit<AlertProp, "variant" | "onDismiss"> & {
-  kind?: CalloutKindProp;
 };
 
 /** @see AlertTitle */

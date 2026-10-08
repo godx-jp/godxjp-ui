@@ -2,22 +2,22 @@ import { describe, expect, it, vi } from "vitest";
 import { createRef } from "react";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 import { Button } from "../../general/button";
-import { Banner, type BannerProp, type BannerProps } from "../banner";
+import { Alert } from "../alert";
 
 /**
  * Banner — the canonical DXS full-bleed attention strip.
  * It IS the Alert primitive with `variant` fixed to "banner": one implementation
  * owns tone semantics, dismiss, actions, icon treatment and focus order.
  */
-describe("Banner", () => {
+describe("Alert variant=banner (formerly Banner, v32 #1223)", () => {
   it("renders as the alert primitive with the banner structural variant fixed", () => {
     renderWithUi(
-      <Banner tone="warning">
-        <Banner.Content>
-          <Banner.Title>お支払いが確認できていません</Banner.Title>
-          <Banner.Description>お支払い方法を更新してください。</Banner.Description>
-        </Banner.Content>
-      </Banner>,
+      <Alert variant="banner" tone="warning">
+        <Alert.Content>
+          <Alert.Title>お支払いが確認できていません</Alert.Title>
+          <Alert.Description>お支払い方法を更新してください。</Alert.Description>
+        </Alert.Content>
+      </Alert>,
     );
     const banner = screen.getByRole("alert");
     expect(banner).toHaveAttribute("data-slot", "alert");
@@ -27,18 +27,18 @@ describe("Banner", () => {
 
   it("announces politely (role=status) for non-assertive tones", () => {
     renderWithUi(
-      <Banner tone="info">
-        <Banner.Title>サポートセッションが進行中です</Banner.Title>
-      </Banner>,
+      <Alert variant="banner" tone="info">
+        <Alert.Title>サポートセッションが進行中です</Alert.Title>
+      </Alert>,
     );
     expect(screen.getByRole("status")).toHaveAttribute("data-variant", "banner");
   });
 
   it("announces assertively (role=alert) for destructive", () => {
     renderWithUi(
-      <Banner tone="destructive">
-        <Banner.Title>障害が発生しています</Banner.Title>
-      </Banner>,
+      <Alert variant="banner" tone="destructive">
+        <Alert.Title>障害が発生しています</Alert.Title>
+      </Alert>,
     );
     expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "destructive");
   });
@@ -47,14 +47,14 @@ describe("Banner", () => {
     const user = userEvent.setup();
     const onDismiss = vi.fn();
     renderWithUi(
-      <Banner tone="neutral" onDismiss={onDismiss}>
-        <Banner.Content>
-          <Banner.Title>メンテナンスのお知らせ</Banner.Title>
-        </Banner.Content>
-        <Banner.Actions>
+      <Alert variant="banner" tone="neutral" onDismiss={onDismiss}>
+        <Alert.Content>
+          <Alert.Title>メンテナンスのお知らせ</Alert.Title>
+        </Alert.Content>
+        <Alert.Actions>
           <Button size="sm">詳細</Button>
-        </Banner.Actions>
-      </Banner>,
+        </Alert.Actions>
+      </Alert>,
     );
     // Test locale is "vi" → the shared alert dismiss key resolves to "Đóng".
     const dismiss = screen.getByRole("button", { name: "Đóng" });
@@ -68,9 +68,9 @@ describe("Banner", () => {
 
   it("supports icon override and icon={false}", () => {
     const { container } = renderWithUi(
-      <Banner tone="warning" icon={false}>
-        <Banner.Title>アイコンなし</Banner.Title>
-      </Banner>,
+      <Alert variant="banner" tone="warning" icon={false}>
+        <Alert.Title>アイコンなし</Alert.Title>
+      </Alert>,
     );
     expect(container.querySelector('[data-slot="alert-icon"]')).toBeNull();
   });
@@ -78,24 +78,13 @@ describe("Banner", () => {
   it("forwards ref and className to the strip root", () => {
     const ref = createRef<HTMLDivElement>();
     renderWithUi(
-      <Banner ref={ref} className="test-hook">
-        <Banner.Title>参照</Banner.Title>
-      </Banner>,
+      <Alert variant="banner" ref={ref} className="test-hook">
+        <Alert.Title>参照</Alert.Title>
+      </Alert>,
     );
     expect(ref.current).not.toBeNull();
     expect(ref.current).toHaveAttribute("data-variant", "banner");
     expect(ref.current).toHaveClass("test-hook");
-  });
-
-  it("pins the public declaration contract (BannerProps, no variant knob)", () => {
-    // BannerProp/BannerProps are the same public type: tone/icon/onDismiss owned,
-    // `variant` structurally excluded — the banner presentation cannot be unfixed.
-    const props: BannerProps = { tone: "success", onDismiss: () => {} };
-    const alias: BannerProp = props;
-    expect(alias).toBe(props);
-    // @ts-expect-error — `variant` is not part of the Banner contract (fixed to "banner").
-    const invalid: BannerProps = { variant: "default" };
-    expect(invalid).toBeDefined();
   });
 });
 
@@ -103,7 +92,7 @@ describe("Banner", () => {
  * Ported from the dev-line Banner suite (godxjp-ui 18.7.x): the full tone matrix, the
  * runtime variant guard and the axe pass — adapted to the canonical `../banner` export.
  */
-describe("Banner — tone matrix and runtime guards", () => {
+describe("Alert variant=banner — tone matrix", () => {
   it.each([
     ["destructive", "alert"],
     ["warning", "alert"],
@@ -114,25 +103,10 @@ describe("Banner — tone matrix and runtime guards", () => {
     ["default", "status"],
   ] as const)("tone=%s announces via role=%s, exactly as Alert does", (tone, role) => {
     renderWithUi(
-      <Banner tone={tone}>
-        <Banner.Title>お知らせ</Banner.Title>
-      </Banner>,
+      <Alert variant="banner" tone={tone}>
+        <Alert.Title>お知らせ</Alert.Title>
+      </Alert>,
     );
     expect(screen.getByRole(role)).toHaveAttribute("data-tone", tone);
-  });
-
-  it("cannot be talked out of the banner measure — the alias owns `variant` at runtime too", () => {
-    // The prop is `Omit<AlertProp, "variant">` at the type level; this is the runtime half of the
-    // same guarantee, so a spread of leftover Alert props can't silently downgrade the strip.
-    const { container } = renderWithUi(
-      // @ts-expect-error — `variant` is not part of BannerProp; asserted here as a runtime guard.
-      <Banner tone="info" variant="default">
-        <Banner.Title>定期メンテナンス</Banner.Title>
-      </Banner>,
-    );
-    expect(container.querySelector('[data-slot="alert"]')).toHaveAttribute(
-      "data-variant",
-      "banner",
-    );
   });
 });

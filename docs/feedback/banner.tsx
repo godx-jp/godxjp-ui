@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Banner } from "@godxjp/ui/feedback";
+import { Alert } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Banner · full-bleed page/shell attention strip — the Alert
+ * Alert variant="banner" · full-bleed page/shell attention strip — the Alert
  * primitive with the structural axis fixed to variant="banner". Persistent,
  * page/shell-scoped, at most one per surface. tone owns colour + icon +
  * live-region politeness; onDismiss renders the built-in dismiss (last in focus
@@ -17,7 +17,7 @@ export default function Demo() {
 
   return (
     <PageContainer
-      title="Banner"
+      title="Alert · banner"
       subtitle="tone × actions × dismiss · full-bleed attention strip (the inline-card presentation is Alert)"
     >
       <Flex direction="col" gap="lg">
@@ -33,50 +33,48 @@ export default function Demo() {
           </CardHeader>
           <CardContent flush>
             <Flex direction="col" gap="md">
-              <Banner tone="warning">
-                <Banner.Content>
-                  <Banner.Title>お支払いが確認できていません</Banner.Title>
-                  <Banner.Description>
+              <Alert variant="banner" tone="warning">
+                <Alert.Content>
+                  <Alert.Title>お支払いが確認できていません</Alert.Title>
+                  <Alert.Description>
                     サービスの停止を避けるため、お支払い方法を更新してください。
-                  </Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+                  </Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm" variant="outline">
                     お支払い方法を更新
                   </Button>
-                </Banner.Actions>
-              </Banner>
-              <Banner tone="info">
-                <Banner.Content>
-                  <Banner.Title>サポートセッションが進行中です</Banner.Title>
-                  <Banner.Description>
+                </Alert.Actions>
+              </Alert>
+              <Alert variant="banner" tone="info">
+                <Alert.Content>
+                  <Alert.Title>サポートセッションが進行中です</Alert.Title>
+                  <Alert.Description>
                     担当者（田中）がお客様の組織を閲覧しています。
-                  </Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+                  </Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm" variant="outline">
                     セッションを終了
                   </Button>
-                </Banner.Actions>
-              </Banner>
-              <Banner tone="destructive">
-                <Banner.Title>一部のサービスで障害が発生しています</Banner.Title>
-                <Banner.Description>
-                  復旧状況はステータスページをご確認ください。
-                </Banner.Description>
-              </Banner>
-              <Banner tone="success">
-                <Banner.Title>お支払いを確認しました</Banner.Title>
-                <Banner.Description>すべての機能が再び利用可能になりました。</Banner.Description>
-              </Banner>
-              <Banner tone="neutral">
-                <Banner.Title>8月24日 02:00〜04:00 に定期メンテナンスを行います</Banner.Title>
-                <Banner.Description>作業中は一部の操作が制限されます。</Banner.Description>
-              </Banner>
-              <Banner tone="muted">
-                <Banner.Title>この組織はアーカイブ済みです</Banner.Title>
-                <Banner.Description>閲覧のみ可能で、変更はできません。</Banner.Description>
-              </Banner>
+                </Alert.Actions>
+              </Alert>
+              <Alert variant="banner" tone="destructive">
+                <Alert.Title>一部のサービスで障害が発生しています</Alert.Title>
+                <Alert.Description>復旧状況はステータスページをご確認ください。</Alert.Description>
+              </Alert>
+              <Alert variant="banner" tone="success">
+                <Alert.Title>お支払いを確認しました</Alert.Title>
+                <Alert.Description>すべての機能が再び利用可能になりました。</Alert.Description>
+              </Alert>
+              <Alert variant="banner" tone="neutral">
+                <Alert.Title>8月24日 02:00〜04:00 に定期メンテナンスを行います</Alert.Title>
+                <Alert.Description>作業中は一部の操作が制限されます。</Alert.Description>
+              </Alert>
+              <Alert variant="banner" tone="muted">
+                <Alert.Title>この組織はアーカイブ済みです</Alert.Title>
+                <Alert.Description>閲覧のみ可能で、変更はできません。</Alert.Description>
+              </Alert>
             </Flex>
           </CardContent>
         </Card>
@@ -87,27 +85,27 @@ export default function Demo() {
             <CardDescription>
               onDismiss renders the localized dismiss button pinned top/inline-end and LAST in DOM
               order: keyboard focus reaches content, then actions, then dismiss. Never hand-roll an
-              × inside Banner.Actions.
+              × inside Alert.Actions.
             </CardDescription>
           </CardHeader>
           <CardContent flush>
             {dismissed ? (
-              <Banner tone="default" icon={false}>
-                <Banner.Content>
-                  <Banner.Title>通知を閉じました</Banner.Title>
-                  <Banner.Description>このデモでは再表示できます。</Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+              <Alert variant="banner" tone="default" icon={false}>
+                <Alert.Content>
+                  <Alert.Title>通知を閉じました</Alert.Title>
+                  <Alert.Description>このデモでは再表示できます。</Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm" variant="outline" onClick={() => setDismissed(false)}>
                     通知を再表示
                   </Button>
-                </Banner.Actions>
-              </Banner>
+                </Alert.Actions>
+              </Alert>
             ) : (
-              <Banner tone="neutral" onDismiss={() => setDismissed(true)}>
-                <Banner.Title>新しい管理コンソールをお試しいただけます</Banner.Title>
-                <Banner.Description>設定画面からいつでも元の表示に戻せます。</Banner.Description>
-              </Banner>
+              <Alert variant="banner" tone="neutral" onDismiss={() => setDismissed(true)}>
+                <Alert.Title>新しい管理コンソールをお試しいただけます</Alert.Title>
+                <Alert.Description>設定画面からいつでも元の表示に戻せます。</Alert.Description>
+              </Alert>
             )}
           </CardContent>
         </Card>
@@ -123,57 +121,57 @@ export default function Demo() {
           </CardHeader>
           <CardContent flush>
             <Flex direction="col" gap="md">
-              <Banner tone="warning">
-                <Banner.Content>
-                  <Banner.Title>
+              <Alert variant="banner" tone="warning">
+                <Alert.Content>
+                  <Alert.Title>
                     ご契約中のプランのお支払い期限が過ぎています。未払いの状態が続く場合、組織内のすべてのサービスが自動的に停止されます
-                  </Banner.Title>
-                  <Banner.Description>
+                  </Alert.Title>
+                  <Alert.Description>
                     請求書番号 INV-2026-08-0042
                     のお支払いが確認できていません。お支払い方法の更新、または経理担当者への再送をお願いします。
-                  </Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+                  </Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm" variant="outline">
                     請求書を再送
                   </Button>
                   <Button size="sm">お支払い方法を更新</Button>
-                </Banner.Actions>
-              </Banner>
-              <Banner tone="info">
-                <Banner.Content>
-                  <Banner.Title>
+                </Alert.Actions>
+              </Alert>
+              <Alert variant="banner" tone="info">
+                <Alert.Content>
+                  <Alert.Title>
                     A scheduled maintenance window will interrupt single sign-on for all connected
                     services this weekend
-                  </Banner.Title>
-                  <Banner.Description>
+                  </Alert.Title>
+                  <Alert.Description>
                     Between Saturday 22:00 and Sunday 02:00 (JST), sign-in and token refresh will be
                     unavailable. Active sessions continue to work.
-                  </Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+                  </Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm" variant="outline">
                     View status page
                   </Button>
-                </Banner.Actions>
-              </Banner>
-              <Banner tone="destructive">
-                <Banner.Content>
-                  <Banner.Title>
+                </Alert.Actions>
+              </Alert>
+              <Alert variant="banner" tone="destructive">
+                <Alert.Content>
+                  <Alert.Title>
                     Phiên hỗ trợ từ xa đang hoạt động. Nhân viên hỗ trợ hiện có thể xem toàn bộ dữ
                     liệu tổ chức của bạn cho đến khi phiên kết thúc
-                  </Banner.Title>
-                  <Banner.Description>
+                  </Alert.Title>
+                  <Alert.Description>
                     Nếu bạn không yêu cầu phiên hỗ trợ này, hãy kết thúc ngay và đổi mật khẩu quản
                     trị của tổ chức.
-                  </Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+                  </Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm" variant="outline">
                     Kết thúc phiên
                   </Button>
-                </Banner.Actions>
-              </Banner>
+                </Alert.Actions>
+              </Alert>
             </Flex>
           </CardContent>
         </Card>

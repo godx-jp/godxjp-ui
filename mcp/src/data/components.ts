@@ -9498,16 +9498,24 @@ import { Button } from "@godxjp/ui/general";
       "AlertQueryError",
       "AlertTitle",
     ],
+    absorbed: ["Banner", "Callout"],
     group: "feedback",
     tagline:
-      "Inline alert banner with variant-aware icon + optional dismiss. Parts: Alert/AlertTitle/AlertDescription/AlertActions/AlertQueryError.",
+      'Status message with a tone icon and optional dismiss, in three presentations: inline card, full-bleed page/shell strip (`variant="banner"`), or a non-live aside inside a document (`variant="callout"`, GitHub `> [!NOTE]`). Parts: Alert.Title/Description/Content/Actions/QueryError.',
     props: [
       {
         name: "variant",
-        type: '"default" | "banner"',
+        type: '"default" | "banner" | "callout"',
         defaultValue: '"default"',
         description:
-          'STRUCTURAL axis, orthogonal to `tone` (which owns colour + icon): "default" is the inline rounded card; "banner" is the full-bleed attention strip — prefer the `Banner` export, which fixes this axis.',
+          'STRUCTURAL axis, orthogonal to `tone` (which owns colour + icon): "default" is the inline rounded card; "banner" is the full-bleed page/shell attention strip (square corners, page-gutter inset, actions wrap below 640px); "callout" is the aside INSIDE a document body — `role="note"`, never a live region, `kind` picks the admonition. v32 folded the former `Banner` and `Callout` exports into these values.',
+      },
+      {
+        name: "kind",
+        type: '"note" | "tip" | "important" | "warning" | "caution"',
+        defaultValue: '"note"',
+        description:
+          '`variant="callout"` only. GitHub/Obsidian admonition preset; resolves the tone AND the leading glyph. A preset, not a second colour axis — `tone` and `icon` still override per instance. Ignored by the other variants.',
       },
       {
         name: "onDismiss",
@@ -9521,8 +9529,9 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "tone",
-        type: '"success" | "warning" | "destructive" | "info" | "neutral"',
-        description: "Semantic tone driving the colour + leading icon.",
+        type: '"default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
+        description:
+          'Semantic tone driving the colour + leading icon AND live-region politeness ("destructive"/"warning" announce assertively via role="alert"; every other tone politely via role="status"). Under `variant="callout"` tone drives colour only — a callout is never a live region.',
       },
     ],
     usage: [
@@ -9533,6 +9542,8 @@ import { Button } from "@godxjp/ui/general";
       'DON\'T pass raw action elements directly as top-level children of `<Alert>` without wrapping them in `<Alert.Actions>` — the layout slot only activates correctly via the `data-slot="alert-actions"` wrapper.',
       'DON\'T hand-roll a dismiss ✕ button — pass `onDismiss` to `<Alert>` and the component renders its own accessible dismiss button with `aria-label="Dismiss"`. The `onDismiss` handler may return a Promise.',
       'DON\'T suppress the icon with `icon={false}` unless there is a deliberate design reason; the icon is the primary a11y cue for sighted users since the root already carries `role="alert"` for screen readers.',
+      'BANNER (`variant="banner"`): place it FULL-BLEED at the top of the surface it warns about — directly under the Topbar inside AppShell\'s children for shell-wide attention (past-due subscription, active support session), or as the first child of a page. Its inline inset defaults to the page gutter (--space-page-active-x) and its geometry is owned by the `--banner-*` tokens; never fake a strip with `className` overrides. At most ONE per surface.',
+      'CALLOUT (`variant="callout"`): for content that is PART of the document being read — a docs admonition, a CMS note, a policy caveat. It renders `role="note"` and never announces. Map Markdown `[!NOTE]`/`[!TIP]`/`[!IMPORTANT]`/`[!WARNING]`/`[!CAUTION]` straight onto `kind`. DON\'T pass `onDismiss` (prose is not dismissed) and DON\'T use a callout for something that just HAPPENED — that is the default or banner variant, which announce.',
       "DO NOT use `Alert` for transient ephemeral feedback (e.g. 'saved successfully'). Use `toast()` from sonner + `<Toaster>` for that. `Alert` is for persistent, page-scoped banners that stay visible until the user acts or dismisses.",
     ],
     useCases: [
@@ -9541,12 +9552,16 @@ import { Button } from "@godxjp/ui/general";
       'Success confirmation banner rendered after a bulk-import job completes and the user returns to the list page — `tone="success"` with `Alert.Description` showing the record count imported.',
       "TanStack Query data-fetch failure inside a Card body — use `<Alert.QueryError error={error} onRetry={refetch} />` instead of writing a custom error state.",
       "Informational notice at the top of a settings page when a feature is in beta or requires a plan upgrade — `tone=\"info\"` with a short description and an `Alert.Actions` 'Learn more' link.",
+      'Past-due subscription strip across the console shell — `variant="banner" tone="warning"` with an `Alert.Actions` "お支払い方法を更新" Button, rendered above the page slot until billing recovers.',
+      'Docs/handbook admonition inside a prose column — `variant="callout" kind="tip"`; a destructive-consequence note beside a runbook step is `kind="caution"`, still silent on load.',
       'Dismissible billing-overdue notice at the top of the dashboard — `tone="destructive"` with `onDismiss` that sets a session flag so it does not reappear until the next login.',
     ],
     related: [
       "Toaster — use for transient, auto-dismissing feedback ('Record saved', 'Deleted'). Alert is for persistent page-scoped banners; Toaster is for fire-and-forget notifications triggered by toast() from sonner.",
       "AlertMutationFeedback — use when you want inline success/error feedback tightly coupled to a form mutation's state (renders inline below the submit button). Alert requires you to manage show/hide state yourself.",
       "DataState — use for full query lifecycle (loading skeleton + empty state + error) inside a data-fetching section. Alert.QueryError is the error sub-component DataState uses internally; prefer DataState when you also need the loading/empty states.",
+      "ErrorSurface — a whole-page semantic exception state (403/404/5xx) that REPLACES the page. An `Alert` (any variant) annotates a page that still works.",
+      'Prose — the typographic column a `variant="callout"` normally sits inside; the callout\'s block margin is tuned to that rhythm.',
       "EmptyState — use for the zero-data case inside a list or table section, not for errors or warnings. Alert is for status messages; EmptyState is for the absence of data.",
     ],
     example: `import { Alert, AlertTitle, AlertDescription } from "@godxjp/ui/feedback";
@@ -9556,122 +9571,6 @@ import { Button } from "@godxjp/ui/general";
   <AlertDescription>本日中に確認してください。</AlertDescription>
 </Alert>`,
     storyPath: "feedback/Alert.stories.tsx",
-    rules: [],
-  },
-  {
-    name: "Banner",
-    group: "feedback",
-    tagline:
-      "Full-bleed page/shell attention strip (past-due subscription, support session, maintenance). Parts: Banner.Title/Description/Content/Actions.",
-    props: [
-      {
-        name: "tone",
-        type: '"default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
-        defaultValue: '"default"',
-        description:
-          'Semantic tone driving the surface colour, the default leading icon AND live-region politeness ("destructive"/"warning" announce assertively via role="alert"; every other tone politely via role="status").',
-      },
-      {
-        name: "onDismiss",
-        type: "() => void | Promise<void>",
-        description:
-          "Renders the built-in localized dismiss button (top/inline-end). It sits LAST in DOM and focus order: content → actions → dismiss.",
-      },
-      {
-        name: "icon",
-        type: "LucideIcon | false",
-        description: "Override or hide (false) the tone's default leading icon.",
-      },
-    ],
-    usage: [
-      'CANONICAL BANNER CONTRACT: `Banner` is `Alert` with the structural axis fixed to `variant="banner"` — same tone system, same slots, same dismiss/a11y behaviour, but STRIP geometry owned by the `--banner-*` tokens (square corners, hairline block-end rule, page-gutter inline inset). Never fake a banner by putting `className` overrides on an `Alert`, and never hand-roll a coloured div strip.',
-      "DO: Place a Banner FULL-BLEED at the top of the surface it warns about — directly under the Topbar inside AppShell's children for shell-wide attention (past-due subscription, active support session), or as the first child of a page for page-scoped notices. Its inline inset defaults to the page gutter (--space-page-active-x) so the text column aligns with page content.",
-      "DO: Compose text as `Banner.Title` + `Banner.Description` (group multi-part copy in `Banner.Content` when you add `Banner.Actions`). At >=640px actions sit in a trailing column; below the step they drop onto their own full-width WRAPPING line, so a 390px viewport wraps instead of clipping.",
-      "DO: Pass `onDismiss` for dismissible notices — the component renders its own accessible, localized dismiss button. DON'T hand-roll an × Button in `Banner.Actions`.",
-      "DON'T: Use Banner for transient feedback ('saved successfully') — that is `toast()` + `<Toaster>`. Banner is persistent and page/shell-scoped, and there should be at most ONE per surface; stack further messages inside the page as inline `Alert`s.",
-      "DON'T: Encode DXS business rules here (when past_due shows, who sees a support-session strip) — the app decides WHEN to render; Banner owns only presentation and behaviour.",
-    ],
-    useCases: [
-      'Past-due subscription strip across the console shell — `tone="warning"` with a `Banner.Actions` "お支払い方法を更新" Button, rendered above the page slot until billing recovers.',
-      'Active support-session indicator — `tone="info"` with the operator name in `Banner.Description` and a "セッションを終了" action; not dismissible while the session runs.',
-      'Scheduled maintenance notice — `tone="neutral"` with `onDismiss` so the user can clear it for the session.',
-      'Read-only / archived-organization mode — `tone="muted"` explaining why every mutation control on the page is disabled.',
-      'Degraded-service warning after a partial outage — `tone="destructive"` with a status-page link in `Banner.Actions`.',
-    ],
-    related: [
-      "Alert — the SAME primitive in its inline-card presentation; use inside a page section or Card for persistent local feedback. Banner is the full-bleed strip presentation for shell/page-level attention.",
-      "Toaster — transient auto-dismissing feedback (toast()). Banner is persistent until acted on or dismissed.",
-      "ErrorSurface — a whole-page semantic exception state (403/404/5xx) that REPLACES the page. Banner annotates a page that still works.",
-      "PageContainer — Banner sits ABOVE or as the first child of PageContainer, never inside the header slots; the page header's own status/meta belongs in PageContainer's `status` prop.",
-    ],
-    example: `import { Banner } from "@godxjp/ui/feedback";
-import { Button } from "@godxjp/ui/general";
-
-<Banner tone="warning">
-  <Banner.Content>
-    <Banner.Title>お支払いが確認できていません</Banner.Title>
-    <Banner.Description>サービスの停止を避けるため、お支払い方法を更新してください。</Banner.Description>
-  </Banner.Content>
-  <Banner.Actions>
-    <Button size="sm" variant="outline">お支払い方法を更新</Button>
-  </Banner.Actions>
-</Banner>`,
-    storyPath: "feedback/Banner.stories.tsx",
-    rules: [],
-  },
-  {
-    name: "Callout",
-    group: "feedback",
-    tagline:
-      'Static aside INSIDE a document body (docs admonition, CMS note, GitHub `> [!NOTE]`). role="note", never a live region. Parts: Callout.Title/Description/Content/Actions.',
-    props: [
-      {
-        name: "kind",
-        type: '"note" | "tip" | "important" | "warning" | "caution"',
-        defaultValue: '"note"',
-        description:
-          "GitHub/Obsidian admonition preset; resolves the tone AND the leading glyph. A preset, not a second colour axis — `tone` and `icon` still override per instance.",
-      },
-      {
-        name: "tone",
-        type: '"default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
-        description:
-          "Overrides the tone the `kind` resolves to. Drives surface colour and the leading rail ONLY — unlike Alert, tone never changes live-region politeness here, because a Callout has none.",
-      },
-      {
-        name: "icon",
-        type: "LucideIcon | false",
-        description: "Override or hide (false) the kind's default leading glyph.",
-      },
-    ],
-    usage: [
-      'CANONICAL CALLOUT CONTRACT: `Callout` is `Alert` with the structural axis fixed to `variant="callout"` — same tone system, same slots, but ASIDE geometry owned by the `--callout-*` tokens (leading rail, prose insets, block margin) and, uniquely, NO live region. Never fake a callout with `className` on an `Alert`, and never hand-roll a coloured div with a left border.',
-      "DO: Use Callout for content that is part of the document the reader is reading — a docs admonition, a note in a CMS article, a caveat inside a policy page. It is rendered with the page, so it must not announce.",
-      "DON'T: Use `<Alert role=\"note\">` for this. That worked only because `{...props}` is spread after the computed `role`, which the package never promised; one refactor would have silently restored the live region. A consumer neutralising a component's own semantics is the tell that it is the wrong primitive (gh#765).",
-      "DON'T: Reach for Callout to report something that just HAPPENED (a save failed, a session expired). That is an update to the page, not part of it — use `Alert` (inline), `Banner` (page/shell strip) or `toast()`, all of which announce.",
-      "DON'T: Pass `onDismiss` — the type excludes it. Prose does not get dismissed; if the reader can remove it, it is an Alert.",
-      "MARKDOWN RENDERERS: map the five GitHub types straight onto `kind` — `[!NOTE]`→note, `[!TIP]`→tip, `[!IMPORTANT]`→important, `[!WARNING]`→warning, `[!CAUTION]`→caution. Obsidian's lower-case spelling is the same set. `important` takes the NEUTRAL tone (this system has no purple role); its glyph, not its colour, is what tells it from `note`.",
-    ],
-    useCases: [
-      'Docs/handbook admonition inside a prose column — `kind="note"` for an aside, `kind="tip"` for a shortcut worth knowing.',
-      "A caveat inside a rendered CMS article (react-markdown + rehype-sanitize), drawn from `> [!WARNING]` in the source.",
-      'A legal or policy page clause that needs emphasis without interrupting a screen-reader user reading the page top to bottom — `kind="important"`.',
-      'A destructive-consequence note beside a runbook step — `kind="caution"`, still silent on load.',
-    ],
-    related: [
-      "Alert — the SAME primitive in its inline-card presentation, and a LIVE REGION. Use it for an update to the page; Callout is for part of the page.",
-      "Banner — the same primitive as the full-bleed page/shell strip, also a live region.",
-      "Prose — the typographic column a Callout normally sits inside; the callout's block margin is tuned to that rhythm.",
-    ],
-    example: `import { Callout } from "@godxjp/ui/feedback";
-
-<Callout kind="warning">
-  <Callout.Title>この操作は取り消せません</Callout.Title>
-  <Callout.Description>
-    リポジトリを削除すると、Issue と Pull Request も一緒に削除されます。
-  </Callout.Description>
-</Callout>`,
-    storyPath: "feedback/Callout.stories.tsx",
     rules: [],
   },
   {

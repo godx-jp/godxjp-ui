@@ -3134,22 +3134,13 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/feedback.prop.ts",
     vocabulary: [
       "AlertVariantProp",
+      "CalloutKindProp",
       "ToneProp",
       "IconProp",
       "OnValueChangeProp",
       "ClassNameProp",
       "ChildrenProp",
     ],
-  },
-  BannerProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["ToneProp", "IconProp", "OnValueChangeProp", "ClassNameProp", "ChildrenProp"],
-  },
-  CalloutProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: ["CalloutKindProp", "ToneProp", "IconProp", "ClassNameProp", "ChildrenProp"],
   },
   AlertTitleProp: {
     group: "feedback",

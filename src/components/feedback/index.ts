@@ -85,10 +85,6 @@ export type {
   SkeletonImageProp,
   SkeletonImageProps,
 } from "./skeleton";
-export { Banner } from "./banner";
-export type { BannerProp, BannerProps } from "./banner";
-export { Callout } from "./callout";
-export type { CalloutProp, CalloutProps } from "./callout";
 export {
   Alert,
   AlertTitle,
