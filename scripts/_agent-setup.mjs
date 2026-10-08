@@ -307,7 +307,17 @@ function readJson(path) {
  * next run reads as malformed. That is how the two halves of gh#541 fed each other — one bad
  * write manufactured the precondition for the overwrite.
  */
+let dryRunLog = null; // non-null during `sync-rules --dry-run`: collects paths instead of writing
+
+function mkdirp(dir) {
+  if (!dryRunLog) mkdirSync(dir, { recursive: true });
+}
+
 function writeFileAtomic(path, data) {
+  if (dryRunLog) {
+    dryRunLog.add(path);
+    return;
+  }
   // UNIQUE temp name. A fixed `${path}.godxjp-ui-tmp` is a shared mutable file: two installs
   // running at once — a workspace installing packages in parallel is enough — write over each
   // other's temp and `rename` whichever finished last.
@@ -507,7 +517,7 @@ export function outOfProjectUiMcpReport(root, configDir) {
 /** Ensure `.claude/settings.json` has the audit PostToolUse + workflow SessionStart hooks. */
 export function ensureClaudeHooks(root) {
   const path = join(root, ".claude", "settings.json");
-  mkdirSync(dirname(path), { recursive: true });
+  mkdirp(dirname(path));
   const read = readJsonFile(path);
   if (read.state !== "ok" && read.state !== "missing") {
     // Same guard as ensureMcpJson, and the reason it is here rather than only there: this file
@@ -561,7 +571,7 @@ export function ensureClaudeHooks(root) {
 /** Write the workflow mandate the SessionStart hook reads (only if absent). */
 export function writeWorkflowMd(root) {
   const path = join(root, ".claude", "godxjp-ui-workflow.md");
-  mkdirSync(dirname(path), { recursive: true });
+  mkdirp(dirname(path));
   // This file is owned entirely by the package — the CLAUDE.md block tells the consumer to edit
   // it, but nothing else reads from it, so a stale copy is pure loss. It is package-owned end to
   // end, so the comparison is the BODY: a version check froze every consumer whose stamp already
@@ -733,7 +743,7 @@ export function ensureConsumerRules(root) {
       return uiDir;
     }
   }
-  mkdirSync(dir, { recursive: true });
+  mkdirp(dir);
   writeFileAtomic(target, next);
 
   // Prettier and this writer were fighting over the same file: the body holds aligned markdown
@@ -767,4 +777,45 @@ export function ensureConsumerRules(root) {
     }
   }
   return uiDir;
+}
+
+/**
+ * `npx godxjp-ui sync-rules` — the ONLY path that writes agent files into a consumer project
+ * (postinstall writes nothing, #1215). With `dryRun` nothing is written: the returned `changed`
+ * lists every file that would be created or changed. Returns `{ skipped, changed, lines }`.
+ */
+export function runSyncRules(root, { dryRun = false } = {}) {
+  const skipped = shouldSkip(root);
+  if (skipped) return { skipped, changed: [], lines: [] };
+  const lines = [];
+  dryRunLog = dryRun ? new Set() : null;
+  try {
+    const r = ensureMcpJson(root);
+    // A refusal is a full sentence, not one of the three status words — say it on its own line.
+    if (r.startsWith("left untouched") || r.startsWith("present (custom godx-ui")) {
+      lines.push(`\n  @godxjp/ui → .mcp.json ${r}\n`);
+    }
+    // Reported whatever the project file says: it is live beside ours (gh#722).
+    const outside = outOfProjectUiMcpReport(root);
+    if (outside) lines.push(outside);
+    const md = ensureClaudeMd(root);
+    if (md.startsWith("left untouched")) lines.push(`  @godxjp/ui → CLAUDE.md ${md}\n`);
+    const wf = writeWorkflowMd(root);
+    const skill = refreshGuineaPigSkill(root);
+    const rules = ensureConsumerRules(root);
+    const refused = r.startsWith("left untouched") || md.startsWith("left untouched");
+    if (!refused && !(r === "present" && md === "present" && !wf && !skill && !rules)) {
+      lines.push(
+        `\n  @godxjp/ui → MCP in .mcp.json (${r}); workflow mandate in CLAUDE.md (${md}).\n` +
+          (rules ? `  common consumer rules in .ai/rules/godxjp-ui.md (glob ${rules}/**).\n` : "") +
+          (skill ? "  guinea-pig skill refreshed to this version (your section 8 kept).\n" : "") +
+          "  Your agent now has live component + audit guidance. Restart it to pick up the MCP.\n" +
+          "  For auto-audit on every edit (PostToolUse + SessionStart hooks):\n" +
+          "    npx @godxjp/ui init-agent\n",
+      );
+    }
+    return { skipped: null, changed: dryRun ? [...dryRunLog].sort() : [], lines };
+  } finally {
+    dryRunLog = null;
+  }
 }
