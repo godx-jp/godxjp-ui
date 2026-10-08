@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, TagInput } from "@godxjp/ui/data-entry";
+import { FormField, Select } from "@godxjp/ui/data-entry";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * TagInput — free-form multi-value chips input. value is string[] (NOT string).
+ * Select mode="tags" open={false} (formerly TagInput) — free-form multi-value chips input. value is string[] (NOT string).
  * Enter or comma commits a tag; Backspace on empty removes the last chip.
  * Use Select (multiple, with showSearch) instead when the set of values is fixed.
  * Composed only from real @godxjp/ui components.
@@ -26,7 +26,7 @@ export default function Demo() {
 
   return (
     <PageContainer
-      title="TagInput"
+      title="Select · inline tags"
       subtitle="Free-form chips input · value is string[]; Enter/comma to add, Backspace to remove"
     >
       <Flex direction="col" gap="lg">
@@ -40,7 +40,9 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <FormField id="invoice-tags" label="ラベル" helper="Enterまたはカンマで追加">
-              <TagInput
+              <Select
+                mode="tags"
+                open={false}
                 value={invoiceTags}
                 onValueChange={setInvoiceTags}
                 placeholder="ラベルを追加..."
@@ -59,7 +61,9 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <FormField id="skill-tags" label="スキル・資格">
-              <TagInput
+              <Select
+                mode="tags"
+                open={false}
                 value={skillTags}
                 onValueChange={setSkillTags}
                 placeholder="スキルを入力..."
@@ -83,7 +87,9 @@ export default function Demo() {
               label="CC送信先"
               helper="複数のメールアドレスをEnterで追加できます"
             >
-              <TagInput
+              <Select
+                mode="tags"
+                open={false}
                 id="recipient-emails"
                 aria-label="CC送信先メール"
                 className="contract-tag-input"
@@ -112,7 +118,9 @@ export default function Demo() {
               label={t("showcase.tagInput.ledgerLabel")}
               helper={t("showcase.tagInput.ledgerHelper")}
             >
-              <TagInput
+              <Select
+                mode="tags"
+                open={false}
                 id="ledger-tags"
                 value={ledgerTags}
                 onValueChange={setLedgerTags}
@@ -135,7 +143,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <FormField id="disabled-tags" label="ラベル">
-              <TagInput value={["確定済み", "ロック"]} disabled />
+              <Select mode="tags" open={false} value={["確定済み", "ロック"]} disabled />
             </FormField>
           </CardContent>
         </Card>

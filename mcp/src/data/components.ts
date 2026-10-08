@@ -7814,6 +7814,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "SearchSelect",
       "Typeahead",
       "AsyncSelect",
+      "TagInput",
     ],
     subParts: [
       "SelectContent",
@@ -7967,7 +7968,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "open",
         type: "boolean",
         description:
-          "Searchable mode only. Controlled popover open state (uncontrolled by default). Pair with onOpenChange.",
+          'Searchable mode only. Controlled popover open state (uncontrolled by default). Pair with onOpenChange. With `mode="tags"`, `open={false}` (antd\'s spelling of "a tags field whose list never opens") renders the INLINE chip field instead — no popup, no combobox: type + Enter or a `tokenSeparators` character adds a tag, Backspace on an empty draft drops the last, a pasted "a, b, c" becomes three tags, the draft commits on blur, and `name` submits the tags comma-joined in one hidden input. `onValueChange` then receives the tag array only. This is what the retired `TagInput` was (v32 #1223).',
       },
       {
         name: "onOpenChange",
@@ -8230,6 +8231,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      'FREE-TEXT TAGS WITH NO LIST (keywords, email recipients, labels typed from scratch): `<Select mode="tags" open={false} value={tags} onValueChange={setTags} />` — the inline chip field. Use plain `mode="tags"` (popup) only when there is a list of existing tags to pick from. There is no `TagInput` component.',
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
       "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
       "NAMING A SELECT WITH NO VISIBLE LABEL: put `aria-label` on `<Select>`, NOT on `<SelectTrigger>`. Both render the identical button attribute \u2014 Select forwards its name down through SelectFieldA11yContext and the trigger writes last \u2014 but only the root spelling also names the react-aria field, and a root that cannot see a name warns once per render (gh#869). Inside a FormField or Field, pass nothing: the label id reaches both levels on its own. `aria-labelledby` pointing at your own element works on either level and is the right spelling when a visible heading already names the control.",
@@ -15543,101 +15545,6 @@ export default function PasswordBlock() {
   ]}
 />`,
     storyPath: "data-entry/Segmented.stories.tsx",
-    rules: [3, 6, 23],
-  },
-  {
-    name: "TagInput",
-    group: "data-entry",
-    tagline:
-      "Chips/tags input — type + Enter (or comma) to add a tag, Backspace to remove the last; controlled via value/onValueChange (string[]).",
-    props: [
-      { name: "readOnly", type: "boolean", description: "Prevent adding and removing tags." },
-      { name: "value", type: "string[]", description: "Controlled tag list." },
-      { name: "defaultValue", type: "string[]", description: "Uncontrolled initial tags." },
-      {
-        name: "onValueChange",
-        type: "(tags: string[]) => void",
-        description: "Tag-list callback.",
-      },
-      { name: "placeholder", type: "string", description: "Shown when empty." },
-      {
-        name: "name",
-        type: "string",
-        description: "Hidden input (comma-joined) for native form submission.",
-      },
-      {
-        name: "status",
-        type: '"error" | "warning"',
-        description:
-          "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
-      },
-      {
-        name: "variant",
-        type: '"outlined" | "filled" | "borderless"',
-        description:
-          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
-      },
-      {
-        name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
-        description: "antd `size` — height tier on the shared --control-height ladder.",
-      },
-      {
-        name: "maxTagCount",
-        type: "number",
-        description:
-          'antd `maxTagCount` — how many selected values stay visible before the rest collapse into the overflow node. antd\'s `"responsive"` is not supported (see the parity PR).',
-      },
-      {
-        name: "maxTagPlaceholder",
-        type: "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)",
-        description:
-          "antd `maxTagPlaceholder` — the node standing in for what maxTagCount hid. Defaults to a localized `+N`.",
-      },
-      {
-        name: "maxCount",
-        type: "number",
-        description:
-          "antd `maxCount` — a hard ceiling on how many tags may be held. A tag past the limit is refused, so the value handed to onValueChange is never over it.",
-      },
-      {
-        name: "maxTagTextLength",
-        type: "number",
-        description:
-          "antd `maxTagTextLength` — cut each chip's TEXT to this many characters (an ellipsis marks the cut). The value is untouched and stays in the chip's title and in the remover's accessible name, so a long identifier is never silently swallowed. Without it one unbroken token sets the chip's width and the chip sets the row's (gh#840).",
-      },
-      {
-        name: "tagRender",
-        type: "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode",
-        description:
-          "antd `tagRender` — owns the chip body. The onClose it receives is the same remover the built-in ✕ calls, so a custom chip can never be unremovable.",
-      },
-      {
-        name: "tokenSeparators",
-        type: "string[]",
-        description:
-          'antd `tokenSeparators` (default [","]) — characters that commit the draft into a tag. A pasted run containing one is split into several tags. Enter always commits and is not a separator.',
-      },
-    ],
-    usage: [
-      "DO use for free-form multi-value entry (labels, emails, keywords) where options aren't a fixed list.",
-      "DO note dedupe is built in; Enter/comma commits, Backspace on empty removes the last chip.",
-      "DON'T use for choosing from a KNOWN set — use Select (multiple) or a multi-Combobox instead.",
-    ],
-    useCases: [
-      "Labels / tags on a record",
-      "Recipient email entry",
-      "Keyword / skill lists",
-      "Ad-hoc filter terms",
-    ],
-    related: [
-      "Select (multiple) — when the values come from a fixed option set",
-      "Combobox (multi) — searchable known set",
-    ],
-    example: `import { TagInput } from "@godxjp/ui/data-entry";
-
-<TagInput name="labels" placeholder="ラベルを追加…" onValueChange={(tags) => setTags(tags)} />`,
-    storyPath: "data-entry/TagInput.stories.tsx",
     rules: [3, 6, 23],
   },
   {

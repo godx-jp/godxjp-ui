@@ -195,7 +195,6 @@ import {
   Select,
   Slider,
   Switch,
-  TagInput,
   Textarea,
   TimePicker,
   TimeRangePicker,
@@ -1325,7 +1324,9 @@ export default function ThemeLabShowcase() {
                   <Textarea id="f-notes" rows={3} placeholder={t("themeLab.sample.short")} />
                 </FormField>
                 <FormField id="f-tags" label={t("themeLab.field.tags")}>
-                  <TagInput
+                  <Select
+                    mode="tags"
+                    open={false}
                     id="f-tags"
                     aria-label={t("themeLab.field.tags")}
                     value={tags}

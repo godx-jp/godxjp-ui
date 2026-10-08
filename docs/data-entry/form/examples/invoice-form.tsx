@@ -10,7 +10,6 @@ import {
   Select,
   Slider,
   Switch,
-  TagInput,
   Textarea,
 } from "@godxjp/ui/data-entry";
 import type { DateRange } from "react-day-picker";
@@ -346,7 +345,9 @@ export default function Demo() {
               <CardContent>
                 <ResponsiveGrid columns={2}>
                   <FormField id="iv-labels" label="ラベル" helper="Enter またはカンマで追加">
-                    <TagInput
+                    <Select
+                      mode="tags"
+                      open={false}
                       value={v.labels}
                       onValueChange={(val) => update("labels", val)}
                       placeholder="ラベルを追加…"

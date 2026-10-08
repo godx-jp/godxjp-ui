@@ -3564,22 +3564,6 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
-  TagInputProp: {
-    group: "data-entry",
-    file: "components/ui/tag-input.tsx",
-    vocabulary: [
-      "ValueProp",
-      "OnValueChangeProp",
-      "PlaceholderProp",
-      "IdProp",
-      "ClassNameProp",
-      "ControlStatusProp",
-      "ControlVariantProp",
-      "SizeProp",
-      "MaxTagCountProp",
-      "MaxTagPlaceholderProp",
-    ],
-  },
   PasswordInputProp: {
     group: "data-entry",
     file: "components/ui/password-input.tsx",

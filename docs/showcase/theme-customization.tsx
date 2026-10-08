@@ -154,7 +154,6 @@ import {
   Select,
   Slider,
   Switch,
-  TagInput,
 } from "@godxjp/ui/data-entry";
 import {
   Alert,
@@ -636,7 +635,9 @@ function ComponentsBoard(props: {
             />
           </FormField>
           <FormField id="board-labels" label={t("themeShowcase.form.labels")}>
-            <TagInput
+            <Select
+              mode="tags"
+              open={false}
               id="board-labels"
               value={labels}
               onValueChange={setLabels}

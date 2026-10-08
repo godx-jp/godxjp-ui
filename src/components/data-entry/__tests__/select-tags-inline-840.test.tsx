@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
-import { TagInput } from "../tag-input";
+import { Select } from "../select";
 
 /**
  * gh#840 — three defects the owner measured on /showcase/theme-customization, and the three
@@ -24,7 +24,15 @@ const overflowNode = () => document.querySelector<HTMLElement>('[data-slot="tag-
 
 describe("TagInput — maxTagTextLength cuts the TEXT, never the value (gh#840)", () => {
   it("draws at most maxTagTextLength characters plus an ellipsis", () => {
-    renderWithUi(<TagInput value={[UNBREAKABLE]} maxTagTextLength={CUT} aria-label="ラベル" />);
+    renderWithUi(
+      <Select
+        mode="tags"
+        open={false}
+        value={[UNBREAKABLE]}
+        maxTagTextLength={CUT}
+        aria-label="ラベル"
+      />,
+    );
 
     // The prop was declared on the public type and never destructured, so the chip painted all
     // 71 characters, set the row's width, and painted outside the control.
@@ -34,7 +42,13 @@ describe("TagInput — maxTagTextLength cuts the TEXT, never the value (gh#840)"
 
   it("keeps the WHOLE value reachable — in the tooltip and in the remover's accessible name", async () => {
     renderWithUi(
-      <TagInput defaultValue={[UNBREAKABLE]} maxTagTextLength={CUT} aria-label="ラベル" />,
+      <Select
+        mode="tags"
+        open={false}
+        defaultValue={[UNBREAKABLE]}
+        maxTagTextLength={CUT}
+        aria-label="ラベル"
+      />,
     );
 
     // A chip that silently hides half an identifier is its own defect — the issue says so in as
@@ -50,12 +64,20 @@ describe("TagInput — maxTagTextLength cuts the TEXT, never the value (gh#840)"
   });
 
   it("leaves a tag shorter than the ceiling alone — no ellipsis, no tooltip", () => {
-    renderWithUi(<TagInput value={["本番"]} maxTagTextLength={CUT} aria-label="ラベル" />);
+    renderWithUi(
+      <Select
+        mode="tags"
+        open={false}
+        value={["本番"]}
+        maxTagTextLength={CUT}
+        aria-label="ラベル"
+      />,
+    );
     expect(screen.getByText("本番")).not.toHaveAttribute("title");
   });
 
   it("without the prop the full value is drawn — the documented default, not the bug", () => {
-    renderWithUi(<TagInput value={[UNBREAKABLE]} aria-label="ラベル" />);
+    renderWithUi(<Select mode="tags" open={false} value={[UNBREAKABLE]} aria-label="ラベル" />);
     expect(screen.getByText(UNBREAKABLE)).toBeInTheDocument();
   });
 });
@@ -63,7 +85,13 @@ describe("TagInput — maxTagTextLength cuts the TEXT, never the value (gh#840)"
 describe("TagInput — `+N` names what it hides and can be reached (gh#840)", () => {
   it("carries the omitted value in its accessible name and its tooltip", () => {
     renderWithUi(
-      <TagInput value={["本番", "ổn định", UNBREAKABLE]} maxTagCount={2} aria-label="ラベル" />,
+      <Select
+        mode="tags"
+        open={false}
+        value={["本番", "ổn định", UNBREAKABLE]}
+        maxTagCount={2}
+        aria-label="ラベル"
+      />,
     );
 
     const overflow = overflowNode();
@@ -77,7 +105,15 @@ describe("TagInput — `+N` names what it hides and can be reached (gh#840)", ()
   });
 
   it("names EVERY omitted value, not just the first", () => {
-    renderWithUi(<TagInput value={["a", "b", "c", "d"]} maxTagCount={1} aria-label="ラベル" />);
+    renderWithUi(
+      <Select
+        mode="tags"
+        open={false}
+        value={["a", "b", "c", "d"]}
+        maxTagCount={1}
+        aria-label="ラベル"
+      />,
+    );
     const overflow = overflowNode()!;
     for (const hidden of ["b", "c", "d"]) {
       expect(overflow.getAttribute("aria-label")).toContain(hidden);
@@ -88,7 +124,13 @@ describe("TagInput — `+N` names what it hides and can be reached (gh#840)", ()
   it("is reachable by keyboard — Tab lands on it", async () => {
     const user = userEvent.setup();
     renderWithUi(
-      <TagInput value={["本番", "ổn định", UNBREAKABLE]} maxTagCount={2} aria-label="ラベル" />,
+      <Select
+        mode="tags"
+        open={false}
+        value={["本番", "ổn định", UNBREAKABLE]}
+        maxTagCount={2}
+        aria-label="ラベル"
+      />,
     );
     const overflow = overflowNode()!;
 
@@ -104,7 +146,9 @@ describe("TagInput — `+N` names what it hides and can be reached (gh#840)", ()
 
   it("a custom maxTagPlaceholder still announces the hidden values", () => {
     renderWithUi(
-      <TagInput
+      <Select
+        mode="tags"
+        open={false}
         value={["a", "b", "c"]}
         maxTagCount={1}
         maxTagPlaceholder={(omitted) => `ほか${omitted.length}件`}
@@ -123,7 +167,7 @@ describe("TagInput — `+N` names what it hides and can be reached (gh#840)", ()
 describe("TagInput — clicking the field focuses the input (gh#840)", () => {
   it("a press on the control's own box puts the caret in the draft field", async () => {
     const user = userEvent.setup();
-    renderWithUi(<TagInput defaultValue={["本番"]} aria-label="ラベル" />);
+    renderWithUi(<Select mode="tags" open={false} defaultValue={["本番"]} aria-label="ラベル" />);
 
     const box = document.querySelector<HTMLElement>('[data-slot="tag-input"]')!;
     const field = screen.getByRole("textbox");
@@ -138,7 +182,7 @@ describe("TagInput — clicking the field focuses the input (gh#840)", () => {
 
   it("typing straight after that press commits a tag — the caret really is in the field", async () => {
     const user = userEvent.setup();
-    renderWithUi(<TagInput defaultValue={["本番"]} aria-label="ラベル" />);
+    renderWithUi(<Select mode="tags" open={false} defaultValue={["本番"]} aria-label="ラベル" />);
 
     await user.click(document.querySelector<HTMLElement>('[data-slot="tag-input"]')!);
     await user.keyboard("出張{Enter}");
@@ -148,7 +192,9 @@ describe("TagInput — clicking the field focuses the input (gh#840)", () => {
 
   it("a press on a chip's remover is still the remover's own press, not a focus grab", async () => {
     const user = userEvent.setup();
-    renderWithUi(<TagInput defaultValue={["本番", "出張"]} aria-label="ラベル" />);
+    renderWithUi(
+      <Select mode="tags" open={false} defaultValue={["本番", "出張"]} aria-label="ラベル" />,
+    );
 
     await user.click(screen.getByRole("button", { name: /本番/ }));
     expect(screen.queryByText("本番")).toBeNull();

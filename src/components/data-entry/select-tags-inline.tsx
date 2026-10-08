@@ -9,7 +9,7 @@ import {
   controlSurfaceAttrs,
   resolveAllowClear,
   splitByTokenSeparators,
-} from "../data-entry/control-surface";
+} from "./control-surface";
 import type {
   AllowClearProp,
   ControlStatusProp,
@@ -20,10 +20,12 @@ import type {
 } from "../../props/vocabulary";
 
 /**
- * TagInput is this library's answer to antd's `Select mode="tags"` — a free-text token field — so
- * it takes the same token-level props antd puts on that mode.
+ * The INLINE presentation of `<Select mode="tags" open={false}>` — a free-text chip field whose
+ * list never opens (antd's own spelling of "a tags input with no dropdown"). It was the public
+ * `TagInput` until v32 folded it into Select (#1223); the props below are the subset of Select's
+ * tags contract this presentation reads, with the same token-level knobs antd puts on that mode.
  */
-export type TagInputProps = {
+export type SelectTagsInlineProps = {
   value?: string[];
   defaultValue?: string[];
   onValueChange?: (tags: string[]) => void;
@@ -85,7 +87,7 @@ export type TagInputProps = {
   tokenSeparators?: string[];
 };
 
-export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
+export const SelectTagsInline = React.forwardRef<HTMLInputElement, SelectTagsInlineProps>(
   (
     {
       value,
@@ -336,4 +338,4 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     );
   },
 );
-TagInput.displayName = "TagInput";
+SelectTagsInline.displayName = "SelectTagsInline";

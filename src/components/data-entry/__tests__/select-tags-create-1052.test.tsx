@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { fireEvent, renderWithUi, screen, userEvent, waitFor } from "@/test/render";
-import { TagInput } from "../tag-input";
 import { Select } from "../select";
 
 /*
@@ -270,7 +269,9 @@ describe("gh#1054 — TagInput", () => {
     ["keyCode: 229", { keyCode: 229 }],
   ])("a composing Enter (%s) adds no tag", (_, init) => {
     const onValueChange = vi.fn();
-    renderWithUi(<TagInput aria-label="タグ" onValueChange={onValueChange} />);
+    renderWithUi(
+      <Select mode="tags" open={false} aria-label="タグ" onValueChange={onValueChange} />,
+    );
     const box = screen.getByRole("textbox");
     fireEvent.change(box, { target: { value: "とうきょう" } });
     fireEvent.keyDown(box, { key: "Enter", ...init });
@@ -279,7 +280,9 @@ describe("gh#1054 — TagInput", () => {
 
   it("a plain Enter adds the tag", () => {
     const onValueChange = vi.fn();
-    renderWithUi(<TagInput aria-label="タグ" onValueChange={onValueChange} />);
+    renderWithUi(
+      <Select mode="tags" open={false} aria-label="タグ" onValueChange={onValueChange} />,
+    );
     const box = screen.getByRole("textbox");
     fireEvent.change(box, { target: { value: "東京" } });
     fireEvent.keyDown(box, { key: "Enter" });

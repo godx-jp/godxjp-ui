@@ -22,7 +22,6 @@ import {
   Select,
   Slider,
   Switch,
-  TagInput,
   Textarea,
   TimePicker,
   ToggleGroup,
@@ -928,7 +927,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>その他 · TagInput / ToggleGroup / InputOTP / Upload</CardTitle>
+            <CardTitle level={2}>その他 · Select tags / ToggleGroup / InputOTP / Upload</CardTitle>
             <CardDescription>
               タグ入力・セグメント切替・ワンタイムコード・ファイル添付。すべて FormField
               でラベル付けする。
@@ -938,7 +937,9 @@ export default function Demo() {
             <Form>
               <Flex direction="col" gap="md">
                 <FormField id="f-tags" label="ラベル" helper="Enter またはカンマで追加">
-                  <TagInput
+                  <Select
+                    mode="tags"
+                    open={false}
                     value={tags}
                     onValueChange={setTags}
                     placeholder="ラベルを追加…"

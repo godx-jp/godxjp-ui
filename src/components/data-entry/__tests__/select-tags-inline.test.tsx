@@ -2,14 +2,14 @@ import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { TagInput } from "../tag-input";
+import { Select } from "../select";
 
 describe("TagInput", () => {
   it("Enter commits the draft as a tag and clears the field", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     const { getByRole, getByText } = render(
-      <TagInput onValueChange={onValueChange} aria-label="タグ" />,
+      <Select mode="tags" open={false} onValueChange={onValueChange} aria-label="タグ" />,
     );
     const input = getByRole("textbox");
     await user.type(input, "経費{Enter}");
@@ -22,7 +22,13 @@ describe("TagInput", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     const { getByRole } = render(
-      <TagInput defaultValue={["a"]} onValueChange={onValueChange} aria-label="タグ" />,
+      <Select
+        mode="tags"
+        open={false}
+        defaultValue={["a"]}
+        onValueChange={onValueChange}
+        aria-label="タグ"
+      />,
     );
     const input = getByRole("textbox");
     await user.type(input, "b,");
@@ -36,7 +42,13 @@ describe("TagInput", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     const { getByRole } = render(
-      <TagInput defaultValue={["x", "y"]} onValueChange={onValueChange} aria-label="タグ" />,
+      <Select
+        mode="tags"
+        open={false}
+        defaultValue={["x", "y"]}
+        onValueChange={onValueChange}
+        aria-label="タグ"
+      />,
     );
     await user.click(getByRole("textbox"));
     await user.keyboard("{Backspace}");
@@ -47,7 +59,9 @@ describe("TagInput", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     const { getByRole } = render(
-      <TagInput
+      <Select
+        mode="tags"
+        open={false}
         defaultValue={["経費", "交通費"]}
         onValueChange={onValueChange}
         aria-label="タグ"
@@ -62,7 +76,7 @@ describe("TagInput", () => {
     const onValueChange = vi.fn();
     const { getByRole } = render(
       <div>
-        <TagInput onValueChange={onValueChange} aria-label="タグ" />
+        <Select mode="tags" open={false} onValueChange={onValueChange} aria-label="タグ" />
         <button>外</button>
       </div>,
     );
@@ -72,13 +86,15 @@ describe("TagInput", () => {
   });
 
   it("submits the joined value via a hidden input when `name` is set", () => {
-    const { container } = render(<TagInput value={["a", "b"]} name="tags" aria-label="タグ" />);
+    const { container } = render(
+      <Select mode="tags" open={false} value={["a", "b"]} name="tags" aria-label="タグ" />,
+    );
     expect(container.querySelector('input[type="hidden"][name="tags"]')).toHaveValue("a,b");
   });
 
   it("disabled hides the remove buttons and blocks the field", () => {
     const { getByRole, queryByRole } = render(
-      <TagInput value={["a"]} disabled aria-label="タグ" />,
+      <Select mode="tags" open={false} value={["a"]} disabled aria-label="タグ" />,
     );
     expect(getByRole("textbox")).toBeDisabled();
     expect(queryByRole("button")).toBeNull();
@@ -88,7 +104,9 @@ describe("TagInput", () => {
     // The disabled control is dimmed to --disabled-opacity; that composite drops the chip
     // text/background contrast below AA. `aria-disabled` flags it as an inactive control so the
     // rendered a11y check (axe color-contrast) skips it — parity with native disabled controls.
-    const { container } = render(<TagInput value={["a", "b"]} disabled aria-label="タグ" />);
+    const { container } = render(
+      <Select mode="tags" open={false} value={["a", "b"]} disabled aria-label="タグ" />,
+    );
     expect(container.querySelector('[data-slot="tag-input"]')).toHaveAttribute(
       "aria-disabled",
       "true",
@@ -96,7 +114,9 @@ describe("TagInput", () => {
   });
 
   it("enabled does not set aria-disabled (only the disabled state is inactive)", () => {
-    const { container } = render(<TagInput value={["a"]} aria-label="タグ" />);
+    const { container } = render(
+      <Select mode="tags" open={false} value={["a"]} aria-label="タグ" />,
+    );
     expect(container.querySelector('[data-slot="tag-input"]')).not.toHaveAttribute("aria-disabled");
   });
 });
