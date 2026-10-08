@@ -215,7 +215,8 @@ describe("AuthShell", () => {
         <AuthFooter product="Acme ID" terms="Terms" privacy="Privacy" locale="English" />
       </CenteredShell>,
     );
-    expect(container.querySelector('[data-slot="logo"][data-mark="godx"]')).toBeInTheDocument();
+    // v32 (#1220): no preset ⇒ AuthIdentity draws NO product mark; the GoDX mark is the preset's.
+    expect(container.querySelector('[data-slot="logo"][data-mark="godx"]')).toBeNull();
     expect(container.querySelector('[data-slot="auth-requester-icon"]')).toBeInTheDocument();
     expect(getByText("Acme ID")).toBeInTheDocument();
     expect(getByText("English")).toBeInTheDocument();
