@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.6] - 2026-10-08
+
+### 🐛 Table action columns fit their buttons below the collapse step (gh#1206, gh#1207)
+
+Platform: on a narrow table the action-collection column stacked its buttons and spilled them over
+the start edge of the cell (cell 44px, buttons 49/57.6px). The measurement now takes the full extent
+of the actions content, including end-aligned buttons that overflow the start edge, so the column
+measures 74px. That measured width also grows the compact-tier minimum inline size
+(`floor + max(0px, measured − token)`), so a header that used to wrap onto two lines stays on one
+(table 640 → 674px, meta column 86.8 → 91.4px). The
+`--table-action-collection-min-inline-size-compact` default becomes `0px` so the `calc()` resolves.
+
+### 🔧 `check:frame-overflow` no longer passes when it could not look (gh#1210)
+
+When every navigation failed (for example `ERR_UNSAFE_PORT`), the gate logged a warning per frame
+and then printed `✓ … 0 known overflow(s)`, reporting the whole baseline as fixed. Any failed
+navigation now exits 2 with no verdict. The checkout-derived preview port also skips the ports
+browsers refuse (6566, 6665–6669, 6679, 6697); one worktree had landed on 6669. Repo tooling only;
+the published packages do not change because of this.
+
 ## [31.31.5] - 2026-10-08
 
 ### 🐛 A searchable Select works inside a Sheet or Dialog again (gh#1208)

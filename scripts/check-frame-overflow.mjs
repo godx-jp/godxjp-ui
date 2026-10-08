@@ -281,6 +281,8 @@ async function main() {
     Number(process.env.FRAME_CONCURRENCY) || Math.min(SHARED_RUNNER ? 2 : 8, cpuCount()),
   );
 
+  // A navigation that failed measured NOTHING; counted so the verdict below can refuse (gh#1210).
+  let failedNavigations = 0;
   const sweepOne = async (page, vp, id) => {
     await page.goto(`${base}/isolate/${id}`, { waitUntil: "networkidle", timeout: 30000 });
     await page.waitForTimeout(250);
@@ -320,6 +322,7 @@ async function main() {
           try {
             await sweepOne(page, vp, id);
           } catch (e) {
+            failedNavigations += 1;
             console.warn(`  ! ${vp.name} ${id}: ${e.message.slice(0, 80)}`);
           }
         }
@@ -331,6 +334,16 @@ async function main() {
   }
   await browser.close();
   await stopServer?.();
+
+  /* A FAILED NAVIGATION IS NOT A CLEAN FRAME (gh#1210). Swallowed with a warning, every frame
+   * failing (ERR_UNSAFE_PORT, a dead server) produced "0 known overflow(s)" and a green tick, and
+   * reported the whole baseline as FIXED. The gate could not look, so it gives no verdict. */
+  if (failedNavigations > 0) {
+    console.error(
+      `✗ check:frame-overflow — ${failedNavigations} navigation(s) failed; nothing was measured on those frames, so this is not a verdict. Fix the preview/server and re-run.`,
+    );
+    process.exit(2);
+  }
 
   /* THE KEY MUST NOT CONTAIN A MEASUREMENT.
    *
