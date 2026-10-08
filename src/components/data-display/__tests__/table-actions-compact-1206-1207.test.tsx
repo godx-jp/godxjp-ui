@@ -21,7 +21,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
  *
  * gh#1207 — the measured actions width came out of the fixed compact floor
  * (`minInlineSizeCompact`), so the other columns shrank and the JA meta header 「シリアル番号」
- * wrapped 3+3. The excess over the token now grows the floor, and the wrapper scrolls instead.
+ * wrapped 3+3. The fit now measures the width at which the other columns get their room back, and
+ * the wrapper scrolls instead. `#devices` is GoDX ID's /admin/devices shape: three text buttons with
+ * icons, one of them 11 characters long, which the first fix (31.31.6) still lost 3px on.
  */
 
 const ROOT = process.cwd();
@@ -92,6 +94,40 @@ createRoot(document.getElementById("root")).render(
                   <Button variant="outline" size="sm">編集</Button>
                   <Button variant="ghost" size="sm">無効化</Button>
                   <Button variant="ghost" size="sm">削除</Button>
+                </Flex>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+    <div id="devices">
+      <Table preset="action-collection" collapseBelow="sm" columnWidths={{ minInlineSizeCompact: "40rem" }}>
+        <TableHeader>
+          <TableRow>
+            <TableHead priority="primary">名前</TableHead>
+            <TableHead priority="secondary">種別</TableHead>
+            <TableHead priority="secondary">支店</TableHead>
+            <TableHead priority="meta" data-serial="">シリアル番号</TableHead>
+            <TableHead priority="meta">最終接続</TableHead>
+            <TableHead priority="meta">状態</TableHead>
+            <TableHead priority="actions">操作</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {devices.map((d) => (
+            <TableRow key={d[0]}>
+              <TableCell priority="primary"><a href="#">{d[0]}</a></TableCell>
+              <TableCell priority="secondary">{d[1]}</TableCell>
+              <TableCell priority="secondary">{d[2]}</TableCell>
+              <TableCell priority="meta">{d[3]}</TableCell>
+              <TableCell priority="meta">{d[5]}</TableCell>
+              <TableCell priority="meta">有効</TableCell>
+              <TableCell priority="actions">
+                <Flex gap="sm" wrap>
+                  <Button size="sm" variant="outline"><svg width="16" height="16" aria-hidden="true" />クライアントIDを再発行</Button>
+                  <Button size="sm" variant="destructive"><svg width="16" height="16" aria-hidden="true" />無効化</Button>
+                  <Button size="sm" variant="outline" aria-label="PC: 削除"><svg width="16" height="16" aria-hidden="true" />削除</Button>
                 </Flex>
               </TableCell>
             </TableRow>
@@ -234,37 +270,39 @@ describe("action-collection actions column below the collapse step (Chromium, 39
     await page.close();
   });
 
-  it("gh#1207: a measured actions width grows the compact floor instead of shrinking the other columns", async () => {
-    const page = await mount();
-    const m = await page.evaluate(() => {
-      const th = document.querySelector<HTMLElement>("#floor th[data-serial]")!;
-      const range = document.createRange();
-      range.selectNodeContents(th);
-      const tops = new Set([...range.getClientRects()].map((r) => Math.round(r.top)));
-      const table = document.querySelector<HTMLElement>("#floor table")!;
-      return {
-        rem: parseFloat(getComputedStyle(document.documentElement).fontSize),
-        lines: tops.size,
-        metaWidth: th.getBoundingClientRect().width,
-        tableWidth: table.getBoundingClientRect().width,
-        published: parseFloat(
-          getComputedStyle(table).getPropertyValue(
-            "--table-action-collection-actions-content-width",
+  // Without the fit, each 5rem meta column gets 80 × 640 / (512 + 44) ≈ 92.1px of a 40rem table
+  // (six floor-tier columns totalling 32rem, plus the 2.75rem actions token).
+  const BASE_META = (80 * 640) / (512 + 44);
+  for (const id of ["floor", "devices"]) {
+    it(`gh#1207 (${id}): a measured actions width grows the table instead of shrinking the other columns`, async () => {
+      const page = await mount();
+      const m = await page.evaluate((id) => {
+        const th = document.querySelector<HTMLElement>(`#${id} th[data-serial]`)!;
+        const range = document.createRange();
+        range.selectNodeContents(th);
+        const tops = new Set([...range.getClientRects()].map((r) => Math.round(r.top)));
+        const table = document.querySelector<HTMLElement>(`#${id} table`)!;
+        return {
+          rem: parseFloat(getComputedStyle(document.documentElement).fontSize),
+          lines: tops.size,
+          metaWidth: th.getBoundingClientRect().width,
+          tableWidth: table.getBoundingClientRect().width,
+          published: parseFloat(
+            getComputedStyle(table).getPropertyValue(
+              "--table-action-collection-actions-content-width",
+            ),
           ),
-        ),
-      };
+        };
+      }, id);
+      // Precondition: the buttons are wider than the 2.75rem compact token, so the fit publishes.
+      expect(m.published, JSON.stringify(m)).toBeGreaterThan(2.75 * m.rem);
+      // The table outgrows its 40rem floor and the wrapper scrolls ...
+      expect(m.tableWidth, JSON.stringify(m)).toBeGreaterThan(40 * m.rem);
+      // ... and a meta column keeps the room it had before the fit. 31.31.6 grew the floor by
+      // `published − token` and lost ~3px of it on the three-button devices table (89px, 3+3).
+      expect(m.metaWidth, JSON.stringify(m)).toBeGreaterThanOrEqual(BASE_META - 0.5);
+      expect(m.lines, "「シリアル番号」 stays on one line").toBe(1);
+      await page.close();
     });
-    // Precondition: the stacked buttons are wider than the 2.75rem compact token, so the fit
-    // publishes a width (gh#1206).
-    expect(m.published, JSON.stringify(m)).toBeGreaterThan(2.75 * m.rem);
-    // The floor grows by exactly that excess, so the table outgrows its 40rem floor ...
-    expect(
-      Math.abs(m.tableWidth - (40 * m.rem + m.published - 2.75 * m.rem)),
-      JSON.stringify(m),
-    ).toBeLessThanOrEqual(1);
-    // ... and a meta column keeps the share it had with the 2.75rem token (31.0.4: ~92px).
-    expect(m.metaWidth, JSON.stringify(m)).toBeGreaterThanOrEqual(90);
-    expect(m.lines, "「シリアル番号」 stays on one line").toBe(1);
-    await page.close();
-  });
+  }
 });
