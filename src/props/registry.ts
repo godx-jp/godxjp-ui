@@ -3431,7 +3431,7 @@ export const COMPONENT_PROP_REGISTRY = {
   // prop-vocabulary guard governs them too (their fields are mostly Radix/native passthroughs).
   ToggleProp: {
     group: "data-entry",
-    file: "components/ui/toggle.tsx",
+    file: "components/data-entry/toggle.tsx",
     vocabulary: [
       "SizeProp",
       // The control `ShapeProp` verbatim — same three values, same two radius tokens as Button and
@@ -3454,7 +3454,7 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   ToggleGroupProp: {
     group: "data-entry",
-    file: "components/ui/toggle-group.tsx",
+    file: "components/data-entry/toggle-group.tsx",
     vocabulary: [
       "ValueProp",
       "DefaultValueProp",
@@ -3479,7 +3479,7 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   ToggleGroupItemProp: {
     group: "data-entry",
-    file: "components/ui/toggle-group.tsx",
+    file: "components/data-entry/toggle-group.tsx",
     vocabulary: [
       "SizeProp",
       // Reaches the item through the group's context, exactly as `variant`/`size` do (gh#734).
@@ -3510,12 +3510,12 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   RatingProp: {
     group: "data-entry",
-    file: "components/ui/rating.tsx",
+    file: "components/data-entry/rating.tsx",
     vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
   },
   SegmentedProp: {
     group: "data-entry",
-    file: "components/ui/segmented.tsx",
+    file: "components/data-entry/segmented.tsx",
     vocabulary: [
       "ValueProp",
       "DefaultValueProp",
@@ -3528,12 +3528,12 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   PasswordInputProp: {
     group: "data-entry",
-    file: "components/ui/password-input.tsx",
+    file: "components/data-entry/password-input.tsx",
     vocabulary: ["ClassNameProp"],
   },
   PasswordVisibilityToggleProp: {
     group: "data-entry",
-    file: "components/ui/password-input.tsx",
+    file: "components/data-entry/password-input.tsx",
     vocabulary: [],
   },
   PasswordStrengthProp: {

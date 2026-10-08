@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Flex } from "../../layout/flex";
-import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
 
 /**
  * `ToggleGroup wrap` (gh#741).

@@ -5,11 +5,7 @@ import * as RadixCollapsible from "@radix-ui/react-collapsible";
 import { describe, expect, it, vi } from "vitest";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../accordion";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../../data-display/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../collapsible";
 
 /*
  * Phép kiểm SO SÁNH, không phải phép kiểm tự khẳng định.

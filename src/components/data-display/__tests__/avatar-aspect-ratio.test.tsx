@@ -3,7 +3,7 @@ import { act, render } from "@testing-library/react";
 import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AspectRatio } from "../aspect-ratio";
+import { AspectRatio } from "../../layout/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
 
 /*

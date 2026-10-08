@@ -5,7 +5,7 @@ import * as React from "react";
 import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
-import { Segmented } from "../../ui/segmented";
+import { Segmented } from "../segmented";
 
 /**
  * `Segmented` gains the 24px step (gh#719) — the fourth rung Toggle/ToggleGroup took in gh#716.
