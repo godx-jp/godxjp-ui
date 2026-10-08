@@ -4056,7 +4056,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "Button (loading) — THIS action is in flight, on a control. Not an ambient state.",
       "Progress — a DETERMINATE amount is done. Activity's `bar` variant is the indeterminate case, where no percentage exists.",
       "DataState — antd `Spin`'s wrapper form (`<Spin spinning>{children}</Spin>`) over a query: skeleton → prerequisite → empty → error, with cause-aware retry. This is what to reach for when the REGION is loading.",
-      "antd `Spin` — no such component here, by a ruling recorded twice in docs/roadmap/parity-backlog.md and docs/roadmap/parity-audit-data-display-feedback.md §2.20. Its four jobs are Activity / Skeleton / DataState / Button `loading`. Its `delay` (flicker guard) is tracked separately against Button as `loadingDelay`; its `fullscreen` is a Dialog/app-shell concern, not an indicator one.",
+      "antd `Spin` — no such component here, by a standing parity ruling (antd Spin is not ported). Its four jobs are Activity / Skeleton / DataState / Button `loading`. Its `delay` (flicker guard) is tracked separately against Button as `loadingDelay`; its `fullscreen` is a Dialog/app-shell concern, not an indicator one.",
     ],
     example: `import { Activity } from "@godxjp/ui/general";
 
