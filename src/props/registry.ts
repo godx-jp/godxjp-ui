@@ -786,6 +786,8 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/app.prop.ts",
     vocabulary: ["ChildrenProp", "ClassNameProp", "IdProp"],
   },
+  /** Union alias: `AppSettingPickerMenuProp | AppSettingPickerCycleProp`, discriminated by `menu`. */
+  AppSettingPickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: [] },
   AppSettingPickerMenuProp: {
     group: "app",
     file: "components/app.prop.ts",
@@ -1344,6 +1346,8 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: ["DisabledProp", "ClassNameProp"],
     local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction"],
   },
+  /** Union alias: `CenteredShellPageProp | CenteredShellAuthProp`, discriminated by `variant`. */
+  CenteredShellProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   CenteredShellPageProp: {
     group: "layout",
     file: "components/layout.prop.ts",

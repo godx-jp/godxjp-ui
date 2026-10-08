@@ -9,7 +9,7 @@ export {
   PaginationNext,
 } from "./pagination";
 export { Steps } from "./steps";
-export { FilterBar, FilterBarGroup, Toolbar, ToolbarGroup } from "./filter-bar";
+export { FilterBar, FilterBarGroup, Toolbar, ToolbarGroup } from "./toolbar";
 export type {
   FilterBarChipProp,
   FilterBarChipProps,
@@ -24,7 +24,7 @@ export type {
   FilterBarSearchProps,
   ToolbarGroupProps,
   ToolbarProps,
-} from "./filter-bar";
+} from "./toolbar";
 export { AppSettingPicker } from "./app-setting-picker";
 export type {
   AppSettingPickerProp,

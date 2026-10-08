@@ -25,7 +25,7 @@ import type {
  * `TagInput` until v32 folded it into Select (#1223); the props below are the subset of Select's
  * tags contract this presentation reads, with the same token-level knobs antd puts on that mode.
  */
-export type SelectTagsInlineProps = {
+type SelectTagsInlineProps = {
   value?: string[];
   defaultValue?: string[];
   onValueChange?: (tags: string[]) => void;

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
-import { Toolbar, ToolbarGroup } from "../filter-bar";
+import { Toolbar, ToolbarGroup } from "../toolbar";
 
 describe("Toolbar", () => {
   it("renders a labelled toolbar with its children", () => {

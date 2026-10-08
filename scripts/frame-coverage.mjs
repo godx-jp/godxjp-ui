@@ -67,8 +67,6 @@ const FRAME_ALIAS = {
   AreaChart: "charts",
   PieChart: "charts",
   UploadCropDialog: "upload",
-  // alert frame beside the inline variant it re-measures, not in a frame of its own.
-  Banner: "alert",
 };
 
 function walk(dir) {
@@ -293,11 +291,14 @@ function writeReport(cov) {
           `Run \`node scripts/frame-coverage.mjs\`.`,
       );
       // Say WHAT moved: the two counts are the whole story in most cases.
-      const count = (text, label) => text.match(new RegExp(`${label}: \\*\\*(\\d+)\\*\\*`))?.[1] ?? "?";
+      const count = (text, label) =>
+        text.match(new RegExp(`${label}: \\*\\*(\\d+)\\*\\*`))?.[1] ?? "?";
       console.error(
         `    public components: ${count(current, "Public components")} → ${count(body, "Public components")}`,
       );
-      console.error(`    zero-frame: ${count(current, "zero-frame")} → ${count(body, "zero-frame")}`);
+      console.error(
+        `    zero-frame: ${count(current, "zero-frame")} → ${count(body, "zero-frame")}`,
+      );
       process.exit(1);
     }
     console.log(`✓ check:frame-coverage-report — the tracked report matches the frames on disk.`);

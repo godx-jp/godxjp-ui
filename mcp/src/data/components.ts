@@ -10211,6 +10211,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
   // ─── providers / datetime ───────────────────────────────────────────────
   {
     name: "AppProvider",
+    subParts: ["AppPresetContext"],
     group: "providers",
     importPath: "@godxjp/ui/app",
     tagline:
@@ -10297,6 +10298,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
       },
     ],
     usage: [
+      "`AppPresetContext` is the React context AppProvider's `preset` prop fills; read it with `useAppPreset()` (the active `AppPreset`, or undefined for the neutral defaults). Don't provide it yourself — pass `preset` to AppProvider.",
       'DO drive the four theme axes (theme / brand / density / fontSize) from AppProvider props ONLY — they are written to <html data-*> and read by every component via tokens. Never hand-set --font-size-base or .ui-density-* in app CSS; that bypasses persistence + the runtime switchers. For runtime switching mount `<AppSettingPicker kind="density" | "fontSize" | "theme" | "brand" >` or call setDensity/setFontSize/setTheme/setBrand from useAppContext().',
       'DO mount AppProvider ONCE at the application root (e.g. in app.tsx or the Inertia layout), wrapping ALL children — every `AppSettingPicker` (kind="locale" / "timezone" / "dateFormat" / "timeFormat"), every formatDate call, and the Toaster all rely on the single context it provides. Nesting two AppProviders creates split contexts; inner pickers silently read the wrong one.',
       "DO NOT omit AppProvider and then try to use LocalePicker, TimezonePicker, or formatDate standalone — useAppContext() throws 'useAppContext must be used within <AppProvider>' at runtime. The only exception is using those pickers in fully controlled mode (value + onChange) which reads useOptionalAppContext() and returns null safely.",

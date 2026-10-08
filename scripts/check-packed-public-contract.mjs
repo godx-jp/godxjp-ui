@@ -33,7 +33,6 @@ const contracts = [
       "Flex",
       "AppShell",
       "OrgSwitcher",
-      "AuthShell",
       "AuthDivider",
       "AuthIdentity",
       "AuthFooter",
@@ -89,13 +88,13 @@ const contracts = [
     subpath: "./feedback",
     // Pinned in the PACKED artifact
     // regresses silently at publish time).
-    runtime: ["TwoFactorSetup", "Banner"],
-    types: ["TwoFactorSetupProps", "BannerProp", "BannerProps"],
+    runtime: ["TwoFactorSetup", "Alert"],
+    types: ["TwoFactorSetupProps", "AlertProp", "AlertProps"],
     files: [
       "dist/components/feedback/two-factor-setup.js",
       "dist/components/feedback/two-factor-setup.d.ts",
-      "dist/components/feedback/banner.js",
-      "dist/components/feedback/banner.d.ts",
+      "dist/components/feedback/alert.js",
+      "dist/components/feedback/alert.d.ts",
     ],
   },
   {

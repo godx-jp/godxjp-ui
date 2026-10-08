@@ -185,9 +185,7 @@ export function Toolbar({
               key={chip.value}
               variant="outline"
               className="ui-filter-bar-chip"
-              onRemove={
-                onChipRemove ? () => onChipRemove(chip.value) : undefined
-              }
+              onRemove={onChipRemove ? () => onChipRemove(chip.value) : undefined}
               removeDisabled={Boolean(disabled || chip.disabled)}
             >
               {typeof chip.label === "string" ? chip.label : chip.value}
