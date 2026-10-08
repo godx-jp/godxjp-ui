@@ -18,10 +18,12 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CSS_DIRS = ["styles", "tokens", "theme"];
+// Overridable so a test can run the real copy into a scratch dir instead of the repo's dist/.
+const dist = process.env.COPY_STYLES_DIST ?? join(root, "dist");
 
 for (const dir of CSS_DIRS) {
   const from = join(root, "src", dir);
-  const to = join(root, "dist", dir);
+  const to = join(dist, dir);
   if (!existsSync(from)) {
     continue;
   }
@@ -29,9 +31,14 @@ for (const dir of CSS_DIRS) {
   cpSync(from, to, {
     recursive: true,
     // `.woff2` ships too: src/styles/fonts holds the merged JIS level 1 faces that
-    // styles/core-with-jis-level1 points `url()` at (gh#535). Nothing else binary lives here.
+    // styles/core-with-jis-level1 points `url()` at (gh#535). `OFL.txt` rides beside them: the SIL
+    // Open Font License requires its text to travel with the font files (v32 #1221).
     filter: (src) =>
-      src === from || statSync(src).isDirectory() || src.endsWith(".css") || src.endsWith(".woff2"),
+      src === from ||
+      statSync(src).isDirectory() ||
+      src.endsWith(".css") ||
+      src.endsWith(".woff2") ||
+      src.endsWith("OFL.txt"),
   });
 }
 
@@ -44,16 +51,13 @@ const layersFrom = join(root, "src", "styles", "layers.json");
 if (existsSync(layersFrom)) {
   const manifest = JSON.parse(readFileSync(layersFrom, "utf8"));
   manifest.version = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version;
-  writeFileSync(
-    join(root, "dist", "styles", "layers.json"),
-    JSON.stringify(manifest, null, 2) + "\n",
-  );
+  writeFileSync(join(dist, "styles", "layers.json"), JSON.stringify(manifest, null, 2) + "\n");
 }
 
 // Preserved-module output keeps `import ja from "./messages/ja.json"` as-is,
 // so the JSON files must ship next to the emitted i18n modules.
 const messagesFrom = join(root, "src", "i18n", "messages");
-const messagesTo = join(root, "dist", "i18n", "messages");
+const messagesTo = join(dist, "i18n", "messages");
 if (existsSync(messagesFrom)) {
   mkdirSync(messagesTo, { recursive: true });
   cpSync(messagesFrom, messagesTo, {
@@ -66,7 +70,7 @@ if (existsSync(messagesFrom)) {
 // consumer's browser test and a gate cannot read `docs/`. gh#503/#506/#507 each survived four
 // releases on that gap (scripts/gen-measurement-contract.mjs has the numbers).
 const contractsFrom = join(root, "src", "contracts");
-const contractsTo = join(root, "dist", "contracts");
+const contractsTo = join(dist, "contracts");
 if (existsSync(contractsFrom)) {
   mkdirSync(contractsTo, { recursive: true });
   cpSync(contractsFrom, contractsTo, {
@@ -110,6 +114,6 @@ function walk(dir) {
   }
 }
 for (const dir of CSS_DIRS) {
-  const to = join(root, "dist", dir);
+  const to = join(dist, dir);
   if (existsSync(to)) walk(to);
 }
