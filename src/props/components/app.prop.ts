@@ -13,7 +13,7 @@ import type { AppBrand, AppDensity, AppFontSize, AppTheme } from "../../app/them
 import type { AppPreferenceAxis } from "../../app/storage";
 import type {
   AppSettingPickerAppearanceProp,
-  AppSettingToggleAppearanceProp,
+  AppSettingCycleAppearanceProp,
   ChildrenProp,
   ClassNameProp,
   DisabledProp,
@@ -116,7 +116,9 @@ export type AppSettingKind =
  * Replaces the former Locale/Timezone/Date-format/Time-format pickers; pick the target
  * via `kind`. Bound to `<AppProvider>` by default; pass value + onValueChange to control.
  */
-export type AppSettingPickerProp = {
+export type AppSettingPickerMenuProp = {
+  /** `true` (default): open-then-choose from a menu. `false`: see {@link AppSettingPickerCycleProp}. */
+  menu?: true;
   kind: AppSettingKind;
   /**
    * Trigger presentation. `"labeled"` shows the leading icon + the selected value in a control
@@ -140,26 +142,28 @@ export type AppSettingPickerProp = {
 };
 
 /**
- * The {@link AppSettingToggle} subset of {@link AppSettingKind} — the settings whose value set is
+ * The `menu={false}` subset of {@link AppSettingKind} — the settings whose value set is
  * CLOSED and short enough to cycle by tapping. `locale`, `timezone`, `dateFormat` and `brand` are
  * deliberately absent: a 400-entry IANA list (or a palette a service extends) is a menu, not a
  * cycle, and tapping through it is not a control anyone can use.
  */
-export type AppSettingToggleKind = Extract<
+export type AppSettingCycleKind = Extract<
   AppSettingKind,
   "theme" | "density" | "fontSize" | "timeFormat"
 >;
 
 /**
- * @see AppSettingToggle — one BUTTON that steps a single AppProvider setting to its next value and
- * shows that value as its glyph. The no-menu counterpart to {@link AppSettingPickerProp}: same
- * binding contract (context-bound by default, controlled via value + onValueChange), same option
- * order, one tap instead of open-then-choose.
+ * @see AppSettingPicker `menu={false}` — one BUTTON that steps a single AppProvider setting to its
+ * next value and shows that value as its glyph (the former `AppSettingToggle`, v32 #1223). Same
+ * binding contract as the menu (context-bound by default, controlled via value + onValueChange),
+ * same option order, one tap instead of open-then-choose.
  */
-export type AppSettingToggleProp = {
-  kind: AppSettingToggleKind;
-  /** Box the button takes. Default: `"bar"` — a toggle exists for a top bar. */
-  appearance?: AppSettingToggleAppearanceProp;
+export type AppSettingPickerCycleProp = {
+  /** `false`: no menu — each tap steps to the next value. */
+  menu: false;
+  kind: AppSettingCycleKind;
+  /** Box the button takes. Default: `"bar"` — a cycler exists for a top bar. */
+  appearance?: AppSettingCycleAppearanceProp;
   className?: ClassNameProp;
   disabled?: DisabledProp;
   id?: IdProp;
@@ -167,6 +171,9 @@ export type AppSettingToggleProp = {
   value?: ValueProp<string>;
   onValueChange?: OnValueChangeProp<string>;
 };
+
+/** @see AppSettingPicker — the menu (default) or, with `menu={false}`, the one-tap cycler. */
+export type AppSettingPickerProp = AppSettingPickerMenuProp | AppSettingPickerCycleProp;
 
 /** Value exposed by `useAppContext`. */
 export type AppContextValue = {

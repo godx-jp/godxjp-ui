@@ -112,8 +112,9 @@ export type {
   AppContextValue,
   AppSettingKind,
   AppSettingPickerProp,
-  AppSettingToggleKind,
-  AppSettingToggleProp,
+  AppSettingPickerMenuProp,
+  AppSettingPickerCycleProp,
+  AppSettingCycleKind,
   ThemeScopeProp,
 } from "./app.prop";
 export type {

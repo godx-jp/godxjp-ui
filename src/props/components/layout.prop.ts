@@ -1470,7 +1470,7 @@ export type AppLauncherProp = {
    */
   responsive?: "auto" | "popover" | "sheet" | "fullscreen";
   /**
-   * The BOX the trigger takes — the same split `AppSettingToggle` draws, and for the same reason.
+   * The BOX the trigger takes — the same split `AppSettingPicker menu={false}` draws, and for the same reason.
    * `bar` (default) is a `TopbarItem`: a cell as tall as the bar, whose hover is the bar's own
    * surface. `icon` is a square ghost `Button`, for chrome that is NOT a bar — a nav rail, a card
    * header, a toolbar. A `TopbarItem` outside a bar has nothing to bleed to: it stretches to a

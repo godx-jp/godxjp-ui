@@ -164,7 +164,7 @@ import {
   TooltipTrigger,
 } from "@godxjp/ui/feedback";
 import { AuthDivider, Flex, PageContainer, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
-import { AppSettingPicker, AppSettingToggle, Steps, Tabs } from "@godxjp/ui/navigation";
+import { AppSettingPicker, Steps, Tabs } from "@godxjp/ui/navigation";
 
 /* ────────────────────────────────────────────────────────────────────────────────────────────
  * THE ENTIRE THEME LAYER. One scoped block per palette, one per corner step. No component CSS,
@@ -397,7 +397,7 @@ export default function ThemeCustomizationShowcase() {
           end: (
             <Flex align="center" gap="sm" wrap>
               <AppSettingPicker kind="locale" appearance="bar" />
-              <AppSettingToggle kind="theme" appearance="bar" />
+              <AppSettingPicker menu={false} kind="theme" appearance="bar" />
             </Flex>
           ),
         }}

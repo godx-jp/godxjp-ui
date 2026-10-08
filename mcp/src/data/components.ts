@@ -15471,11 +15471,19 @@ export default function PasswordBlock() {
       "TimeFormatPicker",
       "ThemePicker",
       "DensityPicker",
+      "AppSettingToggle",
     ],
     group: "navigation",
     tagline:
       "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat | theme | brand | density | fontSize) — covers locale/format AND the four theme axes. Throws if used without AppProvider AND without controlled value+onValueChange.",
     props: [
+      {
+        name: "menu",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'true (default): open-then-choose from a menu. false: ONE button that steps the setting to its NEXT value on each tap and shows that value as its glyph (theme Sun/Moon/Monitor, density rows, fontSize A-marks, timeFormat text) — only for the closed, short kinds "theme" | "density" | "fontSize" | "timeFormat" (a 400-entry IANA list is a menu, not a cycle). Same binding contract and the same option order as the menu, read from the same constants. Its `appearance` is then "bar" (default — a full-height TopbarItem cell) | "icon" (a square ghost Button off-bar). The accessible name carries the setting AND the current value ("Theme: Dark"). v32 folded `AppSettingToggle` in here.',
+      },
       {
         name: "kind",
         type: '"locale" | "timezone" | "dateFormat" | "timeFormat" | "theme" | "brand" | "density" | "fontSize"',
@@ -15520,6 +15528,11 @@ export default function PasswordBlock() {
       },
     ],
     usage: [
+      'CYCLE (menu={false}): DO: Reach for it in a top bar when the value set is closed and short — <AppSettingPicker menu={false} kind="theme" /> is the light/dark/system switcher, and a dropdown for three values is a menu nobody wanted to open.',
+      'CYCLE (menu={false}): DO: Trust the accessible name — it always names BOTH the setting and the current value ("Theme: Dark"), because the glyph is the only visible state. Never override it with a kind-only aria-label.',
+      "CYCLE (menu={false}): DON'T: Set a height, a radius or a background on it in a bar. The bar cell shape is TopbarItem's, and any utility you add outranks @layer components and re-creates the floating-pill defect.",
+      "CYCLE (menu={false}): DON'T: Reach for it for locale, timezone, dateFormat or brand — those are not in `kind` on purpose. Use AppSettingPicker.",
+      "CYCLE (menu={false}): DON'T: Hand-roll a theme button with useAppContext + a Sun/Moon ternary — that loses the localized value-bearing name, the shared option order, and the bar-cell shape.",
       "DO: Mount inside <AppProvider> for zero-config use — the picker reads and writes the context value named by kind, no value/onValueChange needed.",
       "DO: Use controlled mode (value + onValueChange) when managing state outside AppProvider, e.g. a standalone settings form or a Storybook story. Both are required together in this mode.",
       "DO NOT: Render without AppProvider and without both controlled props — it throws 'AppSettingPicker requires <AppProvider> or controlled value + onValueChange'.",
@@ -15529,6 +15542,10 @@ export default function PasswordBlock() {
       "DON'T hand-roll a locale/timezone/format Select — AppSettingPicker already composes Select + the right icon + translated, context-wired options. There is no separate LocalePicker/TimezonePicker/DateFormatPicker/TimeFormatPicker anymore; use kind.",
     ],
     useCases: [
+      'CYCLE (menu={false}): Topbar light/dark/system switcher: <AppSettingPicker menu={false} kind="theme" /> in a Topbar `end` slot, beside the other TopbarItem cells.',
+      'CYCLE (menu={false}): Density or font-size step-through in an admin bar, for users who resize the grid all day: <AppSettingPicker menu={false} kind="density" />.',
+      'CYCLE (menu={false}): Clock-format flip (24h/12h) next to a schedule view: <AppSettingPicker menu={false} kind="timeFormat" /> — the only kind that shows its value as text, since no glyph can say "24-hour".',
+      'CYCLE (menu={false}): Settings row outside a bar: <AppSettingPicker menu={false} kind="theme" appearance="icon" /> beside its label.',
       'App-shell top-nav language switcher: <AppSettingPicker kind="locale" /> under AppProvider, persisting to localStorage with no extra state.',
       'Topbar locale switcher (globe): <AppSettingPicker kind="locale" appearance="bar" /> in a Topbar `end` slot — a CELL of the bar: full bar height, squared to --topbar-item-radius, so its hover surface matches the TopbarItem beside it. appearance="icon" is the same structural drops shaped as a CONTROL, for a toolbar or card header; in a taller bar it leaves a --control-height pill floating mid-strip and reads as a foreign control family. This line said "icon" while the prop doc said "bar", and a consumer duly shipped the pill.',
       'Auth-footer locale switch: <AppSettingPicker kind="locale" appearance="labeled" compact /> inside an <AuthFooter locale={…}> slot — the readable language name at the small control tier, hugging its value.',
@@ -15574,94 +15591,6 @@ export function TopbarLocale() {
   return <Topbar end={<AppSettingPicker kind="locale" appearance="bar" />} />;
 }\`}`,
     storyPath: "navigation/AppSettingPicker.stories.tsx",
-    rules: [3, 5, 6, 23],
-  },
-  {
-    name: "AppSettingToggle",
-    group: "navigation",
-    tagline:
-      "ONE button that steps a single AppProvider setting to its NEXT value and shows that value as its glyph — theme (Sun/Moon/Monitor), density, fontSize, timeFormat. The no-menu counterpart to AppSettingPicker: same binding contract, same option order, one tap instead of open-then-choose. Renders disabled (never throws) outside AppProvider when uncontrolled.",
-    props: [
-      {
-        name: "kind",
-        type: '"theme" | "density" | "fontSize" | "timeFormat"',
-        description:
-          "Which AppProvider setting this button cycles. Deliberately the CLOSED-value-set subset of AppSettingKind — locale/timezone/dateFormat/brand are absent because a long or service-extensible list is a menu, not a cycle; reach for AppSettingPicker there. The cycle order is the SAME list AppSettingPicker offers for that kind (APP_THEMES / APP_DENSITIES / APP_FONT_SIZES / APP_TIME_FORMAT_OPTIONS), read from those constants rather than copied, so the two controls can never drift.",
-      },
-      {
-        name: "appearance",
-        type: '"bar" | "icon"',
-        defaultValue: '"bar"',
-        description:
-          'The BOX the button takes; there is no labeled/inline form because there is no menu to label. "bar" (default) renders a TopbarItem — a CELL of the bar: it stretches to the full bar height (AppShell grid row, --topbar-height, or the coarse-pointer bar), squares its corners to --topbar-item-radius, and paints the bar\'s own hover surface across the whole strip. It emits NO height of its own, deliberately: a length here would freeze a --control-height pill inside a taller bar, which is exactly the mismatch it exists to remove. "icon" is a square --control-height ghost Button for everywhere that is NOT a bar (a settings row, a card header); the kinds that show value TEXT (timeFormat) take the small labelled tier instead of a square that would clip them.',
-      },
-      {
-        name: "value",
-        type: "string",
-        description:
-          "Controlled value for the chosen kind. Omit to read the current value from AppProvider context.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description:
-          "Controlled change handler, called with the NEXT value in the cycle. Omit to call the matching AppProvider setter (setTheme/setDensity/setFontSize/setTimeFormat). Required together with value when no AppProvider is present.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Extra CSS classes merged onto the button.",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        description: "Disables the button.",
-      },
-      {
-        name: "id",
-        type: "string",
-        description: "HTML id forwarded to the button.",
-      },
-    ],
-    usage: [
-      'DO: Reach for it in a top bar when the value set is closed and short — <AppSettingToggle kind="theme" /> is the light/dark/system switcher, and a dropdown for three values is a menu nobody wanted to open.',
-      'DO: Trust the accessible name — it always names BOTH the setting and the current value ("Theme: Dark"), because the glyph is the only visible state. Never override it with a kind-only aria-label.',
-      "DON'T: Set a height, a radius or a background on it in a bar. The bar cell shape is TopbarItem's, and any utility you add outranks @layer components and re-creates the floating-pill defect.",
-      "DON'T: Reach for it for locale, timezone, dateFormat or brand — those are not in `kind` on purpose. Use AppSettingPicker.",
-      "DON'T: Hand-roll a theme button with useAppContext + a Sun/Moon ternary — that loses the localized value-bearing name, the shared option order, and the bar-cell shape.",
-    ],
-    useCases: [
-      'Topbar light/dark/system switcher: <AppSettingToggle kind="theme" /> in a Topbar `end` slot, beside the other TopbarItem cells.',
-      'Density or font-size step-through in an admin bar, for users who resize the grid all day: <AppSettingToggle kind="density" />.',
-      'Clock-format flip (24h/12h) next to a schedule view: <AppSettingToggle kind="timeFormat" /> — the only kind that shows its value as text, since no glyph can say "24-hour".',
-      'Settings row outside a bar: <AppSettingToggle kind="theme" appearance="icon" /> beside its label.',
-    ],
-    related: [
-      "AppSettingPicker — the same settings as a Select. Use it when the value list is long (locale, timezone) or when the user must SEE the options before choosing.",
-      'TopbarItem — the bar-cell shape appearance="bar" renders; use it directly for your own bar triggers.',
-      "AppProvider — required peer unless fully controlled; supplies the value and the setter for each kind.",
-    ],
-    example: `{\`import { AppProvider } from "@godxjp/ui/app";
-import { Topbar } from "@godxjp/ui/layout";
-import { AppSettingToggle } from "@godxjp/ui/navigation";
-
-// Context-bound: one tap steps light -> dark -> system -> light.
-export function AppBar() {
-  return (
-    <AppProvider>
-      <Topbar end={<AppSettingToggle kind="theme" />} />
-    </AppProvider>
-  );
-}
-
-// Controlled - no AppProvider required.
-import { useState } from "react";
-
-export function ThemeField() {
-  const [theme, setTheme] = useState("light");
-  return <AppSettingToggle kind="theme" appearance="icon" value={theme} onValueChange={setTheme} />;
-}\`}`,
-    storyPath: "navigation/AppSettingToggle.stories.tsx",
     rules: [3, 5, 6, 23],
   },
   {
@@ -17045,7 +16974,7 @@ import { Badge } from "@godxjp/ui/data-display";
         type: '"bar" | "icon"',
         defaultValue: '"bar"',
         description:
-          "The BOX the trigger takes — the same split AppSettingToggle draws, for the same reason. `bar` (default) is a TopbarItem: a cell as tall as the bar, whose hover IS the bar's surface. `icon` is a square ghost Button, for chrome that is NOT a bar — a nav rail (GoDX Dock puts it there), a card header, a toolbar. A TopbarItem outside a bar has nothing to bleed to: it stretches to a container that never set a band height, and its squared corners and full-bleed hover read as a broken cell rather than a control. The panel, the grid, the labels and the responsive contract are identical in both.",
+          "The BOX the trigger takes — the same split `AppSettingPicker menu={false}` draws, for the same reason. `bar` (default) is a TopbarItem: a cell as tall as the bar, whose hover IS the bar's surface. `icon` is a square ghost Button, for chrome that is NOT a bar — a nav rail (GoDX Dock puts it there), a card header, a toolbar. A TopbarItem outside a bar has nothing to bleed to: it stretches to a container that never set a band height, and its squared corners and full-bleed hover read as a broken cell rather than a control. The panel, the grid, the labels and the responsive contract are identical in both.",
       },
       {
         name: "side",

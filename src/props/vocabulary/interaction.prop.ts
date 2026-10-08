@@ -269,7 +269,8 @@ export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";
 export type AppSettingPickerAppearanceProp = "labeled" | "icon" | "bar" | "inline";
 
 /**
- * AppSettingToggle presentation. The toggle has no menu, so it has no `labeled`/`inline` form —
+ * `AppSettingPicker menu={false}` presentation (the former AppSettingToggle, v32 #1223). The
+ * cycler has no menu, so it has no `labeled`/`inline` form —
  * the two members here are the two BOXES a one-tap cycler can take.
  * - `bar` (default) — a CELL of the bar (`TopbarItem`): full bar height, the bar's own hover
  *   surface, square corners (`--topbar-item-radius`). This is the canonical placement, which is
@@ -278,7 +279,7 @@ export type AppSettingPickerAppearanceProp = "labeled" | "icon" | "bar" | "inlin
  *   settings row, a card header). In a taller bar this leaves a pill floating mid-strip, which is
  *   the defect `bar` exists to avoid.
  */
-export type AppSettingToggleAppearanceProp = "bar" | "icon";
+export type AppSettingCycleAppearanceProp = "bar" | "icon";
 
 /** Button size preset. */
 export type SizeProp = "xs" | "sm" | "md" | "lg";

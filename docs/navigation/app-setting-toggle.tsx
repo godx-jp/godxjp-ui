@@ -10,10 +10,10 @@ import {
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, Topbar } from "@godxjp/ui/layout";
-import { AppSettingToggle } from "@godxjp/ui/navigation";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
- * AppSettingToggle — ONE button that steps a single AppProvider setting to its next value and
+ * AppSettingPicker menu={false} (formerly AppSettingToggle) — ONE button that steps a single AppProvider setting to its next value and
  * shows that value as its glyph. The no-menu counterpart to AppSettingPicker: same binding
  * contract, same option order, one tap instead of open-then-choose. `appearance="bar"` (the
  * default) is a CELL of the bar — full bar height, the bar's own hover surface, square corners.
@@ -22,7 +22,7 @@ export default function Demo() {
   return (
     <AppProvider defaultLocale="ja" defaultTimeFormat="24h" persist={false}>
       <PageContainer
-        title="AppSettingToggle"
+        title="AppSettingPicker · cycle"
         subtitle="押すたびに次の値へ送る 1 ボタン。ドロップダウンなし。"
       >
         <Flex direction="col" gap="lg">
@@ -43,10 +43,14 @@ export default function Demo() {
                 }
                 end={
                   <>
-                    <AppSettingToggle kind="theme" id="topbar-theme-toggle" />
-                    <AppSettingToggle kind="density" id="topbar-density-toggle" />
-                    <AppSettingToggle kind="fontSize" id="topbar-font-size-toggle" />
-                    <AppSettingToggle kind="timeFormat" id="topbar-time-format-toggle" />
+                    <AppSettingPicker menu={false} kind="theme" id="topbar-theme-toggle" />
+                    <AppSettingPicker menu={false} kind="density" id="topbar-density-toggle" />
+                    <AppSettingPicker menu={false} kind="fontSize" id="topbar-font-size-toggle" />
+                    <AppSettingPicker
+                      menu={false}
+                      kind="timeFormat"
+                      id="topbar-time-format-toggle"
+                    />
                   </>
                 }
               />
@@ -65,11 +69,17 @@ export default function Demo() {
               <Flex direction="row" gap="md" align="center" wrap>
                 <Flex direction="row" gap="sm" align="center">
                   <Text weight="medium">テーマ</Text>
-                  <AppSettingToggle kind="theme" appearance="icon" id="icon-theme-toggle" />
+                  <AppSettingPicker
+                    menu={false}
+                    kind="theme"
+                    appearance="icon"
+                    id="icon-theme-toggle"
+                  />
                 </Flex>
                 <Flex direction="row" gap="sm" align="center">
                   <Text weight="medium">時刻形式</Text>
-                  <AppSettingToggle
+                  <AppSettingPicker
+                    menu={false}
                     kind="timeFormat"
                     appearance="icon"
                     id="icon-time-format-toggle"
@@ -88,14 +98,16 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex direction="row" gap="md" align="center">
-                <AppSettingToggle
+                <AppSettingPicker
+                  menu={false}
                   kind="density"
                   appearance="icon"
                   value="comfortable"
                   onValueChange={() => {}}
                   id="controlled-density-toggle"
                 />
-                <AppSettingToggle
+                <AppSettingPicker
+                  menu={false}
                   kind="theme"
                   appearance="icon"
                   disabled

@@ -75,7 +75,7 @@ export type {
   ButtonSizeProp,
   BadgeVariantProp,
   AppSettingPickerAppearanceProp,
-  AppSettingToggleAppearanceProp,
+  AppSettingCycleAppearanceProp,
   ShapeProp,
   AvatarShapeProp,
   TextSizeProp,

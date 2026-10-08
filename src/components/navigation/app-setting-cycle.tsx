@@ -18,15 +18,12 @@ import type { AppTimeFormat } from "../../app/time-formats";
 import { APP_DENSITIES, APP_FONT_SIZES, APP_THEMES } from "../../app/theme-axes";
 import { useOptionalAppContext } from "../../app/app-provider";
 import { useTranslation } from "../../i18n/use-translation";
-import type { AppSettingToggleKind, AppSettingToggleProp } from "../../props/components/app.prop";
+import type {
+  AppSettingCycleKind,
+  AppSettingPickerCycleProp,
+} from "../../props/components/app.prop";
 import { Button } from "../general/button";
 import { TopbarItem } from "../layout/topbar-item";
-
-export type {
-  AppSettingToggleKind,
-  AppSettingToggleProp,
-  AppSettingToggleProp as AppSettingToggleProps,
-} from "../../props/components/app.prop";
 
 /**
  * The cycle order, taken FROM THE SAME CONSTANTS `AppSettingPicker` builds its option list from.
@@ -34,7 +31,7 @@ export type {
  * while the button skipped it. `timeFormat` reads the picker's own option objects for the same
  * reason.
  */
-const VALUES: Record<AppSettingToggleKind, readonly string[]> = {
+const VALUES: Record<AppSettingCycleKind, readonly string[]> = {
   theme: APP_THEMES,
   density: APP_DENSITIES,
   fontSize: APP_FONT_SIZES,
@@ -50,7 +47,7 @@ const VALUES: Record<AppSettingToggleKind, readonly string[]> = {
  * `fontSize` uses lucide's dedicated type-size marks (small-A-down / mixed / large-A-up).
  * A kind with NO glyph set that can say its value is absent from this map by design.
  */
-const VALUE_ICON: Record<AppSettingToggleKind, Record<string, LucideIcon>> = {
+const VALUE_ICON: Record<AppSettingCycleKind, Record<string, LucideIcon>> = {
   theme: { light: Sun, dark: Moon, system: Monitor },
   density: { compact: Rows4, default: Rows3, comfortable: Rows2 },
   fontSize: { sm: AArrowDown, default: ALargeSmall, lg: AArrowUp },
@@ -60,7 +57,7 @@ const VALUE_ICON: Record<AppSettingToggleKind, Record<string, LucideIcon>> = {
 };
 
 /** Fallback glyph when the value has no mark of its own — it accompanies the value TEXT. */
-const KIND_ICON: Record<AppSettingToggleKind, LucideIcon> = {
+const KIND_ICON: Record<AppSettingCycleKind, LucideIcon> = {
   theme: Sun,
   density: Rows3,
   fontSize: ALargeSmall,
@@ -68,7 +65,7 @@ const KIND_ICON: Record<AppSettingToggleKind, LucideIcon> = {
 };
 
 /** Same keys `AppSettingPicker` names its trigger with, so both controls say one thing. */
-const ARIA_KEY: Record<AppSettingToggleKind, string> = {
+const ARIA_KEY: Record<AppSettingCycleKind, string> = {
   theme: "navigation.themePicker.ariaLabel",
   density: "navigation.densityPicker.ariaLabel",
   fontSize: "navigation.fontSizePicker.ariaLabel",
@@ -76,7 +73,7 @@ const ARIA_KEY: Record<AppSettingToggleKind, string> = {
 };
 
 /**
- * AppSettingToggle — ONE button that steps a single AppProvider setting to its next value.
+ * `AppSettingPicker menu={false}` (the former AppSettingToggle, v32 #1223) — ONE button that steps a single AppProvider setting to its next value.
  *
  * The no-menu counterpart to {@link AppSettingPicker}: same binding contract, same option order,
  * one tap instead of open-then-choose. Reach for it when the value set is closed and short (theme,
@@ -87,8 +84,8 @@ const ARIA_KEY: Record<AppSettingToggleKind, string> = {
  * glyph is the only visible state and a screen-reader user would otherwise be told only which
  * setting they are standing on, never where it currently is.
  */
-export const AppSettingToggle = React.forwardRef<HTMLButtonElement, AppSettingToggleProp>(
-  function AppSettingToggle(
+export const AppSettingCycle = React.forwardRef<HTMLButtonElement, AppSettingPickerCycleProp>(
+  function AppSettingCycle(
     { kind, appearance = "bar", className, disabled, id, value, onValueChange },
     ref,
   ) {

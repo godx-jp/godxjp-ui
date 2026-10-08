@@ -461,11 +461,11 @@ export const VOCABULARY_REGISTRY = {
     description:
       "AppSettingPicker trigger presentation: labeled (icon + value) | icon (square icon-only topbar trigger) | inline (compact text footer trigger)",
   },
-  AppSettingToggleAppearanceProp: {
+  AppSettingCycleAppearanceProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
     description:
-      "AppSettingToggle box: bar (default — a full-height CELL of the bar, TopbarItem shape) | icon (square --control-height ghost button for anywhere that is not a bar)",
+      "AppSettingPicker menu={false} box: bar (default — a full-height CELL of the bar, TopbarItem shape) | icon (square --control-height ghost button for anywhere that is not a bar)",
   },
   ShapeProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -786,7 +786,7 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/app.prop.ts",
     vocabulary: ["ChildrenProp", "ClassNameProp", "IdProp"],
   },
-  AppSettingPickerProp: {
+  AppSettingPickerMenuProp: {
     group: "app",
     file: "components/app.prop.ts",
     vocabulary: [
@@ -802,9 +802,15 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "Trigger DENSITY for the picker only (sm control tier + content-hugging width) — orthogonal to `appearance`, and not the page-level DensityProp scope.",
       },
+      {
+        field: "menu",
+        local: true,
+        reason:
+          "AppSettingPicker presentation discriminant — true (default) is the open-then-choose menu.",
+      },
     ],
   },
-  AppSettingToggleProp: {
+  AppSettingPickerCycleProp: {
     group: "app",
     file: "components/app.prop.ts",
     vocabulary: [
@@ -813,7 +819,13 @@ export const COMPONENT_PROP_REGISTRY = {
       "DisabledProp",
       "IdProp",
       "ClassNameProp",
-      "AppSettingToggleAppearanceProp",
+      "AppSettingCycleAppearanceProp",
+      {
+        field: "menu",
+        local: true,
+        reason:
+          "AppSettingPicker presentation discriminant — false is the one-tap cycler (the former AppSettingToggle, v32 #1223).",
+      },
     ],
   },
   PageContainerHeaderLayoutProp: {

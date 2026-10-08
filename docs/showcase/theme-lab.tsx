@@ -294,7 +294,6 @@ import {
 import {
   Anchor,
   AppSettingPicker,
-  AppSettingToggle,
   Conversations,
   DropdownMenu,
   DropdownMenuContent,
@@ -470,7 +469,7 @@ export default function ThemeLabShowcase() {
    * Polarity, applied THE WAY THE LIBRARY ITSELF APPLIES IT: through `AppProvider`'s own `theme`
    * axis (`src/app/theme-axes.ts`'s `applyThemeAxes`, which is what `AppProvider` calls on
    * `<html data-theme>`), never by writing `document.documentElement` from this page. Going
-   * through `ctx.setTheme` — the exact setter `AppSettingToggle kind="theme"` already uses above —
+   * through `ctx.setTheme` — the exact setter `AppSettingPicker menu={false} kind="theme"` already uses above —
    * sets `AppProvider`'s OWN state, so ITS OWN effect is what reaches the DOM; this page never
    * touches `document.documentElement` for polarity.
    *
@@ -640,7 +639,7 @@ export default function ThemeLabShowcase() {
       end={
         <Flex direction="row" gap="sm" align="center">
           <AppSettingPicker kind="locale" appearance="bar" />
-          <AppSettingToggle kind="theme" />
+          <AppSettingPicker menu={false} kind="theme" />
           <Popover>
             <PopoverTrigger asChild>
               <TopbarItem

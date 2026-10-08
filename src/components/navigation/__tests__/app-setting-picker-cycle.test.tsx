@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
 
-import { AppSettingToggle } from "../app-setting-toggle";
+import { AppSettingPicker } from "../app-setting-picker";
 import { APP_DENSITIES, APP_THEMES } from "../../../app/theme-axes";
 import { cleanup, renderWithUi, screen, userEvent } from "@/test/render";
 
@@ -28,7 +28,7 @@ describe("AppSettingToggle", () => {
     // này bắt được cả một `next` đứng yên lẫn một vòng không khép (không quay về phần tử đầu).
     let current: string = APP_THEMES[0];
     const { rerender } = renderWithUi(
-      <AppSettingToggle kind="theme" value={current} onValueChange={onValueChange} />,
+      <AppSettingPicker menu={false} kind="theme" value={current} onValueChange={onValueChange} />,
     );
 
     const seen: string[] = [];
@@ -36,7 +36,14 @@ describe("AppSettingToggle", () => {
       await user.click(screen.getByRole("button"));
       current = onValueChange.mock.calls[step][0];
       seen.push(current);
-      rerender(<AppSettingToggle kind="theme" value={current} onValueChange={onValueChange} />);
+      rerender(
+        <AppSettingPicker
+          menu={false}
+          kind="theme"
+          value={current}
+          onValueChange={onValueChange}
+        />,
+      );
     }
 
     // light → dark → system → light: đúng thứ tự APP_THEMES, và bước cuối khép vòng.
@@ -47,7 +54,12 @@ describe("AppSettingToggle", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <AppSettingToggle kind="density" value={APP_DENSITIES[0]} onValueChange={onValueChange} />,
+      <AppSettingPicker
+        menu={false}
+        kind="density"
+        value={APP_DENSITIES[0]}
+        onValueChange={onValueChange}
+      />,
     );
     await user.click(screen.getByRole("button"));
     expect(onValueChange).toHaveBeenCalledWith(APP_DENSITIES[1]);
@@ -56,7 +68,9 @@ describe("AppSettingToggle", () => {
   it("icon đổi theo GIÁ TRỊ, không đứng yên ở glyph của kind", () => {
     const glyphs = APP_THEMES.map((theme) => {
       cleanup();
-      renderWithUi(<AppSettingToggle kind="theme" value={theme} onValueChange={vi.fn()} />);
+      renderWithUi(
+        <AppSettingPicker menu={false} kind="theme" value={theme} onValueChange={vi.fn()} />,
+      );
       return glyphOf(screen.getByRole("button"));
     });
     // lucide gắn `lucide-sun` / `lucide-moon` / `lucide-monitor` vào <svg>: ba giá trị, ba glyph.
@@ -65,14 +79,18 @@ describe("AppSettingToggle", () => {
   });
 
   it("aria-label mang CẢ tên setting lẫn giá trị hiện tại, và đổi theo giá trị", () => {
-    renderWithUi(<AppSettingToggle kind="theme" value="light" onValueChange={vi.fn()} />);
+    renderWithUi(
+      <AppSettingPicker menu={false} kind="theme" value="light" onValueChange={vi.fn()} />,
+    );
     const light = screen.getByRole("button").getAttribute("aria-label") ?? "";
     // vi (locale mặc định của renderWithUi): "Giao diện: Sáng"
     expect(light).toContain("Giao diện");
     expect(light).toContain("Sáng");
 
     cleanup();
-    renderWithUi(<AppSettingToggle kind="theme" value="dark" onValueChange={vi.fn()} />);
+    renderWithUi(
+      <AppSettingPicker menu={false} kind="theme" value="dark" onValueChange={vi.fn()} />,
+    );
     const dark = screen.getByRole("button").getAttribute("aria-label") ?? "";
     expect(dark).toContain("Giao diện");
     expect(dark).toContain("Tối");
@@ -82,12 +100,14 @@ describe("AppSettingToggle", () => {
 
   it("ngoài <AppProvider> và không controlled: render disabled, KHÔNG throw", () => {
     // plain render → useOptionalAppContext() undefined → unbound → disabled
-    const { getByRole } = render(<AppSettingToggle kind="theme" />);
+    const { getByRole } = render(<AppSettingPicker menu={false} kind="theme" />);
     expect(getByRole("button")).toBeDisabled();
   });
 
   it('appearance="bar" KHÔNG phát chiều cao cố định — nó là CELL của bar, không phải viên thuốc trong bar', () => {
-    renderWithUi(<AppSettingToggle kind="theme" value="light" onValueChange={vi.fn()} />);
+    renderWithUi(
+      <AppSettingPicker menu={false} kind="theme" value="light" onValueChange={vi.fn()} />,
+    );
     const button = screen.getByRole("button");
     // Hình dạng đến từ `.ui-topbar-item`, không phải từ một con số của riêng component này.
     expect(button).toHaveClass("ui-topbar-item");
