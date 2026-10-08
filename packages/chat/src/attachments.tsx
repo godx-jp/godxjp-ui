@@ -3,20 +3,20 @@
 import * as React from "react";
 import { FileIcon, ImagePlus, Plus, X } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { formatBytes } from "../../lib/format";
-import { cn } from "../../lib/utils";
-import { Button } from "../general/button";
-import { Progress } from "../data-display/progress";
-import { createUploadItem, type UploadFileItem } from "./upload-types";
-import { readDroppedFiles } from "./upload-files";
+import { useTranslation } from "@godxjp/ui/i18n";
+import { formatBytes } from "@godxjp/ui/admin";
+import { cn } from "@godxjp/ui/lib/utils";
+import { Button } from "@godxjp/ui/general";
+import { Progress } from "@godxjp/ui/data-display";
+import { createUploadItem, type UploadFileItem } from "@godxjp/ui/data-entry";
+import { readDroppedFiles } from "@godxjp/ui/data-entry";
 
 import type {
   AttachmentsItemProp,
   AttachmentsPlaceholderProp,
   AttachmentsProp,
   AttachmentsRefProp,
-} from "../../props/components/data-entry.prop";
+} from "@godxjp/ui/props/components";
 
 export type {
   AttachmentsProp,
@@ -25,7 +25,7 @@ export type {
   AttachmentsPlaceholderProp,
   AttachmentsOverflowProp,
   AttachmentsRefProp,
-} from "../../props/components/data-entry.prop";
+} from "@godxjp/ui/props/components";
 
 const AttachmentContext = React.createContext<{ disabled?: boolean }>({ disabled: false });
 

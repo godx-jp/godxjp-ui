@@ -8,14 +8,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  ChatBubble,
-  ChatBubbleList,
-  type ChatBubbleProp,
-  type ChatMessageProp,
 } from "@godxjp/ui/data-display";
 import { formatAppTime } from "@godxjp/ui/datetime";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
+import { ChatBubble, ChatBubbleList } from "@godxjp/chat";
+import type { ChatBubbleProp, ChatMessageProp } from "@godxjp/chat";
 
 /**
  * ChatBubble · ChatBubbleList — 会話の1発言と、その発言が流れるフィード。

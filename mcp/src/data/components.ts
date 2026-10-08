@@ -16791,6 +16791,7 @@ import { ServiceRolePanel } from "@godxjp/ui/layout";
   },
   {
     name: "ChatBubble",
+    importPath: "@godxjp/chat",
     group: "data-display",
     tagline:
       "One message in a conversation: an author mark, a header naming the turn, the body, and a footer. Renders as an <article> inside ChatBubbleList's log; `loading` shows Skeleton and `typing` streams a string in, dropping the animation entirely under prefers-reduced-motion.",
@@ -16889,7 +16890,8 @@ import { ServiceRolePanel } from "@godxjp/ui/layout";
       "Prose — use it inside `children` when the assistant returns rendered Markdown; ChatBubble owns the container, Prose owns the typography of the body.",
       "Skeleton — what `loading` renders. Do not compose it yourself around a bubble; the prop also sets aria-busy and the localized status line.",
     ],
-    example: `import { Avatar, AvatarFallback, ChatBubble } from "@godxjp/ui/data-display";
+    example: `import { Avatar, AvatarFallback } from "@godxjp/ui/data-display";
+import { ChatBubble } from "@godxjp/chat";
 import { formatAppTime } from "@godxjp/ui/datetime";
 
 <ChatBubble
@@ -16916,6 +16918,7 @@ import { formatAppTime } from "@godxjp/ui/datetime";
   },
   {
     name: "ChatBubbleList",
+    importPath: "@godxjp/chat",
     group: "data-display",
     tagline:
       'The message feed. It owns STICK-TO-BOTTOM (auto-scroll only while the reader is already at the bottom; the moment they scroll up the pin is revoked and a focusable jump-to-latest button appears), one aria-live="polite" role="log" region for the whole conversation, and per-role bubble defaults.',
@@ -16973,7 +16976,7 @@ import { formatAppTime } from "@godxjp/ui/datetime";
       "Timeline — an ordered event rail with no scale and no live region. Use Timeline for a record's history, ChatBubbleList for a dialogue.",
       "DataTable — for many rows that need sorting, filtering and pagination. A conversation is neither sorted nor paged.",
     ],
-    example: `import { ChatBubbleList, type ChatMessageProp } from "@godxjp/ui/data-display";
+    example: `import { ChatBubbleList, type ChatMessageProp } from "@godxjp/chat";
 
 const messages: ChatMessageProp[] = [
   { id: "m1", role: "assistant", content: "How can I help?" },
@@ -16996,6 +16999,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "ChatComposer",
+    importPath: "@godxjp/chat",
     group: "data-entry",
     tagline:
       "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter / Shift+Enter / ⌘-or-Ctrl+Enter is configurable and never fires during an IME conversion.",
@@ -17154,7 +17158,7 @@ const messages: ChatMessageProp[] = [
       "SearchInput — a single-line query field; a composer is multi-line and holds a draft.",
     ],
     example: [
-      'import { ChatComposer } from "@godxjp/ui/data-entry";',
+      'import { ChatComposer } from "@godxjp/chat";',
       "",
       'const [draft, setDraft] = useState("");',
       "const [streaming, setStreaming] = useState(false);",
@@ -17175,6 +17179,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "ChatSuggestion",
+    importPath: "@godxjp/chat",
     group: "data-entry",
     tagline:
       "Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it.",
@@ -17273,7 +17278,7 @@ const messages: ChatMessageProp[] = [
       "Select (showSearch) — the searchable single-select; a suggestion list edits free text, it does not hold a value.",
     ],
     example: [
-      'import { ChatComposer, ChatSuggestion } from "@godxjp/ui/data-entry";',
+      'import { ChatComposer, ChatSuggestion } from "@godxjp/chat";',
       "",
       'const [draft, setDraft] = useState("");',
       "",
@@ -17300,6 +17305,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "Conversations",
+    importPath: "@godxjp/chat",
     group: "navigation",
     tagline:
       "The session rail of a chat surface (Ant Design X Conversations): past conversations, the current one marked with aria-current, a per-row overflow menu, and recency buckets \u2014 the whole rail one roving-tabindex tab stop, not one tab stop per conversation.",
@@ -17373,7 +17379,7 @@ const messages: ChatMessageProp[] = [
       "DropdownMenu \u2014 what the per-row `menu` renders; compose it directly when the menu is not attached to a conversation row.",
     ],
     example: [
-      'import { Conversations } from "@godxjp/ui/navigation";',
+      'import { Conversations } from "@godxjp/chat";',
       "",
       'const [active, setActive] = useState("c1");',
       "",
@@ -17555,6 +17561,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "Welcome",
+    importPath: "@godxjp/chat",
     group: "data-display",
     tagline:
       "The greeting block at the head of an empty conversation (Ant Design X Welcome): glyph, greeting, one line under it, and a trailing slot ON THE TITLE ROW \u2014 which is the placement a hand-roll gets wrong.",
@@ -17605,7 +17612,7 @@ const messages: ChatMessageProp[] = [
       "ChatSuggestion / ChatBubbleList \u2014 the rest of the same surface.",
     ],
     example: [
-      'import { Welcome } from "@godxjp/ui/data-display";',
+      'import { Welcome } from "@godxjp/chat";',
       'import { Button } from "@godxjp/ui/general";',
       'import { Bot } from "lucide-react";',
       "",
@@ -17622,6 +17629,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "Actions",
+    importPath: "@godxjp/chat",
     group: "general",
     tagline:
       "The strip of actions under an assistant message (Ant Design X Actions): copy, retry, like, and a menu for the rest \u2014 a WAI-ARIA toolbar with ONE tab stop, where Ant X's own strip is <div onClick> with no role and no accessible name.",
@@ -17685,7 +17693,7 @@ const messages: ChatMessageProp[] = [
       "CredentialReveal \u2014 a copy affordance for a SECRET field; ActionsCopy copies message text.",
     ],
     example: [
-      'import { Actions, ActionsCopy, ActionsFeedback } from "@godxjp/ui/general";',
+      'import { Actions, ActionsCopy, ActionsFeedback } from "@godxjp/chat";',
       'import { RefreshCw, Share2 } from "lucide-react";',
       "",
       "<Actions",
@@ -17709,6 +17717,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "ThoughtChain",
+    importPath: "@godxjp/chat",
     group: "data-display",
     tagline:
       "The assistant's reasoning, step by step (Ant Design X ThoughtChain): an ORDERED list of steps, each with an ordinal or a glyph, a status, and a body it can collapse \u2014 where Ant X's own step is a <div onClick> with no role and no aria-expanded.",
@@ -17765,7 +17774,7 @@ const messages: ChatMessageProp[] = [
       "ChatBubble \u2014 the answer the chain explains.",
     ],
     example: [
-      'import { ThoughtChain } from "@godxjp/ui/data-display";',
+      'import { ThoughtChain } from "@godxjp/chat";',
       "",
       "<ThoughtChain",
       '  label="\u601D\u8003\u306E\u624B\u9806"',
@@ -17964,6 +17973,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "Attachments",
+    importPath: "@godxjp/chat",
     group: "data-entry",
     tagline:
       "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`.",
@@ -18049,7 +18059,7 @@ const messages: ChatMessageProp[] = [
       "A Sender.Header slot showing picked files before send.",
     ],
     related: ["Upload", "ChatComposer", "ChatBubbleList"],
-    example: `import { Attachments } from "@godxjp/ui/data-entry";
+    example: `import { Attachments } from "@godxjp/chat";
 
 <Attachments
   items={files}

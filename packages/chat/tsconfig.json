@@ -2,14 +2,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@godxjp/markdown": ["../markdown/src/index.ts"],
-      "@godxjp/chat": ["../chat/src/index.ts"],
+      "@godxjp/ui/i18n": ["../../src/i18n/index.ts"],
       "@godxjp/ui/hooks": ["../../src/lib/hooks.ts"],
       "@godxjp/ui/lib/utils": ["../../src/lib/utils.ts"],
       "@godxjp/ui/datetime": ["../../src/lib/datetime/index.ts"],
       "@godxjp/ui/props/components": ["../../src/props/components/index.ts"],
       "@godxjp/ui/props/vocabulary": ["../../src/props/vocabulary/index.ts"],
-      "@godxjp/ui/i18n": ["../../src/i18n/index.ts"],
       "@godxjp/ui/*": ["../../src/components/*/index.ts"],
       "@/*": ["../../src/*"]
     }

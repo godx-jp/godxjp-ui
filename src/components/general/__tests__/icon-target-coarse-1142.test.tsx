@@ -7,7 +7,6 @@ import { AppProvider } from "../../../app/app-provider";
 import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
 import { Toggle } from "../../data-entry/toggle";
 import { ToggleGroup, ToggleGroupItem } from "../../data-entry/toggle-group";
-import { Actions } from "../actions";
 import { Button } from "../button";
 
 /**
@@ -22,9 +21,6 @@ const markup = renderToStaticMarkup(
       <Button size="icon-sm" aria-label="Star">
         <Star />
       </Button>
-    </div>
-    <div data-p="actions">
-      <Actions label="Page" items={[{ key: "star", label: "Star", icon: <Star /> }]} />
     </div>
     <div data-p="toggle">
       <Toggle aria-label="Star">
@@ -91,7 +87,6 @@ async function measure(touch: boolean) {
       return {
         coarse: matchMedia("(pointer: coarse)").matches,
         iconSm: one("icon-sm"),
-        actions: one("actions"),
         toggle: one("toggle"),
         toggleSm: one("toggle-sm"),
         group: probe(a!),
@@ -109,7 +104,6 @@ describe("icon-only targets on a coarse pointer (Chromium, gh#1142)", () => {
     expect(m.coarse).toBe(true);
     for (const [name, c] of Object.entries({
       iconSm: m.iconSm,
-      actions: m.actions,
       toggle: m.toggle,
       toggleSm: m.toggleSm,
     })) {
@@ -128,7 +122,7 @@ describe("icon-only targets on a coarse pointer (Chromium, gh#1142)", () => {
   it("changes nothing under a mouse: the target is the box", async () => {
     const m = await measure(false);
     expect(m.coarse).toBe(false);
-    for (const c of [m.iconSm, m.actions, m.toggle, m.toggleSm]) {
+    for (const c of [m.iconSm, m.toggle, m.toggleSm]) {
       expect(c.hit[0]).toBe(c.box[0]);
       expect(c.hit[1]).toBe(c.box[1]);
     }

@@ -1,17 +1,17 @@
 import * as React from "react";
 import { SendHorizontal, Square } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { cn } from "../../lib/utils";
-import { isApplePlatform } from "../../lib/platform";
-import { omitFieldA11y, pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
-import { Button } from "../general/button";
-import { Textarea } from "./textarea";
-import { controlSurfaceAttrs, resolveAriaInvalid } from "./control-surface";
+import { useTranslation } from "@godxjp/ui/i18n";
+import { cn } from "@godxjp/ui/lib/utils";
+import { isApplePlatform } from "@godxjp/ui/lib/utils";
+import { omitFieldA11y, pickFieldA11y, useFieldIdentity } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
+import { Textarea } from "@godxjp/ui/data-entry";
+import { controlSurfaceAttrs, resolveAriaInvalid } from "@godxjp/ui/data-entry";
 
-import type { ChatComposerProp } from "../../props/components/data-entry.prop";
-import type { ButtonSizeProp } from "../../props/vocabulary";
-import { isImeComposing } from "../../lib/ime";
+import type { ChatComposerProp } from "@godxjp/ui/props/components";
+import type { ButtonSizeProp } from "@godxjp/ui/props/vocabulary";
+import { isImeComposing } from "@godxjp/ui/data-entry";
 
 export type {
   ChatComposerProp,
@@ -19,7 +19,7 @@ export type {
   ChatComposerSubmitTypeProp,
   ChatComposerActionComponents,
   ChatComposerFooterProp,
-} from "../../props/components/data-entry.prop";
+} from "@godxjp/ui/props/components";
 
 /** A draft that is only spaces, tabs or newlines is not a message. */
 function isSendable(text: string): boolean {

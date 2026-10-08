@@ -31,7 +31,7 @@ const ROW_HEIGHT = 40;
 const VIEWPORT_HEIGHT = 100;
 const VIEWPORT_SELECTOR = '[data-slot="scroll-area-viewport"]';
 const STYLES = readFileSync(
-  join(__dirname, "..", "..", "..", "styles", "data-display-layout.css"),
+  join(__dirname, "..", "..", "..", "..", "src", "styles", "data-display-layout.css"),
   "utf8",
 );
 

@@ -217,7 +217,10 @@ describe("component catalog — examples are plausible TSX", () => {
   it("examples import from a @godxjp/ui subpath when they show an import", () => {
     for (const c of COMPONENTS) {
       if (/\bimport\b/.test(c.example)) {
-        expect(c.example, `${c.name} import source`).toMatch(/@godxjp\/ui/);
+        // An entry shipped by a sibling package (`@godxjp/chat`, v32 #1223) imports from it.
+        const from =
+          c.importPath && !c.importPath.startsWith("@godxjp/ui") ? c.importPath : "@godxjp/ui";
+        expect(c.example, `${c.name} import source`).toContain(from);
       }
     }
   });

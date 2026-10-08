@@ -1,15 +1,15 @@
 import * as React from "react";
 
-import { cn } from "../../lib/utils";
-import { Heading, Text } from "../general/typography";
+import { cn } from "@godxjp/ui/lib/utils";
+import { Heading, Text } from "@godxjp/ui/general";
 
-import type { WelcomeProp } from "../../props/components/data-display.prop";
+import type { WelcomeProp } from "@godxjp/ui/props/components";
 
 export type {
   WelcomeProp,
   WelcomeProp as WelcomeProps,
   WelcomeVariantProp,
-} from "../../props/components/data-display.prop";
+} from "@godxjp/ui/props/components";
 
 /** Ant X treats a `string` icon that begins with `http` as an image URL, not as text. */
 function isImageUrl(icon: React.ReactNode): icon is string {

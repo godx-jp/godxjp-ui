@@ -1,22 +1,19 @@
 import * as React from "react";
-import { useTranslation } from "../../i18n/use-translation";
-import { cn } from "../../lib/utils";
-import { VisuallyHidden } from "../general/visually-hidden";
-import { Popover, PopoverAnchor, PopoverContent } from "../data-display/popover";
-import { Command, CommandEmpty, CommandItem, CommandList } from "./command";
+import { useTranslation } from "@godxjp/ui/i18n";
+import { cn } from "@godxjp/ui/lib/utils";
+import { VisuallyHidden } from "@godxjp/ui/general";
+import { Popover, PopoverAnchor, PopoverContent } from "@godxjp/ui/data-display";
+import { Command, CommandEmpty, CommandItem, CommandList } from "@godxjp/ui/data-entry";
 
-import type {
-  ChatSuggestionItemProp,
-  ChatSuggestionProp,
-} from "../../props/components/data-entry.prop";
-import { isImeComposing } from "../../lib/ime";
+import type { ChatSuggestionItemProp, ChatSuggestionProp } from "@godxjp/ui/props/components";
+import { isImeComposing } from "@godxjp/ui/data-entry";
 
 export type {
   ChatSuggestionProp,
   ChatSuggestionProp as ChatSuggestionProps,
   ChatSuggestionItemProp,
   ChatSuggestionRenderProp,
-} from "../../props/components/data-entry.prop";
+} from "@godxjp/ui/props/components";
 
 /** The trigger token under the caret, or `null` when the caret is not inside one. */
 type TriggerMatch = { query: string; start: number };

@@ -125,3 +125,66 @@ export type {
   FormFieldControlProp,
   FieldErrorMessageProp,
 } from "./form.prop";
+
+/*
+ * The conversational family's prop types. Their components live in `@godxjp/chat` since v32
+ * (#1223); the types stay here, public, so that package and its consumers name them the same way.
+ */
+export type {
+  ChatBubbleListProp,
+  ChatBubbleProp,
+  ChatBubbleToneProp,
+  ChatBubbleTypingProp,
+  ThoughtChainItemProp,
+  ThoughtChainProp,
+  ThoughtChainStatusProp,
+  WelcomeProp,
+} from "./data-display.prop";
+export type {
+  AttachmentsItemProp,
+  AttachmentsPlaceholderProp,
+  AttachmentsProp,
+  AttachmentsRefProp,
+  ChatComposerProp,
+  ChatSuggestionItemProp,
+  ChatSuggestionProp,
+} from "./data-entry.prop";
+export type {
+  ActionsCopyProp,
+  ActionsFeedbackProp,
+  ActionsItemProp,
+  ActionsItemsProp,
+  // `ActionsProp` is also the VOCABULARY name of an actions slot; `src/props/index.ts` re-exports
+  // both barrels, and a second `ActionsProp` there would drop both. Same rename `IconGlyphProp` made.
+  ActionsProp as ActionsBarProp,
+} from "./general.prop";
+export type {
+  ConversationsCreationProp,
+  ConversationsEntryProp,
+  ConversationsGroupableProp,
+  ConversationsItemProp,
+  ConversationsMenuProp,
+  ConversationsProp,
+} from "./navigation.prop";
+export type {
+  ChatBubblePlacementProp,
+  ChatBubbleVariantProp,
+  ChatMessageProp,
+  ThoughtChainItemsProp,
+  ThoughtChainLineProp,
+  ThoughtChainVariantProp,
+  WelcomeVariantProp,
+} from "./data-display.prop";
+export type {
+  AttachmentsOverflowProp,
+  ChatComposerActionComponents,
+  ChatComposerFooterProp,
+  ChatComposerSubmitTypeProp,
+  ChatSuggestionRenderProp,
+} from "./data-entry.prop";
+export type {
+  ActionsFeedbackValueProp,
+  ActionsStatusProp,
+  ActionsVariantProp,
+} from "./general.prop";
+export type { ConversationsDividerProp, ConversationsMenuItemProp } from "./navigation.prop";

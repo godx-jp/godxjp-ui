@@ -62,6 +62,7 @@ function packageExportAliases(): Array<{ find: string | RegExp; replacement: str
       find: "@godxjp/block-editor",
       replacement: path.resolve(uiRoot, "packages/block-editor/src/index.ts"),
     },
+    { find: "@godxjp/chat", replacement: path.resolve(uiRoot, "packages/chat/src/index.ts") },
   );
 
   // Longest match first — avoid `@godxjp/ui` swallowing `/data-display` subpaths.

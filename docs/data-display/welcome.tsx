@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { Welcome } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import {
   AppShell,
@@ -11,6 +10,7 @@ import {
   Topbar,
 } from "@godxjp/ui/layout";
 import { Bot, MessageSquare, Settings, Sparkles, Users } from "lucide-react";
+import { Welcome } from "@godxjp/chat";
 
 /**
  * Welcome — the greeting block at the head of an empty conversation (Ant Design X `Welcome`).

@@ -102,8 +102,6 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  ChatBubble,
-  ChatBubbleList,
   CodeBlock,
   Collapsible,
   CollapsibleContent,
@@ -137,20 +135,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  ThoughtChain,
   Image,
   Timeline,
   Tree,
-  Welcome,
-  type ChatMessageProp,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import {
-  Attachments,
   Calendar,
   Cascader,
-  ChatComposer,
-  ChatSuggestion,
   Checkbox,
   CheckboxGroup,
   ColorPicker,
@@ -230,9 +222,6 @@ import {
   toast,
 } from "@godxjp/ui/feedback";
 import {
-  Actions,
-  ActionsCopy,
-  ActionsFeedback,
   Activity,
   Button,
   Heading,
@@ -274,7 +263,6 @@ import {
 } from "@godxjp/ui/layout";
 import {
   AppSettingPicker,
-  Conversations,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -319,6 +307,20 @@ import {
   Anchor,
   MegaMenu,
 } from "@godxjp/ui/lab";
+import {
+  ChatBubble,
+  ChatBubbleList,
+  ThoughtChain,
+  Welcome,
+  Attachments,
+  ChatComposer,
+  ChatSuggestion,
+  Actions,
+  ActionsCopy,
+  ActionsFeedback,
+  Conversations,
+} from "@godxjp/chat";
+import type { ChatMessageProp } from "@godxjp/chat";
 
 /* ── The components that CANNOT appear here, and the reason for each ─────────────────────────
  * Rendered on the page as a table. An absence nobody can see is an absence nobody accounts for,

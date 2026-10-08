@@ -81,18 +81,6 @@ export type {
   PermissionMatrixProps,
   PermissionMatrixRoleProp,
 } from "./permission-matrix";
-export { ChatBubble, ChatBubbleList } from "./chat-bubble";
-export type {
-  ChatBubbleListProp,
-  ChatBubbleListProps,
-  ChatBubblePlacementProp,
-  ChatBubbleProp,
-  ChatBubbleProps,
-  ChatBubbleToneProp,
-  ChatBubbleTypingProp,
-  ChatBubbleVariantProp,
-  ChatMessageProp,
-} from "./chat-bubble";
 export { Tree } from "./tree";
 export type {
   TreeAllowDropInfoProp,
@@ -102,19 +90,6 @@ export type {
   TreeProp,
   TreeProps,
 } from "./tree";
-export { Welcome } from "./welcome";
-export type { WelcomeProp, WelcomeProps, WelcomeVariantProp } from "./welcome";
-export { ThoughtChain, ThoughtChainItem } from "./thought-chain";
-export type {
-  ThoughtChainProp,
-  ThoughtChainProps,
-  ThoughtChainItemsProp,
-  ThoughtChainItemProp,
-  ThoughtChainItemProps,
-  ThoughtChainStatusProp,
-  ThoughtChainLineProp,
-  ThoughtChainVariantProp,
-} from "./thought-chain";
 export { Image, ImagePreviewGroup } from "./image";
 export type {
   ImagePreviewConfigProp,

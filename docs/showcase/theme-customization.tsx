@@ -102,7 +102,6 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  ChatBubble,
   CredentialReveal,
   Descriptions,
   Legend,
@@ -123,9 +122,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  ThoughtChain,
   Timeline,
-  Welcome,
   type BadgeTone,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
@@ -167,6 +164,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@godxjp/ui/lab";
+import { ChatBubble, ThoughtChain, Welcome } from "@godxjp/chat";
 
 /* ────────────────────────────────────────────────────────────────────────────────────────────
  * THE ENTIRE THEME LAYER. One scoped block per palette, one per corner step. No component CSS,

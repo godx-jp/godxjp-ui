@@ -20,6 +20,7 @@ const SCAN_DIRS = [
   "packages/markdown/src",
   "packages/editor/src",
   "packages/block-editor/src",
+  "packages/chat/src",
 ].map((d) => join(ROOT, d));
 const MCP_DATA = join(ROOT, "mcp/src/data/components.ts");
 

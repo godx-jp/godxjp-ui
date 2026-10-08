@@ -2,8 +2,8 @@ import { chromium } from "playwright";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { AppProvider } from "../../../app/app-provider";
-import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
+import { AppProvider } from "@/app/app-provider";
+import { compileRealCss } from "@/components/data-entry/__tests__/compile-real-css";
 import { Actions } from "../actions";
 
 /**

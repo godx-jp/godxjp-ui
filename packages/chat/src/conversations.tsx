@@ -1,18 +1,18 @@
 import * as React from "react";
 import { ChevronDown, MoreHorizontal, Plus } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { formatDate } from "../../lib/datetime/format-date";
-import { cn } from "../../lib/utils";
-import { Button } from "../general/button";
-import { Text } from "../general/typography";
-import { Separator } from "../layout/separator";
+import { useTranslation } from "@godxjp/ui/i18n";
+import { formatDate } from "@godxjp/ui/datetime";
+import { cn } from "@godxjp/ui/lib/utils";
+import { Button } from "@godxjp/ui/general";
+import { Text } from "@godxjp/ui/general";
+import { Separator } from "@godxjp/ui/layout";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./dropdown-menu";
+} from "@godxjp/ui/navigation";
 
 import type {
   ConversationsCreationProp,
@@ -21,7 +21,7 @@ import type {
   ConversationsItemProp,
   ConversationsMenuProp,
   ConversationsProp,
-} from "../../props/components/navigation.prop";
+} from "@godxjp/ui/props/components";
 
 export type {
   ConversationsProp,
@@ -33,7 +33,7 @@ export type {
   ConversationsMenuItemProp,
   ConversationsGroupableProp,
   ConversationsCreationProp,
-} from "../../props/components/navigation.prop";
+} from "@godxjp/ui/props/components";
 
 /** A run of rows drawn under one heading, or one unlabelled run. */
 type Section = {

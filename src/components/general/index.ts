@@ -19,18 +19,3 @@ export type { RevealProp, RevealProps } from "./reveal";
 export { Activity } from "./activity";
 export type { ActivityProp, ActivityProps } from "./activity";
 export { VisuallyHidden } from "./visually-hidden";
-export { Actions, ActionsItem, ActionsCopy, ActionsFeedback } from "./actions";
-export type {
-  ActionsProp,
-  ActionsProps,
-  ActionsItemsProp,
-  ActionsItemProp,
-  ActionsItemProps,
-  ActionsCopyProp,
-  ActionsCopyProps,
-  ActionsFeedbackProp,
-  ActionsFeedbackProps,
-  ActionsVariantProp,
-  ActionsStatusProp,
-  ActionsFeedbackValueProp,
-} from "./actions";

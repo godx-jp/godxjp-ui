@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { ChatBubble, ThoughtChain, ThoughtChainItem } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import {
   AppShell,
@@ -11,6 +10,7 @@ import {
   Topbar,
 } from "@godxjp/ui/layout";
 import { Bot, MessageSquare, Search, Settings, Users } from "lucide-react";
+import { ChatBubble, ThoughtChain, ThoughtChainItem } from "@godxjp/chat";
 
 /**
  * ThoughtChain — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`).

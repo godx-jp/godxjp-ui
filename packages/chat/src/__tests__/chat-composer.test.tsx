@@ -465,9 +465,7 @@ describe("ChatComposer — relocating actions into `footer`", () => {
         defaultValue="内容"
         onSubmit={onSubmit}
         actions={false}
-        footer={({ components: { SubmitButton } }) => (
-          <SubmitButton aria-label="コメントを送信" />
-        )}
+        footer={({ components: { SubmitButton } }) => <SubmitButton aria-label="コメントを送信" />}
       />,
     );
 

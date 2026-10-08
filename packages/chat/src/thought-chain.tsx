@@ -1,16 +1,16 @@
 import * as React from "react";
 import { ChevronRight, CircleCheck, CircleMinus, CircleX, Loader2 } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { cn } from "../../lib/utils";
-import { VisuallyHidden } from "../general/visually-hidden";
-import { Text } from "../general/typography";
+import { useTranslation } from "@godxjp/ui/i18n";
+import { cn } from "@godxjp/ui/lib/utils";
+import { VisuallyHidden } from "@godxjp/ui/general";
+import { Text } from "@godxjp/ui/general";
 
 import type {
   ThoughtChainItemProp,
   ThoughtChainProp,
   ThoughtChainStatusProp,
-} from "../../props/components/data-display.prop";
+} from "@godxjp/ui/props/components";
 
 export type {
   ThoughtChainProp,
@@ -21,7 +21,7 @@ export type {
   ThoughtChainStatusProp,
   ThoughtChainLineProp,
   ThoughtChainVariantProp,
-} from "../../props/components/data-display.prop";
+} from "@godxjp/ui/props/components";
 
 const STATUS_GLYPH: Record<ThoughtChainStatusProp, React.ReactNode> = {
   loading: <Loader2 aria-hidden="true" className="ui-thought-chain-spinner" />,

@@ -1,21 +1,21 @@
 import * as React from "react";
 import { ArrowDown } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { useMediaQuery } from "../../lib/hooks";
-import { cn } from "../../lib/utils";
+import { useTranslation } from "@godxjp/ui/i18n";
+import { useMediaQuery } from "@godxjp/ui/hooks";
+import { cn } from "@godxjp/ui/lib/utils";
 import type {
   ChatBubbleListProp,
   ChatBubbleProp,
   ChatBubbleTypingProp,
   ChatBubbleToneProp,
-} from "../../props/components/data-display.prop";
-import type { SizeProp, TextSizeProp } from "../../props/vocabulary";
-import { Skeleton } from "../feedback/skeleton";
-import { Button } from "../general/button";
-import { Text } from "../general/typography";
-import { VisuallyHidden } from "../general/visually-hidden";
-import { ScrollArea } from "./scroll-area";
+} from "@godxjp/ui/props/components";
+import type { SizeProp, TextSizeProp } from "@godxjp/ui/props/vocabulary";
+import { Skeleton } from "@godxjp/ui/feedback";
+import { Button } from "@godxjp/ui/general";
+import { Text } from "@godxjp/ui/general";
+import { VisuallyHidden } from "@godxjp/ui/general";
+import { ScrollArea } from "@godxjp/ui/data-display";
 
 export type {
   ChatBubbleListProp,
@@ -25,7 +25,7 @@ export type {
   ChatBubbleTypingProp,
   ChatBubbleVariantProp,
   ChatMessageProp,
-} from "../../props/components/data-display.prop";
+} from "@godxjp/ui/props/components";
 
 /**
  * The bubble's type step rides the same ladder every other sized primitive uses (`Activity`,
