@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 // @ts-expect-error — plain .mjs script module, no types
@@ -141,5 +143,45 @@ describe("codemod v32 renames and moves (gh#1223)", () => {
     expect(plain.out).toContain("AppLocale");
     expect(plain.notes.join("\n")).toMatch(/BuiltInLocale/);
     expect(transformSource("a.tsx", godx.out, { godx: true }).changed).toBe(false);
+  });
+});
+
+describe("codemod v32 move table is complete (gh#1223)", () => {
+  // Measured miss: the first table moved the chat COMPONENTS but not their prop types, so a
+  // consumer's `import { type ChatMessageProp } from "@godxjp/ui/data-display"` (Platform's Dock)
+  // still broke after the codemod. Every name the new homes export must have a move entry.
+  const exported = (file: string) => {
+    const src = readFileSync(file, "utf8");
+    const out = new Set<string>();
+    for (const m of src.matchAll(/export\s+(?:type\s+)?\{([^}]*)\}/g))
+      for (const p of m[1].split(",")) {
+        const n = p
+          .trim()
+          .replace(/^type\s+/, "")
+          .split(/\s+as\s+/)
+          .pop()!
+          .trim();
+        if (n) out.add(n);
+      }
+    return out;
+  };
+
+  it("covers every export of @godxjp/chat and @godxjp/ui/lab, and each target really exports it", async () => {
+    // @ts-expect-error — plain .mjs script module, no types
+    const { RENAMES } = await import("../../../scripts/codemod.mjs");
+    const moves = new Map<string, string>(
+      (RENAMES as { from: [string[], string]; to: [string, string] }[]).map((r) => [
+        r.to[1],
+        r.to[0],
+      ]),
+    );
+    for (const [file, mod] of [
+      ["packages/chat/src/index.ts", "@godxjp/chat"],
+      ["src/lab/index.ts", "@godxjp/ui/lab"],
+    ] as const) {
+      const names = exported(file);
+      const missing = [...names].filter((n) => moves.get(n) !== mod);
+      expect(missing, `${mod} exports with no codemod move`).toEqual([]);
+    }
   });
 });
