@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { Button } from "../../general/button";
 import { Field } from "../../data-entry/field";
 import { Input } from "../../data-entry/input";
-import { AuthShell } from "../auth-shell";
+import { CenteredShell } from "../centered-shell";
 import { renderWithUi, screen } from "@/test/render";
 
 /**
@@ -52,7 +52,7 @@ describe.each(VIEWPORTS)("Canonical AuthShell login card at %s (gh#232)", (_labe
   it("delivers the compact block-padding scope down to the rendered card content", () => {
     setViewport(width);
     const { container } = renderWithUi(
-      <AuthShell variant="canonical" brand={<span>GodX ID</span>}>
+      <CenteredShell variant="auth-canonical" brand={<span>GodX ID</span>}>
         <Card>
           <CardHeader>
             <CardTitle level={1}>ログイン</CardTitle>
@@ -65,7 +65,7 @@ describe.each(VIEWPORTS)("Canonical AuthShell login card at %s (gh#232)", (_labe
             <Button fullWidth>続ける</Button>
           </CardContent>
         </Card>
-      </AuthShell>,
+      </CenteredShell>,
     );
 
     const shell = container.querySelector('[data-slot="auth-shell"]') as HTMLElement;
@@ -86,13 +86,13 @@ describe.each(VIEWPORTS)("Canonical AuthShell login card at %s (gh#232)", (_labe
   it("keeps the block edges tunable for a header-less (solo) card too", () => {
     setViewport(width);
     const { container } = renderWithUi(
-      <AuthShell variant="canonical">
+      <CenteredShell variant="auth-canonical">
         <Card>
           <CardContent solo>
             <Button fullWidth>パスキーで続ける</Button>
           </CardContent>
         </Card>
-      </AuthShell>,
+      </CenteredShell>,
     );
 
     const content = container.querySelector('[data-slot="card-content"]') as HTMLElement;
@@ -106,11 +106,11 @@ describe.each(VIEWPORTS)("Canonical AuthShell login card at %s (gh#232)", (_labe
   it("does not apply the compact axis scope at comfortable density", () => {
     setViewport(width);
     const { container } = renderWithUi(
-      <AuthShell>
+      <CenteredShell variant="auth">
         <Card>
           <CardContent solo>x</CardContent>
         </Card>
-      </AuthShell>,
+      </CenteredShell>,
     );
     // The three knobs are compact-only; a default AuthShell keeps the plain card rhythm.
     expect(container.querySelector('[data-slot="auth-shell"]')).toHaveAttribute(

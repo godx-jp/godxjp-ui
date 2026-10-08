@@ -664,14 +664,22 @@ export type AppShellProp = {
 };
 
 /**
- * @see AuthShell — centred auth/login page shell (login · mfa · passkey · device · reset). A
+ * @see CenteredShell `variant="auth" | "auth-canonical"` — the centred auth/login page shell
+ * (login · mfa · passkey · device · reset; the former `AuthShell`, folded in by v32 #1223). A
  * top brand bar, a centred `main` that holds the auth `Card`, and an optional footer, over a
  * `min-h-dvh` surface. The shell scopes `--control-height` to the comfortable tier (44px, the WCAG
  * touch floor) and bumps the auth heading size so forms read at the right density — replacing
  * consumers' hand-rolled `.auth-shell-*` / `.ui-auth-scope` classes. Motion is delegated to
  * `Reveal` (wrap the card) so `prefers-reduced-motion` is honoured at one place.
  */
-export type AuthShellProp = {
+export type CenteredShellAuthProp = {
+  /**
+   * `"auth"` is the unauthenticated root (login/mfa/reset): a brand bar, a vertically centred auth
+   * card, an optional footer. `"auth-canonical"` is the same shell on the shared DXS compact
+   * geometry (36px controls, 22.5rem card measure, responsive page insets) through component
+   * tokens — what `AuthShell variant="canonical"` was.
+   */
+  variant: "auth" | "auth-canonical";
   /** Centred content — typically a single auth `<Card>` with the form. */
   children: ReactNode;
   /** Brand bar slot pinned to the top (e.g. a `<Logo>` / product mark). */
@@ -685,11 +693,6 @@ export type AuthShellProp = {
   actions?: ActionProp;
   /** Footer slot pinned to the bottom (legal links, locale switch, support). */
   footer?: ReactNode;
-  /**
-   * Visual contract for the auth surface. `"canonical"` applies the shared DXS compact geometry
-   * (36px controls, 22.5rem card measure, and responsive page insets) through component tokens.
-   */
-  variant?: "default" | "canonical";
   /**
    * Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the
    * auth card's max-width plus the desktop and mobile page gutters, all owned by component tokens
@@ -963,7 +966,12 @@ export type AuthAccountSummaryProp = {
  * account page needs ZERO custom CSS and never hand-rolls a bar (the `.ui-topbar` zero-inset
  * footgun). Layout-only; delegate motion to `Reveal`.
  */
-export type CenteredShellProp = {
+export type CenteredShellPageProp = {
+  /**
+   * `"page"` (default): the authenticated, no-sidebar, centred-column page. `"auth"` /
+   * `"auth-canonical"` switch to the unauthenticated auth shell ({@link CenteredShellAuthProp}).
+   */
+  variant?: "page";
   /** Centred column content — page sections (identity hero, org picker, service grid, team list). */
   children: ReactNode;
   /**
@@ -991,6 +999,14 @@ export type CenteredShellProp = {
   preset?: CenteredShellPresetProp;
   className?: ClassNameProp;
 };
+
+/**
+ * @see CenteredShell — ONE centred root shell in two shapes (v32 #1223): the authenticated
+ * centred-column page (`variant="page"`, default) and the unauthenticated auth shell
+ * (`variant="auth" | "auth-canonical"`, the former `AuthShell`). The variant decides which props
+ * apply, so a page-only prop on an auth shell (or the reverse) is a type error.
+ */
+export type CenteredShellProp = CenteredShellPageProp | CenteredShellAuthProp;
 
 /**
  * @see ErrorSurface — the optional maintenance / planned-outage timing slot (503, occasionally a

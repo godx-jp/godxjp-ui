@@ -336,7 +336,6 @@ const ABSENT: ReadonlyArray<{ name: string; reasonKey: string }> = [
   { name: "AppProvider", reasonKey: "themeLab.absent.provider" },
   { name: "OverlayPortalProvider", reasonKey: "themeLab.absent.overlayPortal" },
   { name: "ThemeScope", reasonKey: "themeLab.absent.themeScope" },
-  { name: "AuthShell", reasonKey: "themeLab.absent.ownsPage" },
   { name: "CenteredShell", reasonKey: "themeLab.absent.ownsPage" },
   { name: "MobileShell", reasonKey: "themeLab.absent.ownsPage" },
   { name: "LegalDocumentShell", reasonKey: "themeLab.absent.ownsPage" },

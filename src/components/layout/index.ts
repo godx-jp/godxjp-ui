@@ -37,8 +37,6 @@ export type {
   OrgSwitcherProp,
   OrgSwitcherProps,
 } from "./org-switcher";
-export { AuthShell } from "./auth-shell";
-export type { AuthShellProp, AuthShellProps } from "./auth-shell";
 export type { AuthShellPresetProp } from "../../props/vocabulary";
 export { AuthDivider } from "./auth-divider";
 export type { AuthDividerProp, AuthDividerProps } from "./auth-divider";
@@ -56,7 +54,12 @@ export { MobileShell } from "./mobile-shell";
 export type { MobileShellProp, MobileShellProps } from "./mobile-shell";
 export type { MobileShellHeightProp } from "../../props/vocabulary";
 export { CenteredShell } from "./centered-shell";
-export type { CenteredShellProp, CenteredShellProps } from "./centered-shell";
+export type {
+  CenteredShellProp,
+  CenteredShellProps,
+  CenteredShellAuthProp,
+  CenteredShellPageProp,
+} from "./centered-shell";
 export type { CenteredShellWidthProp, CenteredShellAlignProp } from "../../props/vocabulary";
 export { ErrorSurface } from "./error-surface";
 export type {

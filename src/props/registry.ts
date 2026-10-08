@@ -426,7 +426,7 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
     description:
-      "AuthShell named flow geometry — default | login (stable SCR-001 identity/card/footer anchor) | registration (360px SCR-002 sign-up measure, start-aligned long-form scroll, own footer clearance, 15px mobile gutter) | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile) | account-recovery (432px SCR-008 recovery/MFA panel, 15px mobile gutter)",
+      "CenteredShell variant=auth named flow geometry (the former AuthShell) — default | login (stable SCR-001 identity/card/footer anchor) | registration (360px SCR-002 sign-up measure, start-aligned long-form scroll, own footer clearance, 15px mobile gutter) | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile) | account-recovery (432px SCR-008 recovery/MFA panel, 15px mobile gutter)",
   },
   GapProp: {
     file: "vocabulary/layout.prop.ts",
@@ -1195,7 +1195,7 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
-  AuthShellProp: {
+  CenteredShellAuthProp: {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
@@ -1204,7 +1204,8 @@ export const COMPONENT_PROP_REGISTRY = {
       {
         field: "variant",
         local: true,
-        reason: "Auth-shell geometry preset; canonical selects the shared DXS token contract.",
+        reason:
+          "CenteredShell shape discriminant; auth-canonical selects the shared DXS token contract.",
       },
       {
         field: "density",
@@ -1339,7 +1340,7 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: ["DisabledProp", "ClassNameProp"],
     local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction"],
   },
-  CenteredShellProp: {
+  CenteredShellPageProp: {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
@@ -1348,6 +1349,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "CenteredShellWidthProp",
       "CenteredShellAlignProp",
       "CenteredShellPresetProp",
+      {
+        field: "variant",
+        local: true,
+        reason: "CenteredShell shape discriminant; page is the authenticated centred column.",
+      },
     ],
   },
   ErrorSurfaceMaintenanceProp: {

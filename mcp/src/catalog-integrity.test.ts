@@ -392,7 +392,7 @@ describe("newly-added components are catalogued with the expected API", () => {
 
     const usage = (surface?.usage ?? []).join(" ");
     // the catalog must actively steer away from the workaround …
-    expect(usage).toMatch(/AuthShell/);
+    expect(usage).toMatch(/auth CenteredShell|auth shape/); // the former AuthShell (v32 #1223)
     expect(usage).toMatch(/EXACTLY ONE|ONE action/i);
     // … and teach that system geometry is package-owned
     expect(usage).toMatch(/min-h-dvh/);

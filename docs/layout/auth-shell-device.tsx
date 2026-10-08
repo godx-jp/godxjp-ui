@@ -11,7 +11,7 @@ import {
   AuthAccountSummary,
   AuthFooter,
   AuthIdentity,
-  AuthShell,
+  CenteredShell,
   AuthStack,
   Flex,
 } from "@godxjp/ui/layout";
@@ -36,8 +36,8 @@ import { AppSettingPicker, Steps } from "@godxjp/ui/navigation";
  */
 export default function Demo() {
   return (
-    <AuthShell
-      variant="canonical"
+    <CenteredShell
+      variant="auth-canonical"
       preset="device-authorization"
       brand={
         <Flex align="center" gap="sm">
@@ -107,6 +107,6 @@ export default function Demo() {
           </CardContent>
         </Card>
       </Reveal>
-    </AuthShell>
+    </CenteredShell>
   );
 }

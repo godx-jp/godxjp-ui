@@ -97,11 +97,11 @@ export const PROP_VOCABULARY: PropVocabEntry[] = [
   {
     name: "AuthShellPresetProp",
     concept:
-      "Named hosted-identity FLOW MEASURE for AuthShell — the card max-width plus the desktop and mobile page gutters, all owned by component tokens.",
+      'Named hosted-identity FLOW MEASURE for the auth CenteredShell (`variant="auth"`) — the card max-width plus the desktop and mobile page gutters, all owned by component tokens.',
     values: ["default", "device-authorization", "context-selection"],
-    usedBy: ["AuthShell"],
+    usedBy: ["CenteredShell"],
     notes:
-      'Orthogonal to AuthShell\'s `variant` (which owns control density + heading size) and applied after it, so `variant="canonical" preset="device-authorization"` composes. device-authorization = 380px card / 5px inline gutter at 390; context-selection = 25rem card, edge-to-edge on mobile. Selecting a preset REPLACES any consumer-side --auth-shell-card-max-width override — a page-local width is the anti-pattern these presets exist to remove.',
+      'Orthogonal to the auth CenteredShell\'s `variant` (which owns control density + heading size) and applied after it, so `variant="auth-canonical" preset="device-authorization"` composes. device-authorization = 380px card / 5px inline gutter at 390; context-selection = 25rem card, edge-to-edge on mobile. Selecting a preset REPLACES any consumer-side --auth-shell-card-max-width override — a page-local width is the anti-pattern these presets exist to remove.',
   },
   {
     name: "AvatarShapeProp",

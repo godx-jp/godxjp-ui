@@ -153,11 +153,11 @@ try { await save(); } catch (err) { toast.error(humanError(err)); }`,
     usage: [
       "DO import it from `@godxjp/ui` (or `/feedback`), never from `sonner` directly — a second `sonner` instance renders its own container and your toasts land in the wrong one.",
       "DO render `<Toaster />` once at the app root, or none of these appear.",
-      "DON'T use a toast for something the user must act on or must not miss — that is a Dialog, a Banner or an inline field error.",
+      'DON\'T use a toast for something the user must act on or must not miss — that is a Dialog, an `Alert variant="banner"` or an inline field error.',
     ],
     related: [
       "useToast — the hook form with the app's defaults applied.",
-      "Banner — for a persistent, page-level message.",
+      'Alert — `variant="banner"` for a persistent, page-level message.',
       "humanError — what to pass it in a catch block.",
     ],
     example: `import { toast } from "@godxjp/ui/feedback";

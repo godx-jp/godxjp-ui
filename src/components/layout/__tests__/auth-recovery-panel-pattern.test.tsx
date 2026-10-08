@@ -22,7 +22,7 @@
  */
 import { describe, expect, it, vi } from "vitest";
 
-import { AuthShell } from "../auth-shell";
+import { CenteredShell } from "../centered-shell";
 import { AuthStack } from "../auth-stack";
 import { Flex } from "../flex";
 import { Alert, AlertDescription, AlertTitle } from "../../feedback/alert";
@@ -89,7 +89,7 @@ function MfaChallengePanel({
   onVerify?: () => void;
 }) {
   return (
-    <AuthShell variant="canonical" preset="account-recovery">
+    <CenteredShell variant="auth-canonical" preset="account-recovery">
       <Card>
         <CardHeader>
           <CardTitle level={1}>{copy.title}</CardTitle>
@@ -123,7 +123,7 @@ function MfaChallengePanel({
           </AuthStack>
         </CardContent>
       </Card>
-    </AuthShell>
+    </CenteredShell>
   );
 }
 
@@ -261,9 +261,9 @@ describe("auth recovery / MFA challenge — composition pattern (gh#233)", () =>
 
 describe("password recovery — the same anatomy, four states (gh#233)", () => {
   const shell = (children: React.ReactNode) => (
-    <AuthShell variant="canonical" preset="account-recovery">
+    <CenteredShell variant="auth-canonical" preset="account-recovery">
       {children}
-    </AuthShell>
+    </CenteredShell>
   );
 
   it("request: one email field, one full-width primary", () => {

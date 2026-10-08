@@ -4,7 +4,7 @@ import { Alert, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Input, InputOTP, InputOTPGroup, InputOTPSlot } from "@godxjp/ui/data-entry";
 import { Button, Logo, Text } from "@godxjp/ui/general";
-import { AuthFooter, AuthShell, AuthStack, Flex } from "@godxjp/ui/layout";
+import { AuthFooter, CenteredShell, AuthStack, Flex } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
@@ -32,8 +32,8 @@ export default function Demo() {
   const [recoveryCode, setRecoveryCode] = useState("");
 
   return (
-    <AuthShell
-      variant="canonical"
+    <CenteredShell
+      variant="auth-canonical"
       preset="account-recovery"
       brand={
         <Flex align="center" gap="sm">
@@ -249,6 +249,6 @@ export default function Demo() {
           </CardContent>
         </Card>
       </Flex>
-    </AuthShell>
+    </CenteredShell>
   );
 }
