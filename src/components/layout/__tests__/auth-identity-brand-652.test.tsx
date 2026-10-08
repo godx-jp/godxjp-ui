@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 
+import { AppPresetContext } from "../../../app/preset";
+import { godxPreset } from "../../../themes/godx";
 import { AuthIdentity } from "../auth-identity";
 import { Heading, Logo } from "../../general";
 
@@ -37,7 +39,11 @@ const identityOf = (container: HTMLElement) =>
 
 describe("AuthIdentity brand (gh#652)", () => {
   it("announces the product once with the package mark — the behaviour being preserved", () => {
-    const { container } = render(<AuthIdentity title={PRODUCT} />);
+    const { container } = render(
+      <AppPresetContext.Provider value={godxPreset}>
+        <AuthIdentity title={PRODUCT} />
+      </AppPresetContext.Provider>,
+    );
     expect(container.querySelector('[data-slot="logo"]')).toHaveAttribute("data-mark", "godx");
     expect(announcedText(identityOf(container))).toBe(PRODUCT);
   });

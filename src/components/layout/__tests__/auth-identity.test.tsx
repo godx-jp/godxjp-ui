@@ -1,13 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 
+import { AppPresetContext } from "../../../app/preset";
+import { godxPreset } from "../../../themes/godx";
 import { AuthIdentity } from "../auth-identity";
 
 /**
  * AuthIdentity — the canonical hosted-identity heading block.
  *
- * It must ship the brand-green GoDX mark (independent of `--primary`), an `h1`, and an optional
- * requesting-client line — with no page CSS for the centring/rhythm. The mark is decorative: the
+ * It ships the active preset's mark (the GoDX preset's is independent of `--primary`; with no
+ * preset there is none, gh#1220), an `h1`, and an optional requesting-client line — with no page CSS for the centring/rhythm. The mark is decorative: the
  * heading text is the accessible name, so the block is announced once.
  */
 /**
@@ -18,8 +20,12 @@ import { AuthIdentity } from "../auth-identity";
 const CONSUMER_CLASS = "pb-2";
 
 describe("AuthIdentity", () => {
-  it("renders the canonical GoDX identity mark above an h1", () => {
-    const { container } = render(<AuthIdentity title="GoDX ID にログイン" />);
+  it("renders the preset's GoDX identity mark above an h1", () => {
+    const { container } = render(
+      <AppPresetContext.Provider value={godxPreset}>
+        <AuthIdentity title="GoDX ID にログイン" />
+      </AppPresetContext.Provider>,
+    );
     const mark = container.querySelector('[data-slot="logo"]')!;
     expect(mark).toHaveAttribute("data-mark", "godx");
     // tone="success" → the identity fill role, NOT --primary.
@@ -65,9 +71,10 @@ describe("AuthIdentity", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Sign in");
   });
 
-  it("falls back to the canonical GoDX mark when no brand artwork is supplied", () => {
+  it("renders no mark when no brand artwork is supplied and no preset is active (gh#1220)", () => {
     const { container } = render(<AuthIdentity title="Sign in" />);
-    expect(container.querySelector('[data-slot="logo"]')).toHaveAttribute("data-mark", "godx");
+    expect(container.querySelector('[data-slot="logo"]')).toBeNull();
+    expect(container.querySelector("svg")).toBeNull();
   });
 
   it("merges className onto the root without dropping the canonical class", () => {
