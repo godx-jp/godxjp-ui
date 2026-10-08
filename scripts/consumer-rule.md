@@ -1,8 +1,8 @@
 # @godxjp/ui
 
-> **Tệp này do gói `@godxjp/ui` sở hữu.** Nội dung được ghi lại khi luật trong gói đổi (thường
-> qua postinstall sau `npm i`, trừ khi `.npmrc` có `ignore-scripts=true`). Khi đó chạy
-> `npx @godxjp/ui sync-rules`. Dấu `<!-- godxjp-ui:version -->` luôn được đồng bộ với phiên bản
+> **Tệp này do gói `@godxjp/ui` sở hữu.** Cài gói không tự ghi gì cả: nội dung chỉ được ghi lại
+> khi bạn chạy `npx godxjp-ui sync-rules` (thêm `--dry-run` để xem trước). Chạy lại sau mỗi lần
+> nâng cấp. Dấu `<!-- godxjp-ui:version -->` luôn được đồng bộ với phiên bản
 > gói đang cài — kể cả khi thân tệp không đổi giữa hai bản.
 > Đừng sửa ở đây — luật của riêng kho thuộc về một tệp khác trong `.ai/rules/`,
 > và index sẽ nạp cả hai. (Khác với `.claude/skills/.../SKILL.md`, nơi mục §8
@@ -12,50 +12,28 @@
 `docs/CONSUMER-RULES.md` (10 luật) và, với kho chuột bạch, ở
 `.claude/skills/godx-ui-guinea-pig/SKILL.md`.
 
-## Nạp style: BỐN lối vào, và ba lối sau đều không chở 729 lát font
+## Loading styles: one entry, fonts are opt-in
 
-```css
-@import "@godxjp/ui/styles"; /* mọi layer + 729 lát woff2 cắt theo unicode-range */
-@import "@godxjp/ui/styles/core"; /* CÙNG các layer ấy, KHÔNG một @font-face nào */
-@import "@godxjp/ui/styles/core-with-fallbacks"; /* core + 6 khối local()-only, vẫn 0 byte mạng */
-@import "@godxjp/ui/styles/core-with-jis-level1"; /* + Noto Sans JP gộp JIS mức 1: 3 request, ~1,53 MB */
+```ts
+import "@godxjp/ui/styles.css"; // precompiled, no Tailwind needed
 ```
 
-Chọn `core` khi kho tự lo mặt chữ, hoặc khi không muốn chở font: `@fontsource` cắt
-Noto Sans JP thành hàng trăm lát `unicode-range`, và trình duyệt chỉ biết cần lát nào
-SAU khi đã dựng bố cục — một consumer đo được **737 lát / 13 MB**, gấp bảy lần toàn bộ
-JavaScript của họ, cộng ~8 vòng tải mỗi lần chuyển màn.
+```css
+@import "@godxjp/ui/styles"; /* Tailwind v4: every component layer, NO font files */
+@import "@godxjp/ui/styles/fonts"; /* optional, after the styles import: the bundled faces */
+```
 
-Lối thứ ba dành cho kho **tự cấp Noto Sans JP** (next/font, self-host) mà vẫn muốn cửa
-sổ swap không đội hình: nó chở đúng 6 `@font-face` metric-matched, `src` toàn `local()`
-nên **không tải byte nào**. Nhớ tự xếp tên họ chữ ngay sau mặt chữ của bạn:
-`--font-sans-base: "Noto Sans JP", "Noto Sans JP Fallback", system-ui, sans-serif;`
+Since v32 the styles entry no longer bundles fonts. A Japanese app that wants the bundled faces
+installs them and adds the fonts import (the GoDX preset does both for you):
 
-Lối thứ tư dành cho **app tiếng Nhật vẫn muốn font kèm gói**, nhưng không muốn trả số
-vòng tải mỗi lần chuyển màn: nó thay 729 lát bằng **một tệp gộp cho mỗi weight**, phủ
-JIS X 0208 mức 1 (2965 kanji + kana + ký hiệu + Latin + tiếng Việt, 3861 code point).
-Đo trên ba weight, chỉ Noto Sans JP:
+```bash
+pnpm add @fontsource/noto-sans-jp @fontsource/m-plus-2
+```
 
-| số ký tự Nhật khác nhau trên màn | `styles`                     | `core-with-jis-level1`     |
-| -------------------------------- | ---------------------------- | -------------------------- |
-| 448 (nhãn `ja` của chính gói)    | 99 request · 1.051.268 byte  | 3 request · 1.534.636 byte |
-| 694 (nhãn + tên, địa chỉ, câu)   | 150 request · 1.772.728 byte | 3 request · 1.534.636 byte |
-| 772 (thêm chút văn xuôi)         | 216 request · 3.491.840 byte | 3 request · 1.534.636 byte |
-
-Cột trái phình theo NỘI DUNG và phải trả lại ở mỗi màn có ký tự mới; cột phải không đổi.
-**Dưới khoảng 620 ký tự khác nhau thì cắt lát ít byte hơn** (đổi bằng ~100 request), nên
-app nào render ít chữ Nhật hơn cả menu của gói này thì cứ ở `styles`. Lối này KHÔNG chở
-JIS mức 2 — kanji trong họ tên hiếm sẽ rơi xuống mặt chữ của hệ điều hành, nên hãy xếp
-một mặt chữ Nhật của hệ ngay sau mặt chữ của gói. Nó cũng không đụng `--font-sans-base`,
-y như lối thứ ba.
-
-`core` giữ `@font-face` = **0** và đó là lời hứa đo được —
-`grep -c '@font-face' node_modules/@godxjp/ui/dist/styles/core.css` → `0`. Vì vậy các
-fallback nằm ở entry riêng chứ không nhét vào `core`.
-
-Không lối nào trong bốn là cherry-pick: cả bốn đều được hỗ trợ và thứ tự layer vẫn
-nguyên vẹn. Cherry-pick từng layer riêng lẻ thì vẫn cấm — đó là thứ làm vỡ hợp đồng thứ
-tự, không phải việc chọn lối vào.
+An app that supplies its own face (next/font, self-host, a system stack) skips the fonts import and
+names its face with `--font-sans-base`. Never cherry-pick individual `*-layout.css` layers: that
+breaks the layer-order contract, which is not the same thing as choosing an entry point. Reasons
+and measurements are in `docs/CUSTOMER-THEMING.md`.
 
 ## Bố cục chuẩn của platform: BA CỘT, và ba cột là BA PHẠM VI
 

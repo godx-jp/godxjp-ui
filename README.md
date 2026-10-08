@@ -1,10 +1,12 @@
 # @godxjp/ui
 
-The shared React UI framework for every godx surface (admin, agency portal, handheld).
+A React UI framework built on design tokens: accessible components, a controlled prop vocabulary,
+and a machine-readable catalog so coding agents use the real API instead of guessing. It is for any
+team; GoDX is one preset on top of it.
 
-- 📦 **npm:** `@godxjp/ui` (published) · MCP server `@godxjp/ui-mcp`
-- 🌐 **Live preview / catalog:** **https://godx-jp.github.io/godxjp-ui/** (components · tokens · props)
-- 🤖 **Agents:** the `@godxjp/ui-mcp` server exposes the full catalog (`get_component`, `list_primitives`, `search_components`) so coding agents use the real API instead of hand-rolling.
+- npm: `@godxjp/ui` (published) · MCP server `@godxjp/ui-mcp`
+- Live preview / catalog: **https://godx-jp.github.io/godxjp-ui/** (components · tokens · props)
+- Agents: the `@godxjp/ui-mcp` server exposes the full catalog (`get_component`, `list_primitives`, `search_components`) so coding agents use the real API instead of hand-rolling.
 
 ```bash
 npm i @godxjp/ui
@@ -14,15 +16,19 @@ npm i @godxjp/ui
 
 ## Using this from an AI agent
 
-The catalog — 165 components, 1616 tokens, 47 cardinal rules — is published in two forms from one
+<!-- agent-catalog-counts:start -->
+
+The catalog — 185 components, 2188 tokens, 43 cardinal rules — is published in two forms from one
 source. **Entry point for either: [`AGENTS.md`](AGENTS.md).**
+<!-- agent-catalog-counts:end -->
 
 ### If your agent can run a process
 
 Claude Code · Codex CLI · Cursor · any MCP client:
 
 ```bash
-npx @godxjp/ui sync-rules
+npx godxjp-ui sync-rules --dry-run   # preview the files it would create or change
+npx godxjp-ui sync-rules             # write them
 ```
 
 Writes `.mcp.json`, `CLAUDE.md` and `.ai/rules/` into the consumer repo and wires
@@ -30,27 +36,30 @@ Writes `.mcp.json`, `CLAUDE.md` and `.ai/rules/` into the consumer repo and wire
 **locked to the version on disk** — the failure it prevents is an agent being told a prop does not
 exist because the catalog was two minors behind (gh#789).
 
-The package's postinstall runs this on every install, so an upgrade moves the MCP pin forward by
-itself. **Where install scripts are off** (`npm config get ignore-scripts` is `true`, which some CI
-images and machines set), it never runs: run `npx @godxjp/ui sync-rules` yourself after each upgrade,
-or the agent keeps asking the catalog of the version you first installed.
+**Setup is explicit.** Installing the package writes nothing. Run `npx godxjp-ui sync-rules` once
+after installing and again after each upgrade, so the MCP pin moves with the package.
 
 ### If your agent can only fetch URLs
 
 ChatGPT on the web, Claude.ai, or any client without a local process. The same data is served as
 static files straight from this public repo — no hosting, no deploy step:
 
-| file                                                                                                                    | size    | what it is                                                                                             |
-| ----------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
-| [`agent/START-HERE.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md)                   | 6 KB    | **read first** — self-contained: the four rules, the token override model, a page that passes review   |
-| [`agent/llms.txt`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/llms.txt)                             | 2 KB    | the [llms.txt](https://llmstxt.org/) entry point                                                       |
-| [`agent/index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json)                         | 2 KB    | manifest: version, counts, every file's URL                                                            |
-| [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json)   | 42 KB   | all 165 as name + group + tagline — **fetch this first**                                               |
-| [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1–32 KB | one file per component, each with its `importPath` — **this is the route to take**                     |
-| [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json)               | 1.1 MB  | all 165 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
-| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json)                       | 0.6 MB  | every design token, its value and why it exists                                                        |
-| [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json)               | 7 KB    | the controlled prop vocabulary                                                                         |
-| [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json)                         | 17 KB   | the 47 cardinal rules                                                                                  |
+<!-- agent-catalog-files:start -->
+
+<!-- prettier-ignore-start -->
+| file | size | what it is |
+| --- | --- | --- |
+| [`agent/START-HERE.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md) | 11 KB | **read first** — self-contained: the four rules, the token override model, a page that passes review |
+| [`agent/llms.txt`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/llms.txt) | 3 KB | the [llms.txt](https://llmstxt.org/) entry point |
+| [`agent/index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json) | 3 KB | manifest: version, counts, every file's URL |
+| [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 51 KB | all 185 as name + group + tagline — **fetch this first** |
+| [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1 KB–36 KB | one file per component, each with its `importPath` — **this is the route to take** |
+| [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.3 MB | all 185 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
+| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 843 KB | all 2188 design tokens, their values and why they exist |
+| [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json) | 7 KB | the controlled prop vocabulary |
+| [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json) | 21 KB | the 43 cardinal rules |
+<!-- prettier-ignore-end -->
+<!-- agent-catalog-files:end -->
 
 Pasteable bootstrap:
 
@@ -100,7 +109,7 @@ src/styles/      CSS that styles components by [data-slot]; density.css = the on
 src/components/  React components by group (data-display, data-entry, layout, feedback, …)
 src/props/       Prop type system: vocabulary/ (atomic) + components/ + registry.ts (NORMATIVE, CI-checked)
 src/lib/         cn(), control-styles, variants, hooks
-examples/        *.preview.tsx — Storybook-style stories (rendered by the preview app + Pages site)
+docs/            real-screen example pages (rendered by the preview app + Pages site)
 preview/         The preview app (vite, :6008) → also deployed to GitHub Pages
 ```
 
@@ -110,22 +119,22 @@ A value is defined **once** as a CSS var (`--primary`), mapped to a utility in t
 
 ## Component groups
 
-| Group              | Import                    | Examples                                                                                                                                                                                                                                |
-| ------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Layout**         | `@godxjp/ui/layout`       | `Flex`, `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Separator`, `AspectRatio`, `Resizable`                                                                                                                               |
-| **General**        | `@godxjp/ui/general`      | `Button`                                                                                                                                                                                                                                |
-| **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `Field`, `DatePicker`, `TimePicker`, `Combobox`, `Switch`, `Toggle`, `Upload`, `Cascader`, `TreeSelect`, `ColorPicker`, `Slider`, `PasswordInput`, `PasswordStrength`, `InputOTP`, `Rating`, `TagInput` |
-| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `QrCode`, `CredentialReveal`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible`                         |
-| **Feedback**       | `@godxjp/ui/feedback`     | `Dialog`, `AlertDialog`, `Sheet` (side), `Drawer` (bottom-sheet), `Toast`, `Skeleton`, `Alert`, `Tooltip`                                                                                                                               |
-| **Query**          | `@godxjp/ui/query`        | `DataState`, `InfiniteQueryState` (adapter subpath — pulls TanStack Query; no router)                                                                                                                                                   |
-| **React Router**   | `@godxjp/ui/react-router` | `PrefetchLink` — imports the optional `react-router-dom` peer, so it is kept out of `/query` (gh#996)                                                                                                                                   |
-| **Navigation**     | `@godxjp/ui/navigation`   | `Tabs`, `Toolbar`, `DropdownMenu`, `Steps`, `Pagination`, `Breadcrumb`, `AppSettingPicker`                                                                                                                                              |
-| **App**            | `@godxjp/ui/app`          | `AppProvider`, `useDateTime` (adapter — i18n/datetime singleton)                                                                                                                                                                        |
-| **Datetime**       | `@godxjp/ui/datetime`     | `formatDate` (mandatory for display)                                                                                                                                                                                                    |
-| **Form**           | `@godxjp/ui/form`         | `useZodForm`, `FormRoot` (adapter subpath — pulls react-hook-form)                                                                                                                                                                      |
-| **Hooks**          | `@godxjp/ui/hooks`        | `useIsMobile`, `useMediaQuery`                                                                                                                                                                                                          |
-| **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports (tree-shakeable)                                                                                                                                                                               |
-| **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                                                                                                                                                                                  |
+| Group              | Import                    | Examples                                                                                                                                                                                                                    |
+| ------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Layout**         | `@godxjp/ui/layout`       | `Flex`, `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Breadcrumb`, `Separator`, `AspectRatio`, `ResizablePanelGroup`                                                                                           |
+| **General**        | `@godxjp/ui/general`      | `Button`                                                                                                                                                                                                                    |
+| **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `Field`, `DatePicker`, `TimePicker`, `Switch`, `Toggle`, `Upload`, `Cascader`, `TreeSelect`, `ColorPicker`, `Slider`, `PasswordInput`, `PasswordStrength`, `InputOTP`, `Rating`, `TagInput` |
+| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `QrCode`, `CredentialReveal`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible`             |
+| **Feedback**       | `@godxjp/ui/feedback`     | `Dialog`, `AlertDialog`, `Sheet` (side or bottom), `Toaster` / `toast`, `Skeleton`, `Alert`, `Tooltip`                                                                                                                      |
+| **Query**          | `@godxjp/ui/query`        | `DataState`, `InfiniteQueryState` (adapter subpath — pulls TanStack Query; no router)                                                                                                                                       |
+| **React Router**   | `@godxjp/ui/react-router` | `PrefetchLink` — imports the optional `react-router-dom` peer, so it is kept out of `/query` (gh#996)                                                                                                                       |
+| **Navigation**     | `@godxjp/ui/navigation`   | `Tabs`, `Toolbar`, `DropdownMenu`, `Steps`, `Pagination`, `AppSettingPicker`                                                                                                                                                |
+| **App**            | `@godxjp/ui/app`          | `AppProvider`, `useDateTime` (adapter — i18n/datetime singleton)                                                                                                                                                            |
+| **Datetime**       | `@godxjp/ui/datetime`     | `formatDate` (mandatory for display)                                                                                                                                                                                        |
+| **Form**           | `@godxjp/ui/form`         | `useZodForm`, `FormRoot` (adapter subpath — pulls react-hook-form)                                                                                                                                                          |
+| **Hooks**          | `@godxjp/ui/hooks`        | `useIsMobile`, `useMediaQuery`                                                                                                                                                                                              |
+| **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports (tree-shakeable)                                                                                                                                                                   |
+| **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                                                                                                                                                                      |
 
 ---
 
@@ -151,98 +160,70 @@ Replace these at the call site:
 | `StatusBadge`                             | `Badge` (`status` / `tone`)                         |
 | `DialogConfirm` / `Dialog mode="confirm"` | `AlertDialog`                                       |
 
-The full data-grid feature set (sort / search / column visibility / paging) is now built into the one `DataTable` (`@godxjp/ui/data-display`) — TanStack-powered, with the lean `data` + `columns` API for the common case and the compound parts (`DataTable.Search` / `.ViewOptions` / `.Pagination` …) for the rich chrome. The separate `@godxjp/ui/data-grid` (`DataGrid`) subpath has been merged in and removed.
+The full data-grid feature set (sort / search / column visibility / paging) is now built into the one `DataTable` (`@godxjp/ui/data-display`) — TanStack-powered, with the lean `data` + `columns` API for the common case and the compound parts (`DataTable.Search` / `.ViewOptions` / `.Pagination` …) for the rich chrome. The former separate data-grid subpath is gone: there is one `DataTable`.
 
 ---
 
 ## Consumer setup — theme is self-contained
 
-The framework ships colors, the type scale, the wa-iro palette, and (opt-in) bundled fonts (M PLUS 2 + Noto Sans JP fallback via `@fontsource`). A consumer's entire styling surface is **one import + content sources** — no `:root` overrides, no font `<link>`:
+The framework ships colors, the type scale, spacing, density and the component layers. Fonts are
+opt-in (below). A consumer's entire styling surface is **one import + content sources**, with no
+`:root` overrides and no font `<link>`.
+
+### Without Tailwind
+
+```ts
+import "@godxjp/ui/styles.css"; // precompiled, no Tailwind needed
+```
+
+### With Tailwind v4
 
 ```css
 /* resources/css/app.css */
-@import "@godxjp/ui/styles";
+@import "@godxjp/ui/styles"; /* unchanged */
 @source "../js/**/*.{ts,tsx}";
 @source "../views";
 ```
 
-### Where the CSS weight actually is — the font faces, not the components
+### Fonts (opt-in since v32)
 
-`@godxjp/ui/styles` is the zero-config all-in-one: every component's layers **plus 729 `@font-face`
-declarations** for the bundled CJK faces. Those declarations are render-blocking CSS on every page,
-separate from the font FILES (which load lazily, per glyph range). Measured on a fresh Vite 8 +
-Tailwind v4 app using 15 components (gh#971):
+The styles entry no longer bundles any font. Install the families you want and import the font
+sheet after the styles import; the GoDX preset does this for you:
 
-| entry                    | CSS emitted | gzip       |
-| ------------------------ | ----------- | ---------- |
-| `@godxjp/ui/styles`      | 1,303,803 B | **367 KB** |
-| `@godxjp/ui/styles/core` | 581,210 B   | **86 KB**  |
-
-So if CSS weight matters, **the one change that moves it is the import line** — 77% of it is the face
-declarations. `core` is not a per-component slice: it still carries every component's layers (about
-64 KB gzip for all ~165), it only drops the faces. Load fonts another way (next/font, a system stack,
-your own `@font-face`) and take the same layers without them:
-
-```css
-@import "@godxjp/ui/styles/core"; /* every component layer, no @font-face */
+```bash
+pnpm add @fontsource/noto-sans-jp @fontsource/m-plus-2
 ```
 
-Supplying Noto Sans JP yourself and want the cold-visit swap not to reflow the page? Take the
-third entry instead — the same layers plus the six metric-matched fallback faces, whose `src` is
-`local()`-only, so it costs **zero network bytes** over `core`:
-
 ```css
-@import "@godxjp/ui/styles/core-with-fallbacks"; /* core + 6 local()-only faces */
+@import "@godxjp/ui/styles/fonts"; /* after the styles import */
 ```
 
-Then name the family directly after your own face:
-`--font-sans-base: "Noto Sans JP", "Noto Sans JP Fallback", system-ui, sans-serif;`
+Skip it to use your own face or a system stack: name it with `--font-sans-base` (see
+[docs/CUSTOMER-THEMING.md](docs/CUSTOMER-THEMING.md)).
 
-`core` stays at **zero** `@font-face` on purpose — `grep -c '@font-face'
-node_modules/@godxjp/ui/dist/styles/core.css` → `0` is the promise, so the fallbacks got their own
-entry rather than being folded in.
-
-Japanese app that wants the bundled face without the per-screen round-trips? The fourth entry
-replaces the 729 sliced faces with one merged file per weight, JIS X 0208 level 1:
-
-```css
-@import "@godxjp/ui/styles/core-with-jis-level1"; /* core + fallbacks + 3 merged faces */
-```
-
-**3 requests, ~1.53 MB, all on first paint** — against 150 requests and 1,772,728 bytes for a
-694-character Japanese screen on `styles`, spread across screens. It does not cover JIS level 2
-(rare-surname kanji fall through to the platform face, so name one after ours) and it loses to the
-slices below roughly 620 distinct characters. Full table and reasoning in
-[docs/CUSTOMER-THEMING.md](docs/CUSTOMER-THEMING.md).
-
-> **Do not cherry-pick `*-layout.css` files.** Layers depend on each other (a
-> Select's rows, a menu's surface, a form's rhythm live in shared rules) and a
-> missing layer fails silently: menus render with no background, rows with no
-> height. `styles`, `styles/core`, `styles/core-with-fallbacks` and
-> `styles/core-with-jis-level1` are the four supported entries; the runtime `visual-audit` flags a
-> page whose layers are incomplete (`css-layers-missing`). The one supported way to ship LESS
-> than `core` is `prune-css` below — the tool slices along the dependency graph the package
-> ships, so it cannot forget a layer the way a hand-picked list does.
+> **Do not cherry-pick `*-layout.css` files.** Layers depend on each other (a Select's rows, a
+> menu's surface, a form's rhythm live in shared rules) and a missing layer fails silently: menus
+> render with no background, rows with no height. The runtime `visual-audit` flags a page whose
+> layers are incomplete (`css-layers-missing`). The one supported way to ship LESS than the full
+> styles entry is `prune-css` below: it slices along the dependency graph the package ships, so it
+> cannot forget a layer the way a hand-picked list does.
 
 ### prune-css — ship only the component layers you use (gh#971)
 
-`core` still carries every component's layers (~64 KB gzip for all ~165). If that remainder
-matters, let the package slice it:
+The styles entry carries every component's layers. If that weight matters, let the package slice it:
 
 ```bash
-npx @godxjp/ui prune-css resources/js --out resources/css/godx-ui.css   # --fonts for the bundled faces
+npx godxjp-ui prune-css resources/js --out resources/css/godx-ui.css
 ```
 
-It scans your sources for `@godxjp/ui` imports, resolves the CSS layer dependency closure from
-the graph shipped in `dist/styles/layers.json` (what each component's internals render is part
-of the graph — a `DataTable` still gets its dropdown and pagination surfaces), and emits a file
-that imports the foundation plus only the needed layers, in `styles/index.css`'s exact order.
-Import that file INSTEAD of `@godxjp/ui/styles`. Defaults mirror `styles/core` (no
-`@font-face`); the sonner / react-day-picker vendor sheets come along only when a used
-component renders them. **Re-run it whenever the set of components you use changes and after
-every upgrade** — the emitted header says so, and the tool refuses to run against a manifest
-from a different package version. Measured on gh#971's 15-component app: 368 KB gzip
-(`styles`) → 86 KB (`core`) → 75 KB pruned; a small 8-component app lands at 55 KB.
+It scans your sources for `@godxjp/ui` imports, resolves the CSS layer dependency closure from the
+graph shipped in `dist/styles/layers.json` (what each component's internals render is part of the
+graph — a `DataTable` still gets its dropdown and pagination surfaces), and emits a file that
+imports the foundation plus only the needed layers, in `styles/index.css`'s exact order. Import
+that file INSTEAD of `@godxjp/ui/styles`. The sonner / react-day-picker vendor sheets come along
+only when a used component renders them. **Re-run it whenever the set of components you use
+changes and after every upgrade** — the emitted header says so, and the tool refuses to run against
+a manifest from a different package version.
 
 ## Golden ratio (φ ≈ 1.618)
 
