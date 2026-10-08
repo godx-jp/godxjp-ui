@@ -1,6 +1,8 @@
 /* ─────────────────────────────────────────────────────────────────────────
- * ALL-IN-ONE stylesheet — fonts + foundation + EVERY component layout layer.
- * Zero-config: `@import "@godxjp/ui/styles";` and everything is styled.
+ * ALL-IN-ONE stylesheet — foundation + EVERY component layout layer.
+ * Zero-config: `@import "@godxjp/ui/styles";` and everything is styled. Fonts are OPT-IN since v32
+ * (#1221): add `@import "@godxjp/ui/styles/fonts";` AFTER it. No Tailwind installed? Use the
+ * precompiled `@godxjp/ui/styles.css` instead (scripts/build-precompiled-css.mjs).
  * Without the bundled fonts: `@import "@godxjp/ui/styles/core";` (same layers, no @font-face),
  * or `@import "@godxjp/ui/styles/core-with-fallbacks";` (core + the 6 `local()`-only
  * metric-matched faces, still zero network bytes — issue #535), or
@@ -55,8 +57,6 @@
 @import "sonner/dist/styles.css" layer(vendor);
 @import "react-day-picker/style.css" layer(vendor);
 @import "./base.css";
-/* AFTER the token layers — see the ORDER IS LOAD-BEARING note above. */
-@import "./fonts.css";
 @import "./shell-layout.css";
 @import "./motion.css";
 @import "./layout.css";

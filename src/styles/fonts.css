@@ -19,8 +19,10 @@
  * Imported first, this file is silently dead — the system stack renders and the
  * ~800 KB of @font-face is downloaded for nothing (issue #210).
  *
- * The all-in-one `@godxjp/ui/styles` entry pulls this in automatically, in the
- * correct position. If you manage fonts yourself (e.g. next/font), DON'T import
+ * v32 (#1221): the all-in-one `@godxjp/ui/styles` entry NO LONGER pulls this in. Add
+ * `@import "@godxjp/ui/styles/fonts";` after it, and install the optional peers
+ * `@fontsource/noto-sans-jp` + `@fontsource/m-plus-2` (the GoDX preset does both).
+ * If you manage fonts yourself (e.g. next/font), DON'T import
  * this — import `@godxjp/ui/styles/base` + the layout layers you use and supply
  * your own faces via the --font-family-* tokens.
  * ───────────────────────────────────────────────────────────────────────── */

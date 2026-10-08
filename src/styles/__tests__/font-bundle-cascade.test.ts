@@ -44,18 +44,15 @@ const winningDeclaration = (css: string, token: string): string | undefined => {
   return matches.at(-1)?.[1].replace(/\s+/g, " ").trim();
 };
 
-describe("bundled-font cascade order (issue #210)", () => {
-  it("imports fonts.css AFTER base.css in the all-in-one entry", () => {
-    const index = stripComments(readFileSync(resolve(STYLES_DIR, "index.css"), "utf8"));
-    const base = index.indexOf('@import "./base.css"');
-    const fonts = index.indexOf('@import "./fonts.css"');
+/** What a consumer gets from `@import ".../styles"` followed by `@import ".../styles/fonts"`. */
+const optInSequence = () =>
+  flatten(resolve(STYLES_DIR, "index.css")) + flatten(resolve(STYLES_DIR, "fonts.css"));
 
-    expect(base, "index.css must import ./base.css").toBeGreaterThan(-1);
-    expect(fonts, "index.css must import ./fonts.css").toBeGreaterThan(-1);
-    expect(
-      fonts,
-      "fonts.css must be imported AFTER base.css — the token layers re-declare --font-sans-base on :root at equal specificity, so an earlier fonts.css can never apply (issue #210)",
-    ).toBeGreaterThan(base);
+describe("bundled-font cascade order (issue #210)", () => {
+  it("does NOT pull fonts.css into the all-in-one entry — fonts are opt-in (v32 #1221)", () => {
+    const index = stripComments(readFileSync(resolve(STYLES_DIR, "index.css"), "utf8"));
+    expect(index).not.toContain("fonts.css");
+    expect(flatten(resolve(STYLES_DIR, "index.css"))).not.toContain("@fontsource/");
   });
 
   it("still has the conflicting pair unlayered — order is the ONLY precedence lever", () => {
@@ -72,8 +69,8 @@ describe("bundled-font cascade order (issue #210)", () => {
     expect(foundation).not.toMatch(/@layer/);
   });
 
-  it("resolves --font-sans-base to the bundled Noto Sans JP stack through the all-in-one entry", () => {
-    const flattened = flatten(resolve(STYLES_DIR, "index.css"));
+  it("resolves --font-sans-base to the bundled Noto Sans JP stack through the opt-in `index` then `styles/fonts` sequence", () => {
+    const flattened = optInSequence();
     const winner = winningDeclaration(flattened, "--font-sans-base");
 
     expect(winner).toBeDefined();
@@ -87,7 +84,7 @@ describe("bundled-font cascade order (issue #210)", () => {
   });
 
   it("resolves --font-sans-vi to the bundled stack too", () => {
-    const flattened = flatten(resolve(STYLES_DIR, "index.css"));
+    const flattened = optInSequence();
     const winner = winningDeclaration(flattened, "--font-sans-vi");
 
     expect(winner).toMatch(/^"Noto Sans JP"/);
@@ -109,18 +106,15 @@ describe("bundled-font cascade order (issue #210)", () => {
   // the old `if (!existsSync(distIndex)) return;` reported a PASS that had measured nothing —
   // measured: deleting dist/styles/index.css left this file at "6 passed". A skip says so out loud.
   it.skipIf(!existsSync(resolve(REPO_ROOT, "dist/styles/index.css")))(
-    "keeps the published dist entry in the same order",
+    "keeps fonts.css out of the published dist entry (opt-in, v32 #1221)",
     () => {
       const index = stripComments(
         readFileSync(resolve(REPO_ROOT, "dist/styles/index.css"), "utf8"),
       );
-      const base = index.indexOf('@import "./base.css"');
-      const fonts = index.indexOf('@import "./fonts.css"');
-      // Both anchors asserted present: `fonts > base` is also true when base is simply absent
-      // (`n > -1`), which is the same nothing-measured pass in a second disguise.
-      expect(base, "dist/styles/index.css must import ./base.css").toBeGreaterThan(-1);
-      expect(fonts, "dist/styles/index.css must import ./fonts.css").toBeGreaterThan(-1);
-      expect(fonts).toBeGreaterThan(base);
+      expect(index, "dist/styles/index.css must import ./base.css").toContain(
+        '@import "./base.css"',
+      );
+      expect(index).not.toContain("fonts.css");
     },
   );
 });
