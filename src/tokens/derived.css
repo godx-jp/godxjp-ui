@@ -183,27 +183,28 @@
 /* ENGINES WITHOUT RELATIVE COLOUR (Chrome/Edge 111–118; Safari 16.4+ and Firefox 128+ have it —
  * the partial support caniuse lists there is `currentcolor` only, which nothing here uses). The
  * call-site formula would be invalid at computed-value time and paint nothing, so these engines get
- * the default seed's values as literal knobs: exactly what 25.4.0 shipped to every browser. A
- * consumer seed does not follow there. derived-seed-sweep.test.ts holds these equal to the formula. */
+ * the default seed's values as literal knobs — the formula evaluated on the NEUTRAL ink seed since
+ * v32 (gh#1220); the GoDX preset carries its own violet set in themes/godx.css. A consumer seed
+ * does not follow there. derived-seed-sweep.test.ts holds these equal to the formula. */
 @supports not (color: hsl(from red h s l)) {
   :root {
-    --primary-hover: 268.7 100% 41.6%;
-    --primary-active: 268.7 100% 34.5%;
-    --primary-border: 268.7 68% 66%;
-    --control-outline: 268.7 100% 44.7%;
-    --text-link: 268.7 100% 41.6%;
-    --text-brand: 268.7 100% 41.6%;
-    --text-primary: 268.7 100% 34.5%;
+    --primary-hover: 240 6% 1.6%;
+    --primary-active: 240 6% 0%;
+    --primary-border: 240 4.08% 26%;
+    --control-outline: 240 6% 4.7%;
+    --text-link: 240 6% 1.6%;
+    --text-brand: 240 6% 1.6%;
+    --text-primary: 240 6% 0%;
   }
 
   .dark,
   :root[data-theme="dark"] {
-    --primary-hover: 268.7 100% 92.7%;
-    --primary-active: 268.7 100% 81.1%;
-    --primary-border: 268.7 46.7% 23.5%;
-    --control-outline: 268.7 99% 61.8%;
-    --text-link: 268.7 100% 86.9%;
-    --text-brand: 268.7 100% 86.9%;
-    --text-primary: 268.7 100% 92.7%;
+    --primary-hover: 0 0% 100%;
+    --primary-active: 0 0% 92.2%;
+    --primary-border: 0 0% 26.5%;
+    --control-outline: 0 0% 72.9%;
+    --text-link: 0 0% 98%;
+    --text-brand: 0 0% 98%;
+    --text-primary: 0 0% 100%;
   }
 }

@@ -25,13 +25,16 @@ const foundation = read("src/tokens/foundation.css");
 const logoTokens = read("src/tokens/components/logo.css");
 const logoLayout = read("src/styles/logo-layout.css");
 
+/** The GoDX preset (v32, gh#1220): the violet identity moved out of the defaults into this sheet. */
+const godx = read("src/themes/godx.css");
+
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
-function block(selector: string): string {
-  const start = anchorIndex(foundation, selector);
+function block(selector: string, css = foundation): string {
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
-  const open = foundation.indexOf("{", start);
-  const close = foundation.indexOf("\n}", open);
-  return foundation.slice(open + 1, close);
+  const open = css.indexOf("{", start);
+  const close = css.indexOf("\n}", open);
+  return css.slice(open + 1, close);
 }
 
 /** Read an `--name: H S% L%;` token as [h, s, l]. */
@@ -91,6 +94,11 @@ const THEMES = {
   dark: block('.dark, :root[data-theme="dark"] {'),
 } as const;
 
+const GODX = {
+  light: block(":root {", godx),
+  dark: block('.dark, :root[data-theme="dark"] {', godx),
+} as const;
+
 describe("--brand: the GoDX identity role (gh#250)", () => {
   it("declares --brand and --brand-foreground as real roles in BOTH themes", () => {
     for (const body of Object.values(THEMES)) {
@@ -99,19 +107,24 @@ describe("--brand: the GoDX identity role (gh#250)", () => {
     }
   });
 
-  it("light --brand IS the canonical GoDX violet #7A00FF", () => {
-    // Brand identity v2.3 (`01_GoDX`, `06_UI_Design_System/dist/godx.theme.resolved.json` →
-    // core.action.primary.bg). It replaced 翠 emerald #009766, which this line pinned from gh#250
-    // until the identity itself changed.
-    expect(hex(hslToRgb(hsl(THEMES.light, "brand")))).toBe("#7a00ff");
+  it("the package --brand is NEUTRAL — the same ink as the default --primary (gh#1220)", () => {
+    expect(hex(hslToRgb(hsl(THEMES.light, "brand")))).toBe("#18181b");
+    expect(hex(hslToRgb(hsl(THEMES.dark, "brand")))).toBe("#fafafa");
   });
 
-  it("dark --brand keeps the canonical hue and chroma, lifted only in lightness", () => {
-    const [lh, ls] = hsl(THEMES.light, "brand");
-    const [dh, ds, dl] = hsl(THEMES.dark, "brand");
+  it("the GoDX preset's light --brand IS the canonical GoDX violet #7A00FF", () => {
+    // Brand identity v2.3 (`01_GoDX`, `06_UI_Design_System/dist/godx.theme.resolved.json` →
+    // core.action.primary.bg). It replaced 翠 emerald #009766, which this line pinned from gh#250
+    // until the identity itself changed; v32 moved it from the defaults into themes/godx.css.
+    expect(hex(hslToRgb(hsl(GODX.light, "brand")))).toBe("#7a00ff");
+  });
+
+  it("the GoDX preset's dark --brand keeps the canonical hue and chroma, lifted only in lightness", () => {
+    const [lh, ls] = hsl(GODX.light, "brand");
+    const [dh, ds, dl] = hsl(GODX.dark, "brand");
     expect(dh).toBe(lh);
     expect(ds).toBe(ls);
-    expect(dl).toBeGreaterThan(hsl(THEMES.light, "brand")[2]);
+    expect(dl).toBeGreaterThan(hsl(GODX.light, "brand")[2]);
   });
 
   it("--success stays 若竹 wakatake — the STATUS green is untouched by the identity fix", () => {

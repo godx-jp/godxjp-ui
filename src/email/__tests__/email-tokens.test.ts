@@ -486,9 +486,17 @@ describe("canonical GoDX brand mark", () => {
     expect(glyph.y + glyph.height).toBeLessThanOrEqual(capsule.y + capsule.height);
   });
 
+  it("has no default product name — omitted, the mark is decorative (gh#1220)", () => {
+    for (const markup of [emailBrandMarkSvg(), emailBrandMarkTableHtml(), EMAIL_BRAND_MARK.svg]) {
+      expect(markup).toContain('aria-hidden="true"');
+      expect(markup).not.toContain("aria-label");
+      expect(markup).not.toContain("GoDX");
+    }
+  });
+
   it("is decorative when label is empty and an image otherwise (WAI-ARIA)", () => {
-    expect(emailBrandMarkSvg()).toContain('role="img"');
-    expect(emailBrandMarkSvg()).toContain('aria-label="GoDX"');
+    expect(emailBrandMarkSvg({ label: "GoDX" })).toContain('role="img"');
+    expect(emailBrandMarkSvg({ label: "GoDX" })).toContain('aria-label="GoDX"');
     expect(emailBrandMarkSvg({ label: "" })).toContain('aria-hidden="true"');
     expect(emailBrandMarkSvg({ label: "" })).not.toContain("aria-label");
     expect(emailBrandMarkSvg({ label: 'Go"DX' })).toContain("Go&quot;DX");

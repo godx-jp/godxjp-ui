@@ -78,7 +78,7 @@ const PROVIDERS = [
 
 const ORGANIZATIONS = [
   { id: "acme", name: "Acme 株式会社", role: "招待 · 管理者として参加", initials: "AC" },
-  { id: "godx-labs", name: "GoDX Labs", role: "招待 · メンバーとして参加", initials: "GL" },
+  { id: "acme-labs", name: "Acme Labs", role: "招待 · メンバーとして参加", initials: "AL" },
 ];
 
 export default function Demo() {
@@ -116,7 +116,7 @@ export default function Demo() {
       preset="registration"
       footer={
         <AuthFooter
-          product="GoDX ID"
+          product="Acme ID"
           terms="利用規約"
           privacy="プライバシー"
           locale={<AppSettingPicker kind="locale" appearance="labeled" compact />}

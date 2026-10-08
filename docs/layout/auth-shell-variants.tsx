@@ -44,20 +44,20 @@ export default function Demo() {
       density={density}
       brand={
         <Flex align="center" gap="sm">
-          <Logo mark="godx" tone="success" />
-          <Text weight="medium">GoDX ID</Text>
+          <Logo glyph="a" />
+          <Text weight="medium">Acme ID</Text>
         </Flex>
       }
       footer={
         <AuthFooter
-          product="GoDX ID"
+          product="Acme ID"
           terms="利用規約"
           privacy="プライバシー"
           locale={<AppSettingPicker kind="locale" appearance="labeled" compact />}
         />
       }
     >
-      <AuthIdentity title="GoDX ID" requester="経費精算がサインインを要求しています" />
+      <AuthIdentity title="Acme ID" requester="経費精算がサインインを要求しています" />
 
       {/* preset を持たないシェルの列は子要素の間隔を持たないため、2 枚のカードの間隔は
           ページ側の Flex gap が所有します。幅は依然としてシェルのトークンが所有します。 */}
