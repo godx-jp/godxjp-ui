@@ -3778,25 +3778,6 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
-  ThumbnailSizeProp: {
-    group: "data-display",
-    file: "components/data-display.prop.ts",
-    vocabulary: ["SizeProp"],
-  },
-  ThumbnailProp: {
-    group: "data-display",
-    file: "components/data-display.prop.ts",
-    vocabulary: [
-      "SizeProp",
-      "ClassNameProp",
-      {
-        field: "alt",
-        local: true,
-        reason: "The native img alt contract, made required so it cannot be forgotten.",
-      },
-      { field: "src", local: true, reason: "The native img src attribute." },
-    ],
-  },
   CodeBlockProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

@@ -57,7 +57,7 @@ export type {
  *   so they cannot also move a roving focus. Tab walks the buttons.
  * - ←/→ follow the reading direction: in RTL, ← is NEXT. antd ignores `dir`.
  * - With `items`, a clicked child opens at the item whose `src` matches its own (antd opens 0).
- * - `alt` is required, as on `Thumbnail`.
+ * - `alt` is required.
  * - `width`/`height` size the frame (antd) and the picture fills it; a fixed height crops with
  *   `fit` (default `cover`, antd stretches). `size` (sm/md/lg on the Thumbnail height scale, 4:3)
  *   and `caption` (a figcaption held to the picture's width) are godx extensions.
@@ -637,16 +637,23 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
   const shownSrc = isError && fallback ? fallback : src;
   const showPlaceholder = placeholder != null && placeholder !== false && status === "loading";
 
-  const sized = size != null || width != null || height != null;
+  // `fit="intrinsic"` (the former Thumbnail, #1223): the frame is the `size` height at the
+  // picture's OWN width, so `width`/`height` are the file's pixels — `<img>` attributes that let
+  // the browser reserve that width before the bytes land — and never the frame's size.
+  const intrinsic = fit === "intrinsic";
+  const sized = intrinsic || size != null || width != null || height != null;
   const frameFit = fit ?? (size != null || height != null ? "cover" : undefined);
   const frame = sized
     ? {
         "data-sized": "",
-        "data-size": size,
-        style: {
-          ...(width != null ? { "--image-inline-size": cssLength(width) } : null),
-          ...(height != null ? { "--image-block-size": cssLength(height) } : null),
-        } as React.CSSProperties,
+        "data-size": intrinsic ? (size ?? "md") : size,
+        "data-fit": intrinsic ? "intrinsic" : undefined,
+        style: intrinsic
+          ? undefined
+          : ({
+              ...(width != null ? { "--image-inline-size": cssLength(width) } : null),
+              ...(height != null ? { "--image-block-size": cssLength(height) } : null),
+            } as React.CSSProperties),
       }
     : null;
 

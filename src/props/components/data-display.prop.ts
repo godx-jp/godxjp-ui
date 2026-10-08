@@ -217,32 +217,6 @@ export type FeatureListProp = Omit<React.HTMLAttributes<HTMLUListElement>, "chil
   className?: ClassNameProp;
 };
 
-/**
- * Fixed BLOCK size of a `Thumbnail`; the inline size stays intrinsic.
- *
- * A subset of the shared `SizeProp` ladder — `xs` is off the bottom because a 48px frame with a
- * 1px hairline is a favicon, not a thumbnail, and nothing in the reported cases wanted one.
- */
-export type ThumbnailSizeProp = Extract<SizeProp, "sm" | "md" | "lg">;
-
-/**
- * @see Thumbnail — a framed image at a FIXED HEIGHT and its own intrinsic width, for a wrapping
- * row of pictures whose aspect ratios differ.
- */
-export type ThumbnailProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt"> & {
-  /** Image URL. */
-  src: string;
-  /**
-   * Required, with no way to omit it. Pass `""` for a picture that carries no information the
-   * page does not already say — the empty string is a DECISION the author has to make, where a
-   * missing attribute is an omission nobody notices (WCAG 1.1.1).
-   */
-  alt: string;
-  /** Frame height. Default `md`. The width follows the picture's own ratio. */
-  size?: ThumbnailSizeProp;
-  className?: ClassNameProp;
-};
-
 /** @see EmptyState */
 /**
  * Semantic intent of the EmptyState icon medallion — a subset of the shared `ToneProp` vocabulary
@@ -1446,7 +1420,7 @@ export type ImageProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt" | 
   /** Image URL. */
   src: string;
   /**
-   * Required, as on `Thumbnail`: `""` is a decision, a missing `alt` an omission (WCAG 1.1.1). It
+   * Required: `""` is a decision, a missing `alt` an omission (WCAG 1.1.1). It
    * also names the preview trigger ("Preview: {alt}").
    */
   alt: string;
@@ -1472,7 +1446,17 @@ export type ImageProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt" | 
    * `width`/`height`, which override the preset's side they name.
    */
   size?: ImageSizeProp;
-  /** How the picture fills a fixed frame (`object-fit`). Default `cover` once the height is fixed. */
+  /**
+   * How the picture fills a fixed frame. `cover` crops, `contain` letterboxes (both inside the
+   * 4:3 `size` frame or the `width`×`height` one). Default `cover` once the height is fixed.
+   *
+   * `intrinsic` keeps the picture's OWN ratio: the frame takes the `size` height and the picture's
+   * own width — nothing cropped, nothing letterboxed — drawn with the hairline thumbnail frame on a
+   * muted backdrop and clamped to its container. `width`/`height` then stay pure `<img>`
+   * attributes (the file's real pixels), so the browser reserves the final width before the
+   * bytes land. This is what the retired `Thumbnail` was (v32 #1223): a wrapping row of portrait
+   * and landscape shots at one height.
+   */
   fit?: ImageFitProp;
   /**
    * Text under the picture, held to the picture's width, so a long file name truncates instead of
@@ -1485,8 +1469,12 @@ export type ImageProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt" | 
 /** `Image` thumbnail frame preset — the `Thumbnail` height scale. */
 export type ImageSizeProp = Extract<SizeProp, "sm" | "md" | "lg">;
 
-/** `Image` `fit` — the picture's `object-fit` inside a fixed frame. */
-export type ImageFitProp = "cover" | "contain";
+/**
+ * `Image` `fit` — `cover`/`contain` are the picture's `object-fit` inside a fixed frame;
+ * `intrinsic` sizes the frame to the picture's own ratio at the `size` height (the former
+ * `Thumbnail`).
+ */
+export type ImageFitProp = "cover" | "contain" | "intrinsic";
 
 /**
  * @see ImagePreviewGroup — pages the preview across a set of pictures (antd `Image.PreviewGroup`).

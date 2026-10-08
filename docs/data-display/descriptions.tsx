@@ -7,7 +7,7 @@ import {
   CardTitle,
   Descriptions,
   Progress,
-  Thumbnail,
+  Image,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -135,7 +135,13 @@ export default function Demo() {
           <CardContent>
             <Descriptions columns={{ sm: 1, md: 2 }} bordered>
               <Descriptions.Item label="製品画像">
-                <Thumbnail src="/godxjp-ui/favicon.svg" alt="製品サムネイル" size="md" />
+                <Image
+                  fit="intrinsic"
+                  preview={false}
+                  src="/godxjp-ui/favicon.svg"
+                  alt="製品サムネイル"
+                  size="md"
+                />
               </Descriptions.Item>
               <Descriptions.Item label="状態">
                 <Flex direction="row" gap="xs" wrap>

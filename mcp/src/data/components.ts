@@ -5320,86 +5320,6 @@ import { Flex } from "@godxjp/ui/layout";
     rules: [],
   },
   {
-    name: "Thumbnail",
-    group: "data-display",
-    tagline:
-      "A framed picture at a FIXED height with its own INTRINSIC width — the shape a wrapping row of screenshots with different aspect ratios needs.",
-    props: [
-      {
-        name: "src",
-        type: "string",
-        required: true,
-        description: "Image URL.",
-      },
-      {
-        name: "alt",
-        type: "string",
-        required: true,
-        description:
-          'Required by the type. Pass "" for a picture that carries no information the page does not already say — the empty string is a decision, a missing attribute is an omission (WCAG 1.1.1).',
-      },
-      {
-        name: "size",
-        type: '"sm" | "md" | "lg"',
-        defaultValue: '"md"',
-        description:
-          "Frame height — sm 64px (an attachment strip), md 96px (a gallery row), lg 160px (a review screen). The width follows the picture's own ratio.",
-      },
-      {
-        name: "width",
-        type: "number",
-        description:
-          "The file's real pixel width. Pass it with `height` and the browser knows the ratio before the bytes land, so the frame takes its final width on the first paint instead of reflowing the row.",
-      },
-      {
-        name: "height",
-        type: "number",
-        description: "The file's real pixel height. See `width`.",
-      },
-      {
-        name: "loading",
-        type: '"lazy" | "eager"',
-        description:
-          "Native img attribute, passed through. Every other img attribute passes through too.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description:
-          "Root class. The three heights, the hairline and the radius live in the --thumbnail-* tokens.",
-      },
-    ],
-    usage: [
-      'DO import from `@godxjp/ui/data-display`: `import { Thumbnail } from "@godxjp/ui/data-display";`',
-      'DO wrap a row of them in `<Flex gap="sm" wrap align="start">` — equal heights make the strip read as one row while each width stays natural.',
-      "DO pass the file's real `width` and `height` so the row does not reflow while the pictures load.",
-      "DON'T use AspectRatio for this: it spans `width: 100%` and pins ONE ratio, so a row of mixed-ratio screenshots comes out letterboxed or cropped. AspectRatio is for a slot whose ratio you choose.",
-      "DON'T use Avatar (an identity mark with an initials fallback) or Card (it pads the frame away from the picture). CardCover is the full-bleed media slot inside a Card, not a standalone thumbnail.",
-      'DON\'T hand-roll `<img className="h-40 w-auto rounded-md border" />` — `no-hand-rolled-surface` flags it, correctly: border + radius is a surface.',
-    ],
-    useCases: [
-      "A review screen showing a submission's screenshots, portrait and landscape in the same wrapping row.",
-      'An attachment strip beside a message or a ticket, at `size="sm"`.',
-      "A gallery row of uploaded images where each picture must stay uncropped.",
-      "Any picture that needs a hairline so a light image is distinguishable from the card behind it.",
-    ],
-    related: [
-      "AspectRatio — a ratio-constrained slot at full width; use it when YOU choose the ratio, not when the picture does.",
-      "Avatar — an identity mark for a person, team or entity, with an initials fallback.",
-      "CardCover — the full-bleed media slot at the top of a Card.",
-      "Carousel — for a set too large to lay out at once; a wrap row of 2–5 thumbnails is not a carousel.",
-    ],
-    example: `import { Thumbnail } from "@godxjp/ui/data-display";
-
-<Flex gap="sm" wrap align="start">
-  <Thumbnail src="/shot-portrait.png" width={360} height={640} alt="モバイル版の一覧画面" size="lg" />
-  <Thumbnail src="/shot-desktop.png" width={960} height={540} alt="デスクトップ版のダッシュボード" size="lg" />
-</Flex>`,
-    docPath: "data-display/thumbnail.tsx",
-    storyPath: "data-display/Thumbnail.stories.tsx",
-    rules: [],
-  },
-  {
     name: "ListRow",
     group: "data-display",
     tagline:
@@ -18832,6 +18752,7 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "Image",
+    absorbed: ["Thumbnail"],
     group: "data-display",
     tagline:
       'antd `Image` + `Image.PreviewGroup`: a picture that opens in a full-viewport preview (zoom in/out by button, wheel or double-click; rotate; flip; reset; drag to pan). Inside an `ImagePreviewGroup` every Image at any depth joins one gallery in document order — prev/next buttons, ←/→, a "2 / 3" counter. Esc closes; focus is trapped and returned to the picture.',
@@ -18874,9 +18795,9 @@ const messages: ChatMessageProp[] = [
       },
       {
         name: "fit",
-        type: '"cover" | "contain"',
+        type: '"cover" | "contain" | "intrinsic"',
         description:
-          "object-fit inside a fixed frame. Default `cover` once the height is fixed (size or height).",
+          'object-fit inside a fixed frame (`cover` crops, `contain` letterboxes). Default `cover` once the height is fixed (size or height). `intrinsic` keeps the picture\'s OWN ratio: the frame is the `size` height (default md) at the picture\'s own width — never cropped — with the hairline thumbnail frame on a muted backdrop, clamped to its column; `width`/`height` then stay `<img>` attributes (the file\'s real pixels) so the width is reserved before the bytes land. Use it for a wrapping row of mixed portrait/landscape screenshots at one height — what the retired `Thumbnail` was (v32). Pair with `preview={false}` for a plain picture.',
       },
       {
         name: "caption",

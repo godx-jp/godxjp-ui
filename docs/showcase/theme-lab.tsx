@@ -149,7 +149,7 @@ import {
   TableHeader,
   TableRow,
   ThoughtChain,
-  Thumbnail,
+  Image,
   Timeline,
   TimelineGrid,
   Tree,
@@ -1146,7 +1146,9 @@ export default function ThemeLabShowcase() {
                   label={t("themeLab.label.qr")}
                   size="md"
                 />
-                <Thumbnail
+                <Image
+                  fit="intrinsic"
+                  preview={false}
                   src={shotLandscape}
                   width={960}
                   height={540}

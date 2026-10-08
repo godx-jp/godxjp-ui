@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Thumbnail,
+  Image,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import {
@@ -106,7 +106,14 @@ export default function MasonryDoc() {
       children: (
         <Card>
           <CardContent>
-            <Thumbnail src={coverTerrain} width={480} height={270} alt="" />
+            <Image
+              fit="intrinsic"
+              preview={false}
+              src={coverTerrain}
+              width={480}
+              height={270}
+              alt=""
+            />
             <Text size="xs" tone="muted">
               cover-terrain.svg · 480×270
             </Text>
@@ -176,7 +183,14 @@ export default function MasonryDoc() {
       children: (
         <Card>
           <CardContent>
-            <Thumbnail src={shotPortrait} width={360} height={640} alt="モバイル版の一覧画面" />
+            <Image
+              fit="intrinsic"
+              preview={false}
+              src={shotPortrait}
+              width={360}
+              height={640}
+              alt="モバイル版の一覧画面"
+            />
           </CardContent>
         </Card>
       ),

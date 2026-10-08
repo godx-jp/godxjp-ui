@@ -11,8 +11,6 @@ export type {
   FeatureListProps,
   FeatureStateProp,
 } from "./feature-list";
-export { Thumbnail } from "./thumbnail";
-export type { ThumbnailProp, ThumbnailProps, ThumbnailSizeProp } from "./thumbnail";
 export { ListRow } from "./list-row";
 export type { ListRowProps, ListRowDensity } from "./list-row";
 export { Marquee } from "./marquee";
