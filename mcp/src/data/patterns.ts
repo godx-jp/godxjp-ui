@@ -391,7 +391,7 @@ import { Flex } from "@godxjp/ui/layout";
     name: "pricing-plans",
     aliases: ["pricing-table", "plan-picker", "pricing-card"],
     tagline:
-      "Pricing plan cards — ResponsiveGrid preset + Card featured + FeatureList + tabular price. A composition, not a component (dxs-platform/pkg-ui#14).",
+      "Pricing plan cards — ResponsiveGrid preset + Card featured + FeatureList + tabular price. A composition, not a component (consumer request, debated 2026-10-09 on #1205).",
     tags: ["pricing", "plans", "billing", "card", "composition"],
     code: `import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Badge, FeatureList } from "@godxjp/ui/data-display";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
