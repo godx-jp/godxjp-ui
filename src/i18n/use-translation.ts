@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import { useOptionalAppContext } from "../app/app-provider";
 import { getDateFnsLocale, getDayPickerLocale } from "../app/locales";
 import { resolveHydrationSafeTimezone } from "../app/timezones";
+import { resolveDefaultDateFormat } from "../app/date-format-labels";
+import { resolveDefaultTimeFormat } from "../app/time-format-labels";
 import { isDevelopment } from "../lib/dev";
 import {
   getSyncedFallbackLocale,
@@ -68,8 +70,8 @@ export function usePickerLocales(dayPickerOverride?: DayPickerLocale) {
       // AppProvider's own unconfigured answer (gh#968) — a zone that looks right when it is wrong
       // (Asia/Ho_Chi_Minh) is worse than one that is visibly not local.
       timezone: ctx?.timezone ?? resolveHydrationSafeTimezone("browser"),
-      timeFormat: ctx?.timeFormat ?? "24h",
-      dateFormat: ctx?.dateFormat ?? "dmy",
+      timeFormat: ctx?.timeFormat ?? resolveDefaultTimeFormat(locale),
+      dateFormat: ctx?.dateFormat ?? resolveDefaultDateFormat(locale),
       dateFnsLocale: ctx?.dateFnsLocale ?? getDateFnsLocale(locale),
       dayPickerLocale: dayPickerOverride ?? ctx?.dayPickerLocale ?? getDayPickerLocale(locale),
     }),

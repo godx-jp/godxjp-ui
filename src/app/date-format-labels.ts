@@ -1,4 +1,4 @@
-import { APP_DATE_FORMATS } from "./date-formats";
+import { APP_DATE_FORMATS, getLocaleDateOrder } from "./date-formats";
 import type { AppLocale } from "./types";
 import type { AppDateFormat } from "./date-formats";
 import { translate } from "../i18n/translate";
@@ -14,7 +14,9 @@ export function getDateFormatLabel(
 }
 
 /**
- * Suggested default per locale — vi → dmy, ja → ymd, en → mdy.
+ * Suggested default per locale: the order the locale writes a numeric date in, from `Intl`
+ * (v32, gh#1219) — vi → dmy, ja → ymd, en → mdy, de / pt-BR / en-GB → dmy, ko → ymd. The three
+ * built-ins answer what the old hard-coded table answered.
  *
  * `ja` used to be `iso` (`yyyy-MM-dd`). Nothing recorded a reason for it, and it is not the form a
  * Japanese business document is written in: those use `YYYY/MM/DD` (or `YYYY年MM月DD日`). The cost
@@ -27,7 +29,5 @@ export function getDateFormatLabel(
  * one keystroke away in `DateFormatPicker`.
  */
 export function resolveDefaultDateFormat(locale: AppLocale): AppDateFormat {
-  if (locale === "en") return "mdy";
-  if (locale === "ja") return "ymd";
-  return "dmy";
+  return getLocaleDateOrder(locale);
 }
