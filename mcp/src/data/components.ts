@@ -3760,6 +3760,7 @@ import { Trash2 } from "lucide-react";
       'DO use `<Logo mark="godx-lockup" productSuffix="ID" />` for a product surface branded "GoDX | ID" — the divider, the gaps, the `size` scale and the light/dark master are the package\'s. DON\'T inline the kit\'s flattened "GoDX | ID" SVG in the app: it is a second master in its own coordinate system, with global `id="title"`/`id="desc"` that collide across instances, a hardcoded `#0B0F3B` ink with no dark variant, and a hardcoded `#C5C8D6` rule (gh#649).',
       "DON'T typeset the suffix yourself as `<Logo mark=\"godx-lockup\" /><Text>ID</Text>` — that has no divider and the spacing is not the lockup's token.",
       'DON\'T re-tint via `className="bg-*"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.',
+      'GoDX LOOK = THE PRESET (v32): the package defaults are neutral (ink `--primary`, no product mark). A GoDX surface gets the violet identity, the fonts and the GoDX mark in AuthIdentity from `import "@godxjp/ui/themes/godx.css"` (after the base stylesheet) plus `import { godxPreset } from "@godxjp/ui/themes/godx"` and `<AppProvider preset={godxPreset}>`. `mark="godx"` / `"godx-lockup"` still render the GoDX artwork wherever you place them explicitly.',
       "DO use `mark=\"godx\"` for the canonical GoDX identity mark on hosted-identity screens — it is ALREADY in the package as real inline vector artwork. DON'T pass a hand-drawn brand SVG as `glyph`, and don't ship a brand asset in the app, to reproduce it.",
       'DO make the brand a link with `asChild`, not with a wrapper: `<Logo asChild mark="godx" wordmark="GoDX"><Link href="/" /></Logo>`. Writing `<a className="flex"><Logo …/></a>` instead is the exact shape ui-audit rejects (no-utility-layout), and dropping the `flex` misaligns the mark.',
     ],
@@ -3773,7 +3774,7 @@ import { Trash2 } from "lucide-react";
       'Product-branded surface ("GoDX ID" legal pages, a Console/Admin topbar) — `<Logo mark="godx-lockup" productSuffix="ID" />`: the master lockup, the package\'s divider, and one accessible name, "GoDX ID".',
     ],
     related: [
-      "AuthIdentity (@godxjp/ui/layout) — the canonical auth heading block; it already renders the GoDX mark, so don't add a second Logo above it.",
+      "AuthIdentity (@godxjp/ui/layout) — the auth heading block. It draws `brand`, else the active preset's `brandMark` (the GoDX mark under `<AppProvider preset={godxPreset}>`), else no mark — so don't add a second Logo above it.",
       "Text / Heading — only for a bespoke lockup the `wordmark` prop cannot express; for the ordinary mark + product name, use `wordmark` (it owns the gap, face and brand colour as tokens).",
       "Avatar — use Avatar for a PERSON/entity image or initials; use Logo for the PRODUCT brand mark. They look similar (square/rounded glyph) but carry different meaning.",
     ],
@@ -10256,9 +10257,15 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
     props: [
       {
         name: "defaultLocale",
-        type: '"ja" | "en" | "vi"',
-        defaultValue: '"vi"',
-        description: "Initial locale.",
+        type: "string (BCP-47)",
+        description:
+          "Initial locale when nothing is stored. Resolution, first match wins: this prop (when registered — `de-AT` is served by a registered `de`) → `<html lang>` (client only) → the preset's `defaultLocale` → `en`. Never `navigator.language` (the server cannot see it, so SSR would hydrate differently). An SSR host passes the request's locale here. v32: the default was `vi`.",
+      },
+      {
+        name: "preset",
+        type: "AppPreset",
+        description:
+          'Product defaults the host opts into — `import { godxPreset } from "@godxjp/ui/themes/godx"` (pair it with `@godxjp/ui/themes/godx.css` after the base stylesheet). Its `defaultLocale` and `timeZone` fill only what the props leave unset, its `brandMark` is what an `AuthIdentity` with no `brand` draws, and its `name` is written to `<html data-preset>`. Omit for the neutral defaults (ink primary, `en`, no product mark).',
       },
       {
         name: "defaultTimezone",
@@ -10330,7 +10337,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
     ],
     usage: [
       'DO drive the four theme axes (theme / brand / density / fontSize) from AppProvider props ONLY — they are written to <html data-*> and read by every component via tokens. Never hand-set --font-size-base or .ui-density-* in app CSS; that bypasses persistence + the runtime switchers. For runtime switching mount `<AppSettingPicker kind="density" | "fontSize" | "theme" | "brand" >` or call setDensity/setFontSize/setTheme/setBrand from useAppContext().',
-      "DO mount AppProvider ONCE at the application root (e.g. in app.tsx or the Inertia layout), wrapping ALL children — every godx-ui picker (LocalePicker, TimezonePicker, DateFormatPicker, TimeFormatPicker), every formatDate call, and the Toaster all rely on the single context it provides. Nesting two AppProviders creates split contexts; inner pickers silently read the wrong one.",
+      'DO mount AppProvider ONCE at the application root (e.g. in app.tsx or the Inertia layout), wrapping ALL children — every `AppSettingPicker` (kind="locale" / "timezone" / "dateFormat" / "timeFormat"), every formatDate call, and the Toaster all rely on the single context it provides. Nesting two AppProviders creates split contexts; inner pickers silently read the wrong one.',
       "DO NOT omit AppProvider and then try to use LocalePicker, TimezonePicker, or formatDate standalone — useAppContext() throws 'useAppContext must be used within <AppProvider>' at runtime. The only exception is using those pickers in fully controlled mode (value + onChange) which reads useOptionalAppContext() and returns null safely.",
       "DO use `persist={false}` on AppProvider for isolated tests and standalone settings forms where localStorage must not be read or written. With the default `persist={true}` the provider reads localStorage key `godxjp.app` on mount (after first render), so initial state may differ between SSR and client.",
       'DO NOT reach for `persist={false}` because the SERVER owns the locale — pass the axes the BROWSER owns instead: `persist={["theme", "brand", "density", "fontSize", "scaling"]}`. Storage is read after the props, so a stored `locale` overrides the one the server just resolved; turning persistence off wholesale fixes that and silently takes the viewer\'s theme with it, which is how a hosted app shipped a theme toggle that reset on every reload.',
@@ -10351,7 +10358,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
       "LocalePicker — the language-selector control that reads/writes AppProvider locale context automatically when used as a zero-prop child. Prefer LocalePicker over calling setLocale from useAppContext() directly in UI.",
       "TimezonePicker — the timezone-selector control; inherits `timezoneOptions` from AppProvider context when its own `options` prop is omitted. Both pickers require AppProvider to be in the tree unless controlled props are passed.",
       "formatDate — the MANDATORY date/time formatter that reads locale, timezone, timeFormat, and dateFormat from AppProvider context. Do NOT call date-fns or Intl.DateTimeFormat directly; formatDate is the single source of truth for display.",
-      "AppShell — the top-level application shell that composes AppProvider, AppShell, Sidebar, and Topbar into a single ready-to-use layout. If your project uses AppShell, AppProvider is already mounted inside it — do not add a second one.",
+      "AppShell — the authenticated layout (sidebar + topbar + main). It does NOT mount AppProvider: mount AppProvider once at the application root, ABOVE AppShell (and above any CenteredShell/MobileShell), so every shell and page reads the same context.",
       "OverlayPortalProvider — the other root-level provider, and the one to reach for when this library is mounted inside a SHADOW ROOT. Every overlay here (Popover, Dialog, Sheet, Tooltip, DropdownMenu, HoverCard) portals to `document.body` by default, which is correct on an ordinary page and wrong in a shadow root: the panel lands outside the tree carrying the stylesheet and renders with none of it — measured on an embedded bar as border 0, radius 0, a transparent background, and the anchor maths 40px off. `<OverlayPortalProvider container={shadowRoot}>` moves all of them at once; a per-component prop cannot, because a component that owns its own overlay (AppLauncher) is unreachable from the outside.",
     ],
     example: `import { AppProvider } from "@godxjp/ui/app";
@@ -16813,7 +16820,7 @@ import { Text } from "@godxjp/ui/general";
         name: "brand",
         type: "ReactNode",
         description:
-          "Brand artwork in the MARK's place, for a service whose design ships a real lockup (mark + wordmark, sometimes a product suffix). Omit it and the canonical GoDX mark renders. data-slot, .ui-auth-identity spacing and the h1 are untouched, so swapping artwork never forks the block.",
+          "Brand artwork in the MARK's place, for a service whose design ships a real lockup (mark + wordmark, sometimes a product suffix). Omitted → the active preset's `brandMark` (`<AppProvider preset={godxPreset}>` supplies the GoDX mark), otherwise NO mark: a neutral package draws no product's logo. `null` → no mark, preset or not. data-slot, .ui-auth-identity spacing and the h1 are untouched, so swapping artwork never forks the block.",
       },
       {
         name: "requester",
@@ -16828,7 +16835,7 @@ import { Text } from "@godxjp/ui/general";
     ],
     usage: [
       "Only show `requester` when the consumer has authoritative client context.",
-      'It ALREADY renders the canonical brand-green GoDX mark (`Logo mark="godx" tone="success"`, independent of --primary) plus the page h1 — don\'t add a second Logo or heading above it.',
+      "It renders the page h1 plus a mark: the `brand` you pass, else the active preset's `brandMark`, else none (v32: the neutral default draws no product logo). Under `<AppProvider preset={godxPreset}>` (from `@godxjp/ui/themes/godx`, with `@godxjp/ui/themes/godx.css`) that is the brand-green GoDX mark — don't add a second Logo or heading above it.",
       'To show YOUR OWN lockup instead, pass it as `brand` — never wrap or rebuild the block. `brand` replaces the mark only, so the h1 stays; if your lockup already spells the product name, make `title` the SCREEN\'S PURPOSE ("Sign in") rather than repeating the brand.',
       'DO keep `brand` non-interactive. The slot is DECORATIVE at every fill: the mark it replaces was always aria-hidden, and a real lockup is not a mark — `Logo mark="godx-lockup" productSuffix="ID"` exposes "GoDX ID" as real text, so left in the tree beside the h1 the block announces the product twice (measured: "GoDXIDGoDX ID"). aria-hidden is merged onto your element, and aria-hidden over a focusable child is a WCAG failure.',
       "Centring and rhythm are token-owned (`--auth-identity-gap` / `--auth-requester-*`); no page CSS (rule #45).",
