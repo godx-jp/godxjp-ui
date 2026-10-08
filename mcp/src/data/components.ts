@@ -10064,10 +10064,10 @@ import { Button } from "@godxjp/ui/general";
   },
   {
     name: "Toolbar",
-    subParts: ["ToolbarGroup"],
+    subParts: ["ToolbarGroup", "FilterBar", "FilterBarGroup"],
     group: "navigation",
     tagline:
-      "List-page filter strip (the framework FilterBar) — SearchInput + labelled ToolbarGroup filter slots + a clear-all affordance, optionally sticky.",
+      "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. `FilterBar`/`FilterBarGroup` are the same components under their alias names.",
     props: [
       {
         name: "children",
@@ -10171,6 +10171,11 @@ import { Button } from "@godxjp/ui/general";
       "DO switch to `overflow='scroll'` when a list page carries more filters than fit one row — one bounded row that scrolls inline keeps the table above the fold, where the default `wrap` would grow a 3-row strip with long JA/EN/VI labels. Never re-implement the geometry in the page: no page-local flex/grid/width rules on a filter strip.",
       "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
       "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
+      "Prefer the typed model for a canonical list page: pass `search` + `filters` + `chips` + `resultCount` and the bar owns the layout, widths, chip lifecycle, keyboard order (search → filters → children → reset → actions → chip removes) and responsive stacking through --filter-bar-* tokens. Everything stays consumer data — the bar renders state, never owns it.",
+      "Compose real controls as children when the model doesn't fit; filter state and URL synchronization remain consumer-owned. Children also render INSIDE the model layout (after the typed filters) for one-off custom controls like a date-range picker.",
+      "Give each FilterBarGroup a `controlId` matching its single control's `id` so the visible caption is that control's real <label>; otherwise the control is nameless to a screen reader. Typed `filters` wire this automatically.",
+      "Reach for `overflow='scroll'` on filter-heavy list pages so a long JA/EN/VI label set never grows the strip into multiple rows and pushes the table below the fold.",
+      "A mobile sheet presentation is a COMPOSITION, not a prop: put the same typed FilterBar inside a Sheet triggered from a compact toolbar when a screen wants drawer-style filters. The bar's own responsive behavior is stack (below 640px) + wrap/scroll (above), token-owned.",
     ],
     useCases: [
       "Master list screens (members, organizations, subscriptions, invoices) that need free-text search plus a few dropdown filters above a DataTable.",
@@ -17036,125 +17041,6 @@ import { Badge } from "@godxjp/ui/data-display";
   }
 />`,
     storyPath: "layout/AppLauncher.stories.tsx",
-    rules: [],
-  },
-  {
-    name: "FilterBar",
-    subParts: ["FilterBarGroup"],
-    group: "navigation",
-    tagline:
-      "Domain-neutral list-page filter toolbar with optional clear action and labelled groups.",
-    props: [
-      {
-        name: "children",
-        type: "ReactNode",
-        description:
-          "Filter controls and groups (composition form). In the typed-model form children remain valid as CUSTOM filters, rendered after the typed `filters`.",
-      },
-      {
-        name: "onClear",
-        type: "() => void",
-        description: "Consumer-owned clear/reset action — also the chips' clear-all.",
-      },
-      {
-        name: "hasActiveFilters",
-        type: "boolean",
-        defaultValue: "true",
-        description: "Shows clear only when filters are active.",
-      },
-      {
-        name: "sticky",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Uses the token-owned sticky presentation.",
-      },
-      {
-        name: "overflow",
-        type: "'wrap' | 'scroll'",
-        defaultValue: "'wrap'",
-        description:
-          "Responsive overflow strategy. 'wrap': stacked column below 640px, wrapping rows above. 'scroll': one bounded inline-scrolling row above 640px (still stacked below) with the clear-all action pinned at the inline end. The geometry is entirely token/CSS owned — never re-implement it in the page.",
-      },
-      {
-        name: "search",
-        type: "FilterBarSearchProp",
-        description:
-          "Typed model: search slot, first in the strip, token-owned width (--filter-bar-search-width). Presence of ANY model prop (search/filters/chips/onChipRemove/actions/resultCount/loading/disabled/error) activates the model layout; without them the composition form renders unchanged.",
-      },
-      {
-        name: "filters",
-        type: "FilterBarFilterProp[]",
-        description:
-          "Typed model: labelled Select filters ({ value, label, options, selected/defaultSelected/onSelectedChange, placeholder, disabled }) — label becomes the control's real <label>. Width knob: --filter-bar-filter-width.",
-      },
-      {
-        name: "chips",
-        type: "FilterBarChipProp[]",
-        description:
-          "Typed model: applied-filter chips ({ value, label, disabled }) in a labelled row. Add = include in the array; remove = onChipRemove(value); clear-all = onClear.",
-      },
-      {
-        name: "onChipRemove",
-        type: "(value: string) => void",
-        description: "Per-chip remove handler; required for the × remove buttons to render.",
-      },
-      {
-        name: "actions",
-        type: "ReactNode",
-        description:
-          "Typed model: trailing action slot at the inline end, after reset in DOM/keyboard order.",
-      },
-      {
-        name: "resultCount",
-        type: "number",
-        description:
-          "Typed model: localized CLDR-pluralized count in a polite role='status' line; 0 is the rendered empty state.",
-      },
-      {
-        name: "loading",
-        type: "boolean",
-        description: "Typed model: aria-busy strip + data-loading root while results (re)load.",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        description: "Typed model: disables all model-rendered controls.",
-      },
-      {
-        name: "error",
-        type: "ReactNode",
-        description: "Typed model: role='alert' error line replacing the result count.",
-      },
-      { name: "className", type: "string", description: "Optional structural class override." },
-    ],
-    usage: [
-      "Prefer the typed model for a canonical list page: pass `search` + `filters` + `chips` + `resultCount` and the bar owns the layout, widths, chip lifecycle, keyboard order (search → filters → children → reset → actions → chip removes) and responsive stacking through --filter-bar-* tokens. Everything stays consumer data — the bar renders state, never owns it.",
-      "Compose real controls as children when the model doesn't fit; filter state and URL synchronization remain consumer-owned. Children also render INSIDE the model layout (after the typed filters) for one-off custom controls like a date-range picker.",
-      "Give each FilterBarGroup a `controlId` matching its single control's `id` so the visible caption is that control's real <label>; otherwise the control is nameless to a screen reader. Typed `filters` wire this automatically.",
-      "Reach for `overflow='scroll'` on filter-heavy list pages so a long JA/EN/VI label set never grows the strip into multiple rows and pushes the table below the fold.",
-      "A mobile sheet presentation is a COMPOSITION, not a prop: put the same typed FilterBar inside a Sheet triggered from a compact toolbar when a screen wants drawer-style filters. The bar's own responsive behavior is stack (below 640px) + wrap/scroll (above), token-owned.",
-    ],
-    example: `import { FilterBar } from "@godxjp/ui/navigation";
-
-<FilterBar
-  search={{ value: query, onValueChange: setQuery, placeholder: "Search records" }}
-  filters={[
-    {
-      value: "status",
-      label: "Status",
-      options: STATUS_OPTIONS,
-      selected: status,
-      onSelectedChange: setStatus,
-    },
-  ]}
-  chips={appliedChips}
-  onChipRemove={removeFilter}
-  onClear={clearFilters}
-  hasActiveFilters={hasFilters}
-  resultCount={rows.length}
-  actions={<Button onClick={openCreate}>Add member</Button>}
-/>`,
-    storyPath: "navigation/FilterBar.stories.tsx",
     rules: [],
   },
   // ─── RBAC composites ────────────────────────
