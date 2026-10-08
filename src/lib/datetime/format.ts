@@ -1,7 +1,7 @@
 import { TZDate } from "@date-fns/tz";
 import { format, formatDistanceToNow, type Locale } from "date-fns";
 import { getDateFnsLocale } from "../../app/locales";
-import { getDatePattern, getDateTimePattern } from "../../app/date-formats";
+import { getDateTimePattern, getLocaleAwareDatePattern } from "../../app/date-formats";
 import { getTimePattern, type AppTimeFormat } from "../../app/time-formats";
 import type { AppLocale, AppDateFormat } from "../../app/types";
 import { calendarDateToTZDate, hhmmToTZDate, parseDateInput } from "./parse";
@@ -17,6 +17,8 @@ export type FormatDatetimeOptions = {
 
 type ResolvedFormatOptions = {
   locale: Locale;
+  /** BCP-47 tag whose `Intl` separators the date pattern uses (gh#1219). */
+  tag: string;
   timezone: string;
   timeFormat: AppTimeFormat;
   dateFormat: AppDateFormat;
@@ -30,8 +32,11 @@ function resolveLocale(locale?: Locale | AppLocale): Locale {
 
 function resolveOptions(options?: FormatDatetimeOptions): ResolvedFormatOptions {
   const ctx = getDatetimeContext();
+  const locale = resolveLocale(options?.locale);
   return {
-    locale: resolveLocale(options?.locale),
+    locale,
+    tag:
+      typeof options?.locale === "string" ? options.locale : (options?.locale?.code ?? ctx.locale),
     timezone: options?.timezone ?? ctx.timezone,
     timeFormat: options?.timeFormat ?? ctx.timeFormat,
     dateFormat: options?.dateFormat ?? ctx.dateFormat,
@@ -56,7 +61,11 @@ export function formatCalendarDate(
   if (!value) return EMPTY;
   const resolved = resolveOptions(options);
   const zoned = calendarDateToTZDate(value, resolved.timezone);
-  return formatTZDate(zoned, getDatePattern(resolved.dateFormat), resolved);
+  return formatTZDate(
+    zoned,
+    getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag),
+    resolved,
+  );
 }
 
 /** Date-only from ISO instant or `yyyy-MM-dd` string — date part in app timezone. */
@@ -68,12 +77,20 @@ export function formatAppDate(
   if (typeof value === "string" && isDateOnlyString(value)) {
     const [year, month, day] = value.split("-").map(Number);
     const zoned = new TZDate(year, month - 1, day, resolved.timezone);
-    return formatTZDate(zoned, getDatePattern(resolved.dateFormat), resolved);
+    return formatTZDate(
+      zoned,
+      getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag),
+      resolved,
+    );
   }
   const parsed = parseDateInput(value);
   if (!parsed) return EMPTY;
   const zoned = instantToTZDate(parsed, resolved.timezone);
-  return formatTZDate(zoned, getDatePattern(resolved.dateFormat), resolved);
+  return formatTZDate(
+    zoned,
+    getLocaleAwareDatePattern(resolved.dateFormat, resolved.tag),
+    resolved,
+  );
 }
 
 /** Date + time in app timezone. */
@@ -87,7 +104,7 @@ export function formatAppDateTime(
   const zoned = instantToTZDate(parsed, resolved.timezone);
   return formatTZDate(
     zoned,
-    getDateTimePattern(resolved.timeFormat, resolved.dateFormat),
+    getDateTimePattern(resolved.timeFormat, resolved.dateFormat, resolved.tag),
     resolved,
   );
 }

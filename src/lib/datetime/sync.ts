@@ -1,7 +1,10 @@
 import type { Locale } from "date-fns";
-import { getDateFnsLocale, isAppLocale } from "../../app/locales";
+import { getDateFnsLocale, normalizeAppLocale } from "../../app/locales";
 import { resolveDefaultDateFormat } from "../../app/date-format-labels";
+import { resolveDefaultTimeFormat } from "../../app/time-format-labels";
+import { getAppSettingsState } from "../../app/settings-scope";
 import { resolveHydrationSafeTimezone } from "../../app/timezones";
+import { resolveDefaultLocale } from "../../i18n/locale-tags";
 import type { AppLocale, AppTimeFormat, AppDateFormat } from "../../app/types";
 
 export type DatetimeContext = {
@@ -12,43 +15,36 @@ export type DatetimeContext = {
   dateFormat: AppDateFormat;
 };
 
-/** Must equal AppProvider's `defaultLocale` default, so "not configured" means one thing. */
-const DEFAULT_LOCALE: AppLocale = "vi";
-
 /*
- * What `formatDate` uses until AppProvider syncs — module load, SSR, and tests that reset.
+ * What `formatDate` uses for whatever the current scope has not set — module load, SSR, tests that
+ * reset, and any field `runWithAppSettings` was not given.
  *
- * The timezone is AppProvider's OWN unconfigured answer (`defaultTimezone = "browser"`, no
- * `systemTimezone`), taken from the same function, so the two cannot drift again (gh#968). It was a
- * hard-coded `Asia/Ho_Chi_Minh`, which disagreed with the provider AND looked plausible when wrong.
+ * LOCALE: the page's own `<html lang>` if it is registered, else `en` (decision A2, gh#1219). Read
+ * at CALL time, since `lang` is often set after this module loads (gh#1202).
+ *
+ * TIMEZONE: AppProvider's OWN unconfigured first-render answer (`defaultTimezone = "browser"`, no
+ * `systemTimezone`), from the same function, so the two cannot drift (gh#968) — UTC, which is at
+ * least visibly not local, where `Asia/Ho_Chi_Minh` looked right while being wrong.
+ *
+ * FORMATS: the locale's own, from `Intl` (`resolveDefaultDateFormat` / `resolveDefaultTimeFormat`).
  */
-/*
- * With no AppProvider synced, the page's own `<html lang>` is the best evidence of its language
- * (gh#1202): a fixed locale silently printed another locale's date format (vi's DD/MM/YYYY on a
- * Japanese page). Read at CALL time, since `lang` is often set after this module loads. Only a lang
- * the kit ships (ja / en / vi, region dropped) is used; anything else keeps the provider's default.
- */
-function pageLocale(): AppLocale {
-  if (typeof document === "undefined") return DEFAULT_LOCALE;
-  const lang = (document.documentElement.lang || "").toLowerCase().split("-")[0];
-  return isAppLocale(lang) ? lang : DEFAULT_LOCALE;
-}
-
-const defaultContext = (): DatetimeContext => {
-  const locale = pageLocale();
+function resolveContext(partial: Partial<DatetimeContext> | undefined): DatetimeContext {
+  const locale = partial?.locale ?? resolveDefaultLocale();
   return {
     locale,
-    dateFnsLocale: getDateFnsLocale(locale),
-    timezone: resolveHydrationSafeTimezone("browser"),
-    timeFormat: "24h",
-    dateFormat: resolveDefaultDateFormat(locale),
+    dateFnsLocale: partial?.dateFnsLocale ?? getDateFnsLocale(normalizeAppLocale(locale)),
+    timezone: partial?.timezone ?? resolveHydrationSafeTimezone("browser"),
+    timeFormat: partial?.timeFormat ?? resolveDefaultTimeFormat(locale),
+    dateFormat: partial?.dateFormat ?? resolveDefaultDateFormat(locale),
   };
-};
+}
 
-let syncedContext: DatetimeContext | null = null;
 let liveRelativeFormattingEnabled = true;
 
-/** Sync module-level datetime prefs from AppProvider (mirrors syncI18nLocale). */
+/**
+ * Sync the CURRENT scope's datetime prefs (mirrors `syncI18nLocale`). AppProvider calls it while
+ * rendering; inside `runWithAppSettings` it writes that request's state only.
+ */
 export function syncDatetimeContext(
   // `prefs`, not `partial`: the type demands all four fields and the body REPLACES the context
   // rather than merging, so a name promising a partial update was the one wrong thing here.
@@ -56,7 +52,7 @@ export function syncDatetimeContext(
     dateFnsLocale?: Locale;
   },
 ): void {
-  syncedContext = {
+  getAppSettingsState().datetime = {
     locale: prefs.locale,
     timezone: prefs.timezone,
     timeFormat: prefs.timeFormat,
@@ -65,8 +61,9 @@ export function syncDatetimeContext(
   };
 }
 
+/** The current scope's datetime prefs, with the neutral defaults for anything unset. */
 export function getDatetimeContext(): Readonly<DatetimeContext> {
-  return syncedContext ?? defaultContext();
+  return resolveContext(getAppSettingsState().datetime);
 }
 
 export function enableLiveRelativeFormatting(): void {
@@ -81,8 +78,8 @@ export function canUseLiveRelativeFormatting(): boolean {
   return liveRelativeFormattingEnabled;
 }
 
-/** Vitest only — reset to defaults between cases. */
+/** Vitest only — reset the current scope to defaults between cases. */
 export function resetDatetimeContextForTests(): void {
-  syncedContext = null;
+  getAppSettingsState().datetime = undefined;
   liveRelativeFormattingEnabled = true;
 }

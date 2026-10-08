@@ -82,9 +82,10 @@ describe("formatting with no AppProvider reads the page language (gh#1202)", () 
     expect(getDatetimeContext()).toMatchObject({ locale: "en", dateFormat: "mdy" });
   });
 
-  it("falls back to the provider default for a language the kit does not ship", () => {
+  it("falls back to the neutral default (en) for a language nobody registered", () => {
     resetDatetimeContextForTests();
     document.documentElement.lang = "fr";
-    expect(getDatetimeContext().locale).toBe("vi");
+    // v32 (gh#1219, decision A2): `<html lang>` if registered, else `en` — no longer `vi`.
+    expect(getDatetimeContext().locale).toBe("en");
   });
 });

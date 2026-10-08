@@ -1,8 +1,16 @@
 import type { AppTimeFormat } from "./time-formats";
 import type { AppDateFormat } from "./date-formats";
 
-/** Supported UI locales — sent as `x-locale` to backend. */
-export type AppLocale = "vi" | "en" | "ja";
+/**
+ * A UI locale: any REGISTERED BCP-47 tag (`registerLocale`) — sent as `x-locale` to the backend.
+ *
+ * v32 widened it from the closed union `"vi" | "en" | "ja"` (gh#1219); those three remain
+ * pre-registered and are named by {@link BuiltInLocale}.
+ */
+export type AppLocale = string;
+
+/** The locales the library ships packs (messages + date adapters) for. */
+export type BuiltInLocale = "vi" | "en" | "ja";
 
 /** IANA timezone identifier — sent as `x-timezone` to backend. */
 export type AppTimezone = string;
@@ -26,7 +34,8 @@ export {
   isAppDateFormat,
 } from "./date-formats";
 
-export const APP_LOCALES = ["vi", "en", "ja"] as const satisfies readonly AppLocale[];
+/** The built-in locales. For everything registered at runtime, read `getRegisteredLocales()`. */
+export const APP_LOCALES = ["vi", "en", "ja"] as const satisfies readonly BuiltInLocale[];
 
 export const APP_REQUEST_HEADER_LOCALE = "x-locale" as const;
 export const APP_REQUEST_HEADER_TIMEZONE = "x-timezone" as const;
