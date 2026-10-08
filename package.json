@@ -19,7 +19,9 @@
       "esbuild": ">=0.28.1"
     }
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
   "files": [
     "LICENSE",
