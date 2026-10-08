@@ -1,11 +1,19 @@
 import * as React from "react";
 import { I18nProvider } from "react-aria-components";
 import { resolveDefaultDateFormat } from "./date-format-labels";
-import { getDateFnsLocale, getDayPickerLocale } from "./locales";
+import {
+  getDateFnsLocale,
+  getDayPickerLocale,
+  getRegisteredLocales,
+  resolvePageLocale,
+  resolveRegisteredLocale,
+} from "./locales";
+import { AppPresetContext, type AppPreset } from "./preset";
+import { warnUnknownLocale } from "../i18n/locale-tags";
 import { syncAppRequestHeaders } from "./request-headers";
 import { syncI18nLocale } from "../i18n/translate";
 
-/** BCP-47 primary subtags that render right-to-left (forward-compat — current AppLocales are LTR). */
+/** BCP-47 primary subtags that render right-to-left. */
 const RTL_LANGUAGE_SUBTAGS = new Set(["ar", "he", "fa", "ur", "ps", "sd", "yi", "dv", "ckb"]);
 function localeDirection(locale: string): "rtl" | "ltr" {
   return RTL_LANGUAGE_SUBTAGS.has(locale.split("-")[0]?.toLowerCase() ?? "") ? "rtl" : "ltr";
@@ -33,7 +41,6 @@ import {
 import { resolveDefaultTimeFormat } from "./time-format-labels";
 import { resolveDefaultTimezone, resolveHydrationSafeTimezone } from "./timezones";
 import {
-  APP_LOCALES,
   APP_REQUEST_HEADER_DATE_FORMAT,
   APP_REQUEST_HEADER_LOCALE,
   APP_REQUEST_HEADER_TIME_FORMAT,
@@ -47,6 +54,36 @@ import {
 import type { AppContextValue, AppProviderProp } from "../props/components/app.prop";
 
 export type { AppProviderProp, AppContextValue } from "../props/components/app.prop";
+
+/** `AppProvider`'s props: {@link AppProviderProp} plus the v32 `preset` (gh#1219 / gh#1220). */
+export type AppProviderProps = AppProviderProp & {
+  /**
+   * Product defaults the host opts into (`godxPreset` from `@godxjp/ui/themes/godx`). Its
+   * `defaultLocale` and `timeZone` fill only what the props leave unset; its `name` is written to
+   * `<html data-preset>`. Omit for the neutral defaults.
+   */
+  preset?: AppPreset;
+};
+
+/**
+ * The locale a provider starts in (decision A2, gh#1219), first match wins:
+ * 1. the `defaultLocale` prop, when registered (`de-AT` is served by a registered `de`);
+ * 2. `<html lang>`, when registered — on a client; a server has no document, so an SSR host that
+ *    wants the page's language passes `defaultLocale` (it knows the request's locale anyway);
+ * 3. the preset's `defaultLocale`, when registered;
+ * 4. `en`.
+ * Never `navigator.language`: a server cannot see it, so the client would hydrate differently.
+ */
+function resolveProviderLocale(
+  defaultLocale: AppLocale | undefined,
+  presetLocale: AppLocale | undefined,
+): AppLocale {
+  const fromProp = resolveRegisteredLocale(defaultLocale);
+  if (fromProp) return fromProp;
+  const resolved = resolvePageLocale() ?? resolveRegisteredLocale(presetLocale) ?? "en";
+  if (defaultLocale) warnUnknownLocale(defaultLocale, resolved);
+  return resolved;
+}
 
 const AppContext = React.createContext<AppContextValue | null>(null);
 
@@ -86,9 +123,10 @@ function buildRequestHeaders(
 
 export function AppProvider({
   children,
-  defaultLocale = "vi",
+  preset,
+  defaultLocale: defaultLocaleProp,
   fallbackLocale = "en",
-  defaultTimezone = "browser",
+  defaultTimezone: defaultTimezoneProp,
   systemTimezone,
   defaultTimeFormat = "locale",
   defaultDateFormat = "locale",
@@ -110,7 +148,15 @@ export function AppProvider({
   onDensityChange,
   onFontSizeChange,
   onScalingChange,
-}: AppProviderProp) {
+}: AppProviderProps) {
+  const presetLocale = preset?.defaultLocale;
+  // Resolved when the inputs change, not on every render: once mounted, `<html lang>` is this
+  // provider's own output, and re-reading it would re-run the init effect on every locale switch.
+  const defaultLocale = React.useMemo(
+    () => resolveProviderLocale(defaultLocaleProp, presetLocale),
+    [defaultLocaleProp, presetLocale],
+  );
+  const defaultTimezone = defaultTimezoneProp ?? preset?.timeZone ?? "browser";
   const initialLocale = defaultLocale;
 
   const [locale, setLocaleState] = React.useState<AppLocale>(initialLocale);
@@ -189,18 +235,22 @@ export function AppProvider({
     // only have been chosen; a value some locale defaults to (`mdy`, `24h`) is ambiguous and
     // treated as derived, so it follows the language again.
     if (!raw.dateFormatChosen && stored.dateFormat !== undefined) {
-      const derivable = APP_LOCALES.some((l) => resolveDefaultDateFormat(l) === stored.dateFormat);
+      const derivable = getRegisteredLocales().some(
+        (l) => resolveDefaultDateFormat(l) === stored.dateFormat,
+      );
       if (derivable) delete stored.dateFormat;
     }
     if (!raw.timeFormatChosen && stored.timeFormat !== undefined) {
-      const derivable = APP_LOCALES.some((l) => resolveDefaultTimeFormat(l) === stored.timeFormat);
+      const derivable = getRegisteredLocales().some(
+        (l) => resolveDefaultTimeFormat(l) === stored.timeFormat,
+      );
       if (derivable) delete stored.timeFormat;
     }
     formatChosenRef.current = {
       dateFormat: stored.dateFormat !== undefined,
       timeFormat: stored.timeFormat !== undefined,
     };
-    const nextLocale = stored.locale ?? defaultLocale;
+    const nextLocale = resolveRegisteredLocale(stored.locale) ?? defaultLocale;
     const nextTimezone = stored.timezone ?? resolveDefaultTimezone(defaultTimezone, systemTimezone);
     const nextTimeFormat = resolveInitialTimeFormat(
       stored.timeFormat,
@@ -290,7 +340,12 @@ export function AppProvider({
   }, [theme]);
 
   const setLocale = React.useCallback(
-    (next: AppLocale) => {
+    (requested: AppLocale) => {
+      const next = resolveRegisteredLocale(requested);
+      if (!next) {
+        warnUnknownLocale(requested, prefsRef.current.locale);
+        return;
+      }
       prefsRef.current = { ...prefsRef.current, locale: next };
       setLocaleState(next);
       // A format the viewer never picked follows the language (gh#1202).
@@ -399,6 +454,13 @@ export function AppProvider({
 
   const dateFnsLocale = getDateFnsLocale(locale);
 
+  /*
+   * For callers with no React context (`translateCurrent`, `formatDate` with no options,
+   * `getAppRequestHeaders`). These write the CURRENT settings scope: on a server inside
+   * `runWithAppSettings`, that request's own state — never a module variable another request
+   * reads (gh#1219). The headers are written here rather than in an effect so a server render,
+   * which runs no effects, reports them too.
+   */
   syncI18nLocale(locale, fallbackLocale);
   syncDatetimeContext({
     locale,
@@ -407,13 +469,10 @@ export function AppProvider({
     dateFormat,
     dateFnsLocale,
   });
+  syncAppRequestHeaders(requestHeaders);
   if (!hasMountedRef.current) {
     disableLiveRelativeFormatting();
   }
-
-  React.useEffect(() => {
-    syncAppRequestHeaders(requestHeaders);
-  }, [requestHeaders]);
 
   // Reflect the locale on <html>: `dir` flips logical CSS (ms/me/ps/pe, start/end) under RTL,
   // and `lang` drives `:lang()` rules (all supported locales keep the default DXS Noto Sans JP
@@ -424,6 +483,15 @@ export function AppProvider({
       document.documentElement.lang = locale;
     }
   }, [locale]);
+
+  // `<html data-preset>` lets a preset stylesheet scope itself (`[data-preset="godx"]`).
+  const presetName = preset?.name;
+  React.useEffect(() => {
+    if (typeof document === "undefined" || !presetName) return;
+    const root = document.documentElement;
+    root.setAttribute("data-preset", presetName);
+    return () => root.removeAttribute("data-preset");
+  }, [presetName]);
 
   React.useEffect(() => {
     hasMountedRef.current = true;
@@ -505,7 +573,9 @@ export function AppProvider({
    */
   return (
     <I18nProvider locale={locale}>
-      <AppContext.Provider value={value}>{children}</AppContext.Provider>
+      <AppPresetContext.Provider value={preset}>
+        <AppContext.Provider value={value}>{children}</AppContext.Provider>
+      </AppPresetContext.Provider>
     </I18nProvider>
   );
 }

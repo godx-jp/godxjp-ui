@@ -135,15 +135,19 @@ const SURFACES = ["card", "background"] as const;
 const onTint = (theme: (typeof THEMES)[number], seed: Hsl, ground: Rgb, alpha: number) =>
   contrast(theme.label(seed), over(hslToRgb(seed), ground, alpha));
 
-/** Every ratio for the package seed, pinned — so a palette move lands HERE, not in an axe run. */
+/**
+ * Every ratio for the package seed, pinned — so a palette move lands HERE, not in an axe run.
+ * v32 (gh#1220): the package seed is the neutral ink. On the 31.x violet seed (now the GoDX preset)
+ * these read light 8.26 / 7.65 on both grounds, dark card 5.89 / 5.32, dark background 6.51 / 5.88.
+ */
 const MEASURED: Record<string, Record<string, { shipped: number; atCeiling: number }>> = {
   light: {
-    card: { shipped: 8.26, atCeiling: 7.65 },
-    background: { shipped: 8.26, atCeiling: 7.65 },
+    card: { shipped: 16.16, atCeiling: 14.81 },
+    background: { shipped: 16.16, atCeiling: 14.81 },
   },
   dark: {
-    card: { shipped: 5.89, atCeiling: 5.32 },
-    background: { shipped: 6.51, atCeiling: 5.88 },
+    card: { shipped: 9.53, atCeiling: 8.32 },
+    background: { shipped: 10.57, atCeiling: 9.23 },
   },
 };
 

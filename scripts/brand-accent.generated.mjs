@@ -17,11 +17,11 @@ export const SHIPPED_BRAND_ACCENTS = [
       "--primary",
       "--brand"
     ],
-    "hsl": "268.7 100% 50%",
+    "hsl": "240 6% 10%",
     "rgb": {
-      "r": 122,
-      "g": 0,
-      "b": 255
+      "r": 24,
+      "g": 24,
+      "b": 27
     }
   }
 ];

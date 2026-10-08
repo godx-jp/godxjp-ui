@@ -68,7 +68,9 @@ const emitted = {
 
 describe("gen:brand reproduces foundation.css on foundation.css's own seed", () => {
   it("emits the seed back unchanged", () => {
-    expect(role(emitted.light, "primary")).toEqual(role(authored.light, "primary"));
+    // #7A00FF is the GoDX preset's seed since v32 (gh#1220); the core default is a neutral ink.
+    const preset = blockOf(readFileSync(join(ROOT, "src/themes/godx.css"), "utf8"), ":root {");
+    expect(role(emitted.light, "primary")).toEqual(role(preset, "primary"));
   });
 
   /* THE GENERATOR WRITES THREE TOKENS PER THEME AND NOTHING ELSE. Everything a brand needs beyond

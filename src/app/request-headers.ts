@@ -5,27 +5,42 @@ import {
   APP_REQUEST_HEADER_TIME_FORMAT,
   APP_REQUEST_HEADER_TIMEZONE,
 } from "./types";
+import { getAppSettingsState } from "./settings-scope";
+import { resolveDefaultDateFormat } from "./date-format-labels";
+import { resolveDefaultTimeFormat } from "./time-format-labels";
+import { getBrowserTimezone } from "./timezones";
+import { resolveDefaultLocale } from "../i18n/locale-tags";
 
-const DEFAULT_HEADERS: AppRequestHeaders = {
-  [APP_REQUEST_HEADER_LOCALE]: "vi",
-  [APP_REQUEST_HEADER_TIMEZONE]: "Asia/Ho_Chi_Minh",
-  [APP_REQUEST_HEADER_TIME_FORMAT]: "24h",
-  [APP_REQUEST_HEADER_DATE_FORMAT]: "dmy",
-};
+/**
+ * The headers nothing chose (v32, gh#1219). They used to be a fixed `vi` / `Asia/Ho_Chi_Minh` /
+ * `dmy`, which told every backend a Vietnamese user in Ho Chi Minh was calling. Now they follow the
+ * current scope: its locale (else `<html lang>` if registered, else `en`), its timezone (else the
+ * browser's from `Intl` on a client, `UTC` on a server), and that locale's own formats from `Intl`.
+ */
+function defaultHeaders(): AppRequestHeaders {
+  const { i18n, datetime } = getAppSettingsState();
+  const locale = i18n?.locale ?? datetime?.locale ?? resolveDefaultLocale();
+  return {
+    [APP_REQUEST_HEADER_LOCALE]: locale,
+    [APP_REQUEST_HEADER_TIMEZONE]:
+      datetime?.timezone ?? (typeof window === "undefined" ? "UTC" : getBrowserTimezone()),
+    [APP_REQUEST_HEADER_TIME_FORMAT]: datetime?.timeFormat ?? resolveDefaultTimeFormat(locale),
+    [APP_REQUEST_HEADER_DATE_FORMAT]: datetime?.dateFormat ?? resolveDefaultDateFormat(locale),
+  };
+}
 
-let currentHeaders: AppRequestHeaders = { ...DEFAULT_HEADERS };
-
-/** Sync locale/timezone into module state for HTTP clients (via `getAppRequestHeaders`). */
+/** Sync locale/timezone into the CURRENT scope for HTTP clients (via `getAppRequestHeaders`). */
 export function syncAppRequestHeaders(headers: Partial<AppRequestHeaders>): void {
-  currentHeaders = { ...currentHeaders, ...headers };
+  const state = getAppSettingsState();
+  state.headers = { ...state.headers, ...headers };
 }
 
-/** Read current app preference headers — wire to API client `setAppHeaderProvider`. */
+/** Read the current scope's preference headers — wire to API client `setAppHeaderProvider`. */
 export function getAppRequestHeaders(): AppRequestHeaders {
-  return { ...currentHeaders };
+  return { ...defaultHeaders(), ...getAppSettingsState().headers };
 }
 
-/** Reset to defaults — for tests only. */
+/** Reset the current scope's headers to defaults — for tests only. */
 export function resetAppRequestHeaders(): void {
-  currentHeaders = { ...DEFAULT_HEADERS };
+  getAppSettingsState().headers = undefined;
 }

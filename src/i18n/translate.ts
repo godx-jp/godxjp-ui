@@ -3,6 +3,8 @@ import en from "./messages/en.json";
 import ja from "./messages/ja.json";
 import vi from "./messages/vi.json";
 import { numberFormat, pluralRules } from "../lib/intl-cache";
+import { getAppSettingsState } from "../app/settings-scope";
+import { resolveDefaultLocale, warnUnknownLocale } from "./locale-tags";
 
 export type Messages = typeof vi;
 
@@ -47,6 +49,12 @@ const LIBRARY_NAMESPACES: ReadonlySet<string> = new Set(
  * instead; every string this library renders has one.
  */
 export function registerMessages(locale: AppLocale, messages: Record<string, unknown>): void {
+  if (!Object.hasOwn(MESSAGE_CATALOG, locale)) {
+    throw new Error(
+      `@godxjp/ui i18n: locale "${locale}" is not registered. Call registerLocale({ code: ` +
+        `"${locale}", messages }) instead — it registers the locale and its strings together.`,
+    );
+  }
   const reserved = [...LIBRARY_NAMESPACES].filter((key) => Object.hasOwn(messages, key));
 
   if (reserved.length > 0) {
@@ -57,6 +65,24 @@ export function registerMessages(locale: AppLocale, messages: Record<string, unk
     );
   }
 
+  MESSAGE_CATALOG[locale] = mergeDeep(MESSAGE_CATALOG[locale] ?? {}, messages);
+}
+
+/**
+ * @internal `registerLocale`'s half of the catalog. For a locale the library does NOT ship
+ * (`allowLibraryNamespaces`), the pack translates the library's own strings, so its `dataEntry.*`
+ * and friends are exactly what it is for; for `vi` / `en` / `ja` the reserved-namespace rule of
+ * `registerMessages` still applies.
+ */
+export function registerLocaleMessages(
+  locale: AppLocale,
+  messages: Record<string, unknown>,
+  allowLibraryNamespaces: boolean,
+): void {
+  if (!allowLibraryNamespaces) {
+    registerMessages(locale, messages);
+    return;
+  }
   MESSAGE_CATALOG[locale] = mergeDeep(MESSAGE_CATALOG[locale] ?? {}, messages);
 }
 
@@ -143,43 +169,52 @@ export function translate(
   key: MessageKey,
   params?: TranslateParams,
 ): string {
-  const primary = getNested(MESSAGE_CATALOG[locale], key);
-  const fallback = getNested(MESSAGE_CATALOG[fallbackLocale], key);
+  const catalog = MESSAGE_CATALOG[locale];
+  if (!catalog) warnUnknownLocale(locale, fallbackLocale);
+  const primary = catalog ? getNested(catalog, key) : undefined;
+  const fallback = getNested(MESSAGE_CATALOG[fallbackLocale] ?? {}, key);
   const value = primary ?? fallback ?? key;
   return interpolate(selectPlural(value, locale, params), locale, params);
 }
 
-/** Non-React translate using module-synced locale (see `syncI18nLocale`). */
+/** Non-React translate using the CURRENT scope's locale (see `syncI18nLocale`, `runWithAppSettings`). */
 export function translateCurrent(key: MessageKey, params?: TranslateParams): string {
   return translate(getSyncedLocale(), getSyncedFallbackLocale(), key, params);
 }
 
-let syncedLocale: AppLocale = "vi";
-let syncedFallbackLocale: AppLocale = "en";
-let syncedByCaller = false;
-
+/*
+ * The locale non-React callers read lives in the current settings scope (`app/settings-scope`),
+ * not in a module variable: on a server the module is shared by every request, so a module
+ * variable answered request A with request B's language (gh#1219).
+ */
+/**
+ * Tell non-React callers in the CURRENT scope which locale to use. `AppProvider` calls it while
+ * rendering; inside `runWithAppSettings` it writes that request's state only.
+ */
 export function syncI18nLocale(locale: AppLocale, fallbackLocale: AppLocale): void {
-  syncedLocale = locale;
-  syncedFallbackLocale = fallbackLocale;
-  syncedByCaller = true;
+  getAppSettingsState().i18n = { locale, fallbackLocale };
 }
 
-/** Whether anything has ever called `syncI18nLocale` — the resting "vi" was never CHOSEN. */
+/** Whether anything chose a locale for the current scope — the resting default was never CHOSEN. */
 export function isI18nLocaleSynced(): boolean {
-  return syncedByCaller;
+  return getAppSettingsState().i18n?.locale !== undefined;
 }
 
+/**
+ * The current scope's locale; unset → `<html lang>` if registered, else `en`.
+ * @deprecated Inside React read `useTranslation().locale`; outside it, this reads the current
+ * `runWithAppSettings` scope.
+ */
 export function getSyncedLocale(): AppLocale {
-  return syncedLocale;
+  return getAppSettingsState().i18n?.locale ?? resolveDefaultLocale();
 }
 
+/** @deprecated Inside React read `useTranslation().fallbackLocale`. */
 export function getSyncedFallbackLocale(): AppLocale {
-  return syncedFallbackLocale;
+  return getAppSettingsState().i18n?.fallbackLocale ?? "en";
 }
 
-/** Reset for tests. */
+/** Reset the current scope's locale — for tests. */
 export function resetI18nLocale(): void {
-  syncedLocale = "vi";
-  syncedFallbackLocale = "en";
-  syncedByCaller = false;
+  getAppSettingsState().i18n = undefined;
 }

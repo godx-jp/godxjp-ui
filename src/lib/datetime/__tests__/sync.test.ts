@@ -55,7 +55,7 @@ describe("live relative formatting toggle", () => {
 });
 
 describe("resetDatetimeContextForTests", () => {
-  it("restores the default vi context and re-enables live formatting", () => {
+  it("restores the default context (en, v32 gh#1219) and re-enables live formatting", () => {
     syncDatetimeContext({
       locale: "en",
       timezone: "Asia/Tokyo",
@@ -64,7 +64,8 @@ describe("resetDatetimeContextForTests", () => {
     });
     disableLiveRelativeFormatting();
     resetDatetimeContextForTests();
-    expect(getDatetimeContext().locale).toBe("vi");
+    document.documentElement.lang = "";
+    expect(getDatetimeContext().locale).toBe("en");
     // AppProvider's OWN unconfigured answer, from the same function (gh#968) — this used to pin
     // `Asia/Ho_Chi_Minh`, i.e. it locked in the disagreement the issue is about.
     expect(getDatetimeContext().timezone).toBe(resolveHydrationSafeTimezone("browser"));
@@ -85,7 +86,7 @@ describe("the fallback says the same thing AppProvider says (gh#968)", () => {
     // The consumer's actual failure: a JST attendance stamp shown 2 hours off, looking normal.
     // 05:30Z is 14:30 in Tokyo and 12:30 in Ho Chi Minh; unconfigured it must be neither.
     resetDatetimeContextForTests();
-    const shown = formatDate("2026-05-01T05:30:00Z", { kind: "datetime" });
+    const shown = formatDate("2026-05-01T05:30:00Z", { kind: "datetime", timeFormat: "24h" });
     expect(shown).toContain("05:30");
     expect(shown).not.toContain("12:30");
     expect(shown).not.toContain("14:30");

@@ -30,7 +30,7 @@ export default function Demo() {
 
   return (
     <CenteredShell variant="auth-canonical" preset="login">
-      <AuthIdentity title="GoDX ID" requester={requester} />
+      <AuthIdentity title="Acme ID" requester={requester} />
       <Card>
         <CardContent solo>
           <AuthStack>
@@ -53,7 +53,7 @@ export default function Demo() {
           </AuthStack>
         </CardContent>
       </Card>
-      <AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />
+      <AuthFooter product="Acme ID" terms="利用規約" privacy="プライバシー" />
     </CenteredShell>
   );
 }

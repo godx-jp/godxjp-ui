@@ -34,7 +34,8 @@
       "identityNote": "Màu nhận diện cố ý đứng yên: đổi màu hành động của một tenant không làm nhuộm lại logo của họ."
     },
     "palette": {
-      "godx": "GoDX",
+      "neutral": "Trung tính (mặc định)",
+      "godx": "Preset GoDX",
       "indigo": "Chàm",
       "teal": "Mòng két",
       "amber": "Hổ phách",

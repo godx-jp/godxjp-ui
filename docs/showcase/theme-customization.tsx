@@ -172,7 +172,8 @@ import { AppSettingPicker, AppSettingToggle, Steps, Tabs } from "@godxjp/ui/navi
  * on the label, SC 1.4.11 on the fill against its canvas):
  *
  *   palette  light seed  label   fill/canvas   dark seed   label    fill/canvas
- *   godx     #7A00FF     6.42:1  6.42:1        #DCBCFF     12.68:1  10.61:1
+ *   neutral  #18181B    17.45:1 17.45:1        #FAFAFA     16.97:1  16.97:1  (the package default)
+ *   godx     #7A00FF     6.42:1  6.42:1        #DCBCFF     12.68:1  10.61:1  (themes/godx.css)
  *   indigo   #4338CA     7.90:1  7.90:1        #A5B4FC     10.53:1   8.81:1
  *   teal     #0F766E     5.47:1  5.47:1        #5EEAD4     14.20:1  11.88:1
  *   amber    #B45309     5.02:1  5.02:1        #FCD34D     14.56:1  12.18:1
@@ -182,6 +183,9 @@ import { AppSettingPicker, AppSettingToggle, Steps, Tabs } from "@godxjp/ui/navi
  * declares both and the dark half is selected by the theme axis AppProvider writes to <html>
  * (`[data-theme="dark"]`, with the legacy `.dark` class as its equal alias). A block that set the
  * light seed only would keep a mid-dark fill on a dark canvas and nothing would say so.
+ *
+ * NEUTRAL HAS NO BLOCK: it is the package default since v32 (gh#1220), inherited from :root. The
+ * `godx` block is the seed `@godxjp/ui/themes/godx.css` restores for the GoDX preset.
  * ──────────────────────────────────────────────────────────────────────────────────────────── */
 const THEME_CSS = `
 [data-godx-theme="godx"]   { --primary: 268.7 100% 50%;  --primary-foreground: 0 0% 100%; }
@@ -224,6 +228,7 @@ const THEME_CSS = `
 
 /** The hex each palette chip stands for, in the LIGHT theme — what the Swatch beside it samples. */
 const PALETTE_SEED: Record<string, string> = {
+  neutral: "#18181B",
   godx: "#7A00FF",
   indigo: "#4338CA",
   teal: "#0F766E",
@@ -299,7 +304,7 @@ export default function ThemeCustomizationShowcase() {
   const { t, locale } = useTranslation();
   const boardRef = React.useRef<HTMLDivElement>(null);
 
-  const [palette, setPalette] = React.useState("godx");
+  const [palette, setPalette] = React.useState("neutral");
   const [corner, setCorner] = React.useState("default");
   const [custom, setCustom] = React.useState("#0F62FE");
   const [regions, setRegions] = React.useState<string[]>(["JP", "VN"]);
@@ -347,17 +352,19 @@ export default function ThemeCustomizationShowcase() {
    * "1 regions" is a bug, and a single template is how you ship one. */
   const seatNoun = t("themeShowcase.dashboard.seats", { count: regions.length });
 
-  const paletteOptions = ["godx", "indigo", "teal", "amber", "rose", "custom"].map((id) => ({
-    value: id,
-    label: (
-      <Flex as="span" align="center" gap="xs">
-        <Swatch color={id === "custom" ? custom : PALETTE_SEED[id]} />
-        <Text as="span" size="xs">
-          {t(`themeShowcase.palette.${id}`)}
-        </Text>
-      </Flex>
-    ),
-  }));
+  const paletteOptions = ["neutral", "godx", "indigo", "teal", "amber", "rose", "custom"].map(
+    (id) => ({
+      value: id,
+      label: (
+        <Flex as="span" align="center" gap="xs">
+          <Swatch color={id === "custom" ? custom : PALETTE_SEED[id]} />
+          <Text as="span" size="xs">
+            {t(`themeShowcase.palette.${id}`)}
+          </Text>
+        </Flex>
+      ),
+    }),
+  );
 
   const timelineItems: TimelineItem[] = [
     {

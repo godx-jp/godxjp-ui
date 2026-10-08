@@ -63,8 +63,9 @@ export interface EmailBrandMarkOptions {
   /** Internal glyph fill. Default `EMAIL_COLORS.brandForeground`. */
   glyphColor?: EmailHex;
   /**
-   * Accessible name. Pass `""` for a decorative mark that sits next to a readable wordmark — the
-   * markup then carries `alt=""` / `aria-hidden` instead of a redundant announcement.
+   * Accessible name — the product name, from the caller or the active preset's `emailBrandLabel`.
+   * There is no default name (v32, gh#1220): omitted or `""`, the mark is decorative and carries
+   * `aria-hidden` instead of an announcement, which is right beside a readable wordmark.
    */
   label?: string;
 }
@@ -87,7 +88,7 @@ function options(o: EmailBrandMarkOptions = {}) {
     height: o.height ?? DEFAULT_HEIGHT,
     color: o.color ?? EMAIL_COLORS.brand,
     glyphColor: o.glyphColor ?? EMAIL_COLORS.brandForeground,
-    label: o.label ?? "GoDX",
+    label: o.label ?? "",
   };
 }
 

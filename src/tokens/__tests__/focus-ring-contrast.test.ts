@@ -39,6 +39,13 @@ import { channelsOf, contrast, hsl, hslToRgb, NON_TEXT, over, relative } from ".
 
 const css = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
 const generated = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
+/**
+ * The GoDX preset (v32, gh#1220). The package seed is a neutral ink now; the two "the outline hue
+ * cannot carry the criterion" measurements below were made on a BRAND seed, and the ink does not
+ * reproduce them (its outline hue reads 8.55:1 on a light accent panel). They stay asserted on the
+ * brand seed the decision was measured on.
+ */
+const godxCss = readFileSync(join(process.cwd(), "src/themes/godx.css"), "utf8");
 const axes = readFileSync(join(process.cwd(), "src/tokens/axes.css"), "utf8");
 const controlTokens = readFileSync(
   join(process.cwd(), "src/tokens/components/control.css"),
@@ -109,17 +116,18 @@ const THEMES = [
 const DERIVED = {
   light: {
     /** `--ring` resolves here through `var(--primary)`; the light seed is unchanged by derivation.
-     *  GoDX violet since brand identity v2.3 — the kit names the same value for core.focus.ring. */
-    ring: "#7a00ff",
-    controlOutline: "rgba(109,0,228,0.11)",
+     *  The neutral ink since v32 (gh#1220); the GoDX preset's violet painted #7a00ff /
+     *  rgba(109,0,228,0.11) / #a66de3 here, and #dcbcff / rgba(153,61,254,0.29) / #3b2058 dark. */
+    ring: "#18181b",
+    controlOutline: "rgba(11,11,13,0.11)",
     colorErrorOutline: "rgba(166,22,11,0.09)",
-    primaryBorder: "#a66de3",
+    primaryBorder: "#404045",
   },
   dark: {
-    ring: "#dcbcff",
-    controlOutline: "rgba(153,61,254,0.29)",
+    ring: "#fafafa",
+    controlOutline: "rgba(186,186,186,0.29)",
     colorErrorOutline: "rgba(253,20,53,0.06)",
-    primaryBorder: "#3b2058",
+    primaryBorder: "#444444",
   },
 } as const;
 
@@ -137,10 +145,14 @@ const GEOMETRY = { lineWidth: 1, controlOutlineWidth: 2, lineWidthFocus: 3 } as 
  * `initial` knobs whose default is `hsl(from hsl(var(--primary)) var(--<token>-channels))` at the
  * call site; derived-seed-sweep.test.ts holds the formula for every other seed.
  */
-function paint(theme: "light" | "dark", token: string): [number, number, number] {
+function paint(
+  theme: "light" | "dark",
+  token: string,
+  seedCss: string = css,
+): [number, number, number] {
   const selector = THEMES.find((t) => t.theme === theme)!.selector;
   return relative(
-    hsl(block(css, selector), "primary"),
+    hsl(block(seedCss, selector), "primary"),
     channelsOf(token, block(generated, selector), block(generated, ":root {")),
   );
 }
@@ -245,14 +257,14 @@ describe.each(THEMES)("the cost of the default appearance ($theme)", ({ theme, s
     expect(contrast(ringOf(theme), background)).toBeGreaterThanOrEqual(NON_TEXT);
   });
 
-  it("the OUTLINE hue does NOT clear 3:1 on every surface — the price of the default", () => {
+  it("the OUTLINE hue does NOT clear 3:1 on every surface — the price, on a brand seed (GoDX)", () => {
     // Not an aspiration and not a bug report: `colorPrimaryBorder` is a light tint by
     // construction. The hue WAS retuned (gh#648, blue seed → GoDX violet) and the number moved:
     // on the page the light tint now reads 3.49:1, where the blue one read 2.00:1. The claim is
     // therefore measured on the WORST surface a control sits on rather than on the page alone —
     // an accent panel, where it is 2.92:1 light and 1.03:1 dark. A mark that clears the criterion
     // on a card and fails it inside a filter bar is not an indicator, so the axis stands.
-    const primaryBorder = hslToRgb(paint(theme, "primary-border"));
+    const primaryBorder = hslToRgb(paint(theme, "primary-border", godxCss));
     expect(contrast(primaryBorder, hslToRgb(hsl(body, "accent")))).toBeLessThan(NON_TEXT);
   });
 
@@ -532,11 +544,11 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
     expect(contrast(ring, background)).toBeGreaterThanOrEqual(contrast(input, background));
   });
 
-  it("the outline hue would NOT have cleared it — on every surface, not just the page", () => {
+  it("on a brand seed (GoDX) the outline hue would NOT have cleared it — on every surface", () => {
     // The same measurement as the one above, against the same surface list the ring is held to:
     // since gh#648 re-hued the tier, `--primary-border` clears 3:1 on the page and still fails on
     // an accent panel, so the ring remains the only hue that carries the criterion everywhere.
-    const primaryBorder = hslToRgb(paint(theme, "primary-border"));
+    const primaryBorder = hslToRgb(paint(theme, "primary-border", godxCss));
     const worst = Math.min(...SURFACES.map(([, surface]) => contrast(primaryBorder, surface())));
     expect(worst).toBeLessThan(NON_TEXT);
   });
@@ -625,6 +637,13 @@ describe.each(THEMES)("the halo is decoration, not the indicator ($theme)", ({ t
   it("raising the halo alpha is not an a11y fix — it stops being a halo first", () => {
     const at = (a: number) => contrast(over(halo, themeBackground, a), themeBackground);
     expect(at(alpha)).toBeLessThan(NON_TEXT);
+  });
+
+  it("on a brand seed (GoDX) the alpha 3:1 would take is past half-opaque", () => {
+    // Measured on the brand seed the two-layer split was decided on. The neutral ink needs 0.44
+    // light / 0.47 dark — still 4× and 1.6× the shipped halo, i.e. a second solid mark.
+    const brandHalo = hslToRgb(paint(theme, "control-outline", godxCss));
+    const at = (a: number) => contrast(over(brandHalo, themeBackground, a), themeBackground);
 
     // And the alpha it WOULD take is no longer a halo: more than half-opaque, i.e. a second solid
     // mark wearing a halo's name, which is the thing the two-layer split exists to avoid.

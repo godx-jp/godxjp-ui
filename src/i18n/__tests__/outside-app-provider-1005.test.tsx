@@ -44,7 +44,8 @@ describe("kit strings outside an AppProvider (gh#1005)", () => {
     expect(render(<Cancel />).container.textContent).toBe("キャンセル");
   });
 
-  it("without either, they are still the resting 'vi' — but a development build says so, ONCE", () => {
+  it("without either, they are the resting 'en' (v32, gh#1219) — and a development build says so, ONCE", () => {
+    document.documentElement.lang = "";
     const { container } = render(
       <>
         <Cancel />
@@ -52,9 +53,9 @@ describe("kit strings outside an AppProvider (gh#1005)", () => {
         <Zone />
       </>,
     );
-    expect(container.textContent).toContain("Hủy");
+    expect(container.textContent).toContain("Cancel");
     expect(outsideWarnings()).toHaveLength(1);
-    expect(String(outsideWarnings()[0][0])).toContain('"vi"');
+    expect(String(outsideWarnings()[0][0])).toContain('"en"');
     render(<Cancel />);
     expect(outsideWarnings()).toHaveLength(1);
   });
