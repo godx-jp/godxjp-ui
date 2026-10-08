@@ -318,12 +318,24 @@ describe("the literal steps ARE the CSS formula (gh#868 gap 3 / gh#678)", () => 
   });
 
   it("the pressed step reflects below the seed past 83.4% L instead of running off the ramp", () => {
-    // #fffbe6 sits at 96.7% L with a black label; the conventional +11.6 would land at 108%.
+    // #f0e0ff-ish seeds between 83.4% and 94% L: the conventional +11.6 would leave the ramp, so
+    // pressed reflects one step BELOW the seed while hover still steps up.
+    const l = (value: string) => triplet(value)[2];
+    const mid = tenantTheme("#e6ccff");
+    expect(l(mid.vars["--primary"])).toBeGreaterThan(83.4);
+    expect(l(mid.vars["--primary"])).toBeLessThan(94);
+    expect(l(mid.vars["--primary-active"])).toBeCloseTo(l(mid.vars["--primary"]) - 5.8, 6);
+    expect(l(mid.vars["--primary-hover"])).toBeCloseTo(l(mid.vars["--primary"]) + 5.8, 6);
+  });
+
+  it("past 94% L both lighten steps turn DOWN, so hover is not lost against white (v32, gh#1220)", () => {
+    // #fffbe6 sits at 96.7% L with a black label; +5.8 would hit 100% (the neutral dark ink's
+    // 98% measured 1.04:1 hover), so hover steps down 5.8 and pressed 11.6.
     const seed = tenantTheme("#fffbe6");
     const l = (value: string) => triplet(value)[2];
-    expect(l(seed.vars["--primary"])).toBeGreaterThan(83.4);
-    expect(l(seed.vars["--primary-active"])).toBeLessThan(l(seed.vars["--primary"]));
-    expect(l(seed.vars["--primary-active"])).toBeCloseTo(l(seed.vars["--primary"]) - 5.8, 6);
+    expect(l(seed.vars["--primary"])).toBeGreaterThan(94);
+    expect(l(seed.vars["--primary-hover"])).toBeCloseTo(l(seed.vars["--primary"]) - 5.8, 6);
+    expect(l(seed.vars["--primary-active"])).toBeCloseTo(l(seed.vars["--primary"]) - 11.6, 6);
   });
 
   it("clamps rather than emitting an out-of-range lightness", () => {
@@ -433,12 +445,15 @@ describe("the brand INK clears AA on the surface it lands on (gh#887)", () => {
     expect(triplet(seed.vars["--text-link"])).toEqual([268.71, 100, 41.6]);
     expect(triplet(seed.vars["--text-brand"])).toEqual([268.71, 100, 41.6]);
     expect(triplet(seed.vars["--text-primary"])).toEqual([268.71, 100, 34.5]);
+    // v32 (gh#1220): the violet fallback literals moved out of core `derived.css` into the GoDX
+    // preset, which is where the #7A00FF seed now lives.
+    const godxPreset = readFileSync(join(process.cwd(), "src/themes/godx.css"), "utf8");
     for (const [role, expected] of [
       ["text-link", "268.7 100% 41.6%"],
       ["text-brand", "268.7 100% 41.6%"],
       ["text-primary", "268.7 100% 34.5%"],
     ] as const) {
-      expect(derived).toContain(`--${role}: ${expected};`);
+      expect(godxPreset).toContain(`--${role}: ${expected};`);
     }
   });
 

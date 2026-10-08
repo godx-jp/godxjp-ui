@@ -17,8 +17,16 @@ import { resetI18nLocale } from "./src/i18n/translate";
  * discoverable — with the measurement of why 8s was not enough recorded beside it.
  */
 
+/* v32 (gh#1219): the resting locale is no longer `vi` — AppProvider now reads `<html lang>` and
+ * falls back to `en`. The existing suite was written against the old `vi` default, so the test page
+ * declares `lang="vi"` the way a Vietnamese host page would; tests of the default itself set
+ * `document.documentElement.lang` explicitly. */
+const TEST_PAGE_LANG = "vi";
+if (typeof document !== "undefined") document.documentElement.lang = TEST_PAGE_LANG;
+
 afterEach(() => {
   cleanup();
+  if (typeof document !== "undefined") document.documentElement.lang = TEST_PAGE_LANG;
   vi.clearAllTimers();
   vi.useRealTimers();
   // The module locale is shared state: AppProvider writes it through `syncI18nLocale`, and since

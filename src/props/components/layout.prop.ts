@@ -889,8 +889,8 @@ export type AuthIdentityProp = {
   /**
    * Brand artwork rendered in the mark's place, for a service whose design supplies a real
    * lockup (mark + wordmark, sometimes a product suffix) rather than the bare GoDX mark. Leave
-   * it out and the canonical `<Logo mark="godx">` renders, which is right for every plain
-   * hosted-GoDX surface.
+   * it out and the active preset's `brandMark` renders (`godxPreset` draws `<Logo mark="godx">`);
+   * with no preset, no mark renders (v32, gh#1220). `null` always renders no mark.
    *
    * The node takes the MARK's slot only: `data-slot="auth-identity"`, the `.ui-auth-identity`
    * spacing and the `h1` contract are untouched, so a consumer swapping artwork does not fork

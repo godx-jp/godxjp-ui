@@ -304,9 +304,10 @@ export default function SettingsAccountSectionsShowcase() {
   // One language switch drives BOTH halves of the page: the app-authored bundle above AND the
   // library's own `t()` chrome — the canonical `StatusBadge` label, dialog affordances, empty
   // states. Swapping only the local bundle would leave an English page wearing a Vietnamese
-  // status pill, so the switch owns `setLocale` too (`AppLocale` is exactly ja | en | vi).
+  // status pill, so the switch owns `setLocale` too (three bundles here; other locales fall back to en).
   const { locale, setLocale } = useAppLocale();
-  const lang: "ja" | "en" | "vi" = locale;
+  // Any registered BCP-47 tag can arrive since v32 (gh#1219); this page ships three bundles.
+  const lang = (locale in BUNDLES ? locale : "en") as keyof typeof BUNDLES;
   const b = BUNDLES[lang];
   const [digest, setDigest] = React.useState(true);
   const [mention, setMention] = React.useState(false);

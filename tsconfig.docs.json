@@ -8,6 +8,7 @@
       "@godxjp/editor": ["./packages/editor/src/index.ts"],
       "@godxjp/block-editor": ["./packages/block-editor/src/index.ts"],
       "@godxjp/ui/i18n": ["./dist/i18n/index.d.ts"],
+      "@godxjp/ui/themes/godx": ["./dist/themes/godx.d.ts"],
       "@godxjp/ui/*": ["./dist/components/*/index.d.ts"]
     }
   },

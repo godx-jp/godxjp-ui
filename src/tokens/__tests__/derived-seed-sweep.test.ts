@@ -218,8 +218,8 @@ const SWEEP: ReadonlyArray<{ theme: "light" | "dark"; seed: string; why: string 
  * pair. Pinned, so a formula change lands here and not in a consumer's axe run.
  */
 const MEASURED: Record<string, [number, number, number]> = {
-  "light 240 6% 10%": [17.45, 20.2, 20.68],
-  "dark 0 0% 98%": [16.97, 17.73, 14.89],
+  "light 240 6% 10%": [17.45, 13.1, 15.32],
+  "dark 0 0% 98%": [16.97, 14.89, 12.97],
   "light 268.7 100% 50%": [6.32, 8.23, 10.31],
   "dark 268.7 100% 86.9%": [10.72, 13.51, 8.41],
   "light 204 100% 37%": [5.04, 7.4, 10.35],

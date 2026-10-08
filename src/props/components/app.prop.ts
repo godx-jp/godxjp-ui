@@ -9,6 +9,7 @@ import type {
   AppTimezoneDefault,
   AppDateFormat,
 } from "../../app/types";
+import type { AppPreset } from "../../app/preset";
 import type { AppBrand, AppDensity, AppFontSize, AppTheme } from "../../app/theme-axes";
 import type { AppPreferenceAxis } from "../../app/storage";
 import type {
@@ -39,8 +40,16 @@ export type ThemeScopeProp = {
 /** @see AppProvider */
 export type AppProviderProp = {
   children: ChildrenProp;
-  /** Initial locale when nothing in storage. Default: `vi`. */
+  /**
+   * Initial locale when nothing is in storage. Default: `<html lang>` when it names a registered
+   * locale, then the preset's `defaultLocale`, then `en` (v32; was `vi`).
+   */
   defaultLocale?: AppLocale;
+  /**
+   * Product defaults the host opts into (`godxPreset` from `@godxjp/ui/themes/godx`). Fills only
+   * what the props leave unset; its `name` is written to `<html data-preset>`. Omit for neutral.
+   */
+  preset?: AppPreset;
   /** Fallback when a translation key is missing. Default: `en`. */
   fallbackLocale?: AppLocale;
   /** Initial timezone: IANA id, `browser`, or `system`. Default: `browser`. */

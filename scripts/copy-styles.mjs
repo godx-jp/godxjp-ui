@@ -17,7 +17,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const CSS_DIRS = ["styles", "tokens", "theme"];
+const CSS_DIRS = ["styles", "tokens", "theme", "themes"];
 // Overridable so a test can run the real copy into a scratch dir instead of the repo's dist/.
 const dist = process.env.COPY_STYLES_DIST ?? join(root, "dist");
 

@@ -55,15 +55,8 @@ import type { AppContextValue, AppProviderProp } from "../props/components/app.p
 
 export type { AppProviderProp, AppContextValue } from "../props/components/app.prop";
 
-/** `AppProvider`'s props: {@link AppProviderProp} plus the v32 `preset` (gh#1219 / gh#1220). */
-export type AppProviderProps = AppProviderProp & {
-  /**
-   * Product defaults the host opts into (`godxPreset` from `@godxjp/ui/themes/godx`). Its
-   * `defaultLocale` and `timeZone` fill only what the props leave unset; its `name` is written to
-   * `<html data-preset>`. Omit for the neutral defaults.
-   */
-  preset?: AppPreset;
-};
+/** `AppProvider`'s props (`preset` included since v32, gh#1219 / gh#1220). */
+export type AppProviderProps = AppProviderProp;
 
 /**
  * The locale a provider starts in (decision A2, gh#1219), first match wins:

@@ -64,6 +64,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./themes/godx": {
+      "types": "./dist/themes/godx.d.ts",
+      "import": "./dist/themes/godx.js"
+    },
+    "./themes/godx.css": "./dist/themes/godx.css",
     "./styles": "./dist/styles/index.css",
     "./styles/core": "./dist/styles/core.css",
     "./styles/core-with-fallbacks": "./dist/styles/core-with-fallbacks.css",

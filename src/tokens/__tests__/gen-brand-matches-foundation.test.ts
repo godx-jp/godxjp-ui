@@ -95,9 +95,9 @@ describe("gen:brand reproduces foundation.css on foundation.css's own seed", () 
   /* The dark ramp runs UPWARD, so the pressed ink is brighter than the seed, not darker — the
    * relationship foundation.css authored (#DCBCFF seed, #E8DAFF pressed). */
   it("puts the dark pressed ink one hover step ABOVE the seed", () => {
-    expect(channelsOf("text-primary", ...derivedScopes.dark)).toBe(
-      channelsOf("primary-hover", ...derivedScopes.dark),
-    );
+    // v32 (gh#1220): the ink keeps the conventional +5.8 step on its own; it no longer shares the
+    // fill's hover channels, which turn DOWN past 94% L.
+    expect(channelsOf("text-primary", ...derivedScopes.dark)).toBe("h s calc(l + 5.8)");
   });
 
   /* The generator prints these ratios and exits non-zero when one misses. Re-measuring them here
