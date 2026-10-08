@@ -1,21 +1,21 @@
 import * as React from "react";
 import { Pause, Play } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { useMediaQuery } from "../../lib/hooks";
-import { cn } from "../../lib/utils";
-import { Button } from "../general/button";
+import { useTranslation } from "../i18n/use-translation";
+import { useMediaQuery } from "../lib/hooks";
+import { cn } from "../lib/utils";
+import { Button } from "../components/general/button";
 import { revealInMarquee } from "./marquee-reveal";
-import { ScrollArea } from "./scroll-area";
-import type { MarqueeProp } from "../../props/components/data-display.prop";
-import type { GapProp } from "../../props/vocabulary";
+import { ScrollArea } from "../components/data-display/scroll-area";
+import type { MarqueeProp } from "../props/components/data-display.prop";
+import type { GapProp } from "../props/vocabulary";
 
 export type {
   MarqueeDirectionProp,
   MarqueeSpeedProp,
   MarqueeProp,
   MarqueeProp as MarqueeProps,
-} from "../../props/components/data-display.prop";
+} from "../props/components/data-display.prop";
 
 /**
  * Marquee — a track of content that travels continuously, and the pause control that makes that

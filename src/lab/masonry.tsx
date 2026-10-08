@@ -1,14 +1,14 @@
 import * as React from "react";
 
-import { isDevelopment } from "../../lib/dev";
-import { useMediaQuery } from "../../lib/hooks";
-import { cn } from "../../lib/utils";
-import type { BreakpointProp, GapProp } from "../../props/vocabulary";
+import { isDevelopment } from "../lib/dev";
+import { useMediaQuery } from "../lib/hooks";
+import { cn } from "../lib/utils";
+import type { BreakpointProp, GapProp } from "../props/vocabulary";
 import type {
   MasonryItemProp,
   MasonryLayoutEntryProp,
   MasonryProp,
-} from "../../props/components/layout.prop";
+} from "../props/components/layout.prop";
 
 export type {
   MasonryColumnsProp,
@@ -17,7 +17,7 @@ export type {
   MasonryLayoutEntryProp,
   MasonryProp,
   MasonryProp as MasonryProps,
-} from "../../props/components/layout.prop";
+} from "../props/components/layout.prop";
 
 /**
  * The four steps `Flex direction` already responds to, spelled as the media queries the

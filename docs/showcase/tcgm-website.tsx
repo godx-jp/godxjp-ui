@@ -36,17 +36,7 @@ import {
 } from "lucide-react";
 
 import { Button, Heading, Icon, Reveal, Text } from "@godxjp/ui/general";
-import {
-  Badge,
-  Card,
-  CardContent,
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  EmptyState,
-} from "@godxjp/ui/data-display";
+import { Badge, Card, CardContent, EmptyState } from "@godxjp/ui/data-display";
 import { Flex, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { SearchInput, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
@@ -78,6 +68,13 @@ import scene1 from "../assets/tcgm/scene-1.svg";
 import scene2 from "../assets/tcgm/scene-2.svg";
 import scene3 from "../assets/tcgm/scene-3.svg";
 import scene4 from "../assets/tcgm/scene-4.svg";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@godxjp/ui/lab";
 
 // ── Brand stylesheet: the handoff's `tokens.css`, mapped onto the library's semantic roles. ───────
 // This is what the consumer ships as their own theme.css. Raw brand values live HERE, never as

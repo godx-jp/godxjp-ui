@@ -63,6 +63,14 @@ export interface ComponentEntry {
   absorbed?: string[];
   /** Deprecated components stay catalogued (so agents are steered to the replacement) but are flagged. */
   deprecated?: boolean;
+  /**
+   * `"lab"` — shipped from the opt-in `@godxjp/ui/lab` subpath (v32 #1223, decision B3): real
+   * behaviour and a known pattern, but niche, so no consumer pays its catalog and context cost by
+   * default. `list_primitives` / `search_components` leave lab entries out unless asked
+   * (`tier: "lab"` or `"all"`); `get_component` still answers them by name. Omitted = core.
+   * Promotion to core: imported by >= 2 repos. Demotion: never automatic.
+   */
+  tier?: "lab";
   example: string;
   docPath?: string;
   storyPath: string;
@@ -533,6 +541,8 @@ export const COMPONENTS: ComponentEntry[] = [
   },
   {
     name: "RangeTimeline",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "data-display",
     tagline: "Horizontal intervals with token-owned geometry and optional endpoint editing.",
     props: [
@@ -893,6 +903,8 @@ export default function OrdersPage() {
   },
   {
     name: "PageCover",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "layout",
     tagline:
       "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
@@ -953,7 +965,8 @@ export default function OrdersPage() {
       'PageContainer — `cover`, `icon`, headerScale="display" for an article title.',
       "Image — an image that opens a preview.",
     ],
-    example: `import { PageContainer, PageCover } from "@godxjp/ui/layout";
+    example: `import { PageContainer } from "@godxjp/ui/layout";
+import { PageCover } from "@godxjp/ui/lab";
 import { Button } from "@godxjp/ui/general";
 
 <PageContainer
@@ -2387,8 +2400,9 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
   },
   {
     name: "DraggablePanel",
+    tier: "lab",
     group: "layout",
-    importPath: "@godxjp/ui/layout",
+    importPath: "@godxjp/ui/lab",
     tagline:
       "A floating surface the person using it can MOVE — drag it by the title-bar handle, or focus the handle and nudge it with the arrow keys. Bounded to the viewport, position reported through onPositionChange and never stored by the library.",
     props: [
@@ -2475,7 +2489,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       },
     ],
     usage: [
-      'DO import from `@godxjp/ui/layout`: `import { DraggablePanel } from "@godxjp/ui/layout";`',
+      'DO import from `@godxjp/ui/lab` (the opt-in lab subpath): `import { DraggablePanel } from "@godxjp/ui/lab";`',
       "DO treat the position as yours. The panel reports it and stores nothing, so persisting it per user, per workspace or not at all is a decision you make.",
       "DO keep the body text short enough to read at 22rem, or let it scroll — the body is its own scroll region and the panel is capped at 70vh.",
       "DON'T hand-roll this with a fixed-position div and pointer maths: that is page-local CSS ui-audit blocks, and every consumer that floats anything would write it again.",
@@ -2495,7 +2509,8 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       "Dialog — modal and focus-trapping. Reach for it when the page behind must be unusable until the person answers.",
     ],
     example: `import { useState } from "react";
-import { DraggablePanel, Flex } from "@godxjp/ui/layout";
+import { Flex } from "@godxjp/ui/layout";
+import { DraggablePanel } from "@godxjp/ui/lab";
 import { Text } from "@godxjp/ui/general";
 
 function Assistant() {
@@ -2772,6 +2787,8 @@ export function MaintenancePage() {
   },
   {
     name: "LegalDocumentShell",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "layout",
     tagline:
       "Long-form legal/policy document surface (terms, privacy, DPA, cookie policy, SLA) — semantic article/nav/section landmarks, real anchors, a sticky table-of-contents rail, scroll-spy aria-current, hash deep links with a token-driven scroll offset and focus handoff. All legal text stays consumer-owned.",
@@ -2866,7 +2883,8 @@ export function MaintenancePage() {
       "PageContainer — for a titled section inside an app page; LegalDocumentShell already renders its own document header (h1 + version + effective date + summary).",
       "Text / Heading — compose the section `content` from these; the shell only supplies the section heading (h2) and the body wrapper.",
     ],
-    example: `import { LegalDocumentShell, CenteredShell, Flex, Topbar } from "@godxjp/ui/layout";
+    example: `import { CenteredShell, Flex, Topbar } from "@godxjp/ui/layout";
+import { LegalDocumentShell } from "@godxjp/ui/lab";
 import { Button, Text } from "@godxjp/ui/general";
 import { useState } from "react";
 
@@ -2968,6 +2986,8 @@ export function TermsPage() {
   // ─── general ────────────────────────────────────────────────────────────
   {
     name: "FloatButton",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "general",
     tagline:
       "Ant Design's corner action, ported whole — a control pinned to the viewport above the page, with FloatButton.Group (a stack, or a menu behind one trigger) and FloatButton.BackTop. The corner insets are tokens, so a service moves the mark without a media query.",
@@ -3040,7 +3060,7 @@ export function TermsPage() {
       },
     ],
     usage: [
-      'DO import from `@godxjp/ui/general`: `import { FloatButton } from "@godxjp/ui/general";`',
+      'DO import from `@godxjp/ui/lab` (the opt-in lab subpath): `import { FloatButton } from "@godxjp/ui/lab";`',
       "DO give every float button a name — `tooltip` as a plain string is enough, since it becomes the aria-label too.",
       "DO move the mark with the `--float-button-offset-block-end` / `--float-button-offset-inline-end` tokens when a sticky action bar or a mobile tab bar is already in that corner.",
       "DO pass `target={() => element}` to FloatButton.BackTop inside a shell that owns its own scroll region, so it watches that region rather than the document.",
@@ -3060,7 +3080,7 @@ export function TermsPage() {
       "Banner — a full-bleed strip, not a corner mark.",
       "Toolbar / PageContainer extra — where an action belongs when it IS part of this page's content.",
     ],
-    example: `import { FloatButton } from "@godxjp/ui/general";
+    example: `import { FloatButton } from "@godxjp/ui/lab";
 import { MessageCircle, Share2 } from "lucide-react";
 
 <FloatButton.Group trigger="click" type="primary" icon={<MessageCircle />} aria-label="Trợ lý">
@@ -4923,6 +4943,8 @@ import { Flex } from "@godxjp/ui/layout";
   },
   {
     name: "TextDiff",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "data-display",
     tagline:
       "What changed between two versions of a text — removed runs in <del>, added runs in <ins>, inline or side by side, per line / word / character, with CJK cut per character and long unchanged runs folded.",
@@ -4987,7 +5009,7 @@ import { Flex } from "@godxjp/ui/layout";
       },
     ],
     usage: [
-      'DO import from `@godxjp/ui/data-display`: `import { TextDiff } from "@godxjp/ui/data-display";`',
+      'DO import from `@godxjp/ui/lab` (the opt-in lab subpath): `import { TextDiff } from "@godxjp/ui/lab";`',
       "DO pass the two raw strings — the component tokenizes, diffs (LCS) and renders. Use the exported `diffText(before, after, { granularity, lang })` only when you need the runs themselves (a change count, a plain-text export).",
       "DO pass `lang` for the text's language, not the UI's: a Japanese original in an English UI still needs lang=\"ja\".",
       'DO use mode="split" when there is room for two columns and the texts are long; inline for a drawer, a list row or a narrow panel.',
@@ -5004,7 +5026,7 @@ import { Flex } from "@godxjp/ui/layout";
       "Text — `delete` / `mark` style a run you already chose; TextDiff decides the runs and announces them.",
       "Timeline — the list of revisions; TextDiff is what one revision changed.",
     ],
-    example: `import { TextDiff } from "@godxjp/ui/data-display";
+    example: `import { TextDiff } from "@godxjp/ui/lab";
 
 <TextDiff before={row.previous_original} after={original} lang="ja" />
 
@@ -6195,6 +6217,8 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
   },
   {
     name: "TimelineGrid",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "data-display",
     tagline:
       "The time-axis half of the Timeline family: a vertical hour axis, one column per day (or room, or machine) and event blocks placed by start time and duration. Overlapping events are laid out side by side automatically. NOT a calendar \u2014 no month view, no navigation, no drag-to-create, no recurrence, no timezone conversion.",
@@ -6257,7 +6281,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
       { name: "id", type: "string", description: "DOM id on the scroll region." },
     ],
     usage: [
-      'DO import from `@godxjp/ui/data-display`: `import { TimelineGrid } from "@godxjp/ui/data-display";`',
+      'DO import from `@godxjp/ui/lab` (the opt-in lab subpath): `import { TimelineGrid } from "@godxjp/ui/lab";`',
       "DO give a shift/booking board one column per day and let the grid place the blocks. DON'T hand-roll a `relative` container with absolutely-positioned divs and percentage offsets \u2014 that is the exact shape this primitive replaces (#354 item 7), and it hides one of two overlapping shifts.",
       "DO re-tune the rhythm with the tokens instead of a className: `--timeline-grid-hour-height` is the height of one hour (the knob that fits a 24-hour axis on one screen), `--timeline-grid-column-min-width` is the floor below which the grid scrolls instead of collapsing, `--timeline-grid-axis-width` is the hour rail, and `--timeline-grid-event-color` / `--timeline-grid-now-color` / `--timeline-grid-current-tint` are role-mirror colour knobs.",
       'DO express a shift that crosses midnight as `start: "22:00", end: "06:00"` \u2014 an `end` at or before `start` means the next day. The block is drawn to the end of the window and marked `data-clipped`, and the text still reads 22:00\u201306:00.',
@@ -6278,7 +6302,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
       "Sheet \u2014 the usual destination of `onEventSelect`: the block is the affordance, the drawer is the detail.",
       "Badge \u2014 the same `color` wash for a record's own colour, on a chip instead of a block.",
     ],
-    example: `import { TimelineGrid } from "@godxjp/ui/data-display";
+    example: `import { TimelineGrid } from "@godxjp/ui/lab";
 
 <TimelineGrid
   label="\u9031\u30b7\u30d5\u30c8 5\u670811\u65e5\u301c17\u65e5"
@@ -14804,6 +14828,8 @@ export default function PasswordBlock() {
   },
   {
     name: "Carousel",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     subParts: [
       "CarouselContent",
       "CarouselDots",
@@ -14851,7 +14877,7 @@ export default function PasswordBlock() {
     ],
     storyPath: "data-display/Carousel.stories.tsx",
     rules: [3, 6],
-    example: `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from "@godxjp/ui/data-display";
+    example: `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from "@godxjp/ui/lab";
 
 // CarouselDots reads the Embla api from context — no setApi wiring needed.
 <Carousel opts={{ loop: true }}>
@@ -15785,6 +15811,8 @@ import { Text } from "@godxjp/ui/general";
   },
   {
     name: "EmojiPicker",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "data-entry",
     tagline:
       'Page icon / reaction picker in a Popover (gh#1164): search by the active language\'s CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and "remove icon". No skin tones.',
@@ -15841,7 +15869,7 @@ import { Text } from "@godxjp/ui/general";
       "The data loads on first open (one locale, ~100 KB gzip); nothing ships in your main bundle.",
     ],
     related: ["PageContainer — `icon` slot.", "CommandPalette — items can carry an emoji `icon`."],
-    example: `import { EmojiPicker } from "@godxjp/ui/data-entry";
+    example: `import { EmojiPicker } from "@godxjp/ui/lab";
 
 <EmojiPicker value={icon} onValueChange={setIcon} />`,
     docPath: "docs/data-entry/emoji-picker.tsx",
@@ -15850,6 +15878,8 @@ import { Text } from "@godxjp/ui/general";
   },
   {
     name: "SortableList",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "data-entry",
     tagline:
       'Reorder a flat list or a grid of tiles (gh#1173). Each item has a grip: drag it with a pointer (touch included — the grip sets touch-action: none), or focus it and press Space/Enter to lift, the arrows (Home / End) to move, Space/Enter to drop, Esc to cancel. Every step is spoken in a polite live region ("2 of 3"). The order is the value.',
@@ -15903,7 +15933,7 @@ import { Text } from "@godxjp/ui/general";
       "Tree — `draggable` for moving nodes within a hierarchy.",
       "Transfer — choose items, not order them.",
     ],
-    example: `import { SortableList } from "@godxjp/ui/data-entry";
+    example: `import { SortableList } from "@godxjp/ui/lab";
 
 <SortableList
   aria-label="Widgets"
@@ -17372,6 +17402,8 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "MegaMenu",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "navigation",
     tagline:
       'A primary site navigation whose top-level items disclose a full-width panel of grouped links (Ant Design `Menu mode="horizontal"` whose SubMenu renders through popupRender). Implements the WAI-ARIA APG Disclosure Navigation pattern — NOT menu/menubar roles — with a roving tabindex across the bar, hover intent, Escape-to-trigger, and a narrow layout where the same disclosure lays out in flow.',
@@ -17487,7 +17519,7 @@ const messages: ChatMessageProp[] = [
       "Breadcrumb — where you are in the hierarchy, not where you can go.",
     ],
     example: [
-      'import { MegaMenu } from "@godxjp/ui/navigation";',
+      'import { MegaMenu } from "@godxjp/ui/lab";',
       "",
       "<MegaMenu",
       '  label="メインナビゲーション"',
@@ -17758,6 +17790,8 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "OrgChart",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "data-display",
     tagline:
       "An organization chart: boxes (avatar, name, title, extra) joined by CSS connector lines, top-down; `agent` nodes are dashed. Scrolls horizontally in its own named region when wider than its container, and turns into an indented Tree when the CONTAINER is under 40rem. APG tree view (tree/treeitem/group, roving tabindex, arrow keys).",
@@ -17800,7 +17834,8 @@ const messages: ChatMessageProp[] = [
       "Badge \u2014 a status in a box's `extra` slot.",
     ],
     example: [
-      'import { Avatar, AvatarFallback, Badge, OrgChart } from "@godxjp/ui/data-display";',
+      'import { Avatar, AvatarFallback, Badge } from "@godxjp/ui/data-display";',
+      'import { OrgChart } from "@godxjp/ui/lab";',
       "",
       "<OrgChart",
       '  label="Company org chart"',
@@ -18028,6 +18063,8 @@ const messages: ChatMessageProp[] = [
   },
   {
     name: "Marquee",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "data-display",
     tagline:
       "A track of content that travels continuously, carrying the WCAG 2.2.2 pause control that makes it conformant. The clone count is MEASURED against the viewport and re-measured on resize; under prefers-reduced-motion it does not move at all.",
@@ -18113,7 +18150,7 @@ const messages: ChatMessageProp[] = [
       "ScrollArea — what a Marquee becomes under prefers-reduced-motion, and what to reach for directly when the row should simply be scrollable.",
       "Flex / ResponsiveGrid — the static logo wall. Start here; add motion only when something asks for it.",
     ],
-    example: `import { Marquee } from "@godxjp/ui/data-display";
+    example: `import { Marquee } from "@godxjp/ui/lab";
 import { Text } from "@godxjp/ui/general";
 
 <Marquee fade pauseOnHover label={t("partners.pauseLogos")}>
@@ -18129,6 +18166,8 @@ import { Text } from "@godxjp/ui/general";
   },
   {
     name: "Masonry",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "layout",
     tagline:
       "Ant Design `Masonry` (6.0.0): tiles of UNEQUAL height packed into columns, each tile dropped into whichever column is shortest when its turn comes. DOM order stays `items` order at every width, so the reading order never follows the packing.",
@@ -18197,7 +18236,7 @@ import { Text } from "@godxjp/ui/general";
       "Card / CardContent — the usual tile. Masonry positions the tile box and never styles what is inside it.",
       "AspectRatio — pair it with `height` when the tiles are images of a known ratio; the layout then settles with no measurement pass at all.",
     ],
-    example: `import { Masonry } from "@godxjp/ui/layout";
+    example: `import { Masonry } from "@godxjp/ui/lab";
 import { Card, CardContent } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 
@@ -18307,6 +18346,8 @@ const [pinned, setPinned] = useState(false);
   },
   {
     name: "Anchor",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
     group: "navigation",
     tagline:
       "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`.",
@@ -18423,7 +18464,7 @@ const [pinned, setPinned] = useState(false);
       "LegalDocumentShell — carries its own built-in contents rail for the legal-document case; Anchor is the general one, for content the shell does not own.",
       'Breadcrumb — where you ARE in the hierarchy (`aria-current="page"`), not where you are on the page.',
     ],
-    example: `import { Anchor } from "@godxjp/ui/navigation";
+    example: `import { Anchor } from "@godxjp/ui/lab";
 
 <Anchor
   offsetBlockStart={64}
@@ -18470,6 +18511,15 @@ export function findSubPartOwner(name: string): ComponentEntry | undefined {
 
 export function componentsByGroup(group: ComponentGroup): ComponentEntry[] {
   return COMPONENTS.filter((c) => c.group === group);
+}
+
+/** Which tier a listing covers: `"core"` (the default agent context), `"lab"`, or `"all"`. */
+export type ComponentTierFilter = "core" | "lab" | "all";
+
+/** Entries in the requested tier — `"core"` leaves the opt-in `@godxjp/ui/lab` entries out. */
+export function componentsInTier(list: ComponentEntry[], tier: ComponentTierFilter = "core") {
+  if (tier === "all") return list;
+  return list.filter((c) => (tier === "lab" ? c.tier === "lab" : c.tier !== "lab"));
 }
 
 export function searchComponents(query: string): ComponentEntry[] {

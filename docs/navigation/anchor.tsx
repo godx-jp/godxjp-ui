@@ -12,7 +12,8 @@ import {
 } from "@godxjp/ui/data-display";
 import { Heading, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { Anchor, type AnchorItemProp } from "@godxjp/ui/navigation";
+import { Anchor } from "@godxjp/ui/lab";
+import type { AnchorItemProp } from "@godxjp/ui/lab";
 
 /**
  * Anchor — Ant Design `Anchor` (6.6.5). The in-page section navigation, and the only thing in the

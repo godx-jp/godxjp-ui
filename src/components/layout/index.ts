@@ -5,8 +5,6 @@ export type {
   BreadcrumbItem,
   BreadcrumbItemProp,
 } from "./page-container";
-export { PageCover } from "./page-cover";
-export type { PageCoverProp, PageCoverProps } from "./page-cover";
 export { Flex } from "./flex";
 export type {
   FlexAlignProp,
@@ -90,25 +88,9 @@ export { MasterDetail } from "./master-detail";
 export type { MasterDetailProps } from "./master-detail";
 export { SplitPane } from "./split-pane";
 export type { SplitPaneProps } from "./split-pane";
-export { DraggablePanel } from "./draggable-panel";
-export type {
-  DraggablePanelProp,
-  DraggablePanelProps,
-  DraggablePanelPlacementProp,
-  DraggablePanelPositionProp,
-  DraggablePanelLabels,
-  DragAxisProp,
-  DragBoundsProp,
-} from "./draggable-panel";
 export { Separator } from "./separator";
 export type { SeparatorProp, SeparatorProps } from "./separator";
 export { AspectRatio } from "./aspect-ratio";
-export { LegalDocumentShell } from "./legal-document-shell";
-export type {
-  LegalDocumentSectionProp,
-  LegalDocumentShellProp,
-  LegalDocumentShellProps,
-} from "./legal-document-shell";
 export { ServiceRolePanel } from "./service-role-panel";
 export type {
   ServiceRoleItemProp,
@@ -117,14 +99,5 @@ export type {
 } from "./service-role-panel";
 
 export { useAppShellNavigationMode } from "./app-shell";
-export { Masonry } from "./masonry";
-export type {
-  MasonryColumnsProp,
-  MasonryGapProp,
-  MasonryItemProp,
-  MasonryLayoutEntryProp,
-  MasonryProp,
-  MasonryProps,
-} from "./masonry";
 export { Affix } from "./affix";
 export type { AffixProp, AffixProps, AffixTargetProp } from "./affix";

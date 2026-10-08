@@ -14,19 +14,19 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { cn } from "../../lib/utils";
-import type { EmojiPickerProp } from "../../props/components/data-entry.prop";
-import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
-import { Button } from "../general/button";
-import { Text } from "../general/typography";
+import { useTranslation } from "../i18n/use-translation";
+import { cn } from "../lib/utils";
+import type { EmojiPickerProp } from "../props/components/data-entry.prop";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/data-display/popover";
+import { Button } from "../components/general/button";
+import { Text } from "../components/general/typography";
 import { EMOJI_GROUPS, loadEmoji, searchEmoji, type EmojiEntry } from "./emoji-data";
-import { SearchInput } from "./search-input";
+import { SearchInput } from "../components/data-entry/search-input";
 
 export type {
   EmojiPickerProp,
   EmojiPickerProp as EmojiPickerProps,
-} from "../../props/components/data-entry.prop";
+} from "../props/components/data-entry.prop";
 
 const COLUMNS = 8;
 /** The trigger shows the chosen emoji as a labelled button, or an icon button when empty. */

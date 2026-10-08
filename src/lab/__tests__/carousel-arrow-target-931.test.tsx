@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { anchorIndex } from "../../../test/css-selector";
+import { anchorIndex } from "../../test/css-selector";
 
 /**
  * THE ARROW'S BOX IS A TOKEN, NOT A LITERAL (gh#931).
@@ -17,11 +17,8 @@ import { anchorIndex } from "../../../test/css-selector";
  * The default is unchanged at 2rem, so no existing carousel moves; a brand that needs the bigger
  * target declares `--carousel-arrow-size` once.
  */
-const LAYOUT = readFileSync(resolve(__dirname, "../../../styles/data-display-layout.css"), "utf8");
-const TOKENS = readFileSync(
-  resolve(__dirname, "../../../tokens/components/data-display.css"),
-  "utf8",
-);
+const LAYOUT = readFileSync(resolve(__dirname, "../../styles/data-display-layout.css"), "utf8");
+const TOKENS = readFileSync(resolve(__dirname, "../../tokens/components/data-display.css"), "utf8");
 
 /*
  * Anchor on STRUCTURE, not on the formatting (gh#767/gh#769). A hand-wrapped literal like

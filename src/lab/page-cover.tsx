@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { cn } from "../../lib/utils";
-import type { PageCoverProp } from "../../props/components/layout.prop";
+import { useTranslation } from "../i18n/use-translation";
+import { cn } from "../lib/utils";
+import type { PageCoverProp } from "../props/components/layout.prop";
 
 export type {
   PageCoverProp,
   PageCoverProp as PageCoverProps,
-} from "../../props/components/layout.prop";
+} from "../props/components/layout.prop";
 
 const clamp = (value: number) => Math.min(100, Math.max(0, Math.round(value)));
 

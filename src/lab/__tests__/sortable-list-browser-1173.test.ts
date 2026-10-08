@@ -3,7 +3,7 @@ import { TextEncoder as NodeTextEncoder } from "node:util";
 import { chromium, type Browser, type Page } from "playwright";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { compileRealCss } from "./compile-real-css";
+import { compileRealCss } from "../../components/data-entry/__tests__/compile-real-css";
 
 /**
  * SortableList (gh#1173) in Chromium: a real pointer drag on the grip, the keyboard path where
@@ -14,7 +14,7 @@ const ENTRY = `
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
-import { SortableList } from "./src/components/data-entry";
+import { SortableList } from "./src/lab";
 const items = [
   { value: "a", label: "Alpha" },
   { value: "b", label: "Beta" },

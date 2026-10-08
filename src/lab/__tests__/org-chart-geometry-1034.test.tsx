@@ -5,8 +5,8 @@ import { chromium, type Page } from "playwright";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { AppProvider } from "../../../app/app-provider";
-import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
+import { AppProvider } from "../../app/app-provider";
+import { compileRealCss } from "../../components/data-entry/__tests__/compile-real-css";
 import { OrgChart } from "../org-chart";
 
 /**
@@ -23,7 +23,7 @@ const ENTRY = `
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
-import { OrgChart } from "./src/components/data-display/org-chart";
+import { OrgChart } from "./src/lab/org-chart";
 
 const data = [
   {

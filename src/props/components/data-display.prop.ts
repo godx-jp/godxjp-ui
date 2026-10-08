@@ -1252,7 +1252,7 @@ export type MarqueeSpeedProp = "slow" | "base" | "fast";
  *
  * The clone count is MEASURED (content width against viewport width, re-measured on resize) —
  * the behaviour no CSS-only marquee can have — and the pause control is why this is a component
- * rather than a snippet. See `src/components/data-display/marquee.tsx` for the full argument and
+ * rather than a snippet. See `src/lab/marquee.tsx` for the full argument and
  * for what is deliberately not ported from `react-fast-marquee`.
  */
 export type MarqueeProp = Omit<

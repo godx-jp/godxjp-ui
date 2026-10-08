@@ -1,21 +1,21 @@
 import * as React from "react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { useScrollsHorizontally } from "../../lib/hooks";
-import { cn } from "../../lib/utils";
+import { useTranslation } from "../i18n/use-translation";
+import { useScrollsHorizontally } from "../lib/hooks";
+import { cn } from "../lib/utils";
 import type {
   OrgChartNodeProp,
   OrgChartProp,
   TreeNodeProp,
-} from "../../props/components/data-display.prop";
-import { Tree } from "./tree";
+} from "../props/components/data-display.prop";
+import { Tree } from "../components/data-display/tree";
 
 export type {
   OrgChartNodeProp,
   OrgChartNodeVariantProp,
   OrgChartProp,
   OrgChartProp as OrgChartProps,
-} from "../../props/components/data-display.prop";
+} from "../props/components/data-display.prop";
 
 type FlatNode = {
   node: OrgChartNodeProp;

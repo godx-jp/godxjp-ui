@@ -73,6 +73,7 @@ function primaryComponents() {
     }
   };
   walk(COMPONENTS_DIR);
+  walk(join(ROOT, "src/lab")); // the opt-in @godxjp/ui/lab subpath (v32 #1223) is catalogued too
   walk(join(ROOT, "src/form"));
   return found;
 }

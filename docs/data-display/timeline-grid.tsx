@@ -1,14 +1,7 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  TimelineGrid,
-  type TimelineGridColumnProp,
-  type TimelineGridEventProp,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { TimelineGrid } from "@godxjp/ui/lab";
+import type { TimelineGridColumnProp, TimelineGridEventProp } from "@godxjp/ui/lab";
 
 /**
  * TimelineGrid — a vertical hour axis, one column per day, and event blocks placed by start time

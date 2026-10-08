@@ -98,10 +98,6 @@ export {
 } from "./command";
 export type { CommandProps } from "./command";
 export { CommandPalette } from "./command-palette";
-export { EmojiPicker } from "./emoji-picker";
-export { SortableList } from "./sortable-list";
-export type { SortableListItemProp, SortableListProp, SortableListProps } from "./sortable-list";
-export type { EmojiPickerProp, EmojiPickerProps } from "./emoji-picker";
 export type {
   CommandPaletteGroup,
   CommandPaletteItem,

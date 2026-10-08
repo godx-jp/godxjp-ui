@@ -13,6 +13,8 @@ const ROOT = process.cwd();
 // their own `importPath` (`@godxjp/markdown`, `@godxjp/editor`, `@godxjp/block-editor`).
 const SCAN_DIRS = [
   "src/components",
+  // the opt-in `@godxjp/ui/lab` subpath (v32 #1223): catalogued with `tier: "lab"`.
+  "src/lab",
   "src/app",
   "src/form",
   "packages/markdown/src",

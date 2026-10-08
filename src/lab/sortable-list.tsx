@@ -1,19 +1,16 @@
 import * as React from "react";
 import { GripVertical } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { cn } from "../../lib/utils";
-import type {
-  SortableListItemProp,
-  SortableListProp,
-} from "../../props/components/data-entry.prop";
-import { Button } from "../general/button";
+import { useTranslation } from "../i18n/use-translation";
+import { cn } from "../lib/utils";
+import type { SortableListItemProp, SortableListProp } from "../props/components/data-entry.prop";
+import { Button } from "../components/general/button";
 
 export type {
   SortableListItemProp,
   SortableListProp,
   SortableListProp as SortableListProps,
-} from "../../props/components/data-entry.prop";
+} from "../props/components/data-entry.prop";
 
 /** Pixels the pointer must travel before a press on the handle becomes a drag, so a click stays a click. */
 const DRAG_THRESHOLD = 4;

@@ -102,12 +102,6 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  Carousel,
-  CarouselContent,
-  CarouselDots,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   ChatBubble,
   CredentialReveal,
   Descriptions,
@@ -165,6 +159,14 @@ import {
 } from "@godxjp/ui/feedback";
 import { AuthDivider, Flex, PageContainer, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
 import { AppSettingPicker, Steps, Tabs } from "@godxjp/ui/navigation";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselDots,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@godxjp/ui/lab";
 
 /* ────────────────────────────────────────────────────────────────────────────────────────────
  * THE ENTIRE THEME LAYER. One scoped block per palette, one per corner step. No component CSS,

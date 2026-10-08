@@ -15,7 +15,8 @@ const ENTRY = `
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
-import { PageContainer, PageCover } from "./src/components/layout";
+import { PageContainer } from "./src/components/layout";
+import { PageCover } from "./src/lab";
 import { Button } from "./src/components/general";
 
 const COVER = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1600"><rect width="1600" height="1600" fill="#789"/></svg>');

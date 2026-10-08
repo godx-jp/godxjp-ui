@@ -1,17 +1,17 @@
 import * as React from "react";
 
-import { cn } from "../../lib/utils";
+import { cn } from "../lib/utils";
 import type {
   TimelineGridEventProp,
   TimelineGridProp,
-} from "../../props/components/data-display.prop";
+} from "../props/components/data-display.prop";
 
 export type {
   TimelineGridColumnProp,
   TimelineGridEventProp,
   TimelineGridProp,
   TimelineGridProp as TimelineGridProps,
-} from "../../props/components/data-display.prop";
+} from "../props/components/data-display.prop";
 
 const MINUTES_PER_DAY = 24 * 60;
 const CLOCK = /^(\d{1,2}):(\d{2})$/;

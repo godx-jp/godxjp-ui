@@ -1,7 +1,7 @@
 import * as React from "react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-import { AppProvider } from "../../../app/app-provider";
+import { AppProvider } from "../../app/app-provider";
 import { EmojiPicker } from "../emoji-picker";
 import { render, renderWithUi, screen, userEvent, waitFor, within } from "@/test/render";
 

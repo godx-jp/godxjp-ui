@@ -3,15 +3,15 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
 
-import { cn } from "../../lib/utils";
-import { useTranslation } from "../../i18n/use-translation";
+import { cn } from "../lib/utils";
+import { useTranslation } from "../i18n/use-translation";
 import type {
   MegaMenuGroupProp,
   MegaMenuItemProp,
   MegaMenuLinkComponentProp,
   MegaMenuLinkProp,
   MegaMenuProp,
-} from "../../props/components/navigation.prop";
+} from "../props/components/navigation.prop";
 
 export type {
   MegaMenuGroupProp,
@@ -28,7 +28,7 @@ export type {
   MegaMenuProp as MegaMenuProps,
   MegaMenuTriggerActionProp,
   MegaMenuTriggerActionProp as MegaMenuTriggerActionProps,
-} from "../../props/components/navigation.prop";
+} from "../props/components/navigation.prop";
 
 /*
  * WHY THIS IS DISCLOSURE AND NOT MENUBAR, AND WHY `DropdownMenu` COULD NOT BE IT

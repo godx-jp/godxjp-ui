@@ -1,16 +1,16 @@
 import * as React from "react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { cn } from "../../lib/utils";
-import type { TextDiffProp, TextDiffSegment } from "../../props/components/data-display.prop";
-import { Button } from "../general/button";
-import { VisuallyHidden } from "../general/visually-hidden";
+import { useTranslation } from "../i18n/use-translation";
+import { cn } from "../lib/utils";
+import type { TextDiffProp, TextDiffSegment } from "../props/components/data-display.prop";
+import { Button } from "../components/general/button";
+import { VisuallyHidden } from "../components/general/visually-hidden";
 
 export type {
   TextDiffProp,
   TextDiffProp as TextDiffProps,
   TextDiffSegment,
-} from "../../props/components/data-display.prop";
+} from "../props/components/data-display.prop";
 
 /** The unit a change is measured in — see `TextDiffProp["granularity"]`. */
 export type TextDiffGranularity = NonNullable<TextDiffProp["granularity"]>;

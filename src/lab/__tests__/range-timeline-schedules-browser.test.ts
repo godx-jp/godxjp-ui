@@ -3,7 +3,7 @@ import { TextEncoder as NodeTextEncoder } from "node:util";
 import { chromium, type Browser, type Page } from "playwright";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
+import { compileRealCss } from "../../components/data-entry/__tests__/compile-real-css";
 
 /**
  * RangeTimeline schedules in Chromium: a dependency connector's ends land on the bars it joins
@@ -15,7 +15,7 @@ const ENTRY = `
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
-import { RangeTimeline } from "./src/components/data-display/range-timeline";
+import { RangeTimeline } from "./src/lab/range-timeline";
 const columns = Array.from({ length: 12 }, (_, d) => ({ label: String(d + 1), units: 1 }));
 const row = (id, label, extra) => ({ id, label, startLabel: id + " start", endLabel: id + " end", ...extra });
 const rows = [

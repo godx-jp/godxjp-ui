@@ -1,16 +1,16 @@
 import * as React from "react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { useControlledLatch } from "../../lib/hooks";
-import { cn } from "../../lib/utils";
-import { Heading } from "../general/typography";
-import type { LegalDocumentShellProp } from "../../props/components/layout.prop";
+import { useTranslation } from "../i18n/use-translation";
+import { useControlledLatch } from "../lib/hooks";
+import { cn } from "../lib/utils";
+import { Heading } from "../components/general/typography";
+import type { LegalDocumentShellProp } from "../props/components/layout.prop";
 
 export type {
   LegalDocumentSectionProp,
   LegalDocumentShellProp,
   LegalDocumentShellProp as LegalDocumentShellProps,
-} from "../../props/components/layout.prop";
+} from "../props/components/layout.prop";
 
 /**
  * Scroll-spy band. A section becomes "active" while its box crosses the strip between 10% and 25%

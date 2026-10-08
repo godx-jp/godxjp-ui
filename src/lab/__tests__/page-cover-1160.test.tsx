@@ -1,7 +1,7 @@
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { PageContainer } from "../page-container";
+import { PageContainer } from "../../components/layout/page-container";
 import { PageCover } from "../page-cover";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 

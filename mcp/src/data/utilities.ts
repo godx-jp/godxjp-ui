@@ -273,7 +273,7 @@ const rows = flattenItemPages(data);`,
   {
     name: "useCarousel",
     kind: "hook",
-    subpaths: ["./data-display"],
+    subpaths: ["./lab"],
     signature:
       "(): { canScrollPrev: boolean; canScrollNext: boolean; selectedIndex: number; scrollSnaps: number[]; api: CarouselApi | null; scrollPrev: () => void; scrollNext: () => void; scrollTo: (index: number) => void }",
     tagline:
@@ -618,7 +618,7 @@ const blocked = dateMatchModifiers(typed, disabledMatchers);`,
   {
     name: "diffText",
     kind: "function",
-    subpaths: ["./data-display"],
+    subpaths: ["./lab"],
     signature:
       "(before: string, after: string, options?: { granularity?: TextDiffGranularity; lang?: string; maxCells?: number }): TextDiffSegment[]",
     tagline:
@@ -638,7 +638,7 @@ const changed = diffText(previous, current, { lang: "ja" }).filter((run) => run.
   {
     name: "tokenizeText",
     kind: "function",
-    subpaths: ["./data-display"],
+    subpaths: ["./lab"],
     signature: "(text: string, granularity?: TextDiffGranularity, lang?: string): string[]",
     tagline:
       "Cut a text into diff tokens: `auto` (Intl.Segmenter words, CJK runs per character), `word`, `char` (grapheme clusters) or `line` (lines with their newline).",

@@ -2,16 +2,16 @@
 
 import * as React from "react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { isDevelopment } from "../../lib/dev";
-import { scrollBoxOf, useControlledLatch } from "../../lib/hooks";
-import { cn, prefersReducedMotion } from "../../lib/utils";
-import { Affix } from "../layout/affix";
+import { useTranslation } from "../i18n/use-translation";
+import { isDevelopment } from "../lib/dev";
+import { scrollBoxOf, useControlledLatch } from "../lib/hooks";
+import { cn, prefersReducedMotion } from "../lib/utils";
+import { Affix } from "../components/layout/affix";
 import type {
   AnchorContainerProp,
   AnchorItemProp,
   AnchorProp,
-} from "../../props/components/navigation.prop";
+} from "../props/components/navigation.prop";
 
 export type {
   AnchorContainerProp,
@@ -19,7 +19,7 @@ export type {
   AnchorItemProp,
   AnchorProp,
   AnchorProp as AnchorProps,
-} from "../../props/components/navigation.prop";
+} from "../props/components/navigation.prop";
 
 /** Ant Design's own `sharpMatcherRegex` — everything after the last `#`. */
 const SHARP_MATCHER = /#([^\t\r\n\f\v]+)$/;

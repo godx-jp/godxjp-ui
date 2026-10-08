@@ -339,6 +339,7 @@ const catalog = JSON.parse(readFileSync(join(ROOT, "agent/components-index.json"
 const entryBarrels = [
   "src/index.ts",
   ...globSync("src/components/*/index.ts", { cwd: ROOT }).map((p) => p.replaceAll("\\", "/")),
+  "src/lab/index.ts",
   "src/form/index.ts",
   "src/app/index.ts",
   "src/inertia/index.ts",

@@ -52,23 +52,6 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
-export { MegaMenu } from "./mega-menu";
-export type {
-  MegaMenuProp,
-  MegaMenuProps,
-  MegaMenuItemProp,
-  MegaMenuItemProps,
-  MegaMenuPanelProp,
-  MegaMenuPanelProps,
-  MegaMenuGroupProp,
-  MegaMenuGroupProps,
-  MegaMenuLinkProp,
-  MegaMenuLinkProps,
-  MegaMenuLinkComponentProp,
-  MegaMenuLinkComponentProps,
-  MegaMenuTriggerActionProp,
-  MegaMenuTriggerActionProps,
-} from "./mega-menu";
 export { Conversations } from "./conversations";
 export type {
   ConversationsProp,
@@ -81,11 +64,3 @@ export type {
   ConversationsGroupableProp,
   ConversationsCreationProp,
 } from "./conversations";
-export { Anchor } from "./anchor";
-export type {
-  AnchorContainerProp,
-  AnchorDirectionProp,
-  AnchorItemProp,
-  AnchorProp,
-  AnchorProps,
-} from "./anchor";

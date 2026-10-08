@@ -4302,7 +4302,7 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   RangeTimelineProp: {
     group: "data-display",
-    file: "components/data-display/range-timeline.tsx",
+    file: "lab/range-timeline.tsx",
     vocabulary: [
       "LabelProp",
       // The CANONICAL three-step axis, the same type DataTable takes — not a local subset. It

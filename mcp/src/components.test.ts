@@ -103,7 +103,9 @@ describe("list_primitives", () => {
     const out = await dispatchTool("list_primitives", {});
     expect(out).toContain("@godxjp/ui");
     // every name appears
-    for (const c of COMPONENTS.slice(0, 10)) expect(out).toContain(c.name);
+    // every CORE name appears; the opt-in lab tier is listed on request (lab-tier.test.ts)
+    for (const c of COMPONENTS.filter((e) => e.tier !== "lab").slice(0, 10))
+      expect(out).toContain(c.name);
   });
 
   const GROUPS: ComponentGroup[] = [

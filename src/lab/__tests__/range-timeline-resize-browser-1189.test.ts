@@ -3,7 +3,7 @@ import { TextEncoder as NodeTextEncoder } from "node:util";
 import { chromium, type Browser } from "playwright";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
+import { compileRealCss } from "../../components/data-entry/__tests__/compile-real-css";
 
 /**
  * gh#1189 in Chromium: dragging the label-column divider widens the label cell in the header AND
@@ -14,7 +14,7 @@ const ENTRY = `
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
-import { RangeTimeline } from "./src/components/data-display/range-timeline";
+import { RangeTimeline } from "./src/lab/range-timeline";
 const columns = Array.from({ length: 14 }, (_, d) => ({ label: String(d + 1), units: 1 }));
 const rows = [
   { id: "a", label: "EXSELI-81 問い合わせフォームの改修", start: 1, end: 4, startLabel: "s", endLabel: "e", color: "#fde68a", overdue: true },

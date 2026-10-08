@@ -2,8 +2,8 @@ import * as React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { cn } from "../../lib/utils";
+import { useTranslation } from "../i18n/use-translation";
+import { cn } from "../lib/utils";
 
 type UseEmblaReturn = ReturnType<typeof useEmblaCarousel>;
 

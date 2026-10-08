@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { DraggablePanel, Flex, PageContainer } from "@godxjp/ui/layout";
-import type { DraggablePanelPositionProp } from "@godxjp/ui/layout";
+import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   Card,
   CardContent,
@@ -11,6 +10,8 @@ import {
   Descriptions,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { DraggablePanel } from "@godxjp/ui/lab";
+import type { DraggablePanelPositionProp } from "@godxjp/ui/lab";
 
 /**
  * DraggablePanel · a floating surface the person using it can MOVE.

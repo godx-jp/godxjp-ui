@@ -1,12 +1,12 @@
 import * as React from "react";
-import { useTranslation } from "../../i18n/use-translation";
+import { useTranslation } from "../i18n/use-translation";
 import { ChevronDown, ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
-import { Button } from "../general/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
-import { CONTRAST_PIVOT, relativeLuminance } from "../../app/tenant-theme";
-import { Text } from "../general/typography";
-import type { DensityProp } from "../../props/vocabulary";
-import { cn } from "../../lib/utils";
+import { Button } from "../components/general/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../components/feedback/tooltip";
+import { CONTRAST_PIVOT, relativeLuminance } from "../app/tenant-theme";
+import { Text } from "../components/general/typography";
+import type { DensityProp } from "../props/vocabulary";
+import { cn } from "../lib/utils";
 
 export type RangeTimelineRow = {
   id: string;

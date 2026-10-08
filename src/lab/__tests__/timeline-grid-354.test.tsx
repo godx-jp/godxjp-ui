@@ -246,10 +246,7 @@ describe("sàn hiển thị là một nguồn duy nhất (codex review)", () => 
   it("token phút và hằng số trong component khớp nhau", () => {
     const token = /--timeline-grid-event-min-height-minutes:\s*(\d+)/.exec(tokens)?.[1];
     expect(token, "token sàn hiển thị").toBeDefined();
-    const source = readFileSync(
-      resolve(process.cwd(), "src/components/data-display/timeline-grid.tsx"),
-      "utf8",
-    );
+    const source = readFileSync(resolve(process.cwd(), "src/lab/timeline-grid.tsx"), "utf8");
     const constant = /const EVENT_MIN_MINUTES = (\d+);/.exec(source)?.[1];
     // Hai con số nói cùng một điều: khối ngắn hơn sàn vẫn được vẽ cao bằng sàn. Lệch nhau là
     // thuật toán xếp làn và CSS mô tả hai hình học khác nhau, và hai ca liền nhau sẽ đè lên nhau.

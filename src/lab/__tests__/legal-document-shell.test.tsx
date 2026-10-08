@@ -4,9 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AppProvider } from "../../../app/app-provider";
+import { AppProvider } from "../../app/app-provider";
 import { LegalDocumentShell } from "../legal-document-shell";
-import type { LegalDocumentSectionProp } from "../../../props/components/layout.prop";
+import type { LegalDocumentSectionProp } from "../../props/components/layout.prop";
 import { renderWithUi } from "@/test/render";
 
 const SECTIONS: LegalDocumentSectionProp[] = [

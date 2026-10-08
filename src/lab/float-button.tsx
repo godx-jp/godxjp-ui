@@ -3,12 +3,12 @@
 import * as React from "react";
 import { ChevronUp, FileText, X } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
-import { useMediaQuery } from "../../lib/hooks";
-import { numberFormat } from "../../lib/intl-cache";
-import { cn } from "../../lib/utils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
-import { Button } from "./button";
+import { useTranslation } from "../i18n/use-translation";
+import { useMediaQuery } from "../lib/hooks";
+import { numberFormat } from "../lib/intl-cache";
+import { cn } from "../lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../components/feedback/tooltip";
+import { Button } from "../components/general/button";
 
 import type {
   FloatButtonBackTopProp,
@@ -18,7 +18,7 @@ import type {
   FloatButtonShapeProp,
   FloatButtonTooltipProp,
   FloatButtonTypeProp,
-} from "../../props/components/general.prop";
+} from "../props/components/general.prop";
 
 export type {
   FloatButtonBackTopProp,
@@ -33,8 +33,8 @@ export type {
   FloatButtonTooltipProp,
   FloatButtonTriggerProp,
   FloatButtonTypeProp,
-} from "../../props/components/general.prop";
-import { isDevelopment } from "../../lib/dev";
+} from "../props/components/general.prop";
+import { isDevelopment } from "../lib/dev";
 
 /**
  * What a `FloatButton` inherits from the `FloatButton.Group` above it.

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { MegaMenu, type MegaMenuItemProp } from "@godxjp/ui/navigation";
 import {
   BookOpen,
   Building2,
@@ -13,6 +12,8 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react";
+import { MegaMenu } from "@godxjp/ui/lab";
+import type { MegaMenuItemProp } from "@godxjp/ui/lab";
 
 /**
  * MegaMenu — the primary site navigation whose top-level items disclose a full-width panel.

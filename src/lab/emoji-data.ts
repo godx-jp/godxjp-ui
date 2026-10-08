@@ -59,7 +59,11 @@ export function loadEmoji(locale: string): Promise<EmojiEntry[]> {
 /** Width- and case-folded, so `ｈａｐｐｙ`, `Happy` and `happy` match alike. */
 const fold = (value: string) => value.normalize("NFKC").toLowerCase();
 
-export function searchEmoji(entries: readonly EmojiEntry[], query: string, limit = 120): EmojiEntry[] {
+export function searchEmoji(
+  entries: readonly EmojiEntry[],
+  query: string,
+  limit = 120,
+): EmojiEntry[] {
   const q = fold(query.trim());
   if (!q) return [];
   const starts: EmojiEntry[] = [];

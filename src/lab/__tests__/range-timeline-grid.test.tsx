@@ -3,9 +3,9 @@ import { join } from "node:path";
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { anchorIndex } from "../../../test/css-selector";
+import { anchorIndex } from "../../test/css-selector";
 
-import { contrast, hsl, hslToRgb, NON_TEXT, over } from "../../../tokens/__tests__/wcag-contrast";
+import { contrast, hsl, hslToRgb, NON_TEXT, over } from "../../tokens/__tests__/wcag-contrast";
 import { RangeTimeline } from "../range-timeline";
 
 /*

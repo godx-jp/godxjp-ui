@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import type * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { AppProvider } from "../../../app/app-provider";
+import { AppProvider } from "../../app/app-provider";
 import { RangeTimeline, type RangeTimelineRow } from "../range-timeline";
 
 /**

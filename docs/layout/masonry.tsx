@@ -13,17 +13,17 @@ import { Button, Text } from "@godxjp/ui/general";
 import {
   AppShell,
   Flex,
-  Masonry,
   PageContainer,
   Sidebar,
   type SidebarSectionProp,
   Topbar,
-  type MasonryItemProp,
 } from "@godxjp/ui/layout";
 import { Bot, Images, Inbox, MessageSquare, Settings } from "lucide-react";
 
 import coverTerrain from "../assets/cover-terrain.svg";
 import shotPortrait from "../assets/shot-portrait.svg";
+import { Masonry } from "@godxjp/ui/lab";
+import type { MasonryItemProp } from "@godxjp/ui/lab";
 
 /**
  * Masonry — Ant Design `Masonry` (6.0.0). A real inbox of mixed-height notes, not a tidy row of

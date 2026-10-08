@@ -1,7 +1,7 @@
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { AppProvider } from "../../../app/app-provider";
+import { AppProvider } from "../../app/app-provider";
 import { SortableList } from "../sortable-list";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 

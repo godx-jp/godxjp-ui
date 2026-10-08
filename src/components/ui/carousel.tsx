@@ -1,1 +1,1 @@
-export * from "../data-display/carousel";
+export * from "../../lab/carousel";

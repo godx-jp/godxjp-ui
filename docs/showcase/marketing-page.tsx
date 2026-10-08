@@ -138,14 +138,7 @@ import {
   Badge,
   Card,
   CardContent,
-  Carousel,
-  CarouselContent,
-  CarouselDots,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   FeatureList,
-  Marquee,
   StatCard,
 } from "@godxjp/ui/data-display";
 import { Rating, Segmented } from "@godxjp/ui/data-entry";
@@ -163,6 +156,15 @@ import { Button, Heading, Icon, Logo, Reveal, Text } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, ResponsiveGrid, Separator, Topbar } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselDots,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  Marquee,
+} from "@godxjp/ui/lab";
 
 /* ── The inline-style constants named in the docblock. Every value is a token reference; no number
    with a unit appears anywhere in this file. Gaps 1 and 2 no longer have one: `Flex measure` and

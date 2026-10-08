@@ -1,13 +1,13 @@
 import * as React from "react";
 import { GripVertical, X } from "lucide-react";
 
-import { cn } from "../../lib/utils";
-import { useTranslation } from "../../i18n/use-translation";
+import { cn } from "../lib/utils";
+import { useTranslation } from "../i18n/use-translation";
 import type {
   DragAxisProp,
   DraggablePanelPositionProp,
   DraggablePanelProp,
-} from "../../props/components/layout.prop";
+} from "../props/components/layout.prop";
 
 export type {
   DraggablePanelProp,
@@ -17,7 +17,7 @@ export type {
   DraggablePanelLabels,
   DragAxisProp,
   DragBoundsProp,
-} from "../../props/components/layout.prop";
+} from "../props/components/layout.prop";
 
 /*
  * DraggablePanel — a floating surface the PERSON USING IT can move (gh#560).

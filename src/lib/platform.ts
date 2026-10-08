@@ -24,7 +24,7 @@ export function isApplePlatform(): boolean {
  * crash.
  *
  * It lives here rather than beside its first caller because it had already been written twice
- * (`src/form/form-root.tsx`, `src/components/layout/legal-document-shell.tsx`) before a third
+ * (`src/form/form-root.tsx`, `src/lab/legal-document-shell.tsx`) before a third
  * caller needed it.
  */
 export function prefersReducedMotion(): boolean {

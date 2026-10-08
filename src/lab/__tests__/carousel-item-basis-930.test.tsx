@@ -34,10 +34,7 @@ import { describe, expect, it } from "vitest";
  * jsdom performs no layout, so the pixels above are the browser's. What this test holds is the
  * shipped CSS contract that makes them possible.
  */
-const CSS = readFileSync(
-  resolve(__dirname, "../../../styles/data-display-layout.css"),
-  "utf8",
-);
+const CSS = readFileSync(resolve(__dirname, "../../styles/data-display-layout.css"), "utf8");
 
 function rule(selector: string) {
   const at = CSS.indexOf(`\n${selector} {`);

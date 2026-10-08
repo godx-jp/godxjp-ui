@@ -358,11 +358,13 @@ for (const entry of data["patterns.json"]) {
  * the only file an agent reads whole, and "Combobox" is what it will look for. A name that resolves
  * to nothing anywhere is the one that gets hand-rolled. */
 files["components-index.json"] = stable(
-  data["components.json"].map(({ name, group, tagline, absorbed }) => ({
+  data["components.json"].map(({ name, group, tagline, absorbed, tier }) => ({
     name,
     group,
     tagline,
     ...(absorbed ? { absorbed } : {}),
+    // `tier: "lab"` = the opt-in `@godxjp/ui/lab` subpath (v32 #1223) — not default context.
+    ...(tier ? { tier } : {}),
   })),
 );
 
