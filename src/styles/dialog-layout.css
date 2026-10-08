@@ -373,6 +373,10 @@
   [data-slot="sheet-overlay"],
   [data-slot="sheet-content"],
   [data-slot="popover-content"],
+  /* gh#1213: the same `animate-in` zoom/slide, missing here, so these three kept moving. */
+  [data-slot="dropdown-menu-content"],
+  [data-slot="tooltip-content"],
+  [data-slot="hover-card-content"],
   .ui-dialog-overlay,
   .ui-command-palette {
     animation: none;

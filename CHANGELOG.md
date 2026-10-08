@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.31.8] - 2026-10-09
+
+### ♿ DropdownMenu, Tooltip and HoverCard stop moving under reduced motion (gh#1213)
+
+The unlayered `prefers-reduced-motion: reduce` guard in `dialog-layout.css` covered Dialog, Sheet
+and Popover, but not these three. They enter with the same `animate-in` zoom/slide, and a guard
+inside a layer cannot beat Tailwind's utilities layer. Measured in Chromium under reduce: the menu
+ran `enter` 150 ms animating `transform`, `filter` and `opacity`. Now nothing moves under reduce on
+any of the six overlays. A Chromium test opens each overlay with and without reduced motion; it is
+red on 31.31.7 for DropdownMenu, Tooltip and HoverCard.
+
+### 🛠️ New maintainer skill: `godxjp-ui-premium-craft`
+
+Repo tooling only, not shipped in the packages. The skill is a procedure for upgrading a component
+that works but feels flat. It was built from a study of 27 "Basic vs Premium" UI demos, read in full
+and driven in Chromium. The study found that about 30% of the upgrade is craft (states, counts,
+feedback, hierarchy) and the rest is decoration. The skill holds 14 craft lenses mapped to this
+library's tokens, a motion spec (`--duration-fast` + `--ease-standard`, never `transition: all`), a
+reject list with evidence, and `motion-probe.mjs`. The probe measures a component in a real browser
+and fails when its click changed nothing. Its first run found gh#1213.
+
 ## [31.31.7] - 2026-10-08
 
 ### 🐛 A wide actions column no longer narrows the other columns (gh#1207, second fix)
