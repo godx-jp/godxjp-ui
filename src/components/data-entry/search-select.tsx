@@ -870,7 +870,11 @@ export function SearchSelect(props: SearchSelectProp) {
                 separator (the panel frames it). A boxed/padded input here double-borders. */}
               <div className="ui-search-select-search">
                 <Input
-                  autoFocus
+                  // NO `autoFocus` (gh#1208). The Popover's open-autofocus effect focuses this field —
+                  // the first tabbable in the panel — AFTER the panel's focus scope has registered.
+                  // `autoFocus` fired during mount, BEFORE that, so inside a Sheet or Dialog the
+                  // modal's focus scope saw focus leave it, pulled it back to the trigger, and the
+                  // panel opened and closed within ~5ms (GoDX ID's client picker).
                   // The PopoverTrigger is the (single) combobox; this search field is a textbox that
                   // filters and drives the listbox — aria-controls + aria-activedescendant are valid on
                   // a textbox and announce the active option without making it a second combobox.
