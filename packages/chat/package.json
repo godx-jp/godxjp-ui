@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/chat",
-  "version": "32.0.1",
+  "version": "32.0.2",
   "description": "Conversational UI for GoDX apps on @godxjp/ui: message bubbles and lists, the composer with slash / mention suggestions, the conversation list, thought chains, the welcome block, attachments and the message action bar — IME-safe, ja / en / vi.",
   "type": "module",
   "main": "./dist/index.js",
@@ -32,7 +32,7 @@
     "lucide-react": "^1.37.0"
   },
   "peerDependencies": {
-    "@godxjp/ui": "~32.0.1",
+    "@godxjp/ui": "~32.0.2",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0"
   },

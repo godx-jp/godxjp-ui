@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.0.2] - 2026-10-09
+
+### 🐛 Fixed
+
+- **The email GoDX preset carries the GoDX mark (#1228).** `EMAIL_TOKENS_GODX.brandMark` was the
+  neutral prebuilt mark (`#18181b`, `aria-hidden`, no label). It is now `EMAIL_BRAND_MARK_GODX`:
+  `svg` / `dataUri` / `tableHtml` byte-identical to the 31.31.8 default mark (asserted against the
+  published package). New `EMAIL_TOKENS_GODX_JSON` for template engines.
+- **Migration note:** a script that reads the GoDX colours must read `themes/godx-tokens.css`;
+  `themes/godx.css` holds only its two `@import` lines since 32.0.1.
+
 ## [32.0.1] - 2026-10-09
 
 **What the first GoDX consumer found upgrading to 32.0.0 (#1228).** All six packages move to
