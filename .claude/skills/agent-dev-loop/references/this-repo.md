@@ -24,18 +24,18 @@ series); `--only <slug>` narrows it to ~18s for a diff-scoped run and refuses `-
 
 ## Aliases expanded
 
-| alias                   | what it really runs                                  | cost     |
-| ----------------------- | ---------------------------------------------------- | -------- |
-| `ship:surface`          | `regen && verify:ci:static && check:frame-contracts` | **~70s** |
-| `verify:ci:static`      | a **46-command `&&` chain**                          | 60s      |
-| `check:frame-contracts` | 7 gates                                              | 5.5s     |
+| alias                   | what it really runs                                                                        | cost     |
+| ----------------------- | ------------------------------------------------------------------------------------------ | -------- |
+| `ship:surface`          | `regen && verify:ci:static && check:frame-contracts`                                       | **~70s** |
+| `verify:ci:static`      | `run-gate-list.mjs` over `verify:ci:static:gates` — runs every gate, reports every failure | 60s      |
+| `check:frame-contracts` | 7 gates                                                                                    | 5.5s     |
 
 `ship:surface` was prescribed **per public export** by the docs, a skill and a saved memory. It is
 batch-only. Expand aliases before running them.
 
 ## Source-scanning gates — unconditional
 
-`src/styles/__tests__` (42 files) read their CSS with `readFileSync`, and most `check:*` gates read
+`src/styles/__tests__` read their CSS with `readFileSync`, and most `check:*` gates read
 source text. **They are invisible to `vitest related`.**
 
 ## Import-graph selector: **UNUSABLE**
@@ -65,8 +65,8 @@ cannot find them and drags in everything else. Do not use it here. Select by pat
 | `.github/workflows/**`, `scripts/check-*.mjs`                 | `check:gate-coverage` · `vitest run src/test/__tests__`                                                                                                                                                                          |
 | anything that moves layout                                    | `check:frame-overflow --only <slug>`                                                                                                                                                                                             |
 
-**The test unit is the COMPONENT, not the group.** `src/components/data-entry/__tests__` is **231
-files** (3–4 min); the `select` prefix is 19 files (22.6s).
+**The test unit is the COMPONENT, not the group.** `src/components/data-entry/__tests__` takes
+minutes as a whole; one component prefix such as `select` takes seconds.
 
 ## Blast-radius classes present
 
@@ -81,22 +81,21 @@ large to review is a signal to stop taking work into it, not to run the suite.
 ## Fail-fast chains and silent-success traps
 
 - ✅ **No `continue-on-error`** anywhere in `.github/workflows/` — a red job is a red run here.
-- ❌ **`verify:ci:static` is a 46-command `&&` chain** run as one step. Red at position 3 ⇒ 43
-  gates do not exist for that run. **gh#853.**
-- `check:gate-coverage` reports 71 gates, 68 reached by 8 workflows — a real index, better than
-  most repos have — but it asks whether a gate is **wired**, not whether it **executed**, so it is
-  blind to the chain.
+- ✅ **`verify:ci:static` runs its gate list through `scripts/run-gate-list.mjs`**, which runs every
+  gate and reports every failure rather than stopping at the first.
+- `check:gate-coverage` (run it for the current counts) asks whether a gate is **wired**, not
+  whether it **executed**.
 
 ## Release evidence
 
 `release-core.mjs` REQUIRED_CI_CHECK_RUNS + `assertCiProvenance` keep **the newest attempt per
-check-run name** (`release-core.mjs:316`) and refuse on any other red check on the SHA. So a newer
+check-run name** and refuse on any other red check on the SHA. So a newer
 cancelled run refuses a publish even when an older green one exists. **"We just ran the suite" is
 not evidence here.**
 
 ## Enforcement mechanism
 
-**NOT BUILT YET** — currently prose only, which rule 8 says is insufficient. Planned: a `PreToolUse`
+**NOT BUILT YET** — currently prose only, which rule 13 says is insufficient. Planned: a `PreToolUse`
 hook refusing `pnpm test`, a bare `vitest run`, `ship:surface`, `verify:ci:static`, a full
 `check:frame-overflow` and `check:contrast`. Must match at command position, must **not** demand a
 path (`vitest run --changed` is a legitimate narrow form), and must name its human-only escape

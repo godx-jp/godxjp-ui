@@ -162,7 +162,7 @@ owes more: freeze the clock, assert across at least three timezones, compare a g
 the library version to production's.
 
 The fix was not a longer list. **A list invites you to check whether you are on it; a question does
-not.** Step 5 is now two questions — what can your test layer not observe, and what can it observe
+not.** Phase 3 step 6 is now two questions — what can your test layer not observe, and what can it observe
 only if pinned — with both families as examples underneath.
 
 → phase 3 step 5, and a caution for anything written as an enumeration in a portable document.

@@ -196,11 +196,9 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
 
 ## 5. Verify what the DIFF touched — not a fixed list
 
-> **This section used to read "ALL must be green" above a chain of nine `&&`-joined commands
-> labelled "run freely", with no condition attached to any of them.** So a one-line CSS change and
-> a brand-new component got the identical nine. The owner caught it: *"tao chỉ yêu cầu sửa mỗi 1
-> cái padding mày run đủ thứ là thế lồn nào???"* He is right. A fixed checklist is not diligence,
-> it is not reading the diff.
+> **A fixed chain of gates gives a one-line CSS change the same checks as a new component.** The
+> owner, after one padding fix: *"tao chỉ yêu cầu sửa mỗi 1 cái padding mày run đủ thứ là thế lồn
+> nào???"* A fixed checklist is not diligence, it is not reading the diff.
 
 **Rule: a gate runs when the diff contains a file it can have an opinion about. Otherwise it does
 not run.** Not "it is cheap so why not" — a check that cannot fail is not evidence, it is noise,
@@ -209,11 +207,11 @@ and nine of them is a minute you spend on every edit forever.
 | you changed | run exactly this |
 | --- | --- |
 | **`.css` only** | `pnpm run audit` · `check:token-tiers` · `check:control-sizing` · that component's tests |
-| **`.tsx`/`.ts` in `src/`** | `pnpm typecheck` · `pnpm lint` · `pnpm run audit` · that group's tests |
+| **`.tsx`/`.ts` in `src/`** | `pnpm typecheck` · `pnpm lint` · `pnpm run audit` · that component's tests |
 | **a public prop / export** | + `pnpm regen` (4s) · `check:prop-vocabulary` · `check:mcp-sync` · `check:mcp-orphans` · `check:component-api-manifest` · `check:registry` — **NOT `ship:surface`**, which is `regen && verify:ci:static && frame-contracts` ≈ 70s and belongs to the batch run |
 | **a token in `src/tokens/`** | + `check:token-tiers` · `pnpm vitest run src/tokens/__tests__` · `pnpm regen` TWICE (gh#847) |
 | **a file in `docs/`** | `pnpm typecheck:docs` · `pnpm run audit` · `check:example-imports` |
-| **anything that moves layout** | `pnpm check:frame-overflow --only <slug>` (~18s) — the full sweep once, pre-PR |
+| **anything that moves layout** | `pnpm check:frame-overflow --only <slug>` (~18s) — the full sweep is part of the batch run |
 
 `pnpm typecheck` covers `src/`, NOT `docs/`; a `docs/`-only change needs `typecheck:docs` and
 gets nothing from `typecheck`. `check:mcp-sync`/`check:mcp-orphans` compare the catalog to the
@@ -222,22 +220,22 @@ public export list — a CSS change cannot move either, so they cannot fail, so 
 **Cost, measured, so you argue with numbers and not with feelings** (`docs/DEVELOPMENT.md` §5.0):
 
     check:token-tiers 0.2s · audit 0.5s · typecheck:docs 0.7s · typecheck 1.3s
-    build 1.5s · preview:build 1.9s · lint 12.9s · check:frame-overflow 52s (199 frames)
+    build 1.5s · preview:build 1.9s · lint 1.8s warm (--cache) / 16.1s cold · check:frame-overflow 52s (full sweep)
 
 Note what this kills: "typecheck the whole repo" is **1.3 seconds** and was never the problem.
-`lint` at 12.9s and the browser sweep are. Never call a gate slow before timing it:
+A cold `lint` and the browser sweep are. Never call a gate slow before timing it:
 `st=$(date +%s); pnpm <gate> >/dev/null 2>&1; echo $(( $(date +%s) - st ))s`
 
 ```
 # then ONLY your own component's tests:
 pnpm vitest run src/components/<group>/__tests__/<name> --maxWorkers=2   # the COMPONENT, not the group:
-#   data-entry/__tests__ is 231 files (3-4 min); .../__tests__/select is 19 files (22.6s).
+#   data-entry/__tests__ as a whole takes minutes; .../__tests__/select takes seconds.
 #   `vitest related <file>` is useless here — measured 250s / 251 files, because the style
 #   tests readFileSync their CSS and the import graph cannot see it.
 ```
 
-**`pnpm test` and a bare `pnpm vitest run` are FORBIDDEN here.** That is 506 files /
-3700+ tests; run from an agent loop, and multiplied by parallel agents, it has put 70
+**`pnpm test` and a bare `pnpm vitest run` are FORBIDDEN here.** That is every test file in the
+repo (`find src packages tests -name '*.test.ts*' | wc -l`); run from an agent loop, and multiplied by parallel agents, it has put 70
 vitest workers on one machine at load 90 and burnt a monthly API budget. The full suite
 is CI's job on the PR — `tal --help` says it outright: _FULL SUITE KHÔNG THUỘC VỀ VÒNG
 LẶP._ `pnpm preview:build` / `pnpm verify:ci:static` are NOT yours to run at all unless the
@@ -266,24 +264,20 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - [ ] **MCP-first**: checked `get_component`/`search_components`/`get_rule`/`get_vocab`/`get_tokens`; confirmed it doesn't already exist (no duplication)
 - [ ] **Real primitives only** — no invented/hand-rolled/faked component, no raw HTML control; composed fully (`CardContent`, `DataTable`, `EmptyState`)
 - [ ] **i18n** — every string + `aria-label` via `t()`; numbers/currency/dates/lists/names/plurals via `Intl`/CLDR; no emoji flags
-- [ ] **a11y** — APG roles/aria/keyboard/focus; ≥24px targets; never colour-only; assert the accessible NAME and the keyboard path by test (`getByRole`, real key presses) — axe was removed from this repo, so nothing catches this for you
+- [ ] **a11y** — APG roles/aria/keyboard/focus; ≥24px targets; never colour-only; assert the accessible NAME and the keyboard path by test (`getByRole`, real key presses) — axe (`check:frame-axe`) runs only locally and on the owner's request, so nothing catches this per change
 - [ ] **RTL** — logical CSS only; flips correctly under `dir="rtl"`
 - [ ] **Vocabulary API** — `value`/`defaultValue`/`onValueChange` (+ uncontrolled); `size ∈ xs\|sm\|md\|lg`; positive booleans; `tone` for status; `ref` forwarded; `XProp` exported + **registered in `src/props/registry.ts`**
 - [ ] **Tokens** — semantic only; control box from the `--control-height` tier (no literal height/`calc`)
 - [ ] **Stateful correctness** — drove EVERY mode to terminal state in a real browser, console clean; refined behaviours per [[godxjp-ui-interaction-feel]]; codified via [[godxjp-ui-behavioral-test]]
 - [ ] **Catalog + docs** — added `mcp/src/data/components.ts` entry + a real-screen docs page ([[godxjp-ui-example-page]]); see [[godxjp-ui-mcp-catalog-sync]]
-- [ ] **Gates matched to the DIFF** — §5's table, not a fixed chain. Name the files you changed, then run only the gates that can have an opinion about them, then **your component's tests only** (`pnpm vitest run src/components/<group>/__tests__/<name> --maxWorkers=2   # the COMPONENT, not the group:
-#   data-entry/__tests__ is 231 files (3-4 min); .../__tests__/select is 19 files (22.6s).
-#   `vitest related <file>` is useless here — measured 250s / 251 files, because the style
-#   tests readFileSync their CSS and the import graph cannot see it.`). NEVER `pnpm test`; the full suite is CI's, and the owner decides when it runs.
+- [ ] **Gates matched to the DIFF** — §5's table, not a fixed chain. Name the files you changed, then run only the gates that can have an opinion about them, then **your component's tests only** (`pnpm vitest run src/components/<group>/__tests__/<name> --maxWorkers=2`, see §5). NEVER `pnpm test`; the full suite is CI's, and the owner decides when it runs.
 
 ## References (read when unsure)
 
 - `docs/STANDARDS-vocabulary-tokens.md`, `docs/PROPS-VOCABULARY.md`, `docs/PROPS-REGISTRY.md`
-- `docs/roadmap/international-standardization.md` (the i18n/a11y/vocab audit + fixes)
 - godx-ui MCP: `get_rule`, `list_anti_ai_tells`, `get_component`, `get_vocab`, `get_tokens`
 - Memory: `godxui-examples-absolute-rules`, `mf-godxui-compose-rules`
 
 ## Picker trailing action (confirmed 2026-09-09)
 
-Every date/time/month picker and range field has exactly one trailing action. Empty: calendar/clock icon. Filled and clearing permitted: only the clear ×. Filled with clearing forbidden or disabled: only the picker icon. Never render the clear and picker icons together. Clicking the input or pressing ArrowDown must still open the panel; clear keeps an accessible name and returns focus to the input. This supersedes the former gh#308 two-icon rule and its tests.
+Every date/time/month picker and range field has exactly one trailing action. Empty: calendar/clock icon. Filled and clearing permitted: only the clear ×. Filled with clearing forbidden or disabled: only the picker icon. Never render the clear and picker icons together. Clicking the input or pressing ArrowDown must still open the panel; clear keeps an accessible name and returns focus to the input.

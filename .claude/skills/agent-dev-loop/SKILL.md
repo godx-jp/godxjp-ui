@@ -42,8 +42,8 @@ separate build.
 will run again in phase 4; the only thing it bought was wall clock.
 
 > **On choosing a model per phase:** phase 3 carries more judgement than phase 2, so it is worth
-> spending a stronger model there. Treat that as advice, never as a control. In this debate the
-> strong model **was** the one that let a falsely-green assertion through — CI caught it, not the
+> spending a stronger model there. Treat that as advice, never as a control. A strong model has
+> let a falsely-green assertion through — CI caught it, not the
 > model. What catches defects is the **procedure** below. Read as a rule, "use a strong model"
 > lets someone believe that choosing one means phase 3 was done.
 
@@ -176,7 +176,7 @@ files changed by anything other than the generator?
 This is the step that is usually skipped, and it is why a batch can be green and wrong.
 
 - **Is it non-vacuous?** Does it reach the element and state it names? Assertions have passed
-  against empty strings in this codebase's history.
+  against empty strings.
 - **Would it fail on the old code?** If that was not proven, prove it: **revert the source hunk,
   run the test, confirm red, restore.** Seconds, and the single highest-value action in the phase.
 - **Is it pinned to the right thing?** A test asserting an exact formatted string breaks when a
@@ -226,8 +226,8 @@ The second question is the one that gets skipped, and skipping it is silent.
 
 > #### A list that does not match your repo reads as "not applicable". It is not.
 >
-> This section used to be the interface row alone, presented as universal. In a repo with no UI an
-> agent reads it, finds nothing that applies, and concludes step 5 is **skippable** — when in fact
+> An interface-only list reads as universal. In a repo with no UI an
+> agent reads it, finds nothing that applies, and concludes this step is **skippable** — when in fact
 > it owes _more_: freeze the clock and assert across **at least three timezones**; compare against a
 > golden fixture; pin the library version to the one production runs, because a minor version can
 > change which characters fold and therefore which bytes a printer receives.
@@ -263,8 +263,7 @@ one. Verified independently in both repositories that debated this file.
 **The owner asks for it, or it does not happen.** There is no counter, no threshold and no
 automatic case.
 
-This used to be a threshold on un-integrated work, and removing it is the conclusion of getting it
-wrong twice: first it fell back to the root commit and **authorised an unasked full-suite run from
+A threshold on un-integrated work was tried and failed twice: first it fell back to the root commit and **authorised an unasked full-suite run from
 the first read** — the one behaviour it forbids — and then, once fixed, it still needed a paragraph
 explaining what it counted and what it did not. A rule that needs a paragraph is a rule that will
 be applied wrongly, and this one fails **open** when applied wrongly.
