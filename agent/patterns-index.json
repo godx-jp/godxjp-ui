@@ -66,6 +66,22 @@
     ]
   },
   {
+    "aliases": [
+      "pricing-table",
+      "plan-picker",
+      "pricing-card"
+    ],
+    "name": "pricing-plans",
+    "tagline": "Pricing plan cards — ResponsiveGrid preset + Card featured + FeatureList + tabular price. A composition, not a component (consumer request, debated 2026-10-09 on #1205).",
+    "tags": [
+      "pricing",
+      "plans",
+      "billing",
+      "card",
+      "composition"
+    ]
+  },
+  {
     "name": "confirm-destructive",
     "tagline": "Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).",
     "tags": [

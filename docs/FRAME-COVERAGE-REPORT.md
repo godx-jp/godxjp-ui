@@ -42,7 +42,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Flex | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | ResponsiveGrid | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | AppShell | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| CenteredShell | ✓ | · | N/A | N/A | · | · | · | · | · | · |
+| CenteredShell | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | MobileShell | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Sidebar | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Topbar | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
@@ -98,7 +98,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | NumberInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | SearchInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | RecordPicker | ✓ | · | · | · | · | · | · | · | · | · |
-| Select | ✓ | · | · | · | · | · | · | · | · | · |
+| Select | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Switch | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Textarea | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Label | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
@@ -108,7 +108,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Dialog | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
 | AlertDialog | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Sheet | ✓ | N/A | N/A | · | · | · | · | · | · | · |
-| Alert | ✓ | · | N/A | N/A | · | · | · | · | · | · |
+| Alert | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | Toaster | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Tabs | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
 | Pagination | ✓ | · | · | · | · | · | · | · | · | · |

@@ -363,7 +363,7 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle level={2}>antd Typography から移行する</CardTitle>
+            <CardTitle level={2}>{t("textExamples.migrateFromAntdTitle")}</CardTitle>
             <CardDescription>
               v32 で antd の Typography / Title / Paragraph は廃止されました。Title は Heading、
               Paragraph は Text as=&quot;p&quot;（行数の省略は clamp）、Typography の囲みは Prose

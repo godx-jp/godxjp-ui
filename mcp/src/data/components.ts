@@ -14008,7 +14008,7 @@ import { Separator } from "@godxjp/ui/layout";
 <Skeleton className="h-6 w-48" />
 
 // The same component is the antd namespace:
-<Skeleton.Button size="sm" />`,
+<Skeleton.Input size="sm" />`,
     storyPath: "feedback/skeleton.tsx",
     rules: [3, 31],
   },

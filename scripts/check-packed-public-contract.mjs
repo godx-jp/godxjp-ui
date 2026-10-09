@@ -103,8 +103,9 @@ const contracts = [
     runtime: ["FilterBar", "FilterBarGroup", "Toolbar", "ToolbarGroup"],
     types: ["FilterBarProp", "FilterBarProps", "FilterBarChipProp", "FilterBarGroupProps"],
     files: [
-      "dist/components/navigation/filter-bar.js",
-      "dist/components/navigation/filter-bar.d.ts",
+      // v32 (#1223): FilterBar is an alias of Toolbar and lives in toolbar.tsx; the names hold.
+      "dist/components/navigation/toolbar.js",
+      "dist/components/navigation/toolbar.d.ts",
     ],
   },
   {

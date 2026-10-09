@@ -9,17 +9,17 @@
     "src/components/data-entry/__tests__/radix-select.fixture.tsx": [
       "@radix-ui/react-select"
     ],
-    "src/components/ui/__tests__/avatar-aspect-ratio.test.tsx": [
+    "src/components/data-display/__tests__/avatar-aspect-ratio.test.tsx": [
       "@radix-ui/react-avatar"
     ],
-    "src/components/ui/__tests__/disclosure-rac.test.tsx": [
+    "src/components/data-display/__tests__/disclosure-rac.test.tsx": [
       "@radix-ui/react-accordion",
       "@radix-ui/react-collapsible"
     ],
-    "src/components/ui/__tests__/separator-rac.test.tsx": [
+    "src/components/layout/__tests__/separator-rac.test.tsx": [
       "@radix-ui/react-separator"
     ],
-    "src/components/ui/__tests__/toggle-rac.test.tsx": [
+    "src/components/data-entry/__tests__/toggle-rac.test.tsx": [
       "@radix-ui/react-toggle",
       "@radix-ui/react-toggle-group"
     ],

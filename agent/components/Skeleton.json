@@ -5,7 +5,7 @@
     "SkeletonNode",
     "SkeletonImage"
   ],
-  "example": "import { Skeleton } from \"@godxjp/ui/feedback\";\n\n<Skeleton className=\"h-6 w-48\" />\n\n// The same component is the antd namespace:\n<Skeleton.Button size=\"sm\" />",
+  "example": "import { Skeleton } from \"@godxjp/ui/feedback\";\n\n<Skeleton className=\"h-6 w-48\" />\n\n// The same component is the antd namespace:\n<Skeleton.Input size=\"sm\" />",
   "group": "feedback",
   "importPath": "@godxjp/ui/feedback",
   "name": "Skeleton",

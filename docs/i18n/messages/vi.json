@@ -17,7 +17,8 @@
     "ellipsisCrumbHome": "Trang chủ",
     "ellipsisLongTitle": "Kiểm thử tích hợp quý 3 · mô-đun thanh toán · kịch bản xuất lại hoá đơn và rà soát tiêu chí nghiệm thu",
     "ellipsisShortTitle": "Kiểm thử nhanh đăng nhập",
-    "ellipsisLongHeader": "Tên lần chạy gần nhất (bản ứng viên 2026-09)"
+    "ellipsisLongHeader": "Tên lần chạy gần nhất (bản ứng viên 2026-09)",
+    "migrateFromAntdTitle": "Chuyển từ antd Typography"
   },
   "themeShowcase": {
     "page": {

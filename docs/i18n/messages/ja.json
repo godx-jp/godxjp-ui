@@ -17,7 +17,8 @@
     "ellipsisCrumbHome": "ホーム",
     "ellipsisLongTitle": "第3四半期 結合テスト 決済モジュール 請求書再発行シナリオと受入基準のレビュー",
     "ellipsisShortTitle": "ログインのスモークテスト",
-    "ellipsisLongHeader": "最新の実行名（2026年9月 リリース候補）"
+    "ellipsisLongHeader": "最新の実行名（2026年9月 リリース候補）",
+    "migrateFromAntdTitle": "antd Typography から移行する"
   },
   "themeShowcase": {
     "page": {

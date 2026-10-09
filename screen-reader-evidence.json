@@ -3,7 +3,10 @@
   "schemaVersion": 3,
   "policy": {
     "issue": "https://github.com/godx-jp/godxjp-ui/issues/171",
-    "requiredLocales": ["ja-JP", "vi-VN"],
+    "requiredLocales": [
+      "ja-JP",
+      "vi-VN"
+    ],
     "combinations": [
       {
         "id": "voiceover-safari-macos",
@@ -31,17 +34,19 @@
       {
         "id": "landmarks-page-structure",
         "title": "Landmarks and page structure",
-        "requiredPhases": ["landmark-navigation", "focus-entry", "internal-navigation"],
+        "requiredPhases": [
+          "landmark-navigation",
+          "focus-entry",
+          "internal-navigation"
+        ],
         "owners": [
           "data-display/card",
           "data-display/service-launcher-card",
           "general/typography",
           "layout/app-shell",
           "layout/auth-identity",
-          "layout/auth-shell",
-          "layout/auth-stack",
           "layout/centered-shell",
-          "layout/legal-document-shell",
+          "layout/auth-stack",
           "layout/master-detail",
           "layout/page-container",
           "layout/resizable",
@@ -106,7 +111,6 @@
           "data-entry/command",
           "data-entry/command-palette",
           "data-entry/select",
-          "data-entry/tag-input",
           "data-entry/toggle-group",
           "data-entry/transfer",
           "data-entry/tree-select",
@@ -117,9 +121,13 @@
       {
         "id": "overlays",
         "title": "Overlays",
-        "requiredPhases": ["focus-entry", "internal-navigation", "escape-close", "focus-return"],
+        "requiredPhases": [
+          "focus-entry",
+          "internal-navigation",
+          "escape-close",
+          "focus-return"
+        ],
         "owners": [
-          "data-display/hover-card",
           "data-display/popover",
           "feedback/dialog",
           "feedback/sheet",
@@ -130,11 +138,15 @@
       {
         "id": "navigation-composites",
         "title": "Navigation composites",
-        "requiredPhases": ["focus-entry", "internal-navigation", "activation"],
+        "requiredPhases": [
+          "focus-entry",
+          "internal-navigation",
+          "activation"
+        ],
         "owners": [
           "layout/auth-account-summary",
           "layout/breadcrumb",
-          "navigation/filter-bar",
+          "navigation/toolbar",
           "navigation/pagination",
           "navigation/steps",
           "navigation/tabs",
@@ -144,14 +156,17 @@
       {
         "id": "data-structures",
         "title": "Data structures and alternative text",
-        "requiredPhases": ["focus-entry", "internal-navigation", "activation"],
+        "requiredPhases": [
+          "focus-entry",
+          "internal-navigation",
+          "activation"
+        ],
         "owners": [
           "charts/area-chart",
           "charts/bar-chart",
           "charts/line-chart",
           "charts/pie-chart",
           "data-display/accordion",
-          "data-display/carousel",
           "data-display/collapsible",
           "data-display/data-table",
           "data-display/descriptions",
@@ -185,7 +200,9 @@
       {
         "id": "announced-static-content",
         "title": "Announced static content",
-        "requiredPhases": ["focus-entry"],
+        "requiredPhases": [
+          "focus-entry"
+        ],
         "owners": [
           "charts/compact-bar-trend",
           "general/logo",
@@ -198,13 +215,16 @@
       {
         "id": "status-regions",
         "title": "Loading status regions",
-        "requiredPhases": ["loading-announcement"],
-        "owners": ["feedback/skeleton"]
+        "requiredPhases": [
+          "loading-announcement"
+        ],
+        "owners": [
+          "feedback/skeleton"
+        ]
       }
     ],
     "complexOwners": [
       "data-display/accordion",
-      "data-display/carousel",
       "data-display/data-table",
       "data-display/popover",
       "data-display/table",
@@ -213,7 +233,6 @@
       "data-entry/command",
       "data-entry/date-picker",
       "data-entry/select",
-      "data-entry/tag-input",
       "data-entry/time-picker",
       "data-entry/toggle-group",
       "data-entry/transfer",
@@ -223,7 +242,7 @@
       "feedback/sheet",
       "feedback/sonner",
       "navigation/dropdown-menu",
-      "navigation/filter-bar",
+      "navigation/toolbar",
       "navigation/tabs",
       "query/data-state",
       "query/infinite-query-state",
