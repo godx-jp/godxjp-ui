@@ -21,7 +21,7 @@
 
 - **`pnpm check:frame-axe` must not run in any GitHub Actions workflow** — not on merge, not nightly, not behind a label, not sharded. It is a measurement you run on your own machine, against the STATIC preview (`pnpm build && pnpm preview:build`, then `pnpm check:frame-axe`).
 - Do not add an axe job, an `@axe-core/playwright` step, or a workflow that invokes `check:frame-axe`, even to fix a regression or to "restore coverage". `check:gate-coverage` lists the gate as EXEMPT for exactly this reason; its absence from `.github/workflows/` is a declaration, not a dead gate.
-- The cost is accepted, not overlooked: a new a11y defect is caught when someone runs the gate locally, not at merge. So run it before any PR that touches markup, ARIA, focus behaviour or colour, and commit `audit-evidence/frame-axe/`. Procedure and rationale: `docs/FRAME-A11Y-CI.md`.
+- The cost is accepted, not overlooked: a new a11y defect is caught when someone runs the gate locally, not at merge. It runs when the owner asks for it by name (see "The batch run" below); for a PR that touches markup, ARIA, focus behaviour or colour, say so when asking. Its output is committed to `audit-evidence/frame-axe/`. Procedure and rationale: `docs/FRAME-A11Y-CI.md`.
 
 ## Two skill families — pick the right one first
 
@@ -33,7 +33,7 @@ Skills are split by audience (see **`.claude/skills/README.md`** for the full ma
 
 Before creating OR changing **any** component, recipe, doc, or example, you MUST activate and follow the **`godxjp-ui-component`** skill (`.claude/skills/godxjp-ui-component/SKILL.md`). It is a hard contract — do not skip a gate. In short:
 
-1. **MCP-first** — consult the `godxjp-ui` MCP (`get_component`, `search_components`, `get_rule`, `list_anti_ai_tells`, `get_vocab`, `get_tokens`) before writing; never guess a prop. Check that the thing doesn't already exist (no duplication — `Select` covers searchable/async select). 2. **Real primitives only** — no invented/hand-rolled/faked components, no raw HTML controls, compose primitives fully (`CardContent` for padding; `Card` + `CardContent flush` + `DataTable`). 3. **International standards on every component** — i18n via `t()` + `Intl`/CLDR (ISO 3166/4217/8601, IANA, BCP-47, `Intl.DisplayNames`/`PluralRules`); WAI-ARIA APG + WCAG 2.2 AA (measured by `pnpm check:frame-axe` on the component's own `/isolate/**` frame — `vitest-axe` was removed in #492 and no longer exists here; see docs/FRAME-A11Y-CI.md); RTL logical CSS; controlled-vocabulary API (`value`/`defaultValue`/ `onValueChange`, `size` ∈ xs|sm|md|lg, forward `ref`, register the prop type). 4. **Semantic tokens only** (`pnpm run audit` = 0/0); add an MCP catalog entry + a real-screen docs page. 5. **Verify what you touched — NEVER the full suite.** A component's tests live beside it in `src/components/<group>/__tests__/`, so run exactly those: `pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`. **`pnpm test` (and a bare `pnpm vitest run`) is FORBIDDEN outside CI** — it is 506 files / 3700+ tests, and with several agents on one machine it puts 70 workers on the box and takes load past 90. The full suite is CI's job on the PR (`tal --help`: "FULL SUITE KHÔNG THUỘC VỀ VÒNG LẶP"). **Gates are matched to the DIFF, never run as a fixed chain** — this line used to list nine `&&`-joined commands as "run freely", so a one-line CSS change got the same nine as a new component. Run only the gates that can have an opinion about the files you changed; the table is in the skill's §5 and `docs/DEVELOPMENT.md` §5.1. (`typecheck` covers `src/` and says nothing about `docs/`; `check:mcp-sync`/`check:mcp-orphans` compare the catalog to the export list and cannot move on a CSS edit.) This is Test Impact Analysis, the industry norm — running everything on every change is what TIA and Meta's Predictive Test Selection exist to stop. **`pnpm verify:ci:static`, `pnpm ship:surface`, the full `check:frame-overflow`, `check:contrast` and `pnpm test` are THE BATCH RUN** — never per issue, never "to be safe", never on your own initiative. See "The batch run" below.
+1. **MCP-first** — consult the `godxjp-ui` MCP (`get_component`, `search_components`, `get_rule`, `list_anti_ai_tells`, `get_vocab`, `get_tokens`) before writing; never guess a prop. Check that the thing doesn't already exist (no duplication — `Select` covers searchable/async select). 2. **Real primitives only** — no invented/hand-rolled/faked components, no raw HTML controls, compose primitives fully (`CardContent` for padding; `Card` + `CardContent flush` + `DataTable`). 3. **International standards on every component** — i18n via `t()` + `Intl`/CLDR (ISO 3166/4217/8601, IANA, BCP-47, `Intl.DisplayNames`/`PluralRules`); WAI-ARIA APG + WCAG 2.2 AA (measured by `pnpm check:frame-axe` on the component's own `/isolate/**` frame — `vitest-axe` was removed in #492 and no longer exists here; see docs/FRAME-A11Y-CI.md); RTL logical CSS; controlled-vocabulary API (`value`/`defaultValue`/ `onValueChange`, `size` ∈ xs|sm|md|lg, forward `ref`, register the prop type). 4. **Semantic tokens only** (`pnpm run audit` = 0/0); add an MCP catalog entry + a real-screen docs page. 5. **Verify what you touched — NEVER the full suite.** A component's tests live beside it in `src/components/<group>/__tests__/`, so run that component's files: `pnpm vitest run src/components/<group>/__tests__/<name> --maxWorkers=2` (the component prefix, not the group — see "The test unit is the COMPONENT" below). **`pnpm test` (and a bare `pnpm vitest run`) is FORBIDDEN outside CI** — it is every test file in the repo (`find src packages tests -name '*.test.ts*' | wc -l`), and with several agents on one machine it puts 70 workers on the box and takes load past 90. The full suite is CI's job on the PR (`tal --help`: "FULL SUITE KHÔNG THUỘC VỀ VÒNG LẶP"). **Gates are matched to the DIFF, never run as a fixed chain** — a one-line CSS change does not get the same gates as a new component. Run only the gates that can have an opinion about the files you changed; the table is in the skill's §5 and `docs/DEVELOPMENT.md` §5.1. (`typecheck` covers `src/` and says nothing about `docs/`; `check:mcp-sync`/`check:mcp-orphans` compare the catalog to the export list and cannot move on a CSS edit.) This is Test Impact Analysis, the industry norm — running everything on every change is what TIA and Meta's Predictive Test Selection exist to stop. **`pnpm verify:ci:static`, `pnpm ship:surface`, the full `check:frame-overflow`, `check:contrast` and `pnpm test` are THE BATCH RUN** — never per issue, never "to be safe", never on your own initiative. See "The batch run" below.
 
 ## MANDATORY for a BATCH of work: read `agent-dev-loop` first
 
@@ -97,16 +97,15 @@ A T1 failure is never waived by the batch run being optional.
 
 ### `ship:surface` is a BATCH command, not a per-change one
 
-It expands to `pnpm regen && pnpm verify:ci:static && pnpm check:frame-contracts` ≈ **70s**. Any
-doc or memory that says to run it "at the first public export" is wrong and is the single biggest
-hidden cost in this repo's loop. For a public prop, run: `pnpm regen` (4s) · `check:prop-vocabulary`
+It expands to `pnpm regen && pnpm verify:ci:static && pnpm check:frame-contracts` ≈ **70s**, so it
+is never run per public export. For a public prop, run: `pnpm regen` (4s) · `check:prop-vocabulary`
 · `check:mcp-sync` · `check:mcp-orphans` · `check:component-api-manifest` · `check:registry`.
 
 ### The test unit is the COMPONENT, not the group
 
-`src/components/data-entry/__tests__` is **231 files** (3–4 minutes). The unit is the component
-prefix: `pnpm vitest run src/components/data-entry/__tests__/select --maxWorkers=2` — 19 files,
-22.6s. `vitest related <file>` is useless here: measured **250s across 251 files**, because the
+`src/components/data-entry/__tests__` as a whole takes minutes. The unit is the component
+prefix: `pnpm vitest run src/components/data-entry/__tests__/select --maxWorkers=2` takes seconds.
+`vitest related <file>` is useless here: measured **250s across 251 files**, because the
 style tests `readFileSync` their CSS and the import graph cannot see it.
 
 ## Scope the checks to the DIFF — and never argue about a cost you have not timed
@@ -131,12 +130,12 @@ which is how the baseline it guards goes stale.
 
 So: **match the checks to what you touched** (`docs/DEVELOPMENT.md` §5.1 has the table by file
 type). A CSS-only diff does not need `typecheck`. A `docs/` diff does not need `typecheck` either
-— it needs `typecheck:docs`. Only a PR or a release earns "run everything".
+— it needs `typecheck:docs`. "Run everything" is the batch run, and only the owner starts it.
 
 For layout work use the diff-scoped sweep: `pnpm check:frame-overflow --only <slug>` — 9 frames in
 **17.5s** against the full **52s**. It refuses `--update-baseline` and labels its own output
-`PARTIAL, not a release gate`, so a filtered green can never be passed off as the real one. Run the
-full sweep once, before the PR.
+`PARTIAL, not a release gate`, so a filtered green can never be passed off as the real one. The
+full sweep belongs to the batch run.
 
 **Time it before you claim it is slow:** `st=$(date +%s); pnpm <gate> >/dev/null 2>&1; echo $(( $(date +%s) - st ))s`.
 
@@ -144,16 +143,24 @@ See `docs/STANDARDS-vocabulary-tokens.md`, `docs/PROPS-VOCABULARY.md` for the fu
 
 ## Design-knob discipline (cardinal rules #44/#45)
 
-If yes, it MUST be a documented component token — theme sets it once globally, props override per instance. ALL pass → it may be a framework component. ANY fails → it is a **composition pattern**: build it from existing primitives - token overrides (global / scoped `[data-tenant]` / per-region role scoping) in the app or a `docs/` showcase — never in `src/components/`.
+Check these before writing any value into `src/styles/*.css`:
+
+- **Chrome is a token, default quiet (#44).** Dividers, separator borders and chrome-only padding never get hard-coded; they read a token whose default is the quietest state (`none`, balanced rhythm). Services opt in via theme (`--page-header-divider: 1px solid hsl(var(--border))`).
+- **Every service-tunable constant gets a knob (#45).** Ask: _"would a service theme.css want to change this to match its design grid?"_ (label widths, label↔control gaps, header insets…). If yes, it MUST be a documented component token — theme sets it once globally, props override per instance. If the only route is forking CSS, that is a library gap: fix the library, never patch the consumer app.
+- **Composition pattern vs framework component (#46).** Before adding anything to `src/components/`, run the Framework-Component Test (`docs/COMPOSITION-VS-COMPONENT.md`, Gate 0 of `godxjp-ui-component`). ALL pass → it may be a framework component. ANY fails → it is a **composition pattern**: build it from existing primitives - token overrides (global / scoped `[data-tenant]` / per-region role scoping) in the app or a `docs/` showcase — never in `src/components/`.
 
 ### Add-a-token checklist (ALL steps, in order)
 
-1. Declare it in the right tier file — `src/tokens/{foundation.css | semantic/* | components/*}` (new `components/<name>.css` files need an `@import` in `src/tokens/base.css`; names must pass `check-token-tiers` — `--{component}-{part}-{property}`). 2. See `docs/TOKENS.md` · "Role-mirror knobs MUST be `initial`". 3.
+1. Declare it in the right tier file — `src/tokens/{foundation.css | semantic/* | components/*}` (new `components/<name>.css` files need an `@import` in `src/tokens/base.css`; names must pass `check-token-tiers` — `--{component}-{part}-{property}`).
+2. Reference it from `src/styles/*.css` via `var(...)`, keeping the old value as the default so the change is opt-in unless the default itself is the fix. **Role-mirror knobs** (a colour/fill/border/shadow token whose default is a role: `--card`, `--muted`, `--primary`, `--ring`…) are declared `initial` at `:root` with the role default at the call site — `var(--knob, var(--role))` — never `--knob: var(--role)` at `:root`, which freezes at the `:root` value so a scoped `[data-tenant]`/`.dark` override never reaches it. See `docs/TOKENS.md` · "Role-mirror knobs MUST be `initial`".
+3. Document it: `mcp/src/data/tokens.ts` (+ the component's entry in `mcp/src/data/components.ts` when behaviour changes).
+4. CHANGELOG entry under `[Unreleased]` (Added for new tokens, Changed for default changes).
+5. `pnpm check:token-tiers`, `pnpm vitest run src/tokens/__tests__`, then `pnpm regen` twice (gh#847).
 
 ## Local-link development (file:-linked consumer apps)
 
 Consumer apps may link this repo directly (`"@godxjp/ui": "file:.../godxjp-ui"`) to develop the framework against real screens. Consumers import **`dist/`**, never `src/` — so:
 
-- **Keep `pnpm dev` running.** It is now the WHOLE of `pnpm build`, incrementally: tsup watch, the three post-steps on every rebuild (copy-styles · fix-esm-extensions · add-use-client, 256ms together), a parallel incremental `tsc --watch` for the `.d.ts`, and the CSS-tree re-copy. A `src/` edit without a dist rebuild ships a stale package; a missing export white-screens the consumer (`does not provide an export named …`).
-  - **It used to run two of those five, and the three it skipped were the ones a consumer notices.** `tsup.config.ts` sets `dts: false`, so `tsc` is the only thing that emits declarations — without it a linked consumer type-checks against the last full build, meaning a NEW export does not exist to its compiler and a CHANGED signature is silently the old one, and both read as the consumer's bug. `fix-esm-extensions` adds the `.js` a `bundle: false` build omits ("unbreaks Node", its own words). `add-use-client` prevents `TypeError: createContext is not a function` in an RSC graph. A watcher that produces a `dist/` wrong in three ways is a watcher nobody trusts, which is how a consumer ends up paying a full `pnpm build` on every library edit — measured, ~2s instead of ~0.3s, on every keystroke-to-check cycle.
+- **Keep `pnpm dev` running.** It is the WHOLE of `pnpm build`, incrementally: tsup watch, the three post-steps on every rebuild (copy-styles · fix-esm-extensions · add-use-client, 256ms together), a parallel incremental `tsc --watch` for the `.d.ts`, and the CSS-tree re-copy. A `src/` edit without a dist rebuild ships a stale package; a missing export white-screens the consumer (`does not provide an export named …`).
+  - **Each of the five matters to a consumer.** `tsup.config.ts` sets `dts: false`, so `tsc` is the only thing that emits declarations — without it a linked consumer type-checks against the last full build, meaning a NEW export does not exist to its compiler and a CHANGED signature is silently the old one, and both read as the consumer's bug. `fix-esm-extensions` adds the `.js` a `bundle: false` build omits ("unbreaks Node", its own words). `add-use-client` prevents `TypeError: createContext is not a function` in an RSC graph. A watcher that produces a wrong `dist/` is a watcher nobody trusts, which is how a consumer ends up paying a full `pnpm build` on every library edit — measured, ~2s instead of ~0.3s, on every keystroke-to-check cycle.
   - After a one-off edit without the watcher, run `pnpm build`; `node scripts/copy-styles.mjs` (79ms) covers a CSS-only change.
