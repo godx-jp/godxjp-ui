@@ -53,7 +53,9 @@ beforeAll(() => {
   // and jsdom has no such global; a dummy nothing is an instance of keeps that branch honest.
   (globalThis as unknown as Record<string, unknown>).CSSTransition ??= class {};
   realGetAnimations = animationHost.getAnimations;
-  animationHost.getAnimations = () => [{ finished: new Promise(() => {}) }];
+  // react-aria 3.53 (#1222) waits only on animations whose `playState` is "running"; a bare
+  // `{ finished }` was filtered out and the menu unmounted at once.
+  animationHost.getAnimations = () => [{ finished: new Promise(() => {}), playState: "running" }];
 });
 
 afterAll(() => {

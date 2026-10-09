@@ -160,7 +160,12 @@ async function measure(css: string, query: string): Promise<Measured> {
       tokens: Object.fromEntries(tokens.map((t) => [t, root.getPropertyValue(t).trim()])),
       button: { background: button.backgroundColor, color: button.color },
       link: getComputedStyle(document.querySelector('[data-slot="text"][data-link]')!).color,
-      font: getComputedStyle(document.body).fontFamily,
+      // Chromium serialises the `BlinkMacSystemFont` alias as "system-ui" on macOS and verbatim on
+      // Linux (CI); that is the renderer, not the stylesheet, so both read as the same token.
+      font: getComputedStyle(document.body).fontFamily.replace(
+        /BlinkMacSystemFont/g,
+        '"system-ui"',
+      ),
       mark: document.querySelector('[data-slot="logo"]')?.getAttribute("data-mark") ?? null,
     };
   }, TOKENS);

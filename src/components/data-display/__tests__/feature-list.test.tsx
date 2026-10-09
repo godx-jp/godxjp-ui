@@ -107,10 +107,15 @@ describe("FeatureList", () => {
     // Comments blanked first — the prose below explains WHY there is no destructive paint, and a
     // scan that reads it would pass on a stylesheet that had one.
     const declarations = css().replace(/\/\*[\s\S]*?\*\//g, "");
-    const scoped = declarations.slice(
-      declarations.indexOf(".ui-feature-list {"),
-      declarations.indexOf(".ui-thumbnail {"),
-    );
+    // The block runs until the first rule that is not a FeatureList rule. It used to end at the
+    // literal `.ui-thumbnail {`, and once v32 (#1223) folded Thumbnail into Image that marker was
+    // gone, so the slice ran to the end of the file and read other components' paint.
+    const start = declarations.indexOf(".ui-feature-list {");
+    const after = declarations.slice(start);
+    const next = after.search(/\n\s*(?!\.ui-feature-list)[.#[@a-z][^{}\n]*\{/);
+    const scoped = next === -1 ? after : after.slice(0, next);
+    expect(start, "the FeatureList block exists").toBeGreaterThanOrEqual(0);
+    expect(scoped).toMatch(/\.ui-feature-list-item/);
 
     expect(scoped).not.toMatch(/destructive/);
     expect(rule('.ui-feature-list-item[data-state="excluded"] .ui-feature-list-label')).toMatch(

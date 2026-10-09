@@ -21,6 +21,10 @@ const FORBIDDEN = [
   // guarded by nothing: the invariant test derives the optional set FROM this list, so a package
   // missing here is a package declared optional with no gate behind the claim.
   "zod",
+  // v32 (#1221): the font packages became OPTIONAL peers; fonts are an opt-in stylesheet, so the
+  // core JS graph must never reach them either.
+  "@fontsource/noto-sans-jp",
+  "@fontsource/m-plus-2",
 ];
 
 if (!existsSync(ROOT_ENTRY)) {

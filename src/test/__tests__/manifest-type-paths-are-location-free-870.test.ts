@@ -61,7 +61,10 @@ describe("component-api-manifest records no path that depends on the checkout lo
 
   it("names every external package from its `node_modules/` boundary, never through a traversal or .pnpm", () => {
     const external = moduleRefs().filter((ref) => ref.specifier.includes("node_modules"));
-    expect(external.length).toBeGreaterThan(0);
+    // Non-vacuity: the parser must find the manifest's `import("…")` refs at all. The only
+    // EXTERNAL refs lived on Carousel (embla-carousel), which v32 (#1223) moved to @godxjp/ui/lab,
+    // out of the core manifest; the rule below still applies to any external ref that returns.
+    expect(moduleRefs().length).toBeGreaterThan(0);
     for (const ref of external) {
       const where = `${ref.component}.${ref.prop}`;
       // `../../../node_modules/…` counts the levels between the declaring file and wherever the
