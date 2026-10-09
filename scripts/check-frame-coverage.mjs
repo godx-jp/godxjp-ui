@@ -103,8 +103,15 @@ const builtinAliases = {
   "query/query-refetch-button": "query/button-refetch",
 };
 const base = path.join(root, "src/components");
-for (const dir of fs.readdirSync(base, { withFileTypes: true }).filter((e) => e.isDirectory())) {
-  const index = path.join(base, dir.name, "index.ts");
+// `@godxjp/ui/lab` (v32 #1223) ships with the same gates as core (decision B3), so its index is
+// scanned too, under `lab/<file>` owners; its docs pages stayed in their 31.x groups (sourceAliases).
+const groups = fs
+  .readdirSync(base, { withFileTypes: true })
+  .filter((e) => e.isDirectory())
+  .map((e) => ({ name: e.name, index: path.join(base, e.name, "index.ts") }))
+  .concat({ name: "lab", index: path.join(root, "src/lab/index.ts") });
+for (const dir of groups) {
+  const index = dir.index;
   if (!fs.existsSync(index)) continue;
   const source = fs.readFileSync(index, "utf8");
   const re = /export\s*\{([\s\S]*?)\}\s*from\s*["']\.\/([^"']+)["'];/g;

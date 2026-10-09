@@ -36,9 +36,9 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | CardBar | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | TimeRangePicker | ✓ | · | · | · | · | · | · | · | · | · |
 | VisuallyHidden | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
-| RangeTimeline | **✗** | · | · | · | · | · | · | · | · | · |
+| RangeTimeline | **✗** | · | · | N/A | · | · | · | · | · | · |
 | PageContainer | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
-| PageCover | ✓ | · | · | · | · | · | · | · | · | · |
+| PageCover | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Flex | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | ResponsiveGrid | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | AppShell | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
@@ -49,12 +49,12 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | TopbarItem | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | NavList | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | MasterDetail | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| DraggablePanel | ✓ | · | · | · | · | · | · | · | · | · |
+| DraggablePanel | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | SplitPane | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | ErrorSurface | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
-| LegalDocumentShell | ✓ | · | · | · | · | · | · | · | · | · |
+| LegalDocumentShell | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Breadcrumb | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| FloatButton | ✓ | · | · | · | · | · | · | · | · | · |
+| FloatButton | ✓ | ✓ | · | N/A | · | · | · | · | · | · |
 | Button | ✓ | ✓ | · | N/A | · | · | · | · | · | · |
 | Text | ✓ | ✓ | · | N/A | · | · | · | · | · | · |
 | Heading | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
@@ -72,7 +72,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Badge | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | Legend | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Swatch | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| TextDiff | ✓ | · | · | · | · | · | · | · | · | · |
+| TextDiff | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | FeatureList | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | ListRow | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | CredentialReveal | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
@@ -86,7 +86,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | BlockEditor | ✓ | · | · | · | · | · | · | · | · | · |
 | Prose | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Timeline | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
-| TimelineGrid | ✓ | · | · | · | · | · | · | · | · | · |
+| TimelineGrid | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Table | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | DataState | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | AuthExpiryProvider | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
@@ -150,7 +150,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Rating | ✓ | N/A | · | · | · | · | · | · | · | · |
 | Segmented | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | ResizablePanel | ✓ | N/A | · | N/A | · | · | · | · | · | · |
-| Carousel | ✓ | · | · | · | · | · | · | · | · | · |
+| Carousel | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | AppSettingPicker | ✓ | N/A | · | · | · | · | · | · | · | · |
 | Field | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | LineChart | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
@@ -160,7 +160,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | PieChart | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | CommandPalette | ✓ | N/A | · | · | · | · | · | · | · | · |
 | EmojiPicker | ✓ | · | · | · | · | · | · | · | · | · |
-| SortableList | ✓ | · | · | · | · | · | · | · | · | · |
+| SortableList | ✓ | N/A | · | · | · | · | · | · | · | · |
 | TwoFactorSetup | ✓ | N/A | · | · | · | · | · | · | · | · |
 | AuthDivider | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | AuthFooter | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
@@ -178,15 +178,15 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | ChatComposer | ✓ | · | · | · | · | · | · | · | · | · |
 | ChatSuggestion | ✓ | · | · | · | · | · | · | · | · | · |
 | Conversations | ✓ | · | · | · | · | · | · | · | · | · |
-| MegaMenu | ✓ | · | · | · | · | · | · | · | · | · |
+| MegaMenu | ✓ | · | N/A | · | · | · | · | · | · | · |
 | Welcome | ✓ | · | · | · | · | · | · | · | · | · |
 | Actions | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | ThoughtChain | ✓ | · | · | · | · | · | · | · | · | · |
-| OrgChart | ✓ | · | · | · | · | · | · | · | · | · |
+| OrgChart | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Image | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Attachments | ✓ | · | · | · | · | · | · | · | · | · |
-| Marquee | ✓ | · | · | · | · | · | · | · | · | · |
-| Masonry | ✓ | · | · | · | · | · | · | · | · | · |
+| Marquee | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
+| Masonry | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Affix | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| Anchor | ✓ | · | · | · | · | · | · | · | · | · |
+| Anchor | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 

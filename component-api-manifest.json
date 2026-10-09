@@ -3344,7 +3344,32 @@
     },
     "Carousel": {
       "group": "lab",
-      "props": []
+      "props": [
+        {
+          "name": "opts",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<import(\"node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/carousel.tsx"]
+        },
+        {
+          "name": "plugins",
+          "origin": "owned",
+          "required": false,
+          "type": "import(\"node_modules/embla-carousel\").CreatePluginType<import(\"node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/carousel.tsx"]
+        },
+        {
+          "name": "setApi",
+          "origin": "owned",
+          "required": false,
+          "type": "((api: CarouselApi) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/carousel.tsx"]
+        }
+      ]
     },
     "CarouselContent": {
       "group": "lab",
@@ -11761,7 +11786,160 @@
     },
     "RangeTimeline": {
       "group": "lab",
-      "props": []
+      "props": [
+        {
+          "name": "bands",
+          "origin": "owned",
+          "required": false,
+          "type": "{ label: string; units: number; }[] | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "bordered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "busy",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "columns",
+          "origin": "owned",
+          "required": true,
+          "type": "{ label: string; units: number; muted?: boolean; }[]",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "defaultExpandedValues",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "defaultLabelWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "density",
+          "origin": "owned",
+          "required": false,
+          "type": "DensityProp | undefined",
+          "values": ["compact", "default", "comfortable"],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "expandedValues",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "labelWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "links",
+          "origin": "owned",
+          "required": false,
+          "type": "RangeTimelineLink[] | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "onExpandedValuesChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((values: string[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "onLabelWidthChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((width: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "onRangeChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((id: string, edge: \"start\" | \"end\", delta: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "planLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "resizableLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { min?: number; max?: number; } | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "rows",
+          "origin": "owned",
+          "required": true,
+          "type": "RangeTimelineRow[]",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "sticky",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { offsetHeader?: number; } | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        },
+        {
+          "name": "today",
+          "origin": "owned",
+          "required": false,
+          "type": "number | null | undefined",
+          "values": [],
+          "declaredIn": ["src/lab/range-timeline.tsx"]
+        }
+      ]
     },
     "Rating": {
       "group": "data-entry",

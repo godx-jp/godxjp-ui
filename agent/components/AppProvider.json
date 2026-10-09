@@ -10,7 +10,7 @@
       "type": "string (BCP-47)"
     },
     {
-      "description": "Product defaults the host opts into — `import { godxPreset } from \"@godxjp/ui/themes/godx\"` (pair it with `@godxjp/ui/themes/godx.css` after the base stylesheet). Its `defaultLocale` and `timeZone` fill only what the props leave unset, its `brandMark` is what an `AuthIdentity` with no `brand` draws, and its `name` is written to `<html data-preset>`. Omit for the neutral defaults (ink primary, `en`, no product mark).",
+      "description": "Product defaults the host opts into — `import { godxPreset } from \"@godxjp/ui/themes/godx\"` (pair it with `@godxjp/ui/themes/godx.css` after the base stylesheet; a shadow root that embeds `@godxjp/ui/styles/core` takes the font-free `@godxjp/ui/themes/godx-tokens.css` instead, since `@font-face` must live in the document). Its `defaultLocale` and `timeZone` fill only what the props leave unset, its `brandMark` is what an `AuthIdentity` with no `brand` draws, and its `name` is written to `<html data-preset>`. Omit for the neutral defaults (ink primary, `en`, no product mark).",
       "name": "preset",
       "type": "AppPreset"
     },

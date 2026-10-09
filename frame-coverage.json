@@ -49,11 +49,24 @@
     "data-display/card": "data-display/card/index",
     "data-display/data-table": "data-display/data-table/index",
     "general/button": "general/button/index",
-    "layout/legal-document-shell": "layout/legal-document-shell/index",
     "layout/error-surface": "layout/error-surface/index",
     "data-entry/form-errors": "data-entry/form",
-    "data-display/range-timeline": "data-display/timeline",
-    "general/visually-hidden": "general/typography"
+    "general/visually-hidden": "general/typography",
+    "lab/anchor": "navigation/anchor",
+    "lab/carousel": "data-display/carousel",
+    "lab/draggable-panel": "layout/draggable-panel",
+    "lab/emoji-picker": "data-entry/emoji-picker",
+    "lab/float-button": "general/float-button",
+    "lab/legal-document-shell": "layout/legal-document-shell/index",
+    "lab/marquee": "data-display/marquee",
+    "lab/masonry": "layout/masonry",
+    "lab/mega-menu": "navigation/mega-menu",
+    "lab/org-chart": "data-display/org-chart",
+    "lab/page-cover": "layout/page-cover",
+    "lab/range-timeline": "data-display/timeline",
+    "lab/sortable-list": "data-entry/sortable-list",
+    "lab/text-diff": "data-display/text-diff",
+    "lab/timeline-grid": "data-display/timeline-grid"
   },
   "excludeExports": [
     "useFormLayout",
@@ -2113,7 +2126,7 @@
         "reason": "Emulated coarse-pointer tap toggled expanded state at 320px and 390px."
       }
     },
-    "data-display/carousel": {
+    "lab/carousel": {
       "responsive": {
         "status": "pass",
         "reason": "Eight-width Chromium geometry passed."
@@ -2741,7 +2754,7 @@
         "data-display/collapsible",
         "data-display/accordion",
         "data-display/hover-card",
-        "data-display/carousel",
+        "lab/carousel",
         "data-display/credential-reveal",
         "general/button"
       ],

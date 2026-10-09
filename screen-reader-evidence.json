@@ -43,6 +43,7 @@
           "data-display/card",
           "data-display/service-launcher-card",
           "general/typography",
+          "lab/legal-document-shell",
           "layout/app-shell",
           "layout/auth-identity",
           "layout/centered-shell",
@@ -174,7 +175,8 @@
           "data-display/qr-code",
           "data-display/scroll-area",
           "data-display/table",
-          "data-display/timeline"
+          "data-display/timeline",
+          "lab/carousel"
         ]
       },
       {
@@ -241,6 +243,7 @@
       "feedback/dialog",
       "feedback/sheet",
       "feedback/sonner",
+      "lab/carousel",
       "navigation/dropdown-menu",
       "navigation/toolbar",
       "navigation/tabs",

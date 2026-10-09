@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `displayName` assignments kept all eight components in any app that imported one. Built one
   module per source file, a Dock-shaped bundle (3 chat components + 30 kit components, JS, gzip)
   goes 190.7 kB → 184.8 kB, below 31.31.8's 188.0 kB.
+- **`@godxjp/ui/lab` is back under the core gates (#1227).** The frame-coverage ledger, the API
+  manifest and the screen-reader cohorts looked only under `src/components/` after the move: the 20
+  lab exports return with their 31.x verdicts, Carousel's known gaps are open again, and
+  `component-api-manifest.json` lists Carousel's 3 and RangeTimeline's 19 props (0 in 32.0.0).
 
 ## [32.0.0] - 2026-10-09
 

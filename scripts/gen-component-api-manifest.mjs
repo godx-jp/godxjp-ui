@@ -380,6 +380,8 @@ export function buildComponentApiManifest(rootDir = root) {
           const filename = declaration.getSourceFile().fileName;
           return (
             filename.includes(`${path.sep}src${path.sep}components${path.sep}`) ||
+            // lab (v32 #1223): Carousel and RangeTimeline declare their props in their own file.
+            filename.includes(`${path.sep}src${path.sep}lab${path.sep}`) ||
             filename.includes(`${path.sep}src${path.sep}props${path.sep}components${path.sep}`)
           );
         });
@@ -404,6 +406,8 @@ export function buildComponentApiManifest(rootDir = root) {
           const filename = declaration.getSourceFile().fileName;
           return (
             filename.includes(`${path.sep}src${path.sep}components${path.sep}`) ||
+            // lab (v32 #1223): Carousel and RangeTimeline declare their props in their own file.
+            filename.includes(`${path.sep}src${path.sep}lab${path.sep}`) ||
             filename.includes(`${path.sep}src${path.sep}props${path.sep}components${path.sep}`)
           );
         });
