@@ -72,7 +72,13 @@ import {
   EMAIL_FOCUS,
   EMAIL_MOBILE,
 } from "./geometry";
-import { EMAIL_BRAND_MARK } from "./brand-mark";
+import {
+  EMAIL_BRAND_MARK,
+  emailBrandMarkDataUri,
+  emailBrandMarkSvg,
+  emailBrandMarkTableHtml,
+  type EmailBrandMark,
+} from "./brand-mark";
 import { EMAIL_URGENCY, EMAIL_URGENCY_DARK } from "./urgency";
 
 /** The whole contract in one object — the shape `EMAIL_TOKENS_JSON` serialises. */
@@ -110,18 +116,39 @@ export const EMAIL_TOKENS: EmailTokens = Object.freeze({
  * cannot import ES modules (Blade, Twig, Liquid, Handlebars on another runtime). Write it to a
  * file in the build step and read it from the template layer.
  */
+export const EMAIL_TOKENS_JSON: string = JSON.stringify(EMAIL_TOKENS, null, 2);
+
+/** The GoDX mark's accessible name, the email counterpart of `godxPreset.emailBrandLabel`. */
+export const EMAIL_BRAND_LABEL_GODX = "GoDX";
+
+const GODX_MARK = {
+  label: EMAIL_BRAND_LABEL_GODX,
+  color: EMAIL_COLORS_GODX.brand,
+  glyphColor: EMAIL_COLORS_GODX.brandForeground,
+};
+
+/**
+ * The prebuilt GoDX mark (gh#1228): same geometry as {@link EMAIL_BRAND_MARK}, the GoDX colours and
+ * the "GoDX" accessible name — byte-identical to the mark 31.31.8 shipped as the default.
+ */
+export const EMAIL_BRAND_MARK_GODX: EmailBrandMark = Object.freeze({
+  ...EMAIL_BRAND_MARK,
+  svg: emailBrandMarkSvg(GODX_MARK),
+  dataUri: emailBrandMarkDataUri(GODX_MARK),
+  tableHtml: emailBrandMarkTableHtml(GODX_MARK),
+});
+
 /**
  * The GoDX preset for email (v32.0.1, gh#1228): the email counterpart of `godxPreset` +
- * `themes/godx.css`. Same geometry; colours from {@link EMAIL_COLORS_GODX}. The brand mark's label
- * has no default since v32 — pass {@link EMAIL_BRAND_LABEL_GODX} as `label` for the GoDX mark.
+ * `themes/godx.css`. Same geometry; colours from {@link EMAIL_COLORS_GODX}, mark from
+ * {@link EMAIL_BRAND_MARK_GODX}.
  */
 export const EMAIL_TOKENS_GODX: EmailTokens = Object.freeze({
   ...EMAIL_TOKENS,
   colors: EMAIL_COLORS_GODX,
   colorsDark: EMAIL_COLORS_GODX_DARK,
+  brandMark: EMAIL_BRAND_MARK_GODX,
 });
 
-/** The GoDX mark's accessible name: `emailBrandMarkSvg({ label: EMAIL_BRAND_LABEL_GODX, color: EMAIL_COLORS_GODX.brand })`. */
-export const EMAIL_BRAND_LABEL_GODX = "GoDX";
-
-export const EMAIL_TOKENS_JSON: string = JSON.stringify(EMAIL_TOKENS, null, 2);
+/** {@link EMAIL_TOKENS_GODX} as pretty-printed JSON, like {@link EMAIL_TOKENS_JSON}. */
+export const EMAIL_TOKENS_GODX_JSON: string = JSON.stringify(EMAIL_TOKENS_GODX, null, 2);

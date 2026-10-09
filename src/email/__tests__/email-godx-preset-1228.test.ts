@@ -1,12 +1,18 @@
 import { describe, expect, it } from "vitest";
 
+import V31_MARK from "./__fixtures__/brand-mark-31.31.8.json";
+
 import {
   EMAIL_BRAND_LABEL_GODX,
   EMAIL_COLORS,
   EMAIL_COLORS_DARK,
   EMAIL_COLORS_GODX,
   EMAIL_COLORS_GODX_DARK,
+  EMAIL_BRAND_MARK,
+  EMAIL_BRAND_MARK_GODX,
+  EMAIL_TOKENS,
   EMAIL_TOKENS_GODX,
+  EMAIL_TOKENS_GODX_JSON,
   emailBrandMarkSvg,
   hslToHex,
 } from "../index";
@@ -47,5 +53,28 @@ describe("the GoDX preset for email (gh#1228)", () => {
     });
     expect(svg).toContain('aria-label="GoDX"');
     expect(svg.toLowerCase()).toContain(V31_LIGHT.toLowerCase());
+  });
+
+  it("prebuilds the GoDX mark, byte-identical to what 31.31.8 shipped as the default", () => {
+    // Fixture: EMAIL_TOKENS.brandMark.{svg,dataUri,tableHtml} from the published @godxjp/ui@31.31.8.
+    expect(EMAIL_TOKENS_GODX.brandMark).toBe(EMAIL_BRAND_MARK_GODX);
+    expect(EMAIL_BRAND_MARK_GODX.svg).toBe(V31_MARK.svg);
+    expect(EMAIL_BRAND_MARK_GODX.dataUri).toBe(V31_MARK.dataUri);
+    expect(EMAIL_BRAND_MARK_GODX.tableHtml).toBe(V31_MARK.tableHtml);
+    // Geometry is shared; the neutral default stays decorative.
+    expect({ ...EMAIL_BRAND_MARK_GODX, svg: "", dataUri: "", tableHtml: "" }).toEqual({
+      ...EMAIL_BRAND_MARK,
+      svg: "",
+      dataUri: "",
+      tableHtml: "",
+    });
+    expect(EMAIL_TOKENS.brandMark.svg).toContain('aria-hidden="true"');
+  });
+
+  it("serialises the preset for template engines", () => {
+    expect(JSON.parse(EMAIL_TOKENS_GODX_JSON)).toEqual(
+      JSON.parse(JSON.stringify(EMAIL_TOKENS_GODX)),
+    );
+    expect(EMAIL_TOKENS_GODX_JSON).toContain('aria-label=\\"GoDX\\"');
   });
 });
