@@ -316,6 +316,19 @@ export const KNOWN_GAPS = [
     cases: ["destructive tone", "`over={true}` (value beyond 100%)"],
   },
   {
+    id: "carousel-contract-gaps",
+    targets: ["Carousel"],
+    dimensions: ["ownership", "contentStress", "keyboard", "reducedMotion", "rtl"],
+    cases: [
+      "single slide",
+      "plugins / setApi",
+      "autoplay pause",
+      "arrow-key traversal alongside tabs",
+      "touch / swipe",
+      "RTL",
+    ],
+  },
+  {
     id: "data-table-contract-gaps",
     targets: ["DataTable"],
     dimensions: ["states", "async", "keyboard", "accessibleName", "density"],
