@@ -64,7 +64,7 @@
     44,
     45
   ],
-  "storyPath": "layout/Separator.stories.tsx",
+  "storyPath": "layout/separator.tsx",
   "tagline": "Tokenized horizontal or vertical rule, optionally INTERRUPTED by a localized label (day divider, unread watermark, auth conjunction).",
   "usage": [
     "DO use Separator for section dividers instead of raw border divs.",

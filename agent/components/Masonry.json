@@ -1,8 +1,8 @@
 {
   "docPath": "layout/masonry.tsx",
-  "example": "import { Masonry } from \"@godxjp/ui/layout\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\nimport { Text } from \"@godxjp/ui/general\";\n\n// T flows from `items`, so `data` in itemRender is whatever you put there — give the\n// collection a shape and the render callback needs no annotation.\ntype Note = { id: string; body: string };\nconst notes: Note[] = useNotes();\n\n<Masonry\n  columns={{ base: 1, sm: 2, lg: 3 }}\n  gap=\"md\"\n  items={notes.map((note) => ({ key: note.id, data: note }))}\n  itemRender={({ data }) => (\n    <Card>\n      <CardContent>\n        <Text>{data?.body}</Text>\n      </CardContent>\n    </Card>\n  )}\n  onLayoutChange={(layout) => console.log(layout.length, \"tiles placed\")}\n/>",
+  "example": "import { Masonry } from \"@godxjp/ui/lab\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\nimport { Text } from \"@godxjp/ui/general\";\n\n// T flows from `items`, so `data` in itemRender is whatever you put there — give the\n// collection a shape and the render callback needs no annotation.\ntype Note = { id: string; body: string };\nconst notes: Note[] = useNotes();\n\n<Masonry\n  columns={{ base: 1, sm: 2, lg: 3 }}\n  gap=\"md\"\n  items={notes.map((note) => ({ key: note.id, data: note }))}\n  itemRender={({ data }) => (\n    <Card>\n      <CardContent>\n        <Text>{data?.body}</Text>\n      </CardContent>\n    </Card>\n  )}\n  onLayoutChange={(layout) => console.log(layout.length, \"tiles placed\")}\n/>",
   "group": "layout",
-  "importPath": "@godxjp/ui/layout",
+  "importPath": "@godxjp/ui/lab",
   "name": "Masonry",
   "props": [
     {
@@ -61,8 +61,9 @@
     44,
     45
   ],
-  "storyPath": "layout/Masonry.stories.tsx",
+  "storyPath": "layout/masonry.tsx",
   "tagline": "Ant Design `Masonry` (6.0.0): tiles of UNEQUAL height packed into columns, each tile dropped into whichever column is shortest when its turn comes. DOM order stays `items` order at every width, so the reading order never follows the packing.",
+  "tier": "lab",
   "usage": [
     "DO order `items` by IMPORTANCE, never by height. The tiles are absolutely positioned, so DOM order — what a screen reader reads and what Tab visits — is always the `items` order, while the visual order is the packing. A later tile can sit visually above an earlier one; that is the form, not a bug.",
     "DO give every tile a stable `key`. It is the identity the measurement cache and `onLayoutChange` are keyed on, not React's element key alone.",

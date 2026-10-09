@@ -1,7 +1,7 @@
 {
-  "example": "import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from \"@godxjp/ui/data-display\";\n\n// CarouselDots reads the Embla api from context — no setApi wiring needed.\n<Carousel opts={{ loop: true }}>\n  <CarouselContent>\n    <CarouselItem>1</CarouselItem>\n    <CarouselItem>2</CarouselItem>\n  </CarouselContent>\n  <CarouselPrevious />\n  <CarouselNext />\n  <CarouselDots />\n</Carousel>",
+  "example": "import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from \"@godxjp/ui/lab\";\n\n// CarouselDots reads the Embla api from context — no setApi wiring needed.\n<Carousel opts={{ loop: true }}>\n  <CarouselContent>\n    <CarouselItem>1</CarouselItem>\n    <CarouselItem>2</CarouselItem>\n  </CarouselContent>\n  <CarouselPrevious />\n  <CarouselNext />\n  <CarouselDots />\n</Carousel>",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/ui/lab",
   "name": "Carousel",
   "props": [
     {
@@ -24,7 +24,7 @@
     3,
     6
   ],
-  "storyPath": "data-display/Carousel.stories.tsx",
+  "storyPath": "data-display/carousel.tsx",
   "subParts": [
     "CarouselContent",
     "CarouselDots",
@@ -33,6 +33,7 @@
     "CarouselPrevious"
   ],
   "tagline": "Embla-backed carousel primitives: previous/next controls, CarouselDots indicators, and a context API.",
+  "tier": "lab",
   "usage": [
     "DO compose the full set: `<Carousel>` › `<CarouselContent>` › many `<CarouselItem>`, with `<CarouselPrevious>`/`<CarouselNext>` for arrows and `<CarouselDots>` for the indicator row. Don't render items outside `<CarouselContent>` — the track is the scroll container.",
     "DO use `<CarouselDots>` for the active-slide indicator instead of wiring `setApi` by hand — it reads `selectedIndex`/`scrollSnaps` from the Carousel context, renders one `aria-current` dot per snap, and auto-hides when there is ≤1 slide.",

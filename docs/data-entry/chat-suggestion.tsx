@@ -9,11 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import {
-  ChatComposer,
-  ChatSuggestion,
-  type ChatSuggestionItemProp,
-} from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import {
   AppShell,
@@ -24,6 +19,8 @@ import {
   Topbar,
 } from "@godxjp/ui/layout";
 import { AtSign, Bot, Hash, MessageSquare, Settings, Slash, Users } from "lucide-react";
+import { ChatComposer, ChatSuggestion } from "@godxjp/chat";
+import type { ChatSuggestionItemProp } from "@godxjp/chat";
 
 /**
  * ChatSuggestion — the trigger-character list that completes a draft in place.
@@ -232,8 +229,8 @@ export default function Demo() {
             <CardHeader>
               <CardTitle level={2}>該当なし</CardTitle>
               <CardDescription>
-                候補が0件でもパネルは開き、件数は読み上げ用の status
-                で通知されます。空の list を黙って閉じると、利用者には「効かない」ように見えます。
+                候補が0件でもパネルは開き、件数は読み上げ用の status で通知されます。空の list
+                を黙って閉じると、利用者には「効かない」ように見えます。
               </CardDescription>
             </CardHeader>
             <CardContent>

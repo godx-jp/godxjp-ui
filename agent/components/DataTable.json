@@ -235,7 +235,7 @@
     35,
     37
   ],
-  "storyPath": "data-display/DataTable.stories.tsx",
+  "storyPath": "data-display/data-table/index.tsx",
   "tagline": "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack).",
   "usage": [
     "DO use `striped` on dense list tables (many columns, a row the eye must follow across the width). To stripe EVERY Table and DataTable in a service, set it ONCE in the theme — `:root { --table-row-striped-alpha: 100%; }` — instead of passing `striped` at each call site; `striped={false}` then opts one table out. Retint with `--table-row-striped-background`, never with a `rowClassName` utility or `:nth-child` page CSS (those count DOM rows, so an expanded detail row shifts every stripe after it).",

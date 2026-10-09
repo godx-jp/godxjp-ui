@@ -7,11 +7,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Marquee,
 } from "@godxjp/ui/data-display";
 import { Switch } from "@godxjp/ui/data-entry";
 import { Heading, Link, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
+import { Marquee } from "@godxjp/ui/lab";
 
 /**
  * Marquee · a track of content that travels continuously, and the WCAG 2.2.2 pause control that

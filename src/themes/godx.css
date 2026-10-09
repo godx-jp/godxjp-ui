@@ -1,0 +1,72 @@
+/* GoDX PRESET — the GoDX identity (brand identity v2.3) as an opt-in theme (v32, gh#1220).
+ *
+ * Since v32 the package defaults are neutral: `--primary` and `--brand` are an ink (≈ zinc-900)
+ * in light and a near-white in dark. This file puts back exactly what 31.x shipped as the default,
+ * and nothing else — every other role was already brand-neutral and is not restated here.
+ *
+ *     @import "@godxjp/ui/styles";
+ *     @import "@godxjp/ui/themes/godx.css";   // AFTER the base stylesheet
+ *
+ * together with `<AppProvider preset={godxPreset}>` from `@godxjp/ui/themes/godx` (locale `vi`,
+ * zone Asia/Ho_Chi_Minh, the GoDX mark in `AuthIdentity`, the "GoDX" email label).
+ *
+ * ORDER IS LOAD-BEARING. These sit on the same selectors as src/tokens/foundation.css at the same
+ * specificity, so the LATER sheet wins: import this one after the base stylesheet. A service theme
+ * that re-seeds `--primary` goes after this one in turn.
+ *
+ * The derived tier (hover, pressed, border, halo, link ink, `--ring`) is not restated: it follows
+ * `--primary` at the element that paints it (src/tokens/derived.css), so the violet seed alone
+ * reproduces the whole 31.x ramp. Held equal to 31.x in Chromium by
+ * src/themes/__tests__/godx-preset-parity-1220-browser.test.ts.
+ *
+ * FONTS. 31.x's `@godxjp/ui/styles` loaded the bundled M PLUS 2 / Noto Sans JP faces; since v32
+ * (#1221) they are opt-in, and the GoDX look includes them, so the preset loads them. They must
+ * come AFTER the token layers (src/styles/index.css · ORDER IS LOAD-BEARING), which importing this
+ * file after the base stylesheet guarantees. Needs the optional peers `@fontsource/noto-sans-jp`
+ * and `@fontsource/m-plus-2`. */
+@import "../styles/fonts.css";
+
+:root {
+  /* GoDX violet #7A00FF — identity v2.3 core.action.primary.bg. 6.32:1 under its near-white label. */
+  --primary: 268.7 100% 50%;
+  --primary-foreground: 60 33% 99%;
+  /* The identity role: the same violet, a separate declaration (gh#250). */
+  --brand: 268.7 100% 50%;
+  --brand-foreground: 60 33% 99%;
+}
+
+.dark,
+:root[data-theme="dark"] {
+  /* #DCBCFF — identity v2.3 dark action.primary.bg, hue snapped to the light tone. 9.56:1 on the
+   * dark canvas. */
+  --primary: 268.7 100% 86.9%;
+  --primary-foreground: 48 9% 9%;
+  --brand: 268.7 100% 86.9%;
+  --brand-foreground: 48 9% 9%;
+}
+
+/* Engines without relative colour (Chrome/Edge 111–118) get the derived tier as literals. These are
+ * the violet ramp 31.x shipped there, restated so the preset stays exact whatever the package's
+ * own fallback holds for its neutral seed. */
+@supports not (color: hsl(from red h s l)) {
+  :root {
+    --primary-hover: 268.7 100% 41.6%;
+    --primary-active: 268.7 100% 34.5%;
+    --primary-border: 268.7 68% 66%;
+    --control-outline: 268.7 100% 44.7%;
+    --text-link: 268.7 100% 41.6%;
+    --text-brand: 268.7 100% 41.6%;
+    --text-primary: 268.7 100% 34.5%;
+  }
+
+  .dark,
+  :root[data-theme="dark"] {
+    --primary-hover: 268.7 100% 92.7%;
+    --primary-active: 268.7 100% 81.1%;
+    --primary-border: 268.7 46.7% 23.5%;
+    --control-outline: 268.7 99% 61.8%;
+    --text-link: 268.7 100% 86.9%;
+    --text-brand: 268.7 100% 86.9%;
+    --text-primary: 268.7 100% 92.7%;
+  }
+}

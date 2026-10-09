@@ -148,17 +148,6 @@ export type TextBreakProp = "normal" | "anywhere";
 export type TypographyTypeProp = "secondary" | "success" | "warning" | "danger";
 
 /**
- * antd `Typography.Title` `level` — 1…5.
- *
- * `HeadingLevelProp` stops at 4 because `--heading-h4` is already 12.5px, BELOW the 14px body step.
- * antd's fifth level is carried here rather than widened into `HeadingLevelProp`, so `Heading` —
- * used across the package and at consumer call sites — keeps the four levels its tokens actually
- * define while `Title` reaches antd's five. Level 5 reads `--heading-h5`, which is bound to the
- * existing `--font-size-2xs` step (≈11.1px); it is not a new number.
- */
-export type TitleLevelProp = 1 | 2 | 3 | 4 | 5;
-
-/**
  * antd `CopyConfig` — the copy affordance beside a run of text.
  *
  * `format: "text/html"` reaches the real `ClipboardItem` path. `tooltips` takes `false` to suppress
@@ -269,7 +258,8 @@ export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";
 export type AppSettingPickerAppearanceProp = "labeled" | "icon" | "bar" | "inline";
 
 /**
- * AppSettingToggle presentation. The toggle has no menu, so it has no `labeled`/`inline` form —
+ * `AppSettingPicker menu={false}` presentation (the former AppSettingToggle, v32 #1223). The
+ * cycler has no menu, so it has no `labeled`/`inline` form —
  * the two members here are the two BOXES a one-tap cycler can take.
  * - `bar` (default) — a CELL of the bar (`TopbarItem`): full bar height, the bar's own hover
  *   surface, square corners (`--topbar-item-radius`). This is the canonical placement, which is
@@ -278,7 +268,7 @@ export type AppSettingPickerAppearanceProp = "labeled" | "icon" | "bar" | "inlin
  *   settings row, a card header). In a taller bar this leaves a pill floating mid-strip, which is
  *   the defect `bar` exists to avoid.
  */
-export type AppSettingToggleAppearanceProp = "bar" | "icon";
+export type AppSettingCycleAppearanceProp = "bar" | "icon";
 
 /** Button size preset. */
 export type SizeProp = "xs" | "sm" | "md" | "lg";

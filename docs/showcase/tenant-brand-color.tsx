@@ -48,7 +48,7 @@ import {
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import { ColorPicker, FormField, Input, Switch } from "@godxjp/ui/data-entry";
-import { Callout } from "@godxjp/ui/feedback";
+import { Alert } from "@godxjp/ui/feedback";
 
 /** Màu thật của khách — hai đầu mút là chỗ quy tắc "luôn chữ trắng" hỏng. */
 const CUSTOMERS = [
@@ -217,15 +217,15 @@ export default function Demo() {
                 </Text>
               </Flex>
               {!seed.meetsAA ? (
-                <Callout kind="warning">
-                  <Callout.Title>API nói KHÔNG, kèm số</Callout.Title>
-                  <Callout.Description>
+                <Alert variant="callout" kind="warning">
+                  <Alert.Title>API nói KHÔNG, kèm số</Alert.Title>
+                  <Alert.Description>
                     Cặp được cấp đo {seed.contrast.toFixed(2)}:1 trên {seed.primary} — dưới 4.5:1
                     của WCAG 2.2 SC 1.4.3. Gói KHÔNG lặng lẽ đổi sang trắng: nó giữ đúng cặp bạn
                     cấp, trả `meetsAA: false`, và cảnh báo ở bản dev. Bỏ trống `foreground` để gói
                     tự chọn màu chữ an toàn.
-                  </Callout.Description>
-                </Callout>
+                  </Alert.Description>
+                </Alert>
               ) : null}
             </Flex>
           </CardContent>
@@ -319,17 +319,17 @@ export default function Demo() {
             <CardTitle level={2}>Mực thương hiệu · thứ gói KHÔNG tự động đổi</CardTitle>
           </CardHeader>
           <CardContent>
-            <Callout kind="important">
-              <Callout.Title>
+            <Alert variant="callout" kind="important">
+              <Alert.Title>
                 `--text-link` / `--text-brand` / `--text-primary` là việc của bạn
-              </Callout.Title>
-              <Callout.Description>
+              </Alert.Title>
+              <Alert.Description>
                 Chúng là mực trên NỀN TRANG, không phải nhãn trên nền nút, nên độ đọc phụ thuộc
                 `--background` — thứ màu của khách không quyết định. Một seed nhạt như #FFD400 cho
                 link ~1.4:1 trên nền trắng. `tenantTheme` để yên ba vai đó; nếu bạn muốn link mang
                 màu thương hiệu, hãy tự đặt chúng SAU KHI đo bằng `contrastRatio()`.
-              </Callout.Description>
-            </Callout>
+              </Alert.Description>
+            </Alert>
           </CardContent>
         </Card>
       </Flex>

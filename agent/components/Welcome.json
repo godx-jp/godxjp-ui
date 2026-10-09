@@ -1,8 +1,8 @@
 {
   "docPath": "data-display/welcome.tsx",
-  "example": "import { Welcome } from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { Bot } from \"lucide-react\";\n\n<Welcome\n  icon={<Bot />}\n  title=\"こんにちは\"\n  description=\"請求、経費、勤怠のことならお手伝いできます。\"\n  extra={<Button variant=\"ghost\" size=\"sm\">閉じる</Button>}\n/>",
+  "example": "import { Welcome } from \"@godxjp/chat\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { Bot } from \"lucide-react\";\n\n<Welcome\n  icon={<Bot />}\n  title=\"こんにちは\"\n  description=\"請求、経費、勤怠のことならお手伝いできます。\"\n  extra={<Button variant=\"ghost\" size=\"sm\">閉じる</Button>}\n/>",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/chat",
   "name": "Welcome",
   "props": [
     {
@@ -48,7 +48,7 @@
     44,
     45
   ],
-  "storyPath": "data-display/Welcome.stories.tsx",
+  "storyPath": "data-display/welcome.tsx",
   "tagline": "The greeting block at the head of an empty conversation (Ant Design X Welcome): glyph, greeting, one line under it, and a trailing slot ON THE TITLE ROW — which is the placement a hand-roll gets wrong.",
   "usage": [
     "DO put it above the composer on an empty chat, with ChatSuggestion or a Prompts row beneath it — that is the surface it belongs to.",

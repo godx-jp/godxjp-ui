@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.0.0] - 2026-10-09
+
+**A framework any team can adopt; GoDX keeps its exact look as a preset.** One planned major for
+the whole #1205 plan (debated by Claude, Codex and Fable, with JEV as reference). Upgrade with
+`npx godxjp-ui codemod v32 <src> [--godx]`; read **docs/migrations/v32.md** first. Accepted on
+Platform (GoDX ID) before release: 30 Pest browser suites and the Dock green, screenshots at
+390/1024/1440 identical to 31.31.8 (0 px; 1 px antialiasing on one page).
+
+### 💥 Breaking
+
+- **Neutral identity, GoDX as a preset (#1220).** Default `--primary`/`--brand` is a neutral ink;
+  `AuthIdentity` renders no mark without a brand; the email mark has no default label. GoDX:
+  `godxPreset` from `@godxjp/ui/themes/godx` + `@godxjp/ui/themes/godx.css`.
+- **Open localization (#1219).** `AppLocale` is any BCP-47 tag (`BuiltInLocale` = vi/en/ja);
+  `registerLocale()`; defaults from `<html lang>` → preset → `en` (was `vi`); date order, separators
+  and week start from `Intl`; request-scoped settings (`runWithAppSettings`) for SSR.
+- **Fonts are opt-in (#1221)**: add `@godxjp/ui/styles/fonts.css`; the `@fontsource` packages are
+  optional peers. New `@godxjp/ui/styles.css` works without Tailwind.
+- **Component surface (#1223)**: 185 → 161 catalog entries. Banner/Callout → `Alert variant`,
+  TagInput → `Select mode="tags"`, Thumbnail → `Image`, HoverCard → `Popover openOn="hover"`,
+  AuthShell → `CenteredShell variant="auth"`, SpaceCompact → `Flex attached`, AppSettingToggle →
+  `AppSettingPicker menu={false}`; the antd Typography shims and four Skeleton parts are removed;
+  15 niche components move to `@godxjp/ui/lab`, the chat family to the new **`@godxjp/chat`**.
+- **Install writes nothing (#1215)**: run `npx godxjp-ui sync-rules` (`--dry-run` to preview).
+- **Dependencies (#1222)**: react-aria family pinned in lockstep (a 31.x install resolved two
+  react-aria copies); `engines.node >=22`.
+
+### ✨ Added / fixed
+
+- `sideEffects` lists CSS so webpack keeps `@godxjp/ui/styles` (measured 0 → 2,394 bytes) (#1216).
+- A trustworthy agent contract: 7 dead rules retired, an API-name gate against the packed
+  declarations, README counts generated, English-coverage gate (#1217).
+- The publish job refuses a new major without an English migration note or within 90 days of the
+  previous one (#1218).
+- Inline `FormField controlWidth` is the control's width (an empty Select was 142 px of 256) (#1224).
+- The neutral primary's hover and pressed steps stay visible at both ends of the lightness ramp.
+- `AppSettingPicker kind="locale"` lists every registered locale.
+
 ## [31.31.8] - 2026-10-09
 
 ### ♿ DropdownMenu, Tooltip and HoverCard stop moving under reduced motion (gh#1213)

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Prose } from "@godxjp/ui/data-display";
-import { EmojiPicker } from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
-import { PageContainer, PageCover } from "@godxjp/ui/layout";
+import { PageContainer } from "@godxjp/ui/layout";
 
 import shot from "../assets/shot-landscape.svg";
+import { EmojiPicker, PageCover } from "@godxjp/ui/lab";
 
 /**
  * PageCover + PageContainer `icon` / headerScale="display" (gh#1160) — a Notion / note.com page:

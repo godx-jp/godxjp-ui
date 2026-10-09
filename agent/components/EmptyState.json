@@ -56,7 +56,7 @@
     "SkeletonTable — use for the loading skeleton before data arrives (pass to DataState's `skeleton=` or DataTable's `loading=`). EmptyState is for after data arrives and is empty, not while loading."
   ],
   "rules": [],
-  "storyPath": "data-display/EmptyState.stories.tsx",
+  "storyPath": "data-display/empty-state.tsx",
   "tagline": "Centred empty placeholder with icon, title, description, and optional CTA.",
   "usage": [
     "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",

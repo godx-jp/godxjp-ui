@@ -178,7 +178,7 @@
     13,
     23
   ],
-  "storyPath": "data-entry/TimePicker.stories.tsx",
+  "storyPath": "data-entry/time-picker.tsx",
   "tagline": "Time combobox with hours, minutes, optional seconds, confirmation and 12-hour formatting. Native submission stays canonical 24-hour time.",
   "usage": [
     "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",

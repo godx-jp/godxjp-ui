@@ -143,7 +143,9 @@ const RUNTIME_MESSAGE_GLOBS = ["src/i18n/messages/*.json"];
 const DOCS_MESSAGE_DIR = "docs/i18n/messages";
 // The shipping library surface. Tests and stories are excluded: a gate fixture quoting
 // `t("showcase.pagination.recordCount")` is a string ABOUT a key, not a component reading one.
-const RUNTIME_SOURCE_GLOBS = ["src/**/*.{ts,tsx}"];
+// v32 (#1223): @godxjp/chat ships beside the kit and reads its `chat.*` keys from this catalogue
+// through @godxjp/ui/i18n, so its source counts as a reader too.
+const RUNTIME_SOURCE_GLOBS = ["src/**/*.{ts,tsx}", "packages/chat/src/**/*.{ts,tsx}"];
 const RUNTIME_SOURCE_EXCLUDE = /(?:__tests__|\.test\.|\.stories\.|\/i18n\/messages\/)/;
 
 // A `>…<` run is JSX text only if it carries none of the characters that mean "this is code":

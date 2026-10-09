@@ -67,7 +67,7 @@
     "RadioGroup — use when the user must choose exactly one option from 2–4 mutually exclusive values; Switch is only appropriate for a single on/off boolean."
   ],
   "rules": [],
-  "storyPath": "data-entry/Switch.stories.tsx",
+  "storyPath": "data-entry/switch.tsx",
   "tagline": "Toggle switch (bare), on react-aria-components. For a labelled row use Field. `role=\"switch\"` is the real `<input>`; the painted track is the `<label>` around it, and that is where `data-state`/`data-size` live.",
   "usage": [
     "DO use Switch (bare) only when you are building a custom inline toggle without a visible label — e.g., a DataTable row action column. Always pair it with a <Label htmlFor={id}> placed adjacent in the DOM; never leave it label-less for screen readers.",

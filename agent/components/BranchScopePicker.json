@@ -88,7 +88,7 @@
   "rules": [
     24
   ],
-  "storyPath": "data-entry/BranchScopePicker.stories.tsx",
+  "storyPath": "data-entry/branch-scope-picker.tsx",
   "tagline": "Canonical scope control: all branches vs an explicit subset.",
   "usage": [
     "DO treat scope as ONE form field: the single { mode, branchIds } value goes through FormField like any other control.",

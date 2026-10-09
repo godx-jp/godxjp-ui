@@ -39,12 +39,12 @@
         "shell-layout.css",
         "control.css",
         "text-layout.css",
-        "dialog-layout.css"
+        "dialog-layout.css",
+        "data-display-layout.css"
       ]
     },
     "Actions": {
       "layers": [
-        "layout.css",
         "control.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -82,16 +82,6 @@
         "form-layout.css"
       ]
     },
-    "AlertDialogRoot": {
-      "layers": [
-        "layout.css",
-        "control.css",
-        "text-layout.css",
-        "dialog-layout.css",
-        "alert-layout.css",
-        "form-layout.css"
-      ]
-    },
     "Anchor": {
       "layers": [
         "layout.css",
@@ -114,15 +104,9 @@
     },
     "AppSettingPicker": {
       "layers": [
-        "control.css",
-        "dialog-layout.css",
-        "navigation-layout.css"
-      ]
-    },
-    "AppSettingToggle": {
-      "layers": [
         "shell-layout.css",
         "control.css",
+        "dialog-layout.css",
         "navigation-layout.css"
       ]
     },
@@ -145,15 +129,21 @@
     },
     "Attachments": {
       "layers": [
+        "layout.css",
         "control.css",
+        "text-layout.css",
+        "table-layout.css",
+        "dialog-layout.css",
+        "alert-layout.css",
         "data-display-layout.css",
-        "data-entry-layout.css"
+        "navigation-layout.css"
       ]
     },
     "AuthAccountSummary": {
       "layers": [
         "shell-layout.css",
-        "control.css"
+        "control.css",
+        "data-display-layout.css"
       ]
     },
     "AuthDivider": {
@@ -174,14 +164,8 @@
       "layers": [
         "shell-layout.css",
         "control.css",
-        "logo-layout.css",
         "text-layout.css",
         "dialog-layout.css"
-      ]
-    },
-    "AuthShell": {
-      "layers": [
-        "shell-layout.css"
       ]
     },
     "AuthStack": {
@@ -198,15 +182,6 @@
       "layers": [
         "dialog-layout.css",
         "badge-layout.css"
-      ]
-    },
-    "Banner": {
-      "layers": [
-        "layout.css",
-        "control.css",
-        "text-layout.css",
-        "dialog-layout.css",
-        "alert-layout.css"
       ]
     },
     "BarChart": {
@@ -261,15 +236,6 @@
         "vendor-day-picker.css"
       ]
     },
-    "Callout": {
-      "layers": [
-        "layout.css",
-        "control.css",
-        "text-layout.css",
-        "dialog-layout.css",
-        "alert-layout.css"
-      ]
-    },
     "Card": {
       "layers": [
         "control.css",
@@ -322,7 +288,8 @@
         "table-layout.css",
         "dialog-layout.css",
         "alert-layout.css",
-        "data-display-layout.css"
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     },
     "ChatBubbleList": {
@@ -333,20 +300,32 @@
         "table-layout.css",
         "dialog-layout.css",
         "alert-layout.css",
-        "data-display-layout.css"
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     },
     "ChatComposer": {
       "layers": [
+        "layout.css",
         "control.css",
-        "data-entry-layout.css"
+        "text-layout.css",
+        "table-layout.css",
+        "dialog-layout.css",
+        "alert-layout.css",
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     },
     "ChatSuggestion": {
       "layers": [
+        "layout.css",
         "control.css",
+        "text-layout.css",
+        "table-layout.css",
         "dialog-layout.css",
-        "data-entry-layout.css"
+        "alert-layout.css",
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     },
     "Checkbox": {
@@ -400,9 +379,13 @@
     },
     "Conversations": {
       "layers": [
+        "layout.css",
         "control.css",
         "text-layout.css",
+        "table-layout.css",
         "dialog-layout.css",
+        "alert-layout.css",
+        "data-display-layout.css",
         "navigation-layout.css"
       ]
     },
@@ -506,15 +489,6 @@
         "form-layout.css"
       ]
     },
-    "FilterBar": {
-      "layers": [
-        "layout.css",
-        "control.css",
-        "dialog-layout.css",
-        "badge-layout.css",
-        "navigation-layout.css"
-      ]
-    },
     "Flex": {
       "layers": [
         "layout.css"
@@ -583,11 +557,6 @@
       "layers": [
         "control.css",
         "text-layout.css",
-        "dialog-layout.css"
-      ]
-    },
-    "HoverCard": {
-      "layers": [
         "dialog-layout.css"
       ]
     },
@@ -761,13 +730,6 @@
         "alert-layout.css",
         "form-layout.css",
         "navigation-layout.css"
-      ]
-    },
-    "Paragraph": {
-      "layers": [
-        "control.css",
-        "text-layout.css",
-        "dialog-layout.css"
       ]
     },
     "PasswordInput": {
@@ -953,83 +915,6 @@
         "alert-layout.css"
       ]
     },
-    "SkeletonArticle": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonAvatar": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonButton": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonDetail": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonForm": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonImage": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonInput": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonNode": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonRows": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonStat": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
-    "SkeletonTable": {
-      "layers": [
-        "layout.css",
-        "table-layout.css",
-        "alert-layout.css"
-      ]
-    },
     "Slider": {
       "layers": [
         "control.css"
@@ -1038,11 +923,6 @@
     "SortableList": {
       "layers": [
         "control.css"
-      ]
-    },
-    "SpaceCompact": {
-      "layers": [
-        "layout.css"
       ]
     },
     "SplitPane": {
@@ -1087,11 +967,6 @@
         "navigation-layout.css"
       ]
     },
-    "TagInput": {
-      "layers": [
-        "control.css"
-      ]
-    },
     "Text": {
       "layers": [
         "control.css",
@@ -1114,15 +989,14 @@
     },
     "ThoughtChain": {
       "layers": [
+        "layout.css",
         "control.css",
         "text-layout.css",
+        "table-layout.css",
         "dialog-layout.css",
-        "data-display-layout.css"
-      ]
-    },
-    "Thumbnail": {
-      "layers": [
-        "data-display-layout.css"
+        "alert-layout.css",
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     },
     "TimePicker": {
@@ -1146,13 +1020,6 @@
     "TimelineGrid": {
       "layers": [
         "data-display-layout.css"
-      ]
-    },
-    "Title": {
-      "layers": [
-        "control.css",
-        "text-layout.css",
-        "dialog-layout.css"
       ]
     },
     "Toaster": {
@@ -1224,6 +1091,7 @@
     },
     "TreeSelect": {
       "layers": [
+        "layout.css",
         "control.css",
         "dialog-layout.css",
         "data-display-layout.css",
@@ -1239,13 +1107,6 @@
         "alert-layout.css",
         "data-display-layout.css",
         "form-layout.css"
-      ]
-    },
-    "Typography": {
-      "layers": [
-        "control.css",
-        "text-layout.css",
-        "dialog-layout.css"
       ]
     },
     "Upload": {
@@ -1276,10 +1137,14 @@
     },
     "Welcome": {
       "layers": [
+        "layout.css",
         "control.css",
         "text-layout.css",
+        "table-layout.css",
         "dialog-layout.css",
-        "data-display-layout.css"
+        "alert-layout.css",
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     }
   }

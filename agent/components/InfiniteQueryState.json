@@ -41,7 +41,7 @@
     "ButtonRefetch — companion component for the page header refresh action wired to `query.refetch()`. Use alongside InfiniteQueryState when you want an explicit refresh control in addition to the built-in load-more footer."
   ],
   "rules": [],
-  "storyPath": "query/InfiniteQueryState.stories.tsx",
+  "storyPath": "query/infinite-query-state.tsx",
   "tagline": "useInfiniteQuery widget — flatten pages, skeleton/empty/error, load-more footer. Import from @godxjp/ui/query.",
   "usage": [
     "DO: Import from `@godxjp/ui/query` (not `@godxjp/ui`). Use the bundled `flattenItemPages` helper for any API that returns `{ items: T[] }` pages — it handles `undefined` data safely. Custom page shapes require a custom `flatten` function.",

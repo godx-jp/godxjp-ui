@@ -806,7 +806,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-bubble-padding-inline",
     "value": "var(--space-3)",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "description": "ChatBubble / ChatBubbleList component tokens (@godxjp/chat since v32) — one message in a conversation, and the feed it lives in. NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
   },
   {
     "name": "--chat-bubble-list-gap",
@@ -846,7 +846,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-bubble-tone-border-alpha",
     "value": "0.35",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "description": "ChatBubble / ChatBubbleList component tokens (@godxjp/chat since v32) — one message in a conversation, and the feed it lives in. NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
   },
   {
     "name": "--chat-bubble-end-background",
@@ -856,7 +856,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-bubble-end-foreground",
     "value": "initial",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "description": "ChatBubble / ChatBubbleList component tokens (@godxjp/chat since v32) — one message in a conversation, and the feed it lives in. NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
   },
   {
     "name": "--chat-composer-min-height",
@@ -1056,7 +1056,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-status-warning-border-color",
     "value": "var(--warning)",
-    "description": "VALIDATION STATUS — antd's `status` axis (docs/DESIGN-AUTHORITY.md names Ant Design the taxonomy authority). Only the FOCUS half is a knob: the boundary itself has to be painted from a Tailwind utility, because `border-input` sits in a later cascade layer than this file's component rules and would win over any of them (measured in Chromium — see components/data-entry/control-appearance.ts). The error boundary therefore reuses the role `aria-invalid:border-destructive` already paints, and cannot drift into a second red. The warning halo borrows the ERROR halo's alpha rather than inventing a second opacity: antd derives both from one `colorXxxOutline` recipe and the generated file carries only the error one (scripts/gen-antd-tokens.mjs)."
+    "description": "VALIDATION STATUS — antd's `status` axis (docs/DESIGN-AUTHORITY.md names Ant Design the taxonomy authority). Only the FOCUS half is a knob: the boundary itself has to be painted from a Tailwind utility, because `border-input` sits in a later cascade layer than this file's component rules and would win over any of them (measured in Chromium — see components/data-entry/control-appearance.ts). The error boundary therefore reuses the role `aria-invalid:border-destructive` already paints, and cannot drift into a second red. The warning halo borrows the ERROR halo's alpha rather than inventing a second opacity: antd derives both from one `colorXxxOutline` recipe, and only the error one is defined in this tier."
   },
   {
     "name": "--control-status-warning-glow-color",
@@ -4456,32 +4456,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--skeleton-element-radius",
     "value": "initial",
-    "description": "SKELETON · antd 6 parity (ant-design/components/skeleton/style/index.ts). antd derives every element box from `controlHeight` and its ±steps; the same boxes here read the `--control-height` tier, so a skeleton button is exactly as tall as the Button it stands in for and follows density with it. The two RATIOS are antd's own multipliers (button = 2× the box, input = 5×); they are unitless on purpose — a service widens the stand-in without leaving the height tier. gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
-  },
-  {
-    "name": "--skeleton-button-width-ratio",
-    "value": "2",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "description": "SKELETON · antd 6 parity (ant-design/components/skeleton/style/index.ts). antd derives every element box from `controlHeight` and its ±steps; the same boxes here read the `--control-height` tier, so a skeleton input is exactly as tall as the Input it stands in for and follows density with it. The RATIO is antd's own multiplier (input = 5× the box); it is unitless on purpose — a service widens the stand-in without leaving the height tier. gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--skeleton-input-width-ratio",
     "value": "5",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
-  },
-  {
-    "name": "--skeleton-node-size",
-    "value": "calc(var(--control-height) * 3)",
-    "description": "antd's node/image square is `controlHeight * 1.5 * 2`."
-  },
-  {
-    "name": "--skeleton-image-glyph-size",
-    "value": "var(--icon-size-4xl)",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
-  },
-  {
-    "name": "--skeleton-image-glyph-color",
-    "value": "initial",
-    "description": "Role-mirror (#44): `initial` so the glyph re-resolves under a scoped theme. Default = hsl(var(--muted-foreground) / 0.4)."
   },
   {
     "name": "--skeleton-article-avatar-gap",
@@ -6486,22 +6466,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--org-chart-node-padding-block",
     "value": "var(--space-3)",
-    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/lab/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
   },
   {
     "name": "--org-chart-node-padding-inline",
     "value": "var(--space-3)",
-    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/lab/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
   },
   {
     "name": "--org-chart-node-gap",
     "value": "var(--space-3)",
-    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/lab/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
   },
   {
     "name": "--org-chart-node-text-gap",
     "value": "var(--space-1)",
-    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/lab/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
   },
   {
     "name": "--org-chart-node-radius",
@@ -6536,7 +6516,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--org-chart-node-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/lab/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
   },
   {
     "name": "--org-chart-agent-border-style",
@@ -6551,7 +6531,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--org-chart-sibling-gap",
     "value": "var(--space-4)",
-    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/lab/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
   },
   {
     "name": "--org-chart-line-width",

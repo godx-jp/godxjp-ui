@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, InputOTP, InputOTPGroup, InputOTPSlot } from "@godxjp/ui/data-entry";
 import { Button, Logo, Reveal, Text } from "@godxjp/ui/general";
-import { AuthFooter, AuthShell, AuthStack, Flex } from "@godxjp/ui/layout";
+import { AuthFooter, CenteredShell, AuthStack, Flex } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
@@ -36,18 +36,18 @@ export default function Demo() {
   const [code, setCode] = useState("");
 
   return (
-    <AuthShell
-      variant="canonical"
+    <CenteredShell
+      variant="auth-canonical"
       preset="account-recovery"
       brand={
         <Flex align="center" gap="sm">
-          <Logo mark="godx" tone="success" />
-          <Text weight="medium">GoDX ID</Text>
+          <Logo glyph="a" />
+          <Text weight="medium">Acme ID</Text>
         </Flex>
       }
       footer={
         <AuthFooter
-          product="GoDX ID"
+          product="Acme ID"
           terms="利用規約"
           privacy="プライバシー"
           locale={<AppSettingPicker kind="locale" appearance="labeled" compact />}
@@ -91,6 +91,6 @@ export default function Demo() {
           </CardContent>
         </Card>
       </Reveal>
-    </AuthShell>
+    </CenteredShell>
   );
 }

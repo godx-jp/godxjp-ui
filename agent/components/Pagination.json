@@ -100,7 +100,7 @@
   "rules": [
     40
   ],
-  "storyPath": "navigation/Pagination.stories.tsx",
+  "storyPath": "navigation/pagination.tsx",
   "subParts": [
     "PaginationContent",
     "PaginationEllipsis",

@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/block-editor",
-  "version": "31.31.8",
+  "version": "32.0.0",
   "description": "Block editor for GoDX apps (Notion / note.com style) on Tiptap: slash menu, block handles, floating format toolbar; reads and writes Markdown through @godxjp/markdown/codec, IME-safe, ja / en / vi.",
   "type": "module",
   "main": "./dist/index.js",
@@ -45,8 +45,8 @@
     "lucide-react": "^1.37.0"
   },
   "peerDependencies": {
-    "@godxjp/markdown": "~31.31.8",
-    "@godxjp/ui": "~31.31.8",
+    "@godxjp/markdown": "~32.0.0",
+    "@godxjp/ui": "~32.0.0",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0"
   },

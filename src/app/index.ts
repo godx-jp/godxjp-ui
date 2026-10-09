@@ -9,7 +9,10 @@ export * from "./storage";
 export * from "./theme-axes";
 export * from "./tenant-theme";
 export * from "./request-headers";
+export { runWithAppSettings, type AppSettings } from "./settings-scope";
+export { AppPresetContext, useAppPreset, type AppPreset } from "./preset";
 export {
+  type AppProviderProps,
   AppProvider,
   useAppContext,
   useOptionalAppContext,

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { CenteredShell, Flex, LegalDocumentShell, Topbar } from "@godxjp/ui/layout";
+import { CenteredShell, Flex, Topbar } from "@godxjp/ui/layout";
 import { Button, Logo, Text } from "@godxjp/ui/general";
 
 import { TERMS_JA } from "../_data";
+import { LegalDocumentShell } from "@godxjp/ui/lab";
 
 /**
  * Viewport fixture — 390×844 (mobile).

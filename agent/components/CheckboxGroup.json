@@ -75,7 +75,6 @@
     23,
     31
   ],
-  "storyPath": "data-entry/CheckboxGroup.stories.tsx",
   "tagline": "Multi-select checkbox list from an options array or manual children — use `options` prop for the data-driven path, never hand-roll individual Checkbox items in a group.",
   "usage": [
     "DO use the `options` prop for any data-driven list — it auto-generates IDs, handles checked state, and wires up Field (label + description) for each item. NEVER hand-roll individual `<Checkbox>` elements inside a loop when you have an options array.",

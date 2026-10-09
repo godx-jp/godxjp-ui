@@ -4,16 +4,16 @@ import { describe, expect, it } from "vitest";
 
 import { renderWithUi, screen } from "@/test/render";
 import { Card, CardContent } from "../../data-display/card";
-import { AuthShell } from "../auth-shell";
+import { CenteredShell } from "../centered-shell";
 
 describe("AuthShell compact card spacing", () => {
   it("composes canonical AuthShell with solo CardContent without consumer selectors", () => {
     const { container } = renderWithUi(
-      <AuthShell variant="canonical">
+      <CenteredShell variant="auth-canonical">
         <Card>
           <CardContent solo>Login form</CardContent>
         </Card>
-      </AuthShell>,
+      </CenteredShell>,
     );
 
     const shell = container.querySelector('[data-slot="auth-shell"]');

@@ -46,26 +46,18 @@ describe("get_component answers for every public export (gh#553)", () => {
   });
 
   /*
-   * The two house shapes that gh#957 un-folded, pinned BY NAME for the same reason `Swatch` is.
-   *
-   * `Skeleton` declared `subParts: ["SkeletonDetail", "SkeletonStat"]`, so both answered with the
-   * fallback — 325 characters telling the agent to "call get_component name=\"Skeleton\" for its
-   * props", which a propless fixed shape does not have. Their three siblings named in the same
-   * source comment (`SkeletonRows`, `SkeletonTable`, `SkeletonArticle`) each had a full entry, so
-   * four peers had two treatments. After: 3119 and 3147 characters, own entry.
-   *
-   * By NAME and not as a rule, deliberately. Two candidate rules were measured and rejected: "the
-   * parent must mention its sub-part in prose" flags 35 of 135 legitimate sub-parts
-   * (`DialogPortal`, `AlertDialogTitle`…), and "a zero-prop entry must have its own entry" flags 42,
-   * because the manifest lists only props this repo OWNS. The distinction here is a judgement — a
-   * standalone shape versus a part composed inside its parent — so it is recorded, not inferred.
+   * v32 #1223 (R4 decision B1, "one catalog entry per compound family") folded the house loading
+   * shapes back into ONE `Skeleton` entry — the reverse of gh#957, decided on purpose: twelve
+   * entries for one family cost every agent's default context more than a fallback costs one
+   * lookup. What must still hold is that each shape ANSWERS, and that the family entry names it.
    */
-  it.each(["SkeletonDetail", "SkeletonStat"])(
-    "%s resolves to its OWN entry — it is a sibling shape, not a part of Skeleton (gh#957)",
+  it.each(["SkeletonDetail", "SkeletonStat", "SkeletonRows", "SkeletonTable", "SkeletonArticle"])(
+    "%s answers with the Skeleton family entry, which names it (v32 #1223)",
     async (name) => {
       const answer = await dispatchTool("get_component", { name });
-      expect(answer).toContain(`# ${name}`);
-      expect(answer).not.toContain("documented as part of");
+      expect(answer).not.toContain("not found");
+      const family = await dispatchTool("get_component", { name: "Skeleton" });
+      expect(family).toContain(name);
     },
   );
 

@@ -46,7 +46,7 @@
   "related": [
     "AppShell — the authenticated shell WITH a sidebar rail and a mobile drawer at the 900px step. Use it for an admin console that happens to be viewed on a phone; use MobileShell when the phone IS the product.",
     "CenteredShell — the authenticated no-sidebar shell whose main scrolls the PAGE. MobileShell is its handheld counterpart: same 'no rail' shape, opposite scroll contract.",
-    "AuthShell — the unauthenticated root. A login screen inside a handheld app still belongs to AuthShell, not MobileShell.",
+    "CenteredShell (auth shape) — the unauthenticated root. A login screen inside a handheld app still belongs to the auth CenteredShell, not MobileShell.",
     "Sheet — `side=\"bottom\"` is the handheld modal: scanners, pickers and forms open from the bottom over MobileShell rather than navigating away."
   ],
   "rules": [
@@ -54,15 +54,15 @@
     24,
     45
   ],
-  "storyPath": "layout/MobileShell.stories.tsx",
+  "storyPath": "layout/mobile-shell.tsx",
   "tagline": "Handheld app shell (gh#354) — status band · app bar · the ONE scroll region · sticky action bar · bottom tab bar, with device safe-area insets and a document that never scrolls.",
   "usage": [
-    "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · AuthShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
+    "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · the auth CenteredShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
     "DO let `children` be the only thing that scrolls. Put the primary verb in `actions` and navigation in `tabBar` — both sit outside the scroll region, so neither needs `position: sticky`, a z-index, or bottom padding to clear the other.",
     "DO NOT compose one out of <Card> + `ui-card-inset*` + `overflow-y-auto` (what docs/showcase/case6 did before gh#354). That reproduces the look and neither behaviour that matters on a device: the document still scrolls, and nothing pads out of env(safe-area-inset-*), so the notch covers the app bar and the home indicator covers the primary button.",
     "DO swap the `header` node for a screen MODE (select mode, search mode) instead of stacking a second contextual strip below it — one bar to read, and the platform pattern on both iOS and Android.",
     "DO use `height=\"fill\"` ONLY when the shell is inside a bounded parent (a device-frame preview). In a real app leave it at \"viewport\": that is what keeps the document from scrolling.",
-    "DO NOT nest MobileShell inside AppShell / AuthShell / CenteredShell (or the reverse) — it is a ROOT shell. Retune the page gutter and the three band heights from the theme (--mobile-shell-inset-inline, --mobile-shell-header-bar-height, --mobile-shell-tab-bar-height, --mobile-shell-status-bar-height); never fork .ui-mobile-shell-* CSS."
+    "DO NOT nest MobileShell inside AppShell / CenteredShell (or the reverse) — it is a ROOT shell. Retune the page gutter and the three band heights from the theme (--mobile-shell-inset-inline, --mobile-shell-header-bar-height, --mobile-shell-tab-bar-height, --mobile-shell-status-bar-height); never fork .ui-mobile-shell-* CSS."
   ],
   "useCases": [
     "Warehouse handheld (代理店ハンディ): a status band, an app bar with a select-mode text action, a scrolling item list, a dominant Scan button in `actions`, and a three-destination `tabBar` (inbound · packing · outbound). See the case6-agency-handy showcase.",

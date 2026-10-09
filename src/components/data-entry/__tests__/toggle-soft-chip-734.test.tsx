@@ -6,8 +6,8 @@ import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Toggle } from "../../ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
+import { Toggle } from "../toggle";
+import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
 
 /**
  * The CHIP: `Toggle variant="soft"` + `shape` (gh#734).

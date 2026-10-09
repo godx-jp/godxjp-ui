@@ -1,8 +1,8 @@
 {
   "docPath": "data-display/chat-bubble.tsx",
-  "example": "import { Avatar, AvatarFallback, ChatBubble } from \"@godxjp/ui/data-display\";\nimport { formatAppTime } from \"@godxjp/ui/datetime\";\n\n<ChatBubble\n  placement=\"start\"\n  variant=\"filled\"\n  avatar={<Avatar aria-hidden=\"true\"><AvatarFallback>AI</AvatarFallback></Avatar>}\n  header={t(\"chat.bubble.assistant\")}\n  footer={formatAppTime(message.sentAt)}\n  typing={{ step: 2, interval: 24 }}\n>\n  {message.text}\n</ChatBubble>\n\n// The reply has been requested and has not arrived yet.\n<ChatBubble placement=\"start\" header={t(\"chat.bubble.assistant\")} loading />\n\n// A failed send: colour AND a localized sr-only word, never colour alone.\n<ChatBubble placement=\"end\" tone=\"destructive\" header={t(\"chat.bubble.you\")}>\n  {draft}\n</ChatBubble>",
+  "example": "import { Avatar, AvatarFallback } from \"@godxjp/ui/data-display\";\nimport { ChatBubble } from \"@godxjp/chat\";\nimport { formatAppTime } from \"@godxjp/ui/datetime\";\n\n<ChatBubble\n  placement=\"start\"\n  variant=\"filled\"\n  avatar={<Avatar aria-hidden=\"true\"><AvatarFallback>AI</AvatarFallback></Avatar>}\n  header={t(\"chat.bubble.assistant\")}\n  footer={formatAppTime(message.sentAt)}\n  typing={{ step: 2, interval: 24 }}\n>\n  {message.text}\n</ChatBubble>\n\n// The reply has been requested and has not arrived yet.\n<ChatBubble placement=\"start\" header={t(\"chat.bubble.assistant\")} loading />\n\n// A failed send: colour AND a localized sr-only word, never colour alone.\n<ChatBubble placement=\"end\" tone=\"destructive\" header={t(\"chat.bubble.you\")}>\n  {draft}\n</ChatBubble>",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/chat",
   "name": "ChatBubble",
   "props": [
     {
@@ -80,7 +80,7 @@
     44,
     45
   ],
-  "storyPath": "data-display/ChatBubble.stories.tsx",
+  "storyPath": "data-display/chat-bubble.tsx",
   "tagline": "One message in a conversation: an author mark, a header naming the turn, the body, and a footer. Renders as an <article> inside ChatBubbleList's log; `loading` shows Skeleton and `typing` streams a string in, dropping the animation entirely under prefers-reduced-motion.",
   "usage": [
     "DO let ChatBubbleList own the feed. A lone ChatBubble is for a single quoted message; a conversation is `items` + `roles` on the list, which is where stick-to-bottom and the one aria-live region live.",

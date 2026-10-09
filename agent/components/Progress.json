@@ -64,7 +64,7 @@
     "BarChart / PieChart / LineChart (@godxjp/ui/charts) — a Progress breakdown handles ONE total split into a few named states, inline and without a charting runtime; move up to a chart when you have several series, many categories, or a value changing over time."
   ],
   "rules": [],
-  "storyPath": "data-display/Progress.stories.tsx",
+  "storyPath": "data-display/progress.tsx",
   "tagline": "Progress in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state, drawn as a bar or — with `shape='ring'` — as an arc with the readout inside it) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track).",
   "usage": [
     "DO import from `@godxjp/ui/data-display`, not from a generic UI path: `import { Progress } from \"@godxjp/ui/data-display\";`",

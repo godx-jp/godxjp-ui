@@ -1,8 +1,8 @@
 {
   "docPath": "navigation/anchor.tsx",
-  "example": "import { Anchor } from \"@godxjp/ui/navigation\";\n\n<Anchor\n  offsetBlockStart={64}\n  targetOffsetBlockStart={88}\n  label=\"On this page\"\n  items={[\n    { key: \"overview\", href: \"#overview\", title: \"Overview\" },\n    {\n      key: \"pricing\",\n      href: \"#pricing\",\n      title: \"Pricing\",\n      children: [{ key: \"tiers\", href: \"#tiers\", title: \"Tiers\" }],\n    },\n    { key: \"faq\", href: \"#faq\", title: \"FAQ\" },\n  ]}\n  onValueChange={(href) => console.log(\"reading\", href)}\n/>",
+  "example": "import { Anchor } from \"@godxjp/ui/lab\";\n\n<Anchor\n  offsetBlockStart={64}\n  targetOffsetBlockStart={88}\n  label=\"On this page\"\n  items={[\n    { key: \"overview\", href: \"#overview\", title: \"Overview\" },\n    {\n      key: \"pricing\",\n      href: \"#pricing\",\n      title: \"Pricing\",\n      children: [{ key: \"tiers\", href: \"#tiers\", title: \"Tiers\" }],\n    },\n    { key: \"faq\", href: \"#faq\", title: \"FAQ\" },\n  ]}\n  onValueChange={(href) => console.log(\"reading\", href)}\n/>",
   "group": "navigation",
-  "importPath": "@godxjp/ui/navigation",
+  "importPath": "@godxjp/ui/lab",
   "name": "Anchor",
   "props": [
     {
@@ -104,8 +104,9 @@
     44,
     45
   ],
-  "storyPath": "navigation/Anchor.stories.tsx",
+  "storyPath": "navigation/anchor.tsx",
   "tagline": "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`.",
+  "tier": "lab",
   "usage": [
     "DO give every target a real `id` and point `href` at it as `#id`. The links are real anchors: middle-clickable, deep-linkable, and correct before JavaScript boots.",
     "DO set `targetOffsetBlockStart` to the height of whatever is pinned above the content, or a clicked section lands under the header. Leave `offsetBlockStart` alone unless the DECISION LINE also needs moving; it follows `targetOffsetBlockStart` by default.",

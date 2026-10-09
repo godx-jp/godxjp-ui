@@ -46,7 +46,7 @@
     "Flex — use Flex for arbitrary vertical/horizontal layout of heterogeneous UI elements. Use Descriptions when every item follows the label-on-top / value-below pattern and you want responsive multi-column alignment for free."
   ],
   "rules": [],
-  "storyPath": "data-display/Descriptions.stories.tsx",
+  "storyPath": "data-display/descriptions.tsx",
   "tagline": "Responsive definition grid for detail-page metadata. COMPOUND — value goes in Descriptions.Item children.",
   "usage": [
     "DO use Descriptions.Item as the ONLY direct child — never raw <div>, <dt>/<dd>, or plain text nodes. Every label/value pair must be wrapped in <Descriptions.Item label=\"…\">value</Descriptions.Item>.",

@@ -17,7 +17,6 @@ import type {
   OpenProp,
   OnOpenChangeProp,
   PendingProp,
-  ShapeProp,
   SizeProp,
   ToneProp,
   TitleProp,
@@ -116,32 +115,24 @@ export type AuthExpiryProviderProp = {
 
 /** @see Alert */
 export type AlertProp = React.HTMLAttributes<HTMLDivElement> & {
+  /**
+   * `default` (inline status), `banner` (full-bleed page/shell strip; actions wrap below 640px) or
+   * `callout` (an aside INSIDE a document body: `role="note"`, never a live region). v32 #1223
+   * folded the former `Banner` and `Callout` components into these two values.
+   */
   variant?: AlertVariantProp;
+  /**
+   * `variant="callout"` only: the GitHub/Obsidian admonition preset — `note` (default), `tip`,
+   * `important`, `warning`, `caution`. Resolves `tone` + the leading glyph; pass `tone` or `icon`
+   * to override either per instance (gh#765).
+   */
+  kind?: CalloutKindProp;
   tone?: ToneProp;
   /** Pass `false` to hide the default variant icon. */
   icon?: IconProp | false;
   onDismiss?: HandlerProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
-};
-
-/**
- * @see Banner — the full-bleed attention strip (`<Alert variant="banner">` with the variant fixed).
- * Same contract as {@link AlertProp} minus `variant`: `tone` owns colour + live-region politeness,
- * `icon`/`icon={false}` owns the leading glyph, `onDismiss` renders the built-in dismiss button.
- */
-export type BannerProp = Omit<AlertProp, "variant">;
-
-/**
- * @see Callout — the in-prose aside (`<Alert variant="callout">` with the variant fixed).
- *
- * Same contract as {@link AlertProp} minus `variant` and `onDismiss`: a callout is part of the
- * document the reader is reading, so it is never a live region and never dismissible. `kind` is
- * the GitHub/Obsidian admonition preset and resolves `tone` + the leading glyph; pass `tone` or
- * `icon` to override either per instance (gh#765).
- */
-export type CalloutProp = Omit<AlertProp, "variant" | "onDismiss"> & {
-  kind?: CalloutKindProp;
 };
 
 /** @see AlertTitle */
@@ -231,43 +222,17 @@ export type SkeletonProp = React.HTMLAttributes<HTMLDivElement> & {
   loading?: boolean;
 };
 
-/** @see SkeletonAvatar */
-export type SkeletonAvatarProp = {
+/** The leading avatar box of a {@link SkeletonArticleProp} (`avatar={{ size, shape }}`). */
+export type SkeletonArticleAvatarProp = {
   /** Box, from the `--control-height` tier — the same tier the real `Avatar` sizes from. */
   size?: SizeProp;
   shape?: AvatarShapeProp;
-  active?: boolean;
-  className?: ClassNameProp;
-};
-
-/** @see SkeletonButton */
-export type SkeletonButtonProp = {
-  size?: SizeProp;
-  /** Corner, in `Button`'s own vocabulary: `pill` is antd's `shape="round"`. */
-  shape?: ShapeProp;
-  /** Fill the inline axis, for a button that spans its column (antd's `block`). */
-  block?: boolean;
-  active?: boolean;
-  className?: ClassNameProp;
 };
 
 /** @see SkeletonInput */
 export type SkeletonInputProp = {
   size?: SizeProp;
   block?: boolean;
-  active?: boolean;
-  className?: ClassNameProp;
-};
-
-/** @see SkeletonNode — a square standing in for a media/custom slot; `children` centres in it. */
-export type SkeletonNodeProp = {
-  active?: boolean;
-  children?: ChildrenProp;
-  className?: ClassNameProp;
-};
-
-/** @see SkeletonImage */
-export type SkeletonImageProp = {
   active?: boolean;
   className?: ClassNameProp;
 };
@@ -279,7 +244,7 @@ export type SkeletonImageProp = {
  * renders.
  */
 export type SkeletonArticleProp = {
-  avatar?: boolean | Pick<SkeletonAvatarProp, "size" | "shape">;
+  avatar?: boolean | SkeletonArticleAvatarProp;
   /** The heading line. NOT a string title — `false` drops the line, `{ width }` re-measures it. */
   title?: boolean | { width?: SkeletonWidth };
   /** `width` as an array measures each row; as a single value it measures the LAST row. */

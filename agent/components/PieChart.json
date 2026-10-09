@@ -83,7 +83,6 @@
     "Progress — single ratio against a target rather than a multi-slice split."
   ],
   "rules": [],
-  "storyPath": "charts/PieChart.stories.tsx",
   "tagline": "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
   "usage": [
     "DO import from the charts entry: `import { PieChart } from \"@godxjp/ui/charts\";` (recharts optional peer required).",

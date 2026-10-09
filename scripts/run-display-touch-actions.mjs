@@ -9,7 +9,9 @@ for (const width of [320, 390]) {
     isMobile: true,
   });
   const page = await context.newPage();
-  await page.goto(`${base}/isolate/data-display-touch-actions`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${base}/isolate/data-display-touch-action-journeys`, {
+    waitUntil: "domcontentloaded",
+  });
   await page.getByRole("button", { name: "Button action" }).tap();
   const button = (await page.getByLabel("Button result").textContent()) === "1";
   await page.getByRole("button", { name: "Sign out" }).tap();

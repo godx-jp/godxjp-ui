@@ -506,20 +506,6 @@
     border-radius: var(--radius-pill);
   }
 
-  [data-skeleton-element="button"] {
-    inline-size: calc(var(--skeleton-element-block-size) * var(--skeleton-button-width-ratio));
-    min-inline-size: calc(var(--skeleton-element-block-size) * var(--skeleton-button-width-ratio));
-  }
-
-  /* Button corners speak Button's own `shape` vocabulary — `pill` is antd's `shape="round"`. */
-  [data-skeleton-element="button"][data-shape="pill"] {
-    border-radius: var(--radius-pill);
-  }
-
-  [data-skeleton-element="button"][data-shape="sharp"] {
-    border-radius: var(--radius-sharp);
-  }
-
   [data-skeleton-element="input"] {
     inline-size: calc(var(--skeleton-element-block-size) * var(--skeleton-input-width-ratio));
     min-inline-size: calc(var(--skeleton-element-block-size) * var(--skeleton-input-width-ratio));
@@ -530,22 +516,6 @@
     display: block;
     inline-size: 100%;
     min-inline-size: 0;
-  }
-
-  [data-skeleton-element="node"],
-  [data-skeleton-element="image"] {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    vertical-align: middle;
-    inline-size: var(--skeleton-node-size);
-    block-size: var(--skeleton-node-size);
-  }
-
-  .ui-skeleton-image-glyph {
-    inline-size: var(--skeleton-image-glyph-size);
-    block-size: var(--skeleton-image-glyph-size);
-    color: var(--skeleton-image-glyph-color, hsl(var(--muted-foreground) / 0.4));
   }
 
   /* ARTICLE — antd lays the avatar and the text out as table cells; a flex row is the same two

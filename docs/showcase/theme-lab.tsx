@@ -102,14 +102,6 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  Carousel,
-  CarouselContent,
-  CarouselDots,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  ChatBubble,
-  ChatBubbleList,
   CodeBlock,
   Collapsible,
   CollapsibleContent,
@@ -119,23 +111,18 @@ import {
   Descriptions,
   EmptyState,
   FeatureList,
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-  Legend,
-  ListRow,
-  Marquee,
-  PermissionMatrix,
   Popover,
   PopoverContent,
+  PopoverTrigger,
+  Legend,
+  ListRow,
+  PermissionMatrix,
   PopoverDescription,
   PopoverHeader,
   PopoverTitle,
-  PopoverTrigger,
   Progress,
   Prose,
   QrCode,
-  RangeTimeline,
   ScrollArea,
   ServiceCatalogCta,
   ServiceLauncherCard,
@@ -148,21 +135,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  ThoughtChain,
-  Thumbnail,
+  Image,
   Timeline,
-  TimelineGrid,
   Tree,
-  Welcome,
-  type ChatMessageProp,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import {
-  Attachments,
   Calendar,
   Cascader,
-  ChatComposer,
-  ChatSuggestion,
   Checkbox,
   CheckboxGroup,
   ColorPicker,
@@ -195,7 +175,6 @@ import {
   Select,
   Slider,
   Switch,
-  TagInput,
   Textarea,
   TimePicker,
   TimeRangePicker,
@@ -213,8 +192,6 @@ import {
   AlertDescription,
   AlertDialog,
   AlertTitle,
-  Banner,
-  Callout,
   Dialog,
   DialogBody,
   DialogClose,
@@ -233,12 +210,8 @@ import {
   SheetTitle,
   Skeleton,
   SkeletonArticle,
-  SkeletonAvatar,
-  SkeletonButton,
   SkeletonForm,
-  SkeletonImage,
   SkeletonInput,
-  SkeletonNode,
   SkeletonRows,
   SkeletonTable,
   Toaster,
@@ -249,21 +222,14 @@ import {
   toast,
 } from "@godxjp/ui/feedback";
 import {
-  Actions,
-  ActionsCopy,
-  ActionsFeedback,
   Activity,
   Button,
-  FloatButton,
   Heading,
   Icon,
   Link,
   Logo,
-  Paragraph,
   Reveal,
   Text,
-  Title,
-  Typography,
   VisuallyHidden,
 } from "@godxjp/ui/general";
 import {
@@ -278,10 +244,8 @@ import {
   AuthIdentity,
   AuthStack,
   Breadcrumb,
-  DraggablePanel,
   ErrorSurface,
   Flex,
-  Masonry,
   MasterDetail,
   NavList,
   OrgSwitcher,
@@ -298,10 +262,7 @@ import {
   TopbarItem,
 } from "@godxjp/ui/layout";
 import {
-  Anchor,
   AppSettingPicker,
-  AppSettingToggle,
-  Conversations,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -309,7 +270,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   FilterBar,
-  MegaMenu,
   Pagination,
   Steps,
   Tabs,
@@ -331,6 +291,34 @@ import {
   type SeedRow,
   type ThemeRow,
 } from "../themes";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselDots,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  Marquee,
+  RangeTimeline,
+  TimelineGrid,
+  FloatButton,
+  DraggablePanel,
+  Masonry,
+  Anchor,
+  MegaMenu,
+} from "@godxjp/ui/lab";
+import {
+  ChatBubble,
+  ChatBubbleList,
+  ThoughtChain,
+  Welcome,
+  Attachments,
+  ChatComposer,
+  ChatSuggestion,
+  Conversations,
+} from "@godxjp/chat";
+import { Actions, ActionsCopy, ActionsFeedback } from "@godxjp/ui/general";
+import type { ChatMessageProp } from "@godxjp/chat";
 
 /* ── The components that CANNOT appear here, and the reason for each ─────────────────────────
  * Rendered on the page as a table. An absence nobody can see is an absence nobody accounts for,
@@ -339,7 +327,6 @@ const ABSENT: ReadonlyArray<{ name: string; reasonKey: string }> = [
   { name: "AppProvider", reasonKey: "themeLab.absent.provider" },
   { name: "OverlayPortalProvider", reasonKey: "themeLab.absent.overlayPortal" },
   { name: "ThemeScope", reasonKey: "themeLab.absent.themeScope" },
-  { name: "AuthShell", reasonKey: "themeLab.absent.ownsPage" },
   { name: "CenteredShell", reasonKey: "themeLab.absent.ownsPage" },
   { name: "MobileShell", reasonKey: "themeLab.absent.ownsPage" },
   { name: "LegalDocumentShell", reasonKey: "themeLab.absent.ownsPage" },
@@ -477,7 +464,7 @@ export default function ThemeLabShowcase() {
    * Polarity, applied THE WAY THE LIBRARY ITSELF APPLIES IT: through `AppProvider`'s own `theme`
    * axis (`src/app/theme-axes.ts`'s `applyThemeAxes`, which is what `AppProvider` calls on
    * `<html data-theme>`), never by writing `document.documentElement` from this page. Going
-   * through `ctx.setTheme` — the exact setter `AppSettingToggle kind="theme"` already uses above —
+   * through `ctx.setTheme` — the exact setter `AppSettingPicker menu={false} kind="theme"` already uses above —
    * sets `AppProvider`'s OWN state, so ITS OWN effect is what reaches the DOM; this page never
    * touches `document.documentElement` for polarity.
    *
@@ -647,7 +634,7 @@ export default function ThemeLabShowcase() {
       end={
         <Flex direction="row" gap="sm" align="center">
           <AppSettingPicker kind="locale" appearance="bar" />
-          <AppSettingToggle kind="theme" />
+          <AppSettingPicker menu={false} kind="theme" />
           <Popover>
             <PopoverTrigger asChild>
               <TopbarItem
@@ -812,8 +799,8 @@ export default function ThemeLabShowcase() {
             >
               <Flex direction="col" gap="sm">
                 <Heading level={3}>{t("themeLab.sample.headline")}</Heading>
-                <Title level={4}>{t("themeLab.sample.alpha")}</Title>
-                <Paragraph>{t("themeLab.sample.long")}</Paragraph>
+                <Heading level={4}>{t("themeLab.sample.alpha")}</Heading>
+                <Text as="p">{t("themeLab.sample.long")}</Text>
                 <Text size="sm" tone="muted">
                   {t("themeLab.sample.short")}
                 </Text>
@@ -824,12 +811,12 @@ export default function ThemeLabShowcase() {
                   {new Intl.NumberFormat(undefined, { notation: "standard" }).format(1240000)}
                 </Text>
                 <Link href="#type">{t("themeLab.sample.linkLabel")}</Link>
-                <Typography>
-                  <Typography.Title level={5}>{t("themeLab.sample.beta")}</Typography.Title>
-                  <Typography.Paragraph>{t("themeLab.sample.short")}</Typography.Paragraph>
-                </Typography>
+                <Heading level={4} size="2xs">
+                  {t("themeLab.sample.beta")}
+                </Heading>
+                <Text as="p">{t("themeLab.sample.short")}</Text>
                 <Prose size="sm">
-                  <Typography.Paragraph>{t("themeLab.sample.long")}</Typography.Paragraph>
+                  <p>{t("themeLab.sample.long")}</p>
                 </Prose>
                 <CodeBlock size="xs" maxHeight="sm" aria-label={t("themeLab.sample.codeLabel")}>
                   {`[data-theme-style="flat"] {\n  --card-radius: 0;\n}`}
@@ -1075,14 +1062,14 @@ export default function ThemeLabShowcase() {
                       </CollapsibleContent>
                     </Flex>
                   </Collapsible>
-                  {/* No `asChild`. HoverCardTrigger is a react-aria `Focusable`, and a `Button`
+                  {/* No `asChild`. A hover-mode PopoverTrigger is a react-aria `Focusable`, and a `Button`
                       handed to it through `asChild` warned "<Focusable> child must forward its ref
                       to a DOM element" on every render. The catalogue's own example is a bare
                       trigger, and that is what this uses. */}
-                  <HoverCard>
-                    <HoverCardTrigger>{t("themeLab.sample.one")}</HoverCardTrigger>
-                    <HoverCardContent>{t("themeLab.sample.short")}</HoverCardContent>
-                  </HoverCard>
+                  <Popover openOn="hover">
+                    <PopoverTrigger>{t("themeLab.sample.one")}</PopoverTrigger>
+                    <PopoverContent>{t("themeLab.sample.short")}</PopoverContent>
+                  </Popover>
                 </Flex>
               </ResponsiveGrid>
               <Card>
@@ -1149,7 +1136,9 @@ export default function ThemeLabShowcase() {
                   label={t("themeLab.label.qr")}
                   size="md"
                 />
-                <Thumbnail
+                <Image
+                  fit="intrinsic"
+                  preview={false}
                   src={shotLandscape}
                   width={960}
                   height={540}
@@ -1327,7 +1316,9 @@ export default function ThemeLabShowcase() {
                   <Textarea id="f-notes" rows={3} placeholder={t("themeLab.sample.short")} />
                 </FormField>
                 <FormField id="f-tags" label={t("themeLab.field.tags")}>
-                  <TagInput
+                  <Select
+                    mode="tags"
+                    open={false}
                     id="f-tags"
                     aria-label={t("themeLab.field.tags")}
                     value={tags}
@@ -1716,16 +1707,16 @@ export default function ThemeLabShowcase() {
                 <AlertTitle>{t("themeLab.tone.destructive")}</AlertTitle>
                 <AlertDescription>{t("themeLab.sample.short")}</AlertDescription>
               </Alert>
-              <Banner tone="warning">
-                <Banner.Content>
-                  <Banner.Title>{t("themeLab.tone.warning")}</Banner.Title>
-                  <Banner.Description>{t("themeLab.sample.short")}</Banner.Description>
-                </Banner.Content>
-              </Banner>
-              <Callout kind="warning">
-                <Callout.Title>{t("themeLab.tone.warning")}</Callout.Title>
-                <Callout.Description>{t("themeLab.sample.long")}</Callout.Description>
-              </Callout>
+              <Alert variant="banner" tone="warning">
+                <Alert.Content>
+                  <Alert.Title>{t("themeLab.tone.warning")}</Alert.Title>
+                  <Alert.Description>{t("themeLab.sample.short")}</Alert.Description>
+                </Alert.Content>
+              </Alert>
+              <Alert variant="callout" kind="warning">
+                <Alert.Title>{t("themeLab.tone.warning")}</Alert.Title>
+                <Alert.Description>{t("themeLab.sample.long")}</Alert.Description>
+              </Alert>
               <EmptyState
                 title={t("themeLab.label.noResults")}
                 description={t("themeLab.sample.short")}
@@ -1739,11 +1730,7 @@ export default function ThemeLabShowcase() {
               />
               <Row2 label={t("themeLab.label.skeletons")}>
                 <Skeleton />
-                <SkeletonAvatar size="lg" />
-                <SkeletonButton size="sm" />
                 <SkeletonInput />
-                <SkeletonNode />
-                <SkeletonImage active />
               </Row2>
               <SkeletonArticle avatar active paragraph={{ rows: 2 }} />
               <SkeletonForm columns={2} fields={4} />

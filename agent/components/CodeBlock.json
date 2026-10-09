@@ -49,7 +49,7 @@
     "CredentialReveal - a masked secret with copy; not for arbitrary text."
   ],
   "rules": [],
-  "storyPath": "data-display/CodeBlock.stories.tsx",
+  "storyPath": "data-display/code-block.tsx",
   "tagline": "A block of preformatted text (request and response bodies, console output, snippets): mono, muted surface, soft-wrapped long lines by default, and an optional height cap that scrolls inside the block instead of pushing the page.",
   "usage": [
     "DO import from `@godxjp/ui/data-display`: `import { CodeBlock } from \"@godxjp/ui/data-display\";`",

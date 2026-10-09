@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  AvatarFallback,
-  Badge,
-  Card,
-  CardContent,
-  OrgChart,
-  type OrgChartNodeProp,
-} from "@godxjp/ui/data-display";
+import { Avatar, AvatarFallback, Badge, Card, CardContent } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import {
   AppShell,
@@ -17,6 +9,8 @@ import {
   Topbar,
 } from "@godxjp/ui/layout";
 import { Bot, Building2, Settings, Users } from "lucide-react";
+import { OrgChart } from "@godxjp/ui/lab";
+import type { OrgChartNodeProp } from "@godxjp/ui/lab";
 
 /**
  * OrgChart — who reports to whom, people and AI agents on one chart (gh#1034).

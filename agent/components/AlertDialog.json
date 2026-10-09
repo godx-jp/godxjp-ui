@@ -80,8 +80,9 @@
     23,
     3
   ],
-  "storyPath": "feedback/AlertDialog.stories.tsx",
+  "storyPath": "feedback/alert-dialog.tsx",
   "subParts": [
+    "AlertDialogRoot",
     "AlertDialogAction",
     "AlertDialogCancel",
     "AlertDialogContent",
@@ -95,6 +96,12 @@
   ],
   "tagline": "Canonical modal confirmation flow (destructive / high-stakes decisions). Preserves confirm semantics with `role=\"alertdialog\"` and built-in cancel/confirm handling.",
   "usage": [
+    "COMPOUND (AlertDialogRoot): Reach for the flat `AlertDialog` preset FIRST — it already covers title/description/confirm/cancel, the typed `challenge`, `stepUp` re-auth and `pending`. Use `AlertDialogRoot` only when the confirm body needs content the preset does not model (an impact summary, a diff, a nested list).",
+    "COMPOUND (AlertDialogRoot): DO name it `AlertDialogRoot`, not `AlertDialog` — the `AlertDialog` export is the flat preset and takes a completely different (non-compound) prop API.",
+    "COMPOUND (AlertDialogRoot): DO include `AlertDialogHeader` with `AlertDialogTitle` inside every `AlertDialogContent` — `role=alertdialog` needs an accessible title; omitting it warns in the console and breaks screen-reader announcement. `AlertDialogHeader` also takes the prop-driven `title`/`subtitle`/`extra`/`tone` form, where `subtitle` renders the `AlertDialogDescription`.",
+    "COMPOUND (AlertDialogRoot): DO portal explicitly: `AlertDialogContent` does NOT self-portal (unlike `DialogContent`). Wrap it in `AlertDialogPortal` with a sibling `AlertDialogOverlay`, or the scrim and stacking context are wrong.",
+    "COMPOUND (AlertDialogRoot): DO use `AlertDialogAction` / `AlertDialogCancel` for the footer buttons — they carry the button styling AND the close semantics. Do not wrap them in `asChild` `<Button variant=…>`: the Root's button classes and the child's would both land on the element and the variant would not win.",
+    "COMPOUND (AlertDialogRoot): DO NOT import `@radix-ui/react-alert-dialog` directly in a consumer app. Everything the compound needs is exported from `@godxjp/ui/feedback`.",
     "Use `AlertDialog` for destructive/irreversible actions (delete, void, unpublish, archive, etc.).",
     "Use `confirmPhrase`/`challenge` for high-friction operations (e.g. typing an org slug) to reduce accidental confirmation — both force the destructive shape: the destructive confirm button plus a leading status glyph beside the title, which is Ant Design `Modal.confirm` parity. The header surface stays UNTINTED — antd signals danger with the glyph and never tints a modal header (its soft `colorErrorBg` belongs to Alert/Tag/message). To tint the band anyway, set `DialogHeader tone` yourself; it is a separate seven-value axis the preset no longer imposes.",
     "Pass `stepUp` for a passkey/2FA re-auth gate that must resolve truthy before `onConfirm` runs (refunds, org deletion).",

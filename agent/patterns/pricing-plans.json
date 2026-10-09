@@ -1,0 +1,17 @@
+{
+  "aliases": [
+    "pricing-table",
+    "plan-picker",
+    "pricing-card"
+  ],
+  "code": "import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Badge, FeatureList } from \"@godxjp/ui/data-display\";\nimport { ResponsiveGrid } from \"@godxjp/ui/layout\";\nimport { Button, Text } from \"@godxjp/ui/general\";\nimport { useTranslation } from \"@godxjp/ui/i18n\";\n\ntype Plan = {\n  id: string;\n  name: string;\n  summary: string;\n  /** Minor units of the ISO 4217 currency; formatted with Intl, never hand-built. */\n  price: number;\n  currency: string;\n  recommended?: boolean;\n  current?: boolean;\n  features: { state: \"included\" | \"excluded\" | \"limited\"; label: string; description?: string }[];\n};\n\nexport function PricingPlans({ plans, onChoose }: { plans: Plan[]; onChoose: (id: string) => void }) {\n  const { t, locale } = useTranslation();\n  return (\n    // 3 columns from the sm container step, 1 below it — the geometry is the preset's, not yours.\n    <ResponsiveGrid preset=\"pricing-plans\" gap=\"md\">\n      {plans.map((plan) => {\n        const money = new Intl.NumberFormat(locale, { style: \"currency\", currency: plan.currency });\n        const digits = money.resolvedOptions().maximumFractionDigits ?? 0;\n        return (\n          // \"featured\" is the one recommended plan: a brand-toned perimeter, not a bigger card.\n          <Card key={plan.id} variant={plan.recommended ? \"featured\" : \"default\"}>\n            <CardHeader>\n              <CardTitle>{plan.name}</CardTitle>\n              <CardDescription>{plan.summary}</CardDescription>\n              {plan.current ? <Badge tone=\"success\">{t(\"billing.currentPlan\")}</Badge> : null}\n            </CardHeader>\n            <CardContent>\n              <Text size=\"xl\" weight=\"semibold\" tabular>\n                {money.format(plan.price / 10 ** digits)}\n              </Text>\n              {/* FeatureList owns the included / limited / excluded glyph, colour and sr-only prefix. */}\n              <FeatureList items={plan.features} />\n            </CardContent>\n            <CardFooter>\n              <Button\n                fullWidth\n                variant={plan.recommended ? \"default\" : \"outline\"}\n                disabled={plan.current}\n                onClick={() => onChoose(plan.id)}\n              >\n                {plan.current ? t(\"billing.currentPlan\") : t(\"billing.choosePlan\")}\n              </Button>\n            </CardFooter>\n          </Card>\n        );\n      })}\n    </ResponsiveGrid>\n  );\n}",
+  "name": "pricing-plans",
+  "tagline": "Pricing plan cards — ResponsiveGrid preset + Card featured + FeatureList + tabular price. A composition, not a component (consumer request, debated 2026-10-09 on #1205).",
+  "tags": [
+    "pricing",
+    "plans",
+    "billing",
+    "card",
+    "composition"
+  ]
+}

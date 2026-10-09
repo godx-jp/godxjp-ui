@@ -38,7 +38,7 @@ export { Cascader } from "../data-entry/cascader";
 export { TreeSelect } from "../data-entry/tree-select";
 export { Transfer } from "../data-entry/transfer";
 export { Pagination, Steps, Tabs, TabsContent, TabsList, TabsTrigger } from "../navigation";
-export { Toolbar, ToolbarGroup } from "../navigation/filter-bar";
+export { Toolbar, ToolbarGroup } from "../navigation/toolbar";
 export {
   Dialog,
   DialogTrigger,

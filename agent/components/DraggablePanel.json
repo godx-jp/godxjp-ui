@@ -1,8 +1,8 @@
 {
   "docPath": "layout/draggable-panel.tsx",
-  "example": "import { useState } from \"react\";\nimport { DraggablePanel, Flex } from \"@godxjp/ui/layout\";\nimport { Text } from \"@godxjp/ui/general\";\n\nfunction Assistant() {\n  const [position, setPosition] = useState({ x: 0, y: 0 });\n  return (\n    <DraggablePanel\n      title=\"アシスタント\"\n      placement=\"bottom-end\"\n      position={position}\n      onPositionChange={setPosition}\n    >\n      <Flex direction=\"col\" gap=\"sm\">\n        <Text size=\"sm\">この請求書の消費税区分について質問できます。</Text>\n      </Flex>\n    </DraggablePanel>\n  );\n}",
+  "example": "import { useState } from \"react\";\nimport { Flex } from \"@godxjp/ui/layout\";\nimport { DraggablePanel } from \"@godxjp/ui/lab\";\nimport { Text } from \"@godxjp/ui/general\";\n\nfunction Assistant() {\n  const [position, setPosition] = useState({ x: 0, y: 0 });\n  return (\n    <DraggablePanel\n      title=\"アシスタント\"\n      placement=\"bottom-end\"\n      position={position}\n      onPositionChange={setPosition}\n    >\n      <Flex direction=\"col\" gap=\"sm\">\n        <Text size=\"sm\">この請求書の消費税区分について質問できます。</Text>\n      </Flex>\n    </DraggablePanel>\n  );\n}",
   "group": "layout",
-  "importPath": "@godxjp/ui/layout",
+  "importPath": "@godxjp/ui/lab",
   "name": "DraggablePanel",
   "props": [
     {
@@ -87,10 +87,11 @@
     23,
     44
   ],
-  "storyPath": "layout/DraggablePanel.stories.tsx",
+  "storyPath": "layout/draggable-panel.tsx",
   "tagline": "A floating surface the person using it can MOVE — drag it by the title-bar handle, or focus the handle and nudge it with the arrow keys. Bounded to the viewport, position reported through onPositionChange and never stored by the library.",
+  "tier": "lab",
   "usage": [
-    "DO import from `@godxjp/ui/layout`: `import { DraggablePanel } from \"@godxjp/ui/layout\";`",
+    "DO import from `@godxjp/ui/lab` (the opt-in lab subpath): `import { DraggablePanel } from \"@godxjp/ui/lab\";`",
     "DO treat the position as yours. The panel reports it and stores nothing, so persisting it per user, per workspace or not at all is a decision you make.",
     "DO keep the body text short enough to read at 22rem, or let it scroll — the body is its own scroll region and the panel is capped at 70vh.",
     "DON'T hand-roll this with a fixed-position div and pointer maths: that is page-local CSS ui-audit blocks, and every consumer that floats anything would write it again.",

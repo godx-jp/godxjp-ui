@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { AuthShell } from "../auth-shell";
+import { CenteredShell } from "../centered-shell";
 import { AuthFooter } from "../auth-footer";
 import { AuthIdentity } from "../auth-identity";
 import { AuthStack } from "../auth-stack";
@@ -11,9 +11,9 @@ import { renderWithUi } from "@/test/render";
 describe("AuthShell", () => {
   it("renders the centred main landmark with its children", () => {
     const { getByRole, getByText } = renderWithUi(
-      <AuthShell>
+      <CenteredShell variant="auth">
         <div>ログインフォーム</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(getByRole("main")).toBeInTheDocument();
     expect(getByText("ログインフォーム")).toBeInTheDocument();
@@ -21,9 +21,9 @@ describe("AuthShell", () => {
 
   it("renders the brand banner and footer contentinfo when provided", () => {
     const { getByRole, getByText } = renderWithUi(
-      <AuthShell brand={<span>ブランド</span>} footer={<span>フッタ</span>}>
+      <CenteredShell variant="auth" brand={<span>ブランド</span>} footer={<span>フッタ</span>}>
         x
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(getByRole("banner")).toBeInTheDocument();
     expect(getByRole("contentinfo")).toBeInTheDocument();
@@ -33,9 +33,9 @@ describe("AuthShell", () => {
 
   it("omits the brand + footer landmarks when their slots are absent", () => {
     const { queryByRole } = renderWithUi(
-      <AuthShell>
+      <CenteredShell variant="auth">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(queryByRole("banner")).toBeNull();
     expect(queryByRole("contentinfo")).toBeNull();
@@ -43,9 +43,9 @@ describe("AuthShell", () => {
 
   it("forwards className to the shell root", () => {
     const { container } = renderWithUi(
-      <AuthShell className="tenant-scope">
+      <CenteredShell variant="auth" className="tenant-scope">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(container.querySelector('[data-slot="auth-shell"]')).toHaveClass(
       "ui-auth-shell",
@@ -55,9 +55,9 @@ describe("AuthShell", () => {
 
   it("exposes the canonical token preset and its compact default density", () => {
     const { container } = renderWithUi(
-      <AuthShell variant="canonical">
+      <CenteredShell variant="auth-canonical">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     const shell = container.querySelector('[data-slot="auth-shell"]');
     expect(shell).toHaveAttribute("data-variant", "canonical");
@@ -66,9 +66,9 @@ describe("AuthShell", () => {
 
   it("preserves comfortable defaults and accepts an explicit density override", () => {
     const { container, rerender } = renderWithUi(
-      <AuthShell>
+      <CenteredShell variant="auth">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(container.querySelector('[data-slot="auth-shell"]')).toHaveAttribute(
       "data-density",
@@ -76,9 +76,9 @@ describe("AuthShell", () => {
     );
 
     rerender(
-      <AuthShell variant="canonical" density="comfortable">
+      <CenteredShell variant="auth-canonical" density="comfortable">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(container.querySelector('[data-slot="auth-shell"]')).toHaveAttribute(
       "data-density",
@@ -88,9 +88,9 @@ describe("AuthShell", () => {
 
   it("stays un-preset by default so the existing shell box is untouched (gh#220)", () => {
     const { container } = renderWithUi(
-      <AuthShell variant="canonical">
+      <CenteredShell variant="auth-canonical">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     // No `data-preset` at all — the `[data-preset] .ui-auth-shell-card` stack rule must not reach
     // an existing consumer, and canonical keeps its own 360px/15px measure.
@@ -107,9 +107,9 @@ describe("AuthShell", () => {
     'preset="%s" is exposed on the shell root and composes with variant="canonical"',
     (preset) => {
       const { container } = renderWithUi(
-        <AuthShell variant="canonical" preset={preset}>
+        <CenteredShell variant="auth-canonical" preset={preset}>
           <div>x</div>
-        </AuthShell>,
+        </CenteredShell>,
       );
       const shell = container.querySelector('[data-slot="auth-shell"]');
       // Both hooks are present: `variant` still owns control density / heading size while the
@@ -124,9 +124,9 @@ describe("AuthShell", () => {
     'align="%s" is exposed on the shell root and composes with a preset',
     (align) => {
       const { container } = renderWithUi(
-        <AuthShell variant="canonical" preset="login" align={align}>
+        <CenteredShell variant="auth-canonical" preset="login" align={align}>
           <div>x</div>
-        </AuthShell>,
+        </CenteredShell>,
       );
       const shell = container.querySelector('[data-slot="auth-shell"]');
       // Orthogonal axes: the preset still owns the page measure, `align` only the block placement.
@@ -139,27 +139,27 @@ describe("AuthShell", () => {
     // Load-bearing: the align and preset rules decide --auth-shell-main-align at EQUAL specificity,
     // and align is declared later. An always-emitted attribute would silently re-aim every preset.
     const { container } = renderWithUi(
-      <AuthShell preset="login">
+      <CenteredShell variant="auth" preset="login">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(container.querySelector('[data-slot="auth-shell"]')).not.toHaveAttribute("data-align");
   });
 
   it('preset="default" is a no-op that keeps the un-preset box', () => {
     const { container } = renderWithUi(
-      <AuthShell preset="default">
+      <CenteredShell variant="auth" preset="default">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(container.querySelector('[data-slot="auth-shell"]')).not.toHaveAttribute("data-preset");
   });
 
   it("keeps the main landmark named and the card slot present under a preset", () => {
     const { container, getByRole } = renderWithUi(
-      <AuthShell variant="canonical" preset="context-selection">
+      <CenteredShell variant="auth-canonical" preset="context-selection">
         <div>組織を選択</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(getByRole("main")).toHaveAccessibleName();
     expect(container.querySelector(".ui-auth-shell-card")).toBeInTheDocument();
@@ -188,11 +188,11 @@ describe("AuthShell", () => {
     "registration preset carries long %s identity copy without truncation markup",
     (_locale, title, requester) => {
       const { container, getByText } = renderWithUi(
-        <AuthShell variant="canonical" preset="registration">
+        <CenteredShell variant="auth-canonical" preset="registration">
           <AuthIdentity title={title} requester={requester} />
           <div>Sign-up form</div>
           <AuthFooter product="GoDX ID" terms="Terms" privacy="Privacy" />
-        </AuthShell>,
+        </CenteredShell>,
       );
       expect(getByText(title)).toBeInTheDocument();
       expect(getByText(requester)).toBeInTheDocument();
@@ -206,16 +206,17 @@ describe("AuthShell", () => {
 
   it("renders canonical identity requester and legal footer composites", () => {
     const { container, getByText } = renderWithUi(
-      <AuthShell variant="canonical">
+      <CenteredShell variant="auth-canonical">
         <AuthIdentity title="GoDX ID" requester="Attendance is requesting sign in" />
         <AuthStack>
           <span>Passkey</span>
           <span>Email</span>
         </AuthStack>
         <AuthFooter product="Acme ID" terms="Terms" privacy="Privacy" locale="English" />
-      </AuthShell>,
+      </CenteredShell>,
     );
-    expect(container.querySelector('[data-slot="logo"][data-mark="godx"]')).toBeInTheDocument();
+    // v32 (#1220): no preset ⇒ AuthIdentity draws NO product mark; the GoDX mark is the preset's.
+    expect(container.querySelector('[data-slot="logo"][data-mark="godx"]')).toBeNull();
     expect(container.querySelector('[data-slot="auth-requester-icon"]')).toBeInTheDocument();
     expect(getByText("Acme ID")).toBeInTheDocument();
     expect(getByText("English")).toBeInTheDocument();
@@ -224,9 +225,13 @@ describe("AuthShell", () => {
 
   it("renders page-level actions at the inline end of the brand banner", () => {
     const { getByRole, getByText, container } = renderWithUi(
-      <AuthShell brand={<span>ブランド</span>} actions={<button type="button">日本語</button>}>
+      <CenteredShell
+        variant="auth"
+        brand={<span>ブランド</span>}
+        actions={<button type="button">日本語</button>}
+      >
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     const banner = getByRole("banner");
     expect(banner).toContainElement(getByText("ブランド"));
@@ -240,9 +245,9 @@ describe("AuthShell", () => {
 
   it("renders the named banner for actions alone (no brand mark)", () => {
     const { getByRole, getByText } = renderWithUi(
-      <AuthShell actions={<button type="button">テーマ</button>}>
+      <CenteredShell variant="auth" actions={<button type="button">テーマ</button>}>
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     const banner = getByRole("banner");
     expect(banner).toHaveAccessibleName();
@@ -251,16 +256,16 @@ describe("AuthShell", () => {
 
   it('emits data-measure only for a real measure, so measure="default" keeps the 24rem box', () => {
     const { container, rerender } = renderWithUi(
-      <AuthShell measure="default">
+      <CenteredShell variant="auth" measure="default">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(container.querySelector('[data-slot="auth-shell"]')).not.toHaveAttribute("data-measure");
 
     rerender(
-      <AuthShell measure="wide">
+      <CenteredShell variant="auth" measure="wide">
         <div>x</div>
-      </AuthShell>,
+      </CenteredShell>,
     );
     expect(container.querySelector('[data-slot="auth-shell"]')).toHaveAttribute(
       "data-measure",

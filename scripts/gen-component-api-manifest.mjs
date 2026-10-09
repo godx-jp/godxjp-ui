@@ -316,10 +316,13 @@ export function buildComponentApiManifest(rootDir = root) {
     return [...new Set(values)];
   }
 
-  for (const directory of fs
+  const componentBarrels = fs
     .readdirSync(path.join(rootDir, "src/components"), { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())) {
-    const indexFile = path.join(rootDir, "src/components", directory.name, "index.ts");
+    .filter((entry) => entry.isDirectory())
+    .map((directory) => path.join(rootDir, "src/components", directory.name, "index.ts"));
+  // The opt-in `@godxjp/ui/lab` subpath (v32 #1223) ships components too.
+  componentBarrels.push(path.join(rootDir, "src/lab/index.ts"));
+  for (const indexFile of componentBarrels) {
     if (!fs.existsSync(indexFile)) continue;
     const sourceFile = program.getSourceFile(indexFile);
     if (!sourceFile) continue;
@@ -353,7 +356,7 @@ export function buildComponentApiManifest(rootDir = root) {
        */
       const parameter = signature.parameters[0];
       if (!parameter) {
-        components[name] = { group: directory.name, props: [] };
+        components[name] = { group: path.basename(path.dirname(indexFile)), props: [] };
         continue;
       }
       const propsType = checker.getTypeOfSymbolAtLocation(parameter, sourceFile);
@@ -436,7 +439,7 @@ export function buildComponentApiManifest(rootDir = root) {
         });
       }
       components[name] = {
-        group: directory.name,
+        group: path.basename(path.dirname(indexFile)),
         props: props.sort((a, b) => a.name.localeCompare(b.name)),
       };
     }
@@ -467,10 +470,8 @@ export function buildComponentApiManifest(rootDir = root) {
   for (const directory of fs
     .readdirSync(path.join(rootDir, "src/components"), { withFileTypes: true })
     .filter((entry) => entry.isDirectory()))
-    utilityBarrels.push([
-      `./${directory.name}`,
-      `src/components/${directory.name}/index.ts`,
-    ]);
+    utilityBarrels.push([`./${directory.name}`, `src/components/${directory.name}/index.ts`]);
+  utilityBarrels.push(["./lab", "src/lab/index.ts"]);
 
   for (const [subpath, relative] of utilityBarrels) {
     const barrelPath = path.join(rootDir, relative);
@@ -487,7 +488,7 @@ export function buildComponentApiManifest(rootDir = root) {
       // A type-only export has no runtime identity, so it is not something to call or read.
       const isValue = Boolean(
         resolved.flags &
-          (ts.SymbolFlags.Function | ts.SymbolFlags.Variable | ts.SymbolFlags.Method),
+        (ts.SymbolFlags.Function | ts.SymbolFlags.Variable | ts.SymbolFlags.Method),
       );
       if (!isValue) continue;
       const type = checker.getTypeOfSymbolAtLocation(symbol, sourceFile);

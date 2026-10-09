@@ -106,7 +106,7 @@
     23,
     31
   ],
-  "storyPath": "data-entry/Form.stories.tsx",
+  "storyPath": "data-entry/form-root.tsx",
   "tagline": "Client or server-adapted forms with shared layout, validation, submission, reset and error recovery.",
   "usage": [
     "Use inside the documented form composition; do not nest native form elements.",

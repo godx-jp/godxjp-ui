@@ -1,4 +1,7 @@
 {
+  "absorbed": [
+    "Thumbnail"
+  ],
   "docPath": "data-display/image.tsx",
   "example": "import { Image, ImagePreviewGroup, Prose } from \"@godxjp/ui/data-display\";\n\n<ImagePreviewGroup>\n  <Prose>\n    <p><Image src=\"/shots/before.png\" alt=\"Before the fix\" width={320} /></p>\n    <p><Image src=\"/shots/after.png\" alt=\"After the fix\" width={320} /></p>\n    <p><Image src=\"/logo.svg\" alt=\"\" width={24} preview={false} /></p>\n  </Prose>\n</ImagePreviewGroup>",
   "group": "data-display",
@@ -41,9 +44,9 @@
       "type": "\"sm\" | \"md\" | \"lg\""
     },
     {
-      "description": "object-fit inside a fixed frame. Default `cover` once the height is fixed (size or height).",
+      "description": "object-fit inside a fixed frame (`cover` crops, `contain` letterboxes). Default `cover` once the height is fixed (size or height). `intrinsic` keeps the picture's OWN ratio: the frame is the `size` height (default md) at the picture's own width — never cropped — with the hairline thumbnail frame on a muted backdrop, clamped to its column; `width`/`height` then stay `<img>` attributes (the file's real pixels) so the width is reserved before the bytes land. Use it for a wrapping row of mixed portrait/landscape screenshots at one height — what the retired `Thumbnail` was (v32). Pair with `preview={false}` for a plain picture.",
       "name": "fit",
-      "type": "\"cover\" | \"contain\""
+      "type": "\"cover\" | \"contain\" | \"intrinsic\""
     },
     {
       "description": "Text under the picture in a figure held to the picture's width — a long file name truncates instead of widening the tile. godx extension.",
@@ -72,7 +75,7 @@
     }
   ],
   "related": [
-    "Thumbnail — a framed picture at a fixed height, with no preview.",
+    "Image `fit=\"intrinsic\" preview={false}` — a framed picture at a fixed height and its own width, with no preview (the former Thumbnail).",
     "Prose — the Markdown body the group usually wraps.",
     "Carousel — slides on the page itself, not a full-viewport preview."
   ],
@@ -83,7 +86,7 @@
     44,
     45
   ],
-  "storyPath": "data-display/Image.stories.tsx",
+  "storyPath": "data-display/image.tsx",
   "subParts": [
     "ImagePreviewGroup"
   ],

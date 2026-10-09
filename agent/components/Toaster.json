@@ -22,7 +22,6 @@
     "Dialog — use when the user must make a conscious decision (confirm delete, resolve conflict) before proceeding. Toaster toasts are fire-and-forget; Dialog blocks until the user responds."
   ],
   "rules": [],
-  "storyPath": "feedback/Toaster.stories.tsx",
   "tagline": "Mount once at app root to enable toasts. IMPORTANT: trigger toasts via `import { toast } from \"sonner\"` — NOT from @godxjp/ui.",
   "usage": [
     "DO: Mount exactly ONE `<Toaster richColors />` at the app root (e.g. inside your layout or AppShell children). Multiple mounts create duplicate toast stacks — there is no provider context, only DOM portals.",

@@ -39,6 +39,8 @@ const AA_TEXT = 4.5;
 
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
 const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
+/** The GoDX preset (v32, gh#1220) — the violet seed the identity kit's ramp was authored on. */
+const godx = readFileSync(join(process.cwd(), "src/themes/godx.css"), "utf8");
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(css: string, selector: string): string {
@@ -77,7 +79,23 @@ const round2 = (n: number) => Math.round(n * 100) / 100;
 /* ────────────────────────────────────────────────────────────────────────────
  * 1. OUR SEED STILL LANDS ON THE KIT.
  * ──────────────────────────────────────────────────────────────────────────── */
-describe("on the package's own seed the formula reproduces the identity kit", () => {
+describe("on the package's own (neutral) seed the core fallback is the formula's answer", () => {
+  // v32 (gh#1220): the default seed is the neutral ink. Chrome/Edge 111–118 get these literals, so
+  // they must be what every other engine computes from that seed — not the GoDX violet ramp.
+  const fallback = derived.slice(derived.indexOf("@supports not (color: hsl(from red h s l))"));
+  const ALL = [...FAMILY, "text-link", "text-brand", "text-primary"] as const;
+
+  describe.each(THEMES)("$theme", (theme) => {
+    const seed = hsl(theme.foundation, "primary");
+    const body = block(fallback, theme.theme === "light" ? "  :root {" : "  .dark,");
+
+    it.each(ALL)("fallback --%s", (name) => {
+      expect(hex(triplet(declaration(body, name)))).toBe(hex(state(theme, name, seed)));
+    });
+  });
+});
+
+describe("on the GoDX preset's seed the formula reproduces the identity kit", () => {
   /** The literals 25.4.0 shipped — the kit's own ramp, hue-snapped (see derived.css). */
   const KIT = {
     light: {
@@ -95,16 +113,19 @@ describe("on the package's own seed the formula reproduces the identity kit", ()
   } as const;
 
   describe.each(THEMES)("$theme", (theme) => {
-    const seed = hsl(theme.foundation, "primary");
+    const seed = hsl(
+      block(godx, theme.theme === "light" ? ":root {" : '.dark, :root[data-theme="dark"] {'),
+      "primary",
+    );
 
     it.each(FAMILY)("--%s", (name) => {
       expect(hex(state(theme, name, seed))).toBe(KIT[theme.theme][name]);
     });
 
-    it("the no-relative-colour fallback carries the same four values", () => {
+    it("the preset's no-relative-colour fallback carries the same four values", () => {
       // Chrome/Edge 111–118 cannot evaluate the formula; they get these literals instead. Held equal
       // here so the fallback can never drift from what every other engine paints.
-      const fallback = derived.slice(derived.indexOf("@supports not (color: hsl(from red h s l))"));
+      const fallback = godx.slice(godx.indexOf("@supports not (color: hsl(from red h s l))"));
       expect(fallback.length, "the @supports fallback block must exist").toBeGreaterThan(50);
       const body = block(fallback, theme.theme === "light" ? "  :root {" : "  .dark,");
       for (const name of FAMILY) {
@@ -173,13 +194,15 @@ describe("the family is a knob with a live default everywhere it is read", () =>
  * ──────────────────────────────────────────────────────────────────────────── */
 
 /**
- * The seeds this sweep names. The first two are ours; the next four were measured in a consuming
+ * The seeds this sweep names. The first two are ours, the next two the GoDX preset's; the next four were measured in a consuming
  * app on 25.4.0 (every one of them hovered violet); the last four are the extremes a formula tends
  * to break at.
  */
 const SWEEP: ReadonlyArray<{ theme: "light" | "dark"; seed: string; why: string }> = [
-  { theme: "light", seed: "268.7 100% 50%", why: "the package seed" },
-  { theme: "dark", seed: "268.7 100% 86.9%", why: "the package seed" },
+  { theme: "light", seed: "240 6% 10%", why: "the package seed (neutral ink)" },
+  { theme: "dark", seed: "0 0% 98%", why: "the package seed (neutral ink)" },
+  { theme: "light", seed: "268.7 100% 50%", why: "the GoDX preset seed" },
+  { theme: "dark", seed: "268.7 100% 86.9%", why: "the GoDX preset seed" },
   { theme: "light", seed: "204 100% 37%", why: "consumer blue" },
   { theme: "dark", seed: "204 90% 60%", why: "consumer blue, dark" },
   { theme: "light", seed: "173 80% 28%", why: "consumer teal" },
@@ -195,6 +218,8 @@ const SWEEP: ReadonlyArray<{ theme: "light" | "dark"; seed: string; why: string 
  * pair. Pinned, so a formula change lands here and not in a consumer's axe run.
  */
 const MEASURED: Record<string, [number, number, number]> = {
+  "light 240 6% 10%": [17.45, 13.1, 15.32],
+  "dark 0 0% 98%": [16.97, 14.89, 12.97],
   "light 268.7 100% 50%": [6.32, 8.23, 10.31],
   "dark 268.7 100% 86.9%": [10.72, 13.51, 8.41],
   "light 204 100% 37%": [5.04, 7.4, 10.35],

@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import * as React from "react";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 
-import { FilterBar, FilterBarGroup, Toolbar } from "../filter-bar";
-import type { FilterBarChipProp, FilterBarProps } from "../filter-bar";
+import { FilterBar, FilterBarGroup, Toolbar } from "../toolbar";
+import type { FilterBarChipProp, FilterBarProps } from "../toolbar";
 import { SearchInput } from "../../data-entry/search-input";
 
 /**

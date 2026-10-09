@@ -39,13 +39,13 @@
     3,
     6
   ],
-  "storyPath": "data-display/Accordion.stories.tsx",
+  "storyPath": "data-display/accordion.tsx",
   "subParts": [
     "AccordionContent",
     "AccordionItem",
     "AccordionTrigger"
   ],
-  "tagline": "Radix accordion — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent.",
+  "tagline": "React Aria disclosure group — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent.",
   "usage": [
     "DO compose the full set: <Accordion type=\"single\" collapsible><AccordionItem value=\"a\"><AccordionTrigger/><AccordionContent/></AccordionItem></Accordion>.",
     "DO give each AccordionItem a unique `value`.",

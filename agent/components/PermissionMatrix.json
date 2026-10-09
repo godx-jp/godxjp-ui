@@ -69,7 +69,7 @@
   "rules": [
     24
   ],
-  "storyPath": "data-display/PermissionMatrix.stories.tsx",
+  "storyPath": "data-display/permission-matrix.tsx",
   "tagline": "Domain data is 100% consumer-supplied.",
   "usage": [
     "DO import it — it is a real export from @godxjp/ui/data-display (the lesson: a docs page is not importable). Never hand-compose the sticky-column grid per app.",

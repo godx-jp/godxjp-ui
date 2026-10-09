@@ -94,10 +94,21 @@
    * A theme picks the pair for its conventional label below; a service whose label polarity is
    * the other way round (a light seed with dark text in the light theme) points the two knobs at
    * the other pair — `applyPrimaryColor` does exactly that from the label it chooses. */
-  --primary-hover-darken-channels: h s calc(l - 8.4);
-  --primary-active-darken-channels: h s calc(l - 15.5);
-  --primary-hover-lighten-channels: h s calc(l + 5.8);
-  --primary-active-lighten-channels: h s calc(l + 11.6 - 17.4 * clamp(0, (l - 83.4) * 1000, 1));
+  /* AT THE ENDS OF THE RAMP THE STEP TURNS AROUND (v32, gh#1220). A seed darker than 12% L has
+   * no room below it: the neutral ink (240 6% 10%) stepped to 1.6% for hover and 0% for pressed,
+   * 1.16:1 from rest, which reads as no hover at all. Below 12% L hover goes UP 9.6 and pressed UP
+   * 4.8 (ink: 19.6% / 14.8%). The bound is 12, not 20, and the up-steps are small, because a light
+   * label must stay AA: the worst hue (green, highest luminance per L) peaks at 21.6% L, still
+   * ≥ 6:1 under white — at 20 / +15.5 the dense sweep measured #004400 pressed at 4.06:1. The mirror
+   * case: above 94% L (the dark theme's near-white ink, 98%) hover ran into 100% (1.04:1), so both
+   * lighten steps turn DOWN (92.2% / 86.4% for the ink). Mid-ramp seeds (the GoDX violet, 50% and
+   * 86.9%) take exactly the old steps. Brand INKS (`--text-*`) keep their own formula below: an ink
+   * sits on a light surface and must step away from it, whatever the fill does. */
+  --primary-hover-darken-channels: h s calc(l - 8.4 + 18 * clamp(0, (12 - l) * 1000, 1));
+  --primary-active-darken-channels: h s calc(l - 15.5 + 20.3 * clamp(0, (12 - l) * 1000, 1));
+  --primary-hover-lighten-channels: h s calc(l + 5.8 - 11.6 * clamp(0, (l - 94) * 1000, 1));
+  --primary-active-lighten-channels: h s
+    calc(l + 11.6 - 17.4 * clamp(0, (l - 83.4) * 1000, 1) - 5.8 * clamp(0, (l - 94) * 1000, 1));
 
   --primary-hover-channels: var(--primary-hover-darken-channels);
   --primary-active-channels: var(--primary-active-darken-channels);
@@ -128,10 +139,10 @@
   --text-primary: initial;
   /* Light: one step DOWN the ramp from the action colour — the same step `--primary-hover` takes,
    * so the link sits where identity v2.3 puts it and moves when the seed does. */
-  --text-link-channels: var(--primary-hover-channels);
-  --text-brand-channels: var(--primary-hover-channels);
+  --text-link-channels: h s calc(l - 8.4);
+  --text-brand-channels: h s calc(l - 8.4);
   /* The pressed ink is two steps down — identity v2.3 action.primary.pressed (#5200B0). */
-  --text-primary-channels: var(--primary-active-channels);
+  --text-primary-channels: h s calc(l - 15.5);
 
   --destructive-hover: 359 50.6% 53.1%; /* #c44b4d */
   --destructive-active: 355 70.6% 33.3%; /* #911923 */
@@ -168,7 +179,7 @@
   --text-brand-channels: h s l;
   /* Dark: the pressed ink is one hover step ABOVE the seed (#E8DAFF), the way foundation.css
    * authored it — the dark ramp runs upward, so "pressed" is brighter, not darker. */
-  --text-primary-channels: var(--primary-hover-channels);
+  --text-primary-channels: h s calc(l + 5.8);
 
   --destructive-hover: 358.8 42.3% 53.1%; /* #ba5557 */
   --destructive-active: 357.3 50.6% 34.1%; /* #832b2f */
@@ -183,27 +194,28 @@
 /* ENGINES WITHOUT RELATIVE COLOUR (Chrome/Edge 111–118; Safari 16.4+ and Firefox 128+ have it —
  * the partial support caniuse lists there is `currentcolor` only, which nothing here uses). The
  * call-site formula would be invalid at computed-value time and paint nothing, so these engines get
- * the default seed's values as literal knobs: exactly what 25.4.0 shipped to every browser. A
- * consumer seed does not follow there. derived-seed-sweep.test.ts holds these equal to the formula. */
+ * the default seed's values as literal knobs — the formula evaluated on the NEUTRAL ink seed since
+ * v32 (gh#1220); the GoDX preset carries its own violet set in themes/godx.css. A consumer seed
+ * does not follow there. derived-seed-sweep.test.ts holds these equal to the formula. */
 @supports not (color: hsl(from red h s l)) {
   :root {
-    --primary-hover: 268.7 100% 41.6%;
-    --primary-active: 268.7 100% 34.5%;
-    --primary-border: 268.7 68% 66%;
-    --control-outline: 268.7 100% 44.7%;
-    --text-link: 268.7 100% 41.6%;
-    --text-brand: 268.7 100% 41.6%;
-    --text-primary: 268.7 100% 34.5%;
+    --primary-hover: 240 6% 19.6%;
+    --primary-active: 240 6% 14.8%;
+    --primary-border: 240 4.08% 26%;
+    --control-outline: 240 6% 4.7%;
+    --text-link: 240 6% 1.6%;
+    --text-brand: 240 6% 1.6%;
+    --text-primary: 240 6% 0%;
   }
 
   .dark,
   :root[data-theme="dark"] {
-    --primary-hover: 268.7 100% 92.7%;
-    --primary-active: 268.7 100% 81.1%;
-    --primary-border: 268.7 46.7% 23.5%;
-    --control-outline: 268.7 99% 61.8%;
-    --text-link: 268.7 100% 86.9%;
-    --text-brand: 268.7 100% 86.9%;
-    --text-primary: 268.7 100% 92.7%;
+    --primary-hover: 0 0% 92.2%;
+    --primary-active: 0 0% 86.4%;
+    --primary-border: 0 0% 26.5%;
+    --control-outline: 0 0% 72.9%;
+    --text-link: 0 0% 98%;
+    --text-brand: 0 0% 98%;
+    --text-primary: 0 0% 100%;
   }
 }

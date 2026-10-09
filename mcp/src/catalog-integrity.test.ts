@@ -74,11 +74,11 @@ describe("component catalog — every entry is structurally complete", () => {
       expect(typeof c.example).toBe("string");
       expect(c.example.trim().length, `${c.name} example`).toBeGreaterThan(0);
 
-      expect(typeof c.storyPath).toBe("string");
-      // Most entries point at a `.stories.tsx`, but a few share a typography/
-      // preview surface (e.g. general/typography.tsx, *.preview.tsx) — accept
-      // any `.tsx` under a group folder.
-      expect(c.storyPath, `${c.name} storyPath`).toMatch(/^[\w-]+\/[\w.-]+\.tsx$/);
+      // Optional since v32 (#1223): a docs page under `docs/`, or absent. That the page EXISTS is
+      // `check:mcp-guidance`'s job; here only the shape.
+      if (c.storyPath !== undefined) {
+        expect(c.storyPath, `${c.name} storyPath`).toMatch(/^[\w-]+(?:\/[\w.-]+)+\.tsx$/);
+      }
 
       expect(Array.isArray(c.rules), `${c.name} rules`).toBe(true);
       for (const n of c.rules) {
@@ -217,7 +217,10 @@ describe("component catalog — examples are plausible TSX", () => {
   it("examples import from a @godxjp/ui subpath when they show an import", () => {
     for (const c of COMPONENTS) {
       if (/\bimport\b/.test(c.example)) {
-        expect(c.example, `${c.name} import source`).toMatch(/@godxjp\/ui/);
+        // An entry shipped by a sibling package (`@godxjp/chat`, v32 #1223) imports from it.
+        const from =
+          c.importPath && !c.importPath.startsWith("@godxjp/ui") ? c.importPath : "@godxjp/ui";
+        expect(c.example, `${c.name} import source`).toContain(from);
       }
     }
   });
@@ -392,7 +395,7 @@ describe("newly-added components are catalogued with the expected API", () => {
 
     const usage = (surface?.usage ?? []).join(" ");
     // the catalog must actively steer away from the workaround …
-    expect(usage).toMatch(/AuthShell/);
+    expect(usage).toMatch(/auth CenteredShell|auth shape/); // the former AuthShell (v32 #1223)
     expect(usage).toMatch(/EXACTLY ONE|ONE action/i);
     // … and teach that system geometry is package-owned
     expect(usage).toMatch(/min-h-dvh/);

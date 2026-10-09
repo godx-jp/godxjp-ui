@@ -27,7 +27,7 @@ import {
   AuthDivider,
   AuthFooter,
   AuthIdentity,
-  AuthShell,
+  CenteredShell,
   AuthStack,
   Flex,
 } from "@godxjp/ui/layout";
@@ -78,7 +78,7 @@ const PROVIDERS = [
 
 const ORGANIZATIONS = [
   { id: "acme", name: "Acme 株式会社", role: "招待 · 管理者として参加", initials: "AC" },
-  { id: "godx-labs", name: "GoDX Labs", role: "招待 · メンバーとして参加", initials: "GL" },
+  { id: "acme-labs", name: "Acme Labs", role: "招待 · メンバーとして参加", initials: "AL" },
 ];
 
 export default function Demo() {
@@ -111,12 +111,12 @@ export default function Demo() {
     // the mark INSIDE the column as `AuthIdentity`, above the card, and pass no top brand bar.
     // Pass one here and the whole column is pushed down by the bar's height, so every offset read
     // off this page would be wrong and the preset's canonical card anchor would silently miss.
-    <AuthShell
-      variant="canonical"
+    <CenteredShell
+      variant="auth-canonical"
       preset="registration"
       footer={
         <AuthFooter
-          product="GoDX ID"
+          product="Acme ID"
           terms="利用規約"
           privacy="プライバシー"
           locale={<AppSettingPicker kind="locale" appearance="labeled" compact />}
@@ -333,6 +333,6 @@ export default function Demo() {
           </Button>
         ))}
       </Flex>
-    </AuthShell>
+    </CenteredShell>
   );
 }

@@ -6,7 +6,7 @@ import {
   Tabs as AriaTabs,
 } from "react-aria-components";
 import { MoreHorizontal, Plus, X } from "lucide-react";
-import { useCounterPill } from "../ui/toggle";
+import { useCounterPill } from "../data-entry/toggle";
 import { useTranslation } from "../../i18n/use-translation";
 import { useMaxWidthBreakpoint } from "../../lib/breakpoint-token";
 import { cn } from "../../lib/utils";

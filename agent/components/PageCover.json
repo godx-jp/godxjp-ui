@@ -1,8 +1,8 @@
 {
   "docPath": "docs/layout/page-cover.tsx",
-  "example": "import { PageContainer, PageCover } from \"@godxjp/ui/layout\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<PageContainer\n  title={page.title}\n  headerScale=\"display\"\n  icon={<span aria-hidden=\"true\">{page.icon}</span>}\n  cover={\n    <PageCover\n      src={page.cover}\n      alt=\"\"\n      positionY={y}\n      onPositionChange={setY}\n      repositioning={moving}\n      onRepositioningChange={setMoving}\n      actions={<Button size=\"sm\" variant=\"secondary\" onClick={() => setMoving(true)}>Reposition</Button>}\n    />\n  }\n>\n  {body}\n</PageContainer>",
+  "example": "import { PageContainer } from \"@godxjp/ui/layout\";\nimport { PageCover } from \"@godxjp/ui/lab\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<PageContainer\n  title={page.title}\n  headerScale=\"display\"\n  icon={<span aria-hidden=\"true\">{page.icon}</span>}\n  cover={\n    <PageCover\n      src={page.cover}\n      alt=\"\"\n      positionY={y}\n      onPositionChange={setY}\n      repositioning={moving}\n      onRepositioningChange={setMoving}\n      actions={<Button size=\"sm\" variant=\"secondary\" onClick={() => setMoving(true)}>Reposition</Button>}\n    />\n  }\n>\n  {body}\n</PageContainer>",
   "group": "layout",
-  "importPath": "@godxjp/ui/layout",
+  "importPath": "@godxjp/ui/lab",
   "name": "PageCover",
   "props": [
     {
@@ -68,6 +68,7 @@
   "rules": [],
   "storyPath": "layout/page-cover.tsx",
   "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
+  "tier": "lab",
   "usage": [
     "DO pass it as PageContainer `cover` with the page `icon` — the container places it and overlaps the icon.",
     "DO wire a Reposition button in `actions` that sets `repositioning`, and persist positionY from onPositionChange."

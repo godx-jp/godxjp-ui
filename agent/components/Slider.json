@@ -138,8 +138,8 @@
     6,
     31
   ],
-  "storyPath": "data-entry/Slider.stories.tsx",
-  "tagline": "Numeric slider on react-aria-components with the antd 6 API — one thumb over a point, or `range` for a span. `value` takes a plain number (antd) or a number[] (the Radix-era spelling); both still work.",
+  "storyPath": "data-entry/slider.tsx",
+  "tagline": "Numeric slider on react-aria-components with the antd 6 API — one thumb over a point, or `range` for a span. `value` takes a plain number (antd) or a number[] (the v22-era array spelling); both still work.",
   "usage": [
     "DO: Use `onChange` for live UI and `onChangeComplete` for the expensive work — a refetch, a save. Commit fires once per gesture, and only when the value moved.",
     "DO: Declare `range` when you want two thumbs. Leaving it to an array's length makes a range that is still loading render as a single point, and `onChange` then reports a number rather than a pair.",

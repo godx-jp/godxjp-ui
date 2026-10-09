@@ -1,7 +1,7 @@
 {
-  "example": "import { TimelineGrid } from \"@godxjp/ui/data-display\";\n\n<TimelineGrid\n  label=\"週シフト 5月11日〜17日\"\n  start=\"06:00\"\n  end=\"24:00\"\n  interval={2}\n  now=\"14:35\"\n  columns={[\n    { id: \"05-13\", label: \"水 13\" },\n    { id: \"05-14\", label: \"木 14\", current: true },\n  ]}\n  events={[\n    { id: \"a\", columnId: \"05-14\", start: \"09:00\", end: \"17:30\", title: \"早番\", description: \"田中\" },\n    { id: \"b\", columnId: \"05-14\", start: \"13:00\", end: \"22:00\", title: \"遅番\", description: \"高橋\" },\n    { id: \"c\", columnId: \"05-14\", start: \"22:00\", end: \"06:00\", title: \"夜勤\", description: \"伊藤\" },\n  ]}\n  onEventSelect={(event) => openShift(event.id)}\n/>",
+  "example": "import { TimelineGrid } from \"@godxjp/ui/lab\";\n\n<TimelineGrid\n  label=\"週シフト 5月11日〜17日\"\n  start=\"06:00\"\n  end=\"24:00\"\n  interval={2}\n  now=\"14:35\"\n  columns={[\n    { id: \"05-13\", label: \"水 13\" },\n    { id: \"05-14\", label: \"木 14\", current: true },\n  ]}\n  events={[\n    { id: \"a\", columnId: \"05-14\", start: \"09:00\", end: \"17:30\", title: \"早番\", description: \"田中\" },\n    { id: \"b\", columnId: \"05-14\", start: \"13:00\", end: \"22:00\", title: \"遅番\", description: \"高橋\" },\n    { id: \"c\", columnId: \"05-14\", start: \"22:00\", end: \"06:00\", title: \"夜勤\", description: \"伊藤\" },\n  ]}\n  onEventSelect={(event) => openShift(event.id)}\n/>",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/ui/lab",
   "name": "TimelineGrid",
   "props": [
     {
@@ -72,10 +72,11 @@
     42,
     45
   ],
-  "storyPath": "data-display/TimelineGrid.stories.tsx",
+  "storyPath": "data-display/timeline-grid.tsx",
   "tagline": "The time-axis half of the Timeline family: a vertical hour axis, one column per day (or room, or machine) and event blocks placed by start time and duration. Overlapping events are laid out side by side automatically. NOT a calendar — no month view, no navigation, no drag-to-create, no recurrence, no timezone conversion.",
+  "tier": "lab",
   "usage": [
-    "DO import from `@godxjp/ui/data-display`: `import { TimelineGrid } from \"@godxjp/ui/data-display\";`",
+    "DO import from `@godxjp/ui/lab` (the opt-in lab subpath): `import { TimelineGrid } from \"@godxjp/ui/lab\";`",
     "DO give a shift/booking board one column per day and let the grid place the blocks. DON'T hand-roll a `relative` container with absolutely-positioned divs and percentage offsets — that is the exact shape this primitive replaces (#354 item 7), and it hides one of two overlapping shifts.",
     "DO re-tune the rhythm with the tokens instead of a className: `--timeline-grid-hour-height` is the height of one hour (the knob that fits a 24-hour axis on one screen), `--timeline-grid-column-min-width` is the floor below which the grid scrolls instead of collapsing, `--timeline-grid-axis-width` is the hour rail, and `--timeline-grid-event-color` / `--timeline-grid-now-color` / `--timeline-grid-current-tint` are role-mirror colour knobs.",
     "DO express a shift that crosses midnight as `start: \"22:00\", end: \"06:00\"` — an `end` at or before `start` means the next day. The block is drawn to the end of the window and marked `data-clipped`, and the text still reads 22:00–06:00.",

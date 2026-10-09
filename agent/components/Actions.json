@@ -56,7 +56,7 @@
     44,
     45
   ],
-  "storyPath": "general/Actions.stories.tsx",
+  "storyPath": "general/actions.tsx",
   "subParts": [
     "ActionsItem",
     "ActionsCopy",

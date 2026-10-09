@@ -33,7 +33,6 @@ const contracts = [
       "Flex",
       "AppShell",
       "OrgSwitcher",
-      "AuthShell",
       "AuthDivider",
       "AuthIdentity",
       "AuthFooter",
@@ -89,13 +88,13 @@ const contracts = [
     subpath: "./feedback",
     // Pinned in the PACKED artifact
     // regresses silently at publish time).
-    runtime: ["TwoFactorSetup", "Banner"],
-    types: ["TwoFactorSetupProps", "BannerProp", "BannerProps"],
+    runtime: ["TwoFactorSetup", "Alert"],
+    types: ["TwoFactorSetupProps", "AlertProp", "AlertProps"],
     files: [
       "dist/components/feedback/two-factor-setup.js",
       "dist/components/feedback/two-factor-setup.d.ts",
-      "dist/components/feedback/banner.js",
-      "dist/components/feedback/banner.d.ts",
+      "dist/components/feedback/alert.js",
+      "dist/components/feedback/alert.d.ts",
     ],
   },
   {
@@ -104,8 +103,9 @@ const contracts = [
     runtime: ["FilterBar", "FilterBarGroup", "Toolbar", "ToolbarGroup"],
     types: ["FilterBarProp", "FilterBarProps", "FilterBarChipProp", "FilterBarGroupProps"],
     files: [
-      "dist/components/navigation/filter-bar.js",
-      "dist/components/navigation/filter-bar.d.ts",
+      // v32 (#1223): FilterBar is an alias of Toolbar and lives in toolbar.tsx; the names hold.
+      "dist/components/navigation/toolbar.js",
+      "dist/components/navigation/toolbar.d.ts",
     ],
   },
   {
@@ -157,8 +157,13 @@ const styleContracts = [
   {
     subpath: "./styles",
     target: "./dist/styles/index.css",
-    // The bundled entry is the one that DOES carry the 737 subsets — pinned so a "fix" that
-    // quietly drops the fonts from the zero-config entry is a failure, not a silent behaviour swap.
+    // v32 (#1221): fonts are OPT-IN. The zero-config entry carries no faces; `./styles/fonts.css`
+    // does. Pinned both ways so neither entry can quietly change what it pulls in.
+    expect: { faces: 0, fontsource: false },
+  },
+  {
+    subpath: "./styles/fonts.css",
+    target: "./dist/styles/fonts.css",
     expect: { faces: 6, fontsource: true },
   },
   {

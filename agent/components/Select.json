@@ -5,7 +5,8 @@
     "CountrySelect",
     "SearchSelect",
     "Typeahead",
-    "AsyncSelect"
+    "AsyncSelect",
+    "TagInput"
   ],
   "example": "import {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectLabel,\n  SelectSeparator,\n  SelectTrigger,\n  SelectValue,\n} from \"@godxjp/ui/data-entry\";\nimport { Text } from \"@godxjp/ui/general\";\n// as=\"span\" on both: an option row is a phrasing context, so a <div> would be invalid HTML.\nimport { Flex } from \"@godxjp/ui/layout\";\n\n// ── 1. Data-driven (Ant-style) — static list, no search ──────────────────────\nexport function StatusSelect({ value, onChange }) {\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      options={[\n        { value: \"draft\",    label: \"Draft\" },\n        { value: \"sent\",     label: \"Sent\" },\n        { value: \"paid\",     label: \"Paid\" },\n        { value: \"overdue\",  label: \"Overdue\" },\n      ]}\n      placeholder=\"Select status\"\n      name=\"status\"\n      id=\"status\"\n    />\n  );\n}\n\n// ── 2. Data-driven, searchable static list with groups ────────────────────────\nexport function CurrencySelect({ value, onChange }) {\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      showSearch\n      options={[\n        { value: \"JPY\", label: \"Japanese Yen\",  group: \"Asia\" },\n        { value: \"VND\", label: \"Vietnamese Dong\", group: \"Asia\" },\n        { value: \"EUR\", label: \"Euro\",           group: \"Europe\" },\n        { value: \"GBP\", label: \"Pound Sterling\", group: \"Europe\" },\n      ]}\n      placeholder=\"Select currency\"\n      searchPlaceholder=\"Search currencies…\"\n      name=\"currency\"\n    />\n  );\n}\n\n// ── 3. Data-driven, async (loadOptions) ──────────────────────────────────────\nexport function AccountSelect({ value, onChange, selectedLabel }) {\n  async function loadOptions({ query, page }) {\n    const res = await fetch(`/api/accounts?q=${query}&page=${page}`);\n    const json = await res.json();\n    return { options: json.data, hasMore: json.hasMore };\n  }\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      loadOptions={loadOptions}\n      selectedLabel={selectedLabel}\n      placeholder=\"Search accounts…\"\n      renderOption={(opt) => (\n        <Flex as=\"span\" align=\"center\" gap=\"xs\">\n          <Text as=\"span\" tone=\"muted\" mono>\n            {opt.value}\n          </Text>\n          {opt.label}\n        </Flex>\n      )}\n      name=\"account_id\"\n    />\n  );\n}\n\n// ── 4. Compound API — custom trigger content ──────────────────────────────────\nexport function PrioritySelect({ value, onValueChange }) {\n  return (\n    <Select value={value} onValueChange={onValueChange}>\n      <SelectTrigger size=\"sm\" id=\"priority\">\n        <SelectValue placeholder=\"Priority\" />\n      </SelectTrigger>\n      <SelectContent>\n        <SelectGroup>\n          <SelectLabel>Urgency</SelectLabel>\n          <SelectItem value=\"high\">High</SelectItem>\n          <SelectItem value=\"medium\">Medium</SelectItem>\n        </SelectGroup>\n        <SelectSeparator />\n        <SelectItem value=\"low\">Low</SelectItem>\n      </SelectContent>\n    </Select>\n  );\n}",
   "group": "data-entry",
@@ -138,7 +139,7 @@
       "type": "\"full\" | \"auto\" | \"bounded\""
     },
     {
-      "description": "Searchable mode only. Controlled popover open state (uncontrolled by default). Pair with onOpenChange.",
+      "description": "Searchable mode only. Controlled popover open state (uncontrolled by default). Pair with onOpenChange. With `mode=\"tags\"`, `open={false}` (antd's spelling of \"a tags field whose list never opens\") renders the INLINE chip field instead — no popup, no combobox: type + Enter or a `tokenSeparators` character adds a tag, Backspace on an empty draft drops the last, a pasted \"a, b, c\" becomes three tags, the draft commits on blur, and `name` submits the tags comma-joined in one hidden input. `onValueChange` then receives the tag array only. This is what the retired `TagInput` was (v32 #1223).",
       "name": "open",
       "type": "boolean"
     },
@@ -366,18 +367,18 @@
   ],
   "related": [
     "Segmented — the same choice when the option set is small and worth showing at once. Select hides its options behind a trigger; Segmented lays them out, which reads better for 2-4 mutually exclusive options.",
-    "SearchSelect — the combobox engine Select delegates to when showSearch=true or loadOptions is set. Prefer Select with showSearch instead of reaching for SearchSelect directly (SearchSelect is now deprecated as a public API).",
+    "Select showSearch / loadOptions — the searchable combobox is a MODE of this component (an internal engine, not a public SearchSelect export); never build your own.",
     "TreeSelect — use when options are hierarchical (parent/child tree). Not a drop-in for Select; has expand/collapse and a separate treeData prop.",
     "Select with showSearch — use Select (with the `showSearch` prop) for typeahead/autocomplete lookup patterns instead of the removed Autocomplete component.",
     "RadioGroup — use instead of Select when there are 2-4 mutually exclusive choices that must all be visible at once without opening a popover.",
-    "Combobox (if present) — compound cmdk-powered combobox for free-text + suggestion; Select is for strict value lists only."
+    "Command — the cmdk-powered list for free-text command search (a palette, a slash menu); a value-picking combobox is Select showSearch — there is no Combobox component."
   ],
   "rules": [
     3,
     6,
     23
   ],
-  "storyPath": "data-entry/Select.stories.tsx",
+  "storyPath": "data-entry/select.tsx",
   "subParts": [
     "SelectContent",
     "SelectGroup",
@@ -391,6 +392,7 @@
   ],
   "tagline": "Polymorphic single-select: pass options/loadOptions for the data-driven (Ant-style) API, or compose sub-parts manually — never use a raw <select>.",
   "usage": [
+    "FREE-TEXT TAGS WITH NO LIST (keywords, email recipients, labels typed from scratch): `<Select mode=\"tags\" open={false} value={tags} onValueChange={setTags} />` — the inline chip field. Use plain `mode=\"tags\"` (popup) only when there is a list of existing tags to pick from. There is no `TagInput` component.",
     "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
     "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
     "NAMING A SELECT WITH NO VISIBLE LABEL: put `aria-label` on `<Select>`, NOT on `<SelectTrigger>`. Both render the identical button attribute — Select forwards its name down through SelectFieldA11yContext and the trigger writes last — but only the root spelling also names the react-aria field, and a root that cannot see a name warns once per render (gh#869). Inside a FormField or Field, pass nothing: the label id reaches both levels on its own. `aria-labelledby` pointing at your own element works on either level and is the right spelling when a visible heading already names the control.",

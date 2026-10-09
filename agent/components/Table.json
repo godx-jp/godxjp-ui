@@ -92,7 +92,7 @@
     "DataState — when your Table's data comes from `useQuery`, wrap it in DataState to handle loading/error/empty states declaratively instead of writing conditional logic around the Table yourself."
   ],
   "rules": [],
-  "storyPath": "data-display/Table.stories.tsx",
+  "storyPath": "data-display/table.tsx",
   "subParts": [
     "TableBody",
     "TableCell",

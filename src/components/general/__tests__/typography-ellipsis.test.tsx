@@ -1,8 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
-import { Paragraph, Text } from "../typography";
+import { Text } from "../typography";
 
 /**
  * antd `ellipsis` — `EllipsisConfig` in antd 6.6.3.
@@ -106,125 +105,5 @@ describe("Text — ellipsis", () => {
     clip(run(container));
     expect(container.textContent).not.toContain("...");
     expect(container.textContent).toContain("件");
-  });
-});
-
-describe("Paragraph — ellipsis rows and expansion", () => {
-  it("maps antd's `rows` onto the clamp this library already owns", () => {
-    const { container } = render(<Paragraph ellipsis={{ rows: 3 }}>長い説明</Paragraph>);
-    const el = run(container);
-    expect(el).toHaveAttribute("data-clamp", "");
-    expect(el.style.getPropertyValue("--text-clamp")).toBe("3");
-  });
-
-  it("reports the measured overflow through onEllipsis, and only when it flips", () => {
-    const onEllipsis = vi.fn();
-    const { container } = render(<Paragraph ellipsis={{ rows: 2, onEllipsis }}>説明</Paragraph>);
-    // Fits: no call, because nothing changed from the initial `false`.
-    expect(onEllipsis).not.toHaveBeenCalled();
-
-    clip(run(container));
-    expect(onEllipsis).toHaveBeenCalledWith(true);
-
-    // A second observer tick with the same geometry must NOT re-fire — antd guards the same way.
-    act(() => {
-      for (const fire of resizeCallbacks) fire();
-    });
-    expect(onEllipsis).toHaveBeenCalledTimes(1);
-  });
-
-  it("shows the expand control only once the text is actually clipped", () => {
-    const { container } = render(
-      <Paragraph ellipsis={{ rows: 2, expandable: true }}>説明</Paragraph>,
-    );
-    // antd hides it for text that fits, and so does this: an "Expand" on a three-word paragraph is
-    // a control that does nothing.
-    expect(screen.queryByRole("button", { name: "Mở rộng" })).toBeNull();
-
-    clip(run(container));
-    expect(screen.getByRole("button", { name: "Mở rộng" })).toBeInTheDocument();
-  });
-
-  it("expands on click, releases the clamp, and reports through onExpand", async () => {
-    const user = userEvent.setup();
-    const onExpand = vi.fn();
-    const { container } = render(
-      <Paragraph ellipsis={{ rows: 2, expandable: true, onExpand }}>長い説明</Paragraph>,
-    );
-    clip(run(container));
-
-    const button = screen.getByRole("button", { name: "Mở rộng" });
-    // A disclosure control states its own state. WAI-ARIA APG owns this layer (DESIGN-AUTHORITY)
-    // and outranks antd, which ships only an aria-label.
-    expect(button).toHaveAttribute("aria-expanded", "false");
-
-    await user.click(button);
-
-    expect(onExpand).toHaveBeenCalledWith(expect.anything(), { expanded: true });
-    // antd releases the clamp entirely once expanded, unless `expandable: "collapsible"`.
-    expect(run(container)).toHaveAttribute("data-expanded", "");
-    expect(screen.queryByRole("button", { name: "Mở rộng" })).toBeNull();
-  });
-
-  it("keeps a collapse control when expandable is 'collapsible'", async () => {
-    const user = userEvent.setup();
-    const { container } = render(
-      <Paragraph ellipsis={{ rows: 2, expandable: "collapsible" }}>長い説明</Paragraph>,
-    );
-    clip(run(container));
-
-    await user.click(screen.getByRole("button", { name: "Mở rộng" }));
-    const collapse = screen.getByRole("button", { name: "Thu gọn" });
-    expect(collapse).toHaveAttribute("aria-expanded", "true");
-  });
-
-  it("takes a caller's `symbol`, including the function form", async () => {
-    const user = userEvent.setup();
-    const symbol = (expanded: boolean) => (expanded ? "閉じる" : "もっと見る");
-    const { container } = render(
-      <Paragraph ellipsis={{ rows: 2, expandable: "collapsible", symbol }}>長い説明</Paragraph>,
-    );
-    clip(run(container));
-
-    expect(screen.getByText("もっと見る")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Mở rộng" }));
-    expect(screen.getByText("閉じる")).toBeInTheDocument();
-  });
-
-  it("honours defaultExpanded and a controlled expanded", () => {
-    const { container, rerender } = render(
-      <Paragraph ellipsis={{ rows: 2, expandable: true, defaultExpanded: true }}>説明</Paragraph>,
-    );
-    expect(run(container)).toHaveAttribute("data-expanded", "");
-
-    rerender(<Paragraph ellipsis={{ rows: 2, expandable: true, expanded: false }}>説明</Paragraph>);
-    expect(run(container)).not.toHaveAttribute("data-expanded");
-  });
-
-  it("moves the clamp onto an inner wrapper when an action cluster shares the run", () => {
-    // THE DOCUMENTED DEVIATION, measured. `-webkit-line-clamp` clips everything inside its box, so
-    // an expand button placed inline would be invisible at exactly the moment it is needed. The
-    // clamp therefore moves to a wrapper and the cluster becomes its sibling. antd solves the same
-    // problem by re-slicing the text in JS; the prop surface is identical, the pixels differ.
-    const { container } = render(
-      <Paragraph ellipsis={{ rows: 2, expandable: true }}>長い説明</Paragraph>,
-    );
-    clip(run(container));
-
-    const outer = run(container);
-    const wrapper = container.querySelector<HTMLElement>('[data-slot="typography-content"]');
-    expect(outer).not.toHaveAttribute("data-clamp");
-    expect(wrapper).toHaveAttribute("data-clamp", "");
-    expect(wrapper?.style.getPropertyValue("--text-clamp")).toBe("2");
-    // The cluster is a SIBLING of the clamped box, never inside it.
-    expect(wrapper?.querySelector('[data-slot="typography-actions"]')).toBeNull();
-    expect(outer.querySelector('[data-slot="typography-actions"]')).not.toBeNull();
-  });
-
-  it("keeps the clamp on the element itself when nothing shares the run", () => {
-    // The plain case must stay byte-for-byte what `clamp` always rendered — no extra wrapper.
-    const { container } = render(<Paragraph ellipsis={{ rows: 2 }}>長い説明</Paragraph>);
-    expect(run(container)).toHaveAttribute("data-clamp", "");
-    expect(container.querySelector('[data-slot="typography-content"]')).toBeNull();
   });
 });

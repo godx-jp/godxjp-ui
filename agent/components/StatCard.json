@@ -62,7 +62,7 @@
     "LineChart / BarChart / PieChart (@godxjp/ui/charts) — when the trend or composition BEHIND a KPI matters, pair the StatCard headline number with a chart in the same dashboard grid: StatCard states the figure, the chart shows its shape over time or its breakdown."
   ],
   "rules": [],
-  "storyPath": "data-display/StatCard.stories.tsx",
+  "storyPath": "data-display/stat-card.tsx",
   "tagline": "KPI tile. ⚠️ StatCard IS ALREADY a bordered Card — render it DIRECTLY in ResponsiveGrid. NEVER wrap it in <Card>/<CardContent> (that double-borders it → looks too thick). Use `accent` for a semantic leading-edge rail on a KPI needing attention.",
   "usage": [
     "DO place StatCard directly as a child of ResponsiveGrid — it renders its own bordered Card shell internally, so no wrapping <Card> or <CardContent> is needed or allowed. Wrapping creates a double border.",

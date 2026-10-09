@@ -30,7 +30,8 @@ const manifest = JSON.parse(readFileSync(resolve("component-api-manifest.json"),
 
 describe("the manifest admits a component that takes no props (gh#957)", () => {
   it("is actually loaded — an empty map would make every assertion below vacuous", () => {
-    expect(Object.keys(manifest.components).length).toBeGreaterThan(290);
+    // v32 (#1223) moved the chat family to @godxjp/chat and retired the antd shims: ~276 remain.
+    expect(Object.keys(manifest.components).length).toBeGreaterThan(250);
   });
 
   it.each(["SkeletonDetail", "SkeletonStat"])("%s is present, with no props", (name) => {
@@ -42,13 +43,9 @@ describe("the manifest admits a component that takes no props (gh#957)", () => {
     const family = [
       "Skeleton",
       "SkeletonArticle",
-      "SkeletonAvatar",
-      "SkeletonButton",
       "SkeletonDetail",
       "SkeletonForm",
-      "SkeletonImage",
       "SkeletonInput",
-      "SkeletonNode",
       "SkeletonRows",
       "SkeletonStat",
       "SkeletonTable",

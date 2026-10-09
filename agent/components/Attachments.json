@@ -1,8 +1,8 @@
 {
   "docPath": "data-entry/attachments.tsx",
-  "example": "import { Attachments } from \"@godxjp/ui/data-entry\";\n\n<Attachments\n  items={files}\n  onChange={({ fileList }) => setFiles(fileList)}\n  overflow=\"scrollX\"\n  maxCount={5}\n/>",
+  "example": "import { Attachments } from \"@godxjp/chat\";\n\n<Attachments\n  items={files}\n  onChange={({ fileList }) => setFiles(fileList)}\n  overflow=\"scrollX\"\n  maxCount={5}\n/>",
   "group": "data-entry",
-  "importPath": "@godxjp/ui/data-entry",
+  "importPath": "@godxjp/chat",
   "name": "Attachments",
   "props": [
     {
@@ -87,7 +87,7 @@
     44,
     45
   ],
-  "storyPath": "data-entry/Attachments.stories.tsx",
+  "storyPath": "data-entry/attachments.tsx",
   "tagline": "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`.",
   "usage": [
     "DO keep antd field names on each item (`thumbUrl`, `originFileObj`, `uid`) — an Ant X call site should compile unchanged.",

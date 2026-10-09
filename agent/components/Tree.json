@@ -205,7 +205,7 @@
     44,
     45
   ],
-  "storyPath": "data-display/Tree.stories.tsx",
+  "storyPath": "data-display/tree.tsx",
   "tagline": "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes, async `loadData` and `draggable` reorder/reparent (antd `onDrop`). Reach for it whenever nodes expand, collapse or are navigated by keyboard; TreeSelect is the same hierarchy inside a Popover.",
   "usage": [
     "DO name the tree — pass `aria-label` (through your own `t()`) or `aria-labelledby`. A tree with no name is an unlabelled landmark for every screen reader user.",

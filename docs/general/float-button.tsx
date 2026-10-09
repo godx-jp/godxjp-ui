@@ -1,9 +1,10 @@
 import type { CSSProperties } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FloatButton, Text } from "@godxjp/ui/general";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { MessageCircle, Printer, Share2 } from "lucide-react";
+import { FloatButton } from "@godxjp/ui/lab";
 
 /** One row up from the corner: the control's own height plus one stack step, both tokens. */
 const STEP_UP = "calc(var(--space-stack-xl) + var(--control-height-lg) + var(--space-stack-md))";

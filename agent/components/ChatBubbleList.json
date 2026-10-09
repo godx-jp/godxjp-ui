@@ -1,8 +1,8 @@
 {
   "docPath": "data-display/chat-bubble.tsx",
-  "example": "import { ChatBubbleList, type ChatMessageProp } from \"@godxjp/ui/data-display\";\n\nconst messages: ChatMessageProp[] = [\n  { id: \"m1\", role: \"assistant\", content: \"How can I help?\" },\n  { id: \"m2\", role: \"user\", content: \"Summarise yesterday's invoices.\" },\n  { id: \"m3\", role: \"assistant\", content: reply, typing: true },\n];\n\n<ChatBubbleList\n  label={t(\"chat.list.label\")}\n  items={messages}\n  roles={{\n    assistant: { placement: \"start\", variant: \"filled\", avatar: assistantAvatar },\n    user: { placement: \"end\", variant: \"outlined\" },\n    system: { placement: \"start\", variant: \"borderless\", tone: \"info\", size: \"sm\" },\n  }}\n/>",
+  "example": "import { ChatBubbleList, type ChatMessageProp } from \"@godxjp/chat\";\n\nconst messages: ChatMessageProp[] = [\n  { id: \"m1\", role: \"assistant\", content: \"How can I help?\" },\n  { id: \"m2\", role: \"user\", content: \"Summarise yesterday's invoices.\" },\n  { id: \"m3\", role: \"assistant\", content: reply, typing: true },\n];\n\n<ChatBubbleList\n  label={t(\"chat.list.label\")}\n  items={messages}\n  roles={{\n    assistant: { placement: \"start\", variant: \"filled\", avatar: assistantAvatar },\n    user: { placement: \"end\", variant: \"outlined\" },\n    system: { placement: \"start\", variant: \"borderless\", tone: \"info\", size: \"sm\" },\n  }}\n/>",
   "group": "data-display",
-  "importPath": "@godxjp/ui/data-display",
+  "importPath": "@godxjp/chat",
   "name": "ChatBubbleList",
   "props": [
     {
@@ -45,7 +45,7 @@
     44,
     45
   ],
-  "storyPath": "data-display/ChatBubbleList.stories.tsx",
+  "storyPath": "data-display/chat-bubble.tsx",
   "tagline": "The message feed. It owns STICK-TO-BOTTOM (auto-scroll only while the reader is already at the bottom; the moment they scroll up the pin is revoked and a focusable jump-to-latest button appears), one aria-live=\"polite\" role=\"log\" region for the whole conversation, and per-role bubble defaults.",
   "usage": [
     "DO drive the feed from `items` and shape it with `roles`. Mapping ChatBubbles yourself inside a ScrollArea loses stick-to-bottom, the jump affordance and the single live region — the three reasons this component exists.",

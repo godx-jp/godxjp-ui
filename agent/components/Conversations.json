@@ -1,8 +1,8 @@
 {
   "docPath": "navigation/conversations.tsx",
-  "example": "import { Conversations } from \"@godxjp/ui/navigation\";\n\nconst [active, setActive] = useState(\"c1\");\n\n<Conversations\n  activeKey={active}\n  onActiveChange={setActive}\n  groupable={{ collapsible: true }}\n  creation={{ onClick: () => startNewChat() }}\n  items={[\n    { key: \"c1\", label: \"請求書の下書き\", group: \"today\" },\n    { key: \"c2\", label: \"経費精算の規則\", group: \"today\" },\n    { key: \"c3\", label: \"出張手当の確認\", group: \"earlier\" },\n  ]}\n  menu={{\n    items: [\n      { key: \"rename\", label: \"名前を変更\" },\n      { key: \"delete\", label: \"削除\", danger: true },\n    ],\n    onClick: ({ key, conversation }) => run(key, conversation.key),\n  }}\n/>",
+  "example": "import { Conversations } from \"@godxjp/chat\";\n\nconst [active, setActive] = useState(\"c1\");\n\n<Conversations\n  activeKey={active}\n  onActiveChange={setActive}\n  groupable={{ collapsible: true }}\n  creation={{ onClick: () => startNewChat() }}\n  items={[\n    { key: \"c1\", label: \"請求書の下書き\", group: \"today\" },\n    { key: \"c2\", label: \"経費精算の規則\", group: \"today\" },\n    { key: \"c3\", label: \"出張手当の確認\", group: \"earlier\" },\n  ]}\n  menu={{\n    items: [\n      { key: \"rename\", label: \"名前を変更\" },\n      { key: \"delete\", label: \"削除\", danger: true },\n    ],\n    onClick: ({ key, conversation }) => run(key, conversation.key),\n  }}\n/>",
   "group": "navigation",
-  "importPath": "@godxjp/ui/navigation",
+  "importPath": "@godxjp/chat",
   "name": "Conversations",
   "props": [
     {
@@ -64,7 +64,7 @@
     44,
     45
   ],
-  "storyPath": "navigation/Conversations.stories.tsx",
+  "storyPath": "navigation/conversations.tsx",
   "tagline": "The session rail of a chat surface (Ant Design X Conversations): past conversations, the current one marked with aria-current, a per-row overflow menu, and recency buckets — the whole rail one roving-tabindex tab stop, not one tab stop per conversation.",
   "usage": [
     "DO give every conversation a stable `key` — it is what activeKey, onActiveChange and the menu callback all address. A key that changes on re-render moves the selection.",

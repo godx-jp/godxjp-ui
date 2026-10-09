@@ -13,7 +13,6 @@ import { renderWithUi, screen, userEvent, waitFor, within } from "@/test/render"
 import { Select } from "../select";
 import { Cascader } from "../cascader";
 import { TreeSelect } from "../tree-select";
-import { TagInput } from "../tag-input";
 
 const OPTIONS = [
   { value: "jpy", label: "日本円" },
@@ -94,7 +93,14 @@ describe("antd parity — surface: status / variant / size", () => {
       <>
         <Cascader options={TREE} aria-label="地域" size="sm" status="warning" variant="filled" />
         <TreeSelect treeData={TREE} aria-label="組織" size="lg" status="error" />
-        <TagInput aria-label="タグ" size="xs" status="error" variant="borderless" />
+        <Select
+          mode="tags"
+          open={false}
+          aria-label="タグ"
+          size="xs"
+          status="error"
+          variant="borderless"
+        />
       </>,
     );
     const [cascader, tree] = screen.getAllByRole("combobox");
@@ -140,7 +146,7 @@ describe("antd parity — surface: status / variant / size", () => {
   );
 
   it.each(["xs", "sm", "md", "lg"] as const)("TagInput accepts size=%s", (size) => {
-    renderWithUi(<TagInput aria-label="タグ" size={size} />);
+    renderWithUi(<Select mode="tags" open={false} aria-label="タグ" size={size} />);
     const field = document.querySelector('[data-slot="tag-input"]');
     if (size === "md") expect(field).not.toHaveAttribute("data-size");
     else expect(field).toHaveAttribute("data-size", size);
@@ -149,7 +155,7 @@ describe("antd parity — surface: status / variant / size", () => {
   it.each(["outlined", "filled", "borderless"] as const)(
     "TagInput accepts variant=%s",
     (variant) => {
-      renderWithUi(<TagInput aria-label="タグ" variant={variant} />);
+      renderWithUi(<Select mode="tags" open={false} aria-label="タグ" variant={variant} />);
       const field = document.querySelector('[data-slot="tag-input"]');
       if (variant === "outlined") expect(field).not.toHaveAttribute("data-variant");
       else expect(field).toHaveAttribute("data-variant", variant);
@@ -210,7 +216,7 @@ describe("antd parity — surface: status / variant / size", () => {
   });
 
   it.each(["warning", "error"] as const)("TagInput accepts status=%s", (status) => {
-    renderWithUi(<TagInput aria-label="タグ" status={status} />);
+    renderWithUi(<Select mode="tags" open={false} aria-label="タグ" status={status} />);
     const field = document.querySelector('[data-slot="tag-input"]');
     expect(field).toHaveAttribute("data-status", status);
     // Only `error` is a claim assistive tech must hear; `warning` is advisory.
@@ -799,7 +805,9 @@ describe('antd parity — TagInput (antd `Select mode="tags"`)', () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <TagInput
+      <Select
+        mode="tags"
+        open={false}
         aria-label="タグ"
         defaultValue={["a", "b"]}
         maxCount={2}
@@ -813,7 +821,9 @@ describe('antd parity — TagInput (antd `Select mode="tags"`)', () => {
 
   it("maxTagCount collapses the chips and maxTagPlaceholder names the remainder", () => {
     renderWithUi(
-      <TagInput
+      <Select
+        mode="tags"
+        open={false}
         aria-label="タグ"
         value={["a", "b", "c"]}
         onValueChange={() => {}}
@@ -830,7 +840,9 @@ describe('antd parity — TagInput (antd `Select mode="tags"`)', () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <TagInput
+      <Select
+        mode="tags"
+        open={false}
         aria-label="タグ"
         value={["a", "b"]}
         onValueChange={onValueChange}
@@ -848,7 +860,9 @@ describe('antd parity — TagInput (antd `Select mode="tags"`)', () => {
   it("tokenSeparators splits a pasted run into several tags", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
-    renderWithUi(<TagInput aria-label="タグ" onValueChange={onValueChange} />);
+    renderWithUi(
+      <Select mode="tags" open={false} aria-label="タグ" onValueChange={onValueChange} />,
+    );
     const field = screen.getByRole("textbox");
     await user.click(field);
     await user.paste("赤, 青, 緑");
@@ -859,7 +873,13 @@ describe('antd parity — TagInput (antd `Select mode="tags"`)', () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <TagInput aria-label="タグ" onValueChange={onValueChange} tokenSeparators={[";"]} />,
+      <Select
+        mode="tags"
+        open={false}
+        aria-label="タグ"
+        onValueChange={onValueChange}
+        tokenSeparators={[";"]}
+      />,
     );
     const field = screen.getByRole("textbox");
     await user.type(field, "a,b;");

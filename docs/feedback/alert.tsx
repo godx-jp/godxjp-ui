@@ -5,7 +5,6 @@ import {
   AlertDescription,
   AlertQueryError,
   AlertTitle,
-  Banner,
 } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
@@ -156,89 +155,88 @@ export default function Demo() {
           </CardHeader>
           <CardContent flush>
             <Flex direction="col">
-              <Banner tone="info">
-                <Banner.Title>8月10日 02:00〜04:00 に定期メンテナンスを実施します</Banner.Title>
-                <Banner.Description>作業中は仕訳の保存ができません。</Banner.Description>
-              </Banner>
-              <Banner
+              <Alert variant="banner" tone="info">
+                <Alert.Title>8月10日 02:00〜04:00 に定期メンテナンスを実施します</Alert.Title>
+                <Alert.Description>作業中は仕訳の保存ができません。</Alert.Description>
+              </Alert>
+              <Alert
+                variant="banner"
                 tone="warning"
                 onDismiss={() => {
                   /* set session flag */
                 }}
               >
-                <Banner.Content>
-                  <Banner.Title>お試し期間は残り 3 日です</Banner.Title>
-                  <Banner.Description>期限までにプランを選択してください。</Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+                <Alert.Content>
+                  <Alert.Title>お試し期間は残り 3 日です</Alert.Title>
+                  <Alert.Description>期限までにプランを選択してください。</Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm">プランを見る</Button>
-                </Banner.Actions>
-              </Banner>
-              <Banner tone="neutral">
-                <Banner.Title>閲覧専用モードで表示しています</Banner.Title>
-                <Banner.Description>
+                </Alert.Actions>
+              </Alert>
+              <Alert variant="banner" tone="neutral">
+                <Alert.Title>閲覧専用モードで表示しています</Alert.Title>
+                <Alert.Description>
                   サポート担当として代理ログイン中のため、編集操作は無効です。
-                </Banner.Description>
-              </Banner>
-              <Banner tone="destructive">
-                <Banner.Title>請求が未払いのため一部機能を停止しています</Banner.Title>
-                <Banner.Description>
+                </Alert.Description>
+              </Alert>
+              <Alert variant="banner" tone="destructive">
+                <Alert.Title>請求が未払いのため一部機能を停止しています</Alert.Title>
+                <Alert.Description>
                   期日を過ぎた請求書が 2 件あります。お支払い後、数分で再開されます。
-                </Banner.Description>
-              </Banner>
+                </Alert.Description>
+              </Alert>
               {/* Long EN / VI copy at the same measure — the strip wraps rather than truncating,
                   and the actions column keeps its minimum before dropping to its own row. This is
                   the 390px stress case: nothing here sets a width. */}
-              <Banner tone="warning">
-                <Banner.Content>
-                  <Banner.Title>
+              <Alert variant="banner" tone="warning">
+                <Alert.Content>
+                  <Alert.Title>
                     Scheduled maintenance will pause synchronisation for all connected accounting
                     workspaces
-                  </Banner.Title>
-                  <Banner.Description>
+                  </Alert.Title>
+                  <Alert.Description>
                     Journal entries created during the window are queued and submitted automatically
                     once the service resumes. No action is required.
-                  </Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+                  </Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm" variant="outline">
                     View status page
                   </Button>
-                </Banner.Actions>
-              </Banner>
-              <Banner tone="info">
-                <Banner.Content>
-                  <Banner.Title>
+                </Alert.Actions>
+              </Alert>
+              <Alert variant="banner" tone="info">
+                <Alert.Content>
+                  <Alert.Title>
                     Việc đồng bộ dữ liệu hoá đơn sẽ tạm dừng trong thời gian bảo trì định kỳ
-                  </Banner.Title>
-                  <Banner.Description>
+                  </Alert.Title>
+                  <Alert.Description>
                     Các bút toán được tạo trong khoảng thời gian này sẽ được xếp hàng và gửi lại tự
                     động sau khi dịch vụ hoạt động trở lại.
-                  </Banner.Description>
-                </Banner.Content>
-                <Banner.Actions>
+                  </Alert.Description>
+                </Alert.Content>
+                <Alert.Actions>
                   <Button size="sm" variant="outline">
                     Xem trạng thái
                   </Button>
-                </Banner.Actions>
-              </Banner>
+                </Alert.Actions>
+              </Alert>
               {/* The remaining three tones. default / muted / neutral deliberately share the quiet
                   neutral surface — the caller names intent without adding colour — so all three
                   belong here: a reader has to SEE that they resolve alike, not be told. */}
-              <Banner tone="default">
-                <Banner.Title>新しい利用規約が2026年9月1日に発効します</Banner.Title>
-                <Banner.Description>内容は設定画面からいつでも確認できます。</Banner.Description>
-              </Banner>
-              <Banner tone="success">
-                <Banner.Title>すべてのサービスが正常に稼働しています</Banner.Title>
-                <Banner.Description>直近のインシデントは解決済みです。</Banner.Description>
-              </Banner>
-              <Banner tone="muted">
-                <Banner.Title>この組織はアーカイブされています</Banner.Title>
-                <Banner.Description>
-                  閲覧のみ可能で、新しい操作は記録されません。
-                </Banner.Description>
-              </Banner>
+              <Alert variant="banner" tone="default">
+                <Alert.Title>新しい利用規約が2026年9月1日に発効します</Alert.Title>
+                <Alert.Description>内容は設定画面からいつでも確認できます。</Alert.Description>
+              </Alert>
+              <Alert variant="banner" tone="success">
+                <Alert.Title>すべてのサービスが正常に稼働しています</Alert.Title>
+                <Alert.Description>直近のインシデントは解決済みです。</Alert.Description>
+              </Alert>
+              <Alert variant="banner" tone="muted">
+                <Alert.Title>この組織はアーカイブされています</Alert.Title>
+                <Alert.Description>閲覧のみ可能で、新しい操作は記録されません。</Alert.Description>
+              </Alert>
             </Flex>
           </CardContent>
         </Card>

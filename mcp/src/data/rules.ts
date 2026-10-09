@@ -2,6 +2,14 @@
  * Cardinal rules — mirrors the cardinal rules in `CLAUDE.md`. The MCP
  * server exposes them via `get_cardinal_rules` so consumer agents
  * can quote them when reviewing PRs or authoring new primitives.
+ *
+ * NUMBERS ARE STABLE, NOT CONTIGUOUS. Rules are cited by number (`rule #44`, `#45`) in code, docs
+ * and consumer repos, so a retired rule leaves a gap rather than renumbering its neighbours.
+ * Retired in v32 because the tool or path they required does not exist in this repo: 30 and 34
+ * (Storybook), 4 (fork-in-place), 11 (git submodules), 17 and 18 (story and `docs/reference`
+ * parity scripts), 22 (`design-handoff/`). Rewritten to the real thing: 1 and 25 (Storybook ->
+ * docs example pages), 3 (Radix), 5 (`initI18n` / `addResourceBundle` -> `registerMessages`),
+ * 14 (the locked stack).
  */
 
 export interface CardinalRule {
@@ -10,36 +18,38 @@ export interface CardinalRule {
   body: string;
 }
 
+/**
+ * Rule numbers retired in v32 (gh#1217): they named Storybook, Radix, i18next, a submodule and
+ * paths that no longer exist. A retired number is never reused, so a citation like "rule #12" in a
+ * component entry, a consumer repo or an agent's memory keeps pointing at the same rule.
+ */
+export const RETIRED_RULE_NUMBERS: readonly number[] = [4, 11, 17, 18, 22, 30, 34];
+
 export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 1,
-    title: "Storybook is mandatory",
-    body: "Every primitive / shell / composite has a paired story under `src/stories/<group>/<Name>.stories.tsx` covering every variant + state on light + dark.",
+    title: "Every component has a real-screen docs page",
+    body: "Every primitive / shell / composite has an example page under `docs/<group>/` (rendered at `/isolate/<group>-<name>`) covering every prop value and state on light + dark, built from real primitives.",
   },
   {
     number: 2,
     title: "Tokens, not utilities",
-    body: "Visual values come from CSS custom properties in `src/tokens/` + `src/styles/theme.css`. Token-named Tailwind utilities (`bg-background`) are fine; raw value utilities (`bg-blue-500`) are forbidden.",
+    body: "Visual values come from CSS custom properties in `src/tokens/` (the `@theme` bridge lives in `src/styles/base.css`). Token-named Tailwind utilities (`bg-background`) are fine; raw value utilities (`bg-blue-500`) are forbidden.",
   },
   {
     number: 3,
-    title: "Radix for interactive primitives",
-    body: "Anything with keyboard / ARIA / portal wraps the relevant Radix primitive.",
-  },
-  {
-    number: 4,
-    title: "shadcn-style ownership",
-    body: "Primitives are thin wrappers; consumers can fork the source in place.",
+    title: "Accessible behaviour comes from react-aria-components, not new Radix",
+    body: "Anything with keyboard / ARIA / portal behaviour is built on `react-aria-components` (or the matching `react-aria` hook). Do not add a new `@radix-ui` import: `pnpm check:radix-surface` is a ratchet that only lets the remaining Radix files shrink.",
   },
   {
     number: 5,
-    title: "One i18next singleton",
-    body: "`initI18n()` in `src/i18n/index.ts` is THE instance; consumers extend via `addResourceBundle`.",
+    title: "One message catalogue",
+    body: "Strings go through `t()` / `useTranslation()` from `src/i18n/`. Consumers add or override messages with `registerMessages(locale, messages)`; there is no second i18n instance and no i18next dependency.",
   },
   {
     number: 6,
-    title: "WCAG 2.1 AA baseline",
-    body: "Every interactive primitive passes axe-core (keyboard nav, ARIA, focus-visible, 4.5:1 contrast, `prefers-reduced-motion`). Stories double as a11y test surfaces.",
+    title: "WCAG 2.2 AA baseline",
+    body: "Every interactive primitive meets WCAG 2.2 AA (keyboard nav, ARIA, focus-visible, 4.5:1 text contrast, `prefers-reduced-motion`). It is measured by `pnpm check:frame-axe` on the component's own `/isolate/**` frame, run locally.",
   },
   {
     number: 7,
@@ -59,17 +69,12 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 10,
     title: "English is canonical for docs",
-    body: "Localised docs at `docs/i18n/<bcp47>/`; front-matter tracks staleness.",
-  },
-  {
-    number: 11,
-    title: "Submodule discipline",
-    body: "Never push a pin to a SHA not on the submodule remote.",
+    body: "Prose in `docs/` and `agent/` is English. Translated UI messages live in `docs/i18n/messages/<locale>.json`; a translation never replaces the English source.",
   },
   {
     number: 12,
     title: "Branch + PR workflow",
-    body: "`feat/<scope>` / `fix/<scope>` → submodule `main`. CI green + squash-merge. No direct push to `main`. `--no-verify` forbidden.",
+    body: "Work lands on `main` through a pull request; `feat/<scope>` / `fix/<scope>` branches. CI green + squash-merge. No direct push to `main`. `--no-verify` forbidden.",
   },
   {
     number: 13,
@@ -78,33 +83,23 @@ export const CARDINAL_RULES: CardinalRule[] = [
   },
   {
     number: 14,
-    title: "Every third-party library is shadcn / Radix-recommended",
-    body: "Locked stack: Radix UI, cmdk, sonner, lucide-react, react-aria-components + `@internationalized/date`, i18next + react-i18next, class-variance-authority + clsx + tailwind-merge. New peer → ADR documenting why it's the canonical choice.",
+    title: "Every third-party library is a deliberate, declared choice",
+    body: "The runtime stack is what `package.json` declares: react-aria-components / react-aria / react-stately, cmdk, sonner, lucide-react, @tanstack/react-table, react-day-picker, class-variance-authority + clsx + tailwind-merge. A new dependency needs an ADR saying why it is the canonical choice and why an existing one cannot do it.",
   },
   {
     number: 15,
     title: "No `@apply` re-encoding tokens",
-    body: "Inside a primitive `.tsx`, don't `@apply` a Tailwind utility that re-encodes a token — reference the canonical CSS class from `tokens.css` instead. Composite token-named utilities remain fine.",
+    body: "Inside a primitive `.tsx`, don't `@apply` a Tailwind utility that re-encodes a token — reference the token (or the component's CSS class in `src/styles/`) instead. Composite token-named utilities remain fine.",
   },
   {
     number: 16,
-    title: "CSS source-of-truth is `src/tokens/` + `src/styles/theme.css`",
-    body: "A primitive that needs a new color / spacing / radius adds it there FIRST, then references it.",
-  },
-  {
-    number: 17,
-    title: "`src/stories/` ↔ `src/components/` parity",
-    body: "Story set matches primitive set under each group. CI-checked via `scripts/check-stories-parity.mjs`.",
-  },
-  {
-    number: 18,
-    title: "`docs/reference/<group>/` ↔ `src/components/<group>/` parity",
-    body: "Every primitive has a reference page; every page maps to a primitive. CI-checked via `scripts/check-docs-parity.mjs`.",
+    title: "CSS source-of-truth is `src/tokens/`",
+    body: "A primitive that needs a new color / spacing / radius adds the token to the right tier in `src/tokens/` FIRST, then references it.",
   },
   {
     number: 19,
     title: "No service-specific anything",
-    body: '`me-service`, `forge-service`, `admin-service` never appear in source / comments / prop names. Per-deployment brand color lives at `[data-accent="<palette>"]`.',
+    body: "`me-service`, `forge-service`, `admin-service` never appear in source / comments / prop names. Per-deployment brand colour is a token override on `:root` or a scope such as `[data-tenant]` (see docs/CUSTOMER-THEMING.md), never a component fork.",
   },
   {
     number: 20,
@@ -114,12 +109,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 21,
     title: "Every component honours every theme axis",
-    body: "`data-theme` (light / dark), `data-accent` (6 palettes), `data-density` (compact / default / comfortable), `data-font-size` (sm / base / lg / xl). Read from tokens, never hardcode values.",
-  },
-  {
-    number: 22,
-    title: "100% match to the design canon",
-    body: 'Every visual literal comes from `design-handoff/ui-system/<latest-bundle>/`. Token-pin canon literals; never substitute "close enough". If the bundle doesn\'t cover a case — STOP, ask the user to mock it.',
+    body: "`.dark` / light theme, `data-density` (compact / default / comfortable) and `data-font-size` (sm / base / lg) are axes the component must follow. Read from tokens, never hardcode values.",
   },
   {
     number: 23,
@@ -129,42 +119,37 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 24,
     title: "Mobile-first",
-    body: "Defaults target `xs` (≥0px); progressive enhancement via `sm:` / `md:` / `lg:` / `xl:` / `2xl:`. Touch targets ≥ 44 × 44 px (`--touch-target-min`, does NOT scale with density). Runtime viewport via `useBreakpoint`, never `window.innerWidth`. Stories render at narrow viewport first.",
+    body: "Defaults target `xs` (≥0px); progressive enhancement via `sm:` / `md:` / `lg:` / `xl:` / `2xl:`. Touch targets ≥ 24 × 24 px (`--touch-target-min`, WCAG 2.2 SC 2.5.8; does NOT scale with density). Runtime viewport via `useMediaQuery` / `useIsMobile` from `@godxjp/ui/hooks`, never `window.innerWidth`. Examples render at narrow viewport first.",
   },
   {
     number: 25,
-    title: "Stories are docs; UI is the primitive",
-    body: "When a story looks wrong, fix the primitive / CSS / token. Never paper over with a story tweak. Story-only diff without a paired primitive / CSS / token diff is rejected.",
+    title: "Docs pages are evidence; the primitive is the product",
+    body: "When a docs example looks wrong, fix the primitive / CSS / token. Never paper over it with an example tweak. A docs-only diff without a paired primitive / CSS / token diff does not close a defect.",
   },
   {
     number: 26,
     title: "Library isolation",
-    body: "`dist/` ships only the consumer surface. Storybook, tests, scripts, design-handoff, `dev-probe/` stay out of npm. Every `dependencies` entry is `external` in `tsup`. Verification via `pnpm pack` + grep of `dist/`.",
+    body: "`dist/` ships only the consumer surface. Tests, scripts, design-handoff, `dev-probe/` stay out of npm. Every `dependencies` entry is `external` in `tsup`. Verification via `pnpm pack` + grep of `dist/`.",
   },
   {
     number: 27,
     title: "Per-group folder structure",
-    body: "Primitives at `src/components/<group>/<Name>.tsx`; six canonical groups (general, layout, data-display, data-entry, feedback, navigation). Barrel = `src/components/primitives.ts` (single file). Stories + reference docs mirror the same group hierarchy.",
+    body: "Components live at `src/components/<group>/<name>.tsx`, one folder per public subpath (`general`, `layout`, `data-display`, `data-entry`, `feedback`, `navigation`, plus the adapter groups `charts`, `query`, `react-router`). The group's `index.ts` is its barrel; docs examples under `docs/<group>/` mirror the same hierarchy.",
   },
   {
     number: 28,
     title: "`src/` folder taxonomy",
-    body: "Three classes: consumer surface (matched by `tsup` entry + `package.json::exports`), Storybook-only (`src/stories/`), build-input-only (`cn.ts`, per-group sources consumed via the barrel). No `src/lib/`, `src/utils/`, `src/internal/`, `src/clients/`, `src/screens/`. Service clients live with the composite that uses them.",
+    body: "Two classes: consumer surface (matched by a `tsup` entry + `package.json::exports`) and build-input-only (`cn`, shared helpers in `src/lib/`, consumed through a group barrel). No `src/internal/`, `src/clients/`, `src/screens/`. Service clients live with the composite that uses them.",
   },
   {
     number: 29,
-    title: "Stories consume framework primitives only",
+    title: "Docs examples consume framework primitives only",
     body: "No raw `<button>` / `<input>` / hand-rolled chips when a primitive exists. HTML semantics (`<section>`, `<article>`, …) for structure are fine. Inline `style={{}}` limited to layout / positioning; no colour / radius / typography overrides.",
-  },
-  {
-    number: 30,
-    title: "Story `render` returns JSX directly",
-    body: "No opaque `<XyzDemo />` wrapper components, no zero-arg `Demo` helpers. Use `render: function StoryName() { … }` so Storybook's source panel shows runnable JSX, not `<XyzDemo />`.",
   },
   {
     number: 31,
     title: "No nested wrapper / convenience primitives",
-    body: "One Radix base = one framework primitive. `<SimpleX>` over `<X>` is forbidden; add a prop to `<X>` instead. Composites under `src/components/composites/` that combine multiple primitives are NOT wrappers.",
+    body: "One base = one framework primitive. A convenience wrapper that restates a base primitive under another name is forbidden; add a prop to the base instead. Composites that combine multiple primitives are NOT wrappers.",
   },
   {
     number: 32,
@@ -173,13 +158,8 @@ export const CARDINAL_RULES: CardinalRule[] = [
   },
   {
     number: 33,
-    title: "Stories / source / docs name-synchronized",
-    body: "No two names for the same export across the framework surface; no legacy aliases in stories / docs (source may keep an alias for a deprecation cycle, but the marketing surfaces use the canonical name only).",
-  },
-  {
-    number: 34,
-    title: "Storybook source panel = real, copy-paste-ready code",
-    body: 'Storybook\'s react-docgen serializer strips every function value (`cell: ({row}) => <JSX/>`, `render: ({field}) => <Input/>`, `rowClassName`, `renderItem`, …) to `() => {}`. Any story whose `render` passes a function-valued prop, references a module-level helper (`Badge`, `EMPLOYEE_COLUMNS`, etc.), or uses a render-prop pattern MUST override `parameters.docs.source.code` with the literal copy-paste-ready snippet — type aliases, helper functions spelled out, column definitions with cell JSX visible, inline data array. The `render()` callback stays as-is (module-level constants are fine for runtime performance); `source.code` is the marketing surface. Skip ONLY for stories whose JSX is purely static primitives Storybook can serialize verbatim (`<Button variant="primary">Click</Button>`).',
+    title: "Docs / source name-synchronized",
+    body: "No two names for the same export across the framework surface; no legacy aliases in docs or examples (source may keep an alias for a deprecation cycle, but the documentation surface uses the canonical name only).",
   },
   {
     number: 35,
@@ -254,12 +234,12 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 49,
     title: "Interaction states are 95 separate tokens — resting state is not one of them",
-    body: 'Hover, active, selected, checked, pressed and focus are their own tokens: 95 published (`node -e "const t=require(\'./node_modules/@godxjp/ui/agent/tokens.json\'); console.log(t.filter(x => /-(hover|active|selected|checked|pressed|focus)(-|$)/.test(x.name)).length)"`), 62 of which paint a colour, an edge or an elevation. A theme that re-materialises a surface and sets only its RESTING fill ships every other state broken, and each defect is reported from a screenshot rather than by a gate: a sidebar row at dark-violet-on-violet (`--sidebar-item-active-foreground` defaults to the live `--primary-active`, src/styles/shell-layout.css:2289-2291), a Segmented hover with a dark fill under dark text (`--segmented-item-hover-background` set without `--segmented-item-hover-color`), a Topbar hover block. `--focus-ring-color` is on that list and a ring that fails 3:1 on its new ground is a WCAG 2.2 SC 1.4.11 defect, not a polish item. THE METHOD: for every component you re-theme, list its tokens (`get_component`, or `grep -- "--<component>-" node_modules/@godxjp/ui/dist/tokens/components/`) and set the state rows at the same time as the resting row. A state knob left at its default resolves against the LIVE role at the painting element — the correct default, and exactly why it can be wrong for you once `--accent` is no longer pale.',
+    body: 'Hover, active, selected, checked, pressed and focus are their own tokens: 95 published (`node -e "const t=require(\'./node_modules/@godxjp/ui/agent/tokens.json\'); console.log(t.filter(x => /-(hover|active|selected|checked|pressed|focus)(-|$)/.test(x.name)).length)"`), 62 of which paint a colour, an edge or an elevation. A theme that re-materialises a surface and sets only its RESTING fill ships every other state broken, and each defect is reported from a screenshot rather than by a gate: a sidebar row at dark-violet-on-violet (`--sidebar-item-active-foreground` defaults to the live `--primary-active`, in `src/styles/shell-layout.css`), a Segmented hover with a dark fill under dark text (`--segmented-item-hover-background` set without `--segmented-item-hover-color`), a Topbar hover block. `--focus-ring-color` is on that list and a ring that fails 3:1 on its new ground is a WCAG 2.2 SC 1.4.11 defect, not a polish item. THE METHOD: for every component you re-theme, list its tokens (`get_component`, or `grep -- "--<component>-" node_modules/@godxjp/ui/dist/tokens/components/`) and set the state rows at the same time as the resting row. A state knob left at its default resolves against the LIVE role at the painting element — the correct default, and exactly why it can be wrong for you once `--accent` is no longer pale.',
   },
   {
     number: 50,
     title: "A scoped theme must state its own `color`",
-    body: "`src/styles/base.css:261` sets `color: hsl(var(--foreground))` on `body`, which is above every scope a consumer can make, so that `var()` substitutes against the ROOT's `--foreground` exactly once and every element below inherits the already-resolved colour. A plain `<div>` carrying a theme's tokens therefore retints every SURFACE and no TEXT: measured, a title whose own computed `--foreground` was the theme's near-white still painted `rgb(36, 35, 30)`, 1.34:1 on real pixels, with every element reporting it was inside the scope (gh#881). It is the §3 freeze rule applied to a PROPERTY instead of a token, and worse there — a token can be given a knob and `color` on `body` cannot. FIX, React: wrap the region in `ThemeScope` (`@godxjp/ui/app`), which re-states `color` on its own element (src/lib/overlay-portal.tsx:270, `display: contents` so the box goes and the inheritance stays) AND on the body-level host it creates for portalled overlays (:203) — the other half, since a Dialog portals to `document.body` and would otherwise wear the root's theme. FIX, stylesheet-only scope: declare `color: hsl(var(--foreground))` on your own selector alongside the tokens; that is your element, not a selector into this package, so cardinal rule \"a consumer sets tokens, never selectors\" permits it — but it does NOT reach portalled overlays. docs/TOKEN-RESOLUTION.md §5 rule 7.",
+    body: "`src/styles/base.css` sets `color: hsl(var(--foreground))` on `body`, which is above every scope a consumer can make, so that `var()` substitutes against the ROOT's `--foreground` exactly once and every element below inherits the already-resolved colour. A plain `<div>` carrying a theme's tokens therefore retints every SURFACE and no TEXT: measured, a title whose own computed `--foreground` was the theme's near-white still painted `rgb(36, 35, 30)`, 1.34:1 on real pixels, with every element reporting it was inside the scope (gh#881). It is the §3 freeze rule applied to a PROPERTY instead of a token, and worse there — a token can be given a knob and `color` on `body` cannot. FIX, React: wrap the region in `ThemeScope` (`@godxjp/ui/app`), which re-states `color` on its own element (`src/lib/overlay-portal.tsx`, `display: contents` so the box goes and the inheritance stays) AND on the body-level host it creates for portalled overlays — the other half, since a Dialog portals to `document.body` and would otherwise wear the root's theme. FIX, stylesheet-only scope: declare `color: hsl(var(--foreground))` on your own selector alongside the tokens; that is your element, not a selector into this package, so cardinal rule \"a consumer sets tokens, never selectors\" permits it — but it does NOT reach portalled overlays. docs/TOKEN-RESOLUTION.md §5 rule 7.",
   },
 ];
 

@@ -106,10 +106,10 @@
     23,
     24
   ],
-  "storyPath": "layout/ErrorSurface.stories.tsx",
+  "storyPath": "layout/error-surface/index.tsx",
   "tagline": "Package-owned semantic exception surface for 400 / 403 / 404 / 500 / 503. `mode` is the SHELL CONTRACT: \"application\" renders the body you put inside the AppShell the route already provides (chrome PRESERVED, never reconstructed); \"system\" owns the whole page via CenteredShell align=\"center\" (package-owned 1440/1024/390 geometry). Exactly one recovery action, plus semantic request-id / permission / organization / maintenance metadata slots.",
   "usage": [
-    "DO use ErrorSurface for ANY 400 / 403 / 404 / 500 / 503 page. It is a real import from @godxjp/ui/layout — never hand-compose an error page from AuthShell + a generic Card, and never add a consumer-local `.canonical-auth-card`-style class (that workaround IS the regression).",
+    "DO use ErrorSurface for ANY 400 / 403 / 404 / 500 / 503 page. It is a real import from @godxjp/ui/layout — never hand-compose an error page from the auth CenteredShell + a generic Card, and never add a consumer-local `.canonical-auth-card`-style class (that workaround IS the regression).",
     "DO put mode=\"application\" INSIDE the shell the route already renders: <AppShell …><PageContainer …><ErrorSurface mode=\"application\" …/></PageContainer></AppShell>. The surface returns only its own block on purpose, so the sidebar/topbar/breadcrumb survive and the user can navigate away.",
     "DO use mode=\"system\" for 500/503 and pass NOTHING for geometry — the surface renders CenteredShell align=\"center\" itself. A className=\"min-h-dvh flex items-center\" is always wrong.",
     "DO pass ONE action. A second CTA is dropped with a development error; put 'contact support' in `description`.",
@@ -117,7 +117,7 @@
     "DO let `status` pick the icon and tone. Override them only for a truer product glyph — never to recolour a status into a different severity.",
     "DO NOT retune the geometry with a className: --error-surface-max-width, --error-surface-gap, --error-surface-padding-block(-compact), --error-surface-meta-* and --error-surface-progress-max-width are the knobs. The metadata divider defaults to `none` (rule #44); opt in with --error-surface-meta-border.",
     "DO NOT write the request id, the missing permission or the maintenance window into `description` as prose — each is a semantic <dt>/<dd> slot, and prose loses the label↔value relationship for a screen reader.",
-    "DO NOT use AuthShell for an error page: it is the UNAUTHENTICATED root and imposes auth-card geometry."
+    "DO NOT use the auth shape for an error page: it is the UNAUTHENTICATED root and imposes auth-card geometry."
   ],
   "useCases": [
     "Inertia/Laravel exception page (SCR-006): one Error.tsx receives `status` from Handler::render() and renders <ErrorSurface mode={status >= 500 ? \"system\" : \"application\"} status={status} … />, with Error.layout keeping the authenticated shell for 403/404 only.",

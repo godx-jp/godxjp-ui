@@ -62,7 +62,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--font-size-*",
     category: "primitive",
     tier: "primitive",
-    role: "Raw typography scale. `--font-size-display` is the BASE KNOB of the display ramp (`3xl`/`4xl`/`5xl` derive from it), so one declaration moves a marketing hero AND the two steps under it — never restate `--font-size-5xl`. It takes any length expression, so a FLUID hero is `--font-size-display: clamp(2.125rem, 4vw, 3.5rem)`; pinned at a single rem it paints the desktop size on a phone (measured: 56px at a 390 viewport where the brand scale said 34px). Pair with `--font-family-display`, and for a CJK product do NOT put a Latin-only face first in that stack — the browser falls through per glyph so it LOOKS fine, while the Latin inside a Japanese headline silently renders in a different face than the headline. Keep the CJK face as the display family and opt into the Latin face per element (eyebrow, price, code)."
+    role: "Raw typography scale. `--font-size-display` is the BASE KNOB of the display ramp (`3xl`/`4xl`/`5xl` derive from it), so one declaration moves a marketing hero AND the two steps under it — never restate `--font-size-5xl`. It takes any length expression, so a FLUID hero is `--font-size-display: clamp(2.125rem, 4vw, 3.5rem)`; pinned at a single rem it paints the desktop size on a phone (measured: 56px at a 390 viewport where the brand scale said 34px). Pair with `--font-family-display`, and for a CJK product do NOT put a Latin-only face first in that stack — the browser falls through per glyph so it LOOKS fine, while the Latin inside a Japanese headline silently renders in a different face than the headline. Keep the CJK face as the display family and opt into the Latin face per element (eyebrow, price, code).",
   },
   {
     name: "--font-sans-base",
@@ -80,7 +80,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--duration-{fast,base,slow}",
     category: "primitive",
     tier: "primitive",
-    role: "Motion durations (150 / 250 / 500ms). Read these instead of a literal `0.5s` for enter/transition timing (rule #2). the reference design keeps motion short; honour `prefers-reduced-motion` at the call site. RE-THEMING: a brand that ships its own timing TABLE (press/hover/state/enter/hero-once) does not need a fork or new CSS — redeclare these three plus the four `--ease-*` and the two `--reveal-*` in its theme scope, and `Reveal`, Card `hoverable`, Dialog/Sheet enter and every token-driven transition retune themselves. A whole brand motion spec has been reproduced in EIGHT declarations; see the `brand-theme-block` pattern."
+    role: "Motion durations (150 / 250 / 500ms). Read these instead of a literal `0.5s` for enter/transition timing (rule #2). the reference design keeps motion short; honour `prefers-reduced-motion` at the call site. RE-THEMING: a brand that ships its own timing TABLE (press/hover/state/enter/hero-once) does not need a fork or new CSS — redeclare these three plus the four `--ease-*` and the two `--reveal-*` in its theme scope, and `Reveal`, Card `hoverable`, Dialog/Sheet enter and every token-driven transition retune themselves. A whole brand motion spec has been reproduced in EIGHT declarations; see the `brand-theme-block` pattern.",
   },
   {
     name: "--ease-{standard,emphasized,decelerate,accelerate}",
@@ -92,7 +92,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--reveal-distance",
     category: "primitive",
     tier: "primitive",
-    role: "Distance (10px) a revealed element travels on enter (translateY/-X). Read instead of a literal `translateY(10px)` for staggered reveals. A brand whose spec reads \"hero once 480ms, 0→1, y8→0\" sets `--duration-slow: 480ms` and `--reveal-distance: 8px` — the spec becomes two declarations.",
+    role: 'Distance (10px) a revealed element travels on enter (translateY/-X). Read instead of a literal `translateY(10px)` for staggered reveals. A brand whose spec reads "hero once 480ms, 0→1, y8→0" sets `--duration-slow: 480ms` and `--reveal-distance: 8px` — the spec becomes two declarations.',
   },
   {
     name: "--reveal-stagger-step",
@@ -257,7 +257,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--surface-{success,warning,info,destructive}",
     category: "semantic",
     tier: "semantic",
-    role: "The status SURFACE tier (gh#866) — the pale GROUND a toned surface paints, as a FINISHED colour (`#E8F5EF`), not HSL components. The other three status tiers are ink: FILL (--success), TEXT (--text-success), MARK (--mark-success); this is the ground they sit on. UNSET BY DEFAULT (`initial`) and it has no default of its own, because there is no single derived value it could carry: Alert washes its hue at 5%, Badge at 10%, the DataTable row tone at 6%, the EmptyState medallion at 12%, the toast color-mixes into --popover. Each surface keeps its own formula AT ITS CALL SITE behind the role — `var(--surface-success, hsl(var(--success) / var(--alert-bg-alpha)))` — so unset, everything paints exactly what it painted before (measured: 30/30 computed values byte-identical), and set on a scope, all nine consumers follow: Alert/Banner/Callout, Badge tone, Dialog/AlertDialog/Sheet header band, Toast, ChatBubble, DataTable row tone, EmptyState medallion, Flex surface=\"warning\", the Upload draft-undo strip. SET THIS WHEN A BRAND SHIPS INDEPENDENT PAIRS: `--success #126342` with `--success-soft #E8F5EF` is not a derivation — the mint is not that green at any alpha — and before this tier the only move was to lighten the success TEXT until its wash matched, damaging the ink to fix the ground. Declared `initial` rather than bound at :root so a scoped `[data-tenant]` reaches the component instead of freezing on <html> (docs/TOKENS.md · 'Role-mirror knobs MUST be initial'). NO primary/attention entry (a brand ships soft pairs for the four statuses only) and NO border role — --alert-border-alpha and --chat-bubble-tone-border-alpha keep deriving the edge. CONTRAST: this library paints the TEXT tier on these grounds, which clears AA on the reference kit (6.22 / 5.48 / 6.64 / 7.34:1); the Callout RAIL is the FILL tier and measures 1.99:1 (success) and 1.62:1 (warning) there, under SC 1.4.11 — inherited, not introduced (2.12 / 1.69:1 on the derived tint), and repaired through --mark-*.",
+    role: "The status SURFACE tier (gh#866) — the pale GROUND a toned surface paints, as a FINISHED colour (`#E8F5EF`), not HSL components. The other three status tiers are ink: FILL (--success), TEXT (--text-success), MARK (--mark-success); this is the ground they sit on. UNSET BY DEFAULT (`initial`) and it has no default of its own, because there is no single derived value it could carry: Alert washes its hue at 5%, Badge at 10%, the DataTable row tone at 6%, the EmptyState medallion at 12%, the toast color-mixes into --popover. Each surface keeps its own formula AT ITS CALL SITE behind the role — `var(--surface-success, hsl(var(--success) / var(--alert-bg-alpha)))` — so unset, everything paints exactly what it painted before (measured: 30/30 computed values byte-identical), and set on a scope, all nine consumers follow: Alert (all three variants), Badge tone, Dialog/AlertDialog/Sheet header band, Toast, ChatBubble, DataTable row tone, EmptyState medallion, Flex surface=\"warning\", the Upload draft-undo strip. SET THIS WHEN A BRAND SHIPS INDEPENDENT PAIRS: `--success #126342` with `--success-soft #E8F5EF` is not a derivation — the mint is not that green at any alpha — and before this tier the only move was to lighten the success TEXT until its wash matched, damaging the ink to fix the ground. Declared `initial` rather than bound at :root so a scoped `[data-tenant]` reaches the component instead of freezing on <html> (docs/TOKENS.md · 'Role-mirror knobs MUST be initial'). NO primary/attention entry (a brand ships soft pairs for the four statuses only) and NO border role — --alert-border-alpha and --chat-bubble-tone-border-alpha keep deriving the edge. CONTRAST: this library paints the TEXT tier on these grounds, which clears AA on the reference kit (6.22 / 5.48 / 6.64 / 7.34:1); the Callout RAIL is the FILL tier and measures 1.99:1 (success) and 1.62:1 (warning) there, under SC 1.4.11 — inherited, not introduced (2.12 / 1.69:1 on the derived tint), and repaired through --mark-*.",
   },
   {
     name: "--border / --input",
@@ -475,7 +475,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--banner-{radius,border-width,space-inset-block,space-inset-inline}",
     category: "component",
     tier: "component",
-    role: 'Banner strip geometry — the full-bleed presentation of the Alert primitive (`<Banner>` / Alert variant="banner"). radius 0 (square strip corners), a single hairline block-end rule (tone-coloured by the alert rules), block inset denser than the inline card (--space-3), inline inset defaulting to the page gutter (--space-page-active-x) so banner text aligns with page content. Colour stays entirely with `tone`; a service retunes the strip once here — a consumer never writes CSS to place a banner.',
+    role: 'Banner strip geometry — the full-bleed presentation of the Alert primitive (`<Alert variant="banner">`). radius 0 (square strip corners), a single hairline block-end rule (tone-coloured by the alert rules), block inset denser than the inline card (--space-3), inline inset defaulting to the page gutter (--space-page-active-x) so banner text aligns with page content. Colour stays entirely with `tone`; a service retunes the strip once here — a consumer never writes CSS to place a banner.',
   },
   {
     name: "--page-header-status-gap",
@@ -571,25 +571,25 @@ export const TOKENS: TokenEntry[] = [
     name: "--auth-shell-device-{card-max-width,main-padding,main-padding-mobile,otp-slot-inline-size,otp-slot-block-size}",
     category: "component",
     tier: "component",
-    role: 'AuthShell `preset="device-authorization"` measure — the canonical OAuth device-grant artboard: a 23.75rem/380px card at 1440/1024 and a 15px-block · 5px-inline page gutter at 390 (so the card renders x=5px, width=380px), PLUS the code field the flow is actually about. The preset now owns its OTP slot box and hands it to --otp-slot-{inline,block}-size: 27.5x52 per slot, i.e. a 4-slot `appearance="grouped"` box of 112x54 with its 1px group border. Without it the field fell back to the square --control-height tier and rendered 146x38 against that artboard — the preset owned the page but not its subject. LITERAL lengths, not --space-*, because the artboard specifies exact device pixels that must not drift with --scaling. Selecting the preset replaces a consumer-side --auth-shell-card-max-width override or a forked `.auth-shell--wide` class; the canonical 360px/15px default is untouched.',
+    role: 'CenteredShell variant="auth" `preset="device-authorization"` measure — the canonical OAuth device-grant artboard: a 23.75rem/380px card at 1440/1024 and a 15px-block · 5px-inline page gutter at 390 (so the card renders x=5px, width=380px), PLUS the code field the flow is actually about. The preset now owns its OTP slot box and hands it to --otp-slot-{inline,block}-size: 27.5x52 per slot, i.e. a 4-slot `appearance="grouped"` box of 112x54 with its 1px group border. Without it the field fell back to the square --control-height tier and rendered 146x38 against that artboard — the preset owned the page but not its subject. LITERAL lengths, not --space-*, because the artboard specifies exact device pixels that must not drift with --scaling. Selecting the preset replaces a consumer-side --auth-shell-card-max-width override or a forked `.auth-shell--wide` class; the canonical 360px/15px default is untouched.',
   },
   {
     name: "--auth-shell-context-{card-max-width,main-padding,main-padding-mobile,card-stack-gap}",
     category: "component",
     tier: "component",
-    role: 'AuthShell `preset="context-selection"` measure — the organisation/context picker: a 25rem card on desktop/tablet, edge-to-edge on mobile (0 inline gutter), and a 1rem rhythm between the three direct sections of the auth column (intro · choice card · "remember" row).',
+    role: 'CenteredShell variant="auth" `preset="context-selection"` measure — the organisation/context picker: a 25rem card on desktop/tablet, edge-to-edge on mobile (0 inline gutter), and a 1rem rhythm between the three direct sections of the auth column (intro · choice card · "remember" row).',
   },
   {
     name: "--auth-shell-recovery-{card-max-width,main-padding,main-padding-mobile}",
     category: "component",
     tier: "component",
-    role: 'AuthShell `preset="account-recovery"` measure — the SCR-008 27rem/432px panel, shared by the password-recovery panel (request · sent · new-password · expired) AND the sign-in MFA challenge panel (OTP · recovery-code · passkey-failure), because both canonical desktop panels measure w=432 at 1440. Mobile gutter = 15px inline at <=30rem, so the panel is x=15, width=360 — the SAME rhythm as the canonical Login flow, chosen deliberately: the supplied 390 reference is a desktop 2x2 composite that crops horizontally and is NOT a valid source. The canonical 360px Login measure and the 24rem un-preset shell are untouched.',
+    role: 'CenteredShell variant="auth" `preset="account-recovery"` measure — the SCR-008 27rem/432px panel, shared by the password-recovery panel (request · sent · new-password · expired) AND the sign-in MFA challenge panel (OTP · recovery-code · passkey-failure), because both canonical desktop panels measure w=432 at 1440. Mobile gutter = 15px inline at <=30rem, so the panel is x=15, width=360 — the SAME rhythm as the canonical Login flow, chosen deliberately: the supplied 390 reference is a desktop 2x2 composite that crops horizontally and is NOT a valid source. The canonical 360px Login measure and the 24rem un-preset shell are untouched.',
   },
   {
     name: "--auth-shell-registration-{card-max-width,main-padding-block-start,main-padding-block-start-mobile,main-padding-inline,main-padding-inline-mobile,main-padding-block-end,main-padding-block-end-mobile,card-stack-gap,identity-slot-block-size}",
     category: "component",
     tier: "component",
-    role: 'AuthShell `preset="registration"` measure — the canonical SCR-002 sign-up flow: a 22.5rem/360px form measure with a 15px inline gutter at 390 (card x=15, width=360 — the same page rhythm as the Login flow, so sign-in → sign-up never jumps on a phone). START-aligned (a tall sign-up card must scroll, not clip its own top above the scroll origin), with the block-start offset DERIVED from the canonical artboard (card y=284 at 1440x900, y=274 at 390x844: padding-block-start + 112px identity slot + 20px stack gap), and a footer-clearance knob of its own (block-end 3rem / 2rem mobile) so the legal/consent footer never sits flush against the submit button after a long scroll. The fixed 112px identity track absorbs absent / one-line / wrapped two-line identity copy without moving the card anchor.',
+    role: 'CenteredShell variant="auth" `preset="registration"` measure — the canonical SCR-002 sign-up flow: a 22.5rem/360px form measure with a 15px inline gutter at 390 (card x=15, width=360 — the same page rhythm as the Login flow, so sign-in → sign-up never jumps on a phone). START-aligned (a tall sign-up card must scroll, not clip its own top above the scroll origin), with the block-start offset DERIVED from the canonical artboard (card y=284 at 1440x900, y=274 at 390x844: padding-block-start + 112px identity slot + 20px stack gap), and a footer-clearance knob of its own (block-end 3rem / 2rem mobile) so the legal/consent footer never sits flush against the submit button after a long scroll. The fixed 112px identity track absorbs absent / one-line / wrapped two-line identity copy without moving the card anchor.',
   },
   {
     name: "--otp-slot-size",
@@ -601,7 +601,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--otp-slot-{inline-size,block-size}",
     category: "component",
     tier: "component",
-    role: 'Per-AXIS InputOTP slot box. --otp-slot-size stays the SQUARE shorthand; these two win over it and fall back to it, so a code field that is taller than it is wide — the canonical device-grant slot, 27.5x52 — is finally expressible from a token. Declared `initial` so the whole chain (axis → square → --control-height) resolves at the CALL SITE and a shell that re-scopes --control-height still reaches a field that sets neither axis. `AuthShell preset="device-authorization"` sets both for you.',
+    role: 'Per-AXIS InputOTP slot box. --otp-slot-size stays the SQUARE shorthand; these two win over it and fall back to it, so a code field that is taller than it is wide — the canonical device-grant slot, 27.5x52 — is finally expressible from a token. Declared `initial` so the whole chain (axis → square → --control-height) resolves at the CALL SITE and a shell that re-scopes --control-height still reaches a field that sets neither axis. `auth CenteredShell preset="device-authorization"` sets both for you.',
   },
   {
     name: "--otp-container-align",
@@ -655,7 +655,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--auth-shell-{main-align,card-stack-gap}",
     category: "component",
     tier: "component",
-    role: "AuthShell column knobs shared by every preset. --auth-shell-main-align is the block alignment of the auth column (default `center`, the vertically-centred card; set `start` for a tall intro+card+footnote stack). --auth-shell-card-stack-gap is the gap between the card slot's direct sections — default `0px` (quiet, rule #44) so an existing single-card consumer is byte-for-byte unchanged; a preset opts in.",
+    role: "Auth CenteredShell column knobs shared by every preset. --auth-shell-main-align is the block alignment of the auth column (default `center`, the vertically-centred card; set `start` for a tall intro+card+footnote stack). --auth-shell-card-stack-gap is the gap between the card slot's direct sections — default `0px` (quiet, rule #44) so an existing single-card consumer is byte-for-byte unchanged; a preset opts in.",
   },
   {
     name: "--card-{accent-rail-width,accent-perimeter-width,accent-perimeter-ring-width,featured-border-color,featured-ring-width}",
@@ -673,7 +673,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--auth-shell-{compact-card-inset,card-padding-block-compact,card-body-gap-compact,card-gap-compact}",
     category: "component",
     tier: "component",
-    role: "The compact AuthShell card's four independent knobs — one per axis, so the canonical Login card is tunable WITHOUT a consumer selector on the card-content slot: `compact-card-inset` = the inline column (→ --card-space-inset); `card-padding-block-compact` = the card's block/top-bottom padding (→ --card-space-shell-y, `initial` so its default mirrors the live inline inset and canonical output is unchanged); `card-body-gap-compact` = the header↔body gap (→ --card-space-body-y, 12px, the role the block knob used to be mis-wired to); `card-gap-compact` = the in-slot title↕description stack gap (→ --card-space-gap).",
+    role: "The compact auth CenteredShell card's four independent knobs — one per axis, so the canonical Login card is tunable WITHOUT a consumer selector on the card-content slot: `compact-card-inset` = the inline column (→ --card-space-inset); `card-padding-block-compact` = the card's block/top-bottom padding (→ --card-space-shell-y, `initial` so its default mirrors the live inline inset and canonical output is unchanged); `card-body-gap-compact` = the header↔body gap (→ --card-space-body-y, 12px, the role the block knob used to be mis-wired to); `card-gap-compact` = the in-slot title↕description stack gap (→ --card-space-gap).",
   },
   {
     name: "--app-setting-picker-compact-{control-height,padding-x,gap,font-size}",

@@ -53,8 +53,11 @@ describe("isShippedBrandAccent (gh#823 brand carve-out)", () => {
     // Without this the two directions below could both pass on an empty list — one because the
     // exemption never matched, the other because there was nothing to match.
     expect(SHIPPED_BRAND_ACCENTS.length).toBeGreaterThan(0);
-    const primary = SHIPPED_BRAND_ACCENTS.find((a: { cssVars: string[] }) =>
-      a.cssVars.includes("--primary"),
+    // v32 (gh#1220): core `--primary` is a neutral ink and the violet ships in the GoDX preset, so
+    // find the violet entry by its source rather than taking the first `--primary`.
+    const primary = SHIPPED_BRAND_ACCENTS.find(
+      (a: { cssVars: string[]; source?: string }) =>
+        a.cssVars.includes("--primary") && a.source === "src/themes/godx.css",
     );
     expect(primary).toBeTruthy();
     expect(primary.rgb).toEqual(BRAND);

@@ -205,7 +205,8 @@ describe("the merged JIS level 1 entry (issue #535)", () => {
     expect(faceBodies(flatten(resolve(STYLES_DIR, "core.css")))).toHaveLength(0);
     expect(faceBodies(flatten(resolve(STYLES_DIR, "core-with-fallbacks.css")))).toHaveLength(6);
     expect(flatten(resolve(STYLES_DIR, "core-with-fallbacks.css"))).not.toMatch(/url\(/);
-    expect(flatten(resolve(STYLES_DIR, "index.css"))).toContain("@fontsource/");
+    // v32 #1221: the all-in-one entry no longer bundles fonts; `styles/fonts` is the opt-in.
+    expect(flatten(resolve(STYLES_DIR, "index.css"))).not.toContain("@fontsource/");
     // …and the merged faces may not leak into the sliced entry, which would ship both.
     expect(flatten(resolve(STYLES_DIR, "index.css"))).not.toContain("jis-level1");
   });

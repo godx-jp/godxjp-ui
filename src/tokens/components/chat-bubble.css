@@ -1,5 +1,5 @@
-/* ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it
- * lives in (docs/roadmap/ai-chat-components.md §2/§3).
+/* ChatBubble / ChatBubbleList component tokens (@godxjp/chat since v32) — one message in a
+ * conversation, and the feed it lives in.
  *
  * NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one
  * of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}`

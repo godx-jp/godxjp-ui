@@ -211,7 +211,7 @@
     13,
     23
   ],
-  "storyPath": "data-entry/TreeSelect.stories.tsx",
+  "storyPath": "data-entry/tree-select.tsx",
   "tagline": "Hierarchical tree picker in a Popover (single or multi-select with checkboxes) — `onValueChange` receives `string` in single mode and `string[]` in multi/checkable mode; never use a raw `<select>` for tree-structured data.",
   "usage": [
     "DO pair with a `<label htmlFor={id}>` and pass the matching `id` prop so screen readers announce the control correctly. The underlying trigger is a `<Button role='combobox'>` — not a native `<select>` — so an explicit label is required.",

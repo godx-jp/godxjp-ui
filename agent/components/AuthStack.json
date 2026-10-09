@@ -16,6 +16,6 @@
     }
   ],
   "rules": [],
-  "storyPath": "layout/AuthStack.stories.tsx",
+  "storyPath": "layout/auth-stack.tsx",
   "tagline": "Token-spaced vertical stack for direct sections inside a canonical auth card."
 }

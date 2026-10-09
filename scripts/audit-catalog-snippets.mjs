@@ -543,10 +543,7 @@ let unsupported = 0;
       );
       if (named) owner = named.initializer.text;
     }
-    if (
-      ts.isPropertyAssignment(node) &&
-      node.name.getText(sf).replace(/['"]/g, "") === "example"
-    ) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(sf).replace(/['"]/g, "") === "example") {
       const line = sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1;
       const raw = extractExampleText(node.initializer);
       if (raw === null) unsupported++;
@@ -576,7 +573,8 @@ function inlineLiteralConsts(text) {
       if (
         ts.isIdentifier(decl.name) &&
         decl.initializer &&
-        (ts.isArrayLiteralExpression(decl.initializer) || ts.isObjectLiteralExpression(decl.initializer))
+        (ts.isArrayLiteralExpression(decl.initializer) ||
+          ts.isObjectLiteralExpression(decl.initializer))
       ) {
         literals.set(decl.name.text, decl.initializer.getText(sf));
       }
@@ -694,7 +692,13 @@ try {
         // tries to resolve it inside our own `src/` and fails before the external-module fallback
         // below ever gets a chance; clearing `paths` lets it fall through as a plain unresolved
         // specifier instead, same as `@inertiajs/react`.
-        compilerOptions: { noImplicitAny: false, paths: {} },
+        // `@godxjp/chat` (v32 #1223) is a sibling package of this repo: map it to its REAL source so a
+        // chat example is type-checked like a kit one. Left unresolved it became a shorthand ambient
+        // module, and `import { type ChatMessageProp }` from one is TS2709 "cannot use namespace".
+        compilerOptions: {
+          noImplicitAny: false,
+          paths: { "@godxjp/chat": ["../packages/chat/src/index.ts"] },
+        },
       },
       null,
       2,
@@ -729,7 +733,13 @@ try {
         {
           extends: "../tsconfig.json",
           include: [...includeFiles, "*.d.ts"],
-          compilerOptions: { noImplicitAny: false, paths: {} },
+          // `@godxjp/chat` (v32 #1223) is a sibling package of this repo: map it to its REAL source so a
+          // chat example is type-checked like a kit one. Left unresolved it became a shorthand ambient
+          // module, and `import { type ChatMessageProp }` from one is TS2709 "cannot use namespace".
+          compilerOptions: {
+            noImplicitAny: false,
+            paths: { "@godxjp/chat": ["../packages/chat/src/index.ts"] },
+          },
         },
         null,
         2,
@@ -740,10 +750,14 @@ try {
       // alphabetically-first diagnostics — the moment enough examples fail at once to exceed it
       // (reproduced by reverting every fix in this file at once: 100+ diagnostics silently became
       // 4). 64 MB is far past anything one run of 170-odd examples can produce.
-      execFileSync(process.execPath, [tscBin, "--noEmit", "-p", join(compileDir, "tsconfig.json")], {
-        encoding: "utf8",
-        maxBuffer: 64 * 1024 * 1024,
-      });
+      execFileSync(
+        process.execPath,
+        [tscBin, "--noEmit", "-p", join(compileDir, "tsconfig.json")],
+        {
+          encoding: "utf8",
+          maxBuffer: 64 * 1024 * 1024,
+        },
+      );
       return "";
     } catch (error) {
       return `${error.stdout ?? ""}${error.stderr ?? ""}`;
@@ -779,7 +793,9 @@ try {
         if (!roundByFile.has(file)) roundByFile.set(file, []);
         roundByFile.get(file).push(message.trim());
       }
-      const fatalNow = remaining.filter((f) => (roundByFile.get(f) ?? []).some((m) => PARSE_FATAL.test(m)));
+      const fatalNow = remaining.filter((f) =>
+        (roundByFile.get(f) ?? []).some((m) => PARSE_FATAL.test(m)),
+      );
       if (fatalNow.length === 0) {
         for (const f of remaining) byFileOut.set(f, roundByFile.get(f) ?? []);
         remaining = [];

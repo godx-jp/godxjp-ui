@@ -60,7 +60,7 @@
     "Sidebar — use Sidebar for persistent left-rail navigation. DropdownMenu is transient (opens on click, dismisses on select); Sidebar is always-visible structural navigation."
   ],
   "rules": [],
-  "storyPath": "navigation/DropdownMenu.stories.tsx",
+  "storyPath": "navigation/dropdown-menu.tsx",
   "subParts": [
     "DropdownMenuCheckboxItem",
     "DropdownMenuContent",

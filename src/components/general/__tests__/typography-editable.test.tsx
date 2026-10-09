@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Text, Title } from "../typography";
+import { Text } from "../typography";
 
 /** antd `editable` — `EditConfig` in antd 6.6.3, rendered by `es/typography/Editable.js`. */
 afterEach(() => {
@@ -137,21 +137,5 @@ describe("Text — editable", () => {
     render(<Text editable={{ enterIcon: <span>確定</span> }}>件名</Text>);
     await user2.click(screen.getByRole("button", { name: "Sửa" }));
     expect(screen.getByText("確定")).toBeInTheDocument();
-  });
-
-  it("works on a Title too — the behaviour is the shared block, not a Text special case", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(
-      <Title level={3} editable={{ onChange }}>
-        請求サマリー
-      </Title>,
-    );
-    await user.click(screen.getByRole("button", { name: "Sửa" }));
-    const textarea = screen.getByRole("textbox");
-    await user.clear(textarea);
-    await user.type(textarea, "月次サマリー");
-    await user.keyboard("{Enter}");
-    expect(onChange).toHaveBeenCalledWith("月次サマリー");
   });
 });

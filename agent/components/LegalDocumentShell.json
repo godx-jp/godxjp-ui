@@ -1,7 +1,7 @@
 {
-  "example": "import { LegalDocumentShell, CenteredShell, Flex, Topbar } from \"@godxjp/ui/layout\";\nimport { Button, Text } from \"@godxjp/ui/general\";\nimport { useState } from \"react\";\n\nexport function TermsPage() {\n  const [activeSection, setActiveSection] = useState(\"acceptance\");\n\n  return (\n    <CenteredShell width=\"lg\" topbar={<Topbar start={<Brand />} />}>\n      <LegalDocumentShell\n        title=\"利用規約\"\n        version=\"2.4\"\n        effectiveDate=\"2026-04-01\"\n        summary=\"本規約は、当社が提供するサービスの利用条件を定めるものです。\"\n        contentsLabel=\"目次\"\n        activeSection={activeSection}\n        onActiveSectionChange={setActiveSection}\n        sections={[\n          { id: \"acceptance\", title: \"第1条(本規約への同意)\", content: <Text as=\"p\">…</Text> },\n          { id: \"accounts\", title: \"第2条(アカウントの管理)\", content: <Text as=\"p\">…</Text> },\n        ]}\n        documentNavigation={\n          <Flex direction=\"col\" gap=\"xs\" role=\"group\" aria-label=\"法的文書\">\n            <Button variant=\"secondary\" size=\"sm\" fullWidth aria-current=\"page\">利用規約</Button>\n            <Button variant=\"ghost\" size=\"sm\" fullWidth>プライバシーポリシー</Button>\n          </Flex>\n        }\n        footerAction={<Button size=\"sm\">同意する</Button>}\n      />\n    </CenteredShell>\n  );\n}",
+  "example": "import { CenteredShell, Flex, Topbar } from \"@godxjp/ui/layout\";\nimport { LegalDocumentShell } from \"@godxjp/ui/lab\";\nimport { Button, Text } from \"@godxjp/ui/general\";\nimport { useState } from \"react\";\n\nexport function TermsPage() {\n  const [activeSection, setActiveSection] = useState(\"acceptance\");\n\n  return (\n    <CenteredShell width=\"lg\" topbar={<Topbar start={<Brand />} />}>\n      <LegalDocumentShell\n        title=\"利用規約\"\n        version=\"2.4\"\n        effectiveDate=\"2026-04-01\"\n        summary=\"本規約は、当社が提供するサービスの利用条件を定めるものです。\"\n        contentsLabel=\"目次\"\n        activeSection={activeSection}\n        onActiveSectionChange={setActiveSection}\n        sections={[\n          { id: \"acceptance\", title: \"第1条(本規約への同意)\", content: <Text as=\"p\">…</Text> },\n          { id: \"accounts\", title: \"第2条(アカウントの管理)\", content: <Text as=\"p\">…</Text> },\n        ]}\n        documentNavigation={\n          <Flex direction=\"col\" gap=\"xs\" role=\"group\" aria-label=\"法的文書\">\n            <Button variant=\"secondary\" size=\"sm\" fullWidth aria-current=\"page\">利用規約</Button>\n            <Button variant=\"ghost\" size=\"sm\" fullWidth>プライバシーポリシー</Button>\n          </Flex>\n        }\n        footerAction={<Button size=\"sm\">同意する</Button>}\n      />\n    </CenteredShell>\n  );\n}",
   "group": "layout",
-  "importPath": "@godxjp/ui/layout",
+  "importPath": "@godxjp/ui/lab",
   "name": "LegalDocumentShell",
   "props": [
     {
@@ -82,8 +82,9 @@
     23,
     24
   ],
-  "storyPath": "layout/LegalDocumentShell.stories.tsx",
+  "storyPath": "layout/legal-document-shell/index.tsx",
   "tagline": "Long-form legal/policy document surface (terms, privacy, DPA, cookie policy, SLA) — semantic article/nav/section landmarks, real anchors, a sticky table-of-contents rail, scroll-spy aria-current, hash deep links with a token-driven scroll offset and focus handoff. All legal text stays consumer-owned.",
+  "tier": "lab",
   "usage": [
     "DO use LegalDocumentShell for ANY long-form legal/policy document — terms of service, privacy policy, DPA, cookie policy, SLA, EULA, security policy. It is the only primitive that owns the document behaviour: scroll-spy active section, hash deep links, scroll offset, focus handoff and reduced-motion scrolling.",
     "DO pass `effectiveDate` as an ISO 8601 string ('2026-04-01'). The shell formats it with Intl.DateTimeFormat in the active locale and keeps the ISO value in <time dateTime>. A pre-formatted string ('April 1, 2026') is a bug — it will not localize.",
@@ -94,7 +95,7 @@
     "DO NOT expect a viewport media query: the shell owns its query container, so the one-column ⇄ two-column split (56rem) is decided by the SHELL's own width. Below it the contents are a STATIC compact block (never pinned on a phone); above it they are a sticky rail."
   ],
   "useCases": [
-    "Hosted legal terms/privacy screen (SCR-005): <CenteredShell width=\"lg\" topbar={<Topbar …/>}><LegalDocumentShell title=\"利用規約\" version=\"2.4\" effectiveDate=\"2026-04-01\" contentsLabel=\"目次\" sections={sections} activeSection={active} onActiveSectionChange={setActive} documentNavigation={<DocumentSwitcher/>} footerAction={<Button>同意する</Button>} /></CenteredShell>",
+    "Hosted legal terms/privacy screen (SCR-005): <CenteredShell width=\"lg\" topbar={<Topbar …/>}><LegalDocumentShell title=\"利用規約\" version=\"2.4\" effectiveDate=\"2026-04-01\" contentsLabel=\"目次\" sections={sections} activeSection={active} onActiveSectionChange={setActive} documentNavigation={yourDocumentSwitcher} footerAction={<Button>同意する</Button>} /></CenteredShell>",
     "In-app policy viewer inside a Dialog/Sheet during onboarding: the same `sections` with `footerAction` carrying the accept button; the shell stays single-column because its container is narrow.",
     "Deep-linkable DPA / sub-processor document: link to /legal/dpa#data-retention — the shell selects, scrolls to (with the scroll offset) and focuses that section on arrival.",
     "Multi-document legal set (Terms · Privacy · Cookies): render the switcher in `documentNavigation` so it sits above the contents in the sticky rail."

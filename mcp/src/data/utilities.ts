@@ -44,6 +44,135 @@ export interface UtilityEntry {
  * NEW export still cannot slip through uncatalogued.
  */
 export const UTILITIES: UtilityEntry[] = [
+  // ── Building a custom field that joins FormField and the control-surface matrix (v32 #1223) ──
+  {
+    name: "pickFieldA11y",
+    kind: "function",
+    subpaths: ["./data-entry"],
+    signature: "(props: FieldA11yProps): FieldA11yProps",
+    tagline:
+      "Take ONLY the accessible-name / description / validation props FormField injects (aria-label, -labelledby, -describedby, -errormessage, -invalid, -required, data-field) out of a props bag — to forward them to your control's real focus target.",
+    usage: [
+      "DO forward the result to the element the user tabs to (the real <textarea>/<input>/trigger), never to a wrapper <div>.",
+      'DON\'T use it for a role="group" container: invalid/required/errormessage are widget-only there.',
+    ],
+    related: [
+      "omitFieldA11y — the rest of the bag, for the wrapper.",
+      "FormField — the parent that injects these props onto its single child.",
+    ],
+    example: `import { omitFieldA11y, pickFieldA11y } from "@godxjp/ui/data-entry";
+
+function MyField(props: MyFieldProps) {
+  return (
+    <div {...omitFieldA11y(props)}>
+      <textarea {...pickFieldA11y(props)} />
+    </div>
+  );
+}`,
+  },
+  {
+    name: "omitFieldA11y",
+    kind: "function",
+    subpaths: ["./data-entry"],
+    signature: "<T extends FieldA11yProps>(props: T): Omit<T, keyof FieldA11yProps>",
+    tagline:
+      "The props bag WITHOUT the FormField a11y props — what a custom field spreads on its wrapper after `pickFieldA11y` has routed those to the focus target.",
+    usage: [
+      "DO pair it with pickFieldA11y so each attribute lands exactly once.",
+      "DON'T spread the original bag on the wrapper too — that duplicates aria-* on a non-focusable box.",
+    ],
+    related: ["pickFieldA11y — the half that goes to the focus target."],
+    example: `import { omitFieldA11y } from "@godxjp/ui/data-entry";
+
+<div {...omitFieldA11y(props)} />`,
+  },
+  {
+    name: "useFieldIdentity",
+    kind: "hook",
+    subpaths: ["./data-entry"],
+    signature:
+      '(own: { id?: string; name?: string; "data-field"?: string }): { "data-field"?: string; name?: string }',
+    tagline:
+      "Resolve `data-field` / `name` for a custom control nested under a FormField, the way every kit control does — `{}` everywhere else.",
+    usage: [
+      "DO call it once per control with the control's own id/name and spread the result on the element a native form submit reads.",
+      "DON'T invent a field name yourself: outside a FormField it returns {} so nothing changes.",
+    ],
+    related: ["FormField — supplies the identity context this reads."],
+    example: `import { useFieldIdentity } from "@godxjp/ui/data-entry";
+
+const identity = useFieldIdentity({ id, name });
+<textarea id={id} name={name ?? identity.name} data-field={identity["data-field"]} />`,
+  },
+  {
+    name: "controlSurfaceAttrs",
+    kind: "function",
+    subpaths: ["./data-entry"],
+    signature:
+      '(props: { variant?: ControlVariantProp; status?: ControlStatusProp; size?: SizeProp }): { "data-variant"?; "data-status"?; "data-size"? }',
+    tagline:
+      "The `variant` × `status` × `size` attributes the kit's control surface paints from — so a custom field in a form row looks exactly like the Select and Input beside it.",
+    usage: [
+      "DO spread it on the element that carries `ui-control-surface` (each default emits nothing, so an unconfigured control keeps its DOM).",
+      "DON'T recolour a field by className — status is token-owned through these attributes.",
+    ],
+    related: ['resolveAriaInvalid — the a11y half of `status="error"`.'],
+    example: `import { controlSurfaceAttrs } from "@godxjp/ui/data-entry";
+
+<div className="ui-control-surface" {...controlSurfaceAttrs({ variant, status, size })} />`,
+  },
+  {
+    name: "resolveAriaInvalid",
+    kind: "function",
+    subpaths: ["./data-entry"],
+    signature:
+      '<T extends React.AriaAttributes["aria-invalid"]>(ariaInvalid: T, status?: ControlStatusProp): T | true | undefined',
+    tagline:
+      'Fold `status="error"` into `aria-invalid` so the error reaches assistive tech (WCAG 1.4.1), while an `aria-invalid` from FormField always wins.',
+    usage: ["DO pass the FormField-injected aria-invalid first; the status is only the fallback."],
+    related: ["controlSurfaceAttrs — the visual half of `status`."],
+    example: `import { resolveAriaInvalid } from "@godxjp/ui/data-entry";
+
+<textarea aria-invalid={resolveAriaInvalid(props["aria-invalid"], status)} />`,
+  },
+  {
+    name: "isImeComposing",
+    kind: "function",
+    subpaths: ["./data-entry"],
+    signature: "(event: React.KeyboardEvent | KeyboardEvent): boolean",
+    tagline:
+      "True while an IME (Japanese, Chinese, Korean, Vietnamese) is composing — the Enter that confirms a conversion is the IME's, not a submit (gh#1054).",
+    usage: [
+      "DO return early from any keydown handler that acts on Enter/Tab/Escape when this is true.",
+      "DON'T track composition events yourself: Safari reports the confirming Enter after compositionend, which only this check (keyCode 229) catches.",
+    ],
+    related: ["ChatComposer (@godxjp/chat) — a field that guards every key with it."],
+    example: `import { isImeComposing } from "@godxjp/ui/data-entry";
+
+onKeyDown={(e) => {
+  if (isImeComposing(e)) return;
+  if (e.key === "Enter") submit();
+}}`,
+  },
+  {
+    name: "readDroppedFiles",
+    kind: "function",
+    subpaths: ["./data-entry"],
+    signature: "(transfer: DataTransfer, directory: boolean): Promise<File[]>",
+    tagline:
+      "The files of a drop — walking dropped FOLDERS when `directory` is true, since DataTransfer.files lists only the top-level items.",
+    usage: ["DO await it in your drop handler and hand the files to the same path a picker uses."],
+    related: [
+      "Upload — the dropzone that already does this.",
+      "createUploadItem — wraps each file as an upload item.",
+    ],
+    example: `import { readDroppedFiles } from "@godxjp/ui/data-entry";
+
+onDrop={async (e) => {
+  e.preventDefault();
+  add(await readDroppedFiles(e.dataTransfer, false));
+}}`,
+  },
   {
     name: "cn",
     kind: "function",
@@ -153,11 +282,11 @@ try { await save(); } catch (err) { toast.error(humanError(err)); }`,
     usage: [
       "DO import it from `@godxjp/ui` (or `/feedback`), never from `sonner` directly — a second `sonner` instance renders its own container and your toasts land in the wrong one.",
       "DO render `<Toaster />` once at the app root, or none of these appear.",
-      "DON'T use a toast for something the user must act on or must not miss — that is a Dialog, a Banner or an inline field error.",
+      'DON\'T use a toast for something the user must act on or must not miss — that is a Dialog, an `Alert variant="banner"` or an inline field error.',
     ],
     related: [
       "useToast — the hook form with the app's defaults applied.",
-      "Banner — for a persistent, page-level message.",
+      'Alert — `variant="banner"` for a persistent, page-level message.',
       "humanError — what to pass it in a catch block.",
     ],
     example: `import { toast } from "@godxjp/ui/feedback";
@@ -273,7 +402,7 @@ const rows = flattenItemPages(data);`,
   {
     name: "useCarousel",
     kind: "hook",
-    subpaths: ["./data-display"],
+    subpaths: ["./lab"],
     signature:
       "(): { canScrollPrev: boolean; canScrollNext: boolean; selectedIndex: number; scrollSnaps: number[]; api: CarouselApi | null; scrollPrev: () => void; scrollNext: () => void; scrollTo: (index: number) => void }",
     tagline:
@@ -618,7 +747,7 @@ const blocked = dateMatchModifiers(typed, disabledMatchers);`,
   {
     name: "diffText",
     kind: "function",
-    subpaths: ["./data-display"],
+    subpaths: ["./lab"],
     signature:
       "(before: string, after: string, options?: { granularity?: TextDiffGranularity; lang?: string; maxCells?: number }): TextDiffSegment[]",
     tagline:
@@ -638,7 +767,7 @@ const changed = diffText(previous, current, { lang: "ja" }).filter((run) => run.
   {
     name: "tokenizeText",
     kind: "function",
-    subpaths: ["./data-display"],
+    subpaths: ["./lab"],
     signature: "(text: string, granularity?: TextDiffGranularity, lang?: string): string[]",
     tagline:
       "Cut a text into diff tokens: `auto` (Intl.Segmenter words, CJK runs per character), `word`, `char` (grapheme clusters) or `line` (lines with their newline).",

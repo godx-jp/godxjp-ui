@@ -31,15 +31,15 @@ A **specific arrangement of existing primitives** for a specific screen, domain 
 
 Before creating OR proposing a framework component, evaluate **every** criterion and record the verdict. **Allowed only if ALL are `PASS`.** Any `FAIL` ⇒ it is a composition pattern; use existing components instead.
 
-| #                                                                 | Criterion                                                                                                                      | PASS means                                                            | FAIL means (→ compose)                                                   |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **C1. Universal, not design-specific**                            | Needed by many apps across domains; not a recreation of one design's block.                                                    | A generic capability (a select, a table, a date picker).              | "ACME Hero", "AcmePricingTable", "this dashboard's header".              |
-| **C2. Encapsulates reusable BEHAVIOR**                            | Owns non-trivial state / keyboard / focus / ARIA that must not be re-implemented per app.                                      | Listbox navigation, dialog focus-trap, table sort/select, async load. | Pure static layout/visual arrangement (a hero, a footer, a banner).      |
-| **C3. Not expressible by composing existing primitives + tokens** | You genuinely cannot build it from `Card`/`Button`/`Text`/`Grid`/`Flex`/… + token overrides.                                   | A new interaction primitive with no existing equivalent.              | You _can_ build it today from primitives + tokens (then you must).       |
-| **C4. Single responsibility + controlled-vocabulary API**         | One job; maps to `value`/`defaultValue`/`onValueChange`, `size ∈ xs\|sm\|md\|lg`, `tone`, etc.; generalizes beyond one screen. | `Select`, `Switch`, `Pagination`.                                     | A grab-bag "Section"/"Block"/"Layout" with a bespoke, screen-shaped API. |
-| **C5. Fully token-themeable, zero baked brand**                   | Appearance is 100% token-driven; works for every brand with no code change.                                                    | Reads `hsl(var(--…))` / semantic tokens only.                         | Needs baked colors / raw hex / per-brand styling to look right.          |
-| **C6. Earns the international contract**                          | Broad reuse justifies the full i18n (`t()`/`Intl`) + WAI-ARIA APG + WCAG 2.2 AA + RTL + a11y-test + MCP-catalog cost.          | A control everyone uses and that needs correct ARIA.                  | A one-off where that cost is pure overhead.                              |
-| **C7. Earns its bundle cost**                                     | Broadly used ⇒ worth shipping to _every_ consumer.                                                                             | Used across most apps.                                                | Used by one app / one design ⇒ it belongs in that app.                   |
+| #                                                                 | Criterion                                                                                                                                | PASS means                                                            | FAIL means (→ compose)                                                                                         |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **C1. Universal, not design-specific**                            | Needed by many apps across domains; not a recreation of one design's block.                                                              | A generic capability (a select, a table, a date picker).              | "ACME Hero", "AcmePricingTable", "this dashboard's header".                                                    |
+| **C2. Encapsulates reusable BEHAVIOR**                            | Owns non-trivial state / keyboard / focus / ARIA that must not be re-implemented per app.                                                | Listbox navigation, dialog focus-trap, table sort/select, async load. | Pure static layout/visual arrangement (a hero, a footer, a banner).                                            |
+| **C3. Not expressible by composing existing primitives + tokens** | You genuinely cannot build it from `Card`/`Button`/`Text`/`Grid`/`Flex`/… + token overrides.                                             | A new interaction primitive with no existing equivalent.              | You _can_ build it today from primitives + tokens (then you must).                                             |
+| **C4. Single responsibility + controlled-vocabulary API**         | One job; maps to `value`/`defaultValue`/`onValueChange`, `size ∈ xs\|sm\|md\|lg`, `tone`, etc.; generalizes beyond one screen.           | `Select`, `Switch`, `Pagination`.                                     | A grab-bag "Section"/"Block"/"Layout" with a bespoke, screen-shaped API.                                       |
+| **C5. Fully token-themeable, zero baked brand**                   | Appearance is 100% token-driven; works for every brand with no code change.                                                              | Reads `hsl(var(--…))` / semantic tokens only.                         | Needs baked colors / raw hex / per-brand styling to look right.                                                |
+| **C6. Earns the international contract**                          | Broad reuse justifies the full i18n (`t()`/`Intl`) + WAI-ARIA APG + WCAG 2.2 AA + RTL + a11y-test + MCP-catalog cost.                    | A control everyone uses and that needs correct ARIA.                  | A one-off where that cost is pure overhead.                                                                    |
+| **C7. Named pattern + neutral defaults**                          | A pattern named in at least TWO of WAI-ARIA APG, antd, MUI, shadcn (or an ISO/CLDR need), whose defaults encode no one product's policy. | `Select` (APG combobox · antd · MUI · shadcn), `Calendar` (CLDR).     | A screen-shaped invention no reference names ⇒ compose; one product's policy baked in ⇒ that product's preset. |
 
 > **Heuristic shortcuts** (a single one is usually enough to send it to composition):
 >
@@ -47,6 +47,33 @@ Before creating OR proposing a framework component, evaluate **every** criterion
 > - "Is the name a **proper noun / screen name / brand block** (Hero, Navbar, Footer, Pricing,
 >   DashboardHeader)?" → **yes ⇒ compose** (C1).
 > - "Does it own **any real behavior**, or is it just **layout + content + color**?" → layout only ⇒ **compose** (C2).
+
+### 2.1 The admission rule — usage decides the TIER, never the verdict (v32, #1205 decision B4)
+
+C7 used to read "earns its bundle cost — used across most apps". That made usage the verdict, and
+usage in our own repos measures **migration exposure, not worldwide need**: a date-range picker
+nobody in GoDX happens to import yet is still a standard form primitive every adopter expects. The
+rule that replaced it (R4, agreed by both reviewers; JEV 0.87–0.89):
+
+A **core** component must
+
+1. **own reusable behaviour** — keyboard, focus, ARIA, timing, measurement — **measured in the
+   source**, not claimed in the tagline (C2);
+2. **match a pattern named in at least two of** WAI-ARIA APG, antd, MUI, shadcn, or an ISO/CLDR
+   need (C7);
+3. **not be composable** from primitives plus tokens — if it is, it is a recipe in `docs/` (C3);
+4. **have neutral defaults** — a component that encodes one product's policy (its roles, its
+   branches, its identity mark) belongs in that product's preset, e.g. `@godxjp/ui/themes/godx`
+   (C5 + C7).
+
+Then **usage picks the tier**, it never removes a component on its own:
+
+| Passes the rule, and …                         | Ships from                       | Notes                                                                                                                                                                                    |
+| ---------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| imported by consumers                          | `@godxjp/ui` (core)              | The default agent context; the full contract.                                                                                                                                            |
+| **no consumer imports it yet**                 | **`@godxjp/ui/lab`**             | Same gates as core (tests, a11y, i18n, tokens) and semver'd; left out of the default MCP listings. **Promoted** to core once imported by **≥ 2 repos**; **demotion is never automatic**. |
+| a cohesive family with its own audience (chat) | its own package (`@godxjp/chat`) | Composes the kit's public API only.                                                                                                                                                      |
+| fails the rule                                 | —                                | A recipe in `docs/`, or the product's preset.                                                                                                                                            |
 
 ### Decision flow
 
@@ -57,7 +84,7 @@ new UI need
   │        (Select = searchable/async; AppShell/PageContainer = chrome; DataTable = grids)
   │
   ├─ Run the Framework-Component Test (C1–C7).
-  │        ├─ ALL pass → it MAY be a framework component
+  │        ├─ ALL pass → it MAY be a framework component; §2.1 picks core vs `/lab` by usage
   │        │             → follow the full `godxjp-ui-component` contract (i18n/a11y/vocab/
   │        │               tokens/test/MCP/registry) before merging into src/components/.
   │        └─ ANY fail → it is a COMPOSITION PATTERN
@@ -72,20 +99,20 @@ new UI need
 
 ## 3. Worked examples
 
-| Thing                                                   | C1  | C2  | C3  | C4  | C5  | C6  | C7  | Verdict                                                                  |
-| ------------------------------------------------------- | --- | --- | --- | --- | --- | --- | --- | ------------------------------------------------------------------------ |
-| `Select` (incl. search/async)                           | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component**                                                  |
-| `DataTable`, `Dialog`, `Calendar`, `Switch`, `Combobox` | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component**                                                  |
-| `StatCard` (+ `icon`)                                   | ✅  | ➖  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component** (a reusable KPI tile with a stable API + tokens) |
-| `ServiceLauncherCard`                                   | ➖  | ❌  | ❌  | ✅  | ✅  | ➖  | ➖  | **Composition by the test — RETAINED as a recorded exception** (gh#814)  |
-| `MegaMenu`                                              | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ➖  | **Framework component** — the instructive contrast with Hero, below      |
-| Marketing **Hero**                                      | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — section, static, composable, brand-specific            |
-| **Navbar** / **Footer**                                 | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — layout of `Text`/`Button`/`Flex`                       |
-| **PricingTable** / feature grid                         | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — `ResponsiveGrid` + `Card`                              |
-| Dashboard **page layout**                               | ❌  | ❌  | ❌  | ❌  | ➖  | ❌  | ❌  | **Composition** — `AppShell` + `PageContainer` + `ResponsiveGrid`        |
-| "Icon medallion"                                        | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `Avatar` (square) + a Lucide glyph                     |
-| **Section** / **Band** (full-bleed + measured column)   | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `<section>` + `Flex measure` + `pad`; see §3.1         |
-| `TenantTheme` (customer hex at runtime)                 | ✅  | ➖  | ❌  | ❌  | ✅  | ❌  | ➖  | **Composition + a published FUNCTION** — `tenantTheme()`; see §3.2       |
+| Thing                                                   | C1  | C2  | C3  | C4  | C5  | C6  | C7  | Verdict                                                                                                            |
+| ------------------------------------------------------- | --- | --- | --- | --- | --- | --- | --- | ------------------------------------------------------------------------------------------------------------------ |
+| `Select` (incl. search/async)                           | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component**                                                                                            |
+| `DataTable`, `Dialog`, `Calendar`, `Switch`, `Combobox` | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component**                                                                                            |
+| `StatCard` (+ `icon`)                                   | ✅  | ➖  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component** (a reusable KPI tile with a stable API + tokens)                                           |
+| `ServiceLauncherCard`                                   | ➖  | ❌  | ❌  | ✅  | ✅  | ➖  | ➖  | **Composition by the test — RETAINED as a recorded exception** (gh#814)                                            |
+| `MegaMenu`                                              | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component, `@godxjp/ui/lab` tier** (no consumer yet, §2.1) — the instructive contrast with Hero, below |
+| Marketing **Hero**                                      | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — section, static, composable, brand-specific                                                      |
+| **Navbar** / **Footer**                                 | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — layout of `Text`/`Button`/`Flex`                                                                 |
+| **PricingTable** / feature grid                         | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — `ResponsiveGrid` + `Card`                                                                        |
+| Dashboard **page layout**                               | ❌  | ❌  | ❌  | ❌  | ➖  | ❌  | ❌  | **Composition** — `AppShell` + `PageContainer` + `ResponsiveGrid`                                                  |
+| "Icon medallion"                                        | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `Avatar` (square) + a Lucide glyph                                                               |
+| **Section** / **Band** (full-bleed + measured column)   | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `<section>` + `Flex measure` + `pad`; see §3.1                                                   |
+| `TenantTheme` (customer hex at runtime)                 | ✅  | ➖  | ❌  | ❌  | ✅  | ❌  | ➖  | **Composition + a published FUNCTION** — `tenantTheme()`; see §3.2                                                 |
 
 `✅ pass · ❌ fail · ➖ borderline`. **StatCard** is the instructive borderline: C2 is weak (it owns little behavior), but it is a universal KPI tile with a controlled API, fully tokenized, broadly reused — so it earns its place. A **Hero** fails six of seven; it is unambiguously a composition.
 
@@ -99,12 +126,10 @@ get wrong: `DropdownMenu` looks like the answer and is the WRONG primitive, not 
 is react-aria-components `Menu`, i.e. `role="menu"` / `role="menuitem"`, which announces a set of
 site links as a desktop application menu and takes Tab out of the widget. The APG says so itself in
 its Disclosure Navigation example. A recipe over `DropdownMenu` would therefore ship the classic
-megamenu accessibility defect, which is exactly the case C3 is asking about. **C7 is the weak
-one** — marked ➖ deliberately: this is a JP business-software library, and a marketing megamenu is
-not in every consumer's build. It is kept because the same disclosure bar is what an admin console
-with several product areas needs, and because the cost is one file with no new dependency (no
-`@radix-ui/react-navigation-menu`, no animation runtime). Compare `StatCard`, whose borderline is
-C2 rather than C7.
+megamenu accessibility defect, which is exactly the case C3 is asking about. **C7 passes** under
+the v32 rule — APG names the Disclosure Navigation pattern and antd ships `Menu mode="horizontal"`
+with popup panels. What the old C7 ("used across most apps") marked ➖ is now a TIER question, not a
+verdict: no GoDX repo imports it yet, so it ships from `@godxjp/ui/lab` (§2.1) until two do.
 
 **ServiceLauncherCard is the ONE recorded exception, and it is recorded so that it stays one.** It shipped before the test was run against it, and when the test was run it came back with two hard FAILs: **C2** — no state, no keyboard handling, no focus management, its only ARIA three static attributes — and **C3** — its own imports are `Card` + `CardContent` + `Badge` + a Lucide glyph, so "could I build this right now from primitives?" is yes. By §2 that makes it a composition pattern. It is kept anyway because `src/components/layout/app-launcher.tsx` consumes it: it is an internal building block of a component that **does** pass, so the question was never "should it exist" but "should it be PUBLIC", and removing a public export is breaking. Keeping it public was the cheaper call and the ledger lives on gh#814 and at the top of `src/components/data-display/service-launcher-card.tsx`. **Consumers should compose `Card` + `Badge` for a service tile** — reach for `ServiceLauncherCard` only to match `AppLauncher`'s own tiles — and this row is not precedent for adding another static tile to `src/components/`.
 
@@ -116,8 +141,8 @@ turned out to be neither "add a component" nor "do nothing".
 **A `Section` component is refused, and it is refused for Hero's reasons.** It owns no state, no
 keyboard, no focus and no ARIA a `<section aria-labelledby>` does not already have (**C2**); it is
 `<section>` + `Flex` + padding + a max-width, i.e. buildable today (**C3**); its API would be the
-grab-bag `band` / `measure` / `glow` / `surface` / `bleed` that **C4** names by name; and a JP
-business-software library would be shipping a marketing band to every consumer (**C7**). One
+grab-bag `band` / `measure` / `glow` / `surface` / `bleed` that **C4** names by name; and no
+reference library names a "band" component — it is a page section, not a pattern (**C7**). One
 criterion of seven passes. Nothing about that is close.
 
 **But "do nothing" was also refused, and that is the part worth remembering.** The doctrine's own
@@ -163,7 +188,7 @@ copying it would have been the third private version of the same thing.
 | **C4** single responsibility + controlled vocabulary | **FAIL**                                         | The requested API is `primary` / `secondary` / `primaryForeground` / `tenant`. There is no `value`/`defaultValue`/`onValueChange`, no `size`, no `tone` — it is a configuration carrier with a screen-shaped API, which is the shape C4 names by name.                                                                                                                                                                                                                                              |
 | **C5** token-themeable, zero baked brand             | **PASS** (vacuously)                             | It IS the theming mechanism; it bakes nothing.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | **C6** earns the international contract              | **FAIL**                                         | It renders no text, has no role, no keyboard and no ARIA, so there is nothing for `t()` or the APG to say. The accessibility content of this feature is CONTRAST, and that lives in the computation and its tests — not in a component contract.                                                                                                                                                                                                                                                    |
-| **C7** earns its bundle cost                         | ➖                                               | The arithmetic is ~60 lines and every consumer that stores a customer colour needs it. A React wrapper around a `<div>` is not what earns that.                                                                                                                                                                                                                                                                                                                                                     |
+| **C7** named pattern + neutral defaults              | ➖                                               | The need is universal and the defaults are neutral, but no reference names a theming WRAPPER component — antd's ConfigProvider and MUI's ThemeProvider configure tokens, which is what the published function does. A React wrapper around a `<div>` is not the pattern.                                                                                                                                                                                                                            |
 
 **Three hard FAILs. Verdict: composition pattern — plus a published function.** `tenantTheme(hex)`
 in `@godxjp/ui/app` returns the declarations (`--primary`, `--primary-foreground`, `--ring`, and

@@ -1,7 +1,13 @@
+/**
+ * @deprecated `@godxjp/ui/ui` is the v31 shadcn-style alias, kept in v32 as RE-EXPORTS ONLY
+ * (#1223): every implementation lives in its group (`@godxjp/ui/general`, `/data-entry`,
+ * `/data-display`, `/feedback`, `/layout`, `/navigation`) — import from there. No file under
+ * `src/components/ui/` may hold an implementation again.
+ */
 export * from "./alert";
 export * from "./alert-dialog";
-export * from "./aspect-ratio";
-export * from "./avatar";
+export * from "../layout/aspect-ratio";
+export * from "../data-display/avatar";
 export * from "./badge";
 export * from "./button";
 export * from "./calendar";
@@ -13,7 +19,7 @@ export * from "./command";
 export * from "./resizable";
 export * from "./date-picker";
 export * from "./dialog";
-export { Separator } from "./separator";
+export { Separator } from "../layout/separator";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../feedback/tooltip";
 export * from "./dropdown-menu";
 export * from "./input";
@@ -33,6 +39,6 @@ export * from "./table";
 export * from "./tabs";
 export * from "./textarea";
 export * from "./time-picker";
-export * from "./toggle";
-export * from "./toggle-group";
+export * from "../data-entry/toggle";
+export * from "../data-entry/toggle-group";
 export * from "./upload";

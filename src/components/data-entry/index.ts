@@ -18,19 +18,6 @@ export {
 export { Checkbox } from "./checkbox";
 export { CheckboxGroup } from "./checkbox-group";
 export { Radio, RadioGroup, RadioItem, RadioGroupRoot } from "./radio";
-export { ChatComposer } from "./chat-composer";
-export type {
-  ChatComposerProp,
-  ChatComposerProps,
-  ChatComposerSubmitTypeProp,
-} from "./chat-composer";
-export { ChatSuggestion } from "./chat-suggestion";
-export type {
-  ChatSuggestionProp,
-  ChatSuggestionProps,
-  ChatSuggestionItemProp,
-  ChatSuggestionRenderProp,
-} from "./chat-suggestion";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
 export { Form, useFormLayout, type FormLayoutContextValue } from "./form";
@@ -98,10 +85,6 @@ export {
 } from "./command";
 export type { CommandProps } from "./command";
 export { CommandPalette } from "./command-palette";
-export { EmojiPicker } from "./emoji-picker";
-export { SortableList } from "./sortable-list";
-export type { SortableListItemProp, SortableListProp, SortableListProps } from "./sortable-list";
-export type { EmojiPickerProp, EmojiPickerProps } from "./emoji-picker";
 export type {
   CommandPaletteGroup,
   CommandPaletteItem,
@@ -130,8 +113,6 @@ export type {
 } from "./input-otp";
 export { Rating } from "./rating";
 export type { RatingProps } from "./rating";
-export { TagInput } from "./tag-input";
-export type { TagInputProps } from "./tag-input";
 export { Segmented } from "./segmented";
 export type { SegmentedOption, SegmentedProp, SegmentedProps } from "./segmented";
 export { BranchScopePicker } from "./branch-scope-picker";
@@ -149,15 +130,6 @@ export type { TimeRangePickerProps } from "./time-range-picker";
 export type { UploadRequestContext, UploadResult, UploadRejection } from "./upload-types";
 
 export type { UploadItemActions } from "./upload-types";
-export { Attachments } from "./attachments";
-export type {
-  AttachmentsProp,
-  AttachmentsProps,
-  AttachmentsItemProp,
-  AttachmentsPlaceholderProp,
-  AttachmentsOverflowProp,
-  AttachmentsRefProp,
-} from "./attachments";
 
 /*
  * The react-day-picker seam, handed out by THIS package (gh#797). A consumer typing a custom
@@ -175,3 +147,15 @@ export type {
   CalendarDay,
   DateLib,
 } from "./calendar";
+
+/*
+ * Building a field that takes part in `FormField` (its id, label, description and error wiring) and
+ * in the control-surface matrix (`variant` × `status` × `size`) without re-implementing either —
+ * what `@godxjp/chat`'s composer does, and what any app-side custom control can now do the same
+ * way (v32 #1223).
+ */
+export { pickFieldA11y, omitFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
+export type { FieldA11yProps } from "../../lib/field-a11y";
+export { controlSurfaceAttrs, resolveAriaInvalid } from "./control-surface";
+export { isImeComposing } from "../../lib/ime";
+export { readDroppedFiles } from "./upload-files";

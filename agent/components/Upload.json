@@ -204,7 +204,7 @@
     3,
     23
   ],
-  "storyPath": "data-entry/Upload.stories.tsx",
+  "storyPath": "data-entry/upload.tsx",
   "tagline": "Drag-and-drop / button / avatar / picture file uploader in six variants — wire onUpload to your media-service and call collectUploadCommitActions on form submit; supports multipart forms and custom media storage.",
   "usage": [
     "DO provide onUpload to auto-upload on pick. The callback must return { mediaId, previewUrl? } — the component transitions item.status through uploading → done/error automatically. Without onUpload the File object sits in item.file until you manually process it.",

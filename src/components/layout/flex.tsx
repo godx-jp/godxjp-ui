@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { Children, type CSSProperties } from "react";
 import { mergeAriaIds } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { flexGapClass, padStyle, padStepToken } from "../../lib/variants";
@@ -77,7 +77,11 @@ export type {
  */
 const HAS_IMPLICIT_ROLE = new Set(["ul", "ol", "li"]);
 
-export function Flex({
+export function Flex(props: FlexProp) {
+  return props.attached ? <AttachedFlex {...props} /> : <LayoutFlex {...props} />;
+}
+
+function LayoutFlex({
   as: Element = "div",
   direction = "row",
   marker,
@@ -100,6 +104,9 @@ export function Flex({
   fill = false,
   width,
   measure,
+  attached: _attached,
+  fullWidth: _fullWidth,
+  density: _density,
   className,
   style,
   children,
@@ -202,5 +209,92 @@ export function Flex({
       )}
       {children}
     </Element>
+  );
+}
+
+/**
+ * `<Flex attached>` — antd `Space.Compact`: a row of controls welded into one visual unit (the
+ * former `SpaceCompact`, v32 #1223; its DOM, classes and tokens are kept, so every seam rule in
+ * `src/styles/layout.css` still applies).
+ *
+ * A plain `<div>`: a visual join, not a semantic group — each child keeps its own accessible name.
+ * Named (`aria-label`/`aria-labelledby`, e.g. by a wrapping `FormField`) with no explicit `role`,
+ * it becomes `role="group"` and keeps only the aria a group allows, exactly as the layout Flex does.
+ *
+ * ONE WRAPPER PER CHILD (gh#919). Every seam rule keys on a box this component owns, so "one
+ * child, one flex item" holds whatever the child renders — `Select`'s root is `display: contents`
+ * and react-aria puts a `<template>` beside it, which `> *` rules silently missed.
+ */
+function AttachedFlex({
+  as: _as,
+  direction,
+  marker: _marker,
+  grow: _grow,
+  shrink: _shrink,
+  surface: _surface,
+  bleed: _bleed,
+  reveal: _reveal,
+  gap: _gap,
+  gapRaw: _gapRaw,
+  pad: _pad,
+  padRaw: _padRaw,
+  align: _align,
+  justify: _justify,
+  wrap: _wrap,
+  hideBelow: _hideBelow,
+  hideFrom: _hideFrom,
+  hideBelowRaw: _hideBelowRaw,
+  hideFromRaw: _hideFromRaw,
+  fill: _fill,
+  width: _width,
+  measure: _measure,
+  attached: _attached,
+  fullWidth,
+  density,
+  className,
+  children,
+  ...props
+}: FlexProp) {
+  const axis = typeof direction === "object" ? direction.base : direction;
+  const orientation = axis === "col" ? "vertical" : "horizontal";
+
+  let domProps = props;
+  if (
+    props.role === undefined &&
+    (props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined)
+  ) {
+    const {
+      "aria-required": _ariaRequired,
+      "aria-invalid": _ariaInvalid,
+      "aria-errormessage": ariaErrorMessage,
+      ...allowed
+    } = props;
+    domProps = {
+      ...allowed,
+      role: "group",
+      "aria-describedby": mergeAriaIds(props["aria-describedby"], ariaErrorMessage),
+    };
+  }
+
+  return (
+    <div
+      data-slot="space-compact"
+      data-orientation={orientation}
+      data-full-width={fullWidth ? "true" : undefined}
+      className={cn("ui-space-compact", density && `ui-density-${density}`, className)}
+      {...(domProps as React.HTMLAttributes<HTMLDivElement>)}
+    >
+      {Children.toArray(children).map((child, index) => (
+        <div
+          // eslint-disable-next-line react/no-array-index-key -- `toArray` already keys the
+          // children; this wrapper's key only has to be unique among its siblings, and the seam
+          // depends on position, so the index IS the identity here.
+          key={index}
+          data-slot="space-compact-item"
+        >
+          {child}
+        </div>
+      ))}
+    </div>
   );
 }

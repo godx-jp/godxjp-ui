@@ -1,7 +1,7 @@
 import { act, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { Anchor } from "../../navigation/anchor";
+import { Anchor } from "../../../lab/anchor";
 import { Affix } from "../affix";
 
 /**

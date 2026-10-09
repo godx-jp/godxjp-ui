@@ -23,7 +23,7 @@
     "CardAction — the header slot a Legend usually sits in, so the key lands opposite the CardTitle."
   ],
   "rules": [],
-  "storyPath": "data-display/Legend.stories.tsx",
+  "storyPath": "data-display/legend.tsx",
   "tagline": "The KEY for a colour-coded surface: which tone means what, spelled out in words once — a square swatch per tone with its label.",
   "usage": [
     "DO import from `@godxjp/ui/data-display`: `import { Legend } from \"@godxjp/ui/data-display\";`",

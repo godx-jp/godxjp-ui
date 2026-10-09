@@ -1825,8 +1825,11 @@ for (const dir of SCAN_DIRS) {
     scannedFiles.push(rel);
     // A primitive implements native controls; asking Input to render Input recurses.
     // Consumer applications and executable docs still receive these composition checks.
+    // `src/lab/` holds primitives too — the opt-in tier (v32 #1223), same gates as core.
     const fileRules =
-      SELF && !args.includes("--consumer") && rel.startsWith("src/components/")
+      SELF &&
+      !args.includes("--consumer") &&
+      (rel.startsWith("src/components/") || rel.startsWith("src/lab/"))
         ? ACTIVE_RULES.filter((rule) => rule.scope !== "consumer-control")
         : ACTIVE_RULES;
     const content = readFileSync(file, "utf8");
@@ -2089,7 +2092,7 @@ for (const dir of SCAN_DIRS) {
             rule: "formfield-needs-form",
             severity: "error",
             standard: "@godxjp/ui Form (gh#998)",
-            message: `${group.length} FormFields under one parent with no <Form> around them. <Form layout="horizontal" labelWidth controlWidth> is what lines fields up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field's label out of line. Wrap them in <Form>; a row that belongs together is <SpaceCompact> or <Form columns>. A lone field (a search box, a type-to-confirm input) is not flagged.`,
+            message: `${group.length} FormFields under one parent with no <Form> around them. <Form layout="horizontal" labelWidth controlWidth> is what lines fields up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field's label out of line. Wrap them in <Form>; a row that belongs together is <Flex attached> or <Form columns>. A lone field (a search box, a type-to-confirm input) is not flagged.`,
             snippet: scanContent.slice(at, at + 120).replace(/\s+/g, " "),
           });
         }

@@ -56,7 +56,7 @@
     },
     {
       "defaultValue": "\"bar\"",
-      "description": "The BOX the trigger takes — the same split AppSettingToggle draws, for the same reason. `bar` (default) is a TopbarItem: a cell as tall as the bar, whose hover IS the bar's surface. `icon` is a square ghost Button, for chrome that is NOT a bar — a nav rail (GoDX Dock puts it there), a card header, a toolbar. A TopbarItem outside a bar has nothing to bleed to: it stretches to a container that never set a band height, and its squared corners and full-bleed hover read as a broken cell rather than a control. The panel, the grid, the labels and the responsive contract are identical in both.",
+      "description": "The BOX the trigger takes — the same split `AppSettingPicker menu={false}` draws, for the same reason. `bar` (default) is a TopbarItem: a cell as tall as the bar, whose hover IS the bar's surface. `icon` is a square ghost Button, for chrome that is NOT a bar — a nav rail (GoDX Dock puts it there), a card header, a toolbar. A TopbarItem outside a bar has nothing to bleed to: it stretches to a container that never set a band height, and its squared corners and full-bleed hover read as a broken cell rather than a control. The panel, the grid, the labels and the responsive contract are identical in both.",
       "name": "appearance",
       "type": "\"bar\" | \"icon\""
     },
@@ -93,7 +93,7 @@
     "TopbarItem — the bar cell the trigger is built from; use it directly for a one-off bar control."
   ],
   "rules": [],
-  "storyPath": "layout/AppLauncher.stories.tsx",
+  "storyPath": "layout/app-launcher.tsx",
   "tagline": "Nine-dot topbar app grid — the platform-standard way to switch app (the Google Workspace shape).",
   "usage": [
     "DO drop it straight into a Topbar slot. It renders NO wrapper element, so the trigger is the slot's own flex child and `.ui-topbar-item { align-self: stretch }` reaches the bar's height.",

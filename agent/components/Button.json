@@ -48,7 +48,7 @@
     },
     {
       "defaultValue": "false",
-      "description": "Render as Radix Slot — merge props onto the child (<a>/<Link>).",
+      "description": "Render as the kit's Slot — merge props onto the child (<a>/<Link>).",
       "name": "asChild",
       "type": "boolean"
     },
@@ -106,11 +106,11 @@
   "rules": [
     23
   ],
-  "storyPath": "general/Button.stories.tsx",
+  "storyPath": "general/button/index.tsx",
   "subParts": [
     "ButtonRefetch"
   ],
-  "tagline": "Core button with variant + size presets, built on cva and Radix Slot (asChild).",
+  "tagline": "Core button with variant + size presets, built on cva with the kit's own Slot (asChild).",
   "usage": [
     "DO pick the right variant for intent: `default` (primary CTA, one per section), `destructive` (irreversible actions like delete/revoke), `outline` (secondary actions alongside a primary), `secondary` (less prominent actions), `ghost` (toolbar icon-only actions), `link` (inline text-style navigation without an underline by default).",
     "DO use icon-only sizes (`icon`, `icon-xs`, `icon-sm`, `icon-lg`) exclusively for buttons that contain only an SVG — these sizes set equal width/height. For text+icon buttons use `default|sm|lg|xs` sizes; icons inside are auto-sized to 1rem via `[&_svg:not([class*='size-'])]:size-4`.",

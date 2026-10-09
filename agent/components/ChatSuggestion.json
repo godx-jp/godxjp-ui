@@ -1,8 +1,8 @@
 {
   "docPath": "data-entry/chat-composer.tsx",
-  "example": "import { ChatComposer, ChatSuggestion } from \"@godxjp/ui/data-entry\";\n\nconst [draft, setDraft] = useState(\"\");\n\n<ChatSuggestion\n  items={[\n    { value: \"summarize\", label: \"要約する\", description: \"Summarize the thread\" },\n    { value: \"translate\", label: \"翻訳する\" },\n  ]}\n  onValueChange={(value) => setDraft(\"/\" + value + \" \")}\n>\n  {({ onTrigger, onKeyDown }) => (\n    <ChatComposer\n      value={draft}\n      onValueChange={(next) => { setDraft(next); onTrigger(next); }}\n      onKeyDown={onKeyDown}\n      onSubmit={(text) => send(text)}\n    />\n  )}\n</ChatSuggestion>",
+  "example": "import { ChatComposer, ChatSuggestion } from \"@godxjp/chat\";\n\nconst [draft, setDraft] = useState(\"\");\n\n<ChatSuggestion\n  items={[\n    { value: \"summarize\", label: \"要約する\", description: \"Summarize the thread\" },\n    { value: \"translate\", label: \"翻訳する\" },\n  ]}\n  onValueChange={(value) => setDraft(\"/\" + value + \" \")}\n>\n  {({ onTrigger, onKeyDown }) => (\n    <ChatComposer\n      value={draft}\n      onValueChange={(next) => { setDraft(next); onTrigger(next); }}\n      onKeyDown={onKeyDown}\n      onSubmit={(text) => send(text)}\n    />\n  )}\n</ChatSuggestion>",
   "group": "data-entry",
-  "importPath": "@godxjp/ui/data-entry",
+  "importPath": "@godxjp/chat",
   "name": "ChatSuggestion",
   "props": [
     {
@@ -91,7 +91,7 @@
     3,
     6
   ],
-  "storyPath": "data-entry/ChatSuggestion.stories.tsx",
+  "storyPath": "data-entry/chat-composer.tsx",
   "tagline": "Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it.",
   "usage": [
     "DO wire BOTH halves of the render prop: `onTrigger` from the composer's onValueChange and `onKeyDown` from its onKeyDown. With only one wired the list either never opens or cannot be driven.",

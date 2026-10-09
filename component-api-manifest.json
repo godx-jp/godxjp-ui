@@ -11,7 +11,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         },
         {
           "name": "defaultValue",
@@ -19,7 +19,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         },
         {
           "name": "dir",
@@ -27,7 +27,7 @@
           "required": false,
           "type": "\"ltr\" | \"rtl\" | undefined",
           "values": ["ltr", "rtl"],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         },
         {
           "name": "disabled",
@@ -35,7 +35,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         },
         {
           "name": "onValueChange",
@@ -43,7 +43,7 @@
           "required": false,
           "type": "((value: string) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         },
         {
           "name": "orientation",
@@ -51,7 +51,7 @@
           "required": false,
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         },
         {
           "name": "type",
@@ -59,7 +59,7 @@
           "required": true,
           "type": "\"single\"",
           "values": ["single"],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         },
         {
           "name": "value",
@@ -67,7 +67,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         }
       ]
     },
@@ -80,7 +80,7 @@
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         }
       ]
     },
@@ -93,7 +93,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         },
         {
           "name": "value",
@@ -101,7 +101,7 @@
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         }
       ]
     },
@@ -114,7 +114,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/accordion.tsx"]
+          "declaredIn": ["src/components/data-display/accordion.tsx"]
         }
       ]
     },
@@ -623,6 +623,14 @@
           "required": false,
           "type": "false | IconProp | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "kind",
+          "origin": "owned",
+          "required": false,
+          "type": "CalloutKindProp | undefined",
+          "values": ["warning", "note", "tip", "important", "caution"],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
         },
         {
@@ -1163,7 +1171,7 @@
       ]
     },
     "Anchor": {
-      "group": "navigation",
+      "group": "lab",
       "props": [
         {
           "name": "affix",
@@ -1529,72 +1537,19 @@
           "declaredIn": ["src/props/components/app.prop.ts"]
         },
         {
+          "name": "menu",
+          "origin": "owned",
+          "required": false,
+          "type": "true | undefined",
+          "values": [true],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
           "name": "name",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/props/components/app.prop.ts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "owned",
-          "required": false,
-          "type": "OnValueChangeProp<string> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/app.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/app.prop.ts"]
-        }
-      ]
-    },
-    "AppSettingToggle": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "appearance",
-          "origin": "owned",
-          "required": false,
-          "type": "AppSettingToggleAppearanceProp | undefined",
-          "values": ["icon", "bar"],
-          "declaredIn": ["src/props/components/app.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/app.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/app.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/app.prop.ts"]
-        },
-        {
-          "name": "kind",
-          "origin": "owned",
-          "required": true,
-          "type": "AppSettingToggleKind",
-          "values": ["density", "fontSize", "timeFormat", "theme"],
           "declaredIn": ["src/props/components/app.prop.ts"]
         },
         {
@@ -1978,7 +1933,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/aspect-ratio.tsx"]
+          "declaredIn": ["src/components/layout/aspect-ratio.tsx"]
         },
         {
           "name": "ratio",
@@ -1986,340 +1941,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/aspect-ratio.tsx"]
-        }
-      ]
-    },
-    "Attachments": {
-      "group": "data-entry",
-      "props": [
-        {
-          "name": "accept",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "action",
-          "origin": "owned",
-          "required": false,
-          "type": "string | ((file: File) => string | Promise<string>) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "beforeUpload",
-          "origin": "owned",
-          "required": false,
-          "type": "((file: File, files: File[]) => boolean | File | Blob | typeof import(\"../../components/data-entry/upload-types\").UPLOAD_LIST_IGNORE | Promise<boolean | File | Blob | typeof import(\"../../components/data-entry/upload-types\").UPLOAD_LIST_IGNORE>) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "children",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "classNames",
-          "origin": "owned",
-          "required": false,
-          "type": "Partial<Record<AttachmentsSemanticProp, string>> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "data",
-          "origin": "owned",
-          "required": false,
-          "type": "Record<string, string | Blob> | ((file: File) => Record<string, string | Blob> | Promise<Record<string, string | Blob>>) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "directory",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "getDropContainer",
-          "origin": "owned",
-          "required": false,
-          "type": "(() => HTMLElement | null | undefined) | null | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "headers",
-          "origin": "owned",
-          "required": false,
-          "type": "Record<string, string> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "imageProps",
-          "origin": "owned",
-          "required": false,
-          "type": "Record<string, unknown> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "itemRender",
-          "origin": "owned",
-          "required": false,
-          "type": "((node: React.ReactElement, item: UploadFileItemProp, items: UploadFileItemProp[], actions: import(\"../../components/data-entry/upload-types\").UploadItemActions) => React.ReactNode) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "items",
-          "origin": "owned",
-          "required": false,
-          "type": "readonly AttachmentsItemProp[] | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "listType",
-          "origin": "owned",
-          "required": false,
-          "type": "UploadListTypeProp | undefined",
-          "values": ["picture", "text"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "maxCount",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "maxSizeBytes",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "method",
-          "origin": "owned",
-          "required": false,
-          "type": "\"POST\" | \"PUT\" | \"PATCH\" | undefined",
-          "values": ["POST", "PUT", "PATCH"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "multiple",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((info: { file: AttachmentsItemProp; fileList: AttachmentsItemProp[]; }) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onDownload",
-          "origin": "owned",
-          "required": false,
-          "type": "((item: UploadFileItemProp) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onDrop",
-          "origin": "owned",
-          "required": false,
-          "type": "React.DragEventHandler<HTMLElement> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onPreview",
-          "origin": "owned",
-          "required": false,
-          "type": "((item: UploadFileItemProp) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onReject",
-          "origin": "owned",
-          "required": false,
-          "type": "((rejection: import(\"../../components/data-entry/upload-types\").UploadRejection) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onRemove",
-          "origin": "owned",
-          "required": false,
-          "type": "((item: AttachmentsItemProp) => boolean | void | Promise<boolean | void>) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onUpload",
-          "origin": "owned",
-          "required": false,
-          "type": "((file: File, item: UploadFileItemProp, context: import(\"../../components/data-entry/upload-types\").UploadRequestContext) => Promise<import(\"../../components/data-entry/upload-types\").UploadResult>) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "openFileDialogOnClick",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "overflow",
-          "origin": "owned",
-          "required": false,
-          "type": "AttachmentsOverflowProp | undefined",
-          "values": ["wrap", "scrollX", "scrollY"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "pastable",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "placeholder",
-          "origin": "owned",
-          "required": false,
-          "type": "AttachmentsPlaceholderProp | ((type: \"inline\" | \"drop\") => AttachmentsPlaceholderProp) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "previewFile",
-          "origin": "owned",
-          "required": false,
-          "type": "((file: File) => Promise<string>) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "readOnly",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "removable",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "rootClassName",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "styles",
-          "origin": "owned",
-          "required": false,
-          "type": "Partial<Record<AttachmentsSemanticProp, React.CSSProperties>> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "triggerIcon",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ComponentType<React.SVGProps<SVGSVGElement> & React.RefAttributes<SVGSVGElement>> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "triggerSize",
-          "origin": "owned",
-          "required": false,
-          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"default\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | undefined",
-          "values": ["xs", "sm", "md", "lg", "default", "icon", "icon-xs", "icon-sm", "icon-lg"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "triggerVariant",
-          "origin": "owned",
-          "required": false,
-          "type": "\"link\" | \"default\" | \"ghost\" | \"destructive\" | \"secondary\" | \"outline\" | \"dashed\" | undefined",
-          "values": ["link", "default", "ghost", "destructive", "secondary", "outline", "dashed"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "withCredentials",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+          "declaredIn": ["src/components/layout/aspect-ratio.tsx"]
         }
       ]
     },
@@ -2508,98 +2130,6 @@
         }
       ]
     },
-    "AuthShell": {
-      "group": "layout",
-      "props": [
-        {
-          "name": "actions",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "align",
-          "origin": "owned",
-          "required": false,
-          "type": "\"center\" | \"anchored\" | undefined",
-          "values": ["center", "anchored"],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "brand",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "children",
-          "origin": "owned",
-          "required": true,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "density",
-          "origin": "owned",
-          "required": false,
-          "type": "\"compact\" | \"comfortable\" | undefined",
-          "values": ["compact", "comfortable"],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "footer",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "measure",
-          "origin": "owned",
-          "required": false,
-          "type": "\"default\" | \"wide\" | undefined",
-          "values": ["default", "wide"],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "preset",
-          "origin": "owned",
-          "required": false,
-          "type": "AuthShellPresetProp | undefined",
-          "values": [
-            "default",
-            "login",
-            "registration",
-            "device-authorization",
-            "context-selection",
-            "account-recovery"
-          ],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "\"default\" | \"canonical\" | undefined",
-          "values": ["default", "canonical"],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        }
-      ]
-    },
     "AuthStack": {
       "group": "layout",
       "props": []
@@ -2621,7 +2151,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/avatar.tsx"]
+          "declaredIn": ["src/components/data-display/avatar.tsx"]
         },
         {
           "name": "presence",
@@ -2666,7 +2196,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/avatar.tsx"]
+          "declaredIn": ["src/components/data-display/avatar.tsx"]
         },
         {
           "name": "delayMs",
@@ -2674,7 +2204,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/avatar.tsx"]
+          "declaredIn": ["src/components/data-display/avatar.tsx"]
         }
       ]
     },
@@ -2687,7 +2217,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/avatar.tsx"]
+          "declaredIn": ["src/components/data-display/avatar.tsx"]
         },
         {
           "name": "fit",
@@ -2695,7 +2225,7 @@
           "required": false,
           "type": "AvatarImageFitProp | undefined",
           "values": ["cover", "contain"],
-          "declaredIn": ["src/components/ui/avatar.tsx"]
+          "declaredIn": ["src/components/data-display/avatar.tsx"]
         },
         {
           "name": "onLoadingStatusChange",
@@ -2703,7 +2233,7 @@
           "required": false,
           "type": "((status: ImageLoadingStatus) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/avatar.tsx"]
+          "declaredIn": ["src/components/data-display/avatar.tsx"]
         }
       ]
     },
@@ -2814,57 +2344,6 @@
           "type": "BadgeVariant | null | undefined",
           "values": ["default", "secondary", "outline", "dashed"],
           "declaredIn": ["src/components/data-display/badge.tsx"]
-        }
-      ]
-    },
-    "Banner": {
-      "group": "feedback",
-      "props": [
-        {
-          "name": "children",
-          "origin": "owned",
-          "required": false,
-          "type": "ReactNode",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/feedback.prop.ts"
-          ]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/feedback.prop.ts"
-          ]
-        },
-        {
-          "name": "icon",
-          "origin": "owned",
-          "required": false,
-          "type": "false | IconProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "onDismiss",
-          "origin": "owned",
-          "required": false,
-          "type": "HandlerProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "tone",
-          "origin": "owned",
-          "required": false,
-          "type": "ToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "neutral"],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
     },
@@ -3605,57 +3084,6 @@
         }
       ]
     },
-    "Callout": {
-      "group": "feedback",
-      "props": [
-        {
-          "name": "children",
-          "origin": "owned",
-          "required": false,
-          "type": "ReactNode",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/feedback.prop.ts"
-          ]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/feedback.prop.ts"
-          ]
-        },
-        {
-          "name": "icon",
-          "origin": "owned",
-          "required": false,
-          "type": "false | IconProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "kind",
-          "origin": "owned",
-          "required": false,
-          "type": "CalloutKindProp | undefined",
-          "values": ["warning", "note", "tip", "important", "caution"],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "tone",
-          "origin": "owned",
-          "required": false,
-          "type": "ToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "neutral"],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        }
-      ]
-    },
     "Card": {
       "group": "data-display",
       "props": [
@@ -3915,52 +3343,27 @@
       ]
     },
     "Carousel": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "opts",
-          "origin": "owned",
-          "required": false,
-          "type": "Partial<import(\"node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/carousel.tsx"]
-        },
-        {
-          "name": "plugins",
-          "origin": "owned",
-          "required": false,
-          "type": "import(\"node_modules/embla-carousel\").CreatePluginType<import(\"node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/carousel.tsx"]
-        },
-        {
-          "name": "setApi",
-          "origin": "owned",
-          "required": false,
-          "type": "((api: CarouselApi) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/carousel.tsx"]
-        }
-      ]
+      "group": "lab",
+      "props": []
     },
     "CarouselContent": {
-      "group": "data-display",
+      "group": "lab",
       "props": []
     },
     "CarouselDots": {
-      "group": "data-display",
+      "group": "lab",
       "props": []
     },
     "CarouselItem": {
-      "group": "data-display",
+      "group": "lab",
       "props": []
     },
     "CarouselNext": {
-      "group": "data-display",
+      "group": "lab",
       "props": []
     },
     "CarouselPrevious": {
-      "group": "data-display",
+      "group": "lab",
       "props": []
     },
     "Cascader": {
@@ -4284,11 +3687,27 @@
       "group": "layout",
       "props": [
         {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "align",
           "origin": "owned",
           "required": false,
           "type": "CenteredShellAlignProp | undefined",
           "values": ["center", "start"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "brand",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -4308,11 +3727,27 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "density",
+          "origin": "owned",
+          "required": false,
+          "type": "\"compact\" | \"comfortable\" | undefined",
+          "values": ["compact", "comfortable"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "footer",
           "origin": "owned",
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "measure",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"wide\" | undefined",
+          "values": ["default", "wide"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -4332,494 +3767,20 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"page\" | undefined",
+          "values": ["page"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "width",
           "origin": "owned",
           "required": false,
           "type": "CenteredShellWidthProp | undefined",
           "values": ["sm", "md", "lg"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
-        }
-      ]
-    },
-    "ChatBubble": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "avatar",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "children",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "footer",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "header",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "loading",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "placement",
-          "origin": "owned",
-          "required": false,
-          "type": "ChatBubblePlacementProp | undefined",
-          "values": ["start", "end"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "SizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "tone",
-          "origin": "owned",
-          "required": false,
-          "type": "ChatBubbleToneProp | undefined",
-          "values": ["default", "warning", "success", "destructive", "info"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "typing",
-          "origin": "owned",
-          "required": false,
-          "type": "ChatBubbleTypingProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "ChatBubbleVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        }
-      ]
-    },
-    "ChatBubbleList": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "autoScroll",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "items",
-          "origin": "owned",
-          "required": true,
-          "type": "readonly ChatMessageProp[]",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "label",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "roles",
-          "origin": "owned",
-          "required": false,
-          "type": "Record<string, Partial<ChatBubbleProp>> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        }
-      ]
-    },
-    "ChatComposer": {
-      "group": "data-entry",
-      "props": [
-        {
-          "name": "actions",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "allowEmptySubmit",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "cancelLabel",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/data-entry.prop.ts"
-          ]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "footer",
-          "origin": "owned",
-          "required": false,
-          "type": "ChatComposerFooterProp",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "header",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/data-entry.prop.ts"
-          ]
-        },
-        {
-          "name": "loading",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "maxLength",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onCancel",
-          "origin": "owned",
-          "required": false,
-          "type": "(() => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onKeyDown",
-          "origin": "owned",
-          "required": false,
-          "type": "React.KeyboardEventHandler<HTMLTextAreaElement> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onSubmit",
-          "origin": "owned",
-          "required": false,
-          "type": "((value: string) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "owned",
-          "required": false,
-          "type": "OnValueChangeProp<string> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "placeholder",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "prefix",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "readOnly",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "SizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "status",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlStatusProp | undefined",
-          "values": ["warning", "error"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "submitLabel",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "submitType",
-          "origin": "owned",
-          "required": false,
-          "type": "ChatComposerSubmitTypeProp | undefined",
-          "values": ["enter", "shiftEnter", "modEnter"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        }
-      ]
-    },
-    "ChatSuggestion": {
-      "group": "data-entry",
-      "props": [
-        {
-          "name": "allowSpaces",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "children",
-          "origin": "owned",
-          "required": true,
-          "type": "(props: ChatSuggestionRenderProp) => React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "defaultOpen",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "emptyMessage",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "items",
-          "origin": "owned",
-          "required": true,
-          "type": "readonly ChatSuggestionItemProp[]",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "listLabel",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onOpenChange",
-          "origin": "owned",
-          "required": false,
-          "type": "OnOpenChangeProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onQueryChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((query: string) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "owned",
-          "required": false,
-          "type": "OnValueChangeProp<string> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "open",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "shouldFilter",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "terminator",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "triggerCharacter",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -5552,91 +4513,6 @@
           "type": "string",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
-        }
-      ]
-    },
-    "Conversations": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "activeKey",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "creation",
-          "origin": "owned",
-          "required": false,
-          "type": "ConversationsCreationProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "defaultActiveKey",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "groupable",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | ConversationsGroupableProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "items",
-          "origin": "owned",
-          "required": false,
-          "type": "readonly ConversationsEntryProp[] | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "label",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "menu",
-          "origin": "owned",
-          "required": false,
-          "type": "ConversationsMenuProp | ((conversation: ConversationsItemProp) => ConversationsMenuProp | undefined) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "onActiveChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((key: string, item?: ConversationsEntryProp) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]
     },
@@ -6923,7 +5799,7 @@
       ]
     },
     "DraggablePanel": {
-      "group": "layout",
+      "group": "lab",
       "props": [
         {
           "name": "axis",
@@ -7685,7 +6561,7 @@
       ]
     },
     "EmojiPicker": {
-      "group": "data-entry",
+      "group": "lab",
       "props": [
         {
           "name": "aria-label",
@@ -8286,11 +7162,27 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "attached",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "bleed",
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
           "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12, 20, 24],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "density",
+          "origin": "owned",
+          "required": false,
+          "type": "DensityProp | undefined",
+          "values": ["compact", "default", "comfortable"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -8303,6 +7195,14 @@
         },
         {
           "name": "fill",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "fullWidth",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -8448,7 +7348,7 @@
       ]
     },
     "FloatButton": {
-      "group": "general",
+      "group": "lab",
       "props": [
         {
           "name": "badge",
@@ -8935,141 +7835,6 @@
         }
       ]
     },
-    "HoverCard": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "closeDelay",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "defaultOpen",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "onOpenChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((open: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "open",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "openDelay",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        }
-      ]
-    },
-    "HoverCardContent": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "align",
-          "origin": "owned",
-          "required": false,
-          "type": "Align | undefined",
-          "values": ["center", "start", "end"],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "alignOffset",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "avoidCollisions",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "collisionPadding",
-          "origin": "owned",
-          "required": false,
-          "type": "number | Partial<Record<Side, number>> | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "forceMount",
-          "origin": "owned",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "hideWhenDetached",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "side",
-          "origin": "owned",
-          "required": false,
-          "type": "Side | undefined",
-          "values": ["left", "right", "top", "bottom"],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "sideOffset",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "sticky",
-          "origin": "owned",
-          "required": false,
-          "type": "\"always\" | \"partial\" | undefined",
-          "values": ["always", "partial"],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        }
-      ]
-    },
-    "HoverCardTrigger": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "asChild",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/ui/hover-card.tsx"]
-        }
-      ]
-    },
     "Icon": {
       "group": "general",
       "props": [
@@ -9170,7 +7935,7 @@
           "origin": "owned",
           "required": false,
           "type": "ImageFitProp | undefined",
-          "values": ["cover", "contain"],
+          "values": ["cover", "contain", "intrinsic"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
@@ -9735,7 +8500,7 @@
           "required": true,
           "type": "number",
           "values": [],
-          "declaredIn": ["src/components/ui/input-otp.tsx"]
+          "declaredIn": ["src/components/data-entry/input-otp.tsx"]
         }
       ]
     },
@@ -9761,7 +8526,7 @@
       ]
     },
     "LegalDocumentShell": {
-      "group": "layout",
+      "group": "lab",
       "props": [
         {
           "name": "activeSection",
@@ -10502,7 +9267,7 @@
       ]
     },
     "Marquee": {
-      "group": "data-display",
+      "group": "lab",
       "props": [
         {
           "name": "children",
@@ -10598,7 +9363,7 @@
       ]
     },
     "Masonry": {
-      "group": "layout",
+      "group": "lab",
       "props": [
         {
           "name": "className",
@@ -10768,7 +9533,7 @@
       ]
     },
     "MegaMenu": {
-      "group": "navigation",
+      "group": "lab",
       "props": [
         {
           "name": "className",
@@ -11218,7 +9983,7 @@
       ]
     },
     "OrgChart": {
-      "group": "data-display",
+      "group": "lab",
       "props": [
         {
           "name": "className",
@@ -11593,7 +10358,7 @@
       ]
     },
     "PageCover": {
-      "group": "layout",
+      "group": "lab",
       "props": [
         {
           "name": "actions",
@@ -11926,295 +10691,6 @@
         }
       ]
     },
-    "Paragraph": {
-      "group": "general",
-      "props": [
-        {
-          "name": "actions",
-          "origin": "owned",
-          "required": false,
-          "type": "TypographyActionsConfigProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "align",
-          "origin": "owned",
-          "required": false,
-          "type": "TextAlignProp | undefined",
-          "values": ["center", "start", "end"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "as",
-          "origin": "owned",
-          "required": false,
-          "type": "\"div\" | \"p\" | \"span\" | undefined",
-          "values": ["div", "p", "span"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "asChild",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "break",
-          "origin": "owned",
-          "required": false,
-          "type": "TextBreakProp | undefined",
-          "values": ["normal", "anywhere"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "chip",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "clamp",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "code",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "component",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "copyable",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | TypographyCopyConfigProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "decoration",
-          "origin": "owned",
-          "required": false,
-          "type": "\"none\" | \"underline\" | \"line-through\" | undefined",
-          "values": ["none", "underline", "line-through"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "delete",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "download",
-          "origin": "owned",
-          "required": false,
-          "type": "any",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "editable",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | TypographyEditConfigProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "ellipsis",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | TypographyEllipsisConfigProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "href",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "htmlFor",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "italic",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "keyboard",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "link",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "mark",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "mono",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "rel",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/general.prop.ts"
-          ]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "strong",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "tabular",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "target",
-          "origin": "owned",
-          "required": false,
-          "type": "React.HTMLAttributeAnchorTarget | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "tone",
-          "origin": "owned",
-          "required": false,
-          "type": "TextToneProp | undefined",
-          "values": [
-            "default",
-            "muted",
-            "warning",
-            "success",
-            "destructive",
-            "info",
-            "primary",
-            "inherit"
-          ],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "truncate",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "owned",
-          "required": false,
-          "type": "TypographyTypeProp | undefined",
-          "values": ["warning", "success", "secondary", "danger"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "underline",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "weight",
-          "origin": "owned",
-          "required": false,
-          "type": "FontWeightProp | undefined",
-          "values": ["medium", "regular", "semibold", "bold"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "whitespace",
-          "origin": "owned",
-          "required": false,
-          "type": "TextWhitespaceProp | undefined",
-          "values": ["normal", "pre-wrap"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        }
-      ]
-    },
     "PasswordInput": {
       "group": "data-entry",
       "props": [
@@ -12264,7 +10740,7 @@
           "required": false,
           "type": "((visible: boolean) => React.ReactNode) | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/password-input.tsx"]
+          "declaredIn": ["src/components/data-entry/password-input.tsx"]
         },
         {
           "name": "leadingIcon",
@@ -12352,7 +10828,7 @@
           "required": false,
           "type": "PasswordVisibilityToggleProp | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/password-input.tsx"]
+          "declaredIn": ["src/components/data-entry/password-input.tsx"]
         }
       ]
     },
@@ -12655,6 +11131,14 @@
       "group": "data-display",
       "props": [
         {
+          "name": "closeDelay",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
           "name": "defaultOpen",
           "origin": "owned",
           "required": false,
@@ -12684,6 +11168,22 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
+          "name": "openDelay",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
+          "name": "openOn",
+          "origin": "owned",
+          "required": false,
+          "type": "\"hover\" | \"click\" | undefined",
+          "values": ["hover", "click"],
           "declaredIn": ["src/components/data-display/popover.tsx"]
         }
       ]
@@ -13260,161 +11760,8 @@
       ]
     },
     "RangeTimeline": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "bands",
-          "origin": "owned",
-          "required": false,
-          "type": "{ label: string; units: number; }[] | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "bordered",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "busy",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "columns",
-          "origin": "owned",
-          "required": true,
-          "type": "{ label: string; units: number; muted?: boolean; }[]",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "defaultExpandedValues",
-          "origin": "owned",
-          "required": false,
-          "type": "readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "defaultLabelWidth",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "density",
-          "origin": "owned",
-          "required": false,
-          "type": "DensityProp | undefined",
-          "values": ["compact", "default", "comfortable"],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "expandedValues",
-          "origin": "owned",
-          "required": false,
-          "type": "readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "label",
-          "origin": "owned",
-          "required": true,
-          "type": "string",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "labelWidth",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "links",
-          "origin": "owned",
-          "required": false,
-          "type": "RangeTimelineLink[] | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "onExpandedValuesChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((values: string[]) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "onLabelWidthChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((width: number) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "onRangeChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((id: string, edge: \"start\" | \"end\", delta: number) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "planLabel",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "resizableLabel",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | { min?: number; max?: number; } | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "rows",
-          "origin": "owned",
-          "required": true,
-          "type": "RangeTimelineRow[]",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "sticky",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | { offsetHeader?: number; } | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        },
-        {
-          "name": "today",
-          "origin": "owned",
-          "required": false,
-          "type": "number | null | undefined",
-          "values": [],
-          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
-        }
-      ]
+      "group": "lab",
+      "props": []
     },
     "Rating": {
       "group": "data-entry",
@@ -13425,7 +11772,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "allowHalf",
@@ -13433,7 +11780,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "aria-label",
@@ -13441,7 +11788,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "character",
@@ -13449,7 +11796,7 @@
           "required": false,
           "type": "React.ReactNode | ((index: number) => React.ReactNode)",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "className",
@@ -13457,7 +11804,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "count",
@@ -13465,7 +11812,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "defaultValue",
@@ -13473,7 +11820,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "disabled",
@@ -13481,7 +11828,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "max",
@@ -13489,7 +11836,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "name",
@@ -13497,7 +11844,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "onValueChange",
@@ -13505,7 +11852,7 @@
           "required": false,
           "type": "((value: number) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "readOnly",
@@ -13513,7 +11860,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "tooltips",
@@ -13521,7 +11868,7 @@
           "required": false,
           "type": "readonly string[] | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         },
         {
           "name": "value",
@@ -13529,7 +11876,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/rating.tsx"]
+          "declaredIn": ["src/components/data-entry/rating.tsx"]
         }
       ]
     },
@@ -13785,7 +12132,7 @@
           "origin": "owned",
           "required": false,
           "type": "ResponsiveGridFlowProp | undefined",
-          "values": ["columns", "rows"],
+          "values": ["rows", "columns"],
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
@@ -14097,7 +12444,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "aria-labelledby",
@@ -14105,7 +12452,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "block",
@@ -14113,7 +12460,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "className",
@@ -14121,7 +12468,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "defaultValue",
@@ -14129,7 +12476,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "disabled",
@@ -14137,7 +12484,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "id",
@@ -14145,7 +12492,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "name",
@@ -14153,7 +12500,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "onValueChange",
@@ -14161,7 +12508,7 @@
           "required": false,
           "type": "((value: string) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "options",
@@ -14169,7 +12516,7 @@
           "required": true,
           "type": "readonly SegmentedOption[]",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "size",
@@ -14177,7 +12524,7 @@
           "required": false,
           "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | undefined",
           "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "value",
@@ -14185,7 +12532,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
           "name": "vertical",
@@ -14193,7 +12540,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/segmented.tsx"]
+          "declaredIn": ["src/components/data-entry/segmented.tsx"]
         }
       ]
     },
@@ -15980,7 +14327,7 @@
           "name": "avatar",
           "origin": "owned",
           "required": false,
-          "type": "boolean | Pick<SkeletonAvatarProp, \"shape\" | \"size\"> | undefined",
+          "type": "boolean | SkeletonArticleAvatarProp | undefined",
           "values": [],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
         },
@@ -16034,88 +14381,6 @@
         }
       ]
     },
-    "SkeletonAvatar": {
-      "group": "feedback",
-      "props": [
-        {
-          "name": "active",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "shape",
-          "origin": "owned",
-          "required": false,
-          "type": "AvatarShapeProp | undefined",
-          "values": ["circle", "square"],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "SizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        }
-      ]
-    },
-    "SkeletonButton": {
-      "group": "feedback",
-      "props": [
-        {
-          "name": "active",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "block",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "shape",
-          "origin": "owned",
-          "required": false,
-          "type": "ShapeProp | undefined",
-          "values": ["default", "pill", "sharp"],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "SizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        }
-      ]
-    },
     "SkeletonDetail": {
       "group": "feedback",
       "props": []
@@ -16157,27 +14422,6 @@
         }
       ]
     },
-    "SkeletonImage": {
-      "group": "feedback",
-      "props": [
-        {
-          "name": "active",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        }
-      ]
-    },
     "SkeletonInput": {
       "group": "feedback",
       "props": [
@@ -16211,35 +14455,6 @@
           "required": false,
           "type": "SizeProp | undefined",
           "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        }
-      ]
-    },
-    "SkeletonNode": {
-      "group": "feedback",
-      "props": [
-        {
-          "name": "active",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "children",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/feedback.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
@@ -16496,7 +14711,7 @@
       ]
     },
     "SortableList": {
-      "group": "data-entry",
+      "group": "lab",
       "props": [
         {
           "name": "aria-label",
@@ -16577,73 +14792,6 @@
           "type": "string[] | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        }
-      ]
-    },
-    "SpaceCompact": {
-      "group": "layout",
-      "props": [
-        {
-          "name": "children",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/layout.prop.ts"
-          ]
-        },
-        {
-          "name": "density",
-          "origin": "owned",
-          "required": false,
-          "type": "DensityProp | undefined",
-          "values": ["compact", "default", "comfortable"],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "fullWidth",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/layout.prop.ts"
-          ]
-        },
-        {
-          "name": "orientation",
-          "origin": "owned",
-          "required": false,
-          "type": "OrientationProp | undefined",
-          "values": ["vertical", "horizontal"],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "vertical",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
     },
@@ -17645,179 +15793,6 @@
         }
       ]
     },
-    "TagInput": {
-      "group": "data-entry",
-      "props": [
-        {
-          "name": "allowClear",
-          "origin": "owned",
-          "required": false,
-          "type": "AllowClearProp | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "aria-label",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "owned",
-          "required": false,
-          "type": "string[] | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "maxCount",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "maxTagCount",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "maxTagPlaceholder",
-          "origin": "owned",
-          "required": false,
-          "type": "MaxTagPlaceholderProp",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "maxTagTextLength",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "name",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "onClear",
-          "origin": "owned",
-          "required": false,
-          "type": "(() => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((tags: string[]) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "placeholder",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "readOnly",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "SizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "status",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlStatusProp | undefined",
-          "values": ["warning", "error"],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "tagRender",
-          "origin": "owned",
-          "required": false,
-          "type": "((props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean; }) => React.ReactNode) | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "tokenSeparators",
-          "origin": "owned",
-          "required": false,
-          "type": "string[] | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "value",
-          "origin": "owned",
-          "required": false,
-          "type": "string[] | undefined",
-          "values": [],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
-          "declaredIn": ["src/components/ui/tag-input.tsx"]
-        }
-      ]
-    },
     "Text": {
       "group": "general",
       "props": [
@@ -17960,7 +15935,7 @@
           "name": "ellipsis",
           "origin": "owned",
           "required": false,
-          "type": "boolean | Omit<TypographyEllipsisConfigProp, \"rows\" | \"onExpand\" | \"expandable\"> | undefined",
+          "type": "boolean | Omit<TypographyEllipsisConfigProp, \"rows\" | \"expandable\" | \"onExpand\"> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
@@ -18264,7 +16239,7 @@
       ]
     },
     "TextDiff": {
-      "group": "data-display",
+      "group": "lab",
       "props": [
         {
           "name": "after",
@@ -18362,203 +16337,6 @@
         }
       ]
     },
-    "ThoughtChain": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "defaultExpandedKeys",
-          "origin": "owned",
-          "required": false,
-          "type": "readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "expandedKeys",
-          "origin": "owned",
-          "required": false,
-          "type": "readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "items",
-          "origin": "owned",
-          "required": false,
-          "type": "readonly ThoughtChainItemsProp[] | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "label",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "line",
-          "origin": "owned",
-          "required": false,
-          "type": "ThoughtChainLineProp | undefined",
-          "values": [false, true, "dashed", "solid", "dotted"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "onExpand",
-          "origin": "owned",
-          "required": false,
-          "type": "((keys: string[]) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        }
-      ]
-    },
-    "ThoughtChainItem": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "blink",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "description",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "icon",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "onClick",
-          "origin": "owned",
-          "required": false,
-          "type": "OnClickProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "status",
-          "origin": "owned",
-          "required": false,
-          "type": "ThoughtChainStatusProp | undefined",
-          "values": ["success", "error", "loading", "abort"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "title",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "ThoughtChainVariantProp | undefined",
-          "values": ["text", "outlined", "solid"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        }
-      ]
-    },
-    "Thumbnail": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "alt",
-          "origin": "owned",
-          "required": true,
-          "type": "string",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/data-display.prop.ts"
-          ]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "ThumbnailSizeProp | undefined",
-          "values": ["sm", "md", "lg"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "src",
-          "origin": "owned",
-          "required": true,
-          "type": "string",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/data-display.prop.ts"
-          ]
-        }
-      ]
-    },
     "Timeline": {
       "group": "data-display",
       "props": [
@@ -18589,7 +16367,7 @@
       ]
     },
     "TimelineGrid": {
-      "group": "data-display",
+      "group": "lab",
       "props": [
         {
           "name": "className",
@@ -19211,172 +16989,6 @@
         }
       ]
     },
-    "Title": {
-      "group": "general",
-      "props": [
-        {
-          "name": "actions",
-          "origin": "owned",
-          "required": false,
-          "type": "TypographyActionsConfigProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "align",
-          "origin": "owned",
-          "required": false,
-          "type": "TextAlignProp | undefined",
-          "values": ["center", "start", "end"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "as",
-          "origin": "owned",
-          "required": false,
-          "type": "\"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | undefined",
-          "values": ["div", "h1", "h2", "h3", "h4", "h5"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "code",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "component",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "copyable",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | TypographyCopyConfigProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "delete",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "editable",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | TypographyEditConfigProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "ellipsis",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | TypographyEllipsisConfigProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "italic",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "keyboard",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "level",
-          "origin": "owned",
-          "required": false,
-          "type": "TitleLevelProp | undefined",
-          "values": [1, 2, 3, 4, 5],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "mark",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "tone",
-          "origin": "owned",
-          "required": false,
-          "type": "TextToneProp | undefined",
-          "values": [
-            "default",
-            "muted",
-            "warning",
-            "success",
-            "destructive",
-            "info",
-            "primary",
-            "inherit"
-          ],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "truncate",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "owned",
-          "required": false,
-          "type": "TypographyTypeProp | undefined",
-          "values": ["warning", "success", "secondary", "danger"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "underline",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "weight",
-          "origin": "owned",
-          "required": false,
-          "type": "FontWeightProp | undefined",
-          "values": ["medium", "regular", "semibold", "bold"],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        }
-      ]
-    },
     "Toaster": {
       "group": "feedback",
       "props": [
@@ -19399,7 +17011,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "countLabel",
@@ -19407,7 +17019,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "defaultPressed",
@@ -19415,7 +17027,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "disabled",
@@ -19431,7 +17043,7 @@
           "required": false,
           "type": "((pressed: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "overflowCount",
@@ -19439,7 +17051,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "pressed",
@@ -19447,7 +17059,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "shape",
@@ -19455,7 +17067,7 @@
           "required": false,
           "type": "\"default\" | \"pill\" | \"sharp\" | null | undefined",
           "values": ["default", "pill", "sharp"],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "showZero",
@@ -19463,7 +17075,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "size",
@@ -19471,7 +17083,7 @@
           "required": false,
           "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
           "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "variant",
@@ -19479,7 +17091,7 @@
           "required": false,
           "type": "\"default\" | \"outline\" | \"soft\" | null | undefined",
           "values": ["default", "outline", "soft"],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         }
       ]
     },
@@ -19492,7 +17104,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "dir",
@@ -19500,7 +17112,7 @@
           "required": false,
           "type": "\"ltr\" | \"rtl\" | undefined",
           "values": ["ltr", "rtl"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "disabled",
@@ -19508,7 +17120,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "disallowEmptySelection",
@@ -19516,7 +17128,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "loop",
@@ -19524,7 +17136,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "onValueChange",
@@ -19532,7 +17144,7 @@
           "required": false,
           "type": "((value: string) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "orientation",
@@ -19540,7 +17152,7 @@
           "required": false,
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "shape",
@@ -19548,7 +17160,7 @@
           "required": false,
           "type": "\"default\" | \"pill\" | \"sharp\" | null | undefined",
           "values": ["default", "pill", "sharp"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "size",
@@ -19556,7 +17168,7 @@
           "required": false,
           "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
           "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "type",
@@ -19564,7 +17176,7 @@
           "required": true,
           "type": "\"single\"",
           "values": ["single"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "value",
@@ -19572,7 +17184,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "variant",
@@ -19580,7 +17192,7 @@
           "required": false,
           "type": "\"default\" | \"outline\" | \"soft\" | null | undefined",
           "values": ["default", "outline", "soft"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "wrap",
@@ -19588,7 +17200,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         }
       ]
     },
@@ -19601,7 +17213,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "countLabel",
@@ -19609,7 +17221,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "disabled",
@@ -19625,7 +17237,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "shape",
@@ -19633,7 +17245,7 @@
           "required": false,
           "type": "\"default\" | \"pill\" | \"sharp\" | null | undefined",
           "values": ["default", "pill", "sharp"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "showZero",
@@ -19641,7 +17253,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/ui/toggle.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
           "name": "size",
@@ -19649,7 +17261,7 @@
           "required": false,
           "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
           "values": ["xs", "sm", "md", "lg"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "value",
@@ -19657,7 +17269,7 @@
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
           "name": "variant",
@@ -19665,7 +17277,7 @@
           "required": false,
           "type": "\"default\" | \"outline\" | \"soft\" | null | undefined",
           "values": ["default", "outline", "soft"],
-          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+          "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         }
       ]
     },
@@ -21020,27 +18632,6 @@
         }
       ]
     },
-    "Typography": {
-      "group": "general",
-      "props": [
-        {
-          "name": "as",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "component",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/general.prop.ts"]
-        }
-      ]
-    },
     "Upload": {
       "group": "data-entry",
       "props": [
@@ -21382,67 +18973,6 @@
     "VisuallyHidden": {
       "group": "general",
       "props": []
-    },
-    "Welcome": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "description",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "extra",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "icon",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "title",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "WelcomeVariantProp | undefined",
-          "values": ["filled", "borderless"],
-          "declaredIn": ["src/props/components/data-display.prop.ts"]
-        }
-      ]
     }
   },
   "utilities": {
@@ -21476,6 +19006,12 @@
       "signature": "(items: import(\"./components/data-entry\").UploadFileItem[]): import(\"./components/data-entry\").UploadCommitAction",
       "declaredIn": ["src/components/data-entry/upload-types.ts"]
     },
+    "controlSurfaceAttrs": {
+      "kind": "function",
+      "subpaths": ["./data-entry"],
+      "signature": "(props: { variant?: import(\"../../props\").ControlVariantProp; status?: import(\"../../props\").ControlStatusProp; size?: import(\"../../props\").SizeProp; }): { \"data-variant\"?: import(\"../../props\").ControlVariantProp; \"data-status\"?: import(\"../../props\").ControlStatusProp; \"data-size\"?: import(\"../../props\").SizeProp; }",
+      "declaredIn": ["src/components/data-entry/control-surface.ts"]
+    },
     "createSidebarLink": {
       "kind": "function",
       "subpaths": ["./layout"],
@@ -21496,9 +19032,9 @@
     },
     "diffText": {
       "kind": "function",
-      "subpaths": ["./data-display"],
+      "subpaths": ["./lab"],
       "signature": "(before: string, after: string, options?: { granularity?: import(\"./text-diff\").TextDiffGranularity; lang?: string; maxCells?: number; }): import(\"./text-diff\").TextDiffSegment[]",
-      "declaredIn": ["src/components/data-display/text-diff.tsx"]
+      "declaredIn": ["src/lab/text-diff.tsx"]
     },
     "flattenItemPages": {
       "kind": "function",
@@ -21536,11 +19072,41 @@
       "signature": "(err: unknown): string",
       "declaredIn": ["src/lib/format.ts"]
     },
+    "isImeComposing": {
+      "kind": "function",
+      "subpaths": ["./data-entry"],
+      "signature": "(event: React.KeyboardEvent | KeyboardEvent): boolean",
+      "declaredIn": ["src/lib/ime.ts"]
+    },
     "isRetryableQueryError": {
       "kind": "function",
       "subpaths": ["./query"],
       "signature": "(error: unknown): boolean",
       "declaredIn": ["src/lib/query-error.ts"]
+    },
+    "omitFieldA11y": {
+      "kind": "function",
+      "subpaths": ["./data-entry"],
+      "signature": "<T extends import(\".\").FieldA11yProps>(props: T): Omit<T, keyof import(\".\").FieldA11yProps>",
+      "declaredIn": ["src/lib/field-a11y.ts"]
+    },
+    "pickFieldA11y": {
+      "kind": "function",
+      "subpaths": ["./data-entry"],
+      "signature": "(props: import(\".\").FieldA11yProps): import(\".\").FieldA11yProps",
+      "declaredIn": ["src/lib/field-a11y.ts"]
+    },
+    "readDroppedFiles": {
+      "kind": "function",
+      "subpaths": ["./data-entry"],
+      "signature": "(transfer: DataTransfer, directory: boolean): Promise<File[]>",
+      "declaredIn": ["src/components/data-entry/upload-files.ts"]
+    },
+    "resolveAriaInvalid": {
+      "kind": "function",
+      "subpaths": ["./data-entry"],
+      "signature": "<T extends React.AriaAttributes[\"aria-invalid\"]>(ariaInvalid: T, status: import(\"../../props\").ControlStatusProp | undefined): T | true | undefined",
+      "declaredIn": ["src/components/data-entry/control-surface.ts"]
     },
     "shortId": {
       "kind": "function",
@@ -21574,9 +19140,9 @@
     },
     "tokenizeText": {
       "kind": "function",
-      "subpaths": ["./data-display"],
+      "subpaths": ["./lab"],
       "signature": "(text: string, granularity?: import(\"./text-diff\").TextDiffGranularity, lang?: string): string[]",
-      "declaredIn": ["src/components/data-display/text-diff.tsx"]
+      "declaredIn": ["src/lab/text-diff.tsx"]
     },
     "UPLOAD_LIST_IGNORE": {
       "kind": "value",
@@ -21592,15 +19158,21 @@
     },
     "useCarousel": {
       "kind": "hook",
-      "subpaths": ["./data-display"],
+      "subpaths": ["./lab"],
       "signature": "(): { canScrollPrev: boolean; canScrollNext: boolean; selectedIndex: number; scrollSnaps: number[]; api: import(\"./carousel\").CarouselApi | null; scrollPrev: () => void; scrollNext: () => void; scrollTo: (index: number) => void; }",
-      "declaredIn": ["src/components/data-display/carousel.tsx"]
+      "declaredIn": ["src/lab/carousel.tsx"]
     },
     "useDebouncedValue": {
       "kind": "hook",
       "subpaths": [".", "./admin"],
       "signature": "<T>(value: T, delay?: number): T",
       "declaredIn": ["src/lib/hooks.ts"]
+    },
+    "useFieldIdentity": {
+      "kind": "hook",
+      "subpaths": ["./data-entry"],
+      "signature": "(own: { id?: string; name?: string; \"data-field\"?: string; }): { \"data-field\"?: string; name?: string; }",
+      "declaredIn": ["src/lib/field-a11y.ts"]
     },
     "useFormLayout": {
       "kind": "hook",

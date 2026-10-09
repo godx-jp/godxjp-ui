@@ -66,6 +66,22 @@
     ]
   },
   {
+    "aliases": [
+      "pricing-table",
+      "plan-picker",
+      "pricing-card"
+    ],
+    "name": "pricing-plans",
+    "tagline": "Pricing plan cards — ResponsiveGrid preset + Card featured + FeatureList + tabular price. A composition, not a component (consumer request, debated 2026-10-09 on #1205).",
+    "tags": [
+      "pricing",
+      "plans",
+      "billing",
+      "card",
+      "composition"
+    ]
+  },
+  {
     "name": "confirm-destructive",
     "tagline": "Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).",
     "tags": [
@@ -232,7 +248,7 @@
       "scr-008"
     ],
     "name": "auth-recovery-panels",
-    "tagline": "Signed-OUT password recovery + sign-in MFA challenge panels (SCR-008). There is NO PasswordRecoveryPanel and NO MfaChallengePanel — compose Card + AuthStack + FormField/InputOTP + Button inside AuthShell preset=\"account-recovery\" (the 432px token-owned measure).",
+    "tagline": "Signed-OUT password recovery + sign-in MFA challenge panels (SCR-008). There is NO PasswordRecoveryPanel and NO MfaChallengePanel — compose Card + AuthStack + FormField/InputOTP + Button inside CenteredShell variant=\"auth-canonical\" preset=\"account-recovery\" (the 432px token-owned measure).",
     "tags": [
       "auth",
       "authshell",

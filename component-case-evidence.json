@@ -27,8 +27,7 @@
             "docs/feedback/alert.tsx",
             "docs/feedback/banner.tsx",
             "docs/feedback/callout.tsx",
-            "src/components/feedback/__tests__/banner.test.tsx",
-            "src/components/feedback/__tests__/callout.test.tsx"
+            "src/components/feedback/__tests__/alert-merge-parity-1223.test.tsx"
           ]
         }
       }
@@ -387,29 +386,6 @@
         }
       }
     },
-    "AuthShell": {
-      "props": {
-        "variant": {
-          "cases": [
-            "default",
-            "canonical"
-          ],
-          "evidence": [
-            "docs/layout/auth-shell-variants.tsx",
-            "docs/layout/auth-shell.tsx"
-          ]
-        },
-        "density": {
-          "cases": [
-            "compact",
-            "comfortable"
-          ],
-          "evidence": [
-            "docs/layout/auth-shell-variants.tsx"
-          ]
-        }
-      }
-    },
     "Avatar": {
       "props": {
         "shape": {
@@ -480,25 +456,6 @@
           "evidence": [
             "src/components/data-display/__tests__/badge-phrasing-seam-354.test.tsx",
             "docs/showcase/table-view-tabs.tsx"
-          ]
-        }
-      }
-    },
-    "Banner": {
-      "props": {
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/banner.tsx",
-            "src/components/feedback/__tests__/banner.test.tsx"
           ]
         }
       }
@@ -1143,7 +1100,7 @@
           ],
           "evidence": [
             "docs/layout/draggable-panel.tsx",
-            "src/components/layout/__tests__/draggable-panel.test.tsx"
+            "src/lab/__tests__/draggable-panel.test.tsx"
           ]
         },
         "axis": {
@@ -1154,7 +1111,7 @@
             "none"
           ],
           "evidence": [
-            "src/components/layout/__tests__/draggable-panel.test.tsx"
+            "src/lab/__tests__/draggable-panel.test.tsx"
           ]
         },
         "bounds": {
@@ -1163,7 +1120,7 @@
             "none"
           ],
           "evidence": [
-            "src/components/layout/__tests__/draggable-panel.test.tsx"
+            "src/lab/__tests__/draggable-panel.test.tsx"
           ]
         },
         "width": {
@@ -1175,7 +1132,7 @@
           ],
           "evidence": [
             "docs/layout/draggable-panel.tsx",
-            "src/components/layout/__tests__/draggable-panel.test.tsx"
+            "src/lab/__tests__/draggable-panel.test.tsx"
           ]
         },
         "disabled": {
@@ -1185,7 +1142,7 @@
           ],
           "evidence": [
             "docs/layout/draggable-panel.tsx",
-            "src/components/layout/__tests__/draggable-panel.test.tsx"
+            "src/lab/__tests__/draggable-panel.test.tsx"
           ]
         }
       }
@@ -1277,7 +1234,7 @@
             "square"
           ],
           "evidence": [
-            "src/components/general/__tests__/float-button.test.tsx",
+            "src/lab/__tests__/float-button.test.tsx",
             "docs/general/float-button.tsx"
           ]
         },
@@ -1287,7 +1244,7 @@
             "primary"
           ],
           "evidence": [
-            "src/components/general/__tests__/float-button.test.tsx",
+            "src/lab/__tests__/float-button.test.tsx",
             "docs/general/float-button.tsx"
           ]
         },
@@ -1298,7 +1255,7 @@
             "reset"
           ],
           "evidence": [
-            "src/components/general/__tests__/float-button.test.tsx"
+            "src/lab/__tests__/float-button.test.tsx"
           ]
         },
         "disabled": {
@@ -1307,7 +1264,7 @@
             true
           ],
           "evidence": [
-            "src/components/general/__tests__/float-button.test.tsx"
+            "src/lab/__tests__/float-button.test.tsx"
           ]
         }
       }
@@ -2915,6 +2872,28 @@
             "docs/data-entry/select.tsx",
             "src/components/data-entry/__tests__/select-controlled-empty.test.tsx"
           ]
+        },
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
+          ]
+        },
+        "variant": {
+          "cases": [
+            "outlined",
+            "filled",
+            "borderless",
+            "underlined"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
+          ]
         }
       }
     },
@@ -3043,103 +3022,6 @@
         }
       }
     },
-    "SkeletonAvatar": {
-      "props": {
-        "active": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        },
-        "shape": {
-          "cases": [
-            "circle",
-            "square"
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        },
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        }
-      }
-    },
-    "SkeletonButton": {
-      "props": {
-        "active": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        },
-        "block": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        },
-        "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        },
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        }
-      }
-    },
-    "SkeletonImage": {
-      "props": {
-        "active": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        }
-      }
-    },
     "SkeletonInput": {
       "props": {
         "active": {
@@ -3168,20 +3050,6 @@
             "sm",
             "md",
             "lg"
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
-            "docs/feedback/skeleton.tsx"
-          ]
-        }
-      }
-    },
-    "SkeletonNode": {
-      "props": {
-        "active": {
-          "cases": [
-            false,
-            true
           ],
           "evidence": [
             "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
@@ -3581,213 +3449,6 @@
         }
       }
     },
-    "TagInput": {
-      "complete": true,
-      "props": {
-        "aria-label": {
-          "cases": [
-            "CC送信先メール"
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx"
-          ]
-        },
-        "className": {
-          "cases": [
-            "contract-tag-input"
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx"
-          ]
-        },
-        "defaultValue": {
-          "cases": [
-            [
-              "approver@example.jp"
-            ]
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx",
-            "src/components/data-entry/__tests__/tag-input.test.tsx"
-          ]
-        },
-        "disabled": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx",
-            "src/components/data-entry/__tests__/tag-input.test.tsx"
-          ]
-        },
-        "id": {
-          "cases": [
-            "recipient-emails"
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx"
-          ]
-        },
-        "maxCount": {
-          "cases": [
-            2
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
-          ]
-        },
-        "maxTagCount": {
-          "cases": [
-            1
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
-          ]
-        },
-        "maxTagPlaceholder": {
-          "cases": [
-            "function → ほか2件"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
-          ]
-        },
-        "maxTagTextLength": {
-          "cases": [
-            12,
-            16
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx",
-            "docs/showcase/theme-customization.tsx",
-            "src/components/data-entry/__tests__/tag-input-840.test.tsx"
-          ]
-        },
-        "name": {
-          "cases": [
-            "cc_emails",
-            "locked_tags"
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx",
-            "src/components/data-entry/__tests__/tag-input.test.tsx"
-          ]
-        },
-        "onValueChange": {
-          "cases": [
-            "add",
-            "remove",
-            "backspace",
-            "blur"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/tag-input.test.tsx"
-          ]
-        },
-        "placeholder": {
-          "cases": [
-            "empty visible",
-            "populated hidden"
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx",
-            "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
-          ]
-        },
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
-          ]
-        },
-        "status": {
-          "cases": [
-            "warning",
-            "error"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
-          ]
-        },
-        "tagRender": {
-          "cases": [
-            "custom chip + onClose"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
-          ]
-        },
-        "tokenSeparators": {
-          "cases": [
-            [
-              ","
-            ],
-            [
-              ";"
-            ]
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
-          ]
-        },
-        "value": {
-          "cases": [
-            [
-              "営業部",
-              "Q1"
-            ]
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx",
-            "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
-          ]
-        },
-        "variant": {
-          "cases": [
-            "outlined",
-            "filled",
-            "borderless",
-            "underlined"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
-          ]
-        },
-        "allowClear": {
-          "cases": [
-            "controlled value and callback",
-            "default and custom configuration"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-input-uncontrolled.test.tsx"
-          ]
-        },
-        "onClear": {
-          "cases": [
-            "controlled value and callback",
-            "default and custom configuration"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-input-uncontrolled.test.tsx"
-          ]
-        },
-        "readOnly": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-input-uncontrolled.test.tsx"
-          ]
-        }
-      }
-    },
     "Text": {
       "props": {
         "tone": {
@@ -3916,7 +3577,7 @@
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "src/lab/__tests__/timeline-grid-354.test.tsx",
             "docs/showcase/case5-shift-calendar.tsx"
           ]
         },
@@ -3928,7 +3589,7 @@
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "src/lab/__tests__/timeline-grid-354.test.tsx",
             "docs/showcase/case5-shift-calendar.tsx"
           ]
         },
@@ -3942,7 +3603,7 @@
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "src/lab/__tests__/timeline-grid-354.test.tsx",
             "docs/showcase/case5-shift-calendar.tsx"
           ]
         },
@@ -3953,7 +3614,7 @@
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "src/lab/__tests__/timeline-grid-354.test.tsx",
             "docs/showcase/case5-shift-calendar.tsx"
           ]
         },
@@ -3965,7 +3626,7 @@
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "src/lab/__tests__/timeline-grid-354.test.tsx",
             "docs/showcase/case5-shift-calendar.tsx"
           ]
         },
@@ -3986,7 +3647,7 @@
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "src/lab/__tests__/timeline-grid-354.test.tsx",
             "docs/showcase/case5-shift-calendar.tsx"
           ]
         },
@@ -3997,7 +3658,7 @@
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx"
+            "src/lab/__tests__/timeline-grid-354.test.tsx"
           ]
         },
         "className": {
@@ -4005,7 +3666,7 @@
             "omitted"
           ],
           "evidence": [
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx"
+            "src/lab/__tests__/timeline-grid-354.test.tsx"
           ]
         },
         "id": {
@@ -4013,7 +3674,7 @@
             "omitted"
           ],
           "evidence": [
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx"
+            "src/lab/__tests__/timeline-grid-354.test.tsx"
           ]
         }
       }
@@ -4215,7 +3876,7 @@
         }
       }
     },
-    "Paragraph": {
+    "Link": {
       "props": {
         "size": {
           "cases": [
@@ -4236,23 +3897,27 @@
         }
       }
     },
-    "Link": {
+    "CenteredShell": {
       "props": {
-        "size": {
+        "variant": {
           "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "xl",
-            "2xs",
-            "2xl",
-            "3xl",
-            "4xl",
-            "5xl"
+            "page",
+            "auth",
+            "auth-canonical"
           ],
           "evidence": [
-            "docs/general/typography.tsx"
+            "docs/layout/auth-shell-variants.tsx",
+            "src/components/layout/__tests__/centered-shell-auth-parity-1223.test.tsx"
+          ]
+        },
+        "density": {
+          "cases": [
+            "compact",
+            "comfortable"
+          ],
+          "evidence": [
+            "docs/layout/auth-shell-variants.tsx",
+            "src/components/layout/__tests__/centered-shell-auth-parity-1223.test.tsx"
           ]
         }
       }

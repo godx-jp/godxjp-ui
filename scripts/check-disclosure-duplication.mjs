@@ -42,7 +42,9 @@ import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from "
 import { join, relative } from "node:path";
 
 const ROOT = process.cwd();
-const SCAN_DIR = join(ROOT, "src/components");
+// v32 (#1223) moved components into src/lab and packages/chat; they keep their debt, so they stay
+// scanned — otherwise moving a file would read as paying it off.
+const SCAN_DIRS = ["src/components", "src/lab", "packages/chat/src"].map((d) => join(ROOT, d));
 const BASELINE = join(ROOT, "scripts/disclosure-duplication.baseline.json");
 
 const args = new Set(process.argv.slice(2));
@@ -163,7 +165,7 @@ function partsOf(rawSource) {
   return parts;
 }
 
-const files = walk(SCAN_DIR)
+const files = SCAN_DIRS.flatMap((dir) => walk(dir))
   .filter((f) => f.endsWith(".tsx") && !f.includes("__tests__") && !f.includes("__fixtures__"))
   .sort();
 

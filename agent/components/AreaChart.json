@@ -106,7 +106,6 @@
     "BarChart — discrete category comparison."
   ],
   "rules": [],
-  "storyPath": "charts/AreaChart.stories.tsx",
   "tagline": "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot.",
   "usage": [
     "DO import from the charts entry: `import { AreaChart } from \"@godxjp/ui/charts\";` (recharts optional peer required).",

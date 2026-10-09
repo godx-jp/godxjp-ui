@@ -29,7 +29,6 @@ import type {
   TextToneProp,
   TextWhitespaceProp,
   TextBreakProp,
-  TitleLevelProp,
   TypographyActionsConfigProp,
   TypographyCopyConfigProp,
   TypographyEditConfigProp,
@@ -198,25 +197,7 @@ export type HeadingProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"
  */
 
 /**
- * @see Typography — antd's plain `<article>` wrapper for a run of prose (`TypographyProps`).
- *
- * It carries no emphasis of its own; it is the container `Title` / `Paragraph` / `Text` / `Link`
- * sit inside, and the thing `Typography.Text` etc. hang off as a compound component.
- */
-export type TypographyProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
-  /** Rendered element. Default `article`, matching antd. */
-  as?: string;
-  /**
-   * antd's (private) `component` — the rendered element.
-   *
-   * `as` is the spelling this library documents, and `as` WINS when both are passed. `component`
-   * exists so antd code pastes in unchanged.
-   */
-  component?: string;
-};
-
-/**
- * The antd `BlockProps` behaviour shared by `Text` / `Title` / `Paragraph` / `Link`.
+ * The antd `BlockProps` behaviour shared by `Text` / `Link`.
  *
  * The seven decoration flags each WRAP the content in a real element, in antd's own nesting order
  * (strong → u → del → code → mark → kbd → i), so the meaning reaches a screen reader instead of
@@ -260,54 +241,6 @@ export type TypographyBlockProp = {
   italic?: boolean;
   /** antd's (private) `component` alias for `as`; `as` wins when both are passed. */
   component?: string;
-};
-
-/**
- * @see Title — antd `Typography.Title`.
- *
- * A SIBLING of `Heading`, not a replacement: `Heading` is this library's own four-level heading and
- * stays exactly as it was. `Title` is antd's, so it reaches level 5 and carries the block
- * behaviours (`copyable`, `editable`, `ellipsis`, the decorations).
- *
- * antd omits `strong` from `TitleProps` because a heading is already `fontWeightStrong`; that
- * omission is ported.
- *
- * NAMED `TypographyTitleProp`, not `TitleProp`, for one measured reason: `TitleProp` is already a
- * VOCABULARY type (`vocabulary/content.prop.ts` — the ReactNode heading slot a Card / Dialog /
- * PageContainer takes), and `src/props/index.ts` re-exports `./vocabulary` and `./components`
- * through the same `export *`. A second `TitleProp` there is an ambiguous re-export, which TS
- * resolves by dropping BOTH. The component and its public `TitleProps` alias are still spelled
- * antd's way; only the internal type name moves.
- */
-export type TypographyTitleProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"> &
-  Omit<TypographyBlockProp, "strong"> & {
-    /** Heading level 1…5 — sets the `--heading-h*` size token AND the `<h1>`…`<h5>` element. */
-    level?: TitleLevelProp;
-    /** Override the rendered element (a visual h2 that is a real `<h1>`). */
-    as?: "h1" | "h2" | "h3" | "h4" | "h5" | "div";
-    /** Semantic colour intent. Outranks antd's `type`. */
-    tone?: TextToneProp;
-    align?: TextAlignProp;
-    /** This library's single-line ellipsis. `ellipsis` outranks it when both are passed. */
-    truncate?: boolean;
-    /** Weight (system canon: 400 · 500 · 700). Default `medium`. */
-    weight?: FontWeightProp;
-    /** Truncation — `true` is one line; the object form is antd's full `EllipsisConfig`. */
-    ellipsis?: boolean | TypographyEllipsisConfigProp;
-  };
-
-/**
- * @see Paragraph — antd `Typography.Paragraph`.
- *
- * antd renders it as a `<div>`, not a `<p>`, because the editing textarea and the action cluster
- * are block content that a `<p>` may not legally contain. That is ported verbatim; pass
- * `as="p"` when the content is known to be phrasing-only.
- */
-export type ParagraphProp = Omit<TextProp, "ellipsis" | "as"> & {
-  /** Rendered element. Default `div` — antd's choice; see above. */
-  as?: "div" | "p" | "span";
-  /** Truncation — `true` is one line; the object form is antd's full `EllipsisConfig`. */
-  ellipsis?: boolean | TypographyEllipsisConfigProp;
 };
 
 /**

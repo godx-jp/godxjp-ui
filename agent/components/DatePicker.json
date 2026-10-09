@@ -250,7 +250,7 @@
     13,
     31
   ],
-  "storyPath": "data-entry/DatePicker.stories.tsx",
+  "storyPath": "data-entry/date-picker.tsx",
   "tagline": "ONE date control: `picker` sets the granularity (day · week · month · quarter · year), `range` makes it a two-endpoint field, `multiple` a set. A real typeable input holds the value and submits ISO-8601 at the picker's own precision; the panel is the visual-only affordance.",
   "usage": [
     "ONE component covers every date-shaped field. `picker` is the granularity axis, `range` and `multiple` are the cardinality axis, and they compose: `<DatePicker range picker=\"month\" />` is a month range.",

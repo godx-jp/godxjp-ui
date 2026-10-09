@@ -25,7 +25,6 @@
   "rules": [
     5
   ],
-  "storyPath": "app/OverlayPortalProvider.stories.tsx",
   "tagline": "Moves EVERY overlay in this library (Popover, Dialog, Sheet, Tooltip, DropdownMenu, HoverCard, Select, Cascader) into a container you name — the one thing an app mounted inside a SHADOW ROOT cannot do with props.",
   "usage": [
     "DO mount it when this library is rendered inside a shadow root (an embedded bar, a widget injected into a host page, a Web Component wrapper). Overlays default to document.body, which is outside the tree carrying this library's stylesheet — measured on an embedded bar as border 0, radius 0, a transparent background and the anchor maths 40px off.",

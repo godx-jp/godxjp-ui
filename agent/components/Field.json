@@ -47,7 +47,6 @@
   "rules": [
     23
   ],
-  "storyPath": "data-entry/Field.stories.tsx",
   "tagline": "Label + optional description laid out beside a single checkbox/radio/switch control — the inline alternative to FormField's full block layout.",
   "usage": [
     "DO: Use Field to label a single boolean/choice control (Switch, Checkbox, Radio) in a compact two-column row — control beside label + description.",

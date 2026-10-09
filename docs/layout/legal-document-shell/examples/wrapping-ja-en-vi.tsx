@@ -1,7 +1,8 @@
-import { CenteredShell, Flex, LegalDocumentShell, Topbar } from "@godxjp/ui/layout";
+import { CenteredShell, Flex, Topbar } from "@godxjp/ui/layout";
 import { Button, Logo, Text } from "@godxjp/ui/general";
 
 import { WRAPPING_MIXED } from "../_data";
+import { LegalDocumentShell } from "@godxjp/ui/lab";
 
 /**
  * Wrapping fixture — long JA / EN / VI sections.

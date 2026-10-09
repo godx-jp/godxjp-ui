@@ -103,7 +103,9 @@ describe("list_primitives", () => {
     const out = await dispatchTool("list_primitives", {});
     expect(out).toContain("@godxjp/ui");
     // every name appears
-    for (const c of COMPONENTS.slice(0, 10)) expect(out).toContain(c.name);
+    // every CORE name appears; the opt-in lab tier is listed on request (lab-tier.test.ts)
+    for (const c of COMPONENTS.filter((e) => e.tier !== "lab").slice(0, 10))
+      expect(out).toContain(c.name);
   });
 
   const GROUPS: ComponentGroup[] = [
@@ -152,15 +154,9 @@ describe("search_components", () => {
  * `search_components` when folded only into a parent entry or missed by filename-based orphan scans.
  */
 describe("gh#605 — consumer-used exports are discoverable", () => {
-  const GH605 = [
-    "Segmented",
-    "CardBar",
-    "Legend",
-    "MasterDetail",
-    "SkeletonRows",
-  ] as const;
+  const GH605 = ["Segmented", "CardBar", "Legend", "MasterDetail"] as const;
 
-  it.each(GH605)('list_primitives includes %s', async (name) => {
+  it.each(GH605)("list_primitives includes %s", async (name) => {
     const out = await dispatchTool("list_primitives", {});
     expect(out).toContain(`**${name}**`);
   });
@@ -171,13 +167,16 @@ describe("gh#605 — consumer-used exports are discoverable", () => {
     expect(out).not.toMatch(/^No matches/m);
   });
 
-  it.each(GH605)("get_component(%s) returns a full guide, not a sub-part steer-away", async (name) => {
-    const out = await dispatchTool("get_component", { name });
-    expect(out).toContain(`# ${name}`);
-    expect(out).toContain("## Props");
-    expect(out).not.toMatch(/not found/i);
-    expect(out).not.toContain("documented as part of");
-  });
+  it.each(GH605)(
+    "get_component(%s) returns a full guide, not a sub-part steer-away",
+    async (name) => {
+      const out = await dispatchTool("get_component", { name });
+      expect(out).toContain(`# ${name}`);
+      expect(out).toContain("## Props");
+      expect(out).not.toMatch(/not found/i);
+      expect(out).not.toContain("documented as part of");
+    },
+  );
 });
 
 describe("suggest_primitive", () => {

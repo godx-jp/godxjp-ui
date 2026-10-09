@@ -16,7 +16,8 @@ import {
 import { Markdown } from "@godxjp/markdown";
 import { Card, CardContent, Prose } from "@godxjp/ui/data-display";
 import { Segmented, Textarea } from "@godxjp/ui/data-entry";
-import { Actions, Text, type ActionsItemsProp } from "@godxjp/ui/general";
+import { Text } from "@godxjp/ui/general";
+import { Actions, type ActionsItemsProp } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, ResponsiveGrid } from "@godxjp/ui/layout";
 

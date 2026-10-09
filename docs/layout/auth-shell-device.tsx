@@ -11,7 +11,7 @@ import {
   AuthAccountSummary,
   AuthFooter,
   AuthIdentity,
-  AuthShell,
+  CenteredShell,
   AuthStack,
   Flex,
 } from "@godxjp/ui/layout";
@@ -36,18 +36,18 @@ import { AppSettingPicker, Steps } from "@godxjp/ui/navigation";
  */
 export default function Demo() {
   return (
-    <AuthShell
-      variant="canonical"
+    <CenteredShell
+      variant="auth-canonical"
       preset="device-authorization"
       brand={
         <Flex align="center" gap="sm">
-          <Logo mark="godx" tone="success" />
-          <Text weight="medium">GoDX ID</Text>
+          <Logo glyph="a" />
+          <Text weight="medium">Acme ID</Text>
         </Flex>
       }
       footer={
         <AuthFooter
-          product="GoDX ID"
+          product="Acme ID"
           terms="利用規約"
           privacy="プライバシー"
           locale={<AppSettingPicker kind="locale" appearance="labeled" compact />}
@@ -107,6 +107,6 @@ export default function Demo() {
           </CardContent>
         </Card>
       </Reveal>
-    </AuthShell>
+    </CenteredShell>
   );
 }

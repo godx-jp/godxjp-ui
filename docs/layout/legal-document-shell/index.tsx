@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { CenteredShell, Flex, LegalDocumentShell, Topbar } from "@godxjp/ui/layout";
+import { CenteredShell, Flex, Topbar } from "@godxjp/ui/layout";
 import { Button, Logo, Text } from "@godxjp/ui/general";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 import { TERMS_JA } from "./_data";
+import { LegalDocumentShell } from "@godxjp/ui/lab";
 
 /**
  * LegalDocumentShell — the long-form legal/policy document surface (terms, privacy, DPA, cookie

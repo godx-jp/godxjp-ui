@@ -3,7 +3,10 @@ import {
   AlertCircle,
   CheckCircle2,
   Info,
+  Lightbulb,
   LogIn,
+  MessageSquareWarning,
+  OctagonAlert,
   RefreshCw,
   TriangleAlert,
   X,
@@ -17,7 +20,7 @@ import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
 import { Text } from "../general/typography";
 import { useAuthExpiry } from "./auth-expiry";
-import type { AlertVariantProp, ToneProp } from "../../props/vocabulary";
+import type { AlertVariantProp, CalloutKindProp, IconProp, ToneProp } from "../../props/vocabulary";
 import type {
   AlertActionsProp,
   AlertContentProp,
@@ -71,13 +74,34 @@ const DEFAULT_ICONS: Record<ToneProp, LucideIcon> = {
   neutral: Info,
 };
 
+/**
+ * The five admonitions GitHub documents (`> [!NOTE]` … `[!CAUTION]`), which Obsidian's lower-case
+ * spelling maps onto one-for-one. Each resolves a `tone` and a glyph for `variant="callout"`, and
+ * each is still overridable per instance — `kind` is a preset, not a second colour axis.
+ *
+ * `important` takes the NEUTRAL tone on purpose: GitHub paints it purple, this system has no purple
+ * role, and borrowing `info` would make it indistinguishable from `note`. Its glyph carries the
+ * difference instead, which is also what keeps the set readable without colour (WCAG 1.4.1).
+ */
+const CALLOUT_KINDS: Record<CalloutKindProp, { tone: ToneProp; icon: IconProp }> = {
+  note: { tone: "info", icon: Info },
+  tip: { tone: "success", icon: Lightbulb },
+  important: { tone: "neutral", icon: MessageSquareWarning },
+  warning: { tone: "warning", icon: TriangleAlert },
+  caution: { tone: "destructive", icon: OctagonAlert },
+};
+
 const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
   (
-    { variant = "default", tone = "default", icon, onDismiss, className, children, ...props },
+    { variant = "default", kind, tone: toneProp, icon, onDismiss, className, children, ...props },
     ref,
   ) => {
     const { t } = useTranslation();
-    const IconComponent = icon === false ? null : (icon ?? DEFAULT_ICONS[tone]);
+    // `kind` is the callout preset (v32 #1223 folded `Callout` in here); a callout with no kind is
+    // a `note`, exactly as the retired component defaulted. Other variants ignore it.
+    const preset = variant === "callout" ? CALLOUT_KINDS[kind ?? "note"] : undefined;
+    const tone = toneProp ?? preset?.tone ?? "default";
+    const IconComponent = icon === false ? null : (icon ?? preset?.icon ?? DEFAULT_ICONS[tone]);
 
     return (
       <AlertContext.Provider value={tone}>

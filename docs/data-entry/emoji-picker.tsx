@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { EmojiPicker, FormField } from "@godxjp/ui/data-entry";
+import { FormField } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { EmojiPicker } from "@godxjp/ui/lab";
 
 /**
  * EmojiPicker (gh#1164) — a page icon chosen from the active language's emoji keywords, with

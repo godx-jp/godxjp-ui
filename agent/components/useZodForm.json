@@ -26,7 +26,6 @@
     23,
     31
   ],
-  "storyPath": "data-entry/Form.stories.tsx",
   "tagline": "Create a typed React Hook Form instance with Zod validation; reuse reset, setValue, trigger, formState and field errors.",
   "usage": [
     "Use inside the documented form composition; do not nest native form elements.",

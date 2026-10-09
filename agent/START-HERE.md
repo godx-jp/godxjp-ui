@@ -3,7 +3,7 @@
 You are about to write code against a design system you did not author. This file is the whole
 contract. Read it before you write JSX.
 
-**This catalog describes `@godxjp/ui` 31.31.8.** If the project you are editing has a different
+**This catalog describes `@godxjp/ui` 32.0.0.** If the project you are editing has a different
 version in its `package.json`, read the pinned catalog for THAT version instead
 (`…/v<their-version>/agent/…`). A catalog newer than the installed package describes props that do
 not exist yet; older, and it hides props that do. Neither failure announces itself.
@@ -43,28 +43,28 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
 **You cannot run a process** (ChatGPT web · Claude.ai · anything fetching URLs)
 → These files are for you. Fetch in this order:
 
-0. `patterns-index.json` — 21 whole-task patterns as name + tagline + tags. **If your
+0. `patterns-index.json` — 22 whole-task patterns as name + tagline + tags. **If your
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
    filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
    copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".
-1. `components-index.json` — 51 KB, all 185 components as name + group +
+1. `components-index.json` — 47 KB, all 161 components as name + group +
    tagline. Read this when you already know the SHAPE you need. Each entry may carry `absorbed`:
    names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
    `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field
    first; it exists because that is the mistake.
 2. `components/<Name>.json` — one file per component (1 KB–36 KB, median 6 KB), carrying its props,
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
-3. `rules.json` — 50 cardinal rules. The ones about raw HTML and hardcoded colour are not
+3. `rules.json` — 43 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 2188 design tokens, each tagged with its `tier`. **If you were handed a
-   brand, read the 211 `foundation` entries first** — `--primary`, `--background`,
+4. `tokens.json` — 2183 design tokens, each tagged with its `tier`. **If you were handed a
+   brand, read the 210 `foundation` entries first** — `--primary`, `--background`,
    `--radius`, `--font-size-base` are the handful everything else derives from. The
-   1865 `component` entries are per-part knobs; reach for one only when a role is
+   1861 `component` entries are per-part knobs; reach for one only when a role is
    right everywhere except one component.
 5. `anti-ai-tells.json` — 26 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
 
-**Do not fetch `components.json`.** It is 1.3 MB, and most URL fetchers truncate a
+**Do not fetch `components.json`.** It is 1.2 MB, and most URL fetchers truncate a
 response that size and return the head without telling you. You get the first few entries, believe
 you read the catalog, and answer the rest from memory — which is the failure this file exists to
 prevent. The per-component files say the same thing without the cliff.
@@ -143,9 +143,9 @@ has stopped following the brand.
 
 | `tier` | count | what it is | set it? |
 |---|---|---|---|
-| `foundation` | 211 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** Handed a brand colour, this is where it goes: `:root { --primary: <H> <S>% <L>%; }` (HSL components, no `hsl()` wrapper) |
+| `foundation` | 210 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** Handed a brand colour, this is where it goes: `:root { --primary: <H> <S>% <L>%; }` (HSL components, no `hsl()` wrapper) |
 | `semantic` | 112 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
-| `component` | 1865 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
+| `component` | 1861 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
 
 A token whose `value` is `initial` is not empty and not broken: `initial` is the guaranteed-invalid
 value, so the real default is computed where the element paints it. Set it and yours wins.

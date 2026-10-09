@@ -5,8 +5,8 @@ import * as React from "react";
 import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
-import { Toggle } from "../../ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
+import { Toggle } from "../toggle";
+import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
 
 /**
  * `Toggle` / `ToggleGroup` gain the 24px step (gh#716).

@@ -51,7 +51,7 @@ import {
   CardDescription,
   Descriptions,
 } from "@godxjp/ui/data-display";
-import { AuthShell, Flex, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
+import { CenteredShell, Flex, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
 
 // ── The single allowed multi-color brand mark (Google "G") ─────────────────────
 // Icons normally inherit currentColor; a third-party brand mark is the documented
@@ -117,7 +117,8 @@ export default function LoginShowcase() {
   const [theme, setTheme] = React.useState("light");
 
   return (
-    <AuthShell
+    <CenteredShell
+      variant="auth"
       /* The 64rem content slot the split (brand panel + card) login needs. */
       measure="wide"
       className="text-foreground"
@@ -307,6 +308,6 @@ export default function LoginShowcase() {
           </CardContent>
         </Card>
       </ResponsiveGrid>
-    </AuthShell>
+    </CenteredShell>
   );
 }

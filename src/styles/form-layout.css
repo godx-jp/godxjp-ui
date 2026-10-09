@@ -118,6 +118,14 @@
     inline-size: auto;
   }
 
+  /* gh#1224: in an inline row a SET controlWidth is the control's width, not only its cap. The cap
+   * below only bites when the control fills a column, and an inline field has none: a Select hugged
+   * its own text (142px empty, 219px with a value, against controlWidth 16rem), so the row jumped
+   * on every pick. Unset, the field still hugs its content (the fallback is `auto`). */
+  .ui-form-field[data-layout="inline"] > .ui-form-field-control {
+    inline-size: var(--form-control-width, auto);
+  }
+
   .ui-form-field-label {
     display: flex;
     align-items: center;

@@ -43,7 +43,7 @@
     5,
     6
   ],
-  "storyPath": "layout/NavList.stories.tsx",
+  "storyPath": "layout/nav-list.tsx",
   "tagline": "Vertical route navigation for INSIDE a page — the shape a settings nav takes. Renders the same `.sb-nav-item` rows as the Sidebar rail (icon column, label, badge, active tokens, `aria-current=\"page\"`) in a `<nav>` landmark, without the AppShell grid the rail depends on.",
   "usage": [
     "DO use NavList for a settings / account / preferences sub-navigation beside the pane it drives — typically as MasterDetail's `master`.",

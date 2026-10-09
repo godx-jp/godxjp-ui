@@ -71,7 +71,7 @@
     "Breadcrumb — use Breadcrumb for hierarchical location within a page tree; use Steps for sequential workflow progress where order and completion matter."
   ],
   "rules": [],
-  "storyPath": "navigation/Steps.stories.tsx",
+  "storyPath": "navigation/steps.tsx",
   "tagline": "Multi-step progress indicator — horizontal or vertical, default or dot style.",
   "usage": [
     "DO: Pass all steps via the `items` array (each `{ title, subtitle?, description?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",

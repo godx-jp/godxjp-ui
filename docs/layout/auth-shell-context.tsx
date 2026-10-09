@@ -12,7 +12,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Checkbox, Field } from "@godxjp/ui/data-entry";
 import { Button, Logo, Reveal, Text } from "@godxjp/ui/general";
-import { AuthFooter, AuthIdentity, AuthShell, Flex } from "@godxjp/ui/layout";
+import { AuthFooter, AuthIdentity, CenteredShell, Flex } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
@@ -27,14 +27,14 @@ import { AppSettingPicker } from "@godxjp/ui/navigation";
  * `Card` + `CardContent flush` + a `<ul>` of `ListRow as="li"` already gives shared row dividers
  * with no per-row card outline — exactly the requested `OrganizationChoiceList`.
  *
- * The brand mark is the real GoDX identity mark that the package already owns
- * (`<Logo mark="godx" />`), and the footer locale switch is the compact labelled presentation
+ * The brand mark is a neutral boxed glyph (`<Logo glyph="a" />`) — the package draws no product's
+ * logo by default since v32 (gh#1220); a GoDX surface passes the preset instead — and the footer locale switch is the compact labelled presentation
  * (`<AppSettingPicker kind="locale" appearance="labeled" compact />`) rather than the square
  * icon-only topbar default. Verify at 1440x900 · 1024x900 · 390x844.
  */
 const ORGANIZATIONS = [
   { id: "acme", name: "Acme 株式会社", role: "管理者 · 128 メンバー", initials: "AC" },
-  { id: "godx-labs", name: "GoDX Labs", role: "メンバー · 24 メンバー", initials: "GL" },
+  { id: "acme-labs", name: "Acme Labs", role: "メンバー · 24 メンバー", initials: "AL" },
   {
     id: "tokyo-logistics",
     name: "東京ロジスティクス",
@@ -45,18 +45,18 @@ const ORGANIZATIONS = [
 
 export default function Demo() {
   return (
-    <AuthShell
-      variant="canonical"
+    <CenteredShell
+      variant="auth-canonical"
       preset="context-selection"
       brand={
         <Flex align="center" gap="sm">
-          <Logo mark="godx" tone="success" />
-          <Text weight="medium">GoDX ID</Text>
+          <Logo glyph="a" />
+          <Text weight="medium">Acme ID</Text>
         </Flex>
       }
       footer={
         <AuthFooter
-          product="GoDX ID"
+          product="Acme ID"
           terms="利用規約"
           privacy="プライバシー"
           locale={<AppSettingPicker kind="locale" appearance="labeled" compact />}
@@ -98,6 +98,6 @@ export default function Demo() {
       <Field id="auth-remember-context" label="次回からこの組織を既定にする">
         <Checkbox id="auth-remember-context" />
       </Field>
-    </AuthShell>
+    </CenteredShell>
   );
 }

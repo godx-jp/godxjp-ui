@@ -17,7 +17,8 @@
     "ellipsisCrumbHome": "Home",
     "ellipsisLongTitle": "Q3 integration test · payment module · invoice re-issue scenarios and acceptance criteria review",
     "ellipsisShortTitle": "Login smoke test",
-    "ellipsisLongHeader": "Latest run name (release candidate 2026-09)"
+    "ellipsisLongHeader": "Latest run name (release candidate 2026-09)",
+    "migrateFromAntdTitle": "Migrating from antd Typography"
   },
   "themeShowcase": {
     "page": {
@@ -34,7 +35,8 @@
       "identityNote": "The identity colour deliberately stays where it is: a tenant that changes its action colour does not retint its logo."
     },
     "palette": {
-      "godx": "GoDX",
+      "neutral": "Neutral (default)",
+      "godx": "GoDX preset",
       "indigo": "Indigo",
       "teal": "Teal",
       "amber": "Amber",

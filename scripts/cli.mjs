@@ -2,10 +2,11 @@
 /**
  * @godxjp/ui CLI — `npx @godxjp/ui <command>`.
  *   init-agent     scaffold the agent forcing-kit (MCP + auto-audit hook + mandate)
- *   sync-rules     refresh package-owned agent rules (same path as postinstall)
+ *   sync-rules     write/refresh package-owned agent rules (--dry-run previews)
  *   audit          static UI audit (regex over source)
  *   visual-audit   runtime audit (Playwright + axe-core) against a running app
  *   prune-css      emit a stylesheet with only the CSS layers the app uses (gh#971)
+ *   codemod v32    apply the mechanical half of the v32 upgrade (docs/migrations/v32.md)
  */
 import { spawnSync } from "node:child_process";
 import { dirname, join } from "node:path";
@@ -14,10 +15,10 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MAP = {
   "init-agent": "init-agent-kit.mjs",
-  "sync-rules": "postinstall.mjs",
   audit: "ui-audit.mjs",
   "visual-audit": "visual-audit.mjs",
   "prune-css": "prune-css.mjs",
+  codemod: "codemod.mjs",
 };
 
 // `<command> --help` is answered HERE: the scripts take free positional arguments, so a `--help`
@@ -35,8 +36,10 @@ const HELP = {
 
   Refresh the package-owned agent files for the installed @godxjp/ui version: the godx-ui entry in
   .mcp.json, the managed CLAUDE.md block, .claude/godxjp-ui-workflow.md and .ai/rules/godxjp-ui.md.
-  It is the postinstall step, run by hand — use it when the app installs with ignore-scripts=true,
-  where postinstall never runs and the rules go stale. Silent no-op in CI and when opted out.
+  Postinstall writes nothing (inert install); this explicit command is the only thing that does.
+  Run it after installing and after each upgrade. Silent no-op in CI and when opted out.
+
+    --dry-run   list every file it would create or change, without writing anything
 
   Restart the session afterwards: rewriting the .mcp.json pin does not relaunch an MCP server that
   is already running, and that process keeps answering from the catalog it started with.
@@ -66,6 +69,15 @@ const HELP = {
   Import the emitted file INSTEAD of "@godxjp/ui/styles". Re-run when your component usage
   changes and after every upgrade; it refuses on a package/manifest version mismatch.
   Hand cherry-picking *-layout.css stays forbidden — this tool is the only thing allowed to slice.`,
+  codemod: `godxjp-ui codemod v32 [paths…] [--godx] [--dry-run]
+
+  Apply the mechanical half of the v32 upgrade (docs/migrations/v32.md). Idempotent.
+    paths …     files or directories to rewrite (default ".")
+    --godx      a GoDX product: keep today's look with the GoDX preset (violet, the GoDX mark,
+                vi default locale, Japanese fonts)
+    --dry-run   list every change without writing
+  What it cannot decide (a component move that changes props, an AppProvider that relied on the
+  old vi default) is printed as a "note" for you to finish.`,
   "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] <baseUrl> [route …]
 
   Runtime audit (Playwright + axe-core) against an app you are ALREADY running locally.
@@ -81,7 +93,7 @@ const USAGE = `usage: godxjp-ui <command> [args]
 
 commands:
   init-agent     install the agent forcing-kit (MCP + auto-audit hook + CLAUDE.md mandate)
-  sync-rules     refresh package-owned agent rules (postinstall, by hand)
+  sync-rules     write/refresh package-owned agent rules (--dry-run previews)
   audit          static UI audit over source
   visual-audit   runtime audit (Playwright + axe-core) against a running app
   prune-css      emit a stylesheet with only the CSS layers your app uses
@@ -97,7 +109,7 @@ if (cmd === undefined || isHelp(cmd)) {
   process.exit(cmd === undefined ? 1 : 0);
 }
 const script = MAP[cmd];
-if (!script) {
+if (!script && cmd !== "sync-rules") {
   console.error(`unknown command: ${cmd}\n\n${USAGE}`);
   process.exit(1);
 }
@@ -105,9 +117,22 @@ if (rest.includes("--help") || rest.includes("-h")) {
   console.log(HELP[cmd]);
   process.exit(0);
 }
-const env =
-  cmd === "sync-rules"
-    ? { ...process.env, INIT_CWD: process.env.INIT_CWD ?? process.cwd() }
-    : process.env;
-const r = spawnSync("node", [join(HERE, script), ...rest], { stdio: "inherit", env });
+if (cmd === "sync-rules") {
+  // The ONLY writer of agent files (postinstall is inert, #1215). In-process: no env hand-off.
+  const { runSyncRules } = await import("./_agent-setup.mjs");
+  const dryRun = rest.includes("--dry-run");
+  const root = process.env.INIT_CWD ?? process.cwd();
+  const { changed, lines } = runSyncRules(root, { dryRun });
+  for (const line of lines) console.log(line);
+  if (dryRun) {
+    console.log(
+      changed.length
+        ? `  sync-rules --dry-run: would create or change ${changed.length} file(s), nothing written:\n` +
+            changed.map((f) => `    ${f}`).join("\n")
+        : "  sync-rules --dry-run: nothing to change.",
+    );
+  }
+  process.exit(0);
+}
+const r = spawnSync("node", [join(HERE, script), ...rest], { stdio: "inherit", env: process.env });
 process.exit(r.status ?? 0);

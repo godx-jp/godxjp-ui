@@ -44,7 +44,7 @@
     23,
     24
   ],
-  "storyPath": "data-display/QrCode.stories.tsx",
+  "storyPath": "data-display/qr-code.tsx",
   "tagline": "Local-only SVG QR renderer for enrollment links, device pairing and other values that must never be sent to a third-party image service.",
   "usage": [
     "DO use QrCode when the encoded payload must remain inside the browser, especially an otpauth enrollment URI containing a TOTP secret.",

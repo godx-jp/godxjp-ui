@@ -1,14 +1,5 @@
 import { useTranslation } from "@godxjp/ui/i18n";
-import {
-  Button,
-  Heading,
-  Link,
-  Paragraph,
-  Text,
-  Title,
-  Typography,
-  VisuallyHidden,
-} from "@godxjp/ui/general";
+import { Button, Heading, Link, Text, VisuallyHidden } from "@godxjp/ui/general";
 import {
   Card,
   CardContent,
@@ -220,20 +211,20 @@ export default function Demo() {
                 ))}
               </Flex>
 
-              {/* Paragraph and Link read the SAME TextSizeProp, so widening the ladder widened
-                  their public surface too. Drawn over the whole ladder rather than left as an
-                  undrawn branch — an undrawn branch is what refused the 28.6.0 release. */}
+              {/* A paragraph (`Text as="p"`) and Link read the SAME TextSizeProp, so widening the
+                  ladder widened their public surface too. Drawn over the whole ladder rather than
+                  left as an undrawn branch — an undrawn branch is what refused the 28.6.0 release. */}
               <Flex direction="col" gap="xs">
                 {[...sizes, ...displaySizes].map((size) => (
                   <Flex key={size} direction="row" gap="sm" align="baseline">
-                    <Paragraph size={size} tone="muted">
+                    <Text as="p" size={size} tone="muted">
                       「速い」
-                    </Paragraph>
+                    </Text>
                     <Link href="#typography" size={size}>
                       詳しく
                     </Link>
                     <Text size="2xs" mono tone="muted">
-                      {`<Paragraph size="${size}"> · <Link size="${size}">`}
+                      {`<Text as="p" size="${size}"> · <Link size="${size}">`}
                     </Text>
                   </Flex>
                 ))}
@@ -372,28 +363,30 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle level={2}>antd Typography · Title / Paragraph / Link</CardTitle>
+            <CardTitle level={2}>{t("textExamples.migrateFromAntdTitle")}</CardTitle>
             <CardDescription>
-              antd の Typography をそのまま移植したもの。Text と Heading は変わらず、Title は 5
-              段階、Paragraph は rows 付きの ellipsis、Link は target=&quot;_blank&quot; に rel
-              を自動で付けます。
+              v32 で antd の Typography / Title / Paragraph は廃止されました。Title は Heading、
+              Paragraph は Text as=&quot;p&quot;（行数の省略は clamp）、Typography の囲みは Prose
+              です。Link は target=&quot;_blank&quot; に rel を自動で付けます。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Typography>
-                <Title level={3}>請求サマリー</Title>
-                <Paragraph>今月の請求は 3 件です。明細は各行のリンクから確認できます。</Paragraph>
+              <Flex direction="col" gap="xs">
+                <Heading level={3}>請求サマリー</Heading>
+                <Text as="p">今月の請求は 3 件です。明細は各行のリンクから確認できます。</Text>
                 <Link href="#typography">変更履歴を見る</Link>
-              </Typography>
+              </Flex>
 
-              <Title level={5}>内訳（level 5 · Heading にはない段）</Title>
+              <Heading level={4} size="2xs">
+                内訳（旧 Title level 5 · Heading の size で同じ段）
+              </Heading>
 
-              <Paragraph ellipsis={{ rows: 2, expandable: true }}>
+              <Text as="p" clamp={2}>
                 ログイン画面の余白が狭く、パスワード再設定リンクが本文と重なって見えます。
                 発生条件は 390px 幅の端末で、日本語ロケールのときのみです。
                 再現手順とスクリーンショットは添付の通りです。
-              </Paragraph>
+              </Text>
             </Flex>
           </CardContent>
         </Card>

@@ -1,7 +1,8 @@
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { MegaMenu, type MegaMenuItemProp } from "@godxjp/ui/navigation";
 import { ShieldCheck, Users } from "lucide-react";
+import { MegaMenu } from "@godxjp/ui/lab";
+import type { MegaMenuItemProp } from "@godxjp/ui/lab";
 
 /**
  * MegaMenu — ONE panel, open, and nothing else on the page.
