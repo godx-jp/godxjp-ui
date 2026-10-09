@@ -45,7 +45,7 @@ const generated = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "u
  * reproduce them (its outline hue reads 8.55:1 on a light accent panel). They stay asserted on the
  * brand seed the decision was measured on.
  */
-const godxCss = readFileSync(join(process.cwd(), "src/themes/godx.css"), "utf8");
+const godxCss = readFileSync(join(process.cwd(), "src/themes/godx-tokens.css"), "utf8");
 const axes = readFileSync(join(process.cwd(), "src/tokens/axes.css"), "utf8");
 const controlTokens = readFileSync(
   join(process.cwd(), "src/tokens/components/control.css"),

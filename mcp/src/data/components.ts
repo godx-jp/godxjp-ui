@@ -1160,7 +1160,7 @@ import { Button } from "@godxjp/ui/general";
       "Form sub-sections where a vertical group needs stretched children or centered helper content beyond what a plain column Flex provides.",
       "Badge, chip, or tag clusters where wrapping is required but the caller also needs explicit gap control.",
       "Low-level layout composition inside custom components where raw flex classes would duplicate the primitive.",
-      "ATTACHED: a recurring-issue interval row, \"毎 [NumberInput] [Select 週/月/日 ▾] ごと\", fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.",
+      'ATTACHED: a recurring-issue interval row, "毎 [NumberInput] [Select 週/月/日 ▾] ごと", fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.',
       "ATTACHED: A currency amount: [Select 通貨 ▾][NumberInput 金額] welded so the currency reads as part of the amount field, not a separate control beside it.",
       "ATTACHED: A filtered search bar: [Select scope][SearchInput query] as one visual field, `fullWidth` inside a page toolbar.",
     ],
@@ -9956,7 +9956,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
         name: "preset",
         type: "AppPreset",
         description:
-          'Product defaults the host opts into — `import { godxPreset } from "@godxjp/ui/themes/godx"` (pair it with `@godxjp/ui/themes/godx.css` after the base stylesheet). Its `defaultLocale` and `timeZone` fill only what the props leave unset, its `brandMark` is what an `AuthIdentity` with no `brand` draws, and its `name` is written to `<html data-preset>`. Omit for the neutral defaults (ink primary, `en`, no product mark).',
+          'Product defaults the host opts into — `import { godxPreset } from "@godxjp/ui/themes/godx"` (pair it with `@godxjp/ui/themes/godx.css` after the base stylesheet; a shadow root that embeds `@godxjp/ui/styles/core` takes the font-free `@godxjp/ui/themes/godx-tokens.css` instead, since `@font-face` must live in the document). Its `defaultLocale` and `timeZone` fill only what the props leave unset, its `brandMark` is what an `AuthIdentity` with no `brand` draws, and its `name` is written to `<html data-preset>`. Omit for the neutral defaults (ink primary, `en`, no product mark).',
       },
       {
         name: "defaultTimezone",

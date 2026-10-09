@@ -1,8 +1,8 @@
 import { defineConfig } from "tsup";
 
-/** One ESM entry; every dependency and peer stays external (tsup reads them from package.json). */
+/** One ESM entry per source file, so a bundler drops an unused component with its module (gh#1228); every dependency and peer stays external (tsup reads them from package.json). */
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: ["src/*.ts", "src/*.tsx"],
   format: ["esm"],
   target: "es2022",
   dts: true,

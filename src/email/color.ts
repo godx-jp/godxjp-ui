@@ -3,7 +3,12 @@
  * worth trusting: Gmail strips <style>, Outlook ignores custom properties, and every colour must
  * appear inline as `#rrggbb` on the element that paints it.
  */
-import { EMAIL_COLOR_SOURCE, EMAIL_COLOR_SOURCE_DARK } from "./tokens.generated";
+import {
+  EMAIL_COLOR_SOURCE,
+  EMAIL_COLOR_SOURCE_DARK,
+  EMAIL_COLOR_SOURCE_GODX,
+  EMAIL_COLOR_SOURCE_GODX_DARK,
+} from "./tokens.generated";
 
 /**
  * The email palette slots. Each maps 1:1 to a semantic role in `src/tokens/foundation.css`
@@ -95,4 +100,17 @@ export const EMAIL_COLORS: Readonly<Record<EmailColorToken, EmailHex>> = resolve
  */
 export const EMAIL_COLORS_DARK: Readonly<Record<EmailColorToken, EmailHex>> = resolve(
   EMAIL_COLOR_SOURCE_DARK as unknown as Record<string, { cssVar: string; hsl: string }>,
+);
+
+/**
+ * The GoDX preset's email palette (v32.0.1, gh#1228): the same roles as {@link EMAIL_COLORS}, with
+ * primary / brand / focus taken from `src/themes/godx-tokens.css` — what the GoDX web preset paints.
+ */
+export const EMAIL_COLORS_GODX: Readonly<Record<EmailColorToken, EmailHex>> = resolve(
+  EMAIL_COLOR_SOURCE_GODX as unknown as Record<string, { cssVar: string; hsl: string }>,
+);
+
+/** The GoDX preset's dark email palette. */
+export const EMAIL_COLORS_GODX_DARK: Readonly<Record<EmailColorToken, EmailHex>> = resolve(
+  EMAIL_COLOR_SOURCE_GODX_DARK as unknown as Record<string, { cssVar: string; hsl: string }>,
 );

@@ -9,6 +9,8 @@ export {
   hslToHex,
   EMAIL_COLORS,
   EMAIL_COLORS_DARK,
+  EMAIL_COLORS_GODX,
+  EMAIL_COLORS_GODX_DARK,
   type EmailColorToken,
   type EmailHex,
 } from "./color";
@@ -50,11 +52,18 @@ export { EMAIL_URGENCY, EMAIL_URGENCY_DARK, type EmailUrgencyTokens } from "./ur
 export {
   EMAIL_COLOR_SOURCE,
   EMAIL_COLOR_SOURCE_DARK,
+  EMAIL_COLOR_SOURCE_GODX,
+  EMAIL_COLOR_SOURCE_GODX_DARK,
   EMAIL_GEOMETRY_SOURCE,
   type EmailColorSource,
 } from "./tokens.generated";
 
-import { EMAIL_COLORS, EMAIL_COLORS_DARK } from "./color";
+import {
+  EMAIL_COLORS,
+  EMAIL_COLORS_DARK,
+  EMAIL_COLORS_GODX,
+  EMAIL_COLORS_GODX_DARK,
+} from "./color";
 import {
   EMAIL_SHELL,
   EMAIL_TYPOGRAPHY,
@@ -101,4 +110,18 @@ export const EMAIL_TOKENS: EmailTokens = Object.freeze({
  * cannot import ES modules (Blade, Twig, Liquid, Handlebars on another runtime). Write it to a
  * file in the build step and read it from the template layer.
  */
+/**
+ * The GoDX preset for email (v32.0.1, gh#1228): the email counterpart of `godxPreset` +
+ * `themes/godx.css`. Same geometry; colours from {@link EMAIL_COLORS_GODX}. The brand mark's label
+ * has no default since v32 — pass {@link EMAIL_BRAND_LABEL_GODX} as `label` for the GoDX mark.
+ */
+export const EMAIL_TOKENS_GODX: EmailTokens = Object.freeze({
+  ...EMAIL_TOKENS,
+  colors: EMAIL_COLORS_GODX,
+  colorsDark: EMAIL_COLORS_GODX_DARK,
+});
+
+/** The GoDX mark's accessible name: `emailBrandMarkSvg({ label: EMAIL_BRAND_LABEL_GODX, color: EMAIL_COLORS_GODX.brand })`. */
+export const EMAIL_BRAND_LABEL_GODX = "GoDX";
+
 export const EMAIL_TOKENS_JSON: string = JSON.stringify(EMAIL_TOKENS, null, 2);

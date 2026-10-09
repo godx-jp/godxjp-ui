@@ -40,7 +40,7 @@ const AA_TEXT = 4.5;
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
 const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
 /** The GoDX preset (v32, gh#1220) — the violet seed the identity kit's ramp was authored on. */
-const godx = readFileSync(join(process.cwd(), "src/themes/godx.css"), "utf8");
+const godx = readFileSync(join(process.cwd(), "src/themes/godx-tokens.css"), "utf8");
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(css: string, selector: string): string {

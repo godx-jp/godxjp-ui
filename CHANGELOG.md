@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.0.1] - 2026-10-09
+
+**What the first GoDX consumer found upgrading to 32.0.0 (#1228).** All six packages move to
+32.0.1 together.
+
+### 🐛 Fixed
+
+- **A shadow root can take the GoDX colours without the fonts.** New
+  `@godxjp/ui/themes/godx-tokens.css` (`:root`, `.dark` and the relative-colour fallback, no
+  `@font-face`); `themes/godx.css` is now `fonts.css` + `godx-tokens.css`, the same rules split in two.
+  A Dock that embeds `styles/core` lost the violet in 32.0.0 because `godx.css` was its only source.
+- **The codemod imports the fonts once.** Under `--godx` it added both `fonts.css` and `godx.css`
+  (which imports them): 1,470 `@font-face` rules, 489 kB instead of 178 kB gzip. It now adds only
+  `godx.css`, adds `godx-tokens.css` after `styles/core`, and removes the duplicate `fonts.css` line
+  from a file the 32.0.0 codemod already touched.
+- **Emails keep the GoDX look.** `@godxjp/ui/email` adds `EMAIL_TOKENS_GODX`,
+  `EMAIL_COLORS_GODX`, `EMAIL_COLORS_GODX_DARK` and `EMAIL_BRAND_LABEL_GODX` ("GoDX"), generated from
+  `godx-tokens.css` over the foundation (primary/brand/focus `#7A00FF` light, `#DCBCFF` dark).
+- **`@godxjp/chat` tree-shakes per component.** It shipped as one bundled `index.js`, whose
+  `displayName` assignments kept all eight components in any app that imported one. Built one
+  module per source file, a Dock-shaped bundle (3 chat components + 30 kit components, JS, gzip)
+  goes 190.7 kB → 184.8 kB, below 31.31.8's 188.0 kB.
+
 ## [32.0.0] - 2026-10-09
 
 **A framework any team can adopt; GoDX keeps its exact look as a preset.** One planned major for
