@@ -33,10 +33,7 @@ describe("Attachments stylesheet — every slot has a rule, every knob has a rea
     resolve(process.cwd(), "src/tokens/components/attachments.css"),
     "utf8",
   );
-  const tsx = readFileSync(
-    resolve(process.cwd(), "src/components/data-entry/attachments.tsx"),
-    "utf8",
-  );
+  const tsx = readFileSync(resolve(process.cwd(), "packages/chat/src/attachments.tsx"), "utf8");
 
   /** Rule bodies for an exact selector, ignoring anything that merely contains it. */
   const ruleBodies = (selector: string) =>
