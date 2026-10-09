@@ -26,7 +26,7 @@ const logoTokens = read("src/tokens/components/logo.css");
 const logoLayout = read("src/styles/logo-layout.css");
 
 /** The GoDX preset (v32, gh#1220): the violet identity moved out of the defaults into this sheet. */
-const godx = read("src/themes/godx.css");
+const godx = read("src/themes/godx-tokens.css");
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(selector: string, css = foundation): string {

@@ -185,3 +185,34 @@ describe("codemod v32 move table is complete (gh#1223)", () => {
     }
   });
 });
+
+describe("codemod v32 --godx imports the fonts once (gh#1228)", () => {
+  it("adds only godx.css after styles (it already carries the fonts)", () => {
+    const { out } = transformSource("a.css", '@import "@godxjp/ui/styles";\n', { godx: true });
+    expect(out).toContain('@import "@godxjp/ui/themes/godx.css";');
+    expect(out).not.toContain("styles/fonts");
+  });
+
+  it("adds the font-free godx-tokens.css after styles/core (the Dock's shadow root)", () => {
+    const { out } = transformSource("dock.css", '@import "@godxjp/ui/styles/core";\n', {
+      godx: true,
+    });
+    expect(out).toContain(
+      '@import "@godxjp/ui/styles/core";\n@import "@godxjp/ui/themes/godx-tokens.css";',
+    );
+    expect(out).not.toMatch(/fonts|themes\/godx\.css/);
+  });
+
+  it("repairs a file the 32.0.0 codemod left with both fonts.css and godx.css", () => {
+    const old =
+      '@import "@godxjp/ui/styles";\n@import "@godxjp/ui/styles/fonts.css";\n@import "@godxjp/ui/themes/godx.css";\n';
+    const { out } = transformSource("id.css", old, { godx: true });
+    expect(out).toBe('@import "@godxjp/ui/styles";\n@import "@godxjp/ui/themes/godx.css";\n');
+    expect(transformSource("id.css", out, { godx: true }).changed).toBe(false);
+  });
+
+  it("without --godx keeps adding the opt-in fonts after styles", () => {
+    const { out } = transformSource("a.css", '@import "@godxjp/ui/styles";\n');
+    expect(out).toContain('@import "@godxjp/ui/styles/fonts.css";');
+  });
+});

@@ -12,6 +12,9 @@ import { Logo } from "../components/general/logo";
  *     import { godxPreset } from "@godxjp/ui/themes/godx";
  *     <AppProvider preset={godxPreset}>…</AppProvider>
  *
+ * A shadow root that embeds `@godxjp/ui/styles/core` adds `@godxjp/ui/themes/godx-tokens.css` (the
+ * same colours without the fonts) instead.
+ *
  * Core never imports this module, which is what keeps the GoDX artwork out of a neutral bundle.
  */
 export const godxPreset: AppPreset = Object.freeze({

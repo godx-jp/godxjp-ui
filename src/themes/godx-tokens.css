@@ -1,0 +1,56 @@
+/* GoDX PRESET — COLOUR TOKENS ONLY (no fonts). v32.0.1, gh#1228.
+ *
+ * The GoDX identity's colour roles, without the @font-face import that `godx.css` adds. For a
+ * consumer that cannot or should not load fonts from this sheet: a shadow root (the GoDX Dock
+ * compiles `@godxjp/ui/styles/core` into one, and @font-face inside a shadow tree is ignored), an
+ * IIFE bundle that would inline the woff2 files, or an app that loads its own fonts.
+ *
+ *     @import "@godxjp/ui/styles/core";
+ *     @import "@godxjp/ui/themes/godx-tokens.css";   // AFTER the base stylesheet
+ *
+ * `godx.css` is exactly this file plus the bundled fonts. Import one or the other, never both:
+ * the tokens are the same, and two font imports ship every @font-face twice. */
+:root {
+  /* GoDX violet #7A00FF — identity v2.3 core.action.primary.bg. 6.32:1 under its near-white label. */
+  --primary: 268.7 100% 50%;
+  --primary-foreground: 60 33% 99%;
+  /* The identity role: the same violet, a separate declaration (gh#250). */
+  --brand: 268.7 100% 50%;
+  --brand-foreground: 60 33% 99%;
+}
+
+.dark,
+:root[data-theme="dark"] {
+  /* #DCBCFF — identity v2.3 dark action.primary.bg, hue snapped to the light tone. 9.56:1 on the
+   * dark canvas. */
+  --primary: 268.7 100% 86.9%;
+  --primary-foreground: 48 9% 9%;
+  --brand: 268.7 100% 86.9%;
+  --brand-foreground: 48 9% 9%;
+}
+
+/* Engines without relative colour (Chrome/Edge 111–118) get the derived tier as literals. These are
+ * the violet ramp 31.x shipped there, restated so the preset stays exact whatever the package's
+ * own fallback holds for its neutral seed. */
+@supports not (color: hsl(from red h s l)) {
+  :root {
+    --primary-hover: 268.7 100% 41.6%;
+    --primary-active: 268.7 100% 34.5%;
+    --primary-border: 268.7 68% 66%;
+    --control-outline: 268.7 100% 44.7%;
+    --text-link: 268.7 100% 41.6%;
+    --text-brand: 268.7 100% 41.6%;
+    --text-primary: 268.7 100% 34.5%;
+  }
+
+  .dark,
+  :root[data-theme="dark"] {
+    --primary-hover: 268.7 100% 92.7%;
+    --primary-active: 268.7 100% 81.1%;
+    --primary-border: 268.7 46.7% 23.5%;
+    --control-outline: 268.7 99% 61.8%;
+    --text-link: 268.7 100% 86.9%;
+    --text-brand: 268.7 100% 86.9%;
+    --text-primary: 268.7 100% 92.7%;
+  }
+}

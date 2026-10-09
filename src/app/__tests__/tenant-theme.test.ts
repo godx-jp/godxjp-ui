@@ -447,7 +447,7 @@ describe("the brand INK clears AA on the surface it lands on (gh#887)", () => {
     expect(triplet(seed.vars["--text-primary"])).toEqual([268.71, 100, 34.5]);
     // v32 (gh#1220): the violet fallback literals moved out of core `derived.css` into the GoDX
     // preset, which is where the #7A00FF seed now lives.
-    const godxPreset = readFileSync(join(process.cwd(), "src/themes/godx.css"), "utf8");
+    const godxPreset = readFileSync(join(process.cwd(), "src/themes/godx-tokens.css"), "utf8");
     for (const [role, expected] of [
       ["text-link", "268.7 100% 41.6%"],
       ["text-brand", "268.7 100% 41.6%"],

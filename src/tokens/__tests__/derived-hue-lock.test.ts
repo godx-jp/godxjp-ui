@@ -37,7 +37,7 @@ import { channelsOf, hsl, relative, triplet } from "./wcag-contrast";
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
 const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
 /** The GoDX preset (v32, gh#1220) carries its own violet fallback for engines without relative colour. */
-const godx = readFileSync(join(process.cwd(), "src/themes/godx.css"), "utf8");
+const godx = readFileSync(join(process.cwd(), "src/themes/godx-tokens.css"), "utf8");
 
 /** The theme's block inside a sheet's `@supports not (relative colour)` fallback. */
 function fallbackBlock(css: string, selector: string): string {

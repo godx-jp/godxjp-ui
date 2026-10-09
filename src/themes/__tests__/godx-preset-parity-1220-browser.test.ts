@@ -110,6 +110,7 @@ const V31: Record<"light" | "dark", Measured> = {
 let js = "";
 let neutralCss = "";
 let godxCss = "";
+let godxTokensCss = "";
 let browser: Browser;
 
 beforeAll(async () => {
@@ -136,6 +137,7 @@ beforeAll(async () => {
   const candidates = [...new Set(js.match(/[\w:./[\]()%#!=-]+/g) ?? [])];
   neutralCss = await compileCss(candidates);
   godxCss = await compileCss(candidates, ["../themes/godx.css"]);
+  godxTokensCss = await compileCss(candidates, ["../themes/godx-tokens.css"]);
   browser = await chromium.launch({ headless: true });
 }, 180_000);
 
@@ -207,5 +209,17 @@ describe("without the preset the identity is neutral (gh#1220)", { timeout: 60_0
     });
     expect(got.button.background).toBe("rgb(250, 250, 250)");
     expect(got.mark).toBeNull();
+  });
+});
+
+describe("GoDX colour tokens without fonts, for a shadow root (gh#1228)", () => {
+  it("godx-tokens.css paints the 31.x violet and declares no @font-face", async () => {
+    // The Dock compiles styles/core into a shadow root, where @font-face is ignored; it needs the
+    // GoDX colours alone. godx.css = these tokens + the fonts; importing both doubled every face.
+    expect(godxTokensCss).not.toMatch(/@font-face/);
+    expect(godxCss).toMatch(/@font-face/);
+    const got = await measure(godxTokensCss, "theme=light&preset=godx");
+    expect(got.tokens).toEqual(V31.light.tokens);
+    expect(got.button).toEqual(V31.light.button);
   });
 });

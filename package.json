@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "32.0.0",
-  "godxUiMcp": "32.0.0",
+  "version": "32.0.1",
+  "godxUiMcp": "32.0.1",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -70,6 +70,7 @@
       "import": "./dist/themes/godx.js"
     },
     "./themes/godx.css": "./dist/themes/godx.css",
+    "./themes/godx-tokens.css": "./dist/themes/godx-tokens.css",
     "./lab": {
       "types": "./dist/lab/index.d.ts",
       "import": "./dist/lab/index.js"

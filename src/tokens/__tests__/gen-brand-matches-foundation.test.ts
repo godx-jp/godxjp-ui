@@ -69,7 +69,10 @@ const emitted = {
 describe("gen:brand reproduces foundation.css on foundation.css's own seed", () => {
   it("emits the seed back unchanged", () => {
     // #7A00FF is the GoDX preset's seed since v32 (gh#1220); the core default is a neutral ink.
-    const preset = blockOf(readFileSync(join(ROOT, "src/themes/godx.css"), "utf8"), ":root {");
+    const preset = blockOf(
+      readFileSync(join(ROOT, "src/themes/godx-tokens.css"), "utf8"),
+      ":root {",
+    );
     expect(role(emitted.light, "primary")).toEqual(role(preset, "primary"));
   });
 

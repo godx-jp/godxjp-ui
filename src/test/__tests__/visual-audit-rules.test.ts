@@ -57,7 +57,7 @@ describe("isShippedBrandAccent (gh#823 brand carve-out)", () => {
     // find the violet entry by its source rather than taking the first `--primary`.
     const primary = SHIPPED_BRAND_ACCENTS.find(
       (a: { cssVars: string[]; source?: string }) =>
-        a.cssVars.includes("--primary") && a.source === "src/themes/godx.css",
+        a.cssVars.includes("--primary") && a.source === "src/themes/godx-tokens.css",
     );
     expect(primary).toBeTruthy();
     expect(primary.rgb).toEqual(BRAND);

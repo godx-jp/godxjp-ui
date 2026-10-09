@@ -300,26 +300,46 @@ const STYLE_IMPORT_CSS = /^([ \t]*)@import\s+(["'])@godxjp\/ui\/styles\2\s*;[ \t
 const STYLE_IMPORT_JS = /^([ \t]*)import\s+(["'])@godxjp\/ui\/styles\2\s*;?[ \t]*$/m;
 const FONTS = "@godxjp/ui/styles/fonts.css";
 const GODX_CSS = "@godxjp/ui/themes/godx.css";
+const GODX_TOKENS_CSS = "@godxjp/ui/themes/godx-tokens.css";
+const CORE_IMPORT_CSS = /^([ \t]*)@import\s+(["'])@godxjp\/ui\/styles\/core\2\s*;[ \t]*$/m;
+const CORE_IMPORT_JS = /^([ \t]*)import\s+(["'])@godxjp\/ui\/styles\/core\2\s*;?[ \t]*$/m;
 
 export function transformSource(file, source, { godx = false } = {}) {
   let out = source;
   const notes = [];
   const isCss = file.endsWith(".css");
   const styleImport = isCss ? STYLE_IMPORT_CSS : STYLE_IMPORT_JS;
+  const coreImport = isCss ? CORE_IMPORT_CSS : CORE_IMPORT_JS;
+  const written = (indent, q, spec) =>
+    isCss ? `${indent}@import ${q}${spec}${q};` : `${indent}import ${q}${spec}${q};`;
   const m = out.match(styleImport);
   if (m) {
     const [line, indent, q] = m;
     const add = [];
-    if (!out.includes(FONTS) && !out.includes("@godxjp/ui/styles/fonts")) add.push(FONTS);
-    if (godx && !out.includes(GODX_CSS)) add.push(GODX_CSS);
-    if (add.length) {
-      const extra = add
-        .map((spec) =>
-          isCss ? `${indent}@import ${q}${spec}${q};` : `${indent}import ${q}${spec}${q};`,
-        )
-        .join("\n");
-      out = out.replace(line, `${line}\n${extra}`);
+    // gh#1228: godx.css already imports the fonts. Under --godx add only the preset sheet; adding
+    // fonts.css too shipped every @font-face twice (735 → 1470 rules, 178 → 489 kB gzip measured).
+    if (godx) {
+      if (!out.includes(GODX_CSS)) add.push(GODX_CSS);
+    } else if (!out.includes(FONTS) && !out.includes("@godxjp/ui/styles/fonts")) {
+      add.push(FONTS);
     }
+    if (add.length)
+      out = out.replace(line, `${line}\n${add.map((spec) => written(indent, q, spec)).join("\n")}`);
+  }
+  // styles/core (a shadow root or an app with its own fonts): the colour tokens, never the fonts.
+  const c = out.match(coreImport);
+  if (c && godx && !out.includes(GODX_TOKENS_CSS) && !out.includes(GODX_CSS)) {
+    const [line, indent, q] = c;
+    out = out.replace(line, `${line}\n${written(indent, q, GODX_TOKENS_CSS)}`);
+  }
+  // A file the 32.0.0 codemod already touched carries BOTH godx.css and fonts.css: drop the second.
+  if (out.includes(GODX_CSS)) {
+    out = out.replace(
+      isCss
+        ? /^[ \t]*@import\s+["']@godxjp\/ui\/styles\/fonts(?:\.css)?["']\s*;[ \t]*\n/m
+        : /^[ \t]*import\s+["']@godxjp\/ui\/styles\/fonts(?:\.css)?["']\s*;?[ \t]*\n/m,
+      "",
+    );
   }
   if (!isCss && /<AppProvider\b/.test(out)) {
     const tags = out.match(/<AppProvider\b[^>]*>/g) ?? [];

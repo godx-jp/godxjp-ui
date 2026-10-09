@@ -130,6 +130,126 @@ export const EMAIL_COLOR_SOURCE_DARK = {
   }
 } as const;
 
+/** The GoDX preset's palette for email: foundation :root with src/themes/godx-tokens.css laid over it. */
+export const EMAIL_COLOR_SOURCE_GODX = {
+  "background": {
+    "cssVar": "--background",
+    "hsl": "60 33% 99%"
+  },
+  "foreground": {
+    "cssVar": "--foreground",
+    "hsl": "48 8% 13%"
+  },
+  "surface": {
+    "cssVar": "--card",
+    "hsl": "60 33% 99%"
+  },
+  "surfaceForeground": {
+    "cssVar": "--card-foreground",
+    "hsl": "48 8% 13%"
+  },
+  "muted": {
+    "cssVar": "--muted",
+    "hsl": "45 15% 95%"
+  },
+  "mutedForeground": {
+    "cssVar": "--muted-foreground",
+    "hsl": "44 5% 39%"
+  },
+  "border": {
+    "cssVar": "--border",
+    "hsl": "30 7% 93%"
+  },
+  "primary": {
+    "cssVar": "--primary",
+    "hsl": "268.7 100% 50%"
+  },
+  "primaryForeground": {
+    "cssVar": "--primary-foreground",
+    "hsl": "60 33% 99%"
+  },
+  "focus": {
+    "cssVar": "--primary",
+    "hsl": "268.7 100% 50%"
+  },
+  "brand": {
+    "cssVar": "--brand",
+    "hsl": "268.7 100% 50%"
+  },
+  "brandForeground": {
+    "cssVar": "--brand-foreground",
+    "hsl": "60 33% 99%"
+  },
+  "urgency": {
+    "cssVar": "--attention",
+    "hsl": "25 99% 46%"
+  },
+  "urgencyForeground": {
+    "cssVar": "--attention-foreground",
+    "hsl": "48 8% 13%"
+  }
+} as const;
+
+/** The GoDX preset's dark palette for email. */
+export const EMAIL_COLOR_SOURCE_GODX_DARK = {
+  "background": {
+    "cssVar": "--background",
+    "hsl": "48 9% 9%"
+  },
+  "foreground": {
+    "cssVar": "--foreground",
+    "hsl": "60 20% 96%"
+  },
+  "surface": {
+    "cssVar": "--card",
+    "hsl": "48 8% 12%"
+  },
+  "surfaceForeground": {
+    "cssVar": "--card-foreground",
+    "hsl": "60 20% 96%"
+  },
+  "muted": {
+    "cssVar": "--muted",
+    "hsl": "45 6% 18%"
+  },
+  "mutedForeground": {
+    "cssVar": "--muted-foreground",
+    "hsl": "44 6% 64%"
+  },
+  "border": {
+    "cssVar": "--border",
+    "hsl": "45 6% 19%"
+  },
+  "primary": {
+    "cssVar": "--primary",
+    "hsl": "268.7 100% 86.9%"
+  },
+  "primaryForeground": {
+    "cssVar": "--primary-foreground",
+    "hsl": "48 9% 9%"
+  },
+  "focus": {
+    "cssVar": "--primary",
+    "hsl": "268.7 100% 86.9%"
+  },
+  "brand": {
+    "cssVar": "--brand",
+    "hsl": "268.7 100% 86.9%"
+  },
+  "brandForeground": {
+    "cssVar": "--brand-foreground",
+    "hsl": "48 9% 9%"
+  },
+  "urgency": {
+    "cssVar": "--attention",
+    "hsl": "25 95% 56%"
+  },
+  "urgencyForeground": {
+    "cssVar": "--attention-foreground",
+    "hsl": "48 9% 9%"
+  }
+} as const;
+
 /** Raw `--email-*` declarations from the component token tier, verbatim. */
 export const EMAIL_GEOMETRY_SOURCE = {
   "--email-shell-width": "480px",

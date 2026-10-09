@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/markdown",
-  "version": "32.0.0",
+  "version": "32.0.1",
   "description": "The one Markdown renderer for GoDX apps: GFM + heading anchors, one sanitiser schema, a shared fixture corpus, and Mermaid drawn only after its SVG passes a fail-closed gate.",
   "type": "module",
   "main": "./dist/index.js",
