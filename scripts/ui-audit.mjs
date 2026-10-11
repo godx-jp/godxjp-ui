@@ -1810,6 +1810,113 @@ function staleOwnedRules() {
   };
 }
 
+/*
+ * THE FORMFIELD WALK, shared by `formfield-needs-form` and the cross-file index below (gh#1238).
+ * One pass over a file's open/close JSX tags with a stack, so "same parent" is structural.
+ * `(?<![\w.$])` skips a generic argument (`useRef<HTMLDivElement>`), which is preceded by an
+ * identifier. Returns the bare FormFields grouped by parent, and which component tags this file
+ * renders under a Form and which outside one.
+ *
+ * Every exported tag that renders @godxjp/ui's <Form> around its children counts (gh#1039).
+ * `FormRoot` (@godxjp/ui/form, src/form/form-root.tsx) wraps its <form> in <Form asChild>
+ * whenever a layout prop is set, and is the form shell with one stacked layout otherwise.
+ * Pagination also renders <Form>, but around its own controls, not a consumer's fields. Add a tag
+ * here when another exported wrapper starts rendering <Form> around children.
+ */
+const FORM_TAGS = new Set(["Form", "FormRoot"]);
+const formOpenTag = new RegExp(`<(${[...FORM_TAGS].join("|")})(?=[\\s>])([^>]*)>`, "g");
+function formTagWalk(scanContent) {
+  const stack = [];
+  const bareByParent = new Map();
+  const underForm = new Set();
+  /** Component tag → indexes where this file renders it with no Form above it. */
+  const outsideForm = new Map();
+  let formDepth = 0;
+  for (const m of scanContent.matchAll(
+    /(?<![\w.$])<(\/?)([A-Za-z][\w.]*)(?=[\s>/])([^<>]*?(?:\{[^{}]*\}[^<>]*?)*)(\/?)>/g,
+  )) {
+    const [, close, tag, , selfClose] = m;
+    if (close) {
+      for (let i = stack.length - 1; i >= 0; i -= 1) {
+        if (stack[i].tag === tag) {
+          stack.length = i;
+          break;
+        }
+      }
+      if (FORM_TAGS.has(tag)) formDepth = Math.max(0, formDepth - 1);
+      continue;
+    }
+    if (tag === "FormField" && formDepth === 0) {
+      const parent = stack.at(-1)?.index ?? -1;
+      (bareByParent.get(parent) ?? bareByParent.set(parent, []).get(parent)).push(m.index);
+    }
+    if (/^[A-Z]/.test(tag)) {
+      if (formDepth > 0) underForm.add(tag);
+      else (outsideForm.get(tag) ?? outsideForm.set(tag, []).get(tag)).push(m.index);
+    }
+    if (selfClose) continue;
+    stack.push({ tag, index: m.index });
+    if (FORM_TAGS.has(tag)) formDepth += 1;
+  }
+  return { bareByParent, underForm, outsideForm };
+}
+
+/** The PascalCase component declared last before `index` — the one a FormField group sits in. */
+function enclosingComponent(scanContent, index) {
+  let name = null;
+  for (const m of scanContent
+    .slice(0, index)
+    .matchAll(
+      /(?:^|\n)\s*(?:export\s+)?(?:default\s+)?(?:function\s+([A-Z]\w*)|const\s+([A-Z]\w*)\s*[:=])/g,
+    )) {
+    name = m[1] ?? m[2];
+  }
+  return name;
+}
+
+/*
+ * A FIELD GROUP RENDERED INTO ITS CALLER'S FORM (gh#1238). A component that only contributes
+ * fields (`RevisionFields`, rendered inside `<Form asChild errors={form.errors}>` in two dialogs)
+ * has no <Form> in its own file, and wrapping it in one would nest a <form> or open a second Form
+ * context without the caller's errors. So the rule asks the whole project: if every place that
+ * renders this component does so under a Form, its fields have one. Used bare ANYWHERE, it is still
+ * flagged — that keeps the gh#998 defect (fields in a hand-rolled <Flex> nobody wraps) caught.
+ *
+ * The index reads every file under the default scan roots plus any path named on the command line,
+ * not only the files being reported, so `--changed` or a single-file run still sees the callers. Known miss: a default
+ * export imported under another local name does not match; `ui-audit-disable-next-line` covers it.
+ */
+let formUsageIndex = null;
+/**
+ * Where `name` is rendered across the project: `under` (some caller renders it inside a Form) and
+ * `bare` (the `file:line` of every caller that does not). Null for a nameless group.
+ */
+function formUsage(name) {
+  if (!name) return null;
+  if (!formUsageIndex) {
+    formUsageIndex = { under: new Set(), bare: new Map() };
+    // The default roots AND whatever was named: a single file (the editor hook) or a directory
+    // outside the defaults (`resources/js/lib`) must still see the callers that render it.
+    const roots = new Set([...(SELF ? SELF_SCAN_ROOTS : CONSUMER_SCAN_ROOTS), ...dirArgs]);
+    const seen = new Set();
+    for (const dir of roots) {
+      for (const file of walk(isAbsolute(dir) ? dir : join(CWD, dir))) {
+        if (!/\.[jt]sx$/.test(file) || seen.has(file)) continue;
+        seen.add(file);
+        const text = stripComments(readFileSync(file, "utf8"));
+        const { underForm, outsideForm } = formTagWalk(text);
+        for (const tag of underForm) formUsageIndex.under.add(tag);
+        for (const [tag, indexes] of outsideForm) {
+          const list = formUsageIndex.bare.get(tag) ?? formUsageIndex.bare.set(tag, []).get(tag);
+          for (const i of indexes)
+            list.push(`${relative(CWD, file)}:${text.slice(0, i).split("\n").length}`);
+        }
+      }
+    }
+  }
+  return { under: formUsageIndex.under.has(name), bare: formUsageIndex.bare.get(name) ?? [] };
+}
+
 const findings = [];
 const stale = staleOwnedRules();
 if (stale) findings.push(stale);
@@ -2046,43 +2153,15 @@ for (const dir of SCAN_DIRS) {
        * The walk keeps a stack of open JSX elements so "same parent" is structural. `(?<![\w.$])`
        * skips a generic argument (`useRef<HTMLDivElement>`), which is preceded by an identifier.
        */
-      const stack = [];
-      const bareByParent = new Map();
-      /*
-       * Every exported tag that renders @godxjp/ui's <Form> around its children (gh#1039). A field
-       * under any of them has the Form layout context, so it must count like a literal <Form>.
-       * `FormRoot` (@godxjp/ui/form, src/form/form-root.tsx) wraps its <form> in <Form asChild>
-       * whenever a layout prop is set, and is the form shell with one stacked layout otherwise.
-       * Pagination also renders <Form>, but around its own controls, not a consumer's fields. Add a
-       * tag here when another exported wrapper starts rendering <Form> around children.
-       */
-      const FORM_TAGS = new Set(["Form", "FormRoot"]);
-      const formOpenTag = new RegExp(`<(${[...FORM_TAGS].join("|")})(?=[\\s>])([^>]*)>`, "g");
-      let formDepth = 0;
-      for (const m of scanContent.matchAll(
-        /(?<![\w.$])<(\/?)([A-Za-z][\w.]*)(?=[\s>/])([^<>]*?(?:\{[^{}]*\}[^<>]*?)*)(\/?)>/g,
-      )) {
-        const [, close, tag, , selfClose] = m;
-        if (close) {
-          for (let i = stack.length - 1; i >= 0; i -= 1) {
-            if (stack[i].tag === tag) {
-              stack.length = i;
-              break;
-            }
-          }
-          if (FORM_TAGS.has(tag)) formDepth = Math.max(0, formDepth - 1);
-          continue;
-        }
-        if (tag === "FormField" && formDepth === 0) {
-          const parent = stack.at(-1)?.index ?? -1;
-          (bareByParent.get(parent) ?? bareByParent.set(parent, []).get(parent)).push(m.index);
-        }
-        if (selfClose) continue;
-        stack.push({ tag, index: m.index });
-        if (FORM_TAGS.has(tag)) formDepth += 1;
-      }
+      const { bareByParent } = formTagWalk(scanContent);
       for (const group of bareByParent.values()) {
         if (group.length < 2) continue;
+        const owner = enclosingComponent(scanContent, group[0]);
+        const usage = formUsage(owner);
+        // Every caller renders this component inside a Form: its fields have one (gh#1238).
+        if (usage?.under && usage.bare.length === 0) continue;
+        // Some callers do and some do not: the fix is at the bare call sites, not in this file.
+        const bareCallers = usage?.under ? usage.bare : [];
         for (const at of group) {
           const lineNo = lineAt(at);
           if (suppressed("formfield-needs-form", lineNo - 1)) continue;
@@ -2092,7 +2171,9 @@ for (const dir of SCAN_DIRS) {
             rule: "formfield-needs-form",
             severity: "error",
             standard: "@godxjp/ui Form (gh#998)",
-            message: `${group.length} FormFields under one parent with no <Form> around them. <Form layout="horizontal" labelWidth controlWidth> is what lines fields up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field's label out of line. Wrap them in <Form>; a row that belongs together is <Flex attached> or <Form columns>. A lone field (a search box, a type-to-confirm input) is not flagged.`,
+            message: bareCallers.length
+              ? `${owner} renders ${group.length} FormFields and is used inside a <Form> elsewhere, but not at ${bareCallers.join(", ")}. Wrap THAT call in <Form> (it has no Form to nest into); do not wrap the fields here, which would nest a <form> or open a second Form context without the caller's errors.`
+              : `${group.length} FormFields under one parent with no <Form> around them. <Form layout="horizontal" labelWidth controlWidth> is what lines fields up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field's label out of line. Wrap them in <Form>; a row that belongs together is <Flex attached> or <Form columns>. A lone field (a search box, a type-to-confirm input) is not flagged. If every caller renders this component inside a <Form>, it is not flagged either.`,
             snippet: scanContent.slice(at, at + 120).replace(/\s+/g, " "),
           });
         }

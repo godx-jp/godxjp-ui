@@ -219,7 +219,7 @@ export const AUDIT_RULES: AuditRule[] = [
     severity: "error",
     category: "composition",
     standard: "@godxjp/ui Form (gh#998)",
-    fix: 'Wrap FormFields in <Form layout="horizontal" labelWidth controlWidth>; a row of fields is <Flex attached> or <Form columns>, never a hand-rolled <Flex>. A field component whose whole output is one FormField is exempt.',
+    fix: 'Wrap FormFields in <Form layout="horizontal" labelWidth controlWidth>; a row of fields is <Flex attached> or <Form columns>, never a hand-rolled <Flex>. A field component whose whole output is one FormField is exempt, and so is a field-group component that every caller renders inside a <Form> (checked across the project); when only some callers do, wrap the bare call sites the message names, not the fields.',
   },
   {
     id: "mixed-button-size",

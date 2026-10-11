@@ -8,5 +8,8 @@
  * here (which @imports the root) — NOT in the shipped library index.css, so the
  * published package never carries doc-scanning source paths. */
 @import "../../src/styles/index.css";
+/* Fonts are opt-in since v32 (#1221); the catalogue is mostly Japanese text, and the browser gates
+ * measure text boxes, so it loads them the way a consumer does — after the base stylesheet (gh#1233). */
+@import "../../src/styles/fonts.css";
 @source "../../docs";
 @source "../../examples";
