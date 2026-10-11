@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.0.4] - 2026-10-12
+
+### 🐛 Fixed
+
+- **The Sheet/Dialog form-wrapper fix is scoped, and covers Dialog and `Form asChild` (#1239).**
+  32.0.3 turned EVERY direct `<form>` child of SheetContent into a flex column, which also re-spaced
+  a short form that holds its FormFields directly. Now only a form that wraps the panel's body is
+  made transparent (`display: contents`), in Sheet and Dialog alike, and `Form asChild`'s sibling
+  margin no longer stacks on the panel gap. Body→footer spacing: Dialog 0px (bare form) / 32px
+  (`Form asChild`) → 16px, the same as without a form (11 browser cases, from #1240).
+
 ## [32.0.3] - 2026-10-12
 
 ### 🐛 Fixed

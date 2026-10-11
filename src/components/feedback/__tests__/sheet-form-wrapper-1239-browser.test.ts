@@ -6,38 +6,56 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
 
 /**
- * gh#1239 in Chromium, against the real stylesheet. `SheetBody` scrolls because it is a flex child
- * of `SheetContent` (`flex-1 overflow-y-auto`). The usual form shape puts a `<form>` between them:
+ * gh#1239 in Chromium, against the real stylesheet.
  *
- *     <SheetContent><SheetHeader/><form><SheetBody/><SheetFooter/></form></SheetContent>
+ * The common form shape puts a `<form>` between `SheetContent` and its `SheetBody`/`SheetFooter`:
  *
- * A plain block `<form>` breaks that chain: the body grows to its content and the footer, which
- * holds the submit button, lands below the viewport. Dialog never had this, because dialog-body
- * carries its own max-height. Asserted: with the wrapper the footer stays on screen, the body is
- * the thing that scrolls, and the layout matches the same sheet without the wrapper.
+ *   <SheetContent><SheetHeader/><Form asChild><form onSubmit>
+ *     <SheetBody>…</SheetBody><SheetFooter><Button type="submit"/></SheetFooter>
+ *   </form></Form></SheetContent>
+ *
+ * `SheetBody` scrolls only as a flex item of `sheet-content`. A `<form>` in between was a box of
+ * its own, so the body grew to its content and the footer — the submit button — sat below the
+ * viewport. The body must scroll and the footer must stay on screen, with the form wrapper and
+ * without it, and the footer button must still submit the form.
  */
 const ROOT = process.cwd();
 const ENTRY = `
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody, SheetFooter,
-} from "./src/components/feedback/sheet";
-const wrapped = new URLSearchParams(location.search).get("form") === "1";
-const fields = Array.from({ length: 30 }, (_, i) => (
-  <p key={i} style={{ margin: 0, height: 32 }}>Field {i + 1}</p>
+import { Sheet, SheetContent, SheetHeader, SheetBody, SheetFooter } from "./src/components/feedback/sheet";
+import { DialogRoot, DialogContent, DialogHeader, DialogBody, DialogFooter } from "./src/components/feedback/dialog";
+import { Form } from "./src/components/data-entry/form";
+import { FormField } from "./src/components/data-entry/form-field";
+import { Input } from "./src/components/data-entry/input";
+import { Button } from "./src/components/general/button";
+const params = new URLSearchParams(location.search);
+const kind = params.get("kind");
+const wrap = params.get("wrap");
+const rows = Array.from({ length: 30 }, (_, i) => (
+  <FormField key={i} id={"f" + i} label={"Field " + i}><Input id={"f" + i} /></FormField>
 ));
-const body = <SheetBody>{fields}</SheetBody>;
-const footer = <SheetFooter><button type="submit">Save</button></SheetFooter>;
+window.__submitted = 0;
+const submit = (e) => { e.preventDefault(); window.__submitted += 1; };
+const Body = kind === "dialog" ? DialogBody : SheetBody;
+const Footer = kind === "dialog" ? DialogFooter : SheetFooter;
+const inner = [
+  <Body key="b">{rows}</Body>,
+  <Footer key="f"><Button type="submit">Save</Button></Footer>,
+];
+const content =
+  wrap === "fields-only" ? <Form asChild><form onSubmit={submit} noValidate>{rows.slice(0, 2)}<Footer><Button type="submit">Save</Button></Footer></form></Form>
+  : wrap === "form-aschild" ? <Form asChild><form onSubmit={submit} noValidate>{inner}</form></Form>
+  : wrap === "form" ? <form onSubmit={submit} noValidate>{inner}</form>
+  : inner;
 createRoot(document.getElementById("root")).render(
   <AppProvider defaultLocale="en" persist={false}>
-    <Sheet defaultOpen>
-      <SheetContent>
-        <SheetHeader><SheetTitle>Correction</SheetTitle></SheetHeader>
-        {wrapped ? <form onSubmit={(e) => e.preventDefault()}>{body}{footer}</form> : <>{body}{footer}</>}
-      </SheetContent>
-    </Sheet>
+    {kind === "dialog" ? (
+      <DialogRoot defaultOpen><DialogContent><DialogHeader title="Edit" />{content}</DialogContent></DialogRoot>
+    ) : (
+      <Sheet defaultOpen><SheetContent><SheetHeader title="Edit" />{content}</SheetContent></Sheet>
+    )}
   </AppProvider>,
 );
 `;
@@ -67,7 +85,6 @@ beforeAll(async () => {
     globalThis.TextEncoder = realm.encoder;
     globalThis.Uint8Array = realm.bytes;
   }
-  // `=` included: `data-[state=open]:animate-in` is one class, and without it the variant never compiles.
   const tokens = [...new Set(js.match(/[\w:./[\]()%#!=-]+/g) ?? [])].join(" ");
   css = await compileRealCss(`<div class="${tokens.replaceAll('"', "")}"></div>`);
   browser = await chromium.launch({ headless: true });
@@ -77,43 +94,115 @@ afterAll(async () => {
   await browser?.close();
 });
 
-async function measure(form: boolean) {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 700 } });
+async function open(query: string): Promise<Page> {
+  // Short viewport: thirty fields are far taller than the panel.
+  const page = await browser.newPage({ viewport: { width: 1280, height: 480 } });
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto(`about:blank?form=${form ? 1 : 0}`);
+  await page.goto(`about:blank?${query}`);
   await page.setContent(
     `<!doctype html><html lang="en"><head><style>${css}</style></head><body><div id="root"></div><script>${js}</script></body></html>`,
   );
-  await page.locator('[data-slot="sheet-footer"] button').waitFor();
-  const m = await page.evaluate(() => {
-    const body = document.querySelector('[data-slot="sheet-body"]') as HTMLElement;
-    const footer = document.querySelector('[data-slot="sheet-footer"]')!.getBoundingClientRect();
-    const panel = document.querySelector('[data-slot="sheet-content"]')!.getBoundingClientRect();
-    return {
-      footerBottom: Math.round(footer.bottom),
-      footerTop: Math.round(footer.top),
-      panelBottom: Math.round(panel.bottom),
-      bodyScrolls: body.scrollHeight > body.clientHeight + 1,
-      bodyHeight: Math.round(body.getBoundingClientRect().height),
-      viewport: window.innerHeight,
-    };
-  });
-  await page.close();
-  return m;
+  await page.locator('[data-slot$="-footer"] button').waitFor();
+  return page;
 }
 
-describe("a <form> between SheetContent and SheetBody/SheetFooter keeps the body scrolling (gh#1239)", () => {
-  it("keeps the footer on screen and scrolls the body, exactly like the unwrapped sheet", async () => {
-    const plain = await measure(false);
-    const wrapped = await measure(true);
-    // The control: without the wrapper the sheet already behaves.
-    expect(plain.bodyScrolls).toBe(true);
-    expect(plain.footerBottom).toBeLessThanOrEqual(plain.viewport);
-    // The defect: with the wrapper the footer was pushed below the 700px viewport.
-    expect(wrapped.footerBottom, JSON.stringify(wrapped)).toBeLessThanOrEqual(wrapped.viewport);
-    expect(wrapped.bodyScrolls).toBe(true);
-    // And the wrapper is invisible to the layout: same footer and body geometry.
-    expect(wrapped.footerTop).toBe(plain.footerTop);
-    expect(wrapped.bodyHeight).toBe(plain.bodyHeight);
-  }, 60_000);
+const geometry = (page: Page, prefix: "sheet" | "dialog") =>
+  page.evaluate((p) => {
+    const body = document.querySelector<HTMLElement>(`[data-slot="${p}-body"]`)!;
+    const footer = document.querySelector<HTMLElement>(`[data-slot="${p}-footer"]`)!;
+    const b = body.getBoundingClientRect();
+    const f = footer.getBoundingClientRect();
+    return {
+      bodyScrolls: body.scrollHeight > body.clientHeight,
+      bodyOverflowY: getComputedStyle(body).overflowY,
+      footerBottom: f.bottom,
+      viewport: window.innerHeight,
+      bodyToFooter: Math.round(f.top - b.bottom),
+    };
+  }, prefix);
+
+describe(
+  "Sheet with a <form> between SheetContent and SheetBody/SheetFooter (gh#1239)",
+  {
+    timeout: 60_000,
+  },
+  () => {
+    it.each(["none", "form", "form-aschild"])(
+      "wrap=%s: the body scrolls and the footer stays inside the viewport",
+      async (wrap) => {
+        const page = await open(`kind=sheet&wrap=${wrap}`);
+        const g = await geometry(page, "sheet");
+        expect(g.bodyOverflowY).toBe("auto");
+        expect(g.bodyScrolls).toBe(true);
+        expect(g.footerBottom).toBeLessThanOrEqual(g.viewport);
+        await page.close();
+      },
+    );
+
+    it("the form wrapper does not change the layout: same body→footer spacing as without it", async () => {
+      const bare = await open("kind=sheet&wrap=none");
+      const expected = (await geometry(bare, "sheet")).bodyToFooter;
+      await bare.close();
+      for (const wrap of ["form", "form-aschild"]) {
+        const page = await open(`kind=sheet&wrap=${wrap}`);
+        expect((await geometry(page, "sheet")).bodyToFooter, wrap).toBe(expected);
+        await page.close();
+      }
+    });
+
+    it("the footer submit button still submits the wrapping form", async () => {
+      for (const wrap of ["form", "form-aschild"]) {
+        const page = await open(`kind=sheet&wrap=${wrap}`);
+        await page
+          .locator('[data-slot="sheet-footer"] button[type="submit"]')
+          .click({ timeout: 2_000 });
+        expect(
+          await page.evaluate(() => (window as unknown as { __submitted: number }).__submitted),
+          wrap,
+        ).toBe(1);
+        await page.close();
+      }
+    });
+  },
+);
+
+describe("Dialog with the same form wrapper (gh#1239)", { timeout: 60_000 }, () => {
+  it.each(["none", "form", "form-aschild"])(
+    "wrap=%s: the body scrolls and the footer stays inside the viewport",
+    async (wrap) => {
+      const page = await open(`kind=dialog&wrap=${wrap}`);
+      const g = await geometry(page, "dialog");
+      expect(g.bodyScrolls).toBe(true);
+      expect(g.footerBottom).toBeLessThanOrEqual(g.viewport);
+      await page.close();
+    },
+  );
+
+  it("the form wrapper does not change the layout: same body→footer spacing as without it", async () => {
+    const bare = await open("kind=dialog&wrap=none");
+    const expected = (await geometry(bare, "dialog")).bodyToFooter;
+    await bare.close();
+    for (const wrap of ["form", "form-aschild"]) {
+      const page = await open(`kind=dialog&wrap=${wrap}`);
+      expect((await geometry(page, "dialog")).bodyToFooter, wrap).toBe(expected);
+      await page.close();
+    }
+  });
 });
+
+describe(
+  "a short form that holds its fields directly keeps its own box (gh#1239 scope)",
+  {
+    timeout: 60_000,
+  },
+  () => {
+    it.each(["sheet", "dialog"])("%s: no body ⇒ the form stays a flex column", async (kind) => {
+      const page = await open(`kind=${kind}&wrap=fields-only`);
+      const display = await page
+        .locator(`[data-slot="${kind}-content"] > form`)
+        .evaluate((el) => getComputedStyle(el).display);
+      expect(display).toBe("flex");
+      await page.close();
+    });
+  },
+);
