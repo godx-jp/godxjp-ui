@@ -1,9 +1,16 @@
-# Copy to .github/workflows/instruction-files.yml — CLAUDE.md must be @AGENTS.md + tool blocks (#588).
+# CLAUDE.md must be @AGENTS.md + tool blocks (futurelastic/colab-handbook#588).
+# Pinned to one reviewed handbook commit, in BOTH places: `uses:` fetches the workflow, and
+# `handbook-ref` is the ref the workflow checks the checker code out at (it defaults to `main`, so
+# pinning `uses:` alone would still run mutable code). Bump both together, to a reviewed SHA.
 name: instruction-files
 on:
   push:
     branches: [main]
   pull_request:
+permissions:
+  contents: read
 jobs:
   instruction-files:
-    uses: futurelastic/colab-handbook/.github/workflows/instruction-files.yml@main
+    uses: futurelastic/colab-handbook/.github/workflows/instruction-files.yml@dde83267c426d7c8d5c16714a0d3f6d8b3cccad6 # main @ 2026-10-11 (#594)
+    with:
+      handbook-ref: dde83267c426d7c8d5c16714a0d3f6d8b3cccad6

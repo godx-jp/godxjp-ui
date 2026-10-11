@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.0.3] - 2026-10-12
+
+### 🐛 Fixed
+
+- **A `<form>` around SheetBody + SheetFooter keeps the body scrolling (#1239).** SheetBody scrolls
+  as a flex child of SheetContent; the usual form shape put a plain block `<form>` in between, so the
+  body grew to its content and the footer with the submit button fell off-screen (1280×700: footer
+  at 1088px). A direct `<form>` child now takes over SheetContent's column: footer on screen, body
+  scrolls, same geometry as the unwrapped sheet (browser test).
+- **`formfield-needs-form` sees the caller's Form (#1238).** The rule read one file at a time, so a
+  field-group component rendered inside a caller's `<Form>` was flagged, with advice that would nest
+  a `<form>`. It now indexes the project (default roots plus any named path, so `--changed` and the
+  editor hook see callers too): a component every caller renders inside a Form is not flagged; when
+  some callers do and some do not, the message names the bare call sites. On gino-cloud's tree the 4
+  findings now each name the one bare caller; with those two calls wrapped it is 0 (the old script
+  stays at 4).
+
+### 🔧 Internal
+
+- Nightly full sweep green again (#1233): the preview imports `fonts.css`, which 32.0.0 took out of
+  `styles/index.css`; the DataTable empty-state gate was measuring the fallback font (40.5px → 42.5px).
+- `instruction-files` workflow pinned to one reviewed colab-handbook commit, in both `uses:` and
+  `handbook-ref`, with `permissions: contents: read`.
+
 ## [32.0.2] - 2026-10-09
 
 ### 🐛 Fixed

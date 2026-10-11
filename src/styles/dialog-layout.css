@@ -18,6 +18,18 @@
     border-top: var(--stroke-hairline) solid hsl(var(--border));
   }
 
+  /* A `<form>` between SheetContent and SheetBody/SheetFooter (the usual form shape, gh#1239) takes
+   * over SheetContent's flex column, so the body still scrolls and the footer stays on screen.
+   * Without this the form is a plain block: the body grows to its content and the footer, holding
+   * the submit button, lands below the viewport. */
+  [data-slot="sheet-content"] > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: inherit;
+  }
+
   /* Scrim = a SHARE of the ONE shared semantic scrim (--overlay-background), resolved here at the
    * call site so a scoped [data-tenant]/.dark override of --overlay-background actually reaches
    * the portaled overlay (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). */
