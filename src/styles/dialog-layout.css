@@ -94,7 +94,18 @@
     inset-inline-start: 50%;
     top: 50%;
     z-index: var(--overlay-z-index);
-    display: grid;
+    /* A FLEX COLUMN CAPPED TO THE VIEWPORT (gh#1242). `dialog-body` caps itself at
+     * `min(60vh, 32rem)`, but header + footer + padding add ~154px, so below ~385px of viewport
+     * height (a phone in landscape; WCAG 2.2 SC 1.4.10 reflow at 200% zoom on a 768px window) the
+     * box outgrew the screen — measured at 1280x200: top -37px, footer bottom 236px, the confirm
+     * button unreachable while only the body scrolled. The box now stops at the viewport minus
+     * `--dialog-viewport-inset` (the same total inset the width cap uses), and the body is the one
+     * flex item allowed to shrink (`min-block-size: 0` + its own overflow), so header and footer
+     * always stay on screen. Was `display: grid`; a single column with the same `gap` lays out the
+     * same everywhere the box fits. */
+    display: flex;
+    flex-direction: column;
+    max-block-size: calc(100dvh - var(--dialog-viewport-inset));
     width: min(
       var(--dialog-width, var(--dialog-width-default)),
       calc(100% - var(--dialog-viewport-inset))
@@ -137,6 +148,7 @@
 
   /* Ring-safe scrollable body for a tall dialog. */
   [data-slot="dialog-body"] {
+    flex: 1 1 auto;
     min-height: 0;
     max-height: min(60vh, 32rem);
     overflow-y: auto;

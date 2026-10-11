@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐛 Fixed
 
+- **A Dialog never outgrows the viewport (#1242).** `dialog-content` is now a flex column capped
+  at `calc(100dvh - var(--dialog-viewport-inset))`, and `dialog-body` is the item that shrinks and
+  scrolls, so the header and footer (the confirm button) stay on screen. Below ~385px of viewport
+  height (phone landscape, 200% zoom) the box used to overflow: at 1280x200 its top was at -37px
+  and the footer bottom at 236px. Sheet is unchanged.
 - **A `<form>` between `SheetContent` and its `SheetBody`/`SheetFooter` no longer breaks the sheet
   (#1239).** The usual form shape `<SheetContent><SheetHeader/><Form asChild><form onSubmit>
 <SheetBody/><SheetFooter/></form></Form></SheetContent>` made the form a box of its own: the body

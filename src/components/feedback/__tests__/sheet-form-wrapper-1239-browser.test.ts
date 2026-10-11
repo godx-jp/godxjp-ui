@@ -94,9 +94,9 @@ afterAll(async () => {
   await browser?.close();
 });
 
-async function open(query: string): Promise<Page> {
+async function open(query: string, height = 480): Promise<Page> {
   // Short viewport: thirty fields are far taller than the panel.
-  const page = await browser.newPage({ viewport: { width: 1280, height: 480 } });
+  const page = await browser.newPage({ viewport: { width: 1280, height } });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(`about:blank?${query}`);
   await page.setContent(
@@ -206,3 +206,34 @@ describe(
     });
   },
 );
+
+/**
+ * gh#1242: the Dialog itself is capped to the viewport. `dialog-body` caps at `min(60vh, 32rem)`,
+ * but header + footer + padding add ~154px, so below ~385px of viewport height (a phone in
+ * landscape, 200% zoom on a 768px window) the footer — the confirm button — left the screen while
+ * only the body scrolled. Measured before the fix at 1280x200: footer bottom 236px.
+ */
+describe("Dialog is capped to the viewport (gh#1242)", { timeout: 60_000 }, () => {
+  it.each(["none", "form", "form-aschild"])(
+    "wrap=%s at 1280x200: header and footer on screen, the body scrolls",
+    async (wrap) => {
+      const page = await open(`kind=dialog&wrap=${wrap}`, 200);
+      const g = await geometry(page, "dialog");
+      const box = await page
+        .locator('[data-slot="dialog-content"]')
+        .evaluate((el) => el.getBoundingClientRect().toJSON() as DOMRect);
+      expect(g.bodyScrolls).toBe(true);
+      expect(box.top).toBeGreaterThanOrEqual(0);
+      expect(g.footerBottom).toBeLessThanOrEqual(g.viewport);
+      await page.close();
+    },
+  );
+
+  it("Sheet at 1280x200 is unaffected: body scrolls, footer on screen", async () => {
+    const page = await open("kind=sheet&wrap=none", 200);
+    const g = await geometry(page, "sheet");
+    expect(g.bodyScrolls).toBe(true);
+    expect(g.footerBottom).toBeLessThanOrEqual(g.viewport);
+    await page.close();
+  });
+});
