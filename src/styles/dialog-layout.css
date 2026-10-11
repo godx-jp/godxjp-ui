@@ -28,7 +28,7 @@
    * covers a bare `<form>` and `<Form asChild><form>` alike.
    *
    * Dialog gets the same rule: `dialog-body` caps its own height so it never overflowed, but the
-   * wrapper became ONE grid item of `dialog-content` and the body→footer gap went 16px → 0.
+   * wrapper became ONE item of `dialog-content` and the body→footer gap went 16px → 0.
    *
    * Under `Form asChild` the form is also `.ui-form`, whose `> * + *` sibling margin still matches
    * through `contents` and would stack on the panel's own gap (measured: Dialog body→footer 32px
@@ -94,7 +94,16 @@
     inset-inline-start: 50%;
     top: 50%;
     z-index: var(--overlay-z-index);
-    display: grid;
+    /* A COLUMN CAPPED TO THE VIEWPORT (gh#1242). `dialog-body` caps itself at `min(60vh, 32rem)`,
+     * but header + footer + padding are a fixed ~154px, so below ~385px of viewport (a phone in
+     * landscape; WCAG 2.2 SC 1.4.10 reflow at 200% zoom on a 768px window) the panel outgrew the
+     * screen and the footer's confirm button sat off-screen. The panel now stops at the viewport
+     * minus the same inset its width uses, and the body — the only part with `min-height: 0` —
+     * gives up the height, so header and footer always stay visible. Where the cap does not bind
+     * the layout is unchanged (measured to the pixel in dialog-viewport-cap-1242-browser.test). */
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - var(--dialog-viewport-inset));
     width: min(
       var(--dialog-width, var(--dialog-width-default)),
       calc(100% - var(--dialog-viewport-inset))
