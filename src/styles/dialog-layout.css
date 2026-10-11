@@ -8,6 +8,41 @@
     --sheet-pad-y: var(--space-chrome-y);
   }
 
+  /* A `<form>` BETWEEN THE PANEL AND ITS PARTS IS NOT A LAYOUT BOX (gh#1239).
+   *
+   * The usual form shape is `<SheetContent><SheetHeader/><Form asChild><form onSubmit>
+   * <SheetBody/><SheetFooter/></form></Form></SheetContent>`. `SheetBody` scrolls only as a flex
+   * item of `sheet-content`, and `SheetHeader/Body/Footer` cancel the panel padding with negative
+   * margins and take their spacing from its `gap` — all three assume they are the panel's direct
+   * items. A `<form>` in between was a box of its own: the body grew to its content, never
+   * scrolled, and the footer holding the submit button was pushed below the viewport (measured:
+   * 30 fields at 1280x480, footer bottom past the viewport, body `scrollHeight == clientHeight`).
+   *
+   * Scoped to a form that wraps the panel's BODY — the broken shape. A short form that holds its
+   * FormFields directly (no body) keeps its own box and `.ui-form` field rhythm; flattening it
+   * would turn every field into a panel item spaced by the chrome gap.
+   *
+   * `display: contents` hands the form's children back to the panel, so the layout is identical
+   * to the same parts without a form — the same mechanism `SheetContent` already uses for the RAC
+   * `Modal` wrapper. Submission is DOM-based and unaffected. The element selector (not `.ui-form`)
+   * covers a bare `<form>` and `<Form asChild><form>` alike.
+   *
+   * Dialog gets the same rule: `dialog-body` caps its own height so it never overflowed, but the
+   * wrapper became ONE grid item of `dialog-content` and the body→footer gap went 16px → 0.
+   *
+   * Under `Form asChild` the form is also `.ui-form`, whose `> * + *` sibling margin still matches
+   * through `contents` and would stack on the panel's own gap (measured: Dialog body→footer 32px
+   * instead of 16px). Inside the panel the panel's gap is the one rhythm, so that margin is reset. */
+  [data-slot="sheet-content"] > form:has(> [data-slot="sheet-body"]),
+  [data-slot="dialog-content"] > form:has(> [data-slot="dialog-body"]) {
+    display: contents;
+  }
+
+  [data-slot="sheet-content"] > form.ui-form:has(> [data-slot="sheet-body"]) > * + *,
+  [data-slot="dialog-content"] > form.ui-form:has(> [data-slot="dialog-body"]) > * + * {
+    margin-block-start: 0;
+  }
+
   /* Sheet header/footer dividers appear ONLY when a SheetBody is present (mirrors the dialog rule)
    * — a body-less sheet never shows a doubled header-bottom + footer-top line. */
   [data-slot="sheet-content"]:has([data-slot="sheet-body"]) [data-slot="sheet-header"] {
@@ -16,18 +51,6 @@
 
   [data-slot="sheet-content"]:has([data-slot="sheet-body"]) [data-slot="sheet-footer"] {
     border-top: var(--stroke-hairline) solid hsl(var(--border));
-  }
-
-  /* A `<form>` between SheetContent and SheetBody/SheetFooter (the usual form shape, gh#1239) takes
-   * over SheetContent's flex column, so the body still scrolls and the footer stays on screen.
-   * Without this the form is a plain block: the body grows to its content and the footer, holding
-   * the submit button, lands below the viewport. */
-  [data-slot="sheet-content"] > form {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
-    gap: inherit;
   }
 
   /* Scrim = a SHARE of the ONE shared semantic scrim (--overlay-background), resolved here at the
