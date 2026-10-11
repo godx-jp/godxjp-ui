@@ -45,7 +45,8 @@ const inner = [
   <Footer key="f"><Button type="submit">Save</Button></Footer>,
 ];
 const content =
-  wrap === "form-aschild" ? <Form asChild><form onSubmit={submit} noValidate>{inner}</form></Form>
+  wrap === "fields-only" ? <Form asChild><form onSubmit={submit} noValidate>{rows.slice(0, 2)}<Footer><Button type="submit">Save</Button></Footer></form></Form>
+  : wrap === "form-aschild" ? <Form asChild><form onSubmit={submit} noValidate>{inner}</form></Form>
   : wrap === "form" ? <form onSubmit={submit} noValidate>{inner}</form>
   : inner;
 createRoot(document.getElementById("root")).render(
@@ -188,3 +189,20 @@ describe("Dialog with the same form wrapper (gh#1239)", { timeout: 60_000 }, () 
     }
   });
 });
+
+describe(
+  "a short form that holds its fields directly keeps its own box (gh#1239 scope)",
+  {
+    timeout: 60_000,
+  },
+  () => {
+    it.each(["sheet", "dialog"])("%s: no body ⇒ the form stays a flex column", async (kind) => {
+      const page = await open(`kind=${kind}&wrap=fields-only`);
+      const display = await page
+        .locator(`[data-slot="${kind}-content"] > form`)
+        .evaluate((el) => getComputedStyle(el).display);
+      expect(display).toBe("flex");
+      await page.close();
+    });
+  },
+);

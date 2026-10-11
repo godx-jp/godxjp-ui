@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <SheetBody/><SheetFooter/></form></Form></SheetContent>` made the form a box of its own: the body
   grew to its content and never scrolled, and the footer holding the submit button sat below the
   viewport (30 fields at 1280x480). A form that is a direct child of `sheet-content` or
-  `dialog-content` is now `display: contents`, so the parts lay out exactly as without it, and
+  `dialog-content` and wraps its `SheetBody`/`DialogBody` is now `display: contents`, so the parts lay out exactly as without it, and
   `.ui-form`'s sibling margin no longer stacks on the panel gap. Dialog body→footer spacing with a
   form wrapper: 0px (bare `<form>`) / 32px (`Form asChild`) → 16px, the same as without one.
 
