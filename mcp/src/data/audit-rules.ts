@@ -219,7 +219,7 @@ export const AUDIT_RULES: AuditRule[] = [
     severity: "error",
     category: "composition",
     standard: "@godxjp/ui Form (gh#998)",
-    fix: 'Wrap FormFields in <Form layout="horizontal" labelWidth controlWidth>; a row of fields is <Flex attached> or <Form columns>, never a hand-rolled <Flex>. A field component whose whole output is one FormField is exempt.',
+    fix: 'Wrap FormFields in <Form layout="horizontal" labelWidth controlWidth>; a row of fields is <Flex attached> or <Form columns>, never a hand-rolled <Flex>. A field component whose whole output is one FormField is exempt. A component that contributes fields to a <Form> its CALLER owns is a form part, not a bare group — another <Form> would nest a <form> or (asChild) drop the errors bag of the caller; mark the group with `{/* form-part: rendered inside <Form> of <caller> */}` (12+ chars of reason) above its first FormField (gh#1238).',
   },
   {
     id: "mixed-button-size",

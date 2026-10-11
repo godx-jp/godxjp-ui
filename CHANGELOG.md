@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🐛 Fixed
+
+- **A `<form>` between `SheetContent` and its `SheetBody`/`SheetFooter` no longer breaks the sheet
+  (#1239).** The usual form shape `<SheetContent><SheetHeader/><Form asChild><form onSubmit>
+<SheetBody/><SheetFooter/></form></Form></SheetContent>` made the form a box of its own: the body
+  grew to its content and never scrolled, and the footer holding the submit button sat below the
+  viewport (30 fields at 1280x480). A form that is a direct child of `sheet-content` or
+  `dialog-content` is now `display: contents`, so the parts lay out exactly as without it, and
+  `.ui-form`'s sibling margin no longer stacks on the panel gap. Dialog body→footer spacing with a
+  form wrapper: 0px (bare `<form>`) / 32px (`Form asChild`) → 16px, the same as without one.
+
+### Added
+
+- **ui-audit `formfield-needs-form`: a `form-part:` marker for fields that render inside the
+  caller's `<Form>` (#1238).** The rule reads one file at a time, so a component that contributes
+  fields to a Form its caller owns was flagged, and its suggested fix (another `<Form>`) nests a
+  `<form>` or, with `asChild`, drops the caller's `errors` bag. `{/* form-part: rendered inside
+  <Form> of <caller> */}` on the line of, or above, the group's first `FormField` or its parent's
+  opening tag declares the group; the reason (12+ characters) is mandatory, and a bare group
+  elsewhere in the same file is still flagged.
+
 ## [32.0.2] - 2026-10-09
 
 ### 🐛 Fixed

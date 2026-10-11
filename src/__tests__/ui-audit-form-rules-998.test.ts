@@ -112,6 +112,39 @@ describe("formfield-needs-form (gh#998)", () => {
   });
 });
 
+describe("formfield-needs-form: a form part rendered inside the caller's <Form> (gh#1238)", () => {
+  // The reporter's shape: a component that contributes fields to a Form its CALLER owns.
+  const part = (marker: string) =>
+    `export function RevisionFields() {\n  return (\n    <>\n      ${marker}\n      ${field("a")}\n      ${field("b")}\n    </>\n  );\n}`;
+
+  it("without a marker it is flagged — the false positive the issue reports", () => {
+    expect(rules(part(""))).toEqual(["formfield-needs-form:error", "formfield-needs-form:error"]);
+  });
+
+  it("`form-part: <reason>` above the first FormField declares the group, and it is clean", () => {
+    expect(
+      rules(part("{/* form-part: rendered inside <Form asChild errors> of job-order-dialog */}")),
+    ).toEqual([]);
+  });
+
+  it("the marker also works on the parent's opening tag", () => {
+    const src = `export const Fields = () => (\n  // form-part: fields of the employment-contracts-tab <Form>\n  <Flex direction="col" gap="md">\n    ${field("a")}\n    ${field("b")}\n  </Flex>\n);`;
+    expect(rules(src)).toEqual([]);
+  });
+
+  it("a marker without a reason is ignored and the finding stands", () => {
+    expect(rules(part("{/* form-part: x */}"))).toHaveLength(2);
+  });
+
+  it("the marker covers ITS group only — a genuine bare group in the same file is still flagged", () => {
+    const src = `${part("{/* form-part: rendered inside <Form> of candidate-dialog */}")}\nexport const Bare = () => (\n  <Flex>\n    ${field("c")}\n    ${field("d")}\n  </Flex>\n);`;
+    expect(audit(src).map((f) => `${f.rule}:${f.line}`)).toEqual([
+      "formfield-needs-form:12",
+      "formfield-needs-form:13",
+    ]);
+  });
+});
+
 describe("dialog-form-too-big (gh#998)", () => {
   const body = (tag: string, n: number) =>
     `<Form><${tag}>${Array.from({ length: n }, (_, i) => field(`f${i}`)).join("")}</${tag}></Form>`;

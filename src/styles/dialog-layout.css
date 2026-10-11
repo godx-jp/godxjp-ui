@@ -8,6 +8,37 @@
     --sheet-pad-y: var(--space-chrome-y);
   }
 
+  /* A `<form>` BETWEEN THE PANEL AND ITS PARTS IS NOT A LAYOUT BOX (gh#1239).
+   *
+   * The usual form shape is `<SheetContent><SheetHeader/><Form asChild><form onSubmit>
+   * <SheetBody/><SheetFooter/></form></Form></SheetContent>`. `SheetBody` scrolls only as a flex
+   * item of `sheet-content`, and `SheetHeader/Body/Footer` cancel the panel padding with negative
+   * margins and take their spacing from its `gap` — all three assume they are the panel's direct
+   * items. A `<form>` in between was a box of its own: the body grew to its content, never
+   * scrolled, and the footer holding the submit button was pushed below the viewport (measured:
+   * 30 fields at 1280x480, footer bottom past the viewport, body `scrollHeight == clientHeight`).
+   *
+   * `display: contents` hands the form's children back to the panel, so the layout is identical
+   * to the same parts without a form — the same mechanism `SheetContent` already uses for the RAC
+   * `Modal` wrapper. Submission is DOM-based and unaffected. The element selector (not `.ui-form`)
+   * covers a bare `<form>` and `<Form asChild><form>` alike.
+   *
+   * Dialog gets the same rule: `dialog-body` caps its own height so it never overflowed, but the
+   * wrapper became ONE grid item of `dialog-content` and the body→footer gap went 16px → 0.
+   *
+   * Under `Form asChild` the form is also `.ui-form`, whose `> * + *` sibling margin still matches
+   * through `contents` and would stack on the panel's own gap (measured: Dialog body→footer 32px
+   * instead of 16px). Inside the panel the panel's gap is the one rhythm, so that margin is reset. */
+  [data-slot="sheet-content"] > form,
+  [data-slot="dialog-content"] > form {
+    display: contents;
+  }
+
+  [data-slot="sheet-content"] > form.ui-form > * + *,
+  [data-slot="dialog-content"] > form.ui-form > * + * {
+    margin-block-start: 0;
+  }
+
   /* Sheet header/footer dividers appear ONLY when a SheetBody is present (mirrors the dialog rule)
    * — a body-less sheet never shows a doubled header-bottom + footer-top line. */
   [data-slot="sheet-content"]:has([data-slot="sheet-body"]) [data-slot="sheet-header"] {

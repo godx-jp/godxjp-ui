@@ -111,11 +111,11 @@ giờ cảnh báo MỘT lần khi component của kit render ngoài provider. Kh
 godx-mailer dính bốn lỗi form trong một ngày, cả bốn đều là kit ĐÃ CÓ đồ đúng
 (gh#998). Giờ ui-audit chặn:
 
-| Sai                                                         | Đúng                                                                                         | rule                   |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------- |
-| ≥2 `FormField` không có `Form`, hoặc xếp hàng bằng `<Flex>` | `<Form layout="horizontal" labelWidth controlWidth>`; hàng = `SpaceCompact` / `Form columns` | `formfield-needs-form` |
-| ≥3 `FormField` trong `DialogBody`                           | page riêng (route riêng)                                                                     | `dialog-form-too-big`  |
-| `Select` hai lựa chọn kéo full width                        | `controlWidth` trên field hoặc một lần trên `Form`                                           | `select-width-hint`    |
+| Sai                                                         | Đúng                                                                                         | rule                                                                                                                                                  |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ≥2 `FormField` không có `Form`, hoặc xếp hàng bằng `<Flex>` | `<Form layout="horizontal" labelWidth controlWidth>`; hàng = `SpaceCompact` / `Form columns` | `formfield-needs-form` (component chỉ góp field vào `<Form>` của caller: đánh dấu `{/* form-part: <Form nào render> */}` trên FormField đầu, gh#1238) |
+| ≥3 `FormField` trong `DialogBody`                           | page riêng (route riêng)                                                                     | `dialog-form-too-big`                                                                                                                                 |
+| `Select` hai lựa chọn kéo full width                        | `controlWidth` trên field hoặc một lần trên `Form`                                           | `select-width-hint`                                                                                                                                   |
 
 Ca kit không diễn đạt được thì **mở issue ở godx-jp/godxjp-ui**, tạm dùng cách
 hợp lệ gần nhất kèm `// TODO(godxjp-ui#<n>)` — không tự chế.

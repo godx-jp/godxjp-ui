@@ -2081,8 +2081,25 @@ for (const dir of SCAN_DIRS) {
         stack.push({ tag, index: m.index });
         if (FORM_TAGS.has(tag)) formDepth += 1;
       }
-      for (const group of bareByParent.values()) {
+      /*
+       * A FORM PART (gh#1238). The rule reads one file, so a component that only CONTRIBUTES
+       * fields to a <Form> its caller owns has no <Form> of its own and looks like a bare group.
+       * Wrapping it in <Form> is the wrong fix there: it nests a <form> in a <form>, or, with
+       * `asChild`, opens a second Form context without the caller's `errors` bag, so its fields
+       * stop claiming their server errors. `form-part: <which Form renders these, 12+ chars>` on
+       * the line of, or the line above, the group's FIRST FormField or its parent's opening tag
+       * declares the group deliberate — one reason-carrying marker per group, like `rtl-ignore:`,
+       * instead of a `disable` per field. A marker with no reason is ignored.
+       */
+      const FORM_PART = /form-part:\s*\S[^\n]{11,}/;
+      const formPartAt = (index) => {
+        if (index < 0) return false;
+        const i = lineAt(index) - 1;
+        return FORM_PART.test(origLines[i] ?? "") || FORM_PART.test(origLines[i - 1] ?? "");
+      };
+      for (const [parent, group] of bareByParent) {
         if (group.length < 2) continue;
+        if (formPartAt(group[0]) || formPartAt(parent)) continue;
         for (const at of group) {
           const lineNo = lineAt(at);
           if (suppressed("formfield-needs-form", lineNo - 1)) continue;
@@ -2092,7 +2109,7 @@ for (const dir of SCAN_DIRS) {
             rule: "formfield-needs-form",
             severity: "error",
             standard: "@godxjp/ui Form (gh#998)",
-            message: `${group.length} FormFields under one parent with no <Form> around them. <Form layout="horizontal" labelWidth controlWidth> is what lines fields up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field's label out of line. Wrap them in <Form>; a row that belongs together is <Flex attached> or <Form columns>. A lone field (a search box, a type-to-confirm input) is not flagged.`,
+            message: `${group.length} FormFields under one parent with no <Form> around them. <Form layout="horizontal" labelWidth controlWidth> is what lines fields up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field's label out of line. Wrap them in <Form>; a row that belongs together is <Flex attached> or <Form columns>. A lone field (a search box, a type-to-confirm input) is not flagged. A component whose fields render inside a <Form> its CALLER owns is not fixed by another <Form> (that nests a <form>, or with asChild drops the caller's errors bag) — mark the group with \`{/* form-part: rendered inside <Form> of <caller> */}\` above its first FormField.`,
             snippet: scanContent.slice(at, at + 120).replace(/\s+/g, " "),
           });
         }
