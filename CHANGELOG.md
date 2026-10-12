@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.0.5] - 2026-10-12
+
+### 🐛 Fixed
+
+- **Dialog stays inside the viewport (#1242).** `dialog-body` capped itself at `min(60vh, 32rem)`
+  but `dialog-content` had no cap, and header + footer + padding are ~154px, so below ~385px of
+  viewport (phone landscape; WCAG 2.2 SC 1.4.10 reflow at 200% zoom) the confirm button sat
+  off-screen. The panel is now a flex column capped at `100dvh` minus `--dialog-viewport-inset`, and
+  the body gives up the height. At 1280×200: header −32px / footer 232px → both on screen, body
+  scrolls. At 1280×900 the short and long dialogs keep their exact 32.0.4 geometry (browser test).
+
 ## [32.0.4] - 2026-10-12
 
 ### 🐛 Fixed
