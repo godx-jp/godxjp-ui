@@ -158,7 +158,7 @@ describe("Upload lifecycle", () => {
     await user.upload(input(container), file());
     await act(async () => requests[0].context.onProgress(42));
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "42");
-    await user.click(screen.getByRole("button", { name: /cancel|huỷ|キャンセル/i }));
+    await user.click(screen.getByRole("button", { name: /cancel|hủy|huỷ|キャンセル/i }));
     expect(requests[0].context.signal.aborted).toBe(true);
     await user.click(screen.getByRole("button", { name: /^(upload|tải lên|アップロード)$/i }));
     await act(async () => requests[0].resolve({ mediaId: "stale" }));
