@@ -183,6 +183,30 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Select all</CardTitle>
+            <CardDescription>
+              selectAll adds a leading box derived from the value (checked, mixed or clear) and a
+              &quot;n of m selected&quot; count. The disabled option is never counted, added or
+              removed.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CheckboxGroup
+              aria-label="通知チャネル"
+              selectAll
+              defaultValue={["email"]}
+              options={[
+                { value: "email", label: "メール" },
+                { value: "sms", label: "SMS" },
+                { value: "push", label: "プッシュ通知" },
+                { value: "fax", label: "FAX", disabled: true, description: "契約外です" },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Horizontal orientation</CardTitle>
             <CardDescription>
               orientation=&quot;horizontal&quot; lays the options out in a wrapping row.

@@ -14,6 +14,7 @@
     "previous": "Previous",
     "next": "Next",
     "selectedCount": "{count} selected",
+    "selectedOfTotal": "{count} of {total} selected",
     "typeToConfirm": "Type {phrase} to confirm"
   },
   "dataEntry": {
@@ -250,6 +251,9 @@
       "moved": "{label}: position {position} of {count}.",
       "dropped": "Dropped {label} at position {position} of {count}.",
       "cancelled": "Move cancelled. {label} is back at position {position} of {count}."
+    },
+    "checkboxGroup": {
+      "selectAll": "Select all"
     },
     "passwordStrength": {
       "weak": "Weak",

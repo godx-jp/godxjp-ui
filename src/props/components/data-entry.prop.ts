@@ -572,6 +572,14 @@ export type CheckboxGroupProp = FieldA11yProps & {
   id?: IdProp;
   className?: ClassNameProp;
   children?: React.ReactNode;
+  /**
+   * A leading "select all" box (gh#1245), `options` form only. Its state is derived from the group
+   * value — checked when every enabled option is selected, mixed on a partial selection, clear
+   * otherwise — and it is followed by a muted "{n} of {m} selected" count and a separator. One
+   * click is one `onValueChange`. Disabled options are outside it in both directions: neither
+   * counted nor added nor removed. `{ label }` replaces the default "Select all" text.
+   */
+  selectAll?: boolean | { label?: React.ReactNode };
 };
 
 /** @see Radio.Group */

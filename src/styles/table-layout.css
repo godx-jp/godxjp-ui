@@ -355,6 +355,14 @@
     align-items: center;
     gap: var(--space-inline-sm);
     font-size: var(--font-size-base);
+    /* gh#1251 — opacity only, no transform: the bar never moves the rows under it. */
+    transition: opacity var(--duration-fast) var(--ease-standard);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ui-data-table-bulk {
+      transition: none;
+    }
   }
 
   .ui-data-table-bulk-actions {
