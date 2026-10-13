@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.2.1] - 2026-10-13
+
+### 🐛 Fixed
+
+- **A page shortcut no longer fires from inside an open dialog (#1267, regression in 32.2.0).**
+  Pressing `f` on a button inside a Dialog opened a page `DropdownMenu shortcut="f"` over the dialog
+  and pulled focus out of it. Every shortcut (SearchInput, CommandPalette, DropdownMenu) is now
+  ignored while focus is inside a dialog, menu or listbox that does not contain its owner; a
+  SearchInput inside the dialog keeps its own shortcut.
+- **A focused link inside a truncated `DataTable` cell unfolds the cell (#1267)**, as a focused cell
+  already did.
+
+### ✨ Added
+
+- **`Toolbar`/`FilterBar` `viewsPlacement="inline"` (#1267)** — `views` at the start of the strip's
+  first row, so an idle bar stays one row (with the default `above`, an idle bar measured 55 → 95px).
+- **`aria-keyshortcuts` from `shortcut` (#1267)** — on the `DropdownMenu` trigger (an explicit value
+  wins) and on the `SearchInput` field.
+
 ## [32.2.0] - 2026-10-13
 
 The filter-bar kit, from godx-task's issue-list redesign (#1264).

@@ -131,9 +131,18 @@ export type ToolbarProp = {
    * filter set, so it is not one more filter in the strip.
    */
   views?: React.ReactNode;
+  /**
+   * Where `views` sits (gh#1267). `above` (default) is its own row over the strip; `inline` puts it
+   * at the START of the strip's first row, so an idle bar stays ONE row — measured with `above`: an
+   * idle bar 55 → 95px, one table row fewer above the fold at 1440×900.
+   */
+  viewsPlacement?: FilterBarViewsPlacementProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };
+
+/** @see ToolbarProp.viewsPlacement */
+export type FilterBarViewsPlacementProp = "above" | "inline";
 
 /** @see ToolbarProp.clearDisplay */
 export type FilterBarClearDisplayProp = "label" | "icon";

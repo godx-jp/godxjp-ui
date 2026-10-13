@@ -44,6 +44,7 @@ export function Toolbar({
   error,
   clearDisplay = "label",
   views,
+  viewsPlacement = "above",
   className,
   children,
 }: ToolbarProp) {
@@ -135,7 +136,9 @@ export function Toolbar({
       className={cn("ui-filter-bar", sticky && "ui-toolbar-sticky", className)}
       data-loading={loading || undefined}
     >
-      {views != null && <div className="ui-filter-bar-views">{views}</div>}
+      {views != null && viewsPlacement === "above" && (
+        <div className="ui-filter-bar-views">{views}</div>
+      )}
       <div
         role="toolbar"
         aria-label={t("navigation.toolbar.ariaLabel")}
@@ -143,6 +146,11 @@ export function Toolbar({
         data-overflow={overflow}
         className="ui-toolbar"
       >
+        {views != null && viewsPlacement === "inline" && (
+          <div className="ui-filter-bar-views" data-placement="inline">
+            {views}
+          </div>
+        )}
         {search && (
           <SearchInput
             id={search.id}

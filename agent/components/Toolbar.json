@@ -91,6 +91,12 @@
       "type": "ReactNode"
     },
     {
+      "defaultValue": "\"above\"",
+      "description": "Where `views` sits (gh#1267). `above` is its own row over the strip; `inline` puts it at the START of the strip's first row so an idle bar stays ONE row (with `above`, an idle bar measured 55 → 95px and one table row fewer above the fold at 1440×900).",
+      "name": "viewsPlacement",
+      "type": "\"above\" | \"inline\""
+    },
+    {
       "description": "Extra classes on the root element.",
       "name": "className",
       "type": "string"

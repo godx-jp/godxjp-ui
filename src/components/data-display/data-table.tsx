@@ -1609,9 +1609,9 @@ DataTable.Content = function DataTableContent() {
     const el = scrollRef.current;
     if (!el) return;
     for (const cell of el.querySelectorAll<HTMLElement>("tbody td.ui-data-table-ellipsis")) {
-      // A focused cell is UNFOLDED, so it measures as fitting; re-measuring it would drop its tab
-      // stop under the user's focus. It is measured again on focusout.
-      if (cell === document.activeElement) continue;
+      // A cell holding focus (itself or a link inside, gh#1267) is UNFOLDED, so it measures as
+      // fitting; re-measuring it would drop its state under the user's focus. Re-measured on focusout.
+      if (cell.contains(document.activeElement)) continue;
       const ownTitle = cell.dataset.truncatedTitle !== undefined;
       if (cell.scrollWidth - cell.clientWidth > 1) {
         cell.dataset.truncated = "";
