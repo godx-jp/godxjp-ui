@@ -1829,6 +1829,8 @@ function staleOwnedRules() {
 const FORM_TAGS = new Set(["Form", "FormRoot"]);
 const formOpenTag = new RegExp(`<(${[...FORM_TAGS].join("|")})(?=[\\s>])([^>]*)>`, "g");
 function formTagWalk(scanContent) {
+  const formSpans = [];
+  const formOpens = [];
   const stack = [];
   const bareByParent = new Map();
   const underForm = new Set();
@@ -1846,11 +1848,18 @@ function formTagWalk(scanContent) {
           break;
         }
       }
-      if (FORM_TAGS.has(tag)) formDepth = Math.max(0, formDepth - 1);
+      if (FORM_TAGS.has(tag)) {
+        formDepth = Math.max(0, formDepth - 1);
+        const open = formOpens.pop();
+        if (open !== undefined) formSpans.push([open, m.index]);
+      }
       continue;
     }
     if (tag === "FormField" && formDepth === 0) {
-      const parent = stack.at(-1)?.index ?? -1;
+      // A field at the TOP of a return has no parent tag; key it by its component, or two
+      // one-field components in one file (`Field`, `Choice`) read as "Field renders 2 FormFields"
+      // (gh#1260). A lone field is not flagged, so each is now judged on its own.
+      const parent = stack.at(-1)?.index ?? `top:${enclosingComponent(scanContent, m.index)}`;
       (bareByParent.get(parent) ?? bareByParent.set(parent, []).get(parent)).push(m.index);
     }
     if (/^[A-Z]/.test(tag)) {
@@ -1859,9 +1868,76 @@ function formTagWalk(scanContent) {
     }
     if (selfClose) continue;
     stack.push({ tag, index: m.index });
-    if (FORM_TAGS.has(tag)) formDepth += 1;
+    if (FORM_TAGS.has(tag)) {
+      formDepth += 1;
+      formOpens.push(m.index);
+    }
+  }
+  // gh#1260: JSX inside a RENDER HELPER (`const legFields = (leg) => (…)`) has no Form above it in
+  // the source, but it renders wherever the helper is CALLED. When every call of that helper is
+  // under a Form — directly, or inside another such helper — the JSX is under that Form too.
+  const covered = renderHelperCoverage(scanContent, formSpans);
+  if (covered) {
+    for (const [parent, indexes] of bareByParent) {
+      const kept = indexes.filter((i) => !covered(i));
+      if (kept.length) bareByParent.set(parent, kept);
+      else bareByParent.delete(parent);
+    }
+    for (const [tag, indexes] of outsideForm) {
+      const kept = indexes.filter((i) => !covered(i));
+      if (kept.length < indexes.length) underForm.add(tag);
+      if (kept.length) outsideForm.set(tag, kept);
+      else outsideForm.delete(tag);
+    }
   }
   return { bareByParent, underForm, outsideForm };
+}
+
+/**
+ * `index → true` when `index` sits in a same-file render helper whose every call is under a Form
+ * (gh#1260). Helpers are lowercase `function name(` / `const name = (…) =>` declarations; their
+ * body is found by bracket matching, and a helper never called is NOT covered (it might be
+ * exported or passed as a render prop). Returns null when the file declares no helper.
+ */
+function renderHelperCoverage(scanContent, formSpans) {
+  const helpers = [];
+  for (const m of scanContent.matchAll(
+    /(?<![\w$.])(?:function\s+([a-z]\w*)\s*(?:<[^>]*>)?\s*\(|(?:const|let)\s+([a-z]\w*)\s*(?::[^=]+)?=\s*(?:async\s*)?(?:\([^()]*(?:\([^()]*\)[^()]*)*\)|[a-z]\w*)\s*(?::[^=]+?)?=>\s*)/g,
+  )) {
+    const name = m[1] ?? m[2];
+    let open;
+    if (m[1]) {
+      const params = matchBracket(scanContent, m.index + m[0].length - 1);
+      if (params < 0) continue;
+      open = scanContent.indexOf("{", params);
+    } else {
+      open = m.index + m[0].length;
+      if (scanContent[open] !== "{" && scanContent[open] !== "(") continue;
+    }
+    const close = open < 0 ? -1 : matchBracket(scanContent, open);
+    if (close < 0) continue;
+    helpers.push({ name, from: open, to: close, decl: m.index });
+  }
+  if (!helpers.length) return null;
+  const inForm = (i) => formSpans.some(([a, b]) => i > a && i < b);
+  /** The innermost helper whose body holds `i`. */
+  const helperAt = (i) =>
+    helpers
+      .filter((h) => i > h.from && i < h.to)
+      .reduce((inner, h) => (!inner || h.from > inner.from ? h : inner), null);
+  const callsOf = (name) =>
+    [...scanContent.matchAll(new RegExp(`(?<![\\w$.])${name}\\s*\\(`, "g"))]
+      .map((c) => c.index)
+      .filter((i) => !helpers.some((h) => h.name === name && i >= h.decl && i < h.from));
+  const covered = (i, depth = 0) => {
+    if (inForm(i)) return true;
+    if (depth > 4) return false;
+    const helper = helperAt(i);
+    if (!helper) return false;
+    const calls = callsOf(helper.name);
+    return calls.length > 0 && calls.every((c) => covered(c, depth + 1));
+  };
+  return (i) => covered(i);
 }
 
 /** The PascalCase component declared last before `index` — the one a FormField group sits in. */

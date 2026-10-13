@@ -124,3 +124,83 @@ export default function Settings() {
     expect(found[0]!.message).toContain("FormFields under one parent with no <Form>");
   });
 });
+
+/**
+ * gh#1260 — the call site sits in a RENDER HELPER. gino-cloud's pre-departure tracking renders
+ * `Field`/`Choice` (one FormField each) inside `const legFields = (leg, title) => (…)`, and only
+ * CALLS `legFields(…)` inside `<Form onSubmit={submitPlan}>`. The walk saw the JSX with no Form
+ * above it in the source and asked for a second, nested Form.
+ */
+const LEG_FIELDS = (
+  callSite: string,
+) => `import { Form, FormField, Input, Flex } from "@godxjp/ui/data-entry";
+function Field({ label }) {
+  return <FormField label={label}><Input name={label} /></FormField>;
+}
+export function Tracking({ submitPlan }) {
+  const legFields = (leg, title) => {
+    const detail = (name) => <Field label={leg + name} />;
+    return (
+      <Flex>
+        <Field label={title} />
+        {detail("flight")}
+        <FormField label="Airport"><Input name={leg + "airport"} /></FormField>
+        <FormField label="Gate"><Input name={leg + "gate"} /></FormField>
+      </Flex>
+    );
+  };
+  ${callSite}
+}
+`;
+
+describe("formfield-needs-form: call sites inside a render helper called under a Form (gh#1260)", () => {
+  const FILE = "resources/js/lib/application-cases/pre-departure-tracking.tsx";
+
+  it("follows the helper (and a helper inside it) to the <Form> its calls sit in — the reported file", () => {
+    const cwd = project({
+      [FILE]: LEG_FIELDS(`return (
+    <Form onSubmit={submitPlan}>
+      {legFields("inbound", "Inbound")}
+      {legFields("outbound", "Outbound")}
+    </Form>
+  );`),
+    });
+    expect(hits(cwd, "resources/js")).toEqual([]);
+  });
+
+  it("still flags it when one call of the helper is outside every Form", () => {
+    const cwd = project({
+      [FILE]: LEG_FIELDS(`return (
+    <section>
+      <Form onSubmit={submitPlan}>{legFields("inbound", "Inbound")}</Form>
+      {legFields("outbound", "Outbound")}
+    </section>
+  );`),
+    });
+    expect(hits(cwd, "resources/js").length).toBeGreaterThan(0);
+  });
+
+  it("still flags a helper that is never called in the file (it may be exported or passed on)", () => {
+    const cwd = project({
+      [FILE]: LEG_FIELDS(`return <Form onSubmit={submitPlan}><span /></Form>;`),
+    });
+    expect(hits(cwd, "resources/js").length).toBeGreaterThan(0);
+  });
+
+  it("keeps two one-field components in one file apart instead of reading them as one group", () => {
+    const cwd = project({
+      [FILE]: `import { FormField, Input, Select } from "@godxjp/ui/data-entry";
+function Field({ label }) {
+  return <FormField label={label}><Input name={label} /></FormField>;
+}
+function Choice({ label }) {
+  return <FormField label={label}><Select name={label} /></FormField>;
+}
+export default function Page() {
+  return <section><Field label="a" /><Choice label="b" /></section>;
+}
+`,
+    });
+    expect(hits(cwd, "resources/js")).toEqual([]);
+  });
+});
