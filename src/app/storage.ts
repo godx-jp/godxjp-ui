@@ -34,6 +34,12 @@ export type StoredAppPreferences = {
    */
   dateFormatChosen?: boolean;
   timeFormatChosen?: boolean;
+  /**
+   * The viewer PICKED the stored timezone (setTimezone), as opposed to it being the default. Only a
+   * picked zone is stored (gh#1282): storing the default froze it, which is how the godx preset's
+   * pinned `Asia/Ho_Chi_Minh` outlived the preset change.
+   */
+  timezoneChosen?: boolean;
 };
 
 /**
@@ -106,6 +112,7 @@ export function readStoredPreferences(storageKey: string): StoredAppPreferences 
           : undefined,
       dateFormatChosen: parsed.dateFormatChosen === true ? true : undefined,
       timeFormatChosen: parsed.timeFormatChosen === true ? true : undefined,
+      timezoneChosen: parsed.timezoneChosen === true ? true : undefined,
     };
   } catch {
     return {};
