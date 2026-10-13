@@ -31,7 +31,7 @@
       "type": "string"
     },
     {
-      "description": "Dismiss action label (defaults to translated cancel).",
+      "description": "Dismiss action label. Defaults to `feedback.alert.cancel` — en 'Cancel', ja 'キャンセル', vi 'Quay lại' (not 'Hủy': in Vietnamese that is also the verb of the destructive actions a confirm guards, gh#1284). A development warning fires when `confirmLabel` and the cancel label are the same word once tone marks are ignored.",
       "name": "cancelLabel",
       "type": "string"
     },
