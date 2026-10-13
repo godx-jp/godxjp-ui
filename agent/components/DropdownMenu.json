@@ -38,6 +38,11 @@
       "type": "number"
     },
     {
+      "description": "On the ROOT. A page-level key that OPENS the menu — `\"f\"` for a filter menu, `\"mod+shift+v\"` for a view menu (gh#1264). Same combo syntax and guard as SearchInput/CommandPalette: a bare key is ignored while focus is in an editable element or an IME is composing. Off by default; ignored while `disabled`. Show the key in the trigger (e.g. with `DropdownMenuShortcut`) so it is discoverable.",
+      "name": "shortcut",
+      "type": "string"
+    },
+    {
       "description": "Open-state change handler (Ant Design `onOpenChange`).",
       "name": "onOpenChange",
       "type": "(open: boolean) => void"

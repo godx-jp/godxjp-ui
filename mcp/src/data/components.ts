@@ -7308,7 +7308,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         type: "boolean | string",
         defaultValue: "false",
         description:
-          'A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none — two search boxes on one page must not fight over one key; `true` is ⌘K on Apple platforms and Ctrl+K elsewhere (never both, so Ctrl+K keeps its editing meaning on a Mac); a combo string (`"mod+/"`, `"mod+shift+f"`) is read exactly as CommandPalette `shortcut`. A trailing aria-hidden key cap shows the combo while the field is empty — the clear ✕ takes the slot once there is text. Never fires during IME composition, nor while `disabled`.',
+          'A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none — two search boxes on one page must not fight over one key; `true` is ⌘K on Apple platforms and Ctrl+K elsewhere (never both, so Ctrl+K keeps its editing meaning on a Mac); a combo string (`"mod+/"`, `"mod+shift+f"`) is read exactly as CommandPalette `shortcut`. A trailing aria-hidden key cap shows the combo while the field is empty — the clear ✕ takes the slot once there is text. Never fires during IME composition, nor while `disabled`. A BARE key (`"/"`) is ignored while focus is in an editable element or an IME is composing, so it stays text there; a modified combo (`mod+k`) still fires from a field (gh#1264).',
       },
       {
         name: "inputClassName",
@@ -9665,6 +9665,12 @@ toast.error("保存に失敗しました"); // also carries a close button`,
           "On the ROOT, in SECONDS. Grace period after the pointer leaves before a hover menu closes — it is what lets the reader cross the gap from the trigger onto the menu, so do not set it to 0.",
       },
       {
+        name: "shortcut",
+        type: "string",
+        description:
+          'On the ROOT. A page-level key that OPENS the menu — `"f"` for a filter menu, `"mod+shift+v"` for a view menu (gh#1264). Same combo syntax and guard as SearchInput/CommandPalette: a bare key is ignored while focus is in an editable element or an IME is composing. Off by default; ignored while `disabled`. Show the key in the trigger (e.g. with `DropdownMenuShortcut`) so it is discoverable.',
+      },
+      {
         name: "onOpenChange",
         type: "(open: boolean) => void",
         description: "Open-state change handler (Ant Design `onOpenChange`).",
@@ -9931,6 +9937,19 @@ import { Button } from "@godxjp/ui/general";
         type: "ReactNode",
         description:
           "Typed model — consumer error content announced via role='alert' in the meta line, replacing the result count while present.",
+      },
+      {
+        name: "clearDisplay",
+        type: '"label" | "icon"',
+        defaultValue: '"label"',
+        description:
+          'How the clear-all button shows itself (gh#1264). `label` is ✕ + the localized "Clear filters"; `icon` is the ✕ alone — same accessible name, a tooltip with the text, a control-height square instead of ~150px — so a bar with a few active filters keeps one row.',
+      },
+      {
+        name: "views",
+        type: "ReactNode",
+        description:
+          "Typed model — the saved-VIEW switcher rendered ABOVE the filter strip (e.g. `<Tabs>` of Open / Mine / All), the GitHub/Linear layout (gh#1264). A view selects a whole filter set, so it is not one more filter inside the strip; do not pass view tabs as children.",
       },
       {
         name: "className",

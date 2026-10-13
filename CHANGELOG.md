@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.2.0] - 2026-10-13
+
+The filter-bar kit, from godx-task's issue-list redesign (#1264).
+
+### 🐛 Fixed
+
+- **A bare-key shortcut no longer eats text typed in another field (#1264).** `SearchInput
+shortcut="/"` swallowed the "/" while the user typed in any other input (measured: `a/b` in a
+  dialog field lost the `/`). Every global shortcut — `SearchInput`, `CommandPalette` and the new
+  `DropdownMenu shortcut` — now goes through one guard: never during IME composition, and a key with
+  no command modifier is ignored while focus is in an editable element. `mod+k` still fires from a
+  field.
+
+### ✨ Added
+
+- **`DropdownMenu shortcut` (#1264)** — a page-level key that opens the menu (`"f"`), under the same
+  guard.
+- **`Toolbar`/`FilterBar` `clearDisplay="icon"` (#1264)** — the clear-all button as the ✕ alone, with
+  the same accessible name and a tooltip: a control-height square instead of ~150px, so a bar with a
+  few active filters keeps one row.
+- **`Toolbar`/`FilterBar` `views` (#1264)** — a saved-view switcher rendered above the filter strip.
+
 ## [32.1.3] - 2026-10-13
 
 ### 🐛 Fixed

@@ -14,6 +14,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -267,6 +268,30 @@ export default function Demo() {
         </Card>
 
         {/* Nested sub-menu for export */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>shortcut · press F to open</CardTitle>
+            <CardDescription>
+              A page-level key opens the menu. A bare key is ignored while focus is in a field or an
+              IME is composing, so typing &quot;f&quot; into an input stays a letter.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DropdownMenu shortcut="f">
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" aria-keyshortcuts="F">
+                  Filter <DropdownMenuShortcut>F</DropdownMenuShortcut>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>Assignee</DropdownMenuItem>
+                <DropdownMenuItem>Label</DropdownMenuItem>
+                <DropdownMenuItem>Milestone</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>Sub-menu · エクスポート形式の選択</CardTitle>

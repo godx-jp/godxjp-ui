@@ -14,8 +14,7 @@ import {
   CommandList,
 } from "./command";
 import { useTranslation } from "../../i18n/use-translation";
-import { isImeComposing } from "../../lib/ime";
-import { parseShortcut, shortcutHint, shortcutMatches } from "../../lib/shortcut";
+import { parseShortcut, shortcutHint, shouldHandleShortcut } from "../../lib/shortcut";
 
 export type CommandPaletteItem = {
   id: string;
@@ -221,7 +220,7 @@ export function CommandPalette({
     if (!shortcutSpec) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isImeComposing(event) && shortcutMatches(shortcutSpec, event)) {
+      if (shouldHandleShortcut(shortcutSpec, event)) {
         event.preventDefault();
         if (!open && document.activeElement instanceof HTMLElement) {
           shortcutRestoreFocusRef.current = document.activeElement;

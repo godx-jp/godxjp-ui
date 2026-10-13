@@ -70,7 +70,7 @@
     },
     {
       "defaultValue": "false",
-      "description": "A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none — two search boxes on one page must not fight over one key; `true` is ⌘K on Apple platforms and Ctrl+K elsewhere (never both, so Ctrl+K keeps its editing meaning on a Mac); a combo string (`\"mod+/\"`, `\"mod+shift+f\"`) is read exactly as CommandPalette `shortcut`. A trailing aria-hidden key cap shows the combo while the field is empty — the clear ✕ takes the slot once there is text. Never fires during IME composition, nor while `disabled`.",
+      "description": "A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none — two search boxes on one page must not fight over one key; `true` is ⌘K on Apple platforms and Ctrl+K elsewhere (never both, so Ctrl+K keeps its editing meaning on a Mac); a combo string (`\"mod+/\"`, `\"mod+shift+f\"`) is read exactly as CommandPalette `shortcut`. A trailing aria-hidden key cap shows the combo while the field is empty — the clear ✕ takes the slot once there is text. Never fires during IME composition, nor while `disabled`. A BARE key (`\"/\"`) is ignored while focus is in an editable element or an IME is composing, so it stays text there; a modified combo (`mod+k`) still fires from a field (gh#1264).",
       "name": "shortcut",
       "type": "boolean | string"
     },

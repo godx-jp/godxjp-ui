@@ -7,8 +7,7 @@ import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
 import { resolveFieldA11y } from "../../lib/field-a11y";
 import { useDebouncedValue } from "../../lib/hooks";
-import { isImeComposing } from "../../lib/ime";
-import { parseShortcut, shortcutHint, shortcutMatches } from "../../lib/shortcut";
+import { parseShortcut, shortcutHint, shouldHandleShortcut } from "../../lib/shortcut";
 
 import type { SearchInputProp } from "../../props/components/data-entry.prop";
 export type SearchInputProps = SearchInputProp;
@@ -71,7 +70,8 @@ export function SearchInput({
   React.useEffect(() => {
     if (!shortcutSpec || disabled) return;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (isImeComposing(event) || !shortcutMatches(shortcutSpec, event)) return;
+      // Its own field is editable too, so a bare "/" typed into it stays a "/" (gh#1264).
+      if (!shouldHandleShortcut(shortcutSpec, event)) return;
       event.preventDefault();
       inputRef.current?.focus();
     };
