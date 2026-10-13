@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.3.3] - 2026-10-13
+
+### 🐛 Fixed
+
+- **Centred sortable headers get the room too (#1278).** 32.3.1's out-of-flow sort icon (#1275)
+  skipped `text-center` headers, whose label kept a ~16px reservation on each side — 45px of text
+  in a 108px column, where 「予定時間」 needs ~49px. In a wrapping centred header both reservations
+  now hang in the header's own padding: the text gets the whole content box and stays centred on
+  it, the icon never overlaps it or reaches the next column, and the sorted state stays visible.
+
 ## [32.3.2] - 2026-10-13
 
 ### 🐛 Fixed

@@ -104,6 +104,13 @@ const measure = (page: Page) =>
       iconInsideCell: ir.left >= thr.left - 0.5 && ir.right <= thr.right + 0.5,
       buttonHoldsIcon: ir.left >= br.left - 0.5 && ir.right <= br.right + 0.5,
       iconVisible: getComputedStyle(icon).visibility !== "hidden" && ir.width > 0,
+      /** Text centre minus the cell's content-box centre (centred headers). */
+      centreOffset: (() => {
+        const cs = getComputedStyle(th);
+        const contentCentre =
+          (thr.left + parseFloat(cs.paddingLeft) + thr.right - parseFloat(cs.paddingRight)) / 2;
+        return Math.round(((textStart + textEnd) / 2 - contentCentre) * 10) / 10;
+      })(),
       ariaSort: th.getAttribute("aria-sort"),
     };
   });
@@ -111,7 +118,7 @@ const measure = (page: Page) =>
 describe("the sort icon hangs in the header padding (gh#1275)", { timeout: 60_000 }, () => {
   it("「予定時間」 stays on one line in a 92px column (it broke as 予定時|間 before), sorted icon visible", async () => {
     const page = await open("予定時間", "92px", "ja");
-    expect(await measure(page)).toEqual({
+    expect(await measure(page)).toMatchObject({
       lines: 1,
       overlap: false,
       iconInsideCell: true,
@@ -143,6 +150,29 @@ describe("the sort icon hangs in the header padding (gh#1275)", { timeout: 60_00
       iconInsideCell: true,
       buttonHoldsIcon: true,
     });
+    await page.close();
+  });
+
+  it("a CENTRED header gets the same room: 「予定時間」 one line at 108px, centred, icon in the padding (gh#1278)", async () => {
+    const page = await open("予定時間", "108px", "ja", "center");
+    const m = await measure(page);
+    expect(m).toMatchObject({
+      lines: 1,
+      overlap: false,
+      iconInsideCell: true,
+      buttonHoldsIcon: true,
+      iconVisible: true,
+      ariaSort: "ascending",
+    });
+    expect(Math.abs(m.centreOffset)).toBeLessThanOrEqual(1);
+    await page.close();
+  });
+
+  it("a long CENTRED header in a narrow column wraps without overlapping the icon (gh#1278)", async () => {
+    const page = await open("受付開始予定日時の確認", "72px", "ja", "center");
+    const m = await measure(page);
+    expect(m.lines).toBeGreaterThan(1);
+    expect(m).toMatchObject({ overlap: false, iconInsideCell: true, buttonHoldsIcon: true });
     await page.close();
   });
 });

@@ -625,6 +625,31 @@
     transform: translateY(-50%);
   }
 
+  /* …and in a WRAPPING centred header the two reservations hang in the header's own padding
+   * (gh#1278), the same move the start-aligned header makes above. They kept the label's text box
+   * ~31px narrower than the content box — 45px left in a 108px column, where 「予定時間」 needs
+   * ~49px. The button gives both reservations back with equal negative margins, so the text gets
+   * the whole content box and stays centred on it; the header's padding on BOTH sides is raised to
+   * at least the reservation, so the icon never reaches the next column. */
+  [data-slot="table-head"][data-wrap].text-center:has(> .ui-data-table-sort-button) {
+    padding-inline: max(
+      var(--table-cell-space-x, var(--space-section-active)),
+      calc(var(--table-sort-icon-size) + var(--space-inline-xs))
+    );
+  }
+
+  [data-slot="table-head"][data-wrap].text-center > .ui-data-table-sort-button {
+    margin-inline: calc(-1 * (var(--table-sort-icon-size) + var(--space-inline-xs)));
+    max-inline-size: calc(100% + 2 * (var(--table-sort-icon-size) + var(--space-inline-xs)));
+  }
+
+  [data-slot="table-head"][data-wrap].text-center
+    > .ui-data-table-sort-button
+    > .ui-data-table-sort-label {
+    padding-inline: calc(var(--table-sort-icon-size) + var(--space-inline-xs));
+    overflow-wrap: anywhere;
+  }
+
   .ui-data-table-scroll {
     position: relative;
     overflow-x: auto;
