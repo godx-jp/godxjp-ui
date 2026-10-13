@@ -57,6 +57,9 @@ describe("SearchInput shortcut (gh#1250)", () => {
     expect(screen.getByRole("searchbox")).not.toHaveFocus();
     fireEvent.keyDown(document, { key: "k", code: "KeyK", ctrlKey: true, keyCode: 229 });
     expect(screen.getByRole("searchbox")).not.toHaveFocus();
+    // Positive control: the same dispatch without composition reaches the listener and focuses.
+    fireEvent.keyDown(document, { key: "k", code: "KeyK", ctrlKey: true });
+    expect(screen.getByRole("searchbox")).toHaveFocus();
   });
 
   it("the hint is absent while the field has text, and returns when it is cleared", async () => {
