@@ -6,6 +6,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.4.0] - 2026-10-14
+
+From gino-cloud's human-tester inspection on 32.3.0 (#1280), measured in Chromium's
+accessibility tree.
+
+### 🔄 Changed
+
+- **Upload: the visible trigger is the form control; the native file input leaves the tree
+  (#1280).** An empty `<input type="file">` exposes a value the BROWSER writes in the browser's
+  language — 「選択されていません」 on a page set to Vietnamese — and no attribute overrides it. The
+  input is now `aria-hidden` + `tabIndex={-1}` (it keeps `id`, so `#id` file attachment in e2e
+  still works, and forwards focus to the trigger, so a FormField label click lands on it). The
+  FormField contract moves to the dropzone / button / add tile / avatar trigger: name = label + the
+  trigger's own action text, description = helper + 「未選択」 / "No file selected" /
+  "Chưa chọn tệp" in the app's locale while nothing is picked, `aria-invalid` / `aria-errormessage`
+  on the button trigger (folded into the description on a `role="group"` dropzone). `aria-required`
+  is no longer set — it is not allowed on a button; the visible required mark stays. A test that
+  found the input by its label now finds the trigger by role `button`.
+
+### 🐛 Fixed
+
+- **Upload says a rejection once, with the limit (#1280).** The message was rendered in the
+  `role="alert"` paragraph AND repeated in the sr-only polite status, so it printed and read twice.
+  The size message now states `maxSizeBytes`: 「big.pdf: ファイルが大きすぎます（上限 1.0 MB）。」.
+- **Overlay dismiss button in the app's language (#1280).** React Aria's hidden dismiss button in
+  Dialog / Sheet / Image preview read "Dismiss" in English under `vi` (React Aria ships no
+  Vietnamese). AppProvider names it from the catalogue (`common.dismiss`): Dismiss / 閉じる /
+  Bỏ qua — distinct from the visible 「Đóng」.
+
+### Measured, no change
+
+- **NumberInput without `max`** renders no `aria-valuemax`. Chromium's tree still reports
+  `valuemax: 0` — for a native `<input type="number" min="1">` too — so that is the browser's "no
+  maximum", not a library attribute.
+- **「時間 時間」 / 「分 分」** are Chromium's own segment names inside a native `<input type="time">`
+  ("Hours Hours" in an English browser). Use `TimePicker`.
+- **EmptyState** has not been a live region since 32.3.0 (`live` opts in); **toasts** clear a
+  `PageContainer stickyFooter` since 32.3.0 (front toast bottom 811 vs footer top 835 at 1440×900,
+  723 vs 739 at 390×844); **DatePicker `triggerLabel`** exists (gh#551) — three fields with one
+  label need three different `triggerLabel`s from the app.
+
 ## [32.3.3] - 2026-10-13
 
 ### 🐛 Fixed

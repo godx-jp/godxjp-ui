@@ -32,16 +32,18 @@ describe("Upload button trigger name", () => {
     expect(trigger).toHaveAttribute("data-slot", "button");
   });
 
-  it("does not repeat that name on the hidden file input", () => {
+  it("does not repeat that name on the hidden file input — it is out of the tree (gh#1280)", () => {
     const { container } = render(
       <Upload variant="button" triggerSize="icon-sm" aria-label="Attach a file" />,
     );
 
     const input = container.querySelector<HTMLInputElement>('input[type="file"]');
     expect(input).not.toBeNull();
-    // The input keeps its own intrinsic name, so the two nodes read as two distinct things
-    // rather than announcing "Attach a file" twice.
-    expect(input).toHaveAttribute("aria-label", "Chọn tệp");
+    // The browser writes an empty file input's VALUE in the browser's language, which no
+    // attribute overrides; the input is plumbing, so it is hidden and unfocusable by Tab.
+    expect(input).toHaveAttribute("aria-hidden", "true");
+    expect(input).toHaveAttribute("tabindex", "-1");
+    expect(input).not.toHaveAttribute("aria-label");
   });
 
   it("still names an icon trigger whose children render no text", () => {

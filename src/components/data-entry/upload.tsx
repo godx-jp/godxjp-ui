@@ -13,7 +13,7 @@ import {
 import { useTranslation } from "../../i18n/use-translation";
 import { formatBytes } from "../../lib/format";
 import { cn } from "../../lib/utils";
-import { resolveFieldA11y } from "../../lib/field-a11y";
+import { mergeAriaIds, pickFieldA11y } from "../../lib/field-a11y";
 import { Button } from "../general/button";
 import { Icon } from "../general/icon";
 import type { UploadListTypeProp, UploadProp } from "../../props/components/data-entry.prop";
@@ -140,24 +140,37 @@ export function Upload({
   children,
   ...ariaProps
 }: UploadProp) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const disabled = disabledProp || readOnly;
-  // Upload is a composite widget (visible trigger + hidden file input + file list). The native
-  // <input type="file"> is the true form control, so the FormField label/helper/error contract is
-  // forwarded onto it; the visible dropzone/button keeps its own action label. Per-variant visible
-  // triggers are named by their own action label — see the docs for the ownership map.
-  //
-  // ONE exception: `variant="button"`. There the visible trigger IS the widget the user sees and
-  // presses, so an `aria-label` the caller passes is naming *that*, not the input hidden behind it.
-  // Routing it to the input alone left an icon-sized trigger announced as a bare "button". The
-  // trigger takes it and the input falls back to its own intrinsic name — deliberately NOT both:
-  // the input is visually hidden but still in the a11y tree and still focusable, so the same
-  // string on both nodes is read twice for one action.
-  const triggerOwnsAriaLabel = variant === "button";
-  const inputA11y = resolveFieldA11y(
-    triggerOwnsAriaLabel ? { ...ariaProps, "aria-label": undefined } : ariaProps,
-    t("dataEntry.upload.inputLabel"),
-  );
+  /*
+   * THE VISIBLE TRIGGER IS THE FORM CONTROL; THE NATIVE INPUT IS PLUMBING (gh#1280).
+   *
+   * Upload is a composite widget (visible trigger + hidden file input + file list). The native
+   * `<input type="file">` used to carry the FormField contract, which put a second control in the
+   * accessibility tree whose VALUE the browser writes in the browser's language — 「選択されていません」
+   * / "No file chosen" on a page set to Vietnamese — and that no attribute can override. So the
+   * input leaves the tree (`aria-hidden`, `tabIndex={-1}`, keeps `id` so `#id` file attachment in
+   * a consumer's e2e still works, and forwards focus to the trigger so a FormField label click
+   * lands on it), and the trigger the user actually presses takes the contract:
+   *
+   *   name         = the FormField label + the trigger's own action text (`aria-labelledby` with a
+   *                  self-reference), so the visible text stays in the name (WCAG 2.5.3);
+   *   description  = the FormField helper + 「未選択」 / "Chưa chọn tệp" in the APP's locale while
+   *                  nothing is picked (once something is, the file list below says what);
+   *   invalid      = `aria-invalid` + `aria-errormessage`, unchanged.
+   *
+   * Outside a FormField, an `aria-label` the caller passes names the trigger (it always did for
+   * `variant="button"`, gh#734).
+   */
+  const fieldA11y = pickFieldA11y(ariaProps);
+  const fieldLabelledBy = fieldA11y["aria-labelledby"];
+  const triggerId = React.useId();
+  const selectionId = React.useId();
+  const triggerRef = React.useRef<HTMLElement | null>(null);
+  const callerAriaLabel = fieldLabelledBy ? undefined : fieldA11y["aria-label"];
+  const setTriggerRef = (element: HTMLElement | null) => {
+    triggerRef.current = element;
+  };
   // The listing is its own axis (gh#720), but its DEFAULT is whatever each variant already drew:
   // `variant="picture"` listed thumbnails, everything else listed names. A call site that never
   // heard of `listType` therefore renders exactly what it rendered before.
@@ -171,6 +184,21 @@ export function Upload({
   const [cropFile, setCropFile] = React.useState<File | null>(null);
   const [previewItem, setPreviewItem] = React.useState<UploadFileItem | null>(null);
   const [items, setItems] = useUploadList(value, defaultValue, onValueChange);
+  // A dropzone that does not open the picker is `role="group"`, where aria-invalid /
+  // aria-errormessage are not allowed (ARIA 1.2): the error is folded into the description instead,
+  // as FormField does for group roles.
+  const triggerIsGroup = variant === "dropzone" && !openFileDialogOnClick;
+  const triggerA11y = {
+    id: triggerId,
+    "aria-labelledby": fieldLabelledBy ? `${fieldLabelledBy} ${triggerId}` : undefined,
+    "aria-describedby": mergeAriaIds(
+      fieldA11y["aria-describedby"],
+      triggerIsGroup && fieldA11y["aria-invalid"] ? fieldA11y["aria-errormessage"] : undefined,
+      items.length === 0 ? selectionId : undefined,
+    ),
+    "aria-errormessage": triggerIsGroup ? undefined : fieldA11y["aria-errormessage"],
+    "aria-invalid": triggerIsGroup ? undefined : fieldA11y["aria-invalid"],
+  };
 
   const isSingleAvatar =
     variant === "avatar" || variant === "avatar-crop" || (variant === "picture" && maxCount === 1);
@@ -309,7 +337,8 @@ export function Upload({
         `dataEntry.upload.reject${reason[0].toUpperCase()}${reason.slice(1)}` as Parameters<
           typeof t
         >[0],
-        { name: file.name },
+        // `max` is the limit the size message states (gh#1280); the other reasons ignore it.
+        { name: file.name, max: maxSizeBytes != null ? formatBytes(maxSizeBytes, locale) : "" },
       ),
     );
     onReject?.({ file, reason, error });
@@ -506,10 +535,13 @@ export function Upload({
       type="file"
       {...(directory ? { webkitdirectory: "", directory: "" } : {})}
       className="sr-only"
+      aria-hidden="true"
+      tabIndex={-1}
+      data-field={fieldA11y["data-field"]}
       accept={accept}
       multiple={multiple && !isSingleAvatar}
       disabled={disabled}
-      {...inputA11y}
+      onFocus={() => triggerRef.current?.focus()}
       onChange={(e) => {
         pickFiles(e.target.files);
         e.target.value = "";
@@ -544,16 +576,22 @@ export function Upload({
           </DialogBody>
         </DialogContent>
       </Dialog>
+      {/* A rejection is announced ONCE, by the visible `role="alert"` paragraph — repeating it
+          here printed and read it twice (gh#1280). */}
       <span aria-live="polite" className="sr-only" data-slot="upload-status">
-        {rejection ??
-          (errorCount > 0
-            ? t("dataEntry.upload.statusFailed", { count: errorCount })
-            : uploadingCount > 0
-              ? t("dataEntry.upload.statusUploading", { count: uploadingCount })
-              : items.length > 0
-                ? t("dataEntry.upload.statusReady", { count: items.length, done: doneCount })
-                : "")}
+        {errorCount > 0
+          ? t("dataEntry.upload.statusFailed", { count: errorCount })
+          : uploadingCount > 0
+            ? t("dataEntry.upload.statusUploading", { count: uploadingCount })
+            : items.length > 0
+              ? t("dataEntry.upload.statusReady", { count: items.length, done: doneCount })
+              : ""}
       </span>
+      {items.length === 0 ? (
+        <span id={selectionId} className="sr-only" data-slot="upload-selection">
+          {t("dataEntry.upload.noFileSelected")}
+        </span>
+      ) : null}
     </>
   );
 
@@ -572,10 +610,12 @@ export function Upload({
           </p>
         )}
         <div
+          ref={setTriggerRef}
           role={openFileDialogOnClick ? "button" : "group"}
           tabIndex={disabled ? -1 : 0}
           aria-disabled={disabled}
-          aria-label={t("dataEntry.upload.dropzoneLabel")}
+          {...triggerA11y}
+          aria-label={callerAriaLabel ?? t("dataEntry.upload.dropzoneLabel")}
           onClick={openPicker}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
@@ -623,7 +663,7 @@ export function Upload({
     // is a node (an icon, say) that guarantees no readable text. A trigger showing its own text
     // needs no `aria-label`: the text is the name.
     const triggerAriaLabel =
-      ariaProps["aria-label"] ??
+      callerAriaLabel ??
       (iconOnly
         ? typeof label === "string"
           ? label
@@ -645,6 +685,8 @@ export function Upload({
           size={triggerSize}
           disabled={disabled}
           onClick={openPicker}
+          ref={setTriggerRef}
+          {...triggerA11y}
           aria-label={triggerAriaLabel}
           className="ui-upload-trigger"
         >
@@ -692,7 +734,9 @@ export function Upload({
             onClick={openPicker}
             data-disabled={disabled ? "" : undefined}
             className="ui-upload-tile-add"
-            aria-label={t("dataEntry.upload.addImage")}
+            ref={setTriggerRef}
+            {...triggerA11y}
+            aria-label={callerAriaLabel ?? t("dataEntry.upload.addImage")}
           >
             <ImagePlus className="ui-upload-tile-add-icon" aria-hidden="true" />
             <span className="ui-upload-tile-add-label">{t("dataEntry.upload.addImage")}</span>
@@ -717,6 +761,9 @@ export function Upload({
           disabled={disabled}
           variant={triggerVariant}
           onClick={openPicker}
+          ref={setTriggerRef}
+          {...triggerA11y}
+          aria-label={callerAriaLabel}
           className="ui-upload-trigger"
         >
           {children ?? t("dataEntry.upload.addImage")}
@@ -754,6 +801,9 @@ export function Upload({
             type="button"
             disabled={disabled}
             onClick={openPicker}
+            ref={setTriggerRef}
+            {...triggerA11y}
+            aria-label={callerAriaLabel}
             className="ui-upload-picture-empty"
           >
             <ImagePlus className="ui-upload-picture-empty-icon" aria-hidden="true" />
@@ -803,7 +853,9 @@ export function Upload({
           data-pending-delete={item?.pendingDelete ? "" : undefined}
           data-disabled={disabled ? "" : undefined}
           className="ui-upload-avatar ui-focus-ring"
-          aria-label={t("dataEntry.upload.avatarLabel")}
+          ref={setTriggerRef}
+          {...triggerA11y}
+          aria-label={callerAriaLabel ?? t("dataEntry.upload.avatarLabel")}
         >
           {!showPlaceholder && item?.previewUrl ? (
             <img src={item.previewUrl} alt="" className="ui-upload-avatar-image" />

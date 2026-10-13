@@ -42,7 +42,7 @@
       "type": "number"
     },
     {
-      "description": "Files larger than this limit are rejected with localized feedback and onReject.",
+      "description": "Files larger than this limit are rejected with ONE localized message that states the limit (「big.pdf: ファイルが大きすぎます（上限 10.0 MB）。」, gh#1280) and onReject.",
       "name": "maxSizeBytes",
       "type": "number"
     },
@@ -68,7 +68,7 @@
       "type": "string"
     },
     {
-      "description": "Lands on the native `<input type=\"file\">`, NOT on the wrapper — the hidden input is the semantic focus target, so this is what makes a `<label htmlFor>` (or FormField, which injects it) actually focus the picker. Putting it on the visible dropzone instead is the usual reason a label click does nothing.",
+      "description": "Lands on the native `<input type=\"file\">` (so `#id` file attachment in e2e works), NOT on the wrapper. Since gh#1280 that input is plumbing — `aria-hidden`, `tabIndex={-1}`, and it forwards focus to the visible trigger, so a FormField label click lands on the dropzone/button. The FormField contract (name = label + the trigger's own action text, helper, aria-invalid/errormessage) is on that trigger, and the \"nothing picked\" state is read as 「未選択」/\"Chưa chọn tệp\" in the APP's locale — the browser's own 「選択されていません」 is no longer exposed.",
       "name": "id",
       "type": "string"
     },
