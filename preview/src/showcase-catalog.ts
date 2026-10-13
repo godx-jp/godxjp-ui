@@ -306,6 +306,22 @@ export const SHOWCASES: ShowcaseEntry[] = [
     tag: "Theme",
     load: () => import("../../docs/showcase/theme-lab"),
   },
+  {
+    id: "form-dependent-selects",
+    title: "Select phụ thuộc — quốc gia → tỉnh/bang → thành phố",
+    description:
+      'Ba Select thật: ô con bị khoá tới khi ô cha có giá trị (FormField helper nói lý do), loading trong lúc tải lựa chọn, và bị đặt lại về "" khi ô cha đổi. Tên quốc gia qua Intl.DisplayNames. Composition pattern, không phải component (gh#1252).',
+    tag: "Form",
+    load: () => import("../../docs/showcase/form-dependent-selects"),
+  },
+  {
+    id: "card-grid-selection",
+    title: "Chọn trong lưới thẻ — thanh thao tác hàng loạt, xác nhận, hoàn tác",
+    description:
+      "Card + Checkbox cho từng mục, DataTable.BulkActions thật với count ngoài bảng, chọn tất cả có trạng thái indeterminate, AlertDialog trước khi xoá, toast có Undo sau khi xoá, EmptyState khi không còn gì (gh#1252).",
+    tag: "Admin",
+    load: () => import("../../docs/showcase/card-grid-selection"),
+  },
 ];
 
 export const SHOWCASE_MAP = new Map<string, ShowcaseEntry>(SHOWCASES.map((s) => [s.id, s]));

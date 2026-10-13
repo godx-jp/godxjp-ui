@@ -567,6 +567,54 @@
       "assignee": "Người phụ trách",
       "threadTitle": "Bình luận",
       "threadLead": "Trên điện thoại, luồng bình luận dài không còn đẩy phần thuộc tính xuống dưới."
+    },
+    "dependentSelects": {
+      "title": "Select phụ thuộc",
+      "subtitle": "Chọn quốc gia, rồi tỉnh/bang, rồi thành phố. Mỗi ô con chờ ô cha, tải lựa chọn của mình và được đặt lại khi ô cha đổi.",
+      "emptyTitle": "Bắt đầu trống",
+      "emptyDescription": "Tỉnh/bang và thành phố bị khoá cho tới khi ô phía trên có giá trị.",
+      "prefilledTitle": "Địa chỉ đã điền sẵn",
+      "prefilledDescription": "Đổi quốc gia để thấy tỉnh/bang và thành phố bị xoá và tải lại.",
+      "country": "Quốc gia",
+      "region": "Tỉnh / bang",
+      "city": "Thành phố",
+      "countryPlaceholder": "Chọn quốc gia",
+      "regionPlaceholder": "Chọn tỉnh / bang",
+      "cityPlaceholder": "Chọn thành phố",
+      "selectCountryFirst": "Hãy chọn quốc gia trước",
+      "selectRegionFirst": "Hãy chọn tỉnh / bang trước",
+      "loading": "Đang tải lựa chọn",
+      "summary": "Đã chọn: {value}",
+      "summaryNone": "Chưa chọn gì"
+    },
+    "cardGridSelection": {
+      "title": "Chọn trong lưới thẻ",
+      "subtitle": "Đánh dấu thẻ để chọn. Thanh hiển thị số lượng và thao tác hàng loạt xuất hiện; xoá cần xác nhận và có thể hoàn tác.",
+      "gridTitle": "Tệp dùng chung",
+      "emptyStateTitle": "Sau khi xoá hết",
+      "selectAll": "Chọn tất cả",
+      "clearSelection": "Bỏ chọn",
+      "delete": "Xoá",
+      "confirmTitle": {
+        "one": "Xoá {count} tệp?",
+        "other": "Xoá {count} tệp?"
+      },
+      "confirmDescription": "Các tệp sẽ bị gỡ khỏi thư mục này. Bạn có thể hoàn tác từ thông báo ngay sau đó.",
+      "confirm": "Xoá",
+      "cancel": "Huỷ",
+      "deleted": {
+        "one": "Đã xoá {count} tệp",
+        "other": "Đã xoá {count} tệp"
+      },
+      "undo": "Hoàn tác",
+      "restored": {
+        "one": "Đã khôi phục {count} tệp",
+        "other": "Đã khôi phục {count} tệp"
+      },
+      "emptyTitle": "Không còn tệp nào",
+      "emptyDescription": "Mọi tệp trong thư mục này đã bị xoá.",
+      "reset": "Khôi phục tệp mẫu",
+      "meta": "{size} · cập nhật {date}"
     }
   },
   "serviceLauncherShowcase": {

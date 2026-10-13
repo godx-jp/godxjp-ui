@@ -573,6 +573,54 @@
       "assignee": "Assignee",
       "threadTitle": "Comments",
       "threadLead": "Long threads no longer push the properties below the fold on a phone."
+    },
+    "dependentSelects": {
+      "title": "Dependent selects",
+      "subtitle": "Country, then state, then city. Each child waits for its parent, loads its options, and resets when the parent changes.",
+      "emptyTitle": "Starting empty",
+      "emptyDescription": "State and city stay disabled until the field above them has a value.",
+      "prefilledTitle": "Pre-filled address",
+      "prefilledDescription": "Change the country to watch state and city clear and reload.",
+      "country": "Country",
+      "region": "State / prefecture",
+      "city": "City",
+      "countryPlaceholder": "Select a country",
+      "regionPlaceholder": "Select a state",
+      "cityPlaceholder": "Select a city",
+      "selectCountryFirst": "Select a country first",
+      "selectRegionFirst": "Select a state first",
+      "loading": "Loading options",
+      "summary": "Selected: {value}",
+      "summaryNone": "Nothing selected yet"
+    },
+    "cardGridSelection": {
+      "title": "Card grid selection",
+      "subtitle": "Tick cards to select them. A bar with the count and the bulk actions appears; delete asks first and can be undone.",
+      "gridTitle": "Shared files",
+      "emptyStateTitle": "After everything is deleted",
+      "selectAll": "Select all",
+      "clearSelection": "Clear selection",
+      "delete": "Delete",
+      "confirmTitle": {
+        "one": "Delete {count} file?",
+        "other": "Delete {count} files?"
+      },
+      "confirmDescription": "The files leave this folder. You can undo from the notification right after.",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "deleted": {
+        "one": "{count} file deleted",
+        "other": "{count} files deleted"
+      },
+      "undo": "Undo",
+      "restored": {
+        "one": "{count} file restored",
+        "other": "{count} files restored"
+      },
+      "emptyTitle": "No files left",
+      "emptyDescription": "Every file in this folder was deleted.",
+      "reset": "Restore sample files",
+      "meta": "{size} · updated {date}"
     }
   },
   "serviceLauncherShowcase": {

@@ -567,6 +567,54 @@
       "assignee": "担当者",
       "threadTitle": "コメント",
       "threadLead": "スマートフォンでも、長いスレッドがプロパティを画面外へ押し出しません。"
+    },
+    "dependentSelects": {
+      "title": "連動セレクト",
+      "subtitle": "国、都道府県・州、市区町村の順に選びます。子は親の値を待ち、選択肢を読み込み、親が変わるとリセットされます。",
+      "emptyTitle": "未入力から",
+      "emptyDescription": "上の項目に値が入るまで、都道府県・州と市区町村は選べません。",
+      "prefilledTitle": "入力済みの住所",
+      "prefilledDescription": "国を変えると、都道府県・州と市区町村がクリアされて読み込み直されます。",
+      "country": "国",
+      "region": "都道府県・州",
+      "city": "市区町村",
+      "countryPlaceholder": "国を選択",
+      "regionPlaceholder": "都道府県・州を選択",
+      "cityPlaceholder": "市区町村を選択",
+      "selectCountryFirst": "先に国を選択してください",
+      "selectRegionFirst": "先に都道府県・州を選択してください",
+      "loading": "選択肢を読み込み中",
+      "summary": "選択中: {value}",
+      "summaryNone": "まだ選択されていません"
+    },
+    "cardGridSelection": {
+      "title": "カードグリッドの選択",
+      "subtitle": "カードにチェックを入れて選択します。件数と一括操作のバーが表示され、削除は確認後に実行し、取り消せます。",
+      "gridTitle": "共有ファイル",
+      "emptyStateTitle": "すべて削除した後",
+      "selectAll": "すべて選択",
+      "clearSelection": "選択を解除",
+      "delete": "削除",
+      "confirmTitle": {
+        "one": "{count}件のファイルを削除しますか?",
+        "other": "{count}件のファイルを削除しますか?"
+      },
+      "confirmDescription": "ファイルはこのフォルダから削除されます。直後の通知から取り消せます。",
+      "confirm": "削除する",
+      "cancel": "キャンセル",
+      "deleted": {
+        "one": "{count}件のファイルを削除しました",
+        "other": "{count}件のファイルを削除しました"
+      },
+      "undo": "元に戻す",
+      "restored": {
+        "one": "{count}件のファイルを元に戻しました",
+        "other": "{count}件のファイルを元に戻しました"
+      },
+      "emptyTitle": "ファイルがありません",
+      "emptyDescription": "このフォルダのファイルはすべて削除されました。",
+      "reset": "サンプルファイルを戻す",
+      "meta": "{size} · {date} 更新"
     }
   },
   "serviceLauncherShowcase": {
