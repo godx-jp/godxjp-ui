@@ -8977,7 +8977,8 @@ function CreateDialog() {
       {
         name: "cancelLabel",
         type: "string",
-        description: "Dismiss action label (defaults to translated cancel).",
+        description:
+          "Dismiss action label. Defaults to `feedback.alert.cancel` — en 'Cancel', ja 'キャンセル', vi 'Quay lại' (not 'Hủy': in Vietnamese that is also the verb of the destructive actions a confirm guards, gh#1284). A development warning fires when `confirmLabel` and the cancel label are the same word once tone marks are ignored.",
       },
       {
         name: "variant",
@@ -10050,7 +10051,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
         name: "preset",
         type: "AppPreset",
         description:
-          'Product defaults the host opts into — `import { godxPreset } from "@godxjp/ui/themes/godx"` (pair it with `@godxjp/ui/themes/godx.css` after the base stylesheet; a shadow root that embeds `@godxjp/ui/styles/core` takes the font-free `@godxjp/ui/themes/godx-tokens.css` instead, since `@font-face` must live in the document). Its `defaultLocale` and `timeZone` fill only what the props leave unset, its `brandMark` is what an `AuthIdentity` with no `brand` draws, and its `name` is written to `<html data-preset>`. Omit for the neutral defaults (ink primary, `en`, no product mark).',
+          'Product defaults the host opts into — `import { godxPreset } from "@godxjp/ui/themes/godx"` (pair it with `@godxjp/ui/themes/godx.css` after the base stylesheet; a shadow root that embeds `@godxjp/ui/styles/core` takes the font-free `@godxjp/ui/themes/godx-tokens.css` instead, since `@font-face` must live in the document). Its `defaultLocale` fills only what the props leave unset — it pins NO `timeZone` since 32.4.1 (gh#1282: it pinned `Asia/Ho_Chi_Minh` and every app showed Vietnam time to users in Japan; pass `defaultTimezone` for a fixed zone), its `brandMark` is what an `AuthIdentity` with no `brand` draws, and its `name` is written to `<html data-preset>`. Omit for the neutral defaults (ink primary, `en`, no product mark).',
       },
       {
         name: "defaultTimezone",

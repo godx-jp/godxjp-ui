@@ -279,7 +279,8 @@
     "alert": {
       "dismiss": "閉じる",
       "verifying": "確認中…",
-      "stepUpFailed": "再認証に失敗しました。もう一度お試しください。"
+      "stepUpFailed": "再認証に失敗しました。もう一度お試しください。",
+      "cancel": "キャンセル"
     },
     "toast": {
       "close": "通知を閉じる"
