@@ -50,6 +50,10 @@
     "searchInput": {
       "placeholder": "検索…"
     },
+    "commandPalette": {
+      "recent": "最近の検索",
+      "clearRecent": "検索履歴を消去"
+    },
     "autocomplete": {
       "placeholder": "検索または選択…",
       "empty": "結果が見つかりません"

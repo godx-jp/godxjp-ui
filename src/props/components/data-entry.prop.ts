@@ -517,6 +517,13 @@ export type SearchInputProp = FieldA11yProps & {
   status?: ControlStatusProp;
   /** Chrome level — antd `variant`. Default `outlined`. */
   variant?: ControlVariantProp;
+  /**
+   * A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none; `true` is
+   * ⌘K on Apple platforms and Ctrl+K elsewhere; a combo string (`"mod+/"`, `"mod+shift+f"`) binds
+   * that, read exactly as `CommandPalette.shortcut`. Shows a trailing key-cap hint while the field
+   * is empty. Never fires during IME composition, nor while `disabled`.
+   */
+  shortcut?: boolean | string;
 };
 
 /**

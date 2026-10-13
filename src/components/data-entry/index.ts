@@ -90,6 +90,7 @@ export type {
   CommandPaletteItem,
   CommandPaletteLabels,
   CommandPaletteProps,
+  CommandPaletteRecent,
   CommandPaletteSelectModifiers,
 } from "./command-palette";
 export { PasswordInput } from "./password-input";

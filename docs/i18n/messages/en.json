@@ -1713,5 +1713,16 @@
     "legacy": "Legacy migration (cancelled)",
     "audit": "Security review (finish only)",
     "violation": "Release cannot finish before the build"
+  },
+  "commandPaletteDocs": {
+    "recentTitle": "Recent searches (recent)",
+    "recentDescription": "Shown as the first group only while the query is empty; the trailing row clears the history. The app stores it (state, URL, server, localStorage) — the library never does.",
+    "recentSummary": "Recent: {count} · Last chosen: {last}",
+    "none": "(none)"
+  },
+  "searchInputDocs": {
+    "shortcutTitle": "Focus with a shortcut (shortcut)",
+    "shortcutDescription": "⌘K on a Mac, Ctrl+K elsewhere, moves focus to the field. While there is text the ✕ replaces the key cap. Ignored during IME composition. Off by default.",
+    "shortcutPlaceholder": "Search this page"
   }
 }

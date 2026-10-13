@@ -1706,5 +1706,16 @@
     "legacy": "旧システム移行（中止）",
     "audit": "セキュリティ審査（完了のみ）",
     "violation": "開発の完了前にリリースは完了できません"
+  },
+  "commandPaletteDocs": {
+    "recentTitle": "最近の検索（recent）",
+    "recentDescription": "クエリが空のときだけ先頭グループとして表示し、末尾の行で履歴を消去します。保存先はアプリ側（state・URL・サーバー・localStorage）で、ライブラリは保存しません。",
+    "recentSummary": "最近の検索 {count} 件 · 最後の選択: {last}",
+    "none": "（なし）"
+  },
+  "searchInputDocs": {
+    "shortcutTitle": "ショートカットでフォーカス（shortcut）",
+    "shortcutDescription": "Mac は ⌘K、それ以外は Ctrl+K で検索欄へ移動します。入力中はキーキャップの代わりに ✕ が表示されます。IME 変換中は反応しません。既定はオフ。",
+    "shortcutPlaceholder": "ページ内を検索"
   }
 }

@@ -7303,6 +7303,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         description: "Disable search input and clearing.",
       },
       {
+        name: "shortcut",
+        type: "boolean | string",
+        defaultValue: "false",
+        description:
+          'A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none — two search boxes on one page must not fight over one key; `true` is ⌘K on Apple platforms and Ctrl+K elsewhere (never both, so Ctrl+K keeps its editing meaning on a Mac); a combo string (`"mod+/"`, `"mod+shift+f"`) is read exactly as CommandPalette `shortcut`. A trailing aria-hidden key cap shows the combo while the field is empty — the clear ✕ takes the slot once there is text. Never fires during IME composition, nor while `disabled`.',
+      },
+      {
         name: "inputClassName",
         type: "string",
         description:
@@ -9079,7 +9086,7 @@ function CreateDialog() {
       "DO use SheetTrigger asChild to wrap a Button or other interactive element — this avoids a nested <button> in the DOM. Never render a raw <button> as a direct child of SheetTrigger.",
       "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
       "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
-      "DO put one <form> around SheetBody + SheetFooter when the footer holds the submit button (`<Form asChild errors={…}><form onSubmit={…}><SheetBody>…</SheetBody><SheetFooter><Button type=\"submit\">…</Button></SheetFooter></form></Form>`). A <form> that wraps SheetBody is transparent to the panel layout (same in Dialog), so the body still scrolls and the footer stays pinned (gh#1239); no className on the form is needed.",
+      'DO put one <form> around SheetBody + SheetFooter when the footer holds the submit button (`<Form asChild errors={…}><form onSubmit={…}><SheetBody>…</SheetBody><SheetFooter><Button type="submit">…</Button></SheetFooter></form></Form>`). A <form> that wraps SheetBody is transparent to the panel layout (same in Dialog), so the body still scrolls and the footer stays pinned (gh#1239); no className on the form is needed.',
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
       "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
       "DON'T put a Sheet inside a Dialog (nested modal overlays conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
@@ -15768,9 +15775,16 @@ import { Text } from "@godxjp/ui/general";
         description: "Shows the supplied loading content.",
       },
       { name: "error", type: "ReactNode", description: "Consumer-supplied error content." },
+      {
+        name: "recent",
+        type: "{ items: string[]; onSelect: (query: string) => void; onClear: () => void; label?: ReactNode }",
+        description:
+          'Recent queries (gh#1249), rendered as the FIRST group only while the query is empty, followed by a trailing "Clear recent searches" row. Choosing a query calls `onSelect(query)` and closes; the clear row calls `onClear()` and keeps the palette open. The library never reads or writes `localStorage` — the consumer stores, de-duplicates and caps `items`; duplicates are rendered as given. `label` replaces the default heading (`dataEntry.commandPalette.recent`).',
+      },
     ],
     usage: [
       "Provide localized labels and real command groups; the component does not fetch commands.",
+      "Recent searches: keep the list in your own store (state, URL, server, localStorage), de-duplicate it, and pass it as `recent` — the palette only renders it while the query is empty.",
       "Use either `open` plus `onOpenChange` or `defaultOpen`; do not mirror both state models.",
       "Search-as-you-type against an API: read the query from `onSearchChange`, pass the results back as `groups`, and set `shouldFilter={false}` so the rows are not scored a second time against the same string.",
       "The empty-state contract: with `shouldFilter` (default) cmdk decides — items exist, the query matches none. With `shouldFilter={false}` the PALETTE decides from props — `labels.empty` renders when `groups` carries no items, and never while `loading` or `error` is set. Hold `loading` for the whole in-flight window: a request that has not answered yet is not an empty result, and asserting over cmdk's own empty node races an async group that populates a frame late.",

@@ -7,6 +7,7 @@ import {
   type CommandPaletteLabels,
 } from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 const labels: CommandPaletteLabels = {
@@ -108,10 +109,58 @@ function ServerSearchDemo() {
 }
 
 /**
+ * Recent queries (gh#1249). The CONSUMER owns the list — here plain state; in an app, the URL, the
+ * server or `localStorage` — and de-duplicates and caps it before passing it in. The palette shows
+ * it as the first group only while the query is empty, with a trailing clear row.
+ */
+function RecentSearchDemo() {
+  const { t } = useTranslation();
+  const [query, setQuery] = useState("");
+  const [recent, setRecent] = useState(["請求書 2024", "田中"]);
+  const [last, setLast] = useState<string | null>(null);
+  const remember = (q: string) => {
+    const trimmed = q.trim();
+    if (trimmed === "") return;
+    setRecent((current) => [trimmed, ...current.filter((x) => x !== trimmed)].slice(0, 5));
+  };
+
+  return (
+    <Flex direction="col" gap="md">
+      <CommandPalette
+        shortcut={false}
+        search={query}
+        onSearchChange={setQuery}
+        groups={groups}
+        labels={labels}
+        onSelect={(item) => {
+          remember(query);
+          setLast(String(item.label));
+        }}
+        recent={{
+          items: recent,
+          onSelect: (q) => {
+            remember(q);
+            setLast(q);
+          },
+          onClear: () => setRecent([]),
+        }}
+      />
+      <Text size="sm" tone="muted" aria-live="polite">
+        {t("commandPaletteDocs.recentSummary", {
+          count: recent.length,
+          last: last ?? t("commandPaletteDocs.none"),
+        })}
+      </Text>
+    </Flex>
+  );
+}
+
+/**
  * CommandPalette — searchable keyboard navigation with controlled async/error states and a durable
  * selected-item readout. Press Command/Ctrl+K or use the trigger.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<CommandPaletteItem | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
@@ -172,6 +221,15 @@ export default function Demo() {
         </CardHeader>
         <CardContent>
           <ServerSearchDemo />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle level={2}>{t("commandPaletteDocs.recentTitle")}</CardTitle>
+          <CardDescription>{t("commandPaletteDocs.recentDescription")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <RecentSearchDemo />
         </CardContent>
       </Card>
     </PageContainer>
