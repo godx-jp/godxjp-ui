@@ -966,6 +966,37 @@
     font-weight: var(--font-weight-medium);
   }
 
+  /* THE TWO-LINE ROW (gh#1246) — `DropdownMenuItem description`. Same release as the label above:
+   * a row is one line by contract and owns a definite `height`, which would clip the second line,
+   * so a described row trades it for a `min-height` and block padding. The label + description
+   * stack in a column that takes the row's free inline space, so a trailing shortcut stays at the
+   * end edge. */
+  .ui-dropdown-menu-item[data-description] {
+    height: auto;
+    min-height: var(--menu-item-height);
+    padding-block: var(--menu-item-description-space-block);
+  }
+
+  .ui-dropdown-menu-item-text {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ui-dropdown-menu-item-label {
+    display: flex;
+    align-items: center;
+    gap: var(--menu-item-space-gap);
+  }
+
+  .ui-dropdown-menu-item-description {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--menu-item-description-font-size);
+    font-weight: var(--font-weight-normal);
+  }
+
   .ui-dropdown-menu-shortcut {
     margin-inline-start: auto;
     text-align: end;

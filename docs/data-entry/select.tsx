@@ -410,6 +410,29 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
+            <CardTitle level={2}>{t("selectDocs.needConfirm.title")}</CardTitle>
+            <CardDescription>{t("selectDocs.needConfirm.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="notify-channels" label={t("selectDocs.needConfirm.label")}>
+              <Select
+                mode="multiple"
+                name="channels[]"
+                needConfirm
+                defaultValue={["email"]}
+                maxTagCount={2}
+                options={[
+                  { value: "email", label: t("selectDocs.needConfirm.email") },
+                  { value: "slack", label: "Slack" },
+                  { value: "chatwork", label: "Chatwork" },
+                  { value: "sms", label: "SMS" },
+                ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>
               Ant Design 6 · prefix・suffixIcon・placement・listHeight
             </CardTitle>

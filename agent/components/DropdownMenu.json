@@ -51,6 +51,11 @@
       "description": "On DropdownMenuContent. Ant Design `arrow` — paints the pointer at the anchored edge (default off). Sized from --dropdown-arrow-{width,height,background} rather than Radix's built-in 10×5.",
       "name": "arrow",
       "type": "boolean"
+    },
+    {
+      "description": "On DropdownMenuItem (gh#1246). A muted second line under the label — the two-line row, parity with `MegaMenuLinkProp.description`. Rendered as react-aria `<Text slot=\"description\">` (`data-slot=\"dropdown-menu-item-description\"`), so the row's accessible NAME stays the label and the description becomes its `aria-describedby`. A string label is handed to the collection as `textValue`, so typeahead still reaches the row by its label; pass `textValue` yourself when the label is not a plain string. Sized by --menu-item-description-{font-size,space-block}; rows without one keep the one-line height.",
+      "name": "description",
+      "type": "React.ReactNode"
     }
   ],
   "related": [

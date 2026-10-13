@@ -150,7 +150,9 @@ export default defineConfig({
         },
         test: {
           name: "packages",
-          include: ["packages/*/src/**/*.test.{ts,tsx}"],
+          // docs/**: a test that drives a docs page (gh#1252) needs the same public-name → source
+          // resolution, and must not widen it to src/ tests (brand-derivation imports the dist).
+          include: ["packages/*/src/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],
           sequence: { groupOrder: 0 },
         },
       },

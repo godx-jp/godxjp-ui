@@ -440,6 +440,18 @@ export const TOKENS: TokenEntry[] = [
     tier: "component",
     role: "ONE row rhythm for every popup list surface: DropdownMenu AND Select's listbox lay their rows out against these (`.ui-select-item` sits in the same rule as `.ui-dropdown-menu-item`), so a service retunes menu density once instead of per surface. Before #319 the height was a literal `2rem` in the CSS and DropdownMenu had not been converted at all — it carried its whole box as Tailwind literals on the component. Set `--menu-item-height` and every menu surface resizes together; patch one component's padding instead and you get the menus-that-almost-match tell. `--menu-item-inset-space-inline-start` is the indicator column an inset row (a checkbox/radio row with no indicator of its own) reserves so its label stays aligned with its checked siblings — move it whenever you change `--menu-indicator-size`, or the two columns desynchronise. `--menu-content-min-width` (10rem) and `--menu-content-space-inset` are the panel, not the row; DropdownMenu re-points the min-width at `--dropdown-content-min-width` (8rem) because it anchors to a small trigger, so override that one to widen dropdowns alone.",
   },
+  {
+    name: "--menu-item-description-{font-size,space-block}",
+    category: "component",
+    tier: "component",
+    role: "The two-line menu row (gh#1246) — `DropdownMenuItem description`. `--menu-item-description-font-size` is the muted second line (default: the `--font-size-xs` step, same as the shortcut); `--menu-item-description-space-block` is the block padding a described row takes once it gives up the fixed `--menu-item-height` for a `min-height` (default `--space-1`). Rows without a description are untouched.",
+  },
+  {
+    name: "--toast-duration",
+    category: "component",
+    tier: "component",
+    role: "How long a toast stays before it dismisses itself (gh#1253). Default `4000ms` (Sonner's own default); `ms` or `s`. Sonner takes `duration` as a JS number, so `Toaster` reads this token ONCE on mount with getComputedStyle — from its ThemeScope host if it has one, else `<html>` — and passes it as `duration`. A theme override therefore reaches toasts raised after the Toaster mounts, not a change made while it is mounted. The Toaster's own `duration` prop and a per-call `toast(…, { duration })` both still win. An unparseable value falls back to Sonner's default.",
+  },
   { name: "--table-*", category: "component", tier: "component", role: "Table row/cell sizing." },
   {
     name: "--table-pagination-padding-{y,x}",

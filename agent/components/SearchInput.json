@@ -69,6 +69,12 @@
       "type": "boolean"
     },
     {
+      "defaultValue": "false",
+      "description": "A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none — two search boxes on one page must not fight over one key; `true` is ⌘K on Apple platforms and Ctrl+K elsewhere (never both, so Ctrl+K keeps its editing meaning on a Mac); a combo string (`\"mod+/\"`, `\"mod+shift+f\"`) is read exactly as CommandPalette `shortcut`. A trailing aria-hidden key cap shows the combo while the field is empty — the clear ✕ takes the slot once there is text. Never fires during IME composition, nor while `disabled`.",
+      "name": "shortcut",
+      "type": "boolean | string"
+    },
+    {
       "description": "Class on the `<input>` itself. SearchInput renders a WRAPPER (label, icon, clear button, input), so `className` lands on that wrapper and never reaches the field — this is the second handle, for the case where the field and its chrome need different treatment. Layout and colour still belong to tokens; use it for the rare geometry a token cannot reach.",
       "name": "inputClassName",
       "type": "string"

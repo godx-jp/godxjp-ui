@@ -757,6 +757,19 @@
     border: var(--checkbox-border-width, var(--stroke-hairline)) solid hsl(var(--primary));
     color: hsl(var(--text-brand, var(--primary)));
     background: transparent;
+    /* gh#1251 — the fill used to SNAP on toggle while Switch and Button beside it eased. An
+     * explicit list at the fast motion token: never `all`, never a transform. */
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--ease-standard);
+  }
+
+  /* WCAG 2.3.3 — the state still changes, it just stops animating. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-checkbox,
+    .ui-radio {
+      transition: none;
+    }
   }
 
   .ui-checkbox {
@@ -1485,6 +1498,11 @@
     font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   }
 
+  /* The trailing "Clear recent searches" row (gh#1249) reads as a ghost action, not a result. */
+  .ui-command-palette-recent-clear:not([aria-selected="true"]) {
+    color: hsl(var(--muted-foreground));
+  }
+
   .ui-command-palette-state {
     padding-block: var(--space-6);
     padding-inline: var(--space-4);
@@ -1561,6 +1579,15 @@
     top: 50%;
     place-items: center;
     color: hsl(var(--muted-foreground));
+    transform: translateY(-50%);
+  }
+
+  /* The shortcut key cap (gh#1250) sits where the ✕ goes; it is shown only while the field is empty. */
+  .ui-search-input-shortcut {
+    position: absolute;
+    inset-inline-end: var(--search-input-edge-inset);
+    top: 50%;
+    pointer-events: none;
     transform: translateY(-50%);
   }
 

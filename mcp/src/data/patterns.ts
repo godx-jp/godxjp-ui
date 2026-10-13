@@ -488,6 +488,207 @@ export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolea
   },
 
   {
+    name: "dependent-selects",
+    aliases: ["cascading-selects", "country-state-city", "chained-selects", "linked-selects"],
+    tagline:
+      'Country → state → city: three Selects where each child is disabled until its parent has a value (FormField helper says why), loading while its options fetch, and reset to "" when the parent changes. A composition, not a component — reach for Cascader only when it is ONE field.',
+    tags: ["form", "select", "dependent", "cascading", "address", "loading", "reset"],
+    code: `// Live page: /showcase/form-dependent-selects (docs/showcase/form-dependent-selects.tsx).
+// Three rules: (1) child disabled until parent has a value + helper saying why;
+// (2) child loading while its options fetch; (3) parent change resets EVERY descendant to "".
+// Reset to "", Select's controlled empty value — undefined flips it to uncontrolled.
+import * as React from "react";
+import { Form, FormField, Select } from "@godxjp/ui/data-entry";
+import { Flex } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
+
+type Option = { value: string; label: string };
+type Address = { country: string; region: string; city: string };
+
+// Fetch options for a parent value. The answer is stored WITH the parent it answers, so
+// \`loading\` is derived and a slow answer for an OLD parent is never shown on the new one.
+function useChildOptions(parent: string, fetchOptions: (parent: string) => Promise<Option[]>) {
+  const [answer, setAnswer] = React.useState<{ parent: string; options: Option[] }>({ parent: "", options: [] });
+  React.useEffect(() => {
+    if (!parent) return;
+    let live = true;
+    void fetchOptions(parent).then((options) => { if (live) setAnswer({ parent, options }); });
+    return () => { live = false; };
+  }, [parent, fetchOptions]);
+  const ready = parent !== "" && answer.parent === parent;
+  return { options: ready ? answer.options : [], loading: parent !== "" && !ready };
+}
+
+export function AddressFields({
+  fetchRegions,
+  fetchCities,
+}: {
+  fetchRegions: (country: string) => Promise<Option[]>; // stable (module-level or useCallback)
+  fetchCities: (region: string) => Promise<Option[]>;
+}) {
+  const { t, locale } = useTranslation();
+  const [value, setValue] = React.useState<Address>({ country: "", region: "", city: "" });
+  const regions = useChildOptions(value.country, fetchRegions);
+  const cities = useChildOptions(value.region, fetchCities);
+
+  // ISO 3166-1 alpha-2 → the reader's language, no catalogue needed.
+  const countries = React.useMemo(() => {
+    const names = new Intl.DisplayNames([locale], { type: "region" });
+    return ["JP", "US", "VN"].map((code) => ({ value: code, label: names.of(code) ?? code }));
+  }, [locale]);
+
+  return (
+    <Form controlWidth="20rem">
+      <Flex direction="col" gap="md">
+        <FormField id="country" label={t("address.country")}>
+          <Select
+            value={value.country}
+            onValueChange={(country: string) => setValue({ country, region: "", city: "" })}
+            options={countries}
+            placeholder={t("address.countryPlaceholder")}
+          />
+        </FormField>
+        <FormField
+          id="region"
+          label={t("address.region")}
+          helper={value.country ? undefined : t("address.selectCountryFirst")}
+        >
+          <Select
+            value={value.region}
+            onValueChange={(region: string) => setValue({ ...value, region, city: "" })}
+            options={regions.options}
+            disabled={!value.country}
+            loading={regions.loading}
+            placeholder={t("address.regionPlaceholder")}
+          />
+        </FormField>
+        <FormField
+          id="city"
+          label={t("address.city")}
+          helper={value.region ? undefined : t("address.selectRegionFirst")}
+        >
+          <Select
+            value={value.city}
+            onValueChange={(city: string) => setValue({ ...value, city })}
+            options={cities.options}
+            disabled={!value.region}
+            loading={cities.loading}
+            placeholder={t("address.cityPlaceholder")}
+          />
+        </FormField>
+      </Flex>
+    </Form>
+  );
+}`,
+  },
+
+  {
+    name: "card-grid-selection",
+    aliases: ["card-selection", "selectable-cards", "bulk-delete-cards", "grid-bulk-actions"],
+    tagline:
+      "Select cards in a grid and act on them in bulk — Card + Checkbox per item, the real DataTable.BulkActions driven by count outside a table, indeterminate select-all, AlertDialog before delete, toast with Undo after, EmptyState when nothing is left.",
+    tags: ["selection", "bulk", "cards", "grid", "delete", "undo", "empty", "checkbox"],
+    code: `// Live page: /showcase/card-grid-selection (docs/showcase/card-grid-selection.tsx).
+// DataTable.BulkActions reads the table context only when one exists — outside a table pass
+// \`count\`: it renders nothing at 0, and the localised "N selected" + a labelled region above 0.
+// The Checkbox's inline label is the item name: the name is the click target and the
+// accessible name. Do NOT make the whole Card an onClick div.
+import * as React from "react";
+import { FolderOpen, Trash2 } from "lucide-react";
+import { Card, CardContent, DataTable, EmptyState } from "@godxjp/ui/data-display";
+import { Checkbox } from "@godxjp/ui/data-entry";
+import { AlertDialog, Toaster, toast } from "@godxjp/ui/feedback";
+import { Button } from "@godxjp/ui/general";
+import { Flex, ResponsiveGrid } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
+
+type Item = { id: string; name: string };
+
+export function SelectableCardGrid({ source }: { source: Item[] }) {
+  const { t } = useTranslation();
+  const [items, setItems] = React.useState(source);
+  const [selected, setSelected] = React.useState<Set<string>>(new Set());
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [confirmCount, setConfirmCount] = React.useState(0); // frozen: selection clears on confirm
+
+  const all = items.length > 0 && items.every((i) => selected.has(i.id));
+  const selectAll: boolean | "indeterminate" = all ? true : selected.size > 0 ? "indeterminate" : false;
+
+  const deleteSelected = () => {
+    const removed = new Set(selected);
+    setItems((cur) => cur.filter((i) => !removed.has(i.id)));
+    setSelected(new Set());
+    toast(t("files.deleted", { count: removed.size }), {
+      action: {
+        label: t("files.undo"),
+        // restore in the SOURCE order, not appended at the end
+        onClick: () => setItems((cur) => source.filter((i) => removed.has(i.id) || cur.some((c) => c.id === i.id))),
+      },
+    });
+  };
+
+  if (items.length === 0) {
+    return (
+      <EmptyState
+        icon={FolderOpen}
+        variant="section"
+        title={t("files.emptyTitle")}
+        action={<Button variant="outline" onClick={() => setItems(source)}>{t("files.reset")}</Button>}
+      />
+    );
+  }
+
+  return (
+    <Flex direction="col" gap="md">
+      <Flex direction="row" align="center" gap="md" wrap>
+        <Checkbox
+          checked={selectAll}
+          onCheckedChange={(next) => setSelected(next === true ? new Set(items.map((i) => i.id)) : new Set())}
+        >
+          {t("files.selectAll")}
+        </Checkbox>
+        <DataTable.BulkActions count={selected.size}>
+          <Button variant="destructive" size="sm" onClick={() => { setConfirmCount(selected.size); setConfirmOpen(true); }}>
+            <Trash2 aria-hidden="true" />
+            {t("files.delete")}
+          </Button>
+        </DataTable.BulkActions>
+      </Flex>
+      <ResponsiveGrid columns={{ base: 1, sm: 2, lg: 3 }}>
+        {items.map((item) => (
+          <Card key={item.id} className={selected.has(item.id) ? "border-primary" : undefined}>
+            <CardContent>
+              <Checkbox
+                checked={selected.has(item.id)}
+                onCheckedChange={(on) =>
+                  setSelected((prev) => {
+                    const next = new Set(prev);
+                    if (on === true) next.add(item.id); else next.delete(item.id);
+                    return next;
+                  })
+                }
+              >
+                {item.name}
+              </Checkbox>
+            </CardContent>
+          </Card>
+        ))}
+      </ResponsiveGrid>
+      <AlertDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        variant="destructive"
+        title={t("files.confirmTitle", { count: confirmCount })}
+        confirmLabel={t("files.delete")}
+        onConfirm={deleteSelected}
+      />
+      <Toaster />{/* once per app — usually in the root layout, not here */}
+    </Flex>
+  );
+}`,
+  },
+
+  {
     name: "deferred-loading",
     tagline:
       "Inertia deferred props with a Skeleton fallback — SkeletonTable while data loads, then DataTable (real @godxjp/ui API).",

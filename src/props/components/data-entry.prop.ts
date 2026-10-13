@@ -517,6 +517,13 @@ export type SearchInputProp = FieldA11yProps & {
   status?: ControlStatusProp;
   /** Chrome level — antd `variant`. Default `outlined`. */
   variant?: ControlVariantProp;
+  /**
+   * A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none; `true` is
+   * ⌘K on Apple platforms and Ctrl+K elsewhere; a combo string (`"mod+/"`, `"mod+shift+f"`) binds
+   * that, read exactly as `CommandPalette.shortcut`. Shows a trailing key-cap hint while the field
+   * is empty. Never fires during IME composition, nor while `disabled`.
+   */
+  shortcut?: boolean | string;
 };
 
 /**
@@ -565,6 +572,14 @@ export type CheckboxGroupProp = FieldA11yProps & {
   id?: IdProp;
   className?: ClassNameProp;
   children?: React.ReactNode;
+  /**
+   * A leading "select all" box (gh#1245), `options` form only. Its state is derived from the group
+   * value — checked when every enabled option is selected, mixed on a partial selection, clear
+   * otherwise — and it is followed by a muted "{n} of {m} selected" count and a separator. One
+   * click is one `onValueChange`. Disabled options are outside it in both directions: neither
+   * counted nor added nor removed. `{ label }` replaces the default "Select all" text.
+   */
+  selectAll?: boolean | { label?: React.ReactNode };
 };
 
 /** @see Radio.Group */
@@ -1107,6 +1122,15 @@ export type DatePickerProp = DatePickerBaseProp &
         showTime?: false;
         /** Which endpoints may stay empty (antd `allowEmpty`), as `[from, to]`. */
         allowEmpty?: [boolean, boolean];
+        /**
+         * A polite live summary under the day grid: the start date while only the start is
+         * held, then `Intl.DateTimeFormat#formatRange` of both edges and the INCLUSIVE day count,
+         * plural-aware (en "7 days", ja 「7日間」). Default `true`. Day grid only — the
+         * month / quarter / year period grids have no day count to report and ignore it. The
+         * `to` edge's "Select end date" prompt while only the start is held is independent of
+         * this flag.
+         */
+        showSummary?: boolean;
         presets?: { label: React.ReactNode; value: DateRange | (() => DateRange) }[];
       }
   );
@@ -1725,6 +1749,14 @@ export type SearchSelectMultipleProp = {
    * a token only counts when it matches a row; in `mode="tags"` it is accepted as it stands.
    */
   tokenSeparators?: string[];
+  /**
+   * Hold the panel's picks as a DRAFT until OK commits them (antd's `needConfirm`, the same word
+   * `TimePicker` / `DatePicker` use). Row toggles move a pending set; the footer's OK fires ONE
+   * `onValueChange` with the whole set and closes; its Clear empties the pending set; Escape or an
+   * outside click discards it, so the trigger keeps the committed values. `onSelect` /
+   * `onDeselect` do not fire for draft toggles. Default `false` (commit on every toggle).
+   */
+  needConfirm?: boolean;
 } & SelectTagsCreateProp;
 
 /**
@@ -1757,6 +1789,8 @@ export type SelectLabelInValueMultipleProp = {
   maxTagPlaceholder?: MaxTagPlaceholderProp;
   maxTagTextLength?: number;
   tokenSeparators?: string[];
+  /** @see SearchSelectMultipleProp.needConfirm */
+  needConfirm?: boolean;
   tagRender?: (props: {
     value: string;
     label: React.ReactNode;

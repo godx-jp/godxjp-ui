@@ -3946,6 +3946,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "selectAll",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { label?: React.ReactNode; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
@@ -4380,6 +4388,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/data-entry/command-palette.tsx"]
+        },
+        {
+          "name": "recent",
+          "origin": "owned",
+          "required": false,
+          "type": "CommandPaletteRecent | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-entry/command-palette.tsx"]
         },
         {
@@ -5424,6 +5440,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "showSummary",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "showTime",
           "origin": "owned",
           "required": false,
@@ -6219,6 +6243,14 @@
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
@@ -12588,6 +12620,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "shortcut",
+          "origin": "owned",
+          "required": false,
+          "type": "string | boolean | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "status",
           "origin": "owned",
           "required": false,
@@ -13059,6 +13099,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "needConfirm",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -19314,7 +19362,7 @@
       "kind": "function",
       "subpaths": [".", "./admin", "./feedback"],
       "signature": "(message: import(\"react\").ReactNode | (() => React.ReactNode), data?: import(\"sonner\").ExternalToast): string | number",
-      "declaredIn": ["node_modules/sonner/dist/index.d.mts"]
+      "declaredIn": ["src/components/feedback/use-toast.ts"]
     },
     "tokenizeText": {
       "kind": "function",

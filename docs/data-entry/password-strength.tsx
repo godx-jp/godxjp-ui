@@ -25,7 +25,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>新規登録フォーム</CardTitle>
             <CardDescription>
-              PasswordInput の直下に配置し、入力と同時にスコアを表示する。
+              PasswordInput の直下に配置し、入力と同時にスコアを表示する。未入力の間は判定せず、
+              中立の「パスワードを入力」を表示する。
             </CardDescription>
           </CardHeader>
           <CardContent>

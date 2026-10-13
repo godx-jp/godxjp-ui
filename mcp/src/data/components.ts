@@ -7303,6 +7303,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         description: "Disable search input and clearing.",
       },
       {
+        name: "shortcut",
+        type: "boolean | string",
+        defaultValue: "false",
+        description:
+          'A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none — two search boxes on one page must not fight over one key; `true` is ⌘K on Apple platforms and Ctrl+K elsewhere (never both, so Ctrl+K keeps its editing meaning on a Mac); a combo string (`"mod+/"`, `"mod+shift+f"`) is read exactly as CommandPalette `shortcut`. A trailing aria-hidden key cap shows the combo while the field is empty — the clear ✕ takes the slot once there is text. Never fires during IME composition, nor while `disabled`.',
+      },
+      {
         name: "inputClassName",
         type: "string",
         description:
@@ -7898,6 +7905,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "antd `maxTagTextLength` (multiple/tags) — cut each chip's TEXT to this many characters (an ellipsis marks the cut). The value keeps its whole label.",
       },
       {
+        name: "needConfirm",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "multiple/tags — hold the panel's picks as a DRAFT until OK commits them (gh#1248; antd's `needConfirm`, the same word TimePicker/DatePicker use). Row toggles move a pending set and report nothing; the footer's OK (Button size sm) fires ONE onValueChange with the whole set and closes; its Clear empties the pending set; Escape or an outside click discards the draft and the trigger keeps the committed values. onSelect/onDeselect do not fire for draft toggles. A chip's ✕ and Backspace on the closed trigger still commit at once. Default false: every toggle commits.",
+      },
+      {
         name: "tagRender",
         type: "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode",
         description:
@@ -8358,7 +8372,7 @@ export function PrioritySelect({ value, onValueChange }) {
       "DO use the controlled pattern (`checked` + `onCheckedChange`) for any form-bound checkbox. `onCheckedChange` receives `boolean | 'indeterminate'` — always coerce with `!!v` or an explicit guard before storing in state.",
       "DO use `Checkbox.Group` (alias for CheckboxGroup) with the `options` prop when you have ≥2 choices from an array — it renders each item inside a `Field` (label + optional description), generates stable ids automatically, and manages the `string[]` value array. NEVER hand-roll a loop of bare `<Checkbox>` elements for a multi-select list.",
       "DO pass `name` on `Checkbox.Group` (not on individual checkboxes) when the group must submit as form fields — the group propagates the name to each internal checkbox so the browser serialises all checked values under that key.",
-      "DON'T use `checked='indeterminate'` on `Checkbox.Group` children — indeterminate is only meaningful on a parent 'select-all' control you wire manually; the group itself does not auto-compute it.",
+      "DON'T use `checked='indeterminate'` on `Checkbox.Group` children, and DON'T hand-wire a select-all box above a group — pass `selectAll` (or `selectAll={{ label: '…' }}`) on `Checkbox.Group` with `options`. It renders a leading box derived from the value (checked / `mixed` / clear), a muted `{n} of {m} selected` count (`common.selectedOfTotal`, numbers via Intl.NumberFormat) and a Separator; one click is ONE `onValueChange` with every enabled value; disabled options are never counted, added or removed; the box has no `name`, so a native submit never carries it.",
       "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, pass the label as children (`<Checkbox …>label</Checkbox>`, the catalog example) — it renders the same row. Use `<Field id='x' label='…' description='…'><Checkbox id='x' … /></Field>` only when the row needs a description line — Field owns the label-to-control id wiring, the description slot and the row rhythm, and a hand-rolled flex row owns none of them; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group.",
     ],
     useCases: [
@@ -8601,6 +8615,13 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "[boolean, boolean]",
         description:
           "With `range`: which of the two endpoints may stay empty (antd `allowEmpty`). Default `[true, true]`.",
+      },
+      {
+        name: "showSummary",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'With `range`: a polite live summary (`aria-live="polite"`, always mounted) under the DAY grid — the start date alone while only the start is held, then `Intl.DateTimeFormat#formatRange` of both edges plus the INCLUSIVE day count through `Intl.PluralRules` (1 → 7 reads "Mar 1 – 7, 2026 · 7 days"; ja 「7日間」). Muted `Text size="xs" tabular`, no new token. The month / quarter / year period grids ignore it. Independently of this flag, while only the start is chosen the `to` edge\'s placeholder becomes "Select end date" (`dataEntry.dateRangePicker.selectEnd`). `false` removes the summary.',
       },
       {
         name: "order",
@@ -9079,7 +9100,7 @@ function CreateDialog() {
       "DO use SheetTrigger asChild to wrap a Button or other interactive element — this avoids a nested <button> in the DOM. Never render a raw <button> as a direct child of SheetTrigger.",
       "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
       "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
-      "DO put one <form> around SheetBody + SheetFooter when the footer holds the submit button (`<Form asChild errors={…}><form onSubmit={…}><SheetBody>…</SheetBody><SheetFooter><Button type=\"submit\">…</Button></SheetFooter></form></Form>`). A <form> that wraps SheetBody is transparent to the panel layout (same in Dialog), so the body still scrolls and the footer stays pinned (gh#1239); no className on the form is needed.",
+      'DO put one <form> around SheetBody + SheetFooter when the footer holds the submit button (`<Form asChild errors={…}><form onSubmit={…}><SheetBody>…</SheetBody><SheetFooter><Button type="submit">…</Button></SheetFooter></form></Form>`). A <form> that wraps SheetBody is transparent to the panel layout (same in Dialog), so the body still scrolls and the footer stays pinned (gh#1239); no className on the form is needed.',
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
       "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
       "DON'T put a Sheet inside a Dialog (nested modal overlays conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
@@ -9201,7 +9222,7 @@ import { Button } from "@godxjp/ui/general";
     name: "Toaster",
     group: "feedback",
     tagline:
-      'Mount once at app root to enable toasts. IMPORTANT: trigger toasts via `import { toast } from "sonner"` — NOT from @godxjp/ui.',
+      'Mount once at app root to enable toasts. Trigger them with `import { toast } from "@godxjp/ui/feedback"` — Sonner\'s API, with a close button on `toast.error` / `toast.warning` by default.',
     props: [
       {
         name: "position",
@@ -9210,11 +9231,24 @@ import { Button } from "@godxjp/ui/general";
         description: "Toast stack anchor.",
       },
       { name: "richColors", type: "boolean", description: "Enable Sonner rich variant colours." },
+      {
+        name: "duration",
+        type: "number",
+        description:
+          "Auto-dismiss time in ms for every toast. Omit it to let the `--toast-duration` token (default 4000ms) decide — read once on mount from the ThemeScope host or `<html>` (gh#1253). A per-call `toast(…, { duration })` still wins.",
+      },
+      {
+        name: "closeButton",
+        type: "boolean",
+        description:
+          'Sonner\'s switch for a close button on EVERY toast. Leave it unset for the default: `toast.error` / `toast.warning` from `@godxjp/ui/feedback` carry a close button, `toast.success` / `toast.info` stay auto-dismiss only (gh#1253). The button is named via `t("feedback.toast.close")`.',
+      },
     ],
     usage: [
       "DO: Mount exactly ONE `<Toaster richColors />` at the app root (e.g. inside your layout or AppShell children). Multiple mounts create duplicate toast stacks — there is no provider context, only DOM portals.",
-      'DO: Import `toast` from `"sonner"` directly (not from `@godxjp/ui`) to fire toasts anywhere: `toast.success(…)`, `toast.error(…)`, `toast.warning(…)`, `toast.info(…)`, `toast.loading(…)`, `toast.promise(…)`.',
-      "DON'T: Try to import a `toast` helper from `@godxjp/ui/feedback` — it does not exist. The component re-exports only the `Toaster` mount; the imperative API lives in the `sonner` package.",
+      'DO: Import `toast` from `"@godxjp/ui/feedback"` to fire toasts anywhere: `toast.success(…)`, `toast.error(…)`, `toast.warning(…)`, `toast.info(…)`, `toast.loading(…)`, `toast.promise(…)`. It is Sonner\'s own API with one house default: `toast.error` and `toast.warning` carry a close button (opt out per call with `{ closeButton: false }`), success/info stay auto-dismiss only (gh#1253).',
+      'DON\'T: Import `toast` from `"sonner"` directly — it works, but it skips the close-button default on error/warning. Also note `toast.promise` settling into an error does not gain the button; pass `closeButton` there yourself if the failure must stay dismissible.',
+      "DO: Tune how long toasts stay with the `--toast-duration` token in the theme (default 4000ms) rather than a `duration` prop on every mount. Never truncate a toast's body — it wraps.",
       "DO: Let the wrapper handle theming — it uses `useDocumentTheme()` to sync with the document `dark` class and `prefers-color-scheme` automatically. Never pass a hardcoded `theme` prop unless you are deliberately overriding.",
       "DON'T: Use `Toaster` for persistent errors or blocking confirmations. Toasts auto-dismiss; they are not a substitute for `Alert` (inline persistent warnings) or `Dialog` (decisions requiring user input).",
       "DO: Pass `position` to relocate the stack if a persistent sidebar/footer would obscure the default `bottom-right`. The wrapper already sets a safe `mobileOffset`; don't add redundant mobile offsets unless your layout differs.",
@@ -9235,10 +9269,10 @@ import { Button } from "@godxjp/ui/general";
 import { Toaster } from "@godxjp/ui/feedback";
 <>{children}<Toaster richColors /></>
 
-// anywhere — import toast from "sonner"
-import { toast } from "sonner";
-toast.success("クーポンを公開しました");
-toast.error("保存に失敗しました");`,
+// anywhere
+import { toast } from "@godxjp/ui/feedback";
+toast.success("クーポンを公開しました"); // auto-dismiss after --toast-duration
+toast.error("保存に失敗しました"); // also carries a close button`,
     rules: [],
   },
 
@@ -9640,6 +9674,12 @@ toast.error("保存に失敗しました");`,
         type: "boolean",
         description:
           "On DropdownMenuContent. Ant Design `arrow` — paints the pointer at the anchored edge (default off). Sized from --dropdown-arrow-{width,height,background} rather than Radix's built-in 10×5.",
+      },
+      {
+        name: "description",
+        type: "React.ReactNode",
+        description:
+          'On DropdownMenuItem (gh#1246). A muted second line under the label — the two-line row, parity with `MegaMenuLinkProp.description`. Rendered as react-aria `<Text slot="description">` (`data-slot="dropdown-menu-item-description"`), so the row\'s accessible NAME stays the label and the description becomes its `aria-describedby`. A string label is handed to the collection as `textValue`, so typeahead still reaches the row by its label; pass `textValue` yourself when the label is not a plain string. Sized by --menu-item-description-{font-size,space-block}; rows without one keep the one-line height.',
       },
     ],
     usage: [
@@ -12586,8 +12626,15 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
         type: "(value: string[]) => void",
         description: "Fires with the checked values array.",
       },
+      {
+        name: "selectAll",
+        type: "boolean | { label?: React.ReactNode }",
+        description:
+          "`options` mode only. Renders a leading select-all box whose state is derived from the value — checked when every enabled option is selected, `mixed` (indeterminate) on a partial selection, clear otherwise — followed by a muted `{n} of {m} selected` count (`common.selectedOfTotal`, numbers via Intl.NumberFormat) and a Separator. One click is ONE `onValueChange`: from mixed or clear it adds every enabled value, from checked it removes them. Disabled options are never counted, added or removed. The box has no `name`, so a native submit never carries it. `{ label }` replaces the default `dataEntry.checkboxGroup.selectAll` text.",
+      },
     ],
     usage: [
+      "DO pass `selectAll` instead of hand-wiring a parent checkbox above the group — the derived tri-state, the n-of-m count and the disabled-option rule are built in: `<CheckboxGroup options={channels} defaultValue={['email']} selectAll />`.",
       "DO use the `options` prop for any data-driven list — it auto-generates IDs, handles checked state, and wires up Field (label + description) for each item. NEVER hand-roll individual `<Checkbox>` elements inside a loop when you have an options array.",
       "DO pass `name` when inside an HTML form so each checkbox submits its value under the same field name, giving the server a multi-value array. Without `name`, native form submission silently drops all values.",
       "Controlled vs uncontrolled: pass `value` + `onChange` together for controlled usage (e.g. react-hook-form). Pass `defaultValue` alone for uncontrolled usage. Do NOT mix both — if `value` is provided, `defaultValue` is ignored and onChange must update value externally or the UI freezes.",
@@ -14382,7 +14429,8 @@ import { Separator } from "@godxjp/ui/layout";
         name: "value",
         type: "string",
         required: true,
-        description: "The current password value to evaluate.",
+        description:
+          'The current password value to evaluate. While it is empty (or whitespace only) the meter is NEUTRAL (gh#1247): no segment lit, no tone, the label reads `labels.empty` ("Enter a password" / 「パスワードを入力」), every checklist item is `data-state="pending"`, and the live region stays silent — no "Weak" verdict before anything is typed.',
       },
       {
         name: "rules",
@@ -14404,9 +14452,9 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "labels",
-        type: "{ weak?: string; fair?: string; strong?: string; rules?: Partial<Record<PasswordRule, string>>; passed?: string; failed?: string; announcement?: (strength: string) => string }",
+        type: "{ weak?: string; fair?: string; strong?: string; empty?: string; rules?: Partial<Record<PasswordRule, string>>; passed?: string; failed?: string; announcement?: (strength: string) => string }",
         description:
-          "Every visible and screen-reader string, each optional (gh#1191). Unset entries come from the kit's own ja / en / vi catalogue for the active locale, so most apps pass nothing: the score words, the checklist line per rule (length / upper / lower / number / symbol), the sr-only passed / failed prefixes, and the polite live-region sentence (`announcement(strength)`). Pass only the ones your product words differently.",
+          "Every visible and screen-reader string, each optional (gh#1191). Unset entries come from the kit's own ja / en / vi catalogue for the active locale, so most apps pass nothing: the score words, the neutral empty-field line (`empty`, gh#1247), the checklist line per rule (length / upper / lower / number / symbol), the sr-only passed / failed prefixes, and the polite live-region sentence (`announcement(strength)`). Pass only the ones your product words differently.",
       },
     ],
     usage: [
@@ -15768,9 +15816,16 @@ import { Text } from "@godxjp/ui/general";
         description: "Shows the supplied loading content.",
       },
       { name: "error", type: "ReactNode", description: "Consumer-supplied error content." },
+      {
+        name: "recent",
+        type: "{ items: string[]; onSelect: (query: string) => void; onClear: () => void; label?: ReactNode }",
+        description:
+          'Recent queries (gh#1249), rendered as the FIRST group only while the query is empty, followed by a trailing "Clear recent searches" row. Choosing a query calls `onSelect(query)` and closes; the clear row calls `onClear()` and keeps the palette open. The library never reads or writes `localStorage` — the consumer stores, de-duplicates and caps `items`; duplicates are rendered as given. `label` replaces the default heading (`dataEntry.commandPalette.recent`).',
+      },
     ],
     usage: [
       "Provide localized labels and real command groups; the component does not fetch commands.",
+      "Recent searches: keep the list in your own store (state, URL, server, localStorage), de-duplicate it, and pass it as `recent` — the palette only renders it while the query is empty.",
       "Use either `open` plus `onOpenChange` or `defaultOpen`; do not mirror both state models.",
       "Search-as-you-type against an API: read the query from `onSearchChange`, pass the results back as `groups`, and set `shouldFilter={false}` so the rows are not scored a second time against the same string.",
       "The empty-state contract: with `shouldFilter` (default) cmdk decides — items exist, the query matches none. With `shouldFilter={false}` the PALETTE decides from props — `labels.empty` renders when `groups` carries no items, and never while `loading` or `error` is set. Hold `loading` for the whole in-flight window: a request that has not answered yet is not an empty result, and asserting over cmdk's own empty node races an async group that populates a frame late.",

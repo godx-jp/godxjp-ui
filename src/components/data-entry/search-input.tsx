@@ -7,6 +7,8 @@ import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
 import { resolveFieldA11y } from "../../lib/field-a11y";
 import { useDebouncedValue } from "../../lib/hooks";
+import { isImeComposing } from "../../lib/ime";
+import { parseShortcut, shortcutHint, shortcutMatches } from "../../lib/shortcut";
 
 import type { SearchInputProp } from "../../props/components/data-entry.prop";
 export type SearchInputProps = SearchInputProp;
@@ -26,9 +28,12 @@ export function SearchInput({
   disabled = false,
   status,
   variant,
+  shortcut = false,
   ...ariaProps
 }: SearchInputProps) {
   const { t } = useTranslation();
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const shortcutSpec = React.useMemo(() => parseShortcut(shortcut), [shortcut]);
   const isControlled = controlledValue !== undefined;
   const [internal, setInternal] = React.useState(defaultValue);
   const value = isControlled ? controlledValue : internal;
@@ -62,6 +67,20 @@ export function SearchInput({
     onSearchRef.current?.(debounced);
   }, [debounced]);
 
+  // Off by default: every SearchInput on a page binding ⌘K would fight over one key.
+  React.useEffect(() => {
+    if (!shortcutSpec || disabled) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isImeComposing(event) || !shortcutMatches(shortcutSpec, event)) return;
+      event.preventDefault();
+      inputRef.current?.focus();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [shortcutSpec, disabled]);
+
+  const showShortcut = Boolean(shortcutSpec && !value && !disabled);
+
   const setValue = (v: string) => {
     if (!isControlled) setInternal(v);
     onValueChange?.(v);
@@ -81,6 +100,7 @@ export function SearchInput({
       <div className="ui-search-input-field">
         <Search className="ui-search-input-icon" aria-hidden="true" />
         <Input
+          ref={inputRef}
           id={inputId}
           type="text"
           role="searchbox"
@@ -102,7 +122,11 @@ export function SearchInput({
           variant={variant}
           {...fieldA11y}
           className={cn(
-            "ui-search-input-control !ps-[var(--search-input-start-padding)] !pe-[var(--search-input-end-padding)]",
+            "ui-search-input-control !ps-[var(--search-input-start-padding)]",
+            // gh#1250 — while the key cap shows, the text stops before it instead of running under it.
+            showShortcut
+              ? "!pe-[calc(var(--search-input-edge-inset)+6ch)]"
+              : "!pe-[var(--search-input-end-padding)]",
             inputClassName,
           )}
           disabled={disabled}
@@ -119,6 +143,12 @@ export function SearchInput({
             <X />
           </button>
         )}
+        {/* The key cap holds the slot the ✕ takes once there is text (gh#1250). */}
+        {showShortcut && shortcutSpec ? (
+          <kbd className="kbd ui-search-input-shortcut" aria-hidden="true">
+            {shortcutHint(shortcutSpec)}
+          </kbd>
+        ) : null}
       </div>
     </div>
   );

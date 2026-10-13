@@ -14,6 +14,7 @@
     "previous": "前へ",
     "next": "次へ",
     "selectedCount": "{count} 件選択",
+    "selectedOfTotal": "{total} 件中 {count} 件選択",
     "typeToConfirm": "確認のため {phrase} と入力"
   },
   "dataEntry": {
@@ -32,7 +33,12 @@
       "placeholder": "期間を選択",
       "from": "開始",
       "to": "終了",
-      "openCalendar": "カレンダーを開く"
+      "openCalendar": "カレンダーを開く",
+      "selectEnd": "終了日を選択",
+      "days": {
+        "other": "{count}日間"
+      },
+      "summary": "{range}（{days}）"
     },
     "timePicker": {
       "placeholder": "時刻を選択",
@@ -49,6 +55,10 @@
     },
     "searchInput": {
       "placeholder": "検索…"
+    },
+    "commandPalette": {
+      "recent": "最近の検索",
+      "clearRecent": "検索履歴を消去"
     },
     "autocomplete": {
       "placeholder": "検索または選択…",
@@ -237,10 +247,14 @@
       "dropped": "{label} を {count} 件中 {position} 番目に置きました。",
       "cancelled": "移動を取り消しました。{label} は {count} 件中 {position} 番目に戻りました。"
     },
+    "checkboxGroup": {
+      "selectAll": "すべて選択"
+    },
     "passwordStrength": {
       "weak": "弱い",
       "fair": "普通",
       "strong": "強い",
+      "empty": "パスワードを入力",
       "meter": "パスワードの強度 4 段階中 {score}",
       "passed": "達成: ",
       "failed": "未達成: ",
@@ -263,6 +277,9 @@
       "dismiss": "閉じる",
       "verifying": "確認中…",
       "stepUpFailed": "再認証に失敗しました。もう一度お試しください。"
+    },
+    "toast": {
+      "close": "通知を閉じる"
     }
   },
   "layout": {

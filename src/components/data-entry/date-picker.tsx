@@ -12,6 +12,7 @@ import {
 } from "../../lib/datetime/picker-format";
 import { Button } from "../general/button";
 import { Flex } from "../layout/flex";
+import { Text } from "../general/typography";
 import { TimePicker } from "./time-picker";
 import { useControlledLatch } from "../../lib/hooks";
 import { pickFieldA11y, pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
@@ -102,6 +103,7 @@ export function DatePicker(props: DatePickerProp) {
     preserveInvalidOnBlur,
     placement = "bottom-start",
     renderExtraFooter,
+    showSummary = true,
     size,
     status,
     variant,
@@ -111,6 +113,7 @@ export function DatePicker(props: DatePickerProp) {
     range?: boolean;
     multiple?: boolean;
     allowEmpty?: [boolean, boolean];
+    showSummary?: boolean;
     value?: Date | Date[] | DateRange;
     defaultValue?: Date | Date[] | DateRange;
     presets?: { label: React.ReactNode; value: unknown }[];
@@ -264,6 +267,11 @@ export function DatePicker(props: DatePickerProp) {
     if (open) setInternalView(defaultPickerValue ?? valueAnchor);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  // gh#1244 — a range held by its start alone is HALF a value: the `to` edge asks for the end, and
+  // the summary under the grid reads the start only. Read from `working`, so a pending pick under
+  // `needConfirm` is described as faithfully as a committed one.
+  const halfRange = Boolean(rangeValue?.from && !rangeValue.to);
 
   const resolvedPlaceholder =
     placeholder ??
@@ -591,6 +599,39 @@ export function DatePicker(props: DatePickerProp) {
     </div>
   );
 
+  // ── Range summary (gh#1244): what the user has picked, in words, under the day grid. The edges are
+  // formatted by the locale (`formatRange` collapses the shared month/year the way CLDR says), and
+  // the count is INCLUSIVE calendar days — 1 → 7 is seven days, not six — counted on UTC midnights
+  // so a DST switch inside the range cannot shave an hour off and round a day away.
+  const renderSummary = () => {
+    const from = rangeValue?.from;
+    const to = rangeValue?.to;
+    const dates = dateTimeFormat(locale, { year: "numeric", month: "short", day: "numeric" });
+    let content: string | undefined;
+    if (from && to) {
+      const utc = (date: Date) => Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+      const count = Math.round(Math.abs(utc(to) - utc(from)) / 86_400_000) + 1;
+      const [start, end] = +from <= +to ? [from, to] : [to, from];
+      content = t("dataEntry.dateRangePicker.summary", {
+        range: dates.formatRange(start, end),
+        days: t("dataEntry.dateRangePicker.days", { count }),
+      });
+    } else if (from) content = dates.format(from);
+    // The live region is ALWAYS mounted, empty or not: a region inserted together with its text is
+    // not announced by most screen readers, so it must exist before the first pick.
+    return (
+      <div data-slot="date-picker-summary" aria-live="polite" aria-atomic="true">
+        {content ? (
+          <Flex pad="sm">
+            <Text size="xs" tone="muted" tabular>
+              {content}
+            </Text>
+          </Flex>
+        ) : null}
+      </div>
+    );
+  };
+
   const calendarBounds = [
     ...(minimum ? [{ before: minimum }] : []),
     ...(maximum ? [{ after: maximum }] : []),
@@ -740,6 +781,7 @@ export function DatePicker(props: DatePickerProp) {
         </Flex>
       ) : null}
       {isPeriod ? renderPeriodPanel() : renderDayPanel()}
+      {range && showSummary && !isPeriod ? renderSummary() : null}
       {showTime ? (
         <Flex
           pad="sm"
@@ -825,7 +867,11 @@ export function DatePicker(props: DatePickerProp) {
         aria-readonly={inputReadOnly || undefined}
         value={edge === "from" ? fromText : toText}
         disabled={edgeDisabled(edge)}
-        placeholder={resolvedPlaceholder}
+        placeholder={
+          edge === "to" && halfRange
+            ? (t("dataEntry.dateRangePicker.selectEnd") ?? resolvedPlaceholder)
+            : resolvedPlaceholder
+        }
         inputMode="numeric"
         autoComplete="off"
         aria-label={

@@ -573,6 +573,54 @@
       "assignee": "Assignee",
       "threadTitle": "Comments",
       "threadLead": "Long threads no longer push the properties below the fold on a phone."
+    },
+    "dependentSelects": {
+      "title": "Dependent selects",
+      "subtitle": "Country, then state, then city. Each child waits for its parent, loads its options, and resets when the parent changes.",
+      "emptyTitle": "Starting empty",
+      "emptyDescription": "State and city stay disabled until the field above them has a value.",
+      "prefilledTitle": "Pre-filled address",
+      "prefilledDescription": "Change the country to watch state and city clear and reload.",
+      "country": "Country",
+      "region": "State / prefecture",
+      "city": "City",
+      "countryPlaceholder": "Select a country",
+      "regionPlaceholder": "Select a state",
+      "cityPlaceholder": "Select a city",
+      "selectCountryFirst": "Select a country first",
+      "selectRegionFirst": "Select a state first",
+      "loading": "Loading options",
+      "summary": "Selected: {value}",
+      "summaryNone": "Nothing selected yet"
+    },
+    "cardGridSelection": {
+      "title": "Card grid selection",
+      "subtitle": "Tick cards to select them. A bar with the count and the bulk actions appears; delete asks first and can be undone.",
+      "gridTitle": "Shared files",
+      "emptyStateTitle": "After everything is deleted",
+      "selectAll": "Select all",
+      "clearSelection": "Clear selection",
+      "delete": "Delete",
+      "confirmTitle": {
+        "one": "Delete {count} file?",
+        "other": "Delete {count} files?"
+      },
+      "confirmDescription": "The files leave this folder. You can undo from the notification right after.",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "deleted": {
+        "one": "{count} file deleted",
+        "other": "{count} files deleted"
+      },
+      "undo": "Undo",
+      "restored": {
+        "one": "{count} file restored",
+        "other": "{count} files restored"
+      },
+      "emptyTitle": "No files left",
+      "emptyDescription": "Every file in this folder was deleted.",
+      "reset": "Restore sample files",
+      "meta": "{size} · updated {date}"
     }
   },
   "serviceLauncherShowcase": {
@@ -1713,5 +1761,44 @@
     "legacy": "Legacy migration (cancelled)",
     "audit": "Security review (finish only)",
     "violation": "Release cannot finish before the build"
+  },
+  "commandPaletteDocs": {
+    "recentTitle": "Recent searches (recent)",
+    "recentDescription": "Shown as the first group only while the query is empty; the trailing row clears the history. The app stores it (state, URL, server, localStorage) — the library never does.",
+    "recentSummary": "Recent: {count} · Last chosen: {last}",
+    "none": "(none)"
+  },
+  "searchInputDocs": {
+    "shortcutTitle": "Focus with a shortcut (shortcut)",
+    "shortcutDescription": "⌘K on a Mac, Ctrl+K elsewhere, moves focus to the field. While there is text the ✕ replaces the key cap. Ignored during IME composition. Off by default.",
+    "shortcutPlaceholder": "Search this page"
+  },
+  "dropdownMenuDocs": {
+    "description": {
+      "title": "description · two-line items",
+      "body": "Pass description to add a muted second line under the label. Screen readers announce the label as the item's name and the description as its supplementary text (aria-describedby); typing the first letter still jumps to the item by its label.",
+      "trigger": "Export format",
+      "csvDescription": "Opens directly in any spreadsheet",
+      "xlsxDescription": "Keeps formatting and formulas",
+      "pdfDescription": "Fixed layout for printing and sharing"
+    }
+  },
+  "selectDocs": {
+    "needConfirm": {
+      "title": "Multiple, applied on confirm (needConfirm)",
+      "description": "Toggling rows only changes a draft. OK applies it once, Clear empties the draft, and Escape or an outside click discards it.",
+      "label": "Notification channels",
+      "email": "Email"
+    }
+  },
+  "checkboxDocs": {
+    "selectAll": {
+      "title": "Select all",
+      "description": "selectAll adds a leading box derived from the value (checked, mixed or clear) and an \"n of m selected\" count. The disabled option is never counted, added or removed.",
+      "label": "Notification channels",
+      "email": "Email",
+      "push": "Push notifications",
+      "notInPlan": "Not in your plan"
+    }
   }
 }

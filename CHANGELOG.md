@@ -6,6 +6,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.1.0] - 2026-10-13
+
+The backlog from the premium-code-library study (`godxjp-ui-premium-craft`, §7): the ~30% of
+"premium" that is craft — state, feedback, counts, shortcuts — translated into tokens, none of the
+decoration.
+
+### ✨ Added
+
+- **`DatePicker` range summary (#1244).** Range mode shows a live line under the day grid: the start
+  date, then `Intl.DateTimeFormat#formatRange` plus an inclusive, plural-aware day count (en "7 days",
+  ja 「7日間」); the end field asks "Select end date" while only the start is picked. `showSummary`
+  (default `true`; day grid only).
+- **`CheckboxGroup` `selectAll` (#1245).** A leading select-all box — checked, mixed or clear from the
+  enabled options — with a muted "{n} of {m} selected" count. One `onValueChange` per click; disabled
+  options are never counted or changed; the box submits no value.
+- **`DropdownMenuItem` `description` (#1246).** A muted second line under the label, exposed as
+  `aria-describedby`; typeahead still matches the label. Tokens
+  `--menu-item-description-{font-size,space-block}`.
+- **`Select mode="multiple"|"tags"` `needConfirm` (#1248).** Picks stay a draft until OK fires one
+  `onValueChange`; Clear empties the draft; Escape or an outside click discards it. Off by default.
+- **`CommandPalette` `recent` (#1249).** App-stored recent queries as the first group while the query
+  is empty, with a "Clear recent searches" row. The library never touches storage.
+- **`SearchInput` `shortcut` (#1250).** `boolean | string`, default off: ⌘K on Apple / Ctrl+K elsewhere
+  focuses the field, never during IME composition, with a key-cap hint while the field is empty (the
+  text stops before it). The shortcut helpers moved to `src/lib/shortcut.ts`; `CommandPalette`
+  behaviour is unchanged.
+- **`--toast-duration` token (#1253)**, default 4000ms, read into `Toaster`'s `duration` on mount.
+- **Pattern pages (#1252):** `/showcase/form-dependent-selects` (country → state → city, each child
+  disabled with a reason until its parent has a value, reset when it changes) and
+  `/showcase/card-grid-selection` (Card + Checkbox, `DataTable.BulkActions` outside a table,
+  `AlertDialog`, Undo toast, `EmptyState`), with MCP patterns `dependent-selects` and
+  `card-grid-selection`.
+
+### 🔄 Changed
+
+- **`PasswordStrength` empty value is neutral (#1247).** No segment lit, no tone, "Enter a password" /
+  「パスワードを入力」, checklist `pending`, live region silent — it used to say "Weak" before anything
+  was typed. Override with `labels.empty`.
+- **`toast.error` / `toast.warning` show a close button by default (#1253)** (`@godxjp/ui/feedback`;
+  opt out with `{ closeButton: false }`); success/info stay auto-dismiss. The button is named in the
+  active locale.
+- **State changes ease instead of snapping (#1251).** `Checkbox` and `Radio` transition background,
+  border and colour at `--duration-fast` / `--ease-standard` (0.15s in Chromium); the
+  `DataTable.BulkActions` bar fades in on mount via `@starting-style`. Both are off under
+  `prefers-reduced-motion: reduce`.
+
 ## [32.0.5] - 2026-10-12
 
 ### 🐛 Fixed

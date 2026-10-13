@@ -13,8 +13,9 @@ import {
   CommandItem,
   CommandList,
 } from "./command";
-import { isApplePlatform } from "../../lib/platform";
+import { useTranslation } from "../../i18n/use-translation";
 import { isImeComposing } from "../../lib/ime";
+import { parseShortcut, shortcutHint, shortcutMatches } from "../../lib/shortcut";
 
 export type CommandPaletteItem = {
   id: string;
@@ -45,6 +46,22 @@ export type CommandPaletteLabels = {
   move?: React.ReactNode;
   select?: React.ReactNode;
   close?: React.ReactNode;
+};
+
+/**
+ * Recent queries the CONSUMER keeps (gh#1249). The palette only renders them — it never reads or
+ * writes `localStorage` or any other store, and it renders `items` exactly as given (de-duplicate
+ * and cap them before passing them in).
+ */
+export type CommandPaletteRecent = {
+  /** Most recent first. Duplicates are rendered as given. */
+  items: string[];
+  /** A recent query was chosen. The palette closes, like any other selection. */
+  onSelect: (query: string) => void;
+  /** The trailing "Clear recent searches" row was chosen. The palette stays open. */
+  onClear: () => void;
+  /** Group heading. Default: `t("dataEntry.commandPalette.recent")`. */
+  label?: React.ReactNode;
 };
 
 /** The modifier keys held while an item was chosen (gh#1126). */
@@ -111,60 +128,12 @@ export type CommandPaletteProps = {
    * `mod+shift+p` are different shortcuts. Never fires during IME composition.
    */
   shortcut?: boolean | string;
+  /**
+   * Recent queries (gh#1249), shown as the FIRST group only while the query is empty, with a
+   * trailing "Clear recent searches" row. Storage stays with the consumer.
+   */
+  recent?: CommandPaletteRecent;
 };
-
-type ShortcutSpec = {
-  key: string;
-  mod: boolean;
-  shift: boolean;
-  alt: boolean;
-  meta: boolean;
-  ctrl: boolean;
-};
-
-/** `"mod+shift+p"` → its parts. `true` is `mod+k`. */
-function parseShortcut(shortcut: boolean | string): ShortcutSpec | null {
-  if (shortcut === false) return null;
-  const parts = (shortcut === true ? "mod+k" : shortcut)
-    .toLowerCase()
-    .split("+")
-    .map((p) => p.trim());
-  const key = parts.pop() ?? "";
-  if (!key) return null;
-  return {
-    key,
-    mod: parts.includes("mod"),
-    meta: parts.includes("meta") || parts.includes("cmd"),
-    ctrl: parts.includes("ctrl"),
-    shift: parts.includes("shift"),
-    alt: parts.includes("alt") || parts.includes("option"),
-  };
-}
-
-function shortcutMatches(spec: ShortcutSpec, event: KeyboardEvent): boolean {
-  // `event.code` too: with ⌥ held on a Mac, `event.key` is a symbol (⌥P is "π"), not the letter.
-  const keyMatches =
-    event.key.toLowerCase() === spec.key ||
-    (/^[a-z]$/.test(spec.key) && event.code === `Key${spec.key.toUpperCase()}`);
-  if (!keyMatches) return false;
-  // `mod` is THE platform's command key (gh#1129): ⌘ on Apple, Ctrl elsewhere — never both. On a
-  // Mac, Ctrl+O / Ctrl+P / Ctrl+K are text-editing keys in every input and must keep that meaning.
-  if (spec.mod && !(isApplePlatform() ? event.metaKey : event.ctrlKey)) return false;
-  if (spec.meta && !event.metaKey) return false;
-  if (spec.ctrl && !event.ctrlKey) return false;
-  return event.shiftKey === spec.shift && event.altKey === spec.alt;
-}
-
-/** The hint the default trigger shows: `mod+shift+p` → `⌘⇧P`. */
-function shortcutHint(spec: ShortcutSpec): string {
-  return [
-    spec.meta || (spec.mod && isApplePlatform()) ? "⌘" : "",
-    spec.ctrl || (spec.mod && !isApplePlatform()) ? "Ctrl+" : "",
-    spec.alt ? "⌥" : "",
-    spec.shift ? "⇧" : "",
-    spec.key.length === 1 ? spec.key.toUpperCase() : spec.key,
-  ].join("");
-}
 
 const modifiersOf = (
   event: React.KeyboardEvent | React.MouseEvent,
@@ -206,7 +175,9 @@ export function CommandPalette({
   error,
   trigger,
   shortcut = true,
+  recent,
 }: CommandPaletteProps) {
+  const { t } = useTranslation();
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
   const [uncontrolledSearch, setUncontrolledSearch] = React.useState(defaultSearch);
   const shortcutRestoreFocusRef = React.useRef<HTMLElement | null>(null);
@@ -264,6 +235,8 @@ export function CommandPalette({
   }, [open, setOpen, shortcutSpec]);
 
   const hasItems = React.useMemo(() => groups.some((group) => group.items.length > 0), [groups]);
+  // `""`, not `.trim()`: a query of spaces is a query the user typed.
+  const showRecent = recent != null && recent.items.length > 0 && search === "";
 
   // gh#778 — `=== undefined`, NOT `??`. `??` falls back on `null` too, which is what made
   // `trigger={null}` render the default. An explicit `null` now reaches the JSX below and
@@ -342,13 +315,45 @@ export function CommandPalette({
               <>
                 {shouldFilter ? (
                   <CommandEmpty>{labels.empty}</CommandEmpty>
-                ) : hasItems ? null : (
+                ) : hasItems || showRecent ? null : (
                   // Same node cmdk would have rendered (class + role), decided from `groups`
                   // instead of from its scheduled DOM-registration count — see the doc block.
                   <div className="ui-command-empty" role="presentation">
                     {labels.empty}
                   </div>
                 )}
+                {showRecent ? (
+                  <CommandGroup heading={recent.label ?? t("dataEntry.commandPalette.recent")}>
+                    {recent.items.map((query, index) => (
+                      <CommandItem
+                        // Duplicates are rendered as given, so neither the key nor cmdk's value can
+                        // be the string alone; the prefix keeps it off a real item's value too.
+                        key={`${index}:${query}`}
+                        value={`recent:${index}:${query}`}
+                        onSelect={() => {
+                          modifiersRef.current = NO_MODIFIERS;
+                          setOpen(false);
+                          recent.onSelect(query);
+                        }}
+                      >
+                        <span className="ui-command-palette-label">{query}</span>
+                      </CommandItem>
+                    ))}
+                    {/* A row, not a <button>: cmdk renders the group heading aria-hidden and the
+                        list is a listbox, so a button in either is unreachable or invalid ARIA.
+                        As an option it is reached with the arrows like every other row. */}
+                    <CommandItem
+                      value="recent:clear"
+                      className="ui-command-palette-recent-clear"
+                      onSelect={() => {
+                        modifiersRef.current = NO_MODIFIERS;
+                        recent.onClear();
+                      }}
+                    >
+                      {t("dataEntry.commandPalette.clearRecent")}
+                    </CommandItem>
+                  </CommandGroup>
+                ) : null}
                 {groups.map((group) => (
                   <CommandGroup key={group.id} heading={group.label}>
                     {group.items.map((item) => (
