@@ -92,6 +92,45 @@
     ]
   },
   {
+    "aliases": [
+      "cascading-selects",
+      "country-state-city",
+      "chained-selects",
+      "linked-selects"
+    ],
+    "name": "dependent-selects",
+    "tagline": "Country → state → city: three Selects where each child is disabled until its parent has a value (FormField helper says why), loading while its options fetch, and reset to \"\" when the parent changes. A composition, not a component — reach for Cascader only when it is ONE field.",
+    "tags": [
+      "form",
+      "select",
+      "dependent",
+      "cascading",
+      "address",
+      "loading",
+      "reset"
+    ]
+  },
+  {
+    "aliases": [
+      "card-selection",
+      "selectable-cards",
+      "bulk-delete-cards",
+      "grid-bulk-actions"
+    ],
+    "name": "card-grid-selection",
+    "tagline": "Select cards in a grid and act on them in bulk — Card + Checkbox per item, the real DataTable.BulkActions driven by count outside a table, indeterminate select-all, AlertDialog before delete, toast with Undo after, EmptyState when nothing is left.",
+    "tags": [
+      "selection",
+      "bulk",
+      "cards",
+      "grid",
+      "delete",
+      "undo",
+      "empty",
+      "checkbox"
+    ]
+  },
+  {
     "name": "deferred-loading",
     "tagline": "Inertia deferred props with a Skeleton fallback — SkeletonTable while data loads, then DataTable (real @godxjp/ui API).",
     "tags": [
