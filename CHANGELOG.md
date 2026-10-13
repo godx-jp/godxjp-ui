@@ -6,6 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.3.1] - 2026-10-13
+
+### 🐛 Fixed
+
+- **No inline component grows a DataTable row past its text line (#1273).** Audited every
+  component a cell commonly holds, at every density. Before, compact (plain-text row 35.72px): row
+  checkbox 38.08 · Badge 36.42 · Switch sm 37.28 · Button xs 37.80 · Button icon-xs / Toggle xs
+  39.11 · Avatar xs 39.72 · Button sm 41.47 · Avatar sm 43.72 — default and comfortable grew by the
+  same amounts. Now all of them, plus Checkbox, outline Badge, links, `Text truncate`, Icon, Swatch,
+  a label-less Progress and a Tooltip-wrapped Button, give exactly the plain-text row at compact,
+  default and comfortable. A component is centred on the line and its margin box gives back the
+  cell's block padding; inside a wrapping container (`Flex wrap`, the action-collection cell)
+  nothing changes, so wrapped lines never overlap. A component taller than the whole row (Avatar
+  md, a Progress with a visible label) still grows it.
+- **`Toggle variant="quiet"` hides a zero count by default (#1275).** An unstarred comment star showed
+  a visible 「0」. The quiet variant is a mark beside content, so `showZero` now defaults to `false`
+  there (also through a quiet `ToggleGroup`); every other variant keeps Button's default, since a
+  filter chip saying "Open 0" is information.
+- **A sortable header's icon no longer takes width from its text (#1275).** In flow, the icon and
+  its gap took 16px of a narrow column's text, so 「予定時間」 broke as 「予定時|間」 in a 92px
+  column. In a header that wraps (an `ellipsis` column by default), the icon now hangs in the
+  header's own inline-end padding: the text gets the whole content box, the icon never overlaps it
+  or reaches the next column at any width (a word longer than the column breaks instead), the
+  sorted state stays visible, and the button — focus ring, hit area, `aria-sort` — still contains
+  it.
+
 ## [32.3.0] - 2026-10-13
 
 From gino-cloud's usability inspection (#1271).

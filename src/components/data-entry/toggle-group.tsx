@@ -311,7 +311,8 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
     const { pill, resolvedAriaLabel } = useCounterPill({
       count,
       overflowCount,
-      showZero,
+      // gh#1275 — a quiet toggle hides a zero count unless asked (see ToggleProp.showZero).
+      showZero: showZero ?? resolvedVariant !== "quiet",
       countLabel,
       ariaLabel,
     });

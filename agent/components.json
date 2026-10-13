@@ -11838,8 +11838,8 @@
         "type": "number"
       },
       {
-        "defaultValue": "true",
-        "description": "Render the pill when `count` is 0. Same default as Button. Set false to hide an empty facet's pill while keeping the chip.",
+        "defaultValue": "true (false for variant=\"quiet\")",
+        "description": "Render the pill when `count` is 0. Same default as Button — a filter chip saying \"Open 0\" is information. `variant=\"quiet\"` defaults to false (gh#1275): a quiet toggle is a mark beside content, and a \"0\" beside an unstarred star is noise. Set it explicitly to override either way.",
         "name": "showZero",
         "type": "boolean"
       },
