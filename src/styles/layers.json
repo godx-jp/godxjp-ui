@@ -105,6 +105,7 @@
     "AppSettingPicker": {
       "layers": [
         "shell-layout.css",
+        "layout.css",
         "control.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -855,6 +856,7 @@
     },
     "Select": {
       "layers": [
+        "layout.css",
         "control.css",
         "dialog-layout.css",
         "navigation-layout.css"

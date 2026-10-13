@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { Check, Minus, X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 
 const DEFAULT_PASSWORD_RULES = ["length", "upper", "lower", "number", "symbol"] as const;
@@ -12,6 +12,8 @@ export type PasswordStrengthLabels = {
   weak?: string;
   fair?: string;
   strong?: string;
+  /** The neutral line shown while nothing has been typed (gh#1247). */
+  empty?: string;
   /** Checklist line per rule. */
   rules?: Partial<Record<PasswordRule, string>>;
   /** Screen-reader prefix before a met rule (e.g. "Passed: "). */
@@ -80,15 +82,24 @@ export function PasswordStrength({
   const { t } = useTranslation();
   const normalizedRules = [...new Set(rules)];
   const { score, checks } = usePasswordStrength(value, normalizedRules, minLength);
-  const tone = scoreTone(score);
+  // gh#1247: an empty field has no strength yet. Scoring it lit one red segment and announced
+  // "Weak" before the user typed a character — a verdict on nothing. It reads neutral instead.
+  const empty = value.trim() === "";
+  const tone = empty ? undefined : scoreTone(score);
   const segments = Array.from({ length: 5 });
   const key = scoreKey(score);
-  const strength = labels[key] ?? t(`dataEntry.passwordStrength.${key}`);
+  const strength = empty
+    ? (labels.empty ?? t("dataEntry.passwordStrength.empty"))
+    : (labels[key] ?? t(`dataEntry.passwordStrength.${key}`));
   const ruleLabel = (rule: PasswordRule) =>
     labels.rules?.[rule] ?? t(`dataEntry.passwordStrength.rules.${rule}`, { n: String(minLength) });
-  const announcement = labels.announcement
-    ? labels.announcement(strength)
-    : t("dataEntry.passwordStrength.announcement", { strength });
+  // The live region stays MOUNTED but silent while empty: a region inserted together with its
+  // first message is one screen readers can drop, so it must already exist when typing begins.
+  const announcement = empty
+    ? ""
+    : labels.announcement
+      ? labels.announcement(strength)
+      : t("dataEntry.passwordStrength.announcement", { strength });
 
   return (
     <div className="ui-password-strength">
@@ -98,7 +109,7 @@ export function PasswordStrength({
         aria-label={t("dataEntry.passwordStrength.meter", { score: String(score) })}
       >
         {segments.map((_, index) => {
-          const filled = index < score + 1;
+          const filled = !empty && index < score + 1;
           return (
             <span
               key={index}
@@ -123,9 +134,15 @@ export function PasswordStrength({
             <li
               key={rule}
               className="ui-password-strength-checklist-item"
-              data-state={checks[rule] ? "passed" : "failed"}
+              data-state={empty ? "pending" : checks[rule] ? "passed" : "failed"}
             >
-              {checks[rule] ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}
+              {empty ? (
+                <Minus aria-hidden="true" />
+              ) : checks[rule] ? (
+                <Check aria-hidden="true" />
+              ) : (
+                <X aria-hidden="true" />
+              )}
               <span className="sr-only">
                 {checks[rule]
                   ? (labels.passed ?? t("dataEntry.passwordStrength.passed"))

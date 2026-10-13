@@ -7898,6 +7898,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "antd `maxTagTextLength` (multiple/tags) — cut each chip's TEXT to this many characters (an ellipsis marks the cut). The value keeps its whole label.",
       },
       {
+        name: "needConfirm",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "multiple/tags — hold the panel's picks as a DRAFT until OK commits them (gh#1248; antd's `needConfirm`, the same word TimePicker/DatePicker use). Row toggles move a pending set and report nothing; the footer's OK (Button size sm) fires ONE onValueChange with the whole set and closes; its Clear empties the pending set; Escape or an outside click discards the draft and the trigger keeps the committed values. onSelect/onDeselect do not fire for draft toggles. A chip's ✕ and Backspace on the closed trigger still commit at once. Default false: every toggle commits.",
+      },
+      {
         name: "tagRender",
         type: "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode",
         description:
@@ -14389,7 +14396,8 @@ import { Separator } from "@godxjp/ui/layout";
         name: "value",
         type: "string",
         required: true,
-        description: "The current password value to evaluate.",
+        description:
+          'The current password value to evaluate. While it is empty (or whitespace only) the meter is NEUTRAL (gh#1247): no segment lit, no tone, the label reads `labels.empty` ("Enter a password" / 「パスワードを入力」), every checklist item is `data-state="pending"`, and the live region stays silent — no "Weak" verdict before anything is typed.',
       },
       {
         name: "rules",
@@ -14411,9 +14419,9 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "labels",
-        type: "{ weak?: string; fair?: string; strong?: string; rules?: Partial<Record<PasswordRule, string>>; passed?: string; failed?: string; announcement?: (strength: string) => string }",
+        type: "{ weak?: string; fair?: string; strong?: string; empty?: string; rules?: Partial<Record<PasswordRule, string>>; passed?: string; failed?: string; announcement?: (strength: string) => string }",
         description:
-          "Every visible and screen-reader string, each optional (gh#1191). Unset entries come from the kit's own ja / en / vi catalogue for the active locale, so most apps pass nothing: the score words, the checklist line per rule (length / upper / lower / number / symbol), the sr-only passed / failed prefixes, and the polite live-region sentence (`announcement(strength)`). Pass only the ones your product words differently.",
+          "Every visible and screen-reader string, each optional (gh#1191). Unset entries come from the kit's own ja / en / vi catalogue for the active locale, so most apps pass nothing: the score words, the neutral empty-field line (`empty`, gh#1247), the checklist line per rule (length / upper / lower / number / symbol), the sr-only passed / failed prefixes, and the polite live-region sentence (`announcement(strength)`). Pass only the ones your product words differently.",
       },
     ],
     usage: [

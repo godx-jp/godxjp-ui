@@ -251,6 +251,7 @@
       "weak": "Weak",
       "fair": "Fair",
       "strong": "Strong",
+      "empty": "Enter a password",
       "meter": "Password strength {score} of 4",
       "passed": "Passed: ",
       "failed": "Not yet: ",

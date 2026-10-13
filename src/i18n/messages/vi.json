@@ -247,6 +247,7 @@
       "weak": "Yếu",
       "fair": "Trung bình",
       "strong": "Mạnh",
+      "empty": "Nhập mật khẩu",
       "meter": "Độ mạnh mật khẩu {score} trên 4",
       "passed": "Đạt: ",
       "failed": "Chưa đạt: ",

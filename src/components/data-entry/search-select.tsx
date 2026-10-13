@@ -15,6 +15,8 @@ import {
 } from "./control-surface";
 import { normalizeSelectOptions } from "../../lib/select-options";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
+import { Button } from "../general/button";
+import { Flex } from "../layout/flex";
 import { Command, CommandGroup } from "./command";
 import { Input } from "./input";
 import type {
@@ -143,6 +145,10 @@ export function SearchSelect(props: SearchSelectProp) {
   const allowCreate = props.mode !== undefined ? props.allowCreate : undefined;
   const createLabel = props.mode !== undefined ? props.createLabel : undefined;
   const onCreate = props.mode !== undefined ? props.onCreate : undefined;
+  /** gh#1248 — picks are a draft until OK, as in TimePicker / DatePicker. */
+  const needConfirm = props.mode !== undefined ? Boolean(props.needConfirm) : false;
+  /** The draft selection while a `needConfirm` panel is open; `null` = nothing drafted yet. */
+  const [pending, setPending] = React.useState<string[] | null>(null);
   /** gh#1053 — one comparison for the filter, the create row and a token run. */
   const fold = React.useCallback(
     (text: string) => (caseSensitive ? text : text.toLowerCase()),
@@ -182,6 +188,9 @@ export function SearchSelect(props: SearchSelectProp) {
   const setOpen = React.useCallback(
     (next: boolean) => {
       if (!isOpenControlled) setInternalOpen(next);
+      // Every close — Escape, an outside click, OK — ends the draft. OK has already committed it;
+      // the others DISCARD it, so the trigger keeps showing the committed values.
+      if (!next) setPending(null);
       onOpenChange?.(next);
     },
     [isOpenControlled, onOpenChange],
@@ -227,10 +236,16 @@ export function SearchSelect(props: SearchSelectProp) {
     if (!multiple) return [];
     return Array.isArray(rawValue) ? rawValue : rawValue ? [rawValue] : [];
   }, [multiple, rawValue]);
+  /**
+   * What the LIST shows as picked: the draft while a `needConfirm` panel is open, else `values`.
+   * The trigger, the hidden inputs and `data-value` keep reading `values` — the committed set.
+   */
+  const drafting = needConfirm && open;
+  const working = drafting ? (pending ?? values) : values;
   /** The single-mode value. `""` in multiple mode — that branch reads `values`. */
   const value = multiple ? "" : Array.isArray(rawValue) ? (rawValue[0] ?? "") : rawValue;
   const isSelected = (optionValue: string) =>
-    multiple ? values.includes(optionValue) : value === optionValue;
+    multiple ? working.includes(optionValue) : value === optionValue;
   const hasSelection = multiple ? values.length > 0 : Boolean(value);
 
   const reqId = React.useRef(0);
@@ -338,7 +353,7 @@ export function SearchSelect(props: SearchSelectProp) {
     if (!tagsMode) return { displayOptions: loaded, createOption: undefined };
     const known = new Set(loaded.map((option) => option.value));
     const extras: SearchSelectOptionProp[] = [];
-    for (const entry of values) {
+    for (const entry of working) {
       if (known.has(entry)) continue;
       known.add(entry);
       const held = pickedOptions[entry] ?? { value: entry, label: entry };
@@ -358,7 +373,7 @@ export function SearchSelect(props: SearchSelectProp) {
     const exact = typedText
       ? loaded.find(
           (option) =>
-            !values.includes(option.value) &&
+            !working.includes(option.value) &&
             (fold(option.value) === typed || fold(option.label) === typed),
         )
       : undefined;
@@ -373,7 +388,7 @@ export function SearchSelect(props: SearchSelectProp) {
   }, [
     tagsMode,
     loaded,
-    values,
+    working,
     typedText,
     pickedOptions,
     staticOptions,
@@ -464,7 +479,7 @@ export function SearchSelect(props: SearchSelectProp) {
   // antd `maxCount` — a HARD ceiling: a pick past it is refused, and the rows that would break it
   // report `aria-disabled` so the limit is visible BEFORE it is hit rather than as a dead click.
   const maxCount = props.mode !== undefined ? props.maxCount : undefined;
-  const atMaxCount = maxCount !== undefined && values.length >= maxCount;
+  const atMaxCount = maxCount !== undefined && working.length >= maxCount;
 
   const remember = (option: SearchSelectOptionProp) =>
     setPickedOptions((prev) => ({ ...prev, [option.value]: option }));
@@ -474,17 +489,29 @@ export function SearchSelect(props: SearchSelectProp) {
     !(staticOptions ?? []).some((option) => option.value === entry) &&
     !loaded.some((option) => option.value === entry);
 
-  const select = (option: SearchSelectOptionProp) => {
+  /**
+   * `commit` forces a real change even while drafting: a chip's ✕ and Backspace act on the
+   * COMMITTED values the trigger shows, never on the panel's draft.
+   */
+  const select = (option: SearchSelectOptionProp, { commit = false } = {}) => {
     if (option.disabled) return;
     // `mode !== undefined` rather than naming both multi modes: it is the discriminant that also
     // narrows the SINGLE branch below, where `onValueChange` takes a string rather than an array.
     if (props.mode !== undefined) {
-      const already = values.includes(option.value);
-      if (!already && atMaxCount) return;
+      const toDraft = drafting && !commit;
+      const base = toDraft ? working : values;
+      const already = base.includes(option.value);
+      if (!already && maxCount !== undefined && base.length >= maxCount) return;
       const next = already
-        ? values.filter((entry) => entry !== option.value)
-        : [...values, option.value];
+        ? base.filter((entry) => entry !== option.value)
+        : [...base, option.value];
       remember(option);
+      if (toDraft) {
+        // gh#1248: a draft toggle reports nothing — OK sends the whole set in one change.
+        setPending(next);
+        if (autoClearSearchValue) setQuery("");
+        return;
+      }
       if (!isControlled) setInternalValue(next);
       props.onValueChange?.(
         next,
@@ -520,7 +547,7 @@ export function SearchSelect(props: SearchSelectProp) {
    */
   const selectTokens = (text: string) => {
     if (props.mode === undefined) return;
-    const next = [...values];
+    const next = [...working];
     const picked: SearchSelectOptionProp[] = [];
     for (const raw of splitByTokenSeparators(text, tokenSeparators ?? [])) {
       const token = raw.trim();
@@ -543,6 +570,10 @@ export function SearchSelect(props: SearchSelectProp) {
     }
     if (picked.length === 0) return;
     for (const option of picked) remember(option);
+    if (drafting) {
+      setPending(next);
+      return;
+    }
     if (!isControlled) setInternalValue(next);
     props.onValueChange?.(
       next,
@@ -558,7 +589,21 @@ export function SearchSelect(props: SearchSelectProp) {
 
   /** Take one value off — what a chip's ✕, Backspace and a second click on its row all do. */
   const deselect = (chipValue: string) => {
-    select(optionFor(chipValue) ?? { value: chipValue, label: chipValue });
+    select(optionFor(chipValue) ?? { value: chipValue, label: chipValue }, { commit: true });
+  };
+
+  /** gh#1248 — OK: the draft becomes the value in ONE change, and the panel closes. */
+  const confirm = () => {
+    if (props.mode !== undefined) {
+      const next = working;
+      if (!isControlled) setInternalValue(next);
+      props.onValueChange?.(
+        next,
+        next.map(optionFor).filter((entry): entry is SearchSelectOptionProp => entry !== null),
+      );
+    }
+    if (autoClearSearchValue) setQuery("");
+    setOpen(false);
   };
 
   const clear = () => {
@@ -1093,6 +1138,31 @@ export function SearchSelect(props: SearchSelectProp) {
                       if (!loading) void fetchPage(page + 1, debouncedQuery, true);
                     },
                   })}
+                </div>
+              ) : null}
+              {/* gh#1248 `needConfirm`: Clear · OK, the commit model TimePicker and DatePicker
+                already use. Outside role="listbox" and shielded from cmdk's key handling, like
+                the load-more footer, so Enter/Space press the buttons. */}
+              {needConfirm ? (
+                <div
+                  className="ui-search-select-footer"
+                  data-slot="search-select-confirm"
+                  onKeyDown={(event) => event.stopPropagation()}
+                >
+                  <Flex justify="end" gap="sm">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={working.length === 0}
+                      onClick={() => setPending([])}
+                    >
+                      {t("common.clear")}
+                    </Button>
+                    <Button type="button" size="sm" onClick={confirm}>
+                      {t("dataEntry.timePicker.confirm")}
+                    </Button>
+                  </Flex>
                 </div>
               ) : null}
             </Command>
