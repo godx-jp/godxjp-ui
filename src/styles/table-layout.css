@@ -226,6 +226,54 @@
     padding-inline-end: 0;
   }
 
+  /* AN INLINE COMPONENT MUST NOT GROW THE ROW PAST ITS TEXT LINE (gh#1273). Measured against the
+   * real stylesheet, a 2-row DataTable at 1280px, plain-text row 35.72 / 37 / 38.25px
+   * (compact / default / comfortable), with one component in a cell:
+   *
+   *   row checkbox 38.08 · Badge 36.42 · Switch sm 37.28 · Button xs 37.80 · Button icon-xs and
+   *   Toggle xs 39.11 · Avatar xs 39.72 · Button sm 41.47 · Avatar sm 43.72   (compact; the other
+   *   densities grew by the same amounts)
+   *
+   * Two causes. The checkbox and the pill are SHORTER than the line but sit on it badly (baseline /
+   * middle against the strut), and the rest are TALLER than the line, so the line box grew to hold
+   * them on top of the cell's block padding. Both go the same way: the component is centred on the
+   * line and its margin box is shrunk by the cell's own block padding, so anything up to the row's
+   * height overlaps the padding instead of adding to it. A component taller than the whole row
+   * (Avatar md, a two-line block) still grows it — that is content, not alignment.
+   *
+   * Scoped to a component that IS the cell's content or one wrapper deep, never inside a wrapping
+   * container (`Flex wrap`, the action-collection cell): there a negative margin would let wrapped
+   * lines overlap. */
+  [data-slot="table-cell"]
+    > :is(
+      [data-slot="button"],
+      [data-slot="avatar"],
+      [data-slot="toggle"],
+      [data-slot="switch"],
+      label[data-slot="checkbox"],
+      [data-slot="badge"],
+      [data-slot="swatch"]
+    ),
+  [data-slot="table-cell"]
+    > :not([data-wrap], .ui-table-actions-content)
+    > :is(
+      [data-slot="button"],
+      [data-slot="avatar"],
+      [data-slot="toggle"],
+      [data-slot="switch"],
+      label[data-slot="checkbox"],
+      [data-slot="badge"],
+      [data-slot="swatch"]
+    ) {
+    vertical-align: middle;
+    margin-block: calc(var(--table-cell-padding-y) * -1);
+  }
+
+  /* The select-all box in the header: shorter than the line, so centring it is enough. */
+  [data-slot="table-head"] label[data-slot="checkbox"] {
+    vertical-align: middle;
+  }
+
   /* ── COLUMN AXES (gh#410) — `align` / `numeric` / `wrap` on TableHead and TableCell ───────────
    * Every one of these was a `className` before, and the alignment utility the catalog recommended
    * (`text-right`) is a physical direction this package lints against everywhere else.
@@ -520,6 +568,45 @@
   }
   .ui-data-table-sort-label > .ui-data-table-sort-icon {
     flex-shrink: 0;
+  }
+
+  /* THE SORT ICON TAKES NO WIDTH FROM THE LABEL (gh#1275). In flow, the 12px icon and its gap took
+   * 16px of a narrow column's text: a 108px column has a 76px content box, which left 56px for
+   * 「予定時間」, and it broke between kanji. The icon now hangs in the header's own inline-end
+   * padding: the button keeps its box (so the focus ring and the hit area still include the
+   * icon) but gives the reservation back with an equal negative margin, so the TEXT has the whole
+   * content box. The header's end padding is raised to at least the reservation, so the icon can
+   * never reach the next column or overlap the text, at any width. Scoped to a header that WRAPS
+   * (`headerWrap`, the default for an `ellipsis` column) — the width-pressed case; a nowrap header
+   * sizes its column to fit. Centred headers keep their own symmetric reservation below. */
+  [data-slot="table-head"][data-wrap]:not(.text-center):has(> .ui-data-table-sort-button) {
+    padding-inline-end: max(
+      var(--table-cell-space-x, var(--space-section-active)),
+      calc(var(--table-sort-icon-size) + var(--space-inline-xs))
+    );
+  }
+
+  [data-slot="table-head"][data-wrap]:not(.text-center) > .ui-data-table-sort-button {
+    padding-inline-end: calc(var(--table-sort-icon-size) + var(--space-inline-xs));
+    margin-inline-end: calc(-1 * (var(--table-sort-icon-size) + var(--space-inline-xs)));
+    max-inline-size: calc(100% + var(--table-sort-icon-size) + var(--space-inline-xs));
+  }
+
+  /* A word longer than the whole column breaks rather than running under the icon. */
+  [data-slot="table-head"][data-wrap]:not(.text-center)
+    > .ui-data-table-sort-button
+    > .ui-data-table-sort-label {
+    overflow-wrap: anywhere;
+  }
+
+  [data-slot="table-head"][data-wrap]:not(.text-center)
+    > .ui-data-table-sort-button
+    > .ui-data-table-sort-label
+    > .ui-data-table-sort-icon {
+    position: absolute;
+    inset-inline-end: 0;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   /* A centred header centres its LABEL, not its button. */

@@ -64,7 +64,11 @@ type ToggleCountFields = {
   count?: number;
   /** Cap for `count` — beyond it the pill shows `{overflowCount}+` (e.g. `99+`). */
   overflowCount?: number;
-  /** Render the pill when `count` is 0. Default `true`, matching Button. */
+  /**
+   * Render the pill when `count` is 0. Default `true`, matching Button — a filter chip saying
+   * "Open 0" is information. `variant="quiet"` defaults to `false` (gh#1275): a quiet toggle is a
+   * mark beside content (a star, a reaction), where a "0" beside an unstarred star is noise.
+   */
   showZero?: boolean;
   /**
    * Localized description of what the count MEANS, folded into the accessible name so the control
@@ -209,7 +213,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProp>(
     const { pill, resolvedAriaLabel } = useCounterPill({
       count,
       overflowCount,
-      showZero,
+      showZero: showZero ?? variant !== "quiet",
       countLabel,
       ariaLabel,
     });
