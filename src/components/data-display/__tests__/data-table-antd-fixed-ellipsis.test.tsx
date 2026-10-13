@@ -126,7 +126,7 @@ describe("DataTable — antd `ellipsis`", () => {
     expect(b.querySelector(".ui-data-table-surface")).toHaveAttribute("data-table-layout", "fixed");
   });
 
-  it("does not invent a title for a column with its own render", () => {
+  it("does not invent a title for a rendered cell that is not truncated (jsdom lays out nothing; the truncated case is measured in data-table-ellipsis-1262-browser)", () => {
     const columns: ColumnDef<Row>[] = [
       { key: "note", header: "メモ", ellipsis: true, render: (r) => <b>{r.note}</b> },
     ];

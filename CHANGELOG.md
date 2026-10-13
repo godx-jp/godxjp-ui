@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.1.3] - 2026-10-13
+
+### 🐛 Fixed
+
+- **`DataTable` `ellipsis` keeps truncated text reachable (#1262).** A cell that IS truncated —
+  measured, so only those — now gets a `title` from its text even when the column has a `render`
+  (antd `ellipsis.showTitle`), and a tab stop whose keyboard focus unfolds the text in place
+  (PatternFly `Truncate`; a native `title` never opens on focus). A cell that already holds a link
+  or button gets no second tab stop. Both are removed when the cell stops being truncated.
+- **An `ellipsis` column's header wraps instead of truncating (#1262).** The header took the
+  body's truncation with no way to read it.
+- The ellipsis cell clips with `overflow: clip` + the focus-ring margin instead of `hidden`, so a
+  focused link inside it keeps its ring.
+
+### ✨ Added
+
+- **`ColumnDef.headerWrap` (#1262)** — let a column's header wrap (`TableHead wrap`); defaults to
+  `true` for an `ellipsis` column and `false` otherwise.
+
 ## [32.1.2] - 2026-10-13
 
 ### 🐛 Fixed
