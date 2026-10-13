@@ -24,7 +24,7 @@
       "type": "number"
     },
     {
-      "description": "Collapse extra selected labels.",
+      "description": "Collapse extra selected labels into a \"+N\" chip. Without it (mode=\"multiple\"/\"tags\"), the chips WRAP and the trigger grows to hold them, antd's default — a chip is never clipped out of sight. Set it when the trigger must stay one line (a dense rail or table cell).",
       "name": "maxTagCount",
       "type": "number"
     },
@@ -288,7 +288,7 @@
       "type": "React.ReactNode"
     },
     {
-      "description": "antd `suffixIcon` — replaces the trailing chevron; `null` removes the indicator entirely (antd's own replacement for the deprecated showArrow). While a value is clearable the ✕ owns that seat, as in antd.",
+      "description": "antd `suffixIcon` — replaces the trailing chevron; `null` removes the indicator entirely (antd's own replacement for the deprecated showArrow) — and, with no clear and no loading, the trigger stops reserving the chevron's end padding, so a `width=\"auto\"` trigger ends at its value. While a value is clearable the ✕ owns that seat, as in antd.",
       "name": "suffixIcon",
       "type": "React.ReactNode"
     },

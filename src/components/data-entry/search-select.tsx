@@ -714,8 +714,11 @@ export function SearchSelect(props: SearchSelectProp) {
       // order and make that token dead. Same reasoning as SelectTrigger.
       width === "auto" && "w-auto",
       width === "full" && "w-full",
-      // Reserve trailing room for the single clear-or-chevron overlay rendered below.
-      "ui-control-trigger-affixed",
+      // Reserve trailing room for the single clear-or-chevron overlay rendered below — only when
+      // something can sit there. `suffixIcon={null}` with no clear and no loading renders an empty
+      // overlay, and reserving the chevron's room anyway left a dead 2.25rem gap at the end of a
+      // `width="auto"` trigger (gh#1257).
+      (loadingProp || clearControl.enabled || suffixIcon !== null) && "ui-control-trigger-affixed",
     ),
   };
 

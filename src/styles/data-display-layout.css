@@ -1218,6 +1218,16 @@
     padding: var(--list-row-compact-padding-y, var(--space-2))
       var(--list-row-compact-padding-x, var(--list-row-padding-x));
   }
+  /* A PADDED CardContent already holds the card's inline inset, so a row's own inset on top of it
+   * pushed the row text 16px inside the heading's axis (gh#1257: text x=49 under a heading at
+   * x=33). The row gives up its inline padding there and keeps its block rhythm; inside a flush
+   * CardContent — the documented home — nothing changes. */
+  [data-slot="card-content"]:not([data-flush]) > [data-slot="list-row"],
+  [data-slot="card-content"]:not([data-flush])
+    > :is(ul, ol, [role="list"])
+    > [data-slot="list-row"] {
+    padding-inline: 0;
+  }
   [data-slot="list-row"][data-density="compact"] [data-slot="list-row-body"] {
     min-inline-size: min(var(--list-row-compact-body-min-width, 6rem), 100%);
     flex-basis: var(--list-row-compact-body-min-width, 6rem);

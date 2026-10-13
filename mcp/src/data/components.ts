@@ -5166,6 +5166,7 @@ import { Flex } from "@godxjp/ui/layout";
       'DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text ("Unread"/"Read"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON\'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.',
       'DO pass `density="compact"` for the canonical invitation / history row — an Avatar, a title (+ description) and one or two small trailing Buttons that must read as ONE line inside a narrow card (≈326px content at 390px), or a history row whose status Badge + ISO-8601 date belongs beside the title. Measured at 390px: 62px tall vs 126px at the default density (where the actions wrapped), history row 41px vs 114px. DON\'T reach for it just to "make things tighter" on a roomy page — the default density is the entity-row measure.',
       'DON\'T add one-off `min-width`/wrapping CSS in the consumer app for a long title + two trailing Buttons. The row already shrinks and WRAPS: the content column keeps only `min(var(--list-row-body-min-width), 100%)` and the trailing actions drop onto their own line below the threshold. Retune the threshold with `--list-row-body-min-width` (default 12rem) and the action gap with `--list-row-trailing-gap`; pass `overflow="wrap"` (usually with `align="start"`) when the title must stay fully readable at 390px instead of truncating.',
+      'DO expect rows placed DIRECTLY in a padded (non-flush) `CardContent` — or in a `Flex as="ul"` there — to drop their own inline padding: the card already holds the inset, so the row text lines up with the CardTitle instead of sitting 16px inside it. Inside `CardContent flush` (the documented home, with edge-to-edge dividers) the row keeps `--list-row-padding-x`.',
     ],
     useCases: [
       "Account security page — a list of active sessions (device + last-seen as title/description, a destructive 'Revoke' Button in trailing).",
@@ -7535,7 +7536,12 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         type: "number",
         description: "Maximum selected options; selected items remain removable.",
       },
-      { name: "maxTagCount", type: "number", description: "Collapse extra selected labels." },
+      {
+        name: "maxTagCount",
+        type: "number",
+        description:
+          'Collapse extra selected labels into a "+N" chip. Without it (mode="multiple"/"tags"), the chips WRAP and the trigger grows to hold them, antd\'s default — a chip is never clipped out of sight. Set it when the trigger must stay one line (a dense rail or table cell).',
+      },
       {
         name: "options",
         type: "(SearchSelectOptionProp | { label: string; options: SearchSelectOptionProp[] })[]",
@@ -7834,7 +7840,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "suffixIcon",
         type: "React.ReactNode",
         description:
-          "antd `suffixIcon` — replaces the trailing chevron; `null` removes the indicator entirely (antd's own replacement for the deprecated showArrow). While a value is clearable the ✕ owns that seat, as in antd.",
+          "antd `suffixIcon` — replaces the trailing chevron; `null` removes the indicator entirely (antd's own replacement for the deprecated showArrow) — and, with no clear and no loading, the trigger stops reserving the chevron's end padding, so a `width=\"auto\"` trigger ends at its value. While a value is clearable the ✕ owns that seat, as in antd.",
       },
       {
         name: "placement",
@@ -12056,7 +12062,7 @@ function PlanSlider() {
         type: '"auto" | "full"',
         defaultValue: '"auto"',
         description:
-          'How the grid claims horizontal space. `auto` (default) shrink-wraps to seven fixed day columns — the shape a picker popover needs, because the panel is shrink-to-fit and takes ITS width from the calendar inside it. Use `full` for an EMBEDDED calendar (a shift board, a booking month) that is the content of a Card rather than a dropdown: it stacks the months and lets the day cells share the row. Measured at a 1200px container: auto → root 248px / cells 32px; full → root 1200px / cells 168px; the DatePicker popover stays 250px either way. Do NOT reach for `className="w-full"` instead — it widens the root and leaves the grid at 224px pinned left.',
+          'How the grid claims horizontal space. `auto` (default) shrink-wraps to seven fixed day columns — the shape a picker popover needs, because the panel is shrink-to-fit and takes ITS width from the calendar inside it. Use `full` for an EMBEDDED calendar (a shift board, a booking month) that is the content of a Card rather than a dropdown: it stacks the months and lets the day cells share the row, each reading from the start edge with an inset (`--calendar-full-day-padding-inline` / `-block`, default --space-2 / --space-1, so the numeral clears the `text-edge-inset` audit; gh#1258). Measured at a 1200px container: auto → root 248px / cells 32px; full → root 1200px / cells 168px; the DatePicker popover stays 250px either way. Do NOT reach for `className="w-full"` instead — it widens the root and leaves the grid at 224px pinned left.',
       },
       {
         name: "showToday",
@@ -14073,10 +14079,10 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "variant",
-        type: '"default" | "outline" | "soft"',
+        type: '"default" | "outline" | "soft" | "quiet"',
         defaultValue: '"default"',
         description:
-          'Visual style. `default` is a 1px TRANSPARENT border (a toolbar affordance — no resting surface at all), `outline` a hairline on --background, and `soft` (gh#734) the REST FILL a chip needs: hsl(var(--secondary)), byte-identical to the fill `Badge variant="secondary"` and `Button variant="secondary"` already paint, so a chip, a badge and a button on one row are one family. `soft` is antd Tag\'s resting surface and is what makes a FILTER CHIP legible before it is pressed — with `default` or `outline` the chip reads as transparent, which is the reported defect. Hover is the opaque --secondary-hover (not a translucent tint, which would shift between a page and a Card); pressed still wins over both.',
+          'Visual style. `default` is a 1px TRANSPARENT border (a toolbar affordance — no resting surface at all), `outline` a hairline on --background, and `soft` (gh#734) the REST FILL a chip needs: hsl(var(--secondary)), byte-identical to the fill `Badge variant="secondary"` and `Button variant="secondary"` already paint, so a chip, a badge and a button on one row are one family. `soft` is antd Tag\'s resting surface and is what makes a FILTER CHIP legible before it is pressed — with `default` or `outline` the chip reads as transparent, which is the reported defect. Hover is the opaque --secondary-hover (not a translucent tint, which would shift between a page and a Card); pressed still wins over both. `quiet` (gh#1257) is the LOW-KEY pressed state for a mark beside content (a comment star, a reaction): the transparent rest of `default`, and pressed as a --secondary fill with --foreground text and the primary hairline, instead of a solid primary block; knobs `--toggle-quiet-on-{background,color,count-background,count-color}`.',
       },
       {
         name: "size",
@@ -14120,6 +14126,7 @@ import { Separator } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      'DO use `variant="quiet"` for a pressed state that should stay LOW-KEY — a comment star, a like/reaction, a pin beside a row. The solid primary fill is for a selected filter or mode; on a mark beside content it reads as the loudest thing on the screen. No app CSS needed (gh#1257).',
       "DO provide an accessible label when the toggle only contains an icon.",
       "DON'T use Toggle for multi-option selection; use ToggleGroup.",
       "DO reach for `count` for a faceted filter chip, a counted segmented toggle or a reaction chip — Toggle is the primitive that owns BOTH the count and the pressed state.",
@@ -14190,7 +14197,7 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "variant",
-        type: '"default" | "outline" | "soft"',
+        type: '"default" | "outline" | "soft" | "quiet"',
         defaultValue: '"default"',
         description:
           "Visual style, PROVIDED TO EVERY ITEM via context — set it once on the group, not on each ToggleGroupItem. An explicit `variant` on an item still wins. The default is applied per item by toggleVariants, so an unset group emits no `data-variant` at all. `soft` (gh#734) is the chip fill: use it for a tag-filter panel, where `default`/`outline` leave the unselected chips reading as transparent.",

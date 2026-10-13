@@ -6,6 +6,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.1.1] - 2026-10-13
+
+Defects two consumers measured on real screens (godx-task, gino-cloud).
+
+### 🐛 Fixed
+
+- **`Select mode="multiple"|"tags"` chips wrap instead of being clipped (#1257).** The chip row was
+  `overflow: hidden` with no wrap inside a fixed-height trigger: three chips in a 352px rail ended at
+  x=387 inside a box ending at x=282, with nothing to say a value was hidden. The chips now wrap and
+  the trigger grows (antd's default); one row keeps the control height. `maxTagCount` stays the
+  one-line opt-in.
+- **`suffixIcon={null}` stops reserving the chevron's end padding (#1257)** when no clear and no
+  loading indicator can take that seat, so a `width="auto"` trigger ends at its value.
+- **`ListRow` in a padded `CardContent` lines up with the `CardTitle` (#1257).** The row added its
+  own 16px inset on top of the card's (row text x=49 under a heading at x=33); there it now drops its
+  inline padding. Inside `CardContent flush` nothing changes.
+- **`Button variant="secondary"` count pill is quiet (#1257).** It swapped the secondary pair and
+  painted a near-black pill (rgb(36,35,30) on rgb(244,243,240)) that read as a notification dot; it is
+  now `--foreground` on `--background`, the same weight as the outline counter.
+- **`ui-audit` `lucide-icon-needs-size` no longer fires inside `Toggle`/`ToggleGroupItem` (#1257)**,
+  which size a direct glyph through `.ui-toggle > svg`.
+- **`Calendar width="full"` day cells keep an inset (#1258).** The full cell reads from the start
+  edge but kept the unruled `padding: 0`, so each numeral sat on its cell edge (0px inline, 35
+  `text-edge-inset` findings). Now 8px inline / 4px block by default; a content-less month keeps its
+  height.
+
+### ✨ Added
+
+- **`Toggle variant="quiet"` (#1257)** — a low-key pressed state for a mark beside content (a
+  comment star, a reaction): transparent at rest; pressed is a `--secondary` fill with `--foreground`
+  text and the primary hairline instead of a solid primary block. Knobs
+  `--toggle-quiet-on-{background,color,count-background,count-color}`. Also on `ToggleGroup`.
+- **`--toggle-on-color` (#1257)** — the pressed Toggle's label colour, the pair to
+  `--toggle-on-background`, so a quieter pressed state (a pale fill) no longer leaves white text on
+  it.
+- **`--calendar-full-day-padding-{inline,block}` (#1258)** — the `width="full"` day-cell inset.
+
 ## [32.1.0] - 2026-10-13
 
 The backlog from the premium-code-library study (`godxjp-ui-premium-craft`, §7): the ~30% of
