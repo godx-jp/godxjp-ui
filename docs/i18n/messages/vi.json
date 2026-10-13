@@ -1775,5 +1775,23 @@
       "xlsxDescription": "Giữ nguyên định dạng và công thức",
       "pdfDescription": "Bố cục cố định để in và chia sẻ"
     }
+  },
+  "selectDocs": {
+    "needConfirm": {
+      "title": "Chọn nhiều, áp dụng khi xác nhận (needConfirm)",
+      "description": "Bật/tắt dòng chỉ đổi bản nháp. OK áp dụng một lần, Xóa làm trống bản nháp, Escape hoặc bấm ra ngoài thì bỏ bản nháp.",
+      "label": "Kênh thông báo",
+      "email": "Email"
+    }
+  },
+  "checkboxDocs": {
+    "selectAll": {
+      "title": "Chọn tất cả",
+      "description": "selectAll thêm một ô đầu tiên suy ra từ giá trị (đã chọn, một phần hoặc trống) và số đếm \"n / m đã chọn\". Lựa chọn bị vô hiệu không bao giờ được đếm, thêm hay bỏ.",
+      "label": "Kênh thông báo",
+      "email": "Email",
+      "push": "Thông báo đẩy",
+      "notInPlan": "Không có trong gói"
+    }
   }
 }

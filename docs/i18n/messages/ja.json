@@ -1775,5 +1775,23 @@
       "xlsxDescription": "書式と数式を保ったまま出力",
       "pdfDescription": "印刷・社外共有向けの固定レイアウト"
     }
+  },
+  "selectDocs": {
+    "needConfirm": {
+      "title": "複数選択・確定してから反映（needConfirm）",
+      "description": "行の切り替えは下書きのまま。「確定」で一度だけ反映し、「クリア」は下書きを空にする。Escape・外側クリックで下書きを破棄。",
+      "label": "通知チャンネル",
+      "email": "メール"
+    }
+  },
+  "checkboxDocs": {
+    "selectAll": {
+      "title": "すべて選択",
+      "description": "selectAll は値から導かれる先頭のボックス（チェック・一部・なし）と「m 件中 n 件選択」の件数を加える。無効な選択肢は数えず、追加も削除もしない。",
+      "label": "通知チャネル",
+      "email": "メール",
+      "push": "プッシュ通知",
+      "notInPlan": "契約外です"
+    }
   }
 }

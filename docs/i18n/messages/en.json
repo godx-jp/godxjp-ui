@@ -1782,5 +1782,23 @@
       "xlsxDescription": "Keeps formatting and formulas",
       "pdfDescription": "Fixed layout for printing and sharing"
     }
+  },
+  "selectDocs": {
+    "needConfirm": {
+      "title": "Multiple, applied on confirm (needConfirm)",
+      "description": "Toggling rows only changes a draft. OK applies it once, Clear empties the draft, and Escape or an outside click discards it.",
+      "label": "Notification channels",
+      "email": "Email"
+    }
+  },
+  "checkboxDocs": {
+    "selectAll": {
+      "title": "Select all",
+      "description": "selectAll adds a leading box derived from the value (checked, mixed or clear) and an \"n of m selected\" count. The disabled option is never counted, added or removed.",
+      "label": "Notification channels",
+      "email": "Email",
+      "push": "Push notifications",
+      "notInPlan": "Not in your plan"
+    }
   }
 }

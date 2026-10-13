@@ -2772,6 +2772,17 @@
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
           ]
+        },
+        "shortcut": {
+          "cases": [
+            "true (⌘K on Apple / Ctrl+K elsewhere)",
+            "hidden while typing",
+            "IME composition ignored"
+          ],
+          "evidence": [
+            "docs/data-entry/search-input.tsx",
+            "src/components/data-entry/__tests__/search-input-shortcut.test.tsx"
+          ]
         }
       }
     },

@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@godxjp/ui/data-display";
 import { Checkbox, CheckboxGroup, Field, FormField } from "@godxjp/ui/data-entry";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 const ALL_SCOPES = ["read", "write", "delete"];
@@ -19,6 +20,7 @@ const ALL_SCOPES = ["read", "write", "delete"];
  * components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   // Controlled CheckboxGroup — selection is surfaced at rest below the group.
   const [channels, setChannels] = useState<string[]>(["email", "sms"]);
 
@@ -183,23 +185,24 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Select all</CardTitle>
-            <CardDescription>
-              selectAll adds a leading box derived from the value (checked, mixed or clear) and a
-              &quot;n of m selected&quot; count. The disabled option is never counted, added or
-              removed.
-            </CardDescription>
+            <CardTitle level={2}>{t("checkboxDocs.selectAll.title")}</CardTitle>
+            <CardDescription>{t("checkboxDocs.selectAll.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <CheckboxGroup
-              aria-label="通知チャネル"
+              aria-label={t("checkboxDocs.selectAll.label")}
               selectAll
               defaultValue={["email"]}
               options={[
-                { value: "email", label: "メール" },
+                { value: "email", label: t("checkboxDocs.selectAll.email") },
                 { value: "sms", label: "SMS" },
-                { value: "push", label: "プッシュ通知" },
-                { value: "fax", label: "FAX", disabled: true, description: "契約外です" },
+                { value: "push", label: t("checkboxDocs.selectAll.push") },
+                {
+                  value: "fax",
+                  label: "FAX",
+                  disabled: true,
+                  description: t("checkboxDocs.selectAll.notInPlan"),
+                },
               ]}
             />
           </CardContent>
