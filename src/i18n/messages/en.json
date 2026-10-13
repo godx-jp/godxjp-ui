@@ -284,7 +284,8 @@
     "alert": {
       "dismiss": "Dismiss",
       "verifying": "Verifying…",
-      "stepUpFailed": "Re-authentication failed. Please try again."
+      "stepUpFailed": "Re-authentication failed. Please try again.",
+      "cancel": "Cancel"
     },
     "toast": {
       "close": "Close notification"

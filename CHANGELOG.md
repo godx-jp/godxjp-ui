@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.4.1] - 2026-10-14
+
+Three defects measured by a usability inspection of godx-qc.
+
+### 🐛 Fixed
+
+- **The godx preset no longer pins Vietnam's time zone (#1282).** `godxPreset.timeZone` was
+  `"Asia/Ho_Chi_Minh"`, `AppProvider` used it as the default zone, and `persist` wrote that default to
+  storage, so a viewer in Tokyo saw 06:13 JST as 04:13. The preset pins no zone (the viewer's browser
+  zone applies; pass `defaultTimezone` for a fixed one); only a zone the viewer PICKED is stored, now
+  with `timezoneChosen`; and the unflagged `Asia/Ho_Chi_Minh` an older kit stored is dropped on
+  hydration (a picked one, or any other zone, is kept). 4 of 6 tests red on 32.4.0.
+- **A visible `<label for>` names the Select trigger (#1283).** The placeholder fallback set
+  `aria-label`, which outranks the label: in Chromium a FilterBar filter labelled 「ステータス」 was
+  announced as 「すべて」, 「Vai trò」 as 「Tất cả」 (WCAG 2.5.3). The fallback now applies only when no
+  label points at the trigger. The native `<select>` part of the report does not reproduce on 32.4.x:
+  Chromium's AX tree has 0 unnamed controls on the Select, AppSettingPicker and FilterBar pages (the
+  hidden select sits under react-aria's `aria-hidden` wrapper).
+- **AlertDialog's default cancel is not the destructive verb (#1284).** vi `common.cancel` 「Hủy」 is
+  also the verb an app uses for the action a confirm guards (「Huỷ」 phiếu): two buttons, one word,
+  told apart by colour alone. The preset reads `feedback.alert.cancel` — vi 「Quay lại」, en/ja
+  unchanged — and warns in development when confirm and cancel are the same word once tone marks
+  are ignored. The vi catalog now spells 「Hủy」 one way (it had both).
+
 ## [32.4.0] - 2026-10-14
 
 From gino-cloud's human-tester inspection on 32.3.0 (#1280), measured in Chromium's

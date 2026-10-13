@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLayoutEffect } from "@react-aria/utils";
 import {
   Button as AriaButton,
   ButtonContext,
@@ -1087,6 +1088,21 @@ function DataSelect(props: PlainDataSelectProp) {
     "aria-label": props["aria-label"],
     "aria-labelledby": props["aria-labelledby"],
   });
+  /*
+   * gh#1283 — a visible `<label htmlFor={id}>` already names the trigger (a <button> is labelable).
+   * The placeholder fallback below sets `aria-label`, which OUTRANKS that label: measured in
+   * Chromium on /isolate/navigation-filter-bar, a filter labelled 「ステータス」 was announced as
+   * 「すべて」 (WCAG 2.5.3). So the fallback asks the document first. Read after mount — SSR has no
+   * document — and only when there is an `id` for a label to point at.
+   */
+  const [hasNativeLabel, setHasNativeLabel] = React.useState(false);
+  useLayoutEffect(() => {
+    const labelled =
+      typeof document !== "undefined" &&
+      props.id !== undefined &&
+      document.querySelector(`label[for="${CSS.escape(props.id)}"]`) !== null;
+    setHasNativeLabel(labelled);
+  }, [props.id]);
 
   // `mode !== undefined` rather than naming both multi modes: it is the discriminant that narrows
   // `props` to the single-value member below, which is what makes `value` a plain string there.
@@ -1207,7 +1223,8 @@ function DataSelect(props: PlainDataSelectProp) {
     ariaProps["aria-label"] === undefined &&
     ariaProps["aria-labelledby"] === undefined &&
     inheritedName["aria-label"] === undefined &&
-    inheritedName["aria-labelledby"] === undefined
+    inheritedName["aria-labelledby"] === undefined &&
+    !hasNativeLabel
       ? placeholderName
       : undefined;
 

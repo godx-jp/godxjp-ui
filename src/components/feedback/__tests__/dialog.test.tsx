@@ -123,7 +123,7 @@ describe("AlertDialog", () => {
       <AlertDialog open onOpenChange={onOpenChange} title="Confirm?" onConfirm={onConfirm} />,
     );
 
-    await user.click(screen.getByRole("button", { name: "Hủy" }));
+    await user.click(screen.getByRole("button", { name: "Quay lại" }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(onConfirm).not.toHaveBeenCalled();
   });
@@ -139,7 +139,7 @@ describe("AlertDialog", () => {
       />,
     );
     expect(screen.getByRole("button", { name: "Đang xử lý…" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Hủy" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Quay lại" })).toBeDisabled();
   });
 
   it("keeps dialog open when keepOpenOnConfirm is true", async () => {
@@ -204,7 +204,7 @@ describe("AlertDialog", () => {
       renderWithUi(<PhraseResetHarness />);
 
       await user.type(screen.getByPlaceholderText("DELETE"), "DELETE");
-      await user.click(screen.getByRole("button", { name: "Hủy" }));
+      await user.click(screen.getByRole("button", { name: "Quay lại" }));
 
       await user.click(screen.getByRole("button", { name: "Reopen" }));
       expect(screen.getByPlaceholderText("DELETE")).toHaveValue("");

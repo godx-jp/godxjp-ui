@@ -54,6 +54,9 @@ import {
 } from "./types";
 import type { AppContextValue, AppProviderProp } from "../props/components/app.prop";
 
+/** The zone the godx preset pinned until 32.4 (gh#1282) — dropped from storage when unflagged. */
+const LEGACY_GODX_PRESET_TIMEZONE = "Asia/Ho_Chi_Minh";
+
 export type { AppProviderProp, AppContextValue } from "../props/components/app.prop";
 
 /** `AppProvider`'s props (`preset` included since v32, gh#1219 / gh#1220). */
@@ -206,6 +209,8 @@ export function AppProvider({
    * English kept printing MM/DD/YYYY under ja forever.
    */
   const formatChosenRef = React.useRef({ dateFormat: false, timeFormat: false });
+  /** Same idea for the zone (gh#1282): only a zone the viewer picked is stored. */
+  const timezoneChosenRef = React.useRef(false);
 
   const commitPreferences = React.useCallback(() => {
     if (persistedAxes.size === 0) return;
@@ -217,6 +222,10 @@ export function AppProvider({
     if (out.timeFormat !== undefined) {
       if (formatChosenRef.current.timeFormat) out.timeFormatChosen = true;
       else delete out.timeFormat;
+    }
+    if (out.timezone !== undefined) {
+      if (timezoneChosenRef.current) out.timezoneChosen = true;
+      else delete out.timezone;
     }
     writeStoredPreferences(storageKey, out);
   }, [persistedAxes, storageKey]);
@@ -240,6 +249,14 @@ export function AppProvider({
       );
       if (derivable) delete stored.timeFormat;
     }
+    // gh#1282 — an older kit stored the DEFAULT zone with no flag. The one value known to be a
+    // default rather than a choice is the zone the godx preset pinned until 32.4 (`Asia/Ho_Chi_Minh`):
+    // it is dropped, so the viewer gets their browser's zone. A viewer in Vietnam loses nothing —
+    // their browser reports that zone anyway. Any other unflagged zone is kept as before.
+    if (!raw.timezoneChosen && stored.timezone === LEGACY_GODX_PRESET_TIMEZONE) {
+      delete stored.timezone;
+    }
+    timezoneChosenRef.current = stored.timezone !== undefined;
     formatChosenRef.current = {
       dateFormat: stored.dateFormat !== undefined,
       timeFormat: stored.timeFormat !== undefined,
@@ -362,6 +379,7 @@ export function AppProvider({
   const setTimezone = React.useCallback(
     (next: AppTimezone) => {
       prefsRef.current = { ...prefsRef.current, timezone: next };
+      timezoneChosenRef.current = true;
       setTimezoneState(next);
       onTimezoneChange?.(next);
       commitPreferences();

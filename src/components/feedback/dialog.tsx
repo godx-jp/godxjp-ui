@@ -787,6 +787,24 @@ const AlertDialogAction = DialogAction;
 const AlertDialogCancel = DialogCancel;
 
 /**
+ * gh#1284 — two labels that differ only in diacritics or tone-mark placement (「Hủy」 / 「Huỷ」, NFC
+ * vs NFD) read as one word: strip the combining marks after NFD and compare case-insensitively.
+ * Only strings are compared; a ReactNode label is the caller's own composition.
+ */
+function sameWordIgnoringMarks(a: React.ReactNode, b: React.ReactNode): boolean {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  const base = (text: string) =>
+    text
+      .normalize("NFD")
+      .replace(/\p{M}/gu, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .trim()
+      .toLowerCase();
+  return base(a) === base(b);
+}
+
+/**
  * Preset: confirm / destructive / typed-challenge / step-up without compound markup. Both flows
  * force the destructive shape: the confirm button plus antd's leading status glyph. The header
  * surface stays untinted — see the note on `showDangerIcon` below.
@@ -832,7 +850,17 @@ function AlertDialog({
   // preset simply stops imposing it (DESIGN-AUTHORITY.md §4 keeps that separation).
   const showDangerIcon = effectiveVariant === "destructive";
   const resolvedConfirm = confirmLabel ?? (needsPhrase ? t("common.delete") : t("common.continue"));
-  const resolvedCancel = cancelLabel ?? t("common.cancel");
+  // gh#1284 — the preset's own cancel word, not `common.cancel`: in Vietnamese 「Hủy」 is ALSO the
+  // verb of the destructive actions a confirm dialog guards (hủy phiếu, hủy đơn), so a void dialog
+  // rendered 「Huỷ」 (confirm, red) beside 「Hủy」 (cancel) — one word, told apart by colour alone
+  // and identical to a screen reader. vi says 「Quay lại」 here; en / ja keep Cancel / キャンセル.
+  const resolvedCancel = cancelLabel ?? t("feedback.alert.cancel");
+  React.useEffect(() => {
+    if (!isDevelopment() || !sameWordIgnoringMarks(resolvedConfirm, resolvedCancel)) return;
+    console.warn(
+      `[@godxjp/ui] AlertDialog: confirmLabel "${String(resolvedConfirm)}" and the cancel label "${String(resolvedCancel)}" are the same word once tone marks are ignored — a reader tells them apart by colour alone and a screen reader not at all. Rename one (gh#1284).`,
+    );
+  }, [resolvedConfirm, resolvedCancel]);
   const busy = pending || verifying;
   const confirmLabelText = verifying
     ? t("feedback.alert.verifying")

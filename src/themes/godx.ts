@@ -15,12 +15,15 @@ import { Logo } from "../components/general/logo";
  * A shadow root that embeds `@godxjp/ui/styles/core` adds `@godxjp/ui/themes/godx-tokens.css` (the
  * same colours without the fonts) instead.
  *
+ * NO `timeZone` (gh#1282): a preset must not pin a country's zone. 32.x shipped
+ * `"Asia/Ho_Chi_Minh"` here, so every godx app showed Vietnam time to its users in Japan; the zone
+ * now falls back to the viewer's browser, and an app that needs a fixed one passes `defaultTimezone`.
+ *
  * Core never imports this module, which is what keeps the GoDX artwork out of a neutral bundle.
  */
 export const godxPreset: AppPreset = Object.freeze({
   name: "godx",
   defaultLocale: "vi",
-  timeZone: "Asia/Ho_Chi_Minh",
   brandMark: createElement(Logo, { mark: "godx", tone: "success" }),
   emailBrandLabel: "GoDX",
 });

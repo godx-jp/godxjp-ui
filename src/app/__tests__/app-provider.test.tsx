@@ -114,6 +114,8 @@ describe("AppProvider", () => {
       // Picked by the viewer, so stored as chosen (gh#1202); a derived format is not stored at all.
       timeFormatChosen: true,
       dateFormatChosen: true,
+      // The zone too (gh#1282): picked, so stored with its flag.
+      timezoneChosen: true,
       theme: "light",
       density: "default",
       fontSize: "default",

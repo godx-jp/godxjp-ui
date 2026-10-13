@@ -99,7 +99,7 @@
       "download": "Tải xuống",
       "retry": "Thử lại",
       "start": "Tải lên",
-      "cancel": "Huỷ",
+      "cancel": "Hủy",
       "rejectAccept": "{name}: loại tệp không được phép.",
       "rejectSize": "{name}: tệp quá lớn (tối đa {max}).",
       "rejectCount": "{name}: đã đủ số lượng tệp.",
@@ -216,7 +216,7 @@
       "empty": "Không có mục nào khớp",
       "error": "Không tải được",
       "confirm": "Xác nhận",
-      "cancel": "Huỷ",
+      "cancel": "Hủy",
       "clear": "Bỏ chọn",
       "more": "Tải thêm",
       "openDialog": "Chọn từ danh sách",
@@ -280,7 +280,8 @@
     "alert": {
       "dismiss": "Đóng",
       "verifying": "Đang xác minh…",
-      "stepUpFailed": "Xác thực lại thất bại. Vui lòng thử lại."
+      "stepUpFailed": "Xác thực lại thất bại. Vui lòng thử lại.",
+      "cancel": "Quay lại"
     },
     "toast": {
       "close": "Đóng thông báo"
