@@ -13,7 +13,7 @@ import {
 import { useTranslation } from "../../i18n/use-translation";
 import { formatBytes } from "../../lib/format";
 import { cn } from "../../lib/utils";
-import { mergeAriaIds, pickFieldA11y } from "../../lib/field-a11y";
+import { FieldNameContext, mergeAriaIds, pickFieldA11y } from "../../lib/field-a11y";
 import { Button } from "../general/button";
 import { Icon } from "../general/icon";
 import type { UploadListTypeProp, UploadProp } from "../../props/components/data-entry.prop";
@@ -24,6 +24,7 @@ import {
   createUploadItem,
   revokePreviewUrl,
   type UploadFileItem,
+  type UploadFileStatus,
   type UploadVariant,
 } from "./upload-types";
 import { readDroppedFiles } from "./upload-files";
@@ -59,6 +60,18 @@ function defaultMaxCount(variant: UploadVariant): number | undefined {
   if (variant === "avatar" || variant === "avatar-crop" || variant === "picture") return 1;
   return undefined;
 }
+
+/**
+ * The polite status of a one-file Upload: the file's own state, never a count (gh#1288). A file
+ * marked for delete says nothing here — the undo banner beside the trigger already says it.
+ */
+const SINGLE_STATUS_KEY: Record<UploadFileStatus, string | null> = {
+  idle: "dataEntry.upload.fileSelected",
+  uploading: "dataEntry.upload.fileUploading",
+  done: "dataEntry.upload.fileUploaded",
+  error: "dataEntry.upload.fileFailed",
+  removed: null,
+};
 
 function fileMatchesAccept(file: File, accept?: string): boolean {
   if (!accept) return true;
@@ -159,15 +172,20 @@ export function Upload({
    *                  nothing is picked (once something is, the file list below says what);
    *   invalid      = `aria-invalid` + `aria-errormessage`, unchanged.
    *
-   * Outside a FormField, an `aria-label` the caller passes names the trigger (it always did for
-   * `variant="button"`, gh#734).
+   * An `aria-label` the caller passes names the trigger, inside a FormField too (gh#1288): FormField
+   * echoes its plain-text label as `aria-label`, so only a value that differs from that echo is the
+   * caller's. Without one, the field label is dropped from the name when the trigger's own action
+   * text already contains it — 「ファイル」 + 「ファイルをアップロード」 read 「ファイル ファイルを…」.
    */
   const fieldA11y = pickFieldA11y(ariaProps);
   const fieldLabelledBy = fieldA11y["aria-labelledby"];
+  const fieldName = React.useContext(FieldNameContext);
   const triggerId = React.useId();
   const selectionId = React.useId();
   const triggerRef = React.useRef<HTMLElement | null>(null);
-  const callerAriaLabel = fieldLabelledBy ? undefined : fieldA11y["aria-label"];
+  const ownAriaLabel = fieldA11y["aria-label"];
+  const callerAriaLabel =
+    !fieldLabelledBy || (fieldName && ownAriaLabel !== fieldName.label) ? ownAriaLabel : undefined;
   const setTriggerRef = (element: HTMLElement | null) => {
     triggerRef.current = element;
   };
@@ -188,9 +206,16 @@ export function Upload({
   // aria-errormessage are not allowed (ARIA 1.2): the error is folded into the description instead,
   // as FormField does for group roles.
   const triggerIsGroup = variant === "dropzone" && !openFileDialogOnClick;
-  const triggerA11y = {
+  /** `action` = the trigger's own name text, when it is a plain string. */
+  const triggerA11y = (action?: string) => ({
     id: triggerId,
-    "aria-labelledby": fieldLabelledBy ? `${fieldLabelledBy} ${triggerId}` : undefined,
+    "aria-labelledby":
+      !fieldLabelledBy ||
+      callerAriaLabel !== undefined ||
+      (fieldName?.label &&
+        action?.toLocaleLowerCase().includes(fieldName.label.trim().toLocaleLowerCase()))
+        ? undefined
+        : `${fieldLabelledBy} ${triggerId}`,
     "aria-describedby": mergeAriaIds(
       fieldA11y["aria-describedby"],
       triggerIsGroup && fieldA11y["aria-invalid"] ? fieldA11y["aria-errormessage"] : undefined,
@@ -198,7 +223,7 @@ export function Upload({
     ),
     "aria-errormessage": triggerIsGroup ? undefined : fieldA11y["aria-errormessage"],
     "aria-invalid": triggerIsGroup ? undefined : fieldA11y["aria-invalid"],
-  };
+  });
 
   const isSingleAvatar =
     variant === "avatar" || variant === "avatar-crop" || (variant === "picture" && maxCount === 1);
@@ -553,6 +578,8 @@ export function Upload({
   const uploadingCount = items.filter((it) => it.status === "uploading").length;
   const doneCount = items.filter((it) => it.status === "done").length;
   const errorCount = items.filter((it) => it.status === "error").length;
+  // One file has no 「N 件中 M 件」: it is selected, uploading, uploaded or failed (gh#1288).
+  const singleFile = !multiple || maxCount === 1;
   const liveRegion = (
     <>
       <Dialog
@@ -579,13 +606,18 @@ export function Upload({
       {/* A rejection is announced ONCE, by the visible `role="alert"` paragraph — repeating it
           here printed and read it twice (gh#1280). */}
       <span aria-live="polite" className="sr-only" data-slot="upload-status">
-        {errorCount > 0
-          ? t("dataEntry.upload.statusFailed", { count: errorCount })
-          : uploadingCount > 0
-            ? t("dataEntry.upload.statusUploading", { count: uploadingCount })
-            : items.length > 0
-              ? t("dataEntry.upload.statusReady", { count: items.length, done: doneCount })
-              : ""}
+        {singleFile && items[0]
+          ? (() => {
+              const key = SINGLE_STATUS_KEY[items[0].status];
+              return key ? t(key, { name: items[0].name }) : "";
+            })()
+          : errorCount > 0
+            ? t("dataEntry.upload.statusFailed", { count: errorCount })
+            : uploadingCount > 0
+              ? t("dataEntry.upload.statusUploading", { count: uploadingCount })
+              : items.length > 0
+                ? t("dataEntry.upload.statusReady", { count: items.length, done: doneCount })
+                : ""}
       </span>
       {items.length === 0 ? (
         <span id={selectionId} className="sr-only" data-slot="upload-selection">
@@ -614,7 +646,7 @@ export function Upload({
           role={openFileDialogOnClick ? "button" : "group"}
           tabIndex={disabled ? -1 : 0}
           aria-disabled={disabled}
-          {...triggerA11y}
+          {...triggerA11y(t("dataEntry.upload.dropzoneLabel"))}
           aria-label={callerAriaLabel ?? t("dataEntry.upload.dropzoneLabel")}
           onClick={openPicker}
           onKeyDown={(e) => {
@@ -686,7 +718,9 @@ export function Upload({
           disabled={disabled}
           onClick={openPicker}
           ref={setTriggerRef}
-          {...triggerA11y}
+          {...triggerA11y(
+            iconOnly ? triggerAriaLabel : typeof label === "string" ? label : undefined,
+          )}
           aria-label={triggerAriaLabel}
           className="ui-upload-trigger"
         >
@@ -735,7 +769,7 @@ export function Upload({
             data-disabled={disabled ? "" : undefined}
             className="ui-upload-tile-add"
             ref={setTriggerRef}
-            {...triggerA11y}
+            {...triggerA11y(t("dataEntry.upload.addImage"))}
             aria-label={callerAriaLabel ?? t("dataEntry.upload.addImage")}
           >
             <ImagePlus className="ui-upload-tile-add-icon" aria-hidden="true" />
@@ -747,6 +781,7 @@ export function Upload({
   }
 
   if (variant === "picture" && !isSingleAvatar) {
+    const label = children ?? t("dataEntry.upload.addImage");
     return (
       <div {...pasteProps} className={cn("ui-stack-sm", className)}>
         {hiddenInput}
@@ -762,11 +797,11 @@ export function Upload({
           variant={triggerVariant}
           onClick={openPicker}
           ref={setTriggerRef}
-          {...triggerA11y}
+          {...triggerA11y(typeof label === "string" ? label : undefined)}
           aria-label={callerAriaLabel}
           className="ui-upload-trigger"
         >
-          {children ?? t("dataEntry.upload.addImage")}
+          {label}
         </Button>
         {list}
       </div>
@@ -802,7 +837,7 @@ export function Upload({
             disabled={disabled}
             onClick={openPicker}
             ref={setTriggerRef}
-            {...triggerA11y}
+            {...triggerA11y(t("dataEntry.upload.addImage"))}
             aria-label={callerAriaLabel}
             className="ui-upload-picture-empty"
           >
@@ -854,7 +889,7 @@ export function Upload({
           data-disabled={disabled ? "" : undefined}
           className="ui-upload-avatar ui-focus-ring"
           ref={setTriggerRef}
-          {...triggerA11y}
+          {...triggerA11y(t("dataEntry.upload.avatarLabel"))}
           aria-label={callerAriaLabel ?? t("dataEntry.upload.avatarLabel")}
         >
           {!showPlaceholder && item?.previewUrl ? (
