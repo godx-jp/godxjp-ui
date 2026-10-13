@@ -83,10 +83,18 @@ export type ColumnDefProp<T> = {
    */
   fixed?: ColumnFixedProp;
   /**
-   * Hold the cell to ONE line and truncate the overflow (antd `ColumnType.ellipsis`). The full text
-   * is kept reachable as the cell's `title`, so nothing is silently lost.
+   * Hold the cell to ONE line and truncate the overflow (antd `ColumnType.ellipsis`). A cell that
+   * IS truncated keeps its full text reachable: as its `title` (rendered cells too, from the
+   * cell's text — antd `ellipsis.showTitle`), and as a tab stop that unfolds the text on keyboard
+   * focus (PatternFly `Truncate`). The header is never truncated: it wraps (see `headerWrap`).
    */
   ellipsis?: boolean;
+  /**
+   * Let the column HEADER wrap onto further lines instead of holding one (`TableHead wrap`).
+   * Defaults to `true` for an `ellipsis` column — a narrow column's heading must stay readable —
+   * and `false` otherwise, where headings keep one line.
+   */
+  headerWrap?: boolean;
   /**
    * The cell's CONTENT owns its inset (the same contract as `TableCell flush`): the column's body
    * cells drop their padding so a self-padded row primitive — a `ListRow` in a selectable list —

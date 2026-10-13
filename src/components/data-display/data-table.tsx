@@ -1345,6 +1345,10 @@ function fixedEdge<T>(col: ColumnDef<T>): "start" | "end" | undefined {
   return col.fixed ?? (col.pin === "end" ? "end" : undefined);
 }
 
+/** Something inside a truncated cell that already takes focus — the cell then needs no tab stop. */
+const TRUNCATED_CELL_FOCUSABLE =
+  'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
+
 function sameOffsets(a: Record<string, number>, b: Record<string, number>): boolean {
   const keys = Object.keys(a);
   if (keys.length !== Object.keys(b).length) return false;
@@ -1591,6 +1595,59 @@ DataTable.Content = function DataTableContent() {
     };
   }, [fixedSignature]);
 
+  // ── truncated cells, MEASURED (gh#1262) ─────────────────────────────────
+  // `ellipsis` hides the overflow, so a truncated cell must keep its text reachable — and only a
+  // TRUNCATED one: a title and a tab stop on every cell of a column would be noise. CSS cannot
+  // know which cells overflow, so each `ellipsis` body cell is measured and, while truncated,
+  // gains `data-truncated`, a `title` from its text when the column did not set one (a rendered
+  // cell has none — antd `ellipsis.showTitle` covers rendered cells too), and `tabindex="0"`
+  // unless it already holds something focusable, so a keyboard user can reach it; focus unfolds
+  // the text in table-layout.css (PatternFly `Truncate`). Re-measured after every render and on
+  // every resize of the scroll region.
+  const hasEllipsis = !stacked && visibleColumns.some((col) => col.ellipsis);
+  const markTruncated = React.useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    for (const cell of el.querySelectorAll<HTMLElement>("tbody td.ui-data-table-ellipsis")) {
+      // A focused cell is UNFOLDED, so it measures as fitting; re-measuring it would drop its tab
+      // stop under the user's focus. It is measured again on focusout.
+      if (cell === document.activeElement) continue;
+      const ownTitle = cell.dataset.truncatedTitle !== undefined;
+      if (cell.scrollWidth - cell.clientWidth > 1) {
+        cell.dataset.truncated = "";
+        if (!cell.title || ownTitle) {
+          cell.title = (cell.textContent ?? "").replace(/\s+/g, " ").trim();
+          cell.dataset.truncatedTitle = "";
+        }
+        if (!cell.querySelector(TRUNCATED_CELL_FOCUSABLE)) cell.tabIndex = 0;
+      } else if (cell.dataset.truncated !== undefined) {
+        delete cell.dataset.truncated;
+        if (ownTitle) {
+          cell.removeAttribute("title");
+          delete cell.dataset.truncatedTitle;
+        }
+        cell.removeAttribute("tabindex");
+      }
+    }
+  }, []);
+  React.useEffect(() => {
+    if (hasEllipsis) markTruncated();
+  });
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!hasEllipsis || !el) return;
+    const observer = new ResizeObserver(markTruncated);
+    observer.observe(el);
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
+    // Leaving a cell folds it again; measure once that has happened.
+    const refold = () => requestAnimationFrame(markTruncated);
+    el.addEventListener("focusout", refold);
+    return () => {
+      observer.disconnect();
+      el.removeEventListener("focusout", refold);
+    };
+  }, [hasEllipsis, markTruncated]);
+
   /** The column IDENTITY the offset measurement reads back, plus the frozen edge it read. */
   const fixedCellProps = (key: string, edge: "start" | "end" | undefined) =>
     edge ? { "data-column-key": key, "data-fixed": edge } : { "data-column-key": key };
@@ -1604,13 +1661,13 @@ DataTable.Content = function DataTableContent() {
       ? ({ "--table-fixed-offset": fixedOffsets[key] ?? 0 } as React.CSSProperties)
       : undefined;
 
-  const columnCellClass = (col: ColumnDef<unknown>) => {
+  const columnCellClass = (col: ColumnDef<unknown>, part: "header" | "body" = "body") => {
     const edge = fixedEdge(col);
     return cn(
       columnWidth(col.width).className,
       col.align === "right" && "text-end",
       col.align === "center" && "text-center",
-      col.ellipsis && "ui-data-table-ellipsis",
+      part === "body" && col.ellipsis && "ui-data-table-ellipsis",
       edge === "end" && "ui-data-table-pin-end",
       edge === "start" && "ui-data-table-pin-start",
     );
@@ -1845,8 +1902,10 @@ DataTable.Content = function DataTableContent() {
                     {...fixedCellProps(col.key, fixedEdge(col))}
                     {...columnHideBelowProps(col)}
                     style={columnCellStyle(col)}
+                    // gh#1262: the heading is never truncated — an ellipsis column's heading wraps.
+                    wrap={col.headerWrap ?? Boolean(col.ellipsis)}
                     className={cn(
-                      columnCellClass(col),
+                      columnCellClass(col, "header"),
                       // `headerAlign` when the heading differs from the rows,
                       // `align` otherwise. A table wanting centred headings
                       // over start-aligned text could not say so before, and

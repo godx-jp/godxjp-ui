@@ -67,6 +67,7 @@
     .ui-focus-ring-outline,
     [data-interactive] > [data-slot="table-cell"] a[href],
     [data-interactive] > [data-slot="table-cell"] button,
+    .ui-data-table-ellipsis[data-truncated],
     .ui-input,
     .ui-control,
     .ui-control-multiline,

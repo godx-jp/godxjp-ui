@@ -733,10 +733,23 @@
    * grows to fit its widest cell instead — which is why the component switches the layout on as
    * soon as a column asks for `ellipsis` (or `scroll.x` pins a minimum width). Same mechanism antd
    * uses, and the reason `ellipsis` alone looks inert in every hand-rolled table. */
+  /* `clip` + the ring margin, not `hidden` (gh#1262): a truncated cell is now a tab stop and may
+   * hold a link, and `hidden` shaved the ring of anything focused inside it. `text-overflow`
+   * applies to any non-visible overflow, `clip` included, so the ellipsis is unchanged. */
   .ui-data-table-ellipsis {
-    overflow: hidden;
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /* A TRUNCATED cell is a tab stop (gh#1262, set by DataTable only while it overflows), and focus
+   * UNFOLDS it: the text wraps in place so a keyboard user reads all of it — a `title` tooltip
+   * never opens on focus. PatternFly `Truncate` makes the same move. The row grows only while the
+   * cell holds focus. */
+  .ui-data-table-ellipsis[data-truncated]:focus-visible {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .ui-data-table-surface[data-table-layout="fixed"] [data-slot="table"] {
