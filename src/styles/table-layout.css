@@ -359,6 +359,14 @@
     transition: opacity var(--duration-fast) var(--ease-standard);
   }
 
+  /* The bar MOUNTS with the first selection, so without a start value the transition above has no
+   * "before" to run from. @starting-style gives it one: the bar fades in on insertion. */
+  @starting-style {
+    .ui-data-table-bulk {
+      opacity: 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .ui-data-table-bulk {
       transition: none;
