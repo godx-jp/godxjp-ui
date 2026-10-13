@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   DropdownMenu,
@@ -27,6 +28,7 @@ import { MoreHorizontal } from "lucide-react";
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState("draft");
   const [showAmount, setShowAmount] = useState(true);
   const [showPartner, setShowPartner] = useState(true);
@@ -87,6 +89,32 @@ export default function Demo() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </Flex>
+          </CardContent>
+        </Card>
+
+        {/* gh#1246 — the two-line row */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("dropdownMenuDocs.description.title")}</CardTitle>
+            <CardDescription>{t("dropdownMenuDocs.description.body")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">{t("dropdownMenuDocs.description.trigger")}</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem description={t("dropdownMenuDocs.description.csvDescription")}>
+                  CSV
+                </DropdownMenuItem>
+                <DropdownMenuItem description={t("dropdownMenuDocs.description.xlsxDescription")}>
+                  Excel (.xlsx)
+                </DropdownMenuItem>
+                <DropdownMenuItem description={t("dropdownMenuDocs.description.pdfDescription")}>
+                  PDF
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </CardContent>
         </Card>
 
@@ -319,8 +347,8 @@ export default function Demo() {
             <CardTitle level={2}>defaultOpen · 計測できる状態で開いておく</CardTitle>
             <CardDescription>
               antd の open/defaultOpen。ここだけはマウント時から開いたままにしてある。
-              閉じたメニューは 1 ピクセルも描かないので、どのスイープにも測れない。
-              destructive の行が読める色で描かれているかは、開いていて初めて測れる。
+              閉じたメニューは 1 ピクセルも描かないので、どのスイープにも測れない。 destructive
+              の行が読める色で描かれているかは、開いていて初めて測れる。
             </CardDescription>
           </CardHeader>
           <CardContent>

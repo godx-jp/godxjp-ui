@@ -6223,6 +6223,14 @@
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
           "name": "disabled",
           "origin": "owned",
           "required": false,
@@ -19314,7 +19322,7 @@
       "kind": "function",
       "subpaths": [".", "./admin", "./feedback"],
       "signature": "(message: import(\"react\").ReactNode | (() => React.ReactNode), data?: import(\"sonner\").ExternalToast): string | number",
-      "declaredIn": ["node_modules/sonner/dist/index.d.mts"]
+      "declaredIn": ["src/components/feedback/use-toast.ts"]
     },
     "tokenizeText": {
       "kind": "function",

@@ -43,6 +43,9 @@ describe("toast = Sonner native API", () => {
     toast.success("承認しました");
     expect(sonnerMock.success).toHaveBeenCalledWith("承認しました");
     toast.error("失敗しました");
-    expect(sonnerMock.error).toHaveBeenCalledWith("失敗しました");
+    // gh#1253: error / warning carry a close button by default; a per-call option still wins.
+    expect(sonnerMock.error).toHaveBeenCalledWith("失敗しました", { closeButton: true });
+    toast.error("静かに失敗", { closeButton: false });
+    expect(sonnerMock.error).toHaveBeenLastCalledWith("静かに失敗", { closeButton: false });
   });
 });

@@ -1713,5 +1713,15 @@
     "legacy": "Legacy migration (cancelled)",
     "audit": "Security review (finish only)",
     "violation": "Release cannot finish before the build"
+  },
+  "dropdownMenuDocs": {
+    "description": {
+      "title": "description · two-line items",
+      "body": "Pass description to add a muted second line under the label. Screen readers announce the label as the item's name and the description as its supplementary text (aria-describedby); typing the first letter still jumps to the item by its label.",
+      "trigger": "Export format",
+      "csvDescription": "Opens directly in any spreadsheet",
+      "xlsxDescription": "Keeps formatting and formulas",
+      "pdfDescription": "Fixed layout for printing and sharing"
+    }
   }
 }

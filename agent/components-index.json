@@ -453,7 +453,7 @@
   {
     "group": "feedback",
     "name": "Toaster",
-    "tagline": "Mount once at app root to enable toasts. IMPORTANT: trigger toasts via `import { toast } from \"sonner\"` — NOT from @godxjp/ui."
+    "tagline": "Mount once at app root to enable toasts. Trigger them with `import { toast } from \"@godxjp/ui/feedback\"` — Sonner's API, with a close button on `toast.error` / `toast.warning` by default."
   },
   {
     "group": "navigation",

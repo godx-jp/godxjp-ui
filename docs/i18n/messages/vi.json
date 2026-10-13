@@ -1706,5 +1706,15 @@
     "legacy": "Chuyển hệ thống cũ (đã hủy)",
     "audit": "Đánh giá bảo mật (chỉ ngày hoàn thành)",
     "violation": "Không thể phát hành trước khi phát triển xong"
+  },
+  "dropdownMenuDocs": {
+    "description": {
+      "title": "description · mục hai dòng",
+      "body": "Truyền description để thêm một dòng phụ nhạt màu dưới nhãn. Trình đọc màn hình đọc nhãn làm tên mục và description làm phần mô tả bổ sung (aria-describedby); gõ chữ cái đầu vẫn nhảy tới mục theo nhãn.",
+      "trigger": "Định dạng xuất",
+      "csvDescription": "Mở thẳng bằng bảng tính",
+      "xlsxDescription": "Giữ nguyên định dạng và công thức",
+      "pdfDescription": "Bố cục cố định để in và chia sẻ"
+    }
   }
 }

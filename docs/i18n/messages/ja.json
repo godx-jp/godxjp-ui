@@ -1706,5 +1706,15 @@
     "legacy": "旧システム移行（中止）",
     "audit": "セキュリティ審査（完了のみ）",
     "violation": "開発の完了前にリリースは完了できません"
+  },
+  "dropdownMenuDocs": {
+    "description": {
+      "title": "description · 2 行の項目",
+      "body": "description を渡すと、ラベルの下に控えめな 2 行目が付く。読み上げではラベルが名前、description が補足説明（aria-describedby）になり、先頭文字の入力による移動もラベルで効く。",
+      "trigger": "エクスポート形式",
+      "csvDescription": "表計算ソフトでそのまま開ける",
+      "xlsxDescription": "書式と数式を保ったまま出力",
+      "pdfDescription": "印刷・社外共有向けの固定レイアウト"
+    }
   }
 }
