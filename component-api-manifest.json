@@ -5184,6 +5184,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "captionLayout",
+          "origin": "owned",
+          "required": false,
+          "type": "\"label\" | \"dropdown\" | \"dropdown-months\" | \"dropdown-years\" | undefined",
+          "values": ["label", "dropdown", "dropdown-months", "dropdown-years"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "cellRender",
           "origin": "owned",
           "required": false,
@@ -6775,6 +6783,14 @@
           "required": false,
           "type": "IconProp | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "live",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {

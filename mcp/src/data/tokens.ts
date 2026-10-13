@@ -458,6 +458,18 @@ export const TOKENS: TokenEntry[] = [
     tier: "primitive",
     role: "How long a toast stays before it dismisses itself (gh#1253). Declared in the MOTION tier (tokens/foundation.css), beside `--activity-interval`. Default `4000ms` (Sonner's own default); `ms` or `s`. Sonner takes `duration` as a JS number, so `Toaster` reads this token ONCE on mount with getComputedStyle — from its ThemeScope host if it has one, else `<html>` — and passes it as `duration`. A theme override therefore reaches toasts raised after the Toaster mounts, not a change made while it is mounted. The Toaster's own `duration` prop and a per-call `toast(…, { duration })` both still win. An unparseable value falls back to Sonner's default.",
   },
+  {
+    name: "--toast-offset-bottom",
+    category: "component",
+    tier: "component",
+    role: "Extra clearance the toast stack keeps above the viewport bottom (gh#1271), ADDED to the gutter on both desktop (Sonner's 24px) and mobile (`--toast-mobile-offset`). Default `0px` — the stack sits where it always did. Set it once in theme.css when the APP pins bottom chrome the library does not render; a library sticky bar (`PageContainer stickyFooter`, `MobileShell` actions/tabBar) is cleared automatically through `--toast-sticky-bar-height`. Always a length with a unit: it is a `calc()` term, and a bare `0` invalidates the offset.",
+  },
+  {
+    name: "--toast-sticky-bar-height",
+    category: "component",
+    tier: "component",
+    role: 'RUNTIME-PUBLISHED, not a theme knob (gh#1271). A mounted, VISIBLE sticky action bar — `PageContainer stickyFooter` (always, or once revealed under `footerReveal="onScroll"`), or the `MobileShell` action bar + tab bar in a `height="viewport"` shell — writes its block size here inline on `<html>`, kept current by a ResizeObserver, and removes it on unmount/hide (falling back to the declared `0px`). The Toaster adds it to its bottom offset, so toasts never cover the primary action. Do not set it in a theme — the runtime value overwrites it; use `--toast-offset-bottom`.',
+  },
   { name: "--table-*", category: "component", tier: "component", role: "Table row/cell sizing." },
   {
     name: "--table-pagination-padding-{y,x}",

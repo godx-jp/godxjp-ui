@@ -245,6 +245,13 @@ export type EmptyStateProp = {
    * zero-state message is not announced as a heading and cannot skip an outline level.
    */
   titleAs?: "h1" | "h2" | "h3" | "h4" | "p" | "div";
+  /**
+   * Announce the empty state as a status message (`role="status"`). Default `false`: a static
+   * empty state ("no records yet") is content, not an update, and is not a live region. Set it
+   * when the empty state APPEARS as the result of a user action — a search or filter that matched
+   * nothing — so a screen-reader user hears the outcome (WCAG 4.1.3).
+   */
+  live?: boolean;
   className?: ClassNameProp;
 };
 

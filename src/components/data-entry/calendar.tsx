@@ -160,6 +160,12 @@ export function Calendar({
         labelNav:
           labels?.labelNav ??
           (() => t("dataEntry.calendar.nav", { label: ariaLabel ?? t("dataEntry.calendar.name") })),
+        // The two caption selects (`captionLayout="dropdown"`) are named the same way — react-day-
+        // picker's defaults are English literals whatever the locale (gh#1271).
+        labelMonthDropdown:
+          labels?.labelMonthDropdown ?? (() => t("dataEntry.calendar.monthDropdown") ?? "Month"),
+        labelYearDropdown:
+          labels?.labelYearDropdown ?? (() => t("dataEntry.calendar.yearDropdown") ?? "Year"),
       }}
       // The calendar has an INTRINSIC width — seven fixed day columns — and `width="auto"` (the
       // default) shrink-wraps to it so the nav sits beside the grid, not at the container edges.
@@ -182,6 +188,17 @@ export function Calendar({
         month: cn("ui-calendar-month", classNames?.month),
         month_caption: cn("ui-calendar-caption", classNames?.month_caption),
         caption_label: cn("ui-calendar-caption-label", classNames?.caption_label),
+        /*
+         * `captionLayout="dropdown"` slots (gh#1271). Naming a slot REPLACES react-day-picker's own
+         * class, so with these set nothing of `.rdp-dropdown*` applies and control.css owns the whole
+         * look: a native `<select>` laid invisibly over a label + chevron that reads as a compact
+         * control. Unnamed, the selects fell back to the vendor sheet under our caption rules.
+         */
+        dropdowns: cn("ui-calendar-dropdowns", classNames?.dropdowns),
+        dropdown_root: cn("ui-calendar-dropdown-root", classNames?.dropdown_root),
+        dropdown: cn("ui-calendar-dropdown", classNames?.dropdown),
+        months_dropdown: cn("ui-calendar-months-dropdown", classNames?.months_dropdown),
+        years_dropdown: cn("ui-calendar-years-dropdown", classNames?.years_dropdown),
         // z-10 is load-bearing: `month` below is position:relative and later in the DOM, so
         // without a z-index it paints OVER these buttons — they render but never receive the
         // click (the month caption swallows it) and the calendar looks frozen.

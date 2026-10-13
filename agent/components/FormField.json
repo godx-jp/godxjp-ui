@@ -26,7 +26,7 @@
       "type": "string"
     },
     {
-      "description": "Field label above the control.",
+      "description": "Field label above the control. `false` renders no label row; in a horizontal form the content still sits in the control column — the action row (gh#1271).",
       "name": "label",
       "required": true,
       "type": "ReactNode"
@@ -112,6 +112,7 @@
   "tagline": "Wraps a control with label, helper, and error; injects the accessible name (aria-labelledby), description (aria-describedby) and validation (aria-errormessage/aria-invalid/aria-required) contract onto the child, which forwards it to its real semantic focus target. Reads the parent Form's layout (vertical/horizontal) — overridable per field.",
   "usage": [
     "DO pass the same string to both `id` on `<FormField>` and `id` on the child control — the component wires `<Label htmlFor={id}>`, and builds `{id}-helper` / `{id}-error` ids for `aria-describedby`. If the ids diverge the label click and screen-reader announcements break.",
+    "NO LABEL: `label={false}` renders no label row and reserves no label space; in a horizontal form the content still sits in the CONTROL column (gh#709). That is the canonical action row under a horizontal form (gh#1271): `<FormField label={false}><Flex gap=\"sm\" wrap><Button type=\"submit\">Save</Button><Button variant=\"outline\">Cancel</Button></Flex></FormField>`. A label-less field around a CONTROL must name the control itself (a `<Checkbox>label</Checkbox>`, an `aria-label`).",
     "DO pass a SINGLE React element as `children`. FormField calls `React.cloneElement` on it to inject `aria-describedby`, `aria-required`, and `aria-invalid` — if you pass a fragment or multiple nodes, cloneElement silently skips the injection and a11y attributes are lost.",
     "COMPOSITE CHILD: when the single child is a layout wrapper — a `Flex` holding a range from/to pair or a 年/月 input+select combo — the label still reaches every control inside. FormField publishes its label through FieldNameContext and each control's semantic focus target (Input's `<input>`, Select's `role=combobox` trigger, and everything composed on them) adopts it as a LAST-RESORT accessible name; a control's own `aria-label`/`aria-labelledby` always wins, so set a per-control `aria-label` (e.g. 開始日/終了日) when the two halves should announce distinct names. The wrapper itself renders as a named `role='group'` (see Flex).",
     "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",

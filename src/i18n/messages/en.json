@@ -22,7 +22,9 @@
       "today": "Today",
       "close": "Close",
       "nav": "{label} navigation",
-      "name": "Calendar"
+      "name": "Calendar",
+      "monthDropdown": "Month",
+      "yearDropdown": "Year"
     },
     "datePicker": {
       "placeholder": "Select date",

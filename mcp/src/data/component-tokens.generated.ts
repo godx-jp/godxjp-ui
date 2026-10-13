@@ -4679,6 +4679,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the device edge (thumb reach / safe area), not a density-scaled gap inside a surface."
   },
   {
+    "name": "--toast-offset-bottom",
+    "value": "0px",
+    "description": "Extra clearance the toast stack keeps above the viewport's bottom edge, ADDED to the gutter on both desktop (sonner's 24px) and mobile (`--toast-mobile-offset`) — gh#1271. `0px` = the stack sits where it always did. A service whose layout pins its own bottom chrome (a fixed bar the library does not render) sets it once in theme.css. Never unitless `0`: it is a `calc()` term, and a bare number there invalidates the whole offset."
+  },
+  {
+    "name": "--toast-sticky-bar-height",
+    "value": "0px",
+    "description": "RUNTIME-PUBLISHED, not a theme knob (gh#1271). A mounted, visible sticky action bar — `PageContainer stickyFooter`, or `MobileShell actions`/`tabBar` in a viewport shell — writes its block size here inline on <html> (`src/lib/toast-clearance.ts`), and the Toaster adds it to its bottom offset so the stack never covers the primary action. Removed again when the bar unmounts or is hidden, which falls back to this `0px`. Set `--toast-offset-bottom` instead of this one: the runtime value overwrites any theme value."
+  },
+  {
     "name": "--dialog-close-size",
     "value": "var(--band-height-xl)",
     "description": "Rule #24 companion for the overlay ✕ (gh#1138): the 24px floor is the WCAG 2.5.8 AA minimum for a mouse; under a finger the target lifts to the 44px tap floor the control ladder already uses. Only the hit area grows (the `::after` above the glyph) — the 16px paint stays put."

@@ -17,6 +17,7 @@ export function EmptyState({
   tone = "muted",
   titleLevel = 3,
   titleAs,
+  live = false,
   className,
 }: EmptyStateProp) {
   // Title element: a real heading at `titleLevel` by default (pick the level for
@@ -28,7 +29,11 @@ export function EmptyState({
       data-slot="empty-state"
       data-variant={variant}
       data-tone={tone}
-      role="status"
+      // gh#1271 — NOT a live region by default. WCAG 4.1.3 covers status MESSAGES (content that
+      // appears in response to something); a static "no records yet" announced as an update on
+      // every render is noise. `live` opts back in for the empty state that IS such a result — a
+      // search or filter that matched nothing.
+      role={live ? "status" : undefined}
       className={cn("ui-empty-state", className)}
     >
       {Icon && variant !== "compact" && (

@@ -104,6 +104,7 @@ export function DatePicker(props: DatePickerProp) {
     placement = "bottom-start",
     renderExtraFooter,
     showSummary = true,
+    captionLayout = "label",
     size,
     status,
     variant,
@@ -181,8 +182,12 @@ export function DatePicker(props: DatePickerProp) {
       : toIsoPeriod(date, picker);
   const displayAll = (date: Date | Date[] | undefined): string =>
     Array.isArray(date) ? date.map((day) => display(day)).join(", ") : display(date);
-  const parse = (text: string) =>
-    parsePickerDate(text, format, parseFormat, Boolean(showTime)) ?? parseIsoPeriod(text, picker);
+  // `strict` is the KEYSTROKE reading (gh#1271): only the canonical spelling commits while typing,
+  // because a loose one like `2026/10/1` is a complete date on its way to `2026/10/15`. Enter and
+  // blur read loosely and normalise the text to the canonical display.
+  const parse = (text: string, strict = false) =>
+    parsePickerDate(text, format, parseFormat, Boolean(showTime), strict) ??
+    parseIsoPeriod(text, picker);
   const periodDate = (date: Date) => pickerPeriodStart(date, picker, dayPickerLocale);
 
   // ── Identity / a11y. A range has no single labelable focus target (two inputs), so its shell is
@@ -376,14 +381,14 @@ export function DatePicker(props: DatePickerProp) {
       choose(undefined);
       return;
     }
-    const parsed = parse(raw);
+    const parsed = parse(raw, true);
     if (parsed && allowed(parsed)) choose(parsed);
   };
 
-  const commitEdge = (edge: "from" | "to", raw: string) => {
+  const commitEdge = (edge: "from" | "to", raw: string, strict = false) => {
     if (edgeDisabled(edge)) return;
     const trimmed = raw.trim();
-    const parsed = parse(trimmed);
+    const parsed = parse(trimmed, strict);
     if (trimmed && (!parsed || !allowed(parsed))) return;
     if (!trimmed && !allowEmpty[edge === "from" ? 0 : 1]) return;
     const base = working as DateRange | undefined;
@@ -419,11 +424,22 @@ export function DatePicker(props: DatePickerProp) {
       const next = periodDate(parsed);
       emit(next);
       setText(display(parsed));
+    } else if (!preserveInvalidOnBlur) {
+      // An entry that cannot be a value must not keep LOOKING like one (gh#1271): the text reverts
+      // to the committed value, the same thing blur does, so what the field shows is what it holds.
+      setText(displayAll(committedSingle));
     }
     setOpen(false);
   };
   const enterEdge = (edge: "from" | "to") => () => {
-    commitEdge(edge, edge === "from" ? fromText : toText);
+    const raw = edge === "from" ? fromText : toText;
+    const parsed = parse(raw);
+    commitEdge(edge, raw);
+    if (raw.trim() && (!parsed || !allowed(parsed)) && !preserveInvalidOnBlur) {
+      const fallback = display(edge === "from" ? committedRange?.from : committedRange?.to);
+      if (edge === "from") setFromText(fallback);
+      else setToText(fallback);
+    }
     setOpen(false);
   };
 
@@ -650,6 +666,7 @@ export function DatePicker(props: DatePickerProp) {
     endMonth: maximum,
     showToday,
     showClose,
+    captionLayout,
     onClose: () => setOpen(false),
   } as const;
 
@@ -886,15 +903,19 @@ export function DatePicker(props: DatePickerProp) {
         onChange={(event) => {
           if (edge === "from") setFromText(event.target.value);
           else setToText(event.target.value);
-          commitEdge(edge, event.target.value);
+          commitEdge(edge, event.target.value, true);
         }}
         onBlur={(event) => {
-          // antd `preserveInvalidOnBlur` — keep a half-typed edge visible instead of reverting it,
-          // so a mistyped date can be corrected rather than retyped.
-          if (preserveInvalidOnBlur) return;
           const parsed = parse(event.target.value);
           const accepted = parsed && allowed(parsed) ? parsed : undefined;
           const fallback = edge === "from" ? committedRange?.from : committedRange?.to;
+          // A loose spelling (`2026/10/01`) is only read at this boundary — commit it here, or
+          // the field would normalise the text while the value stayed empty (gh#1271).
+          if (accepted && +periodDate(accepted) !== +(fallback ?? NaN))
+            commitEdge(edge, event.target.value);
+          // antd `preserveInvalidOnBlur` — keep a half-typed edge visible instead of reverting it,
+          // so a mistyped date can be corrected rather than retyped.
+          if (preserveInvalidOnBlur) return;
           const next = accepted ? display(accepted) : display(fallback);
           if (edge === "from") setFromText(next);
           else setToText(next);
@@ -1009,6 +1030,16 @@ export function DatePicker(props: DatePickerProp) {
               const parsed = parse(event.target.value);
               const accepted =
                 parsed && allowed(parsed) && timeAllowed(parsed) ? parsed : undefined;
+              // A loose spelling (`2026/10/01`) is only read at this boundary, so blur COMMITS it
+              // as Enter does — normalising the text alone would show a date the value never got
+              // (gh#1271). Unchanged text does not re-emit.
+              if (
+                accepted &&
+                !multiple &&
+                !needConfirm &&
+                +periodDate(accepted) !== +((committedSingle as Date | undefined) ?? NaN)
+              )
+                emit(periodDate(accepted));
               if (!preserveInvalidOnBlur)
                 setText(accepted ? display(accepted) : displayAll(committedSingle));
             }}

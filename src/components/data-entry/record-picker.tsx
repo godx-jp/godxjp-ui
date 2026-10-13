@@ -752,7 +752,10 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
                   filter above), never by cmdk over a page it cannot see. Same call Select makes. */}
               <Command shouldFilter={false} split={isMultiple} className="ui-record-picker-list">
                 {status === "error" ? (
+                  // `live` on both outcomes below: each answers the user's own query (gh#1271 —
+                  // EmptyState is no longer a live region by default).
                   <EmptyState
+                    live
                     variant="compact"
                     tone="destructive"
                     title={t("dataEntry.recordPicker.error")}
@@ -772,6 +775,7 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
                   </div>
                 ) : visible.length === 0 ? (
                   <EmptyState
+                    live
                     variant="compact"
                     title={notFoundContent ?? t("dataEntry.recordPicker.empty")}
                   />

@@ -60,7 +60,7 @@ describe("EmptyState — the page zero-state owns the page's remaining height", 
   it("is the default variant, so a page zero-state gets it without opting in", () => {
     const implicit = render(<EmptyState title="データなし" />).container
       .firstElementChild as HTMLElement;
-    expect(implicit.getAttribute("role")).toBe("status");
+    expect(implicit.getAttribute("data-slot")).toBe("empty-state");
     expect(implicit.matches(ruleSelector(css, PAGE_FILL))).toBe(true);
   });
 });

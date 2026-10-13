@@ -11,10 +11,14 @@ import { EmptyState } from "../empty-state";
  */
 const CONSUMER_CLASS = "my-8";
 
+/** The root by its slot — not by `role="status"`, which is opt-in since gh#1271 (`live`). */
+const slot = (container: HTMLElement) =>
+  container.querySelector<HTMLElement>('[data-slot="empty-state"]');
+
 describe("EmptyState", () => {
   it("renders title only (no icon / description / action)", () => {
-    const { getByRole, container } = render(<EmptyState title="データなし" />);
-    const root = getByRole("status");
+    const { container } = render(<EmptyState title="データなし" />);
+    const root = slot(container);
     expect(root).toHaveTextContent("データなし");
     expect(container.querySelector(".ui-empty-state-icon")).toBeNull();
     expect(container.querySelector(".ui-empty-state-description")).toBeNull();
@@ -34,19 +38,19 @@ describe("EmptyState", () => {
     expect(getByRole("button", { name: "更新" })).toBeInTheDocument();
   });
 
-  it("forwards className to the status root", () => {
-    const { getByRole } = render(<EmptyState title="x" className={CONSUMER_CLASS} />);
-    expect(getByRole("status")).toHaveClass(CONSUMER_CLASS);
+  it("forwards className to the root", () => {
+    const { container } = render(<EmptyState title="x" className={CONSUMER_CLASS} />);
+    expect(slot(container)).toHaveClass(CONSUMER_CLASS);
   });
 
   it("exposes restrained section and compact variants", () => {
     const { getByRole, rerender, container } = render(
       <EmptyState icon={Inbox} title="None" variant="section" />,
     );
-    expect(getByRole("status")).toHaveAttribute("data-variant", "section");
+    expect(slot(container)).toHaveAttribute("data-variant", "section");
     expect(getByRole("heading", { level: 3, name: "None" })).toBeInTheDocument();
     rerender(<EmptyState icon={Inbox} title="None" variant="compact" />);
-    expect(getByRole("status")).toHaveAttribute("data-variant", "compact");
+    expect(slot(container)).toHaveAttribute("data-variant", "compact");
     expect(container.querySelector(".ui-empty-state-icon")).toBeNull();
   });
 
@@ -75,9 +79,23 @@ describe("EmptyState", () => {
   });
 
   it("defaults to the muted tone and reflects a semantic tone via data-tone", () => {
-    const { getByRole, rerender } = render(<EmptyState icon={Inbox} title="なし" />);
-    expect(getByRole("status")).toHaveAttribute("data-tone", "muted");
+    const { container, rerender } = render(<EmptyState icon={Inbox} title="なし" />);
+    expect(slot(container)).toHaveAttribute("data-tone", "muted");
     rerender(<EmptyState icon={Inbox} title="承認済み" tone="success" />);
-    expect(getByRole("status")).toHaveAttribute("data-tone", "success");
+    expect(slot(container)).toHaveAttribute("data-tone", "success");
+  });
+
+  // gh#1271 — a static empty state is content, not a status message (WCAG 4.1.3).
+  it("is not a live region by default", () => {
+    const { container, queryByRole } = render(<EmptyState title="まだ記録がありません" />);
+    expect(queryByRole("status")).toBeNull();
+    expect(slot(container)).not.toHaveAttribute("role");
+    expect(slot(container)).not.toHaveAttribute("aria-live");
+  });
+
+  it("`live` announces it as a status — the result of a search or filter", () => {
+    const { getByRole } = render(<EmptyState live title="該当する結果はありません" />);
+    expect(getByRole("status")).toHaveAttribute("data-slot", "empty-state");
+    expect(getByRole("status")).toHaveTextContent("該当する結果はありません");
   });
 });

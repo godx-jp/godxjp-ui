@@ -6,7 +6,8 @@ import { collectInPage } from "../../scripts/visual-audit.mjs";
 
 /**
  * gh#1198 — the banner anatomy check collected the kit's own EmptyState (role="status") and flagged
- * it as `alert-controls-misplaced`. Run the real in-page collector in Chromium.
+ * it as `alert-controls-misplaced`. Run the real in-page collector in Chromium. The fixture is the
+ * `live` EmptyState — the only one that still carries role="status" since gh#1271.
  */
 describe("visual-audit banner collector skips the kit's EmptyState (gh#1198)", () => {
   it("collects a real alert and not an EmptyState status region", async () => {

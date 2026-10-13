@@ -1004,6 +1004,18 @@ export type DatePickerBaseProp = FieldA11yProps &
     minDate?: Date;
     maxDate?: Date;
     showWeek?: boolean;
+    /**
+     * How the day panel's month caption is drawn — forwarded to `Calendar`'s react-day-picker
+     * `captionLayout`. `"label"` (default) is the plain month name between the ‹ › arrows;
+     * `"dropdown"` turns the month and the year into selects, `"dropdown-months"` /
+     * `"dropdown-years"` only one of them.
+     *
+     * Use `"dropdown"` for a BIRTH DATE or any date far from today (gh#1271): with the arrows alone
+     * reaching 1999 is ~320 clicks, with the year select it is one. Without `minDate`/`maxDate` the
+     * year list spans 100 years back to the current year — set `maxDate` for a date that can lie in
+     * the future (an expiry).
+     */
+    captionLayout?: DayPickerProps["captionLayout"];
     needConfirm?: boolean;
     /**
      * Which period the PANEL opens on, independently of the value (antd `defaultPickerValue`, and

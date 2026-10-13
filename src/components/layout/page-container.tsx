@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { scrollParent, useInView } from "../../lib/hooks";
+import { useToastStickyBarClearance } from "../../lib/toast-clearance";
 import { cn } from "../../lib/utils";
 import { BreadcrumbCrumbText, trailEllipsis } from "./breadcrumb-ellipsis";
 import { densityClass, pageContainerVariantClass, padStyle } from "../../lib/variants";
@@ -128,6 +129,11 @@ function PageContainerRoot({
 }: PageContainerProp) {
   const reveal = stickyFooter && footer != null && footerReveal === "onScroll";
   const { headerRef, revealed } = useFooterReveal(reveal);
+  // gh#1271 — while the sticky footer is on screen, the Toaster lifts its stack above it instead of
+  // covering the primary action. A reveal footer that is still parked below the fold publishes
+  // nothing, so a hidden bar never pushes the toasts up.
+  const footerRef = useRef<HTMLElement>(null);
+  useToastStickyBarClearance([footerRef], stickyFooter && !!footer && (!reveal || revealed));
   const { t } = useTranslation();
   const { start: extraStart, end: extraEnd } = resolvePageExtra(extra);
   // Spread on EVERY `<h1>` branch below, so the ref follows the heading through loading → loaded.
@@ -285,7 +291,7 @@ function PageContainerRoot({
       {children != null && <div className="ui-page-body">{children}</div>}
 
       {footer && (
-        <footer className="ui-page-footer" style={footerPadStyle(footerPad)}>
+        <footer ref={footerRef} className="ui-page-footer" style={footerPadStyle(footerPad)}>
           {footer}
         </footer>
       )}

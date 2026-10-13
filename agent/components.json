@@ -748,7 +748,7 @@
       },
       {
         "defaultValue": "false",
-        "description": "Pin footer to viewport bottom on scroll — pairs with variant=\"narrow\".",
+        "description": "Pin footer to viewport bottom on scroll — pairs with variant=\"narrow\". While the pinned footer is VISIBLE (always, or once revealed under `footerReveal=\"onScroll\"`), it publishes its block size as `--toast-sticky-bar-height` on `<html>` and the `Toaster` stack rises above it, so a toast never covers the Save/Submit button that raised it (gh#1271). Cleared on unmount or while a reveal footer is parked below the fold.",
         "name": "stickyFooter",
         "type": "boolean"
       },
@@ -1502,7 +1502,7 @@
         "type": "ReactNode"
       },
       {
-        "description": "The sticky action bar pinned above the tab bar — the screen's primary verb (Scan, Save, Hand over) and at most one secondary. It sits OUTSIDE the scroll region, so it is always reachable with no `position: sticky` and no scroll-padding hack, and it takes the home-indicator inset whenever no tabBar follows it.",
+        "description": "The sticky action bar pinned above the tab bar — the screen's primary verb (Scan, Save, Hand over) and at most one secondary. It sits OUTSIDE the scroll region, so it is always reachable with no `position: sticky` and no scroll-padding hack, and it takes the home-indicator inset whenever no tabBar follows it. In a `height='viewport'` shell the action bar plus the tab bar publish their summed block size as `--toast-sticky-bar-height`, so the `Toaster` stack sits above the bottom chrome instead of over the primary verb (gh#1271).",
         "name": "actions",
         "type": "ReactNode"
       },
@@ -4656,6 +4656,12 @@
         "description": "Render the title as a non-heading element (p/div) instead of a heading — for a compact/section empty state inside a section that already owns its heading, so the message is not announced as a heading and cannot skip an outline level. Overrides titleLevel.",
         "name": "titleAs",
         "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\""
+      },
+      {
+        "defaultValue": "false",
+        "description": "Announce the empty state as a status message (`role=\"status\"`). Default false since gh#1271: a static empty state (\"No invoices yet\") is content, not an update. Rule of thumb — on the page when it loads → leave it off; APPEARS because the user just searched or filtered and nothing matched → `live`.",
+        "name": "live",
+        "type": "boolean"
       }
     ],
     "related": [
@@ -4668,6 +4674,7 @@
     "storyPath": "data-display/empty-state.tsx",
     "tagline": "Centred empty placeholder with icon, title, description, and optional CTA.",
     "usage": [
+      "DO decide whether the empty state is a STATUS MESSAGE (gh#1271). It is not a live region by default: a static \"No records yet\" that is there when the page loads would otherwise be announced as an update on every render (WCAG 4.1.3 covers content that CHANGES). Pass `live` (→ `role=\"status\"`) only when it appears as the result of a user action — a search or filter that matched nothing: `<EmptyState live icon={SearchIcon} title=\"No matching invoices\" />`. Inside `DataTable` do neither — its empty cell already carries `aria-live=\"polite\"`.",
       "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
       "DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs=\"p\"` so the message is not a heading at all.",
       "DO use `tone=\"success\"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.",
@@ -5695,6 +5702,7 @@
       "DO rely on mobile-first collapse: `layout='horizontal'` automatically stacks to vertical below `collapseBelow` (default `md`). Pass `collapseBelow={false}` only when a field MUST stay label-beside-control even on phones.",
       "DO use `columns` for multi-field forms (e.g. `columns={2}`) — it reuses ResponsiveGrid (1 column on small screens, more on md/lg). Span a wide field across columns with `<FormField colSpan={2}>`.",
       "ROW RHYTHM IS THE SAME ON EVERY PATH: a grid of FormFields hands its row spacing to the grid's own `row-gap` (--form-grid-row-gap, defaulting to --form-field-row-gap) instead of the per-field margin a stacked Form uses. So `columns={1}` — and any `columns={n}` form once a narrow container collapses it to one column — is pixel-identical to a Form with no `columns`, and a hand-written `<ResponsiveGrid columns={2}>` of FormFields inside a `CardContent` (what a form with several titled Card sections has to write) matches `columns={2}` exactly. Retune --form-field-row-gap to move every path together; --form-grid-row-gap / --form-grid-column-gap to retune the grid rows / gutter alone. Never add margin to a FormField to space a grid row: a per-item margin inside a grid misaligns row 1 and double-counts the track gap.",
+      "ACTION ROW in a horizontal form (gh#1271): the submit/cancel buttons go in `<FormField label={false}><Flex gap=\"sm\" wrap>…buttons…</Flex></FormField>` as the LAST field. A label-less field renders no label cell and its control is pinned to the control column (gh#709), so the first button's left edge is the inputs' left edge, it follows `labelWidth`, and it collapses with the fields below `collapseBelow`; `wrap` lets the row break onto a second line on a phone. Requires `labelWidth` on the Form — unset, each label column is as wide as its own text and nothing can align with it. DON'T use `staticText` for buttons (it is the read-only VALUE slot), DON'T push the row with a hand-written padding, and DON'T float it to the far end of the card, away from the column the eye just went down. This is the row for a form INSIDE a card or section; a form that is the whole page puts its primary + cancel in the PageContainer footer instead (docs/general/button/examples/form-actions.tsx).",
       "DON'T hand-roll a `<form>` + Flex stack for spacing — `<Form>` provides the vertical rhythm and the layout context FormField reads. Wire react-hook-form by spreading `onSubmit={handleSubmit(...)}` onto `<Form>`.",
       "SERVER ERROR BAG: pass `errors={form.errors}` (Inertia) ONCE on `<Form>`, give each field a `name`, and put `<FormErrors />` at the top of the form. A named field resolves its message from the bag automatically (no per-field `error={errors.x}`), and FormErrors catches validation errors on hidden/derived keys (`action_mode`, `page`, a source-record id) that no visible field could display — without it those submits fail SILENTLY.",
       "SIBLING FORMS: an edit screen split into several Card+Form sections shares ONE bag by wrapping the region in `<FormErrorsProvider errors={form.errors}>` instead of passing `errors` to each Form — the section Forms (without their own `errors`) join the shared registry, and one `<FormErrors />` anywhere in the region renders the unclaimed remainder."
@@ -5734,7 +5742,7 @@
         "type": "string"
       },
       {
-        "description": "Field label above the control.",
+        "description": "Field label above the control. `false` renders no label row; in a horizontal form the content still sits in the control column — the action row (gh#1271).",
         "name": "label",
         "required": true,
         "type": "ReactNode"
@@ -5820,6 +5828,7 @@
     "tagline": "Wraps a control with label, helper, and error; injects the accessible name (aria-labelledby), description (aria-describedby) and validation (aria-errormessage/aria-invalid/aria-required) contract onto the child, which forwards it to its real semantic focus target. Reads the parent Form's layout (vertical/horizontal) — overridable per field.",
     "usage": [
       "DO pass the same string to both `id` on `<FormField>` and `id` on the child control — the component wires `<Label htmlFor={id}>`, and builds `{id}-helper` / `{id}-error` ids for `aria-describedby`. If the ids diverge the label click and screen-reader announcements break.",
+      "NO LABEL: `label={false}` renders no label row and reserves no label space; in a horizontal form the content still sits in the CONTROL column (gh#709). That is the canonical action row under a horizontal form (gh#1271): `<FormField label={false}><Flex gap=\"sm\" wrap><Button type=\"submit\">Save</Button><Button variant=\"outline\">Cancel</Button></Flex></FormField>`. A label-less field around a CONTROL must name the control itself (a `<Checkbox>label</Checkbox>`, an `aria-label`).",
       "DO pass a SINGLE React element as `children`. FormField calls `React.cloneElement` on it to inject `aria-describedby`, `aria-required`, and `aria-invalid` — if you pass a fragment or multiple nodes, cloneElement silently skips the injection and a11y attributes are lost.",
       "COMPOSITE CHILD: when the single child is a layout wrapper — a `Flex` holding a range from/to pair or a 年/月 input+select combo — the label still reaches every control inside. FormField publishes its label through FieldNameContext and each control's semantic focus target (Input's `<input>`, Select's `role=combobox` trigger, and everything composed on them) adopts it as a LAST-RESORT accessible name; a control's own `aria-label`/`aria-labelledby` always wins, so set a per-control `aria-label` (e.g. 開始日/終了日) when the two halves should announce distinct names. The wrapper itself renders as a named `role='group'` (see Flex).",
       "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",
@@ -7345,6 +7354,11 @@
         "type": "boolean"
       },
       {
+        "description": "How the day panel's month caption is drawn (react-day-picker `captionLayout`, forwarded to Calendar). Default `label`. `dropdown` turns month and year into selects; without minDate/maxDate the year list spans 100 years back to the current year.",
+        "name": "captionLayout",
+        "type": "\"label\" | \"dropdown\" | \"dropdown-months\" | \"dropdown-years\""
+      },
+      {
         "description": "Which period the PANEL opens on, independently of the value (antd `defaultPickerValue`), and — as in antd — RE-APPLIED every time the panel opens, not only at mount. Use it for 'open on the fiscal year's start month' or 'open on the month of the row being edited'.",
         "name": "defaultPickerValue",
         "type": "Date"
@@ -7523,6 +7537,7 @@
       "DO test by filling the input directly: `await user.type(screen.getByRole('combobox'), '2026-04-15')`. With `range`, the two edges are named textboxes (From / To). The panel is secondary and not required for testing.",
       "DO use `minDate` / `maxDate` to restrict what is selectable — they are enforced on the panel AND on typed entry, so the keyboard is not a way around the rule the mouse obeys.",
       "DON'T place two DatePickers side by side to fake a from~to pair — that is `range`, which is one control, one shell and one value.",
+      "DO use captionLayout=\"dropdown\" for a birth date or any far-away date — the year select reaches 1999 in one pick instead of ~320 arrow clicks; also set `maxDate` when the date can lie in the future (the year list stops at the current year).",
       "DO use `defaultPickerValue` when the panel should open somewhere other than the value — it is the only way to say it, and it re-applies on every open.",
       "DON'T reach for `inputReadOnly` to switch the control off; it only sets the input's readonly attribute (the panel still opens). `disabled` is the inert one.",
       "DON'T hand-roll a date text input + calendar popover — this component IS that pattern at WAI-ARIA combobox spec level."
@@ -7891,6 +7906,7 @@
       "DON'T suppress the icon with `icon={false}` unless there is a deliberate design reason; the icon is the primary a11y cue for sighted users since the root already carries `role=\"alert\"` for screen readers.",
       "BANNER (`variant=\"banner\"`): place it FULL-BLEED at the top of the surface it warns about — directly under the Topbar inside AppShell's children for shell-wide attention (past-due subscription, active support session), or as the first child of a page. Its inline inset defaults to the page gutter (--space-page-active-x) and its geometry is owned by the `--banner-*` tokens; never fake a strip with `className` overrides. At most ONE per surface.",
       "CALLOUT (`variant=\"callout\"`): for content that is PART of the document being read — a docs admonition, a CMS note, a policy caveat. It renders `role=\"note\"` and never announces. Map Markdown `[!NOTE]`/`[!TIP]`/`[!IMPORTANT]`/`[!WARNING]`/`[!CAUTION]` straight onto `kind`. DON'T pass `onDismiss` (prose is not dismissed) and DON'T use a callout for something that just HAPPENED — that is the default or banner variant, which announce.",
+      "LIVE OR NOT (gh#1271): static, unchanging guidance → `variant=\"callout\"` (not a live region, `role=\"note\"`); `role=\"alert\"`/`role=\"status\"` (the default and banner variants) are for messages that appear in response to something — a failed save, a sync that finished. A hint that is on the page when it loads is not a status message (WCAG 4.1.3), so it must not announce on every render.",
       "DO NOT use `Alert` for transient ephemeral feedback (e.g. 'saved successfully'). Use `toast()` from sonner + `<Toaster>` for that. `Alert` is for persistent, page-scoped banners that stay visible until the user acts or dismisses."
     ],
     "useCases": [
@@ -7946,7 +7962,8 @@
       "DO: Tune how long toasts stay with the `--toast-duration` token in the theme (default 4000ms) rather than a `duration` prop on every mount. Never truncate a toast's body — it wraps.",
       "DO: Let the wrapper handle theming — it uses `useDocumentTheme()` to sync with the document `dark` class and `prefers-color-scheme` automatically. Never pass a hardcoded `theme` prop unless you are deliberately overriding.",
       "DON'T: Use `Toaster` for persistent errors or blocking confirmations. Toasts auto-dismiss; they are not a substitute for `Alert` (inline persistent warnings) or `Dialog` (decisions requiring user input).",
-      "DO: Pass `position` to relocate the stack if a persistent sidebar/footer would obscure the default `bottom-right`. The wrapper already sets a safe `mobileOffset`; don't add redundant mobile offsets unless your layout differs."
+      "DO: Pass `position` to relocate the stack if a persistent sidebar would obscure the default `bottom-right`. The wrapper already sets a safe `mobileOffset`; don't add redundant mobile offsets unless your layout differs.",
+      "DON'T: Hand-tune `offset` to dodge a sticky action bar. The bottom offset (desktop 24px, mobile `--toast-mobile-offset`) already adds `--toast-sticky-bar-height`, which a visible `PageContainer stickyFooter` or `MobileShell` action/tab bar publishes at runtime, so the stack clears it on its own (gh#1271). For bottom chrome the library does not render (an app's own fixed bar), set `--toast-offset-bottom` once in theme.css — it is added on desktop and mobile alike."
     ],
     "useCases": [
       "After a successful form save (invoice, journal entry, vendor record) — show `toast.success(\"保存しました\")` to confirm without blocking navigation.",

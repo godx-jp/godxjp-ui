@@ -166,11 +166,20 @@ function Toaster({ style, richColors = true, toastOptions, ...props }: ToasterPr
         } as React.CSSProperties
       }
       position="bottom-right"
+      // gh#1271 — the bottom edge adds two clearances to the gutter: `--toast-offset-bottom` (a
+      // theme knob, 0px) and `--toast-sticky-bar-height` (published at runtime by a visible sticky
+      // action bar, 0px otherwise), so a toast never covers the submit button that raised it.
+      // `24px` restates sonner's own desktop VIEWPORT_OFFSET, so with both at 0px the stack sits
+      // exactly where it did; top/right/left are left unset and keep sonner's defaults.
+      offset={{
+        bottom: "calc(24px + var(--toast-offset-bottom) + var(--toast-sticky-bar-height))",
+      }}
       // Viewport gutter of the mobile stack. Sonner drops this straight into inline CSS, so a
       // var() string resolves normally — the two 16px literals were library config a service
       // theme could not reach.
       mobileOffset={{
-        bottom: "var(--toast-mobile-offset)",
+        bottom:
+          "calc(var(--toast-mobile-offset) + var(--toast-offset-bottom) + var(--toast-sticky-bar-height))",
         right: "var(--toast-mobile-offset)",
       }}
       // `--toast-duration` (gh#1253). Before `{...props}`, so the Toaster's own `duration` prop
