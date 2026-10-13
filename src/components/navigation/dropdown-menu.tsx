@@ -21,7 +21,7 @@ import {
   type PopoverRenderProps,
 } from "react-aria-components";
 import { Check, ChevronRight } from "lucide-react";
-import { parseShortcut, shouldHandleShortcut } from "../../lib/shortcut";
+import { ariaKeyShortcuts, parseShortcut, shouldHandleShortcut } from "../../lib/shortcut";
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
 import type {
@@ -283,6 +283,8 @@ type DropdownMenuOptions = {
   racOwnsContextMenu: boolean;
   /** Menu autofocus is suppressed for a hover-opened menu — see DropdownMenuContent. */
   openedByHover: React.RefObject<boolean>;
+  /** The root's `shortcut`, as the trigger announces it in `aria-keyshortcuts` (gh#1267). */
+  keyShortcuts?: string;
 };
 
 const DropdownMenuModalContext = React.createContext<DropdownMenuOptions>({
@@ -488,8 +490,9 @@ export function DropdownMenu({
       hover,
       racOwnsContextMenu,
       openedByHover,
+      keyShortcuts: shortcutSpec && !disabled ? ariaKeyShortcuts(shortcutSpec) : undefined,
     }),
-    [modal, wantsContextMenu, disabled, hover, racOwnsContextMenu, wantsHover],
+    [modal, wantsContextMenu, disabled, hover, racOwnsContextMenu, wantsHover, shortcutSpec],
   );
 
   return (
@@ -521,7 +524,7 @@ export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMen
   const menuState = React.useContext(
     RootMenuTriggerStateContext,
   ) as unknown as MenuTriggerLikeState | null;
-  const { contextMenuGesture, disabled, hover, racOwnsContextMenu } =
+  const { contextMenuGesture, disabled, hover, racOwnsContextMenu, keyShortcuts } =
     React.useContext(DropdownMenuModalContext);
   const dataState = state?.isOpen ? "open" : "closed";
 
@@ -599,6 +602,11 @@ export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMen
           React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
             "data-slot": "dropdown-menu-trigger",
             "data-state": dataState,
+            // The root's `shortcut`, announced (gh#1267); a consumer's own value wins.
+            ...(keyShortcuts &&
+            (children.props as Record<string, unknown>)["aria-keyshortcuts"] === undefined
+              ? { "aria-keyshortcuts": keyShortcuts }
+              : {}),
             // A right click target is usually a region rather than a button, and Shift+F10 needs it
             // focusable — so it is given a tab stop unless the consumer already placed one.
             ...(wantsContextMenu &&
@@ -623,6 +631,7 @@ export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMen
       isDisabled={isDisabled}
       data-slot="dropdown-menu-trigger"
       data-state={dataState}
+      aria-keyshortcuts={props["aria-keyshortcuts"] ?? keyShortcuts}
     >
       {children}
     </AriaButton>

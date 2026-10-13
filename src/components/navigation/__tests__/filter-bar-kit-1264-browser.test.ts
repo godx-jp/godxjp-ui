@@ -24,6 +24,7 @@ import { Input } from "./src/components/data-entry/input";
 import { Toolbar } from "./src/components/navigation/toolbar";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./src/components/navigation/dropdown-menu";
 import { Button } from "./src/components/general/button";
+import { DialogRoot, DialogContent, DialogHeader, DialogBody } from "./src/components/feedback/dialog";
 const kind = new URLSearchParams(location.search).get("kind");
 const view =
   kind === "search" ? (
@@ -43,6 +44,34 @@ const view =
       </DropdownMenu>
       <Input id="other" aria-label="Other field" />
     </>
+  ) : kind === "menu-dialog" ? (
+    <>
+      <DropdownMenu shortcut="f">
+        <DropdownMenuTrigger asChild><Button>Filter</Button></DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>Assignee</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DialogRoot defaultOpen>
+        <DialogContent>
+          <DialogHeader title="Edit issue" />
+          <DialogBody>
+            <Button id="in-dialog">Inside</Button>
+            <SearchInput id="dialog-search" ariaLabel="Search in dialog" shortcut="/" />
+          </DialogBody>
+        </DialogContent>
+      </DialogRoot>
+    </>
+  ) : kind === "views-inline" || kind === "views-none" ? (
+    <div style={{ width: 1200 }}>
+      <Toolbar
+        views={kind === "views-inline" ? <nav id="views" aria-label="Views">Open · Mine · All</nav> : undefined}
+        viewsPlacement="inline"
+        search={{ ariaLabel: "Search issues" }}
+        onClear={() => {}}
+        clearDisplay="icon"
+      />
+    </div>
   ) : (
     <div style={{ width: 900 }}>
       <Toolbar
@@ -181,5 +210,54 @@ describe("Toolbar clearDisplay and views (gh#1264)", { timeout: 60_000 }, () => 
     });
     expect(order.viewsAbove).toBe(true);
     await page.close();
+  });
+});
+
+describe("follow-ups from adopting 32.2.0 (gh#1267)", { timeout: 60_000 }, () => {
+  it("a bare-key shortcut does not fire behind an open dialog (the regression)", async () => {
+    const page = await open("menu-dialog");
+    await page.locator("#in-dialog").focus();
+    await page.keyboard.press("f");
+    await page.waitForTimeout(150);
+    expect(await page.locator('[role="menu"]').count()).toBe(0);
+    expect(await activeId(page)).toBe("in-dialog");
+    await page.close();
+  });
+
+  it("a shortcut whose owner is INSIDE the dialog still works there", async () => {
+    const page = await open("menu-dialog");
+    await page.locator("#in-dialog").focus();
+    await page.keyboard.press("/");
+    expect(await activeId(page)).toBe("dialog-search");
+    await page.close();
+  });
+
+  it("the trigger and the search field announce their shortcut in aria-keyshortcuts", async () => {
+    const menu = await open("menu");
+    expect(
+      await menu.locator('[data-slot="dropdown-menu-trigger"]').getAttribute("aria-keyshortcuts"),
+    ).toBe("F");
+    await menu.close();
+    const search = await open("search");
+    expect(await search.locator("#s").getAttribute("aria-keyshortcuts")).toBe("/");
+    await search.close();
+  });
+
+  it('viewsPlacement="inline" keeps an idle bar one row: same height as a bar without views', async () => {
+    const height = async (kind: string) => {
+      const page = await open(kind);
+      const h = await page
+        .locator(".ui-filter-bar")
+        .evaluate((el) => Math.round(el.getBoundingClientRect().height));
+      const viewsInStrip = await page.evaluate(
+        () => document.querySelector('[role="toolbar"] #views') !== null,
+      );
+      await page.close();
+      return { h, viewsInStrip };
+    };
+    const without = await height("views-none");
+    const inline = await height("views-inline");
+    expect(inline.viewsInStrip).toBe(true);
+    expect(inline.h).toBe(without.h);
   });
 });

@@ -7,7 +7,12 @@ import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
 import { resolveFieldA11y } from "../../lib/field-a11y";
 import { useDebouncedValue } from "../../lib/hooks";
-import { parseShortcut, shortcutHint, shouldHandleShortcut } from "../../lib/shortcut";
+import {
+  ariaKeyShortcuts,
+  parseShortcut,
+  shortcutHint,
+  shouldHandleShortcut,
+} from "../../lib/shortcut";
 
 import type { SearchInputProp } from "../../props/components/data-entry.prop";
 export type SearchInputProps = SearchInputProp;
@@ -71,7 +76,7 @@ export function SearchInput({
     if (!shortcutSpec || disabled) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       // Its own field is editable too, so a bare "/" typed into it stays a "/" (gh#1264).
-      if (!shouldHandleShortcut(shortcutSpec, event)) return;
+      if (!shouldHandleShortcut(shortcutSpec, event, inputRef.current)) return;
       event.preventDefault();
       inputRef.current?.focus();
     };
@@ -104,6 +109,8 @@ export function SearchInput({
           id={inputId}
           type="text"
           role="searchbox"
+          // The shortcut, announced (gh#1267) — the visible <kbd> hint is aria-hidden.
+          aria-keyshortcuts={shortcutSpec ? ariaKeyShortcuts(shortcutSpec) : undefined}
           value={value}
           onChange={(e) => {
             setValue(e.target.value);

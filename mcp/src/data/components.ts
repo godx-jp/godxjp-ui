@@ -9668,7 +9668,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
         name: "shortcut",
         type: "string",
         description:
-          'On the ROOT. A page-level key that OPENS the menu — `"f"` for a filter menu, `"mod+shift+v"` for a view menu (gh#1264). Same combo syntax and guard as SearchInput/CommandPalette: a bare key is ignored while focus is in an editable element or an IME is composing. Off by default; ignored while `disabled`. Show the key in the trigger (e.g. with `DropdownMenuShortcut`) so it is discoverable.',
+          'On the ROOT. A page-level key that OPENS the menu — `"f"` for a filter menu, `"mod+shift+v"` for a view menu (gh#1264). Same combo syntax and guard as SearchInput/CommandPalette: a bare key is ignored while focus is in an editable element or an IME is composing. Off by default; ignored while `disabled`. The trigger gets `aria-keyshortcuts` automatically (an explicit consumer value wins); show the key visibly too (e.g. `DropdownMenuShortcut`). Never fires from inside a dialog, menu or listbox that does not contain the menu (gh#1267).',
       },
       {
         name: "onOpenChange",
@@ -9950,6 +9950,13 @@ import { Button } from "@godxjp/ui/general";
         type: "ReactNode",
         description:
           "Typed model — the saved-VIEW switcher rendered ABOVE the filter strip (e.g. `<Tabs>` of Open / Mine / All), the GitHub/Linear layout (gh#1264). A view selects a whole filter set, so it is not one more filter inside the strip; do not pass view tabs as children.",
+      },
+      {
+        name: "viewsPlacement",
+        type: '"above" | "inline"',
+        defaultValue: '"above"',
+        description:
+          "Where `views` sits (gh#1267). `above` is its own row over the strip; `inline` puts it at the START of the strip's first row so an idle bar stays ONE row (with `above`, an idle bar measured 55 → 95px and one table row fewer above the fold at 1440×900).",
       },
       {
         name: "className",

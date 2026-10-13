@@ -745,9 +745,10 @@
 
   /* A TRUNCATED cell is a tab stop (gh#1262, set by DataTable only while it overflows), and focus
    * UNFOLDS it: the text wraps in place so a keyboard user reads all of it — a `title` tooltip
-   * never opens on focus. PatternFly `Truncate` makes the same move. The row grows only while the
-   * cell holds focus. */
-  .ui-data-table-ellipsis[data-truncated]:focus-visible {
+   * never opens on focus. PatternFly `Truncate` makes the same move. A link or button inside the
+   * cell unfolds it the same way (gh#1267). The row grows only while the cell holds focus. */
+  .ui-data-table-ellipsis[data-truncated]:focus-visible,
+  .ui-data-table-ellipsis[data-truncated]:has(:focus-visible) {
     white-space: normal;
     overflow-wrap: anywhere;
   }

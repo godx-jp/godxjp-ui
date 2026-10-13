@@ -88,13 +88,53 @@ export function isEditableTarget(target: EventTarget | null): boolean {
 /**
  * Should this keydown run the shortcut? The ONE gate every global shortcut goes through:
  *  - never during IME composition (the key belongs to the conversion, gh#1054);
+ *  - never from inside a dialog/menu/listbox that does not contain `owner` (gh#1267);
  *  - the combo must match;
  *  - a shortcut with NO command modifier (`"/"`, `"f"`, `"shift+?"`) is ignored while focus is in
  *    an editable element, where that key is text. A modified one (`"mod+k"`) still fires there —
  *    no text field types ⌘K — which is how GitHub's and Linear's palettes behave.
  */
-export function shouldHandleShortcut(spec: ShortcutSpec, event: KeyboardEvent): boolean {
+export function shouldHandleShortcut(
+  spec: ShortcutSpec,
+  event: KeyboardEvent,
+  owner?: Element | null,
+): boolean {
   if (isImeComposing(event) || !shortcutMatches(spec, event)) return false;
+  if (inForeignLayer(event.target, owner)) return false;
   const commandModifier = spec.mod || spec.meta || spec.ctrl || spec.alt;
   return commandModifier || !isEditableTarget(event.target);
+}
+
+/** The layers a page-level shortcut must not reach through (gh#1267). */
+const SHORTCUT_LAYER =
+  '[role="dialog"], [role="alertdialog"], [aria-modal="true"], [role="menu"], [role="listbox"]';
+
+/**
+ * Is focus inside a dialog, menu or listbox that does NOT contain the shortcut's owner? A page
+ * shortcut fired from there opens something BEHIND the layer and pulls focus out of it — measured:
+ * `f` pressed on a button inside a Dialog opened a page `DropdownMenu shortcut="f"` over the dialog
+ * (gh#1267). A shortcut whose owner lives inside that same layer (a SearchInput in the dialog)
+ * still works.
+ */
+function inForeignLayer(target: EventTarget | null, owner?: Element | null): boolean {
+  if (!(target instanceof Element)) return false;
+  const layer = target.closest(SHORTCUT_LAYER);
+  return layer !== null && !(owner && layer.contains(owner));
+}
+
+/**
+ * The `aria-keyshortcuts` value for a spec (WAI-ARIA 1.2: modifiers then key, `+`-joined, with
+ * `Control`/`Meta`/`Alt`/`Shift` spelled out and a letter upper-cased): `mod+k` → `Meta+K` on
+ * Apple platforms, `Control+K` elsewhere; `"/"` → `/` (gh#1267).
+ */
+export function ariaKeyShortcuts(spec: ShortcutSpec): string {
+  return [
+    spec.ctrl || (spec.mod && !isApplePlatform()) ? "Control" : "",
+    spec.meta || (spec.mod && isApplePlatform()) ? "Meta" : "",
+    spec.alt ? "Alt" : "",
+    spec.shift ? "Shift" : "",
+    spec.key.length === 1 ? spec.key.toUpperCase() : spec.key,
+  ]
+    .filter(Boolean)
+    .join("+");
 }

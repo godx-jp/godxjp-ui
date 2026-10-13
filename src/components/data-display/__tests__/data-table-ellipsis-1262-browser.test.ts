@@ -192,4 +192,26 @@ describe("DataTable ellipsis keeps truncated text reachable (gh#1262)", { timeou
     });
     await page.close();
   });
+
+  it("a focused LINK inside a truncated cell unfolds the cell too (gh#1267)", async () => {
+    const page = await open();
+    const link = page.locator('tbody td[data-column-key="link"] a');
+    for (let i = 0; i < 10; i += 1) {
+      await page.keyboard.press("Tab");
+      if (await link.evaluate((el) => el === document.activeElement)) break;
+    }
+    const state = await page.locator('tbody td[data-column-key="link"]').evaluate((el) => ({
+      linkFocused: el.querySelector("a") === document.activeElement,
+      whiteSpace: getComputedStyle(el).whiteSpace,
+      overflow: el.scrollWidth - el.clientWidth,
+      truncated: el.hasAttribute("data-truncated"),
+    }));
+    expect(state).toEqual({
+      linkFocused: true,
+      whiteSpace: "normal",
+      overflow: 0,
+      truncated: true,
+    });
+    await page.close();
+  });
 });
