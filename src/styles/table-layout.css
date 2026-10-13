@@ -753,6 +753,15 @@
     overflow-wrap: anywhere;
   }
 
+  /* The same unfold for a descendant that truncates ON ITS OWN (gh#1269) — a `Text truncate` link
+   * beside a badge or an avatar: its own nowrap/ellipsis is released while the cell holds focus. */
+  .ui-data-table-ellipsis[data-truncated]:focus-visible [data-truncate],
+  .ui-data-table-ellipsis[data-truncated]:has(:focus-visible) [data-truncate] {
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
   .ui-data-table-surface[data-table-layout="fixed"] [data-slot="table"] {
     table-layout: fixed;
   }

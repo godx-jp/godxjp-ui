@@ -53,7 +53,7 @@ static files straight from this public repo — no hosting, no deploy step:
 | [`agent/llms.txt`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/llms.txt) | 3 KB | the [llms.txt](https://llmstxt.org/) entry point |
 | [`agent/index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json) | 3 KB | manifest: version, counts, every file's URL |
 | [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 47 KB | all 161 as name + group + tagline — **fetch this first** |
-| [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1 KB–36 KB | one file per component, each with its `importPath` — **this is the route to take** |
+| [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1 KB–37 KB | one file per component, each with its `importPath` — **this is the route to take** |
 | [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.2 MB | all 161 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
 | [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 845 KB | all 2193 design tokens, their values and why they exist |
 | [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json) | 7 KB | the controlled prop vocabulary |

@@ -1349,6 +1349,22 @@ function fixedEdge<T>(col: ColumnDef<T>): "start" | "end" | undefined {
 const TRUNCATED_CELL_FOCUSABLE =
   'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
 
+/**
+ * What, in an `ellipsis` cell, is actually cut (gh#1269): the cell itself, or a descendant that
+ * truncates on its own — a `Text truncate`/`ellipsis` link sharing the row with a badge or an
+ * avatar never overflows the CELL, so measuring the cell alone found 0 of 7 truncated subjects.
+ * A descendant counts when it ends in an ellipsis (`text-overflow: ellipsis`) and overflows.
+ */
+function truncatedPart(cell: HTMLElement): HTMLElement | null {
+  if (cell.scrollWidth - cell.clientWidth > 1) return cell;
+  for (const el of cell.querySelectorAll<HTMLElement>("*")) {
+    if (el.scrollWidth - el.clientWidth > 1 && getComputedStyle(el).textOverflow === "ellipsis") {
+      return el;
+    }
+  }
+  return null;
+}
+
 function sameOffsets(a: Record<string, number>, b: Record<string, number>): boolean {
   const keys = Object.keys(a);
   if (keys.length !== Object.keys(b).length) return false;
@@ -1613,10 +1629,14 @@ DataTable.Content = function DataTableContent() {
       // fitting; re-measuring it would drop its state under the user's focus. Re-measured on focusout.
       if (cell.contains(document.activeElement)) continue;
       const ownTitle = cell.dataset.truncatedTitle !== undefined;
-      if (cell.scrollWidth - cell.clientWidth > 1) {
+      const part = truncatedPart(cell);
+      if (part) {
         cell.dataset.truncated = "";
-        if (!cell.title || ownTitle) {
-          cell.title = (cell.textContent ?? "").replace(/\s+/g, " ").trim();
+        // The title names the text that is CUT — a truncating `Text` beside a badge or an avatar
+        // titles with its own words, not the badge's — and steps aside when that part already
+        // carries a title of its own.
+        if ((!cell.title || ownTitle) && (part === cell || !part.title)) {
+          cell.title = (part.textContent ?? "").replace(/\s+/g, " ").trim();
           cell.dataset.truncatedTitle = "";
         }
         if (!cell.querySelector(TRUNCATED_CELL_FOCUSABLE)) cell.tabIndex = 0;
