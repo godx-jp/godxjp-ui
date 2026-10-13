@@ -20,6 +20,8 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
 import { DataTable } from "./src/components/data-display/data-table";
+import { Text } from "./src/components/general/typography";
+import { Badge } from "./src/components/data-display/badge";
 const long = "A very long issue subject that cannot possibly fit in a narrow column";
 const data = [
   { id: "1", subject: long, plain: long, link: long, short: "OK" },
@@ -31,6 +33,13 @@ const columns = [
   { key: "link", header: "Link", width: "140px", ellipsis: true,
     render: (row) => <a href="#x">{row.link}</a> },
   { key: "short", header: "Short", width: "140px", ellipsis: true, render: (row) => <em>{row.short}</em> },
+  { key: "badged", header: "Badged", width: "180px", ellipsis: true,
+    render: (row) => (
+      <span style={{ display: "flex", gap: 4, alignItems: "center", minWidth: 0 }}>
+        <Text truncate><a href="#s">{row.subject}</a></Text>
+        <Badge>AI翻訳</Badge>
+      </span>
+    ) },
 ];
 function App() {
   const [wide, setWide] = React.useState(false);
@@ -212,6 +221,38 @@ describe("DataTable ellipsis keeps truncated text reachable (gh#1262)", { timeou
       overflow: 0,
       truncated: true,
     });
+    await page.close();
+  });
+
+  it("a Text truncating INSIDE the cell beside a badge marks the cell, titled with its own text (gh#1269)", async () => {
+    const page = await open();
+    const c = await page.locator('tbody td[data-column-key="badged"]').evaluate((el) => ({
+      cellOverflow: el.scrollWidth - el.clientWidth,
+      textOverflow: (() => {
+        const t = el.querySelector<HTMLElement>("[data-truncate]")!;
+        return t.scrollWidth - t.clientWidth;
+      })(),
+      truncated: el.hasAttribute("data-truncated"),
+      title: el.getAttribute("title"),
+    }));
+    // The reported shape: the CELL fits, the Text inside it is cut.
+    expect(c.cellOverflow).toBeLessThanOrEqual(1);
+    expect(c.textOverflow).toBeGreaterThan(1);
+    expect(c.truncated).toBe(true);
+    expect(c.title).toBe("A very long issue subject that cannot possibly fit in a narrow column");
+    // Keyboard focus on the link unfolds the Text too.
+    const link = page.locator('tbody td[data-column-key="badged"] a');
+    for (let i = 0; i < 12; i += 1) {
+      await page.keyboard.press("Tab");
+      if (await link.evaluate((el) => el === document.activeElement)) break;
+    }
+    const unfolded = await page
+      .locator('tbody td[data-column-key="badged"] [data-truncate]')
+      .evaluate((el) => ({
+        focused: el.querySelector("a") === document.activeElement,
+        whiteSpace: getComputedStyle(el).whiteSpace,
+      }));
+    expect(unfolded).toEqual({ focused: true, whiteSpace: "normal" });
     await page.close();
   });
 });

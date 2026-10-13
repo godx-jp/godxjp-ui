@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.2.2] - 2026-10-13
+
+### 🐛 Fixed
+
+- **`DataTable` `ellipsis` detects truncation inside the cell (#1269).** A `Text truncate` link
+  sharing the row with a badge or an avatar is cut while the cell itself fits, so the cell was
+  never marked (measured on godx-task: subject 0 of 7 truncated cells marked, assignee 0 of 13).
+  A descendant that ends in an ellipsis and overflows now marks the cell, the title carries that
+  descendant's text (not the badge's), and keyboard focus unfolds it too.
+
 ## [32.2.1] - 2026-10-13
 
 ### 🐛 Fixed
