@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.4.2] - 2026-10-14
+
+From gino-cloud on 32.4.0 (#1288), measured in Chromium's accessibility tree.
+
+### 🐛 Fixed
+
+- **A one-file Upload states the file, not a count.** With `maxCount={1}` (or `multiple={false}`)
+  the polite status read 「1 件中 0 件アップロード済み」 for a picked file. It now says the file's own
+  state — 「passport.pdf を選択済み」 / 「… をアップロード中…」 / 「… をアップロード済み」 /
+  「… のアップロードに失敗」 (new `dataEntry.upload.fileSelected|fileUploading|fileUploaded|fileFailed`
+  in en/ja/vi); a file marked for delete says nothing there (the undo banner says it). `multiple`
+  keeps the count. 3 of 3 locales red on 32.4.0.
+- **The Upload trigger's name inside a FormField.** It was always the field label followed by the
+  trigger's own text, so label 「ファイル」 + 「ファイルをアップロード」 read 「ファイル ファイルをアップロード」
+  (the button variant: 「ファイル ファイルを選択」), and an `aria-label` the caller passed was dropped.
+  Now a caller `aria-label` names the trigger (FormField's own echo of its label is told apart via
+  the field context); otherwise the field label leads the name unless the trigger's action text
+  already contains it (「在留カード ファイルをアップロード」 stays as is). 3 of 4 cases red on 32.4.0.
+
 ## [32.4.1] - 2026-10-14
 
 Three defects measured by a usability inspection of godx-qc.
