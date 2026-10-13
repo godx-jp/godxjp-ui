@@ -139,6 +139,58 @@ describe("PasswordStrength", () => {
   });
 });
 
+describe("PasswordStrength empty state (gh#1247)", () => {
+  it("is neutral while nothing is typed: no lit segment, no tone, no verdict", () => {
+    const { container } = render(<PasswordStrength value="" />);
+    expect(container.querySelectorAll('[data-state="filled"]')).toHaveLength(0);
+    expect(container.querySelector("[data-tone]")).toBeNull();
+    expect(screen.getByText("Enter a password")).toBeInTheDocument();
+    expect(screen.queryByText("Weak")).toBeNull();
+    const live = container.querySelector('[aria-live="polite"]');
+    expect(live).not.toBeNull();
+    expect(live).toHaveTextContent("");
+    for (const item of screen.getAllByRole("listitem")) {
+      expect(item).toHaveAttribute("data-state", "pending");
+    }
+  });
+
+  it("treats whitespace-only as empty", () => {
+    const { container } = render(<PasswordStrength value="   " />);
+    expect(container.querySelectorAll('[data-state="filled"]')).toHaveLength(0);
+    expect(screen.getByText("Enter a password")).toBeInTheDocument();
+  });
+
+  it("reads the empty line in the active locale and from labels.empty", () => {
+    const { unmount } = render(<PasswordStrength value="" />, "ja");
+    expect(screen.getByText("パスワードを入力")).toBeInTheDocument();
+    unmount();
+    render(<PasswordStrength value="" labels={{ empty: "未入力" }} />);
+    expect(screen.getByText("未入力")).toBeInTheDocument();
+  });
+
+  // The meter lights `score + 1` of five segments once there is input, so "a" (score 1) lights two
+  // destructive segments and a passing password (score 4) lights all five.
+  it("scores from the first character: destructive at once, all five for a strong one", () => {
+    const { container, rerender } = render(<PasswordStrength value="" />);
+    const wrap = (value: string) => (
+      <AppProvider persist={false} defaultLocale="en" fallbackLocale="en">
+        <PasswordStrength value={value} />
+      </AppProvider>
+    );
+    rerender(wrap("a"));
+    const filled = container.querySelectorAll('[data-state="filled"]');
+    expect(filled).toHaveLength(2);
+    for (const segment of filled) expect(segment).toHaveAttribute("data-tone", "destructive");
+    expect(container.querySelector('[aria-live="polite"]')).toHaveTextContent(
+      "Password strength: Weak",
+    );
+    rerender(wrap("Abcdef1!"));
+    expect(container.querySelectorAll('[data-state="filled"]')).toHaveLength(5);
+    expect(container.querySelectorAll('[data-tone="success"]')).toHaveLength(5);
+    expect(screen.getByText("Strong")).toBeInTheDocument();
+  });
+});
+
 describe("usePasswordStrength minLength (gh#1193)", () => {
   it("scores the length rule against minLength", () => {
     expect(

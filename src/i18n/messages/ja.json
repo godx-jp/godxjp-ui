@@ -241,6 +241,7 @@
       "weak": "弱い",
       "fair": "普通",
       "strong": "強い",
+      "empty": "パスワードを入力",
       "meter": "パスワードの強度 4 段階中 {score}",
       "passed": "達成: ",
       "failed": "未達成: ",
