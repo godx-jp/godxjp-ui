@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.1.2] - 2026-10-13
+
+### 🐛 Fixed
+
+- **`ui-audit` `formfield-needs-form` follows render helpers (#1260).** JSX inside a same-file helper
+  (`const legFields = (leg) => (…)`) whose every call sits under a `<Form>` — directly or through
+  another such helper — now counts as under that Form. On gino-cloud's pre-departure tracking, with
+  its `LabelledControl` workaround removed: 2 findings → 0. A helper called once outside a Form, or
+  never called, is still flagged.
+- **Two one-field components in one file are no longer one group (#1260).** A `<FormField>` at the
+  top of a return was keyed to a shared "no parent", so `Field` and `Choice` read as "Field renders
+  2 FormFields"; each component is now judged alone (a lone field is not flagged).
+
 ## [32.1.1] - 2026-10-13
 
 Defects two consumers measured on real screens (godx-task, gino-cloud).
