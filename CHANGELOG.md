@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.4.3] - 2026-10-14
+
+### 🐛 Fixed
+
+- **`--search-input-end-padding` is no longer inert on a field showing the shortcut key cap (#1285).**
+  32.1.0's key-cap padding (`calc(var(--search-input-edge-inset) + 6ch)`, #1250) won the cascade and
+  read a different token, so a theme retuning `--search-input-end-padding` did nothing there (nightly
+  `check:frame-token-wins`). The padding is now derived from that token: same default pixels
+  (Chromium test), and it follows the token.
+
 ## [32.4.2] - 2026-10-14
 
 From gino-cloud on 32.4.0 (#1288), measured in Chromium's accessibility tree.
