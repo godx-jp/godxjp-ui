@@ -1444,6 +1444,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--toggle-on-color",
+    "value": "initial",
+    "description": "Pressed Toggle LABEL colour — the pair to --toggle-on-background, `initial` like it (default hsl(var(--primary-foreground)) at the call site). Without it a service that quietened the pressed fill to a pale tint was left with white text on it."
+  },
+  {
     "name": "--slider-track-background",
     "value": "initial",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -2122,6 +2127,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--calendar-bordered-weekday-padding-block",
     "value": "var(--space-1)",
     "description": "Block inset of a header cell once the grid is RULED. Unruled, the header row has no edge for its text to sit against, so it needs none; ruled, the line box started right at the 1px rule — measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named step. The smallest step, not a literal, so a service retuning the spacing grid moves it too."
+  },
+  {
+    "name": "--calendar-full-day-padding-inline",
+    "value": "initial",
+    "description": "Text inset of a `width=\"full\"` day cell (gh#1258). The full cell reads from the start edge so a number can sit above badges, and with the unruled cell's `padding: 0` the numeral touched the cell edge — 0px left, 3px top, flagged by the library's own `text-edge-inset` rule (cell: >= 8px inline, >= 4px block). `initial` so the density-scaled defaults (var(--space-2) inline, var(--space-1) block) resolve at the call site, not frozen at the :root density. A shift board that wants a tighter or roomier cell sets these."
+  },
+  {
+    "name": "--calendar-full-day-padding-block",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--calendar-grid-border-color",

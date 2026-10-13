@@ -1305,8 +1305,11 @@ function lucideLocalNames(source) {
  */
 function iconSizingRanges(source) {
   const ranges = [];
+  // Each of these sizes a glyph it holds directly: Button through its svg utility ladder, the menu
+  // items and TopbarItem through their own rules, Toggle/ToggleGroupItem through `.ui-toggle > svg`
+  // in control.css (a bare star inside a Toggle was a false positive, gh#1257).
   for (const m of source.matchAll(
-    /<(Button|DropdownMenuItem|DropdownMenuCheckboxItem|DropdownMenuRadioItem|TopbarItem)\b[\s\S]*?<\/\1>/g,
+    /<(Button|DropdownMenuItem|DropdownMenuCheckboxItem|DropdownMenuRadioItem|TopbarItem|Toggle|ToggleGroupItem)\b[\s\S]*?<\/\1>/g,
   )) {
     ranges.push([m.index, m.index + m[0].length]);
   }

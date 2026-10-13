@@ -83,7 +83,7 @@
 
   .ui-toggle[data-state="on"] {
     background: var(--toggle-on-background, hsl(var(--primary)));
-    color: hsl(var(--primary-foreground));
+    color: var(--toggle-on-color, hsl(var(--primary-foreground)));
   }
 
   .ui-toggle:disabled,
@@ -2551,9 +2551,21 @@
     display: flex;
     min-inline-size: 0;
     flex: 1 1 0%;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--search-select-option-space-gap);
     overflow: hidden;
+  }
+
+  /* The chips WRAP and the trigger grows to hold them (antd's multiple/tags default). Without the
+   * wrap (gh#1257), three chips in a 352px rail ended at x=387 inside a box that ended at x=282 — clipped by
+   * `overflow: hidden` with nothing to say a value was hidden. One row keeps the control height:
+   * `min-block-size` is the floor. No block padding: a chip is 26px, so any padding would grow a
+   * one-row md (32px) or sm (28px) trigger and misalign it with the fields beside it (measured).
+   * A trigger that must stay one line opts into `maxTagCount` ("+N"). */
+  .ui-control-trigger[data-mode="multiple"]:has(.ui-search-select-values) {
+    block-size: auto;
+    min-block-size: var(--control-height);
   }
 
   .ui-search-select-value {
@@ -3527,6 +3539,11 @@
     justify-content: flex-start;
     text-align: start;
     white-space: normal;
+    /* Reading from the start edge needs an inset to read from (gh#1258): the unruled rule below
+     * sets `padding: 0`, which put the numeral on the cell edge. The block step fits inside the
+     * `--control-height` floor, so a content-less full month keeps its height. */
+    padding-inline: var(--calendar-full-day-padding-inline, var(--space-2));
+    padding-block: var(--calendar-full-day-padding-block, var(--space-1));
   }
 
   /* NO `gap` here (gh#730). A month has exactly two in-flow children — the caption and the grid —
@@ -4040,9 +4057,12 @@
     color: var(--button-count-destructive-color, hsl(var(--destructive)));
   }
 
+  /* Secondary is a QUIET fill, so its counter stays quiet too: a light pill on the grey button,
+   * not the swapped near-black one, which read as a notification dot (gh#1257: rgb(36,35,30) on
+   * rgb(244,243,240)). Same weight as the outline/ghost counter, lifted off the fill. */
   .ui-button--secondary .ui-button-count {
-    background: var(--button-count-secondary-background, hsl(var(--secondary-foreground)));
-    color: var(--button-count-secondary-color, hsl(var(--secondary)));
+    background: var(--button-count-secondary-background, hsl(var(--background)));
+    color: var(--button-count-secondary-color, hsl(var(--foreground)));
   }
 }
 

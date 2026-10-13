@@ -282,6 +282,10 @@
   --checkbox-checked-background: initial;
   --switch-checked-background: initial;
   --toggle-on-background: initial;
+  /* Pressed Toggle LABEL colour — the pair to --toggle-on-background, `initial` like it (default
+   * hsl(var(--primary-foreground)) at the call site). Without it a service that quietened the
+   * pressed fill to a pale tint was left with white text on it. */
+  --toggle-on-color: initial;
   --slider-track-background: initial;
   --slider-range-background: initial;
 
@@ -617,6 +621,14 @@
    * measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named
    * step. The smallest step, not a literal, so a service retuning the spacing grid moves it too. */
   --calendar-bordered-weekday-padding-block: var(--space-1);
+  /* Text inset of a `width="full"` day cell (gh#1258). The full cell reads from the start edge so a
+   * number can sit above badges, and with the unruled cell's `padding: 0` the numeral touched the
+   * cell edge — 0px left, 3px top, flagged by the library's own `text-edge-inset` rule (cell:
+   * >= 8px inline, >= 4px block). `initial` so the density-scaled defaults (var(--space-2) inline,
+   * var(--space-1) block) resolve at the call site, not frozen at the :root density. A shift board
+   * that wants a tighter or roomier cell sets these. */
+  --calendar-full-day-padding-inline: initial;
+  --calendar-full-day-padding-block: initial;
   /* Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the
    * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--border)))`
    * so it follows a scoped theme. The --border tier: L* 93.80 / 1.149:1 on the popover in light,

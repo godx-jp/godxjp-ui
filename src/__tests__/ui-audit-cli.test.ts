@@ -392,6 +392,9 @@ describe("lucide-icon-needs-size (gh#712)", () => {
       `${IMPORT}<Button size="sm">\n  <Lock />\n  Export\n</Button>`,
       `${IMPORT}<DropdownMenuItem>\n  <Lock />\n  Lock\n</DropdownMenuItem>`,
       `${IMPORT}<TopbarItem aria-label="lock">\n  <Lock />\n</TopbarItem>`,
+      // `.ui-toggle > svg` sizes a direct glyph (gh#1257)
+      `${IMPORT}<Toggle aria-label="Star">\n  <Lock />\n</Toggle>`,
+      `${IMPORT}<ToggleGroupItem value="lock" aria-label="Lock">\n  <Lock />\n</ToggleGroupItem>`,
       // a glyph handed to a component through a named SLOT is that component's to size
       `${IMPORT}<ListRow leading={<Lock />} title="Vault" />`,
       `${IMPORT}<Alert icon={<Lock />} title="Locked" />`,
