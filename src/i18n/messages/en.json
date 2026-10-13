@@ -32,7 +32,13 @@
       "placeholder": "Select date range",
       "from": "From",
       "to": "To",
-      "openCalendar": "Open calendar"
+      "openCalendar": "Open calendar",
+      "selectEnd": "Select end date",
+      "days": {
+        "one": "{count} day",
+        "other": "{count} days"
+      },
+      "summary": "{range} · {days}"
     },
     "timePicker": {
       "placeholder": "Select time",

@@ -32,7 +32,12 @@
       "placeholder": "Chọn khoảng ngày",
       "from": "Từ",
       "to": "Đến",
-      "openCalendar": "Mở lịch"
+      "openCalendar": "Mở lịch",
+      "selectEnd": "Chọn ngày kết thúc",
+      "days": {
+        "other": "{count} ngày"
+      },
+      "summary": "{range} · {days}"
     },
     "timePicker": {
       "placeholder": "Chọn giờ",

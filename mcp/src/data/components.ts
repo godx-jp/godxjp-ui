@@ -8603,6 +8603,13 @@ export function PrioritySelect({ value, onValueChange }) {
           "With `range`: which of the two endpoints may stay empty (antd `allowEmpty`). Default `[true, true]`.",
       },
       {
+        name: "showSummary",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'With `range`: a polite live summary (`aria-live="polite"`, always mounted) under the DAY grid — the start date alone while only the start is held, then `Intl.DateTimeFormat#formatRange` of both edges plus the INCLUSIVE day count through `Intl.PluralRules` (1 → 7 reads "Mar 1 – 7, 2026 · 7 days"; ja 「7日間」). Muted `Text size="xs" tabular`, no new token. The month / quarter / year period grids ignore it. Independently of this flag, while only the start is chosen the `to` edge\'s placeholder becomes "Select end date" (`dataEntry.dateRangePicker.selectEnd`). `false` removes the summary.',
+      },
+      {
         name: "order",
         type: "boolean",
         defaultValue: "true",
@@ -9079,7 +9086,7 @@ function CreateDialog() {
       "DO use SheetTrigger asChild to wrap a Button or other interactive element — this avoids a nested <button> in the DOM. Never render a raw <button> as a direct child of SheetTrigger.",
       "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
       "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
-      "DO put one <form> around SheetBody + SheetFooter when the footer holds the submit button (`<Form asChild errors={…}><form onSubmit={…}><SheetBody>…</SheetBody><SheetFooter><Button type=\"submit\">…</Button></SheetFooter></form></Form>`). A <form> that wraps SheetBody is transparent to the panel layout (same in Dialog), so the body still scrolls and the footer stays pinned (gh#1239); no className on the form is needed.",
+      'DO put one <form> around SheetBody + SheetFooter when the footer holds the submit button (`<Form asChild errors={…}><form onSubmit={…}><SheetBody>…</SheetBody><SheetFooter><Button type="submit">…</Button></SheetFooter></form></Form>`). A <form> that wraps SheetBody is transparent to the panel layout (same in Dialog), so the body still scrolls and the footer stays pinned (gh#1239); no className on the form is needed.',
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
       "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
       "DON'T put a Sheet inside a Dialog (nested modal overlays conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",

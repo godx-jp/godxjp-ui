@@ -1107,6 +1107,15 @@ export type DatePickerProp = DatePickerBaseProp &
         showTime?: false;
         /** Which endpoints may stay empty (antd `allowEmpty`), as `[from, to]`. */
         allowEmpty?: [boolean, boolean];
+        /**
+         * A polite live summary under the day grid: the start date while only the start is
+         * held, then `Intl.DateTimeFormat#formatRange` of both edges and the INCLUSIVE day count,
+         * plural-aware (en "7 days", ja 「7日間」). Default `true`. Day grid only — the
+         * month / quarter / year period grids have no day count to report and ignore it. The
+         * `to` edge's "Select end date" prompt while only the start is held is independent of
+         * this flag.
+         */
+        showSummary?: boolean;
         presets?: { label: React.ReactNode; value: DateRange | (() => DateRange) }[];
       }
   );

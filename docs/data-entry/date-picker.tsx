@@ -321,12 +321,15 @@ export default function Demo() {
               range を付けると値は DateRange になり、開始/終了の 2 入力を 1
               つのコントロールにまとめる。 name=&#34;period&#34; は period_from / period_to として
               ISO 送信される。 開始 &gt; 終了で入力しても order (既定 true) が昇順に正規化する。
+              showSummary (既定 true) はカレンダー下に選択中の期間と日数 (例: 7日間) を aria-live
+              で読み上げ、開始日だけ選んだ間は終了側が「終了日を選択」と促す。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <FormField id="period" label="会計期間" required>
               <DatePicker
                 range
+                showSummary
                 id="period"
                 name="period"
                 value={period}

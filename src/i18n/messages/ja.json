@@ -32,7 +32,12 @@
       "placeholder": "期間を選択",
       "from": "開始",
       "to": "終了",
-      "openCalendar": "カレンダーを開く"
+      "openCalendar": "カレンダーを開く",
+      "selectEnd": "終了日を選択",
+      "days": {
+        "other": "{count}日間"
+      },
+      "summary": "{range}（{days}）"
     },
     "timePicker": {
       "placeholder": "時刻を選択",

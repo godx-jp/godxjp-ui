@@ -424,6 +424,7 @@
       "layers": [
         "layout.css",
         "control.css",
+        "text-layout.css",
         "dialog-layout.css"
       ],
       "vendor": [

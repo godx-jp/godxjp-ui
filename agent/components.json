@@ -7378,6 +7378,12 @@
       },
       {
         "defaultValue": "true",
+        "description": "With `range`: a polite live summary (`aria-live=\"polite\"`, always mounted) under the DAY grid — the start date alone while only the start is held, then `Intl.DateTimeFormat#formatRange` of both edges plus the INCLUSIVE day count through `Intl.PluralRules` (1 → 7 reads \"Mar 1 – 7, 2026 · 7 days\"; ja 「7日間」). Muted `Text size=\"xs\" tabular`, no new token. The month / quarter / year period grids ignore it. Independently of this flag, while only the start is chosen the `to` edge's placeholder becomes \"Select end date\" (`dataEntry.dateRangePicker.selectEnd`). `false` removes the summary.",
+        "name": "showSummary",
+        "type": "boolean"
+      },
+      {
+        "defaultValue": "true",
         "description": "Normalise the selection into ascending order (antd `order`). ONE rule seen through two value shapes: a `range` picked backwards is SWAPPED, a `multiple` selection is SORTED. Pass false to keep pick order.",
         "name": "order",
         "type": "boolean"
