@@ -55,8 +55,8 @@
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1864,
-      "foundation": 210,
+      "component": 1863,
+      "foundation": 211,
       "semantic": 112
     },
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",

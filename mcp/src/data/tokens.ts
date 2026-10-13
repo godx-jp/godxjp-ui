@@ -448,9 +448,9 @@ export const TOKENS: TokenEntry[] = [
   },
   {
     name: "--toast-duration",
-    category: "component",
-    tier: "component",
-    role: "How long a toast stays before it dismisses itself (gh#1253). Default `4000ms` (Sonner's own default); `ms` or `s`. Sonner takes `duration` as a JS number, so `Toaster` reads this token ONCE on mount with getComputedStyle — from its ThemeScope host if it has one, else `<html>` — and passes it as `duration`. A theme override therefore reaches toasts raised after the Toaster mounts, not a change made while it is mounted. The Toaster's own `duration` prop and a per-call `toast(…, { duration })` both still win. An unparseable value falls back to Sonner's default.",
+    category: "primitive",
+    tier: "primitive",
+    role: "How long a toast stays before it dismisses itself (gh#1253). Declared in the MOTION tier (tokens/foundation.css), beside `--activity-interval`. Default `4000ms` (Sonner's own default); `ms` or `s`. Sonner takes `duration` as a JS number, so `Toaster` reads this token ONCE on mount with getComputedStyle — from its ThemeScope host if it has one, else `<html>` — and passes it as `duration`. A theme override therefore reaches toasts raised after the Toaster mounts, not a change made while it is mounted. The Toaster's own `duration` prop and a per-call `toast(…, { duration })` both still win. An unparseable value falls back to Sonner's default.",
   },
   { name: "--table-*", category: "component", tier: "component", role: "Table row/cell sizing." },
   {

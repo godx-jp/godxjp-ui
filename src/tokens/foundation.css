@@ -959,6 +959,13 @@
    * named to match. In RTL the dots reverse with the row, so the cascade follows the reading
    * direction with no extra rule. */
   --activity-stagger-step: 160ms;
+  /* How long a toast stays before it dismisses itself (gh#1253). In the MOTION tier, like
+   * `--activity-interval`: a component-token name has no property word for a duration. Sonner takes
+   * `duration` as a JS number, so `Toaster` reads this ONCE on mount with getComputedStyle — from its
+   * ThemeScope host when it has one, else `<html>` — and accepts `ms` or `s`. A theme override
+   * applies to toasts raised after the Toaster mounts; a per-call `duration` or the Toaster's own
+   * `duration` prop still wins. 4000ms is Sonner's own default. */
+  --toast-duration: 4000ms;
 
   /* MARQUEE — the TRAVERSAL member of the loop family, and deliberately NOT `--duration-loop`.
    *

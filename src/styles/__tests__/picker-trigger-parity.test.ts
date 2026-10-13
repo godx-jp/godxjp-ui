@@ -33,7 +33,21 @@ describe("picker triggers all sit on the control chrome (gh#348)", () => {
     const source = read(`src/${file}`);
     // A Button would bring .ui-button: its own border, shadow, radius and 2px solid focus ring.
     expect(source).not.toContain('variant="outline"');
-    expect(source).not.toContain('from "../general/button"');
+    // A Button may sit in the popup's FOOTER (gh#1248: needConfirm's Clear / OK, as in TimePicker),
+    // never on the trigger: every `<Button` must follow a `ui-search-select-footer` opener within
+    // twenty lines.
+    // Comments blanked (line count kept) so prose that NAMES <Button> is not read as markup.
+    const code = source.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, (c) => c.replace(/[^\n]/g, " "));
+    const lines = code.split("\n");
+    const stray = lines.flatMap((line, index) =>
+      /<Button[\s>]/.test(line) &&
+      !lines
+        .slice(Math.max(0, index - 20), index)
+        .some((l) => l.includes("ui-search-select-footer"))
+        ? [index + 1]
+        : [],
+    );
+    expect(stray, `<Button outside a popup footer at line(s) ${stray.join(", ")}`).toEqual([]);
   });
 
   it("a trigger reads the control tokens, never the button ones", () => {
