@@ -81,7 +81,7 @@ describe("SearchInput shortcut (gh#1250)", () => {
     const user = userEvent.setup();
     renderWithUi(<SearchInput shortcut label="Search" />);
     const box = screen.getByRole("searchbox");
-    expect(box.className).toContain("!pe-[calc(var(--search-input-edge-inset)+6ch)]");
+    expect(box.className).toContain("!pe-[calc(var(--search-input-end-padding)_-_var(--control-icon-size)_-_var(--control-gap)_+_6ch)]");
     await user.type(box, "a");
     expect(box.className).toContain("!pe-[var(--search-input-end-padding)]");
     expect(box.className).not.toContain("6ch");

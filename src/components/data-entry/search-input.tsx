@@ -131,8 +131,10 @@ export function SearchInput({
           className={cn(
             "ui-search-input-control !ps-[var(--search-input-start-padding)]",
             // gh#1250 — while the key cap shows, the text stops before it instead of running under it.
+            // gh#1285 — written FROM --search-input-end-padding (minus the ✕ slot it reserves, plus the
+            // cap), so a theme that retunes that token still moves this padding (default: edge inset + 6ch, as before).
             showShortcut
-              ? "!pe-[calc(var(--search-input-edge-inset)+6ch)]"
+              ? "!pe-[calc(var(--search-input-end-padding)_-_var(--control-icon-size)_-_var(--control-gap)_+_6ch)]"
               : "!pe-[var(--search-input-end-padding)]",
             inputClassName,
           )}
