@@ -138,6 +138,48 @@ describe('Select mode="multiple" needConfirm (gh#1248)', () => {
     expect(onValueChange).toHaveBeenCalledWith([], []);
   });
 
+  it("a controlled close (open={false}) drops the draft too", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const { rerender } = renderWithUi(
+      <Select
+        mode="multiple"
+        needConfirm
+        open
+        options={OPTIONS}
+        aria-label="都市"
+        onValueChange={onValueChange}
+      />,
+    );
+    await user.click(await screen.findByRole("option", { name: "東京" }));
+    expect(option("東京")).toHaveAttribute("aria-selected", "true");
+    rerender(
+      <Select
+        mode="multiple"
+        needConfirm
+        open={false}
+        options={OPTIONS}
+        aria-label="都市"
+        onValueChange={onValueChange}
+      />,
+    );
+    rerender(
+      <Select
+        mode="multiple"
+        needConfirm
+        open
+        options={OPTIONS}
+        aria-label="都市"
+        onValueChange={onValueChange}
+      />,
+    );
+    expect(await screen.findByRole("option", { name: "東京" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
   it("without needConfirm every toggle still commits at once (default unchanged)", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
