@@ -29,28 +29,6 @@ const SPAWNING_TESTS = globSync("src/**/*.test.{ts,tsx}").filter((file) =>
   SPAWNS.test(readFileSync(file, "utf8")),
 );
 
-/* The kit's public subpaths, resolved to SOURCE. A consumer — a package beside the kit, or a
- * docs/** example page — imports `@godxjp/ui/<group>`; under test that must be the code in src/,
- * never a stale (or absent) dist. The generic `<group>` rule is last: the specific subpaths above
- * it are not component groups. */
-const KIT_SOURCE_ALIASES = [
-  { find: /^@godxjp\/ui\/i18n$/, replacement: path.resolve(__dirname, "src/i18n/index.ts") },
-  { find: /^@godxjp\/ui\/hooks$/, replacement: path.resolve(__dirname, "src/lib/hooks.ts") },
-  { find: /^@godxjp\/ui\/lib\/utils$/, replacement: path.resolve(__dirname, "src/lib/utils.ts") },
-  {
-    find: /^@godxjp\/ui\/datetime$/,
-    replacement: path.resolve(__dirname, "src/lib/datetime/index.ts"),
-  },
-  {
-    find: /^@godxjp\/ui\/props\/(components|vocabulary)$/,
-    replacement: path.resolve(__dirname, "src/props/$1/index.ts"),
-  },
-  {
-    find: /^@godxjp\/ui\/([a-z-]+)$/,
-    replacement: path.resolve(__dirname, "src/components/$1/index.ts"),
-  },
-];
-
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -114,10 +92,6 @@ export default defineConfig({
     projects: [
       {
         extends: true,
-        /* A unit test that drives a docs/** example page (gh#1252: the dependent-selects pattern)
-         * imports that page, and the page imports the kit by its public name. Nothing under src/
-         * imports `@godxjp/ui/*` itself, so no existing test changes how it resolves. */
-        resolve: { alias: KIT_SOURCE_ALIASES },
         test: {
           name: "unit",
           include: ["src/**/*.test.{ts,tsx}"],
@@ -129,7 +103,8 @@ export default defineConfig({
         /* The packages beside the kit (gh#1108 / gh#1109 / gh#1156: @godxjp/markdown,
          * @godxjp/editor, @godxjp/block-editor). They
          * import the kit and each other by PACKAGE name, as a consumer does; here those names
-         * resolve to source, so a test never runs against a stale dist. */
+         * resolve to source, so a test never runs against a stale dist. Scoped to this project so
+         * no test under src/ changes how it resolves anything. */
         extends: true,
         resolve: {
           alias: [
@@ -141,18 +116,43 @@ export default defineConfig({
               find: /^@godxjp\/markdown\/codec$/,
               replacement: path.resolve(__dirname, "packages/markdown/src/codec/index.ts"),
             },
+            {
+              find: /^@godxjp\/ui\/i18n$/,
+              replacement: path.resolve(__dirname, "src/i18n/index.ts"),
+            },
             // @godxjp/chat (v32 #1223) — and the non-group kit subpaths it imports, which the
-            // generic `@godxjp/ui/<group>` rule would send to a missing src/components dir.
+            // generic `@godxjp/ui/<group>` rule below would send to a missing src/components dir.
             {
               find: /^@godxjp\/chat$/,
               replacement: path.resolve(__dirname, "packages/chat/src/index.ts"),
             },
-            ...KIT_SOURCE_ALIASES,
+            {
+              find: /^@godxjp\/ui\/hooks$/,
+              replacement: path.resolve(__dirname, "src/lib/hooks.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/lib\/utils$/,
+              replacement: path.resolve(__dirname, "src/lib/utils.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/datetime$/,
+              replacement: path.resolve(__dirname, "src/lib/datetime/index.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/props\/(components|vocabulary)$/,
+              replacement: path.resolve(__dirname, "src/props/$1/index.ts"),
+            },
+            {
+              find: /^@godxjp\/ui\/([a-z-]+)$/,
+              replacement: path.resolve(__dirname, "src/components/$1/index.ts"),
+            },
           ],
         },
         test: {
           name: "packages",
-          include: ["packages/*/src/**/*.test.{ts,tsx}"],
+          // docs/**: a test that drives a docs page (gh#1252) needs the same public-name → source
+          // resolution, and must not widen it to src/ tests (brand-derivation imports the dist).
+          include: ["packages/*/src/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],
           sequence: { groupOrder: 0 },
         },
       },

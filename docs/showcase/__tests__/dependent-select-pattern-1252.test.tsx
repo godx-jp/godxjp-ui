@@ -1,8 +1,9 @@
 import { beforeAll, describe, expect, it } from "vitest";
+import "@testing-library/jest-dom/vitest";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 
-import { registerDocsMessages } from "../../../../preview/src/docs-messages";
-import { DependentLocationFields } from "../../../../docs/showcase/form-dependent-selects";
+import { registerDocsMessages } from "../../../preview/src/docs-messages";
+import { DependentLocationFields } from "../form-dependent-selects";
 
 /**
  * gh#1252 — the dependent-selects COMPOSITION PATTERN (docs/showcase/form-dependent-selects.tsx).

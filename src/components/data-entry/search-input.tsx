@@ -144,7 +144,7 @@ export function SearchInput({
           </button>
         )}
         {/* The key cap holds the slot the ✕ takes once there is text (gh#1250). */}
-        {showShortcut ? (
+        {showShortcut && shortcutSpec ? (
           <kbd className="kbd ui-search-input-shortcut" aria-hidden="true">
             {shortcutHint(shortcutSpec)}
           </kbd>
