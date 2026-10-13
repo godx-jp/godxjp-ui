@@ -7303,6 +7303,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         description: "Disable search input and clearing.",
       },
       {
+        name: "shortcut",
+        type: "boolean | string",
+        defaultValue: "false",
+        description:
+          'A global shortcut that FOCUSES the field (gh#1250). `false` (default) binds none — two search boxes on one page must not fight over one key; `true` is ⌘K on Apple platforms and Ctrl+K elsewhere (never both, so Ctrl+K keeps its editing meaning on a Mac); a combo string (`"mod+/"`, `"mod+shift+f"`) is read exactly as CommandPalette `shortcut`. A trailing aria-hidden key cap shows the combo while the field is empty — the clear ✕ takes the slot once there is text. Never fires during IME composition, nor while `disabled`.',
+      },
+      {
         name: "inputClassName",
         type: "string",
         description:
@@ -15783,9 +15790,16 @@ import { Text } from "@godxjp/ui/general";
         description: "Shows the supplied loading content.",
       },
       { name: "error", type: "ReactNode", description: "Consumer-supplied error content." },
+      {
+        name: "recent",
+        type: "{ items: string[]; onSelect: (query: string) => void; onClear: () => void; label?: ReactNode }",
+        description:
+          'Recent queries (gh#1249), rendered as the FIRST group only while the query is empty, followed by a trailing "Clear recent searches" row. Choosing a query calls `onSelect(query)` and closes; the clear row calls `onClear()` and keeps the palette open. The library never reads or writes `localStorage` — the consumer stores, de-duplicates and caps `items`; duplicates are rendered as given. `label` replaces the default heading (`dataEntry.commandPalette.recent`).',
+      },
     ],
     usage: [
       "Provide localized labels and real command groups; the component does not fetch commands.",
+      "Recent searches: keep the list in your own store (state, URL, server, localStorage), de-duplicate it, and pass it as `recent` — the palette only renders it while the query is empty.",
       "Use either `open` plus `onOpenChange` or `defaultOpen`; do not mirror both state models.",
       "Search-as-you-type against an API: read the query from `onSearchChange`, pass the results back as `groups`, and set `shouldFilter={false}` so the rows are not scored a second time against the same string.",
       "The empty-state contract: with `shouldFilter` (default) cmdk decides — items exist, the query matches none. With `shouldFilter={false}` the PALETTE decides from props — `labels.empty` renders when `groups` carries no items, and never while `loading` or `error` is set. Hold `loading` for the whole in-flight window: a request that has not answered yet is not an empty result, and asserting over cmdk's own empty node races an async group that populates a frame late.",

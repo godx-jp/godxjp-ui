@@ -56,6 +56,10 @@
     "searchInput": {
       "placeholder": "Search…"
     },
+    "commandPalette": {
+      "recent": "Recent searches",
+      "clearRecent": "Clear recent searches"
+    },
     "autocomplete": {
       "placeholder": "Search or select…",
       "empty": "No results found"

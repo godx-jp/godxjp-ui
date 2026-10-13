@@ -55,6 +55,10 @@
     "searchInput": {
       "placeholder": "Tìm kiếm…"
     },
+    "commandPalette": {
+      "recent": "Tìm kiếm gần đây",
+      "clearRecent": "Xóa lịch sử tìm kiếm"
+    },
     "autocomplete": {
       "placeholder": "Tìm hoặc chọn…",
       "empty": "Không tìm thấy kết quả"

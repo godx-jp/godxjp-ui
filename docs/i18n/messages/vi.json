@@ -1706,5 +1706,16 @@
     "legacy": "Chuyển hệ thống cũ (đã hủy)",
     "audit": "Đánh giá bảo mật (chỉ ngày hoàn thành)",
     "violation": "Không thể phát hành trước khi phát triển xong"
+  },
+  "commandPaletteDocs": {
+    "recentTitle": "Tìm kiếm gần đây (recent)",
+    "recentDescription": "Chỉ hiện thành nhóm đầu tiên khi ô tìm kiếm trống; dòng cuối xóa lịch sử. Ứng dụng tự lưu (state, URL, máy chủ, localStorage) — thư viện không lưu.",
+    "recentSummary": "Gần đây: {count} · Chọn gần nhất: {last}",
+    "none": "(không có)"
+  },
+  "searchInputDocs": {
+    "shortcutTitle": "Phím tắt để focus (shortcut)",
+    "shortcutDescription": "⌘K trên Mac, Ctrl+K ở nơi khác sẽ đưa focus vào ô. Khi đã có chữ, nút ✕ thay chỗ phím tắt. Không phản ứng khi đang gõ IME. Mặc định tắt.",
+    "shortcutPlaceholder": "Tìm trong trang"
   }
 }

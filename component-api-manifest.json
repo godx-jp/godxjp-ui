@@ -4383,6 +4383,14 @@
           "declaredIn": ["src/components/data-entry/command-palette.tsx"]
         },
         {
+          "name": "recent",
+          "origin": "owned",
+          "required": false,
+          "type": "CommandPaletteRecent | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/command-palette.tsx"]
+        },
+        {
           "name": "search",
           "origin": "owned",
           "required": false,
@@ -12592,6 +12600,14 @@
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "shortcut",
+          "origin": "owned",
+          "required": false,
+          "type": "string | boolean | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },

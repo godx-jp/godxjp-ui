@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { SearchInput } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -13,6 +14,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [journalQuery, setJournalQuery] = useState("");
   const [partnerQuery, setPartnerQuery] = useState("");
 
@@ -111,6 +113,20 @@ export default function Demo() {
               className="contract-search-wrapper"
               inputClassName="contract-search-field"
               placeholder="勘定科目コードで検索"
+              onSearch={() => {}}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("searchInputDocs.shortcutTitle")}</CardTitle>
+            <CardDescription>{t("searchInputDocs.shortcutDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SearchInput
+              shortcut
+              placeholder={t("searchInputDocs.shortcutPlaceholder")}
               onSearch={() => {}}
             />
           </CardContent>
