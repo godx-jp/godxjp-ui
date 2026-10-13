@@ -410,6 +410,31 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
+            <CardTitle level={2}>複数選択・確定してから反映（needConfirm）</CardTitle>
+            <CardDescription>
+              行の切り替えは下書きのまま。「確定」で一度だけ反映し、「クリア」は下書きを空にする。Escape・外側クリックで下書きを破棄。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="notify-channels" label="通知チャンネル">
+              <Select
+                mode="multiple"
+                name="channels[]"
+                needConfirm
+                defaultValue={["email"]}
+                maxTagCount={2}
+                options={[
+                  { value: "email", label: "メール" },
+                  { value: "slack", label: "Slack" },
+                  { value: "chatwork", label: "Chatwork" },
+                  { value: "sms", label: "SMS" },
+                ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>
               Ant Design 6 · prefix・suffixIcon・placement・listHeight
             </CardTitle>

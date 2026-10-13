@@ -1725,6 +1725,14 @@ export type SearchSelectMultipleProp = {
    * a token only counts when it matches a row; in `mode="tags"` it is accepted as it stands.
    */
   tokenSeparators?: string[];
+  /**
+   * Hold the panel's picks as a DRAFT until OK commits them (antd's `needConfirm`, the same word
+   * `TimePicker` / `DatePicker` use). Row toggles move a pending set; the footer's OK fires ONE
+   * `onValueChange` with the whole set and closes; its Clear empties the pending set; Escape or an
+   * outside click discards it, so the trigger keeps the committed values. `onSelect` /
+   * `onDeselect` do not fire for draft toggles. Default `false` (commit on every toggle).
+   */
+  needConfirm?: boolean;
 } & SelectTagsCreateProp;
 
 /**
@@ -1757,6 +1765,8 @@ export type SelectLabelInValueMultipleProp = {
   maxTagPlaceholder?: MaxTagPlaceholderProp;
   maxTagTextLength?: number;
   tokenSeparators?: string[];
+  /** @see SearchSelectMultipleProp.needConfirm */
+  needConfirm?: boolean;
   tagRender?: (props: {
     value: string;
     label: React.ReactNode;

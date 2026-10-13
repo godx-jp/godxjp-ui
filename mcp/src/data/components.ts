@@ -7898,6 +7898,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "antd `maxTagTextLength` (multiple/tags) — cut each chip's TEXT to this many characters (an ellipsis marks the cut). The value keeps its whole label.",
       },
       {
+        name: "needConfirm",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "multiple/tags — hold the panel's picks as a DRAFT until OK commits them (gh#1248; antd's `needConfirm`, the same word TimePicker/DatePicker use). Row toggles move a pending set and report nothing; the footer's OK (Button size sm) fires ONE onValueChange with the whole set and closes; its Clear empties the pending set; Escape or an outside click discards the draft and the trigger keeps the committed values. onSelect/onDeselect do not fire for draft toggles. A chip's ✕ and Backspace on the closed trigger still commit at once. Default false: every toggle commits.",
+      },
+      {
         name: "tagRender",
         type: "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode",
         description:
