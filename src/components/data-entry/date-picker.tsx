@@ -868,7 +868,7 @@ export function DatePicker(props: DatePickerProp) {
         value={edge === "from" ? fromText : toText}
         disabled={edgeDisabled(edge)}
         placeholder={
-          edge === "to" && halfRange
+          edge === "to" && halfRange && !isPeriod
             ? (t("dataEntry.dateRangePicker.selectEnd") ?? resolvedPlaceholder)
             : resolvedPlaceholder
         }
