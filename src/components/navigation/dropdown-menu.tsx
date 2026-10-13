@@ -14,6 +14,7 @@ import {
   Separator,
   OverlayArrow,
   SubmenuTrigger,
+  Text,
   useLocale,
   type MenuItemRenderProps,
   type PopoverProps,
@@ -903,6 +904,12 @@ interface DropdownMenuItemPropsOwn {
   disabled?: boolean;
   onSelect?: (event: Event) => void;
   textValue?: string;
+  /**
+   * A second, muted line under the label — the two-line row (gh#1246, parity with
+   * `MegaMenuLinkProp.description`). Rendered as RAC `<Text slot="description">`, so the item's
+   * accessible NAME stays the label and the description is wired as its `aria-describedby`.
+   */
+  description?: React.ReactNode;
   /** Mượn thẻ của con thay vì dựng `<div>` riêng — chỗ để nhét một `<Link>` vào một mục menu. */
   asChild?: boolean;
   /**
@@ -930,14 +937,19 @@ export function DropdownMenuItem({
   disabled,
   onSelect,
   textValue,
+  description,
   asChild,
   ...forwarded
 }: DropdownMenuItemProps) {
   const tag = borrowedTag(children, asChild);
+  const label = tag ? tag.props.children : children;
+  const hasDescription = description != null && description !== false;
   return (
     <MenuItem
       isDisabled={disabled}
-      textValue={textValue}
+      // Wrapping the label in slots below means the collection no longer sees a bare string, so
+      // typeahead would go dead on a described row; a string label is handed over explicitly.
+      textValue={textValue ?? (typeof label === "string" ? label : undefined)}
       onAction={onSelect ? () => onSelect(selectEvent("dropdownmenu.itemSelect")) : undefined}
       className={cn(
         "ui-dropdown-menu-item [&_svg:not([class*='text-'])]:text-muted-foreground",
@@ -952,6 +964,7 @@ export function DropdownMenuItem({
             "data-slot": "dropdown-menu-item",
             "data-inset": inset,
             "data-variant": variant,
+            "data-description": hasDescription ? "" : undefined,
             ...radixItemState(state),
             // LAST, so a consumer's own `id`/`data-*` wins over ours rather than being
             // overwritten by the slot bookkeeping above (gh#631).
@@ -961,7 +974,22 @@ export function DropdownMenuItem({
         );
       }}
     >
-      {tag ? tag.props.children : children}
+      {hasDescription ? (
+        <span className="ui-dropdown-menu-item-text">
+          <Text slot="label" className="ui-dropdown-menu-item-label">
+            {label}
+          </Text>
+          <Text
+            slot="description"
+            data-slot="dropdown-menu-item-description"
+            className="ui-dropdown-menu-item-description"
+          >
+            {description}
+          </Text>
+        </span>
+      ) : (
+        label
+      )}
     </MenuItem>
   );
 }

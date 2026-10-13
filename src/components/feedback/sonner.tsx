@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { CheckCircle2, Info, Loader2, OctagonX, TriangleAlert } from "lucide-react";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 import { useOverlayPortalContainer } from "../../lib/overlay-portal";
+import { useTranslation } from "../../i18n/use-translation";
 
 function useDocumentTheme(): ToasterProps["theme"] {
   return React.useSyncExternalStore(
@@ -35,6 +36,33 @@ function useDocumentTheme(): ToasterProps["theme"] {
         : "light",
     () => "light",
   );
+}
+
+/**
+ * `--toast-duration` → milliseconds for Sonner's `duration` (gh#1253). Accepts the two CSS time
+ * units; anything else (unset, `initial`, a typo) is `undefined`, which leaves Sonner's own
+ * 4000ms default in charge rather than inventing a second one here.
+ */
+export function parseToastDuration(raw: string): number | undefined {
+  const match = /^\s*(\d+(?:\.\d+)?)(ms|s)\s*$/.exec(raw);
+  if (!match) return undefined;
+  const ms = Number(match[1]) * (match[2] === "s" ? 1000 : 1);
+  return ms > 0 ? ms : undefined;
+}
+
+/**
+ * Sonner takes `duration` as a number, so the token is read from the cascade ONCE per host, after
+ * mount — the only point at which computed style exists (SSR has none). Read from the ThemeScope
+ * host when the toaster is portalled into one, so a themed region's duration applies; else from
+ * `<html>`, where the tier file declares it.
+ */
+function useToastDurationToken(host: Element | undefined): number | undefined {
+  const [duration, setDuration] = React.useState<number | undefined>(undefined);
+  React.useEffect(() => {
+    const element = host ?? document.documentElement;
+    setDuration(parseToastDuration(getComputedStyle(element).getPropertyValue("--toast-duration")));
+  }, [host]);
+  return duration;
 }
 
 /**
@@ -87,8 +115,9 @@ const toneVars = Object.fromEntries(
  * are declared and never read. A consumer can still pass `richColors={false}` for a deliberately
  * monochrome stack.
  */
-function Toaster({ style, richColors = true, ...props }: ToasterProps) {
+function Toaster({ style, richColors = true, toastOptions, ...props }: ToasterProps) {
   const theme = useDocumentTheme();
+  const { t } = useTranslation();
   /*
    * Sonner is the one overlay in this library that does NOT portal — it renders where it is
    * mounted. On an ordinary page that is right, and this hook returns `undefined`, so nothing
@@ -97,6 +126,7 @@ function Toaster({ style, richColors = true, ...props }: ToasterProps) {
    * the same statement about the tree the other overlays already obey (gh#877).
    */
   const overlayPortalContainer = useOverlayPortalContainer();
+  const tokenDuration = useToastDurationToken(overlayPortalContainer);
 
   const toaster = (
     <Sonner
@@ -143,6 +173,12 @@ function Toaster({ style, richColors = true, ...props }: ToasterProps) {
         bottom: "var(--toast-mobile-offset)",
         right: "var(--toast-mobile-offset)",
       }}
+      // `--toast-duration` (gh#1253). Before `{...props}`, so the Toaster's own `duration` prop
+      // and a per-call `toast(…, { duration })` both still win.
+      duration={tokenDuration}
+      // The ✕ that `toast.error` / `toast.warning` carry by default (use-toast.ts, gh#1253) is
+      // named in the active locale; Sonner's own label is a fixed English "Close toast".
+      toastOptions={{ closeButtonAriaLabel: t("feedback.toast.close"), ...toastOptions }}
       {...props}
     />
   );

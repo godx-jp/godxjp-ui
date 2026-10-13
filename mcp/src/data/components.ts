@@ -9222,7 +9222,7 @@ import { Button } from "@godxjp/ui/general";
     name: "Toaster",
     group: "feedback",
     tagline:
-      'Mount once at app root to enable toasts. IMPORTANT: trigger toasts via `import { toast } from "sonner"` — NOT from @godxjp/ui.',
+      'Mount once at app root to enable toasts. Trigger them with `import { toast } from "@godxjp/ui/feedback"` — Sonner\'s API, with a close button on `toast.error` / `toast.warning` by default.',
     props: [
       {
         name: "position",
@@ -9231,11 +9231,24 @@ import { Button } from "@godxjp/ui/general";
         description: "Toast stack anchor.",
       },
       { name: "richColors", type: "boolean", description: "Enable Sonner rich variant colours." },
+      {
+        name: "duration",
+        type: "number",
+        description:
+          "Auto-dismiss time in ms for every toast. Omit it to let the `--toast-duration` token (default 4000ms) decide — read once on mount from the ThemeScope host or `<html>` (gh#1253). A per-call `toast(…, { duration })` still wins.",
+      },
+      {
+        name: "closeButton",
+        type: "boolean",
+        description:
+          'Sonner\'s switch for a close button on EVERY toast. Leave it unset for the default: `toast.error` / `toast.warning` from `@godxjp/ui/feedback` carry a close button, `toast.success` / `toast.info` stay auto-dismiss only (gh#1253). The button is named via `t("feedback.toast.close")`.',
+      },
     ],
     usage: [
       "DO: Mount exactly ONE `<Toaster richColors />` at the app root (e.g. inside your layout or AppShell children). Multiple mounts create duplicate toast stacks — there is no provider context, only DOM portals.",
-      'DO: Import `toast` from `"sonner"` directly (not from `@godxjp/ui`) to fire toasts anywhere: `toast.success(…)`, `toast.error(…)`, `toast.warning(…)`, `toast.info(…)`, `toast.loading(…)`, `toast.promise(…)`.',
-      "DON'T: Try to import a `toast` helper from `@godxjp/ui/feedback` — it does not exist. The component re-exports only the `Toaster` mount; the imperative API lives in the `sonner` package.",
+      'DO: Import `toast` from `"@godxjp/ui/feedback"` to fire toasts anywhere: `toast.success(…)`, `toast.error(…)`, `toast.warning(…)`, `toast.info(…)`, `toast.loading(…)`, `toast.promise(…)`. It is Sonner\'s own API with one house default: `toast.error` and `toast.warning` carry a close button (opt out per call with `{ closeButton: false }`), success/info stay auto-dismiss only (gh#1253).',
+      'DON\'T: Import `toast` from `"sonner"` directly — it works, but it skips the close-button default on error/warning. Also note `toast.promise` settling into an error does not gain the button; pass `closeButton` there yourself if the failure must stay dismissible.',
+      "DO: Tune how long toasts stay with the `--toast-duration` token in the theme (default 4000ms) rather than a `duration` prop on every mount. Never truncate a toast's body — it wraps.",
       "DO: Let the wrapper handle theming — it uses `useDocumentTheme()` to sync with the document `dark` class and `prefers-color-scheme` automatically. Never pass a hardcoded `theme` prop unless you are deliberately overriding.",
       "DON'T: Use `Toaster` for persistent errors or blocking confirmations. Toasts auto-dismiss; they are not a substitute for `Alert` (inline persistent warnings) or `Dialog` (decisions requiring user input).",
       "DO: Pass `position` to relocate the stack if a persistent sidebar/footer would obscure the default `bottom-right`. The wrapper already sets a safe `mobileOffset`; don't add redundant mobile offsets unless your layout differs.",
@@ -9256,10 +9269,10 @@ import { Button } from "@godxjp/ui/general";
 import { Toaster } from "@godxjp/ui/feedback";
 <>{children}<Toaster richColors /></>
 
-// anywhere — import toast from "sonner"
-import { toast } from "sonner";
-toast.success("クーポンを公開しました");
-toast.error("保存に失敗しました");`,
+// anywhere
+import { toast } from "@godxjp/ui/feedback";
+toast.success("クーポンを公開しました"); // auto-dismiss after --toast-duration
+toast.error("保存に失敗しました"); // also carries a close button`,
     rules: [],
   },
 
@@ -9661,6 +9674,12 @@ toast.error("保存に失敗しました");`,
         type: "boolean",
         description:
           "On DropdownMenuContent. Ant Design `arrow` — paints the pointer at the anchored edge (default off). Sized from --dropdown-arrow-{width,height,background} rather than Radix's built-in 10×5.",
+      },
+      {
+        name: "description",
+        type: "React.ReactNode",
+        description:
+          'On DropdownMenuItem (gh#1246). A muted second line under the label — the two-line row, parity with `MegaMenuLinkProp.description`. Rendered as react-aria `<Text slot="description">` (`data-slot="dropdown-menu-item-description"`), so the row\'s accessible NAME stays the label and the description becomes its `aria-describedby`. A string label is handed to the collection as `textValue`, so typeahead still reaches the row by its label; pass `textValue` yourself when the label is not a plain string. Sized by --menu-item-description-{font-size,space-block}; rows without one keep the one-line height.',
       },
     ],
     usage: [

@@ -274,6 +274,9 @@
       "dismiss": "Đóng",
       "verifying": "Đang xác minh…",
       "stepUpFailed": "Xác thực lại thất bại. Vui lòng thử lại."
+    },
+    "toast": {
+      "close": "Đóng thông báo"
     }
   },
   "layout": {

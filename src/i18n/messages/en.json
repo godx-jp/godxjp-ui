@@ -278,6 +278,9 @@
       "dismiss": "Dismiss",
       "verifying": "Verifying…",
       "stepUpFailed": "Re-authentication failed. Please try again."
+    },
+    "toast": {
+      "close": "Close notification"
     }
   },
   "layout": {

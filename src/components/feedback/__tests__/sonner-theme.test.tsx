@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { act, waitFor } from "@testing-library/react";
+import { act, render, waitFor } from "@testing-library/react";
 
 // Capture the props Sonner's Toaster receives so we can assert the resolved `theme`.
 let lastProps: Record<string, unknown> = {};
@@ -44,9 +44,13 @@ describe("Toaster — useDocumentTheme", () => {
 
   // `data-theme` is what AppProvider actually writes; `.dark` is only the legacy alias. A
   // class-only read reported "light" on a dark page, and a class-only observer never fired at all.
+  // Rendered WITHOUT AppProvider: AppProvider applies its own theme axis to `<html data-theme>`
+  // after mount ("light" here), and the Toaster now re-renders under its context (it reads `t()`
+  // for the close button's label, gh#1253) — so under renderWithUi the truthful answer after
+  // mount is "light", and this case would only measure who wrote the attribute last.
   it("resolves to dark from `data-theme` on the root element", () => {
     document.documentElement.dataset.theme = "dark";
-    renderWithUi(<Toaster />);
+    render(<Toaster />);
     expect(lastProps.theme).toBe("dark");
   });
 

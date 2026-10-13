@@ -1724,5 +1724,15 @@
     "shortcutTitle": "Focus with a shortcut (shortcut)",
     "shortcutDescription": "⌘K on a Mac, Ctrl+K elsewhere, moves focus to the field. While there is text the ✕ replaces the key cap. Ignored during IME composition. Off by default.",
     "shortcutPlaceholder": "Search this page"
+  },
+  "dropdownMenuDocs": {
+    "description": {
+      "title": "description · two-line items",
+      "body": "Pass description to add a muted second line under the label. Screen readers announce the label as the item's name and the description as its supplementary text (aria-describedby); typing the first letter still jumps to the item by its label.",
+      "trigger": "Export format",
+      "csvDescription": "Opens directly in any spreadsheet",
+      "xlsxDescription": "Keeps formatting and formulas",
+      "pdfDescription": "Fixed layout for printing and sharing"
+    }
   }
 }

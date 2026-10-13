@@ -1717,5 +1717,15 @@
     "shortcutTitle": "Phím tắt để focus (shortcut)",
     "shortcutDescription": "⌘K trên Mac, Ctrl+K ở nơi khác sẽ đưa focus vào ô. Khi đã có chữ, nút ✕ thay chỗ phím tắt. Không phản ứng khi đang gõ IME. Mặc định tắt.",
     "shortcutPlaceholder": "Tìm trong trang"
+  },
+  "dropdownMenuDocs": {
+    "description": {
+      "title": "description · mục hai dòng",
+      "body": "Truyền description để thêm một dòng phụ nhạt màu dưới nhãn. Trình đọc màn hình đọc nhãn làm tên mục và description làm phần mô tả bổ sung (aria-describedby); gõ chữ cái đầu vẫn nhảy tới mục theo nhãn.",
+      "trigger": "Định dạng xuất",
+      "csvDescription": "Mở thẳng bằng bảng tính",
+      "xlsxDescription": "Giữ nguyên định dạng và công thức",
+      "pdfDescription": "Bố cục cố định để in và chia sẻ"
+    }
   }
 }

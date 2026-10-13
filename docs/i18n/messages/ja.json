@@ -1717,5 +1717,15 @@
     "shortcutTitle": "ショートカットでフォーカス（shortcut）",
     "shortcutDescription": "Mac は ⌘K、それ以外は Ctrl+K で検索欄へ移動します。入力中はキーキャップの代わりに ✕ が表示されます。IME 変換中は反応しません。既定はオフ。",
     "shortcutPlaceholder": "ページ内を検索"
+  },
+  "dropdownMenuDocs": {
+    "description": {
+      "title": "description · 2 行の項目",
+      "body": "description を渡すと、ラベルの下に控えめな 2 行目が付く。読み上げではラベルが名前、description が補足説明（aria-describedby）になり、先頭文字の入力による移動もラベルで効く。",
+      "trigger": "エクスポート形式",
+      "csvDescription": "表計算ソフトでそのまま開ける",
+      "xlsxDescription": "書式と数式を保ったまま出力",
+      "pdfDescription": "印刷・社外共有向けの固定レイアウト"
+    }
   }
 }

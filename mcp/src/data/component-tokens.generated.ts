@@ -4644,6 +4644,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the device edge (thumb reach / safe area), not a density-scaled gap inside a surface."
   },
   {
+    "name": "--toast-duration",
+    "value": "4000ms",
+    "description": "How long a toast stays before it dismisses itself (gh#1253). Sonner takes `duration` as a JS number, not a CSS value, so `Toaster` reads this ONCE on mount with getComputedStyle — from its ThemeScope host when it has one, else `<html>` — and accepts `ms` or `s`. A theme override therefore applies to toasts raised after the Toaster mounts; a per-call `duration` or the Toaster's own `duration` prop still wins. 4000ms is Sonner's own default."
+  },
+  {
     "name": "--dialog-close-size",
     "value": "var(--band-height-xl)",
     "description": "Rule #24 companion for the overlay ✕ (gh#1138): the 24px floor is the WCAG 2.5.8 AA minimum for a mouse; under a finger the target lifts to the 44px tap floor the control ladder already uses. Only the hit area grows (the `::after` above the glyph) — the 16px paint stays put."
@@ -6161,6 +6166,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--menu-item-font-size",
     "value": "var(--font-size-base)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--menu-item-description-font-size",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
+    "description": "`DropdownMenuItem description` (gh#1246): the muted second line takes the shortcut's xs step, and a two-line row swaps its fixed height for this block padding."
+  },
+  {
+    "name": "--menu-item-description-space-block",
+    "value": "var(--space-1)",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {

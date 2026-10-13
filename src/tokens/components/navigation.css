@@ -318,6 +318,13 @@
   --menu-item-space-inline: var(--space-2);
   --menu-item-space-gap: var(--space-2);
   --menu-item-font-size: var(--font-size-base);
+  /* `DropdownMenuItem description` (gh#1246): the muted second line takes the shortcut's xs step,
+   * and a two-line row swaps its fixed height for this block padding. */
+  --menu-item-description-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --menu-item-description-space-block: var(--space-1);
   /* Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so
    * labels stay aligned with their checked siblings. */
   --menu-item-inset-space-inline-start: var(--space-8);

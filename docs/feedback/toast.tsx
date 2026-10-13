@@ -11,18 +11,22 @@ export default function Demo() {
   return (
     <PageContainer
       title="Toast"
-      subtitle="Toaster (mount once at root) + toast() from sonner · fire-and-forget ephemeral feedback"
+      subtitle="Toaster (mount once at root) + toast() from @godxjp/ui/feedback · fire-and-forget ephemeral feedback"
     >
-      {/* Mount Toaster once · in a real app this lives in the root layout */}
-      <Toaster richColors position="top-right" duration={4000} closeButton />
+      {/* Mount Toaster once · in a real app this lives in the root layout. No `duration` /
+          `closeButton` here on purpose: the page shows the defaults — `--toast-duration` (4000ms)
+          and a close button on error/warning only. */}
+      <Toaster richColors position="top-right" />
 
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle level={2}>Toast variants</CardTitle>
             <CardDescription>
-              Import toast from sonner (not @godxjp/ui). success / error / warning / info for the
-              four semantic variants. Toasts auto-dismiss · use Alert for persistent messages.
+              Import toast from @godxjp/ui/feedback. success / error / warning / info for the four
+              semantic variants. All auto-dismiss after --toast-duration; error and warning also
+              carry a close button so the reader can dismiss them on their own time. Use Alert for
+              persistent messages.
             </CardDescription>
           </CardHeader>
           <CardContent>
