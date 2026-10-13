@@ -15,7 +15,8 @@
     "next": "Next",
     "selectedCount": "{count} selected",
     "selectedOfTotal": "{count} of {total} selected",
-    "typeToConfirm": "Type {phrase} to confirm"
+    "typeToConfirm": "Type {phrase} to confirm",
+    "dismiss": "Dismiss"
   },
   "dataEntry": {
     "calendar": {
@@ -89,7 +90,6 @@
       "cropTitle": "Crop photo",
       "cropZoom": "Zoom",
       "cropConfirm": "Use photo",
-      "inputLabel": "Choose files",
       "statusUploading": "Uploading {count} file(s)…",
       "statusReady": "{count} file(s), {done} uploaded",
       "statusFailed": "{count} upload(s) failed",
@@ -102,11 +102,12 @@
       "start": "Upload",
       "cancel": "Cancel",
       "rejectAccept": "{name}: file type is not allowed.",
-      "rejectSize": "{name}: file is too large.",
+      "rejectSize": "{name}: file is too large (limit {max}).",
       "rejectCount": "{name}: file limit reached.",
       "rejectBeforeUpload": "{name}: file validation failed.",
       "readFailed": "Could not read the selected folder.",
-      "callbackFailed": "The selected files could not be added."
+      "callbackFailed": "The selected files could not be added.",
+      "noFileSelected": "No file selected"
     },
     "cascader": {
       "placeholder": "Select…",

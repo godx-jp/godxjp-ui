@@ -236,15 +236,30 @@ describe("FormField contract → ColorPicker", () => {
 });
 
 describe("FormField contract → Upload", () => {
-  it("names the native file input from the FormField label", () => {
-    const { container } = renderWithUi(
+  // gh#1280 — the visible trigger carries the contract; the native input (whose value the browser
+  // writes in the browser's language) is out of the tree but keeps the field id.
+  it("names the visible trigger from the FormField label, keeping its own action text", () => {
+    const { container, getByRole } = renderWithUi(
       <FormField id="f" label={LABEL} helper={HELPER}>
         <Upload id="f" onValueChange={() => {}} />
       </FormField>,
     );
+    const trigger = getByRole("button", { name: new RegExp(`^${LABEL} `) });
+    expect(trigger.getAttribute("aria-describedby")).toBeTruthy();
+    expect(trigger).toHaveAccessibleDescription(new RegExp(HELPER));
     const fileInput = container.querySelector<HTMLInputElement>('input[type="file"]');
-    expect(fileInput).toBeTruthy();
-    expect(fileInput!).toHaveAccessibleName(LABEL);
-    expect(fileInput!).toHaveAccessibleDescription(HELPER);
+    expect(fileInput).toHaveAttribute("id", "f");
+    expect(fileInput).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("marks the trigger invalid and points aria-errormessage at the FormField error", () => {
+    const { getByRole, getByText } = renderWithUi(
+      <FormField id="f" label={LABEL} error={ERROR}>
+        <Upload id="f" onValueChange={() => {}} />
+      </FormField>,
+    );
+    const trigger = getByRole("button", { name: new RegExp(`^${LABEL} `) });
+    expect(trigger).toHaveAttribute("aria-invalid", "true");
+    expect(trigger.getAttribute("aria-errormessage")).toBe(getByText(ERROR).id);
   });
 });

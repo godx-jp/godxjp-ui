@@ -11,7 +11,8 @@ import {
 import { AppPresetContext, type AppPreset } from "./preset";
 import { warnUnknownLocale } from "../i18n/locale-tags";
 import { syncAppRequestHeaders } from "./request-headers";
-import { syncI18nLocale } from "../i18n/translate";
+import { syncI18nLocale, translate } from "../i18n/translate";
+import { useOverlayDismissLabel } from "../lib/overlay-dismiss-label";
 
 /** BCP-47 primary subtags that render right-to-left. */
 const RTL_LANGUAGE_SUBTAGS = new Set(["ar", "he", "fa", "ur", "ps", "sd", "yi", "dv", "ckb"]);
@@ -543,6 +544,15 @@ export function AppProvider({
       setFontSize,
       setScaling,
     ],
+  );
+
+  // React Aria's hidden overlay dismiss button names itself from its own string table, which has
+  // no `vi`; the library's catalogue names it instead, in every locale (gh#1280). The OUTERMOST
+  // provider owns it: the buttons are portalled to <body>, so two nested providers in different
+  // locales would each rewrite the other's label on every mutation, forever.
+  const isOutermostProvider = React.useContext(AppContext) === null;
+  useOverlayDismissLabel(
+    isOutermostProvider ? translate(locale, fallbackLocale, "common.dismiss") : null,
   );
 
   /*

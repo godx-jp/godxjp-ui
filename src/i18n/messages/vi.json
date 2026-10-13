@@ -15,7 +15,8 @@
     "next": "Tiếp",
     "selectedCount": "{count} đã chọn",
     "selectedOfTotal": "Đã chọn {count}/{total}",
-    "typeToConfirm": "Nhập {phrase} để xác nhận"
+    "typeToConfirm": "Nhập {phrase} để xác nhận",
+    "dismiss": "Bỏ qua"
   },
   "dataEntry": {
     "calendar": {
@@ -88,7 +89,6 @@
       "cropTitle": "Cắt ảnh",
       "cropZoom": "Thu phóng",
       "cropConfirm": "Dùng ảnh này",
-      "inputLabel": "Chọn tệp",
       "statusUploading": "Đang tải lên {count} tệp…",
       "statusReady": "{count} tệp, đã tải lên {done}",
       "statusFailed": "{count} tệp tải lên thất bại",
@@ -101,11 +101,12 @@
       "start": "Tải lên",
       "cancel": "Huỷ",
       "rejectAccept": "{name}: loại tệp không được phép.",
-      "rejectSize": "{name}: tệp quá lớn.",
+      "rejectSize": "{name}: tệp quá lớn (tối đa {max}).",
       "rejectCount": "{name}: đã đủ số lượng tệp.",
       "rejectBeforeUpload": "{name}: kiểm tra tệp thất bại.",
       "readFailed": "Không thể đọc thư mục đã chọn.",
-      "callbackFailed": "Không thể thêm các tệp đã chọn."
+      "callbackFailed": "Không thể thêm các tệp đã chọn.",
+      "noFileSelected": "Chưa chọn tệp"
     },
     "cascader": {
       "placeholder": "Chọn…",

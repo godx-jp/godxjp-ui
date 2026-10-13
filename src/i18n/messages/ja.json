@@ -15,7 +15,8 @@
     "next": "次へ",
     "selectedCount": "{count} 件選択",
     "selectedOfTotal": "{total} 件中 {count} 件選択",
-    "typeToConfirm": "確認のため {phrase} と入力"
+    "typeToConfirm": "確認のため {phrase} と入力",
+    "dismiss": "閉じる"
   },
   "dataEntry": {
     "calendar": {
@@ -88,7 +89,6 @@
       "cropTitle": "写真を切り抜き",
       "cropZoom": "ズーム",
       "cropConfirm": "この写真を使用",
-      "inputLabel": "ファイルを選択",
       "statusUploading": "{count} 件をアップロード中…",
       "statusReady": "{count} 件中 {done} 件アップロード済み",
       "statusFailed": "{count} 件のアップロードに失敗",
@@ -101,11 +101,12 @@
       "start": "アップロード",
       "cancel": "キャンセル",
       "rejectAccept": "{name}: 許可されていない形式です。",
-      "rejectSize": "{name}: ファイルが大きすぎます。",
+      "rejectSize": "{name}: ファイルが大きすぎます（上限 {max}）。",
       "rejectCount": "{name}: ファイル数の上限です。",
       "rejectBeforeUpload": "{name}: ファイルの検証に失敗しました。",
       "readFailed": "選択したフォルダーを読み取れませんでした。",
-      "callbackFailed": "選択したファイルを追加できませんでした。"
+      "callbackFailed": "選択したファイルを追加できませんでした。",
+      "noFileSelected": "未選択"
     },
     "cascader": {
       "placeholder": "選択…",
