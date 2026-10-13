@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { Button, Text } from "@godxjp/ui/general";
 import {
   SearchInput,
+  Segmented,
   Select,
   SelectContent,
   SelectItem,
@@ -125,6 +126,36 @@ export default function Demo() {
                 メンバーを追加
               </Button>
             }
+          />
+        </Flex>
+
+        {/* views + clearDisplay="icon" (gh#1264) — the issue-list shape: saved views above the
+            strip, a compact clear so a few active filters keep one row. */}
+        <Flex direction="col" gap="xs">
+          <Text size="xs" tone="muted">
+            views · above the strip · clearDisplay=&quot;icon&quot; · the ✕ alone, same name
+          </Text>
+          <FilterBar
+            views={
+              <Segmented
+                aria-label="Views"
+                options={[
+                  { value: "open", label: "Open" },
+                  { value: "mine", label: "Assigned to me" },
+                  { value: "all", label: "All" },
+                ]}
+                defaultValue="open"
+              />
+            }
+            search={{
+              value: modelQuery,
+              onValueChange: setModelQuery,
+              placeholder: "Search issues",
+              ariaLabel: "Search issues",
+            }}
+            onClear={clearModelFilters}
+            hasActiveFilters
+            clearDisplay="icon"
           />
         </Flex>
 

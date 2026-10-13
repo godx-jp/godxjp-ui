@@ -21,6 +21,7 @@ import {
   type PopoverRenderProps,
 } from "react-aria-components";
 import { Check, ChevronRight } from "lucide-react";
+import { parseShortcut, shouldHandleShortcut } from "../../lib/shortcut";
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
 import type {
@@ -378,6 +379,13 @@ interface DropdownMenuPropsOwn {
   mouseEnterDelay?: number;
   /** Ant Design `mouseLeaveDelay`, in SECONDS. Default 0.1 — long enough to cross the gap. */
   mouseLeaveDelay?: number;
+  /**
+   * A page-level key that OPENS the menu — `"f"` for a filter menu, `"mod+shift+v"` for a view
+   * menu (gh#1264). The same combo syntax and the same guard as `SearchInput`/`CommandPalette`: a
+   * bare key is ignored while focus is in an editable element or an IME is composing. Off by
+   * default; ignored while `disabled`. Show the key in the trigger with `DropdownMenuShortcut`.
+   */
+  shortcut?: string;
 }
 
 type DropdownMenuProps = React.PropsWithChildren<DropdownMenuPropsOwn>;
@@ -393,6 +401,7 @@ export function DropdownMenu({
   disabled = false,
   mouseEnterDelay = DROPDOWN_MENU_MOUSE_ENTER_DELAY,
   mouseLeaveDelay = DROPDOWN_MENU_MOUSE_LEAVE_DELAY,
+  shortcut,
 }: DropdownMenuProps) {
   void dir;
   // antd: `triggerActions = disabled ? [] : trigger`. Disabling is the absence of every gesture,
@@ -421,6 +430,18 @@ export function DropdownMenu({
     },
     [disabled, open, onOpenChange],
   );
+
+  const shortcutSpec = React.useMemo(() => (shortcut ? parseShortcut(shortcut) : null), [shortcut]);
+  React.useEffect(() => {
+    if (!shortcutSpec || disabled) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isOpenRef.current || !shouldHandleShortcut(shortcutSpec, event)) return;
+      event.preventDefault();
+      setOpen(true);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [shortcutSpec, disabled, setOpen]);
 
   const enterTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const leaveTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);

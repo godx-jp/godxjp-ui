@@ -80,6 +80,17 @@
       "type": "ReactNode"
     },
     {
+      "defaultValue": "\"label\"",
+      "description": "How the clear-all button shows itself (gh#1264). `label` is ✕ + the localized \"Clear filters\"; `icon` is the ✕ alone — same accessible name, a tooltip with the text, a control-height square instead of ~150px — so a bar with a few active filters keeps one row.",
+      "name": "clearDisplay",
+      "type": "\"label\" | \"icon\""
+    },
+    {
+      "description": "Typed model — the saved-VIEW switcher rendered ABOVE the filter strip (e.g. `<Tabs>` of Open / Mine / All), the GitHub/Linear layout (gh#1264). A view selects a whole filter set, so it is not one more filter inside the strip; do not pass view tabs as children.",
+      "name": "views",
+      "type": "ReactNode"
+    },
+    {
       "description": "Extra classes on the root element.",
       "name": "className",
       "type": "string"

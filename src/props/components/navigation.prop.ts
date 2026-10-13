@@ -119,9 +119,24 @@ export type ToolbarProp = {
   disabled?: DisabledProp;
   /** Typed model — consumer error content, announced via `role="alert"` in place of the count. */
   error?: ErrorProp;
+  /**
+   * How the clear-all button shows itself (gh#1264). `label` (default) is the ✕ plus the localized
+   * "Clear filters" text; `icon` is the ✕ alone — the same accessible name, a tooltip with the text,
+   * and a control-height square instead of ~150px, so a bar with a few active filters keeps one row.
+   */
+  clearDisplay?: FilterBarClearDisplayProp;
+  /**
+   * Typed model — the saved-VIEW switcher above the filter strip (e.g. `<Tabs>` of "Open / Mine /
+   * All"), as GitHub and Linear put view tabs over their filters (gh#1264). A view selects a whole
+   * filter set, so it is not one more filter in the strip.
+   */
+  views?: React.ReactNode;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };
+
+/** @see ToolbarProp.clearDisplay */
+export type FilterBarClearDisplayProp = "label" | "icon";
 
 /** @see ToolbarGroup */
 export type ToolbarGroupProp = {

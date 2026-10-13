@@ -1,8 +1,10 @@
+import { isImeComposing } from "./ime";
 import { isApplePlatform } from "./platform";
 
 /**
  * A global keyboard shortcut, parsed from a combo string. Shared by `CommandPalette` (toggles the
- * dialog) and `SearchInput` (focuses the field) so both read `"mod+k"` the same way (gh#1250).
+ * dialog), `SearchInput` (focuses the field) and `DropdownMenu` (opens the menu) so all three read
+ * `"mod+k"` the same way (gh#1250).
  */
 export type ShortcutSpec = {
   key: string;
@@ -55,4 +57,44 @@ export function shortcutHint(spec: ShortcutSpec): string {
     spec.shift ? "⇧" : "",
     spec.key.length === 1 ? spec.key.toUpperCase() : spec.key,
   ].join("");
+}
+
+/**
+ * Is focus somewhere the user is TYPING — an input, a textarea, a select, a contenteditable or an
+ * ARIA textbox/combobox? A bare key is text there: `"/"` typed into a dialog field is a slash,
+ * not "focus the search box" (gh#1264, measured: typing `a/b` lost the `/`).
+ */
+export function isEditableTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  if (target.isContentEditable) return true;
+  if (target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return true;
+  if (target instanceof HTMLInputElement) {
+    return ![
+      "button",
+      "checkbox",
+      "radio",
+      "range",
+      "reset",
+      "submit",
+      "color",
+      "file",
+      "image",
+    ].includes(target.type);
+  }
+  const role = target.getAttribute("role");
+  return role === "textbox" || role === "combobox" || role === "searchbox";
+}
+
+/**
+ * Should this keydown run the shortcut? The ONE gate every global shortcut goes through:
+ *  - never during IME composition (the key belongs to the conversion, gh#1054);
+ *  - the combo must match;
+ *  - a shortcut with NO command modifier (`"/"`, `"f"`, `"shift+?"`) is ignored while focus is in
+ *    an editable element, where that key is text. A modified one (`"mod+k"`) still fires there —
+ *    no text field types ⌘K — which is how GitHub's and Linear's palettes behave.
+ */
+export function shouldHandleShortcut(spec: ShortcutSpec, event: KeyboardEvent): boolean {
+  if (isImeComposing(event) || !shortcutMatches(spec, event)) return false;
+  const commandModifier = spec.mod || spec.meta || spec.ctrl || spec.alt;
+  return commandModifier || !isEditableTarget(event.target);
 }

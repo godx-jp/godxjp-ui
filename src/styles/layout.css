@@ -1854,6 +1854,12 @@
     gap: var(--filter-bar-section-gap);
   }
 
+  /* The saved-view switcher above the strip (gh#1264). `min-inline-size: 0` lets a Tabs row inside
+   * it scroll on its own instead of widening the bar. */
+  .ui-filter-bar-views {
+    min-inline-size: 0;
+  }
+
   .ui-filter-bar .ui-filter-bar-search {
     inline-size: 100%;
   }

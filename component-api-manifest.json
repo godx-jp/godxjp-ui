@@ -6035,6 +6035,14 @@
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
+          "name": "shortcut",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
           "name": "trigger",
           "origin": "owned",
           "required": false,
@@ -7073,6 +7081,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "clearDisplay",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarClearDisplayProp | undefined",
+          "values": ["label", "icon"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "disabled",
           "origin": "owned",
           "required": false,
@@ -7158,6 +7174,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "views",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]
@@ -17543,6 +17567,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "clearDisplay",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarClearDisplayProp | undefined",
+          "values": ["label", "icon"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "disabled",
           "origin": "owned",
           "required": false,
@@ -17628,6 +17660,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "views",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]

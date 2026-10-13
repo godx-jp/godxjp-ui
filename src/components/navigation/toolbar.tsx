@@ -6,6 +6,7 @@ import { Button } from "../general/button";
 import { Badge } from "../data-display/badge";
 import { SearchInput } from "../data-entry/search-input";
 import { Select } from "../data-entry/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
 import { cn } from "../../lib/utils";
 import type { ToolbarGroupProp, ToolbarProp } from "../../props/components/navigation.prop";
 
@@ -41,6 +42,8 @@ export function Toolbar({
   loading,
   disabled,
   error,
+  clearDisplay = "label",
+  views,
   className,
   children,
 }: ToolbarProp) {
@@ -58,7 +61,48 @@ export function Toolbar({
     resultCount !== undefined ||
     loading !== undefined ||
     disabled !== undefined ||
-    error !== undefined;
+    error !== undefined ||
+    views !== undefined;
+
+  /**
+   * The clear-all control in either display (gh#1264). `icon` keeps the accessible name and moves
+   * the visible text into a tooltip, so the button is a control-height square instead of ~150px.
+   */
+  const clearButton = (isDisabled?: boolean) => {
+    const label = t("common.clearFilters");
+    if (clearDisplay === "icon") {
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={onClear}
+              disabled={isDisabled}
+              aria-label={label}
+              className="ui-toolbar-clear"
+              data-display="icon"
+            >
+              <X aria-hidden="true" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{label}</TooltipContent>
+        </Tooltip>
+      );
+    }
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onClear}
+        disabled={isDisabled}
+        className="ui-toolbar-clear"
+      >
+        <X aria-hidden="true" />
+        {label}
+      </Button>
+    );
+  };
 
   if (!hasModel) {
     return (
@@ -75,12 +119,7 @@ export function Toolbar({
         className={cn("ui-toolbar", sticky && "ui-toolbar-sticky", className)}
       >
         {children}
-        {onClear && hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={onClear} className="ui-toolbar-clear">
-            <X aria-hidden="true" />
-            {t("common.clearFilters")}
-          </Button>
-        )}
+        {onClear && hasActiveFilters && clearButton()}
       </div>
     );
   }
@@ -89,13 +128,14 @@ export function Toolbar({
   const showChips = Boolean(chips && chips.length > 0);
   const showMeta = error != null || resultCount !== undefined;
 
-  //   search → typed filters → children (custom composition filters) → reset → actions
-  //   → applied-filter chips row → result-count / error line.
+  //   views row → search → typed filters → children (custom composition filters) → reset
+  //   → actions → applied-filter chips row → result-count / error line.
   return (
     <div
       className={cn("ui-filter-bar", sticky && "ui-toolbar-sticky", className)}
       data-loading={loading || undefined}
     >
+      {views != null && <div className="ui-filter-bar-views">{views}</div>}
       <div
         role="toolbar"
         aria-label={t("navigation.toolbar.ariaLabel")}
@@ -158,18 +198,7 @@ export function Toolbar({
         {children}
         {(showClear || actions != null) && (
           <div className="ui-filter-bar-end">
-            {showClear && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClear}
-                disabled={disabled}
-                className="ui-toolbar-clear"
-              >
-                <X aria-hidden="true" />
-                {t("common.clearFilters")}
-              </Button>
-            )}
+            {showClear && clearButton(disabled)}
             {actions != null && <div className="ui-filter-bar-actions">{actions}</div>}
           </div>
         )}

@@ -3190,6 +3190,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "ChildrenProp",
     ],
   },
+  FilterBarClearDisplayProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
   FilterBarOverflowProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
