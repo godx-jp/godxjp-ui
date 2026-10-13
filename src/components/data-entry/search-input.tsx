@@ -79,6 +79,8 @@ export function SearchInput({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [shortcutSpec, disabled]);
 
+  const showShortcut = Boolean(shortcutSpec && !value && !disabled);
+
   const setValue = (v: string) => {
     if (!isControlled) setInternal(v);
     onValueChange?.(v);
@@ -120,7 +122,11 @@ export function SearchInput({
           variant={variant}
           {...fieldA11y}
           className={cn(
-            "ui-search-input-control !ps-[var(--search-input-start-padding)] !pe-[var(--search-input-end-padding)]",
+            "ui-search-input-control !ps-[var(--search-input-start-padding)]",
+            // gh#1250 — while the key cap shows, the text stops before it instead of running under it.
+            showShortcut
+              ? "!pe-[calc(var(--search-input-edge-inset)+6ch)]"
+              : "!pe-[var(--search-input-end-padding)]",
             inputClassName,
           )}
           disabled={disabled}
@@ -138,7 +144,7 @@ export function SearchInput({
           </button>
         )}
         {/* The key cap holds the slot the ✕ takes once there is text (gh#1250). */}
-        {shortcutSpec && !value && !disabled ? (
+        {showShortcut ? (
           <kbd className="kbd ui-search-input-shortcut" aria-hidden="true">
             {shortcutHint(shortcutSpec)}
           </kbd>

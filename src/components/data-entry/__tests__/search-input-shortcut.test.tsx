@@ -77,6 +77,16 @@ describe("SearchInput shortcut (gh#1250)", () => {
     expect(hint(container)).toBeNull();
   });
 
+  it("the text keeps clear of the key cap while it shows, and gets the ✕ padding back once typed", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<SearchInput shortcut label="Search" />);
+    const box = screen.getByRole("searchbox");
+    expect(box.className).toContain("!pe-[calc(var(--search-input-edge-inset)+6ch)]");
+    await user.type(box, "a");
+    expect(box.className).toContain("!pe-[var(--search-input-end-padding)]");
+    expect(box.className).not.toContain("6ch");
+  });
+
   it("off by default, and off while disabled: no hint, no focus", async () => {
     onPlatform("Win32");
     const user = userEvent.setup();
