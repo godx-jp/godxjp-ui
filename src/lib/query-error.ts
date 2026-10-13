@@ -58,7 +58,7 @@ const FORBIDDEN_RE =
   /forbidden|permission denied|not allowed|access denied|insufficient (?:scope|permission)/i;
 const NOT_FOUND_RE = /not found|does not exist|no such/i;
 const TRANSIENT_RE =
-  /network|failed to fetch|timeout|timed out|connection|econn(?:refused|reset|aborted)|temporarily|unavailable|gateway/i;
+  /network|failed to fetch|timeout|timed out|connection|econn(?:refused|reset|aborted)|temporarily|unavailable|gateway|could not reach|unreachable|server error|offline/i;
 const VALIDATION_RE = /validation|invalid input|bad request|must be|is required/i;
 
 /**

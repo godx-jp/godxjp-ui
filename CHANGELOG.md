@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.3.2] - 2026-10-13
+
+### 🐛 Fixed
+
+- **`Text ellipsis={{ suffix }}` keeps the suffix on one line (#1276).** The truncating text took
+  the whole slot, so the suffix fell past its edge and was cut (measured: a 269px run plus the
+  suffix in a 294px slot). The text now shrinks to what is left and the suffix keeps its natural
+  width, as antd `ellipsis.suffix` does — a file extension stays visible.
+- **`AlertQueryError` / `AlertMutationFeedback` localize transport failures (#1276).** A network or
+  5xx error showed the server's or HTTP client's raw text ("Server Error", "Could not reach the
+  server…"), in English on a ja screen. Those now show the kit's localized transient message; a 4xx
+  validation message keeps the server's words. The transient classifier also recognises "could not
+  reach", "unreachable", "server error" and "offline" messages without a status.
+
 ## [32.3.1] - 2026-10-13
 
 ### 🐛 Fixed

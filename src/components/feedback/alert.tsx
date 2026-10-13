@@ -232,6 +232,12 @@ export function AlertQueryError({
   const { t } = useTranslation();
   const resolved = category ?? classifyQueryError(error).category;
   const expiry = useAuthExpiry(resolved === "auth", error);
+  // A network or 5xx failure carries TRANSPORT text ("Server Error", "Could not reach the
+  // server…") in whatever language the server or the HTTP client speaks — a ja screen showed it in
+  // English (gh#1276). It says nothing a user can act on, so it takes the kit's own localized
+  // transient message. Every other class keeps the server's words: a 4xx validation message is the
+  // one place the server tells the user what to fix.
+  const localizedCategory = category ?? (resolved === "transient" ? resolved : undefined);
 
   if (expiry?.status === "redirecting") {
     return (
@@ -251,7 +257,7 @@ export function AlertQueryError({
   // The provider's handler failed: keep the sign-in recovery, now wired to the provider.
   const authAction = expiry ? expiry.retry : onAuthAction;
 
-  if (!category && !expiry) {
+  if (!localizedCategory && !expiry) {
     return (
       <Alert tone="destructive" className={className}>
         <AlertTitle>{t("common.error")}</AlertTitle>
