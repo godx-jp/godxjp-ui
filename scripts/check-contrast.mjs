@@ -473,6 +473,15 @@ function collect() {
           .filter((f) => f && f.a > 0.5)
           .map((f) => f.rgb.join(","));
         const distinct = [...new Set(fills)];
+        // An EMPTY meter (gh#1247: PasswordStrength with no value) is all track and no datum — no
+        // member is lit (`data-state="filled"`), so there is no "adjacent colour" a reader compares
+        // and the state is carried by the text label. Skipped as a track; a FULLY lit meter (one
+        // fill, every member filled) is still measured against the card below.
+        if (
+          distinct.length === 1 &&
+          !group.some((sib) => sib.getAttribute("data-state") === "filled")
+        )
+          continue;
         if (distinct.length === 2) {
           const mine = fill.rgb.join(",");
           // One record per group, from the first of the two colours to appear.
