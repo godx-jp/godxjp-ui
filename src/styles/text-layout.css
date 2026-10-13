@@ -564,6 +564,27 @@
     vertical-align: bottom;
   }
 
+  /* ONE LINE WITH A SUFFIX (or the action cluster): the text gives way, the suffix never does
+   * (gh#1276). The truncating content span used to be `max-inline-size: 100%` of the slot, so the
+   * suffix landed past the slot edge and was cut with it — measured, a 269px run plus a suffix in a
+   * 294px slot. As a row, the content shrinks to what is left and keeps its own ellipsis; the
+   * suffix and the actions keep their natural width (antd `ellipsis.suffix`). */
+  [data-slot="text"]:has(> .ui-typography-content[data-truncate]) {
+    display: inline-flex;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    align-items: baseline;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+  [data-slot="text"] > .ui-typography-content[data-truncate] {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+  }
+  [data-slot="text"]:has(> .ui-typography-content[data-truncate]) > :not(.ui-typography-content) {
+    flex: none;
+  }
+
   /* A truncated inline run needs a box to truncate INSIDE. antd sets the same two declarations on
    * `a&-ellipsis, span&-ellipsis` for the same reason: an inline box has no width to overflow. */
   [data-slot="text"][data-ellipsis][data-truncate] {

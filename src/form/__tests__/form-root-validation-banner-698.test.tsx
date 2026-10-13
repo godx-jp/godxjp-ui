@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider, useMutation } from "@tanstack/react-q
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
+import vi from "../../i18n/messages/vi.json";
 import { FormRoot } from "../form-root";
 import { FormFieldControl } from "../form-field-control";
 import { useZodForm } from "../use-zod-form";
@@ -140,8 +141,12 @@ describe("FormRoot submitFailed banner — server validation (gh#698)", () => {
     await submit(
       <Canonical failure={apiError(500, "Server exploded")} submitFailedMessage={false} />,
     );
-    // AlertMutationFeedback still reports the 5xx — only FormRoot's own banner is opted out.
-    await waitFor(() => expect(screen.getByText("Server exploded")).toBeInTheDocument());
+    // AlertMutationFeedback still reports the 5xx — only FormRoot's own banner is opted out. It
+    // reports it in the kit's localized transient words, not the server's transport text (gh#1276).
+    await waitFor(() =>
+      expect(screen.getByText(vi.query.error.description.transient)).toBeInTheDocument(),
+    );
+    expect(screen.queryByText("Server exploded")).not.toBeInTheDocument();
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(screen.queryByText(BANNER)).not.toBeInTheDocument();
   });
