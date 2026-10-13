@@ -1,4 +1,7 @@
+import { useRef } from "react";
+
 import { useTranslation } from "../../i18n/use-translation";
+import { useToastStickyBarClearance } from "../../lib/toast-clearance";
 import { cn } from "../../lib/utils";
 import type { MobileShellProp } from "../../props/components/layout.prop";
 
@@ -36,6 +39,16 @@ export function MobileShell({
   className,
 }: MobileShellProp) {
   const { t } = useTranslation();
+  // gh#1271 — the action bar and the tab bar below it are the shell's bottom chrome; toasts stack
+  // above BOTH. Only a `viewport` shell owns the screen's bottom edge — a `fill` shell sits inside
+  // some other box (a device-frame preview), where its bars are not where the toasts are.
+  const actionsRef = useRef<HTMLElement>(null);
+  const tabBarRef = useRef<HTMLElement>(null);
+  const bottomBands = [
+    ...(actions !== undefined ? [actionsRef] : []),
+    ...(tabBar !== undefined ? [tabBarRef] : []),
+  ];
+  useToastStickyBarClearance(bottomBands, height === "viewport");
 
   return (
     <div
@@ -74,9 +87,17 @@ export function MobileShell({
       {/* <footer> chứ không phải <div>: băng này nằm ngoài vùng cuộn nên cũng phải thuộc một
        * landmark. Nó là con trực tiếp của gốc shell (một div, không phải sectioning content) nên
        * ánh xạ thành contentinfo. */}
-      {actions !== undefined && <footer className="ui-mobile-shell-actions">{actions}</footer>}
+      {actions !== undefined && (
+        <footer ref={actionsRef} className="ui-mobile-shell-actions">
+          {actions}
+        </footer>
+      )}
       {tabBar !== undefined && (
-        <nav className="ui-mobile-shell-tabbar" aria-label={t("layout.sidebar.ariaLabel")}>
+        <nav
+          ref={tabBarRef}
+          className="ui-mobile-shell-tabbar"
+          aria-label={t("layout.sidebar.ariaLabel")}
+        >
           {tabBar}
         </nav>
       )}

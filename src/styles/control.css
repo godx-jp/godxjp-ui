@@ -3571,6 +3571,70 @@
     font-weight: var(--font-weight-medium);
   }
 
+  /* `captionLayout="dropdown"` (gh#1271) — the month and year as selects, for a birth date that is
+   * otherwise ~320 arrow clicks away. Calendar names every dropdown slot, which REPLACES
+   * react-day-picker's `.rdp-dropdown*` classes, so these rules are the whole look.
+   *
+   * The shape is react-day-picker's own: the native `<select>` stays the control — keyboard, screen
+   * reader, the OS picker on touch — but is laid INVISIBLY over a visible label + chevron that reads
+   * as a compact field. Each root is its own box sized by its label, so the pair stays inside the
+   * caption's padding, which is what keeps it clear of the absolutely positioned ‹ › buttons. The
+   * keyboard mark lands on the root: the select is opacity 0, so a mark on it would be invisible
+   * (focus-ring.css lists the root). */
+  .ui-calendar-dropdowns {
+    display: inline-flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .ui-calendar-dropdown-root {
+    position: relative;
+    display: inline-flex;
+    min-inline-size: 0;
+    align-items: center;
+    block-size: var(--control-height-sm);
+    padding-inline: var(--space-2) var(--space-1);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--control-radius);
+    background-color: hsl(var(--background));
+  }
+
+  .ui-calendar-dropdown-root:hover {
+    background-color: hsl(var(--accent));
+  }
+
+  .ui-calendar-dropdown-root[data-disabled="true"] {
+    opacity: var(--calendar-nav-rest-alpha);
+  }
+
+  .ui-calendar-dropdown {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    inline-size: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    appearance: none;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .ui-calendar-dropdown-root > .ui-calendar-caption-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    white-space: nowrap;
+  }
+
+  .ui-calendar-dropdown-root .ui-calendar-chevron {
+    inline-size: var(--icon-size-sm);
+    block-size: var(--icon-size-sm);
+    opacity: var(--calendar-nav-rest-alpha);
+  }
+
   /* The nav overlays the caption row, so it must share that row's BOX — not a hand-set offset.
    * With `inset-block-start: var(--space-3)` the buttons measured 4px above the month label
    * (376.2 vs 380.2), and that 4px was only right at one caption font-size: raising
@@ -3596,9 +3660,14 @@
     align-items: center;
     justify-content: space-between;
     padding-inline: var(--calendar-nav-space-inline);
+    /* The nav spans the whole caption row ABOVE the caption, so its empty middle swallowed every
+     * click meant for what sits there — harmless over a label, fatal over the caption's month and
+     * year selects (gh#1271). Only the two buttons take the pointer. */
+    pointer-events: none;
   }
 
   .ui-calendar-nav-button {
+    pointer-events: auto;
     background: transparent;
     padding: 0;
     opacity: var(--calendar-nav-rest-alpha);

@@ -22,7 +22,9 @@
       "today": "今日",
       "close": "閉じる",
       "nav": "{label}のナビゲーション",
-      "name": "カレンダー"
+      "name": "カレンダー",
+      "monthDropdown": "月",
+      "yearDropdown": "年"
     },
     "datePicker": {
       "placeholder": "日付を選択",

@@ -693,6 +693,42 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Action row · aligned with the input column</CardTitle>
+            <CardDescription>
+              The buttons under a horizontal form start where the inputs start. Put them in a{" "}
+              <code>FormField label=&#123;false&#125;</code>: it renders no label cell and pins its
+              content to the control column, so the row follows <code>labelWidth</code> and
+              collapses with the fields. A wrapping <code>Flex</code> lets the row break onto a
+              second line on a phone. Set <code>labelWidth</code> on the form — without it each
+              label column is as wide as its own text, and nothing can line up with it.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form
+              layout="horizontal"
+              labelWidth="9rem"
+              onSubmit={(event) => event.preventDefault()}
+            >
+              <FormField id="actions-company" label="Company name" required>
+                <Input id="actions-company" defaultValue="Godo Trading Ltd." />
+              </FormField>
+              <FormField id="actions-email" label="Billing email">
+                <Input id="actions-email" type="email" defaultValue="billing@example.com" />
+              </FormField>
+              <FormField label={false}>
+                <Flex gap="sm" wrap>
+                  <Button type="submit">Save changes</Button>
+                  <Button type="button" variant="outline">
+                    Cancel
+                  </Button>
+                </Flex>
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Density · compact / default / comfortable</CardTitle>
             <CardDescription>
               density はフォーム全体の縦方向リズムを変更する。入力サイズやラベル関係は変えない。

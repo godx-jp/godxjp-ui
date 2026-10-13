@@ -88,6 +88,11 @@
       "type": "boolean"
     },
     {
+      "description": "How the day panel's month caption is drawn (react-day-picker `captionLayout`, forwarded to Calendar). Default `label`. `dropdown` turns month and year into selects; without minDate/maxDate the year list spans 100 years back to the current year.",
+      "name": "captionLayout",
+      "type": "\"label\" | \"dropdown\" | \"dropdown-months\" | \"dropdown-years\""
+    },
+    {
       "description": "Which period the PANEL opens on, independently of the value (antd `defaultPickerValue`), and — as in antd — RE-APPLIED every time the panel opens, not only at mount. Use it for 'open on the fiscal year's start month' or 'open on the month of the row being edited'.",
       "name": "defaultPickerValue",
       "type": "Date"
@@ -266,6 +271,7 @@
     "DO test by filling the input directly: `await user.type(screen.getByRole('combobox'), '2026-04-15')`. With `range`, the two edges are named textboxes (From / To). The panel is secondary and not required for testing.",
     "DO use `minDate` / `maxDate` to restrict what is selectable — they are enforced on the panel AND on typed entry, so the keyboard is not a way around the rule the mouse obeys.",
     "DON'T place two DatePickers side by side to fake a from~to pair — that is `range`, which is one control, one shell and one value.",
+    "DO use captionLayout=\"dropdown\" for a birth date or any far-away date — the year select reaches 1999 in one pick instead of ~320 arrow clicks; also set `maxDate` when the date can lie in the future (the year list stops at the current year).",
     "DO use `defaultPickerValue` when the panel should open somewhere other than the value — it is the only way to say it, and it re-applies on every open.",
     "DON'T reach for `inputReadOnly` to switch the control off; it only sets the input's readonly attribute (the panel still opens). `disabled` is the inert one.",
     "DON'T hand-roll a date text input + calendar popover — this component IS that pattern at WAI-ARIA combobox spec level."

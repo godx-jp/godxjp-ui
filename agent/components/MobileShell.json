@@ -21,7 +21,7 @@
       "type": "ReactNode"
     },
     {
-      "description": "The sticky action bar pinned above the tab bar — the screen's primary verb (Scan, Save, Hand over) and at most one secondary. It sits OUTSIDE the scroll region, so it is always reachable with no `position: sticky` and no scroll-padding hack, and it takes the home-indicator inset whenever no tabBar follows it.",
+      "description": "The sticky action bar pinned above the tab bar — the screen's primary verb (Scan, Save, Hand over) and at most one secondary. It sits OUTSIDE the scroll region, so it is always reachable with no `position: sticky` and no scroll-padding hack, and it takes the home-indicator inset whenever no tabBar follows it. In a `height='viewport'` shell the action bar plus the tab bar publish their summed block size as `--toast-sticky-bar-height`, so the `Toaster` stack sits above the bottom chrome instead of over the primary verb (gh#1271).",
       "name": "actions",
       "type": "ReactNode"
     },

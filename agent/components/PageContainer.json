@@ -103,7 +103,7 @@
     },
     {
       "defaultValue": "false",
-      "description": "Pin footer to viewport bottom on scroll — pairs with variant=\"narrow\".",
+      "description": "Pin footer to viewport bottom on scroll — pairs with variant=\"narrow\". While the pinned footer is VISIBLE (always, or once revealed under `footerReveal=\"onScroll\"`), it publishes its block size as `--toast-sticky-bar-height` on `<html>` and the `Toaster` stack rises above it, so a toast never covers the Save/Submit button that raised it (gh#1271). Cleared on unmount or while a reveal footer is parked below the fold.",
       "name": "stickyFooter",
       "type": "boolean"
     },

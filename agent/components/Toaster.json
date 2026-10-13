@@ -40,7 +40,8 @@
     "DO: Tune how long toasts stay with the `--toast-duration` token in the theme (default 4000ms) rather than a `duration` prop on every mount. Never truncate a toast's body — it wraps.",
     "DO: Let the wrapper handle theming — it uses `useDocumentTheme()` to sync with the document `dark` class and `prefers-color-scheme` automatically. Never pass a hardcoded `theme` prop unless you are deliberately overriding.",
     "DON'T: Use `Toaster` for persistent errors or blocking confirmations. Toasts auto-dismiss; they are not a substitute for `Alert` (inline persistent warnings) or `Dialog` (decisions requiring user input).",
-    "DO: Pass `position` to relocate the stack if a persistent sidebar/footer would obscure the default `bottom-right`. The wrapper already sets a safe `mobileOffset`; don't add redundant mobile offsets unless your layout differs."
+    "DO: Pass `position` to relocate the stack if a persistent sidebar would obscure the default `bottom-right`. The wrapper already sets a safe `mobileOffset`; don't add redundant mobile offsets unless your layout differs.",
+    "DON'T: Hand-tune `offset` to dodge a sticky action bar. The bottom offset (desktop 24px, mobile `--toast-mobile-offset`) already adds `--toast-sticky-bar-height`, which a visible `PageContainer stickyFooter` or `MobileShell` action/tab bar publishes at runtime, so the stack clears it on its own (gh#1271). For bottom chrome the library does not render (an app's own fixed bar), set `--toast-offset-bottom` once in theme.css — it is added on desktop and mobile alike."
   ],
   "useCases": [
     "After a successful form save (invoice, journal entry, vendor record) — show `toast.success(\"保存しました\")` to confirm without blocking navigation.",

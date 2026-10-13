@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.3.0] - 2026-10-13
+
+From gino-cloud's usability inspection (#1271).
+
+### ✨ Added
+
+- **`DatePicker captionLayout="dropdown"` (#1271)** — year and month dropdowns in the calendar
+  caption, so a birth date is one selection away instead of ~320 month steps. Without `minDate` the
+  year list spans 100 years back; set `maxDate` for dates that may be in the future. Localized
+  dropdown names; the visible box takes the focus ring.
+- **`EmptyState live` (#1271)** — opts the empty state into `role="status"` when it is the RESULT of
+  a search or filter.
+- **Toasts clear sticky action bars (#1271)** — a visible `PageContainer stickyFooter` or
+  `MobileShell` action bar publishes its height as `--toast-sticky-bar-height`, and the Toaster
+  adds it (plus the new theme knob `--toast-offset-bottom`) to its bottom offset, so a toast no
+  longer covers the submit button that raised it. Without a sticky bar the stack is where it was.
+
+### 🐛 Fixed
+
+- **DatePicker accepts year-first typed dates (#1271).** `2026/10/01` (the Japanese convention),
+  `2026.10.01`, `2026/1/5` and `20261001` were shown but never committed, so a form saved empty.
+  They now commit on Enter or blur and are reformatted to `2026-10-01`; ISO still commits as typed.
+  Impossible dates such as `2026-02-30` are rejected instead of rolling over to March. Enter on
+  unparseable text now reverts it, as blur already did.
+
+### 💥 Changed
+
+- **`EmptyState` is no longer a live region by default (#1271).** A static empty state was announced
+  as a status update every time it rendered (WCAG 4.1.3 covers messages that appear in response to
+  something). Pass `live` where it is such a message. `RecordPicker`'s "no match" and error states
+  pass it.
+
+### 📝 Documented
+
+- The horizontal-Form action row is `<FormField label={false}>` (with `labelWidth` on the Form) — the
+  content then starts at the control column; no new component (#1271). Static guidance text is
+  `Alert variant="callout"`, which is not a live region.
+
 ## [32.2.2] - 2026-10-13
 
 ### 🐛 Fixed

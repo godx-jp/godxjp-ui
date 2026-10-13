@@ -173,7 +173,7 @@ describe("CompactBarTrend public API (gh#218)", () => {
   });
 
   it("shows an empty state (default localized, or the emptyMessage override)", () => {
-    const { getByRole, getByText, container } = renderWithUi(
+    const { queryByRole, getByText, container } = renderWithUi(
       <CompactBarTrend
         label="新規組織"
         data={[]}
@@ -183,7 +183,10 @@ describe("CompactBarTrend public API (gh#218)", () => {
       />,
     );
     expect(getByText("データがありません")).toBeInTheDocument();
-    expect(getByRole("status")).toBeInTheDocument();
+    // A chart with no data is static content, not a status message (gh#1271): the EmptyState
+    // renders, and it is not a live region.
+    expect(container.querySelector('[data-slot="empty-state"]')).toBeInTheDocument();
+    expect(queryByRole("status")).toBeNull();
     expect(container.querySelectorAll(".ui-chart-trend-bar")).toHaveLength(0);
     expect(container.querySelectorAll("ul.sr-only")).toHaveLength(0);
   });

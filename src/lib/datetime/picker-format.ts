@@ -13,7 +13,7 @@ import type {
   DatePickerBaseProp,
   PickerDateFormatProp,
 } from "../../props/components/data-entry.prop";
-import { parseDateInput, toIsoDate } from "./parse";
+import { toIsoDate } from "./parse";
 import { dateTimeFormat } from "../intl-cache";
 
 /** The granularity axis a picker selects at — `DatePickerProp["picker"]`, resolved. */
@@ -33,11 +33,43 @@ export function formatPickerDate(
   return withTime ? formatDate(date, "yyyy-MM-dd HH:mm") : toIsoDate(date);
 }
 
+/**
+ * YEAR-FIRST spellings a person types into a date field (gh#1271): `2026/10/01` is the Japanese
+ * convention, `2026.10.01` a common office one, `2026-1-5` drops the padding and `20261001` drops
+ * the separators. Year-first is the one order that is never ambiguous — no locale writes
+ * year-day-month — so accepting it cannot misread anyone's date. The separator must repeat
+ * (`2026/10-01` is a typo, not a date).
+ */
+const YEAR_FIRST = /^(\d{4})([-/.])(\d{1,2})\2(\d{1,2})$/;
+const YEAR_FIRST_COMPACT = /^(\d{4})(\d{2})(\d{2})$/;
+
+function parseYearFirst(raw: string): Date | undefined {
+  const m = YEAR_FIRST.exec(raw);
+  const parts = m ? [m[1], m[3], m[4]] : YEAR_FIRST_COMPACT.exec(raw)?.slice(1, 4);
+  if (!parts) return undefined;
+  const [year, month, day] = parts.map(Number) as [number, number, number];
+  const date = new Date(year, month - 1, day);
+  // `new Date` maps years 0–99 onto 1900–1999; put the typed year back before comparing.
+  date.setFullYear(year, month - 1, day);
+  // `Date` rolls over (2026/02/30 → March 2); a real date reads back exactly as it was typed.
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+    ? date
+    : undefined;
+}
+
+/**
+ * Read typed text back into a date. Tries, in order: the caller's `parser`, the explicit `format`
+ * pattern, then canonical ISO `yyyy-MM-dd` — and, unless `strict`, any unambiguous year-first
+ * spelling (see `YEAR_FIRST`). `strict` exists for the KEYSTROKE path: `2026/10/1` is a complete
+ * year-first date on its way to `2026/10/15`, so committing it mid-typing would rewrite the text
+ * under the user's cursor. The field commits loose spellings on Enter and blur instead.
+ */
 export function parsePickerDate(
   text: string,
   format: PickerDateFormatProp | undefined,
   parser?: (text: string) => Date | undefined,
   withTime = false,
+  strict = false,
 ): Date | undefined {
   const raw = text.trim();
   if (!raw) return undefined;
@@ -48,8 +80,9 @@ export function parsePickerDate(
     const parsed = parse(raw, pattern, new Date(2000, 0, 1));
     if (isValid(parsed) && formatDate(parsed, pattern) === raw) return parsed;
   }
-  if (withTime || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return undefined;
-  return parseDateInput(raw) ?? undefined;
+  if (withTime) return undefined;
+  if (strict && !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return undefined;
+  return parseYearFirst(raw);
 }
 
 export function pickerDateAllowed(

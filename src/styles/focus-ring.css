@@ -119,7 +119,13 @@
    * `<label>` around a visually hidden real `<input>` (a Segmented member is one) put keyboard
    * focus on the INPUT, so `:focus-visible` never matches the painted box.
    * react-aria mirrors its own focus-visible state onto the root as `data-focus-visible`, which
-   * is the hook that keeps the mark on the element that actually has the border. */
+   * is the hook that keeps the mark on the element that actually has the border.
+   *
+   * The Calendar's caption selects are the same shape without react-aria: the real `<select>`
+   * is laid at opacity 0 over the painted label box, so a mark on the select would be drawn and
+   * never seen. `:has(:focus-visible)` moves it to that box — keyboard only, as react-day-picker's
+   * own stylesheet intends (gh#1271). */
+  .ui-calendar-dropdown-root:has(.ui-calendar-dropdown:focus-visible),
   .ui-checkbox[data-focus-visible],
   .ui-radio[data-focus-visible],
   .ui-switch[data-focus-visible],

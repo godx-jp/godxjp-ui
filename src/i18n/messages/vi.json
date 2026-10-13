@@ -22,7 +22,9 @@
       "today": "Hôm nay",
       "close": "Đóng",
       "nav": "Điều hướng {label}",
-      "name": "Lịch"
+      "name": "Lịch",
+      "monthDropdown": "Tháng",
+      "yearDropdown": "Năm"
     },
     "datePicker": {
       "placeholder": "Chọn ngày",

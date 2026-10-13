@@ -47,6 +47,12 @@
       "description": "Render the title as a non-heading element (p/div) instead of a heading — for a compact/section empty state inside a section that already owns its heading, so the message is not announced as a heading and cannot skip an outline level. Overrides titleLevel.",
       "name": "titleAs",
       "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Announce the empty state as a status message (`role=\"status\"`). Default false since gh#1271: a static empty state (\"No invoices yet\") is content, not an update. Rule of thumb — on the page when it loads → leave it off; APPEARS because the user just searched or filtered and nothing matched → `live`.",
+      "name": "live",
+      "type": "boolean"
     }
   ],
   "related": [
@@ -59,6 +65,7 @@
   "storyPath": "data-display/empty-state.tsx",
   "tagline": "Centred empty placeholder with icon, title, description, and optional CTA.",
   "usage": [
+    "DO decide whether the empty state is a STATUS MESSAGE (gh#1271). It is not a live region by default: a static \"No records yet\" that is there when the page loads would otherwise be announced as an update on every render (WCAG 4.1.3 covers content that CHANGES). Pass `live` (→ `role=\"status\"`) only when it appears as the result of a user action — a search or filter that matched nothing: `<EmptyState live icon={SearchIcon} title=\"No matching invoices\" />`. Inside `DataTable` do neither — its empty cell already carries `aria-live=\"polite\"`.",
     "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
     "DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs=\"p\"` so the message is not a heading at all.",
     "DO use `tone=\"success\"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.",
