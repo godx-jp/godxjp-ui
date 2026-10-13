@@ -85,7 +85,7 @@ describe("CommandPalette recent (gh#1249)", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 
-  it("Enter on the clear row calls onClear and keeps the palette open", async () => {
+  it("choosing the clear row calls onClear and keeps the palette open", async () => {
     const { user, onClear, onRecentSelect } = setup();
     await user.click(screen.getByRole("option", { name: CLEAR }));
     expect(onClear).toHaveBeenCalledTimes(1);
