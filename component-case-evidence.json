@@ -3696,10 +3696,12 @@
           "cases": [
             "default",
             "outline",
-            "soft"
+            "soft",
+            "quiet"
           ],
           "evidence": [
-            "docs/data-entry/toggle.tsx"
+            "docs/data-entry/toggle.tsx",
+            "src/components/data-entry/__tests__/consumer-defects-1257-1258-browser.test.ts"
           ]
         },
         "shape": {
@@ -3731,11 +3733,13 @@
           "cases": [
             "default",
             "outline",
-            "soft"
+            "soft",
+            "quiet"
           ],
           "evidence": [
             "docs/data-entry/toggle-group.tsx",
-            "docs/data-entry/toggle-count.tsx"
+            "docs/data-entry/toggle-count.tsx",
+            "src/components/data-entry/__tests__/consumer-defects-1257-1258-browser.test.ts"
           ]
         },
         "shape": {
@@ -3768,11 +3772,13 @@
           "cases": [
             "default",
             "outline",
-            "soft"
+            "soft",
+            "quiet"
           ],
           "evidence": [
             "docs/data-entry/toggle-group.tsx",
-            "docs/data-entry/toggle-count.tsx"
+            "docs/data-entry/toggle-count.tsx",
+            "src/components/data-entry/__tests__/consumer-defects-1257-1258-browser.test.ts"
           ]
         },
         "shape": {

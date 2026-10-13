@@ -125,6 +125,27 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>quiet · a star or a reaction</CardTitle>
+            <CardDescription>
+              A low-key pressed state: transparent at rest like default; pressed is a --secondary
+              fill with --foreground text and the primary hairline. A solid primary block is too
+              loud for a mark beside content.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" gap="sm" wrap align="center">
+              <Toggle variant="quiet" size="sm" defaultPressed count={4} countLabel="stars">
+                Star
+              </Toggle>
+              <Toggle variant="quiet" size="sm" count={2} countLabel="likes">
+                Like
+              </Toggle>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Sizes</CardTitle>
             <CardDescription>
               xs 24px / sm 28px / md 32px / lg 36px · すべて --control-height

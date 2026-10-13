@@ -286,6 +286,13 @@
    * hsl(var(--primary-foreground)) at the call site). Without it a service that quietened the
    * pressed fill to a pale tint was left with white text on it. */
   --toggle-on-color: initial;
+  /* `Toggle variant="quiet"` pressed state (gh#1257) — role-mirror knobs, `initial`; defaults at the
+   * call site: fill hsl(var(--secondary)), label hsl(var(--foreground)), counter
+   * hsl(var(--background)) / hsl(var(--foreground)). */
+  --toggle-quiet-on-background: initial;
+  --toggle-quiet-on-color: initial;
+  --toggle-quiet-on-count-background: initial;
+  --toggle-quiet-on-count-color: initial;
   --slider-track-background: initial;
   --slider-range-background: initial;
 

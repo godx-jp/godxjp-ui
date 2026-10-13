@@ -29,7 +29,7 @@
       "defaultValue": "\"default\"",
       "description": "Visual style, PROVIDED TO EVERY ITEM via context — set it once on the group, not on each ToggleGroupItem. An explicit `variant` on an item still wins. The default is applied per item by toggleVariants, so an unset group emits no `data-variant` at all. `soft` (gh#734) is the chip fill: use it for a tag-filter panel, where `default`/`outline` leave the unselected chips reading as transparent.",
       "name": "variant",
-      "type": "\"default\" | \"outline\" | \"soft\""
+      "type": "\"default\" | \"outline\" | \"soft\" | \"quiet\""
     },
     {
       "defaultValue": "\"default\"",

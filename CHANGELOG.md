@@ -34,6 +34,10 @@ Defects two consumers measured on real screens (godx-task, gino-cloud).
 
 ### ✨ Added
 
+- **`Toggle variant="quiet"` (#1257)** — a low-key pressed state for a mark beside content (a
+  comment star, a reaction): transparent at rest; pressed is a `--secondary` fill with `--foreground`
+  text and the primary hairline instead of a solid primary block. Knobs
+  `--toggle-quiet-on-{background,color,count-background,count-color}`. Also on `ToggleGroup`.
 - **`--toggle-on-color` (#1257)** — the pressed Toggle's label colour, the pair to
   `--toggle-on-background`, so a quieter pressed state (a pale fill) no longer leaves white text on
   it.

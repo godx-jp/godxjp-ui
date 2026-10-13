@@ -11771,9 +11771,9 @@
       },
       {
         "defaultValue": "\"default\"",
-        "description": "Visual style. `default` is a 1px TRANSPARENT border (a toolbar affordance — no resting surface at all), `outline` a hairline on --background, and `soft` (gh#734) the REST FILL a chip needs: hsl(var(--secondary)), byte-identical to the fill `Badge variant=\"secondary\"` and `Button variant=\"secondary\"` already paint, so a chip, a badge and a button on one row are one family. `soft` is antd Tag's resting surface and is what makes a FILTER CHIP legible before it is pressed — with `default` or `outline` the chip reads as transparent, which is the reported defect. Hover is the opaque --secondary-hover (not a translucent tint, which would shift between a page and a Card); pressed still wins over both.",
+        "description": "Visual style. `default` is a 1px TRANSPARENT border (a toolbar affordance — no resting surface at all), `outline` a hairline on --background, and `soft` (gh#734) the REST FILL a chip needs: hsl(var(--secondary)), byte-identical to the fill `Badge variant=\"secondary\"` and `Button variant=\"secondary\"` already paint, so a chip, a badge and a button on one row are one family. `soft` is antd Tag's resting surface and is what makes a FILTER CHIP legible before it is pressed — with `default` or `outline` the chip reads as transparent, which is the reported defect. Hover is the opaque --secondary-hover (not a translucent tint, which would shift between a page and a Card); pressed still wins over both. `quiet` (gh#1257) is the LOW-KEY pressed state for a mark beside content (a comment star, a reaction): the transparent rest of `default`, and pressed as a --secondary fill with --foreground text and the primary hairline, instead of a solid primary block; knobs `--toggle-quiet-on-{background,color,count-background,count-color}`.",
         "name": "variant",
-        "type": "\"default\" | \"outline\" | \"soft\""
+        "type": "\"default\" | \"outline\" | \"soft\" | \"quiet\""
       },
       {
         "defaultValue": "\"md\"",
@@ -11823,6 +11823,7 @@
     "storyPath": "data-entry/toggle.tsx",
     "tagline": "React Aria toggle button with default/outline/soft variants and tokenized sizes.",
     "usage": [
+      "DO use `variant=\"quiet\"` for a pressed state that should stay LOW-KEY — a comment star, a like/reaction, a pin beside a row. The solid primary fill is for a selected filter or mode; on a mark beside content it reads as the loudest thing on the screen. No app CSS needed (gh#1257).",
       "DO provide an accessible label when the toggle only contains an icon.",
       "DON'T use Toggle for multi-option selection; use ToggleGroup.",
       "DO reach for `count` for a faceted filter chip, a counted segmented toggle or a reaction chip — Toggle is the primitive that owns BOTH the count and the pressed state.",
@@ -11874,7 +11875,7 @@
         "defaultValue": "\"default\"",
         "description": "Visual style, PROVIDED TO EVERY ITEM via context — set it once on the group, not on each ToggleGroupItem. An explicit `variant` on an item still wins. The default is applied per item by toggleVariants, so an unset group emits no `data-variant` at all. `soft` (gh#734) is the chip fill: use it for a tag-filter panel, where `default`/`outline` leave the unselected chips reading as transparent.",
         "name": "variant",
-        "type": "\"default\" | \"outline\" | \"soft\""
+        "type": "\"default\" | \"outline\" | \"soft\" | \"quiet\""
       },
       {
         "defaultValue": "\"default\"",

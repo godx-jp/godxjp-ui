@@ -24,6 +24,7 @@ import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
 import { Select } from "./src/components/data-entry/select";
 import { Toggle } from "./src/components/data-entry/toggle";
+import { ToggleGroup, ToggleGroupItem } from "./src/components/data-entry/toggle-group";
 import { Calendar } from "./src/components/data-entry/calendar";
 import { Button } from "./src/components/general/button";
 import { Card, CardHeader, CardTitle, CardContent } from "./src/components/data-display/card";
@@ -60,6 +61,12 @@ const view =
       <Calendar mode="single" bordered defaultMonth={new Date(2026, 9, 1)}
         {...(kind === "calendar-full" ? { width: "full" } : {})} />
     </div>
+  ) : kind === "toggle-quiet" ? (
+    <Flex gap="sm">
+      <Toggle variant="quiet" defaultPressed count={4} aria-label="Star">Star</Toggle>
+      <Toggle defaultPressed count={4} aria-label="Pin">Pin</Toggle>
+      <ToggleGroup type="single" variant="quiet" defaultValue="a" aria-label="Reaction"><ToggleGroupItem value="a">A</ToggleGroupItem></ToggleGroup>
+    </Flex>
   ) : (
     <div style={{ "--toggle-on-color": "rgb(1, 2, 3)" }}><Toggle defaultPressed aria-label="Star">Star</Toggle></div>
   );
@@ -243,5 +250,42 @@ describe("Calendar width=full day inset (gh#1258)", { timeout: 60_000 }, () => {
     const base = await open("calendar-default");
     expect(fullHeight).toBe((await cells(base))[0]!.height);
     await base.close();
+  });
+});
+
+describe("Toggle variant=quiet (gh#1257)", { timeout: 60_000 }, () => {
+  it("pressed is a light fill with dark text and keeps the primary hairline", async () => {
+    const page = await open("toggle-quiet");
+    const [quiet, solid] = await page.evaluate(() =>
+      [
+        ...document.querySelectorAll<HTMLElement>('[aria-pressed="true"]:not(.ui-toggle-group *)'),
+      ].map((el) => {
+        const lum = (c: string) => {
+          const [r, g, b] = c.match(/\d+/g)!.map(Number);
+          return (0.2126 * r! + 0.7152 * g! + 0.0722 * b!) / 255;
+        };
+        const s = getComputedStyle(el);
+        const pill = getComputedStyle(el.querySelector(".ui-toggle-count")!);
+        return {
+          fill: lum(s.backgroundColor),
+          text: lum(s.color),
+          border: s.borderTopColor,
+          pill: lum(pill.backgroundColor),
+        };
+      }),
+    );
+    expect(quiet!.fill).toBeGreaterThan(0.8);
+    expect(quiet!.text).toBeLessThan(0.3);
+    expect(quiet!.pill).toBeGreaterThan(0.8);
+    // the state is not carried by fill alone: same primary hairline as the solid pressed toggle
+    expect(quiet!.border).toBe(solid!.border);
+    expect(solid!.fill).toBeLessThan(quiet!.fill);
+    // ToggleGroup hands `quiet` to its items through context
+    const grouped = await page.locator(".ui-toggle-group .ui-toggle").evaluate((el) => ({
+      quiet: el.classList.contains("ui-toggle-quiet"),
+      state: el.getAttribute("data-state"),
+    }));
+    expect(grouped).toEqual({ quiet: true, state: "on" });
+    await page.close();
   });
 });

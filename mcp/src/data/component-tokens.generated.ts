@@ -1449,6 +1449,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Pressed Toggle LABEL colour — the pair to --toggle-on-background, `initial` like it (default hsl(var(--primary-foreground)) at the call site). Without it a service that quietened the pressed fill to a pale tint was left with white text on it."
   },
   {
+    "name": "--toggle-quiet-on-background",
+    "value": "initial",
+    "description": "`Toggle variant=\"quiet\"` pressed state (gh#1257) — role-mirror knobs, `initial`; defaults at the call site: fill hsl(var(--secondary)), label hsl(var(--foreground)), counter hsl(var(--background)) / hsl(var(--foreground))."
+  },
+  {
+    "name": "--toggle-quiet-on-color",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--toggle-quiet-on-count-background",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--toggle-quiet-on-count-color",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--slider-track-background",
     "value": "initial",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."

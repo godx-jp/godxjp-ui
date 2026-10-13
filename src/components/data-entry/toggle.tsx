@@ -19,6 +19,10 @@ const toggleVariants = cva("ui-toggle", {
       // `hsl(var(--secondary))` fill `Badge variant="secondary"` and `Button variant="secondary"`
       // already paint, so a chip, a badge and a button on one row are one family.
       soft: "ui-toggle-soft",
+      // A LOW-KEY pressed state (gh#1257): the `default` rest, and pressed as a --secondary fill with
+      // --foreground text and the primary hairline instead of a solid primary block — for a comment
+      // star or a reaction, where a pressed toggle is a mark beside content, not a selected filter.
+      quiet: "ui-toggle-quiet",
     },
     size: {
       // The fourth step of the shared control ladder (gh#716): 24px, `--control-height-xs`, the

@@ -44,6 +44,25 @@
     color: var(--toggle-pressed-count-color, hsl(var(--primary)));
   }
 
+  /* `variant="quiet"` (gh#1257). Rest = `default`'s transparent border. Pressed keeps the primary
+   * HAIRLINE above (the state is not carried by hue alone) but paints the quiet --secondary fill
+   * with --foreground text, and its counter takes the page surface like the soft chip's. One more
+   * class in the selector so it outranks the generic pressed fill and hover wherever this file
+   * lands in the cascade. */
+  .ui-toggle-quiet {
+    border: var(--stroke-hairline) solid transparent;
+  }
+
+  .ui-toggle.ui-toggle-quiet[data-state="on"] {
+    background: var(--toggle-quiet-on-background, hsl(var(--secondary)));
+    color: var(--toggle-quiet-on-color, hsl(var(--foreground)));
+  }
+
+  .ui-toggle.ui-toggle-quiet[data-state="on"] .ui-toggle-count {
+    background: var(--toggle-quiet-on-count-background, hsl(var(--background)));
+    color: var(--toggle-quiet-on-count-color, hsl(var(--foreground)));
+  }
+
   /* Forced colors flattens every background, so neither inversion distinguishes the states any
    * more. */
   @media (forced-colors: active) {
