@@ -330,12 +330,14 @@
     },
     "Checkbox": {
       "layers": [
+        "layout.css",
         "control.css",
         "form-layout.css"
       ]
     },
     "CheckboxGroup": {
       "layers": [
+        "layout.css",
         "control.css",
         "form-layout.css"
       ]

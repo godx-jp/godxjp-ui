@@ -14,6 +14,7 @@
     "previous": "前へ",
     "next": "次へ",
     "selectedCount": "{count} 件選択",
+    "selectedOfTotal": "{total} 件中 {count} 件選択",
     "typeToConfirm": "確認のため {phrase} と入力"
   },
   "dataEntry": {
@@ -236,6 +237,9 @@
       "moved": "{label}: {count} 件中 {position} 番目。",
       "dropped": "{label} を {count} 件中 {position} 番目に置きました。",
       "cancelled": "移動を取り消しました。{label} は {count} 件中 {position} 番目に戻りました。"
+    },
+    "checkboxGroup": {
+      "selectAll": "すべて選択"
     },
     "passwordStrength": {
       "weak": "弱い",

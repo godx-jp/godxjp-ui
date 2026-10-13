@@ -3946,6 +3946,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "selectAll",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { label?: React.ReactNode; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,

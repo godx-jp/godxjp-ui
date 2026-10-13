@@ -8358,7 +8358,7 @@ export function PrioritySelect({ value, onValueChange }) {
       "DO use the controlled pattern (`checked` + `onCheckedChange`) for any form-bound checkbox. `onCheckedChange` receives `boolean | 'indeterminate'` — always coerce with `!!v` or an explicit guard before storing in state.",
       "DO use `Checkbox.Group` (alias for CheckboxGroup) with the `options` prop when you have ≥2 choices from an array — it renders each item inside a `Field` (label + optional description), generates stable ids automatically, and manages the `string[]` value array. NEVER hand-roll a loop of bare `<Checkbox>` elements for a multi-select list.",
       "DO pass `name` on `Checkbox.Group` (not on individual checkboxes) when the group must submit as form fields — the group propagates the name to each internal checkbox so the browser serialises all checked values under that key.",
-      "DON'T use `checked='indeterminate'` on `Checkbox.Group` children — indeterminate is only meaningful on a parent 'select-all' control you wire manually; the group itself does not auto-compute it.",
+      "DON'T use `checked='indeterminate'` on `Checkbox.Group` children, and DON'T hand-wire a select-all box above a group — pass `selectAll` (or `selectAll={{ label: '…' }}`) on `Checkbox.Group` with `options`. It renders a leading box derived from the value (checked / `mixed` / clear), a muted `{n} of {m} selected` count (`common.selectedOfTotal`, numbers via Intl.NumberFormat) and a Separator; one click is ONE `onValueChange` with every enabled value; disabled options are never counted, added or removed; the box has no `name`, so a native submit never carries it.",
       "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, pass the label as children (`<Checkbox …>label</Checkbox>`, the catalog example) — it renders the same row. Use `<Field id='x' label='…' description='…'><Checkbox id='x' … /></Field>` only when the row needs a description line — Field owns the label-to-control id wiring, the description slot and the row rhythm, and a hand-rolled flex row owns none of them; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group.",
     ],
     useCases: [
@@ -9079,7 +9079,7 @@ function CreateDialog() {
       "DO use SheetTrigger asChild to wrap a Button or other interactive element — this avoids a nested <button> in the DOM. Never render a raw <button> as a direct child of SheetTrigger.",
       "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
       "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
-      "DO put one <form> around SheetBody + SheetFooter when the footer holds the submit button (`<Form asChild errors={…}><form onSubmit={…}><SheetBody>…</SheetBody><SheetFooter><Button type=\"submit\">…</Button></SheetFooter></form></Form>`). A <form> that wraps SheetBody is transparent to the panel layout (same in Dialog), so the body still scrolls and the footer stays pinned (gh#1239); no className on the form is needed.",
+      'DO put one <form> around SheetBody + SheetFooter when the footer holds the submit button (`<Form asChild errors={…}><form onSubmit={…}><SheetBody>…</SheetBody><SheetFooter><Button type="submit">…</Button></SheetFooter></form></Form>`). A <form> that wraps SheetBody is transparent to the panel layout (same in Dialog), so the body still scrolls and the footer stays pinned (gh#1239); no className on the form is needed.',
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
       "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
       "DON'T put a Sheet inside a Dialog (nested modal overlays conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
@@ -12586,8 +12586,15 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
         type: "(value: string[]) => void",
         description: "Fires with the checked values array.",
       },
+      {
+        name: "selectAll",
+        type: "boolean | { label?: React.ReactNode }",
+        description:
+          "`options` mode only. Renders a leading select-all box whose state is derived from the value — checked when every enabled option is selected, `mixed` (indeterminate) on a partial selection, clear otherwise — followed by a muted `{n} of {m} selected` count (`common.selectedOfTotal`, numbers via Intl.NumberFormat) and a Separator. One click is ONE `onValueChange`: from mixed or clear it adds every enabled value, from checked it removes them. Disabled options are never counted, added or removed. The box has no `name`, so a native submit never carries it. `{ label }` replaces the default `dataEntry.checkboxGroup.selectAll` text.",
+      },
     ],
     usage: [
+      "DO pass `selectAll` instead of hand-wiring a parent checkbox above the group — the derived tri-state, the n-of-m count and the disabled-option rule are built in: `<CheckboxGroup options={channels} defaultValue={['email']} selectAll />`.",
       "DO use the `options` prop for any data-driven list — it auto-generates IDs, handles checked state, and wires up Field (label + description) for each item. NEVER hand-roll individual `<Checkbox>` elements inside a loop when you have an options array.",
       "DO pass `name` when inside an HTML form so each checkbox submits its value under the same field name, giving the server a multi-value array. Without `name`, native form submission silently drops all values.",
       "Controlled vs uncontrolled: pass `value` + `onChange` together for controlled usage (e.g. react-hook-form). Pass `defaultValue` alone for uncontrolled usage. Do NOT mix both — if `value` is provided, `defaultValue` is ignored and onChange must update value externally or the UI freezes.",

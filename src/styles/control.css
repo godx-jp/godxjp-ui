@@ -757,6 +757,19 @@
     border: var(--checkbox-border-width, var(--stroke-hairline)) solid hsl(var(--primary));
     color: hsl(var(--text-brand, var(--primary)));
     background: transparent;
+    /* gh#1251 — the fill used to SNAP on toggle while Switch and Button beside it eased. An
+     * explicit list at the fast motion token: never `all`, never a transform. */
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--ease-standard);
+  }
+
+  /* WCAG 2.3.3 — the state still changes, it just stops animating. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-checkbox,
+    .ui-radio {
+      transition: none;
+    }
   }
 
   .ui-checkbox {

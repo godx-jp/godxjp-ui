@@ -14,6 +14,7 @@
     "previous": "Trước",
     "next": "Tiếp",
     "selectedCount": "{count} đã chọn",
+    "selectedOfTotal": "Đã chọn {count}/{total}",
     "typeToConfirm": "Nhập {phrase} để xác nhận"
   },
   "dataEntry": {
@@ -237,6 +238,9 @@
       "moved": "{label}: vị trí {position}/{count}.",
       "dropped": "Đã thả {label} ở vị trí {position}/{count}.",
       "cancelled": "Đã huỷ di chuyển. {label} trở lại vị trí {position}/{count}."
+    },
+    "checkboxGroup": {
+      "selectAll": "Chọn tất cả"
     },
     "passwordStrength": {
       "weak": "Yếu",

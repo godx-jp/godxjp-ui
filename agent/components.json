@@ -7139,7 +7139,7 @@
       "DO use the controlled pattern (`checked` + `onCheckedChange`) for any form-bound checkbox. `onCheckedChange` receives `boolean | 'indeterminate'` — always coerce with `!!v` or an explicit guard before storing in state.",
       "DO use `Checkbox.Group` (alias for CheckboxGroup) with the `options` prop when you have ≥2 choices from an array — it renders each item inside a `Field` (label + optional description), generates stable ids automatically, and manages the `string[]` value array. NEVER hand-roll a loop of bare `<Checkbox>` elements for a multi-select list.",
       "DO pass `name` on `Checkbox.Group` (not on individual checkboxes) when the group must submit as form fields — the group propagates the name to each internal checkbox so the browser serialises all checked values under that key.",
-      "DON'T use `checked='indeterminate'` on `Checkbox.Group` children — indeterminate is only meaningful on a parent 'select-all' control you wire manually; the group itself does not auto-compute it.",
+      "DON'T use `checked='indeterminate'` on `Checkbox.Group` children, and DON'T hand-wire a select-all box above a group — pass `selectAll` (or `selectAll={{ label: '…' }}`) on `Checkbox.Group` with `options`. It renders a leading box derived from the value (checked / `mixed` / clear), a muted `{n} of {m} selected` count (`common.selectedOfTotal`, numbers via Intl.NumberFormat) and a Separator; one click is ONE `onValueChange` with every enabled value; disabled options are never counted, added or removed; the box has no `name`, so a native submit never carries it.",
       "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, pass the label as children (`<Checkbox …>label</Checkbox>`, the catalog example) — it renders the same row. Use `<Field id='x' label='…' description='…'><Checkbox id='x' … /></Field>` only when the row needs a description line — Field owns the label-to-control id wiring, the description slot and the row rhythm, and a hand-rolled flex row owns none of them; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group."
     ],
     "useCases": [
@@ -10631,6 +10631,11 @@
         "description": "Fires with the checked values array.",
         "name": "onValueChange",
         "type": "(value: string[]) => void"
+      },
+      {
+        "description": "`options` mode only. Renders a leading select-all box whose state is derived from the value — checked when every enabled option is selected, `mixed` (indeterminate) on a partial selection, clear otherwise — followed by a muted `{n} of {m} selected` count (`common.selectedOfTotal`, numbers via Intl.NumberFormat) and a Separator. One click is ONE `onValueChange`: from mixed or clear it adds every enabled value, from checked it removes them. Disabled options are never counted, added or removed. The box has no `name`, so a native submit never carries it. `{ label }` replaces the default `dataEntry.checkboxGroup.selectAll` text.",
+        "name": "selectAll",
+        "type": "boolean | { label?: React.ReactNode }"
       }
     ],
     "related": [
@@ -10648,6 +10653,7 @@
     ],
     "tagline": "Multi-select checkbox list from an options array or manual children — use `options` prop for the data-driven path, never hand-roll individual Checkbox items in a group.",
     "usage": [
+      "DO pass `selectAll` instead of hand-wiring a parent checkbox above the group — the derived tri-state, the n-of-m count and the disabled-option rule are built in: `<CheckboxGroup options={channels} defaultValue={['email']} selectAll />`.",
       "DO use the `options` prop for any data-driven list — it auto-generates IDs, handles checked state, and wires up Field (label + description) for each item. NEVER hand-roll individual `<Checkbox>` elements inside a loop when you have an options array.",
       "DO pass `name` when inside an HTML form so each checkbox submits its value under the same field name, giving the server a multi-value array. Without `name`, native form submission silently drops all values.",
       "Controlled vs uncontrolled: pass `value` + `onChange` together for controlled usage (e.g. react-hook-form). Pass `defaultValue` alone for uncontrolled usage. Do NOT mix both — if `value` is provided, `defaultValue` is ignored and onChange must update value externally or the UI freezes.",

@@ -4,6 +4,8 @@ import { cn } from "../../lib/utils";
 import { pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { Checkbox } from "./checkbox";
 import { Field } from "./field";
+import { Separator } from "../layout/separator";
+import { useTranslation } from "../../i18n/use-translation";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
 import type { CheckboxGroupProp } from "../../props/components/data-entry.prop";
 
@@ -38,8 +40,10 @@ export function CheckboxGroup({
   id,
   className,
   children,
+  selectAll,
   ...ariaProps
 }: CheckboxGroupProp) {
+  const { t } = useTranslation();
   const reactId = React.useId();
   const [value, setValue] = useControllableArray(controlledValue, defaultValue);
   // FormField wires the visible label/helper/error onto this group via aria-labelledby /
@@ -65,6 +69,32 @@ export function CheckboxGroup({
     onValueChange?.(next);
   };
 
+  // gh#1245 — the select-all box controls the ENABLED options only. A disabled option is left
+  // exactly as it is in both directions (antd / DataTable's locked-row rule): never counted, never
+  // added, never removed — so a checked disabled option survives "clear all".
+  const enabledValues = (options ?? []).filter((opt) => !opt.disabled).map((opt) => opt.value);
+  const selectedEnabled = enabledValues.filter((v) => value.includes(v)).length;
+  const allState: boolean | "indeterminate" =
+    enabledValues.length > 0 && selectedEnabled === enabledValues.length
+      ? true
+      : selectedEnabled > 0
+        ? "indeterminate"
+        : false;
+  const toggleAll = () => {
+    // Computed here rather than from onCheckedChange's argument: from "mixed" the box must SELECT.
+    const next =
+      allState === true
+        ? value.filter((v) => !enabledValues.includes(v))
+        : [...value, ...enabledValues.filter((v) => !value.includes(v))];
+    setValue(next);
+    onValueChange?.(next);
+  };
+  const selectAllId = id ? `${id}-select-all` : `${reactId}-select-all`;
+  const selectAllLabel =
+    typeof selectAll === "object" && selectAll.label != null
+      ? selectAll.label
+      : t("dataEntry.checkboxGroup.selectAll");
+
   if (options && options.length > 0) {
     return (
       <div
@@ -76,6 +106,29 @@ export function CheckboxGroup({
         data-orientation={orientation}
         className={choiceGroupClassName(orientation, className)}
       >
+        {selectAll ? (
+          <>
+            {/* No `name`/`value`: the box is a control over the group, not a form value, so a
+                native submit never carries it. The count is its description — muted, and wired to
+                the box through aria-describedby by Field. */}
+            <Field
+              id={selectAllId}
+              label={selectAllLabel}
+              description={t("common.selectedOfTotal", {
+                count: selectedEnabled,
+                total: enabledValues.length,
+              })}
+            >
+              <Checkbox
+                id={selectAllId}
+                checked={allState}
+                disabled={Boolean(disabled) || enabledValues.length === 0}
+                onCheckedChange={toggleAll}
+              />
+            </Field>
+            <Separator />
+          </>
+        ) : null}
         {options.map((opt: ChoiceOption, index) => {
           const optionId = optionDomId(opt.value, index);
           const checked = value.includes(opt.value);
