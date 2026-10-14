@@ -94,7 +94,16 @@
   --prose-quote-border-width: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
   --prose-quote-space-inline: var(--space-3);
   --prose-code-font-size: calc(1em / var(--font-size-ratio));
-  --prose-code-block-font-size: 1em; /* a `pre` in prose follows the surrounding text (gh#1320) */
+  --prose-code-block-font-size: 1em; /* scale-exempt: a `pre` in prose follows the surrounding text size, so it scales with user text (gh#1320) */
+  /* Prose heading steps RELATIVE to the prose text (gh#1320): ProseMirror strips per-block attributes,
+   * so editor headings only grow with user text size by inheriting — a fixed step would not. Same
+   * default sizes as the global type scale at 14px body; `--heading-h*` still overrides. */
+  --prose-heading-h1-font-size: calc(
+    1em * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio)
+  );
+  --prose-heading-h2-font-size: calc(1em * var(--font-size-ratio) * var(--font-size-ratio));
+  --prose-heading-h3-font-size: calc(1em * var(--font-size-ratio));
+  --prose-heading-h4-font-size: 1em; /* scale-exempt: h4–h6 sit at the prose text size, relative so they scale with it (gh#1320) */
   --prose-code-space-inline: var(--space-1);
   /* An image in a table cell is capped at a LENGTH, not at 100% (gh#1150): a percentage of an
    * auto-width column lets the column squash the image to nothing, while a length makes the
@@ -109,6 +118,8 @@
   /* Below 40rem the gutter collapses to this (ADR C05: first line ≤24px from the inner edge) and
    * the handle rises above the caret's block at its inline end instead of sitting beside it. */
   --block-editor-compact-gutter-inline-size: var(--block-editor-frame-padding);
+  /* Raw-Markdown block head: one step below the editor text, relative so it scales with it (gh#1320). */
+  --block-editor-raw-block-head-font-size: calc(1em / var(--font-size-ratio));
   --block-editor-min-height: var(--band-height-3xl);
   /* The `/` and `[[` menus: wide enough for a label and its description, tall enough for ~8 rows
    * before the list scrolls. */

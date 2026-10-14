@@ -2871,7 +2871,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--prose-code-block-font-size",
     "value": "1em",
-    "description": "a `pre` in prose follows the surrounding text (gh#1320)"
+    "description": "scale-exempt: a `pre` in prose follows the surrounding text size, so it scales with user text (gh#1320)"
+  },
+  {
+    "name": "--prose-heading-h1-font-size",
+    "value": "calc( 1em * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) )",
+    "description": "Prose heading steps RELATIVE to the prose text (gh#1320): ProseMirror strips per-block attributes, so editor headings only grow with user text size by inheriting — a fixed step would not. Same default sizes as the global type scale at 14px body; `--heading-h*` still overrides."
+  },
+  {
+    "name": "--prose-heading-h2-font-size",
+    "value": "calc(1em * var(--font-size-ratio) * var(--font-size-ratio))",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--prose-heading-h3-font-size",
+    "value": "calc(1em * var(--font-size-ratio))",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--prose-heading-h4-font-size",
+    "value": "1em",
+    "description": "scale-exempt: h4–h6 sit at the prose text size, relative so they scale with it (gh#1320)"
   },
   {
     "name": "--prose-code-space-inline",
@@ -2897,6 +2917,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--block-editor-compact-gutter-inline-size",
     "value": "var(--block-editor-frame-padding)",
     "description": "Below 40rem the gutter collapses to this (ADR C05: first line ≤24px from the inner edge) and the handle rises above the caret's block at its inline end instead of sitting beside it."
+  },
+  {
+    "name": "--block-editor-raw-block-head-font-size",
+    "value": "calc(1em / var(--font-size-ratio))",
+    "description": "Raw-Markdown block head: one step below the editor text, relative so it scales with it (gh#1320)."
   },
   {
     "name": "--block-editor-min-height",

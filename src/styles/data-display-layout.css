@@ -1829,22 +1829,19 @@
    * a ProseMirror view the per-element override is stripped, so only inherited size reaches the
    * blocks, and a fixed length inherits nothing (gh#1320). */
   .ui-prose h1 {
-    font-size: var(
-      --heading-h1,
-      calc(1em * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio))
-    );
+    font-size: var(--heading-h1, var(--prose-heading-h1-font-size));
   }
 
   .ui-prose h2 {
-    font-size: var(--heading-h2, calc(1em * var(--font-size-ratio) * var(--font-size-ratio)));
+    font-size: var(--heading-h2, var(--prose-heading-h2-font-size));
   }
 
   .ui-prose h3 {
-    font-size: var(--heading-h3, calc(1em * var(--font-size-ratio)));
+    font-size: var(--heading-h3, var(--prose-heading-h3-font-size));
   }
 
   .ui-prose h4 {
-    font-size: var(--heading-h4, 1em);
+    font-size: var(--heading-h4, var(--prose-heading-h4-font-size));
   }
 
   .ui-prose :is(h5, h6) {
@@ -2217,7 +2214,7 @@
    * the inherited size rather than the root, so they follow a larger text size like the blocks do
    * (gh#1320). Same 12.5px at the default scale. */
   .ui-block-editor .ui-block-editor-raw-block-head :is([data-slot="text"], .ui-button) {
-    font-size: calc(1em / var(--font-size-ratio));
+    font-size: var(--block-editor-raw-block-head-font-size);
   }
 
   .ui-block-editor-raw-block-source {
