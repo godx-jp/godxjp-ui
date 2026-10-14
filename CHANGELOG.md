@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.10.1] - 2026-10-15
+
+The first release of everything listed under 32.10.0 below: the `v32.10.0` tag was pushed on a
+red main (a release-script gate failed open) and its publish was refused, so 32.10.0 never reached
+npm.
+
+### 🐛 Fixed
+
+- **Tree: a label holding a `Text ellipsis` no longer unfolds on keyboard focus.** 32.10.0's
+  unfold-on-focus (gh#1308) un-cut the label, so the Text's own full-text tooltip (gh#1045) never
+  opened — CI's typography-ellipsis-tooltip test went red. Labels without that tooltip still
+  unfold.
+
 ## [32.10.0] - 2026-10-14
 
 From the independent review that REJECTED godx-content's round-3 screens (#1307, #1308): the
