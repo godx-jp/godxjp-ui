@@ -172,7 +172,7 @@ SAI:
     </div>
 
 ĐÚNG:
-    <PageContainer title="Kênh" subtitle="…" extra={<NewChannel />}>
+    <PageContainer title="Kênh" extra={<NewChannel />}>
       <ResponsiveGrid columns={2} gap="md">…</ResponsiveGrid>
     </PageContainer>
 
@@ -262,81 +262,84 @@ kêu — tắt đúng một dòng và nói lý do:
   {
     id: "taste",
     audience: "both",
-    name: "Taste baseline — Senior UI/UX engineering",
+    name: "Taste baseline — restrained app screens",
     whenToUse:
-      "Default for any production app screen. Metric-based rules, strict component architecture, CSS hardware acceleration, balanced design engineering.",
-    source: "Leonxlnx/taste-skill (root) + @godxjp/ui design-thinking.ts",
+      "Default craft rules for any production app screen built with @godxjp/ui: one intent per screen, type does the hierarchy, varied spacing, scarce accent, form and loading discipline. Every snippet uses today's props (verify with get_component).",
+    source: "Leonxlnx/taste-skill (root), rewritten against the @godxjp/ui API",
     sections: [
       {
         id: "mobile-first",
         title: "Mobile-first non-negotiable",
-        tagline: "Defaults target xs (≥0px); enhance via sm: / md: / lg: / xl: / 2xl:",
-        body: `Cardinal rule 24. Touch targets ≥ 44×44 px. NEVER read
-window.innerWidth — use useBreakpoint(). Stories render at narrow
-viewport first. Multi-column layouts: grid grid-cols-1 sm:grid-cols-N.
-EXCEPTION: name pairs (姓+名) use grid-cols-2 always.`,
+        tagline: "One column on a phone; add columns through responsive props, never utilities.",
+        body: `Cardinal rule 24. Targets ≥ 24×24 px (WCAG 2.5.8), 44 px on touch-first screens.
+Columns come from props, not grid utilities:
+  <ResponsiveGrid columns={{ base: 1, md: 3 }} gap="md">…</ResponsiveGrid>
+  <Flex direction={{ base: "col", md: "row" }} gap="sm">…</Flex>
+  <Form columns={{ md: 2 }}>…</Form>          // field pairs such as 姓 + 名
+Never read window.innerWidth to switch layout; the props above resolve per breakpoint.
+Check the screen at 390 / 768 / 1280 before calling it done.`,
       },
       {
         id: "one-intent-per-screen",
         title: "One intent per screen",
-        tagline: "Pick the ONE primary question this page answers. 60-80% visual weight to it.",
-        body: `Wall-of-cards dashboards are AI slop. Show 1-2 hero metrics
-+ ONE primary list + contextual actions. Tertiary content lives in
-Sheet / DropdownMenu / next page. The 8-stat-card grid pattern is a
-RED FLAG — it means "I couldn't decide what mattered".`,
+        tagline: "Pick the ONE question this page answers. Give it most of the visual weight.",
+        body: `A list page answers "which item next?": filters, then the table. It does not open
+with a row of KPI tiles — StatCard rows belong on dashboards, and even there 3–4 at most.
+Tertiary content goes to a Sheet, the header's overflow DropdownMenu or the next page.
+The 8-stat-card grid and the Card-per-section page both mean "I could not decide what
+mattered": decide, and let the rest be plain text and whitespace.`,
       },
       {
         id: "type-hierarchy",
         title: "Type does the hierarchy work",
-        tagline: "Weight + size + color, NOT colored background blocks.",
-        body: `Typography.Title size={1..5} is the canonical scale. h2 → h3 → h4
-each ~75% of previous. Don't skip levels. Body = Typography.Paragraph.
-Metadata = Typography.Text color="secondary". Type contrast alone IS
-the hierarchy — colored background blocks for every section is AI
-slop. Reserve colored bg for genuinely different surfaces (Card vs
-page, Alert vs body).`,
+        tagline: "Weight + size + tone, not coloured blocks or a box around every section.",
+        body: `Section titles: <Heading level={2}> (level sets the default size; override with
+size="lg" | "md" only when the scale needs it). Body copy: <Text as="p">. Metadata:
+<Text size="sm" tone="muted">. Numbers in columns: <Text tabular>.
+Do not skip heading levels. A section is a Heading followed by its content — it does not
+need a Card. Reserve a surface (Card, Alert) for something genuinely different from the page.`,
       },
       {
         id: "whitespace-is-content",
-        title: "Whitespace IS content",
-        tagline: "Use the smallest spacing step that visually separates concepts.",
-        body: `Spacing ladder: --spacing-1 (4px) for tight groups, -2 (8) for
-control pairs, -3 (12) for related controls in form, -4 (16) for
-sections, -6 (24) for cards in grid, -8 (32) for page rhythm.
-"Premium via excess padding" (everything spacing-6 to feel premium)
-is wrong — undersized content lost in oceans of grey. Premium = VARIED
-spacing — tight where related, generous where not.`,
+        title: "Whitespace IS content — vary it by level",
+        tagline: "Tight inside a group, generous between sections. Uniform gap reads as generated.",
+        body: `Gap is a prop on Flex / ResponsiveGrid: none | xs | sm | md | lg | xl.
+  label ↔ value, icon ↔ text      xs
+  controls in one row             sm
+  items in a list / cards in grid md
+  sections of a page              PageContainer spaces them; inside a section lg
+One gap value repeated for every level flattens the hierarchy. "Premium via excess padding"
+is also wrong: varied spacing (tight where related, generous where not) is what reads as designed.`,
       },
       {
         id: "two-accents",
-        title: "Two accents do real work — not eight",
-        tagline: "ONE brand color for action + ONE semantic color contextually. Not a rainbow.",
-        body: `Use --primary for actions (Button, link, focus ring) + ONE
-semantic (destructive for delete confirm, warning for deadline alert,
-success for completed state). NEVER a rainbow tag wall. Tag variety
-via appearance (soft/solid/outline) of the SAME hue, not different
-hues.`,
+        title: "Accent is scarce",
+        tagline: "--primary on the main action and focus only. Status uses semantic tones.",
+        body: `--primary goes on the one primary Button of the view, links and the focus ring.
+Status uses tone (success / warning / destructive / info) and only where it changes a decision.
+Tiers and categories (plan, role, type) are NOT status: render them in one neutral tone
+(<Badge variant="outline">, or <Badge tone="neutral">), never a rainbow. Distinguish
+by text, not by hue.`,
       },
       {
         id: "form-discipline",
         title: "Form discipline — label, help, error always",
-        tagline: "Every input has explicit label + help + error wired via FormField.",
-        body: `Never placeholder-as-label (disappears on focus). Use
-<FormField label description /> — it wires the Radix Label, the
-description text, and the error via aria-describedby + role="alert"
-automatically. Server errors as inline near the field, NOT as toasts
-(SR can't announce a disappearing toast).`,
+        tagline: "Every control sits in a FormField inside a Form.",
+        body: `Never placeholder-as-label (it disappears on focus). Use
+<Form layout="horizontal" labelWidth controlWidth> with <FormField label helper error>
+around each control — FormField wires the label, the helper text and the error message
+(aria-describedby, role="alert"). Server errors go inline on the field (Form errors={…}),
+not in a toast a screen reader cannot catch. Three or more fields is a page, not a Dialog.`,
       },
       {
         id: "loading-states",
         title: "Skeleton for INIT, Spinner for ACTIVE work",
         tagline: "Different states for different moments — never mix.",
-        body: `Skeleton while fetching existing values (no data yet — put a
-<Skeleton /> in each FormField so labels and grid hold their place and
-nothing flashes). Spinner while saving: keep the filled controls on
-screen and use <Button loading> on the submit. Skeleton during save is
-wrong (the user sees structure they already saw — reads as broken).
-Spinner during init is wrong (nothing to spin over).`,
+        body: `Skeleton while fetching existing values (no data yet): <SkeletonForm> for a form,
+<DataTable loading> for a table, so labels and columns hold their place. While saving, keep the
+filled controls on screen and set <Button loading> on the submit. Skeleton during save is
+wrong (the user sees structure they already saw — reads as broken); a spinner during init is
+wrong (nothing to spin over).`,
       },
     ],
   },
@@ -417,19 +420,18 @@ fetch). Clear resets to the idle (null) state.`,
     audience: "consumer",
     name: "Awwwards-tier — $150k agency build",
     whenToUse:
-      "Premium agency brief — marketing site, hero pages, product showcase. NOT every internal SaaS screen. Apply when the brief asks for 'Linear-tier', 'Apple-esque', 'Awwwards-style'.",
+      "MARKETING ONLY — a landing page, hero or product showcase whose brief asks for 'Linear-tier', 'Apple-esque', 'Awwwards-style'. Never an app screen: dashboards, lists, forms and settings follow compose-a-screen + DESIGN.md. Where this skill conflicts with the library DNA (Lucide 1.5px icons, 1px borders, the font tokens), the DNA wins.",
     source: "Leonxlnx/taste-skill/soft-skill",
     sections: [
       {
         id: "absolute-zero",
         title: "Absolute Zero — banned defaults",
-        tagline: "Inter / Roboto / Lucide / shadow-md / 3-col Bootstrap / linear easing — banned.",
+        tagline:
+          "Generic fonts / shadow-md / 3-col Bootstrap / linear easing — banned on marketing pages.",
         body: `BANNED FONTS: Inter, Roboto, Arial, Open Sans, Helvetica → use Geist
 / Clash Display / PP Editorial New / Plus Jakarta Sans.
-BANNED ICONS: standard thick Lucide / Material → use Phosphor Light /
-Remix Line.
-BANNED BORDERS: generic 1px solid gray → hairline rings (ring-1
-ring-black/5), tinted borders, OR whitespace as separator.
+ICONS AND BORDERS stay the library's: Lucide at 1.5px stroke through <Icon>, and the
+1px --border token. Do not swap icon sets or replace borders with rings.
 BANNED SHADOWS: shadow-md, rgba(0,0,0,0.3) → ultra-diffuse low-opacity
 (<0.05), TINTED to background.
 BANNED LAYOUTS: edge-to-edge sticky navbars, symmetric 3-col → floating
@@ -542,15 +544,14 @@ or Framer Motion's whileInView. NEVER window.addEventListener("scroll")
     audience: "consumer",
     name: "Minimalist — editorial workspace",
     whenToUse:
-      "Document-style apps (Notion-clone, knowledge base, blog admin). Warm monochrome + spot pastels. Bento grids. Editorial serif headings + sans body + monospace for data.",
+      "MARKETING ONLY — an editorial landing page or blog front. Warm monochrome + spot pastels, serif headings. Never an app screen: a document list, knowledge base or workspace is compose-a-screen + DESIGN.md. Where this skill conflicts with the library DNA (Lucide icons, the palette and font tokens), the DNA wins.",
     source: "Leonxlnx/taste-skill/minimalist-skill",
     sections: [
       {
         id: "negative-constraints",
         title: "Banned defaults",
-        tagline: "Inter / Roboto / Lucide / shadow-md / pill containers / emojis / Acme — banned.",
-        body: `BANNED: Inter / Roboto / Open Sans fonts. Lucide / Feather / Heroicons
-default icons. Tailwind heavy shadows (md/lg/xl). Primary-colored hero
+        tagline: "Heavy shadows / pill containers / emojis / Acme — banned.",
+        body: `BANNED: Tailwind heavy shadows (md/lg/xl). Primary-colored hero
 backgrounds. Gradients, neon, full glassmorphism. rounded-full on
 large containers. Emojis anywhere in markup. Generic names (John Doe,
 Acme, Lorem Ipsum). AI clichés (Elevate, Seamless, Unleash, Next-Gen).`,
@@ -589,8 +590,8 @@ Accents EXCLUSIVELY from 4 muted pastels:
         tagline: "Cards: 1px solid #EAEAEA, 8-12px radius MAX, 24-40px padding, NO shadow.",
         body: `Asymmetric CSS Grid layouts (1x1, 1x2, 2x1, 2x2). Cards:
 border: 1px solid #EAEAEA, border-radius 8px or 12px MAX (never larger),
-generous internal padding (24-40px), no box-shadow. Use raw CSS Grid
-with gridColumn/gridRow span for the bento layout.`,
+generous internal padding (24-40px), no box-shadow. Lay it out with
+<ResponsiveGrid columns> — never raw grid utilities.`,
       },
       {
         id: "components",
@@ -630,7 +631,7 @@ position:fixed pointer-events-none layer.`,
     audience: "consumer",
     name: "Brutalist — Swiss print + military terminal",
     whenToUse:
-      "Data-heavy dashboards, declassified-blueprint feel, portfolios needing raw mechanical aesthetic. Rigid grids, extreme type scale contrast, utilitarian color, analog degradation effects.",
+      "MARKETING ONLY — a portfolio or campaign page that asks for a raw mechanical look. Never an app dashboard: dashboards are compose-a-screen + DESIGN.md (restrained, 1px borders, semantic tones).",
     source: "Leonxlnx/taste-skill/brutalist-skill",
     sections: [
       {
@@ -656,7 +657,7 @@ portfolios.`,
     audience: "consumer",
     name: "GPT taste — editorial + advanced GSAP motion",
     whenToUse:
-      "Long-scroll marketing pages with cinematic scroll choreography. Pins, stacks, scrubbed timelines. AIDA structure. Wide editorial typography. Bans 6-line wraps. Gapless bento grids.",
+      "MARKETING ONLY — long-scroll landing pages with cinematic scroll choreography. Pins, stacks, scrubbed timelines. AIDA structure. Never on an app screen.",
     source: "Leonxlnx/taste-skill/gpt-tasteskill",
     sections: [
       {
@@ -826,7 +827,7 @@ expressive.`,
     audience: "consumer",
     name: "Imagegen mobile — app screen reference images",
     whenToUse:
-      "Pre-code phase. Generate mobile screen mockups before implementing. Onboarding flows, auth, home dashboards, profile, settings, chat, ecommerce, fintech, health, productivity.",
+      "MARKETING ONLY — pre-code mockups for a mobile landing / store-listing / campaign screen. An app's own screens (dashboards, settings, lists) follow compose-a-screen + DESIGN.md instead.",
     source: "Leonxlnx/taste-skill/imagegen-frontend-mobile",
     sections: [
       {
@@ -952,12 +953,13 @@ lists.`,
       {
         id: "a11y-apg",
         title: "WAI-ARIA APG + WCAG 2.2 AA",
-        tagline: "Correct roles/aria/keyboard/focus + a vitest-axe test (0 violations).",
+        tagline: "Correct roles/aria/keyboard/focus, measured by check:frame-axe (0 violations).",
         body: `Implement the APG pattern: role/landmark, aria-current/expanded/selected/sort/busy +
 aria-live/activedescendant, aria-errormessage+aria-invalid. Keyboard: roving tabindex, arrows,
 Home/End, Enter/Space, Esc, visible focus, no positive tabindex. ≥24px targets (2.5.8); never
-colour-only state (1.4.1 — add sr-only text); icon-only buttons need a name. Add a *.a11y.test.tsx
-with expectNoA11yViolations. Prefer Radix/cmdk/vaul for ARIA.`,
+colour-only state (1.4.1 — add sr-only text); icon-only buttons need a name. Measure with
+pnpm check:frame-axe on the component's /isolate frame (local only). Build on
+react-aria-components (rule 3), not new Radix.`,
       },
       {
         id: "rtl-vocab",
@@ -1039,22 +1041,24 @@ label); entry-point affordances live in chrome, not floating in content.`,
 <input>/<select>/<button>/<table>. Decompose each screen into a shopping list and
 resolve each item through THIS MCP: list_primitives to discover, get_component to
 confirm the exact prop/union before you write (never guess a prop). Typical map:
-page chrome → AppShell/Sidebar/Topbar/PageContainer; stat row → ResponsiveGrid +
-StatCard; data grid → DataTable; status pill → Badge tone=…; filter row → Form
+page chrome → AppShell/Sidebar/Topbar/PageContainer; stat row (dashboards only) →
+ResponsiveGrid + StatCard; data grid → DataTable; status pill → Badge tone=…; filter row → Form
 inline + Select/Input; org→branch → Cascader/TreeSelect; date/time → DatePicker/
 TimePicker; ⌘K → Command; bulk drawer/detail → Drawer/Sheet/Dialog; split list+
-detail → SplitPane/Resizable; empty → EmptyState; confirm → AlertDialog; toast →
-Sonner. No duplication: Select (showSearch/loadOptions) is the ONLY searchable/
+detail → SplitPane/Resizable; empty → EmptyState; destructive confirm → Dialog
+with variant="destructive"; toast → Toaster/toast. No duplication: Select (showSearch/loadOptions) is the ONLY searchable/
 async select (no Combobox/Autocomplete); the 4 i18n pickers are one AppSettingPicker
 kind=…. A table = Card + CardContent-flush + DataTable (not PageContainer flush).`,
       },
       {
         id: "tokens-exist",
         title: "Tokens already exist — consume var(--…), never redeclare",
-        tagline: "The design's colors_and_type.css is already implemented as foundation.css.",
-        body: `The handoff's colors_and_type.css (SmartHR blue, wa-iro, M PLUS 2, the
-density scale) is ALREADY shipped as @godxjp/ui's foundation tokens. Never paste a
-hex, never redeclare a token, never invent a neutral. Consume var(--…) and the
+        tagline: "Map the design's values onto the foundation tokens; never paste hex.",
+        body: `The token system (semantic roles, wa-iro, the density scale) ships in
+@godxjp/ui's foundation tokens. The default --primary is a NEUTRAL placeholder: a brand colour
+from the handoff goes into --primary (HSL components) or a theme preset such as
+@godxjp/ui/themes/godx — once, at the theme level. Never paste a hex into a component,
+never redeclare a token, never invent a neutral. Consume var(--…) and the
 semantic utilities. Use get_tokens (MCP) to find the right name — if a token seems
 missing it almost certainly exists under a different name. Soft tints come from
 color-mix(in oklch, var(--primary) 15%, transparent), NOT a new pale hex. Control
@@ -1136,33 +1140,23 @@ time calendar, multilingual-field, no-code builders. Never silently fill a gap.`
 spinner/loading for active save, EmptyState for no-data, inline error near the field
 (not a disappearing toast). A11y: correct roles/landmarks, keyboard (arrows/Home/End/
 Enter/Esc, visible focus, no positive tabindex), ≥24px targets, never colour-only
-state (add sr-only text), icon-only buttons have a name; aim for 0 vitest-axe
-violations. i18n: zero hardcoded strings — every label + aria-label through t(),
-format numbers/dates via Intl. Then run the build: pnpm typecheck + pnpm lint +
-pnpm audit must be green, console clean, and eyeball the page at 390 / 768 / 1280
-(atoms never wrap, containers wrap with row-gap, tabs horizontal-scroll, grids
-minmax(0,1fr), heights never break).`,
+state (add sr-only text), icon-only buttons have a name; 0 axe violations from
+node node_modules/@godxjp/ui/scripts/visual-audit.mjs <url>. i18n: zero hardcoded
+strings — every label + aria-label through t(), format numbers/dates via Intl. Then:
+typecheck + lint clean, node node_modules/@godxjp/ui/scripts/ui-audit.mjs at zero
+errors (\`pnpm audit\` is npm's vulnerability check, not this), console clean.
+Finally screenshot at 390 / 768 / 1280 beside the handoff and fix the top 3 differences;
+at most 3 rounds (atoms never wrap, containers wrap with row-gap, tabs horizontal-scroll,
+heights never break).`,
       },
       {
         id: "report-bug",
         title: "godx-ui bug / can't-follow-a-rule → file a gh issue (never fake it)",
         tagline:
           "If the LIBRARY is wrong, report it — don't hand-roll a workaround that hides the bug.",
-        body: `When you CANNOT satisfy a rule because @godxjp/ui itself is at fault — a
-primitive doesn't expose the controlled-vocabulary prop you need, a token is
-missing, a component has a real a11y/behaviour bug, an example in the catalog is
-wrong — the rule is: DO NOT silently hand-roll/fake a replacement to dodge it (that
-just buries a library bug inside every app). Instead:
-• DON'T: copy a primitive's internals into your app, swap in a raw <input>/<div>, or
-  redeclare a token to route around the defect.
-• DO: open a detailed GitHub issue against the library, then apply the SMALLEST
-  possible local workaround marked // TODO(godxui#<n>: <summary>) so it's grep-able
-  and removed once fixed.
-• Use the MCP tool draft_bug_report to generate the issue body + a copy-paste
-  'gh issue create --repo godx-jp/godxjp-ui …' command. Include: the component/rule
-  (link via get_component/get_rule), a minimal repro, expected vs actual, the
-  installed @godxjp/ui version, and your env. A vague "X is broken" issue is not
-  enough — the report must let a maintainer reproduce in one paste.`,
+        body: `Same procedure as compose-a-screen/report-bug (get_consumer_skill
+skill="compose-a-screen" section="report-bug"): file the issue with draft_bug_report, never
+hand-roll around a library defect.`,
       },
     ],
   },
@@ -1173,7 +1167,7 @@ just buries a library bug inside every app). Instead:
     audience: "consumer",
     name: "Compose a screen — primitives → a finished app view (consumer)",
     whenToUse:
-      "You (a consumer agent) are building a NEW screen/page in an app that imports @godxjp/ui — from a written brief or product requirement, not a design handoff. Read this to assemble it from real primitives via this MCP: pick the right components, lay out one-intent-per-screen, wire every state + a11y + i18n, and verify. For a Claude Design handoff bundle/mock specifically, use design-to-page instead.",
+      "You (a consumer agent) are building a NEW screen/page — list, table, detail, form, settings, dashboard, approval, workspace — in an app that imports @godxjp/ui, from a written brief or product requirement, not a design handoff. Read this to assemble it from real primitives via this MCP: pick the right components, lay out one-intent-per-screen, wire every state + a11y + i18n, and verify. For a Claude Design handoff bundle/mock specifically, use design-to-page instead.",
     source:
       "@godxjp/ui MCP (consumer surface) — taste/one-intent + component-discipline + reference-design DNA",
     sections: [
@@ -1182,8 +1176,11 @@ just buries a library bug inside every app). Instead:
         title: "Pick primitives via the MCP — never hand-roll, never guess a prop",
         tagline:
           "Decompose the screen into a shopping list; resolve each item with list_primitives → get_component.",
-        body: `Start from the requirement, not the markup. Write a shopping list of every
-block the screen needs, then resolve each through THIS MCP before writing JSX:
+        body: `Before any JSX: read DESIGN.md (get_design, or node_modules/@godxjp/ui/DESIGN.md)
+and pull the closest reference screen with get_exemplar archetype=<list | detail | form |
+settings | dashboard | approval>. Match the exemplar's structure; it is the visual target.
+Then write a shopping list of every block the screen needs and resolve each through THIS
+MCP:
 list_primitives (discover the group), get_component <Name> (confirm the exact
 prop/union/default — never guess), suggest_primitive / search_components when unsure
 which fits. Hard rules: compose ONLY real @godxjp/ui primitives — no styled <div>
@@ -1199,8 +1196,9 @@ primitive, see gaps handling in design-to-page/gaps-extend-or-ask + report-bug.`
         tagline:
           "One primary question per page; AppShell/PageContainer chrome; --primary once; semantic color is fixed.",
         body: `Distil the screen to ONE primary question it answers (one-intent-per-screen):
-1–2 hero facts + ONE primary list/form + contextual actions; push tertiary content to
-a Sheet/Dialog/next page. An 8-stat-card wall is a red flag. Use real page chrome
+ONE primary list/form + contextual actions; push tertiary content to a Sheet/Dialog/next
+page. KPI tiles (StatCard) only on a dashboard, 3–4 at most. Most sections are a Heading
+plus content, not a Card; no subtitle that restates the title; filters sit above the table. Use real page chrome
 (AppShell/Sidebar/Topbar/PageContainer) — content never touches the viewport edge,
 two bordered surfaces never touch (間/breathing via Flex gap). PageContainer is
 top-packed by default: a short page on a tall viewport leaves NO stretched void
@@ -1279,23 +1277,26 @@ open; multi-step selections (date range, capped multi-select) can be restarted f
 complete state, not trapped; controlled mirrors update both directions. Run the app's
 build: typecheck + lint clean, console clean, and eyeball at 390 / 768 / 1280 (atoms
 never wrap, containers wrap with row-gap, natural-width components stay w-fit, no
-decorative edge fades, no dead grey panes). If a failure traces to @godxjp/ui itself,
-do not fake around it — see report-bug.`,
+decorative edge fades, no dead grey panes). Then screenshot at 390 / 768 / 1280 next to
+the get_exemplar reference, list the top 3 differences, fix them, repeat — at most 3
+rounds. If a failure traces to @godxjp/ui itself, do not fake around it — see report-bug.`,
       },
       {
         id: "report-bug",
         title: "godx-ui bug / can't-follow-a-rule → file a gh issue (never fake it)",
         tagline:
           "If the LIBRARY is wrong, report it — don't hand-roll a workaround that hides the bug.",
-        body: `Same contract as design-to-page/report-bug: when a rule is impossible because
-@godxjp/ui is at fault (missing token, a primitive without the controlled-vocabulary
-prop, a real a11y/behaviour bug, a wrong catalog example) — DO NOT silently fake a
-replacement. DON'T copy primitive internals, drop to raw HTML, or redeclare a token to
-dodge it. DO open a detailed GitHub issue (use the draft_bug_report MCP tool to build
-the body + the 'gh issue create --repo godx-jp/godxjp-ui …' command), then apply the
-smallest local workaround tagged // TODO(godxui#<n>: <summary>). The issue must carry a
-minimal repro, expected vs actual, the installed version, and env — enough to
-reproduce in one paste.`,
+        body: `When a rule is impossible because @godxjp/ui itself is at fault — a primitive
+without the controlled-vocabulary prop you need, a missing token, a real a11y/behaviour bug,
+a wrong catalog example — do NOT hand-roll a replacement (that buries a library bug inside
+every app):
+• DON'T copy a primitive's internals, drop to raw <input>/<div>, or redeclare a token.
+• DO open a GitHub issue: the draft_bug_report MCP tool builds the body and the
+  'gh issue create --repo godx-jp/godxjp-ui …' command. Include the component/rule
+  (get_component / get_rule), a minimal repro, expected vs actual, the installed version and
+  env — enough to reproduce in one paste.
+• Then apply the smallest local workaround tagged // TODO(godxjp-ui#<n>) so it is grep-able
+  and removed once fixed.`,
       },
     ],
   },
@@ -1522,7 +1523,7 @@ export function findSection(skillId: string, sectionId: string): SkillSection | 
   return findSkill(skillId)?.sections.find((s) => s.id === sectionId);
 }
 
-/** Naïve task router — keyword match. */
+/** Task router — whole-word keyword match. */
 export interface RouteResult {
   skill: string;
   section: string | "<see whenToUse>";
@@ -1530,9 +1531,36 @@ export interface RouteResult {
   alsoSee?: string[];
 }
 
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Does `q` contain keyword `k`? A Latin keyword matches as a whole word (an optional plural `s`/`es`
+ * allowed), so "documents" never hits a "doc" branch and "context" never hits "text" — the substring
+ * match this replaced sent "documents list page" to the pastel `minimalist` skill (gh#1294). A
+ * keyword with non-ASCII letters (Japanese, Vietnamese) keeps substring matching: CJK has no word
+ * boundaries to match on.
+ */
+export function keywordMatches(q: string, k: string): boolean {
+  if (/[^\p{ASCII}]/u.test(k)) return q.includes(k);
+  return new RegExp(`(^|[^a-z0-9])${escapeRe(k)}(e?s)?([^a-z0-9]|$)`).test(q);
+}
+
+/** Words that make a task a marketing / landing surface — the only gate for the marketing-taste skills. */
+const MARKETING_KEYWORDS = [
+  "landing",
+  "landing page",
+  "marketing",
+  "lp",
+  "hero",
+  "long scroll",
+  "campaign site",
+];
+
 export function routeTask(task: string, opts?: { consumerOnly?: boolean }): RouteResult[] {
   const q = task.toLowerCase();
   const matches: RouteResult[] = [];
+  const has = (kw: string[]) => kw.some((k) => keywordMatches(q, k));
+  const marketing = has(MARKETING_KEYWORDS);
 
   const route = (
     kw: string[],
@@ -1541,7 +1569,13 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     why: string,
     alsoSee?: string[],
   ) => {
-    if (kw.some((k) => q.includes(k))) matches.push({ skill, section, why, alsoSee });
+    if (!has(kw)) return;
+    if (matches.some((m) => m.skill === skill && m.section === section)) return;
+    matches.push({ skill, section, why, alsoSee });
+  };
+  /** A marketing-taste skill: soft / minimalist / brutalist / gpt-tasteskill / imagegen-*. */
+  const marketingRoute: typeof route = (...args) => {
+    if (marketing) route(...args);
   };
 
   /*
@@ -1592,49 +1626,78 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     ["contract/loop", "contract/spacing", "contract/escape"],
   );
 
-  // Premium / agency / Awwwards
-  route(
+  // App screens — the common case. Before any taste skill, so an agent that follows the first
+  // non-contract hit builds a restrained admin screen, not a marketing page (gh#1294).
+  if (!marketing)
+    route(
+      [
+        "dashboard",
+        "table",
+        "list",
+        "admin",
+        "settings",
+        "setting",
+        "document",
+        "workspace",
+        "form",
+        "detail page",
+        "approval",
+        "console",
+        "back office",
+        "back-office",
+        "screen",
+        "page",
+        "view",
+        "app",
+      ],
+      "compose-a-screen",
+      "pick-primitives",
+      "An app screen: start from DESIGN.md (get_design) and the matching get_exemplar, compose real primitives, then screenshot-compare at 390/768/1280.",
+      ["compose-a-screen/assemble-screen", "design-to-page/dna", "taste/one-intent-per-screen"],
+    );
+
+  // Premium / agency / Awwwards — marketing only
+  marketingRoute(
     ["premium", "awwwards", "agency", "linear", "apple", "high-end", "luxury"],
     "soft",
     "vibe-archetypes",
-    "Premium tier — pick a Vibe + Layout archetype + apply Double-Bezel.",
+    "Marketing-only premium tier — pick a Vibe + Layout archetype + apply Double-Bezel.",
     ["soft/double-bezel", "soft/magnetic-hover"],
   );
 
   // Marketing / landing
-  route(
-    ["landing page", "marketing", "hero", "long scroll"],
+  marketingRoute(
+    MARKETING_KEYWORDS,
     "imagegen-web",
     "hero-composition-bias",
     "Landing pages benefit from hero composition variety + per-section image generation.",
     ["gpt-tasteskill/principles", "soft/layout-archetypes"],
   );
 
-  // Mobile app screens
-  route(
+  // Mobile marketing screens
+  marketingRoute(
     ["mobile app", "ios", "android", "phone screen", "onboarding flow"],
     "imagegen-mobile",
     "principles",
-    "Mobile app design — generate screens first, avoid phone-shaped-website.",
+    "Mobile marketing screens — generate screens first, avoid phone-shaped-website.",
     ["taste/mobile-first"],
   );
 
-  // Workspace / Notion-like
-  route(
-    ["workspace", "notion", "document", "editorial", "knowledge base"],
+  // Editorial marketing (blog / magazine landing)
+  marketingRoute(
+    ["editorial", "notion", "magazine", "blog"],
     "minimalist",
     "palette",
-    "Editorial workspace = warm monochrome + spot pastels + serif headings.",
-    ["minimalist/typography", "minimalist/bento-grids"],
+    "Marketing-only editorial look: warm monochrome + spot pastels + serif headings.",
+    ["minimalist/typography"],
   );
 
-  // Data dashboard
-  route(
-    ["dashboard", "data heavy", "tabular", "ops table"],
+  // Raw / brutalist marketing
+  marketingRoute(
+    ["brutalist", "raw", "terminal", "swiss"],
     "brutalist",
     "principles",
-    "Data-heavy dashboards work with Brutalist (rigid grids, utilitarian color).",
-    ["taste/one-intent-per-screen"],
+    "Marketing-only brutalist look (rigid grids, utilitarian colour).",
   );
 
   // Brand work
@@ -1675,7 +1738,7 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     ["mobile first", "responsive", "breakpoint"],
     "taste",
     "mobile-first",
-    "Default styles target xs. Touch targets ≥ 44px. Use useBreakpoint().",
+    "Default styles target xs. Touch targets ≥ 44px. Responsive props, not window.innerWidth.",
   );
 
   // Output quality
@@ -1686,9 +1749,9 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     "Banned: // ..., // TODO, 'for brevity'. Ship complete runnable code.",
   );
 
-  // GSAP motion
-  route(
-    ["gsap", "scrolltrigger", "scroll choreography", "pinning"],
+  // GSAP motion — marketing only
+  marketingRoute(
+    ["gsap", "scrolltrigger", "scroll choreography", "pinning", "scroll-triggered"],
     "gpt-tasteskill",
     "principles",
     "GSAP ScrollTrigger — pinning, stacking, scrubbing.",
@@ -1775,7 +1838,8 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
       "rerender",
       "bundle size",
       "code splitting",
-      "tree-shak",
+      "tree-shaking",
+      "tree shaking",
       "chậm",
       "lỗi hiệu năng",
       "重い",

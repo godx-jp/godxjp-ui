@@ -1420,8 +1420,8 @@ function suggestPrimitive(useCase: string): string {
   );
   check(
     ["modal", "dialog", "confirm"],
-    "Dialog / AlertDialog",
-    "Radix Dialog. AlertDialog for destructive.",
+    "Dialog",
+    'Controlled open/onOpenChange. A destructive confirm is variant="destructive" on DialogRoot or DialogContent (alertdialog role, outside click does not dismiss).',
     4,
   );
   check(["drawer", "side panel", "sheet"], "Sheet", "Side panel for filters/settings.", 4);
@@ -1432,11 +1432,16 @@ function suggestPrimitive(useCase: string): string {
     "Spinner=active work, Skeleton=init fetch.",
     3,
   );
-  check(["alert", "banner"], "Alert", "5 semantic colors × outlined/banner.", 3);
+  check(
+    ["alert", "banner"],
+    "Alert",
+    "tone × variant (default/banner/callout). Only for something the user must act on; not a page decoration.",
+    3,
+  );
   check(
     ["select", "dropdown"],
-    "Select / AutoComplete",
-    "Select=discrete options, AutoComplete=free-text+suggestions.",
+    "Select",
+    "One control: showSearch for type-to-filter, loadOptions for async options; no separate combobox component exists.",
     3,
   );
   check(
@@ -1448,7 +1453,7 @@ function suggestPrimitive(useCase: string): string {
   check(
     ["delete", "destructive"],
     "Pattern 'confirm-destructive'",
-    "Card accent='destructive' + typed-name confirm.",
+    'Dialog variant="destructive" + typed-name confirm.',
     4,
   );
   if (!suggestions.length)

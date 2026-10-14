@@ -183,7 +183,7 @@ describe("suggest_primitive", () => {
   const CASES: Array<[string, RegExp]> = [
     ["I need a registration form with validation", /Form \+ FormField/],
     ["render a table of rows and columns", /DataTable/],
-    ["confirm a destructive delete", /confirm-destructive|AlertDialog/],
+    ["confirm a destructive delete", /confirm-destructive/],
     ["a side panel drawer for filters", /Sheet/],
     ["show a toast notification", /Toaster|toast/],
     ["a loading spinner while saving", /Spinner/],
@@ -195,6 +195,19 @@ describe("suggest_primitive", () => {
   it.each(CASES)("%s → suggestion", async (useCase, expected) => {
     const out = await dispatchTool("suggest_primitive", { use_case: useCase });
     expect(out).toMatch(expected);
+  });
+
+  // gh#1294: there is no AutoComplete; a destructive confirm is Dialog variant="destructive".
+  it("never suggests a component that does not exist", async () => {
+    const out = await dispatchTool("suggest_primitive", { use_case: "a dropdown select" });
+    expect(out).not.toContain("AutoComplete");
+    expect(out).toMatch(/showSearch/);
+  });
+
+  it("a destructive confirm points at Dialog variant=destructive, not the legacy AlertDialog", async () => {
+    const out = await dispatchTool("suggest_primitive", { use_case: "a confirm dialog" });
+    expect(out).toContain('variant="destructive"');
+    expect(out).not.toContain("AlertDialog");
   });
 
   it("no match returns guidance", async () => {
