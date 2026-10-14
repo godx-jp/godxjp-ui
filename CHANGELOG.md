@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.8.0] - 2026-10-14
+
+### ✨ Added
+
+- **`Progress` breakdown slices take `info` and `neutral` (#1302)** — the same fills as the matching
+  `Legend` swatches, so a four-state partition (done · done-awaiting · in progress · not started) no
+  longer forces two states into one colour. Measured against the track / the page: `info` 7.50 /
+  8.18 light, 5.46 / 7.26 dark; `neutral` 5.18 / 5.65 light, 5.49 / 7.30 dark (WCAG 1.4.11 asks 3).
+  New exported type `ProgressSegmentTone`; the meter keeps its three tones.
+
 ## [32.7.2] - 2026-10-14
 
 ### 🐛 Fixed

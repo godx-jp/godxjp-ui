@@ -284,6 +284,16 @@
     background: hsl(var(--mark-destructive, var(--text-error)));
   }
 
+  /* gh#1302 — the Legend's `info` and `neutral` swatches, verbatim, so a four-state partition keys
+   * against its Legend one-to-one. */
+  .ui-progress-segment[data-tone="info"] {
+    background: hsl(var(--mark-info, var(--text-info)));
+  }
+
+  .ui-progress-segment[data-tone="neutral"] {
+    background: hsl(var(--muted-foreground));
+  }
+
   .ui-progress-label {
     color: hsl(var(--muted-foreground));
     font-size: var(--progress-label-font-size);

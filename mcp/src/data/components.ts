@@ -5617,9 +5617,9 @@ import { Flex } from "@godxjp/ui/layout";
       },
       {
         name: "segments",
-        type: '{ value: number; tone: "success" | "warning" | "destructive"; label: string }[]',
+        type: '{ value: number; tone: "success" | "warning" | "destructive" | "info" | "neutral"; label: string }[]',
         description:
-          'BREAKDOWN mode: one total split into slices. Pass ABSOLUTE amounts in one unit (counts, bytes, yen) — the bar computes each share, so three numbers never have to be rounded into 100. Renders role="img" named from every slice (a partition is not three progressbars), on a taller track (--progress-breakdown-block-size 1.375rem, --progress-breakdown-radius var(--radius)) because three abutting fills on the meter\'s 0.5rem pill read as a coloured hairline. `label` on each slice is REQUIRED — colour alone never carries meaning (WCAG 1.4.1). Mutually exclusive with value/tone/over.',
+          'BREAKDOWN mode: one total split into slices. Pass ABSOLUTE amounts in one unit (counts, bytes, yen) — the bar computes each share, so three numbers never have to be rounded into 100. Renders role="img" named from every slice (a partition is not three progressbars), on a taller track (--progress-breakdown-block-size 1.375rem, --progress-breakdown-radius var(--radius)) because three abutting fills on the meter\'s 0.5rem pill read as a coloured hairline. `label` on each slice is REQUIRED — colour alone never carries meaning (WCAG 1.4.1). Mutually exclusive with value/tone/over. Slice tones add `info` and `neutral` to the three meter tones (gh#1302) — the same fills as the matching `Legend` swatches, so a four-state partition (done · awaiting · in progress · not started) stays distinguishable and keys one-to-one.',
       },
       {
         name: "total",
