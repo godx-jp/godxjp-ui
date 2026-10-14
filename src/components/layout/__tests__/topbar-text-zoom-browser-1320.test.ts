@@ -184,11 +184,11 @@ describe("Topbar under enlarged text (Chromium, gh#1320)", { timeout: 60_000 }, 
 
     await zoomText(page);
     const zoomed = await measure(page);
-    if (zoomed.collapsed !== "true") {
-      expect(zoomed.controls.length, JSON.stringify(zoomed)).toBeGreaterThanOrEqual(3);
-      expect(overlaps(zoomed.controls)).toEqual([]);
-      expect(zoomed.foreignOverSearch).toEqual([]);
-    }
+    // At 1280 there is room: the bar stays expanded, so the overlap check below cannot pass vacuously.
+    expect(zoomed.collapsed).toBe("false");
+    expect(zoomed.controls.length, JSON.stringify(zoomed)).toBeGreaterThanOrEqual(3);
+    expect(overlaps(zoomed.controls)).toEqual([]);
+    expect(zoomed.foreignOverSearch).toEqual([]);
     expect(errors).toEqual([]);
     await page.close();
   });
