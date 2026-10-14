@@ -85,7 +85,7 @@ const HELP = {
     --dry-run   list every change without writing
   What it cannot decide (a component move that changes props, an AppProvider that relied on the
   old vi default) is printed as a "note" for you to finish.`,
-  "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] [--widths WxH,…] [--storage-state FILE] <baseUrl> [route …]
+  "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] [--widths WxH,…] [--storage-state FILE] [--text-spacing] [--text-zoom 200] [--screenshots DIR] <baseUrl> [route …]
 
   Runtime audit (Playwright) against an app you are ALREADY running locally, at six widths.
     baseUrl         the running app, e.g. http://localhost:5173
@@ -95,6 +95,11 @@ const HELP = {
     --storage-state a Playwright storageState JSON (cookies + localStorage) so signed-in routes
                     are audited signed in; save one with
                     npx playwright codegen --save-storage=state.json <url>
+    --text-spacing  also render each width with the WCAG 1.4.12 text-spacing override, then C01
+    --text-zoom N   also render each width with text resized to N% (WCAG 1.4.4; e.g. 200)
+                    Each reports the geometry delta against the unmodified render; a delta of
+                    zero is an error ("override not applied"), never a pass
+    --screenshots   a directory for the base + override render of each evidence mode
     --strict       exit non-zero on any finding, not only errors
     --format json   machine-readable: findings (viewport, element, threshold + origin), unmapped
                     items (reviewer required), per-width rule status + reviewer checklist

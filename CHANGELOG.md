@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.12.0] - 2026-10-15
+
+From the independent review of godx-content round 5 (#1316) — which caught a fabricated WCAG 1.4.12
+cell: a text-spacing override that never applied (byte-identical screenshots) logged as a pass.
+
+### ✨ Added
+
+- **`visual-audit --text-spacing`** (WCAG 1.4.12) and **`--text-zoom <percent>`** (WCAG 1.4.4), with
+  `--screenshots <dir>`. Each width is re-rendered with the override injected last, outside every
+  `@layer`, with `!important`, and C01 runs under it; `evidence[]` reports the share of text that took
+  the values and the layout delta against the normal render. An override that changes nothing is an
+  error ("override not applied"), never a pass.
+
+### 🐛 Fixed
+
+- **Japanese breadcrumb crumbs** (Breadcrumb and PageContainer's trail) break between phrases
+  instead of mid-word (「…オンボーディ|ング…」), like titles since 32.11.1 (0 breaks at 240–358px; 2–3 before).
+- DropdownMenu no longer reads the dead `--radix-dropdown-menu-content-available-height`;
+  react-aria's inline `max-height` keeps clamping the panel and `100dvh` is the fallback (the panel
+  scrolls and its last item is reachable at 844×390 — pinned by a browser test).
+
 ## [32.11.1] - 2026-10-15
 
 ### 🐛 Fixed

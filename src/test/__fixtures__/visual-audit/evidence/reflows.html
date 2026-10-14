@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evidence: text reflows under the override, nothing is lost</title>
+    <style>
+      body { margin: 0; padding: 16px; font: 16px/1.4 system-ui, sans-serif; }
+    </style>
+  </head>
+  <body>
+    <main id="content">
+      <h1>Release notes</h1>
+      <p>Every paragraph here sits in a fluid column, so more spacing only makes the page taller.</p>
+      <p>Nothing is clipped: no fixed heights, no overflow hidden, no nowrap.</p>
+    </main>
+  </body>
+</html>
