@@ -109,8 +109,12 @@ function changedFiles() {
   }
 
   const parts = [
-    run(["diff", "--name-only", "--diff-filter=ACMR", mergeBase.trim(), "--"]),
-    run(["diff", "--name-only", "--diff-filter=ACMR", "--cached"]),
+    // `--relative` (gh#1296): `git diff` names paths from the REPO root, `ls-files` from the cwd.
+    // Run from a workspace package (pages/) the root-relative names failed the existsSync below
+    // and were dropped, so 16 changed .tsx read as "no .tsx/.jsx changed" — a false clean.
+    // `--relative` makes both cwd-relative and limits them to the package being audited.
+    run(["diff", "--relative", "--name-only", "--diff-filter=ACMR", mergeBase.trim(), "--"]),
+    run(["diff", "--relative", "--name-only", "--diff-filter=ACMR", "--cached"]),
     run(["ls-files", "--others", "--exclude-standard"]),
   ];
   if (parts.some((out) => out === null)) {
@@ -2551,7 +2555,7 @@ if (filesScanned === 0 && !changedNoFiles) {
   // Dưới `--changed`, NÓI RA base đã so. Một base sai không làm chương trình chết — nó cho ra một
   // con số hợp lý, và đó là thứ duy nhất người đọc có thể dùng để nghi ngờ (gh#948).
   if (CHANGED && changed?.base) {
-    console.log(`${C.dim}so với: ${changed.base}${C.reset}`);
+    console.log(`${C.dim}compared with: ${changed.base}${C.reset}`);
   }
   // Bỏ file trong im lặng là cách một gate thu hẹp dần mà không ai thấy (cùng lý do với dòng
   // `so với:` ngay trên). Nói ra số file và lãnh thổ đã dùng.
