@@ -1561,6 +1561,26 @@
     font-weight: var(--font-weight-medium);
   }
 
+  /* JAPANESE HEADINGS AND SHORT UI STRINGS BREAK BETWEEN PHRASES (gh#1314) — 32.11.0 gave Markdown
+   * prose `auto-phrase`, but a page title, a document title and an EmptyState sentence still broke
+   * mid-word (「リ|リース」, 「オンボー|ディング」, 「ませ|ん。」 measured in godx-content). Scoped to
+   * `:lang(ja)`: Chromium phrase-segments Japanese only, so Latin and Vietnamese wrap as before;
+   * unsupported engines drop the value and keep their own CJK breaking. */
+  :is(
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .ui-page-title,
+    .ui-empty-state-title,
+    .ui-empty-state-description
+  ):lang(ja) {
+    word-break: auto-phrase;
+    line-break: strict;
+  }
+
   .ui-empty-state-description {
     font-size: var(--font-size-base);
     color: hsl(var(--muted-foreground));

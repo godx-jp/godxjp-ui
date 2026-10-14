@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.11.1] - 2026-10-15
+
+### 🐛 Fixed
+
+- **Japanese headings and EmptyState strings break between phrases (#1314).** 32.11.0 gave Markdown
+  prose `auto-phrase`, but page titles, document titles and EmptyState sentences still broke
+  mid-word (「リ|リース」, 「オンボー|ディング」, 「ませ|ん。」 in godx-content). h1–h6, `.ui-page-title` and
+  the EmptyState title/description now use `word-break: auto-phrase` + `line-break: strict` under
+  `:lang(ja)` (Chromium measures 0 mid-word breaks at 200–360px; a phrase longer than the line still
+  breaks inside itself). Latin and Vietnamese wrap unchanged.
+
 ## [32.11.0] - 2026-10-15
 
 Library gaps found by godx-content's round-4 redesign and its independent review (#1310).
