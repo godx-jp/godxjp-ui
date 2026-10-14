@@ -3,7 +3,7 @@
  * godxjp-ui VISUAL audit — the runtime counterpart to the static ui-audit.mjs. Static audit
  * (ui-audit.mjs) reads SOURCE with regexes — zero deps, fast, runs on every save.
  */
-import { realpathSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
   VISUAL_RULES,
@@ -212,6 +212,11 @@ export function collectInPage() {
     "[role=alert], [role=status], [data-slot=alert], [class*=banner], [class*=notification]",
   )) {
     if (!visible(el)) continue;
+    // A screen-reader live region (`span.sr-only[role=status]`, 1x1 and clipped) is not a banner:
+    // nothing is painted, so there is no anatomy to get wrong (gh#1307 — BlockEditor's own status
+    // region was reported as "controls stacked vertically"). Its own box OR an ancestor's clip.
+    const own = el.getBoundingClientRect();
+    if (own.width <= 1 || own.height <= 1 || clippedAway(el)) continue;
     // The kit's EmptyState is a polite status region, not a banner: it has no Alert anatomy to get
     // wrong, so the banner checks do not apply to it (gh#1198).
     if (el.closest("[data-slot=empty-state]")) continue;
@@ -263,7 +268,11 @@ export function collectInPage() {
     return { layer, ok: v !== bad && v !== "" };
   };
   const layers = [
-    probe("control", "ui-button", "borderRadius", "0px"),
+    // gh#1307 — this read `borderRadius` on a bare `.ui-button`, and no rule in control.css gives
+    // `.ui-button` a radius (the corner comes from the variant classes), so the probe read 0px
+    // with the layer loaded and reported it missing on every consumer page. `display: inline-flex`
+    // is what the bare `.ui-button` rule itself declares; a div without the layer stays `block`.
+    probe("control", "ui-button", "display", "block"),
     probe("navigation-layout", "ui-dropdown-menu-content", "borderTopWidth", "0px"),
     // `.ui-card` is NOT a class the library sets rules on — Card renders `cn("group/card", …)`
     // and card-layout.css owns `.ui-card-bar` / `.ui-card-cover` / `.ui-card-inset*` /
@@ -490,7 +499,7 @@ export const PROBE_RULES = [
     category: "layout",
     standard: `toggle centre within 8px of the declared rail edge at ≥1024px (${RC})`,
     kind: "probe",
-    fix: "An edge-mounted rail toggle sits on the rail edge it controls in both desktop states. Declare the pattern with data-audit-role=rail-toggle (+ data-audit-edge=start|end).",
+    fix: "An edge-mounted rail toggle sits on the rail edge it controls in both desktop states. Declare the pattern with data-audit-role=rail-toggle (+ data-audit-edge=start|end). A toggle inside `Sidebar action` is the supported placement and reports not-applicable-sidebar-action.",
   },
   {
     id: "c11-search-keyline",
@@ -638,7 +647,8 @@ export function isTrackedUppercaseLabel(l) {
  *
  * Status per rule: fail | pass | partial (mapped elements pass, but unmapped candidates remain) |
  * unmapped (only candidates) | not-found (nothing to measure — the reviewer confirms N/A) |
- * not-applicable-at-width | checklist. Only "pass" is a machine pass, and only for what was mapped.
+ * not-applicable-at-width | not-applicable-end-aligned (C11) | not-applicable-sidebar-action (C10) |
+ * checklist. Only "pass" is a machine pass, and only for what was mapped.
  */
 export function evaluateProbes(raw, { url, viewport }) {
   const T = PROBE_THRESHOLDS;
@@ -825,6 +835,8 @@ export function evaluateProbes(raw, { url, viewport }) {
       );
   noteUnmapped("c10-rail-toggle-attached", raw.c10?.candidates);
   settle("c10-rail-toggle-attached", toggles.length);
+  if (rules["c10-rail-toggle-attached"] === "not-found" && raw.c10?.sidebarAction?.length)
+    rules["c10-rail-toggle-attached"] = "not-applicable-sidebar-action";
 
   // C11 — desktop search keyline.
   const keylines = applies("c11-search-keyline") ? raw.c11?.mapped || [] : [];
@@ -1117,7 +1129,13 @@ export function collectProbes(opts) {
       reason:
         "looks like a search field but carries no search mapping (SearchInput, role=searchbox, type=search or data-audit-role=search)",
     }));
-  const searchTriggers = [...document.querySelectorAll("[data-audit-role=search-trigger]")]
+  // The kit's own TopbarSearch folds to its trigger below `collapseBelow`; the consumer cannot
+  // annotate that internal button, so it is mapped through its own hook (gh#1307).
+  const searchTriggers = [
+    ...document.querySelectorAll(
+      "[data-audit-role=search-trigger], [data-slot=topbar-search] .ui-topbar-search-trigger",
+    ),
+  ]
     .filter(shown)
     .map((el) => ({ element: desc(el), probe: tag(el) }));
 
@@ -1298,6 +1316,7 @@ export function collectProbes(opts) {
   // ── C10: edge-mounted rail toggle ───────────────────────────────────────────────────────
   const toggles = [];
   const railCandidates = [];
+  const sidebarActionToggles = [];
   if (width >= DESKTOP) {
     const rail = [
       ...document.querySelectorAll("[data-audit-role=rail], .app-sidebar, .sb-root"),
@@ -1326,7 +1345,11 @@ export function collectProbes(opts) {
     for (const t of document.querySelectorAll("[aria-controls]")) {
       if (t.matches("[data-audit-role=rail-toggle]") || !shown(t) || !sidebar) continue;
       const target = document.getElementById(t.getAttribute("aria-controls"));
-      if (target && sidebar.contains(target))
+      if (!target || !sidebar.contains(target)) continue;
+      // `Sidebar action` is the placement DESIGN.md prescribes for a collapse toggle — inside the
+      // rail, so the edge-mounted pattern C10 measures does not apply to it (gh#1307).
+      if (t.closest("[data-slot=sidebar-action]")) sidebarActionToggles.push({ element: desc(t) });
+      else
         railCandidates.push({
           element: desc(t),
           reason:
@@ -1439,7 +1462,7 @@ export function collectProbes(opts) {
     c04: { mapped: accounts, candidates: accountCandidates },
     c05: { mapped: editors },
     c06: { mapped: groups, candidates: actionCandidates },
-    c10: { mapped: toggles, candidates: railCandidates },
+    c10: { mapped: toggles, candidates: railCandidates, sidebarAction: sidebarActionToggles },
     c11: { mapped: keylines, candidates: keylineCandidates, endAligned },
     c12: { mapped: labels, candidates: labelCandidates },
   };
@@ -1547,7 +1570,7 @@ async function loadDeps() {
  * (page/context/browser) is guaranteed via finally on BOTH success and failure.
  */
 /* c8 ignore start — the browser-driving glue; exercised by scripts/visual-audit-smoke.mjs in CI. */
-async function audit(targets, { chromium }, viewports = DEFAULT_VIEWPORTS) {
+async function audit(targets, { chromium }, viewports = DEFAULT_VIEWPORTS, { storageState } = {}) {
   const findings = [];
   const errors = [];
   const matrix = [];
@@ -1568,7 +1591,7 @@ async function audit(targets, { chromium }, viewports = DEFAULT_VIEWPORTS) {
         "(or set PLAYWRIGHT_CHROMIUM_EXECUTABLE to a system Chromium).";
       throw err;
     }
-    context = await browser.newContext({ viewport: viewports[0] });
+    context = await browser.newContext({ viewport: viewports[0], storageState });
     const page = await context.newPage();
 
     for (const url of targets) {
@@ -1813,12 +1836,32 @@ async function main() {
     return;
   }
 
+  // `--storage-state <file>` — a Playwright storageState JSON (cookies + localStorage), so a
+  // signed-in route is audited signed in (gh#1307: the consumer had to patch a copy to get past
+  // its login). Create one with `npx playwright codegen --save-storage=state.json <url>`.
+  const ssIdx = args.indexOf("--storage-state");
+  const storageState = ssIdx === -1 ? undefined : args[ssIdx + 1];
+  if (ssIdx !== -1 && (!storageState || !existsSync(storageState))) {
+    finish(
+      buildBootstrapError(
+        `--storage-state: "${storageState ?? ""}" is not a readable file`,
+        "pass a Playwright storageState JSON, e.g. from `npx playwright codegen --save-storage=state.json <url>`",
+      ),
+      { asJson, strict, pages: 0 },
+    );
+    return;
+  }
+
   const urls = args.filter(
-    (a, i) => !a.startsWith("--") && args[i - 1] !== "--format" && args[i - 1] !== "--widths",
+    (a, i) =>
+      !a.startsWith("--") &&
+      args[i - 1] !== "--format" &&
+      args[i - 1] !== "--widths" &&
+      args[i - 1] !== "--storage-state",
   );
   if (urls.length === 0) {
     const msg =
-      "no baseUrl given — usage: visual-audit.mjs [--format json] [--strict] [--widths 390x844,1280x900] <baseUrl> [route …] " +
+      "no baseUrl given — usage: visual-audit.mjs [--format json] [--strict] [--widths 390x844,1280x900] [--storage-state state.json] <baseUrl> [route …] " +
       "(baseUrl is the running app; extra args are routes appended to it)";
     finish(buildBootstrapError(msg), { asJson, strict, pages: 0 });
     return;
@@ -1839,7 +1882,7 @@ async function main() {
   }
 
   try {
-    const result = await audit(targets, deps, viewports);
+    const result = await audit(targets, deps, viewports, { storageState });
     finish(result, { asJson, strict, pages: targets.length });
   } catch (e) {
     // A launch/setup failure = infrastructure error (never "zero violations").

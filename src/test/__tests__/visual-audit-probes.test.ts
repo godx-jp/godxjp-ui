@@ -159,6 +159,8 @@ const DESKTOP: Case[] = [
   C("c10/repaired.html", "c10-rail-toggle-attached", "pass"),
   C("c10/clean-collapsed.html", "c10-rail-toggle-attached", "pass"),
   C("c10/unmapped.html", "c10-rail-toggle-attached", "unmapped"),
+  // gh#1307 — DESIGN's own placement (inside `Sidebar action`) is not the edge-mounted pattern.
+  C("c10/clean-sidebar-action.html", "c10-rail-toggle-attached", "not-applicable-sidebar-action"),
 
   C("c11/bad.html", "c11-search-keyline", "fail", [["c11-search-keyline", "#c11-search"]]),
   C("c11/repaired.html", "c11-search-keyline", "pass"),
