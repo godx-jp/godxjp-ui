@@ -1848,7 +1848,7 @@
   }
 
   .ui-prose :is(h5, h6) {
-    font-size: 1em;
+    font-size: inherit;
   }
 
   .ui-prose :is(h4, h5, h6) {
