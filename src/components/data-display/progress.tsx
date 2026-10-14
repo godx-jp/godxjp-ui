@@ -7,6 +7,14 @@ import { cn } from "../../lib/utils";
 export type ProgressTone = "success" | "warning" | "destructive";
 
 /**
+ * A breakdown SLICE takes two more tones than the meter (gh#1302): `info` and `neutral`, the same
+ * pair `Legend` already keys — a partition with four states (done · done-awaiting · in progress ·
+ * not started) needs four distinguishable fills, and the meter's three made two of them identical.
+ * Each paints exactly what the matching Legend swatch paints, so a key and its bar stay one.
+ */
+export type ProgressSegmentTone = ProgressTone | "info" | "neutral";
+
+/**
  * One slice of a BREAKDOWN bar — how much of the total this state holds, in the SAME unit as every
  * other slice (counts, bytes, yen). Never a percentage: the bar owns the ratio arithmetic, so the
  * caller never has to round three numbers that must still add up to 100.
@@ -16,7 +24,7 @@ export type ProgressTone = "success" | "warning" | "destructive";
  */
 export type ProgressSegment = {
   value: number;
-  tone: ProgressTone;
+  tone: ProgressSegmentTone;
   label: string;
 };
 
