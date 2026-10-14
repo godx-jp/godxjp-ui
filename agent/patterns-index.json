@@ -53,7 +53,7 @@
       "account-identity"
     ],
     "name": "settings-section-rows",
-    "tagline": "The four canonical settings BLOCKS — identity · preference rows · billing handoff · danger zone — composed from Card + ListRow + Descriptions + StatusBadge + AlertDialog. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
+    "tagline": "The four canonical settings blocks — identity · preference rows · billing handoff · danger zone. Identity and billing are SECTIONS (Heading + Descriptions, no surface); preference rows and the danger zone are Cards because they are real boundaries. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
     "tags": [
       "settings",
       "account",
@@ -83,7 +83,7 @@
   },
   {
     "name": "confirm-destructive",
-    "tagline": "Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).",
+    "tagline": "Type-to-confirm destructive dialog — the AlertDialog PRESET with `challenge` (the compound AlertDialog* parts are the older way in; a body the preset does not cover is Dialog variant=\"destructive\").",
     "tags": [
       "dialog",
       "confirm",

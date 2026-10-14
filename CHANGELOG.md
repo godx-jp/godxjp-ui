@@ -6,6 +6,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.6.0] - 2026-10-14
+
+Why consumer screens still read as AI-generated, measured on four consumer repos (#1294): the
+decorative tells were already ~0 (enforced), but a STRUCTURAL formula was not — a subtitle restating
+every title (163 pages), a KPI tile row above lists (25 files), a Card per section (136 files with
+three or more; one page 23 Cards / 28 Badges), an icon EmptyState inside a Card (211), Alert banners
+on 96 of 150 pages. The guidance an agent loaded by default held no taste at all, there was no
+visual target, and the library's own examples modelled the formula.
+
+### ✨ Added
+
+- **`DESIGN.md`** — a VoltAgent/awesome-design-md-style spec: real token values, colour scarcity,
+  elevation, admin screen anatomy (list · detail · form · settings · dashboard · approval queue),
+  do's and don'ts, an iteration guide, known gaps. Shipped in the package root and `agent/`; MCP
+  **`get_design`** (whole document or one section).
+- **MCP `get_exemplar(archetype)`** — five reference screens (list, detail, settings, dashboard,
+  approval queue) with anatomy notes, source and live preview URL. The five showcases were cleaned of
+  restating subtitles, card-per-section, icon EmptyStates and badge walls first.
+- **Six ui-audit WARNINGS for admin-screen tells** (consumer scope; limits measured on 511 consumer
+  files, flagging the heaviest ~13%): `nested-card`, `card-per-section` (≥5 Cards),
+  `kpi-row-off-dashboard` (≥3 StatCards outside a dashboard path), `empty-state-icon-in-card`,
+  `badge-wall` (≥5), `alert-per-page` (≥4). Nine admin anti-AI-tells.
+
+### 🔄 Changed
+
+- **The consumer default path is a five-step loop** (`sync-rules` CLAUDE.md block, workflow file and
+  the MCP server's `instructions`): DESIGN.md / `get_design` → `route_consumer_task` →
+  `get_exemplar` → ui-audit → screenshot at 390/768/1280 beside the exemplar, fix the top three,
+  at most three rounds. Default-loaded text 17,971 → 13,265 chars (block 2,730 → 753);
+  `.ai/rules/godxjp-ui.md` gains a screen-composition section and drops font/AlertDialog/antd history.
+- **Routing:** English keywords match whole words; app screens (dashboard, table, list, admin,
+  settings, document, form…) route to `compose-a-screen`; the marketing taste skills only match
+  landing/marketing/LP/hero tasks; `taste` is rewritten against the current API.
+- **Patterns stop modelling the tells:** list/detail pages lose their StatCard rows and restating
+  subtitles, `page-sections` and `settings-section-rows` are heading + spacing with Cards only at
+  real boundaries, tier badges are one neutral tone, `confirm-destructive` uses the AlertDialog
+  preset's `challenge`. The START-HERE model page puts filters above the table.
+
+### 🐛 Fixed
+
+- **A Select named by `<label for>` no longer makes react-aria warn on every render** (regression
+  from 32.4.1, #1283): the label text is handed to the root.
+- Stale consumer guidance: `suggest_primitive` no longer names the non-existent AutoComplete or the
+  legacy AlertDialog parts; references to `useBreakpoint`, `Typography.Title`, `vitest-axe`,
+  `pnpm audit`, "ten rules" and `styles/core (no fonts)` corrected.
+- Three repo skills had frontmatter that failed to parse (`behavioral-test`, `mcp-catalog-sync`) or
+  none (`performance`), so their descriptions fell back to the first body line.
+- The `settings-*` class lens in `check:mcp-pattern-imports` matched showcase ids; it now matches
+  class references only.
+
 ## [32.5.0] - 2026-10-14
 
 From gino-cloud (#1292), measured in Chromium 151.

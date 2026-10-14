@@ -12,7 +12,7 @@ import { Select } from "../select";
 afterEach(() => vi.restoreAllMocks());
 
 const OPTIONS = [{ value: "a", label: "A" }];
-const missingLabelWarnings = (warn: ReturnType<typeof vi.spyOn>) =>
+const missingLabelWarnings = (warn: { mock: { calls: unknown[][] } }) =>
   warn.mock.calls.filter(([m]) => String(m).includes("visible label")).length;
 
 describe("Select labelled by <label for> (gh#1294)", () => {

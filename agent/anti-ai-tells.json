@@ -200,7 +200,7 @@
   {
     "body": "Click a Button → Dialog opens → click \"Edit\" → another Dialog\nopens → click \"Confirm\" → AlertDialog opens. Triple stack;\nuser loses context.",
     "category": "structure",
-    "fix": "Use Sheet for the FIRST level (side panel), Dialog for the\nconfirm. Or, redesign the flow so the edit is INLINE in the\nfirst Dialog (no second Dialog needed). AlertDialog for confirm\nis correct — but ONE deep, not three.",
+    "fix": "Use Sheet for the FIRST level (side panel), Dialog for the\nconfirm. Or, redesign the flow so the edit is INLINE in the\nfirst Dialog (no second Dialog needed). A destructive confirm\n(AlertDialog preset, or Dialog variant=\"destructive\") is correct —\nbut ONE deep, not three.",
     "name": "Modal-in-modal-in-modal"
   },
   {
