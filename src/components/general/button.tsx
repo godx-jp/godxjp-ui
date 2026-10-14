@@ -61,6 +61,8 @@ const buttonVariants = cva("ui-button", {
       "icon-xs": "ui-button--icon-xs [&_svg]:size-[var(--button-xs-icon-size)] [&_svg]:shrink-0",
       "icon-sm": "ui-button--icon-sm",
       "icon-lg": "ui-button--icon-lg",
+      // The glove step (gh#1304): ≥56×56, `--control-height-touch`.
+      touch: "ui-button--touch",
     },
     // Single source of corner radius (deterministic — no competing rounded-* utility): default uses
     // pill is fully rounded, sharp is square.

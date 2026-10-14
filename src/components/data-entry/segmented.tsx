@@ -84,9 +84,10 @@ export type SegmentedProp = {
    * Control height tier: `md` (default), `xs`, `sm` or `lg` — the same `--control-height-*` tier
    * every other control reads. `xs` is the fourth step (gh#719, the one Toggle/ToggleGroup took in
    * gh#716): a 24px-dense row can carry a real segmented control instead of a hand-rolled row of
-   * Buttons.
+   * Buttons. `touch` (gh#1304) is the glove step: every segment at least 56×56 CSS px, standing
+   * `--control-touch-gap` (8px) apart — pair it with `block` for full-width pass/fail bars.
    */
-  size?: "xs" | "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg" | "touch";
   /** Disable the whole group. */
   disabled?: boolean;
   /** Form field name — submits the selected value with the form. */

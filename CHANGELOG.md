@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ Added
+
+- **`size="touch"` — the glove step (#1304)** on `Button`, `Segmented`, `Toggle` / `ToggleGroup`
+  and `RadioGroup optionType="button"` (new `size?: "md" | "touch"` there). Every target is at
+  least **56×56 CSS px** and, where the component owns its siblings, targets stand at least **8px**
+  apart (ToggleGroup items, Segmented segments, and the radio bar, which un-welds into separate
+  buttons at this step). Unconditional — not behind `(pointer: coarse)`. For wet or gloved hands
+  at food-production stations, where godx-qc measured the largest available control at 152×32 on a
+  HACCP 良/否 screen (390×844). Measured in Chromium at 390×844 by
+  `button-touch-size-1304.test.ts`, under a mouse and a finger. `touch` is NOT added to
+  `SizeProp`, so a control that cannot honour it does not type-check it.
+- Tokens: `--control-height-touch` (`var(--band-height-3xl)`, 56px — a band, not derived from
+  `--control-height`, so density / shell tier / pointer do not move it), `--control-touch-gap`
+  (`var(--space-2)`, 8px), `--button-touch-space-inline` (`var(--space-6)`).
+
 ## [33.1.1] - 2026-10-15
 
 ### 🐛 Fixed

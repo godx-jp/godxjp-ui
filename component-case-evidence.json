@@ -505,12 +505,14 @@
             "icon",
             "icon-xs",
             "icon-sm",
-            "icon-lg"
+            "icon-lg",
+            "touch"
           ],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
+            "scripts/check-display-runtime-evidence.mjs",
+            "src/components/general/__tests__/button-touch-size-1304.test.ts"
           ]
         },
         "shape": {
@@ -666,7 +668,8 @@
             "icon",
             "icon-xs",
             "icon-sm",
-            "icon-lg"
+            "icon-lg",
+            "touch"
           ],
           "evidence": [
             "docs/query/button-refetch.tsx"
@@ -2828,11 +2831,14 @@
             "xs",
             "sm",
             "md",
-            "lg"
+            "lg",
+            "touch"
           ],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
-            "src/components/data-entry/__tests__/segmented-xs-719.test.tsx"
+            "src/components/data-entry/__tests__/segmented-xs-719.test.tsx",
+            "docs/data-entry/segmented.tsx",
+            "src/components/general/__tests__/button-touch-size-1304.test.ts"
           ]
         }
       }
@@ -3736,7 +3742,8 @@
             "xs",
             "sm",
             "md",
-            "lg"
+            "lg",
+            "touch"
           ],
           "evidence": [
             "docs/data-entry/toggle.tsx"
@@ -3775,10 +3782,12 @@
             "xs",
             "sm",
             "md",
-            "lg"
+            "lg",
+            "touch"
           ],
           "evidence": [
-            "docs/data-entry/toggle-group.tsx"
+            "docs/data-entry/toggle-group.tsx",
+            "src/components/general/__tests__/button-touch-size-1304.test.ts"
           ]
         }
       }
@@ -3814,10 +3823,12 @@
             "xs",
             "sm",
             "md",
-            "lg"
+            "lg",
+            "touch"
           ],
           "evidence": [
-            "docs/data-entry/toggle-group.tsx"
+            "docs/data-entry/toggle-group.tsx",
+            "src/components/general/__tests__/button-touch-size-1304.test.ts"
           ]
         }
       }

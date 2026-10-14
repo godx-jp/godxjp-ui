@@ -39,9 +39,9 @@
     },
     {
       "defaultValue": "\"md\"",
-      "description": "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (xs 24px · sm 28px · md 32px · lg 36px). Pick the step the ROW already has: xs is the one that fits a 24px-dense row (gh#716).",
+      "description": "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (xs 24px · sm 28px · md 32px · lg 36px). Pick the step the ROW already has: xs is the one that fits a 24px-dense row (gh#716). `touch` (gh#1304) is the glove step: every item at least 56×56 CSS px and the items spaced `--control-touch-gap` (8px) apart, for wet or gloved hands.",
       "name": "size",
-      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"touch\""
     },
     {
       "description": "Disables the whole group; individual items also accept `disabled`.",

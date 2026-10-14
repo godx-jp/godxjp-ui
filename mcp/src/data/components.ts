@@ -3184,9 +3184,10 @@ import { MessageCircle, Share2 } from "lucide-react";
       },
       {
         name: "size",
-        type: '"default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg"',
+        type: '"default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg" | "touch"',
         defaultValue: '"default"',
-        description: "Size preset (height, padding, icon dims).",
+        description:
+          'Size preset (height, padding, icon dims). `touch` (gh#1304) is the glove step for wet or gloved hands — food-production stations, a HACCP 良/否 verdict: 56px tall (`--control-height-touch`) and never narrower than it is tall, under a mouse as well as a finger. Button owns no siblings, so lay a row of touch Buttons out with a gap of at least `--control-touch-gap` (8px), e.g. `Flex direction="row" gap="sm"` (8px); pair with `fullWidth` for a full-width bar.',
       },
       {
         name: "shape",
@@ -8520,6 +8521,13 @@ export function PrioritySelect({ value, onValueChange }) {
         defaultValue: '"outline"',
         description:
           'antd `buttonStyle` — fill of the SELECTED choice while `optionType="button"`. Inert on the default option type.',
+      },
+      {
+        name: "size",
+        type: '"md" | "touch"',
+        defaultValue: '"md"',
+        description:
+          'Button-bar size while `optionType="button"`. `touch` (gh#1304) is the glove step: every button at least 56×56 CSS px (`--control-height-touch`) and the bar un-welded into separate buttons `--control-touch-gap` (8px) apart, for wet or gloved hands. Inert on radio dots.',
       },
       {
         name: "id",
@@ -14214,10 +14222,10 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg" | "touch"',
         defaultValue: '"md"',
         description:
-          "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px. Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716). Every step clears the WCAG 2.2 SC 2.5.8 24px target floor, xs exactly.",
+          "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px · touch ≥56×56 (gh#1304, the glove step, `--control-height-touch`). Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716). Every step clears the WCAG 2.2 SC 2.5.8 24px target floor, xs exactly.",
       },
       {
         name: "shape",
@@ -14339,10 +14347,10 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg" | "touch"',
         defaultValue: '"md"',
         description:
-          "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (xs 24px · sm 28px · md 32px · lg 36px). Pick the step the ROW already has: xs is the one that fits a 24px-dense row (gh#716).",
+          "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (xs 24px · sm 28px · md 32px · lg 36px). Pick the step the ROW already has: xs is the one that fits a 24px-dense row (gh#716). `touch` (gh#1304) is the glove step: every item at least 56×56 CSS px and the items spaced `--control-touch-gap` (8px) apart, for wet or gloved hands.",
       },
       {
         name: "disabled",
@@ -14842,10 +14850,10 @@ export default function PasswordBlock() {
       },
       {
         name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg" | "touch"',
         defaultValue: '"md"',
         description:
-          "Control height tier — reads the shared `--control-height` ladder: xs 24px · sm 28px · md 32px · lg 36px. The TRACK measures exactly one control height, so the bar sits level with an Input, a Button or a ToggleGroup of the same step on the same row. Pick the step the ROW already has: xs (gh#719) is the one that fits a 24px-dense toolbar or audit-log row — before it, that row could only get a hand-rolled set of Buttons, which loses the radiogroup semantics and the arrow keys. xs is the DENSE step, not a smaller default: the track spends its 2px inset at every step, so the individual SEGMENT measures 20px and clears WCAG 2.2 SC 2.5.8 through the Spacing exception (adjacent segments 26.47px apart for a one-glyph label) rather than the 24px minimum. Keep labels at a glyph or more, and stay on sm or md wherever the row height is yours to choose.",
+          "Control height tier — reads the shared `--control-height` ladder: xs 24px · sm 28px · md 32px · lg 36px. `touch` (gh#1304) is the glove step and the one exception to the track rule below: every SEGMENT is at least 56×56 CSS px (`--control-height-touch`), segments stand `--control-touch-gap` (8px) apart, and the track grows around them — pair with `block` for full-width pass/fail bars. The TRACK measures exactly one control height, so the bar sits level with an Input, a Button or a ToggleGroup of the same step on the same row. Pick the step the ROW already has: xs (gh#719) is the one that fits a 24px-dense toolbar or audit-log row — before it, that row could only get a hand-rolled set of Buttons, which loses the radiogroup semantics and the arrow keys. xs is the DENSE step, not a smaller default: the track spends its 2px inset at every step, so the individual SEGMENT measures 20px and clears WCAG 2.2 SC 2.5.8 through the Spacing exception (adjacent segments 26.47px apart for a one-glyph label) rather than the 24px minimum. Keep labels at a glyph or more, and stay on sm or md wherever the row height is yours to choose.",
       },
       {
         name: "options",

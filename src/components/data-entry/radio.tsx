@@ -210,6 +210,7 @@ function RadioGroupOptions({
   orientation = "vertical",
   optionType = "default",
   buttonStyle = "outline",
+  size,
   disabled,
   name,
   id,
@@ -249,6 +250,7 @@ function RadioGroupOptions({
         data-orientation={orientation}
         data-option-type={optionType === "default" ? undefined : optionType}
         data-button-style={optionType === "button" ? buttonStyle : undefined}
+        data-size={optionType === "button" && size === "touch" ? size : undefined}
         className={cn(
           optionType === "button" ? "ui-radio-button-bar" : choiceGroupClassName(orientation),
           className,

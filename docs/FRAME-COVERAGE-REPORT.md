@@ -104,7 +104,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Textarea | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Label | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Checkbox | ✓ | N/A | · | · | · | · | · | · | · | · |
-| RadioGroup | ✓ | N/A | · | · | · | · | · | · | · | · |
+| RadioGroup | ✓ | · | · | · | · | · | · | · | · | · |
 | DatePicker | ✓ | · | · | · | · | · | · | · | · | · |
 | Dialog | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
 | AlertDialog | ✓ | ✓ | · | · | · | · | · | · | · | · |

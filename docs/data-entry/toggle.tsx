@@ -168,6 +168,9 @@ export default function Demo() {
               <Toggle size="lg" aria-label="大サイズ">
                 大
               </Toggle>
+              <Toggle size="touch" aria-label="手袋サイズ">
+                手袋
+              </Toggle>
             </Flex>
           </CardContent>
         </Card>

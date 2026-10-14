@@ -61,6 +61,14 @@
     padding-inline: var(--space-4);
   }
 
+  /* The glove step (gh#1304): 56×56 at least, whatever the label. A one-glyph chip (良 / 否) would
+   * otherwise be as narrow as its glyph plus padding. */
+  .ui-toggle-touch {
+    min-height: var(--control-height-touch);
+    min-inline-size: var(--control-height-touch);
+    padding-inline: var(--space-4);
+  }
+
   .ui-toggle:hover {
     background: hsl(var(--accent));
     color: hsl(var(--accent-foreground));
@@ -123,6 +131,11 @@
    * the other edge, and it reorders no boxes — arrow keys still walk the items in DOM order. */
   .ui-toggle-group[data-wrap="true"] {
     flex-wrap: wrap;
+  }
+
+  /* Touch items stand `--control-touch-gap` (8px) apart, on both axes once wrapped (gh#1304). */
+  .ui-toggle-group[data-size="touch"] {
+    gap: var(--control-touch-gap);
   }
 
   /* NO `border-radius` HERE, AND THAT IS THE FIX, NOT AN OMISSION (gh#824).
@@ -424,6 +437,16 @@
   .ui-button--lg {
     height: var(--control-height-lg);
     padding-inline: var(--space-8);
+    font-size: var(--font-size-base);
+  }
+
+  /* The glove step (gh#1304): 56px tall and never narrower than it is tall, so a one-glyph verdict
+   * button (良 / 否) or an icon-only one is still a 56×56 target. Unconditional, not behind
+   * `(pointer: coarse)` — the consumer asked for it by name. */
+  .ui-button--touch {
+    height: var(--control-height-touch);
+    min-inline-size: var(--control-height-touch);
+    padding-inline: var(--button-touch-space-inline);
     font-size: var(--font-size-base);
   }
 
@@ -4154,6 +4177,9 @@
   .ui-button[data-wrap][data-size="lg"] {
     --button-wrap-min-height: var(--control-height-lg);
   }
+  .ui-button[data-wrap][data-size="touch"] {
+    --button-wrap-min-height: var(--control-height-touch);
+  }
   .ui-button[data-align="start"] {
     justify-content: flex-start;
     text-align: start;
@@ -4659,6 +4685,21 @@
     opacity: var(--disabled-opacity);
   }
 
+  /* `size="touch"` (gh#1304): the bar UN-WELDS. Each button is a 56×56-minimum target standing
+   * `--control-touch-gap` apart, so it needs its own full border and corners back — a welded bar
+   * puts two glove targets edge to edge. */
+  .ui-radio-button-bar[data-size="touch"] {
+    flex-wrap: wrap;
+    gap: var(--control-touch-gap);
+  }
+
+  .ui-radio-button-bar[data-size="touch"] .ui-radio-button {
+    block-size: var(--control-height-touch);
+    min-inline-size: var(--control-height-touch);
+    border-inline-start-width: var(--control-border-width, var(--stroke-hairline));
+    border-radius: var(--control-radius);
+  }
+
   /* ── SEGMENTED `block` / `vertical` / `size` ─────────────────────────────────────────────
    * `block` shares the width EQUALLY (`1fr` per item, not `flex: 1` on content), so the
    * selected pill does not resize when the label under it changes length — which is the whole
@@ -4732,5 +4773,22 @@
 
   .ui-segmented[data-size="lg"] {
     --control-height: var(--control-height-lg);
+  }
+
+  /* The glove step (gh#1304). Unlike the steps above, the SEGMENT — the thing a finger presses —
+   * is the 56px, not the track: `--control-height − 2 × track padding` would land the segment at
+   * 52. The track grows to 56 + its inset instead. Segments stand `--control-touch-gap` apart on
+   * both axes (this out-ranks the 2px wrapped `row-gap` above by source order), and none is
+   * narrower than it is tall — including under `block`, whose `min-inline-size: 0` (0-4-0) would
+   * otherwise let a crowded row squeeze a segment under 56px; the `[data-slot]` matches that
+   * specificity so source order decides, and a row that cannot fit wraps instead. */
+  .ui-segmented[data-size="touch"] {
+    --control-height: var(--control-height-touch);
+    --segmented-item-height: var(--control-height-touch);
+    gap: var(--control-touch-gap);
+  }
+
+  .ui-segmented[data-size="touch"] > .ui-segmented-item[data-slot="segmented-item"] {
+    min-inline-size: var(--control-height-touch);
   }
 }

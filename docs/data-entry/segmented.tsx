@@ -1,7 +1,13 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Segmented, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
+import {
+  FormField,
+  RadioGroup,
+  Segmented,
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@godxjp/ui/data-entry";
 import { Button, Text, VisuallyHidden } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-react";
@@ -210,6 +216,59 @@ export default function Demo() {
               <Text as="p" size="xs" tone="muted">
                 いずれも --control-height-xs（24px）。
               </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>手袋・濡れた手でも押せる · size=&quot;touch&quot;</CardTitle>
+            <CardDescription>
+              厨房や包装ラインの HACCP チェックでは、手袋や濡れた手で 良 / 否 を押します。
+              size=&quot;touch&quot; はどの押す場所も 56×56px 以上（--control-height-touch）、
+              隣との間は 8px 以上（--control-touch-gap）。マウスでもタッチでも同じ大きさです。
+              Segmented は block と組み合わせると幅いっぱいのバーになります。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Segmented
+                aria-label="判定（Segmented）"
+                size="touch"
+                block
+                defaultValue="ok"
+                options={[
+                  { value: "ok", label: "良" },
+                  { value: "ng", label: "否" },
+                ]}
+              />
+              <ToggleGroup
+                type="single"
+                size="touch"
+                disallowEmptySelection
+                defaultValue="ok"
+                aria-label="判定（ToggleGroup）"
+              >
+                <ToggleGroupItem value="ok">良</ToggleGroupItem>
+                <ToggleGroupItem value="ng">否</ToggleGroupItem>
+              </ToggleGroup>
+              <RadioGroup
+                aria-label="判定（RadioGroup）"
+                optionType="button"
+                size="touch"
+                orientation="horizontal"
+                defaultValue="ok"
+                options={[
+                  { value: "ok", label: "良" },
+                  { value: "ng", label: "否" },
+                ]}
+              />
+              <Flex direction="row" gap="sm">
+                <Button size="touch" variant="outline">
+                  否
+                </Button>
+                <Button size="touch">良</Button>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>

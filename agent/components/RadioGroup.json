@@ -17,6 +17,12 @@
       "type": "\"outline\" | \"solid\""
     },
     {
+      "defaultValue": "\"md\"",
+      "description": "Button-bar size while `optionType=\"button\"`. `touch` (gh#1304) is the glove step: every button at least 56×56 CSS px (`--control-height-touch`) and the bar un-welded into separate buttons `--control-touch-gap` (8px) apart, for wet or gloved hands. Inert on radio dots.",
+      "name": "size",
+      "type": "\"md\" | \"touch\""
+    },
+    {
       "description": "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
       "name": "id",
       "type": "string"

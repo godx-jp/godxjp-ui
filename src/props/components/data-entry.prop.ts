@@ -603,6 +603,12 @@ export type RadioGroupProp = FieldA11yProps & {
   optionType?: RadioOptionTypeProp;
   /** antd `buttonStyle` — fill of the selected choice while `optionType="button"`. */
   buttonStyle?: RadioButtonStyleProp;
+  /**
+   * Button-bar size while `optionType="button"`: `md` (default, the control band) or `touch`
+   * (gh#1304) — every button at least 56×56 CSS px, the bar un-welded into buttons standing
+   * `--control-touch-gap` (8px) apart, for wet or gloved hands. No effect on radio dots.
+   */
+  size?: Extract<SizeProp, "md"> | "touch";
 };
 
 /** antd `RadioGroupOptionType` — a radio group drawn as dots or as a welded button bar. */
