@@ -6,6 +6,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.7.0] - 2026-10-14
+
+The first real use of the 32.6.0 consumer loop — a fresh agent redesigning godx-content's page
+edit / view / reader screens (godx-content#107) — found what the guidance still got wrong (#1296).
+
+### ✨ Added
+
+- **`get_exemplar` archetypes `editor`** (aliases form/edit/create → showcase `page-editor`: title
+  field, body editor, metadata side panel, one Save in the header, change note) **and `reader`**
+  (aliases document/wiki → `page-reader`). `form` no longer returns the settings screen. DESIGN.md
+  gains Editor and Reader anatomy; the tool's description is built from the exemplar data.
+- **`LegalDocumentShell dateKind`** (`"effective" | "updated"`) — 施行日/Effective or 更新日/Updated.
+- Tokens `--legal-document-page-padding-inline`, `--legal-document-title-font-size`.
+
+### 🔄 Changed
+
+- **`route_consumer_task` returns `compose-a-screen` first for a screen-building task**; the
+  contract follows it and stays first for spacing/token/colour/audit tasks.
+- **`sync-rules` scopes `.ai/rules/godxjp-ui.md` to where the repo's UI actually lives** (`web/`,
+  `resources/js/`, `apps/*/src`, …) instead of a fixed `src/**` that never loaded in godx-content.
+  Stale `SpaceCompact`/`TagInput` advice and the "falls back to Vietnamese" claim corrected.
+- **Commands work from a workspace package:** the synced files use `npx @godxjp/ui audit` /
+  `visual-audit`, and `init-agent` wires the per-edit hook as `npx --no-install @godxjp/ui
+  audit-hook` (the old `node node_modules/…` default is rewritten in place; it did nothing under a
+  hoisted install).
+- **`PageContainer title` is optional** — omitted renders no `<h1>` and no empty header band; the
+  content must supply the page's `<h1>`.
+- **`LegalDocumentShell`** used on its own keeps the page inline gutter (0 → 16px at 390; none
+  inside PageContainer/CenteredShell), and its title is two type steps above the section headings
+  (ratio 1.12 → 1.26).
+
+### 🐛 Fixed
+
+- `ui-audit` finds a hoisted `@godxjp/ui` up the node_modules chain (no more `owned-rules-unknown`
+  in workspaces); `ui-audit --help` prints usage instead of running a full audit; `godxjp-ui audit
+  --help` lists `--base=` and `--consumer`.
+- `search_components` names the package of a component that lives outside `@godxjp/ui`
+  (ChatSuggestion → `@godxjp/chat`).
+- The v32 migration note says `@godxjp/chat` is a NEW dependency at the lockstep version, and that
+  `godx-tokens.css` is the import for an app that ships its own fonts.
+- MCP: Progress `label` is documented as a visible caption, Anchor `label` as screen-reader-only.
+- DESIGN.md Known Gaps: `card-per-section` counts per file.
+
 ## [32.6.0] - 2026-10-14
 
 Why consumer screens still read as AI-generated, measured on four consumer repos (#1294): the

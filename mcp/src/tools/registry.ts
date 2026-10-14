@@ -450,14 +450,19 @@ export const TOOL_DEFINITIONS = [
   {
     name: "get_exemplar",
     description:
-      "A reference screen to match for an admin archetype: its anatomy notes from DESIGN.md, the full source of the showcase built from real @godxjp/ui primitives, and its live preview URL for screenshot comparison. Archetypes: list, detail, settings (alias form), dashboard, approval-queue. Omit `archetype` to list them.",
+      "A reference screen to match for an admin archetype: its anatomy notes from DESIGN.md, the full source of the showcase built from real @godxjp/ui primitives, and its live preview URL for screenshot comparison. Archetypes: " +
+      EXEMPLARS.map((e) => e.archetype).join(", ") +
+      ". Omit `archetype` to list them.",
     inputSchema: {
       type: "object",
       properties: {
         archetype: {
           type: "string",
           description:
-            "list | detail | settings | dashboard | approval-queue (aliases: form, table, record, overview, queue …).",
+            EXEMPLARS.map((e) => e.archetype).join(" | ") +
+            " (aliases: " +
+            EXEMPLARS.flatMap((e) => e.aliases ?? []).join(", ") +
+            ").",
         },
       },
     },
@@ -1629,8 +1634,13 @@ function searchComponents(query: string, tier: ComponentTierFilter = "core"): st
   out += utilityMatches.length
     ? `, ${utilityMatches.length} utility match${utilityMatches.length === 1 ? "" : "es"}\n\n`
     : `\n\n`;
-  for (const { c, score } of matches)
-    out += `- **${c.name}** (${c.group}, ${score}) — ${c.tagline}\n`;
+  // A component from a sibling package says so (gh#1296): ChatSuggestion read as @godxjp/ui
+  // data-entry after it moved to @godxjp/chat, and a consumer agent imported it from the wrong place.
+  for (const { c, score } of matches) {
+    const pkg =
+      c.importPath && !c.importPath.startsWith("@godxjp/ui") ? `\`${c.importPath}\`, ` : "";
+    out += `- **${c.name}** (${pkg}${c.group}, ${score}) — ${c.tagline}\n`;
+  }
   out += labHint;
   if (matches.some(({ c }) => c.group === "data-entry")) out += `\n${FORM_RULES}`;
   if (utilityMatches.length) {

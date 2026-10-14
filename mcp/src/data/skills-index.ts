@@ -1556,6 +1556,28 @@ const MARKETING_KEYWORDS = [
   "campaign site",
 ];
 
+/** Words that make a task an app screen — compose-a-screen's route (gh#1294). */
+const APP_SCREEN_KEYWORDS = [
+  "dashboard",
+  "table",
+  "list",
+  "admin",
+  "settings",
+  "setting",
+  "document",
+  "workspace",
+  "form",
+  "detail page",
+  "approval",
+  "console",
+  "back office",
+  "back-office",
+  "screen",
+  "page",
+  "view",
+  "app",
+];
+
 export function routeTask(task: string, opts?: { consumerOnly?: boolean }): RouteResult[] {
   const q = task.toLowerCase();
   const matches: RouteResult[] = [];
@@ -1578,16 +1600,56 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     if (marketing) route(...args);
   };
 
+  // App screens — the common case. Before any taste skill, so an agent that follows the first
+  // non-contract hit builds a restrained admin screen, not a marketing page (gh#1294).
+  const appScreen = () => {
+    if (!marketing)
+      route(
+        APP_SCREEN_KEYWORDS,
+        "compose-a-screen",
+        "pick-primitives",
+        "An app screen: start from DESIGN.md (get_design) and the matching get_exemplar, compose real primitives, then screenshot-compare at 390/768/1280.",
+        ["compose-a-screen/assemble-screen", "design-to-page/dna", "taste/one-intent-per-screen"],
+      );
+  };
+
   /*
-   * Hợp đồng cứng đứng ĐẦU danh sách định tuyến, và cố ý bắt rộng.
+   * A screen-building task gets compose-a-screen FIRST and the contract right after it (gh#1296):
+   * the synced CLAUDE.md promises the loop starts at compose-a-screen, and an agent follows the
+   * first hit. compose-a-screen is not a taste skill, so "the hard rules before taste" still holds.
+   * When the task names a contract concern (spacing, a token, a colour, an audit finding) the
+   * contract stays first.
+   */
+  const contractFirst = has([
+    "spacing",
+    "gap",
+    "khoảng cách",
+    "padding",
+    "margin",
+    "color",
+    "colour",
+    "màu",
+    "token",
+    "typography",
+    "prop",
+    "audit",
+    "lỗi",
+    "error",
+  ]);
+  if (!contractFirst) appScreen();
+  const screenMatched = matches.some((m) => m.skill === "compose-a-screen");
+
+  /*
+   * Hợp đồng cứng đứng TRƯỚC mọi skill về gu, và cố ý bắt rộng.
    *
    * Lý do: agent hỏi router MỘT lần rồi làm theo thứ nó trả về. Nếu câu đầu
    * tiên nó nhận được là một skill về gu thẩm mỹ thì nó sẽ viết mã đẹp mà sai
    * hợp đồng — rồi audit đỏ, và không ai hiểu vì sao. Luật cứng phải tới
-   * TRƯỚC gu.
+   * TRƯỚC gu. Một màn hình app luôn kéo theo hợp đồng.
    */
   route(
     [
+      ...(screenMatched ? APP_SCREEN_KEYWORDS : []),
       "spacing",
       "gap",
       "khoảng cách",
@@ -1626,35 +1688,7 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     ["contract/loop", "contract/spacing", "contract/escape"],
   );
 
-  // App screens — the common case. Before any taste skill, so an agent that follows the first
-  // non-contract hit builds a restrained admin screen, not a marketing page (gh#1294).
-  if (!marketing)
-    route(
-      [
-        "dashboard",
-        "table",
-        "list",
-        "admin",
-        "settings",
-        "setting",
-        "document",
-        "workspace",
-        "form",
-        "detail page",
-        "approval",
-        "console",
-        "back office",
-        "back-office",
-        "screen",
-        "page",
-        "view",
-        "app",
-      ],
-      "compose-a-screen",
-      "pick-primitives",
-      "An app screen: start from DESIGN.md (get_design) and the matching get_exemplar, compose real primitives, then screenshot-compare at 390/768/1280.",
-      ["compose-a-screen/assemble-screen", "design-to-page/dna", "taste/one-intent-per-screen"],
-    );
+  if (contractFirst) appScreen();
 
   // Premium / agency / Awwwards — marketing only
   marketingRoute(

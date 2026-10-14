@@ -71,7 +71,7 @@
       "type": "(event: React.MouseEvent<HTMLAnchorElement>, item: AnchorItemProp) => void"
     },
     {
-      "description": "Accessible name of the <nav> landmark. antd ships an unnamed <div>; a page routinely carries a breadcrumb, a rail and this, so a localized default (\"On this page\") applies when omitted.",
+      "description": "SCREEN-READER-ONLY accessible name of the <nav> landmark — it is never drawn (unlike Progress `label`, which is a visible caption). Need a visible heading over the links? Render a Heading yourself and keep this as the landmark name. antd ships an unnamed <div>; a page routinely carries a breadcrumb, a rail and this, so a localized default (\"On this page\") applies when omitted.",
       "name": "label",
       "type": "string"
     },

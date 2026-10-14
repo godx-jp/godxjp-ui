@@ -102,7 +102,7 @@ Colour is scarce. Most of the screen is canvas, ink and hairline.
 
 ## Typography
 
-- One family. Hierarchy from size steps, weight 400/500/700 and `ink` vs `ink-muted`. Page title ~20px; anything larger belongs on a marketing page.
+- One family. Hierarchy from size steps, weight 400/500/700 and `ink` vs `ink-muted`. Page title ~20px; anything larger belongs on a marketing page. One exception: a long-form document title (Reader) is ~22px, two steps above its ~17.6px section headings, because one step reads flat there.
 - Body 14px / 1.7. Captions and meta 12.5px muted. `Text tabular` on every number, time and money column.
 - Japanese prose: `Text break="phrase"` so lines break between phrases.
 - Copy is quiet and factual: no praise, no alarm, no emoji, no em dash in UI strings. A success message states the fact (「承認しました」).
@@ -123,7 +123,7 @@ Colour is scarce. Most of the screen is canvas, ink and hairline.
 
 ## Components
 
-- **PageContainer** is the page shell: `title`, optional `subtitle`, `breadcrumb`, `extra` (page actions, primary last), `toolbar`, `footer`.
+- **PageContainer** is the page shell: `title`, optional `subtitle`, `breadcrumb`, `extra` (page actions, primary last), `toolbar`, `footer`. Omit `title` only when the content draws the page's one `<h1>` (a document reader); PageContainer then renders no heading.
 - **Card** only for a real boundary: a table with its own toolbar and pagination, a list of setting rows, a dashboard panel, a danger zone (`accent="destructive"`), a selectable item. Not around every section, never nested. `CardContent flush` for tables and row lists.
 - **Toolbar** (+ `ToolbarGroup`) is the filter strip: search, labelled filters, clear-all, result count. It sits above the table, never in the page header.
 - **DataTable** for lists: sort, selection with `DataTable.BulkActions`, density, empty/loading/error states. Row actions in one kebab `DropdownMenu`.
@@ -145,6 +145,14 @@ Header: record name as title, status `Badge` beside it, actions in `extra` (one 
 ### Form
 
 `Form` in a narrow measure; fields grouped by Heading sections, not Cards. Labels via `FormField`; helper text only when it adds information. One primary submit and a secondary cancel at the end, or in a sticky footer for long forms. Errors inline on the field plus `FormErrors` summary on submit.
+
+### Editor
+
+Edit (or create) one document or record. Header: record name as title, status `Badge` beside it, a subtitle only for a fact such as when it was last saved, and ONE primary Save in `extra` (`Button type="submit" form=<form id>`), Cancel `outline` before it. Body: one `Form` in a `SplitPane`: the main column holds the title field and a large body editor (`BlockEditor`, or `Textarea autoSize`); the aside holds metadata fields, read-only facts in `Descriptions`, and the change note last. No Card per field group, no second Save at the bottom.
+
+### Reader
+
+A long-form document to read. The document owns the page's one `<h1>`: `PageContainer` gets `breadcrumb` and `extra` (Edit) and no `title`. `LegalDocumentShell` draws the reading column: title two steps above the section headings, one metadata line (version, date with `dateKind="updated"` for a revision), the contents rail, and prose at a reading measure with `Text break="phrase"` for Japanese. No Card around the article, no subtitle, no icon per heading.
 
 ### Settings
 
@@ -197,5 +205,6 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 
 - The default primary is neutral by design; a product without a brand colour looks monochrome until one is set.
 - `ui-audit` checks primitives and tokens, not structure: a page can pass it and still show every Don't above.
+- `card-per-section` counts Cards per file, so a screen split across components can pass with a Card around every section.
 - Exemplar previews deploy on release tags, so they can lag `main`. On GitHub Pages a showcase URL answers HTTP 404 and renders through `404.html`, so open it in a browser; a plain fetch sees the 404.
 - Dark theme (`data-theme="dark"`) is supported; the exemplars are reviewed in light.

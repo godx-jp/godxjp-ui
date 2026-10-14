@@ -31,7 +31,11 @@ describe("hợp đồng cứng — agent phải nhận được nó", () => {
     ["dựng form đăng nhập", "form"],
     ["màu chữ phụ", "màu"],
   ])("định tuyến %j tới hợp đồng TRƯỚC mọi skill về gu", (task) => {
-    const hits = routeTask(task, { consumerOnly: true });
+    // compose-a-screen is the build loop, not a taste skill: a screen task gets it first and the
+    // contract right after (gh#1296). Every other skill still comes after the contract.
+    const hits = routeTask(task, { consumerOnly: true }).filter(
+      (h) => h.skill !== "compose-a-screen",
+    );
 
     expect(hits.length).toBeGreaterThan(0);
     expect(hits[0]?.skill).toBe("contract");

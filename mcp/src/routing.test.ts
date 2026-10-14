@@ -132,8 +132,9 @@ describe("route_consumer_task — app screens never reach marketing taste (gh#12
     for (const skill of MARKETING_SKILLS) expect(hits, task).not.toContain(skill);
   });
 
-  it("the contract still comes first for a page task", () => {
-    expect(routeTask("documents list page", { consumerOnly: true })[0]?.skill).toBe("contract");
+  it("a page task gets compose-a-screen first and the contract right after it (gh#1296)", () => {
+    const hits = routeTask("documents list page", { consumerOnly: true }).map((r) => r.skill);
+    expect(hits.slice(0, 2)).toEqual(["compose-a-screen", "contract"]);
   });
 
   it("compose-a-screen comes before design-complex-admin for an admin console", () => {
@@ -166,5 +167,42 @@ describe("route_consumer_task — app screens never reach marketing taste (gh#12
     const hits = routeTask("a new page with a list and a form", { consumerOnly: true });
     const keys = hits.map((r) => `${r.skill}/${r.section}`);
     expect(new Set(keys).size).toBe(keys.length);
+  });
+});
+
+/**
+ * gh#1296 — the synced CLAUDE.md says the loop routes to compose-a-screen, and an agent follows the
+ * FIRST hit. A screen-building task (build / redesign / make a page, a list, an edit screen) must
+ * get compose-a-screen first; the contract still follows it, and stays first when the task is
+ * about the contract itself (spacing, a token, a colour, an audit finding).
+ */
+const FIRST_HIT: Array<[string, string]> = [
+  ["redesign the page edit, view and reader screens", "compose-a-screen"],
+  ["build the documents list page", "compose-a-screen"],
+  ["make an edit page for a customer", "compose-a-screen"],
+  ["how do i build a page", "compose-a-screen"],
+  ["dựng form đăng nhập", "compose-a-screen"],
+  ["a settings screen", "compose-a-screen"],
+  ["gap 20px", "contract"],
+  ["khoảng cách giữa hai thẻ", "contract"],
+  ["màu chữ phụ", "contract"],
+  ["fix the spacing on the settings page", "contract"],
+  ["which token for the page background colour", "contract"],
+  ["redesign and audit an existing page", "contract"],
+];
+
+describe("route_consumer_task — first hit (gh#1296)", () => {
+  it.each(FIRST_HIT)("'%s' → %s first", (task, skill) => {
+    const hits = routeTask(task, { consumerOnly: true }).map((r) => r.skill);
+    expect(hits[0], task).toBe(skill);
+    expect(hits, task).toContain("contract");
+  });
+
+  it("the rendered tool output lists compose-a-screen before the contract", async () => {
+    const out = await dispatchTool("route_consumer_task", {
+      task: "redesign the page edit screen",
+    });
+    expect(out.indexOf("`compose-a-screen`")).toBeGreaterThan(-1);
+    expect(out.indexOf("`compose-a-screen`")).toBeLessThan(out.indexOf("`contract`"));
   });
 });

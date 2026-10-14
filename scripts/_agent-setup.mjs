@@ -15,6 +15,7 @@ import {
   chmodSync,
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   realpathSync,
   renameSync,
@@ -78,7 +79,11 @@ function mcpConfigMismatchMessage(root, existing, expected, key = MCP_KEY) {
 }
 
 /** Commands wired into the consumer's .claude/settings.json. */
-export const AUDIT_HOOK_CMD = "node node_modules/@godxjp/ui/scripts/audit-hook.mjs";
+// `npx --no-install` resolves @godxjp/ui up the node_modules chain, so the hook also works from a
+// workspace package whose install is hoisted to the repo root (gh#1296); it never downloads.
+export const AUDIT_HOOK_CMD = "npx --no-install @godxjp/ui audit-hook";
+/** The pre-#1296 default, rewritten to AUDIT_HOOK_CMD when found verbatim (a custom command is kept). */
+const LEGACY_AUDIT_HOOK_CMD = "node node_modules/@godxjp/ui/scripts/audit-hook.mjs";
 export const PRIMER_CMD = "cat .claude/godxjp-ui-workflow.md";
 
 /** What `.claude/settings.json` would get, used only for the `.godxjp-ui-suggested` sidecar. */
@@ -97,7 +102,12 @@ export const KIT_VERSION = readJson(join(SELF_ROOT, "package.json"))?.version ??
  * node_modules). Returns null when absent — caller falls back to this package's release train.
  */
 export function readConsumerUiMetadata(root) {
-  const uiPkg = readJson(join(root, "node_modules/@godxjp/ui/package.json"));
+  // Up the node_modules chain: a workspace package has @godxjp/ui hoisted to the repo root (gh#1296).
+  let uiPkg;
+  for (let dir = resolve(root); ; dir = dirname(dir)) {
+    uiPkg = readJson(join(dir, "node_modules/@godxjp/ui/package.json"));
+    if (uiPkg || dirname(dir) === dir) break;
+  }
   if (!uiPkg?.version) return null;
   return {
     version: String(uiPkg.version),
@@ -196,12 +206,14 @@ Follow this every time you create or change a page, component or form.
 - Screen composition (what the audit cannot see) is in \`.ai/rules/godxjp-ui.md\`.
 
 ## After JSX
-5. \`node node_modules/@godxjp/ui/scripts/ui-audit.mjs <files>\` — zero errors (a PostToolUse hook
-   also runs it on each edit).
+5. \`npx @godxjp/ui audit <files>\` — zero errors (a PostToolUse hook also runs it on each edit).
+   Run it from the package that owns the files; \`--help\` lists the flags.
 6. Screenshot at 390 / 768 / 1280 next to the exemplar, list the top 3 differences, fix them,
    repeat — at most 3 rounds.
-7. Before a visual review: \`node node_modules/@godxjp/ui/scripts/visual-audit.mjs <url>\`
-   (axe + contrast + layout).
+7. Before a visual review: \`npx @godxjp/ui visual-audit <url>\` (axe + contrast + layout).
+
+In a workspace, \`node_modules/@godxjp/ui\` may be hoisted to the repo root: read its files there,
+or through the MCP (\`get_design\`, \`get_rule\`).
 `;
 
 /** Delimited block appended to the consumer's CLAUDE.md — loaded into the agent's context
@@ -217,7 +229,7 @@ Before any JSX for a screen:
 3. \`get_exemplar\` (list | detail | form | settings | dashboard | approval) — match its structure.
 
 After building:
-4. \`node node_modules/@godxjp/ui/scripts/ui-audit.mjs <files>\` — zero errors.
+4. \`npx @godxjp/ui audit <files>\` — zero errors.
 5. Screenshot at 390 / 768 / 1280 beside the exemplar; fix the top 3 differences; max 3 rounds.
 
 Rules: \`node_modules/@godxjp/ui/docs/CONSUMER-RULES.md\`. Details: \`.claude/godxjp-ui-workflow.md\`.
@@ -523,7 +535,13 @@ export function ensureClaudeHooks(root) {
     (arr ?? []).some((g) => (g.hooks ?? []).some((h) => (h.command ?? "").includes(cmd)));
 
   json.hooks.PostToolUse = json.hooks.PostToolUse ?? [];
-  if (!has(json.hooks.PostToolUse, "audit-hook.mjs")) {
+  for (const group of json.hooks.PostToolUse)
+    for (const hook of group.hooks ?? [])
+      if (hook.command === LEGACY_AUDIT_HOOK_CMD) {
+        hook.command = AUDIT_HOOK_CMD;
+        added.push("PostToolUse:auto-audit (workspace-safe command)");
+      }
+  if (!has(json.hooks.PostToolUse, "audit-hook")) {
     json.hooks.PostToolUse.push({
       matcher: "Write|Edit|MultiEdit",
       hooks: [{ type: "command", command: AUDIT_HOOK_CMD }],
@@ -692,16 +710,86 @@ export function guineaPigStamp() {
  * this one. The file says so at the top, because the first draft preserved nothing and silently
  * ate a note left inside it — measured, and the reason for that banner.
  */
-export function ensureConsumerRules(root) {
-  const uiDir = ["resources/js", "app/javascript", "src/components", "src", "app"].find((d) =>
+const UI_FILE = /\.(tsx|jsx)$/;
+const NOT_UI_DIR = new Set([
+  "node_modules",
+  "dist",
+  "build",
+  "out",
+  "vendor",
+  "coverage",
+  "public",
+  "storage",
+]);
+
+/** Does `dir` hold a .tsx/.jsx file within a few levels? Bounded, so a large tree costs little. */
+function holdsUi(dir, depth = 5) {
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return false;
+  }
+  if (entries.some((e) => e.isFile() && UI_FILE.test(e.name))) return true;
+  if (depth === 0) return false;
+  return entries.some(
+    (e) =>
+      e.isDirectory() &&
+      !e.name.startsWith(".") &&
+      !NOT_UI_DIR.has(e.name) &&
+      holdsUi(join(dir, e.name), depth - 1),
+  );
+}
+
+/**
+ * Every directory that actually holds the consumer's UI, as `paths:` globs without the `/**`
+ * (gh#1296). A fixed `src` never fired in an app whose screens live in `web/` or
+ * `resources/js/`, so the rules looked installed and loaded on no edit. Conventional nested roots
+ * first (`resources/js`, `apps/*\/src`, …), then any other top-level directory holding .tsx/.jsx.
+ * A repo with no UI files yet (a fresh scaffold) falls back to the first conventional directory
+ * that exists.
+ */
+function detectUiDirs(root) {
+  const subdirs = (rel) => {
+    try {
+      return readdirSync(join(root, rel), { withFileTypes: true })
+        .filter((e) => e.isDirectory() && !e.name.startsWith(".") && !NOT_UI_DIR.has(e.name))
+        .map((e) => e.name)
+        .sort();
+    } catch {
+      return [];
+    }
+  };
+  const found = [];
+  const add = (glob, dirs) => {
+    if (dirs.some((d) => holdsUi(join(root, d)))) found.push(glob);
+  };
+  for (const rel of ["resources/js", "app/javascript"]) add(rel, [rel]);
+  for (const parent of ["apps", "packages"]) {
+    const dirs = subdirs(parent)
+      .map((name) => `${parent}/${name}/src`)
+      .filter((d) => existsSync(join(root, d)));
+    if (dirs.length) add(`${parent}/*/src`, dirs);
+  }
+  for (const name of subdirs("")) {
+    if (!found.some((glob) => glob.split("/")[0] === name)) add(name, [name]);
+  }
+  if (found.length) return found;
+  const scaffold = ["resources/js", "app/javascript", "src/components", "src", "app"].find((d) =>
     existsSync(join(root, d)),
   );
-  if (!uiDir) return false;
+  return scaffold ? [scaffold] : [];
+}
+
+export function ensureConsumerRules(root) {
+  const uiDirs = detectUiDirs(root);
+  if (uiDirs.length === 0) return false;
+  const uiDir = uiDirs.join(", ");
 
   const dir = join(root, ".ai", "rules");
   const target = join(dir, "godxjp-ui.md");
   const body = readFileSync(join(SELF_ROOT, "scripts", "consumer-rule.md"), "utf8");
-  const front = `---\npaths:\n    - '${uiDir}/**'\n---\n\n`;
+  const front = `---\npaths:\n${uiDirs.map((d) => `    - '${d}/**'\n`).join("")}---\n\n`;
   // The digest covers the FRONT MATTER too: the detected glob is part of what makes this file
   // correct, and a repo that grows a `resources/js` after shipping with `src` needs the rewrite.
   const managed = `${front}${body}`;
@@ -745,7 +833,8 @@ export function ensureConsumerRules(root) {
     if (!cur.includes(".ai/rules/godxjp-ui.md")) {
       writeFileAtomic(
         index,
-        cur.replace(/\s*$/, "") + `\n| ${uiDir}/** | .ai/rules/godxjp-ui.md |\n`,
+        cur.replace(/\s*$/, "") +
+          `\n| ${uiDirs.map((d) => `${d}/**`).join(", ")} | .ai/rules/godxjp-ui.md |\n`,
       );
     }
   }
@@ -780,7 +869,9 @@ export function runSyncRules(root, { dryRun = false } = {}) {
     if (!refused && !(r === "present" && md === "present" && !wf && !skill && !rules)) {
       lines.push(
         `\n  @godxjp/ui → MCP in .mcp.json (${r}); workflow mandate in CLAUDE.md (${md}).\n` +
-          (rules ? `  common consumer rules in .ai/rules/godxjp-ui.md (glob ${rules}/**).\n` : "") +
+          (rules
+            ? `  common consumer rules in .ai/rules/godxjp-ui.md (UI dirs: ${rules}).\n`
+            : "") +
           (skill ? "  guinea-pig skill refreshed to this version (your section 8 kept).\n" : "") +
           "  Your agent now has live component + audit guidance. Restart it to pick up the MCP.\n" +
           "  For auto-audit on every edit (PostToolUse + SessionStart hooks):\n" +

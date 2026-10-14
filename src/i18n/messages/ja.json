@@ -319,7 +319,8 @@
     "legalDocumentShell": {
       "contents": "目次",
       "version": "バージョン {version}",
-      "effectiveDate": "施行日 {date}"
+      "effectiveDate": "施行日 {date}",
+      "updatedDate": "更新日 {date}"
     },
     "errorSurface": {
       "statusLabel": "HTTP ステータス {status}",

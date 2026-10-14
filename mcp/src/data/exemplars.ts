@@ -7,7 +7,8 @@
  * import either generated file: the generator bundles it to learn which showcases to embed.
  */
 
-export type ExemplarArchetype = "list" | "detail" | "settings" | "dashboard" | "approval-queue";
+export type ExemplarArchetype =
+  "list" | "detail" | "editor" | "reader" | "settings" | "dashboard" | "approval-queue";
 
 export interface Exemplar {
   archetype: ExemplarArchetype;
@@ -42,10 +43,26 @@ export const EXEMPLARS: Exemplar[] = [
       "Record header with status Badge and actions, Descriptions metadata, history as a headed section.",
   },
   {
+    archetype: "editor",
+    aliases: ["form", "edit", "create", "document-editor", "record-editor", "編集"],
+    showcase: "page-editor",
+    anatomy: ["Editor", "Form"],
+    focus:
+      "One primary Save in `extra` submitting the Form by id; title field + large body editor in the main column, metadata + change note in a SplitPane aside. The body uses @godxjp/block-editor (a second package); `Textarea autoSize` fits the same FormField.",
+  },
+  {
+    archetype: "reader",
+    aliases: ["document", "article", "wiki", "view", "read", "閲覧"],
+    showcase: "page-reader",
+    anatomy: ["Reader"],
+    focus:
+      "PageContainer with breadcrumb + `extra` and NO `title`; LegalDocumentShell (@godxjp/ui/lab) owns the h1, metadata line, contents rail and prose at reading width.",
+  },
+  {
     archetype: "settings",
-    aliases: ["form", "preferences", "account", "設定"],
+    aliases: ["preferences", "account", "設定"],
     showcase: "settings-account-sections",
-    anatomy: ["Settings", "Form"],
+    anatomy: ["Settings"],
     focus: "Heading + ListRow sections without Cards; one destructive Card at the end.",
   },
   {

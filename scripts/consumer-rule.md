@@ -77,7 +77,7 @@ ngày: năm thứ cần đều ĐÃ CÓ và vẫn bị dựng lại bằng thứ
 | một hàng LÀ liên kết (thay cho nút rời)                          | `<ListRow asChild>`                                                                |
 | kẻ ô từng ngày trong lịch                                        | `<Calendar bordered>`                                                              |
 | dải giữa hai vùng, tự kẻ theo VỊ TRÍ                             | `<CardBar>` (`border` để ép khi xếp chồng)                                         |
-| chip "điều kiện đang bật" có dấu × để bỏ                         | `<Badge onRemove>` — KHÔNG phải `TagInput`                                         |
+| chip "điều kiện đang bật" có dấu × để bỏ                         | `<Badge onRemove>` — KHÔNG phải `Select mode="tags"`                               |
 | dải tab nằm TRONG đầu Card                                       | `<Card tabList activeTabKey onTabChange>`                                          |
 | tiêu đề / đoạn văn / liên kết trong văn bản                      | `<Heading level>` · `<Text as="p">` · `<Link>`                                     |
 | nút nổi góc màn (quay lên đầu, hành động nhanh)                  | `<FloatButton>`                                                                    |
@@ -91,11 +91,11 @@ ngày: năm thứ cần đều ĐÃ CÓ và vẫn bị dựng lại bằng thứ
 Lỗi không phải "đoán sai tên prop" mà là **cho rằng nó không tồn tại nên không
 hỏi**.
 
-## `AppProvider` là bắt buộc — thiếu nó, chuỗi của kit nói tiếng Việt
+## `AppProvider` là bắt buộc — thiếu nó, chuỗi của kit không theo ngôn ngữ của app
 
 Mount `<AppProvider defaultLocale="ja">` MỘT lần ở gốc app. Thiếu nó, chuỗi của chính kit (nút
-đóng/hủy/xóa của dialog, upload, badge đếm, nhãn picker) rơi về locale nghỉ `vi` và picker rơi về
-UTC — godx-mailer đo được nút tiếng Việt giữa UI tiếng Nhật, không một cảnh báo (gh#1005). Bản dev
+đóng/hủy/xóa của dialog, upload, badge đếm, nhãn picker) rơi về locale nghỉ — `<html lang>` nếu
+locale đó đã đăng ký, không thì `en` — và picker rơi về UTC (gh#1005). Bản dev
 giờ cảnh báo MỘT lần khi component của kit render ngoài provider. Không mount được provider thì gọi
 `syncI18nLocale(locale, fallback)` lúc khởi động.
 
@@ -104,11 +104,11 @@ giờ cảnh báo MỘT lần khi component của kit render ngoài provider. Kh
 godx-mailer dính bốn lỗi form trong một ngày, cả bốn đều là kit ĐÃ CÓ đồ đúng
 (gh#998). Giờ ui-audit chặn:
 
-| Sai                                                         | Đúng                                                                                         | rule                   |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------- |
-| ≥2 `FormField` không có `Form`, hoặc xếp hàng bằng `<Flex>` | `<Form layout="horizontal" labelWidth controlWidth>`; hàng = `SpaceCompact` / `Form columns` | `formfield-needs-form` |
-| ≥3 `FormField` trong `DialogBody`                           | page riêng (route riêng)                                                                     | `dialog-form-too-big`  |
-| `Select` hai lựa chọn kéo full width                        | `controlWidth` trên field hoặc một lần trên `Form`                                           | `select-width-hint`    |
+| Sai                                                         | Đúng                                                                                            | rule                   |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------- |
+| ≥2 `FormField` không có `Form`, hoặc xếp hàng bằng `<Flex>` | `<Form layout="horizontal" labelWidth controlWidth>`; hàng = `<Flex attached>` / `Form columns` | `formfield-needs-form` |
+| ≥3 `FormField` trong `DialogBody`                           | page riêng (route riêng)                                                                        | `dialog-form-too-big`  |
+| `Select` hai lựa chọn kéo full width                        | `controlWidth` trên field hoặc một lần trên `Form`                                              | `select-width-hint`    |
 
 Ca kit không diễn đạt được thì **mở issue ở godx-jp/godxjp-ui**, tạm dùng cách
 hợp lệ gần nhất kèm `// TODO(godxjp-ui#<n>)` — không tự chế.

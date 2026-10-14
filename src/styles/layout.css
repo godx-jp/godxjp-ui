@@ -1374,6 +1374,11 @@
       justify-content: flex-end;
     }
 
+    /* No heading (title omitted, gh#1296): the actions still sit at the inline end. */
+    .ui-page-header-extra:only-child {
+      margin-inline-start: auto;
+    }
+
     /* `headerScale="chrome"`, second consequence of the SAME fact. */
     .ui-page-container[data-header-scale="chrome"] .ui-page-header-extra {
       align-self: center;
@@ -1926,6 +1931,29 @@
    * the rail and the section rhythm from theme.css with zero consumer `.legal-*` CSS. */
   .ui-legal-document-scope {
     container: legal-document / inline-size;
+    padding-inline: var(--legal-document-page-padding-inline, var(--space-page-x));
+    /* Same mechanism as `.ui-auth-shell`: the shell's own Heading level 1 reads --heading-h1. */
+    --heading-h1: var(
+      --legal-document-title-font-size,
+      var(
+        --font-size-2xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio) * var(--font-size-ratio)
+        )
+      )
+    );
+  }
+
+  @media (max-width: 720px) {
+    .ui-legal-document-scope {
+      padding-inline: var(--legal-document-page-padding-inline, var(--space-page-compact-x));
+    }
+  }
+
+  /* A page shell that already pads its body: the shell adds no second gutter (gh#1296). */
+  :where(.ui-page-body, .ui-centered-shell-main) .ui-legal-document-scope {
+    --legal-document-page-padding-inline: 0px;
   }
 
   .ui-legal-document {
