@@ -3625,8 +3625,12 @@
 
   /* A cut label UNFOLDS while its row holds keyboard focus (gh#1308) — a `title` never opens on
    * focus, and a touch user in the drawer cannot hover. Not in a windowed tree: its rows share
-   * one measured height, and the label carries the full text as its `title` there (tree.tsx). */
-  .ui-tree:not([data-virtual]) .ui-tree-node:focus-visible > .ui-tree-label[data-truncated] {
+   * one measured height, and the label carries the full text as its `title` there (tree.tsx).
+   * Nor when the label holds a `Text ellipsis`: that Text already opens its own full-text tooltip on
+   * the row's keyboard focus (gh#1045), and unfolding would un-cut it so the tooltip never opens. */
+  .ui-tree:not([data-virtual])
+    .ui-tree-node:focus-visible
+    > .ui-tree-label[data-truncated]:not(:has([data-ellipsis])) {
     overflow: visible;
     white-space: normal;
     overflow-wrap: anywhere;
