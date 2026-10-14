@@ -3612,6 +3612,15 @@
     white-space: nowrap;
   }
 
+  /* A cut label UNFOLDS while its row holds keyboard focus (gh#1308) — a `title` never opens on
+   * focus, and a touch user in the drawer cannot hover. Not in a windowed tree: its rows share
+   * one measured height, and the label carries the full text as its `title` there (tree.tsx). */
+  .ui-tree:not([data-virtual]) .ui-tree-node:focus-visible > .ui-tree-label[data-truncated] {
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
   .ui-tree-group {
     display: flex;
     flex-direction: column;
