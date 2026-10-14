@@ -181,8 +181,19 @@ describe("TopbarSearch (Chromium, ADR C02)", { timeout: 40_000 }, () => {
     await page.getByRole("button", { name: "Close search" }).click();
     expect((await measure(page)).focused).toBe("trigger");
 
-    // Focus leaving the open field folds it, and stays where it went.
+    // Safari's tap on the ✕: a pointer press inside the panel, then a blur with no relatedTarget
+    // (it does not focus a clicked button). The field must stay open for the clear to land.
     await page.keyboard.press("Enter");
+    await page.evaluate(() => {
+      const clear = document.querySelector(".ui-search-input-clear")!;
+      clear.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+      document.querySelector<HTMLInputElement>(".ui-topbar-search input")!.blur();
+    });
+    expect((await measure(page)).inputVisible).toBe(true);
+
+    // Focus leaving the open field folds it, and stays where it went.
+    await page.waitForTimeout(50);
+    await page.locator(".ui-topbar-search input").focus();
     await page.locator("#after").focus();
     const left = await measure(page);
     expect(left.inputVisible).toBe(false);

@@ -142,6 +142,23 @@ describe("BlockEditor compact gutter (Chromium, ADR C05)", { timeout: 40_000 }, 
     expect(m.handle!.bottom).toBeLessThanOrEqual(m.paraTop + 1.5);
     expect(m.overflow).toBeLessThanOrEqual(1.5);
 
+    // The FIRST block has nothing above it inside the frame: the handle must not leave the editor.
+    await page.locator(".ui-block-editor-content h1").click();
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const h = document.querySelector(".ui-block-editor-handle")!.getBoundingClientRect();
+          const e = document.querySelector(".ui-block-editor")!.getBoundingClientRect();
+          const first = document
+            .querySelector(".ui-block-editor-content h1")!
+            .getBoundingClientRect();
+          // It is the heading's handle (not the paragraph's, left behind), and it stays inside the frame.
+          return h.top < first.bottom && h.top >= e.top - 0.5;
+        }),
+      )
+      .toBe(true);
+    await page.locator(".ui-block-editor-content > p").first().click();
+
     // Keyboard alternative: Mod+/ opens the caret block's menu.
     await page.keyboard.press("ControlOrMeta+/");
     await expect.poll(() => page.getByRole("menuitem", { name: "複製" }).count()).toBe(1);

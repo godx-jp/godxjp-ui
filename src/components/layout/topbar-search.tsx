@@ -25,6 +25,7 @@ export function TopbarSearch({ collapseBelow = "sm", className, ...props }: Topb
   const [open, setOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const panelRef = React.useRef<HTMLDivElement>(null);
+  const pressedInside = React.useRef(false);
   const panelId = React.useId();
   const name = props.ariaLabel ?? t("common.search");
 
@@ -63,9 +64,21 @@ export function TopbarSearch({ collapseBelow = "sm", className, ...props }: Topb
             close(true);
           }
         }}
+        // Safari does not focus a clicked <button>, so a tap on the field's ✕ blurs with a null
+        // `relatedTarget`; a pointer press inside the panel is therefore never a reason to fold it.
+        onPointerDownCapture={() => {
+          pressedInside.current = true;
+          setTimeout(() => {
+            pressedInside.current = false;
+          });
+        }}
         onBlur={(event) => {
           // Focus moving to something outside the open field folds it; the focus stays where it went.
-          if (open && !event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          if (
+            open &&
+            !pressedInside.current &&
+            !event.currentTarget.contains(event.relatedTarget as Node | null)
+          ) {
             close(false);
           }
         }}

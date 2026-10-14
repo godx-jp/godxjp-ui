@@ -2084,6 +2084,12 @@
       border-radius: var(--popover-radius, var(--radius));
       background-color: hsl(var(--popover) / var(--popover-alpha, 100%));
     }
+
+    /* Nothing above the first block but the frame: rising would leave the editor, so it stays on
+     * the block's own row at the inline end. */
+    .ui-block-editor-handle[data-first-block] {
+      translate: none;
+    }
   }
 
   /* Out of the way until the editor is being used; always there on a touch screen (no hover). */
