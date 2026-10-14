@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [32.7.1] - 2026-10-14
+## [32.7.2] - 2026-10-14
 
 ### 🐛 Fixed
 
@@ -17,6 +17,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and unfolds while the row holds keyboard focus (the row itself as a link, a control in it, or the
   line's own tab stop when nothing else takes focus). A line that fits gets none of it. The
   measurement is shared with DataTable `ellipsis` (`src/lib/truncation.ts`).
+
+## [32.7.1] - 2026-10-14
+
+From the second consumer run on 32.7.0 (godx-content#107, #1299).
+
+### 🐛 Fixed
+
+- **`audit --changed` no longer reports a false clean from a workspace package.** Run from `pages/`
+  with 16 changed `.tsx`, it said "no .tsx/.jsx changed": `git diff` names repo-root paths while
+  `ls-files` names cwd paths, and the root-relative ones were dropped. Both now use cwd-relative
+  paths (`git diff --relative`), limited to the package being audited. The base line prints in
+  English ("compared with: …").
+- The synced CLAUDE.md block, workflow file and MCP `instructions` list the current archetypes
+  (editor, reader included) and say `get_exemplar` with no argument lists them.
+- DESIGN.md Editor: the change note may sit under the body or last in the aside (one per app);
+  aside groups are named by a heading one step above their labels; a controlled sub-component with
+  its own Form stays a separate form and the single header Save submits by handler. Known Gaps
+  notes the one-step page-title vs h2 difference on phones.
 
 ## [32.7.0] - 2026-10-14
 
