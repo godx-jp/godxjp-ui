@@ -4,15 +4,17 @@
     "page-layout",
     "stack-cards"
   ],
-  "code": "import { PageContainer, Flex, ResponsiveGrid } from \"@godxjp/ui/layout\";\nimport { Card, CardHeader, CardTitle, CardContent } from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\n\n// Every direct child of PageContainer is a page section — the page owns the gap between them\n// (--page-body-gap, the section step). Do NOT add gap-* / space-y-* / mt-* yourself.\nexport function ReportPage() {\n  return (\n    <PageContainer title=\"Bug report\" subtitle=\"https://app.example.com/orders\" extra={<Button>Send</Button>}>\n      <Card>\n        <CardHeader><CardTitle>Details</CardTitle></CardHeader>\n        <CardContent>…</CardContent>\n      </Card>\n      <Card>\n        <CardHeader><CardTitle>Screenshots</CardTitle></CardHeader>\n        <CardContent>\n          {/* items INSIDE a section: ResponsiveGrid for a grid, Flex for a stack/row */}\n          <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>…</ResponsiveGrid>\n        </CardContent>\n      </Card>\n      <Card>\n        <CardContent>\n          <Flex direction=\"col\" gap=\"md\">…</Flex>\n        </CardContent>\n      </Card>\n    </PageContainer>\n  );\n}\n",
+  "code": "import { PageContainer, Flex, ResponsiveGrid } from \"@godxjp/ui/layout\";\nimport { Card, CardContent, DataTable, Descriptions, type ColumnDef } from \"@godxjp/ui/data-display\";\nimport { Button, Heading } from \"@godxjp/ui/general\";\n\ntype Shot = { id: string; name: string };\nconst columns: ColumnDef<Shot>[] = [{ key: \"name\", header: \"File\" }];\n\n// Two steps, never one uniform gap:\n//   section step — between direct children of PageContainer (--page-body-gap). Do NOT add gap-*/mt-*.\n//   item step    — inside a section, Flex gap=\"sm\" between its heading and its content.\n// A section is a Heading, not a Card. Card is for a real boundary: here, the table surface.\nexport function ReportPage({ shots }: { shots: Shot[] }) {\n  return (\n    <PageContainer title=\"Bug report\" extra={<Button>Send</Button>}>\n      <Flex direction=\"col\" gap=\"sm\">\n        <Heading level={2}>Details</Heading>\n        <Descriptions columns={2}>\n          <Descriptions.Item label=\"URL\">https://app.example.com/orders</Descriptions.Item>\n          <Descriptions.Item label=\"Browser\">Safari 18</Descriptions.Item>\n        </Descriptions>\n      </Flex>\n      <Flex direction=\"col\" gap=\"sm\">\n        <Heading level={2}>Screenshots</Heading>\n        <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>…</ResponsiveGrid>\n      </Flex>\n      <Flex direction=\"col\" gap=\"sm\">\n        <Heading level={2}>Attachments</Heading>\n        <Card>\n          <CardContent flush>\n            <DataTable data={shots} columns={columns} getRowId={(r) => r.id} />\n          </CardContent>\n        </Card>\n      </Flex>\n    </PageContainer>\n  );\n}\n",
   "name": "page-sections",
-  "tagline": "A page made of several Card sections: PageContainer spaces its direct children by default; group items inside a section with Flex/ResponsiveGrid, never Tailwind gap-*/p-*.",
+  "tagline": "A page of several sections: a Heading + section spacing marks a section, not a Card. PageContainer spaces its direct children (section step); Flex gap spaces items inside one (item step). Card only for a real boundary.",
   "tags": [
     "layout",
     "page",
     "card",
     "spacing",
     "flex",
-    "grid"
+    "grid",
+    "section",
+    "heading"
   ]
 }

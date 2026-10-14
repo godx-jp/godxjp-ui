@@ -259,9 +259,10 @@ better than a generic stock person.`,
     body: `Empty state with a chrome / pastel 3D icon (coin, key, shield)
 floating in the center. Looks like every NFT marketplace from
 2021.`,
-    fix: `Simple lucide-react line icon (\`<Inbox size={48} />\`) +
-descriptive title. Or a flat illustration matching the brand
-palette. Skip the 3D entirely unless your brand IS 3D.`,
+    fix: `No illustration. In an admin screen an EmptyState is one
+sentence and one action (\`<EmptyState title action />\`, no \`icon\`).
+A first-run page outside a Card may take one small line icon via
+\`icon={Inbox}\`; never a large glyph or a 3D render.`,
   },
   {
     category: "imagery",
@@ -276,6 +277,83 @@ showcase) — not every internal screen.`,
   },
 
   // ── structure ──────────────────────────────────────────────────
+  // Admin screens (gh#1294): built from correct primitives, still read as generated.
+  // ui-audit warns on the countable ones (rule id in the fix).
+  {
+    category: "structure",
+    name: "Card per section",
+    body: `Every section of a page wrapped in Card + CardHeader + CardTitle
++ CardDescription. Boxes everywhere, so no box means anything.`,
+    fix: `Mark a section with \`<Heading level={2}>\` and section spacing
+(PageContainer children). Card only for a real boundary: a table
+surface, a selectable item. ui-audit: card-per-section.`,
+  },
+  {
+    category: "structure",
+    name: "Nested Card",
+    body: `A Card (or StatCard) inside a Card: two borders for one boundary.`,
+    fix: `One Card; group inside it with Heading + Flex or Separator.
+ui-audit: nested-card.`,
+  },
+  {
+    category: "copy",
+    name: "Subtitle restating the title",
+    body: `PageContainer title="クーポン管理" subtitle="クーポンの一覧です".
+The subtitle repeats the title in more words.`,
+    fix: `Omit subtitle. Use it only for a fact the title lacks (scope,
+owner, last sync time).`,
+  },
+  {
+    category: "structure",
+    name: "KPI tile row on a non-dashboard page",
+    body: `3–4 StatCards above a list or detail page: 件数, 公開中, 合計.
+A row count is not a KPI.`,
+    fix: `Drop the row; the total is \`<Pagination showTotal>\`, a record's
+figures are Descriptions rows. StatCard rows belong on a dashboard
+with comparison or trend (delta). ui-audit: kpi-row-off-dashboard.`,
+  },
+  {
+    category: "structure",
+    name: "Icon EmptyState inside a Card",
+    body: `A large icon + title + description centred inside a Card or
+table surface.`,
+    fix: `One sentence + one action: \`<EmptyState title action />\`, no
+\`icon\` (or variant="compact"). ui-audit: empty-state-icon-in-card.`,
+  },
+  {
+    category: "structure",
+    name: "Alert banner on every page",
+    body: `An info Alert at the top of each page explaining the page, or
+several Alerts repeating the same notice.`,
+    fix: `Alert only for a state that blocks or changes the task. Field
+errors in FormField, results in a toast, standing info in plain
+text. ui-audit: alert-per-page.`,
+  },
+  {
+    category: "visual",
+    name: "Badge wall",
+    body: `A Badge in every table column, tiers and categories in
+different colours. Colour stops meaning status.`,
+    fix: `Badge for status only, one status column per table. Tiers,
+categories and scopes are plain text (or one neutral tone).
+ui-audit: badge-wall.`,
+  },
+  {
+    category: "layout",
+    name: "Uniform spacing",
+    body: `The same gap everywhere: between sections, between a heading
+and its content, between fields. No hierarchy.`,
+    fix: `Two steps: section step (PageContainer children / gap="lg")
+and item step (gap="sm" inside a section).`,
+  },
+  {
+    category: "visual",
+    name: "Icon in every heading and button",
+    body: `A Lucide icon before each CardTitle, section heading and button
+label. Decoration that adds no meaning.`,
+    fix: `Text alone. An icon only where it is the affordance (icon-only
+button with aria-label) or carries status.`,
+  },
   {
     category: "structure",
     name: "Settings as one long form",

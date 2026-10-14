@@ -128,7 +128,7 @@
   {
     "body": "Empty state with a chrome / pastel 3D icon (coin, key, shield)\nfloating in the center. Looks like every NFT marketplace from\n2021.",
     "category": "imagery",
-    "fix": "Simple lucide-react line icon (`<Inbox size={48} />`) +\ndescriptive title. Or a flat illustration matching the brand\npalette. Skip the 3D entirely unless your brand IS 3D.",
+    "fix": "No illustration. In an admin screen an EmptyState is one\nsentence and one action (`<EmptyState title action />`, no `icon`).\nA first-run page outside a Card may take one small line icon via\n`icon={Inbox}`; never a large glyph or a 3D render.",
     "name": "Floating 3D crypto icon"
   },
   {
@@ -136,6 +136,60 @@
     "category": "imagery",
     "fix": "Solid background (`--background`). If you need depth, use a\nsubtle 1px border + `--card` background tint. Reserve high-effort\nbackgrounds for pages where they matter (marketing hero, product\nshowcase) — not every internal screen.",
     "name": "Decorative gradient mesh background"
+  },
+  {
+    "body": "Every section of a page wrapped in Card + CardHeader + CardTitle\n+ CardDescription. Boxes everywhere, so no box means anything.",
+    "category": "structure",
+    "fix": "Mark a section with `<Heading level={2}>` and section spacing\n(PageContainer children). Card only for a real boundary: a table\nsurface, a selectable item. ui-audit: card-per-section.",
+    "name": "Card per section"
+  },
+  {
+    "body": "A Card (or StatCard) inside a Card: two borders for one boundary.",
+    "category": "structure",
+    "fix": "One Card; group inside it with Heading + Flex or Separator.\nui-audit: nested-card.",
+    "name": "Nested Card"
+  },
+  {
+    "body": "PageContainer title=\"クーポン管理\" subtitle=\"クーポンの一覧です\".\nThe subtitle repeats the title in more words.",
+    "category": "copy",
+    "fix": "Omit subtitle. Use it only for a fact the title lacks (scope,\nowner, last sync time).",
+    "name": "Subtitle restating the title"
+  },
+  {
+    "body": "3–4 StatCards above a list or detail page: 件数, 公開中, 合計.\nA row count is not a KPI.",
+    "category": "structure",
+    "fix": "Drop the row; the total is `<Pagination showTotal>`, a record's\nfigures are Descriptions rows. StatCard rows belong on a dashboard\nwith comparison or trend (delta). ui-audit: kpi-row-off-dashboard.",
+    "name": "KPI tile row on a non-dashboard page"
+  },
+  {
+    "body": "A large icon + title + description centred inside a Card or\ntable surface.",
+    "category": "structure",
+    "fix": "One sentence + one action: `<EmptyState title action />`, no\n`icon` (or variant=\"compact\"). ui-audit: empty-state-icon-in-card.",
+    "name": "Icon EmptyState inside a Card"
+  },
+  {
+    "body": "An info Alert at the top of each page explaining the page, or\nseveral Alerts repeating the same notice.",
+    "category": "structure",
+    "fix": "Alert only for a state that blocks or changes the task. Field\nerrors in FormField, results in a toast, standing info in plain\ntext. ui-audit: alert-per-page.",
+    "name": "Alert banner on every page"
+  },
+  {
+    "body": "A Badge in every table column, tiers and categories in\ndifferent colours. Colour stops meaning status.",
+    "category": "visual",
+    "fix": "Badge for status only, one status column per table. Tiers,\ncategories and scopes are plain text (or one neutral tone).\nui-audit: badge-wall.",
+    "name": "Badge wall"
+  },
+  {
+    "body": "The same gap everywhere: between sections, between a heading\nand its content, between fields. No hierarchy.",
+    "category": "layout",
+    "fix": "Two steps: section step (PageContainer children / gap=\"lg\")\nand item step (gap=\"sm\" inside a section).",
+    "name": "Uniform spacing"
+  },
+  {
+    "body": "A Lucide icon before each CardTitle, section heading and button\nlabel. Decoration that adds no meaning.",
+    "category": "visual",
+    "fix": "Text alone. An icon only where it is the affordance (icon-only\nbutton with aria-label) or carries status.",
+    "name": "Icon in every heading and button"
   },
   {
     "body": "Settings page with 40 form fields in a single scroll. User\nloses their place, can't find the field they came for.",
