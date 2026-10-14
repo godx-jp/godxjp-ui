@@ -79,7 +79,11 @@ function mcpConfigMismatchMessage(root, existing, expected, key = MCP_KEY) {
 }
 
 /** Commands wired into the consumer's .claude/settings.json. */
-export const AUDIT_HOOK_CMD = "node node_modules/@godxjp/ui/scripts/audit-hook.mjs";
+// `npx --no-install` resolves @godxjp/ui up the node_modules chain, so the hook also works from a
+// workspace package whose install is hoisted to the repo root (gh#1296); it never downloads.
+export const AUDIT_HOOK_CMD = "npx --no-install @godxjp/ui audit-hook";
+/** The pre-#1296 default, rewritten to AUDIT_HOOK_CMD when found verbatim (a custom command is kept). */
+const LEGACY_AUDIT_HOOK_CMD = "node node_modules/@godxjp/ui/scripts/audit-hook.mjs";
 export const PRIMER_CMD = "cat .claude/godxjp-ui-workflow.md";
 
 /** What `.claude/settings.json` would get, used only for the `.godxjp-ui-suggested` sidecar. */
@@ -531,7 +535,13 @@ export function ensureClaudeHooks(root) {
     (arr ?? []).some((g) => (g.hooks ?? []).some((h) => (h.command ?? "").includes(cmd)));
 
   json.hooks.PostToolUse = json.hooks.PostToolUse ?? [];
-  if (!has(json.hooks.PostToolUse, "audit-hook.mjs")) {
+  for (const group of json.hooks.PostToolUse)
+    for (const hook of group.hooks ?? [])
+      if (hook.command === LEGACY_AUDIT_HOOK_CMD) {
+        hook.command = AUDIT_HOOK_CMD;
+        added.push("PostToolUse:auto-audit (workspace-safe command)");
+      }
+  if (!has(json.hooks.PostToolUse, "audit-hook")) {
     json.hooks.PostToolUse.push({
       matcher: "Write|Edit|MultiEdit",
       hooks: [{ type: "command", command: AUDIT_HOOK_CMD }],

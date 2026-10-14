@@ -16,6 +16,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const MAP = {
   "init-agent": "init-agent-kit.mjs",
   audit: "ui-audit.mjs",
+  "audit-hook": "audit-hook.mjs",
   "visual-audit": "visual-audit.mjs",
   "prune-css": "prune-css.mjs",
   codemod: "codemod.mjs",
@@ -55,8 +56,14 @@ const HELP = {
                     fails rather than reporting clean when origin/main cannot be resolved
     --format json   machine-readable findings
     --quiet         print errors only (warnings hidden)
+    --base=<ref>    with --changed, diff against <ref> instead of origin/main
     --rules         print the rule catalog as JSON and exit
+    --consumer      inside the @godxjp/ui repo only: apply the consumer rules (always on in an app)
   Pre-commit:  npx godxjp-ui audit resources/js || exit 1`,
+  "audit-hook": `godxjp-ui audit-hook
+
+  The Claude Code PostToolUse hook init-agent wires in: reads the hook payload on stdin and audits
+  the .tsx file that was just written or edited, feeding findings back to the agent. Not for humans.`,
   "prune-css": `godxjp-ui prune-css <src dir/glob …> [--out <file>] [--fonts]
 
   Emit a stylesheet with only the component CSS layers your app uses (gh#971). Scans the given
@@ -95,6 +102,7 @@ commands:
   init-agent     install the agent forcing-kit (MCP + auto-audit hook + CLAUDE.md mandate)
   sync-rules     write/refresh package-owned agent rules (--dry-run previews)
   audit          static UI audit over source
+  audit-hook     the per-edit audit hook (wired by init-agent)
   visual-audit   runtime audit (Playwright + axe-core) against a running app
   prune-css      emit a stylesheet with only the CSS layers your app uses
 
