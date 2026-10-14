@@ -6,6 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.13.0] - 2026-10-15
+
+From the independent review of godx-content round 6 (#1320): under 200% text the top bar overlapped
+and editor headings stayed small — and `visual-audit` called a partly applied override "applied".
+
+### ✨ Added
+
+- **`--prose-code-block-font-size`** (default `1em`): a code block inside Prose / BlockEditor follows
+  the surrounding text size (14px at the default scale, unchanged). Standalone CodeBlock keeps
+  `--code-block-font-size`, which no longer reaches code blocks inside Prose.
+
+### 🔄 Changed
+
+- **Prose / BlockEditor headings scale with user text size:** h1–h6 default sizes are relative to
+  the prose text (`1em` × ratio steps; default sizes unchanged), so they follow enlarged text and work
+  inside the editor (ProseMirror strips per-block attributes, so blocks only inherit). `Prose
+  size="sm"` headings and code blocks now scale down with the body. `--heading-h*` overrides unchanged.
+
+### 🐛 Fixed
+
+- **Topbar under enlarged text:** the search field no longer paints over the next end cell (its
+  `ch` floor now reaches the cluster: 21.7px overlap → 0 at 1280 under 200% text), and `overflow="menu"`
+  folds when the clusters' content outgrows the bar, not only when the bar resizes.
+- **BlockEditor:** code blocks, the raw-Markdown block source, and its "Markdown source" / "Edit
+  Markdown" head scale with enlarged text (0 of 18 visible text elements left behind; 4 before).
+- **`visual-audit --text-zoom` / `--text-spacing`:** evidence lists `notTaken` (selector + text) and
+  fails the cell "override partially applied" when any visible text did not take the override
+  (hidden, aria-hidden, sr-only and svg text exempt); before, one element taking it was enough for
+  `applied: true`.
+
 ## [32.12.1] - 2026-10-15
 
 ### 🐛 Fixed

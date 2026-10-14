@@ -94,6 +94,7 @@
   --prose-quote-border-width: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
   --prose-quote-space-inline: var(--space-3);
   --prose-code-font-size: calc(1em / var(--font-size-ratio));
+  --prose-code-block-font-size: 1em; /* a `pre` in prose follows the surrounding text (gh#1320) */
   --prose-code-space-inline: var(--space-1);
   /* An image in a table cell is capped at a LENGTH, not at 100% (gh#1150): a percentage of an
    * auto-width column lets the column squash the image to nothing, while a length makes the

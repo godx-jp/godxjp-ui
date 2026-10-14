@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evidence: only hidden and aria-hidden text resists, so the override applied</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        font:
+          16px/1.4 system-ui,
+          sans-serif;
+      }
+      [data-resist] {
+        font-size: 20px;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="content">
+      <h1>Release notes</h1>
+      <p>
+        Every paragraph here sits in a fluid column, so more spacing only makes the page taller.
+      </p>
+      <span aria-hidden="true" data-resist>★</span>
+      <span class="sr-only" data-resist>Starred</span>
+      <span hidden data-resist>Draft</span>
+    </main>
+    <script>
+      new MutationObserver((records) => {
+        for (const r of records)
+          if (r.target.hasAttribute("data-resist") && r.target.hasAttribute(r.attributeName))
+            r.target.removeAttribute(r.attributeName);
+      }).observe(document.body, { subtree: true, attributeFilter: ["data-visual-audit-fz"] });
+    </script>
+  </body>
+</html>

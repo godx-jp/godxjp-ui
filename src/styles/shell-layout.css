@@ -2837,8 +2837,14 @@
     gap: var(--topbar-gap);
   }
 
+  /* `min-inline-size: min-content`, not the automatic minimum: with an `inline-size` set, the
+   * automatic minimum is capped at that size, so once the text floor (in `ch`) outgrew 16rem —
+   * 200% text — the field overflowed this wrapper and was painted over the next end cell (gh#1320:
+   * control 285.7px in a 256px wrapper at 1280). Now the floor reaches the cluster, which grows or,
+   * under `overflow="menu"`, folds. */
   .ui-topbar-search-panel > .ui-search-input {
     inline-size: var(--topbar-search-inline-size);
+    min-inline-size: min-content;
     flex: 0 1 auto;
   }
 

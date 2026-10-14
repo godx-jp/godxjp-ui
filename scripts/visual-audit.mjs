@@ -1496,19 +1496,38 @@ export function parseTextZoom(spec) {
 
 /**
  * Did the override reach the page? (pure). `before`/`after` are `snapshotText()` results of the
- * SAME document (same text-bearing elements, same order). Applied = the override's computed values
- * reached at least one text element AND the geometry moved; either half alone is not enough — a
- * computed value with zero geometry change is a render that was never re-laid out, and geometry
- * that moved without the values is something else moving.
+ * SAME document. Applied = the override's computed values reached EVERY visible text element AND
+ * the geometry moved; either half alone is not enough — a computed value with zero geometry change
+ * is a render that was never re-laid out, and geometry that moved without the values is something
+ * else moving.
+ *
+ * "Every", not "any" (gh#1320): "took > 0" reported `applied: true` on an editor whose four h2
+ * blocks kept their size (ratio 0.897), so a heading smaller than its own body passed as evidence.
+ * The tolerance is ZERO visible elements; what is exempt is listed on the snapshot
+ * (`exempt`: hidden, zero-area / sr-only, aria-hidden, inside an svg) and never counted.
+ *
+ * Elements are paired by index when the two snapshots agree there, otherwise by their `key`
+ * (selector + text): a bar that folds under larger text, or an editor that re-creates a block,
+ * changes the list, and pairing by index alone would compare unrelated elements.
  */
 export function textOverrideVerdict(mode, before, after, { zoom = 200 } = {}) {
-  const n = Math.min(before.texts.length, after.texts.length);
+  const used = new Set();
+  const pairs = [];
+  before.texts.forEach((a, i) => {
+    const same = after.texts[i];
+    let j = same && !used.has(i) && (same.key ?? null) === (a.key ?? null) ? i : -1;
+    if (j < 0 && a.key != null)
+      j = after.texts.findIndex((b, k) => !used.has(k) && b.key === a.key);
+    if (j < 0) return;
+    used.add(j);
+    pairs.push([a, after.texts[j]]);
+  });
+  const n = pairs.length;
   let moved = 0;
   let maxShiftPx = 0;
   let took = 0;
-  for (let i = 0; i < n; i++) {
-    const a = before.texts[i];
-    const b = after.texts[i];
+  const notTaken = [];
+  for (const [a, b] of pairs) {
     const shift = Math.max(
       Math.abs(a.x - b.x),
       Math.abs(a.y - b.y),
@@ -1523,6 +1542,14 @@ export function textOverrideVerdict(mode, before, after, { zoom = 200 } = {}) {
           Math.abs(b.wordSpacingPx - 0.16 * b.fontPx) <= 0.5
         : Math.abs(b.fontPx - (a.fontPx * zoom) / 100) <= 0.5;
     if (ok) took++;
+    else if (!a.exempt && !b.exempt)
+      notTaken.push({
+        selector: a.selector ?? "?",
+        text: a.text ?? "",
+        ...(mode === "text-zoom"
+          ? { fontPx: a.fontPx, expectedPx: +((a.fontPx * zoom) / 100).toFixed(2), gotPx: b.fontPx }
+          : { letterSpacingPx: b.letterSpacingPx, wordSpacingPx: b.wordSpacingPx }),
+      });
   }
   const delta = {
     textElements: n,
@@ -1537,7 +1564,15 @@ export function textOverrideVerdict(mode, before, after, { zoom = 200 } = {}) {
   else if (took === 0) reason = `the ${mode} values reached 0 of ${n} text elements`;
   else if (moved === 0 && delta.documentHeightPx === 0 && delta.documentWidthPx === 0)
     reason = "zero geometry delta against the unmodified render";
-  return { applied: reason === null, reason, appliedRatio, delta };
+  else if (notTaken.length)
+    reason =
+      `override partially applied: ${notTaken.length} of ${n} visible text elements did not take it — ` +
+      notTaken
+        .slice(0, 5)
+        .map((m) => `${m.selector} "${m.text}"`)
+        .join(", ") +
+      (notTaken.length > 5 ? `, … ${notTaken.length - 5} more` : "");
+  return { applied: reason === null, reason, appliedRatio, delta, notTaken };
 }
 
 /** Text-bearing elements' boxes + computed text metrics, in document order. Runs in the page. */
@@ -1554,11 +1589,36 @@ export function snapshotText() {
     seen.add(p);
     owners.push(p);
   }
+  // `tag#id` or `tag.class.class`, three levels up — enough to find the element, stable across a
+  // re-render that re-creates it (no data attributes, no indices).
+  const step = (el) =>
+    el.tagName.toLowerCase() +
+    (el.id
+      ? `#${el.id}`
+      : [...el.classList]
+          .slice(0, 2)
+          .map((c) => `.${c}`)
+          .join(""));
+  const selectorOf = (el) => {
+    const parts = [];
+    for (let e = el; e && e !== document.body && parts.length < 3; e = e.parentElement)
+      parts.unshift(step(e));
+    return parts.join(" > ");
+  };
   const texts = owners.map((el) => {
     const r = el.getBoundingClientRect();
     const s = getComputedStyle(el);
     const fontPx = parseFloat(s.fontSize) || 0;
     const px = (v) => (v === "normal" ? 0 : parseFloat(v) || 0);
+    const selector = selectorOf(el);
+    const text = (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 40);
+    // Not text a reader sees, so never counted as "did not take the override".
+    const exempt =
+      r.width <= 1 ||
+      r.height <= 1 ||
+      s.visibility !== "visible" ||
+      Number(s.opacity) === 0 ||
+      !!el.closest('[aria-hidden="true"], svg');
     return {
       x: r.left + se.scrollLeft,
       y: r.top + se.scrollTop,
@@ -1567,6 +1627,10 @@ export function snapshotText() {
       fontPx,
       letterSpacingPx: px(s.letterSpacing),
       wordSpacingPx: px(s.wordSpacing),
+      selector,
+      text,
+      key: `${selector}|${text}`,
+      exempt,
     };
   });
   return { texts, docHeight: se.scrollHeight, docWidth: se.scrollWidth };
@@ -1642,6 +1706,8 @@ async function runEvidence(page, url, viewport, mode, { zoom, screenshots }) {
     ...(mode === "text-zoom" ? { zoomPercent: zoom } : null),
     applied: verdict.applied,
     appliedRatio: verdict.appliedRatio,
+    // The visible text elements that did NOT take the override (gh#1320): selector + snippet.
+    notTaken: verdict.notTaken,
     delta: verdict.delta,
     c01: "not-run",
     screenshots: screenshots ? { base, override } : null,

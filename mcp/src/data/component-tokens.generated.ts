@@ -2869,6 +2869,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--prose-code-block-font-size",
+    "value": "1em",
+    "description": "a `pre` in prose follows the surrounding text (gh#1320)"
+  },
+  {
     "name": "--prose-code-space-inline",
     "value": "var(--space-1)",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."

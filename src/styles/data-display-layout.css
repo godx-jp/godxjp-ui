@@ -1551,6 +1551,15 @@
     tab-size: 2;
   }
 
+  /* Inside prose the block follows the TEXT AROUND IT, not the root: `1em` by default, which is the
+   * same 14px as `--code-block-font-size` at the default scale. A rem-sized `pre` kept its size in
+   * the BlockEditor under text zoom while the paragraphs doubled — the editor strips per-element
+   * overrides, so only an inherited size reaches its blocks (gh#1320). Standalone CodeBlock keeps
+   * `--code-block-font-size`. */
+  .ui-prose pre {
+    font-size: var(--prose-code-block-font-size);
+  }
+
   :is(.ui-code-block, .ui-prose pre) > code {
     font: inherit;
     background: transparent;
@@ -1813,33 +1822,33 @@
     margin-block-start: var(--prose-heading-space-block-start);
   }
 
+  /* `1em` = the prose's own size (a heading is a child of `.ui-prose`), so the scale follows the
+   * text it heads: a larger user text size, `data-size="sm"`, or a host font-size on the editor.
+   * The fallbacks were `--font-size-base` / `--prose-font-size` — fixed lengths — and under a
+   * text-only zoom the BlockEditor's h2 stayed 17.6px while its paragraphs went 14 → 28px: inside
+   * a ProseMirror view the per-element override is stripped, so only inherited size reaches the
+   * blocks, and a fixed length inherits nothing (gh#1320). */
   .ui-prose h1 {
     font-size: var(
       --heading-h1,
-      calc(
-        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
-          var(--font-size-ratio)
-      )
+      calc(1em * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio))
     );
   }
 
   .ui-prose h2 {
-    font-size: var(
-      --heading-h2,
-      calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
-    );
+    font-size: var(--heading-h2, calc(1em * var(--font-size-ratio) * var(--font-size-ratio)));
   }
 
   .ui-prose h3 {
-    font-size: var(--heading-h3, calc(var(--prose-font-size) * var(--font-size-ratio)));
+    font-size: var(--heading-h3, calc(1em * var(--font-size-ratio)));
   }
 
   .ui-prose h4 {
-    font-size: var(--heading-h4, var(--prose-font-size));
+    font-size: var(--heading-h4, 1em);
   }
 
   .ui-prose :is(h5, h6) {
-    font-size: var(--prose-font-size);
+    font-size: inherit;
   }
 
   .ui-prose :is(h4, h5, h6) {
@@ -2202,6 +2211,13 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-2);
+  }
+
+  /* The head's label and button sit one step below the editor's text — the xs step, but taken from
+   * the inherited size rather than the root, so they follow a larger text size like the blocks do
+   * (gh#1320). Same 12.5px at the default scale. */
+  .ui-block-editor .ui-block-editor-raw-block-head :is([data-slot="text"], .ui-button) {
+    font-size: calc(1em / var(--font-size-ratio));
   }
 
   .ui-block-editor-raw-block-source {
