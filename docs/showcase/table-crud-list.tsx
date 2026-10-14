@@ -5,11 +5,12 @@
  * @godxjp/ui primitives. This is the pattern a consumer should copy when building
  * an admin list screen:
  *
- *   header toolbar ......... PageContainer (title + `extra`) → SearchInput + primary Button
- *   filter row ............. Card + Flex + Select (部署 / 状態 / 期間) + ghost "クリア"
+ *   header actions ......... PageContainer (title + `extra`) → CSV + primary Button (last)
+ *   filter strip ........... Toolbar: SearchInput + ToolbarGroup/Select (部署 / 状態 / 期間), above the table,
+ *                            clear-all + result count owned by Toolbar (no Card of its own)
  *   data grid .............. DataTable (sortable columns · row selection · bulk actions ·
  *                            density toggle · row kebab via DropdownMenu)
- *   footer totals .......... CardFooter — selected count + 出勤/遅刻/承認待ち tallies (tabular-nums)
+ *   footer totals .......... CardFooter — 出勤/遅刻/承認待ち tallies as quiet text (tabular-nums)
  *   pagination ............. Pagination (numbered · showTotal · showSizeChanger)
  *
  * All behaviour is real and client-driven so it is observable AT REST:
@@ -22,7 +23,7 @@
  * 欠勤 · neutral 未提出), quiet factual JP copy, no emoji.
  */
 import * as React from "react";
-import { Download, Plus, Check, X } from "lucide-react";
+import { Download, Plus, Check } from "lucide-react";
 
 import { Button, Text } from "@godxjp/ui/general";
 import {
@@ -42,6 +43,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Pagination,
+  Toolbar,
+  ToolbarGroup,
 } from "@godxjp/ui/navigation";
 import type { DensityProp, SortStateProp } from "@godxjp/ui/props";
 import { MoreHorizontal, Pencil, CheckCircle2, Trash2 } from "lucide-react";
@@ -284,16 +287,11 @@ const columns: ColumnDef<Attendance>[] = [
     header: "承認",
     align: "center",
     width: "w-20",
-    render: (r) =>
-      r.approved ? (
-        <Badge tone="success" variant="outline">
-          承認済
-        </Badge>
-      ) : (
-        <Badge tone="muted" variant="outline">
-          承認待ち
-        </Badge>
-      ),
+    render: (r) => (
+      <Text size="xs" tone={r.approved ? "default" : "muted"}>
+        {r.approved ? "承認済" : "承認待ち"}
+      </Text>
+    ),
   },
   {
     key: "_actions",
@@ -400,14 +398,6 @@ export default function Demo() {
       density="compact"
       extra={
         <Flex direction="row" gap="sm" align="center" wrap>
-          <SearchInput
-            value={query}
-            onValueChange={setQuery}
-            onSearch={() => setPage(1)}
-            placeholder="従業員名・社員番号で検索"
-            ariaLabel="勤怠を検索"
-            className="w-full sm:w-64"
-          />
           <Button variant="outline" size="sm">
             <Download aria-hidden="true" />
             CSV出力
@@ -420,49 +410,54 @@ export default function Demo() {
       }
     >
       <Flex direction="col" gap="md">
-        {/* Filter row — real Select primitives, data-driven API. */}
-        <Card>
-          <CardContent>
-            <Flex direction="row" gap="sm" align="center" wrap>
-              <Select
-                options={DEPT_OPTIONS}
-                value={dept}
-                onValueChange={(v: string) => {
-                  setDept(v);
-                  setPage(1);
-                }}
-                placeholder="部署"
-                className="w-full sm:w-40"
-              />
-              <Select
-                options={STATUS_OPTIONS}
-                value={status}
-                onValueChange={(v: string) => {
-                  setStatus(v);
-                  setPage(1);
-                }}
-                placeholder="状態"
-                className="w-full sm:w-40"
-              />
-              <Select
-                options={PERIOD_OPTIONS}
-                value={period}
-                onValueChange={setPeriod}
-                placeholder="期間"
-                className="w-full sm:w-32"
-              />
-              {hasActiveFilters && (
-                <Button variant="ghost" size="sm" onClick={clearFilters}>
-                  <X aria-hidden="true" />
-                  条件をクリア
-                </Button>
-              )}
-              <Text size="xs" tone="muted" tabular className="ms-auto">
-                {rows.length} 件表示
-              </Text>
-            </Flex>
-          </CardContent>
-        </Card>
+        {/* Filter strip ABOVE the table — Toolbar owns clear-all and the result count. */}
+        <Toolbar
+          hasActiveFilters={hasActiveFilters}
+          onClear={clearFilters}
+          resultCount={rows.length}
+        >
+          <SearchInput
+            value={query}
+            onValueChange={setQuery}
+            onSearch={() => setPage(1)}
+            placeholder="従業員名・社員番号で検索"
+            ariaLabel="勤怠を検索"
+            className="w-full sm:w-64"
+          />
+          <ToolbarGroup label="部署">
+            <Select
+              placeholder="部署"
+              options={DEPT_OPTIONS}
+              value={dept}
+              onValueChange={(v: string) => {
+                setDept(v);
+                setPage(1);
+              }}
+              className="w-full sm:w-40"
+            />
+          </ToolbarGroup>
+          <ToolbarGroup label="状態">
+            <Select
+              placeholder="状態"
+              options={STATUS_OPTIONS}
+              value={status}
+              onValueChange={(v: string) => {
+                setStatus(v);
+                setPage(1);
+              }}
+              className="w-full sm:w-40"
+            />
+          </ToolbarGroup>
+          <ToolbarGroup label="期間">
+            <Select
+              placeholder="期間"
+              options={PERIOD_OPTIONS}
+              value={period}
+              onValueChange={setPeriod}
+              className="w-full sm:w-32"
+            />
+          </ToolbarGroup>
+        </Toolbar>
 
         {/* Data grid + footer totals, wrapped so footer reads as one surface. */}
         <Card>
@@ -496,35 +491,11 @@ export default function Demo() {
             </DataTable>
           </CardContent>
 
-          {/* Footer totals — composed from CardFooter + Badge, not a hand-rolled bar. */}
+          {/* Footer totals — one quiet line of tallies, not a row of badges. */}
           <CardFooter className="flex-wrap justify-between">
-            <Flex direction="row" gap="md" align="center" wrap>
-              <Text size="xs" tone="muted">
-                選択中{" "}
-                <Text as="strong" weight="medium" tabular>
-                  {selected.size}
-                </Text>{" "}
-                件
-              </Text>
-              <Badge tone="success" variant="outline">
-                出勤{" "}
-                <Text as="span" tabular>
-                  {tally.present}
-                </Text>
-              </Badge>
-              <Badge tone="warning" variant="outline">
-                遅刻{" "}
-                <Text as="span" tabular>
-                  {tally.late}
-                </Text>
-              </Badge>
-              <Badge tone="muted" variant="outline">
-                承認待ち{" "}
-                <Text as="span" tabular>
-                  {tally.pendingApproval}
-                </Text>
-              </Badge>
-            </Flex>
+            <Text size="xs" tone="muted" tabular>
+              出勤 {tally.present} · 遅刻 {tally.late} · 承認待ち {tally.pendingApproval}
+            </Text>
             <Pagination
               value={page}
               total={TOTAL}

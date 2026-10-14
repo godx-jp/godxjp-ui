@@ -167,87 +167,60 @@ function resyncVersionStamp(text) {
  * appended repo-specific sections keeps them.
  */
 export const WORKFLOW_MD = `${STAMP(KIT_VERSION)}
-# @godxjp/ui — mandatory workflow (read every session)
+# @godxjp/ui — workflow (read every session)
 
-You are building UI in an app that uses @godxjp/ui. Follow this EVERY time you create
-or change a component, page, or form — no exceptions.
+Follow this every time you create or change a page, component or form.
 
-## The rules the audit enforces (docs/CONSUMER-RULES.md in node_modules/@godxjp/ui)
-- Styles: \`@import "@godxjp/ui/styles"\` or \`@godxjp/ui/styles/core\` (no fonts). Never cherry-pick layers.
-- Layout: sections of a page are spaced by \`PageContainer\`; siblings go in \`<Flex direction="col" gap>\` /
+## Before JSX
+1. **Design target.** Read \`node_modules/@godxjp/ui/DESIGN.md\` (MCP \`get_design\`): tokens,
+   scarcity rules, screen anatomy, do/don't.
+2. **Route.** \`route_consumer_task "<task>"\` → \`compose-a-screen\` for app screens. The
+   marketing skills (soft, minimalist, brutalist, gpt-tasteskill, imagegen-*) are for landing
+   pages only.
+3. **Exemplar.** \`get_exemplar\` with archetype list | detail | form | settings | dashboard |
+   approval. Match its structure; it is the visual target.
+4. **Discover, then look up.** \`search_components "<area>"\` first, \`get_component <Name>\`
+   second — \`get_component\` cannot find a name you do not already have (a consumer hand-rolled
+   the shipped \`OrgSwitcher\` and \`TopbarItem\` this way). Code already in this repo is not the
+   authority: search even when a neighbouring file seems to answer. Never guess a prop.
+
+## Contract (ui-audit enforces it; full text in node_modules/@godxjp/ui/docs/CONSUMER-RULES.md)
+- Styles: \`@import "@godxjp/ui/styles"\` (or \`import "@godxjp/ui/styles.css"\`); fonts are opt-in
+  via \`@godxjp/ui/styles/fonts.css\`. Never cherry-pick layers.
+- Layout: \`PageContainer\` spaces sections; siblings go in \`<Flex direction="col" gap>\` /
   \`<ResponsiveGrid>\`. No \`flex\` / \`grid\` / \`gap-*\` / \`p-*\` / \`m-*\` on your own elements.
-- Surfaces: \`Card\` / \`Badge\` / \`Avatar\` / \`ListRow\` / \`Descriptions\` / \`EmptyState\` — never a
-  \`rounded border\` div. Text is \`<Text tone size weight truncate>\`, never utility classes.
+- Surfaces: \`Card\` / \`Badge\` / \`Avatar\` / \`ListRow\` / \`Descriptions\` / \`EmptyState\`, never a
+  \`rounded border\` div. Text is \`<Text tone size weight>\`.
+- Real controls only; a labelled control sits in \`<FormField label>\` inside a \`<Form>\`.
+- Semantic tokens only: no hex, palette names, arbitrary \`[13px]\`, emoji. Logical CSS (ms-/me-).
+- Screen composition (what the audit cannot see) is in \`.ai/rules/godxjp-ui.md\`.
 
-## Before writing UI
-1. **DISCOVERY BEFORE LOOKUP — in this order, every time.**
-   1. \`search_components "<the area you are about to build>"\` FIRST. This is the only call that
-      answers "what already exists here". Ask it before the first line of JSX, not after.
-   2. \`get_component <Name>\` second, once you know the name.
-   \`get_component\` answers "how do I use X" and is USELESS for finding X — you can only look up a
-   name you already have. Skipping step 1 is how a consumer hand-rolled an organization switcher
-   the package ships (\`OrgSwitcher\`) and built three topbar cells out of Buttons instead of
-   \`TopbarItem\`: both were one \`search_components\` call away, and neither was ever searched for.
-   **Existing code in this repo is NOT the authority.** Reading a neighbouring file and copying it
-   is the most common way this rule gets skipped — measured: of four fresh agents given a vague UI
-   task, all four answered correctly but two never called the MCP at all, saying the answer was
-   already in the code. They were only right because that code had just been fixed; a week earlier
-   the same files hand-rolled a switcher and put Buttons in topbar slots, and both agents would
-   have copied it. Search the catalog even when a local file looks like it already answers you.
-   Also \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
-   primitive already does.
-2. **Real primitives only.** No raw \`<input>/<select>/<button>/<textarea>/<table>\`, no
-   styled-div fakes. A labelled control ALWAYS goes in \`<FormField label=…>\` (it owns the
-   label↔control wiring, error/aria, AND the field rhythm). Never pair a bare \`<Label>\`
-   with an \`<Input>\`.
-3. **Tokens, not literals.** Semantic colour tokens (bg-primary, text-muted-foreground),
-   token spacing/size/radius/type — no raw palette (bg-blue-600), no hex, no arbitrary
-   \`[13px]\`. No emoji in product UI. Logical CSS (ms-/me-/ps-/pe-) for RTL.
-
-## After writing UI
-4. **Audit (runs automatically too).** \`node node_modules/@godxjp/ui/scripts/ui-audit.mjs\`
-   — fix every finding. A PostToolUse hook also runs it on each edit and feeds findings back.
-5. **Before a visual review**, run the runtime audit against the running app:
-   \`node node_modules/@godxjp/ui/scripts/visual-audit.mjs <url>\` (axe + contrast + layout).
+## After JSX
+5. \`node node_modules/@godxjp/ui/scripts/ui-audit.mjs <files>\` — zero errors (a PostToolUse hook
+   also runs it on each edit).
+6. Screenshot at 390 / 768 / 1280 next to the exemplar, list the top 3 differences, fix them,
+   repeat — at most 3 rounds.
+7. Before a visual review: \`node node_modules/@godxjp/ui/scripts/visual-audit.mjs <url>\`
+   (axe + contrast + layout).
 `;
 
 /** Delimited block appended to the consumer's CLAUDE.md — loaded into the agent's context
- * every turn (the most reliable "ensure it reads the rules"). Markers keep it idempotent. */
-export const CLAUDE_MD_BLOCK = `<!-- godxjp-ui:start (managed by @godxjp/ui — edit .claude/godxjp-ui-workflow.md instead) -->
+ * every turn, so it carries only the default path and points at the workflow for the rest.
+ * Markers keep it idempotent. */
+export const CLAUDE_MD_BLOCK = `<!-- godxjp-ui:start (managed by @godxjp/ui — rewritten by npx godxjp-ui sync-rules) -->
 ${STAMP(KIT_VERSION)}
-## @godxjp/ui — mandatory UI workflow (do NOT skip)
+## @godxjp/ui — UI workflow
 
-This app uses @godxjp/ui. EVERY time you build or change UI:
+Before any JSX for a screen:
+1. Read \`node_modules/@godxjp/ui/DESIGN.md\` (MCP \`get_design\`).
+2. \`route_consumer_task\` → \`compose-a-screen\`; \`search_components\` before hand-rolling anything.
+3. \`get_exemplar\` (list | detail | form | settings | dashboard | approval) — match its structure.
 
-0. **Ten rules** — read \`node_modules/@godxjp/ui/docs/CONSUMER-RULES.md\` once. Styles via
-   \`@godxjp/ui/styles\` or \`styles/core\` (never cherry-pick layers). Page sections are spaced by
-   \`PageContainer\`; siblings go in \`<Flex direction="col" gap>\` / \`<ResponsiveGrid>\`; no
-   \`flex\`/\`grid\`/\`gap-*\`/\`p-*\`/\`m-*\` on your own elements; boxes are \`Card\`/\`Badge\`/
-   \`ListRow\`/\`Descriptions\`, never a \`rounded border\` div; text is \`<Text tone size weight>\`.
-1. **DISCOVERY BEFORE LOOKUP — in this order, every time.**
-   1. \`search_components "<the area you are about to build>"\` FIRST. This is the only call that
-      answers "what already exists here". Ask it before the first line of JSX, not after.
-   2. \`get_component <Name>\` second, once you know the name.
-   \`get_component\` answers "how do I use X" and is USELESS for finding X — you can only look up a
-   name you already have. Skipping step 1 is how a consumer hand-rolled an organization switcher
-   the package ships (\`OrgSwitcher\`) and built three topbar cells out of Buttons instead of
-   \`TopbarItem\`: both were one \`search_components\` call away, and neither was ever searched for.
-   **Existing code in this repo is NOT the authority.** Reading a neighbouring file and copying it
-   is the most common way this rule gets skipped — measured: of four fresh agents given a vague UI
-   task, all four answered correctly but two never called the MCP at all, saying the answer was
-   already in the code. They were only right because that code had just been fixed; a week earlier
-   the same files hand-rolled a switcher and put Buttons in topbar slots, and both agents would
-   have copied it. Search the catalog even when a local file looks like it already answers you.
-   Also \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
-   primitive already does.
-2. **Real primitives only.** No raw \`<input>/<select>/<button>/<textarea>/<table>\`. A labelled
-   control ALWAYS goes in \`<FormField label=…>\` — never a bare \`<Label>\`+\`<Input>\`. Semantic
-   tokens, not raw palette/hex/arbitrary values. No emoji in product UI. Logical CSS for RTL.
-3. **Scan after writing.** \`node node_modules/@godxjp/ui/scripts/ui-audit.mjs <files>\` and fix
-   every finding (a PostToolUse hook runs this automatically and feeds findings back). Before a
-   visual review: \`node node_modules/@godxjp/ui/scripts/visual-audit.mjs <url>\` (axe + layout).
+After building:
+4. \`node node_modules/@godxjp/ui/scripts/ui-audit.mjs <files>\` — zero errors.
+5. Screenshot at 390 / 768 / 1280 beside the exemplar; fix the top 3 differences; max 3 rounds.
 
-Full guide: \`.claude/godxjp-ui-workflow.md\`.
+Rules: \`node_modules/@godxjp/ui/docs/CONSUMER-RULES.md\`. Details: \`.claude/godxjp-ui-workflow.md\`.
 <!-- godxjp-ui:end -->
 `;
 

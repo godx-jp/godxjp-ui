@@ -48,16 +48,15 @@ export const PATTERNS: PatternEntry[] = [
 // 1) StatCard shows a DOUBLE border (too thick)
 //    Cause: StatCard IS already a bordered Card. Don't wrap it.
 // ❌  <Card><CardContent><StatCard label="x" value="1" /></CardContent></Card>
-// ✅  <ResponsiveGrid columns={4}><StatCard label="x" value="1" /></ResponsiveGrid>
-//    Need a section title? Use a heading, NOT a Card:
-// ✅  <Flex direction="col" gap="sm"><div className="text-sm font-medium">KPI</div>
-//        <ResponsiveGrid columns={4}><StatCard .../></ResponsiveGrid></Flex>
+// ✅  dashboard only, with comparison/trend:
+//     <ResponsiveGrid columns={4}><StatCard label="売上" value="¥8.2M" delta="+12%" /></ResponsiveGrid>
+//    A list or detail page has NO StatCard row — a row count is not a KPI (Pagination showTotal).
 
 // 2) Badge renders grey with a ○ (no colour) for localized/tier labels
 //    Cause: it auto-maps only English lifecycle keys.
-// ❌  <Badge status="プレミアム" />
-// ✅  <Badge status="プレミアム" tone="success" icon={null} />   // tier → pill, no icon
 // ✅  <Badge status="active">公開中</Badge>                       // lifecycle → keep icon
+// ✅  <Badge status="プレミアム" tone="neutral" icon={null} />   // tier → ONE neutral tone
+//    Colour is for status only; a tier/category/scope is plain text or a neutral pill.
 
 // 3) Table text collapses to one char per line, or a chip wraps
 // ✅  give long columns a width:  { key: "name", header: "氏名", width: "w-64" }
@@ -250,121 +249,98 @@ export function GeneralSettingsSection({
       "account-identity",
     ],
     tagline:
-      "The four canonical settings BLOCKS — identity · preference rows · billing handoff · danger zone — composed from Card + ListRow + Descriptions + StatusBadge + AlertDialog. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
+      "The four canonical settings blocks — identity · preference rows · billing handoff · danger zone. Identity and billing are SECTIONS (Heading + Descriptions, no surface); preference rows and the danger zone are Cards because they are real boundaries. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
     tags: ["settings", "account", "billing", "danger", "preferences", "listrow", "card", "admin"],
-    code: `// Gate 0 (docs/COMPOSITION-VS-COMPONENT.md): a "SettingsSection"/"SettingsRow"/
-// "DangerZone" FAILS the Framework-Component Test — it owns no behavior (C2), is fully
-// expressible from existing primitives + tokens (C3), and its API would be screen-shaped (C4).
-// So compose it. Live reference screen: the "settings account sections" page in the preview
-// showcase gallery (docs/showcase/, served at /showcase/<id>).
-import { ExternalLink, ShieldAlert } from "lucide-react";
-import { Button, Text } from "@godxjp/ui/general";
-import {
-  Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
-  Descriptions, ListRow, StatusBadge,
-} from "@godxjp/ui/data-display";
+    code: `// Gate 0 (docs/COMPOSITION-VS-COMPONENT.md): a "SettingsSection"/"SettingsRow"/"DangerZone"
+// FAILS the Framework-Component Test, so compose it. Reference screen: get_exemplar("settings")
+// (docs/showcase/settings-account-sections.tsx). Composition rules: DESIGN.md → Admin Screen Anatomy.
+import { ExternalLink } from "lucide-react";
+import { Button, Heading } from "@godxjp/ui/general";
+import { Card, CardContent, Descriptions, ListRow, StatusBadge } from "@godxjp/ui/data-display";
 import { Switch } from "@godxjp/ui/data-entry";
 import { AlertDialog } from "@godxjp/ui/feedback";
 import { Flex } from "@godxjp/ui/layout";
 
-// The sections stack in ONE bounded column. The gap between sibling Cards belongs to that stack,
-// never to the cards themselves — four bare <Card>s in a row is what the audit means by
-// sibling-cards-need-flex, and it is the same rule the DO list at the bottom of this file states.
-<Flex direction="col" gap="lg" className="max-w-3xl">
+// Sections are a heading + spacing: the SECTION step (gap="xl") is larger than the ITEM step
+// (gap="sm"), which is what carries the hierarchy — not a box around every block.
+<Flex direction="col" gap="xl">
 
-// 1) IDENTITY — metadata is a description list, so it is Descriptions (a real <dl>), never a
-//    two-column flex of styled divs. One header action goes in CardAction.
-<Card>
-  <CardHeader>
-    <CardTitle level={2}>アカウント情報</CardTitle>
-    <CardDescription>請求書・監査ログに表示される氏名とメールアドレスです。</CardDescription>
-    <CardAction><Button variant="outline" size="sm">編集</Button></CardAction>
-  </CardHeader>
-  <CardContent>
+  {/* 1) IDENTITY — a section, not a Card. Metadata is Descriptions (a real <dl>). */}
+  <Flex direction="col" gap="sm">
+    <Flex justify="between" align="center">
+      <Heading level={2}>アカウント情報</Heading>
+      <Button variant="outline" size="sm">編集</Button>
+    </Flex>
     <Descriptions columns={2}>
       <Descriptions.Item label="表示名">藤原 慧</Descriptions.Item>
       <Descriptions.Item label="メールアドレス">satoshi@example.co.jp</Descriptions.Item>
       <Descriptions.Item label="従業員番号" mono>EMP-1042-JP</Descriptions.Item>
       <Descriptions.Item label="利用開始日">
-        {/* ISO-8601 in the machine attribute, Intl for the human text. */}
         <time dateTime="2023-04-01">
           {new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "UTC" }).format(since)}
         </time>
       </Descriptions.Item>
     </Descriptions>
-  </CardContent>
-</Card>
+  </Flex>
 
-// 2) PREFERENCE ROWS — THE setting row pattern: CardContent flush + ListRow, whose \`trailing\`
-//    slot IS the control. align="start" + overflow="wrap" keep long JA/VI titles readable and let
-//    the control drop to its own line at 390px (--list-row-body-min-width).
-// ⛔ NEVER: <div className="flex items-center justify-between border-b py-3">…</div>
-<Card>
-  <CardHeader><CardTitle level={2}>通知の環境設定</CardTitle></CardHeader>
-  <CardContent flush>
-    <ListRow
-      align="start"
-      overflow="wrap"
-      title={<label htmlFor="pref-digest">週次サマリーをメールで受け取る</label>}
-      description="毎週月曜日の朝に未処理の承認をまとめて送信します。"
-      trailing={<Switch id="pref-digest" checked={digest} onCheckedChange={setDigest} />}
-    />
-  </CardContent>
-</Card>
+  {/* 2) PREFERENCE ROWS — a list of setting rows IS a real boundary, so it gets one Card:
+       CardContent flush + ListRow, whose trailing slot is the control. The visible title is the
+       control's <label htmlFor>. NEVER a flex div with border-b rows. */}
+  <Flex direction="col" gap="sm">
+    <Heading level={2}>通知の環境設定</Heading>
+    <Card>
+      <CardContent flush>
+        <ListRow
+          align="start"
+          overflow="wrap"
+          title={<label htmlFor="pref-digest">週次サマリーをメールで受け取る</label>}
+          description="毎週月曜日の朝に未処理の承認をまとめて送信します。"
+          trailing={<Switch id="pref-digest" checked={digest} onCheckedChange={setDigest} />}
+        />
+      </CardContent>
+    </Card>
+  </Flex>
 
-// 3) BILLING HANDOFF — the subscription state is a CANONICAL StatusBadge; the tone + icon come
-//    from the library's shared domain-status map, so a page NEVER keeps its own status→colour
-//    table. Money/seats/dates go through Intl (ISO 4217 minor units come from the formatter).
-// ⛔ NEVER: const STATUS_COLORS = { past_due: "red", trialing: "blue" }
-<Card>
-  <CardHeader>
-    <CardTitle level={2}>請求とサブスクリプション</CardTitle>
-    <CardDescription>支払い方法と請求書は外部の請求ポータルで管理します。</CardDescription>
-    <CardAction><StatusBadge status="past_due" variant="outline" /></CardAction>
-  </CardHeader>
-  <CardContent>
+  {/* 3) BILLING HANDOFF — a section. The state is a canonical StatusBadge (never a page-local
+       status→colour map); money through Intl. */}
+  <Flex direction="col" gap="sm">
+    <Flex justify="between" align="center">
+      <Heading level={2}>請求とサブスクリプション</Heading>
+      <StatusBadge status="past_due" variant="outline" />
+    </Flex>
     <Descriptions columns={2}>
       <Descriptions.Item label="契約プラン">ビジネス（年額）</Descriptions.Item>
       <Descriptions.Item label="次回請求予定額">
         {new Intl.NumberFormat(locale, { style: "currency", currency: "JPY" }).format(1536000)}
       </Descriptions.Item>
     </Descriptions>
-  </CardContent>
-  <CardFooter separated>
-    <Button variant="outline" asChild>
-      <a href={portalUrl} target="_blank" rel="noreferrer">
-        <ExternalLink aria-hidden="true" />
-        請求ポータルを開く
-        {/* Never signal "leaves the app" with the icon alone (WCAG 1.4.1 / 2.4.4). */}
-        <span className="sr-only">（新しいタブで開きます）</span>
-      </a>
-    </Button>
-  </CardFooter>
-</Card>
+    <div>
+      <Button variant="outline" asChild>
+        <a href={portalUrl} target="_blank" rel="noreferrer">
+          <ExternalLink aria-hidden="true" />
+          請求ポータルを開く
+          <span className="sr-only">（新しいタブで開きます）</span>
+        </a>
+      </Button>
+    </div>
+  </Flex>
 
-// 4) DANGER ZONE — Card accent="destructive" paints the semantic leading rail from --destructive
-//    through the existing --card-accent-rail-width token. NO new component, NO new token, and no
-//    baked red. Colour never carries the meaning alone: the heading says "irreversible", each row
-//    says what is lost, and delete is gated behind type-to-confirm friction.
-<Card accent="destructive">
-  <CardHeader>
-    <CardTitle level={2} className="text-destructive">取り消せない操作</CardTitle>
-    <CardDescription>以下の操作は元に戻せません。</CardDescription>
-  </CardHeader>
-  <CardContent flush>
-    <ListRow
-      align="start"
-      overflow="wrap"
-      leading={<ShieldAlert className="text-destructive size-4" aria-hidden="true" />}
-      title="ワークスペースと全データを完全に削除する"
-      description="勤怠記録・申請履歴・監査ログがすべて削除されます。"
-      trailing={
-        <Button variant="destructive" size="sm" onClick={() => setConfirmOpen(true)}>削除</Button>
-      }
-    />
-  </CardContent>
-</Card>
-
+  {/* 4) DANGER ZONE — a real boundary: Card accent="destructive" (the rail comes from
+       --destructive). The heading and each row say what is lost; no decorative icon. */}
+  <Flex direction="col" gap="sm">
+    <Heading level={2}>取り消せない操作</Heading>
+    <Card accent="destructive">
+      <CardContent flush>
+        <ListRow
+          align="start"
+          overflow="wrap"
+          title="ワークスペースと全データを完全に削除する"
+          description="勤怠記録・申請履歴・監査ログがすべて削除されます。"
+          trailing={<Button variant="destructive" size="sm" onClick={() => setConfirmOpen(true)}>削除</Button>}
+        />
+      </CardContent>
+    </Card>
+  </Flex>
 </Flex>
 
 <AlertDialog
@@ -378,13 +354,12 @@ import { Flex } from "@godxjp/ui/layout";
 />
 
 // ── DO / DON'T ────────────────────────────────────────────────────────────────────────────
-// ✅ Sections stack in a bounded column: <Flex direction="col" gap="lg" className="max-w-3xl">.
-// ✅ Every setting row is a ListRow; its control lives in \`trailing\`, and the visible row title is
-//    a <label htmlFor> pointing at that control so the switch/select is named by what you can read.
+// ✅ Section step > item step (gap="xl" between sections, gap="sm" inside one).
+// ✅ A Card only where there is a real boundary: a list of setting rows, the danger zone.
+// ✅ Every setting row is a ListRow; its control lives in \`trailing\`, titled by <label htmlFor>.
 // ⛔ Do NOT add SettingsSection / SettingsRow / DangerZone to src/components — they fail Gate 0.
-// ⛔ Do NOT wrap the WHOLE settings page in one Card (route-backed local nav owns the IA — see the
-//    responsive settings page pattern); each block is its own Card.
-// ⛔ Do NOT hand-roll padding (p-4) on a Card, a status colour map, or a <dl> replacement.`,
+// ⛔ Do NOT give every block Card + CardHeader + CardTitle + CardDescription (ui-audit card-per-section).
+// ⛔ Do NOT hand-roll padding (p-4), a status colour map, or a <dl> replacement.`,
   },
 
   {
@@ -454,35 +429,25 @@ export function PricingPlans({ plans, onChoose }: { plans: Plan[]; onChoose: (id
   {
     name: "confirm-destructive",
     tagline:
-      "Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).",
+      'Type-to-confirm destructive dialog — the AlertDialog PRESET with `challenge` (the compound AlertDialog* parts are the older way in; a body the preset does not cover is Dialog variant="destructive").',
     tags: ["dialog", "confirm", "destructive", "delete"],
-    code: `import { useState } from "react";
-import { AlertDialogRoot, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@godxjp/ui/feedback";
-import { Input } from "@godxjp/ui/data-entry";
-import { Button } from "@godxjp/ui/general";
-import { Flex } from "@godxjp/ui/layout";
-import { toast } from "sonner";
+    code: `import { AlertDialog, toast } from "@godxjp/ui/feedback";
 
+// The preset covers a typed challenge: confirm stays disabled until the input equals \`slug\`.
 export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolean; onOpenChange: (v: boolean) => void; slug: string }) {
-  const [confirm, setConfirm] = useState("");
   return (
-    <AlertDialogRoot open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>プロジェクトを削除</AlertDialogTitle>
-          <AlertDialogDescription>この操作は取り消せません。確認のためプロジェクト名 "{slug}" と入力してください。</AlertDialogDescription>
-        </AlertDialogHeader>
-        <Flex direction="col" gap="md">
-          <Input value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder={slug} />
-        </Flex>
-        <AlertDialogFooter>
-          <AlertDialogCancel asChild><Button variant="outline">キャンセル</Button></AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button variant="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialogRoot>
+    <AlertDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="プロジェクトを削除"
+      description={\`この操作は取り消せません。確認のためプロジェクト名 "\${slug}" と入力してください。\`}
+      challenge={slug}
+      confirmLabel="完全に削除"
+      onConfirm={() => {
+        toast.success("削除しました");
+        onOpenChange(false);
+      }}
+    />
   );
 }`,
   },
@@ -721,12 +686,12 @@ export default function Coupons({ coupons }: { coupons?: Coupon[] }) {
   {
     name: "inertia-list-page",
     tagline:
-      "Inertia + @godxjp/ui list page — PageContainer + Toolbar + DataTable + Badge + Pagination (current primitive API).",
+      "Inertia + @godxjp/ui list page — PageContainer + Toolbar (above the table) + DataTable + Badge + Pagination. No KPI row, no restating subtitle.",
     tags: ["inertia", "list", "table", "page", "filter", "pagination", "datatable", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
 import { useMemo, useState } from "react"
-import { PageContainer, ResponsiveGrid, Flex } from "@godxjp/ui/layout"
-import { Card, CardContent, StatCard, DataTable, EmptyState, Badge, type ColumnDef } from "@godxjp/ui/data-display"
+import { PageContainer, Flex } from "@godxjp/ui/layout"
+import { Card, CardContent, DataTable, EmptyState, Badge, type ColumnDef } from "@godxjp/ui/data-display"
 import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry"
 import { Toolbar, ToolbarGroup, Pagination } from "@godxjp/ui/navigation"
 import { formatDate } from "@godxjp/ui/datetime"
@@ -750,7 +715,7 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
   // ColumnDef = { key, header, render?, align?: "left"|"center"|"right", sortable?, width? }
   const columns: ColumnDef<Coupon>[] = [
     { key: "name", header: "クーポン名", render: (c) => <span className="font-medium">{c.name}</span> },
-    { key: "scope", header: "スコープ", render: (c) => <Badge status={c.scope} tone="info" icon={null} /> },
+    { key: "scope", header: "スコープ" }, // a category is plain text; Badge is for the status column only
     { key: "status", header: "ステータス", render: (c) => <Badge status={c.status} /> },
     { key: "valid", header: "有効期間", render: (c) => \`\${formatDate(c.validFrom)} 〜 \${formatDate(c.validTo)}\` },
     { key: "usage", header: "利用数", align: "right", render: (c) => c.usage.toLocaleString() },
@@ -759,15 +724,10 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
   return (
     <>
       <Head title="クーポン管理" />
-      {/* RULE: every page wraps in PageContainer; vertical rhythm via Flex direction="col"/ResponsiveGrid, never p-*/gap-* */}
-      <PageContainer title="クーポン管理" subtitle="配信中のクーポン一覧">
+      {/* RULE: every page wraps in PageContainer; vertical rhythm via Flex direction="col"/ResponsiveGrid, never p-* or gap-* */}
+      {/* No subtitle that restates the title, no StatCard row: the total is Pagination's showTotal. */}
+      <PageContainer title="クーポン管理">
         <Flex direction="col" gap="lg">
-          <ResponsiveGrid columns={3}>
-            <StatCard label="公開中" value={coupons.filter((c) => c.status === "公開中").length} />
-            <StatCard label="総利用数" value={coupons.reduce((s, c) => s + c.usage, 0).toLocaleString()} />
-            <StatCard label="件数" value={coupons.length} />
-          </ResponsiveGrid>
-
           {/* Toolbar is the filter-bar primitive (standalone, above the table surface). */}
           <Toolbar hasActiveFilters={q !== "" || status !== "all"} onClear={() => { setQ(""); setStatus("all"); setPage(1) }}>
             {/* SearchInput is value + onSearch(v) — NOT onChange */}
@@ -787,7 +747,7 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
           <Card>
             <CardContent flush>
               {filtered.length === 0
-                ? <EmptyState title="該当するクーポンがありません" description="検索条件を変更してください。" />
+                ? <EmptyState title="該当するクーポンがありません" description="検索条件を変更してください。" /> /* one sentence, no icon */
                 : <DataTable data={paged} columns={columns} getRowId={(c) => c.id} onRowClick={(c) => router.visit(\`/coupons/\${c.id}\`)} />}
             </CardContent>
           </Card>
@@ -809,11 +769,11 @@ export default Coupons`,
   {
     name: "inertia-detail-page",
     tagline:
-      "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
+      "Inertia detail page — receives {id} prop, Descriptions (compound) in one Card + EmptyState fallback. No KPI tile row.",
     tags: ["inertia", "detail", "show", "page", "keyvaluegrid", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
-import { PageContainer, ResponsiveGrid, Flex } from "@godxjp/ui/layout"
-import { Card, CardContent, StatCard, EmptyState, Descriptions, Badge } from "@godxjp/ui/data-display"
+import { PageContainer } from "@godxjp/ui/layout"
+import { Card, CardContent, EmptyState, Descriptions, Badge } from "@godxjp/ui/data-display"
 import { Button } from "@godxjp/ui/general"
 import { formatDate } from "@godxjp/ui/datetime"
 import { ArrowLeft } from "lucide-react"
@@ -828,7 +788,7 @@ function MemberShow({ id }: { id: string }) {
     return (
       <>
         <Head title="会員詳細" />
-        <PageContainer title="会員詳細" subtitle="会員が見つかりません">
+        <PageContainer title="会員詳細">
           <EmptyState title="会員が見つかりません" description={\`ID「\${id}」は存在しません。\`} />
           <Button variant="outline" onClick={() => router.visit("/members")}><ArrowLeft className="size-4" />一覧へ戻る</Button>
         </PageContainer>
@@ -839,26 +799,21 @@ function MemberShow({ id }: { id: string }) {
   return (
     <>
       <Head title={member.name} />
-      <PageContainer title={member.name} subtitle={\`\${member.id} / \${member.rank}\`}>
-        <Flex direction="col" gap="lg">
-          <ResponsiveGrid columns={4}>
-            <StatCard label="累計購入額" value={\`¥\${member.total.toLocaleString()}\`} />
-            <StatCard label="来店回数" value={member.visits} />
-            <StatCard label="ポイント" value={member.points.toLocaleString()} />
-            <StatCard label="LTV" value={\`¥\${member.ltv.toLocaleString()}\`} />
-          </ResponsiveGrid>
-          <Card>
-            <CardContent>
-              {/* Descriptions is COMPOUND — value goes in children, not a prop */}
-              <Descriptions columns={2}>
-                <Descriptions.Item label="氏名">{member.name}</Descriptions.Item>
-                <Descriptions.Item label="ランク"><Badge status={member.rank} tone="info" icon={null} /></Descriptions.Item>
-                <Descriptions.Item label="ステータス"><Badge status={member.status} /></Descriptions.Item>
-                <Descriptions.Item label="登録日">{formatDate(member.registeredAt)}</Descriptions.Item>
-              </Descriptions>
-            </CardContent>
-          </Card>
-        </Flex>
+      <PageContainer title={member.name}>
+        {/* Figures about one member are facts, not KPIs: Descriptions rows, not a StatCard row. */}
+        <Card>
+          <CardContent>
+            {/* Descriptions is COMPOUND — value goes in children, not a prop */}
+            <Descriptions columns={2}>
+              <Descriptions.Item label="会員ID">{member.id}</Descriptions.Item>
+              <Descriptions.Item label="ランク">{member.rank}</Descriptions.Item>
+              <Descriptions.Item label="ステータス"><Badge status={member.status} /></Descriptions.Item>
+              <Descriptions.Item label="登録日">{formatDate(member.registeredAt)}</Descriptions.Item>
+              <Descriptions.Item label="累計購入額">{\`¥\${member.total.toLocaleString()}\`}</Descriptions.Item>
+              <Descriptions.Item label="来店回数">{member.visits}</Descriptions.Item>
+            </Descriptions>
+          </CardContent>
+        </Card>
       </PageContainer>
     </>
   )
@@ -1026,7 +981,8 @@ export function MaintenancePage() {
 
   {
     name: "badge-coloring",
-    tagline: "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props).",
+    tagline:
+      "Colour a Badge for a localized STATUS via tone + icon; tiers and categories take one neutral tone (colour means status).",
     tags: ["statusbadge", "badge", "tone", "color", "status", "tier", "table"],
     code: `import { Badge } from "@godxjp/ui/data-display"
 
@@ -1041,10 +997,10 @@ export function MaintenancePage() {
 // 2) Unknown label — set tone explicitly (no icon, since the key is unknown):
 <Badge status="公開中" tone="success" />
 
-// 3) Tier / category — coloured pill, drop the misleading glyph with icon={null}:
-<Badge status="プレミアム" tone="success" icon={null} />
-<Badge status="ゴールド"   tone="warning" icon={null} />
-<Badge status="法人共通"   tone="info"    icon={null} />
+// 3) Tier / category — ONE neutral tone for all of them, no glyph. Colour means status;
+//    a rainbow of tiers reads as several statuses. Prefer plain text in a table column.
+<Badge status="プレミアム" tone="neutral" icon={null} />
+<Badge status="ゴールド"   tone="neutral" icon={null} />
 
 // tone: "success" | "warning" | "destructive" | "info" | "neutral"  (import type ToneProp)
 // RULE: a chip never wraps — it is pinned white-space: nowrap, so it stays one line in
@@ -1643,33 +1599,41 @@ export const mediaQuery = \`
     name: "page-sections",
     aliases: ["cards-in-page", "page-layout", "stack-cards"],
     tagline:
-      "A page made of several Card sections: PageContainer spaces its direct children by default; group items inside a section with Flex/ResponsiveGrid, never Tailwind gap-*/p-*.",
-    tags: ["layout", "page", "card", "spacing", "flex", "grid"],
+      "A page of several sections: a Heading + section spacing marks a section, not a Card. PageContainer spaces its direct children (section step); Flex gap spaces items inside one (item step). Card only for a real boundary.",
+    tags: ["layout", "page", "card", "spacing", "flex", "grid", "section", "heading"],
     code: `import { PageContainer, Flex, ResponsiveGrid } from "@godxjp/ui/layout";
-import { Card, CardHeader, CardTitle, CardContent } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Card, CardContent, DataTable, Descriptions, type ColumnDef } from "@godxjp/ui/data-display";
+import { Button, Heading } from "@godxjp/ui/general";
 
-// Every direct child of PageContainer is a page section — the page owns the gap between them
-// (--page-body-gap, the section step). Do NOT add gap-* / space-y-* / mt-* yourself.
-export function ReportPage() {
+type Shot = { id: string; name: string };
+const columns: ColumnDef<Shot>[] = [{ key: "name", header: "File" }];
+
+// Two steps, never one uniform gap:
+//   section step — between direct children of PageContainer (--page-body-gap). Do NOT add gap-*/mt-*.
+//   item step    — inside a section, Flex gap="sm" between its heading and its content.
+// A section is a Heading, not a Card. Card is for a real boundary: here, the table surface.
+export function ReportPage({ shots }: { shots: Shot[] }) {
   return (
-    <PageContainer title="Bug report" subtitle="https://app.example.com/orders" extra={<Button>Send</Button>}>
-      <Card>
-        <CardHeader><CardTitle>Details</CardTitle></CardHeader>
-        <CardContent>…</CardContent>
-      </Card>
-      <Card>
-        <CardHeader><CardTitle>Screenshots</CardTitle></CardHeader>
-        <CardContent>
-          {/* items INSIDE a section: ResponsiveGrid for a grid, Flex for a stack/row */}
-          <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>…</ResponsiveGrid>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <Flex direction="col" gap="md">…</Flex>
-        </CardContent>
-      </Card>
+    <PageContainer title="Bug report" extra={<Button>Send</Button>}>
+      <Flex direction="col" gap="sm">
+        <Heading level={2}>Details</Heading>
+        <Descriptions columns={2}>
+          <Descriptions.Item label="URL">https://app.example.com/orders</Descriptions.Item>
+          <Descriptions.Item label="Browser">Safari 18</Descriptions.Item>
+        </Descriptions>
+      </Flex>
+      <Flex direction="col" gap="sm">
+        <Heading level={2}>Screenshots</Heading>
+        <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>…</ResponsiveGrid>
+      </Flex>
+      <Flex direction="col" gap="sm">
+        <Heading level={2}>Attachments</Heading>
+        <Card>
+          <CardContent flush>
+            <DataTable data={shots} columns={columns} getRowId={(r) => r.id} />
+          </CardContent>
+        </Card>
+      </Flex>
     </PageContainer>
   );
 }

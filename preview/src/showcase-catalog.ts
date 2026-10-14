@@ -75,7 +75,7 @@ export const SHOWCASES: ShowcaseEntry[] = [
     id: "tcgm-website",
     title: "TCG-M — Website tiếng Nhật có MOTION (token rebuild)",
     description:
-      "Dựng lại trang chủ TCG-M \"Layered Prism\" (hero prism-wash · rail chip theo tựa game · lưới thẻ có ウォッチ + toast · carousel bài viết thủ công · lịch phát hành · dải trust · footer) CHỈ bằng token + real primitives. Brand thứ BA và là brand đầu tiên mang theo BẢNG THỜI LƯỢNG MOTION riêng: press 90 · hover 140 · state 200 · hero-once 480ms y8→0 · cubic-bezier(.2,.8,.2,1) — cả bảng đó trở thành 8 dòng token, và `Reveal` (on=\"mount\" cho illustration, on=\"view\" + stagger cho từng section) tự chạy đúng nhịp ấy. Hero KHÔNG reveal phần chữ, vì spec ghi \"chỉ illustration, text hiện ngay\". 0 component framework mới.",
+      'Dựng lại trang chủ TCG-M "Layered Prism" (hero prism-wash · rail chip theo tựa game · lưới thẻ có ウォッチ + toast · carousel bài viết thủ công · lịch phát hành · dải trust · footer) CHỈ bằng token + real primitives. Brand thứ BA và là brand đầu tiên mang theo BẢNG THỜI LƯỢNG MOTION riêng: press 90 · hover 140 · state 200 · hero-once 480ms y8→0 · cubic-bezier(.2,.8,.2,1) — cả bảng đó trở thành 8 dòng token, và `Reveal` (on="mount" cho illustration, on="view" + stagger cho từng section) tự chạy đúng nhịp ấy. Hero KHÔNG reveal phần chữ, vì spec ghi "chỉ illustration, text hiện ngay". 0 component framework mới.',
     tag: "Website",
     load: () => import("../../docs/showcase/tcgm-website"),
   },
@@ -99,7 +99,7 @@ export const SHOWCASES: ShowcaseEntry[] = [
     id: "table-crud-list",
     title: "CRUD一覧 (V1)",
     description:
-      "Danh sách quản trị: toolbar + hàng lọc + DataTable (sort/chọn dòng) + dòng tổng + phân trang số.",
+      "Danh sách quản trị: Toolbar lọc ở trên bảng + DataTable (sort/chọn dòng) + dòng tổng + phân trang số.",
     tag: "Bảng",
     load: () => import("../../docs/showcase/table-crud-list"),
   },
@@ -198,7 +198,8 @@ export const SHOWCASES: ShowcaseEntry[] = [
   {
     id: "table-master-detail",
     title: "マスター詳細 (V20)",
-    description: "List + pane chi tiết (chọn dòng hiện chi tiết bên phải; mobile xếp dọc).",
+    description:
+      "MasterDetail: DataTable trên rail cố định điều khiển bản ghi (xếp chồng dưới md) — header + Badge trạng thái, Descriptions, lịch sử Timeline.",
     tag: "Bảng",
     load: () => import("../../docs/showcase/table-master-detail"),
   },

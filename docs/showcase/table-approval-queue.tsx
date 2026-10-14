@@ -112,14 +112,9 @@ export default function TableApprovalQueue() {
           ]}
         />
       }
-      topbar={<Topbar start={<Text weight="medium">アクセス承認</Text>} />}
+      topbar={<Topbar />}
     >
-      <PageContainer
-        title="アクセス承認"
-        subtitle="Access approval · Phê duyệt truy cập"
-        density="compact"
-        variant="flush"
-      >
+      <PageContainer title="アクセス承認" density="compact" variant="flush">
         <Card>
           <CardContent flush>
             <Table preset="action-collection" collapseBelow="sm">

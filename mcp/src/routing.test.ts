@@ -12,16 +12,16 @@ import { routeTask } from "./data/skills-index.js";
 const BRANCHES: Array<[string, string]> = [
   ["a premium awwwards agency hero", "soft"],
   ["a marketing landing page hero", "imagegen-web"],
-  ["a mobile app onboarding flow", "imagegen-mobile"],
-  ["a notion-like workspace document editor", "minimalist"],
-  ["a data heavy dashboard with an ops table", "brutalist"],
+  ["a mobile app landing page hero", "imagegen-mobile"],
+  ["a notion-like workspace document editor", "compose-a-screen"],
+  ["a data heavy dashboard with an ops table", "compose-a-screen"],
   ["a brand identity logo guidelines board", "brandkit"],
   ["redesign and audit an existing page", "redesign"],
   ["a sign up form with validation", "taste"],
   ["loading and saving skeleton spinner states", "taste"],
   ["make it responsive mobile first with breakpoints", "taste"],
   ["ship complete code with no placeholder", "output"],
-  ["gsap scrolltrigger scroll choreography pinning", "gpt-tasteskill"],
+  ["gsap scrolltrigger scroll choreography for the marketing site", "gpt-tasteskill"],
   ["from image to code, design first", "image-to-code"],
   ["implement the design handoff bundle mockup prototype", "design-to-page"],
   ["compose a screen, a new page from a brief", "compose-a-screen"],
@@ -91,5 +91,80 @@ describe("route_consumer_task — performance tasks reach app-performance", () =
       section: "filter-pane-memo",
     });
     expect(body).toContain("165ms");
+  });
+});
+
+/**
+ * gh#1294 — app screens go to compose-a-screen; the marketing-taste skills (soft, minimalist,
+ * brutalist, gpt-tasteskill, imagegen-*) only when the task says landing / marketing / LP / hero.
+ * Keywords match whole words, so "documents" does not hit a "document" or "doc" substring branch
+ * and "context" does not hit "text".
+ */
+const MARKETING_SKILLS = [
+  "soft",
+  "minimalist",
+  "brutalist",
+  "gpt-tasteskill",
+  "imagegen-web",
+  "imagegen-mobile",
+];
+
+const APP_SCREENS: string[] = [
+  "documents list page",
+  "a dashboard for the ops team",
+  "an analytics dashboard with charts",
+  "a users table with filters",
+  "an admin list of invoices",
+  "the settings screen",
+  "a workspace members page",
+  "a knowledge base document viewer",
+  "an edit form for a customer",
+  "a premium-feeling settings page",
+  "a linear-style issue list",
+  "build a mobile app screen for approvals",
+  "add gsap animation to the dashboard",
+];
+
+describe("route_consumer_task — app screens never reach marketing taste (gh#1294)", () => {
+  it.each(APP_SCREENS)("'%s' → compose-a-screen, no marketing skill", (task) => {
+    const hits = routeTask(task, { consumerOnly: true }).map((r) => r.skill);
+    expect(hits, task).toContain("compose-a-screen");
+    for (const skill of MARKETING_SKILLS) expect(hits, task).not.toContain(skill);
+  });
+
+  it("the contract still comes first for a page task", () => {
+    expect(routeTask("documents list page", { consumerOnly: true })[0]?.skill).toBe("contract");
+  });
+
+  it("compose-a-screen comes before design-complex-admin for an admin console", () => {
+    const hits = routeTask("an admin console", { consumerOnly: true }).map((r) => r.skill);
+    expect(hits.indexOf("compose-a-screen")).toBeGreaterThanOrEqual(0);
+    expect(hits.indexOf("compose-a-screen")).toBeLessThan(hits.indexOf("design-complex-admin"));
+  });
+
+  it("the app-screen route points at the design DNA", () => {
+    const hit = routeTask("a dashboard", { consumerOnly: true }).find(
+      (r) => r.skill === "compose-a-screen",
+    );
+    expect(hit?.alsoSee).toContain("design-to-page/dna");
+  });
+
+  it.each([
+    ["a marketing landing page", "imagegen-web"],
+    ["an LP for the spring campaign", "imagegen-web"],
+    ["a hero section for the product site", "imagegen-web"],
+  ])("'%s' still reaches marketing taste", (task, skill) => {
+    expect(routeTask(task, { consumerOnly: true }).map((r) => r.skill)).toContain(skill);
+  });
+
+  it("a page task does not match the 'text' keyword inside 'context'", () => {
+    const hits = routeTask("zzz context qqq").map((r) => r.skill);
+    expect(hits).not.toContain("contract");
+  });
+
+  it("returns each skill/section at most once", () => {
+    const hits = routeTask("a new page with a list and a form", { consumerOnly: true });
+    const keys = hits.map((r) => `${r.skill}/${r.section}`);
+    expect(new Set(keys).size).toBe(keys.length);
   });
 });

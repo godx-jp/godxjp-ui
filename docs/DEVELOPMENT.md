@@ -268,7 +268,7 @@ npm versions are immutable, so you can never "fix" a bad published version in pl
 ## See also
 
 - [README](../README.md) — overview, component groups, consumer setup.
-- [CONSUMER-RULES.md](./CONSUMER-RULES.md) — the ten rules every consumer follows (the audit enforces them).
+- [CONSUMER-RULES.md](./CONSUMER-RULES.md) — the rules every consumer follows (the audit enforces them).
 - `docs/TOKENS.md`, `docs/SPACING.md`, `docs/PROPS-VOCABULARY.md`, `docs/PROPS-REGISTRY.md`.
 - [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) — per-frame axe a11y (**local only, never in CI**) + geometry + coverage gates.
 - **`godx-ui-component-placement`** skill — decide whether a component belongs here.

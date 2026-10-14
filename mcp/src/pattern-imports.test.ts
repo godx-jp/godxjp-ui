@@ -41,9 +41,21 @@ describe("patterns never teach a removed component API", () => {
 });
 
 describe("patterns never name an undefined library CSS class", () => {
+  // A CLASS reference only (class/className or a `.settings-…` selector): a showcase id or slug
+  // such as "settings-account-sections" merely starts with "settings-" and is not a class.
+  const SETTINGS_CLASS = /(?:class(?:Name)?=\{?\s*["'`][^"'`]*?\b|\.)settings-[a-z][a-z-]*\b/;
+
+  it("the settings-* class lens fires on a class and not on a showcase id", () => {
+    expect('<div className="settings-layout">').toMatch(SETTINGS_CLASS);
+    expect('<div className="flex settings-content">').toMatch(SETTINGS_CLASS);
+    expect(".settings-local-nav { }").toMatch(SETTINGS_CLASS);
+    expect("// docs/showcase/settings-account-sections.tsx").not.toMatch(SETTINGS_CLASS);
+    expect('get_exemplar("settings") → settings-section-rows').not.toMatch(SETTINGS_CLASS);
+  });
+
   it("no pattern uses a settings-* class (the library ships none)", () => {
     for (const p of PATTERNS) {
-      const m = p.code.match(/\bsettings-(?:layout|local-nav|content|[a-z-]+)\b/);
+      const m = p.code.match(SETTINGS_CLASS);
       expect(m, `pattern "${p.name}" uses undefined class "${m?.[0]}"`).toBeNull();
     }
   });

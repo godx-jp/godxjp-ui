@@ -1095,13 +1095,16 @@ function DataSelect(props: PlainDataSelectProp) {
    * 「すべて」 (WCAG 2.5.3). So the fallback asks the document first. Read after mount — SSR has no
    * document — and only when there is an `id` for a label to point at.
    */
-  const [hasNativeLabel, setHasNativeLabel] = React.useState(false);
+  const [nativeLabel, setNativeLabel] = React.useState<string | null>(null);
+  const hasNativeLabel = nativeLabel !== null;
   useLayoutEffect(() => {
-    const labelled =
-      typeof document !== "undefined" &&
-      props.id !== undefined &&
-      document.querySelector(`label[for="${CSS.escape(props.id)}"]`) !== null;
-    setHasNativeLabel(labelled);
+    const label =
+      typeof document !== "undefined" && props.id !== undefined
+        ? document.querySelector(`label[for="${CSS.escape(props.id)}"]`)
+        : null;
+    // The label's TEXT is kept, not just its presence: react-aria's root still wants a name of its
+    // own (gh#869 — it warns once per render without one), and the label is the right one to hand it.
+    setNativeLabel(label ? (label.textContent ?? "").trim() || null : null);
   }, [props.id]);
 
   // `mode !== undefined` rather than naming both multi modes: it is the discriminant that narrows
@@ -1293,7 +1296,12 @@ function DataSelect(props: PlainDataSelectProp) {
       // plain render-time values (the label id comes from `FieldNameContext`, which FormField
       // publishes on ITS render), so nothing here changes after mount. The trigger's own name is
       // untouched: `SelectTrigger` writes it last, over anything react-aria hands down.
-      aria-label={(ariaProps["aria-label"] as string | undefined) ?? nameFromPlaceholder}
+      aria-label={
+        (ariaProps["aria-label"] as string | undefined) ??
+        nameFromPlaceholder ??
+        nativeLabel ??
+        undefined
+      }
       aria-labelledby={
         (ariaProps["aria-labelledby"] as string | undefined) ?? inheritedName["aria-labelledby"]
       }

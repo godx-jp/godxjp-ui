@@ -1,6 +1,7 @@
 ---
 name: godxjp-ui-behavioral-test
-description: BẮT BUỘC khi kiểm chứng BẤT KỲ component UI tương tác nào của @godxjp/ui (input, select, combobox, cascader, calendar, date picker, switch, command...). Cấm suy diễn hành vi từ code. PHẢI mở browser MCP thật (chrome-devtools / playwright / browsermcp) để MÔ PHỎNG và TEST từng hành vi (focus, gõ phím dính giá trị, Enter/Escape/Arrow/Tab, nút clear, disabled, readOnly, điều hướng bàn phím), rồi CODIFY phát hiện thành test @testing-library/user-event (vitest + jsdom) trong src/components/<group>/__tests__/ để lần sau chạy ĐÚNG file test đó (`pnpm vitest run <file>`) KHÔNG cần MCP — cấm `pnpm test`. Bắt lỗi kinh điển: controlled input có `value` nhưng thiếu `onValueChange` đồng bộ → input ĐÓNG BĂNG. Đọc TRƯỚC khi nói "đã verify".
+description: >-
+  BẮT BUỘC khi kiểm chứng BẤT KỲ component UI tương tác nào của @godxjp/ui (input, select, combobox, cascader, calendar, date picker, switch, command...). Cấm suy diễn hành vi từ code. PHẢI mở browser MCP thật (chrome-devtools / playwright / browsermcp) để MÔ PHỎNG và TEST từng hành vi (focus, gõ phím dính giá trị, Enter/Escape/Arrow/Tab, nút clear, disabled, readOnly, điều hướng bàn phím), rồi CODIFY phát hiện thành test @testing-library/user-event (vitest + jsdom) trong src/components/<group>/__tests__/ để lần sau chạy ĐÚNG file test đó (`pnpm vitest run <file>`) KHÔNG cần MCP — cấm `pnpm test`. Bắt lỗi kinh điển: controlled input có `value` nhưng thiếu `onValueChange` đồng bộ → input ĐÓNG BĂNG. Đọc TRƯỚC khi nói "đã verify".
 ---
 
 # godxjp-ui Behavioral Test

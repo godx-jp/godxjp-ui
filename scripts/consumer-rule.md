@@ -1,39 +1,33 @@
 # @godxjp/ui
 
-> **Tệp này do gói `@godxjp/ui` sở hữu.** Cài gói không tự ghi gì cả: nội dung chỉ được ghi lại
-> khi bạn chạy `npx godxjp-ui sync-rules` (thêm `--dry-run` để xem trước). Chạy lại sau mỗi lần
-> nâng cấp. Dấu `<!-- godxjp-ui:version -->` luôn được đồng bộ với phiên bản
-> gói đang cài — kể cả khi thân tệp không đổi giữa hai bản.
-> Đừng sửa ở đây — luật của riêng kho thuộc về một tệp khác trong `.ai/rules/`,
-> và index sẽ nạp cả hai. (Khác với `.claude/skills/.../SKILL.md`, nơi mục §8
-> trở đi là của kho và được giữ lại.)
+> **Tệp do gói `@godxjp/ui` sở hữu**, ghi lại mỗi lần chạy `npx godxjp-ui sync-rules`. Đừng sửa ở
+> đây — luật riêng của kho thuộc về một tệp khác trong `.ai/rules/`.
 
-Đây là **danh sách kiểm** bắn mỗi lần chạm một tệp UI. Lý do đầy đủ nằm ở
-`docs/CONSUMER-RULES.md` (10 luật) và, với kho chuột bạch, ở
-`.claude/skills/godx-ui-guinea-pig/SKILL.md`.
+Danh sách kiểm bắn mỗi lần chạm một tệp UI. Luật đầy đủ: `docs/CONSUMER-RULES.md`.
 
-## Loading styles: one entry, fonts are opt-in
-
-```ts
-import "@godxjp/ui/styles.css"; // precompiled, no Tailwind needed
-```
+## Styles và theme
 
 ```css
-@import "@godxjp/ui/styles"; /* Tailwind v4: every component layer, NO font files */
-@import "@godxjp/ui/styles/fonts.css"; /* optional, after the styles import: the bundled faces */
+@import "@godxjp/ui/styles"; /* or: import "@godxjp/ui/styles.css" — no Tailwind needed */
 ```
 
-Since v32 the styles entry no longer bundles fonts. A Japanese app that wants the bundled faces
-installs them and adds the fonts import (the GoDX preset does both for you):
+Fonts are opt-in (`@godxjp/ui/styles/fonts.css`, after the styles import). Never cherry-pick
+`*-layout.css` layers. The default `--primary` is a neutral placeholder: set `--primary` once in
+your theme, or import a preset (`@godxjp/ui/themes/godx.css`). Details: `docs/CUSTOMER-THEMING.md`.
 
-```bash
-pnpm add @fontsource/noto-sans-jp @fontsource/m-plus-2
-```
+## Screen composition (ui-audit không thấy những lỗi này)
 
-An app that supplies its own face (next/font, self-host, a system stack) skips the fonts import and
-names its face with `--font-sans-base`. Never cherry-pick individual `*-layout.css` layers: that
-breaks the layer-order contract, which is not the same thing as choosing an entry point. Reasons
-and measurements are in `docs/CUSTOMER-THEMING.md`.
+- Most sections are a `Heading` + content, NOT a `Card`. A Card is for a genuinely separate
+  surface (a table, a form block), never a frame around every section.
+- No `subtitle` that restates the `title`. Leave it out unless it adds a fact.
+- Filters sit ABOVE the table they filter, never after it.
+- KPI tiles (`StatCard`) only on dashboards, 3–4 at most. A list page opens with its list.
+- `EmptyState` = one sentence + one action. Inside a Card it has no icon.
+- `Alert` only for something the user must act on now; not a page decoration.
+- Tiers / categories / roles render in ONE neutral tone (`<Badge variant="outline">`); colour
+  is for status.
+- Vary spacing by level: `xs` inside a group, `sm` within a row, `md` between items, `lg`
+  between blocks. One gap everywhere reads as generated.
 
 ## Bố cục chuẩn của platform: BA CỘT, và ba cột là BA PHẠM VI
 
@@ -85,11 +79,10 @@ ngày: năm thứ cần đều ĐÃ CÓ và vẫn bị dựng lại bằng thứ
 | dải giữa hai vùng, tự kẻ theo VỊ TRÍ                             | `<CardBar>` (`border` để ép khi xếp chồng)                                         |
 | chip "điều kiện đang bật" có dấu × để bỏ                         | `<Badge onRemove>` — KHÔNG phải `TagInput`                                         |
 | dải tab nằm TRONG đầu Card                                       | `<Card tabList activeTabKey onTabChange>`                                          |
-| tiêu đề / đoạn văn / liên kết trong văn bản                      | `<Title>` · `<Paragraph>` · `<Link>` (`Text` 33 prop)                              |
+| tiêu đề / đoạn văn / liên kết trong văn bản                      | `<Heading level>` · `<Text as="p">` · `<Link>`                                     |
 | nút nổi góc màn (quay lên đầu, hành động nhanh)                  | `<FloatButton>`                                                                    |
 | khung xương của một FORM khi đang tải                            | `<SkeletonForm>`                                                                   |
 | ô màu chỉ để xem, màu do NGƯỜI DÙNG chọn                         | `<Swatch>`                                                                         |
-| ảnh đại diện của một tệp / bản xem trước                         | `<Thumbnail>`                                                                      |
 | danh sách "có gì trong gói này"                                  | `<FeatureList>`                                                                    |
 | panel kéo giãn được (chia đôi màn)                               | `<DraggablePanel>`                                                                 |
 | màn hội thoại AI                                                 | `<Welcome>` · `<Conversations>` · `<Attachments>` · `<ThoughtChain>` · `<Actions>` |
@@ -120,48 +113,19 @@ godx-mailer dính bốn lỗi form trong một ngày, cả bốn đều là kit 
 Ca kit không diễn đạt được thì **mở issue ở godx-jp/godxjp-ui**, tạm dùng cách
 hợp lệ gần nhất kèm `// TODO(godxjp-ui#<n>)` — không tự chế.
 
-## Dialog và AlertDialog là MỘT họ — `variant` là lối chuẩn
-
-Đừng với tay sang 12 export `AlertDialog*` nữa. Chúng **vẫn chạy y như cũ** (gỡ
-là breaking change) nhưng là **LỐI CŨ**: đo được 26 export với **12 cặp trùng
-tên** và **0** phần chỉ `AlertDialog` mới có. antd — thẩm quyền bề mặt prop của
-gói này — chỉ có MỘT `Modal`, và mức nguy hiểm ở đó là một PROP.
+## Xác nhận nguy hiểm: `Dialog variant="destructive"`
 
 ```tsx
-<DialogContent variant="destructive">   {/* thay cho <AlertDialogContent> */}
+<DialogContent variant="destructive">   {/* không dùng họ AlertDialog* — lối cũ */}
 ```
 
-Một prop ấy quyết định ba thứ đi cùng nhau: `role="alertdialog"`, click ra ngoài
-KHÔNG đóng, nút chính nhấn mạnh destructive (và ✕ mặc định tắt). Esc VẪN đóng —
-y như `AlertDialogContent` trước nay. Đặt `variant` ở `DialogRoot` thì cả cây kế
-thừa.
+Một prop: `role="alertdialog"`, click ra ngoài không đóng, nút chính nhấn mạnh destructive.
+Thiếu prop thì mở issue kèm tên antd của nó (`docs/DESIGN-AUTHORITY.md`), đừng tự đặt tên.
 
-## antd là CHUẨN — thiếu gì thì port 100%, đừng tự thiết kế
+## Luật bố cục: hỏi `get_component` trước
 
-`docs/DESIGN-AUTHORITY.md` của gói: **nơi antd đặt tên cho một năng lực, gói này
-lấy nguyên tên và nguyên ngữ nghĩa của antd.** Một năng lực còn thiếu được port
-từ antd **100% TRƯỚC** — tên, prop, ngữ nghĩa — rồi mới cải tiến. Không thiết kế
-lại trước, không port một nửa.
-
-Nghĩa là với consumer: thấy thiếu prop thì **mở issue kèm tên antd của nó**
-(`sorter`, `closable`, `okType`…), đừng đề xuất một cái tên mới và đừng tự vẽ
-lại bằng class tiện ích. Ba trục cố ý lệch khỏi antd đều đã ghi lý do trong
-DESIGN-AUTHORITY (logical thay cho `left/right`, từ vựng giá trị của gói này,
-`density` thay cho `size`) — lệch thêm thì phải viết ra ở đó.
-
-## Catalog giờ chở CẢ luật bố cục — nhưng phải hỏi mới có
-
-Mục này từng nói "catalog chở PROP, không chở LUẬT BỐ CỤC", với `CardBar` làm
-bằng chứng: một prop (`extra`), không dòng nào nói nó tự kẻ theo vị trí. **Bằng
-chứng ấy đã hết đúng.** `CardBar` nay có 6 prop, trong đó `border` (`"none" |
-"block-start" | "block-end" | "both"`) ép được đường kẻ khi xếp chồng, và cả
-`Card` lẫn `CardBar` trong catalog đều nói ra luật vị trí (đầu: kẻ dưới · cuối:
-kẻ trên · giữa: cả hai).
-
-Nên luật hiện hành là: **hỏi `get_component` trước** — nay nó thường trả lời cả
-hình dạng lẫn luật. Còn khi `usage`/`description` im lặng về bố cục thì mới mở
-`node_modules/@godxjp/ui/src/styles/*-layout.css` của component ấy ra đọc; chú
-thích trong đó vẫn là bản đầy đủ nhất.
+`usage`/`description` thường nói cả luật vị trí (vd. `CardBar` tự kẻ theo vị trí, `border` để
+ép). Khi catalog im lặng thì mới đọc `node_modules/@godxjp/ui/src/styles/*-layout.css`.
 
 ## Card không lồng Card
 

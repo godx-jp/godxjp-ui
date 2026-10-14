@@ -1,3 +1,11 @@
+---
+name: godxjp-ui-performance
+description: >-
+  Measure-first React performance for @godxjp/ui, in the library and in consumer apps — profile
+  before optimising (keystroke latency, open latency, bundle size), with the repo's commands and
+  the fixes that proved decisive. Use when a screen or component feels slow or a bundle grows.
+---
+
 # godxjp-ui-performance — measure-first React perf, lib AND consumer
 
 > 🛠️ **AUDIENCE: CORE + CONSUMER.** Distilled from a real audit (2026-06, exseli 受注書一覧:

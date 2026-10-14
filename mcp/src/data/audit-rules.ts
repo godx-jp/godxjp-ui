@@ -76,6 +76,49 @@ export const AUDIT_RULES: AuditRule[] = [
     standard: null,
     fix: 'Wrap adjacent <Card>s in <Flex direction="col" gap="lg"> or <ResponsiveGrid>; direct children of PageContainer are spaced by the page already.',
   },
+  // ── admin-screen tells (gh#1294): judgement calls, so warnings ───────────
+  {
+    id: "nested-card",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: 'A Card (or StatCard) inside a Card draws two borders for one boundary. Group inside the outer Card with <Heading> + <Flex direction="col"> or <Separator />.',
+  },
+  {
+    id: "card-per-section",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: '5+ Cards in one file is a Card per section. Mark a section with <Heading level={2}> and section spacing (PageContainer children / Flex gap="lg"); keep Card for a real boundary (a table surface, a selectable item).',
+  },
+  {
+    id: "kpi-row-off-dashboard",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: "3+ StatCards outside a file whose path names a dashboard. A row count is not a KPI: drop the row and show the total in <Pagination showTotal>. StatCard rows are for a dashboard with comparison or trend (delta).",
+  },
+  {
+    id: "empty-state-icon-in-card",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: 'In an admin surface an empty state is one sentence and one action. Drop `icon` from an EmptyState inside a Card, or use variant="compact".',
+  },
+  {
+    id: "badge-wall",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: "5+ Badge/Tag in one file. Badge is for status only; render categories, tiers and scopes as plain text, one status column per table.",
+  },
+  {
+    id: "alert-per-page",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: "4+ Alerts in one file. Keep one Alert for a state that blocks or changes the task; field errors go in FormField, results in a toast, standing info in plain text.",
+  },
   // ── tokens (house design-system: semantic tokens only) ──────────────────
   {
     id: "no-raw-palette-color",

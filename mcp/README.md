@@ -207,7 +207,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ---
 
-## Tools (26)
+## Tools (28)
 
 > **Building an app with @godxjp/ui?** Start with `list_consumer_skills` / `route_consumer_task`
 > (the Consumer namespace below) — they hide library-maintenance material. The data tools
@@ -216,16 +216,16 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ### Discovery (small responses — start here)
 
-| Tool                   | Returns                                                                                                                     | Size   |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------ |
-| `list_skills`          | 15 design skills (audience-tagged) + section ids                                                                            | ~1 KB  |
-| `list_primitives`      | All components, grouped + tagline. Optional `group` filter.                                                                 | ~3 KB  |
+| Tool                   | Returns                                                                                                                                                      | Size   |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| `list_skills`          | 15 design skills (audience-tagged) + section ids                                                                                                             | ~1 KB  |
+| `list_primitives`      | All components, grouped + tagline. Optional `group` filter.                                                                                                  | ~3 KB  |
 | `list_utilities`       | Every NON-component export — hooks, helper functions, constants (`cn`, `formatDate`, `toast`, `useDebouncedValue`, `CHART_COLORS`…). Optional `kind` filter. | ~2 KB  |
-| `list_patterns`        | 7 canonical patterns + taglines                                                                                             | ~500 B |
-| `list_anti_ai_tells`   | 20+ AI-tell patterns. Optional `category` filter.                                                                           | ~2 KB  |
-| `list_redesign_checks` | 50+ audit checks + fix priority. Optional `category` filter.                                                                | ~5 KB  |
-| `list_audit_rules`     | Local STATIC ui-audit rules (WCAG/ARIA/Intl/ISO/CSS-Logical) to run BEFORE a visual pass. Optional `category` filter.       | ~3 KB  |
-| `list_visual_checks`   | RUNTIME visual-audit checks (Playwright: contrast, target-size, chroma, emoji, banner anatomy). Optional `category` filter. | ~2 KB  |
+| `list_patterns`        | 7 canonical patterns + taglines                                                                                                                              | ~500 B |
+| `list_anti_ai_tells`   | 20+ AI-tell patterns. Optional `category` filter.                                                                                                            | ~2 KB  |
+| `list_redesign_checks` | 50+ audit checks + fix priority. Optional `category` filter.                                                                                                 | ~5 KB  |
+| `list_audit_rules`     | Local STATIC ui-audit rules (WCAG/ARIA/Intl/ISO/CSS-Logical) to run BEFORE a visual pass. Optional `category` filter.                                        | ~3 KB  |
+| `list_visual_checks`   | RUNTIME visual-audit checks (Playwright: contrast, target-size, chroma, emoji, banner anatomy). Optional `category` filter.                                  | ~2 KB  |
 
 ### Drill-down (medium responses — after discovery)
 
@@ -238,6 +238,8 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 | `get_vocab`          | One vocab type (or all 14)                                                                                                                    | ~500 B / ~3 KB  |
 | `get_tokens`         | Tokens (optionally by category)                                                                                                               | ~5 KB           |
 | `get_frame_coverage` | Frame-contract coverage for one export (or the totals). Reports `UNTESTED` explicitly — never infers support from a happy-path example (#163) | ~1 KB           |
+| `get_design`         | DESIGN.md: tokens, colour scarcity, admin screen anatomy, do/don't. Optional `section` returns one section                                    | ~1 KB / ~12 KB  |
+| `get_exemplar`       | Reference screen for an archetype (list, detail, settings, dashboard, approval-queue): anatomy, showcase source, live preview URL             | ~8–30 KB        |
 
 ### Task routing (smallest — pointer only)
 
