@@ -52,6 +52,18 @@ describe("get_design (gh#1294 A)", () => {
 });
 
 describe("get_exemplar (gh#1294 F)", () => {
+  it("the tool description names every archetype the tool serves (gh#1296)", () => {
+    const def = TOOL_DEFINITIONS.find((t) => t.name === "get_exemplar")!;
+    const archetypeDoc = String(
+      (def.inputSchema as { properties: { archetype: { description: string } } }).properties
+        .archetype.description,
+    );
+    for (const e of EXEMPLARS) {
+      expect(def.description, e.archetype).toContain(e.archetype);
+      expect(archetypeDoc, e.archetype).toContain(e.archetype);
+    }
+  });
+
   it("is a declared tool", () => {
     expect(TOOL_DEFINITIONS.map((t) => t.name)).toContain("get_exemplar");
   });

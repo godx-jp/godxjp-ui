@@ -450,14 +450,19 @@ export const TOOL_DEFINITIONS = [
   {
     name: "get_exemplar",
     description:
-      "A reference screen to match for an admin archetype: its anatomy notes from DESIGN.md, the full source of the showcase built from real @godxjp/ui primitives, and its live preview URL for screenshot comparison. Archetypes: list, detail, settings (alias form), dashboard, approval-queue. Omit `archetype` to list them.",
+      "A reference screen to match for an admin archetype: its anatomy notes from DESIGN.md, the full source of the showcase built from real @godxjp/ui primitives, and its live preview URL for screenshot comparison. Archetypes: " +
+      EXEMPLARS.map((e) => e.archetype).join(", ") +
+      ". Omit `archetype` to list them.",
     inputSchema: {
       type: "object",
       properties: {
         archetype: {
           type: "string",
           description:
-            "list | detail | settings | dashboard | approval-queue (aliases: form, table, record, overview, queue …).",
+            EXEMPLARS.map((e) => e.archetype).join(" | ") +
+            " (aliases: " +
+            EXEMPLARS.flatMap((e) => e.aliases ?? []).join(", ") +
+            ").",
         },
       },
     },
