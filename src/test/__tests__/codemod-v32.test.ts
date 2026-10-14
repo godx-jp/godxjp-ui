@@ -1,9 +1,11 @@
-import { readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 
-import { describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 
 // @ts-expect-error — plain .mjs script module, no types
-import { transformSource } from "../../../scripts/codemod.mjs";
+import { run, transformSource } from "../../../scripts/codemod.mjs";
 
 /** The v32 codemod (docs/migrations/v32.md): mechanical, idempotent, and it reports what it cannot decide. */
 const APP = `import "@godxjp/ui/styles";
@@ -78,7 +80,8 @@ describe("codemod v32 renames and moves (gh#1223)", () => {
     const { out } = transformSource("a.tsx", src);
     expect(out).toContain('<Alert variant="callout"><Alert.Title>t</Alert.Title></Alert>');
     expect(out).toContain("Popover as HC");
-    expect(out).toContain("<HC />");
+    // gh#1327: the alias is the Popover binding now, so it gets HoverCard's openOn too.
+    expect(out).toContain('<HC openOn="hover" />');
   });
 
   it("moves lab and chat components to their new packages, keeping the rest in place", () => {
@@ -214,5 +217,175 @@ describe("codemod v32 --godx imports the fonts once (gh#1228)", () => {
   it("without --godx keeps adding the opt-in fonts after styles", () => {
     const { out } = transformSource("a.css", '@import "@godxjp/ui/styles";\n');
     expect(out).toContain('@import "@godxjp/ui/styles/fonts.css";');
+  });
+});
+
+describe("codemod v32 follows import bindings, never edits strings, leaves untouched files alone (gh#1327)", () => {
+  // Measured on a Laravel+Inertia admin with 32.13.1: --godx added preset to the app's OWN
+  // AppProvider (app.tsx + 5 tests), missed the real `AppProvider as DesignSystemProvider` call
+  // site, rewrote an Error string, and reported 5 files changed where only blank lines were cut.
+  const WRAPPER = `import { createContext, useContext, type ReactNode } from "react";
+import { AppProvider as DesignSystemProvider } from "@godxjp/ui/app";
+import { Button } from "@godxjp/ui";
+
+const Ctx = createContext<string | null>(null);
+
+// Renders <AppProvider> from the design system under its alias.
+export function AppProvider({ children }: { children: ReactNode }) {
+  return (
+    <Ctx.Provider value="admin">
+      <DesignSystemProvider persist={false}>{children}</DesignSystemProvider>
+    </Ctx.Provider>
+  );
+}
+
+export function useAppContext() {
+  const value = useContext(Ctx);
+  if (!value) throw new Error("useAppContext must be used within <AppProvider>");
+  return value;
+}
+
+export const hint = \`wrap the page in <AppProvider>, it's required\`;
+export const Retry = () => <Button title="it's <AppProvider>">Don't retry</Button>;
+`;
+  const WRAPPER_FIXED = WRAPPER.replace(
+    'import { Button } from "@godxjp/ui";\n',
+    'import { Button } from "@godxjp/ui";\nimport { godxPreset } from "@godxjp/ui/themes/godx";\n',
+  ).replace("<DesignSystemProvider persist", "<DesignSystemProvider preset={godxPreset} persist");
+  // The app's own wrapper and its test: same JSX name, different binding. Must not change.
+  const APP_TSX = `import { createRoot } from "react-dom/client";
+import { Card } from "@godxjp/ui/data-display";
+import { AppProvider } from "@/providers/app-provider";
+
+
+createRoot(document.getElementById("app")!).render(
+  <AppProvider>
+    <Card>Admin</Card>
+  </AppProvider>,
+);
+`;
+  const APP_TEST = `import { render } from "@testing-library/react";
+import { Button } from "@godxjp/ui";
+import { AppProvider } from "../providers/app-provider";
+
+it("renders", () => {
+  render(<AppProvider><Button>Go</Button></AppProvider>);
+});
+`;
+  // No rule applies, and it has runs of blank lines the old codemod collapsed.
+  const UNTOUCHED = `import { Button } from "@godxjp/ui";
+
+
+
+export default function Page() {
+  return <Button>Save</Button>;
+}
+
+
+`;
+
+  const dirs: string[] = [];
+  afterAll(() => {
+    for (const d of dirs) rmSync(d, { recursive: true, force: true });
+  });
+  const runIn = (files: Record<string, string>, args: string[]) => {
+    const dir = mkdtempSync(path.join(tmpdir(), "codemod-1327-"));
+    dirs.push(dir);
+    for (const [rel, src] of Object.entries(files)) {
+      mkdirSync(path.dirname(path.join(dir, rel)), { recursive: true });
+      writeFileSync(path.join(dir, rel), src);
+    }
+    const log: string[] = [];
+    const spy = vi.spyOn(console, "log").mockImplementation((line: string) => {
+      log.push(line);
+    });
+    try {
+      expect(run(["v32", dir, ...args])).toBe(0);
+    } finally {
+      spy.mockRestore();
+    }
+    return {
+      log,
+      read: (rel: string) => readFileSync(path.join(dir, rel), "utf8"),
+      reported: (rel: string) => log.some((l) => l.includes(path.join(dir, rel))),
+    };
+  };
+
+  it("--godx: preset goes on the aliased @godxjp/ui/app binding only; strings, comments, the app's own AppProvider and untouched files stay byte-identical and unreported", () => {
+    const { read, reported, log } = runIn(
+      {
+        "providers/app-provider.tsx": WRAPPER,
+        "app.tsx": APP_TSX,
+        "providers/__tests__/app-provider.test.tsx": APP_TEST,
+        "products/new/page.tsx": UNTOUCHED,
+      },
+      ["--godx"],
+    );
+    expect(read("providers/app-provider.tsx")).toBe(WRAPPER_FIXED);
+    expect(reported("providers/app-provider.tsx")).toBe(true);
+    for (const [rel, src] of [
+      ["app.tsx", APP_TSX],
+      ["providers/__tests__/app-provider.test.tsx", APP_TEST],
+      ["products/new/page.tsx", UNTOUCHED],
+    ] as const) {
+      expect(read(rel), rel).toBe(src);
+      expect(reported(rel), rel).toBe(false);
+    }
+    expect(log.at(-1)).toBe("1 file(s) changed.");
+  });
+
+  it("is idempotent on the wrapper", () => {
+    const once = transformSource("p.tsx", WRAPPER, { godx: true }).out;
+    expect(once).toBe(WRAPPER_FIXED);
+    expect(transformSource("p.tsx", once, { godx: true }).changed).toBe(false);
+  });
+
+  it("without --godx reports the aliased binding, never the app's own AppProvider", () => {
+    expect(transformSource("p.tsx", WRAPPER).notes.join("\n")).toMatch(/no defaultLocale/);
+    expect(transformSource("app.tsx", APP_TSX).notes).toEqual([]);
+    expect(transformSource("t.tsx", APP_TEST).notes).toEqual([]);
+  });
+
+  it("renames TagInput through an alias and adds its props, but never inside strings or comments", () => {
+    const src = `import { TagInput as Tags } from "@godxjp/ui/data-entry";
+
+// <TagInput /> was the old name
+
+
+export const help = "Use <TagInput> or <Tags> for labels";
+export const F = () => <Tags value={v} />;
+`;
+    const { out } = transformSource("f.tsx", src);
+    expect(out).toBe(`import { Select as Tags } from "@godxjp/ui/data-entry";
+
+// <TagInput /> was the old name
+
+
+export const help = "Use <TagInput> or <Tags> for labels";
+export const F = () => <Tags open={false} mode="tags" value={v} />;
+`);
+    expect(transformSource("f.tsx", out).changed).toBe(false);
+  });
+
+  it("drops an import emptied by a move without collapsing the blank lines elsewhere", () => {
+    const src = `import { Carousel } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui";
+
+
+export const C = () => <Carousel><Button /></Carousel>;
+`;
+    expect(transformSource("c.tsx", src).out).toBe(`import { Button } from "@godxjp/ui";
+import { Carousel } from "@godxjp/ui/lab";
+
+
+export const C = () => <Carousel><Button /></Carousel>;
+`);
+  });
+
+  it("ignores a styles import inside a CSS comment or a JS template literal", () => {
+    const css = `/*\n@import "@godxjp/ui/styles";\n*/\n@import "tailwindcss";\n`;
+    expect(transformSource("a.css", css, { godx: true }).changed).toBe(false);
+    const js = `import { Button } from "@godxjp/ui";\nexport const doc = \`\nimport "@godxjp/ui/styles";\n\`;\n`;
+    expect(transformSource("a.tsx", js, { godx: true }).changed).toBe(false);
   });
 });
