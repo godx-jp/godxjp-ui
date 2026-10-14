@@ -82,8 +82,25 @@ describe("get_exemplar (gh#1294 F)", () => {
   });
 
   it("resolves an alias", async () => {
-    const out = await dispatchTool("get_exemplar", { archetype: "form" });
-    expect(out).toContain("settings-account-sections");
+    const out = await dispatchTool("get_exemplar", { archetype: "queue" });
+    expect(out).toContain("table-approval-queue");
+  });
+
+  it("maps a form to the editor exemplar, not to settings (gh#1296)", async () => {
+    for (const archetype of ["form", "editor", "edit"]) {
+      const out = await dispatchTool("get_exemplar", { archetype });
+      expect(out, archetype).toContain("docs/showcase/page-editor.tsx");
+      expect(out, archetype).not.toContain("settings-account-sections");
+      expect(out, archetype).toContain(anatomySubsection("Editor")!);
+    }
+  });
+
+  it("has a reader exemplar for a long-form document page (gh#1296)", async () => {
+    for (const archetype of ["reader", "document", "wiki"]) {
+      const out = await dispatchTool("get_exemplar", { archetype });
+      expect(out, archetype).toContain("docs/showcase/page-reader.tsx");
+      expect(out, archetype).toContain(anatomySubsection("Reader")!);
+    }
   });
 
   it("lists the archetypes when none or an unknown one is given", async () => {

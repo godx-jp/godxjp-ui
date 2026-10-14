@@ -4,14 +4,14 @@
     "components": 161,
     "patterns": 24,
     "rules": 43,
-    "tokens": 2195,
+    "tokens": 2197,
     "vocabulary": 14
   },
   "design": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md",
   "files": [
     {
       "file": "DESIGN.md",
-      "note": "12 KB — the visual spec: tokens, colour scarcity, admin screen anatomy (list, detail, form, settings, dashboard), do/don't. Read before composing a screen.",
+      "note": "13 KB — the visual spec: tokens, colour scarcity, admin screen anatomy (list, detail, form, settings, dashboard), do/don't. Read before composing a screen.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md"
     },
     {
@@ -61,7 +61,7 @@
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1872,
+      "component": 1874,
       "foundation": 211,
       "semantic": 112
     },

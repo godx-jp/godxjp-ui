@@ -20,9 +20,8 @@
       "type": "string"
     },
     {
-      "description": "Page heading rendered as <h1>.",
+      "description": "Page heading rendered as <h1>. OPTIONAL when the content draws its own heading (a document reader, LegalDocumentShell): omitted, no <h1> is rendered and a header with no other slot is dropped. The page must then still have exactly one <h1> from its content; `titleRef` has nothing to attach to.",
       "name": "title",
-      "required": true,
       "type": "string"
     },
     {

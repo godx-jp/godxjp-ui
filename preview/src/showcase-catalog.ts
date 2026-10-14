@@ -236,6 +236,22 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/settings-account-sections"),
   },
   {
+    id: "page-editor",
+    title: "ページ編集 (gh#1296)",
+    description:
+      "Màn sửa tài liệu/bản ghi: tên + Badge trạng thái ở header, MỘT nút Lưu chính trong extra (submit form theo id), ô tiêu đề + BlockEditor ở cột chính, metadata + ghi chú thay đổi ở SplitPane aside. Không Card cho từng nhóm field.",
+    tag: "Editor",
+    load: () => import("../../docs/showcase/page-editor"),
+  },
+  {
+    id: "page-reader",
+    title: "ページ閲覧 (gh#1296)",
+    description:
+      "Trang đọc tài liệu dài: PageContainer không title (tài liệu tự giữ h1), LegalDocumentShell với tiêu đề cao hơn h2 hai bậc, dòng metadata (dateKind=updated), mục lục scroll-spy, văn bản Text break=phrase ở độ rộng đọc.",
+    tag: "Reader",
+    load: () => import("../../docs/showcase/page-reader"),
+  },
+  {
     id: "case2-employee-me",
     title: "従業員 /me",
     description:

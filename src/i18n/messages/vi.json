@@ -320,7 +320,8 @@
     "legalDocumentShell": {
       "contents": "Mục lục",
       "version": "Phiên bản {version}",
-      "effectiveDate": "Hiệu lực từ {date}"
+      "effectiveDate": "Hiệu lực từ {date}",
+      "updatedDate": "Cập nhật {date}"
     },
     "errorSurface": {
       "statusLabel": "Trạng thái HTTP {status}",

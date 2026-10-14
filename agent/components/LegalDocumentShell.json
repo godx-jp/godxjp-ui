@@ -5,7 +5,7 @@
   "name": "LegalDocumentShell",
   "props": [
     {
-      "description": "Document title — the <h1> that names the <article> (e.g. 'Terms of Service').",
+      "description": "Document title — the <h1> that names the <article> (e.g. 'Terms of Service'). Sized two type steps above the section <h2>s (--legal-document-title-font-size, default the --font-size-2xl step) so the page does not read flat. Around it, PageContainer may omit `title` so this stays the page's only <h1>.",
       "name": "title",
       "required": true,
       "type": "ReactNode"
@@ -25,6 +25,12 @@
       "description": "ISO 8601 calendar date (yyyy-MM-dd) or a full ISO instant. Formatted with Intl.DateTimeFormat in the active locale and emitted inside <time dateTime={effectiveDate}>, so the machine-readable value is always the ISO input. NEVER pass a pre-formatted date string.",
       "name": "effectiveDate",
       "type": "string"
+    },
+    {
+      "defaultValue": "\"effective\"",
+      "description": "What the date means, which picks its localized caption: 'effective' (施行日 / Effective, a policy in force from that date) or 'updated' (更新日 / Updated, a wiki page or help article last revised). Never prefix a label of your own to the date: word order differs per locale.",
+      "name": "dateKind",
+      "type": "\"effective\" | \"updated\""
     },
     {
       "description": "Short plain-language summary rendered under the metadata, above the contents.",

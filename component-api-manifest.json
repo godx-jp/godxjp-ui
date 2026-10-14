@@ -8658,6 +8658,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "dateKind",
+          "origin": "owned",
+          "required": false,
+          "type": "\"effective\" | \"updated\" | undefined",
+          "values": ["effective", "updated"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "defaultActiveSection",
           "origin": "owned",
           "required": false,
@@ -10423,7 +10431,7 @@
         {
           "name": "title",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
