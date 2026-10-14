@@ -5703,9 +5703,10 @@ import { Flex } from "@godxjp/ui/layout";
       },
       {
         name: "tone",
-        type: '"success" | "warning" | "destructive"',
-        defaultValue: '"success"',
-        description: "Bar colour tone. Over-capacity defaults to destructive.",
+        type: '"primary" | "success" | "warning" | "destructive"',
+        defaultValue: '"primary"',
+        description:
+          "Bar colour tone. `primary` (default since gh#1308) is the brand role for ordinary progress — a reading position, an upload; pass a status tone only when the bar reports that status (ADR C09: `success` for a completed/healthy state, `warning`/`destructive` for limits). Over-capacity defaults to destructive.",
       },
       {
         name: "over",

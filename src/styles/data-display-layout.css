@@ -217,10 +217,17 @@
    * the track it is drawn in. Reading the FILL tier here measured 1.60:1 (warning) and 2.00:1
    * (success) on the light track, and 2.42:1 (destructive) on the dark one — see `--mark-*` in
    * `src/tokens/foundation.css` and the tier table in `docs/TOKENS.md`. */
+  /* The DEFAULT (`primary`, gh#1308) is the brand role — ordinary progress is not a status (ADR
+   * C09). `--progress-fill-background` retunes it; `--mark-primary` pins the brand mark. Measured
+   * in Chromium against the track: 15.97:1 light, 12.8:1 dark on the shipped seed (floor 3:1). */
   .ui-progress-bar {
     height: 100%;
     border-radius: inherit;
-    background: var(--progress-fill-background, hsl(var(--mark-success, var(--text-success))));
+    background: var(--progress-fill-background, hsl(var(--mark-primary, var(--primary))));
+  }
+
+  .ui-progress[data-tone="success"] .ui-progress-bar {
+    background: hsl(var(--mark-success, var(--text-success)));
   }
 
   .ui-progress[data-tone="warning"] .ui-progress-bar {
@@ -347,10 +354,14 @@
   }
 
   .ui-progress-ring-indicator {
-    stroke: var(--progress-fill-background, hsl(var(--mark-success, var(--text-success))));
+    stroke: var(--progress-fill-background, hsl(var(--mark-primary, var(--primary))));
     /* A zero-length arc still paints a dot with a round cap, which reads as "a little" when the
      * answer is "none". Butt caps make 0% genuinely empty. */
     stroke-linecap: butt;
+  }
+
+  .ui-progress[data-tone="success"] .ui-progress-ring-indicator {
+    stroke: hsl(var(--mark-success, var(--text-success)));
   }
 
   .ui-progress[data-tone="warning"] .ui-progress-ring-indicator {

@@ -32,8 +32,10 @@ describe("Progress", () => {
     expect(bar()).toHaveAttribute("aria-valuenow", "0");
   });
 
-  it("defaults the tone to success and honours an explicit warning/destructive tone", () => {
+  it("defaults the tone to the brand role (gh#1308) and honours an explicit status tone", () => {
     const { rerender } = render(<Progress value={50} />);
+    expect(bar()).toHaveAttribute("data-tone", "primary");
+    rerender(<Progress value={50} tone="success" />);
     expect(bar()).toHaveAttribute("data-tone", "success");
     rerender(<Progress value={50} tone="warning" />);
     expect(bar()).toHaveAttribute("data-tone", "warning");
@@ -58,7 +60,7 @@ describe("Progress", () => {
     const { rerender } = render(<Progress value={252} />);
     expect(bar()).not.toHaveAttribute("data-over");
     expect(bar()).toHaveAttribute("aria-valuetext", "100%");
-    expect(bar()).toHaveAttribute("data-tone", "success");
+    expect(bar()).toHaveAttribute("data-tone", "primary");
     // An explicit tone wins even when over.
     rerender(<Progress value={110} over tone="warning" />);
     expect(bar()).toHaveAttribute("data-over", "");

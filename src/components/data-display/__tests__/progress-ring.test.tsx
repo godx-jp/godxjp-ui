@@ -101,8 +101,10 @@ describe("Progress shape=ring", () => {
     // The default reads the same component knob the bar does, so a service that retunes
     // `--progress-fill-background` once moves both shapes; the fallback behind it is the mark.
     expect(layoutCss).toMatch(
-      /stroke:\s*var\(\s*--progress-fill-background,\s*hsl\(\s*var\(\s*--mark-success,/,
+      /stroke:\s*var\(\s*--progress-fill-background,\s*hsl\(\s*var\(\s*--mark-primary,/,
     );
+    // gh#1308: the default is the brand mark; success is an opt-in status tone.
+    expect(layoutCss).toMatch(/stroke:\s*hsl\(\s*var\(\s*--mark-success,/);
     expect(layoutCss).toMatch(/stroke:\s*hsl\(\s*var\(\s*--mark-warning,/);
     expect(layoutCss).toMatch(/stroke:\s*hsl\(\s*var\(\s*--mark-destructive,/);
     // And no ring rule may fall back to the FILL tier, which is the defect the bar was moved off.

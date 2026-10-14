@@ -169,7 +169,9 @@ describe("the mark-tier surfaces read the mark tier", () => {
     ['.ui-progress-segment[data-tone="destructive"]', "mark-destructive"],
     ['.ui-progress[data-tone="warning"] .ui-progress-bar', "mark-warning"],
     ['.ui-progress[data-tone="destructive"] .ui-progress-bar', "mark-destructive"],
-    ["  .ui-progress-bar {", "mark-success"],
+    // gh#1308: the meter's DEFAULT is the brand mark; success is an opt-in status tone.
+    ["  .ui-progress-bar {", "mark-primary"],
+    ['.ui-progress[data-tone="success"] .ui-progress-bar', "mark-success"],
     ["  .ui-progress[data-over] .ui-progress-bar {", "mark-destructive"],
   ];
 
