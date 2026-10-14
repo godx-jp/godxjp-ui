@@ -193,6 +193,10 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 - `DataTable` hides `hiddenOnMobile` columns and can stack rows (`collapseBelow`); `Table preset="action-collection"` keeps the actions column visible at 390.
 - `ResponsiveGrid` columns follow its container. `AppShell` turns the sidebar into a drawer on narrow screens.
 - Header `extra` wraps under the title; a toolbar wraps its filters. Touch targets 44px at `comfortable`.
+- Below 640px: at most 2 direct actions in `extra` plus one overflow `DropdownMenu` for the rest; it wraps but never prioritises for you.
+- Bar search is `TopbarSearch`, never a bare `SearchInput`: it folds to a named search cell below 640px. To share the content keyline, keep the default `topbarSpan="content"` and put it first in `Topbar start`.
+- Account cell: `TopbarItem icon={<Avatar/>} labelHideBelow="sm"` with the name repeated in the menu's `DropdownMenuLabel`, so a phone shows the avatar only.
+- A sidebar collapse toggle goes in `Sidebar action` (it receives `collapsed`), not in the bar beside the brand. The phone drawer has its own trigger.
 
 ## Iteration Guide
 
@@ -207,6 +211,7 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 
 - The default primary is neutral by design; a product without a brand colour looks monochrome until one is set.
 - `ui-audit` checks primitives and tokens, not structure: a page can pass it and still show every Don't above.
+- No edge-mounted rail toggle (a control straddling the sidebar border); `Sidebar action` is the supported place. Under `topbarSpan="full"` the bar shares no keyline with the content column.
 - `card-per-section` counts Cards per file, so a screen split across components can pass with a Card around every section.
 - Exemplar previews deploy on release tags, so they can lag `main`. On GitHub Pages a showcase URL answers HTTP 404 and renders through `404.html`, so open it in a browser; a plain fetch sees the 404.
 - Dark theme (`data-theme="dark"`) is supported; the exemplars are reviewed in light.

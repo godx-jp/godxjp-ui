@@ -92,6 +92,7 @@
   "storyPath": "data-entry/search-input.tsx",
   "tagline": "Debounced search box with a clear button. Fires onSearch (NOT onChange) after the debounce. Controlled (value) or uncontrolled (defaultValue).",
   "usage": [
+    "DON'T drop a bare SearchInput into a Topbar slot — use `TopbarSearch` (layout), which passes every SearchInput prop through and folds to a search cell below 40rem instead of shrinking under 8ch (ADR C02).",
     "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",
     "DO: choose controlled vs uncontrolled deliberately. Pass `value` + `onValueChange` together for controlled mode; optionally add `onSearch` for debounced effects (e.g. when search state lives in a URL param or shared parent). For local-only ephemeral search pass only `defaultValue` + `onSearch` — omitting `value` puts the component in uncontrolled mode.",
     "DO: supply an `ariaLabel` (or visible `label`) when no adjacent label exists. Without either prop, SearchInput falls back to the i18n key `common.search` rendered as a visually-hidden `<Label>` — still accessible, but providing a context-specific string (e.g. `ariaLabel='請求書を検索'`) is more descriptive for screen readers.",

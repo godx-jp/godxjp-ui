@@ -82,6 +82,8 @@ export { Topbar } from "./topbar";
 export type { TopbarProp, TopbarProps } from "./topbar";
 export { TopbarItem } from "./topbar-item";
 export type { TopbarItemProp, TopbarItemProps } from "./topbar-item";
+export { TopbarSearch } from "./topbar-search";
+export type { TopbarSearchProp, TopbarSearchProps } from "./topbar-search";
 export { ResponsiveGrid } from "./responsive-grid";
 export type { ResponsiveGridProps } from "./responsive-grid";
 export { MasterDetail } from "./master-detail";

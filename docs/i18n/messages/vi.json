@@ -1835,5 +1835,15 @@
       "push": "Thông báo đẩy",
       "notInPlan": "Không có trong gói"
     }
+  },
+  "topbarSearchDocs": {
+    "pages": "Trang",
+    "guide": "Bắt đầu",
+    "searchLabel": "Tìm trong bộ sưu tập",
+    "account": "Tài khoản",
+    "userName": "Sato Daisuke",
+    "logOut": "Đăng xuất",
+    "body": "Ô tìm kiếm bắt đầu cùng hàng với tiêu đề này. Dưới 640px nó thu thành nút tìm kiếm, mở ô nhập phủ cả thanh; Escape đóng lại và trả tiêu điểm về nút. Ô tài khoản khi đó chỉ hiện ảnh đại diện, tên chuyển vào menu.",
+    "lastQuery": "Lần tìm gần nhất"
   }
 }

@@ -1072,6 +1072,12 @@
         "shell-layout.css"
       ]
     },
+    "TopbarSearch": {
+      "layers": [
+        "shell-layout.css",
+        "control.css"
+      ]
+    },
     "Transfer": {
       "layers": [
         "layout.css",

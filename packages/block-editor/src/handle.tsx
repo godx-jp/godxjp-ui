@@ -109,7 +109,13 @@ export function BlockHandle({
   };
 
   return (
-    <div className="ui-block-editor-handle" style={{ insetBlockStart: block.top }}>
+    <div
+      className="ui-block-editor-handle"
+      // The first block has no block above it to rise over: on a phone its handle stays on its own
+      // row instead of leaving the editor's frame (styles: data-display-layout.css).
+      data-first-block={block.start === 0 ? "" : undefined}
+      style={{ insetBlockStart: block.top }}
+    >
       <Button
         size="icon-xs"
         variant="ghost"

@@ -18,7 +18,7 @@ npm i @godxjp/ui
 
 <!-- agent-catalog-counts:start -->
 
-The catalog — 161 components, 2197 tokens, 43 cardinal rules — is published in two forms from one
+The catalog — 162 components, 2200 tokens, 43 cardinal rules — is published in two forms from one
 source. **Entry point for either: [`AGENTS.md`](AGENTS.md).**
 <!-- agent-catalog-counts:end -->
 
@@ -51,12 +51,12 @@ static files straight from this public repo — no hosting, no deploy step:
 | --- | --- | --- |
 | [`agent/START-HERE.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md) | 11 KB | **read first** — self-contained: the four rules, the token override model, a page that passes review |
 | [`agent/llms.txt`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/llms.txt) | 3 KB | the [llms.txt](https://llmstxt.org/) entry point |
-| [`agent/DESIGN.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md) | 15 KB | the visual spec: tokens, colour scarcity, admin screen anatomy, do/don't |
+| [`agent/DESIGN.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md) | 16 KB | the visual spec: tokens, colour scarcity, admin screen anatomy, do/don't |
 | [`agent/index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json) | 3 KB | manifest: version, counts, every file's URL |
-| [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 47 KB | all 161 as name + group + tagline — **fetch this first** |
+| [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 48 KB | all 162 as name + group + tagline — **fetch this first** |
 | [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1 KB–37 KB | one file per component, each with its `importPath` — **this is the route to take** |
-| [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.2 MB | all 161 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
-| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 846 KB | all 2197 design tokens, their values and why they exist |
+| [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.2 MB | all 162 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
+| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 847 KB | all 2200 design tokens, their values and why they exist |
 | [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json) | 7 KB | the controlled prop vocabulary |
 | [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json) | 21 KB | the 43 cardinal rules |
 <!-- prettier-ignore-end -->
