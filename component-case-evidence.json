@@ -2381,12 +2381,14 @@
         },
         "tone": {
           "cases": [
+            "primary",
             "success",
             "warning",
             "destructive"
           ],
           "evidence": [
-            "docs/data-display/progress.tsx"
+            "docs/data-display/progress.tsx",
+            "src/components/data-display/__tests__/progress-primary-default-1308-browser.test.ts"
           ]
         }
       }
