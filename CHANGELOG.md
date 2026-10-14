@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.7.2] - 2026-10-14
+
+### 🐛 Fixed
+
+- **A cut `ListRow` title stays readable (#1298).** The row truncates its title and description, and a
+  cut line had no `title` and no keyboard route to the rest (measured: scrollWidth 745 /
+  clientWidth 728, unreadable). Each line is now measured, and only while it is actually cut it gets
+  a `title` with the text that is cut — a `Text ellipsis` inside the title, not a badge beside it —
+  and unfolds while the row holds keyboard focus (the row itself as a link, a control in it, or the
+  line's own tab stop when nothing else takes focus). A line that fits gets none of it. The
+  measurement is shared with DataTable `ellipsis` (`src/lib/truncation.ts`).
+
 ## [32.7.1] - 2026-10-14
 
 From the second consumer run on 32.7.0 (godx-content#107, #1299).
@@ -47,7 +59,7 @@ edit / view / reader screens (godx-content#107) — found what the guidance stil
   Stale `SpaceCompact`/`TagInput` advice and the "falls back to Vietnamese" claim corrected.
 - **Commands work from a workspace package:** the synced files use `npx @godxjp/ui audit` /
   `visual-audit`, and `init-agent` wires the per-edit hook as `npx --no-install @godxjp/ui
-  audit-hook` (the old `node node_modules/…` default is rewritten in place; it did nothing under a
+audit-hook` (the old `node node_modules/…` default is rewritten in place; it did nothing under a
   hoisted install).
 - **`PageContainer title` is optional** — omitted renders no `<h1>` and no empty header band; the
   content must supply the page's `<h1>`.
@@ -59,7 +71,7 @@ edit / view / reader screens (godx-content#107) — found what the guidance stil
 
 - `ui-audit` finds a hoisted `@godxjp/ui` up the node_modules chain (no more `owned-rules-unknown`
   in workspaces); `ui-audit --help` prints usage instead of running a full audit; `godxjp-ui audit
-  --help` lists `--base=` and `--consumer`.
+--help` lists `--base=` and `--consumer`.
 - `search_components` names the package of a component that lives outside `@godxjp/ui`
   (ChatSuggestion → `@godxjp/chat`).
 - The v32 migration note says `@godxjp/chat` is a NEW dependency at the lockstep version, and that

@@ -103,6 +103,7 @@ import {
 import { cn } from "../../lib/utils";
 import { useScrollsHorizontally } from "../../lib/hooks";
 import { densityClass } from "../../lib/variants";
+import { TRUNCATION_FOCUSABLE, truncatedPart } from "../../lib/truncation";
 import {
   controlIconSmClass,
   tableCellPaddingClass,
@@ -1345,26 +1346,6 @@ function fixedEdge<T>(col: ColumnDef<T>): "start" | "end" | undefined {
   return col.fixed ?? (col.pin === "end" ? "end" : undefined);
 }
 
-/** Something inside a truncated cell that already takes focus — the cell then needs no tab stop. */
-const TRUNCATED_CELL_FOCUSABLE =
-  'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
-
-/**
- * What, in an `ellipsis` cell, is actually cut (gh#1269): the cell itself, or a descendant that
- * truncates on its own — a `Text truncate`/`ellipsis` link sharing the row with a badge or an
- * avatar never overflows the CELL, so measuring the cell alone found 0 of 7 truncated subjects.
- * A descendant counts when it ends in an ellipsis (`text-overflow: ellipsis`) and overflows.
- */
-function truncatedPart(cell: HTMLElement): HTMLElement | null {
-  if (cell.scrollWidth - cell.clientWidth > 1) return cell;
-  for (const el of cell.querySelectorAll<HTMLElement>("*")) {
-    if (el.scrollWidth - el.clientWidth > 1 && getComputedStyle(el).textOverflow === "ellipsis") {
-      return el;
-    }
-  }
-  return null;
-}
-
 function sameOffsets(a: Record<string, number>, b: Record<string, number>): boolean {
   const keys = Object.keys(a);
   if (keys.length !== Object.keys(b).length) return false;
@@ -1639,7 +1620,7 @@ DataTable.Content = function DataTableContent() {
           cell.title = (part.textContent ?? "").replace(/\s+/g, " ").trim();
           cell.dataset.truncatedTitle = "";
         }
-        if (!cell.querySelector(TRUNCATED_CELL_FOCUSABLE)) cell.tabIndex = 0;
+        if (!cell.querySelector(TRUNCATION_FOCUSABLE)) cell.tabIndex = 0;
       } else if (cell.dataset.truncated !== undefined) {
         delete cell.dataset.truncated;
         if (ownTitle) {

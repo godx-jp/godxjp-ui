@@ -4,7 +4,70 @@ import { Slot } from "../../lib/slot";
 import { useTranslation } from "../../i18n/use-translation";
 import type { ListRowDensityProp } from "../../props/components/data-display.prop";
 import { cn } from "../../lib/utils";
+import { TRUNCATION_FOCUSABLE, truncatedPart } from "../../lib/truncation";
 import { Text } from "../general/typography";
+
+/**
+ * A TRUNCATED TITLE MUST STAY READABLE (gh#1298). The row truncates its title and description, and
+ * a cut title had no `title` and no keyboard route to the rest — measured on a linked-issue row,
+ * scrollWidth 745 / clientWidth 728, unreadable. The same treatment DataTable `ellipsis` got
+ * (gh#1262, gh#1269): each line is MEASURED, and only while it is actually cut it gets
+ * `data-truncated`, a `title` with the text of the part that is cut (a `Text ellipsis` inside the
+ * title, not a badge beside it), and — when nothing in the row takes focus already — a tab stop.
+ * While the row holds keyboard focus the cut lines unfold (data-display-layout.css). While the row
+ * holds focus its lines are skipped by the re-measure (unfolded, they measure as fitting) and
+ * re-measured on focusout; a consumer's own `title` is never overwritten.
+ */
+function useTruncatedLines(rowRef: React.RefObject<HTMLElement | null>, enabled: boolean) {
+  const mark = React.useCallback(() => {
+    const row = rowRef.current;
+    if (!row) return;
+    const rowFocusable =
+      row.matches(TRUNCATION_FOCUSABLE) || row.querySelector(TRUNCATION_FOCUSABLE) !== null;
+    for (const line of row.querySelectorAll<HTMLElement>('[data-slot="list-row-body"] > *')) {
+      // While the row holds focus its cut lines are UNFOLDED and measure as fitting — keep them.
+      if (row.contains(document.activeElement) && line.dataset.truncated !== undefined) continue;
+      const ownTitle = line.dataset.truncatedTitle !== undefined;
+      const part = truncatedPart(line);
+      if (part) {
+        line.dataset.truncated = "";
+        if ((!line.title || ownTitle) && (part === line || !part.title)) {
+          line.title = (part.textContent ?? "").replace(/\s+/g, " ").trim();
+          line.dataset.truncatedTitle = "";
+        }
+        if (!rowFocusable || line.dataset.truncatedStop !== undefined) {
+          line.tabIndex = 0;
+          line.dataset.truncatedStop = "";
+        }
+      } else if (line.dataset.truncated !== undefined) {
+        delete line.dataset.truncated;
+        if (ownTitle) {
+          line.removeAttribute("title");
+          delete line.dataset.truncatedTitle;
+        }
+        if (line.dataset.truncatedStop !== undefined) {
+          line.removeAttribute("tabindex");
+          delete line.dataset.truncatedStop;
+        }
+      }
+    }
+  }, [rowRef]);
+  React.useEffect(() => {
+    if (enabled) mark();
+  });
+  React.useEffect(() => {
+    const row = rowRef.current;
+    if (!enabled || !row || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(mark);
+    observer.observe(row);
+    const refold = () => requestAnimationFrame(mark);
+    row.addEventListener("focusout", refold);
+    return () => {
+      observer.disconnect();
+      row.removeEventListener("focusout", refold);
+    };
+  }, [enabled, mark, rowRef]);
+}
 
 /**
  * ListRow vertical/inline geometry — `default` (the roomy entity row) or `compact` (the
@@ -78,6 +141,16 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
     ref,
   ) => {
     const { t } = useTranslation();
+    const rowRef = React.useRef<HTMLDivElement | null>(null);
+    const setRef = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        rowRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      },
+      [ref],
+    );
+    useTruncatedLines(rowRef, overflow !== "wrap");
     // `asChild` hands the row element to the child, so it cannot ALSO be `as`. When both
     // are set the row is the child and `as` becomes the list item wrapping it.
     const item = asChild && as !== "div" ? (as as React.ElementType) : null;
@@ -108,7 +181,7 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
     );
     const row = (
       <Comp
-        ref={ref}
+        ref={setRef}
         data-slot="list-row"
         data-align={align === "start" ? "start" : undefined}
         data-overflow={overflow === "wrap" ? "wrap" : undefined}
