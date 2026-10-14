@@ -1813,33 +1813,33 @@
     margin-block-start: var(--prose-heading-space-block-start);
   }
 
+  /* `1em` = the prose's own size (a heading is a child of `.ui-prose`), so the scale follows the
+   * text it heads: a larger user text size, `data-size="sm"`, or a host font-size on the editor.
+   * The fallbacks were `--font-size-base` / `--prose-font-size` — fixed lengths — and under a
+   * text-only zoom the BlockEditor's h2 stayed 17.6px while its paragraphs went 14 → 28px: inside
+   * a ProseMirror view the per-element override is stripped, so only inherited size reaches the
+   * blocks, and a fixed length inherits nothing (gh#1320). */
   .ui-prose h1 {
     font-size: var(
       --heading-h1,
-      calc(
-        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
-          var(--font-size-ratio)
-      )
+      calc(1em * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio))
     );
   }
 
   .ui-prose h2 {
-    font-size: var(
-      --heading-h2,
-      calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
-    );
+    font-size: var(--heading-h2, calc(1em * var(--font-size-ratio) * var(--font-size-ratio)));
   }
 
   .ui-prose h3 {
-    font-size: var(--heading-h3, calc(var(--prose-font-size) * var(--font-size-ratio)));
+    font-size: var(--heading-h3, calc(1em * var(--font-size-ratio)));
   }
 
   .ui-prose h4 {
-    font-size: var(--heading-h4, var(--prose-font-size));
+    font-size: var(--heading-h4, 1em);
   }
 
   .ui-prose :is(h5, h6) {
-    font-size: var(--prose-font-size);
+    font-size: 1em;
   }
 
   .ui-prose :is(h4, h5, h6) {

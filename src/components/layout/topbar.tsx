@@ -129,6 +129,9 @@ function useCollapsesToMenu(
     if (typeof ResizeObserver === "undefined") return undefined;
     const observer = new ResizeObserver(update);
     observer.observe(bar);
+    // The clusters too: a larger text size grows their content while the bar's own box stays put,
+    // and only a cluster resize says so (gh#1320).
+    if (!collapsed) for (const cluster of bar.children) observer.observe(cluster);
     return () => observer.disconnect();
   }, [ref, enabled, collapsed]);
 

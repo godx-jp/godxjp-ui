@@ -26,6 +26,8 @@ type Evidence = {
   viewport: string;
   mode: string;
   applied: boolean;
+  appliedRatio: number;
+  notTaken: { selector: string; text: string }[];
   delta: { movedTextElements: number; maxShiftPx: number; documentHeightPx: number };
   c01: string;
   screenshots: { base: string; override: string } | null;
@@ -111,12 +113,14 @@ describe("visual-audit evidence modes (gh#1316)", { timeout: 180_000 }, () => {
       "reflows.html",
       "clips.html",
       "csp-blocked.html",
+      "resists.html",
+      "exempt.html",
     ]));
   }, 180_000);
 
   it("reports one evidence entry per route × width × mode", () => {
     expect(result, out).not.toBeNull();
-    expect(result!.evidence, out).toHaveLength(3 * 2 * 2);
+    expect(result!.evidence, out).toHaveLength(5 * 2 * 2);
   });
 
   it("a page that reflows: applied with a geometry delta, C01 passes, screenshots saved", () => {
@@ -170,6 +174,52 @@ describe("visual-audit evidence modes (gh#1316)", { timeout: 180_000 }, () => {
   });
 });
 
+describe(
+  "visual-audit evidence: a partially applied override (gh#1320)",
+  { timeout: 180_000 },
+  () => {
+    let result: Result | null = null;
+    let out = "";
+
+    beforeAll(async () => {
+      ({ result, out } = await audit([
+        "--widths",
+        "1280x900",
+        "--text-zoom",
+        "200",
+        base,
+        "resists.html",
+        "exempt.html",
+      ]));
+    }, 180_000);
+
+    it("one visible heading that keeps its size fails the cell and is named", () => {
+      expect(result, out).not.toBeNull();
+      const e = at(result!, "resists.html", "text-zoom", "1280x900")!;
+      expect(e.applied, JSON.stringify(e)).toBe(false);
+      expect(e.appliedRatio).toBeLessThan(1);
+      expect(e.notTaken).toEqual([
+        expect.objectContaining({ selector: "main#content > h2#onboarding", text: "Onboarding" }),
+      ]);
+      expect(e.c01).toBe("not-run");
+      const error = result!.errors.find(
+        (x) => x.url?.endsWith("resists.html") && x.stage === "text-zoom",
+      );
+      expect(error?.message, JSON.stringify(result!.errors)).toMatch(
+        /override partially applied: 1 of \d+ visible text elements did not take it — main#content > h2#onboarding "Onboarding"/,
+      );
+    });
+
+    it("text that resists but is not seen (aria-hidden, sr-only, hidden) is exempt: applied", () => {
+      const e = at(result!, "exempt.html", "text-zoom", "1280x900")!;
+      expect(e.applied, JSON.stringify(e)).toBe(true);
+      expect(e.appliedRatio).toBeLessThan(1);
+      expect(e.notTaken).toEqual([]);
+      expect(e.c01).toBe("pass");
+    });
+  },
+);
+
 describe("textOverrideVerdict (pure)", () => {
   const snap = (fontPx: number, ls: number, ws: number, h: number) => ({
     texts: [{ x: 0, y: 0, w: 100, h, fontPx, letterSpacingPx: ls, wordSpacingPx: ws }],
@@ -188,6 +238,63 @@ describe("textOverrideVerdict (pure)", () => {
       zoom: 200,
     });
     expect(v.applied).toBe(false);
+  });
+
+  it("a visible element that kept its size is listed and fails; an exempt one is not", () => {
+    const t = (key: string, fontPx: number, h: number, exempt = false) => ({
+      x: 0,
+      y: 0,
+      w: 100,
+      h,
+      fontPx,
+      letterSpacingPx: 0,
+      wordSpacingPx: 0,
+      selector: key,
+      text: key,
+      key: `${key}|${key}`,
+      exempt,
+    });
+    const before = {
+      texts: [t("p", 10, 20), t("h2", 12, 20), t("i", 8, 8, true)],
+      docHeight: 60,
+      docWidth: 100,
+    };
+    const after = {
+      texts: [t("p", 20, 40), t("h2", 12, 20), t("i", 8, 8, true)],
+      docHeight: 80,
+      docWidth: 100,
+    };
+    const v = textOverrideVerdict("text-zoom", before, after, { zoom: 200 });
+    expect(v.applied).toBe(false);
+    expect(v.reason).toMatch(/override partially applied: 1 of 3 .* h2 "h2"/);
+    expect(v.notTaken).toEqual([
+      expect.objectContaining({ selector: "h2", gotPx: 12, expectedPx: 24 }),
+    ]);
+  });
+
+  it("pairs by key when the list changed (a bar folded away under larger text)", () => {
+    const t = (key: string, fontPx: number) => ({
+      x: 0,
+      y: 0,
+      w: 100,
+      h: fontPx * 2,
+      fontPx,
+      letterSpacingPx: 0,
+      wordSpacingPx: 0,
+      selector: key,
+      text: key,
+      key: `${key}|${key}`,
+      exempt: false,
+    });
+    const before = {
+      texts: [t("account", 10), t("h1", 20), t("p", 10)],
+      docHeight: 60,
+      docWidth: 100,
+    };
+    const after = { texts: [t("h1", 40), t("p", 20)], docHeight: 120, docWidth: 100 };
+    const v = textOverrideVerdict("text-zoom", before, after, { zoom: 200 });
+    expect(v).toMatchObject({ applied: true, appliedRatio: 1, notTaken: [] });
+    expect(v.delta.textElements).toBe(2);
   });
 
   it("values taken and geometry moved: applied, with the delta reported", () => {
