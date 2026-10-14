@@ -26,6 +26,14 @@
   --legal-document-column-gap: var(--space-10);
   /* Sticky table-of-contents rail width (two-column mode only). */
   --legal-document-toc-width: 15rem;
+  /* Page inline margin of a shell used BARE, the way a public reader page uses it (gh#1296):
+   * default = --space-page-x, --space-page-compact-x at ≤720px, resolved at the call site
+   * because both re-derive under a density scope. Inside PageContainer / CenteredShell, which
+   * already pad, it resolves to 0 so the gutter is never doubled. */
+  --legal-document-page-padding-inline: initial;
+  /* Document title size — two type-scale steps above a section heading, so the h1 reads as the
+   * page title and not as one more section (gh#1296). Default = the --font-size-2xl step. */
+  --legal-document-title-font-size: initial;
   /* Distance the pinned rail keeps from the top of the scrollport. */
   --legal-document-toc-inset-block-start: var(--space-6);
   /* Cap for a long contents list so the rail never outgrows the viewport. */

@@ -703,8 +703,8 @@ export const COMPONENTS: ComponentEntry[] = [
       {
         name: "title",
         type: "string",
-        required: true,
-        description: "Page heading rendered as <h1>.",
+        description:
+          "Page heading rendered as <h1>. OPTIONAL when the content draws its own heading (a document reader, LegalDocumentShell): omitted, no <h1> is rendered and a header with no other slot is dropped. The page must then still have exactly one <h1> from its content; `titleRef` has nothing to attach to.",
       },
       { name: "subtitle", type: "string", description: "Secondary line beneath the title." },
       {
@@ -2798,7 +2798,7 @@ export function MaintenancePage() {
         type: "ReactNode",
         required: true,
         description:
-          "Document title — the <h1> that names the <article> (e.g. 'Terms of Service').",
+          "Document title — the <h1> that names the <article> (e.g. 'Terms of Service'). Sized two type steps above the section <h2>s (--legal-document-title-font-size, default the --font-size-2xl step) so the page does not read flat. Around it, PageContainer may omit `title` so this stays the page's only <h1>.",
       },
       {
         name: "sections",
@@ -2818,6 +2818,13 @@ export function MaintenancePage() {
         type: "string",
         description:
           "ISO 8601 calendar date (yyyy-MM-dd) or a full ISO instant. Formatted with Intl.DateTimeFormat in the active locale and emitted inside <time dateTime={effectiveDate}>, so the machine-readable value is always the ISO input. NEVER pass a pre-formatted date string.",
+      },
+      {
+        name: "dateKind",
+        type: '"effective" | "updated"',
+        defaultValue: '"effective"',
+        description:
+          "What the date means, which picks its localized caption: 'effective' (施行日 / Effective, a policy in force from that date) or 'updated' (更新日 / Updated, a wiki page or help article last revised). Never prefix a label of your own to the date: word order differs per locale.",
       },
       {
         name: "summary",
@@ -5629,7 +5636,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "label",
         type: "string",
         description:
-          "Text label beside/below the bar; it also becomes the accessible name. Pass `aria-labelledby` instead when the name is ALREADY on screen (a row's company name, a card heading) — the bar then borrows it rather than repeating it.",
+          "VISIBLE caption beside/below the bar; it also becomes the accessible name. (Unlike Anchor `label`, which is screen-reader-only: there the name is never drawn.) Pass `aria-labelledby` instead when the name is ALREADY on screen (a row's company name, a card heading) — the bar then borrows it rather than repeating it.",
       },
       {
         name: "tone",
@@ -18530,7 +18537,7 @@ const [pinned, setPinned] = useState(false);
         name: "label",
         type: "string",
         description:
-          'Accessible name of the <nav> landmark. antd ships an unnamed <div>; a page routinely carries a breadcrumb, a rail and this, so a localized default ("On this page") applies when omitted.',
+          'SCREEN-READER-ONLY accessible name of the <nav> landmark — it is never drawn (unlike Progress `label`, which is a visible caption). Need a visible heading over the links? Render a Heading yourself and keep this as the landmark name. antd ships an unnamed <div>; a page routinely carries a breadcrumb, a rail and this, so a localized default ("On this page") applies when omitted.',
       },
       {
         name: "onChange / offsetTop / targetOffset",

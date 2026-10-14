@@ -127,7 +127,20 @@ function PageContainerRoot({
   children,
   className,
 }: PageContainerProp) {
-  const reveal = stickyFooter && footer != null && footerReveal === "onScroll";
+  // gh#1296 — `title` is optional for content that draws its own <h1>. Omitted, no <h1> is
+  // rendered (an empty heading is axe `empty-heading`), and a header with nothing in it is dropped.
+  const hasTitle = title != null && title !== false && title !== "";
+  const hasIcon = icon != null && icon !== false;
+  const { start: extraStart, end: extraEnd } = resolvePageExtra(extra);
+  const hasHeading = headerLoading || hasTitle || hasIcon || status != null || !!subtitle;
+  const hasBreadcrumb = !!breadcrumb && breadcrumb.length > 0;
+  // Read off the PageCover element below; only an eyecatch cover sits inside the header.
+  const hasEyecatch =
+    isValidElement<{ variant?: string }>(cover) && cover.props.variant === "eyecatch";
+  const hasHeader =
+    hasHeading || hasBreadcrumb || hasEyecatch || extraStart != null || extraEnd != null;
+  // With no header there is nothing to scroll past, so an onScroll footer simply shows.
+  const reveal = stickyFooter && footer != null && footerReveal === "onScroll" && hasHeader;
   const { headerRef, revealed } = useFooterReveal(reveal);
   // gh#1271 — while the sticky footer is on screen, the Toaster lifts its stack above it instead of
   // covering the primary action. A reveal footer that is still parked below the fold publishes
@@ -135,7 +148,6 @@ function PageContainerRoot({
   const footerRef = useRef<HTMLElement>(null);
   useToastStickyBarClearance([footerRef], stickyFooter && !!footer && (!reveal || revealed));
   const { t } = useTranslation();
-  const { start: extraStart, end: extraEnd } = resolvePageExtra(extra);
   // Spread on EVERY `<h1>` branch below, so the ref follows the heading through loading → loaded.
   const titleFocus = titleRef === undefined ? undefined : { ref: titleRef, tabIndex: -1 };
   // A banner cover spans the page edge to edge above the header; an eyecatch sits in the header's
@@ -173,113 +185,117 @@ function PageContainerRoot({
       )}
     >
       {coverVariant === "banner" ? <div className="ui-page-cover-slot">{cover}</div> : null}
-      <header
-        ref={headerRef}
-        className="ui-page-header"
-        data-layout={headerLayout}
-        // Only emitted while pending, so a settled header carries no ARIA state at all.
-        aria-busy={headerLoading ? "true" : undefined}
-      >
-        {breadcrumb && breadcrumb.length > 0 && (
-          <nav
-            aria-label={
-              breadcrumbLabel ?? breadcrumbAriaLabel ?? t("navigation.breadcrumb.ariaLabel")
-            }
-            className="ui-breadcrumb"
-          >
-            <ol className="ui-breadcrumb-list" data-ellipsis={trailEllipsis(breadcrumb)}>
-              {breadcrumb.map((item, i) => {
-                const isLast = i === breadcrumb.length - 1;
-                return (
-                  // `--space-inline-xs` gap the previous `.ui-inline-xs` gave, and it brings
-                  // `.ui-breadcrumb-item svg { 0.75rem }` with it, so the separator glyph no
-                  // longer carries a `size-3` literal. It also drops `.ui-inline-xs`'s
-                  // `flex-wrap: wrap` — a crumb must not break between its label and its
-                  // chevron; the LIST wraps instead, exactly as <Breadcrumb> already behaves.
-                  <li
-                    key={i}
-                    className="ui-breadcrumb-item"
-                    data-ellipsis={item.ellipsis ? "" : undefined}
+      {hasHeader && (
+        <header
+          ref={headerRef}
+          className="ui-page-header"
+          data-layout={headerLayout}
+          // Only emitted while pending, so a settled header carries no ARIA state at all.
+          aria-busy={headerLoading ? "true" : undefined}
+        >
+          {hasBreadcrumb && (
+            <nav
+              aria-label={
+                breadcrumbLabel ?? breadcrumbAriaLabel ?? t("navigation.breadcrumb.ariaLabel")
+              }
+              className="ui-breadcrumb"
+            >
+              <ol className="ui-breadcrumb-list" data-ellipsis={trailEllipsis(breadcrumb)}>
+                {breadcrumb.map((item, i) => {
+                  const isLast = i === breadcrumb.length - 1;
+                  return (
+                    // `--space-inline-xs` gap the previous `.ui-inline-xs` gave, and it brings
+                    // `.ui-breadcrumb-item svg { 0.75rem }` with it, so the separator glyph no
+                    // longer carries a `size-3` literal. It also drops `.ui-inline-xs`'s
+                    // `flex-wrap: wrap` — a crumb must not break between its label and its
+                    // chevron; the LIST wraps instead, exactly as <Breadcrumb> already behaves.
+                    <li
+                      key={i}
+                      className="ui-breadcrumb-item"
+                      data-ellipsis={item.ellipsis ? "" : undefined}
+                    >
+                      {item.to && !isLast ? (
+                        <BreadcrumbCrumbText item={item}>
+                          <LinkComponent
+                            href={item.to}
+                            to={item.to}
+                            className="hover:text-foreground hover:underline"
+                          >
+                            {item.label}
+                          </LinkComponent>
+                        </BreadcrumbCrumbText>
+                      ) : (
+                        <BreadcrumbCrumbText item={item}>
+                          <span
+                            className={isLast ? "text-foreground" : ""}
+                            aria-current={isLast ? "page" : undefined}
+                          >
+                            {item.label}
+                          </span>
+                        </BreadcrumbCrumbText>
+                      )}
+                      {!isLast && <ChevronRight aria-hidden="true" />}
+                    </li>
+                  );
+                })}
+              </ol>
+            </nav>
+          )}
+          {coverVariant === "eyecatch" ? <div className="ui-page-cover-slot">{cover}</div> : null}
+          <div className="ui-page-header-row">
+            {hasHeading && (
+              <div className="ui-page-header-heading">
+                {hasIcon ? <div className="ui-page-header-icon">{icon}</div> : null}
+                {}
+                {/* It BECOMES the placeholder by wearing the library's own `ui-skeleton-block` skin rather than wrapping a `<Skeleton>` element: `<h1>` takes phrasing content, so nesting Skeleton's `<div>` inside it is invalid HTML. The visible name is sr-only text, because a heading rendered as a bare decorative box is an EMPTY heading (axe `empty-heading`, WCAG 1.3.1). */}
+                {headerLoading ? (
+                  <h1
+                    {...titleFocus}
+                    className="ui-page-title ui-skeleton-block ui-page-title-placeholder"
                   >
-                    {item.to && !isLast ? (
-                      <BreadcrumbCrumbText item={item}>
-                        <LinkComponent
-                          href={item.to}
-                          to={item.to}
-                          className="hover:text-foreground hover:underline"
-                        >
-                          {item.label}
-                        </LinkComponent>
-                      </BreadcrumbCrumbText>
-                    ) : (
-                      <BreadcrumbCrumbText item={item}>
-                        <span
-                          className={isLast ? "text-foreground" : ""}
-                          aria-current={isLast ? "page" : undefined}
-                        >
-                          {item.label}
-                        </span>
-                      </BreadcrumbCrumbText>
+                    <span className="sr-only">{t("layout.pageHeader.loading")}</span>
+                  </h1>
+                ) : status != null ? (
+                  <div className="ui-page-header-title-row">
+                    {hasTitle && (
+                      <h1 {...titleFocus} className="ui-page-title">
+                        {title}
+                      </h1>
                     )}
-                    {!isLast && <ChevronRight aria-hidden="true" />}
-                  </li>
-                );
-              })}
-            </ol>
-          </nav>
-        )}
-        {coverVariant === "eyecatch" ? <div className="ui-page-cover-slot">{cover}</div> : null}
-        <div className="ui-page-header-row">
-          <div className="ui-page-header-heading">
-            {icon != null && icon !== false ? (
-              <div className="ui-page-header-icon">{icon}</div>
-            ) : null}
-            {}
-            {/* It BECOMES the placeholder by wearing the library's own `ui-skeleton-block` skin rather than wrapping a `<Skeleton>` element: `<h1>` takes phrasing content, so nesting Skeleton's `<div>` inside it is invalid HTML. The visible name is sr-only text, because a heading rendered as a bare decorative box is an EMPTY heading (axe `empty-heading`, WCAG 1.3.1). */}
-            {headerLoading ? (
-              <h1
-                {...titleFocus}
-                className="ui-page-title ui-skeleton-block ui-page-title-placeholder"
-              >
-                <span className="sr-only">{t("layout.pageHeader.loading")}</span>
-              </h1>
-            ) : status != null ? (
-              <div className="ui-page-header-title-row">
-                <h1 {...titleFocus} className="ui-page-title">
-                  {title}
-                </h1>
-                <div className="ui-page-header-status">{status}</div>
+                    <div className="ui-page-header-status">{status}</div>
+                  </div>
+                ) : hasTitle ? (
+                  <h1 {...titleFocus} className="ui-page-title">
+                    {title}
+                  </h1>
+                ) : null}
+                {headerLoading ? (
+                  // Decorative only — the pending state is already announced once by the heading above,
+                  // so a second live placeholder here would double-announce it.
+                  <p
+                    className="ui-page-subtitle ui-skeleton-block ui-page-subtitle-placeholder"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  subtitle && <p className="ui-page-subtitle">{subtitle}</p>
+                )}
               </div>
-            ) : (
-              <h1 {...titleFocus} className="ui-page-title">
-                {title}
-              </h1>
             )}
-            {headerLoading ? (
-              // Decorative only — the pending state is already announced once by the heading above,
-              // so a second live placeholder here would double-announce it.
-              <p
-                className="ui-page-subtitle ui-skeleton-block ui-page-subtitle-placeholder"
-                aria-hidden="true"
-              />
-            ) : (
-              subtitle && <p className="ui-page-subtitle">{subtitle}</p>
-            )}
-          </div>
-          {/* Both sub-slots are direct children of the ONE `.ui-page-header-extra` box, in source
+            {/* Both sub-slots are direct children of the ONE `.ui-page-header-extra` box, in source
               order, so the DOM order IS the reading order and the box's existing wrap + gap apply
               to the pair with no second container. Neither side is wrapped: `.ui-page-header-extra
               > .ui-flex[data-direction="row"]` is the tested overflow fix that keeps an action
               group from running over the `<h1>`, and it matches DIRECT children only, so a wrapper
               would silently disarm it. Unused ⇒ nothing is rendered at all. */}
-          {(extraStart != null || extraEnd != null) && (
-            <div className="ui-page-header-extra">
-              {extraStart}
-              {extraEnd}
-            </div>
-          )}
-        </div>
-      </header>
+            {(extraStart != null || extraEnd != null) && (
+              <div className="ui-page-header-extra">
+                {extraStart}
+                {extraEnd}
+              </div>
+            )}
+          </div>
+        </header>
+      )}
 
       {/* It is a SIBLING of `.ui-page-body`, never a child, because under `fill` the body is the scroll viewport: as a `flex: none` sibling the band stays put and the transcript scrolls beneath NOTHING, whereas a `position: sticky` strip inside the scroller keeps content flowing under it (the half-sliced row a hand-laid page chrome always produces). Absent → no element and no gap at all. */}
       {toolbar != null && (

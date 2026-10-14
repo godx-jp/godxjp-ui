@@ -4959,6 +4959,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Sticky table-of-contents rail width (two-column mode only)."
   },
   {
+    "name": "--legal-document-page-padding-inline",
+    "value": "initial",
+    "description": "Page inline margin of a shell used BARE, the way a public reader page uses it (gh#1296): default = --space-page-x, --space-page-compact-x at ≤720px, resolved at the call site because both re-derive under a density scope. Inside PageContainer / CenteredShell, which already pad, it resolves to 0 so the gutter is never doubled."
+  },
+  {
+    "name": "--legal-document-title-font-size",
+    "value": "initial",
+    "description": "Document title size — two type-scale steps above a section heading, so the h1 reads as the page title and not as one more section (gh#1296). Default = the --font-size-2xl step."
+  },
+  {
     "name": "--legal-document-toc-inset-block-start",
     "value": "var(--space-6)",
     "description": "Distance the pinned rail keeps from the top of the scrollport."

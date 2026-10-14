@@ -270,6 +270,29 @@ describe("LegalDocumentShell", () => {
     expect(document.querySelector("time")).toHaveTextContent("施行日 2026年4月1日");
   });
 
+  it('dateKind="updated" captions the date as a revision, not an effective date (gh#1296)', () => {
+    for (const [locale, text] of [
+      ["en", "Updated April 1, 2026"],
+      ["ja", "更新日 2026年4月1日"],
+      ["vi", "Cập nhật"],
+    ] as const) {
+      const { unmount } = renderLocalized(
+        <LegalDocumentShell
+          title="Wiki"
+          effectiveDate="2026-04-01"
+          dateKind="updated"
+          sections={SECTIONS}
+        />,
+        locale,
+      );
+      const time = document.querySelector("time");
+      expect(time).toHaveAttribute("datetime", "2026-04-01");
+      expect(time).toHaveTextContent(text);
+      expect(time).not.toHaveTextContent(/Effective|施行日|Hiệu lực/);
+      unmount();
+    }
+  });
+
   it("renders the contentsLabel override, the documentNavigation slot and the footerAction slot", () => {
     renderWithUi(
       <LegalDocumentShell

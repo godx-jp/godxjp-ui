@@ -83,7 +83,13 @@ export type PageContainerExtraProp = ExtraProp | { start?: ReactNode; end?: Reac
 export type PageContainerProp = {
   toolbarPad?: PadProp;
   footerPad?: PadProp;
-  title: TitleProp;
+  /**
+   * The page's `<h1>`. Optional for a page whose CONTENT draws its own heading (a document reader,
+   * a LegalDocumentShell): omitted, PageContainer renders no `<h1>` at all, and a header with no
+   * other slot is not rendered. The page must then still have exactly one `<h1>` — from the
+   * content (WCAG 1.3.1 / 2.4.6); `titleRef` has nothing to attach to.
+   */
+  title?: TitleProp;
   subtitle?: SubtitleProp;
   /**
    * Status/meta band rendered beside the title inside the heading — StatusBadge, environment tag,
@@ -1757,6 +1763,12 @@ export type LegalDocumentShellProp = {
    * `<time dateTime={effectiveDate}>`, so the machine-readable value is always the ISO input.
    */
   effectiveDate?: string;
+  /**
+   * What the date in `effectiveDate` means, which picks its localized caption: `"effective"`
+   * (default — 「施行日」 / "Effective", a policy in force from that date) or `"updated"`
+   * (「更新日」 / "Updated", a wiki page or help article last revised on that date).
+   */
+  dateKind?: "effective" | "updated";
   /** Short plain-language summary rendered under the metadata, above the contents. */
   summary?: ReactNode;
   /** Accessible name + visible caption of the contents `<nav>` (e.g. "Contents"). */

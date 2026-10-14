@@ -76,6 +76,7 @@ export const LegalDocumentShell = React.forwardRef<HTMLDivElement, LegalDocument
       title,
       version,
       effectiveDate,
+      dateKind = "effective",
       summary,
       contentsLabel,
       sections,
@@ -226,9 +227,14 @@ export const LegalDocumentShell = React.forwardRef<HTMLDivElement, LegalDocument
                   // <time dateTime> keeps the MACHINE-readable value as the ISO 8601 input while
                   // the visible text is the Intl-formatted, locale-correct rendering.
                   <time dateTime={effectiveDate}>
-                    {t("layout.legalDocumentShell.effectiveDate", {
-                      date: formatEffectiveDate(effectiveDate, locale),
-                    })}
+                    {t(
+                      dateKind === "updated"
+                        ? "layout.legalDocumentShell.updatedDate"
+                        : "layout.legalDocumentShell.effectiveDate",
+                      {
+                        date: formatEffectiveDate(effectiveDate, locale),
+                      },
+                    )}
                   </time>
                 )}
               </div>

@@ -26,7 +26,7 @@
       "type": "string"
     },
     {
-      "description": "Text label beside/below the bar; it also becomes the accessible name. Pass `aria-labelledby` instead when the name is ALREADY on screen (a row's company name, a card heading) — the bar then borrows it rather than repeating it.",
+      "description": "VISIBLE caption beside/below the bar; it also becomes the accessible name. (Unlike Anchor `label`, which is screen-reader-only: there the name is never drawn.) Pass `aria-labelledby` instead when the name is ALREADY on screen (a row's company name, a card heading) — the bar then borrows it rather than repeating it.",
       "name": "label",
       "type": "string"
     },

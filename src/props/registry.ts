@@ -1526,6 +1526,12 @@ export const COMPONENT_PROP_REGISTRY = {
         reason: "ISO 8601 date input formatted via Intl.DateTimeFormat in the active locale.",
       },
       {
+        field: "dateKind",
+        local: true,
+        reason:
+          "Meaning of the date (effective | updated) — selects the localized caption, so the consumer never concatenates a label with a formatted date.",
+      },
+      {
         field: "summary",
         local: true,
         reason: "Plain-language document summary slot, distinct from a page SubtitleProp.",
