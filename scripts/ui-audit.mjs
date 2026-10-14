@@ -1836,7 +1836,7 @@ function* formOnListPageMatches(source) {
         const attrs = topLevelAttrs(openTag);
         // No onSubmit / action / spread: the Form cannot submit, so it is a filter or parameter
         // bar laid out with FormFields, like the NO_OP_SUBMIT shape.
-        const submits = /\b(?:onSubmit|action)\s*=|\{\s*\.\.\./.test(attrs);
+        const submits = /\b(?:onSubmit|action)\s*=/.test(attrs) || /\{\s*\.\.\./.test(openTag);
         const skip = overlay || !submits || NO_OP_SUBMIT.test(openTag);
         opened.push({ index, openTag, scope, skip, fields: 0 });
       }

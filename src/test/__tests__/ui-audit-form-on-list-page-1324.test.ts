@@ -136,6 +136,9 @@ ${form(5)}
   it("does not flag a Form with no onSubmit, and does not count a label={false} slot", () => {
     const bar = form(3).replace(" onSubmit={save}", ' layout="horizontal"');
     expect(findings(page(`<Flex>\n${bar}\n${table}\n</Flex>`))).toHaveLength(0);
+    // A spread may carry the onSubmit, so it counts as submitting.
+    const spread = form(3).replace(" onSubmit={save}", " {...formProps}");
+    expect(findings(page(`<Flex>\n${spread}\n${table}\n</Flex>`))).toHaveLength(1);
     const signOff = form(2).replace(
       "  </Form>",
       `    <FormField label={false}><Button type="submit">Sign</Button></FormField>\n  </Form>`,
