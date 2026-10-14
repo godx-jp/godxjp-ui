@@ -525,7 +525,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-label-letter-spacing",
-    "value": "0.04em",
+    "value": "normal",
+    "description": "gh#1305 (ADR C12): sentence case, no tracking by default; a theme opts into small caps."
+  },
+  {
+    "name": "--stat-card-label-letter-case",
+    "value": "none",
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
@@ -2882,6 +2887,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--block-editor-gutter-inline-size",
     "value": "calc(2 * var(--control-height-xs) + var(--space-2))",
     "description": "@godxjp/block-editor (gh#1156): the start gutter the ⋮⋮ / + handle sits in, and the editing surface's minimum height (an empty body is still a target you can click into)."
+  },
+  {
+    "name": "--block-editor-compact-gutter-inline-size",
+    "value": "var(--block-editor-frame-padding)",
+    "description": "Below 40rem the gutter collapses to this (ADR C05: first line ≤24px from the inner edge) and the handle rises above the caret's block at its inline end instead of sitting beside it."
   },
   {
     "name": "--block-editor-min-height",
@@ -6929,6 +6939,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--sidebar-section-label-letter-case",
+    "value": "none",
+    "description": "Section label case and tracking (gh#1305, ADR C12): default sentence case, no tracking — tiny letter-spaced capitals (11px, 0.08em) are the classic \"AI dashboard\" eyebrow. A theme that wants small caps back sets both."
+  },
+  {
+    "name": "--sidebar-section-label-letter-spacing",
+    "value": "normal",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
     "name": "--sidebar-product-tenant-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
@@ -7317,6 +7337,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--topbar-center-compact-display",
     "value": "none",
     "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. At compact desktop/tablet widths the docked sidebar leaves too little inline room for three intrinsically-sized clusters, so the package hides the optional center slot before it can cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a global search trigger placed in `center` is INVISIBLE from 1100px down — including on every phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot for consumers who never changed a line of their own code (gh#12); it stays because the overlap it prevents is a real defect and flipping a shipped default twice is worse than documenting it once, but it is a DECISION, not an accident: :root { --topbar-center-compact-display: flex; } ← restore the slot at every width Opt back in only once the center content has a compact presentation of its own (an icon-only search trigger, a collapsing field). A page-local media query is the anti-pattern this knob replaces."
+  },
+  {
+    "name": "--topbar-search-min-text-inline-size",
+    "value": "8ch",
+    "description": "TopbarSearch (ADR C02): the inline field's TEXT AREA never shrinks below this — measured after the icon and clear/shortcut padding, in the field's own font. Below its `collapseBelow` step the field folds to a search cell instead of shrinking. 8ch is a repo-chosen policy, not a standard."
+  },
+  {
+    "name": "--topbar-search-inline-size",
+    "value": "16rem",
+    "description": "The inline field's preferred width from the step up; it shrinks toward the floor above."
   },
   {
     "name": "--topbar-item-padding-inline",

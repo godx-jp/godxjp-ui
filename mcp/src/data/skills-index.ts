@@ -1145,9 +1145,11 @@ node node_modules/@godxjp/ui/scripts/visual-audit.mjs <url>. i18n: zero hardcode
 strings — every label + aria-label through t(), format numbers/dates via Intl. Then:
 typecheck + lint clean, node node_modules/@godxjp/ui/scripts/ui-audit.mjs at zero
 errors (\`pnpm audit\` is npm's vulnerability check, not this), console clean.
-Finally screenshot at 390 / 768 / 1280 beside the handoff and fix the top 3 differences;
-at most 3 rounds (atoms never wrap, containers wrap with row-gap, tabs horizontal-scroll,
-heights never break).`,
+Finally \`npx @godxjp/ui visual-audit <url> <routes>\` at 320 / 390 / 768 / 1024 / 1280 /
+844×390 to zero machine failures, and inspect every screenshot beside the handoff at every
+width, region by region (atoms never wrap, containers wrap with row-gap, tabs
+horizontal-scroll, heights never break). No top-N or round cap; report "probes passed;
+independent acceptance pending" — the builder never accepts its own screen.`,
       },
       {
         id: "report-bug",
@@ -1277,9 +1279,11 @@ open; multi-step selections (date range, capped multi-select) can be restarted f
 complete state, not trapped; controlled mirrors update both directions. Run the app's
 build: typecheck + lint clean, console clean, and eyeball at 390 / 768 / 1280 (atoms
 never wrap, containers wrap with row-gap, natural-width components stay w-fit, no
-decorative edge fades, no dead grey panes). Then screenshot at 390 / 768 / 1280 next to
-the get_exemplar reference, list the top 3 differences, fix them, repeat — at most 3
-rounds. If a failure traces to @godxjp/ui itself, do not fake around it — see report-bug.`,
+decorative edge fades, no dead grey panes). Then \`npx @godxjp/ui visual-audit <url> <routes>\`
+(6 widths) to zero machine failures, and inspect every screenshot next to the get_exemplar
+reference at every width, region by region — top bar, header, body, aside/rail, menus —
+including regions you must not change. No top-N or round cap; report "probes passed;
+independent acceptance pending". If a failure traces to @godxjp/ui itself, do not fake around it — see report-bug.`,
       },
       {
         id: "report-bug",

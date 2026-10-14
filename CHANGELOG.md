@@ -6,6 +6,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.9.0] - 2026-10-14
+
+Why a consumer agent declared godx-content's redesign done while the owner found its defects in
+seconds (#1305): the builder graded itself, one width was reviewed, the only measurement was
+`document.scrollWidth` (WCAG 1.4.10 has two halves — it checks "no two-way scroll" and is blind to
+"no lost information"; a squeezed search with a clipped icon passes it), `visual-audit` ran one
+1280 viewport, and the loop said "fix the top 3, max 3 rounds". The rules below were chosen in a
+codex debate (option C — calibrated probes plus independent acceptance — 78.5 vs 73 vs 70; dissent
+recorded in the ADR).
+
+### ✨ Added
+
+- **`visual-audit` runs every route at 320×900, 390×844, 768×1024, 1024×900, 1280×900 and 844×390**
+  (`--widths` overrides) with responsive probes, each calibrated on its own bad / repaired /
+  legitimate-clean fixtures (37 pages; the 32.8 script finds none of the 17 bad cases):
+  `c01-content-reachable` (overflow AND clipped ink, WCAG 1.4.10), `c02-search-usable` (≥8ch or a
+  trigger), `c04-compact-account-name` (avatar only on a phone), `c05-compact-editor-inset` (≤24px),
+  `c06-compact-actions` (≤2 direct + overflow; targets ≥24px, WCAG 2.5.8), `c10-rail-toggle-attached`,
+  `c11-search-keyline`, `c12-tracked-uppercase-label`; checklist rules c03/c07/c08/c09. Advisory
+  until the pilot promotes them; thresholds labelled repo-chosen or WCAG. JSON gains `unmapped[]`
+  (reviewer required, never a pass), a per-width `matrix[]` with the reviewer checklist, and
+  `acceptance`. A clean run prints "probes passed; independent acceptance pending".
+- **`TopbarSearch`** (layout): below `collapseBelow` (default `sm`) the bar search folds to a named
+  search button that opens across the bar; its text area never drops below 8ch (it was 0ch at 390
+  in godx-content's bar). Escape/close return focus.
+- Tokens `--topbar-search-min-text-inline-size`, `--topbar-search-inline-size`,
+  `--block-editor-compact-gutter-inline-size`, `--sidebar-section-label-letter-case`,
+  `--sidebar-section-label-letter-spacing`, `--stat-card-label-letter-case`.
+
+### 🔄 Changed
+
+- **The consumer loop** (DESIGN.md, the synced CLAUDE.md block and workflow, MCP `instructions`,
+  START-HERE, compose-a-screen/design-to-page): 6-width `visual-audit` to zero machine failures,
+  every screenshot inspected region by region (including regions you must not change), no top-N or
+  round cap, and the builder never accepts its own screen — it hands over "probes passed;
+  independent acceptance pending".
+- **BlockEditor below 40rem** collapses its handle gutter (first line 56px → 12px from the inner
+  edge); the handle floats above the active block; touch: tap shows it, ⋮⋮ opens move/duplicate/delete.
+- **Sidebar section labels and StatCard labels** default to sentence case without tracking (they
+  were 11px uppercase at 0.08em — every app with a Sidebar failed C12); tokens opt back in.
+- `--strict` also fails on probe warnings.
+
+### 🐛 Fixed
+
+- `visual-audit --format json` no longer truncates large reports (exit before stdout flushed).
+
 ## [32.8.0] - 2026-10-14
 
 ### ✨ Added

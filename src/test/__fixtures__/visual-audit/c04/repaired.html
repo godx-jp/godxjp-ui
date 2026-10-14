@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C04 repaired: avatar-only trigger opens the identity menu</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+      @media (max-width: 599px) { .name { display: none; } }
+    </style>
+  </head>
+  <body>
+    <header class="app-topbar" style="display: flex; justify-content: flex-end; padding: 8px">
+      <button id="c04-ok" data-slot="topbar-item" aria-label="Account" aria-haspopup="menu" style="display: flex; align-items: center; gap: 8px">
+        <span data-slot="topbar-item-icon"><span data-slot="avatar">FA</span></span>
+        <span data-slot="topbar-item-label" class="name">Famgia Info</span>
+      </button>
+    </header>
+    <div id="c04-ok-menu" role="menu" hidden><div role="menuitem">Famgia Info</div><a role="menuitem" href="#logout">Log out</a></div>
+    <script>
+      const t = document.getElementById("c04-ok");
+      const m = document.getElementById("c04-ok-menu");
+      t.addEventListener("click", () => { m.hidden = false; t.setAttribute("aria-expanded", "true"); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") { m.hidden = true; t.setAttribute("aria-expanded", "false"); } });
+    </script>
+  </body>
+</html>

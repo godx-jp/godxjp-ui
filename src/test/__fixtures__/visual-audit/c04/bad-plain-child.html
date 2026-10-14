@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C04 bad: name as a plain child under a menu trigger (no label slot)</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+    </style>
+  </head>
+  <body>
+    <!-- The shape <DropdownMenuTrigger asChild><TopbarItem icon={<Avatar/>}>{name}</TopbarItem> renders:
+         the trigger's data-slot wins the merge, only .ui-topbar-item survives, and there is no label slot. -->
+    <header class="app-topbar" style="display: flex; justify-content: flex-end; padding: 8px">
+      <button id="c04-plain" class="ui-topbar-item" data-slot="dropdown-menu-trigger" aria-label="Account" aria-haspopup="menu" style="display: flex; align-items: center; gap: 8px">
+        <span data-slot="topbar-item-icon"><span data-slot="avatar">FA</span></span>
+        <span data-slot="text">Famgia Info</span>
+      </button>
+    </header>
+    <div id="c04-plain-menu" role="menu" hidden><div role="menuitem">Famgia Info</div></div>
+    <script>
+      const t = document.getElementById("c04-plain");
+      const m = document.getElementById("c04-plain-menu");
+      t.addEventListener("click", () => { m.hidden = false; });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") m.hidden = true; });
+    </script>
+  </body>
+</html>

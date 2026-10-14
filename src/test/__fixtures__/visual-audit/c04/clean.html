@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C04 clean: the name shows inside the opened account menu</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+
+    </style>
+  </head>
+  <body>
+    <header class="app-topbar" style="display: flex; justify-content: flex-end; padding: 8px">
+      <button id="c04-open" data-slot="topbar-item" aria-label="Account" aria-haspopup="menu" aria-expanded="true">
+        <span data-slot="topbar-item-icon"><span data-slot="avatar">FA</span></span>
+      </button>
+    </header>
+    <div id="c04-open-menu" role="menu"><div role="menuitem"><span data-audit-role="account-name">Famgia Info</span></div><a role="menuitem" href="#logout">Log out</a></div>
+  </body>
+</html>

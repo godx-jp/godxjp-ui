@@ -843,6 +843,7 @@ export const COMPONENTS: ComponentEntry[] = [
       },
     ],
     usage: [
+      'DO keep at most 2 direct actions plus ONE overflow `DropdownMenu` in `extra` when the page is used on a phone (ADR C06, compact = below 40rem): `extra={<><Button variant="outline">Share</Button><Button>Edit</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label={t("more")}><MoreHorizontal /></Button></DropdownMenuTrigger>\u2026</DropdownMenu></>}`. A favourite toggle, a copy-link and the rest go in the menu. The header wraps `extra` under the title but never prioritises it for you.',
       "DO: Always wrap every page's content in PageContainer — it is the mandatory page shell. Pass `title` (required, rendered as `<h1>`) for every page; omitting it leaves the page without an accessible heading.",
       "CANONICAL PAGE-HEADER CONTRACT: PageContainer's embedded header IS the DXS `PageHeader` — there is deliberately NO separate PageHeader export, so the page header cannot be re-created or nested. It owns breadcrumbs (`breadcrumb`), title (`title`), subtitle/description (`subtitle`), status/meta (`status`), actions (`extra`) and responsive overflow (`headerLayout` + `measure`). Loading/error/denied are compositions of siblings, never hand-rolls: skeleton `title`/`subtitle` content or `SkeletonDetail` body while a detail loads; `ErrorSurface` (from @godxjp/ui/layout) REPLACES the page for denied (403) / not-found (404) / failed (5xx) whole-page states; `Alert.QueryError` / `DataState` own an in-body query failure.",
       "DO: Use the `extra` prop (not a sibling div, not a wrapper) for action buttons or controls that sit right of the title row — e.g. `extra={<Button>新規作成</Button>}`. Use the `footer` prop for a pinned action bar below the body (e.g. Save/Cancel on a form page); combine with `stickyFooter` to pin it to the viewport bottom on scroll.",
@@ -1419,6 +1420,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       },
     ],
     usage: [
+      'DO put a sidebar collapse toggle IN the rail, not floating in the bar (ADR C10): the shell does not render one, so pass it through `Sidebar action={(collapsed) => <Button variant="ghost" size="icon" aria-label={t("toggleSidebar")} aria-expanded={!collapsed} \u2026/>}` (or the `footer` render-prop), which keeps it attached to the rail in both states. A toggle in `Topbar start` under `topbarSpan="full"` lands beside the brand, detached from the rail it controls. The shell has no edge-mounted toggle (a control straddling the rail border); `Sidebar action` keeps it inside the rail head, which is the supported placement. Below the navigation boundary the drawer has its own trigger; render no collapse toggle there.',
       "useAppShellNavigationMode() returns drawer/docked at the same 56.25rem boundary as AppShell. The root also publishes data-navigation. Use this instead of a consumer media query.",
       "DO pass a <Sidebar> node to `sidebar` (required) and page content to `children` (required) — these are the only two required props. Everything else is optional and omitting optional slots simply removes that zone from the rendered DOM.",
       "DO rely on AppShell's OWNED mobile drawer at or below 900px (NOT the Tailwind `lg` 1024px step — the shipped media query is `width <= 56.25rem`): it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
@@ -2036,6 +2038,8 @@ export default function Shell() {
       },
     ],
     usage: [
+      "DO use `TopbarSearch`, not a bare `SearchInput`, for the bar's search (ADR C02): a SearchInput in a slot shrinks with the cluster \u2014 measured at 390px in a consumer bar its text area was 0ch. TopbarSearch keeps at least 8ch from 40rem up and folds to a named search cell below it.",
+      'DO align the bar\'s search with the content column (ADR C11) by composition: keep AppShell\'s default `topbarSpan="content"` and put `TopbarSearch` FIRST in `start` \u2014 the bar then starts on the rail edge with the same inset as PageContainer, measured 0px apart at 1024/1280/1440. Under `topbarSpan="full"` the bar starts at the window edge after the brand, so no keyline is shared; there, put the search in `end` deliberately rather than near a column it cannot meet.',
       "DO compose the bar yourself: a brand mark (an `Avatar`) + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
       "DO build the sidebar toggle as a `TopbarItem` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell's `sidebarCollapsed`. There is no baked toggle — but there IS a bar CELL, and it is not a Button: a Button in a slot is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill instead of the cell. The same holds for the notifications bell and the account trigger.",
       "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
@@ -2159,6 +2163,7 @@ import { PanelLeftClose, Search } from "lucide-react";
       },
     ],
     usage: [
+      'DO collapse the account cell to its avatar on a phone (ADR C04): `<DropdownMenuTrigger asChild><TopbarItem aria-label={t("account")} icon={<Avatar>\u2026</Avatar>} labelHideBelow="sm">{name}</TopbarItem></DropdownMenuTrigger>` and repeat the name (and email) in the menu\'s `DropdownMenuLabel`. Measured at 390px: without `labelHideBelow` the name took 74px of a 390px bar; with it the cell is 48x47, named, and the name is read in the open menu.',
       "DO put bar triggers in a Topbar slot as TopbarItem, not as Button — that is the difference between chrome and a control that landed in the chrome.",
       "DO wrap it in a DropdownMenuTrigger asChild for a user menu; the open state lights the cell via [data-state=open].",
       "DON'T set a height: the cell stretches to whatever the bar is (AppShell's grid row, --topbar-height, or the coarse-pointer bar), which is why there is no height knob.",
@@ -2192,6 +2197,63 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
   }
 />`,
     storyPath: "layout/topbar-item.tsx",
+    rules: [2, 3, 5, 6],
+  },
+  {
+    name: "TopbarSearch",
+    group: "layout",
+    tagline:
+      "The bar's one search box. From 40rem up an inline SearchInput whose text area never shrinks below 8ch; below it a named search cell that opens the field across the whole bar (Material 3 search bar → search view). Escape or the close cell folds it and returns focus to the cell.",
+    props: [
+      {
+        name: "collapseBelow",
+        type: "BreakpointProp",
+        defaultValue: '"sm"',
+        description:
+          "The step below which the field folds to a TopbarItem search cell (sm 40rem · md 48rem · lg 64rem · xl 80rem). CSS decides at the step, so SSR and the first paint agree and the typed query survives a resize.",
+      },
+      {
+        name: "ariaLabel",
+        type: "string",
+        description:
+          'The search\'s accessible name — the field\'s AND the folded cell\'s. Defaults to the localized "Search". Name the scope ("Search this collection").',
+      },
+      {
+        name: "…SearchInputProp",
+        type: "SearchInputProp",
+        description:
+          "Every SearchInput prop passes through unchanged: value / defaultValue / onValueChange, onSearch, placeholder, debounce, shortcut, status, disabled.",
+      },
+    ],
+    usage: [
+      "DO use it for the search in a Topbar slot instead of a bare SearchInput: a SearchInput there shrinks with the cluster (0ch of text at 390px, measured in a consumer bar).",
+      "DO name the scope in `ariaLabel`; it is the folded cell's only name.",
+      'DO put it FIRST in `Topbar start` under the default `topbarSpan="content"` when the search belongs to the page column: it then starts on the content keyline (0px apart at 1280).',
+      "DON'T also render a separate search icon button for phones — the folded cell IS that button.",
+      "Keyboard: Enter/Space on the cell opens and focuses the field; Escape closes and returns focus; Tab out of the open field folds it and leaves focus where it went. The cell is an APG disclosure (aria-expanded / aria-controls).",
+    ],
+    useCases: [
+      "A collection or workspace search in the app bar",
+      "A global search that must survive a 320–390px phone bar",
+    ],
+    related: [
+      "SearchInput (the field it renders)",
+      "TopbarItem (the folded cell)",
+      "Topbar (the slot bar it belongs to)",
+      "CommandPalette (⌘K jump-to; a different task from searching content)",
+    ],
+    example: `import { Topbar, TopbarSearch } from "@godxjp/ui/layout";
+
+<Topbar
+  start={
+    <TopbarSearch
+      ariaLabel={t("searchInCollection")}
+      placeholder={t("searchInCollection")}
+      onSearch={(q) => navigate({ to: "/search", search: { q } })}
+    />
+  }
+/>`,
+    storyPath: "layout/topbar-search.tsx",
     rules: [2, 3, 5, 6],
   },
   {
@@ -6052,6 +6114,7 @@ import { FormField } from "@godxjp/ui/data-entry";
       },
     ],
     usage: [
+      "Below 40rem the handle gutter collapses to `--block-editor-compact-gutter-inline-size` (the frame inset, 12px) and the + / \u22ee\u22ee handle rises above the caret's block at its inline end (ADR C05): first line 56px \u2192 12px from the inner edge at 390px. Touch: tap a block to show its handle; \u22ee\u22ee opens Move up / Move down / Duplicate / Delete. Keyboard: Mod+/ opens the same menu, Alt+Shift+\u2191\u2193 moves the block.",
       "Clicking a link (or Mod+K) opens a settings drawer: text, URL, title, open / remove. Clicking an image opens one for src, alt, title, replace (pickMedia / upload) and remove. Markdown stores no link target, so there is no target field. A link in the editor never navigates mid-edit.",
       "YAML front matter shows as a Properties block at the top and round-trips verbatim; read it with frontmatterOf() from @godxjp/markdown/codec.",
       "DO store the Markdown it emits — it is already canonical; compute `normalize()` server-side from the same codec to verify.",
@@ -7340,6 +7403,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "DON'T drop a bare SearchInput into a Topbar slot \u2014 use `TopbarSearch` (layout), which passes every SearchInput prop through and folds to a search cell below 40rem instead of shrinking under 8ch (ADR C02).",
       "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",
       "DO: choose controlled vs uncontrolled deliberately. Pass `value` + `onValueChange` together for controlled mode; optionally add `onSearch` for debounced effects (e.g. when search state lives in a URL param or shared parent). For local-only ephemeral search pass only `defaultValue` + `onSearch` — omitting `value` puts the component in uncontrolled mode.",
       "DO: supply an `ariaLabel` (or visible `label`) when no adjacent label exists. Without either prop, SearchInput falls back to the i18n key `common.search` rendered as a visually-hidden `<Label>` — still accessible, but providing a context-specific string (e.g. `ariaLabel='請求書を検索'`) is more descriptive for screen readers.",

@@ -65,6 +65,7 @@
   "storyPath": "layout/topbar-item.tsx",
   "tagline": "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
   "usage": [
+    "DO collapse the account cell to its avatar on a phone (ADR C04): `<DropdownMenuTrigger asChild><TopbarItem aria-label={t(\"account\")} icon={<Avatar>…</Avatar>} labelHideBelow=\"sm\">{name}</TopbarItem></DropdownMenuTrigger>` and repeat the name (and email) in the menu's `DropdownMenuLabel`. Measured at 390px: without `labelHideBelow` the name took 74px of a 390px bar; with it the cell is 48x47, named, and the name is read in the open menu.",
     "DO put bar triggers in a Topbar slot as TopbarItem, not as Button — that is the difference between chrome and a control that landed in the chrome.",
     "DO wrap it in a DropdownMenuTrigger asChild for a user menu; the open state lights the cell via [data-state=open].",
     "DON'T set a height: the cell stretches to whatever the bar is (AppShell's grid row, --topbar-height, or the coarse-pointer bar), which is why there is no height knob.",

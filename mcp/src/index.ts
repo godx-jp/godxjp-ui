@@ -44,7 +44,7 @@ const INSTRUCTIONS = `Building UI with @godxjp/ui. Before any JSX:
 2. route_consumer_task → compose-a-screen for app screens (marketing skills are for landing pages only).
 3. get_exemplar for the closest archetype (no argument lists them: list, detail, editor, reader, settings, dashboard, approval-queue) — match its structure.
 4. search_components before get_component; never guess a prop.
-After building: ui-audit at zero errors, then screenshot at 390/768/1280 beside the exemplar, fix the top 3 differences, at most 3 rounds.`;
+After building: ui-audit at zero errors, then run \`npx @godxjp/ui visual-audit <url> <routes>\` (320/390/768/1024/1280/844×390) to zero machine failures, inspect every screenshot at every width region by region (including regions you must not change), no top-N or round cap; report "probes passed; independent acceptance pending" — never accept your own screen.`;
 
 async function main() {
   const server = new Server(

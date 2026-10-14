@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C11 clean: end-aligned search is a different layout</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+
+    </style>
+  </head>
+  <body>
+    <header class="app-topbar" style="display: flex; height: 48px; align-items: center; justify-content: flex-end">
+      <div data-slot="topbar-end"><div id="c11-end" class="ui-search-input" style="width: 240px"><input role="searchbox" aria-label="Search" style="box-sizing: border-box; width: 100%" /></div></div>
+    </header>
+    <main class="app-main" style="margin-left: 240px"><div class="ui-page-body" style="padding: 0 24px">Content column</div></main>
+  </body>
+</html>

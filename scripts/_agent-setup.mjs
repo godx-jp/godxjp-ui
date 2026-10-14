@@ -209,9 +209,13 @@ Follow this every time you create or change a page, component or form.
 ## After JSX
 5. \`npx @godxjp/ui audit <files>\` — zero errors (a PostToolUse hook also runs it on each edit).
    Run it from the package that owns the files; \`--help\` lists the flags.
-6. Screenshot at 390 / 768 / 1280 next to the exemplar, list the top 3 differences, fix them,
-   repeat — at most 3 rounds.
-7. Before a visual review: \`npx @godxjp/ui visual-audit <url>\` (axe + contrast + layout).
+6. \`npx @godxjp/ui visual-audit <url> <routes>\` — every route at 320 / 390 / 768 / 1024 / 1280 /
+   844×390; zero machine failures; "unmapped" is not a pass.
+7. Inspect every screenshot at every width, region by region (top bar, header, body, aside/rail,
+   menus/drawers), including regions you must not change — defects there become issues.
+8. No top-N, no round cap: stop at zero failures and a fully resolved checklist. Then report
+   "probes passed; independent acceptance pending" with the artifacts — never "done" on your own
+   review. Acceptance comes from someone who did not build it.
 
 In a workspace, \`node_modules/@godxjp/ui\` may be hoisted to the repo root: read its files there,
 or through the MCP (\`get_design\`, \`get_rule\`).
@@ -231,8 +235,9 @@ Before any JSX for a screen:
    dashboard, approval-queue) — match its structure.
 
 After building:
-4. \`npx @godxjp/ui audit <files>\` — zero errors.
-5. Screenshot at 390 / 768 / 1280 beside the exemplar; fix the top 3 differences; max 3 rounds.
+4. \`npx @godxjp/ui audit <files>\` and \`npx @godxjp/ui visual-audit <url> <routes>\` (6 widths) — zero.
+5. Inspect every screenshot at every width, region by region; no top-N cap. Report "probes passed;
+   independent acceptance pending" — the builder never accepts its own screen.
 
 Rules: \`node_modules/@godxjp/ui/docs/CONSUMER-RULES.md\`. Details: \`.claude/godxjp-ui-workflow.md\`.
 <!-- godxjp-ui:end -->

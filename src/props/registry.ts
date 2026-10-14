@@ -1710,6 +1710,23 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  TopbarSearchProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "PlaceholderProp",
+      "DisabledProp",
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "collapseBelow",
+        local: true,
+        reason:
+          "Flex `hideBelow`'s breakpoint vocabulary, naming the step below which the bar's search folds to a search cell (ADR C02).",
+      },
+    ],
+  },
   NavListProp: {
     group: "layout",
     file: "components/layout.prop.ts",

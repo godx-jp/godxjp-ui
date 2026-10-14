@@ -8,6 +8,11 @@
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
   );
+  /* Section label case and tracking (gh#1305, ADR C12): default sentence case, no tracking — tiny
+   * letter-spaced capitals (11px, 0.08em) are the classic "AI dashboard" eyebrow. A theme that wants
+   * small caps back sets both. */
+  --sidebar-section-label-letter-case: none;
+  --sidebar-section-label-letter-spacing: normal;
   --sidebar-product-tenant-font-size: var(
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
@@ -396,6 +401,12 @@
    * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob
    * replaces. */
   --topbar-center-compact-display: none;
+  /* TopbarSearch (ADR C02): the inline field's TEXT AREA never shrinks below this — measured after
+   * the icon and clear/shortcut padding, in the field's own font. Below its `collapseBelow` step the
+   * field folds to a search cell instead of shrinking. 8ch is a repo-chosen policy, not a standard. */
+  --topbar-search-min-text-inline-size: 8ch;
+  /* The inline field's preferred width from the step up; it shrinks toward the floor above. */
+  --topbar-search-inline-size: 16rem;
 
   /* TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped
    * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's

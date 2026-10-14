@@ -2258,9 +2258,9 @@
     color: var(--sidebar-section-label-foreground, hsl(var(--muted-foreground)));
     font-size: var(--sidebar-section-label-font-size);
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--sidebar-section-label-letter-spacing);
     line-height: 1.2;
-    text-transform: uppercase;
+    text-transform: var(--sidebar-section-label-letter-case);
   }
 
   .sb-nav {
@@ -2821,6 +2821,137 @@
   .ui-topbar-center {
     flex: 1 1 0%;
     justify-content: center;
+  }
+
+  /* ── TOPBAR SEARCH (ADR C02) ─────────────────────────────────────────────────────────────
+   * From the step up: the inline field, preferring --topbar-search-inline-size and never letting
+   * its TEXT AREA (after the icon and the clear/shortcut padding) shrink below
+   * --topbar-search-min-text-inline-size. The wrappers keep the automatic flex minimum (no
+   * `min-inline-size: 0`), so that floor propagates to the cluster instead of being clipped.
+   * Below `data-collapse-below`: a search cell; open, the field covers the whole bar row. */
+  .ui-topbar-search,
+  .ui-topbar-search-panel {
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    gap: var(--topbar-gap);
+  }
+
+  .ui-topbar-search-panel > .ui-search-input {
+    inline-size: var(--topbar-search-inline-size);
+    flex: 0 1 auto;
+  }
+
+  .ui-topbar-search .ui-search-input-control {
+    min-inline-size: calc(
+      var(--search-input-start-padding) + var(--topbar-search-min-text-inline-size) +
+        max(
+          var(--search-input-end-padding),
+          var(--search-input-end-padding) - var(--control-icon-size) - var(--control-gap) + 6ch
+        )
+    );
+  }
+
+  /* The open field's containing block is the WHOLE bar row, so it covers the brand and the
+   * drawer trigger too (one task at a time on a phone), and it escapes the clusters' clip. */
+  .app-topbar:has(.ui-topbar-search[data-open]),
+  .ui-topbar:not(.app-topbar .ui-topbar):has(.ui-topbar-search[data-open]) {
+    position: relative;
+  }
+
+  /* The step values written out (sm 40rem · md 48rem · lg 64rem · xl 80rem): a media query cannot
+   * read a var(). Same pairs as `.ui-topbar-item[data-hide-below]` in layout.css. */
+  @media (width >= 40rem) {
+    .ui-topbar-search[data-collapse-below="sm"]
+      :is(.ui-topbar-search-trigger, .ui-topbar-search-close) {
+      display: none;
+    }
+  }
+  @media (width >= 48rem) {
+    .ui-topbar-search[data-collapse-below="md"]
+      :is(.ui-topbar-search-trigger, .ui-topbar-search-close) {
+      display: none;
+    }
+  }
+  @media (width >= 64rem) {
+    .ui-topbar-search[data-collapse-below="lg"]
+      :is(.ui-topbar-search-trigger, .ui-topbar-search-close) {
+      display: none;
+    }
+  }
+  @media (width >= 80rem) {
+    .ui-topbar-search[data-collapse-below="xl"]
+      :is(.ui-topbar-search-trigger, .ui-topbar-search-close) {
+      display: none;
+    }
+  }
+  @media (width < 40rem) {
+    .ui-topbar-search[data-collapse-below="sm"]:not([data-open]) .ui-topbar-search-panel {
+      display: none;
+    }
+    .ui-topbar-search[data-collapse-below="sm"][data-open] .ui-topbar-search-panel {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      padding-inline: var(--app-shell-bar-inset-compact);
+      background: var(--app-shell-bar-background, hsl(var(--card) / var(--card-alpha, 100%)));
+    }
+    .ui-topbar-search[data-collapse-below="sm"][data-open]
+      .ui-topbar-search-panel
+      > .ui-search-input {
+      flex: 1 1 auto;
+    }
+  }
+  @media (width < 48rem) {
+    .ui-topbar-search[data-collapse-below="md"]:not([data-open]) .ui-topbar-search-panel {
+      display: none;
+    }
+    .ui-topbar-search[data-collapse-below="md"][data-open] .ui-topbar-search-panel {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      padding-inline: var(--app-shell-bar-inset-compact);
+      background: var(--app-shell-bar-background, hsl(var(--card) / var(--card-alpha, 100%)));
+    }
+    .ui-topbar-search[data-collapse-below="md"][data-open]
+      .ui-topbar-search-panel
+      > .ui-search-input {
+      flex: 1 1 auto;
+    }
+  }
+  @media (width < 64rem) {
+    .ui-topbar-search[data-collapse-below="lg"]:not([data-open]) .ui-topbar-search-panel {
+      display: none;
+    }
+    .ui-topbar-search[data-collapse-below="lg"][data-open] .ui-topbar-search-panel {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      padding-inline: var(--app-shell-bar-inset-compact);
+      background: var(--app-shell-bar-background, hsl(var(--card) / var(--card-alpha, 100%)));
+    }
+    .ui-topbar-search[data-collapse-below="lg"][data-open]
+      .ui-topbar-search-panel
+      > .ui-search-input {
+      flex: 1 1 auto;
+    }
+  }
+  @media (width < 80rem) {
+    .ui-topbar-search[data-collapse-below="xl"]:not([data-open]) .ui-topbar-search-panel {
+      display: none;
+    }
+    .ui-topbar-search[data-collapse-below="xl"][data-open] .ui-topbar-search-panel {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      padding-inline: var(--app-shell-bar-inset-compact);
+      background: var(--app-shell-bar-background, hsl(var(--card) / var(--card-alpha, 100%)));
+    }
+    .ui-topbar-search[data-collapse-below="xl"][data-open]
+      .ui-topbar-search-panel
+      > .ui-search-input {
+      flex: 1 1 auto;
+    }
   }
 
   /* ── A WRAPPER IN A SLOT KEEPS THE STRETCH CHAIN (gh#883) ────────────────────────────────

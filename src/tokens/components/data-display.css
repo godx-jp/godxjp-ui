@@ -105,6 +105,9 @@
   /* @godxjp/block-editor (gh#1156): the start gutter the ⋮⋮ / + handle sits in, and the editing
    * surface's minimum height (an empty body is still a target you can click into). */
   --block-editor-gutter-inline-size: calc(2 * var(--control-height-xs) + var(--space-2));
+  /* Below 40rem the gutter collapses to this (ADR C05: first line ≤24px from the inner edge) and
+   * the handle rises above the caret's block at its inline end instead of sitting beside it. */
+  --block-editor-compact-gutter-inline-size: var(--block-editor-frame-padding);
   --block-editor-min-height: var(--band-height-3xl);
   /* The `/` and `[[` menus: wide enough for a label and its description, tall enough for ~8 rows
    * before the list scrolls. */
