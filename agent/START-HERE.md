@@ -39,8 +39,10 @@ disk, and costs far fewer tokens than fetching a 1 MB JSON.
 ```
 
 Then, before any JSX: `get_design` (the visual target), `route_consumer_task`, `get_exemplar` for
-the closest screen, `search_components` → `get_component`. After building, screenshot at
-390 / 768 / 1280 beside the exemplar and fix the top 3 differences, at most 3 rounds.
+the closest screen, `search_components` → `get_component`. After building, run
+`npx @godxjp/ui visual-audit` at 320 / 390 / 768 / 1024 / 1280 / 844×390 to zero failures,
+inspect every screenshot at every width region by region (no top-N cap), and hand over as
+"probes passed; independent acceptance pending" — the builder does not accept its own screen.
 
 **You cannot run a process** (ChatGPT web · Claude.ai · anything fetching URLs)
 → These files are for you. Read `DESIGN.md` (in this folder) first: tokens, scarcity rules and
