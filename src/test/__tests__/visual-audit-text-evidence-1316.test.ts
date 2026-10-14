@@ -6,6 +6,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+// @ts-expect-error — plain .mjs script, no declaration file
 import { textOverrideVerdict } from "../../../scripts/visual-audit.mjs";
 
 /**
