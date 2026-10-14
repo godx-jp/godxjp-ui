@@ -39,6 +39,7 @@ import type {
   SizeProp,
 } from "../vocabulary";
 import type { EmptyStateToneProp } from "./data-display.prop";
+import type { SearchInputProp } from "./data-entry.prop";
 
 /**
  * Arrangement of the page header's title band and its `extra` slot below the 640px step.
@@ -1645,6 +1646,28 @@ export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> 
   overflow?: "scroll" | "clip" | "menu";
   /** Escape hatch — render fully custom bar content instead of the three slots. */
   children?: ReactNode;
+};
+
+/**
+ * @see TopbarSearch — the bar's one search box, which folds to a named search cell on a narrow bar.
+ *
+ * A `SearchInput` dropped into a `Topbar` slot shrinks with its cluster: at 390px in a consumer bar
+ * its text area held under 3ch, so neither a query nor the placeholder could be read (ADR C02).
+ * Below `collapseBelow` this renders a `TopbarItem` named by `ariaLabel`; activating it opens the
+ * field across the whole bar (Material 3 search bar → search view), focused, with a close cell.
+ * Escape or the close cell folds it back and returns focus to the trigger; focus leaving the open
+ * field folds it too. From the step up it is the inline field, whose text area never shrinks below
+ * `--topbar-search-min-text-inline-size` (8ch).
+ *
+ * Every `SearchInput` prop passes through unchanged. ONE field is rendered at every width, so the
+ * typed query survives a resize and the open/closed switch.
+ */
+export type TopbarSearchProp = SearchInputProp & {
+  /**
+   * The step below which the field folds to a search cell. Default `"sm"` (40rem) — the bar's own
+   * compact step, shared with `TopbarItem labelHideBelow` and `AppShell logoCompactBelow`.
+   */
+  collapseBelow?: BreakpointProp;
 };
 
 /**

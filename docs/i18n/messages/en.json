@@ -1842,5 +1842,15 @@
       "push": "Push notifications",
       "notInPlan": "Not in your plan"
     }
+  },
+  "topbarSearchDocs": {
+    "pages": "Pages",
+    "guide": "Getting started",
+    "searchLabel": "Search this collection",
+    "account": "Account",
+    "userName": "Daisuke Sato",
+    "logOut": "Log out",
+    "body": "The search starts on the same line as this title. Below 640px it folds to a search button that opens the field across the bar; Escape closes it and returns focus to the button. The account cell shows only the avatar there, and the name moves into its menu.",
+    "lastQuery": "Last search"
   }
 }

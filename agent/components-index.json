@@ -105,6 +105,11 @@
   },
   {
     "group": "layout",
+    "name": "TopbarSearch",
+    "tagline": "The bar's one search box. From 40rem up an inline SearchInput whose text area never shrinks below 8ch; below it a named search cell that opens the field across the whole bar (Material 3 search bar → search view). Escape or the close cell folds it and returns focus to the cell."
+  },
+  {
+    "group": "layout",
     "name": "NavList",
     "tagline": "Vertical route navigation for INSIDE a page — the shape a settings nav takes. Renders the same `.sb-nav-item` rows as the Sidebar rail (icon column, label, badge, active tokens, `aria-current=\"page\"`) in a `<nav>` landmark, without the AppShell grid the rail depends on."
   },

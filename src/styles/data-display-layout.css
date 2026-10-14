@@ -2066,6 +2066,26 @@
     gap: var(--space-1);
   }
 
+  /* A PHONE HAS NO ROOM FOR A GUTTER (ADR C05). At 390px the 56px gutter took a sixth of the line
+   * from every block, all to host two 24px buttons. Below the compact step the text starts at the
+   * frame inset and the handle — same buttons, same targets, same menu — rises ABOVE the caret's
+   * block at its inline end, on the popover surface, so it covers the tail of the block before
+   * rather than the line being typed. Mod+/ (block menu) and Alt+Shift+↑↓ (move) are unchanged. */
+  @media (width < 40rem) {
+    .ui-block-editor {
+      padding-inline-start: var(--block-editor-compact-gutter-inline-size);
+    }
+
+    .ui-block-editor-handle {
+      inset-inline: auto var(--block-editor-compact-gutter-inline-size);
+      translate: 0 -100%;
+      padding: var(--stroke-hairline);
+      border: var(--stroke-hairline) solid hsl(var(--border));
+      border-radius: var(--popover-radius, var(--radius));
+      background-color: hsl(var(--popover) / var(--popover-alpha, 100%));
+    }
+  }
+
   /* Out of the way until the editor is being used; always there on a touch screen (no hover). */
   @media (hover: hover) {
     .ui-block-editor:not(:hover):not(:focus-within) .ui-block-editor-handle {

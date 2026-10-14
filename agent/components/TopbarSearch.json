@@ -1,0 +1,49 @@
+{
+  "example": "import { Topbar, TopbarSearch } from \"@godxjp/ui/layout\";\n\n<Topbar\n  start={\n    <TopbarSearch\n      ariaLabel={t(\"searchInCollection\")}\n      placeholder={t(\"searchInCollection\")}\n      onSearch={(q) => navigate({ to: \"/search\", search: { q } })}\n    />\n  }\n/>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "TopbarSearch",
+  "props": [
+    {
+      "defaultValue": "\"sm\"",
+      "description": "The step below which the field folds to a TopbarItem search cell (sm 40rem · md 48rem · lg 64rem · xl 80rem). CSS decides at the step, so SSR and the first paint agree and the typed query survives a resize.",
+      "name": "collapseBelow",
+      "type": "BreakpointProp"
+    },
+    {
+      "description": "The search's accessible name — the field's AND the folded cell's. Defaults to the localized \"Search\". Name the scope (\"Search this collection\").",
+      "name": "ariaLabel",
+      "type": "string"
+    },
+    {
+      "description": "Every SearchInput prop passes through unchanged: value / defaultValue / onValueChange, onSearch, placeholder, debounce, shortcut, status, disabled.",
+      "name": "…SearchInputProp",
+      "type": "SearchInputProp"
+    }
+  ],
+  "related": [
+    "SearchInput (the field it renders)",
+    "TopbarItem (the folded cell)",
+    "Topbar (the slot bar it belongs to)",
+    "CommandPalette (⌘K jump-to; a different task from searching content)"
+  ],
+  "rules": [
+    2,
+    3,
+    5,
+    6
+  ],
+  "storyPath": "layout/topbar-search.tsx",
+  "tagline": "The bar's one search box. From 40rem up an inline SearchInput whose text area never shrinks below 8ch; below it a named search cell that opens the field across the whole bar (Material 3 search bar → search view). Escape or the close cell folds it and returns focus to the cell.",
+  "usage": [
+    "DO use it for the search in a Topbar slot instead of a bare SearchInput: a SearchInput there shrinks with the cluster (0ch of text at 390px, measured in a consumer bar).",
+    "DO name the scope in `ariaLabel`; it is the folded cell's only name.",
+    "DO put it FIRST in `Topbar start` under the default `topbarSpan=\"content\"` when the search belongs to the page column: it then starts on the content keyline (0px apart at 1280).",
+    "DON'T also render a separate search icon button for phones — the folded cell IS that button.",
+    "Keyboard: Enter/Space on the cell opens and focuses the field; Escape closes and returns focus; Tab out of the open field folds it and leaves focus where it went. The cell is an APG disclosure (aria-expanded / aria-controls)."
+  ],
+  "useCases": [
+    "A collection or workspace search in the app bar",
+    "A global search that must survive a 320–390px phone bar"
+  ]
+}
