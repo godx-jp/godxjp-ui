@@ -11549,7 +11549,7 @@
           "origin": "owned",
           "required": false,
           "type": "ProgressTone | undefined",
-          "values": ["warning", "success", "destructive"],
+          "values": ["warning", "success", "destructive", "primary"],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {

@@ -519,7 +519,7 @@
     "exports": 282,
     "dimensionCells": 3948,
     "covered": 88,
-    "untested": 2166,
+    "untested": 2167,
     "notApplicable": 1694,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
@@ -5587,11 +5587,11 @@
       "baseline": {
         "covered": 2,
         "notApplicable": 3,
-        "untested": 9
+        "untested": 10
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "covered:prop-evidence:tone",
+        "tones": "untested",
         "sizes": "covered:prop-evidence:size",
         "shapes": "untested",
         "density": "not-applicable:api-manifest",
