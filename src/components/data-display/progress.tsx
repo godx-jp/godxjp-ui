@@ -4,15 +4,21 @@ import { useTranslation } from "../../i18n/use-translation";
 import { numberFormat } from "../../lib/intl-cache";
 import { cn } from "../../lib/utils";
 
-export type ProgressTone = "success" | "warning" | "destructive";
+/**
+ * The METER's tone. `primary` (the default, gh#1308) is the brand role for ordinary progress — a
+ * reading position, an upload; the status tones are opt-in for a bar that reports that status
+ * (ADR C09). `primary` is the name `Badge` already gives its brand tone.
+ */
+export type ProgressTone = "primary" | "success" | "warning" | "destructive";
 
 /**
- * A breakdown SLICE takes two more tones than the meter (gh#1302): `info` and `neutral`, the same
- * pair `Legend` already keys — a partition with four states (done · done-awaiting · in progress ·
- * not started) needs four distinguishable fills, and the meter's three made two of them identical.
- * Each paints exactly what the matching Legend swatch paints, so a key and its bar stay one.
+ * A breakdown SLICE takes two more status tones than the meter (gh#1302): `info` and `neutral`, the
+ * same pair `Legend` already keys — a partition with four states (done · done-awaiting · in
+ * progress · not started) needs four distinguishable fills, and the meter's three made two of them
+ * identical. Each paints exactly what the matching Legend swatch paints, so a key and its bar stay
+ * one. No `primary`: a partition is states, and Legend keys no brand swatch.
  */
-export type ProgressSegmentTone = ProgressTone | "info" | "neutral";
+export type ProgressSegmentTone = Exclude<ProgressTone, "primary"> | "info" | "neutral";
 
 /**
  * One slice of a BREAKDOWN bar — how much of the total this state holds, in the SAME unit as every
@@ -258,8 +264,9 @@ export function Progress(props: ProgressProps) {
   const meterValue = value ?? 0;
   const isOver = over && meterValue > 100;
   const boundedValue = Math.max(0, Math.min(100, meterValue));
-  // Over-capacity forces the destructive tone unless the caller pins one explicitly.
-  const effectiveTone: ProgressTone = tone ?? (isOver ? "destructive" : "success");
+  // Over-capacity forces the destructive tone unless the caller pins one explicitly. Otherwise the
+  // brand role (gh#1308): a bar with no tone is ordinary progress, not a status.
+  const effectiveTone: ProgressTone = tone ?? (isOver ? "destructive" : "primary");
 
   return (
     <div

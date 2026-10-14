@@ -1167,6 +1167,10 @@
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
+    /* It LEADS its crumb (gh#1308). A label that wraps inside its item would centre the glyph
+     * between its lines; one line box tall at the item's start keeps it on the first line. */
+    align-self: flex-start;
+    block-size: 1lh;
   }
 
   /* A segment that opens a sibling menu is a real button, so it has to shed the button chrome and

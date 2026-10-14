@@ -22,7 +22,7 @@ export interface VisualRule {
 
 /** Command an agent runs against the running app before a visual pass (warnings, non-blocking). */
 export const VISUAL_AUDIT_COMMAND =
-  "node node_modules/@godxjp/ui/scripts/visual-audit.mjs [--widths 390x844,1280x900] <baseUrl> [route …]  (every route at 320×900, 390×844, 768×1024, 1024×900, 1280×900, 844×390 by default; findings carry viewport + element + threshold origin; JSON adds unmapped[] (reviewer required, never a pass), matrix[] (per-width rule status + reviewer checklist) and acceptance — at best 'probes passed; independent acceptance pending', never done. Optional peers, TESTED range: playwright >=1.55 <2 [1.61.1] + @axe-core/playwright >=4.10 <5 [4.12.1] + axe-core >=4.10 <5 [4.12.1] + a chromium via `playwright install chromium`; --strict for a CI gate, --format json ALWAYS emits valid JSON with a status of ok|partial|error separating infra errors[] from product findings[], --rules to print this catalog)";
+  "node node_modules/@godxjp/ui/scripts/visual-audit.mjs [--widths 390x844,1280x900] [--storage-state state.json] <baseUrl> [route …]  (--storage-state takes a Playwright storageState JSON so signed-in routes are audited signed in; every route at 320×900, 390×844, 768×1024, 1024×900, 1280×900, 844×390 by default; findings carry viewport + element + threshold origin; JSON adds unmapped[] (reviewer required, never a pass), matrix[] (per-width rule status + reviewer checklist) and acceptance — at best 'probes passed; independent acceptance pending', never done. Optional peers, TESTED range: playwright >=1.55 <2 [1.61.1] + @axe-core/playwright >=4.10 <5 [4.12.1] + axe-core >=4.10 <5 [4.12.1] + a chromium via `playwright install chromium`; --strict for a CI gate, --format json ALWAYS emits valid JSON with a status of ok|partial|error separating infra errors[] from product findings[], --rules to print this catalog)";
 
 export const VISUAL_RULES: VisualRule[] = [
   {
@@ -178,7 +178,7 @@ export const VISUAL_RULES: VisualRule[] = [
     standard:
       "toggle centre within 8px of the declared rail edge at ≥1024px (repo-chosen threshold)",
     kind: "probe",
-    fix: "An edge-mounted rail toggle sits on the rail edge it controls in both desktop states. Declare the pattern with data-audit-role=rail-toggle (+ data-audit-edge=start|end).",
+    fix: "An edge-mounted rail toggle sits on the rail edge it controls in both desktop states. Declare the pattern with data-audit-role=rail-toggle (+ data-audit-edge=start|end). A toggle inside `Sidebar action` is the supported placement and reports not-applicable-sidebar-action.",
   },
   {
     id: "c11-search-keyline",

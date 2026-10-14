@@ -22,7 +22,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Tones</CardTitle>
             <CardDescription>
-              Tone carries meaning。success（既定）/ warning / destructive。
+              Tone carries meaning。primary（既定・通常の進捗）/ success / warning /
+              destructive（状態を表すときだけ）。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -30,7 +31,7 @@ export default function Demo() {
               <Progress value={72} tone="success" label="処理スループット" />
               <Progress value={28} tone="warning" label="SLA 超過リスク" />
               <Progress value={84} tone="destructive" label="エラー率の上限接近" />
-              <Progress value={60} label="（tone 指定なし → success）" />
+              <Progress value={60} label="（tone 指定なし → primary）" />
             </Flex>
           </CardContent>
         </Card>

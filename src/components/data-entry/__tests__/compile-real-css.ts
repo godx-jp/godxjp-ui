@@ -12,7 +12,12 @@ const ROOT = process.cwd();
  * gh#1024). ~0.1s. Vendor sheets that do not resolve from the repo root are skipped: nothing a
  * form lays out comes from them.
  */
-export async function compileRealCss(markup: string): Promise<string> {
+export async function compileRealCss(
+  markup: string,
+  /** Layer files to leave out of `styles/core` (e.g. `["control.css"]`) — a control page for a
+   *  check that must notice a missing layer (gh#1307). */
+  { omit = [] }: { omit?: string[] } = {},
+): Promise<string> {
   const loadStylesheet = async (id: string, base: string) => {
     let path: string;
     if (id.startsWith(".") || id.startsWith("/")) path = resolve(base, id);
@@ -27,7 +32,13 @@ export async function compileRealCss(markup: string): Promise<string> {
     return { path, base: dirname(path), content: readFileSync(path, "utf8") };
   };
   const entry = join(ROOT, "src/styles/core.css");
-  const compiler = await compile(readFileSync(entry, "utf8"), {
+  let source = readFileSync(entry, "utf8");
+  for (const file of omit) {
+    const line = `@import "./${file}";`;
+    if (!source.includes(line)) throw new Error(`compileRealCss: core.css does not import ${file}`);
+    source = source.replace(line, "");
+  }
+  const compiler = await compile(source, {
     base: dirname(entry),
     loadStylesheet,
   });

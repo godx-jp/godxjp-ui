@@ -4,6 +4,7 @@ import { ChevronDown, ChevronRight, File as FileIcon, Folder, FolderOpen } from 
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { truncatedPart } from "../../lib/truncation";
 import { CheckboxVisual } from "../data-entry/checkbox";
 import { Skeleton } from "../feedback/skeleton";
 import {
@@ -419,6 +420,51 @@ function TreeRoot({
     if (measured > 0 && measured !== rowHeight) setRowHeight(measured);
     // Re-measured when the tier (`size`) changes or rows first arrive (a lazy root).
   }, [isWindowed, rowHeight, size, visible.length]);
+
+  /* A CUT LABEL MUST STAY READABLE (gh#1308) — the treatment ListRow got in gh#1298. Each label is
+   * measured, and only while it is actually cut it gets `data-truncated` and its full text as a
+   * `title` (a consumer's own `title` is never replaced). The row is already the tab stop, so the
+   * keyboard route is CSS: a focused row unfolds its cut label (data-display-layout.css) — except
+   * in a windowed tree, whose rows have one measured height. A focused row's label is skipped by
+   * the re-measure (unfolded, it measures as fitting) and re-measured on focusout. */
+  const markTruncatedLabels = React.useCallback(() => {
+    const tree = treeRef.current;
+    if (!tree) return;
+    for (const label of tree.querySelectorAll<HTMLElement>(".ui-tree-label")) {
+      if (label.dataset.truncated !== undefined && label.parentElement === document.activeElement)
+        continue;
+      const ownTitle = label.dataset.truncatedTitle !== undefined;
+      const part = truncatedPart(label);
+      if (part) {
+        label.dataset.truncated = "";
+        if (!label.title || ownTitle) {
+          label.title = (label.textContent ?? "").replace(/\s+/g, " ").trim();
+          label.dataset.truncatedTitle = "";
+        }
+      } else if (label.dataset.truncated !== undefined) {
+        delete label.dataset.truncated;
+        if (ownTitle) {
+          label.removeAttribute("title");
+          delete label.dataset.truncatedTitle;
+        }
+      }
+    }
+  }, []);
+  React.useEffect(() => {
+    markTruncatedLabels();
+  });
+  React.useEffect(() => {
+    const tree = treeRef.current;
+    if (!tree || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(markTruncatedLabels);
+    observer.observe(tree);
+    const refold = () => requestAnimationFrame(markTruncatedLabels);
+    tree.addEventListener("focusout", refold);
+    return () => {
+      observer.disconnect();
+      tree.removeEventListener("focusout", refold);
+    };
+  }, [markTruncatedLabels]);
 
   const nodeRefs = React.useRef(new Map<string, HTMLDivElement | null>());
   // Focus is moved only for a move the KEYBOARD asked for — a bare re-render must never steal it.

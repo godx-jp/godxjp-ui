@@ -6,6 +6,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.10.0] - 2026-10-14
+
+From the independent review that REJECTED godx-content's round-3 screens (#1307, #1308): the
+first run of the 32.9.0 process found defects the builder and I had missed, and some of them were
+the library's — including false positives in visual-audit itself, which blocked "zero machine
+failures" on every route.
+
+### ✨ Added
+
+- **`Progress tone="primary"`**, and it is the default for an ordinary meter (ADR C09): a bar with
+  no tone paints the brand role instead of the success mark. Pass `tone="success"` where the bar
+  reports a completed/healthy status; over-capacity stays destructive.
+- **`visual-audit --storage-state <file>`** — audit signed-in routes with a Playwright storageState
+  (a missing file is an error, never a clean run).
+- C10 status `not-applicable-sidebar-action` for a toggle in `Sidebar action` (DESIGN's placement).
+- **Tree:** a label that is actually cut carries its full text as `title` and unfolds while its
+  row has keyboard focus (virtual trees get the title only).
+
+### 🔄 Changed
+
+- **Breadcrumb** (and PageContainer's): the separator leads the crumb it introduces, so a wrap at
+  320 never leaves "›" alone at a line end (DOM order changed).
+
+### 🐛 Fixed
+
+- visual-audit: the control-layer check no longer fires on every page (it probed a radius no rule
+  sets; it now checks what control.css declares); a screen-reader-only status region is not counted
+  as a banner; the kit's own folded `TopbarSearch` trigger satisfies C02 at 320/390.
+- The Sheet panel no longer paints the browser's own blue focus outline (matches Dialog).
+- DESIGN.md Known Gaps records the BlockEditor desktop keyline (text 57px vs input 13px inside the
+  frame — the handles live there).
+
 ## [32.9.0] - 2026-10-14
 
 Why a consumer agent declared godx-content's redesign done while the owner found its defects in

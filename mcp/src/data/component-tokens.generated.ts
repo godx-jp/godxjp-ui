@@ -3106,7 +3106,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--progress-track-background",
     "value": "initial",
-    "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, fill reads --success; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill."
+    "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, the default (`primary`) fill reads the brand mark; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--mark-primary, var(--primary))) fill (gh#1308 — it was the success mark; status tones are opt-in and do not read this knob)."
   },
   {
     "name": "--progress-track-background-alpha",

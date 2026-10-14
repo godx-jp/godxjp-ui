@@ -5703,9 +5703,10 @@ import { Flex } from "@godxjp/ui/layout";
       },
       {
         name: "tone",
-        type: '"success" | "warning" | "destructive"',
-        defaultValue: '"success"',
-        description: "Bar colour tone. Over-capacity defaults to destructive.",
+        type: '"primary" | "success" | "warning" | "destructive"',
+        defaultValue: '"primary"',
+        description:
+          "Bar colour tone. `primary` (default since gh#1308) is the brand role for ordinary progress — a reading position, an upload; pass a status tone only when the bar reports that status (ADR C09: `success` for a completed/healthy state, `warning`/`destructive` for limits). Over-capacity defaults to destructive.",
       },
       {
         name: "over",
@@ -13652,6 +13653,7 @@ export function FilterSection() {
     ],
     usage: [
       "DO name the tree — pass `aria-label` (through your own `t()`) or `aria-labelledby`. A tree with no name is an unlabelled landmark for every screen reader user.",
+      "DO rely on Tree for a cut label (gh#1308): a label that is actually truncated gets its full text as a `title` and unfolds while its row holds keyboard focus (not in a windowed tree, whose rows share one height — the `title` stays). No `titleRender` wrapper with a hand-set `title` is needed; one you set is kept.",
       "DO keep SELECTION and CHECKS apart: `value`/`onValueChange` is which node is open in the detail pane; `checkedValues`/`onCheckedValuesChange` is which nodes are ticked. They are two axes, exactly as in antd — never drive one from the other.",
       "DO keep SELECTION and EXPANSION apart too — this is the THIRD axis and the one gh#910 tripped on. `onValueChange` says which node a detail pane should show; `onExpandedValuesChange` says which branches are unfolded. A sibling pane listens to the first and ignores the second, so unfolding a branch cannot reload it. If your pane reloads when a branch opens, it is being driven from the wrong event — not from a missing feature.",
       "DO let the keyboard work: the tree ships the full APG contract (Up/Down through visible nodes, Right expands then descends, Left collapses then climbs, Home/End, Enter/Space, `*` to expand the current level, type-ahead). Do not add your own key handling on top.",
