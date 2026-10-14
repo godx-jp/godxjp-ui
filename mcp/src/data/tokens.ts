@@ -332,6 +332,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Gap between the MasterDetail master and detail regions (default --space-stack-md), side by side and stacked.",
   },
   {
+    name: "--split-pane-gap",
+    category: "semantic",
+    tier: "semantic",
+    role: "Gap between the SplitPane main column and its aside, split and stacked (default --space-stack-md, resolved at the call site — the token is `initial` at :root so a density scope still reaches it). A closed rail (`aside={null}`) has no gap whatever this is. Set it to the column step your grid reads between panes, e.g. var(--space-inline-xl) (gh#1310, rule #45).",
+  },
+  {
     name: "--master-detail-collapse-below",
     category: "semantic",
     tier: "semantic",

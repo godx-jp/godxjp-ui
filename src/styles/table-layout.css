@@ -1427,6 +1427,9 @@
       padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
       overflow-wrap: anywhere;
+      /* A card reads label above value from the START (gh#1310): a column's `align`/`numeric`
+       * end alignment is for a column of numbers, not one value among labels. */
+      text-align: start;
     }
 
     [data-collapse-below="sm"] [data-slot="table-cell"]:empty,
@@ -1479,6 +1482,7 @@
       padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
       overflow-wrap: anywhere;
+      text-align: start;
     }
 
     [data-collapse-below="md"] [data-slot="table-cell"]:empty,
@@ -1531,6 +1535,7 @@
       padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
       overflow-wrap: anywhere;
+      text-align: start;
     }
 
     [data-collapse-below="lg"] [data-slot="table-cell"]:empty,
@@ -1583,6 +1588,7 @@
       padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
       overflow-wrap: anywhere;
+      text-align: start;
     }
 
     [data-collapse-below="xl"] [data-slot="table-cell"]:empty,

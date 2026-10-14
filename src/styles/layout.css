@@ -747,7 +747,7 @@
 
   .ui-split-pane {
     display: grid;
-    gap: var(--space-stack-md);
+    gap: var(--split-pane-gap, var(--space-stack-md));
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1994,6 +1994,13 @@
     line-break: strict;
   }
 
+  /* Japanese prose breaks between PHRASES (gh#1310), as `.ui-prose` and `Text break="phrase"` do:
+   * default CJK breaking cut words mid-way. `:lang(ja)` only, so VI and EN keep `normal` above. */
+  .ui-legal-document-summary:lang(ja),
+  .ui-legal-document-section-body:lang(ja) {
+    word-break: auto-phrase;
+  }
+
   .ui-legal-document-summary {
     color: hsl(var(--legal-document-summary-foreground, var(--muted-foreground)));
   }
@@ -2019,9 +2026,13 @@
     color: hsl(var(--legal-document-toc-foreground, var(--muted-foreground)));
   }
 
+  /* Stacked (one column), every entry HUGS its label (gh#1310): a stretched link painted the active
+   * fill across the whole column — 672px at 768 for one word. The marker, ink and weight still
+   * carry the state. The pinned rail stretches them again (below). */
   .ui-legal-document-toc-list {
     display: flex;
     flex-direction: column;
+    align-items: start;
     gap: var(--legal-document-toc-gap);
     margin: 0;
     padding: 0;
@@ -2116,6 +2127,10 @@
       align-self: start;
       max-height: var(--legal-document-toc-max-height);
       overflow-y: auto;
+    }
+
+    .ui-legal-document-toc-list {
+      align-items: stretch;
     }
 
     .ui-legal-document-content {

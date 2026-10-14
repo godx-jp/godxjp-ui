@@ -1,6 +1,6 @@
 # @godxjp/ui
 
-> A Japanese-enterprise React design system: 162 components, 2203 design tokens,
+> A Japanese-enterprise React design system: 162 components, 2204 design tokens,
 > 43 cardinal rules. This file is the entry point for AI agents. Catalog version 32.10.1.
 
 If your client can run a process, do not read these files — run the MCP server instead
@@ -11,7 +11,7 @@ that can only fetch URLs.
 
 - [START-HERE.md](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md): the whole contract — the four rules, the token override model, a page that passes review. Read this first; it is self-contained.
 - [index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json): version, counts, and the URL of every file.
-- [DESIGN.md](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md): 16 KB — the visual spec: tokens, colour scarcity, admin screen anatomy (list, detail, form, settings, dashboard), do/don't. Read it before composing a screen.
+- [DESIGN.md](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md): 17 KB — the visual spec: tokens, colour scarcity, admin screen anatomy (list, detail, form, settings, dashboard), do/don't. Read it before composing a screen.
 
 ## Catalog
 
@@ -19,7 +19,7 @@ that can only fetch URLs.
 - [components-index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json): 48 KB — all 162 components as name, group, tagline, plus `absorbed`: the names that do NOT exist and map to it (`Combobox` → `Select`).
 - [components/&lt;Name&gt;.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json): one file per component (1 KB–37 KB, median 6 KB). Read the index, then fetch only the ones you chose — this is the selective route, and the reason you do not need the blob.
 - [components.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json): 1.2 MB — every entry in one file. Most URL fetchers truncate a response this size without saying so; prefer the per-component files.
-- [tokens.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json): every design token with its value, the reason it exists, and its `tier` — 211 `foundation` seeds (`--primary`, `--background`, `--radius`: set these when you are handed a brand), 112 `semantic` roles, 1880 `component` knobs.
+- [tokens.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json): every design token with its value, the reason it exists, and its `tier` — 211 `foundation` seeds (`--primary`, `--background`, `--radius`: set these when you are handed a brand), 113 `semantic` roles, 1880 `component` knobs.
 - [vocabulary.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json): the controlled prop vocabulary — which prop name means what, across every component.
 - [rules.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json): 43 cardinal rules.
 - [anti-ai-tells.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/anti-ai-tells.json): 35 shapes that make generated UI look generated, each with its fix.
