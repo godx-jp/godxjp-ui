@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.12.1] - 2026-10-15
+
+### 🐛 Fixed
+
+- **Tree: a label that becomes cut after first render gets its full title (#1318).** Found by
+  `visual-audit --text-spacing` on godx-content: under the WCAG 1.4.12 override a rail label was cut
+  9.4px with no title, because #1308's recovery was decided on first render only. Every rendered
+  label is now observed (diffed per render; a windowed tree observes only its rendered rows), and
+  `document.fonts` ready/`loadingdone` re-measure; the label gains `data-truncated`, its `title`, and
+  unfolds on keyboard focus. A consumer's own `title` is kept. Tree isolate frame at 390 with the
+  override: cut-without-title 1 → 0.
+
 ## [32.12.0] - 2026-10-15
 
 From the independent review of godx-content round 5 (#1316) — which caught a fabricated WCAG 1.4.12

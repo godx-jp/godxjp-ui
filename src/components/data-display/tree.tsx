@@ -450,21 +450,56 @@ function TreeRoot({
       }
     }
   }, []);
-  React.useEffect(() => {
-    markTruncatedLabels();
-  });
+  /* A label can become cut LATER without the tree rendering or resizing (gh#1318): the WCAG 1.4.12
+   * text-spacing override, a web font arriving, a theme's font size. So every rendered label is
+   * observed too (its box moves with its line-height and font size), and the fonts' load is
+   * awaited. ResizeObserver and `loadingdone` each deliver one batched callback per frame; the
+   * observed set is diffed per render, so a windowed tree observes only the rows it renders. */
+  const resizeObserver = React.useRef<ResizeObserver | null>(null);
+  const observedLabels = React.useRef(new Set<HTMLElement>());
   React.useEffect(() => {
     const tree = treeRef.current;
-    if (!tree || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(markTruncatedLabels);
-    observer.observe(tree);
+    if (!tree) return;
+    const fonts = typeof document === "undefined" ? undefined : document.fonts;
+    let live = true;
+    void fonts?.ready.then(() => {
+      if (live) markTruncatedLabels();
+    });
+    fonts?.addEventListener?.("loadingdone", markTruncatedLabels);
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(markTruncatedLabels);
+    resizeObserver.current = observer;
+    observer?.observe(tree);
     const refold = () => requestAnimationFrame(markTruncatedLabels);
     tree.addEventListener("focusout", refold);
+    const observed = observedLabels.current;
     return () => {
-      observer.disconnect();
+      live = false;
+      fonts?.removeEventListener?.("loadingdone", markTruncatedLabels);
+      observer?.disconnect();
+      resizeObserver.current = null;
+      observed.clear();
       tree.removeEventListener("focusout", refold);
     };
   }, [markTruncatedLabels]);
+  React.useEffect(() => {
+    markTruncatedLabels();
+    const observer = resizeObserver.current;
+    const tree = treeRef.current;
+    if (!observer || !tree) return;
+    const observed = observedLabels.current;
+    const rendered = new Set(tree.querySelectorAll<HTMLElement>(".ui-tree-label"));
+    for (const label of observed) {
+      if (rendered.has(label)) continue;
+      observer.unobserve(label);
+      observed.delete(label);
+    }
+    for (const label of rendered) {
+      if (observed.has(label)) continue;
+      observer.observe(label);
+      observed.add(label);
+    }
+  });
 
   const nodeRefs = React.useRef(new Map<string, HTMLDivElement | null>());
   // Focus is moved only for a move the KEYBOARD asked for — a bare re-render must never steal it.
