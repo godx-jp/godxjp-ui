@@ -1228,6 +1228,20 @@
     > [data-slot="list-row"] {
     padding-inline: 0;
   }
+  /* A cut title or description UNFOLDS while the row holds keyboard focus (gh#1298) — the row
+   * itself (a link row), a control in it, or the line's own tab stop (list-row.tsx). A `title`
+   * never opens on focus, so this is the keyboard route to the rest of the text. */
+  [data-slot="list-row"]:is(:focus-visible, :has(:focus-visible))
+    [data-slot="list-row-body"]
+    > [data-truncated],
+  [data-slot="list-row"]:is(:focus-visible, :has(:focus-visible))
+    [data-slot="list-row-body"]
+    > [data-truncated]
+    [data-truncate] {
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
   [data-slot="list-row"][data-density="compact"] [data-slot="list-row-body"] {
     min-inline-size: min(var(--list-row-compact-body-min-width, 6rem), 100%);
     flex-basis: var(--list-row-compact-body-min-width, 6rem);

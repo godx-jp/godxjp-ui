@@ -5167,6 +5167,7 @@ import { Flex } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      "DO rely on ListRow for a cut title (gh#1298): a title or description that is actually truncated gets a `title` with its text (a `Text ellipsis` inside it, never a badge beside it) and unfolds while the row holds keyboard focus; when nothing in the row takes focus, the cut line gets its own tab stop. Do not add a hand-rolled Tooltip for that.",
       "DO use ListRow for a SHORT (≈2–8 item) list of entities inside a Card where each row is one line with an action — account sessions, API keys, linked identities, passkeys. Stack rows in a `<Card><CardContent flush>` so the rows draw their own quiet dividers edge-to-edge.",
       "DON'T reach for DataTable here — it carries sorting/selection/pagination chrome that a 3-item list doesn't need. DON'T nest a Card per row either (card-in-card). ListRow is the in-between surface.",
       "DO host ListRow in a DataTable column when the list needs ROW SELECTION (a mail/notification inbox with bulk actions) — DataTable is the only primitive that selects rows. Mark that column `flush: true` so the cell drops its own padding and the ListRow owns the inset (gh#1016); without it the cell padding stacks on the row's (a 32px dead gap after the checkbox, taller rows) and the unread band stops at the checkbox cell. DON'T zero the cell with a className.",
