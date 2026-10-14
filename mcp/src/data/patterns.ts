@@ -453,35 +453,25 @@ export function PricingPlans({ plans, onChoose }: { plans: Plan[]; onChoose: (id
   {
     name: "confirm-destructive",
     tagline:
-      "Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).",
+      "Type-to-confirm destructive dialog — the AlertDialog PRESET with `challenge` (the compound AlertDialog* parts are the older way in; a body the preset does not cover is Dialog variant=\"destructive\").",
     tags: ["dialog", "confirm", "destructive", "delete"],
-    code: `import { useState } from "react";
-import { AlertDialogRoot, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@godxjp/ui/feedback";
-import { Input } from "@godxjp/ui/data-entry";
-import { Button } from "@godxjp/ui/general";
-import { Flex } from "@godxjp/ui/layout";
-import { toast } from "sonner";
+    code: `import { AlertDialog, toast } from "@godxjp/ui/feedback";
 
+// The preset covers a typed challenge: confirm stays disabled until the input equals \`slug\`.
 export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolean; onOpenChange: (v: boolean) => void; slug: string }) {
-  const [confirm, setConfirm] = useState("");
   return (
-    <AlertDialogRoot open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>プロジェクトを削除</AlertDialogTitle>
-          <AlertDialogDescription>この操作は取り消せません。確認のためプロジェクト名 "{slug}" と入力してください。</AlertDialogDescription>
-        </AlertDialogHeader>
-        <Flex direction="col" gap="md">
-          <Input value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder={slug} />
-        </Flex>
-        <AlertDialogFooter>
-          <AlertDialogCancel asChild><Button variant="outline">キャンセル</Button></AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button variant="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialogRoot>
+    <AlertDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="プロジェクトを削除"
+      description={\`この操作は取り消せません。確認のためプロジェクト名 "\${slug}" と入力してください。\`}
+      challenge={slug}
+      confirmLabel="完全に削除"
+      onConfirm={() => {
+        toast.success("削除しました");
+        onOpenChange(false);
+      }}
+    />
   );
 }`,
   },

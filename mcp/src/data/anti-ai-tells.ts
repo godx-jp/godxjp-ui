@@ -372,8 +372,9 @@ opens → click "Confirm" → AlertDialog opens. Triple stack;
 user loses context.`,
     fix: `Use Sheet for the FIRST level (side panel), Dialog for the
 confirm. Or, redesign the flow so the edit is INLINE in the
-first Dialog (no second Dialog needed). AlertDialog for confirm
-is correct — but ONE deep, not three.`,
+first Dialog (no second Dialog needed). A destructive confirm
+(AlertDialog preset, or Dialog variant="destructive") is correct —
+but ONE deep, not three.`,
   },
   {
     category: "structure",
