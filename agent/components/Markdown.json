@@ -83,6 +83,7 @@
   "storyPath": "data-display/markdown.tsx",
   "tagline": "The one Markdown renderer for GoDX apps (sibling package `@godxjp/markdown`, versioned with the kit): GFM + GitHub heading anchors, one sanitiser schema (no raw HTML; http/https/mailto/relative URLs only), and ```mermaid drawn only after its SVG passes a fail-closed gate (gh#1108). Wrap it in `Prose`.",
   "usage": [
+    "DO let the document language do Japanese line breaking: under `:lang(ja)` (AppProvider sets `<html lang>`) every prose paragraph and list item breaks between PHRASES — `word-break: auto-phrase` + `line-break: strict`, the `Text break=\"phrase\"` behaviour (gh#1310) — so 「新しく参加」 is not cut 「新し｜く参加」. Latin and Vietnamese wrap unchanged; a phrase longer than the line still breaks inside itself. A browser without `auto-phrase` keeps its own CJK breaking.",
     "Table of contents: outline(markdown) from @godxjp/markdown/codec returns { depth, text, id }[] with exactly the ids <Markdown> writes — feed it to the kit Anchor. YAML front matter is kept verbatim and never rendered; frontmatterOf(markdown) returns it (gh#1163).",
     "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
     "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",

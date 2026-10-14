@@ -1753,6 +1753,18 @@
     font-size: var(--prose-font-size-sm);
   }
 
+  /* JAPANESE PROSE BREAKS BETWEEN PHRASES (gh#1310) — the `Text break="phrase"` behaviour (gh#1292),
+   * which a Markdown body cannot reach through `Text`. Default CJK breaking cut 「新し｜く参加」 and
+   * katakana names mid-word at every measure. Scoped to `:lang(ja)` paragraphs and list items:
+   * Chromium phrase-segments Japanese content only, so Latin and Vietnamese wrap exactly as before
+   * (no `text-wrap: pretty` here for that reason — it re-wraps a Latin paragraph's last line). Where `auto-phrase` is unsupported (Safari,
+   * Firefox today) the value is dropped and `.ui-prose`'s `overflow-wrap: anywhere` still keeps an
+   * over-long token inside the column. */
+  .ui-prose :is(p, li):lang(ja) {
+    word-break: auto-phrase;
+    line-break: strict;
+  }
+
   /* `measure` — a reading line length (gh#1112). The page-column tokens Flex and PageContainer
    * read, so a theme sets every reading column once. A cap, not a centred column: the body keeps
    * its start edge under its heading. A long code line stays inside the cap (it wraps). */

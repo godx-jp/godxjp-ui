@@ -72,6 +72,10 @@
    * This is a real knob — the layout reads it through the flex-basis threshold, NOT a media
    * query, precisely so a `var()` can drive it (see src/styles/layout.css · .ui-master-detail). */
   --master-detail-collapse-below: 40rem; /* 640px — the `sm` step */
+  /* SplitPane main ↔ aside gap (gh#1310, rule #45), split and stacked. Default = --space-stack-md,
+   * resolved at the call site so a density scope that re-derives the step still reaches it; a
+   * service sets the column step it reads between panes, e.g. var(--space-inline-xl). */
+  --split-pane-gap: initial;
 
   /* Bounded master viewport (gh#231). OPT-IN, chosen by the semantic `masterViewport` prop —
    * `auto` (the default) applies NO bound, so every existing composition is unchanged. A real

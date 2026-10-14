@@ -104,7 +104,7 @@ Colour is scarce. Most of the screen is canvas, ink and hairline.
 
 - One family. Hierarchy from size steps, weight 400/500/700 and `ink` vs `ink-muted`. Page title ~20px; anything larger belongs on a marketing page. One exception: a long-form document title (Reader) is ~22px, two steps above its ~17.6px section headings, because one step reads flat there.
 - Body 14px / 1.7. Captions and meta 12.5px muted. `Text tabular` on every number, time and money column.
-- Japanese prose: `Text break="phrase"` so lines break between phrases.
+- Japanese prose: `Text break="phrase"` so lines break between phrases. `Prose`/`Markdown` and `LegalDocumentShell` bodies do this themselves under `lang="ja"`.
 - Copy is quiet and factual: no praise, no alarm, no emoji, no em dash in UI strings. A success message states the fact (「承認しました」).
 
 ## Layout & Density
@@ -148,11 +148,11 @@ Header: record name as title, status `Badge` beside it, actions in `extra` (one 
 
 ### Editor
 
-Edit (or create) one document or record. Header: record name as title, status `Badge` beside it, a subtitle only for a fact such as when it was last saved, and ONE primary Save in `extra` (`Button type="submit" form=<form id>`), Cancel `outline` before it. Body: one `Form` in a `SplitPane`: the main column holds the title field and a large body editor (`BlockEditor`, or `Textarea autoSize`); the aside holds metadata fields and read-only facts in `Descriptions`. The change note goes either directly under the body (where the writer finishes) or last in the aside — pick one per app and keep it. Name each aside group with a `Heading level={2}` one step above its field labels. A part that is its own controlled component with its own `Form` (forms cannot nest) stays a separate form; the header Save then submits by handler (`onClick`) instead of `form=<id>`, still one Save. No Card per field group, no second Save at the bottom.
+Edit (or create) one document or record. Header: record name as title, status `Badge` beside it, a subtitle only for a fact such as when it was last saved, and ONE primary Save in `extra` (`Button type="submit" form=<form id>`), Cancel `outline` before it. Body: one `Form` in a `SplitPane`: the main column holds the title field and a large body editor (`BlockEditor`, or `Textarea autoSize`); the aside holds metadata fields and read-only facts in `Descriptions`. The change note goes either directly under the body (where the writer finishes) or last in the aside — pick one per app and keep it. Name each aside group with a `Heading level={2}` one step above its field labels. The main↔aside gap is `--split-pane-gap` (default 16px); set it once in the theme. A part that is its own controlled component with its own `Form` (forms cannot nest) stays a separate form; the header Save then submits by handler (`onClick`) instead of `form=<id>`, still one Save. No Card per field group, no second Save at the bottom.
 
 ### Reader
 
-A long-form document to read. The document owns the page's one `<h1>`: `PageContainer` gets `breadcrumb` and `extra` (Edit) and no `title`. `LegalDocumentShell` draws the reading column: title two steps above the section headings, one metadata line (version, date with `dateKind="updated"` for a revision), the contents rail, and prose at a reading measure with `Text break="phrase"` for Japanese. No Card around the article, no subtitle, no icon per heading.
+A long-form document to read. The document owns the page's one `<h1>`: `PageContainer` gets `breadcrumb` and `extra` (Edit) and no `title`. `LegalDocumentShell` draws the reading column: title two steps above the section headings, one metadata line (version, date with `dateKind="updated"` for a revision), the contents rail, and prose at a reading measure (Japanese breaks between phrases under `lang="ja"`; stacked, a contents entry hugs its label). No Card around the article, no subtitle, no icon per heading.
 
 ### Settings
 
@@ -215,5 +215,5 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 - `card-per-section` counts Cards per file, so a screen split across components can pass with a Card around every section.
 - Exemplar previews deploy on release tags, so they can lag `main`. On GitHub Pages a showcase URL answers HTTP 404 and renders through `404.html`, so open it in a browser; a plain fetch sees the 404.
 - Dark theme (`data-theme="dark"`) is supported; the exemplars are reviewed in light.
-- From 640px up, `BlockEditor` text does not share the keyline of the `Input` above it: measured at 768/1024/1280, input text 13px inside its frame, editor text 57px inside (Δ44px), because the ⋮⋮/+ handles (two 24px targets) sit in a start gutter inside the frame. Aligning the text would put the handles outside the field border, where a content column 24px from the viewport edge has no room. Below 640px the gutter collapses (C05). Accepted, not a defect to fix in the app.
+- From 640px up, `BlockEditor` text does not share the keyline of the `Input` above it: measured at 768/1024/1280, input text 13px inside its frame, editor text 57px inside (Δ44px), because the ⋮⋮/+ handles (two 24px targets) sit in a start gutter inside the frame. Aligning the text would put the handles outside the field border, where a content column 24px from the viewport edge has no room. Below 640px the gutter collapses (C05). `--block-editor-gutter-inline-size` sets the gutter width; it cannot close the gap, because the handles live inside it. Accepted, not a defect to fix in the app.
 - On narrow screens the `PageContainer` title steps down (≈17.6px) while body h2 stays ≈15.7px — one step apart. A document page not built on `LegalDocumentShell` keeps only that step on phones; there is no intermediate page-title size yet.
