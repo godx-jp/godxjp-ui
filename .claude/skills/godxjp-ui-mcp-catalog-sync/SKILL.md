@@ -1,6 +1,7 @@
 ---
 name: godxjp-ui-mcp-catalog-sync
-description: BẮT BUỘC khi thêm/sửa/đổi-tên/deprecate/xoá BẤT KỲ component, prop-vocabulary, token, cardinal rule, hay pattern của @godxjp/ui — phần catalog của MCP (mcp/src/data/*) và bộ test của nó PHẢI được cập nhật cùng lúc, nếu không consumer sẽ nhận API sai. Ép quy trình: cập nhật mcp/src/data, chạy check:mcp-sync + check:mcp-orphans, và chạy/bổ sung test MCP cho mọi thay đổi. Đọc TRƯỚC khi commit một thay đổi chạm tới bề mặt public.
+description: >-
+  BẮT BUỘC khi thêm/sửa/đổi-tên/deprecate/xoá BẤT KỲ component, prop-vocabulary, token, cardinal rule, hay pattern của @godxjp/ui — phần catalog của MCP (mcp/src/data/*) và bộ test của nó PHẢI được cập nhật cùng lúc, nếu không consumer sẽ nhận API sai. Ép quy trình: cập nhật mcp/src/data, chạy check:mcp-sync + check:mcp-orphans, và chạy/bổ sung test MCP cho mọi thay đổi. Đọc TRƯỚC khi commit một thay đổi chạm tới bề mặt public.
 ---
 
 # Keeping the MCP catalog (and its tests) in sync
