@@ -82,6 +82,21 @@ describe("Text — break (attribute contract)", () => {
     expect(text).toHaveAttribute("data-clamp", "");
     expect(warn).not.toHaveBeenCalled();
   });
+
+  it('emits data-break="phrase"; truncate wins over it too, and warns', () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    render(
+      <>
+        <Text break="phrase">グエン・ティ・タン・フォン</Text>
+        <Text truncate break="phrase">
+          チャン・ヴァン・ミン
+        </Text>
+      </>,
+    );
+    expect(screen.getByText("グエン・ティ・タン・フォン")).toHaveAttribute("data-break", "phrase");
+    expect(screen.getByText("チャン・ヴァン・ミン")).not.toHaveAttribute("data-break");
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('break="phrase"'));
+  });
 });
 
 const read = (p: string) => readFileSync(join(process.cwd(), p), "utf8");

@@ -59,9 +59,9 @@
     },
     {
       "defaultValue": "\"normal\"",
-      "description": "Where an over-long unbroken token may break. THE prop for a machine identifier — an email address, a coupon code, a login id, a template key — in a DataTable/TableCell or a Descriptions value: `break=\"anywhere\"` emits `overflow-wrap: anywhere` (and releases a table cell's inherited `nowrap`), so the column shrinks to the viewport instead of scrolling the page. Use it INSTEAD of `className=\"[overflow-wrap:anywhere] break-words whitespace-normal\"`. NOT `whitespace=\"pre-wrap\"`: that is for typed line breaks, and its `break-word` does not lower min-content, so in a table cell it breaks nothing (measured: a 71-char token holds a 320px table at 630px with pre-wrap, 320px with break=\"anywhere\"). Independent of `whitespace` (both may be set); `truncate` wins (dev builds warn); `clamp` composes.",
+      "description": "Where an over-long unbroken token may break. THE prop for a machine identifier — an email address, a coupon code, a login id, a template key — in a DataTable/TableCell or a Descriptions value: `break=\"anywhere\"` emits `overflow-wrap: anywhere` (and releases a table cell's inherited `nowrap`), so the column shrinks to the viewport instead of scrolling the page. Use it INSTEAD of `className=\"[overflow-wrap:anywhere] break-words whitespace-normal\"`. NOT `whitespace=\"pre-wrap\"`: that is for typed line breaks, and its `break-word` does not lower min-content, so in a table cell it breaks nothing (measured: a 71-char token holds a 320px table at 630px with pre-wrap, 320px with break=\"anywhere\"). `break=\"phrase\"` is THE prop for Japanese PROSE in a narrow measure — a trainee's katakana name, an organisation, a status in a DataTable cell: it breaks between phrases (`word-break: auto-phrase`, Chrome 119+) instead of between any two characters, never starts a line with a small kana or 「ー」 (`line-break: strict`), adds `text-wrap: pretty`, and releases the cell's `nowrap` (measured in a 974px 8-column table: 「チャン・ヴァ｜ン・ミン」 → 「チャン・｜ヴァン・｜ミン」, 4 mid-katakana breaks → 0). It keeps every phrase whole, so the column is as wide as its longest phrase: a 20+ character katakana compound scrolls the table rather than being cut. Browsers without `auto-phrase` keep their own CJK breaking. Independent of `whitespace` (both may be set); `truncate` wins (dev builds warn); `clamp` composes.",
       "name": "break",
-      "type": "\"normal\" | \"anywhere\""
+      "type": "\"normal\" | \"anywhere\" | \"phrase\""
     },
     {
       "description": "Tabular figures for aligned numbers.",
@@ -195,6 +195,7 @@
   "usage": [
     "DO use `<Text>` for ALL body / inline / caption text instead of a styled `<span>`/`<p>`. Pick `size` from the scale; never write `text-[13px]`/`text-[11px]` or `font-semibold` by hand.",
     "DO use `tone` for colour (`muted`/`primary`/semantic), `tabular` for numbers, `mono` for codes — not `className=\"text-muted-foreground font-mono tabular-nums\"`.",
+    "DO use `break=\"phrase\"` for Japanese prose (a name, an organisation, a status) in a table cell — never `className=\"[word-break:auto-phrase]\"`; it is not for a machine id, which is `break=\"anywhere\"`.",
     "DO use `break=\"anywhere\"` for an email, code or id in a table cell or Descriptions value — never `className=\"[overflow-wrap:anywhere] break-words whitespace-normal\"`, and never `whitespace=\"pre-wrap\"`, which does not shrink a table column.",
     "DO use `clamp={n}` for a description limited to n lines (card grids) and `truncate` for a one-line ellipsis — never `className=\"line-clamp-2\"` (banned utility). They are mutually exclusive; `clamp` wins.",
     "For a heading, use `<Heading level>` instead of a large-size `<Text>`.",
@@ -205,6 +206,7 @@
     "A muted caption under a value: `<Text size=\"xs\" tone=\"muted\">2026年5月度</Text>`.",
     "A monospace id in a list row: `<Text size=\"xs\" mono tone=\"muted\">RC-204881</Text>`.",
     "A staff email in a narrow DataTable cell at 320px, wrapping instead of scrolling the page: `<Text size=\"sm\" break=\"anywhere\">{staff.email}</Text>`.",
+    "A trainee's katakana name in a DataTable cell, breaking between phrases instead of mid-katakana: `render: (row) => <Text break=\"phrase\">{row.name}</Text>` (pair long-heading columns with `headerWrap: true`).",
     "An emphasized inline figure: `<Text weight=\"medium\" tabular>¥1,240,000</Text>`.",
     "A service-card description clamped to 2 lines on a narrow (390px) index: `<Text as=\"p\" size=\"sm\" tone=\"muted\" clamp={2}>{description}</Text>`.",
     "An issue subject linking out of a table cell, wrapping to two lines: `<Text asChild link truncate={false}><Link href={`/view/${key}`}>{subject}</Link></Text>`.",

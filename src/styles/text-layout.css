@@ -249,8 +249,51 @@
     overflow-wrap: anywhere;
     min-inline-size: 0;
   }
-  [data-slot="text"][data-break="anywhere"]:not([data-whitespace]) {
+  [data-slot="text"][data-break="anywhere"]:not([data-whitespace]),
+  [data-slot="text"][data-break="phrase"]:not([data-whitespace]) {
     white-space: normal;
+  }
+  /* PROSE in a narrow measure breaks between PHRASES, not between any two characters (gh#1292).
+   *
+   * Default CJK breaking may break between almost any two characters, so a Japanese name or
+   * organisation in a table cell is cut mid-word. Measured in Chromium 151, an 8-column DataTable
+   * of trainees in the 974px content frame of a 1280 layout, every header wrapping (both 972px):
+   *
+   *   whitespace="normal"  「チャン・ヴァ｜ン・ミン」 「有限会社サンラ｜イズフード」   4 katakana-internal breaks
+   *   break="phrase"       「チャン・｜ヴァン・｜ミン」 「有限会社サンライズフード」     0
+   *
+   * `line-break: strict` is on the SUPPORTED branch too, not only the fallback: it is what stops a
+   * small kana or the long-vowel mark starting a line (「｜ィ・タン」, 「｜ャリア」, 「｜ーバル」)
+   * when a phrase is longer than the line and has to break inside itself.
+   *
+   * THE COST, measured on purpose: `auto-phrase` makes a phrase unbreakable for min-content, so a
+   * column is as wide as its longest phrase. A 23-character katakana compound
+   * (「株式会社グローバルヒューマンリソースマネジメント」) holds its column open and the table
+   * scrolls inside its region — 1429px in that 974px frame — rather than cutting the compound. That
+   * is the trade: `overflow-wrap: anywhere` here would buy the fit back by reintroducing the exact
+   * mid-katakana breaks this value exists to stop (measured: 7 of the 9 return). A machine id is
+   * `break="anywhere"`; prose is this.
+   *
+   * `text-wrap: pretty` keeps a Latin or mixed paragraph from ending on one short word. It does NOT
+   * rescue a Japanese phrase that had to break inside itself (「…マネジメン｜ト」 is identical with
+   * and without it); what keeps a one-character last line away is that a phrase which fits is
+   * never split, and phrases are several characters long.
+   *
+   * `min-inline-size: 0` for the gh#838 reason: inside a flex row the item's `min-width: auto`
+   * would pin it to the longest phrase and push the row past the viewport.
+   *
+   * A browser without `auto-phrase` (Safari, Firefox today) drops the value and keeps its own CJK
+   * breaking; it gets `overflow-wrap: anywhere` so an over-long token still cannot overflow. */
+  [data-slot="text"][data-break="phrase"] {
+    word-break: auto-phrase;
+    line-break: strict;
+    text-wrap: pretty;
+    min-inline-size: 0;
+  }
+  @supports not (word-break: auto-phrase) {
+    [data-slot="text"][data-break="phrase"] {
+      overflow-wrap: anywhere;
+    }
   }
   /* Visual-only: the full text stays in the DOM and the accessible name. */
   [data-slot="text"][data-clamp] {

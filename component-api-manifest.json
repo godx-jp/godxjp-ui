@@ -8960,7 +8960,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextBreakProp | undefined",
-          "values": ["normal", "anywhere"],
+          "values": ["normal", "anywhere", "phrase"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -16122,7 +16122,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextBreakProp | undefined",
-          "values": ["normal", "anywhere"],
+          "values": ["normal", "anywhere", "phrase"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {

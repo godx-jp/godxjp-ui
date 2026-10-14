@@ -521,7 +521,7 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
     description:
-      "Where an over-long unbroken token may break normal | anywhere: `anywhere` (overflow-wrap: anywhere) lets a machine identifier (email, code, login id) split to fit a narrow table cell; independent of TextWhitespaceProp, and `truncate` outranks it",
+      "Where an over-long unbroken token may break normal | anywhere | phrase: `anywhere` (overflow-wrap: anywhere) lets a machine identifier (email, code, login id) split to fit a narrow table cell; `phrase` (word-break: auto-phrase + line-break: strict + text-wrap: pretty) breaks Japanese prose between phrases, never mid-katakana, keeping each phrase whole (the column is as wide as its longest phrase); independent of TextWhitespaceProp, and `truncate` outranks both",
   },
   TypographyTypeProp: {
     file: "vocabulary/interaction.prop.ts",
