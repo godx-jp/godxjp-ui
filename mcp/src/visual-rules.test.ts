@@ -28,6 +28,27 @@ describe("visual-rules catalog", () => {
   it("filters by category", () => {
     expect(visualRulesByCategory("color").every((r) => r.category === "color")).toBe(true);
   });
+
+  it("documents the responsive probes and keeps C03 a human checklist rule", () => {
+    for (const id of [
+      "c01-content-reachable",
+      "c02-search-usable",
+      "c04-compact-account-name",
+      "c05-compact-editor-inset",
+      "c06-compact-actions",
+      "c10-rail-toggle-attached",
+      "c11-search-keyline",
+      "c12-tracked-uppercase-label",
+    ])
+      expect(findVisualRule(id)?.kind, id).toBe("probe");
+    for (const id of [
+      "c03-single-brand",
+      "c07-width-control",
+      "c08-sidebar-field-edges",
+      "c09-progress-role",
+    ])
+      expect(findVisualRule(id)?.kind, id).toBe("checklist");
+  });
 });
 
 describe("list_visual_checks tool", () => {

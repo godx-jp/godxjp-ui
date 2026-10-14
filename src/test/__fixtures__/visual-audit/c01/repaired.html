@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C01 repaired: wraps instead of clipping</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+
+    </style>
+  </head>
+  <body>
+    <div id="c01-wrap" style="width: 120px; overflow: hidden">A long label that now wraps onto lines</div>
+    <div style="margin: 20px; width: 40px; height: 40px; overflow: hidden">
+      <svg width="24" height="24" viewBox="0 0 24 24" style="display: block"><circle cx="12" cy="12" r="10" /></svg>
+    </div>
+  </body>
+</html>

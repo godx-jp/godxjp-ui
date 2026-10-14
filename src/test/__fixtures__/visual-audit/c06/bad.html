@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C06 bad: three direct actions plus overflow on a phone</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+
+    </style>
+  </head>
+  <body>
+    <div id="c06-group" class="ui-page-header-extra" style="display: flex; gap: 8px">
+      <button>Page settings</button><button>Cancel</button><button>Save</button>
+      <button id="c06-more" aria-haspopup="menu" aria-label="More">…</button>
+    </div>
+    <div id="c06-menu" role="menu" hidden><button role="menuitem">Duplicate</button></div>
+    <script>
+      const t = document.getElementById("c06-more");
+      const m = document.getElementById("c06-menu");
+      t.addEventListener("click", () => { m.hidden = false; t.setAttribute("aria-expanded", "true"); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") { m.hidden = true; t.setAttribute("aria-expanded", "false"); } });
+    </script>
+  </body>
+</html>
