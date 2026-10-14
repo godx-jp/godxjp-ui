@@ -1551,6 +1551,15 @@
     tab-size: 2;
   }
 
+  /* Inside prose the block follows the TEXT AROUND IT, not the root: `1em` by default, which is the
+   * same 14px as `--code-block-font-size` at the default scale. A rem-sized `pre` kept its size in
+   * the BlockEditor under text zoom while the paragraphs doubled — the editor strips per-element
+   * overrides, so only an inherited size reaches its blocks (gh#1320). Standalone CodeBlock keeps
+   * `--code-block-font-size`. */
+  .ui-prose pre {
+    font-size: var(--prose-code-block-font-size);
+  }
+
   :is(.ui-code-block, .ui-prose pre) > code {
     font: inherit;
     background: transparent;
@@ -2202,6 +2211,13 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-2);
+  }
+
+  /* The head's label and button sit one step below the editor's text — the xs step, but taken from
+   * the inherited size rather than the root, so they follow a larger text size like the blocks do
+   * (gh#1320). Same 12.5px at the default scale. */
+  .ui-block-editor .ui-block-editor-raw-block-head :is([data-slot="text"], .ui-button) {
+    font-size: calc(1em / var(--font-size-ratio));
   }
 
   .ui-block-editor-raw-block-source {
