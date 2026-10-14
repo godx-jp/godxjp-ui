@@ -390,7 +390,9 @@ export function codeMask(file, src) {
         if (depth === 0 && closer) return i;
         depth -= 1;
       }
-      if (!/\s/.test(c)) {
+      if (/\s/.test(c)) {
+        if (isId(prev)) prev = " "; // `else return`: two words, not `elsereturn`
+      } else {
         if (isId(c)) word = isId(prev) && word ? word + c : c;
         else word = "";
         prev = c;

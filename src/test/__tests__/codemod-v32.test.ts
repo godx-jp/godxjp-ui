@@ -367,6 +367,23 @@ export const F = () => <Tags open={false} mode="tags" value={v} />;
     expect(transformSource("f.tsx", out).changed).toBe(false);
   });
 
+  it("reads JSX after `else return` as JSX, so an apostrophe in its text cannot hide the closing tag", () => {
+    const src = `import { Callout } from "@godxjp/ui";
+export function A({ x }: { x: boolean }) {
+  if (x) return null;
+  else return <Callout>Don't</Callout>;
+}
+`;
+    expect(transformSource("a.tsx", src).out).toBe(
+      `
+export function A({ x }: { x: boolean }) {
+  if (x) return null;
+  else return <Alert variant="callout">Don't</Alert>;
+}
+`.replace(/^\n/, 'import { Alert } from "@godxjp/ui/feedback";\n'),
+    );
+  });
+
   it("drops an import emptied by a move without collapsing the blank lines elsewhere", () => {
     const src = `import { Carousel } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui";
