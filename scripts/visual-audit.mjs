@@ -2009,7 +2009,7 @@ function finish(result, { asJson, strict, pages }) {
   for (const ev of result.evidence || []) {
     const d = ev.delta;
     console.log(
-      `${ev.applied ? C.dim : C.red}${ev.mode} ${ev.url} @${ev.viewport}: ${ev.applied ? "applied" : "NOT APPLIED"} — ${d.movedTextElements}/${d.textElements} text elements moved, max ${d.maxShiftPx}px, document height ${d.documentHeightPx >= 0 ? "+" : ""}${d.documentHeightPx}px · C01 ${ev.c01}${ev.screenshots ? ` · ${ev.screenshots.override}` : ""}${C.reset}`,
+      `${ev.applied ? C.dim : C.red}${ev.mode} ${ev.url} @${ev.viewport}: ${ev.applied ? "applied" : "NOT APPLIED"} (values on ${Math.round(ev.appliedRatio * 100)}% of text) — ${d.movedTextElements}/${d.textElements} text elements moved, max ${d.maxShiftPx}px, document height ${d.documentHeightPx >= 0 ? "+" : ""}${d.documentHeightPx}px · C01 ${ev.c01}${ev.screenshots ? ` · ${ev.screenshots.override}` : ""}${C.reset}`,
     );
   }
   for (const e of result.errors) {
