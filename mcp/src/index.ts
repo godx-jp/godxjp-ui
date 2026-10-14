@@ -34,6 +34,18 @@ import { TOOL_DEFINITIONS, dispatchTool } from "./tools/registry.js";
 import { RESOURCE_DEFINITIONS, readResource } from "./resources/registry.js";
 import pkg from "../package.json";
 
+/**
+ * Sent to the client at initialize and placed in the agent's context by MCP clients that support
+ * it — the one place a consumer agent reads before choosing a tool. Terse on purpose: it is a
+ * recurring token cost (gh#1294).
+ */
+const INSTRUCTIONS = `Building UI with @godxjp/ui. Before any JSX:
+1. get_design — DESIGN.md: tokens, scarcity rules, screen anatomy, do/don't.
+2. route_consumer_task → compose-a-screen for app screens (marketing skills are for landing pages only).
+3. get_exemplar archetype=list|detail|form|settings|dashboard|approval — match its structure.
+4. search_components before get_component; never guess a prop.
+After building: ui-audit at zero errors, then screenshot at 390/768/1280 beside the exemplar, fix the top 3 differences, at most 3 rounds.`;
+
 async function main() {
   const server = new Server(
     {
@@ -46,6 +58,7 @@ async function main() {
         tools: {},
         resources: {},
       },
+      instructions: INSTRUCTIONS,
     },
   );
 

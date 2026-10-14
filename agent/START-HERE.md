@@ -38,10 +38,13 @@ disk, and costs far fewer tokens than fetching a 1 MB JSON.
 { "mcpServers": { "godx-ui": { "command": "npx", "args": ["@godxjp/ui-mcp@<installed version>"] } } }
 ```
 
-Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `list_anti_ai_tells`.
+Then, before any JSX: `get_design` (the visual target), `route_consumer_task`, `get_exemplar` for
+the closest screen, `search_components` → `get_component`. After building, screenshot at
+390 / 768 / 1280 beside the exemplar and fix the top 3 differences, at most 3 rounds.
 
 **You cannot run a process** (ChatGPT web · Claude.ai · anything fetching URLs)
-→ These files are for you. Fetch in this order:
+→ These files are for you. Read `DESIGN.md` (in this folder) first: tokens, scarcity rules and
+screen anatomy, the visual target the rules below do not give you. Then fetch in this order:
 
 0. `patterns-index.json` — 24 whole-task patterns as name + tagline + tags. **If your
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
@@ -143,7 +146,7 @@ has stopped following the brand.
 
 | `tier` | count | what it is | set it? |
 |---|---|---|---|
-| `foundation` | 211 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** Handed a brand colour, this is where it goes: `:root { --primary: <H> <S>% <L>%; }` (HSL components, no `hsl()` wrapper) |
+| `foundation` | 211 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** The default `--primary` is a neutral placeholder: set it (`:root { --primary: <H> <S>% <L>%; }`, HSL components, no `hsl()` wrapper) or import a theme preset such as `@godxjp/ui/themes/godx.css` |
 | `semantic` | 112 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
 | `component` | 1872 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
 
@@ -160,35 +163,27 @@ theme, every tenant scope and every audit in this package.
 
 ```tsx
 import { PageContainer, Flex } from "@godxjp/ui/layout";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, DataTable } from "@godxjp/ui/data-display";
+import { Card, CardContent, DataTable } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
-import { Select } from "@godxjp/ui/data-entry";
-import { Alert, AlertTitle, AlertDescription } from "@godxjp/ui/feedback";
+import { Select, SearchInput } from "@godxjp/ui/data-entry";
 
 export default function InvoicesPage() {
   return (
-    <PageContainer title="請求一覧" subtitle="今月の未収を上から">
-      <Flex direction="col" gap="lg">
-        <Alert tone="warning">
-          <AlertTitle>お支払いが確認できていません</AlertTitle>
-          <AlertDescription>3 件の請求が期限を過ぎています。</AlertDescription>
-        </Alert>
+    <PageContainer title="請求一覧" extra={<Button>請求を作成</Button>}>
+      <Flex direction="col" gap="sm">
+        {/* filters sit ABOVE the table they filter */}
+        <Flex direction="row" gap="sm" wrap>
+          <SearchInput aria-label="請求を検索" />
+          <Select width="auto" options={statuses} defaultValue="unpaid" aria-label="状態" />
+          <Button variant="outline">CSV</Button>
+        </Flex>
 
+        {/* `flush` because DataTable draws its own edges — a padded body double-insets it */}
         <Card>
-          <CardHeader>
-            <CardTitle level={2}>未収</CardTitle>
-            <CardDescription>期限順。金額は税込。</CardDescription>
-          </CardHeader>
-          {/* `flush` because DataTable draws its own edges — a padded body double-insets it */}
           <CardContent flush>
-            <DataTable data={rows} columns={columns} getRowId={(r) => r.id} striped />
+            <DataTable data={rows} columns={columns} getRowId={(r) => r.id} />
           </CardContent>
         </Card>
-
-        <Flex direction="row" gap="sm" wrap>
-          <Select width="auto" options={statuses} defaultValue="unpaid" aria-label="状態" />
-          <Button variant="outline" size="sm">CSV</Button>
-        </Flex>
       </Flex>
     </PageContainer>
   );
@@ -196,7 +191,8 @@ export default function InvoicesPage() {
 ```
 
 Note what is absent: no colour, no pixel, no raw control, no `<div className="flex gap-4">` where
-`Flex` exists.
+`Flex` exists — and no subtitle restating the title, no KPI row above the list, no banner, no Card
+header repeating the page title. The page answers one question: which invoice next.
 
 **Take the import path from the catalog, not from the group.** Every entry in
 `components/<Name>.json` carries an `importPath`; it is the only one guaranteed to resolve. The
