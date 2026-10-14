@@ -1563,7 +1563,9 @@
 
   /* JAPANESE HEADINGS AND SHORT UI STRINGS BREAK BETWEEN PHRASES (gh#1314) — 32.11.0 gave Markdown
    * prose `auto-phrase`, but a page title, a document title and an EmptyState sentence still broke
-   * mid-word (「リ|リース」, 「オンボー|ディング」, 「ませ|ん。」 measured in godx-content). Scoped to
+   * mid-word (「リ|リース」, 「オンボー|ディング」, 「ませ|ん。」 measured in godx-content); so did
+   * breadcrumb crumbs (gh#1316: 「…オンボーディ|ング…」 at 390/320; `.ui-breadcrumb-item` covers
+   * Breadcrumb and PageContainer's own trail, and the link/page text inherits). Scoped to
    * `:lang(ja)`: Chromium phrase-segments Japanese only, so Latin and Vietnamese wrap as before;
    * unsupported engines drop the value and keep their own CJK breaking. */
   :is(
@@ -1575,7 +1577,8 @@
     h6,
     .ui-page-title,
     .ui-empty-state-title,
-    .ui-empty-state-description
+    .ui-empty-state-description,
+    .ui-breadcrumb-item
   ):lang(ja) {
     word-break: auto-phrase;
     line-break: strict;

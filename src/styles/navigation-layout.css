@@ -1122,8 +1122,12 @@
     outline: none;
   }
 
+  /* HEIGHT CAP (gh#1316). react-aria's Popover writes the space left in the viewport as an inline
+   * `max-height`, which is what actually clamps the panel; this line read
+   * `--radix-dropdown-menu-content-available-height`, which nothing has set since the menu moved
+   * off Radix. `100dvh` is only the floor for a render without that inline value. */
   .ui-dropdown-menu-content {
-    max-height: var(--radix-dropdown-menu-content-available-height);
+    max-height: 100dvh;
     overflow-x: hidden;
     overflow-y: auto;
   }
