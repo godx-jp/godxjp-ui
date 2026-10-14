@@ -105,7 +105,7 @@ describe("ui-audit --changed resolves its base from the repo (gh#948)", () => {
 
   it("says which base it used, so a wrong one cannot hide behind a plausible number", () => {
     const { clone } = fixture();
-    expect(audit(clone).out).toContain("so với: origin/HEAD");
+    expect(audit(clone).out).toContain("compared with: origin/HEAD");
   });
 
   it("lets an explicit --base win — and that is the old behaviour, still reachable", () => {
@@ -116,7 +116,7 @@ describe("ui-audit --changed resolves its base from the repo (gh#948)", () => {
     // audited and the clean branch reports an error. This is what every run used to do.
     expect(out).toContain("src/legacy.tsx");
     expect(out).toContain("1 error(s)");
-    expect(out).toContain("so với: origin/main");
+    expect(out).toContain("compared with: origin/main");
   });
 
   it("fails CLOSED when no candidate resolves — never a clean run (gh#542)", () => {
@@ -128,5 +128,29 @@ describe("ui-audit --changed resolves its base from the repo (gh#948)", () => {
     expect(out).toContain("origin/HEAD, origin/main");
     expect(out).not.toContain("No UI-standardization violations found");
     expect(status).not.toBe(0);
+  });
+});
+
+describe("ui-audit --changed from a workspace package (gh#1296)", () => {
+  it("sees the package's committed changes instead of reporting a false clean", () => {
+    const { clone } = fixture();
+    mkdirSync(join(clone, "pages", "web"), { recursive: true });
+    writeFileSync(join(clone, "pages", "web", "edit.tsx"), DIRTY);
+    git(clone, "add", "-A");
+    git(clone, "commit", "-qm", "P1");
+    const { status, out } = audit(join(clone, "pages"));
+    expect(out).toContain("web/edit.tsx");
+    expect(out).not.toMatch(/no \.tsx\/\.jsx changed/i);
+    expect(status).not.toBe(0);
+  });
+
+  it("control: a change outside the package is not reported from inside it", () => {
+    const { clone } = fixture();
+    mkdirSync(join(clone, "pages", "web"), { recursive: true });
+    writeFileSync(join(clone, "pages", "web", "ok.tsx"), CLEAN("P"));
+    git(clone, "add", "-A");
+    git(clone, "commit", "-qm", "P2");
+    const { out } = audit(join(clone, "pages"));
+    expect(out).not.toContain("src/new.tsx");
   });
 });

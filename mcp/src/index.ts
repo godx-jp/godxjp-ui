@@ -42,7 +42,7 @@ import pkg from "../package.json";
 const INSTRUCTIONS = `Building UI with @godxjp/ui. Before any JSX:
 1. get_design — DESIGN.md: tokens, scarcity rules, screen anatomy, do/don't.
 2. route_consumer_task → compose-a-screen for app screens (marketing skills are for landing pages only).
-3. get_exemplar archetype=list|detail|form|settings|dashboard|approval — match its structure.
+3. get_exemplar for the closest archetype (no argument lists them: list, detail, editor, reader, settings, dashboard, approval-queue) — match its structure.
 4. search_components before get_component; never guess a prop.
 After building: ui-audit at zero errors, then screenshot at 390/768/1280 beside the exemplar, fix the top 3 differences, at most 3 rounds.`;
 
