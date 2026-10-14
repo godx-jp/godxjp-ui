@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.13.1] - 2026-10-15
+
+The first release of everything listed under 32.13.0 below: its main CI was red (two typography
+gates) and the release gate stopped before tagging, so 32.13.0 never reached npm.
+
+### 🐛 Fixed
+
+- Prose heading and raw-block-head sizes are component tokens (`--prose-heading-h1…h4-font-size`,
+  `--block-editor-raw-block-head-font-size`) instead of inline `calc(1em × ratio)` values, and the
+  `1em` steps carry a `scale-exempt` reason — `check:typography` and `check:token-scale-bypass` pass.
+  Rendered sizes are unchanged.
+
 ## [32.13.0] - 2026-10-15
 
 From the independent review of godx-content round 6 (#1320): under 200% text the top bar overlapped
