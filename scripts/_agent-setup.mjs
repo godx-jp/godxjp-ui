@@ -187,8 +187,9 @@ Follow this every time you create or change a page, component or form.
 2. **Route.** \`route_consumer_task "<task>"\` → \`compose-a-screen\` for app screens. The
    marketing skills (soft, minimalist, brutalist, gpt-tasteskill, imagegen-*) are for landing
    pages only.
-3. **Exemplar.** \`get_exemplar\` with archetype list | detail | form | settings | dashboard |
-   approval. Match its structure; it is the visual target.
+3. **Exemplar.** \`get_exemplar\` for the closest archetype (call it with no argument for the
+   list: list, detail, editor/form, reader/document, settings, dashboard, approval-queue). Match
+   its structure; it is the visual target.
 4. **Discover, then look up.** \`search_components "<area>"\` first, \`get_component <Name>\`
    second — \`get_component\` cannot find a name you do not already have (a consumer hand-rolled
    the shipped \`OrgSwitcher\` and \`TopbarItem\` this way). Code already in this repo is not the
@@ -226,7 +227,8 @@ ${STAMP(KIT_VERSION)}
 Before any JSX for a screen:
 1. Read \`node_modules/@godxjp/ui/DESIGN.md\` (MCP \`get_design\`).
 2. \`route_consumer_task\` → \`compose-a-screen\`; \`search_components\` before hand-rolling anything.
-3. \`get_exemplar\` (list | detail | form | settings | dashboard | approval) — match its structure.
+3. \`get_exemplar\` (no argument lists the archetypes: list, detail, editor, reader, settings,
+   dashboard, approval-queue) — match its structure.
 
 After building:
 4. \`npx @godxjp/ui audit <files>\` — zero errors.

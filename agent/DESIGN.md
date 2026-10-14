@@ -148,7 +148,7 @@ Header: record name as title, status `Badge` beside it, actions in `extra` (one 
 
 ### Editor
 
-Edit (or create) one document or record. Header: record name as title, status `Badge` beside it, a subtitle only for a fact such as when it was last saved, and ONE primary Save in `extra` (`Button type="submit" form=<form id>`), Cancel `outline` before it. Body: one `Form` in a `SplitPane`: the main column holds the title field and a large body editor (`BlockEditor`, or `Textarea autoSize`); the aside holds metadata fields, read-only facts in `Descriptions`, and the change note last. No Card per field group, no second Save at the bottom.
+Edit (or create) one document or record. Header: record name as title, status `Badge` beside it, a subtitle only for a fact such as when it was last saved, and ONE primary Save in `extra` (`Button type="submit" form=<form id>`), Cancel `outline` before it. Body: one `Form` in a `SplitPane`: the main column holds the title field and a large body editor (`BlockEditor`, or `Textarea autoSize`); the aside holds metadata fields and read-only facts in `Descriptions`. The change note goes either directly under the body (where the writer finishes) or last in the aside — pick one per app and keep it. Name each aside group with a `Heading level={2}` one step above its field labels. A part that is its own controlled component with its own `Form` (forms cannot nest) stays a separate form; the header Save then submits by handler (`onClick`) instead of `form=<id>`, still one Save. No Card per field group, no second Save at the bottom.
 
 ### Reader
 
@@ -208,3 +208,4 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 - `card-per-section` counts Cards per file, so a screen split across components can pass with a Card around every section.
 - Exemplar previews deploy on release tags, so they can lag `main`. On GitHub Pages a showcase URL answers HTTP 404 and renders through `404.html`, so open it in a browser; a plain fetch sees the 404.
 - Dark theme (`data-theme="dark"`) is supported; the exemplars are reviewed in light.
+- On narrow screens the `PageContainer` title steps down (≈17.6px) while body h2 stays ≈15.7px — one step apart. A document page not built on `LegalDocumentShell` keeps only that step on phones; there is no intermediate page-title size yet.
