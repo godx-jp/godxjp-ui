@@ -143,6 +143,16 @@ describe("search_components", () => {
     expect(out).toContain("@godxjp/ui");
   });
 
+  it("a component from a sibling package names that package (gh#1296)", async () => {
+    const chat = COMPONENTS.find((c) => c.importPath === "@godxjp/chat");
+    expect(chat, "a catalogued @godxjp/chat component").toBeDefined();
+    const out = await dispatchTool("search_components", { query: chat!.name });
+    const line = out.split("\n").find((l) => l.startsWith(`- **${chat!.name}**`)) ?? "";
+    expect(line).toContain("`@godxjp/chat`");
+    const core = out.split("\n").find((l) => l.startsWith("- **") && !l.includes("`@godxjp/"));
+    if (core) expect(core).not.toContain("@godxjp/chat");
+  });
+
   it("a no-match query says so", async () => {
     const out = await dispatchTool("search_components", { query: "zzzqqq___nope" });
     expect(out).toMatch(/No matches/i);
