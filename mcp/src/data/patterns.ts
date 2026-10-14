@@ -249,121 +249,98 @@ export function GeneralSettingsSection({
       "account-identity",
     ],
     tagline:
-      "The four canonical settings BLOCKS — identity · preference rows · billing handoff · danger zone — composed from Card + ListRow + Descriptions + StatusBadge + AlertDialog. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
+      "The four canonical settings blocks — identity · preference rows · billing handoff · danger zone. Identity and billing are SECTIONS (Heading + Descriptions, no surface); preference rows and the danger zone are Cards because they are real boundaries. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
     tags: ["settings", "account", "billing", "danger", "preferences", "listrow", "card", "admin"],
-    code: `// Gate 0 (docs/COMPOSITION-VS-COMPONENT.md): a "SettingsSection"/"SettingsRow"/
-// "DangerZone" FAILS the Framework-Component Test — it owns no behavior (C2), is fully
-// expressible from existing primitives + tokens (C3), and its API would be screen-shaped (C4).
-// So compose it. Live reference screen: the "settings account sections" page in the preview
-// showcase gallery (docs/showcase/, served at /showcase/<id>).
-import { ExternalLink, ShieldAlert } from "lucide-react";
-import { Button, Text } from "@godxjp/ui/general";
-import {
-  Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
-  Descriptions, ListRow, StatusBadge,
-} from "@godxjp/ui/data-display";
+    code: `// Gate 0 (docs/COMPOSITION-VS-COMPONENT.md): a "SettingsSection"/"SettingsRow"/"DangerZone"
+// FAILS the Framework-Component Test, so compose it. Reference screen: get_exemplar("settings")
+// (docs/showcase/settings-account-sections.tsx). Composition rules: DESIGN.md → Admin Screen Anatomy.
+import { ExternalLink } from "lucide-react";
+import { Button, Heading } from "@godxjp/ui/general";
+import { Card, CardContent, Descriptions, ListRow, StatusBadge } from "@godxjp/ui/data-display";
 import { Switch } from "@godxjp/ui/data-entry";
 import { AlertDialog } from "@godxjp/ui/feedback";
 import { Flex } from "@godxjp/ui/layout";
 
-// The sections stack in ONE bounded column. The gap between sibling Cards belongs to that stack,
-// never to the cards themselves — four bare <Card>s in a row is what the audit means by
-// sibling-cards-need-flex, and it is the same rule the DO list at the bottom of this file states.
-<Flex direction="col" gap="lg" className="max-w-3xl">
+// Sections are a heading + spacing: the SECTION step (gap="xl") is larger than the ITEM step
+// (gap="sm"), which is what carries the hierarchy — not a box around every block.
+<Flex direction="col" gap="xl">
 
-// 1) IDENTITY — metadata is a description list, so it is Descriptions (a real <dl>), never a
-//    two-column flex of styled divs. One header action goes in CardAction.
-<Card>
-  <CardHeader>
-    <CardTitle level={2}>アカウント情報</CardTitle>
-    <CardDescription>請求書・監査ログに表示される氏名とメールアドレスです。</CardDescription>
-    <CardAction><Button variant="outline" size="sm">編集</Button></CardAction>
-  </CardHeader>
-  <CardContent>
+  {/* 1) IDENTITY — a section, not a Card. Metadata is Descriptions (a real <dl>). */}
+  <Flex direction="col" gap="sm">
+    <Flex justify="between" align="center">
+      <Heading level={2}>アカウント情報</Heading>
+      <Button variant="outline" size="sm">編集</Button>
+    </Flex>
     <Descriptions columns={2}>
       <Descriptions.Item label="表示名">藤原 慧</Descriptions.Item>
       <Descriptions.Item label="メールアドレス">satoshi@example.co.jp</Descriptions.Item>
       <Descriptions.Item label="従業員番号" mono>EMP-1042-JP</Descriptions.Item>
       <Descriptions.Item label="利用開始日">
-        {/* ISO-8601 in the machine attribute, Intl for the human text. */}
         <time dateTime="2023-04-01">
           {new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "UTC" }).format(since)}
         </time>
       </Descriptions.Item>
     </Descriptions>
-  </CardContent>
-</Card>
+  </Flex>
 
-// 2) PREFERENCE ROWS — THE setting row pattern: CardContent flush + ListRow, whose \`trailing\`
-//    slot IS the control. align="start" + overflow="wrap" keep long JA/VI titles readable and let
-//    the control drop to its own line at 390px (--list-row-body-min-width).
-// ⛔ NEVER: <div className="flex items-center justify-between border-b py-3">…</div>
-<Card>
-  <CardHeader><CardTitle level={2}>通知の環境設定</CardTitle></CardHeader>
-  <CardContent flush>
-    <ListRow
-      align="start"
-      overflow="wrap"
-      title={<label htmlFor="pref-digest">週次サマリーをメールで受け取る</label>}
-      description="毎週月曜日の朝に未処理の承認をまとめて送信します。"
-      trailing={<Switch id="pref-digest" checked={digest} onCheckedChange={setDigest} />}
-    />
-  </CardContent>
-</Card>
+  {/* 2) PREFERENCE ROWS — a list of setting rows IS a real boundary, so it gets one Card:
+       CardContent flush + ListRow, whose trailing slot is the control. The visible title is the
+       control's <label htmlFor>. NEVER a flex div with border-b rows. */}
+  <Flex direction="col" gap="sm">
+    <Heading level={2}>通知の環境設定</Heading>
+    <Card>
+      <CardContent flush>
+        <ListRow
+          align="start"
+          overflow="wrap"
+          title={<label htmlFor="pref-digest">週次サマリーをメールで受け取る</label>}
+          description="毎週月曜日の朝に未処理の承認をまとめて送信します。"
+          trailing={<Switch id="pref-digest" checked={digest} onCheckedChange={setDigest} />}
+        />
+      </CardContent>
+    </Card>
+  </Flex>
 
-// 3) BILLING HANDOFF — the subscription state is a CANONICAL StatusBadge; the tone + icon come
-//    from the library's shared domain-status map, so a page NEVER keeps its own status→colour
-//    table. Money/seats/dates go through Intl (ISO 4217 minor units come from the formatter).
-// ⛔ NEVER: const STATUS_COLORS = { past_due: "red", trialing: "blue" }
-<Card>
-  <CardHeader>
-    <CardTitle level={2}>請求とサブスクリプション</CardTitle>
-    <CardDescription>支払い方法と請求書は外部の請求ポータルで管理します。</CardDescription>
-    <CardAction><StatusBadge status="past_due" variant="outline" /></CardAction>
-  </CardHeader>
-  <CardContent>
+  {/* 3) BILLING HANDOFF — a section. The state is a canonical StatusBadge (never a page-local
+       status→colour map); money through Intl. */}
+  <Flex direction="col" gap="sm">
+    <Flex justify="between" align="center">
+      <Heading level={2}>請求とサブスクリプション</Heading>
+      <StatusBadge status="past_due" variant="outline" />
+    </Flex>
     <Descriptions columns={2}>
       <Descriptions.Item label="契約プラン">ビジネス（年額）</Descriptions.Item>
       <Descriptions.Item label="次回請求予定額">
         {new Intl.NumberFormat(locale, { style: "currency", currency: "JPY" }).format(1536000)}
       </Descriptions.Item>
     </Descriptions>
-  </CardContent>
-  <CardFooter separated>
-    <Button variant="outline" asChild>
-      <a href={portalUrl} target="_blank" rel="noreferrer">
-        <ExternalLink aria-hidden="true" />
-        請求ポータルを開く
-        {/* Never signal "leaves the app" with the icon alone (WCAG 1.4.1 / 2.4.4). */}
-        <span className="sr-only">（新しいタブで開きます）</span>
-      </a>
-    </Button>
-  </CardFooter>
-</Card>
+    <div>
+      <Button variant="outline" asChild>
+        <a href={portalUrl} target="_blank" rel="noreferrer">
+          <ExternalLink aria-hidden="true" />
+          請求ポータルを開く
+          <span className="sr-only">（新しいタブで開きます）</span>
+        </a>
+      </Button>
+    </div>
+  </Flex>
 
-// 4) DANGER ZONE — Card accent="destructive" paints the semantic leading rail from --destructive
-//    through the existing --card-accent-rail-width token. NO new component, NO new token, and no
-//    baked red. Colour never carries the meaning alone: the heading says "irreversible", each row
-//    says what is lost, and delete is gated behind type-to-confirm friction.
-<Card accent="destructive">
-  <CardHeader>
-    <CardTitle level={2} className="text-destructive">取り消せない操作</CardTitle>
-    <CardDescription>以下の操作は元に戻せません。</CardDescription>
-  </CardHeader>
-  <CardContent flush>
-    <ListRow
-      align="start"
-      overflow="wrap"
-      leading={<ShieldAlert className="text-destructive size-4" aria-hidden="true" />}
-      title="ワークスペースと全データを完全に削除する"
-      description="勤怠記録・申請履歴・監査ログがすべて削除されます。"
-      trailing={
-        <Button variant="destructive" size="sm" onClick={() => setConfirmOpen(true)}>削除</Button>
-      }
-    />
-  </CardContent>
-</Card>
-
+  {/* 4) DANGER ZONE — a real boundary: Card accent="destructive" (the rail comes from
+       --destructive). The heading and each row say what is lost; no decorative icon. */}
+  <Flex direction="col" gap="sm">
+    <Heading level={2}>取り消せない操作</Heading>
+    <Card accent="destructive">
+      <CardContent flush>
+        <ListRow
+          align="start"
+          overflow="wrap"
+          title="ワークスペースと全データを完全に削除する"
+          description="勤怠記録・申請履歴・監査ログがすべて削除されます。"
+          trailing={<Button variant="destructive" size="sm" onClick={() => setConfirmOpen(true)}>削除</Button>}
+        />
+      </CardContent>
+    </Card>
+  </Flex>
 </Flex>
 
 <AlertDialog
@@ -377,13 +354,12 @@ import { Flex } from "@godxjp/ui/layout";
 />
 
 // ── DO / DON'T ────────────────────────────────────────────────────────────────────────────
-// ✅ Sections stack in a bounded column: <Flex direction="col" gap="lg" className="max-w-3xl">.
-// ✅ Every setting row is a ListRow; its control lives in \`trailing\`, and the visible row title is
-//    a <label htmlFor> pointing at that control so the switch/select is named by what you can read.
+// ✅ Section step > item step (gap="xl" between sections, gap="sm" inside one).
+// ✅ A Card only where there is a real boundary: a list of setting rows, the danger zone.
+// ✅ Every setting row is a ListRow; its control lives in \`trailing\`, titled by <label htmlFor>.
 // ⛔ Do NOT add SettingsSection / SettingsRow / DangerZone to src/components — they fail Gate 0.
-// ⛔ Do NOT wrap the WHOLE settings page in one Card (route-backed local nav owns the IA — see the
-//    responsive settings page pattern); each block is its own Card.
-// ⛔ Do NOT hand-roll padding (p-4) on a Card, a status colour map, or a <dl> replacement.`,
+// ⛔ Do NOT give every block Card + CardHeader + CardTitle + CardDescription (ui-audit card-per-section).
+// ⛔ Do NOT hand-roll padding (p-4), a status colour map, or a <dl> replacement.`,
   },
 
   {
@@ -453,7 +429,7 @@ export function PricingPlans({ plans, onChoose }: { plans: Plan[]; onChoose: (id
   {
     name: "confirm-destructive",
     tagline:
-      "Type-to-confirm destructive dialog — the AlertDialog PRESET with `challenge` (the compound AlertDialog* parts are the older way in; a body the preset does not cover is Dialog variant=\"destructive\").",
+      'Type-to-confirm destructive dialog — the AlertDialog PRESET with `challenge` (the compound AlertDialog* parts are the older way in; a body the preset does not cover is Dialog variant="destructive").',
     tags: ["dialog", "confirm", "destructive", "delete"],
     code: `import { AlertDialog, toast } from "@godxjp/ui/feedback";
 
