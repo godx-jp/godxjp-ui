@@ -1059,11 +1059,16 @@
   }
 
   /* `toolbar` — the FIXED chrome band between the page header and the body: a filter strip, a
-   * status bar, a channel workflow rail. */
+   * status bar, a channel workflow rail. The band's BOX is flush (the margin cancels the container
+   * gap, so a painted, ruled band attaches to the header and the body), and its CONTENT gets the
+   * band rhythm back as its inset by default: a plain filter strip sits one `--page-band-gap` from
+   * the header and from the body, exactly where it would sit with no margin at all (gh#1323 — at
+   * the old 0 default a Segmented touched both, 0px). A theme that paints the band sets its own
+   * inset in `--page-toolbar-pad-block`. */
   .ui-page-toolbar {
     flex: none;
     margin-block: calc(-1 * var(--page-band-gap));
-    padding-block: var(--page-toolbar-pad-block);
+    padding-block: var(--page-toolbar-pad-block, var(--page-band-gap));
     background: var(--page-toolbar-background);
     border-block-end: var(--page-toolbar-divider, var(--page-header-divider));
   }

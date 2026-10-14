@@ -663,7 +663,9 @@ describe("PageContainer", () => {
     });
 
     it("owns its inset and rule as tokens, both quiet by default (rule #44)", () => {
-      expect(layoutTokens).toMatch(/--page-toolbar-pad-block:\s*0px;/);
+      // The inset is `initial` with the band rhythm as its CALL-SITE default (gh#1323): the
+      // container's --page-band-gap is scoped on `.ui-page-container`, so it cannot be bound here.
+      expect(layoutTokens).toMatch(/--page-toolbar-pad-block:\s*initial;/);
       // `initial` + a CALL-SITE fallback, so a scoped override of the header divider still
       // reaches the band (a `:root` binding would freeze it) — docs/TOKENS.md.
       expect(layoutTokens).toMatch(/--page-toolbar-divider:\s*initial;/);
@@ -709,19 +711,25 @@ describe("PageContainer", () => {
       ]);
       const paddingBlockDeclarations = toolbarRules.filter((body) => /padding-block:/.test(body));
       expect(paddingBlockDeclarations).toEqual([
-        expect.stringContaining("padding-block: var(--page-toolbar-pad-block);"),
+        expect.stringContaining(
+          "padding-block: var(--page-toolbar-pad-block, var(--page-band-gap));",
+        ),
       ]);
     });
 
-    it("keeps --page-toolbar-pad-block at 0 — the DECISION, not an oversight", () => {
-      // Re-examined when the ground knob landed, and again when the band went flush, and left alone
-      // both times. A TRANSPARENT band is not a surface and has no inside for an inset to breathe;
-      // under `fill` every pixel of band height is taken straight from the scroll viewport this slot
-      // exists to protect. A theme that PAINTS or RULES the band sets the inset in the same
-      // declaration — which is why `pad-block` sits beside `background` in the token file rather than
-      // being folded into the band's rule. It is now the band's ONLY breathing room: the outside is
-      // flush by contract (see the flush cases below), so this knob is where the air comes from.
-      expect(layoutTokens).toMatch(/--page-toolbar-pad-block:\s*0px;/);
+    it("gives the strip's CONTENT the band rhythm by default — a filter strip never touches (gh#1323)", () => {
+      // The old 0px default made a plain Segmented strip touch the header AND the body (godx-qc:
+      // header bottom 133 = strip top, strip bottom 165 = body top): the negative margin cancels the
+      // container gap and nothing gave it back. The band's BOX stays flush (a painted, ruled band
+      // attaches — see the flush cases below), and its inset defaults to the very number the margin
+      // cancelled, so a transparent strip lands where any other band would. A theme that PAINTS or
+      // RULES the band sets a tighter inset in the same declaration — which is why `pad-block` sits
+      // beside `background` in the token file. Measured in Chromium:
+      // page-toolbar-gap-1323-browser.test.ts.
+      expect(layoutTokens).toMatch(/--page-toolbar-pad-block:\s*initial;/);
+      expect(toolbarBand).toMatch(
+        /padding-block: var\(\s*--page-toolbar-pad-block, var\(\s*--page-band-gap\)\);/,
+      );
       expect(layoutTokens).toMatch(
         /--page-toolbar-background:[\s\S]{0,80}--page-toolbar-pad-block:[\s\S]{0,80}--page-toolbar-divider:/,
       );
