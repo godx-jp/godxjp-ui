@@ -9,7 +9,7 @@
  *   page chrome ............ AppShell + Sidebar + Topbar
  *   page header + actions .. PageContainer (extra slot) + Button
  *   KPI row ................ ResponsiveGrid + StatCard
- *   "Cần xử lý" queue ...... Card + rows + Badge(tone) + Button
+ *   "Cần xử lý" queue ...... Card + ListRow (title states the urgency) + ghost Button
  *   "Hoạt động" feed ....... Card + Timeline
  *   capacity heatmap ....... Card + Progress (per zone) — no hand-rolled heat divs
  *   recent shipments ....... Card + Table + Badge(tone)
@@ -20,10 +20,7 @@
  */
 import * as React from "react";
 import {
-  AlertTriangle,
-  Box,
   LayoutDashboard,
-  type LucideIcon,
   Package,
   RefreshCw,
   Download,
@@ -32,7 +29,6 @@ import {
   Truck,
   Boxes,
   MapPin,
-  Tags,
 } from "lucide-react";
 
 import { Button, Text } from "@godxjp/ui/general";
@@ -73,44 +69,32 @@ import {
 const KPIS: Array<{ label: string; value: number; delta: string; inverse?: boolean }> = [
   // `inverse` flips delta semantics where a rise is bad (more backlog = worse).
   { label: "Item chưa phân loại", value: 9, delta: "+3 trong 2h qua", inverse: true },
-  { label: "Kiện đang mở", value: 5, delta: "12 item chưa gán" },
-  { label: "Hóa đơn đang chờ", value: 3, delta: "-1 đã thanh toán", inverse: true },
+  { label: "Kiện đang mở", value: 5, delta: "+1 vs hôm qua" },
+  { label: "Hóa đơn đang chờ", value: 3, delta: "-1 vs hôm qua", inverse: true },
   { label: "Chuyến hàng tuần này", value: 8, delta: "+2 vs tuần trước" },
 ];
 
-type QueueTone = Extract<BadgeTone, "warning" | "destructive" | "info" | "muted">;
-
 const QUEUE: Array<{
-  icon: LucideIcon;
-  tone: QueueTone;
   title: string;
   meta: string;
   action: string;
 }> = [
   {
-    icon: Smartphone,
-    tone: "warning",
     title: "2 thiết bị đang chờ duyệt",
     meta: "Phạm Văn C · iPhone 13 mini · 14:12 · cách đây 30 phút",
     action: "Mở danh sách",
   },
   {
-    icon: AlertTriangle,
-    tone: "destructive",
     title: "Hoá đơn INV-2080 trễ 4 ngày",
     meta: "Lê Hùng · ZOZOTOWN · 9.800¥ · 2 line item",
     action: "Xem hóa đơn",
   },
   {
-    icon: Tags,
-    tone: "warning",
     title: "9 item chưa phân loại",
     meta: "2 cái > 24 giờ chưa lên giá · ưu tiên xếp",
     action: "Xem item",
   },
   {
-    icon: Box,
-    tone: "info",
     title: "PKG-000038 sẵn sàng tạo chuyến",
     meta: "Bùi Hà · Hà Nội · 8 item · 2,8kg · đã đóng từ hôm qua",
     action: "Tạo chuyến",
@@ -189,7 +173,6 @@ export default function WarehouseDashboardShowcase() {
   return (
     <AppShell
       sidebar={sidebar}
-      topbarLeft={<Text as="strong">Tổng quan kho</Text>}
       topbarRight={
         <Text size="xs" tone="muted" tabular>
           cập nhật 14:32 · 26/05/2026
@@ -245,18 +228,10 @@ export default function WarehouseDashboardShowcase() {
                       <ListRow
                         as="li"
                         key={q.title}
-                        leading={
-                          <Badge
-                            tone={q.tone}
-                            variant="outline"
-                            icon={q.icon}
-                            aria-label={q.title}
-                          />
-                        }
                         title={q.title}
                         description={q.meta}
                         trailing={
-                          <Button variant="outline" size="sm">
+                          <Button variant="ghost" size="sm">
                             {q.action}
                           </Button>
                         }

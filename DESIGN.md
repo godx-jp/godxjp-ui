@@ -124,7 +124,7 @@ Colour is scarce. Most of the screen is canvas, ink and hairline.
 ## Components
 
 - **PageContainer** is the page shell: `title`, optional `subtitle`, `breadcrumb`, `extra` (page actions, primary last), `toolbar`, `footer`.
-- **Card** only for a real boundary: a table with its own toolbar and pagination, a dashboard panel, a danger zone (`accent="destructive"`), a selectable item. Not around every section, never nested. `CardContent flush` for tables and row lists.
+- **Card** only for a real boundary: a table with its own toolbar and pagination, a list of setting rows, a dashboard panel, a danger zone (`accent="destructive"`), a selectable item. Not around every section, never nested. `CardContent flush` for tables and row lists.
 - **Toolbar** (+ `ToolbarGroup`) is the filter strip: search, labelled filters, clear-all, result count. It sits above the table, never in the page header.
 - **DataTable** for lists: sort, selection with `DataTable.BulkActions`, density, empty/loading/error states. Row actions in one kebab `DropdownMenu`.
 - **Descriptions** for record metadata. **ListRow** for setting rows (`trailing` holds the control).
@@ -148,7 +148,7 @@ Header: record name as title, status `Badge` beside it via `status`, actions in 
 
 ### Settings
 
-Sections are Heading + `ListRow` rows whose trailing slot is the control; separate sections with spacing or a `Separator`. Changes that apply instantly need no Save button; a page with a Save button applies nothing until saved. Destructive actions last, in one `Card accent="destructive"`, each behind `AlertDialog`.
+Each section is a Heading (plus one muted line if it adds a fact) over its content: `Descriptions` for read-only values, `ListRow` rows in one `Card` with `CardContent flush` for controls (`trailing` holds the control). Separate sections with spacing or a `Separator`. Changes that apply instantly need no Save button; a page with a Save button applies nothing until saved. Destructive actions last, in one `Card accent="destructive"`, each behind `AlertDialog`.
 
 ### Dashboard
 

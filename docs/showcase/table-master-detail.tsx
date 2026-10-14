@@ -1,30 +1,25 @@
 /**
- * Showcase · table-master-detail — マスター詳細 (V20)
+ * Showcase · table-master-detail — マスター詳細 (V20) · the DETAIL exemplar (DESIGN.md "Detail")
  *
- * Gmail-style master/detail split: a master DataTable (left) drives a detail
- * pane (right). Selecting a row updates the pane with that 従業員's full record.
- * The split is RESIZABLE — built on @godxjp/ui ResizablePanelGroup, so the
- * operator can widen the list when scanning or the detail when reviewing.
+ * Gmail-style master/detail: a master DataTable on the fixed rail drives the record on the
+ * fluid side. Selecting a row updates the record. One Card is the only boundary (the split);
+ * the record inside it is sections, not Cards.
  *
  * Composition map (intent → real @godxjp/ui primitive):
- *   resizable split ........ ResizablePanelGroup + ResizablePanel + ResizableHandle
- * fixed-track split ...... MasterDetail (tokenized rail + stacking threshold, )
+ *   split .................. MasterDetail (tokenized rail; stacks 一覧 → 詳細 below `md`)
  *   master list ............ DataTable (compact, clickable rows, selected row)
  *   status cell ............ Badge tone (出勤/遅刻/早退/休暇 — fixed signaling)
- *   detail header .......... Avatar + heading + Badge + action Buttons
+ *   detail header .......... Avatar + Heading + status Badge + actions (one primary)
  *   detail metadata ........ Descriptions (replaces hand-rolled <dl>)
- *   打刻 history ............ Timeline
- *   empty (nothing picked) . EmptyState (inside the pane)
- *
- * The narrow-viewport fallback (no room for a side pane) is shown too: the same
- * data rendered as a single master DataTable with the detail stacked under it.
+ *   打刻 history ............ Heading + Timeline (no icon beside the heading)
+ *   empty (nothing picked) . EmptyState: one sentence, no icon
  *
  * DNA: compact density, tabular-nums on times/numbers, small headings, fixed
  * color signaling (success 若竹 / warning 山吹 / attention 朱 / info 群青),
  * quiet JP copy, no emoji.
  */
 import * as React from "react";
-import { Check, Clock, Pencil, UserRound } from "lucide-react";
+import { Check, Pencil } from "lucide-react";
 
 import { Button, Heading, Text } from "@godxjp/ui/general";
 import {
@@ -32,10 +27,7 @@ import {
   AvatarFallback,
   Badge,
   Card,
-  CardAction,
   CardContent,
-  CardHeader,
-  CardTitle,
   DataTable,
   Descriptions,
   EmptyState,
@@ -44,15 +36,7 @@ import {
   type ColumnDef,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
-import {
-  Flex,
-  MasterDetail,
-  PageContainer,
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-  Separator,
-} from "@godxjp/ui/layout";
+import { Flex, MasterDetail, PageContainer, Separator } from "@godxjp/ui/layout";
 
 type BadgeTone = NonNullable<BadgeProps["tone"]>;
 
@@ -342,10 +326,7 @@ function EmployeeDetail({ employee }: { employee: Employee }) {
 
       {/* Punch history */}
       <Flex direction="col" gap="sm">
-        <Flex direction="row" align="center" gap="sm">
-          <Clock className="text-muted-foreground size-4" aria-hidden="true" />
-          <Text weight="medium">本日の打刻</Text>
-        </Flex>
+        <Heading level={3}>本日の打刻</Heading>
         <Timeline items={employee.punches} />
       </Flex>
     </Flex>
@@ -363,120 +344,47 @@ export default function Demo() {
 
   return (
     <PageContainer
-      title="勤怠 マスター詳細"
-      subtitle="一覧で従業員を選ぶと右ペインに当日の勤怠が表示されます · 分割は可変幅"
+      title="本日の勤怠"
+      subtitle={`2026-06-04 · ${EMPLOYEES.length}名`}
       density="compact"
     >
-      <Flex direction="col" gap="lg">
-        {/* ── Resizable master/detail split (Gmail-style) ── */}
-        <Card>
-          <CardHeader>
-            <CardTitle level={2}>本日の出勤状況</CardTitle>
-            <CardAction>
-              <Text size="xs" tone="muted" tabular>
-                2026-06-04 · {EMPLOYEES.length}名
-              </Text>
-            </CardAction>
-          </CardHeader>
-          <CardContent flush>
-            <ResizablePanelGroup orientation="horizontal" className="min-h-[460px]">
-              {/* Master list */}
-              <ResizablePanel defaultSize="42%" minSize="28%">
-                <DataTable
-                  data={EMPLOYEES}
-                  columns={columns}
-                  getRowId={(row) => row.id}
-                  density="compact"
-                  selected={selected ? new Set([selected.id]) : new Set()}
-                  onRowClick={(row) => {
-                    setSelectedId(row.id);
-                  }}
-                />
-              </ResizablePanel>
-
-              <ResizableHandle />
-
-              {/* Detail pane */}
-              <ResizablePanel defaultSize="58%" minSize="34%">
-                <CardContent solo className="h-full overflow-auto">
-                  {selected ? (
-                    <EmployeeDetail employee={selected} />
-                  ) : (
-                    <Flex direction="col" align="center" justify="center" className="h-full">
-                      <EmptyState
-                        icon={UserRound}
-                        title="従業員を選択してください"
-                        description="左の一覧から行を選ぶと、ここに当日の勤怠が表示されます。"
-                      />
-                    </Flex>
-                  )}
-                </CardContent>
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </CardContent>
-        </Card>
-
-        {/* ── Empty detail state (nothing selected) ──
-            Fixed-track split, so the geometry belongs to MasterDetail, not this page:
-            rail="master" keeps the leading 一覧 on the fixed track while the detail surface stays
-            fluid, and collapseBelow="md" stacks 一覧→詳細 once the card body itself is too narrow
-            for two tracks. No grid tracks, no per-breakpoint widths, no page-local spacing. */}
-        <Card>
-          <CardHeader>
-            <CardTitle level={2}>未選択の状態</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <MasterDetail
-              rail="master"
-              railWidth="compact"
-              collapseBelow="md"
-              masterLabel="従業員一覧"
-              detailLabel="従業員の詳細"
-              master={
-                <DataTable
-                  data={EMPLOYEES.slice(0, 3)}
-                  columns={columns}
-                  getRowId={(row) => row.id}
-                  density="compact"
-                  onRowClick={() => {}}
-                />
-              }
-            >
-              <EmptyState
-                icon={UserRound}
-                title="従業員を選択してください"
-                description="一覧から行を選ぶと詳細が表示されます。"
+      {/* One boundary: the split itself. The list sits on the fixed rail, the record is fluid,
+          and below `md` MasterDetail stacks 一覧 → 詳細 — no second "narrow layout" demo. */}
+      <Card>
+        <CardContent flush>
+          <MasterDetail
+            rail="master"
+            railWidth="wide"
+            collapseBelow="md"
+            masterLabel="従業員一覧"
+            detailLabel="従業員の詳細"
+            master={
+              <DataTable
+                data={EMPLOYEES}
+                columns={columns}
+                getRowId={(row) => row.id}
+                density="compact"
+                selected={selected ? new Set([selected.id]) : new Set()}
+                onRowClick={(row) => {
+                  setSelectedId(row.id);
+                }}
               />
-            </MasterDetail>
-          </CardContent>
-        </Card>
-
-        {/* ── Narrow fallback: stacked list + detail (no side room) ── */}
-        <Card>
-          <CardHeader>
-            <CardTitle level={2}>狭幅レイアウト（縦積み）</CardTitle>
-            <CardAction>
-              <Text size="xs" tone="muted">
-                サイドペインが取れない幅では一覧の下に詳細を重ねます
-              </Text>
-            </CardAction>
-          </CardHeader>
-          <CardContent flush>
-            <DataTable
-              data={EMPLOYEES.slice(0, 4)}
-              columns={columns}
-              getRowId={(row) => row.id}
-              density="compact"
-              selected={new Set(["E-1042"])}
-              onRowClick={() => {}}
-            />
-          </CardContent>
-          <Separator />
-          <CardContent solo>
-            <EmployeeDetail employee={EMPLOYEES[0]} />
-          </CardContent>
-        </Card>
-      </Flex>
+            }
+          >
+            <CardContent solo>
+              {selected ? (
+                <EmployeeDetail employee={selected} />
+              ) : (
+                <EmptyState
+                  variant="section"
+                  title="従業員を選択してください"
+                  description="一覧から行を選ぶと詳細が表示されます。"
+                />
+              )}
+            </CardContent>
+          </MasterDetail>
+        </CardContent>
+      </Card>
     </PageContainer>
   );
 }

@@ -4,27 +4,29 @@
  * ── Gate 0 verdict: COMPOSITION PATTERN, not a framework component ────────────────────────────
  * A "SettingsSection" / "SettingsRow" / "DangerZone" fails the Framework-Component Test
  * (docs/COMPOSITION-VS-COMPONENT.md): C2 — it owns NO behavior (pure layout + content + colour);
- * C3 — it is fully expressible TODAY from `Card` + `CardHeader/CardTitle/CardDescription/
- * CardAction/CardContent flush/CardFooter` + `ListRow` + `Descriptions` + `Switch`/`Select` +
+ * C3 — it is fully expressible TODAY from `Heading` + `Separator` + `ListRow` + `Descriptions` +
+ * `Card` / `CardContent flush` / `Card accent` + `Switch`/`Select` +
  * `StatusBadge` + `AlertDialog` + the existing `--card-*` / `--list-row-*` / `--descriptions-*`
  * knobs; C4 — its API would be a screen-shaped grab-bag ("identity", "billing", "danger"); C7 —
  * it would ship one design's block to every consumer. So it lives HERE (and as the MCP
  * `settings-section-rows` pattern), never in `src/components/`. Zero new components were added.
  *
  * ── The four blocks the DXS consumer kept re-inventing ───────────────────────────────────────
- *   1. Identity          — avatar + `Descriptions` metadata, one header action (`CardAction`).
+ * Each block is a SECTION (Heading + spacing, Separator between), not a Card — DESIGN.md
+ * "Settings": a Card only where there is a real boundary (the preference row list, the danger zone).
+ *   1. Identity          — avatar + `Descriptions` metadata, one section action.
  *   2. Preferences       — `CardContent flush` + `ListRow` rows whose trailing slot IS the control
  *                          (`Switch` / `Select`). Never a hand-rolled
  *                          `<div className="flex justify-between border-b">`.
  *   3. Billing handoff   — canonical `StatusBadge status=…` (NO page-local status→colour map),
- *                          money/seats/dates through `Intl`, and a footer button that hands off to
+ *                          money/seats/dates through `Intl`, and a button that hands off to
  *                          the external billing portal with an sr-only "opens in a new tab".
  *   4. Danger zone       — `Card accent="destructive"` (the semantic leading rail is already a
  *                          token, `--card-accent-rail-width`) + destructive `ListRow` actions +
  *                          `AlertDialog challenge=…` type-to-confirm friction.
  *
  * ── Acceptance evidence baked into the page ──────────────────────────────────────────────────
- * · 1440 / 1024 / 390 — every block is a Card in a `max-w-3xl` column: `Descriptions` collapses
+ * · 1440 / 1024 / 390 — sections in a `measure="medium"` column: `Descriptions` collapses
  *   3→2→1 columns, `ListRow` wraps its trailing controls onto their own line under
  *   `--list-row-body-min-width`, and the header action row wraps. Nothing scrolls horizontally.
  * · long JA/EN/VI labels — the "表示言語 / Label language" Select swaps the WHOLE label bundle to
@@ -38,18 +40,15 @@
  * · Logical CSS only, semantic tokens only, lucide icons (no emoji), quiet factual copy.
  */
 import * as React from "react";
-import { ExternalLink, ShieldAlert, UserMinus } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 import { useAppLocale } from "@godxjp/ui/app";
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import {
   Avatar,
   AvatarFallback,
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
   Descriptions,
@@ -58,7 +57,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { FormField, Select, Switch } from "@godxjp/ui/data-entry";
 import { AlertDialog } from "@godxjp/ui/feedback";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 
 // ── Label bundles: the SAME screen at its longest JA / EN / VI wording ────────────────────────
 // Long-label stress is a first-class acceptance criterion, so the bundle intentionally
@@ -73,8 +72,6 @@ type LabelBundle = {
   region: string;
   optionLabel: string;
   pageTitle: string;
-  pageSubtitle: string;
-  save: string;
   labelLanguage: string;
   identityTitle: string;
   identityDescription: string;
@@ -106,7 +103,6 @@ type LabelBundle = {
   opensInNewTab: string;
   seat: { one: string; other: string };
   dangerTitle: string;
-  dangerDescription: string;
   dangerTransferTitle: string;
   dangerTransferDescription: string;
   dangerTransfer: string;
@@ -126,9 +122,6 @@ const BUNDLES: Record<"ja" | "en" | "vi", LabelBundle> = {
     region: "JP",
     optionLabel: "日本語（長いラベル検証用）",
     pageTitle: "ワークスペースの設定",
-    pageSubtitle:
-      "アカウント情報・通知の環境設定・請求先ポータルへの引き渡し・取り消せない操作をまとめて管理します。",
-    save: "変更内容を保存する",
     labelLanguage: "表示言語",
     identityTitle: "アカウント情報",
     identityDescription: "請求書・監査ログ・共有リンクに表示される氏名とメールアドレスです。",
@@ -160,7 +153,6 @@ const BUNDLES: Record<"ja" | "en" | "vi", LabelBundle> = {
     opensInNewTab: "新しいタブで開きます",
     seat: { one: "{count} ライセンス", other: "{count} ライセンス" },
     dangerTitle: "取り消せない操作",
-    dangerDescription: "以下の操作は元に戻せません。実行前に必ず内容を確認してください。",
     dangerTransferTitle: "ワークスペースの所有権を他のメンバーへ移管する",
     dangerTransferDescription: "移管後、あなたは管理者権限を失います。",
     dangerTransfer: "所有権を移管",
@@ -179,9 +171,6 @@ const BUNDLES: Record<"ja" | "en" | "vi", LabelBundle> = {
     region: "US",
     optionLabel: "English (long-label stress case)",
     pageTitle: "Workspace settings",
-    pageSubtitle:
-      "Manage your account identity, notification preferences, the handoff to the billing portal, and irreversible actions.",
-    save: "Save all changes",
     labelLanguage: "Label language",
     identityTitle: "Account identity",
     identityDescription:
@@ -216,7 +205,6 @@ const BUNDLES: Record<"ja" | "en" | "vi", LabelBundle> = {
     opensInNewTab: "opens in a new tab",
     seat: { one: "{count} seat", other: "{count} seats" },
     dangerTitle: "Irreversible actions",
-    dangerDescription: "These actions cannot be undone. Read each one before you continue.",
     dangerTransferTitle: "Transfer workspace ownership to another member",
     dangerTransferDescription: "You lose administrator rights as soon as the transfer completes.",
     dangerTransfer: "Transfer ownership",
@@ -235,9 +223,6 @@ const BUNDLES: Record<"ja" | "en" | "vi", LabelBundle> = {
     region: "VN",
     optionLabel: "Tiếng Việt (nhãn dài nhất)",
     pageTitle: "Cài đặt không gian làm việc",
-    pageSubtitle:
-      "Quản lý thông tin tài khoản, tuỳ chọn thông báo, chuyển sang cổng thanh toán và các thao tác không thể hoàn tác.",
-    save: "Lưu toàn bộ thay đổi",
     labelLanguage: "Ngôn ngữ nhãn",
     identityTitle: "Thông tin tài khoản",
     identityDescription:
@@ -270,7 +255,6 @@ const BUNDLES: Record<"ja" | "en" | "vi", LabelBundle> = {
     opensInNewTab: "mở trong tab mới",
     seat: { one: "{count} giấy phép", other: "{count} giấy phép" },
     dangerTitle: "Thao tác không thể hoàn tác",
-    dangerDescription: "Các thao tác dưới đây không thể hoàn tác. Hãy đọc kỹ trước khi tiếp tục.",
     dangerTransferTitle: "Chuyển quyền sở hữu không gian làm việc cho thành viên khác",
     dangerTransferDescription: "Bạn sẽ mất quyền quản trị ngay khi việc chuyển giao hoàn tất.",
     dangerTransfer: "Chuyển quyền sở hữu",
@@ -347,171 +331,166 @@ export default function SettingsAccountSectionsShowcase() {
   return (
     <PageContainer
       title={b.pageTitle}
-      subtitle={b.pageSubtitle}
-      breadcrumb={[{ label: b.pageTitle }]}
-      // PageHeader action composition: the header owns the page-level actions through
-      // `extra`. It wraps at 390 instead of overflowing, so no page-local header geometry.
+      measure="medium"
+      // Nothing on this page waits for a Save: preferences apply instantly, identity has its own
+      // edit flow, billing hands off. So the header carries no Save button, only the language switch.
       extra={
-        <Flex direction="row" align="end" gap="sm" wrap>
-          <FormField id="label-language" label={b.labelLanguage}>
-            <Select
-              id="label-language"
-              options={(["ja", "en", "vi"] as const).map((id) => ({
-                value: id,
-                label: BUNDLES[id].optionLabel,
-              }))}
-              value={lang}
-              onValueChange={(next: string) => {
-                setLocale(next as "ja" | "en" | "vi");
-              }}
-            />
-          </FormField>
-          <Button>{b.save}</Button>
-        </Flex>
+        <FormField id="label-language" label={b.labelLanguage}>
+          <Select
+            id="label-language"
+            options={(["ja", "en", "vi"] as const).map((id) => ({
+              value: id,
+              label: BUNDLES[id].optionLabel,
+            }))}
+            value={lang}
+            onValueChange={(next: string) => {
+              setLocale(next as "ja" | "en" | "vi");
+            }}
+          />
+        </FormField>
       }
     >
-      <Flex direction="col" gap="lg" className="max-w-3xl">
-        {/* ── 1 · Identity ─────────────────────────────────────────────────────────────────
-            Metadata is a description list, so it is `Descriptions` (a real <dl>), never a
-            two-column flex of styled divs. `CardAction` parks the single header action. */}
-        <Card>
-          <CardHeader>
-            <CardTitle level={2}>{b.identityTitle}</CardTitle>
-            <CardDescription>{b.identityDescription}</CardDescription>
-            <CardAction>
-              <Button variant="outline" size="sm">
-                {b.identityEdit}
-              </Button>
-            </CardAction>
-          </CardHeader>
-          <CardContent>
-            <Flex direction="col" gap="md" className="sm:flex-row sm:items-start">
-              <Avatar className="size-12 shrink-0 rounded-md">
-                <AvatarFallback className="bg-primary text-primary-foreground font-bold">
-                  SF
-                </AvatarFallback>
-              </Avatar>
-              <Descriptions columns={2} layout="vertical" className="min-w-0 flex-1">
-                <Descriptions.Item label={b.fieldName}>{b.displayName}</Descriptions.Item>
-                <Descriptions.Item label={b.fieldEmail}>{b.email}</Descriptions.Item>
-                <Descriptions.Item label={b.fieldEmployeeId} mono>
-                  {EMPLOYEE_ID}
-                </Descriptions.Item>
-                <Descriptions.Item label={b.fieldMemberSince}>
-                  {/* ISO-8601 machine value in the <time> datetime, localized text for humans. */}
-                  <time dateTime={MEMBER_SINCE.toISOString().slice(0, 10)}>
-                    {longDate(MEMBER_SINCE)}
-                  </time>
-                </Descriptions.Item>
-              </Descriptions>
-            </Flex>
-          </CardContent>
-        </Card>
-
-        {/* ── 2 · Preferences ─────────────────────────────────────────────────────────────
-            THE settings-row pattern: `CardContent flush` + `ListRow`, whose `trailing` slot IS
-            the control. `align="start"` + `overflow="wrap"` keep long JA/VI titles readable and
-            let the control drop onto its own line at 390 (--list-row-body-min-width). */}
-        <Card>
-          <CardHeader>
-            <CardTitle level={2}>{b.preferencesTitle}</CardTitle>
-            <CardDescription>{b.preferencesDescription}</CardDescription>
-          </CardHeader>
-          <CardContent flush>
-            <ListRow
-              align="start"
-              overflow="wrap"
-              title={<label htmlFor="pref-digest">{b.prefDigestTitle}</label>}
-              description={b.prefDigestDescription}
-              trailing={<Switch id="pref-digest" checked={digest} onCheckedChange={setDigest} />}
-            />
-            <ListRow
-              align="start"
-              overflow="wrap"
-              title={<label htmlFor="pref-mention">{b.prefMentionTitle}</label>}
-              description={b.prefMentionDescription}
-              trailing={<Switch id="pref-mention" checked={mention} onCheckedChange={setMention} />}
-            />
-            <ListRow
-              align="start"
-              overflow="wrap"
-              title={<label htmlFor="pref-date-format">{b.prefDateFormatTitle}</label>}
-              description={b.prefDateFormatDescription}
-              trailing={
-                <Select
-                  id="pref-date-format"
-                  options={dateFormatOptions}
-                  value={dateFormat}
-                  onValueChange={setDateFormat}
-                  className="w-[var(--filter-picker-width-sm)]"
-                />
-              }
-            />
-          </CardContent>
-        </Card>
-
-        {/* ── 3 · Billing handoff ─────────────────────────────────────────────────────────
-            The subscription state is a canonical `StatusBadge status="past_due"` — the tone and
-            icon come from the shared domain-status map in the library, so no page ever keeps its
-            own status→colour table (#216 acceptance). Money/seats/dates/region are all Intl. */}
-        <Card>
-          <CardHeader>
-            <CardTitle level={2}>{b.billingTitle}</CardTitle>
-            <CardDescription>{b.billingDescription}</CardDescription>
-            <CardAction>
-              <StatusBadge status="past_due" variant="outline" />
-            </CardAction>
-          </CardHeader>
-          <CardContent>
-            <Descriptions columns={2} layout="vertical">
-              <Descriptions.Item label={b.billingPlanLabel}>{b.billingPlanValue}</Descriptions.Item>
-              <Descriptions.Item label={b.billingSeatsLabel}>{seatCount(b)}</Descriptions.Item>
-              <Descriptions.Item label={b.billingAmountLabel}>{money}</Descriptions.Item>
-              <Descriptions.Item label={b.billingNextInvoiceLabel}>
-                <time dateTime={NEXT_INVOICE.toISOString().slice(0, 10)}>
-                  {longDate(NEXT_INVOICE)}
-                </time>
-              </Descriptions.Item>
-              <Descriptions.Item label={b.billingRegionLabel} span={2}>
-                {regionName}
-              </Descriptions.Item>
-            </Descriptions>
-          </CardContent>
-          <CardFooter separated>
-            <Flex direction="col" gap="md" className="sm:flex-row sm:items-center">
-              <Button variant="outline" asChild>
-                <a href="https://billing.example.com/portal" target="_blank" rel="noreferrer">
-                  <ExternalLink aria-hidden="true" />
-                  {b.billingHandoff}
-                  {/* Never signal "leaves the app" with the icon alone (WCAG 1.4.1 / 2.4.4). */}
-                  <span className="sr-only"> ({b.opensInNewTab})</span>
-                </a>
-              </Button>
-              <Text size="xs" tone="muted">
-                {b.billingHandoffHint}
+      {/* A section is a Heading plus spacing; a Separator keeps neighbours apart. A Card appears only
+          where there is a real boundary: the preference rows (a row list, heading outside) and the
+          destructive zone. Never a Card per section with its own Header + Title + Description. */}
+      <Flex direction="col" gap="xl">
+        {/* ── 1 · Identity — metadata is a description list, so it is `Descriptions` (a real <dl>). */}
+        <Flex direction="col" gap="md">
+          <Flex direction="row" align="start" justify="between" gap="md" wrap>
+            <Flex direction="col" gap="xs">
+              <Heading level={2}>{b.identityTitle}</Heading>
+              <Text size="sm" tone="muted">
+                {b.identityDescription}
               </Text>
             </Flex>
-          </CardFooter>
-        </Card>
+            <Button variant="outline" size="sm">
+              {b.identityEdit}
+            </Button>
+          </Flex>
+          <Flex direction="col" gap="md" className="sm:flex-row sm:items-start">
+            <Avatar className="size-12 shrink-0 rounded-md">
+              <AvatarFallback>SF</AvatarFallback>
+            </Avatar>
+            <Descriptions columns={2} layout="vertical" className="min-w-0 flex-1">
+              <Descriptions.Item label={b.fieldName}>{b.displayName}</Descriptions.Item>
+              <Descriptions.Item label={b.fieldEmail}>{b.email}</Descriptions.Item>
+              <Descriptions.Item label={b.fieldEmployeeId} mono>
+                {EMPLOYEE_ID}
+              </Descriptions.Item>
+              <Descriptions.Item label={b.fieldMemberSince}>
+                {/* ISO-8601 machine value in the <time> datetime, localized text for humans. */}
+                <time dateTime={MEMBER_SINCE.toISOString().slice(0, 10)}>
+                  {longDate(MEMBER_SINCE)}
+                </time>
+              </Descriptions.Item>
+            </Descriptions>
+          </Flex>
+        </Flex>
 
-        {/* ── 4 · Danger zone ─────────────────────────────────────────────────────────────
-            `Card accent="destructive"` paints the semantic leading rail from `--destructive`
-            through the existing `--card-accent-rail-width` token — a danger zone needs NO new
-            component and NO new token. Colour never carries the meaning alone: the heading says
-            "irreversible", the rows say what is lost, and delete is gated behind a type-to-confirm
-            AlertDialog (`challenge`). */}
+        <Separator />
+
+        {/* ── 2 · Preferences — THE settings-row pattern: `CardContent flush` + `ListRow`, whose `trailing` slot IS the
+            control. `align="start"` + `overflow="wrap"` keep long JA/VI titles readable and let
+            the control drop onto its own line at 390 (--list-row-body-min-width). */}
+        <Flex direction="col" gap="sm">
+          <Flex direction="col" gap="xs">
+            <Heading level={2}>{b.preferencesTitle}</Heading>
+            <Text size="sm" tone="muted">
+              {b.preferencesDescription}
+            </Text>
+          </Flex>
+          <Card>
+            <CardContent flush>
+              <ListRow
+                align="start"
+                overflow="wrap"
+                title={<label htmlFor="pref-digest">{b.prefDigestTitle}</label>}
+                description={b.prefDigestDescription}
+                trailing={<Switch id="pref-digest" checked={digest} onCheckedChange={setDigest} />}
+              />
+              <ListRow
+                align="start"
+                overflow="wrap"
+                title={<label htmlFor="pref-mention">{b.prefMentionTitle}</label>}
+                description={b.prefMentionDescription}
+                trailing={
+                  <Switch id="pref-mention" checked={mention} onCheckedChange={setMention} />
+                }
+              />
+              <ListRow
+                align="start"
+                overflow="wrap"
+                title={<label htmlFor="pref-date-format">{b.prefDateFormatTitle}</label>}
+                description={b.prefDateFormatDescription}
+                trailing={
+                  <Select
+                    id="pref-date-format"
+                    options={dateFormatOptions}
+                    value={dateFormat}
+                    onValueChange={setDateFormat}
+                    className="w-[var(--filter-picker-width-sm)]"
+                  />
+                }
+              />
+            </CardContent>
+          </Card>
+        </Flex>
+
+        <Separator />
+
+        {/* ── 3 · Billing handoff — the subscription state is a canonical `StatusBadge`
+            (shared domain-status map, no page-local status→colour table, #216). Money, seats,
+            dates and region are all Intl. */}
+        <Flex direction="col" gap="md">
+          <Flex direction="row" align="start" justify="between" gap="md" wrap>
+            <Flex direction="col" gap="xs">
+              <Heading level={2}>{b.billingTitle}</Heading>
+              <Text size="sm" tone="muted">
+                {b.billingDescription}
+              </Text>
+            </Flex>
+            <StatusBadge status="past_due" variant="outline" />
+          </Flex>
+          <Descriptions columns={2} layout="vertical">
+            <Descriptions.Item label={b.billingPlanLabel}>{b.billingPlanValue}</Descriptions.Item>
+            <Descriptions.Item label={b.billingSeatsLabel}>{seatCount(b)}</Descriptions.Item>
+            <Descriptions.Item label={b.billingAmountLabel}>{money}</Descriptions.Item>
+            <Descriptions.Item label={b.billingNextInvoiceLabel}>
+              <time dateTime={NEXT_INVOICE.toISOString().slice(0, 10)}>
+                {longDate(NEXT_INVOICE)}
+              </time>
+            </Descriptions.Item>
+            <Descriptions.Item label={b.billingRegionLabel} span={2}>
+              {regionName}
+            </Descriptions.Item>
+          </Descriptions>
+          <Flex direction="col" gap="sm" className="sm:flex-row sm:items-center">
+            <Button variant="outline" asChild>
+              <a href="https://billing.example.com/portal" target="_blank" rel="noreferrer">
+                <ExternalLink aria-hidden="true" />
+                {b.billingHandoff}
+                {/* Never signal "leaves the app" with the icon alone (WCAG 1.4.1 / 2.4.4). */}
+                <span className="sr-only"> ({b.opensInNewTab})</span>
+              </a>
+            </Button>
+            <Text size="xs" tone="muted">
+              {b.billingHandoffHint}
+            </Text>
+          </Flex>
+        </Flex>
+
+        {/* ── 4 · Danger zone — the one Card on the page: `accent="destructive"` paints the
+            leading rail from `--destructive` via `--card-accent-rail-width`. Colour never carries
+            the meaning alone: the title says "irreversible", each row says what is lost, and
+            delete is gated behind a type-to-confirm AlertDialog (`challenge`). */}
         <Card accent="destructive">
           <CardHeader>
-            <CardTitle level={2} className="text-destructive">
-              {b.dangerTitle}
-            </CardTitle>
-            <CardDescription>{b.dangerDescription}</CardDescription>
+            <CardTitle level={2}>{b.dangerTitle}</CardTitle>
           </CardHeader>
           <CardContent flush>
             <ListRow
               align="start"
               overflow="wrap"
-              leading={<UserMinus className="text-muted-foreground size-4" aria-hidden="true" />}
               title={b.dangerTransferTitle}
               description={b.dangerTransferDescription}
               trailing={
@@ -523,7 +502,6 @@ export default function SettingsAccountSectionsShowcase() {
             <ListRow
               align="start"
               overflow="wrap"
-              leading={<ShieldAlert className="text-destructive size-4" aria-hidden="true" />}
               title={b.dangerDeleteTitle}
               description={b.dangerDeleteDescription}
               trailing={

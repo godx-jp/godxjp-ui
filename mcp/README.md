@@ -207,7 +207,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ---
 
-## Tools (26)
+## Tools (28)
 
 > **Building an app with @godxjp/ui?** Start with `list_consumer_skills` / `route_consumer_task`
 > (the Consumer namespace below) — they hide library-maintenance material. The data tools
