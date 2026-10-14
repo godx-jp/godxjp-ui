@@ -165,6 +165,7 @@ describe("ensureConsumerRules", () => {
       ]);
       ensureConsumerRules(root);
       expect(pathsOf(root)).toEqual(["src/**", "web/**"]);
+      expect(ensureConsumerRules(root)).toBe(false); // multi-entry front matter is idempotent too
     });
   });
 

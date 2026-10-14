@@ -5,7 +5,6 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-// @ts-expect-error — plain ESM script without a declaration file
 import { readConsumerUiMetadata } from "../../scripts/_agent-setup.mjs";
 
 /*
