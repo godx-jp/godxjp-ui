@@ -746,9 +746,9 @@ const TextBase = React.forwardRef<HTMLElement, TextProp>((props, ref) => {
         'Text: `truncate` and `whitespace="pre-wrap"` are mutually exclusive — `truncate` takes precedence (one line, one ellipsis); use `clamp` to keep preserved line breaks and still bound the height.',
       );
     }
-    if (breakMode === "anywhere" && truncating) {
+    if ((breakMode === "anywhere" || breakMode === "phrase") && truncating) {
       console.warn(
-        'Text: `truncate` and `break="anywhere"` are mutually exclusive — `truncate` takes precedence (one line has nowhere to break to); use `clamp` to split the token and still bound the height.',
+        `Text: \`truncate\` and \`break="${breakMode}"\` are mutually exclusive — \`truncate\` takes precedence (one line has nowhere to break to); use \`clamp\` to keep the breaking and still bound the height.`,
       );
     }
     if (ellipsis && (truncate || clamp !== undefined)) {
@@ -787,8 +787,8 @@ const TextBase = React.forwardRef<HTMLElement, TextProp>((props, ref) => {
     // Text inherits, e.g. from a table cell. `truncate` still wins by emitting nothing.
     "data-whitespace": whitespace && !truncating ? whitespace : undefined,
     // Same shape and the same precedence as `whitespace`: `normal` is inert, and one line has
-    // nowhere to break to, so `truncate` simply does not emit it (gh#927).
-    "data-break": breakMode === "anywhere" && !truncating ? "anywhere" : undefined,
+    // nowhere to break to, so `truncate` simply does not emit it (gh#927, and `phrase` likewise).
+    "data-break": breakMode && breakMode !== "normal" && !truncating ? breakMode : undefined,
     style: clampStyle,
     "data-tabular": tabular ? "" : undefined,
     "data-decoration": decoration,

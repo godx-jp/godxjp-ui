@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.5.0] - 2026-10-14
+
+From gino-cloud (#1292), measured in Chromium 151.
+
+### ✨ Added
+
+- **`Text break="phrase"` — Japanese prose breaks between phrases, not mid-word.** For a name, an
+  organisation or a status in a narrow measure (a DataTable cell): `word-break: auto-phrase`
+  (Chrome 119+), `line-break: strict` (no small kana or 「ー」 starting a line), `text-wrap: pretty`,
+  and it releases the cell's inherited `nowrap` like `break="anywhere"`. In an 8-column DataTable
+  in the 974px frame of a 1280 layout: 「チャン・ヴァ｜ン・ミン」 → 「チャン・｜ヴァン・｜ミン」, 4
+  mid-katakana breaks → 0, table 972px either way. Each phrase stays whole, so a column is as wide
+  as its longest phrase — a 20+ character katakana compound scrolls the table rather than being
+  cut. Browsers without `auto-phrase` keep their own CJK breaking (and get `overflow-wrap:
+anywhere`). `TextBreakProp` is now `"normal" | "anywhere" | "phrase"`; existing values unchanged.
+- Long column headers already wrap with `ColumnDef.headerWrap` (32.1.3); the same fixture now
+  asserts it in Chromium (headers wrap, table fits 974px).
+
 ## [32.4.3] - 2026-10-14
 
 ### 🐛 Fixed

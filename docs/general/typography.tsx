@@ -517,7 +517,9 @@ export default function Demo() {
               <TableBody>
                 <TableRow>
                   <TableCell>
-                    <Text size="sm">{t("textExamples.breakSampleName")}</Text>
+                    <Text size="sm" break="phrase">
+                      {t("textExamples.breakSampleName")}
+                    </Text>
                   </TableCell>
                   <TableCell>
                     <Text size="sm" break="anywhere">

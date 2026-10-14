@@ -121,8 +121,16 @@ export type TextWhitespaceProp = "normal" | "pre-wrap";
  * typed are content, `break` says whether a machine identifier may be split to fit. Only `anywhere`
  * — not `break-word` — lowers the box's min-content size (CSS Text 3 §5.5), which is what a table
  * cell sizes its column from; `break-word` breaks in a block and still holds a `<td>` open.
+ *
+ * `phrase` (gh#1292) is for PROSE in a narrow measure — a Japanese name, an organisation, a status label in a
+ * table cell: lines break between phrases instead of between any two
+ * characters (`word-break: auto-phrase`), small kana and the long-vowel mark never start a line
+ * (`line-break: strict`), and a paragraph does not end on one short word (`text-wrap: pretty`).
+ * Like `anywhere` it releases an inherited `nowrap`. Unlike `anywhere` it does NOT lower min-content:
+ * a column is as wide as its longest phrase, so a very long compound scrolls the table instead of
+ * being cut. Browsers without `auto-phrase` keep their own CJK breaking.
  */
-export type TextBreakProp = "normal" | "anywhere";
+export type TextBreakProp = "normal" | "anywhere" | "phrase";
 
 /*
  * ─────────────────────────────────────────────────────────────────────────────

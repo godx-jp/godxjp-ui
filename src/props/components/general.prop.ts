@@ -125,6 +125,12 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> &
      * also releases a `nowrap` it inherited (a table cell's default) back to `normal` — newlines
      * still collapse, because an identifier's whitespace is not content.
      *
+     * `phrase` is for Japanese PROSE in a narrow measure — a name, an organisation, a status in a
+     * table cell: it breaks between phrases (`word-break: auto-phrase`) instead of mid-word, never
+     * starts a line with a small kana or 「ー」 (`line-break: strict`), adds `text-wrap: pretty`, and
+     * releases an inherited `nowrap` too. Each phrase stays whole, so a column is as wide as its
+     * longest phrase. Browsers without `auto-phrase` keep their own CJK breaking.
+     *
      * Independent of `whitespace`: `whitespace="pre-wrap" break="anywhere"` keeps typed line breaks
      * AND splits a long token. `truncate` WINS (one line has nowhere to break to), so the attribute
      * is not emitted under it; `clamp` composes.
