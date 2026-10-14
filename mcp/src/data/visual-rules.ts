@@ -13,11 +13,16 @@ export interface VisualRule {
   category: VisualRuleCategory;
   standard: string;
   fix: string;
+  /**
+   * Responsive rules C01–C12 (ADR 2026-10-14): `probe` = measured per width, advisory until the
+   * pilot promotes it; `checklist` = a human reviewer resolves it, the audit never passes it.
+   */
+  kind?: "probe" | "checklist";
 }
 
 /** Command an agent runs against the running app before a visual pass (warnings, non-blocking). */
 export const VISUAL_AUDIT_COMMAND =
-  "node node_modules/@godxjp/ui/scripts/visual-audit.mjs <baseUrl> [route …]  (optional peers, TESTED range: playwright >=1.55 <2 [1.61.1] + @axe-core/playwright >=4.10 <5 [4.12.1] + axe-core >=4.10 <5 [4.12.1] + a chromium via `playwright install chromium`; --strict for a CI gate, --format json ALWAYS emits valid JSON with a status of ok|partial|error separating infra errors[] from product findings[], --rules to print this catalog)";
+  "node node_modules/@godxjp/ui/scripts/visual-audit.mjs [--widths 390x844,1280x900] <baseUrl> [route …]  (every route at 320×900, 390×844, 768×1024, 1024×900, 1280×900, 844×390 by default; findings carry viewport + element + threshold origin; JSON adds unmapped[] (reviewer required, never a pass), matrix[] (per-width rule status + reviewer checklist) and acceptance — at best 'probes passed; independent acceptance pending', never done. Optional peers, TESTED range: playwright >=1.55 <2 [1.61.1] + @axe-core/playwright >=4.10 <5 [4.12.1] + axe-core >=4.10 <5 [4.12.1] + a chromium via `playwright install chromium`; --strict for a CI gate, --format json ALWAYS emits valid JSON with a status of ok|partial|error separating infra errors[] from product findings[], --rules to print this catalog)";
 
 export const VISUAL_RULES: VisualRule[] = [
   {
@@ -89,6 +94,108 @@ export const VISUAL_RULES: VisualRule[] = [
     category: "layout",
     standard: "@godxjp/ui Alert anatomy · WAI-ARIA 1.2 · WCAG 2.2 SC 4.1.2",
     fix: "Use <Alert>: one leading tone icon, <Alert.Actions> trailing-right normal width, onDismiss × top-right, one horizontal row.",
+  },
+  {
+    id: "c01-content-reachable",
+    severity: "warn",
+    category: "layout",
+    standard: "WCAG 2.2 SC 1.4.10 / 1.4.4 / 1.4.12; 1.5px tolerance repo-chosen threshold",
+    kind: "probe",
+    fix: "Nothing may be cut off: no horizontal scroll on the document or the app's main region, and no text/icon partly hidden by an overflow:hidden/clip ancestor. Let the container shrink its content (min-width:0 + wrap), or truncate with a recoverable full value (title / aria-label).",
+  },
+  {
+    id: "c02-search-usable",
+    severity: "warn",
+    category: "layout",
+    standard:
+      "search text area ≥ 8ch after padding/icon, hint fits within 1.5px (repo-chosen threshold); WCAG 1.4.10 principle",
+    kind: "probe",
+    fix: "A search field narrower than 8ch is not a search field. Below the width where it fits, show a named search trigger (data-audit-role=search-trigger) that opens a full-width field; keep the scope hint visible somewhere when the placeholder no longer fits.",
+  },
+  {
+    id: "c03-single-brand",
+    severity: "warn",
+    category: "layout",
+    standard: "repo-chosen policy — human checklist only",
+    kind: "checklist",
+    fix: "Reviewer counts brand presentations in the closed and open shell: one logo+wordmark, distinct from the service name and breadcrumb.",
+  },
+  {
+    id: "c04-compact-account-name",
+    severity: "warn",
+    category: "a11y",
+    standard:
+      "compact (<600px) bar shows no account name (repo-chosen threshold); trigger name per WCAG 2.2 SC 4.1.2",
+    kind: "probe",
+    fix: "Below 600px the bar shows the avatar only: hide the account name (it belongs in the opened account menu) and make the avatar the trigger — accessible name + aria-haspopup, opening identity and account controls.",
+  },
+  {
+    id: "c05-compact-editor-inset",
+    severity: "warn",
+    category: "layout",
+    standard:
+      "first unindented line ≤ 24px from the editor inner edge below 600px (repo-chosen threshold); WCAG 1.4.10 principle",
+    kind: "probe",
+    fix: "Reclaim the desktop drag-handle gutter on phones: the editor's base inset (padding included) is at most 24px below 600px; keep list indentation, and give tap/keyboard alternatives to the hover handle.",
+  },
+  {
+    id: "c06-compact-actions",
+    severity: "warn",
+    category: "layout",
+    standard:
+      "≤2 direct actions + ≤1 overflow per task-action group below 600px (repo-chosen threshold); targets ≥24×24 per WCAG 2.2 SC 2.5.8",
+    kind: "probe",
+    fix: "On phones a task-action group shows at most two direct actions plus one overflow menu that really holds the rest; every target at least 24×24 CSS px (or a documented SC 2.5.8 exception).",
+  },
+  {
+    id: "c07-width-control",
+    severity: "warn",
+    category: "layout",
+    standard: "repo-chosen policy — human checklist (no library hook maps a width control)",
+    kind: "checklist",
+    fix: "A wide-page control must move content to an approved destination width (±1px), or be hidden on phones / labelled as a desktop-only preference that persists.",
+  },
+  {
+    id: "c08-sidebar-field-edges",
+    severity: "warn",
+    category: "layout",
+    standard: "repo-chosen policy — human checklist (equivalent groups are a semantic call)",
+    kind: "checklist",
+    fix: "Equivalent sidebar fields share left and right edges within 2px; the reviewer inventories the fields before reading any mapping.",
+  },
+  {
+    id: "c09-progress-role",
+    severity: "warn",
+    category: "color",
+    standard: "repo-chosen policy — human checklist (tone ↔ meaning is a semantic call)",
+    kind: "checklist",
+    fix: "Ordinary branded progress uses the brand role; a status tone (success/warning/destructive) only where the bar reports that status. Thickness matches the approved variant ±1px.",
+  },
+  {
+    id: "c10-rail-toggle-attached",
+    severity: "warn",
+    category: "layout",
+    standard:
+      "toggle centre within 8px of the declared rail edge at ≥1024px (repo-chosen threshold)",
+    kind: "probe",
+    fix: "An edge-mounted rail toggle sits on the rail edge it controls in both desktop states. Declare the pattern with data-audit-role=rail-toggle (+ data-audit-edge=start|end).",
+  },
+  {
+    id: "c11-search-keyline",
+    severity: "warn",
+    category: "layout",
+    standard: "desktop search start within 2px of the content column start (repo-chosen threshold)",
+    kind: "probe",
+    fix: "A centred top-bar search starts on the content column's keyline, not the window's centre. Applies when the search sits in Topbar `center` (or carries data-audit-keyline).",
+  },
+  {
+    id: "c12-tracked-uppercase-label",
+    severity: "warn",
+    category: "layout",
+    standard:
+      "section label uppercase AND ≤12px AND tracking ≥0.04em fails (repo-chosen threshold); no WCAG font floor implied",
+    kind: "probe",
+    fix: "Section labels read as sentence-case text at the body scale, not tiny tracked capitals. Literal domain codes are exempt when marked as such (<code>, <kbd>, data-audit-literal).",
   },
 ];
 

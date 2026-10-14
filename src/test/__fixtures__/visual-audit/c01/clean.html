@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C01 clean: sr-only, recoverable ellipsis, reachable scroll, hidden drawer</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    </style>
+  </head>
+  <body>
+    <button><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect width="16" height="16" /></svg><span class="sr-only">Close the dialog and return</span></button>
+    <div id="c01-ellipsis" title="Famgia Information Technology Co." style="width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">Famgia Information Technology Co.</div>
+    <div id="c01-scroll" style="width: 200px; overflow-x: auto"><table><tr><td style="white-space: nowrap">A wide table cell that scrolls inside its own region</td></tr></table></div>
+    <div style="position: relative; width: 200px; height: 60px; overflow: hidden">
+      <nav id="c01-drawer" style="position: absolute; inset: 0; transform: translateX(-100%)">Closed drawer content</nav>
+    </div>
+  </body>
+</html>

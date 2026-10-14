@@ -4,7 +4,7 @@
  *   init-agent     scaffold the agent forcing-kit (MCP + auto-audit hook + mandate)
  *   sync-rules     write/refresh package-owned agent rules (--dry-run previews)
  *   audit          static UI audit (regex over source)
- *   visual-audit   runtime audit (Playwright + axe-core) against a running app
+ *   visual-audit   runtime audit (Playwright) against a running app, at six widths
  *   prune-css      emit a stylesheet with only the CSS layers the app uses (gh#971)
  *   codemod v32    apply the mechanical half of the v32 upgrade (docs/migrations/v32.md)
  */
@@ -85,15 +85,21 @@ const HELP = {
     --dry-run   list every change without writing
   What it cannot decide (a component move that changes props, an AppProvider that relied on the
   old vi default) is printed as a "note" for you to finish.`,
-  "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] <baseUrl> [route …]
+  "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] [--widths WxH,…] <baseUrl> [route …]
 
-  Runtime audit (Playwright + axe-core) against an app you are ALREADY running locally.
+  Runtime audit (Playwright) against an app you are ALREADY running locally, at six widths.
     baseUrl         the running app, e.g. http://localhost:5173
     route …         paths appended to baseUrl (default "/")
+    --widths        viewports to audit (default 320x900,390x844,768x1024,1024x900,1280x900,844x390;
+                    a bare width uses height 900)
     --strict        exit non-zero on any finding, not only errors
-    --format json   machine-readable findings
+    --format json   machine-readable: findings (viewport, element, threshold + origin), unmapped
+                    items (reviewer required), per-width rule status + reviewer checklist
     --rules         print the visual rule catalog as JSON and exit
-  Needs the playwright peer installed.`,
+  Responsive probes C01–C12 are advisory; thresholds are repo-chosen unless marked WCAG. A clean
+  run ends "probes passed; independent acceptance pending" — the checklist still needs a reviewer.
+  Map your own components with data-audit-role (search, search-trigger, account-name, editor,
+  task-actions, rail-toggle, content-column, section-label, metadata). Needs the playwright peer.`,
 };
 
 const USAGE = `usage: godxjp-ui <command> [args]
@@ -103,7 +109,7 @@ commands:
   sync-rules     write/refresh package-owned agent rules (--dry-run previews)
   audit          static UI audit over source
   audit-hook     the per-edit audit hook (wired by init-agent)
-  visual-audit   runtime audit (Playwright + axe-core) against a running app
+  visual-audit   runtime audit (Playwright) against a running app, at six widths
   prune-css      emit a stylesheet with only the CSS layers your app uses
 
 godxjp-ui <command> --help   details and flags for one command`;
