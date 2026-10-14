@@ -295,6 +295,22 @@ const isAsChildSlot = (content, index) => {
 const rawTagOutsideAsChildSlot = (tag) => (content) =>
   [...content.matchAll(rawTag(tag))].filter((match) => !isAsChildSlot(content, match.index));
 
+/*
+ * ADMIN-SCREEN TELLS (gh#1294). Consumer screens built only from correct primitives still read as
+ * generated, through structure: a Card per section, a Card in a Card, a KPI tile row above a
+ * list, an icon EmptyState inside a Card, a wall of Badges or Alerts. Each is sometimes right, so
+ * these are WARNINGS. The per-file limits were set from four consumer repos (ql, platform,
+ * godx-task, godx-content: 511 files importing @godxjp/ui, 2026-10-14) to flag the densest
+ * ~10–15% of the files that use the tag at all:
+ *   Card   ≥5 → 43 of 336 files (12.8%)
+ *   Badge  ≥5 → 28 of 211 (13.3%)
+ *   Alert  ≥4 → 27 of 200 (13.5%)
+ */
+const CARD_LIMIT = 5;
+const BADGE_LIMIT = 5;
+const ALERT_LIMIT = 4;
+const STATCARD_ROW = 3;
+
 /**
  * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string,
  *         exempt?:RegExp, classOnly?:boolean}[]}
@@ -914,6 +930,64 @@ const RULES = [
     matches: mixedButtonSizeMatches,
     message:
       "Buttons in one row mix sizes — every Button under one parent takes the same `size` (a missing size is `default`; `icon-sm` pairs with `sm`, `icon-xs` with `xs`, `icon` with default). Pick the row's size and apply it to every button in it (docs/CONSUMER-RULES.md §5).",
+  },
+  // Admin-screen tells (gh#1294) — structure, not decoration; limits measured, see CARD_LIMIT.
+  {
+    id: "nested-card",
+    replacement: "Heading + Flex inside the one Card",
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    matches: nestedCardMatches,
+    message:
+      "A Card (or StatCard) inside a Card — two borders for one boundary. Group inside the outer Card with a Heading and Flex/Separator; keep Card for a real surface boundary.",
+  },
+  {
+    id: "card-per-section",
+    replacement: "Heading + Flex direction=col per section",
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    matches: (source) => densityMatches(source, ["Card"], CARD_LIMIT),
+    message: `${CARD_LIMIT}+ Cards in one file — a Card per section. Mark sections with a Heading and section spacing (PageContainer children, Flex gap="lg"); keep Card for a real boundary (a table surface, a selectable item).`,
+  },
+  {
+    id: "kpi-row-off-dashboard",
+    replacement: "drop the StatCard row; put counts in the table header or Pagination total",
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    matches: kpiRowMatches,
+    message: `${STATCARD_ROW}+ StatCards outside a dashboard — a row count is not a KPI. Keep StatCard rows for a dashboard with comparison or trend (delta); a list shows its total in Pagination showTotal.`,
+  },
+  {
+    id: "empty-state-icon-in-card",
+    replacement: 'EmptyState title + action, no icon (or variant="compact")',
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    matches: emptyStateIconInCardMatches,
+    message:
+      'An icon EmptyState inside a Card. In an admin surface an empty state is one sentence and one action: drop `icon`, or use variant="compact".',
+  },
+  {
+    id: "badge-wall",
+    replacement: "plain text for categories; Badge only for status",
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    matches: (source) => densityMatches(source, ["Badge", "Tag"], BADGE_LIMIT),
+    message: `${BADGE_LIMIT}+ Badge/Tag in one file. Badge is for status; render categories, tiers and scopes as plain text, and keep one status column per table.`,
+  },
+  {
+    id: "alert-per-page",
+    replacement:
+      "one Alert for the page's blocking state; inline FormField errors and toasts for the rest",
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    matches: (source) => densityMatches(source, ["Alert"], ALERT_LIMIT),
+    message: `${ALERT_LIMIT}+ Alerts in one file. An Alert is for a state that blocks or changes the task; field errors belong in FormField, results in a toast, and standing info in plain text.`,
   },
 ];
 
@@ -1554,9 +1628,11 @@ const BUTTON_ROW_TRANSPARENT = new Set([
   "TooltipTrigger",
 ]);
 
-/** A Button's `size` literal from its OPENING tag's own attributes (not a nested element's). */
-function buttonSizeOf(openTag) {
-  // Blank every `{…}` body so `icon={<Plus size="sm" />}` cannot answer for the Button.
+/**
+ * An opening tag with every `{…}` body blanked (the `{` kept), so `icon={<Plus size="sm" />}`
+ * cannot answer for the element that owns the attribute.
+ */
+function topLevelAttrs(openTag) {
   let top = "";
   let depth = 0;
   let quote = "";
@@ -1573,7 +1649,12 @@ function buttonSizeOf(openTag) {
     top += depth ? (ch === "{" && depth === 1 ? "{" : " ") : ch;
     if (ch === "}") depth--;
   }
-  const at = /\bsize\s*=\s*/.exec(top);
+  return top;
+}
+
+/** A Button's `size` literal from its OPENING tag's own attributes (not a nested element's). */
+function buttonSizeOf(openTag) {
+  const at = /\bsize\s*=\s*/.exec(topLevelAttrs(openTag));
   if (!at) return "default";
   const rest = openTag.slice(at.index + at[0].length);
   const lit = /^(?:"([^"]*)"|'([^']*)'|\{\s*(?:"([^"]*)"|'([^']*)'|`([^`$]*)`)\s*\})/.exec(rest);
@@ -1587,15 +1668,14 @@ const buttonSizeFamily = (size) => {
 };
 
 /**
- * `mixed-button-size`: group every <Button> by its nearest non-transparent JSX parent and yield
- * one match per group whose size families differ. A tag stack over the whole file; an element in
- * an attribute (`actions={<>…</>}`) gets the attribute's owner as its parent, kept apart from the
- * owner's children. A `<` glued to an identifier outside JSX children is a TS generic.
+ * Every JSX opening tag in the file, with the stack of elements open around it. A tag stack over
+ * the whole file; an element in an attribute (`actions={<>…</>}`) gets the attribute's owner as an
+ * `attr: true` frame, kept apart from the owner's children. A `<` glued to an identifier outside
+ * JSX children is a TS generic. `stack` is live: read it before asking for the next element.
  */
-function* mixedButtonSizeMatches(source) {
+function* jsxElements(source) {
   const stack = []; // { tag, id, attr }
   const pending = []; // opening tags whose attributes are still being scanned
-  const groups = new Map();
   let nextId = 0;
   const settle = (upTo) => {
     while (pending.length && pending.at(-1).end < upTo) {
@@ -1625,20 +1705,30 @@ function* mixedButtonSizeMatches(source) {
     const end = jsxOpeningEnd(source, m.index);
     if (end >= source.length) continue;
     const openTag = source.slice(m.index, end + 1);
-    if (tag === "Button") {
-      const parent = stack.findLast((f) => f.attr || !BUTTON_ROW_TRANSPARENT.has(f.tag));
-      const size = buttonSizeOf(openTag);
-      if (parent && size !== null) {
-        (groups.get(parent.id) ?? groups.set(parent.id, []).get(parent.id)).push({
-          size,
-          index: m.index,
-          openTag,
-        });
-      }
-    }
+    yield { tag, index: m.index, openTag, stack };
     const frame = { tag, id: nextId++, attr: true };
     stack.push(frame);
     pending.push({ end, frame, selfClose: /\/\s*>$/.test(openTag) });
+  }
+}
+
+/**
+ * `mixed-button-size`: group every <Button> by its nearest non-transparent JSX parent and yield
+ * one match per group whose size families differ.
+ */
+function* mixedButtonSizeMatches(source) {
+  const groups = new Map();
+  for (const { tag, index, openTag, stack } of jsxElements(source)) {
+    if (tag !== "Button") continue;
+    const parent = stack.findLast((f) => f.attr || !BUTTON_ROW_TRANSPARENT.has(f.tag));
+    const size = buttonSizeOf(openTag);
+    if (parent && size !== null) {
+      (groups.get(parent.id) ?? groups.set(parent.id, []).get(parent.id)).push({
+        size,
+        index,
+        openTag,
+      });
+    }
   }
   for (const group of groups.values()) {
     const families = new Set(group.map((b) => buttonSizeFamily(b.size)));
@@ -1647,6 +1737,46 @@ function* mixedButtonSizeMatches(source) {
       0: `sizes ${group.map((b) => b.size).join(" + ")}: ${group[0].openTag}`,
       index: group[0].index,
     };
+  }
+}
+
+/** One finding per file, at the `limit`-th occurrence of any tag in `tags`, naming the count. */
+function* densityMatches(source, tags, limit) {
+  const hits = [];
+  for (const { tag, index } of jsxElements(source)) if (tags.includes(tag)) hits.push(index);
+  if (hits.length >= limit) yield { 0: `${hits.length} in this file`, index: hits[limit - 1] };
+}
+
+/** A Card or StatCard opened while another Card is open, in children or in an attribute. */
+function* nestedCardMatches(source) {
+  for (const { tag, index, openTag, stack } of jsxElements(source)) {
+    if ((tag === "Card" || tag === "StatCard") && stack.some((f) => f.tag === "Card")) {
+      yield { 0: openTag, index };
+    }
+  }
+}
+
+/** ≥3 StatCards in a file whose path does not say it is a dashboard. */
+function* kpiRowMatches(source, rel = "") {
+  if (/dashboard/i.test(rel)) return;
+  yield* densityMatches(source, ["StatCard"], STATCARD_ROW);
+}
+
+/** An EmptyState that draws an icon (not `icon={null}`, not compact) inside a Card. */
+function* emptyStateIconInCardMatches(source) {
+  for (const { tag, index, openTag, stack } of jsxElements(source)) {
+    if (tag !== "EmptyState" || !stack.some((f) => f.tag === "Card" || f.tag === "CardContent")) {
+      continue;
+    }
+    const top = topLevelAttrs(openTag);
+    const icon = /\bicon\s*=\s*/.exec(top);
+    if (!icon || /^\{\s*(?:null|undefined)\s*\}/.test(openTag.slice(icon.index + icon[0].length))) {
+      continue;
+    }
+    const variant = /\bvariant\s*=\s*/.exec(top);
+    const rest = variant ? openTag.slice(variant.index + variant[0].length) : "";
+    if (/^(?:"compact"|'compact'|\{\s*["'`]compact["'`]\s*\})/.test(rest)) continue;
+    yield { 0: openTag, index };
   }
 }
 
@@ -2065,7 +2195,7 @@ for (const dir of SCAN_DIRS) {
     for (const rule of fileRules) {
       if (!rule.spansElement || !isJsx) continue;
       for (const match of rule.matches
-        ? rule.matches(scanContent)
+        ? rule.matches(scanContent, rel)
         : scanContent.matchAll(rule.test)) {
         // A comparison `>` inside a JSX prop is not the end of its opening tag.
         if (

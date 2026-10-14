@@ -61,7 +61,7 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    `--radius`, `--font-size-base` are the handful everything else derives from. The
    1872 `component` entries are per-part knobs; reach for one only when a role is
    right everywhere except one component.
-5. `anti-ai-tells.json` — 26 shapes that make generated UI look generated, each with the
+5. `anti-ai-tells.json` — 35 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
 
 **Do not fetch `components.json`.** It is 1.2 MB, and most URL fetchers truncate a

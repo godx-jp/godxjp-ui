@@ -143,7 +143,7 @@
   },
   {
     "name": "inertia-list-page",
-    "tagline": "Inertia + @godxjp/ui list page — PageContainer + Toolbar + DataTable + Badge + Pagination (current primitive API).",
+    "tagline": "Inertia + @godxjp/ui list page — PageContainer + Toolbar (above the table) + DataTable + Badge + Pagination. No KPI row, no restating subtitle.",
     "tags": [
       "inertia",
       "list",
@@ -157,7 +157,7 @@
   },
   {
     "name": "inertia-detail-page",
-    "tagline": "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
+    "tagline": "Inertia detail page — receives {id} prop, Descriptions (compound) in one Card + EmptyState fallback. No KPI tile row.",
     "tags": [
       "inertia",
       "detail",
@@ -209,7 +209,7 @@
   },
   {
     "name": "badge-coloring",
-    "tagline": "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props).",
+    "tagline": "Colour a Badge for a localized STATUS via tone + icon; tiers and categories take one neutral tone (colour means status).",
     "tags": [
       "statusbadge",
       "badge",
@@ -348,14 +348,16 @@
       "stack-cards"
     ],
     "name": "page-sections",
-    "tagline": "A page made of several Card sections: PageContainer spaces its direct children by default; group items inside a section with Flex/ResponsiveGrid, never Tailwind gap-*/p-*.",
+    "tagline": "A page of several sections: a Heading + section spacing marks a section, not a Card. PageContainer spaces its direct children (section step); Flex gap spaces items inside one (item step). Card only for a real boundary.",
     "tags": [
       "layout",
       "page",
       "card",
       "spacing",
       "flex",
-      "grid"
+      "grid",
+      "section",
+      "heading"
     ]
   },
   {

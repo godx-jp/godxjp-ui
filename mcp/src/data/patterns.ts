@@ -48,16 +48,15 @@ export const PATTERNS: PatternEntry[] = [
 // 1) StatCard shows a DOUBLE border (too thick)
 //    Cause: StatCard IS already a bordered Card. Don't wrap it.
 // ❌  <Card><CardContent><StatCard label="x" value="1" /></CardContent></Card>
-// ✅  <ResponsiveGrid columns={4}><StatCard label="x" value="1" /></ResponsiveGrid>
-//    Need a section title? Use a heading, NOT a Card:
-// ✅  <Flex direction="col" gap="sm"><div className="text-sm font-medium">KPI</div>
-//        <ResponsiveGrid columns={4}><StatCard .../></ResponsiveGrid></Flex>
+// ✅  dashboard only, with comparison/trend:
+//     <ResponsiveGrid columns={4}><StatCard label="売上" value="¥8.2M" delta="+12%" /></ResponsiveGrid>
+//    A list or detail page has NO StatCard row — a row count is not a KPI (Pagination showTotal).
 
 // 2) Badge renders grey with a ○ (no colour) for localized/tier labels
 //    Cause: it auto-maps only English lifecycle keys.
-// ❌  <Badge status="プレミアム" />
-// ✅  <Badge status="プレミアム" tone="success" icon={null} />   // tier → pill, no icon
 // ✅  <Badge status="active">公開中</Badge>                       // lifecycle → keep icon
+// ✅  <Badge status="プレミアム" tone="neutral" icon={null} />   // tier → ONE neutral tone
+//    Colour is for status only; a tier/category/scope is plain text or a neutral pill.
 
 // 3) Table text collapses to one char per line, or a chip wraps
 // ✅  give long columns a width:  { key: "name", header: "氏名", width: "w-64" }
@@ -721,12 +720,12 @@ export default function Coupons({ coupons }: { coupons?: Coupon[] }) {
   {
     name: "inertia-list-page",
     tagline:
-      "Inertia + @godxjp/ui list page — PageContainer + Toolbar + DataTable + Badge + Pagination (current primitive API).",
+      "Inertia + @godxjp/ui list page — PageContainer + Toolbar (above the table) + DataTable + Badge + Pagination. No KPI row, no restating subtitle.",
     tags: ["inertia", "list", "table", "page", "filter", "pagination", "datatable", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
 import { useMemo, useState } from "react"
-import { PageContainer, ResponsiveGrid, Flex } from "@godxjp/ui/layout"
-import { Card, CardContent, StatCard, DataTable, EmptyState, Badge, type ColumnDef } from "@godxjp/ui/data-display"
+import { PageContainer, Flex } from "@godxjp/ui/layout"
+import { Card, CardContent, DataTable, EmptyState, Badge, type ColumnDef } from "@godxjp/ui/data-display"
 import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry"
 import { Toolbar, ToolbarGroup, Pagination } from "@godxjp/ui/navigation"
 import { formatDate } from "@godxjp/ui/datetime"
@@ -750,7 +749,7 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
   // ColumnDef = { key, header, render?, align?: "left"|"center"|"right", sortable?, width? }
   const columns: ColumnDef<Coupon>[] = [
     { key: "name", header: "クーポン名", render: (c) => <span className="font-medium">{c.name}</span> },
-    { key: "scope", header: "スコープ", render: (c) => <Badge status={c.scope} tone="info" icon={null} /> },
+    { key: "scope", header: "スコープ" }, // a category is plain text; Badge is for the status column only
     { key: "status", header: "ステータス", render: (c) => <Badge status={c.status} /> },
     { key: "valid", header: "有効期間", render: (c) => \`\${formatDate(c.validFrom)} 〜 \${formatDate(c.validTo)}\` },
     { key: "usage", header: "利用数", align: "right", render: (c) => c.usage.toLocaleString() },
@@ -759,15 +758,10 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
   return (
     <>
       <Head title="クーポン管理" />
-      {/* RULE: every page wraps in PageContainer; vertical rhythm via Flex direction="col"/ResponsiveGrid, never p-*/gap-* */}
-      <PageContainer title="クーポン管理" subtitle="配信中のクーポン一覧">
+      {/* RULE: every page wraps in PageContainer; vertical rhythm via Flex direction="col"/ResponsiveGrid, never p-* or gap-* */}
+      {/* No subtitle that restates the title, no StatCard row: the total is Pagination's showTotal. */}
+      <PageContainer title="クーポン管理">
         <Flex direction="col" gap="lg">
-          <ResponsiveGrid columns={3}>
-            <StatCard label="公開中" value={coupons.filter((c) => c.status === "公開中").length} />
-            <StatCard label="総利用数" value={coupons.reduce((s, c) => s + c.usage, 0).toLocaleString()} />
-            <StatCard label="件数" value={coupons.length} />
-          </ResponsiveGrid>
-
           {/* Toolbar is the filter-bar primitive (standalone, above the table surface). */}
           <Toolbar hasActiveFilters={q !== "" || status !== "all"} onClear={() => { setQ(""); setStatus("all"); setPage(1) }}>
             {/* SearchInput is value + onSearch(v) — NOT onChange */}
@@ -787,7 +781,7 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
           <Card>
             <CardContent flush>
               {filtered.length === 0
-                ? <EmptyState title="該当するクーポンがありません" description="検索条件を変更してください。" />
+                ? <EmptyState title="該当するクーポンがありません" description="検索条件を変更してください。" /> /* one sentence, no icon */
                 : <DataTable data={paged} columns={columns} getRowId={(c) => c.id} onRowClick={(c) => router.visit(\`/coupons/\${c.id}\`)} />}
             </CardContent>
           </Card>
@@ -809,11 +803,11 @@ export default Coupons`,
   {
     name: "inertia-detail-page",
     tagline:
-      "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
+      "Inertia detail page — receives {id} prop, Descriptions (compound) in one Card + EmptyState fallback. No KPI tile row.",
     tags: ["inertia", "detail", "show", "page", "keyvaluegrid", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
-import { PageContainer, ResponsiveGrid, Flex } from "@godxjp/ui/layout"
-import { Card, CardContent, StatCard, EmptyState, Descriptions, Badge } from "@godxjp/ui/data-display"
+import { PageContainer } from "@godxjp/ui/layout"
+import { Card, CardContent, EmptyState, Descriptions, Badge } from "@godxjp/ui/data-display"
 import { Button } from "@godxjp/ui/general"
 import { formatDate } from "@godxjp/ui/datetime"
 import { ArrowLeft } from "lucide-react"
@@ -828,7 +822,7 @@ function MemberShow({ id }: { id: string }) {
     return (
       <>
         <Head title="会員詳細" />
-        <PageContainer title="会員詳細" subtitle="会員が見つかりません">
+        <PageContainer title="会員詳細">
           <EmptyState title="会員が見つかりません" description={\`ID「\${id}」は存在しません。\`} />
           <Button variant="outline" onClick={() => router.visit("/members")}><ArrowLeft className="size-4" />一覧へ戻る</Button>
         </PageContainer>
@@ -839,26 +833,21 @@ function MemberShow({ id }: { id: string }) {
   return (
     <>
       <Head title={member.name} />
-      <PageContainer title={member.name} subtitle={\`\${member.id} / \${member.rank}\`}>
-        <Flex direction="col" gap="lg">
-          <ResponsiveGrid columns={4}>
-            <StatCard label="累計購入額" value={\`¥\${member.total.toLocaleString()}\`} />
-            <StatCard label="来店回数" value={member.visits} />
-            <StatCard label="ポイント" value={member.points.toLocaleString()} />
-            <StatCard label="LTV" value={\`¥\${member.ltv.toLocaleString()}\`} />
-          </ResponsiveGrid>
-          <Card>
-            <CardContent>
-              {/* Descriptions is COMPOUND — value goes in children, not a prop */}
-              <Descriptions columns={2}>
-                <Descriptions.Item label="氏名">{member.name}</Descriptions.Item>
-                <Descriptions.Item label="ランク"><Badge status={member.rank} tone="info" icon={null} /></Descriptions.Item>
-                <Descriptions.Item label="ステータス"><Badge status={member.status} /></Descriptions.Item>
-                <Descriptions.Item label="登録日">{formatDate(member.registeredAt)}</Descriptions.Item>
-              </Descriptions>
-            </CardContent>
-          </Card>
-        </Flex>
+      <PageContainer title={member.name}>
+        {/* Figures about one member are facts, not KPIs: Descriptions rows, not a StatCard row. */}
+        <Card>
+          <CardContent>
+            {/* Descriptions is COMPOUND — value goes in children, not a prop */}
+            <Descriptions columns={2}>
+              <Descriptions.Item label="会員ID">{member.id}</Descriptions.Item>
+              <Descriptions.Item label="ランク">{member.rank}</Descriptions.Item>
+              <Descriptions.Item label="ステータス"><Badge status={member.status} /></Descriptions.Item>
+              <Descriptions.Item label="登録日">{formatDate(member.registeredAt)}</Descriptions.Item>
+              <Descriptions.Item label="累計購入額">{\`¥\${member.total.toLocaleString()}\`}</Descriptions.Item>
+              <Descriptions.Item label="来店回数">{member.visits}</Descriptions.Item>
+            </Descriptions>
+          </CardContent>
+        </Card>
       </PageContainer>
     </>
   )
@@ -1026,7 +1015,8 @@ export function MaintenancePage() {
 
   {
     name: "badge-coloring",
-    tagline: "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props).",
+    tagline:
+      "Colour a Badge for a localized STATUS via tone + icon; tiers and categories take one neutral tone (colour means status).",
     tags: ["statusbadge", "badge", "tone", "color", "status", "tier", "table"],
     code: `import { Badge } from "@godxjp/ui/data-display"
 
@@ -1041,10 +1031,10 @@ export function MaintenancePage() {
 // 2) Unknown label — set tone explicitly (no icon, since the key is unknown):
 <Badge status="公開中" tone="success" />
 
-// 3) Tier / category — coloured pill, drop the misleading glyph with icon={null}:
-<Badge status="プレミアム" tone="success" icon={null} />
-<Badge status="ゴールド"   tone="warning" icon={null} />
-<Badge status="法人共通"   tone="info"    icon={null} />
+// 3) Tier / category — ONE neutral tone for all of them, no glyph. Colour means status;
+//    a rainbow of tiers reads as several statuses. Prefer plain text in a table column.
+<Badge status="プレミアム" tone="neutral" icon={null} />
+<Badge status="ゴールド"   tone="neutral" icon={null} />
 
 // tone: "success" | "warning" | "destructive" | "info" | "neutral"  (import type ToneProp)
 // RULE: a chip never wraps — it is pinned white-space: nowrap, so it stays one line in
@@ -1643,33 +1633,41 @@ export const mediaQuery = \`
     name: "page-sections",
     aliases: ["cards-in-page", "page-layout", "stack-cards"],
     tagline:
-      "A page made of several Card sections: PageContainer spaces its direct children by default; group items inside a section with Flex/ResponsiveGrid, never Tailwind gap-*/p-*.",
-    tags: ["layout", "page", "card", "spacing", "flex", "grid"],
+      "A page of several sections: a Heading + section spacing marks a section, not a Card. PageContainer spaces its direct children (section step); Flex gap spaces items inside one (item step). Card only for a real boundary.",
+    tags: ["layout", "page", "card", "spacing", "flex", "grid", "section", "heading"],
     code: `import { PageContainer, Flex, ResponsiveGrid } from "@godxjp/ui/layout";
-import { Card, CardHeader, CardTitle, CardContent } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Card, CardContent, DataTable, Descriptions, type ColumnDef } from "@godxjp/ui/data-display";
+import { Button, Heading } from "@godxjp/ui/general";
 
-// Every direct child of PageContainer is a page section — the page owns the gap between them
-// (--page-body-gap, the section step). Do NOT add gap-* / space-y-* / mt-* yourself.
-export function ReportPage() {
+type Shot = { id: string; name: string };
+const columns: ColumnDef<Shot>[] = [{ key: "name", header: "File" }];
+
+// Two steps, never one uniform gap:
+//   section step — between direct children of PageContainer (--page-body-gap). Do NOT add gap-*/mt-*.
+//   item step    — inside a section, Flex gap="sm" between its heading and its content.
+// A section is a Heading, not a Card. Card is for a real boundary: here, the table surface.
+export function ReportPage({ shots }: { shots: Shot[] }) {
   return (
-    <PageContainer title="Bug report" subtitle="https://app.example.com/orders" extra={<Button>Send</Button>}>
-      <Card>
-        <CardHeader><CardTitle>Details</CardTitle></CardHeader>
-        <CardContent>…</CardContent>
-      </Card>
-      <Card>
-        <CardHeader><CardTitle>Screenshots</CardTitle></CardHeader>
-        <CardContent>
-          {/* items INSIDE a section: ResponsiveGrid for a grid, Flex for a stack/row */}
-          <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>…</ResponsiveGrid>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <Flex direction="col" gap="md">…</Flex>
-        </CardContent>
-      </Card>
+    <PageContainer title="Bug report" extra={<Button>Send</Button>}>
+      <Flex direction="col" gap="sm">
+        <Heading level={2}>Details</Heading>
+        <Descriptions columns={2}>
+          <Descriptions.Item label="URL">https://app.example.com/orders</Descriptions.Item>
+          <Descriptions.Item label="Browser">Safari 18</Descriptions.Item>
+        </Descriptions>
+      </Flex>
+      <Flex direction="col" gap="sm">
+        <Heading level={2}>Screenshots</Heading>
+        <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>…</ResponsiveGrid>
+      </Flex>
+      <Flex direction="col" gap="sm">
+        <Heading level={2}>Attachments</Heading>
+        <Card>
+          <CardContent flush>
+            <DataTable data={shots} columns={columns} getRowId={(r) => r.id} />
+          </CardContent>
+        </Card>
+      </Flex>
     </PageContainer>
   );
 }
