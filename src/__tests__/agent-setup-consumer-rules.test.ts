@@ -126,6 +126,48 @@ describe("ensureConsumerRules", () => {
     expect(ensureConsumerRules(root)).toBe(false);
   });
 
+  describe("paths: where the consumer's UI actually lives (gh#1296)", () => {
+    function repoWithUi(files: string[]) {
+      const root = mkdtempSync(join(tmpdir(), "godxui-consumer-"));
+      roots.push(root);
+      for (const file of files) {
+        mkdirSync(join(root, file, ".."), { recursive: true });
+        writeFileSync(join(root, file), "export {};\n");
+      }
+      return root;
+    }
+    const pathsOf = (root: string) =>
+      [...readFileSync(rulePath(root), "utf8").matchAll(/^ {4}- '([^']+)'$/gm)].map((m) => m[1]);
+
+    it("a repo whose UI lives only in web/ gets a web/** glob", () => {
+      const root = repoWithUi(["web/pages/edit.tsx", "server/main.go"]);
+      expect(ensureConsumerRules(root)).toBe("web");
+      expect(pathsOf(root)).toEqual(["web/**"]);
+    });
+
+    it("a Laravel app gets resources/js, not its PHP app/ directory", () => {
+      const root = repoWithUi(["resources/js/pages/Index.tsx", "app/Models/User.php"]);
+      expect(pathsOf((ensureConsumerRules(root), root))).toEqual(["resources/js/**"]);
+    });
+
+    it("a monorepo gets every apps/*/src that holds UI, as one glob", () => {
+      const root = repoWithUi(["apps/admin/src/App.tsx", "apps/site/src/main.tsx"]);
+      ensureConsumerRules(root);
+      expect(pathsOf(root)).toEqual(["apps/*/src/**"]);
+    });
+
+    it("lists every UI root, and skips node_modules and build output", () => {
+      const root = repoWithUi([
+        "src/App.tsx",
+        "web/Page.jsx",
+        "node_modules/x/index.tsx",
+        "dist/App.tsx",
+      ]);
+      ensureConsumerRules(root);
+      expect(pathsOf(root)).toEqual(["src/**", "web/**"]);
+    });
+  });
+
   it("carries the three-column scope contract, the one thing consumers get wrong unprompted", () => {
     // Not prose-checking the file: this is the standard the platform layout depends on, and a
     // refactor that drops it leaves every consumer free to put app nav in the platform rail.

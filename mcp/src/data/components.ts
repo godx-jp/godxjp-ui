@@ -17270,7 +17270,7 @@ const messages: ChatMessageProp[] = [
     importPath: "@godxjp/chat",
     group: "data-entry",
     tagline:
-      "Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it.",
+      "In @godxjp/chat since v32, not @godxjp/ui: add @godxjp/chat as a dependency at the same version as @godxjp/ui. Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it.",
     props: [
       {
         name: "items",

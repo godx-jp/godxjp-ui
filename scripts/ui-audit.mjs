@@ -7,7 +7,7 @@
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { isAbsolute, join, relative } from "node:path";
+import { dirname, isAbsolute, join, relative } from "node:path";
 
 const CWD = process.cwd();
 const SELF = (() => {
@@ -18,6 +18,29 @@ const SELF = (() => {
   }
 })();
 const args = process.argv.slice(2);
+
+// Before anything reads the arguments: `--help` used to be filtered out as a flag and ran a full
+// audit of the working directory instead (gh#1296).
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(`usage: ui-audit [dir|file …] [--changed [--base=<ref>]] [--format json] [--quiet]
+       ui-audit --rules
+
+Static UI-standardization audit of @godxjp/ui consumer source. Exits 1 on any error.
+Run it from the package that owns the files (a workspace package works; the installed
+@godxjp/ui is found up the node_modules chain). Same as: npx @godxjp/ui audit …
+
+  dir|file …      what to scan (default: the conventional UI directories under the cwd)
+  --changed       scan what this branch changed (committed, staged, untracked)
+  --base=<ref>    the base for --changed (default origin/HEAD, then origin/main)
+  --format json   machine-readable findings
+  --quiet         errors only
+  --rules         print the rule catalog as JSON and exit
+  --consumer      library repo only: apply the consumer rules inside @godxjp/ui itself.
+                  A consumer app never needs it; there those rules always apply.
+  -h, --help      this text`);
+  process.exit(0);
+}
+
 const asJson = args.includes("--format") && args[args.indexOf("--format") + 1] === "json";
 const quiet = args.includes("--quiet");
 const dirArgs = args.filter((a) => !a.startsWith("--") && a !== "json");
@@ -1899,13 +1922,20 @@ function staleOwnedRules() {
   const contents = readFileSync(target, "utf8");
   const stamped = /<!-- godxjp-ui:version ([^\s]+) -->/.exec(contents)?.[1];
 
+  // Up the node_modules chain, as Node resolves it: a workspace package has its @godxjp/ui hoisted
+  // to the repo root, and reading only `CWD/node_modules` reported a correct install as
+  // `owned-rules-unknown` (gh#1296). The package's `exports` map does not expose package.json,
+  // so `require.resolve` cannot do this walk for us.
   let installed;
-  try {
-    installed = JSON.parse(
-      readFileSync(join(CWD, "node_modules", "@godxjp", "ui", "package.json"), "utf8"),
-    ).version;
-  } catch {
-    installed = undefined;
+  for (let dir = CWD; installed === undefined; dir = dirname(dir)) {
+    try {
+      installed = JSON.parse(
+        readFileSync(join(dir, "node_modules", "@godxjp", "ui", "package.json"), "utf8"),
+      ).version;
+    } catch {
+      // Not here — keep walking.
+    }
+    if (dirname(dir) === dir) break;
   }
 
   if (!stamped || !installed) {

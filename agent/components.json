@@ -14902,7 +14902,7 @@
       6
     ],
     "storyPath": "data-entry/chat-composer.tsx",
-    "tagline": "Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it.",
+    "tagline": "In @godxjp/chat since v32, not @godxjp/ui: add @godxjp/chat as a dependency at the same version as @godxjp/ui. Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it.",
     "usage": [
       "DO wire BOTH halves of the render prop: `onTrigger` from the composer's onValueChange and `onKeyDown` from its onKeyDown. With only one wired the list either never opens or cannot be driven.",
       "DO decide yourself what a pick does to the draft — onValueChange hands you the value; the typed /query is still in the box, so replace it or append to it as your screen needs.",
