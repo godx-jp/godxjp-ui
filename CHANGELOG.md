@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.11.0] - 2026-10-15
+
+Library gaps found by godx-content's round-4 redesign and its independent review (#1310).
+
+### ✨ Added
+
+- **`--split-pane-gap`** — the SplitPane main↔aside gap (default `--space-stack-md`, unchanged; set
+  it to the column step, e.g. `var(--space-inline-xl)`).
+
+### 🔄 Changed
+
+- **Stacked DataTable / Table cells read from the start:** a column's `align` / `numeric` end or
+  centre alignment no longer carries into the folded card (6 of 11 cells were misaligned at 390).
+- **LegalDocumentShell, stacked:** each contents entry hugs its label, so the active fill no longer
+  spans the column (720px → 43px at 768); the pinned rail is unchanged.
+- **Japanese prose breaks between phrases:** under `lang="ja"`, `.ui-prose` paragraphs and list
+  items (Markdown output) and the LegalDocumentShell summary/sections use `word-break: auto-phrase`
+  and `line-break: strict` (katakana mid-word breaks 4/4/1/2 → 0 at 300–480px). Latin and Vietnamese
+  wrap unchanged.
+
+### 📝 Docs
+
+- BlockEditor catalog and DESIGN.md Known Gap name `--block-editor-gutter-inline-size` and why it
+  cannot close the keyline gap (the handles need 56px outside the frame; layouts have 24px).
+
 ## [32.10.1] - 2026-10-15
 
 The first release of everything listed under 32.10.0 below: the `v32.10.0` tag was pushed on a
