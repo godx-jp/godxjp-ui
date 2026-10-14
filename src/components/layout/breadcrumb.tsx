@@ -59,12 +59,15 @@ export function Breadcrumb({
               className="ui-breadcrumb-item"
               data-ellipsis={item.ellipsis ? "" : undefined}
             >
-              {renderBreadcrumbSegment({ item, index, isLast, items, itemRender, LinkComponent })}
-              {!isLast ? (
+              {/* The separator LEADS the crumb it introduces (gh#1308): the item is one unbreakable
+                  box, so a wrapped trail carries `›` onto the next line with the crumb instead of
+                  leaving it alone at the end of the line before. */}
+              {index > 0 ? (
                 <span className="ui-breadcrumb-separator" aria-hidden="true">
                   {separatorNode}
                 </span>
               ) : null}
+              {renderBreadcrumbSegment({ item, index, isLast, items, itemRender, LinkComponent })}
             </li>
           );
         })}

@@ -619,6 +619,10 @@
      * reason `[data-slot="dialog-content"]` documents above (gh#877). */
     background-color: var(--sheet-surface-background, hsl(var(--background)));
     box-shadow: var(--sheet-shadow, var(--shadow-lg));
+    /* react-aria focuses the dialog CONTAINER on open. It is not a control (focus-ring.css), and
+     * without this it painted Chrome's own `auto 1px rgb(0, 95, 204)` along the panel edge — the
+     * same reset `DialogContent` carries as `outline-none`. */
+    outline: none;
   }
 
   .ui-sheet-panel[data-side="top"] {

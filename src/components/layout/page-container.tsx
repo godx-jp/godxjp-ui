@@ -214,6 +214,12 @@ function PageContainerRoot({
                       className="ui-breadcrumb-item"
                       data-ellipsis={item.ellipsis ? "" : undefined}
                     >
+                      {/* Leads the crumb it introduces, as in <Breadcrumb> (gh#1308). */}
+                      {i > 0 ? (
+                        <span className="ui-breadcrumb-separator" aria-hidden="true">
+                          <ChevronRight aria-hidden="true" />
+                        </span>
+                      ) : null}
                       {item.to && !isLast ? (
                         <BreadcrumbCrumbText item={item}>
                           <LinkComponent
@@ -234,7 +240,6 @@ function PageContainerRoot({
                           </span>
                         </BreadcrumbCrumbText>
                       )}
-                      {!isLast && <ChevronRight aria-hidden="true" />}
                     </li>
                   );
                 })}
