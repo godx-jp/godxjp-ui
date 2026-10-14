@@ -3,7 +3,8 @@
  * godxjp-ui VISUAL audit — the runtime counterpart to the static ui-audit.mjs. Static audit
  * (ui-audit.mjs) reads SOURCE with regexes — zero deps, fast, runs on every save.
  */
-import { existsSync, realpathSync } from "node:fs";
+import { existsSync, mkdirSync, realpathSync } from "node:fs";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   VISUAL_RULES,
@@ -60,6 +61,7 @@ export function buildResult({
   viewports = [],
   matrix = [],
   unmapped = [],
+  evidence,
 } = {}) {
   const productErrors = findings.filter((f) => f.severity === "error");
   const warnings = findings.filter((f) => f.severity === "warn");
@@ -92,6 +94,8 @@ export function buildResult({
     findings,
     unmapped,
     matrix,
+    // Present only when an evidence mode ran (gh#1316): one entry per route × width × mode.
+    ...(evidence ? { evidence } : null),
     errors,
   };
 }
@@ -1469,6 +1473,195 @@ export function collectProbes(opts) {
 }
 /* c8 ignore stop */
 
+// ─────────────────────────────────────────────────────────────────────────────────────────────
+// Evidence modes (gh#1316): `--text-spacing` (WCAG 2.2 SC 1.4.12) and `--text-zoom 200` (SC 1.4.4).
+// A consumer reported "W12 0/0/0" from captures byte-identical to the base render — the override
+// never applied, and nothing said so. Each mode here measures the render BEFORE and AFTER the
+// override; an override that moves nothing is an infrastructure error ("override not applied"),
+// never a pass. Only an applied override runs the C01 content-loss probe.
+// ─────────────────────────────────────────────────────────────────────────────────────────────
+
+/** The SC 1.4.12 values, unlayered and `!important`, so they sit above every `@layer`. */
+export const TEXT_SPACING_CSS =
+  "*, *::before, *::after { line-height: 1.5 !important; letter-spacing: 0.12em !important; " +
+  "word-spacing: 0.16em !important; } p { margin-block-end: 2em !important; }";
+
+/** Parse `--text-zoom 200` (a percent, 110–400). Throws on garbage. */
+export function parseTextZoom(spec) {
+  const n = Number(spec);
+  if (!Number.isInteger(n) || n < 110 || n > 400)
+    throw new Error(`--text-zoom: "${spec ?? ""}" is not a percent between 110 and 400`);
+  return n;
+}
+
+/**
+ * Did the override reach the page? (pure). `before`/`after` are `snapshotText()` results of the
+ * SAME document (same text-bearing elements, same order). Applied = the override's computed values
+ * reached at least one text element AND the geometry moved; either half alone is not enough — a
+ * computed value with zero geometry change is a render that was never re-laid out, and geometry
+ * that moved without the values is something else moving.
+ */
+export function textOverrideVerdict(mode, before, after, { zoom = 200 } = {}) {
+  const n = Math.min(before.texts.length, after.texts.length);
+  let moved = 0;
+  let maxShiftPx = 0;
+  let took = 0;
+  for (let i = 0; i < n; i++) {
+    const a = before.texts[i];
+    const b = after.texts[i];
+    const shift = Math.max(
+      Math.abs(a.x - b.x),
+      Math.abs(a.y - b.y),
+      Math.abs(a.w - b.w),
+      Math.abs(a.h - b.h),
+    );
+    if (shift > 0.5) moved++;
+    maxShiftPx = Math.max(maxShiftPx, shift);
+    const ok =
+      mode === "text-spacing"
+        ? Math.abs(b.letterSpacingPx - 0.12 * b.fontPx) <= 0.5 &&
+          Math.abs(b.wordSpacingPx - 0.16 * b.fontPx) <= 0.5
+        : Math.abs(b.fontPx - (a.fontPx * zoom) / 100) <= 0.5;
+    if (ok) took++;
+  }
+  const delta = {
+    textElements: n,
+    movedTextElements: moved,
+    maxShiftPx: +maxShiftPx.toFixed(1),
+    documentHeightPx: +(after.docHeight - before.docHeight).toFixed(1),
+    documentWidthPx: +(after.docWidth - before.docWidth).toFixed(1),
+  };
+  const appliedRatio = n ? +(took / n).toFixed(3) : 0;
+  let reason = null;
+  if (n === 0) reason = "no text to measure";
+  else if (took === 0) reason = `the ${mode} values reached 0 of ${n} text elements`;
+  else if (moved === 0 && delta.documentHeightPx === 0 && delta.documentWidthPx === 0)
+    reason = "zero geometry delta against the unmodified render";
+  return { applied: reason === null, reason, appliedRatio, delta };
+}
+
+/** Text-bearing elements' boxes + computed text metrics, in document order. Runs in the page. */
+/* c8 ignore start — runs inside the browser, exercised by the visual-audit-text-evidence test. */
+export function snapshotText() {
+  const se = document.scrollingElement || document.documentElement;
+  const owners = [];
+  const seen = new Set();
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const p = n.parentElement;
+    if (!n.data.trim() || !p || seen.has(p) || p.closest("script, style, noscript, template"))
+      continue;
+    seen.add(p);
+    owners.push(p);
+  }
+  const texts = owners.map((el) => {
+    const r = el.getBoundingClientRect();
+    const s = getComputedStyle(el);
+    const fontPx = parseFloat(s.fontSize) || 0;
+    const px = (v) => (v === "normal" ? 0 : parseFloat(v) || 0);
+    return {
+      x: r.left + se.scrollLeft,
+      y: r.top + se.scrollTop,
+      w: r.width,
+      h: r.height,
+      fontPx,
+      letterSpacingPx: px(s.letterSpacing),
+      wordSpacingPx: px(s.wordSpacing),
+    };
+  });
+  return { texts, docHeight: se.scrollHeight, docWidth: se.scrollWidth };
+}
+
+/** Append the SC 1.4.12 sheet LAST in <head>. A CSP without 'unsafe-inline' blocks it — measured. */
+export function injectTextSpacing(css) {
+  const style = document.createElement("style");
+  style.setAttribute("data-visual-audit", "text-spacing");
+  style.textContent = css;
+  document.head.appendChild(style);
+}
+
+/**
+ * Text-only zoom (SC 1.4.4): every element's computed font size × factor, as one appended sheet
+ * keyed by the size each element had — px-sized text grows too, line boxes and widths stay
+ * author-controlled, which is exactly what a browser's text-size setting does.
+ */
+export function injectTextZoom(percent) {
+  const sizes = new Set();
+  for (const el of document.querySelectorAll("body, body *")) {
+    const px = parseFloat(getComputedStyle(el).fontSize);
+    if (!px) continue;
+    const key = String(Math.round(px * 100) / 100);
+    el.setAttribute("data-visual-audit-fz", key);
+    sizes.add(key);
+  }
+  const style = document.createElement("style");
+  style.setAttribute("data-visual-audit", "text-zoom");
+  style.textContent = [...sizes]
+    .map(
+      (k) =>
+        `[data-visual-audit-fz="${k}"] { font-size: ${(Number(k) * percent) / 100}px !important; }`,
+    )
+    .join("\n");
+  document.head.appendChild(style);
+}
+/* c8 ignore stop */
+
+/**
+ * One evidence cell: reload the route clean, measure, inject, measure again, judge, and run C01
+ * only when the override applied. Screenshots (base + override) when `screenshots` is a dir.
+ */
+/* c8 ignore start — browser glue; exercised by the visual-audit-text-evidence spawn test. */
+async function runEvidence(page, url, viewport, mode, { zoom, screenshots }) {
+  const vp = viewportLabel(viewport);
+  await page.goto(url, { waitUntil: "networkidle", timeout: 30_000 });
+  await page.evaluate(() => document.fonts?.ready);
+  const shot = async (suffix) => {
+    if (!screenshots) return null;
+    const slug = url
+      .replace(/^https?:\/\/[^/]+/, "")
+      .replace(/[^\w-]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+    const file = path.join(screenshots, `${slug || "root"}-${vp}-${mode}-${suffix}.png`);
+    await page.screenshot({ path: file, fullPage: true });
+    return file;
+  };
+  const before = await page.evaluate(snapshotText);
+  const base = await shot("base");
+  if (mode === "text-spacing") await page.evaluate(injectTextSpacing, TEXT_SPACING_CSS);
+  else await page.evaluate(injectTextZoom, zoom);
+  await page.evaluate(
+    () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+  );
+  const after = await page.evaluate(snapshotText);
+  const override = await shot("override");
+  const verdict = textOverrideVerdict(mode, before, after, { zoom });
+  const entry = {
+    url,
+    viewport: vp,
+    mode,
+    ...(mode === "text-zoom" ? { zoomPercent: zoom } : null),
+    applied: verdict.applied,
+    appliedRatio: verdict.appliedRatio,
+    delta: verdict.delta,
+    c01: "not-run",
+    screenshots: screenshots ? { base, override } : null,
+  };
+  if (!verdict.applied)
+    return {
+      entry,
+      findings: [],
+      error: { url, viewport: vp, stage: mode, message: `override not applied: ${verdict.reason}` },
+    };
+  const opts = { width: viewport.width, compactBelow: COMPACT_BELOW, desktopFrom: DESKTOP_FROM };
+  const probed = evaluateProbes(await page.evaluate(collectProbes, opts), { url, viewport });
+  const findings = probed.findings
+    .filter((f) => f.rule === "c01-content-reachable")
+    .map((f) => ({ ...f, condition: mode, message: `[${mode}] ${f.message}` }));
+  entry.c01 = probed.cell.rules["c01-content-reachable"];
+  return { entry, findings, error: null };
+}
+/* c8 ignore stop */
+
 /**
  * Run the probes for one route × viewport, including the interactions a static read cannot
  * answer: does the avatar open a menu, does the overflow menu hold actions, does a declared
@@ -1570,12 +1763,18 @@ async function loadDeps() {
  * (page/context/browser) is guaranteed via finally on BOTH success and failure.
  */
 /* c8 ignore start — the browser-driving glue; exercised by scripts/visual-audit-smoke.mjs in CI. */
-async function audit(targets, { chromium }, viewports = DEFAULT_VIEWPORTS, { storageState } = {}) {
+async function audit(
+  targets,
+  { chromium },
+  viewports = DEFAULT_VIEWPORTS,
+  { storageState, modes = [], zoom = 200, screenshots } = {},
+) {
   const findings = [];
   const errors = [];
   const matrix = [];
   const unmapped = [];
   const timings = [];
+  const evidence = modes.length ? [] : undefined;
   let browser;
   let context;
   try {
@@ -1714,6 +1913,22 @@ async function audit(targets, { chromium }, viewports = DEFAULT_VIEWPORTS, { sto
             message: `audit engine failed: ${e.message}`,
           });
         }
+        // 4) evidence modes (gh#1316) — each on a fresh load, after the base probes.
+        for (const mode of modes) {
+          try {
+            const ev = await runEvidence(page, url, viewport, mode, { zoom, screenshots });
+            evidence.push(ev.entry);
+            findings.push(...ev.findings);
+            if (ev.error) errors.push(ev.error);
+          } catch (e) {
+            errors.push({
+              url,
+              viewport: vp,
+              stage: mode,
+              message: `${mode} failed: ${e.message}`,
+            });
+          }
+        }
       }
       timings.push({ url, viewports: viewports.length, ms: Date.now() - started });
     }
@@ -1729,6 +1944,7 @@ async function audit(targets, { chromium }, viewports = DEFAULT_VIEWPORTS, { sto
     viewports,
     matrix,
     unmapped,
+    evidence,
   });
   result.timings = timings;
   return result;
@@ -1788,6 +2004,12 @@ function finish(result, { asJson, strict, pages }) {
       `${C.dim}cell ${cell.url} @${cell.viewport}: ${Object.entries(by)
         .map(([st, ids]) => `${st} ${ids.join(",")}`)
         .join(" · ")} · checklist ${cell.checklist.length} pending${C.reset}`,
+    );
+  }
+  for (const ev of result.evidence || []) {
+    const d = ev.delta;
+    console.log(
+      `${ev.applied ? C.dim : C.red}${ev.mode} ${ev.url} @${ev.viewport}: ${ev.applied ? "applied" : "NOT APPLIED"} — ${d.movedTextElements}/${d.textElements} text elements moved, max ${d.maxShiftPx}px, document height ${d.documentHeightPx >= 0 ? "+" : ""}${d.documentHeightPx}px · C01 ${ev.c01}${ev.screenshots ? ` · ${ev.screenshots.override}` : ""}${C.reset}`,
     );
   }
   for (const e of result.errors) {
@@ -1852,16 +2074,38 @@ async function main() {
     return;
   }
 
-  const urls = args.filter(
-    (a, i) =>
-      !a.startsWith("--") &&
-      args[i - 1] !== "--format" &&
-      args[i - 1] !== "--widths" &&
-      args[i - 1] !== "--storage-state",
-  );
+  // Evidence modes (gh#1316): `--text-spacing` (SC 1.4.12), `--text-zoom <percent>` (SC 1.4.4),
+  // `--screenshots <dir>` for the base + override render of each.
+  const modes = [];
+  if (args.includes("--text-spacing")) modes.push("text-spacing");
+  const tzIdx = args.indexOf("--text-zoom");
+  let zoom = 200;
+  if (tzIdx !== -1) {
+    try {
+      zoom = parseTextZoom(args[tzIdx + 1]);
+    } catch (e) {
+      finish(buildBootstrapError(e.message), { asJson, strict, pages: 0 });
+      return;
+    }
+    modes.push("text-zoom");
+  }
+  const shIdx = args.indexOf("--screenshots");
+  const screenshots = shIdx === -1 ? undefined : args[shIdx + 1];
+  if (shIdx !== -1) {
+    try {
+      if (!screenshots || screenshots.startsWith("--")) throw new Error("no directory given");
+      mkdirSync(screenshots, { recursive: true });
+    } catch (e) {
+      finish(buildBootstrapError(`--screenshots: ${e.message}`), { asJson, strict, pages: 0 });
+      return;
+    }
+  }
+
+  const VALUED = ["--format", "--widths", "--storage-state", "--text-zoom", "--screenshots"];
+  const urls = args.filter((a, i) => !a.startsWith("--") && !VALUED.includes(args[i - 1]));
   if (urls.length === 0) {
     const msg =
-      "no baseUrl given — usage: visual-audit.mjs [--format json] [--strict] [--widths 390x844,1280x900] [--storage-state state.json] <baseUrl> [route …] " +
+      "no baseUrl given — usage: visual-audit.mjs [--format json] [--strict] [--widths 390x844,1280x900] [--storage-state state.json] [--text-spacing] [--text-zoom 200] [--screenshots DIR] <baseUrl> [route …] " +
       "(baseUrl is the running app; extra args are routes appended to it)";
     finish(buildBootstrapError(msg), { asJson, strict, pages: 0 });
     return;
@@ -1882,7 +2126,12 @@ async function main() {
   }
 
   try {
-    const result = await audit(targets, deps, viewports, { storageState });
+    const result = await audit(targets, deps, viewports, {
+      storageState,
+      modes,
+      zoom,
+      screenshots: screenshots && path.resolve(screenshots),
+    });
     finish(result, { asJson, strict, pages: targets.length });
   } catch (e) {
     // A launch/setup failure = infrastructure error (never "zero violations").
