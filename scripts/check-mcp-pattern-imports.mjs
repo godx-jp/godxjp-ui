@@ -139,7 +139,7 @@ const UNDEFINED_CLASS = {
   label: "undefined library CSS class settings-* (no such class ships)",
   // A CLASS reference only: inside class/className, or a `.settings-…` selector. A showcase id or
   // pattern slug that merely starts with "settings-" (settings-account-sections) is not a class.
-  re: /(?:class(?:Name)?=\{?\s*["\'`][^"\'`]*?\b|\.)settings-[a-z][a-z-]*\b/g,
+  re: /(?:class(?:Name)?=\{?\s*["'`][^"'`]*?\b|\.)settings-[a-z][a-z-]*\b/g,
 };
 
 // ── run ──────────────────────────────────────────────────────────────────────────────────────
