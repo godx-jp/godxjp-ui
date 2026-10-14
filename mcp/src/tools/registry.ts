@@ -67,6 +67,9 @@ import {
   visualRulesByCategory,
   type VisualRule,
 } from "../data/visual-rules.js";
+import { DESIGN_MD, anatomySubsection, designSections, findDesignSection } from "../data/design.js";
+import { EXEMPLARS, exemplarPreviewUrl, findExemplar } from "../data/exemplars.js";
+import { EXEMPLAR_SOURCES } from "../data/exemplars.generated.js";
 import pkg from "../../package.json";
 
 export const TOOL_DEFINITIONS = [
@@ -428,6 +431,38 @@ export const TOOL_DEFINITIONS = [
     },
   },
 
+  // ── VISUAL SPEC + REFERENCE SCREENS (gh#1294) ─────────────────
+  {
+    name: "get_design",
+    description:
+      "DESIGN.md — the visual spec for screens built with @godxjp/ui: real tokens (YAML front matter), colour scarcity rules, typography, layout & density, elevation, components, ADMIN SCREEN ANATOMY (list / detail / form / settings / dashboard / approval queue), do's and don'ts, responsive, iteration guide, known gaps. Read before composing a screen. Pass `section` for one section; omit it for the whole document (~12 KB).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        section: {
+          type: "string",
+          description:
+            "Section id or heading word, e.g. 'tokens', 'colors', 'admin-screen-anatomy', 'dos-and-donts', 'iteration-guide'. Unknown ids list the valid ones.",
+        },
+      },
+    },
+  },
+  {
+    name: "get_exemplar",
+    description:
+      "A reference screen to match for an admin archetype: its anatomy notes from DESIGN.md, the full source of the showcase built from real @godxjp/ui primitives, and its live preview URL for screenshot comparison. Archetypes: list, detail, settings (alias form), dashboard, approval-queue. Omit `archetype` to list them.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        archetype: {
+          type: "string",
+          description:
+            "list | detail | settings | dashboard | approval-queue (aliases: form, table, record, overview, queue …).",
+        },
+      },
+    },
+  },
+
   // ── LINT / AUDIT (one-shot critique) ───────────────────────────
   {
     name: "lint_jsx",
@@ -578,6 +613,11 @@ async function answerTool(name: string, args: Record<string, unknown>): Promise<
       );
     case "get_frame_coverage":
       return getFrameCoverage(args.name === undefined ? undefined : String(args.name));
+    // Visual spec + reference screens
+    case "get_design":
+      return getDesign(args.section == null ? undefined : String(args.section));
+    case "get_exemplar":
+      return getExemplar(args.archetype == null ? "" : String(args.archetype));
     // Lint
     case "lint_jsx":
       return lintJsx(String(args.jsx ?? ""));
@@ -587,6 +627,52 @@ async function answerTool(name: string, args: Record<string, unknown>): Promise<
 }
 
 // ── implementations ───────────────────────────────────────────────
+
+function getDesign(section?: string): string {
+  if (section === undefined || section.trim() === "") return DESIGN_MD;
+  const hit = findDesignSection(section);
+  if (hit) return hit.body;
+  const ids = designSections()
+    .map((s) => `- \`${s.id}\` — ${s.title}`)
+    .join("\n");
+  return `Section "${section.slice(0, 80)}" not found in DESIGN.md. Sections:\n${ids}`;
+}
+
+function getExemplar(archetype: string): string {
+  const e = findExemplar(archetype);
+  if (!e) {
+    const head = archetype.trim()
+      ? `No exemplar for "${archetype.slice(0, 80)}".`
+      : "Pass `archetype` to get one exemplar.";
+    const rows = EXEMPLARS.map(
+      (x) => `- \`${x.archetype}\` (${x.aliases.join(", ")}) → ${x.showcase}: ${x.focus}`,
+    ).join("\n");
+    return `${head} Archetypes:\n${rows}`;
+  }
+  const url = exemplarPreviewUrl(e.showcase);
+  const anatomy = e.anatomy
+    .map((h) => anatomySubsection(h))
+    .filter(Boolean)
+    .join("\n\n");
+  return [
+    `# Exemplar · ${e.archetype} → \`docs/showcase/${e.showcase}.tsx\``,
+    "",
+    `**Copy:** ${e.focus}`,
+    "",
+    `**Live preview:** ${url}`,
+    "Open it in a browser and screenshot at 390 / 768 / 1280 next to yours. GitHub Pages serves it through 404.html (HTTP 404, renders client-side), so a plain fetch sees a 404; it deploys on release tags and can lag main.",
+    "",
+    "## Anatomy (DESIGN.md)",
+    "",
+    anatomy,
+    "",
+    "## Source",
+    "",
+    "```tsx",
+    EXEMPLAR_SOURCES[e.showcase] ?? "(source missing — run `pnpm gen:agent-catalog`)",
+    "```",
+  ].join("\n");
+}
 
 function listSkills(): string {
   let out = `# Available skills (${SKILLS.length})\n\n`;
