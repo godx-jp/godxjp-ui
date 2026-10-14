@@ -140,7 +140,7 @@ Header: title, then `extra` with the primary create action last. Below it a `Too
 
 ### Detail
 
-Header: record name as title, status `Badge` beside it via `status`, actions in `extra` (one primary). Body: `Descriptions` for metadata, then sections (Heading + content) for related records and history (`Timeline`). Use `Tabs` only when sections are independent and long. No Card per section; no icon beside every heading.
+Header: record name as title, status `Badge` beside it, actions in `extra` (one primary). Body: `Descriptions` for metadata, then sections (Heading + content) for related records and history (`Timeline`). Use `Tabs` only when sections are independent and long. No Card per section; no icon beside every heading.
 
 ### Form
 
@@ -156,7 +156,7 @@ The only archetype with KPI tiles: at most four `StatCard`s, each with a compari
 
 ### Approval queue
 
-A list whose rows are decisions. Show requester, target, reason, submitted time; approve and reject reachable from the row (kebab or row buttons) and in `BulkActions`. Escalated or overdue rows get one status Badge, not a coloured row.
+A list whose rows are decisions. Show requester, target, reason, submitted time; approve and reject reachable from the row (kebab or row buttons); with `DataTable`, also in `BulkActions`. Escalated or overdue rows get one status Badge, not a coloured row.
 
 ## Do's and Don'ts
 

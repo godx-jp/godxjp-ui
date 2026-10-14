@@ -367,7 +367,7 @@ export default function SettingsAccountSectionsShowcase() {
               {b.identityEdit}
             </Button>
           </Flex>
-          <Flex direction="col" gap="md" className="sm:flex-row sm:items-start">
+          <Flex direction={{ base: "col", sm: "row" }} align="start" gap="md">
             <Avatar className="size-12 shrink-0 rounded-md">
               <AvatarFallback>SF</AvatarFallback>
             </Avatar>
