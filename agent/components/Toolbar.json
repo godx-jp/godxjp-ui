@@ -29,12 +29,6 @@
       "type": "boolean"
     },
     {
-      "defaultValue": "'wrap'",
-      "description": "Responsive overflow strategy. 'wrap' stacks the groups into one column below 640px, then wraps onto extra rows. 'scroll' keeps ONE bounded row at >=640px that scrolls inline (groups never shrink; the clear-all button stays sticky at the inline end) — use it when many filters with long JA/EN/VI labels would otherwise push the table below the fold. Below 640px 'scroll' still stacks, so a 390px viewport never hides a filter behind an invisible horizontal scroll.",
-      "name": "overflow",
-      "type": "'wrap' | 'scroll'"
-    },
-    {
       "description": "Typed model — canonical search slot rendered FIRST in the strip with the token-owned consistent width (--filter-bar-search-width, full-width below 640px). Controlled triad value/defaultValue/onValueChange plus SearchInput's debounced onSearch. ANY model prop (search/filters/chips/onChipRemove/actions/resultCount/loading/disabled/error) switches the bar to the canonical model layout; with none of them the bar stays the plain children-composition toolbar unchanged.",
       "name": "search",
       "type": "FilterBarSearchProp"
@@ -127,14 +121,13 @@
     "DO drive the clear-all button with `hasActiveFilters` + `onClear` — it only renders when both are truthy. The strip collapses to a single stacked column below 640px automatically.",
     "DO set `sticky` for long list pages so the filters stay reachable while scrolling; if a topbar sits above the list, raise `--filter-bar-sticky-offset` so the strip parks below it.",
     "DO pass `controlId` on a ToolbarGroup that wraps ONE control and give that control the same `id` — the visible caption then becomes the control's real `<label htmlFor>` (WCAG 2.5.3 label-in-name). Without it the caption only names the group wrapper and the control itself is NAMELESS (axe: select-name / button-name), so you must fall back to an `aria-label` that repeats the caption.",
-    "DO switch to `overflow='scroll'` when a list page carries more filters than fit one row — one bounded row that scrolls inline keeps the table above the fold, where the default `wrap` would grow a 3-row strip with long JA/EN/VI labels. Never re-implement the geometry in the page: no page-local flex/grid/width rules on a filter strip.",
+    "DO let the strip WRAP — it stacks below 640px and wraps onto extra rows above; it never scrolls sideways (the `overflow` prop and its `scroll` strategy were removed in 33.0.0: a horizontal strip hid filters off-screen and clipped the first label at its edge). When a list page has more filters than fit one or two rows, keep the few common ones in the bar and put the rest behind ONE 'More filters' Button that opens a Sheet (or Popover) holding them — a composition of Button + Sheet + FilterBarGroup; there is no dedicated component. Never re-implement the geometry in the page: no page-local flex/grid/width/overflow rules on a filter strip.",
     "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
     "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
     "Prefer the typed model for a canonical list page: pass `search` + `filters` + `chips` + `resultCount` and the bar owns the layout, widths, chip lifecycle, keyboard order (search → filters → children → reset → actions → chip removes) and responsive stacking through --filter-bar-* tokens. Everything stays consumer data — the bar renders state, never owns it.",
     "Compose real controls as children when the model doesn't fit; filter state and URL synchronization remain consumer-owned. Children also render INSIDE the model layout (after the typed filters) for one-off custom controls like a date-range picker.",
     "Give each FilterBarGroup a `controlId` matching its single control's `id` so the visible caption is that control's real <label>; otherwise the control is nameless to a screen reader. Typed `filters` wire this automatically.",
-    "Reach for `overflow='scroll'` on filter-heavy list pages so a long JA/EN/VI label set never grows the strip into multiple rows and pushes the table below the fold.",
-    "A mobile sheet presentation is a COMPOSITION, not a prop: put the same typed FilterBar inside a Sheet triggered from a compact toolbar when a screen wants drawer-style filters. The bar's own responsive behavior is stack (below 640px) + wrap/scroll (above), token-owned."
+    "A mobile sheet presentation is a COMPOSITION, not a prop: put the same typed FilterBar inside a Sheet triggered from a compact toolbar when a screen wants drawer-style filters. The bar's own responsive behavior is stack (below 640px) + wrap (above), token-owned."
   ],
   "useCases": [
     "Master list screens (members, organizations, subscriptions, invoices) that need free-text search plus a few dropdown filters above a DataTable.",

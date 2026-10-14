@@ -17,7 +17,6 @@ export type {
   FilterBarFilterProps,
   FilterBarGroupProp,
   FilterBarGroupProps,
-  FilterBarOverflowProp,
   FilterBarProp,
   FilterBarProps,
   FilterBarSearchProp,

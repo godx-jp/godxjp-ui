@@ -9491,7 +9491,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
         type: '"scroll" | "menu"',
         defaultValue: '"scroll"',
         description:
-          "What the trigger strip does when there are more tabs than fit — Ant Design's `more`, mapped onto the `overflow` vocabulary Toolbar already uses for the same question rather than re-spelled. `scroll` (default, and what every strip does today) keeps one bounded row that scrolls its own inline overflow, with the active (or, under manual activation, focused) trigger re-pinned into view. `menu` keeps all of that AND puts a real named button beside the strip listing the tabs currently outside the scrollport; choosing one selects it. DIVERGES FROM ANTD DELIBERATELY: antd REMOVES the overflowing tabs from the bar, but the WAI-ARIA APG tab pattern requires the tablist to own every tab and a `display: none` tab cannot take roving focus — so here every tab stays in the strip and the menu is an ADDITIONAL pointer route, not a relocation. The default is not `menu` because switching it would change the rendered bar for every existing consumer at once.",
+          "What the trigger strip does when there are more tabs than fit — Ant Design's `more`, mapped onto the `overflow` vocabulary Topbar already uses for the same question rather than re-spelled. `scroll` (default, and what every strip does today) keeps one bounded row that scrolls its own inline overflow, with the active (or, under manual activation, focused) trigger re-pinned into view. `menu` keeps all of that AND puts a real named button beside the strip listing the tabs currently outside the scrollport; choosing one selects it. DIVERGES FROM ANTD DELIBERATELY: antd REMOVES the overflowing tabs from the bar, but the WAI-ARIA APG tab pattern requires the tablist to own every tab and a `display: none` tab cannot take roving focus — so here every tab stays in the strip and the menu is an ADDITIONAL pointer route, not a relocation. The default is not `menu` because switching it would change the rendered bar for every existing consumer at once.",
       },
       {
         name: "onTabClick",
@@ -9979,13 +9979,6 @@ import { Button } from "@godxjp/ui/general";
           "Pin the strip to the top of its scroll container while the list scrolls beneath it. Opt-in; tune offset/fill via the --filter-bar-sticky-offset / --filter-bar-sticky-background theme knobs.",
       },
       {
-        name: "overflow",
-        type: "'wrap' | 'scroll'",
-        defaultValue: "'wrap'",
-        description:
-          "Responsive overflow strategy. 'wrap' stacks the groups into one column below 640px, then wraps onto extra rows. 'scroll' keeps ONE bounded row at >=640px that scrolls inline (groups never shrink; the clear-all button stays sticky at the inline end) — use it when many filters with long JA/EN/VI labels would otherwise push the table below the fold. Below 640px 'scroll' still stacks, so a 390px viewport never hides a filter behind an invisible horizontal scroll.",
-      },
-      {
         name: "search",
         type: "FilterBarSearchProp",
         description:
@@ -10071,14 +10064,13 @@ import { Button } from "@godxjp/ui/general";
       "DO drive the clear-all button with `hasActiveFilters` + `onClear` — it only renders when both are truthy. The strip collapses to a single stacked column below 640px automatically.",
       "DO set `sticky` for long list pages so the filters stay reachable while scrolling; if a topbar sits above the list, raise `--filter-bar-sticky-offset` so the strip parks below it.",
       "DO pass `controlId` on a ToolbarGroup that wraps ONE control and give that control the same `id` — the visible caption then becomes the control's real `<label htmlFor>` (WCAG 2.5.3 label-in-name). Without it the caption only names the group wrapper and the control itself is NAMELESS (axe: select-name / button-name), so you must fall back to an `aria-label` that repeats the caption.",
-      "DO switch to `overflow='scroll'` when a list page carries more filters than fit one row — one bounded row that scrolls inline keeps the table above the fold, where the default `wrap` would grow a 3-row strip with long JA/EN/VI labels. Never re-implement the geometry in the page: no page-local flex/grid/width rules on a filter strip.",
+      "DO let the strip WRAP — it stacks below 640px and wraps onto extra rows above; it never scrolls sideways (the `overflow` prop and its `scroll` strategy were removed in 33.0.0: a horizontal strip hid filters off-screen and clipped the first label at its edge). When a list page has more filters than fit one or two rows, keep the few common ones in the bar and put the rest behind ONE 'More filters' Button that opens a Sheet (or Popover) holding them — a composition of Button + Sheet + FilterBarGroup; there is no dedicated component. Never re-implement the geometry in the page: no page-local flex/grid/width/overflow rules on a filter strip.",
       "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
       "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
       "Prefer the typed model for a canonical list page: pass `search` + `filters` + `chips` + `resultCount` and the bar owns the layout, widths, chip lifecycle, keyboard order (search → filters → children → reset → actions → chip removes) and responsive stacking through --filter-bar-* tokens. Everything stays consumer data — the bar renders state, never owns it.",
       "Compose real controls as children when the model doesn't fit; filter state and URL synchronization remain consumer-owned. Children also render INSIDE the model layout (after the typed filters) for one-off custom controls like a date-range picker.",
       "Give each FilterBarGroup a `controlId` matching its single control's `id` so the visible caption is that control's real <label>; otherwise the control is nameless to a screen reader. Typed `filters` wire this automatically.",
-      "Reach for `overflow='scroll'` on filter-heavy list pages so a long JA/EN/VI label set never grows the strip into multiple rows and pushes the table below the fold.",
-      "A mobile sheet presentation is a COMPOSITION, not a prop: put the same typed FilterBar inside a Sheet triggered from a compact toolbar when a screen wants drawer-style filters. The bar's own responsive behavior is stack (below 640px) + wrap/scroll (above), token-owned.",
+      "A mobile sheet presentation is a COMPOSITION, not a prop: put the same typed FilterBar inside a Sheet triggered from a compact toolbar when a screen wants drawer-style filters. The bar's own responsive behavior is stack (below 640px) + wrap (above), token-owned.",
     ],
     useCases: [
       "Master list screens (members, organizations, subscriptions, invoices) that need free-text search plus a few dropdown filters above a DataTable.",

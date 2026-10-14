@@ -9,8 +9,7 @@
 /**
  * WHAT `clipped` MEANS — "a control the user cannot bring into the frame", not merely "a control
  * whose box currently sticks out of the frame". The two differ wherever a surface is DELIBERATELY
- * scrollable: a DataTable's `.ui-data-table-scroll` at 320px, a `FilterBar overflow="scroll"`
- * strip, a tabs list.
+ * scrollable: a DataTable's `.ui-data-table-scroll` at 320px, a tabs list.
  */
 export async function measure() {
   const frame = document.querySelector(".demo-block-frame");

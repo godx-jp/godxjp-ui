@@ -6209,11 +6209,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Fill painted only when the filter strip is pinned. Role-mirror knob (rule #45): `initial` so --background re-resolves at the call site under a scoped [data-tenant]/.dark theme."
   },
   {
-    "name": "--filter-bar-scroll-padding-y",
-    "value": "var(--space-1)",
-    "description": "Scrollbar gutter reserved under a `overflow=\"scroll\"` filter strip (#216) so the inline scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid (0 on an overlay-scrollbar platform)."
-  },
-  {
     "name": "--filter-bar-search-width",
     "value": "20rem",
     "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME search width, filter width, chip rhythm and section stacking without page-local CSS. All are rule-#45 knobs: a service theme retunes them once, props/className override per instance. Below 640px the strip stacks (search/filters full-width); the widths apply from the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never overflows at 390px with long JA/EN/VI labels."

@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.0.0] - 2026-10-15
+
+**A filter bar wraps; it never scrolls sideways.** Read **docs/migrations/v33.md**. The library
+taught `FilterBar overflow="scroll"` for "many filters with long JA/EN/VI labels", and a consumer
+followed it: at 1240px in Vietnamese the strip was 1945px wide inside a 921px frame, the first
+filter label was clipped at the inline-start edge, and filters were reachable only by scrolling
+sideways. GitHub, Linear, Gmail, Jira and Shopify Polaris IndexFilters never scroll a filter bar —
+they wrap it, or collapse the rarely used filters behind a "More filters" control.
+
+### 💥 Breaking
+
+- **`FilterBar` / `Toolbar` lose the `overflow` prop and the `FilterBarOverflowProp` type.** The
+  bar always wraps: stacked below 640px, extra rows above. The `.ui-toolbar[data-overflow="scroll"]`
+  rules and the `data-overflow` attribute on the strip are gone. With many filters, keep the common
+  ones in the bar and put the rest behind one "More filters" Button that opens a Sheet.
+- **Token `--filter-bar-scroll-padding-y` removed** (it only padded the removed scroll strip).
+
+### ✨ Added
+
+- **ui-audit `filter-bar-no-overflow`** (error): flags `overflow=` on `<FilterBar>` / `<Toolbar>`.
+  Tabs and Topbar keep their own `overflow`.
+
 ## [32.13.1] - 2026-10-15
 
 The first release of everything listed under 32.13.0 below: its main CI was red (two typography
