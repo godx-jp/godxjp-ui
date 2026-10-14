@@ -125,7 +125,9 @@
     calc(var(--font-size-base) / var(--font-size-ratio))
   );
   --stat-card-label-font-weight: var(--font-weight-medium);
-  --stat-card-label-letter-spacing: 0.04em;
+  /* gh#1305 (ADR C12): sentence case, no tracking by default; a theme opts into small caps. */
+  --stat-card-label-letter-spacing: normal;
+  --stat-card-label-letter-case: none;
   --stat-card-value-font-size: var(
     --font-size-2xl,
     calc(

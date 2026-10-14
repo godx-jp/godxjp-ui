@@ -716,7 +716,7 @@
     font-weight: var(--stat-card-label-font-weight);
     letter-spacing: var(--stat-card-label-letter-spacing);
     line-height: var(--line-height-normal);
-    text-transform: uppercase;
+    text-transform: var(--stat-card-label-letter-case);
   }
 
   [data-slot="stat-card-label"] svg {

@@ -525,7 +525,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-label-letter-spacing",
-    "value": "0.04em",
+    "value": "normal",
+    "description": "gh#1305 (ADR C12): sentence case, no tracking by default; a theme opts into small caps."
+  },
+  {
+    "name": "--stat-card-label-letter-case",
+    "value": "none",
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
@@ -6931,6 +6936,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sidebar-section-label-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--sidebar-section-label-letter-case",
+    "value": "none",
+    "description": "Section label case and tracking (gh#1305, ADR C12): default sentence case, no tracking — tiny letter-spaced capitals (11px, 0.08em) are the classic \"AI dashboard\" eyebrow. A theme that wants small caps back sets both."
+  },
+  {
+    "name": "--sidebar-section-label-letter-spacing",
+    "value": "normal",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {

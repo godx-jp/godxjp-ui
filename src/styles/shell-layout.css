@@ -2258,9 +2258,9 @@
     color: var(--sidebar-section-label-foreground, hsl(var(--muted-foreground)));
     font-size: var(--sidebar-section-label-font-size);
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--sidebar-section-label-letter-spacing);
     line-height: 1.2;
-    text-transform: uppercase;
+    text-transform: var(--sidebar-section-label-letter-case);
   }
 
   .sb-nav {
