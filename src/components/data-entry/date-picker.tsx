@@ -1032,11 +1032,12 @@ export function DatePicker(props: DatePickerProp) {
                 parsed && allowed(parsed) && timeAllowed(parsed) ? parsed : undefined;
               // A loose spelling (`2026/10/01`) is only read at this boundary, so blur COMMITS it
               // as Enter does — normalising the text alone would show a date the value never got
-              // (gh#1271). Unchanged text does not re-emit.
+              // (gh#1271). Unchanged text does not re-emit. `needConfirm` (on by default with
+              // `showTime`) gates the PANEL's pick, not typed text: Enter already commits a typed
+              // date-time, and blur must too, or the field shows a value the form never receives.
               if (
                 accepted &&
                 !multiple &&
-                !needConfirm &&
                 +periodDate(accepted) !== +((committedSingle as Date | undefined) ?? NaN)
               )
                 emit(periodDate(accepted));
