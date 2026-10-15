@@ -43,7 +43,12 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
   // the icon box goes (gh#1171): that element is the cell, so the overlay anchors to it and the
   // count joins its content the same way it does on the button. A bell that is a link is the
   // common case, and dropping its count left nothing but an `aria-label` to carry it.
-  const showBadge = badge !== undefined && badge !== "";
+  //
+  // A numeric 0 is absent too (gh#1341): an unread count of zero is "nothing to see", and a "0"
+  // pill on a bell reads as an alert. Hiding it here means a call site passes the count as it is
+  // instead of `count === 0 ? undefined : count`. A STRING "0" is content the caller chose and
+  // still renders — that is the opt-in for a product that does want a zero shown.
+  const showBadge = badge !== undefined && badge !== "" && badge !== 0;
   // The glyph goes in a box the CELL owns, so it keeps the bar's step however the consumer wraps
   // it (gh#712). Under `asChild` the box goes INSIDE the borrowed element, ahead of that element's
   // own children (gh#726): the element is still the cell, so `.ui-topbar-item-icon svg` sizes the
