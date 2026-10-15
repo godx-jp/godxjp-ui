@@ -9,6 +9,7 @@ import {
   ToggleGroupItem,
 } from "@godxjp/ui/data-entry";
 import { Button, Text, VisuallyHidden } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-react";
 
@@ -19,6 +20,7 @@ import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-r
  * Input or a Button on the same row.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [theme, setTheme] = useState("system");
   const [view, setView] = useState("list");
   const [range, setRange] = useState("week");
@@ -222,24 +224,19 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>手袋・濡れた手でも押せる · size=&quot;touch&quot;</CardTitle>
-            <CardDescription>
-              厨房や包装ラインの HACCP チェックでは、手袋や濡れた手で 良 / 否 を押します。
-              size=&quot;touch&quot; はどの押す場所も 56×56px 以上（--control-height-touch）、
-              隣との間は 8px 以上（--control-touch-gap）。マウスでもタッチでも同じ大きさです。
-              Segmented は block と組み合わせると幅いっぱいのバーになります。
-            </CardDescription>
+            <CardTitle level={2}>{t("segmentedDocs.touch.title")}</CardTitle>
+            <CardDescription>{t("segmentedDocs.touch.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Segmented
-                aria-label="判定（Segmented）"
+                aria-label={t("segmentedDocs.touch.verdictSegmented")}
                 size="touch"
                 block
                 defaultValue="ok"
                 options={[
-                  { value: "ok", label: "良" },
-                  { value: "ng", label: "否" },
+                  { value: "ok", label: t("segmentedDocs.touch.ok") },
+                  { value: "ng", label: t("segmentedDocs.touch.ng") },
                 ]}
               />
               <ToggleGroup
@@ -247,27 +244,27 @@ export default function Demo() {
                 size="touch"
                 disallowEmptySelection
                 defaultValue="ok"
-                aria-label="判定（ToggleGroup）"
+                aria-label={t("segmentedDocs.touch.verdictToggleGroup")}
               >
-                <ToggleGroupItem value="ok">良</ToggleGroupItem>
-                <ToggleGroupItem value="ng">否</ToggleGroupItem>
+                <ToggleGroupItem value="ok">{t("segmentedDocs.touch.ok")}</ToggleGroupItem>
+                <ToggleGroupItem value="ng">{t("segmentedDocs.touch.ng")}</ToggleGroupItem>
               </ToggleGroup>
               <RadioGroup
-                aria-label="判定（RadioGroup）"
+                aria-label={t("segmentedDocs.touch.verdictRadioGroup")}
                 optionType="button"
                 size="touch"
                 orientation="horizontal"
                 defaultValue="ok"
                 options={[
-                  { value: "ok", label: "良" },
-                  { value: "ng", label: "否" },
+                  { value: "ok", label: t("segmentedDocs.touch.ok") },
+                  { value: "ng", label: t("segmentedDocs.touch.ng") },
                 ]}
               />
               <Flex direction="row" gap="sm">
                 <Button size="touch" variant="outline">
-                  否
+                  {t("segmentedDocs.touch.ng")}
                 </Button>
-                <Button size="touch">良</Button>
+                <Button size="touch">{t("segmentedDocs.touch.ok")}</Button>
               </Flex>
             </Flex>
           </CardContent>

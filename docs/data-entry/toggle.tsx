@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Toggle } from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -11,6 +12,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [bold, setBold] = useState(false);
   const [pinned, setPinned] = useState(true);
   const [outline, setOutline] = useState(false);
@@ -168,8 +170,8 @@ export default function Demo() {
               <Toggle size="lg" aria-label="大サイズ">
                 大
               </Toggle>
-              <Toggle size="touch" aria-label="手袋サイズ">
-                手袋
+              <Toggle size="touch" aria-label={t("toggleDocs.touchLabel")}>
+                {t("toggleDocs.touch")}
               </Toggle>
             </Flex>
           </CardContent>

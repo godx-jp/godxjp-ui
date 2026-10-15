@@ -2234,5 +2234,27 @@
         "mirrors": "chế độ xem danh sách của Salesforce Lightning"
       }
     }
+  },
+  "toggleDocs": {
+    "touch": "Găng tay",
+    "touchLabel": "Cỡ găng tay"
+  },
+  "segmentedDocs": {
+    "touch": {
+      "title": "Bấm được khi đeo găng hoặc tay ướt · size=\"touch\"",
+      "description": "Trong kiểm tra HACCP ở bếp hay dây chuyền đóng gói, nhân viên bấm Đạt / Không đạt khi đeo găng hoặc tay ướt. size=\"touch\" làm mọi vùng bấm tối thiểu 56×56px (--control-height-touch), cách nhau tối thiểu 8px (--control-touch-gap), như nhau với chuột hay ngón tay. Kết hợp block, Segmented thành thanh rộng hết chiều ngang.",
+      "verdictSegmented": "Kết quả (Segmented)",
+      "verdictToggleGroup": "Kết quả (ToggleGroup)",
+      "verdictRadioGroup": "Kết quả (RadioGroup)",
+      "ok": "Đạt",
+      "ng": "Không đạt"
+    }
+  },
+  "toggleGroupDocs": {
+    "touch": {
+      "day": "Theo ngày",
+      "month": "Theo tháng",
+      "year": "Theo năm"
+    }
   }
 }
