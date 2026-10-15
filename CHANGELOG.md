@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.5.0] - 2026-10-16
+
+### Added
+
+- **`AppProvider contentLocales` (#1347).** The languages the app stores user content in, source language first (`contentLocales={["ja", "en", "vi"]}`), stated once at the root. Every `TranslatableInput` / `TranslatableTextarea` without its own `locales` takes its tabs from it and opens on its first entry; a field's `locales` / `defaultLocale` still override. Separate from the UI locale and the registered UI catalogs; not persisted, no setter; exposed as `useAppContext().contentLocales`. Unset, the default is unchanged (`getRegisteredLocales()` = vi · en · ja, first tab = the UI locale). A ja-first app passed `locales` on each of 28 fields → 0.
+
 ## [33.4.2] - 2026-10-15
 
 ### Fixed

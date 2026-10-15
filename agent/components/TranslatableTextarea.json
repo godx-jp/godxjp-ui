@@ -20,12 +20,12 @@
       "type": "(value: TranslatableValue) => void"
     },
     {
-      "description": "The BCP-47 tags the field edits, in tab order. Default: the app's registered locales.",
+      "description": "The BCP-47 tags the field edits, in tab order. Default: AppProvider `contentLocales` when set, else the app's registered locales.",
       "name": "locales",
       "type": "readonly string[]"
     },
     {
-      "description": "The locale tab selected first. Default: the AppProvider's active locale.",
+      "description": "The locale tab selected first. Default: the first of AppProvider `contentLocales` when set and in `locales`, else the AppProvider's active locale.",
       "name": "defaultLocale",
       "type": "string"
     },
