@@ -1241,10 +1241,11 @@ export function OrderFilters({ value, onValueChange, resultCount }: {
       resultCount={resultCount}
     >
       {/* Children render after the typed filters, before the reset: ONE "More filters" control.
-          count = hidden filters applied (0 renders nothing), so the closed sheet still says so. */}
+          count = hidden filters applied, so the closed sheet still says so. Button paints a 0 pill by
+          default (showZero = true) — showZero={false} hides it when nothing hidden is applied (#1333). */}
       <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline" count={hiddenApplied} countLabel="applied">
+          <Button variant="outline" count={hiddenApplied} showZero={false} countLabel="applied">
             <SlidersHorizontal aria-hidden="true" />
             More filters
           </Button>

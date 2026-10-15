@@ -105,3 +105,18 @@ describe("the async data-state pattern covers the full state taxonomy", () => {
     "forbidden",
   ])("mentions %s", (token) => expect(code).toContain(token));
 });
+
+describe("counted Buttons in patterns state their zero behaviour (#1333)", () => {
+  /*
+   * Button paints a `0` pill by default (`showZero = true`). A pattern whose count is a "how many
+   * are applied" signal must hide it at zero, or every idle page copying it shows "0" (list-filters
+   * did, and its comment claimed "0 renders nothing").
+   */
+  it("every <Button … count={…}> in a pattern passes showZero explicitly", () => {
+    for (const p of PATTERNS) {
+      for (const tag of p.code.match(/<Button\b[^>]*\bcount=\{[^>]*>/g) ?? []) {
+        expect(/\bshowZero\b/.test(tag), `pattern "${p.name}": ${tag}`).toBe(true);
+      }
+    }
+  });
+});

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.1.1] - 2026-10-15
+
+### 🐛 Fixed
+
+- **Pattern `list-filters`: the "More filters" Button no longer shows a `0` pill when nothing hidden is applied (#1333).** `Button` paints `count={0}` by default (`showZero = true`); the pattern omitted `showZero={false}` while its comment said "0 renders nothing", so every list page that copied it showed "More filters 0" (and announced "0 applied"). The pattern and the FilterBar docs example now pass `showZero={false}`, and a catalog test requires every counted `<Button>` in a pattern to state `showZero` explicitly.
+
 ## [33.1.0] - 2026-10-15
 
 **Every surface now teaches the same filter bar: it wraps, and many filters go behind ONE "More
