@@ -6,6 +6,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.1.0] - 2026-10-15
+
+**Every surface now teaches the same filter bar: it wraps, and many filters go behind ONE "More
+filters" control.** 33.0.0 removed `FilterBar overflow="scroll"`; this release re-teaches the
+pattern everywhere an agent or a developer learns list-page filtering, so no guidance surface
+still describes or demonstrates a sideways-scrolling strip of filters, search fields or controls.
+No public API changes.
+
+### Added
+
+- **Cardinal rule #51** (`get_rule 51`) — the one canonical wording: a filter bar wraps at every
+  width (stacked below 640px, extra rows above) and nothing in it scrolls sideways; keep the 2–4
+  most-used filters inline, put the rest behind ONE "More filters" Button (`count` = hidden filters
+  applied) that opens a Sheet, and show every applied filter as a removable, wrapping chip. Sources:
+  Shopify Polaris Filters (2–3 promoted filters, a More button opening a sheet), Linear (one
+  Filter menu), IBM Carbon (hidden filters show an applied count), WCAG 2.2 SC 1.4.10 (search
+  fields and controls are not in the two-dimensional exception).
+- **MCP pattern `list-filters`** (aliases `more-filters`, `many-filters`, `filter-sheet`,
+  `advanced-filters`, `add-filter`) — the copy-paste composition FilterBar + typed filters + one
+  "More filters" Button + Sheet of FilterBarGroups + chips. `inertia-list-page` and
+  `data-table-page` point to it.
+- **Docs: `navigation/filter-bar`** gains a working "many filters" example (inline filters, a
+  counted "More filters" Sheet, chips for inline and hidden filters).
+- **ui-audit `filter-strip-no-scroll`** (error): a box that scrolls on the inline axis
+  (`overflow-x-auto`/`-scroll`, or `ScrollArea orientation="horizontal"|"both"`) around
+  FilterBar/Toolbar/FormField/Select/SearchInput/Input/a picker. A scroller holding a Table,
+  DataTable or Cards (two-dimensional content) and vertical panes are not flagged; chip rows
+  (ToggleGroup/Segmented) are not matched, because the same components are editor toolbars.
+- **Consumer skill `crud-list` section `filter-bar`**, and `route_consumer_task` routes filter
+  tasks ("filter", "filter bar", 絞り込み, フィルター, bộ lọc) to it.
+
+### Changed
+
+- Catalog: FilterBar/Toolbar cites rule #51 and `list-filters` and relates `Sheet`; ToggleGroup
+  says a filter-chip row takes `wrap` and never sits in a horizontal scroller; the Tabs entry no
+  longer calls Toolbar a "horizontal filter chip row"; the Card entry no longer sends "filter
+  strips / filter chips" to `CardBar` (its main slot scrolls sideways — it is for tool strips) and
+  CardBar/ScrollArea say filters do not go in them; `suggest_primitive "filter"` names the
+  pattern; `no-hand-rolled-scrollport` no longer reads as "move your filter strip into a
+  horizontal ScrollArea".
+- Guidance aligned to rule #51: `DESIGN.md` (components + responsive), `docs/CONSUMER-RULES.md`
+  rule 3, the synced consumer `CLAUDE.md` block, `agent/START-HERE.md` (its example page now uses
+  `FilterBar` instead of a hand-built Flex row), the list exemplar, `compose-a-screen` ("filter row
+  → FilterBar", not "Form inline"), `crud-list/search-form` (fields wrap; 詳細条件 is the same split).
+- Docs: the Card page's CardBar demo is a tool strip (添付 / メンション / テンプレート), not a
+  scrolling row of status filters.
+- Docs: the filter-bar page no longer describes "both responsive overflow strategies" or an
+  `overflow="wrap"` default; the `case6-agency-handy` showcase's filter chips wrap onto a second
+  line instead of scrolling sideways in an `overflow-x-auto` box.
+
 ## [33.0.0] - 2026-10-15
 
 **A filter bar wraps; it never scrolls sideways.** Read **docs/migrations/v33.md**. The library

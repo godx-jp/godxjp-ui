@@ -163,6 +163,16 @@ describe("route_consumer_task — app screens never reach marketing taste (gh#12
     expect(hits).not.toContain("contract");
   });
 
+  it.each([
+    "list page with many filters",
+    "a filter bar for the orders table",
+    "請求一覧の絞り込み",
+    "trang danh sách có bộ lọc",
+  ])("'%s' reaches crud-list/filter-bar (cardinal rule #51)", (task) => {
+    const keys = routeTask(task, { consumerOnly: true }).map((r) => `${r.skill}/${r.section}`);
+    expect(keys, task).toContain("crud-list/filter-bar");
+  });
+
   it("returns each skill/section at most once", () => {
     const hits = routeTask("a new page with a list and a form", { consumerOnly: true });
     const keys = hits.map((r) => `${r.skill}/${r.section}`);

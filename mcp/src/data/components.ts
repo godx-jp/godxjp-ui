@@ -428,8 +428,13 @@ export const COMPONENTS: ComponentEntry[] = [
     rules: [9],
     usage: [
       "Compose inside Card. Unset border follows its position; explicit border prevents double rules in stacked bars.",
+      "DON'T put list filters (search, filter selects, filter chips) in a CardBar: its main slot scrolls sideways when crowded, and a filter strip wraps (cardinal rule #51). Filters are a Toolbar/FilterBar above the card.",
     ],
-    related: ["Card", "Flex"],
+    related: [
+      "Card",
+      "Flex",
+      "Toolbar — the list-page filter strip (alias FilterBar); it wraps, so filters go there rather than in a CardBar.",
+    ],
     useCases: ["Composer tool strips and view tabs."],
     example: '<Card><CardBar pad={{block:2,inline:3}} border="block-start">Tools</CardBar></Card>',
   },
@@ -4365,7 +4370,7 @@ export default function InvoiceList({
     ],
     group: "data-display",
     tagline:
-      "Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab toolbar/filter strip (list controls, filter chips) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card.",
+      "Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab TOOL strip inside the card (composer or editor tools) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. List FILTERS (search, filter selects, filter chips) are NOT a CardBar: CardBar's main slot scrolls sideways, and a filter strip never does — they go in a FilterBar ABOVE the card, which wraps (cardinal rule #51, pattern `list-filters`).",
     props: [
       {
         name: "accent",
@@ -9565,7 +9570,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
     ],
     related: [
       "Steps (@godxjp/ui/navigation) — sequential wizard/progress indicator. Use Steps when order and completion state matter (multi-step forms, onboarding flows); use Tabs when panels are non-sequential and any tab can be visited freely.",
-      "Toolbar / ToolbarGroup (@godxjp/ui/navigation) — horizontal filter chip row. Visually resembles `line`-variant tabs but is semantically different: Toolbar filters a dataset, it does not switch content panels. Never use Tabs as a filter control.",
+      "Toolbar / ToolbarGroup (@godxjp/ui/navigation) — the list-page filter strip; it WRAPS onto extra rows and never scrolls sideways the way a tab strip may (rule #51). Visually resembles `line`-variant tabs but is semantically different: Toolbar filters a dataset, it does not switch content panels. Never use Tabs as a filter control.",
       "DropdownMenu (@godxjp/ui/navigation) — use for space-constrained contexts where showing all tab triggers at once is impractical (e.g. mobile overflow menu). If only 2-3 options exist and screen space is tight, a Segmented control is a lighter alternative to a full tab strip.",
     ],
     example: `import { Tabs } from "@godxjp/ui/navigation";
@@ -9951,7 +9956,7 @@ import { Button } from "@godxjp/ui/general";
     subParts: ["ToolbarGroup", "FilterBar", "FilterBarGroup"],
     group: "navigation",
     tagline:
-      "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. `FilterBar`/`FilterBarGroup` are the same components under their alias names.",
+      "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. It WRAPS and never scrolls sideways; many filters → 2–4 inline + ONE 'More filters' Sheet (rule #51, pattern `list-filters`). `FilterBar`/`FilterBarGroup` are the same components under their alias names.",
     props: [
       {
         name: "children",
@@ -10065,7 +10070,7 @@ import { Button } from "@godxjp/ui/general";
       "DO drive the clear-all button with `hasActiveFilters` + `onClear` — it only renders when both are truthy. The strip collapses to a single stacked column below 640px automatically.",
       "DO set `sticky` for long list pages so the filters stay reachable while scrolling; if a topbar sits above the list, raise `--filter-bar-sticky-offset` so the strip parks below it.",
       "DO pass `controlId` on a ToolbarGroup that wraps ONE control and give that control the same `id` — the visible caption then becomes the control's real `<label htmlFor>` (WCAG 2.5.3 label-in-name). Without it the caption only names the group wrapper and the control itself is NAMELESS (axe: select-name / button-name), so you must fall back to an `aria-label` that repeats the caption.",
-      "DO let the strip WRAP — it stacks below 640px and wraps onto extra rows above; it never scrolls sideways (the `overflow` prop and its `scroll` strategy were removed in 33.0.0: a horizontal strip hid filters off-screen and clipped the first label at its edge). When a list page has more filters than fit one or two rows, keep the few common ones in the bar and put the rest behind ONE 'More filters' Button that opens a Sheet (or Popover) holding them — a composition of Button + Sheet + FilterBarGroup; there is no dedicated component. Never re-implement the geometry in the page: no page-local flex/grid/width/overflow rules on a filter strip.",
+      "DO let the strip WRAP — cardinal rule #51 (`get_rule 51`). It stacks below 640px and wraps onto extra rows above; it never scrolls sideways, and neither may anything you wrap it in (`ScrollArea orientation=\"horizontal\"`, an `overflow-x-auto` box): the `overflow` prop and its `scroll` strategy were removed in 33.0.0 because a sideways strip hid filters off-screen and clipped the first label. When the filters are many, keep the 2–4 most-used ones inline and put the rest behind ONE 'More filters' Button (`count` = hidden filters applied) that opens a Sheet holding them as FilterBarGroup + control; every applied filter, inline or hidden, is a chip in `chips` (the chips row wraps too). Copy-paste composition: pattern `list-filters` (`get_pattern list-filters`); there is no dedicated component. Never re-implement the geometry in the page: no page-local flex/grid/width/overflow rules on a filter strip.",
       "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
       "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
       "Prefer the typed model for a canonical list page: pass `search` + `filters` + `chips` + `resultCount` and the bar owns the layout, widths, chip lifecycle, keyboard order (search → filters → children → reset → actions → chip removes) and responsive stacking through --filter-bar-* tokens. Everything stays consumer data — the bar renders state, never owns it.",
@@ -10083,6 +10088,7 @@ import { Button } from "@godxjp/ui/general";
       "DataTable.Toolbar — the in-table strip for column/density/bulk-action controls; Toolbar (this) is the page-level filter strip that sits ABOVE the table.",
       "SearchInput — the debounced free-text control placed as the first child of Toolbar.",
       "Badge — compose Badge + a sibling icon Button to render each active-filter chip; Badge itself is a non-interactive leaf.",
+      "Sheet — holds the filters beyond the 2–4 inline ones, opened by ONE 'More filters' Button inside the bar (pattern `list-filters`, rule #51). Not a ScrollArea: a filter strip never scrolls sideways.",
     ],
     example: `import { Toolbar, ToolbarGroup } from "@godxjp/ui/navigation";
 import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry";
@@ -10101,7 +10107,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
 </Toolbar>`,
     docPath: "navigation/toolbar",
     storyPath: "navigation/toolbar.tsx",
-    rules: [23, 44, 45, 46],
+    rules: [23, 44, 45, 46, 51],
   },
 
   // ─── providers / datetime ───────────────────────────────────────────────
@@ -13218,6 +13224,7 @@ export function ControlledPopover() {
       "DO reach for ScrollArea rather than your own `overflow-auto` div: it is the same native scrolling, plus the token-styled scrollbar, the keyboard tab stop the axe rule wants, and bottom anchoring. A bare overflow div gets none of that and each call site re-decides the scrollbar's look.",
       "DON'T put ScrollArea inside a flex parent without giving it a `flex-1` or fixed size — it will collapse to zero height and appear broken.",
       'For horizontal-only scrolling use `orientation="horizontal"` with a width constraint; the content is allowed to grow past the box on that axis, so a row of non-shrinking columns overflows instead of squashing.',
+      "DON'T use a horizontal ScrollArea for a strip of filters, search fields, form controls or filter chips — a filter strip WRAPS (cardinal rule #51; ui-audit `filter-strip-no-scroll`). Use FilterBar, and past 2–4 filters the `list-filters` pattern's 'More filters' Sheet.",
       "DO use `viewportRef` (or plain `ref`) when you need the scrolling element, never a `querySelector` for an internal attribute — `[data-radix-scroll-area-viewport]` is gone with Radix, and any selector matches the wrong node the moment two ScrollAreas nest.",
       'DO build a live stream (chat, log tail, streaming response, activity feed) with `anchor="bottom"` instead of writing `viewport.scrollTop = viewport.scrollHeight` in an effect. That naive version is the BUG, not the feature: it yanks a reader who has scrolled up back to the bottom on every arriving message (WCAG 3.2.5).',
       'DO pair `anchor="bottom"` with `onAnchoredChange` and a real Button ("jump to newest"). A keyboard user who has scrolled up needs a focusable route back to new content — the anchor alone is a pointer affordance.',
@@ -14372,6 +14379,7 @@ import { Separator } from "@godxjp/ui/layout";
       'DO build a tag-filter panel as `<ToggleGroup type="multiple" variant="soft" shape="pill" size="xs">` with one counted `ToggleGroupItem` per tag — that is the whole antd `Tag.CheckableTag` row, one tab stop per chip, no `Tag` component needed (gh#734).',
       "DO set `size`/`variant` on an individual ToggleGroupItem only when that ONE item must differ from the group.",
       'DO add `wrap` to a TAG FILTER ROW — `<ToggleGroup type="multiple" variant="soft" shape="pill" size="xs" wrap>` is the whole folder-tag panel however many tags the folder has. This is what replaces the hand-built `<ul>` of individual `<Toggle>`s a row wider than its rail used to force (gh#741): that list loses exactly what the group owns — the shared `variant`/`size`/`shape` context, ONE `value`/`onValueChange`, and the group\'s arrow-key traversal, which keeps walking the chips in DOM order across the wrapped lines.',
+      'DON\'T put a filter-chip row in a horizontal scroller (`overflow-x-auto`, `ScrollArea orientation="horizontal"`) with `shrink-0 whitespace-nowrap` chips — at every width, phone included, a chip row that filters a list takes `wrap` (cardinal rule #51). A sideways chip row hides chips past the edge with no affordance, and this kit ships no primitive that guarantees the first chip unclipped and a visible scroll cue, so the scroller is a hand-roll.',
       "DON'T set `wrap` on a 3–4 item segmented group. Measured at a 320px rail it is one 32px line either way, so the prop buys nothing and only adds a way for a toolbar to reflow.",
       "DON'T pass size='default' — it is not a member of the `xs | sm | md | lg` union. Omit `size` for the md default.",
       "DO give the group an accessible name (`aria-label`) — it renders a `group` of toggle buttons (single, the default), a `radiogroup` (single + `disallowEmptySelection`) or a `toolbar` of toggle buttons (multiple), and all three need a name.",
@@ -14395,7 +14403,7 @@ import { Separator } from "@godxjp/ui/layout";
   <ToggleGroupItem value="center">Center</ToggleGroupItem>
 </ToggleGroup>`,
     storyPath: "data-entry/toggle-group.tsx",
-    rules: [3, 13],
+    rules: [3, 13, 51],
   },
   {
     name: "AspectRatio",

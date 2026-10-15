@@ -49,7 +49,7 @@ taste-skill asks you to choose dial positions per project. They are already chos
 
 ### DESIGN_VARIANCE → **LOW** (locked)
 
-- Layouts are **structured and predictable**: `PageShell` + `PageHeader` + `PageContent`, sidebar 256px, sticky header 48px. Filters in a 4-column label+control grid. Bulk-action toolbar above tables.
+- Layouts are **structured and predictable**: `PageShell` + `PageHeader` + `PageContent`, sidebar 256px, sticky header 48px. List filters in one `FilterBar` that wraps (never scrolls sideways): the 2–4 most-used inline, the rest behind one "More filters" `Sheet` (cardinal rule #51, pattern `list-filters`); a submit-style search form is `Form columns`. Bulk-action toolbar above tables.
 - Asymmetry is allowed _only_ as information hierarchy (primary action right-aligned, KPI row, content-vs-meta split) — never as decorative off-balance composition.
 - **No** per-screen hero layouts, diagonal sections, oversized display type, or "editorial" full-bleed imagery on app surfaces.
 - One brand voice across every screen. A user moving from `/admin/.../absences` to `/me/my-shifts` must feel the _same system_, only re-tenant-colored.

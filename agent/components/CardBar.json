@@ -33,14 +33,16 @@
   ],
   "related": [
     "Card",
-    "Flex"
+    "Flex",
+    "Toolbar — the list-page filter strip (alias FilterBar); it wraps, so filters go there rather than in a CardBar."
   ],
   "rules": [
     9
   ],
   "tagline": "Inline card toolbar with scoped inset and divider edges.",
   "usage": [
-    "Compose inside Card. Unset border follows its position; explicit border prevents double rules in stacked bars."
+    "Compose inside Card. Unset border follows its position; explicit border prevents double rules in stacked bars.",
+    "DON'T put list filters (search, filter selects, filter chips) in a CardBar: its main slot scrolls sideways when crowded, and a filter strip wraps (cardinal rule #51). Filters are a Toolbar/FilterBar above the card."
   ],
   "useCases": [
     "Composer tool strips and view tabs."

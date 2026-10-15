@@ -44,8 +44,10 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            CardBar · scrollable controls + pinned action
+            CardBar · scrollable tool strip + pinned action
           </Text>
+          {/* A TOOL strip (composer / editor tools) may scroll its main slot. List FILTERS never
+              go here: they are a FilterBar above the card, which wraps (cardinal rule #51). */}
           <Card>
             <CardBar
               extra={
@@ -55,13 +57,13 @@ export default function Demo() {
               }
             >
               <Button size="sm" variant="ghost">
-                すべて
+                添付
               </Button>
               <Button size="sm" variant="ghost">
-                未払い
+                メンション
               </Button>
               <Button size="sm" variant="ghost">
-                超過
+                テンプレート
               </Button>
             </CardBar>
             <CardContent>

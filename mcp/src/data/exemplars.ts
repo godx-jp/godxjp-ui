@@ -32,7 +32,7 @@ export const EXEMPLARS: Exemplar[] = [
     showcase: "table-crud-list",
     anatomy: ["List"],
     focus:
-      "Header actions in `extra`, Toolbar filters above the table, one Card with DataTable + Pagination.",
+      "Header actions in `extra`, Toolbar filters above the table (the bar wraps, never scrolls sideways; many filters → pattern `list-filters`, rule #51), one Card with DataTable + Pagination.",
   },
   {
     archetype: "detail",

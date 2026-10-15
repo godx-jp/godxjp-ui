@@ -623,16 +623,17 @@ function InboundTab({
 
   return (
     <Flex direction="col" gap="md">
-      {/* Filter chips — horizontal scroll, count pills */}
+      {/* Filter chips WRAP onto a second line, count pills — even on a phone a filter row never
+          scrolls sideways (cardinal rule #51): chips past the edge would be out of sight. */}
       <ToggleGroup
         type="single"
         value={filter}
         onValueChange={(v) => {
           if (v) setFilter(v);
         }}
-        className="w-full overflow-x-auto"
+        aria-label="Lọc danh sách"
       >
-        <Flex justify="start" gap="sm">
+        <Flex justify="start" gap="sm" wrap>
           {FILTERS.map((f) => (
             <ToggleGroupItem
               key={f.id}

@@ -286,6 +286,13 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: "Three or more FormFields in a Dialog body is a page: give the form its own route. Dialogs hold a confirmation or one or two fields; a side Sheet (drawer) may hold a filter or edit form.",
   },
   {
+    id: "filter-strip-no-scroll",
+    severity: "error",
+    category: "composition",
+    standard: "WCAG 2.2 SC 1.4.10 (Reflow) · @godxjp/ui cardinal rule #51",
+    fix: 'A box that scrolls on the inline axis (`overflow-x-auto`/`overflow-x-scroll`, or `<ScrollArea orientation="horizontal"|"both">`) around FilterBar/Toolbar/FormField/Select/SearchInput/Input/a picker is a sideways-scrolling filter strip. Drop the scroller and let <FilterBar> wrap; keep the 2–4 most-used filters inline and put the rest behind ONE \'More filters\' Button that opens a Sheet (get_rule 51, get_pattern list-filters). A scroller whose body holds a Table/DataTable or Cards (a kanban board) is two-dimensional content and is not flagged; a vertical pane (`overflow-y-auto`, a Sheet body) is not flagged.',
+  },
+  {
     id: "select-width-hint",
     severity: "warn",
     category: "composition",
@@ -365,7 +372,7 @@ export const AUDIT_RULES: AuditRule[] = [
     category: "a11y",
     standard:
       "WCAG 2.2 SC 2.1.1 (Keyboard) · WAI-ARIA 1.2 (group) · Deque axe-core scrollable-region-focusable",
-    fix: 'Replace className="overflow-auto / overflow-y-auto / overflow-x-auto / overflow-scroll" on your own element with <ScrollArea label={t("…")} orientation>, which is the tab stop, the role and the localized name — and withholds all three while there is nothing to scroll. A browser audit only fails a scrollport whose content has NO focusable child, so the same markup is clean or broken depending on the data; this reads the markup instead (gh#825). overflow-hidden is a clipping box, not a scrollport, and is not flagged.',
+    fix: 'Replace className="overflow-auto / overflow-y-auto / overflow-x-auto / overflow-scroll" on your own element with <ScrollArea label={t("…")} orientation>, which is the tab stop, the role and the localized name — and withholds all three while there is nothing to scroll. A browser audit only fails a scrollport whose content has NO focusable child, so the same markup is clean or broken depending on the data; this reads the markup instead (gh#825). overflow-hidden is a clipping box, not a scrollport, and is not flagged. A strip of FILTERS or form controls is not a scrollport at all: it wraps (`filter-strip-no-scroll`, cardinal rule #51) — do not move it into a horizontal ScrollArea.',
   },
 
   // ── i18n (ECMA-402 Intl + ISO + IANA) ────────────────────────────────────

@@ -728,7 +728,8 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
       {/* No subtitle that restates the title, no StatCard row: the total is Pagination's showTotal. */}
       <PageContainer title="クーポン管理">
         <Flex direction="col" gap="lg">
-          {/* Toolbar is the filter-bar primitive (standalone, above the table surface). */}
+          {/* Toolbar is the filter-bar primitive (standalone, above the table surface). It WRAPS and
+              never scrolls sideways (rule #51); past 2–4 filters, see the "list-filters" pattern. */}
           <Toolbar hasActiveFilters={q !== "" || status !== "all"} onClear={() => { setQ(""); setStatus("all"); setPage(1) }}>
             {/* SearchInput is value + onSearch(v) — NOT onChange */}
             <SearchInput placeholder="クーポン名で検索" value={q} onSearch={(v) => { setQ(v); setPage(1) }} />
@@ -1108,7 +1109,8 @@ export function MembersTablePage({ orgId }: { orgId?: string }) {
   return (
     <Flex direction="col" gap="lg">
       {/* Toolbar (filter bar) is STANDALONE and always visible so the user can change filters even
-          while a query is idle/loading/empty. Changing a filter resets to page 1. */}
+          while a query is idle/loading/empty. Changing a filter resets to page 1. It WRAPS, never
+          scrolls sideways (rule #51); more than 2–4 filters → the "list-filters" pattern. */}
       <Toolbar hasActiveFilters={q !== "" || status !== "all"}
         onClear={() => { setQ(""); setStatus("all"); setPage(1); }}>
         <SearchInput placeholder="氏名で検索" value={q} onSearch={(v) => { setQ(v); setPage(1); }} />
@@ -1151,6 +1153,133 @@ export function MembersTablePage({ orgId }: { orgId?: string }) {
 // Responsive: Pagination's showTotal range + controls stack at narrow widths automatically.
 // A transient retry keeps q/status/page (they live in component state, not the query) — the
 // same page reloads in place; the user never loses their filters.`,
+  },
+
+  {
+    name: "list-filters",
+    aliases: ["more-filters", "many-filters", "filter-sheet", "advanced-filters", "add-filter"],
+    tagline:
+      "A list page with MANY filters (cardinal rule #51) — FilterBar WRAPS; the 2–4 most-used filters stay inline, the rest sit behind ONE 'More filters' Button (count = hidden filters applied) that opens a Sheet; every applied filter is a removable chip. Never a sideways-scrolling strip.",
+    tags: [
+      "filter",
+      "filters",
+      "list",
+      "toolbar",
+      "filter-bar",
+      "sheet",
+      "chips",
+      "search",
+      "responsive",
+      "datatable",
+    ],
+    code: `// Research basis: Shopify Polaris Filters ("include no more than 2 or 3 promoted filters"; a
+// More button opens a sheet with the rest), Linear (one Filter menu), IBM Carbon filtering
+// (filters hidden in a drawer/menu show how many are applied), WCAG 2.2 SC 1.4.10 Reflow
+// (search fields and controls are not in the 2-D exception: they reflow, they do not scroll).
+//
+// RULE #51: a filter bar WRAPS — stacked below 640px, extra rows above — at every width.
+// ❌ FilterBar overflow="scroll" (removed in 33.0.0), <ScrollArea orientation="horizontal"> or an
+//    overflow-x-auto box around filters: the strip runs off-screen and clips its first label.
+// ✅ the common filters inline + ONE "More filters" Sheet for the rest + wrapping chips.
+import { useState } from "react";
+import { SlidersHorizontal } from "lucide-react";
+import { Button } from "@godxjp/ui/general";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry";
+import {
+  Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader,
+  SheetTitle, SheetTrigger,
+} from "@godxjp/ui/feedback";
+import { Flex } from "@godxjp/ui/layout";
+import { FilterBar, FilterBarGroup } from "@godxjp/ui/navigation";
+
+type Option = { value: string; label: string };
+type Filters = Record<"q" | "status" | "owner" | "region" | "channel" | "period", string>;
+export const NO_FILTERS: Filters = { q: "", status: "", owner: "", region: "", channel: "", period: "" };
+
+const STATUS: Option[] = [{ value: "open", label: "Open" }, { value: "paid", label: "Paid" }, { value: "void", label: "Void" }];
+const OWNER: Option[] = [{ value: "me", label: "Me" }, { value: "team", label: "My team" }];
+// Everything people reach for less often. Order = the order of the sheet.
+const MORE: { key: "region" | "channel" | "period"; label: string; options: Option[] }[] = [
+  { key: "region", label: "Region", options: [{ value: "kanto", label: "Kanto" }, { value: "kansai", label: "Kansai" }] },
+  { key: "channel", label: "Sales channel", options: [{ value: "web", label: "Web" }, { value: "store", label: "Store" }] },
+  { key: "period", label: "Period", options: [{ value: "month", label: "This month" }, { value: "quarter", label: "This quarter" }] },
+];
+const LABELS: Record<string, { label: string; options: Option[] }> = {
+  status: { label: "Status", options: STATUS },
+  owner: { label: "Owner", options: OWNER },
+  ...Object.fromEntries(MORE.map((f) => [f.key, f])),
+};
+
+export function OrderFilters({ value, onValueChange, resultCount }: {
+  value: Filters; onValueChange: (next: Filters) => void; resultCount: number;
+}) {
+  const [moreOpen, setMoreOpen] = useState(false);
+  const set = (key: keyof Filters, v: string) => onValueChange({ ...value, [key]: v });
+
+  // ONE chip per applied filter — inline AND hidden ones, so nothing applied is out of sight.
+  const chips = Object.entries(LABELS)
+    .filter(([key]) => value[key as keyof Filters] !== "")
+    .map(([key, f]) => ({
+      value: key,
+      label: \`\${f.label}: \${f.options.find((o) => o.value === value[key as keyof Filters])?.label ?? ""}\`,
+    }));
+  if (value.q) chips.unshift({ value: "q", label: \`Search: \${value.q}\` });
+  const hiddenApplied = MORE.filter((f) => value[f.key] !== "").length;
+
+  return (
+    <FilterBar
+      search={{ value: value.q, onValueChange: (v) => set("q", v), placeholder: "Search orders", ariaLabel: "Search orders" }}
+      // The 2–4 most-used filters, INLINE. Typed filters wire each caption as the real <label>.
+      filters={[
+        { value: "status", label: "Status", options: STATUS, selected: value.status, onSelectedChange: (v) => set("status", v), placeholder: "All" },
+        { value: "owner", label: "Owner", options: OWNER, selected: value.owner, onSelectedChange: (v) => set("owner", v), placeholder: "Anyone" },
+      ]}
+      chips={chips}
+      onChipRemove={(key) => set(key as keyof Filters, "")}
+      hasActiveFilters={chips.length > 0}
+      onClear={() => onValueChange(NO_FILTERS)}
+      resultCount={resultCount}
+    >
+      {/* Children render after the typed filters, before the reset: ONE "More filters" control.
+          count = hidden filters applied (0 renders nothing), so the closed sheet still says so. */}
+      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
+        <SheetTrigger asChild>
+          <Button variant="outline" count={hiddenApplied} countLabel="applied">
+            <SlidersHorizontal aria-hidden="true" />
+            More filters
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right">
+          <SheetHeader>
+            <SheetTitle>More filters</SheetTitle>
+            <SheetDescription>Applied filters also show as chips above the list.</SheetDescription>
+          </SheetHeader>
+          <SheetBody>
+            {/* A Sheet scrolls VERTICALLY; the fields stack. The same FilterBarGroup labels them. */}
+            <Flex direction="col" gap="md">
+              {MORE.map((f) => (
+                <FilterBarGroup key={f.key} label={f.label} controlId={\`more-\${f.key}\`}>
+                  <Select value={value[f.key]} onValueChange={(v: string) => set(f.key, v)}>
+                    <SelectTrigger id={\`more-\${f.key}\`}><SelectValue placeholder="All" /></SelectTrigger>
+                    <SelectContent>
+                      {f.options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </FilterBarGroup>
+              ))}
+            </Flex>
+          </SheetBody>
+          <SheetFooter>
+            <SheetClose asChild><Button>Show results</Button></SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </FilterBar>
+  );
+}
+// Phone width: the bar stacks (search, each filter, More filters, reset) and the chips wrap.
+// A row of filter CHIPS (ToggleGroup) takes \`wrap\` — it does not scroll sideways either.
+// Few filters (≤ 4)? Drop the Sheet: the plain bar in the data-table-page pattern is enough.`,
   },
 
   {

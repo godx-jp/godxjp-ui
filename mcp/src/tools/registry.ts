@@ -1537,8 +1537,8 @@ function suggestPrimitive(useCase: string): string {
   );
   check(
     ["filter"],
-    "Toolbar/ToolbarGroup + pattern 'filter-bar' (→ data-table-page)",
-    "Standalone Toolbar filter bar above a table; see the data-table-page pattern.",
+    "Toolbar/ToolbarGroup + pattern 'filter-bar' (→ data-table-page); many filters → pattern 'list-filters'",
+    "Standalone Toolbar filter bar above a table; it WRAPS and never scrolls sideways (rule #51). Past 2–4 filters, the rest go behind ONE 'More filters' Sheet.",
     4,
   );
   check(

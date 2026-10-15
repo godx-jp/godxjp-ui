@@ -400,14 +400,31 @@ it isn't dimmed. Pin at most ONE column per table. RTL-correct out of the
 box (logical inset-inline-end).`,
       },
       {
+        id: "filter-bar",
+        title: "Filters wrap — the common few inline, the rest behind ONE 'More filters' Sheet",
+        tagline:
+          "Cardinal rule #51: FilterBar wraps at every width; never a sideways-scrolling strip of filters.",
+        body: `A live-filtering list puts its filters in ONE <FilterBar> above the table card. The bar
+WRAPS — one stacked column below 640px, extra rows above — and nothing in it scrolls
+sideways at any width: no FilterBar overflow (removed in 33.0.0), no ScrollArea
+orientation="horizontal" or overflow-x-auto box around filters, no chip row that
+scrolls (a ToggleGroup chip row takes wrap). Keep the 2–4 most-used filters inline;
+put the rest behind ONE "More filters" Button (count = hidden filters applied) that
+opens a Sheet holding them as FilterBarGroup + control. Every applied filter, inline
+or hidden, is a removable chip in the bar's chips row. Copy it from
+get_pattern list-filters; get_rule 51 is the canonical wording.`,
+      },
+      {
         id: "search-form",
         title: "Search panel is Form + FormField + real pickers",
         tagline:
           "No ad-hoc labels/inputs; date ranges use the range pickers; no hard-coded text sizes.",
         body: `Build the search conditions with <Form>/<FormField> (label +
 a11y wiring), real DatePicker/NumberInput/
-Select for each field — never bare <input> or hand-rolled labels. Group
-advanced conditions behind a 詳細条件 toggle. Submit copies the live
+Select for each field — never bare <input> or hand-rolled labels. Let the
+fields wrap (Form columns) — never one sideways-scrolling row. Group advanced
+conditions behind a 詳細条件 toggle (the same split as filter-bar: common few
+visible, the rest behind one control). Submit copies the live
 condition state into the query params (a new object → new queryKey →
 fetch). Clear resets to the idle (null) state.`,
       },
@@ -1042,8 +1059,8 @@ label); entry-point affordances live in chrome, not floating in content.`,
 resolve each item through THIS MCP: list_primitives to discover, get_component to
 confirm the exact prop/union before you write (never guess a prop). Typical map:
 page chrome → AppShell/Sidebar/Topbar/PageContainer; stat row (dashboards only) →
-ResponsiveGrid + StatCard; data grid → DataTable; status pill → Badge tone=…; filter row → Form
-inline + Select/Input; org→branch → Cascader/TreeSelect; date/time → DatePicker/
+ResponsiveGrid + StatCard; data grid → DataTable; status pill → Badge tone=…; filter row → FilterBar
+(wraps, never scrolls; many filters → pattern list-filters, rule #51); org→branch → Cascader/TreeSelect; date/time → DatePicker/
 TimePicker; ⌘K → Command; bulk drawer/detail → Drawer/Sheet/Dialog; split list+
 detail → SplitPane/Resizable; empty → EmptyState; destructive confirm → Dialog
 with variant="destructive"; toast → Toaster/toast. No duplication: Select (showSearch/loadOptions) is the ONLY searchable/
@@ -1693,6 +1710,24 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
   );
 
   if (contractFirst) appScreen();
+
+  // List-page filtering — before any taste skill: the strip's shape is a rule, not a taste call.
+  route(
+    [
+      "filter",
+      "filter bar",
+      "filter strip",
+      "filtering",
+      "faceted search",
+      "絞り込み",
+      "フィルター",
+      "bộ lọc",
+    ],
+    "crud-list",
+    "filter-bar",
+    "Cardinal rule #51: FilterBar wraps, never scrolls sideways; 2–4 filters inline, the rest behind ONE 'More filters' Sheet (get_pattern list-filters).",
+    ["crud-list/search-form"],
+  );
 
   // Premium / agency / Awwwards — marketing only
   marketingRoute(

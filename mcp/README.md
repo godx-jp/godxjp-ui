@@ -10,8 +10,9 @@ MCP-aware agent live access to:
 - 80+ component catalog (props, types, defaults, examples)
 - 14 shared prop-vocabulary types (`SizeProp`, `ColorProp`, `LoadingProp`, …)
 - 48 design tokens across the primitive / semantic / component tiers
-- 50 cardinal rules from `CLAUDE.md` (48–50 are the complex-theme rules — see
-  `docs/CUSTOMER-THEMING.md` · "Building a COMPLEX theme")
+- 44 cardinal rules, numbered up to 51 (retired numbers are never reused; 48–50 are the
+  complex-theme rules — see `docs/CUSTOMER-THEMING.md` · "Building a COMPLEX theme"; 51 is "a
+  filter bar wraps — many filters go behind ONE 'More filters' control")
 - 9 canonical copy-paste-ready patterns (sign-up, settings, data-table, …)
 - 15 design skills, each tagged by **audience** — 12 taste-family (taste / soft / minimalist /
   brutalist / gpt-tasteskill / redesign / output / brandkit / stitch / imagegen-mobile /
@@ -245,7 +246,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 | `get_skill_section`  | ONE section of ONE skill                                                                                                                      | ~2 KB           |
 | `get_component`      | Full API for one component                                                                                                                    | ~2 KB           |
 | `get_pattern`        | Full code snippet for one pattern                                                                                                             | ~3 KB           |
-| `get_rule`           | One cardinal rule (or all 43)                                                                                                                 | ~500 B / ~10 KB |
+| `get_rule`           | One cardinal rule (or all 44)                                                                                                                 | ~500 B / ~10 KB |
 | `get_vocab`          | One vocab type (or all 14)                                                                                                                    | ~500 B / ~3 KB  |
 | `get_tokens`         | Tokens (optionally by category)                                                                                                               | ~5 KB           |
 | `get_frame_coverage` | Frame-contract coverage for one export (or the totals). Reports `UNTESTED` explicitly — never infers support from a happy-path example (#163) | ~1 KB           |

@@ -925,7 +925,7 @@ const RULES = [
     standard:
       "WCAG 2.2 SC 2.1.1 (Keyboard) · WAI-ARIA 1.2 (group) · Deque axe-core scrollable-region-focusable",
     message:
-      'Hand-rolled scrollport (overflow-auto / -scroll on your own element) — use <ScrollArea label={t("…")} orientation> so the box that scrolls is a tab stop with a role and a localized name, and stops being one when there is nothing to scroll (gh#821). Without it, anything below the fold is reachable by mouse and by nothing else (WCAG 2.2 SC 2.1.1). axe only catches the instances whose content happens to have no focusable child, so this checks the markup rather than one render (gh#825). overflow-hidden is a clipping box, not a scrollport, and is not flagged.',
+      'Hand-rolled scrollport (overflow-auto / -scroll on your own element) — use <ScrollArea label={t("…")} orientation> so the box that scrolls is a tab stop with a role and a localized name, and stops being one when there is nothing to scroll (gh#821). Without it, anything below the fold is reachable by mouse and by nothing else (WCAG 2.2 SC 2.1.1). axe only catches the instances whose content happens to have no focusable child, so this checks the markup rather than one render (gh#825). overflow-hidden is a clipping box, not a scrollport, and is not flagged. A strip of FILTERS or form controls is not a scrollport at all — it wraps (`filter-strip-no-scroll`, cardinal rule #51); do not move it into a horizontal ScrollArea.',
   },
   {
     id: "no-hand-rolled-break-anywhere",
@@ -2510,6 +2510,53 @@ for (const dir of SCAN_DIRS) {
             snippet: scanContent.slice(at, at + 120).replace(/\s+/g, " "),
           });
         }
+      }
+
+      /*
+       * A HAND-ROLLED sideways filter strip (cardinal rule #51). `filter-bar-no-overflow` only sees
+       * the removed prop; the same strip rebuilt as `<Flex className="overflow-x-auto">` or
+       * `<ScrollArea orientation="horizontal">` around FilterBar/FormField/Select/SearchInput is
+       * the defect 33.0.0 removed (1240px vi: 1945px of filters in a 921px frame, the first label
+       * clipped). WCAG 2.2 SC 1.4.10 excepts two-dimensional content, not search fields or controls,
+       * so a box whose body holds a table (an editable grid) or Cards (a kanban board, a carousel of
+       * records, each with its own controls) is left alone. Only the
+       * INLINE axis is matched: `overflow-auto` / `overflow-y-auto` are vertical panes, where a
+       * Sheet of stacked filters legitimately scrolls. Chip rows (ToggleGroup/Segmented) are not
+       * matched: the same component is an editor toolbar, which SC 1.4.10 does except.
+       */
+      const FILTER_CONTROL =
+        /<(?:FilterBar|Toolbar|FilterBarGroup|ToolbarGroup|FormField|SearchInput|Select|Input|DatePicker|DateRangePicker|TimePicker|NumberInput|Cascader|TreeSelect)(?=[\s/>])/;
+      const HOLDS_2D_CONTENT = /<(?:Table|DataTable|table|Card)(?=[\s/>])/;
+      const scrollOpeners = new Set();
+      for (const m of scanContent.matchAll(/(?<![\w-])overflow-x-(?:auto|scroll)(?![\w-])/g)) {
+        const at = scanContent.lastIndexOf("<", m.index);
+        if (at >= 0 && jsxOpeningEnd(scanContent, at) > m.index) scrollOpeners.add(at);
+      }
+      for (const m of scanContent.matchAll(/<ScrollArea(?=[\s>])/g)) {
+        const open = scanContent.slice(m.index, jsxOpeningEnd(scanContent, m.index) + 1);
+        if (/\borientation\s*=\s*\{?\s*["'](?:horizontal|both)["']/.test(open)) {
+          scrollOpeners.add(m.index);
+        }
+      }
+      for (const at of scrollOpeners) {
+        const tag = /^<([A-Za-z][\w.]*)/.exec(scanContent.slice(at))?.[1];
+        if (!tag) continue;
+        const openEnd = jsxOpeningEnd(scanContent, at);
+        if (/\/\s*$/.test(scanContent.slice(at, openEnd))) continue;
+        const close = closingTagRange(scanContent, tag, openEnd + 1);
+        const body = scanContent.slice(openEnd + 1, close ? close.start : scanContent.length);
+        if (!FILTER_CONTROL.test(body) || HOLDS_2D_CONTENT.test(body)) continue;
+        const lineNo = lineAt(at);
+        if (suppressed("filter-strip-no-scroll", lineNo - 1)) continue;
+        findings.push({
+          file: rel,
+          line: lineNo,
+          rule: "filter-strip-no-scroll",
+          severity: "error",
+          standard: "WCAG 2.2 SC 1.4.10 (Reflow) · @godxjp/ui cardinal rule #51",
+          message: `A sideways-scrolling strip of filters/controls (<${tag}> scrolls on the inline axis around FilterBar/FormField/Select/SearchInput). A filter bar WRAPS at every width and never scrolls sideways: drop the scroller and let <FilterBar> wrap; keep the 2–4 most-used filters inline and put the rest behind ONE "More filters" Button that opens a Sheet (MCP: get_rule 51, get_pattern list-filters).`,
+          snippet: scanContent.slice(at, at + 120).replace(/\s+/g, " "),
+        });
       }
 
       for (const m of scanContent.matchAll(/<(Dialog\.Body|DialogBody)(?=[\s>])[\s\S]*?<\/\1>/g)) {

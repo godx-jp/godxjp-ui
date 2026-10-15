@@ -167,18 +167,19 @@ theme, every tenant scope and every audit in this package.
 import { PageContainer, Flex } from "@godxjp/ui/layout";
 import { Card, CardContent, DataTable } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
-import { Select, SearchInput } from "@godxjp/ui/data-entry";
+import { FilterBar } from "@godxjp/ui/navigation";
 
 export default function InvoicesPage() {
   return (
     <PageContainer title="請求一覧" extra={<Button>請求を作成</Button>}>
       <Flex direction="col" gap="sm">
-        {/* filters sit ABOVE the table they filter */}
-        <Flex direction="row" gap="sm" wrap>
-          <SearchInput aria-label="請求を検索" />
-          <Select width="auto" options={statuses} defaultValue="unpaid" aria-label="状態" />
-          <Button variant="outline">CSV</Button>
-        </Flex>
+        {/* filters sit ABOVE the table they filter, in ONE FilterBar that wraps — never a
+            sideways-scrolling strip (rule #51); many filters → patterns/list-filters.json */}
+        <FilterBar
+          search={{ ariaLabel: "請求を検索", placeholder: "請求を検索" }}
+          filters={[{ value: "status", label: "状態", options: statuses, defaultSelected: "unpaid" }]}
+          actions={<Button variant="outline">CSV</Button>}
+        />
 
         {/* `flush` because DataTable draws its own edges — a padded body double-insets it */}
         <Card>
