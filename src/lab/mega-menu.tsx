@@ -4,6 +4,7 @@ import * as React from "react";
 import { ChevronDown } from "lucide-react";
 
 import { cn } from "../lib/utils";
+import { getActiveElement } from "../lib/active-element";
 import { useTranslation } from "../i18n/use-translation";
 import type {
   MegaMenuGroupProp,
@@ -614,7 +615,7 @@ export const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProp>(function Meg
       closeTimer.current = null;
       const node = rootRef.current;
       // Focus inside the nav outranks the pointer having left it.
-      if (node && node.contains(document.activeElement)) return;
+      if (node && node.contains(getActiveElement(node))) return;
       commitOpen(null);
     }, closeDelay);
   };

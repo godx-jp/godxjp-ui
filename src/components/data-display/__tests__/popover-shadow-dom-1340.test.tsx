@@ -120,8 +120,65 @@ describe("PopoverContent in a shadow root (gh#1340)", () => {
     ) as HTMLElement;
     await user.click(trigger);
 
+    // One press closes it, in both trees — not `[false, true]` (closed on focusout, reopened by
+    // the trigger's click).
+    expect(lightOnOpenChange.mock.calls).toEqual([[false]]);
     expect(onOpenChange.mock.calls).toEqual(lightOnOpenChange.mock.calls);
     expect(shadow.querySelector('[data-testid="view"]') !== null).toBe(lightOpen);
+    cleanup();
+  });
+
+  /*
+   * A search-select / cascader-style panel: its first tabbable is the search input, and opening
+   * must leave focus THERE so the user can type at once. `document.activeElement` is the shadow
+   * host, so the old "did the first tabbable take focus?" check said no and moved focus onto the
+   * panel itself.
+   */
+  it("opening keeps focus on the panel's first input (search-select style)", async () => {
+    const user = userEvent.setup();
+    const dom = mountShadowHost();
+    const view = renderWithUi(
+      <OverlayPortalProvider container={dom.portal}>
+        <Popover>
+          <PopoverTrigger>Pick</PopoverTrigger>
+          <PopoverContent>
+            <input aria-label="Search options" />
+          </PopoverContent>
+        </Popover>
+      </OverlayPortalProvider>,
+      { container: dom.mount },
+    );
+
+    await user.click(dom.shadow.querySelector("button") as HTMLElement);
+
+    const search = dom.shadow.querySelector('input[aria-label="Search options"]');
+    expect(search).not.toBeNull();
+    expect(dom.shadow.activeElement).toBe(search);
+    view.unmount();
+    dom.host.remove();
+    dom.outside.remove();
+  });
+
+  /*
+   * `useOverlayCloseFocus` records the element to restore at open. Reading
+   * `document.activeElement` recorded the shadow HOST, which cannot take focus, so the
+   * synchronous restore did nothing.
+   */
+  it("Escape restores focus to the trigger in the closing turn", async () => {
+    const user = userEvent.setup();
+    const { shadow, cleanup } = setup();
+    // `setup()` mounts it open; close and reopen from the trigger so the restore target is real.
+    const trigger = [...shadow.querySelectorAll("button")].find(
+      (button) => button.textContent === "Notifications",
+    ) as HTMLElement;
+    await user.click(trigger);
+    if (!shadow.querySelector('[data-testid="view"]')) await user.click(trigger);
+    expect(shadow.querySelector('[data-testid="view"]')).not.toBeNull();
+
+    await user.keyboard("{Escape}");
+
+    expect(shadow.querySelector('[data-testid="view"]')).toBeNull();
+    expect(shadow.activeElement).toBe(trigger);
     cleanup();
   });
 

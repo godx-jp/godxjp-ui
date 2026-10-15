@@ -100,9 +100,12 @@ export function shouldHandleShortcut(
   owner?: Element | null,
 ): boolean {
   if (isImeComposing(event) || !shortcutMatches(spec, event)) return false;
-  if (inForeignLayer(event.target, owner)) return false;
+  // The REAL target: on a `document` listener a key typed inside a shadow root arrives retargeted
+  // to the shadow host, which is neither editable nor inside a layer (gh#1340).
+  const target = event.composedPath()[0] ?? event.target;
+  if (inForeignLayer(target, owner)) return false;
   const commandModifier = spec.mod || spec.meta || spec.ctrl || spec.alt;
-  return commandModifier || !isEditableTarget(event.target);
+  return commandModifier || !isEditableTarget(target);
 }
 
 /** The layers a page-level shortcut must not reach through (gh#1267). */

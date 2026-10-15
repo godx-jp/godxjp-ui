@@ -4,6 +4,7 @@ import { chain, mergeRefs } from "@react-aria/utils";
 import { Popover as AriaPopover, type Placement } from "react-aria-components";
 
 import { cn } from "../../lib/utils";
+import { getActiveElement } from "../../lib/active-element";
 import { Slot } from "../../lib/slot";
 import { useOverlayCloseFocus } from "../feedback/overlay-close-focus";
 import type { FlushProp } from "../../props/vocabulary";
@@ -610,7 +611,9 @@ function ClickContent({
        */
       const target = firstTabbable(node);
       target?.focus({ preventScroll: true });
-      if (!node.contains(document.activeElement)) {
+      // Not `document.activeElement`: inside a shadow root it is the HOST, and this branch then
+      // stole focus from the first tabbable onto the panel (gh#1340).
+      if (!node.contains(getActiveElement(node))) {
         node.focus({ preventScroll: true });
       }
     }
@@ -653,6 +656,13 @@ function ClickContent({
       isOpen={root.open}
       onOpenChange={onAriaOpenChange}
       isNonModal={root.isNonModal}
+      /*
+       * The trigger is not "outside". RAC closes a non-modal panel when focus leaves it, and a press
+       * on the trigger moves focus there first — so the panel closed on `focusout`, then the
+       * trigger's own `onClick` read `open === false` and reopened it: `[false, true]`, measured in
+       * Chromium (gh#1340). Leaving the trigger to its click makes one press close it.
+       */
+      shouldCloseOnInteractOutside={(element) => !triggerRef.current?.contains(element)}
       triggerRef={root.anchored ? root.anchorRef : root.triggerRef}
       placement={toPlacement(side, align)}
       offset={sideOffset}
