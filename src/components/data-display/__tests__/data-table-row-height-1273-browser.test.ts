@@ -79,6 +79,12 @@ const cell = {
       {["Edit", "Assign", "Close", "Delete"].map((l) => <Button key={l} size="xs" variant="outline">{l}</Button>)}
     </Flex>
   ),
+  "badge-stack": (
+    <Flex direction="col" gap="none">
+      <Badge>On track</Badge>
+      <Text size="xs">Last 2026/10/06</Text>
+    </Flex>
+  ),
   "tooltip-button-xs": (
     <Tooltip><TooltipTrigger asChild><Button size="xs" variant="ghost">Info</Button></TooltipTrigger><TooltipContent>More</TooltipContent></Tooltip>
   ),
@@ -183,6 +189,30 @@ describe("a wrapping container keeps its lines apart (gh#1273 scope)", { timeout
       Math.max(...rects.filter(([t]) => Math.round(t) === top).map(([, b]) => b));
     for (let i = 1; i < lines.length; i += 1)
       expect(lines[i]!).toBeGreaterThanOrEqual(bottomOf(lines[i - 1]!) - 0.5);
+    await page.close();
+  });
+});
+
+/**
+ * gino-cloud 特定技能届出: a status Badge stacked over a muted date line in `Flex direction="col"`.
+ * The one-wrapper-deep negative margin pulled the date 7.36px up under the Badge. A column stack is
+ * two lines of content — the row grows for it, like the wrapping container above.
+ */
+describe("a column stack keeps its lines apart", { timeout: 60_000 }, () => {
+  it("a Badge over a text line in Flex direction=col does not overlap the text", async () => {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+    await page.goto("about:blank?kind=badge-stack&d=default");
+    await page.setContent(
+      `<!doctype html><html lang="en"><head><style>${css}</style></head><body><div id="root"></div><script>${js}</script></body></html>`,
+    );
+    await page.locator("tbody tr").first().waitFor();
+    const [badgeBottom, textTop] = await page
+      .locator("tbody tr:first-child")
+      .evaluate((row) => [
+        row.querySelector('[data-slot="badge"]')!.getBoundingClientRect().bottom,
+        row.querySelector('[data-slot="badge"] + *')!.getBoundingClientRect().top,
+      ]);
+    expect(textTop).toBeGreaterThanOrEqual(badgeBottom - 0.5);
     await page.close();
   });
 });

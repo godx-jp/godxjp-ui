@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.7.1] - 2026-10-16
+
+### Fixed
+
+- **DataTable: a Badge stacked over a text line no longer overlaps it.** The gh#1273 rule that keeps
+  an inline component on the row's text line (a negative block margin equal to the cell padding)
+  also reached a component one wrapper deep inside `Flex direction="col"`. gino-cloud's 特定技能届出
+  cell — a status Badge over a muted date — drew the date 7.36px up under the Badge. A column stack
+  is two lines of content, so the rule now skips `direction="col"` (and responsive) wrappers, as it
+  already skipped `Flex wrap`.
+
 ## [33.7.0] - 2026-10-16
 
 ### Added
