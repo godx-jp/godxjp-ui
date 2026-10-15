@@ -52,15 +52,15 @@ Import: `import type { TitleProp, GapProp } from "@godxjp/ui/props/vocabulary"`
 
 ## Interaction variants
 
-| Type                 | Values                                                                     |
-| -------------------- | -------------------------------------------------------------------------- |
-| `ButtonVariantProp`  | `default \| destructive \| outline \| secondary \| ghost \| link`          |
-| `ButtonSizeProp`     | `default \| sm \| lg \| icon`                                              |
-| `ConfirmVariantProp` | `default \| destructive`                                                   |
-| `ToneProp`           | `default \| success \| warning \| destructive \| info \| muted \| neutral` |
-| `SortDirectionProp`  | `asc \| desc`                                                              |
-| `ColumnAlignProp`    | `left \| center \| right`                                                  |
-| `SortStateProp`      | `{ key: string; direction: SortDirectionProp }`                            |
+| Type                 | Values                                                                              |
+| -------------------- | ----------------------------------------------------------------------------------- |
+| `ButtonVariantProp`  | `default \| destructive \| outline \| secondary \| ghost \| link`                   |
+| `ButtonSizeProp`     | `default \| xs \| sm \| md \| lg \| icon \| icon-xs \| icon-sm \| icon-lg \| touch` |
+| `ConfirmVariantProp` | `default \| destructive`                                                            |
+| `ToneProp`           | `default \| success \| warning \| destructive \| info \| muted \| neutral`          |
+| `SortDirectionProp`  | `asc \| desc`                                                                       |
+| `ColumnAlignProp`    | `left \| center \| right`                                                           |
+| `SortStateProp`      | `{ key: string; direction: SortDirectionProp }`                                     |
 
 ## Navigation
 

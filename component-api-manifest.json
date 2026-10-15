@@ -2816,7 +2816,18 @@
           "origin": "owned",
           "required": false,
           "type": "ButtonSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "default", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "default",
+            "icon",
+            "icon-xs",
+            "icon-sm",
+            "icon-lg",
+            "touch"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -2966,7 +2977,18 @@
           "origin": "owned",
           "required": false,
           "type": "ButtonSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "default", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "default",
+            "icon",
+            "icon-xs",
+            "icon-sm",
+            "icon-lg",
+            "touch"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -11906,6 +11928,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"md\" | \"touch\" | undefined",
+          "values": ["md", "touch"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
@@ -13113,8 +13143,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | undefined",
-          "values": ["xs", "sm", "md", "lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"touch\" | undefined",
+          "values": ["xs", "sm", "md", "lg", "touch"],
           "declaredIn": ["src/components/data-entry/segmented.tsx"]
         },
         {
@@ -17680,8 +17710,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
-          "values": ["xs", "sm", "md", "lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"touch\" | null | undefined",
+          "values": ["xs", "sm", "md", "lg", "touch"],
           "declaredIn": ["src/components/data-entry/toggle.tsx"]
         },
         {
@@ -17765,8 +17795,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
-          "values": ["xs", "sm", "md", "lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"touch\" | null | undefined",
+          "values": ["xs", "sm", "md", "lg", "touch"],
           "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
@@ -17858,8 +17888,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
-          "values": ["xs", "sm", "md", "lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"touch\" | null | undefined",
+          "values": ["xs", "sm", "md", "lg", "touch"],
           "declaredIn": ["src/components/data-entry/toggle-group.tsx"]
         },
         {
@@ -20041,7 +20071,7 @@
     "buttonVariants": {
       "kind": "function",
       "subpaths": ["./general"],
-      "signature": "(props?: ({ variant?: \"link\" | \"default\" | \"ghost\" | \"destructive\" | \"secondary\" | \"outline\" | \"dashed\" | \"bare\" | null | undefined; size?: \"xs\" | \"sm\" | \"md\" | \"lg\" | \"default\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | null | undefined; shape?: \"default\" | \"pill\" | \"sharp\" | null | undefined; } & import(\"class-variance-authority/types\").ClassProp) | undefined): string",
+      "signature": "(props?: ({ variant?: \"link\" | \"default\" | \"ghost\" | \"destructive\" | \"secondary\" | \"outline\" | \"dashed\" | \"bare\" | null | undefined; size?: \"xs\" | \"sm\" | \"md\" | \"lg\" | \"default\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | \"touch\" | null | undefined; shape?: \"default\" | \"pill\" | \"sharp\" | null | undefined; } & import(\"class-variance-authority/types\").ClassProp) | undefined): string",
       "declaredIn": ["src/components/general/button.tsx"]
     },
     "CHART_COLORS": {

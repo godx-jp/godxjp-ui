@@ -107,6 +107,7 @@ function SizeBlock() {
             <ButtonRefetch query={query} size="md" label="md" />
             <ButtonRefetch query={query} size="default" label="default" />
             <ButtonRefetch query={query} size="lg" label="lg" />
+            <ButtonRefetch query={query} size="touch" label="touch" />
           </Flex>
           <Flex direction="row" gap="sm" wrap>
             <ButtonRefetch query={query} size="icon-xs" label={null} aria-label="更新 icon-xs" />

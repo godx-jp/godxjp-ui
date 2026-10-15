@@ -281,8 +281,14 @@ export type AppSettingCycleAppearanceProp = "bar" | "icon";
 /** Button size preset. */
 export type SizeProp = "xs" | "sm" | "md" | "lg";
 
-/** Button size preset; icon-only sizes are a documented Button subset. */
-export type ButtonSizeProp = SizeProp | "default" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
+/**
+ * Button size preset; icon-only sizes are a documented Button subset. `touch` (gh#1304) is the
+ * glove step — at least 56×56 CSS px (`--control-height-touch`) for wet or gloved hands; it is
+ * shared with Segmented, Toggle/ToggleGroup and `RadioGroup optionType="button"`, and is NOT a
+ * member of `SizeProp`, so a control that cannot honour it does not type-check it.
+ */
+export type ButtonSizeProp =
+  SizeProp | "default" | "icon" | "icon-xs" | "icon-sm" | "icon-lg" | "touch";
 
 /**
  * Validation state a data-entry control PAINTS — Ant Design's `status` axis, which

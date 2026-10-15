@@ -1034,6 +1034,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--control-height-touch",
+    "value": "var(--band-height-3xl)",
+    "description": "THE GLOVE TIER (gh#1304) — `size=\"touch\"` on Button, Segmented, Toggle/ToggleGroup and `RadioGroup optionType=\"button\"`. 56px: wet or gloved hands at a food-production station need more than the 44px WCAG 2.2 SC 2.5.5 target, so this sits one band above `--number-input-touch-height`. A band, NOT derived from `--control-height` — not by density, not by a shell's tier — because the floor is the hand's, not the layout's."
+  },
+  {
     "name": "--control-padding-x",
     "value": "var(--control-padding-x-default)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -1147,6 +1152,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--number-input-touch-height",
     "value": "var(--band-height-2xl)",
     "description": "THE BAND A NumberInput TAKES ON A COARSE POINTER, and the one control in this package that needs a taller one than rule #24's 44px floor. Its two steppers are STACKED inside the field, so each can only ever be half the band. Measured in Chromium (Playwright touch emulation, `(pointer: coarse)` matching) before this token: the default NumberInput was 44px and each stepper **24×19px**, with their centres 20px apart. WCAG 2.2 SC 2.5.8 wants 24×24, and the Spacing exception does not rescue it either — that needs 24px-diameter circles centred on each box NOT to intersect, and at 20px apart they do. 44px cannot be made to work: half of it is 22px whatever the inset and gap. 48px can, exactly — two 24px halves, no inset, no gap — so the band moves up one step for this control alone, and only where a coarse pointer says it matters. `size=\"lg\"` already lands on 48px there, so it gains the same 24×24 for free; `xs` and `sm` stay where the consumer put them (a deliberately smaller control is the consumer's trade, the same way rule #24 already treats them). A service that wants the 44px row back sets this to `var(--band-height-xl)` and takes 22px targets with it."
+  },
+  {
+    "name": "--control-touch-gap",
+    "value": "var(--space-2)",
+    "description": "`size=\"touch\"` (gh#1304). The SPACE between two glove targets: ToggleGroup items, Segmented segments and the buttons of a `RadioGroup optionType=\"button\"` bar stand this far apart at the touch step (8px), so a gloved press on one edge cannot land on the neighbour. Button has no siblings of its own — lay a row of touch Buttons out with a gap of at least this."
+  },
+  {
+    "name": "--button-touch-space-inline",
+    "value": "var(--space-6)",
+    "description": "Button's inline inset at the touch step — one rung under `lg`'s, because a touch Button is usually a short verdict (良 / 否) and its 56px min-inline-size already makes the box."
   },
   {
     "name": "--control-variant-filled-background",

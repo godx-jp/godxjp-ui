@@ -380,6 +380,16 @@ export default function Demo() {
                   <ToggleGroupItem value="year">年次</ToggleGroupItem>
                 </ToggleGroup>
               </Flex>
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  size=&quot;touch&quot;
+                </Text>
+                <ToggleGroup type="single" size="touch" defaultValue="day">
+                  <ToggleGroupItem value="day">日次</ToggleGroupItem>
+                  <ToggleGroupItem value="month">月次</ToggleGroupItem>
+                  <ToggleGroupItem value="year">年次</ToggleGroupItem>
+                </ToggleGroup>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>
