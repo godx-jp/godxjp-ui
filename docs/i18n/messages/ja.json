@@ -1845,5 +1845,24 @@
     "logOut": "ログアウト",
     "body": "検索はこのタイトルと同じ線から始まります。640px 未満では検索ボタンに畳まれ、押すとバー全体に入力欄が開きます。Escape で閉じ、フォーカスはボタンに戻ります。アカウントのセルはアバターだけになり、名前はメニューの中に移ります。",
     "lastQuery": "最後の検索"
+  },
+  "heatmapChartDocs": {
+    "title": "店舗パフォーマンス",
+    "subtitle": "全42店舗・直近4週間・税込",
+    "weekRevenue": "週間売上",
+    "weekOrders": "週間注文数",
+    "peakSlot": "最繁忙時間帯",
+    "stores": "集計対象店舗",
+    "revenueTitle": "曜日×時間帯の売上",
+    "revenueHint": "1週間あたりの平均。3:00〜10:00は閉店中のためデータなし。上位3枠を枠線で強調。",
+    "ordersTitle": "曜日×時間帯の注文数",
+    "ordersHint": "時間帯ごとの伝票数（コンパクトなセル）。",
+    "newStoreTitle": "新宿南口店（木曜オープン）",
+    "newStoreHint": "オープン前の曜日はデータなし。売上ゼロとは区別して表示します。",
+    "sizesTitle": "セルサイズ",
+    "sizesHint": "size でセルの段階 xs・sm・md・lg（--chart-heatmap-cell-size-*）を選びます。金〜日のディナー帯。",
+    "emptyTitle": "データ未登録",
+    "emptyHint": "POS 未連携の店舗は空状態を表示します。",
+    "emptyMessage": "この店舗の売上データはまだありません"
   }
 }

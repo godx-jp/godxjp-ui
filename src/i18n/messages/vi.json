@@ -762,7 +762,14 @@
     "summaryCartesian": "Biểu đồ gồm {series} chuỗi trên {points} điểm dữ liệu",
     "summaryPie": "Biểu đồ tròn gồm {slices} phần",
     "summaryTrend": "Biểu đồ cột xu hướng gồm {points} điểm dữ liệu",
-    "trendCurrent": "hiện tại"
+    "trendCurrent": "hiện tại",
+    "heatmapSummary": "Bản đồ nhiệt {rows} × {columns}",
+    "heatmapHighest": "Cao nhất: {value} tại {row}, {column}",
+    "heatmapNoData": "Không có dữ liệu",
+    "heatmapTop": "Hạng {rank}",
+    "heatmapLegend": "Thang màu",
+    "heatmapLegendTop": "{count} ô cao nhất",
+    "heatmapCell": "{row}, {column}: {value}"
   },
   "rangeTimeline": {
     "childRows": "Hàng con",

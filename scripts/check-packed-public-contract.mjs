@@ -117,6 +117,12 @@ const contracts = [
       "dist/components/charts/compact-bar-trend.d.ts",
     ],
   },
+  {
+    subpath: "./charts/heatmap-chart",
+    runtime: ["HeatmapChart"],
+    types: ["HeatmapChartProp", "HeatmapChartProps", "HeatmapCategory", "HeatmapDatum"],
+    files: ["dist/components/charts/heatmap-chart.js", "dist/components/charts/heatmap-chart.d.ts"],
+  },
   // Per-chart entries, so a screen that needs ONE recharts-backed chart does not link the whole
   // family through the `./charts` barrel (gh#409 · 6: importing BarChart pulled PieChart in).
   {

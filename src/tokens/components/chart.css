@@ -89,3 +89,42 @@
   /* Dash pattern of the cartesian background grid (any `stroke-dasharray` value; `none` = solid). */
   --chart-grid-line-dash: 3 3;
 }
+
+/* ── HeatmapChart (gh#1330) ─────────────────────────────────────────────────────────────
+ * A rows × columns matrix (weekday × hour) whose cell fill steps through the foundation
+ * `--chart-heat-1..5` ramp. Geometry and the two non-colour cues are knobs here; the ramp itself
+ * is a foundation primitive beside `--chart-1..6`, so one override retints every heatmap.
+ *
+ * `size` on HeatmapChart picks the CELL tier (not a canvas height as on the cartesian charts): the
+ * matrix is as tall as its rows, and a cell never shrinks below its tier — when the columns do not
+ * fit, the matrix scrolls inside its own box with the row header pinned (see chart-layout.css). */
+:root {
+  /* Minimum cell edge per tier. `xs` is still 24px — a cell is a hover/focus target (WCAG 2.5.8). */
+  --chart-heatmap-cell-size-xs: 1.5rem;
+  --chart-heatmap-cell-size-sm: 1.75rem;
+  --chart-heatmap-cell-size-md: 2rem;
+  --chart-heatmap-cell-size-lg: 2.5rem;
+  /* Active tier — chart-layout.css re-points this per `data-size`. */
+  --chart-heatmap-cell-size: var(--chart-heatmap-cell-size-md);
+  /* Surface gap between neighbouring cells (the table's border-spacing). */
+  --chart-heatmap-cell-gap: var(--stroke-md);
+  --chart-heatmap-cell-radius: initial; /* default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)), resolved at the call site */
+  /* EMPTY cell outline — the non-colour cue that tells "no data" from a zero (WCAG 1.4.1).
+   * Role-mirror knob, `initial` at :root; default at the call site =
+   * `var(--stroke-hairline) dashed hsl(var(--muted-foreground))`. */
+  --chart-heatmap-empty-border: initial;
+  /* Top-N emphasis ring — a SHAPE cue, never colour alone. Colour is a role-mirror knob
+   * (default `hsl(var(--foreground))` at the call site); width is a plain constant. */
+  --chart-heatmap-emphasis-border: initial;
+  --chart-heatmap-emphasis-width: var(--stroke-md);
+  /* The pinned row-header column paints over cells scrolled beneath it, so it needs a ground.
+   * Role-mirror knob; default = `hsl(var(--card))` at the call site. */
+  --chart-heatmap-row-header-background: initial;
+  --chart-heatmap-tick-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  /* Legend rhythm: the swatch edge and the gap between legend items / plot ↔ legend. */
+  --chart-heatmap-legend-swatch-size: var(--space-3);
+  --chart-heatmap-legend-gap: var(--space-2);
+}

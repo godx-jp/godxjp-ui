@@ -215,3 +215,176 @@
 .ui-chart-canvas [tabindex="-1"]:focus:not(:focus-visible) {
   outline: none;
 }
+
+/* HeatmapChart (gh#1330) — a rows × columns matrix, dependency-free.
+ *
+ * NARROW SCREENS: the matrix scrolls inside its own box and the row header stays pinned. Folding
+ * was rejected: a weekday × hour heatmap is read ACROSS the row (the lunch peak, the dinner peak),
+ * and splitting 24 hours into two stacked half-days at 390px breaks exactly that comparison. A cell
+ * never shrinks below its `size` tier, so 24 columns at `md` need ~800px; below that the box
+ * scrolls, the page does not. Every cell is focusable, so the scrollport is keyboard-reachable
+ * without an extra tab stop. */
+.ui-chart-heatmap[data-size="xs"] {
+  --chart-heatmap-cell-size: var(--chart-heatmap-cell-size-xs);
+}
+
+.ui-chart-heatmap[data-size="sm"] {
+  --chart-heatmap-cell-size: var(--chart-heatmap-cell-size-sm);
+}
+
+.ui-chart-heatmap[data-size="md"] {
+  --chart-heatmap-cell-size: var(--chart-heatmap-cell-size-md);
+}
+
+.ui-chart-heatmap[data-size="lg"] {
+  --chart-heatmap-cell-size: var(--chart-heatmap-cell-size-lg);
+}
+
+.ui-chart-heatmap-scroll {
+  inline-size: 100%;
+  min-inline-size: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.ui-chart-heatmap-grid {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: var(--chart-heatmap-cell-gap);
+  font-size: var(--chart-heatmap-tick-font-size);
+  line-height: var(--line-height-normal);
+}
+
+.ui-chart-heatmap-column-header,
+.ui-chart-heatmap-row-header {
+  padding: 0;
+  font-weight: var(--font-weight-normal);
+  color: hsl(var(--muted-foreground));
+  white-space: nowrap;
+}
+
+.ui-chart-heatmap-column-header {
+  text-align: center;
+}
+
+/* The pinned row header — it paints over the cells that scroll beneath it, so it has a ground. */
+.ui-chart-heatmap-row-header {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  inline-size: 1%;
+  padding-inline-end: var(--space-2);
+  text-align: start;
+  background: var(--chart-heatmap-row-header-background, hsl(var(--card)));
+}
+
+.ui-chart-heatmap-corner {
+  padding: 0;
+}
+
+.ui-chart-heatmap-cell {
+  min-inline-size: var(--chart-heatmap-cell-size);
+  inline-size: var(--chart-heatmap-cell-size);
+  block-size: var(--chart-heatmap-cell-size);
+  padding: 0;
+  /* A transparent border of the empty-outline's width keeps every cell the same box. */
+  border: var(--stroke-hairline) solid transparent;
+  border-radius: var(
+    --chart-heatmap-cell-radius,
+    calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+  );
+}
+
+.ui-chart-heatmap-cell[data-step="1"],
+.ui-chart-heatmap-legend-swatch[data-step="1"] {
+  background: var(--chart-heat-1);
+}
+
+.ui-chart-heatmap-cell[data-step="2"],
+.ui-chart-heatmap-legend-swatch[data-step="2"] {
+  background: var(--chart-heat-2);
+}
+
+.ui-chart-heatmap-cell[data-step="3"],
+.ui-chart-heatmap-legend-swatch[data-step="3"] {
+  background: var(--chart-heat-3);
+}
+
+.ui-chart-heatmap-cell[data-step="4"],
+.ui-chart-heatmap-legend-swatch[data-step="4"] {
+  background: var(--chart-heat-4);
+}
+
+.ui-chart-heatmap-cell[data-step="5"],
+.ui-chart-heatmap-legend-swatch[data-step="5"] {
+  background: var(--chart-heat-5);
+}
+
+/* EMPTY ≠ ZERO, and not by colour: no fill and a dashed outline (WCAG 1.4.1). */
+.ui-chart-heatmap-cell[data-empty],
+.ui-chart-heatmap-legend-swatch[data-empty] {
+  background: transparent;
+  border: var(
+    --chart-heatmap-empty-border,
+    var(--stroke-hairline) dashed hsl(var(--muted-foreground))
+  );
+}
+
+/* Top-N: a ring with a surface-coloured inner keyline, so it reads on the lightest and the darkest
+ * step alike — a shape cue, not a hue. */
+.ui-chart-heatmap-cell[data-emphasized],
+.ui-chart-heatmap-legend-swatch[data-emphasized] {
+  box-shadow:
+    inset 0 0 0 var(--chart-heatmap-emphasis-width)
+      var(--chart-heatmap-emphasis-border, hsl(var(--foreground))),
+    inset 0 0 0 calc(var(--chart-heatmap-emphasis-width) * 2) hsl(var(--card));
+}
+
+.ui-chart-heatmap-tooltip {
+  display: flex;
+  flex-direction: column;
+}
+
+.ui-chart-heatmap-tooltip-title {
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-chart-heatmap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--chart-heatmap-legend-gap) calc(var(--chart-heatmap-legend-gap) * 2);
+  font-size: var(--chart-heatmap-tick-font-size);
+  line-height: var(--line-height-normal);
+  color: hsl(var(--muted-foreground));
+}
+
+.ui-chart-heatmap-legend-scale,
+.ui-chart-heatmap-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--chart-heatmap-legend-gap);
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-chart-heatmap-legend-ramp {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-chart-heatmap-legend-swatch {
+  display: inline-block;
+  inline-size: calc(var(--chart-heatmap-legend-swatch-size) * 1.5);
+  block-size: var(--chart-heatmap-legend-swatch-size);
+  border: var(--stroke-hairline) solid transparent;
+}
+
+.ui-chart-heatmap-legend-item > .ui-chart-heatmap-legend-swatch {
+  inline-size: var(--chart-heatmap-legend-swatch-size);
+  border-radius: var(
+    --chart-heatmap-cell-radius,
+    calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+  );
+}

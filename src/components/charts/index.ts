@@ -9,6 +9,14 @@ export type { BarChartProp, BarChartProps } from "./bar-chart";
  */
 export { CompactBarTrend } from "./compact-bar-trend";
 export type { CompactBarTrendProp, CompactBarTrendProps } from "./compact-bar-trend";
+/** Dependency-free rows × columns heatmap — isolated entry `@godxjp/ui/charts/heatmap-chart`. */
+export { HeatmapChart } from "./heatmap-chart";
+export type {
+  HeatmapChartProp,
+  HeatmapChartProps,
+  HeatmapCategory,
+  HeatmapDatum,
+} from "./heatmap-chart";
 export { AreaChart } from "./area-chart";
 export type { AreaChartProp, AreaChartProps } from "./area-chart";
 export { PieChart } from "./pie-chart";

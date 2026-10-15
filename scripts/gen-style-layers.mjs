@@ -134,6 +134,7 @@ const OWNERS = {
     "Popover",
     "Tooltip",
     "TwoFactorSetup",
+    "HeatmapChart",
     "DropdownMenu",
   ],
   "alert-layout.css": ["Alert", "Toaster", "Skeleton"],
@@ -172,7 +173,14 @@ const OWNERS = {
     "AppSettingPicker",
     "DropdownMenu",
   ],
-  "chart-layout.css": ["LineChart", "BarChart", "AreaChart", "PieChart", "CompactBarTrend"],
+  "chart-layout.css": [
+    "LineChart",
+    "BarChart",
+    "AreaChart",
+    "PieChart",
+    "CompactBarTrend",
+    "HeatmapChart",
+  ],
   "float-button-layout.css": ["FloatButton"],
   "icon-layout.css": ["Icon"],
 };

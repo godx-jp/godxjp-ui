@@ -59,9 +59,13 @@ const DEFAULT_DELAY_DURATION = 200;
  * Anchors `TooltipContent` to an element that is NOT a `TooltipTrigger` (gh#1045). `TooltipTrigger`
  * wraps its child in RAC's `Focusable`, which stamps `tabIndex=0` on it — right for a button, wrong for a truncated `Text` inside a `treeitem`, where it
  * would add a second tab stop. The ellipsis tooltip drives `open` itself and hands its own element
- * here as the positioning target (RAC `Tooltip`'s `triggerRef`).
+ * here as the positioning target (RAC `Tooltip`'s `triggerRef`). HeatmapChart (gh#1330) does the
+ * same with ONE tooltip for its whole grid, anchored to the active cell. Module-internal: not in
+ * the feedback index.
  */
-const TooltipAnchorContext = React.createContext<React.RefObject<Element | null> | null>(null);
+export const TooltipAnchorContext = React.createContext<React.RefObject<Element | null> | null>(
+  null,
+);
 
 /** `side` + `align` của Radix → `placement` của RAC (trục ngang chỉ nhận `top`/`bottom`). */
 function toPlacement(side: Side, align: Align): Placement {

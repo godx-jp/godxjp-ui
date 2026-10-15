@@ -1845,5 +1845,24 @@
     "logOut": "Đăng xuất",
     "body": "Ô tìm kiếm bắt đầu cùng hàng với tiêu đề này. Dưới 640px nó thu thành nút tìm kiếm, mở ô nhập phủ cả thanh; Escape đóng lại và trả tiêu điểm về nút. Ô tài khoản khi đó chỉ hiện ảnh đại diện, tên chuyển vào menu.",
     "lastQuery": "Lần tìm gần nhất"
+  },
+  "heatmapChartDocs": {
+    "title": "Hiệu quả cửa hàng",
+    "subtitle": "Toàn bộ 42 cửa hàng · 4 tuần gần nhất · đã gồm thuế",
+    "weekRevenue": "Doanh thu tuần",
+    "weekOrders": "Số đơn tuần",
+    "peakSlot": "Khung giờ đông nhất",
+    "stores": "Cửa hàng báo cáo",
+    "revenueTitle": "Doanh thu theo thứ và giờ",
+    "revenueHint": "Trung bình mỗi tuần. Cửa hàng đóng cửa 03:00–10:00 nên các ô đó không có dữ liệu; ba khung giờ đông nhất được viền.",
+    "ordersTitle": "Số đơn theo thứ và giờ",
+    "ordersHint": "Số hóa đơn mỗi khung giờ, ô cỡ nhỏ.",
+    "newStoreTitle": "Shinjuku South (khai trương thứ Năm)",
+    "newStoreHint": "Các ngày trước khai trương không có dữ liệu — khác với không có doanh thu.",
+    "sizesTitle": "Kích thước ô",
+    "sizesHint": "size chọn bậc ô xs · sm · md · lg (--chart-heatmap-cell-size-*). Khung giờ tối, thứ Sáu đến Chủ nhật.",
+    "emptyTitle": "Chưa có dữ liệu",
+    "emptyHint": "Cửa hàng chưa đồng bộ POS sẽ hiện trạng thái trống.",
+    "emptyMessage": "Cửa hàng này chưa gửi doanh thu nào"
   }
 }

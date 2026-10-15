@@ -15632,6 +15632,130 @@ import { Text } from "@godxjp/ui/general";
     rules: [],
   },
   {
+    name: "HeatmapChart",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts/heatmap-chart",
+    tagline:
+      "DEPENDENCY-FREE rows × columns heatmap — weekday × hour revenue / order counts, cell intensity from the sequential CVD-safe --chart-heat-1..5 ramp. Empty ≠ zero (dashed outline + 'no data' text), optional top-N ring, per-cell tooltip, APG grid keyboard, the table itself is the text alternative. Needs NO recharts. Matrix / punch card / activity heatmap / busy-hours chart.",
+    props: [
+      {
+        name: "rows",
+        type: "{ key: string | number; label: string }[]",
+        required: true,
+        description:
+          "Row categories, top to bottom (the y axis — weekdays). `label` is already translated.",
+      },
+      {
+        name: "columns",
+        type: "{ key: string | number; label: string }[]",
+        required: true,
+        description:
+          "Column categories, start to end (the x axis — hours). `label` is already translated.",
+      },
+      {
+        name: "data",
+        type: "{ row: string | number; column: string | number; value: number | null | undefined }[]",
+        required: true,
+        description:
+          "Cell values keyed by row + column key. A cell that is absent, null, undefined or NaN is EMPTY ('no data') — never painted as a zero.",
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Accessible name of the figure and its grid + visible caption.",
+      },
+      {
+        name: "showCaption",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Paint `label` as a visible caption. Set false under a CardTitle that already says it — the caption stays sr-only so the grid keeps its name.",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Extra context prepended to the screen-reader summary.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "CELL size tier (--chart-heatmap-cell-size-*: 24/28/32/40px) — not a canvas height. A cell never shrinks below it; when the columns do not fit, the matrix scrolls inside its own box with the row header pinned.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        description:
+          "Locale-aware formatting for cell values, the tooltip, the legend ranges and the summary (e.g. `{ style: 'currency', currency: 'JPY' }`).",
+      },
+      {
+        name: "topN",
+        type: "number",
+        description:
+          "Emphasize the N highest cells with an outline ring plus a 'Top k' note in the tooltip, the cell text and the legend — never colour alone. Ties keep `data` order.",
+      },
+      {
+        name: "showLegend",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Colour-scale legend (min … max, one readable range per swatch) plus the 'no data' and 'top N' keys when they apply.",
+      },
+      {
+        name: "emptyMessage",
+        type: "string",
+        description: "Shown when there are no rows, no columns or no cells with a value.",
+      },
+      {
+        name: "ref",
+        type: "React.Ref<HTMLElement>",
+        description: "Forwarded to the <figure> element.",
+      },
+    ],
+    usage: [
+      'DO import from the isolated entry: `import { HeatmapChart } from "@godxjp/ui/charts/heatmap-chart";` — it never links the optional `recharts` peer.',
+      "DO derive axis labels with Intl in the active locale — weekdays via `Intl.DateTimeFormat(locale, { weekday: 'short' })`, hours via `Intl.NumberFormat(locale)` — and pass money through `numberFormat`, never a hand-built '¥' string.",
+      "DO leave a slot OUT of `data` (or pass `value: null`) when there is no measurement — a closed hour, a day before the store opened. Pass `0` only for a real zero. The two render differently (dashed outline vs filled) and read differently ('No data' vs '¥0').",
+      "DO use `topN` to call out the peak slots; the ring is a shape and the rank is text, so the emphasis survives greyscale and colour-vision deficiency.",
+      "DO retheme through the tokens: the ramp is the foundation `--chart-heat-1..5` (light + dark), geometry and cues are `--chart-heatmap-*`. NEVER tint cells from the app, add page CSS, or fake the matrix with a styled Table.",
+      'DON\'T add a separate sr-only table: the matrix IS a native data table with `role="grid"` and header cells, so the visible chart and its text alternative cannot drift apart.',
+      "DON'T use it for a continuous series over time (LineChart / AreaChart) or one row of values (CompactBarTrend).",
+    ],
+    useCases: [
+      "Restaurant / retail HQ: revenue or order count by weekday × hour across the chain (POS busy-hours).",
+      "Support desk: ticket volume by weekday × hour, to plan staffing.",
+      "Any categorical matrix where intensity matters more than the exact figure: store × week, region × product.",
+    ],
+    related: [
+      "CompactBarTrend — one row of values; the other dependency-free chart.",
+      "BarChart — exact comparison across a single category axis (recharts peer).",
+      "DataTable — when the reader needs to sort, filter or read exact numbers first.",
+    ],
+    example: `import { HeatmapChart } from "@godxjp/ui/charts/heatmap-chart";
+import { useTranslation } from "@godxjp/ui/i18n";
+
+const { t, locale } = useTranslation();
+const weekday = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
+const rows = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map((key, day) => ({
+  key,
+  label: weekday.format(new Date(Date.UTC(2024, 0, 1 + day))), // 2024-01-01 is a Monday
+}));
+const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new Intl.NumberFormat(locale).format(hour) }));
+
+<HeatmapChart
+  label={t("dashboard.revenueByHour")}
+  rows={rows}
+  columns={columns}
+  data={slots /* [{ row: "fri", column: 19, value: 48000 }, …] — omit closed hours */}
+  numberFormat={{ style: "currency", currency: "JPY" }}
+  topN={3}
+/>`,
+    storyPath: "charts/heatmap-chart.tsx",
+    rules: [],
+  },
+  {
     name: "AreaChart",
     group: "data-display",
     importPath: "@godxjp/ui/charts",
