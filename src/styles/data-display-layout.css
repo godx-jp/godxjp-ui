@@ -4236,7 +4236,7 @@
     display: inline-block;
     max-inline-size: 100%;
     padding: 0;
-    border: 0;
+    border-width: 0; /* width only, keep the theme border colour (gh#1344) */
     border-radius: var(--image-radius, var(--radius));
     background: none;
     color: inherit;
