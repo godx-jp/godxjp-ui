@@ -714,6 +714,11 @@
   },
   {
     "group": "data-display",
+    "name": "HeatmapChart",
+    "tagline": "DEPENDENCY-FREE rows × columns heatmap — weekday × hour revenue / order counts, cell intensity from the sequential CVD-safe --chart-heat-1..5 ramp. Empty ≠ zero (dashed outline + 'no data' text), optional top-N ring, per-cell tooltip, APG grid keyboard, the table itself is the text alternative. Needs NO recharts. Matrix / punch card / activity heatmap / busy-hours chart."
+  },
+  {
+    "group": "data-display",
     "name": "AreaChart",
     "tagline": "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot."
   },

@@ -38,6 +38,9 @@
     "scripts/visual-audit-rules.mjs",
     "scripts/brand-accent.generated.mjs",
     "scripts/audit-hook.mjs",
+    "scripts/agent-guard.mjs",
+    "scripts/user-guard.mjs",
+    "scripts/mcp-call.mjs",
     "scripts/init-agent-kit.mjs",
     "scripts/init-guinea-pig.mjs",
     "scripts/guinea-pig-skill.md",
@@ -121,6 +124,10 @@
     "./charts/compact-bar-trend": {
       "types": "./dist/components/charts/compact-bar-trend.d.ts",
       "import": "./dist/components/charts/compact-bar-trend.js"
+    },
+    "./charts/heatmap-chart": {
+      "types": "./dist/components/charts/heatmap-chart.d.ts",
+      "import": "./dist/components/charts/heatmap-chart.js"
     },
     "./charts/line-chart": {
       "types": "./dist/components/charts/line-chart.d.ts",

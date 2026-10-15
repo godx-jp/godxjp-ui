@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * @godxjp/ui CLI — `npx @godxjp/ui <command>`.
- *   init-agent     scaffold the agent forcing-kit (MCP + auto-audit hook + mandate)
+ *   init-agent     scaffold the agent forcing-kit (MCP + auto-audit hook + mandate); --user: guard
+ *   mcp-call       query the godx-ui catalog over plain stdio, for a session without the MCP
  *   sync-rules     write/refresh package-owned agent rules (--dry-run previews)
  *   audit          static UI audit (regex over source)
  *   visual-audit   runtime audit (Playwright) against a running app, at six widths
@@ -17,6 +18,7 @@ const MAP = {
   "init-agent": "init-agent-kit.mjs",
   audit: "ui-audit.mjs",
   "audit-hook": "audit-hook.mjs",
+  "mcp-call": "mcp-call.mjs",
   "visual-audit": "visual-audit.mjs",
   "prune-css": "prune-css.mjs",
   codemod: "codemod.mjs",
@@ -32,7 +34,18 @@ const HELP = {
     .claude/settings.json      a PostToolUse hook that audits every Write/Edit of a .tsx file
     .claude/godxjp-ui-workflow.md
     CLAUDE.md                  the godxjp-ui mandate block
-  Idempotent. Refuses inside the @godxjp/ui repo itself. Restart the agent afterwards.`,
+  Idempotent. Refuses inside the @godxjp/ui repo itself. Restart the agent afterwards.
+
+    --user   install the USER-level guard instead (gh#1324), for sessions that start outside the
+             app: the project files above load only when Claude Code starts in the app, so a
+             session started elsewhere has no MCP, no CLAUDE.md and no audit hook. Writes
+               ~/.claude/hooks/godxjp-ui-guard.mjs   ($CLAUDE_CONFIG_DIR/hooks when set)
+               ~/.claude/settings.json               PreToolUse + PostToolUse on Write|Edit|MultiEdit
+             PreToolUse blocks a .tsx/.jsx write in a repo whose .mcp.json mounts @godxjp/ui-mcp
+             until the agent has consulted the catalog (an mcp__<key>__* call, or mcp-call).
+             PostToolUse runs that repo's audit hook when the session did not start there.
+             Merges into existing settings, idempotent, no network; the guard fails open on its
+             own errors. Remove the two entries and the file to uninstall.`,
   "sync-rules": `godxjp-ui sync-rules
 
   Refresh the package-owned agent files for the installed @godxjp/ui version: the godx-ui entry in
@@ -60,6 +73,14 @@ const HELP = {
     --rules         print the rule catalog as JSON and exit
     --consumer      inside the @godxjp/ui repo only: apply the consumer rules (always on in an app)
   Pre-commit:  npx godxjp-ui audit resources/js || exit 1`,
+  "mcp-call": `godxjp-ui mcp-call [tool] ['{"arg":"value"}']
+
+  Query the godx-ui catalog without an MCP client — for a session that did not load the app's
+  .mcp.json. Launches the app's own .mcp.json catalog entry (the pinned @godxjp/ui-mcp, its env)
+  with \`call <tool> <json>\` appended, so the text is what the MCP tool returns. No tool: list them.
+    npx --no-install @godxjp/ui mcp-call search_components '{"query":"settings page"}'
+    npx --no-install @godxjp/ui mcp-call get_component '{"name":"Segmented"}'
+  Network: as the MCP itself — npx may fetch the pinned server once on a cold cache.`,
   "audit-hook": `godxjp-ui audit-hook
 
   The Claude Code PostToolUse hook init-agent wires in: reads the hook payload on stdin and audits
@@ -114,6 +135,8 @@ const USAGE = `usage: godxjp-ui <command> [args]
 
 commands:
   init-agent     install the agent forcing-kit (MCP + auto-audit hook + CLAUDE.md mandate)
+                 --user: the user-level guard for sessions started outside the app
+  mcp-call       query the godx-ui catalog over plain stdio (no MCP client needed)
   sync-rules     write/refresh package-owned agent rules (--dry-run previews)
   audit          static UI audit over source
   audit-hook     the per-edit audit hook (wired by init-agent)

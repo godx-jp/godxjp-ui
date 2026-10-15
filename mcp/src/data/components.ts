@@ -723,7 +723,7 @@ export const COMPONENTS: ComponentEntry[] = [
         name: "toolbar",
         type: "ReactNode",
         description:
-          'FIXED chrome band between the page header and the body — a filter strip, a status bar, a "channel workflow" rail. It is a SIBLING of the body, not content inside it: with `fill` the body is the scroll viewport, so the band is `flex: none` OUTSIDE the scroller and never scrolls away or gets slid under. Shares the page gutters and the `measure` cap with the header and the body (the three bands line up on both edges), goes full-bleed under variant="flush" (wrap padded strips in PageContainer.Inset), and renders NOTHING when omitted — no wrapper, no gap. It sits FLUSH against the header above and the body below: chrome is attached, not a third page section floating between two voids, so the band cancels the container gap from itself and its ONLY breathing room is its own inset.',
+          'FIXED chrome band between the page header and the body — a filter strip, a status bar, a "channel workflow" rail. It is a SIBLING of the body, not content inside it: with `fill` the body is the scroll viewport, so the band is `flex: none` OUTSIDE the scroller and never scrolls away or gets slid under. Shares the page gutters and the `measure` cap with the header and the body (the three bands line up on both edges), goes full-bleed under variant="flush" (wrap padded strips in PageContainer.Inset), and renders NOTHING when omitted — no wrapper, no gap. Its BOX sits FLUSH against the header above and the body below (chrome is attached, not a third page section floating between two voids, so the band cancels the container gap from itself), and by default its inset gives the band\'s CONTENT that gap back: a plain filter strip (a Segmented, a row of filters) sits one band gap from the header and from the body (gh#1323 — it used to touch both, 0px). A theme that paints or rules the band sets a tighter inset with `--page-toolbar-pad-block`.',
       },
       {
         name: "footer",
@@ -850,7 +850,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "DO: Use `toolbar` for any FIXED strip that belongs between the page header and the page content — a filter/segment bar, a status or connection band, a list's bulk-action rail. DON'T put it in `children` (with `fill` the body is the scroller, so it scrolls out of sight) and NEVER hand-lay it with `position: sticky` / a `top-0 z-10` wrapper at the call site: page chrome is the shell's job, and a sticky strip still lets content flow underneath it — the half-sliced row every hand-rolled version produces. It stays out of the scroll viewport, inherits the page gutters and the `measure` cap so it lines up with the title and the body, and is entirely absent from the DOM when the prop is omitted.",
       "DO: Know the `toolbar` band draws NO bottom rule by default — `--page-toolbar-divider` is unset and falls back to `--page-header-divider` (itself `none`), so a service that opts into the page-header divider gets a consistent band rule in ONE declaration, and `--page-toolbar-divider: none` silences just the band. `variant='ghost'` keeps both quiet unless a theme opts one in explicitly, which it then lets through.",
       "DO: Give the `toolbar` band its own SURFACE from the theme when the design separates it from the page ground — `--page-toolbar-background: hsl(var(--card));` declared once (`:root` or a scoped `[data-tenant]`) paints the whole band, page gutters and `measure` cap included, and stays re-themeable per tenant. It is the `background` shorthand, so a gradient works too. The default is `transparent`, i.e. the band looks exactly as it did before the knob existed (rule #44).",
-      "DO: Set `--page-toolbar-pad-block` in the SAME theme declaration that paints or rules the band. It is the band's ONLY breathing room: the band sits FLUSH against the header and the body (chrome is attached — a ruled, painted band adrift in two 16px voids divides nothing), so there is no outside space to tune. The default is `0` and stays `0`: a transparent band is not a surface and has no inside for an inset to breathe, and under `fill` every pixel of band height comes straight off the scroll viewport the slot exists to protect. Once the band is painted or ruled it DOES have an inside, and `--page-toolbar-pad-block: var(--space-2)` is where that inset belongs. The CALL SITE never sets it — a strip padded at the call site pads only the strip, not the band.",
+      "DO: Set `--page-toolbar-pad-block` in the SAME theme declaration that paints or rules the band. The band's box sits FLUSH against the header and the body (chrome is attached — a ruled, painted band adrift in two 16px voids divides nothing); the inset is its breathing room. Unset, it defaults to the page's band gap, so a transparent filter strip sits exactly one band gap from the header and from the body, like any other band (gh#1323). Once the band is painted or ruled it has an inside of its own, and `--page-toolbar-pad-block: var(--space-2)` is where that tighter inset belongs; `0px` restores a strip flush to both edges. The CALL SITE never sets it — a strip padded at the call site pads only the strip, not the band.",
       "DO: Silence the `footer` band's top rule with `--page-footer-divider: none` when the footer content already carries its own frame — a chat composer is a bordered Card, and the shell's full-width rule then lands directly above it as a SECOND line (a pixel diff against a consumer chat design caught a 100%-wide rule at y=701 the design does not have). This is the ONE page-chrome divider whose default is a RULE rather than silence, deliberately: `footer` is the shared slot a form's Save/Cancel bar lands in, where that line separates the actions from the content. Unset is byte-identical to the literal the rule used to hard-code. All three page bands are now one contract: `--page-header-divider` / `--page-toolbar-divider` / `--page-footer-divider`, each read at the CALL SITE with a fallback, none of them a `border-*` utility at the call site.",
       "DON'T: Style the `toolbar` band from the call site. `toolbar={<div className='bg-card py-1.5'>…</div>}` is hand-laid page chrome: the utility paints the STRIP, not the band, so it stops at the content box instead of running the full page width (and full-bleed under `variant='flush'`); it is invisible to per-tenant theming; and it puts geometry the shell owns back into the app. The band's ground, inset and rule are `--page-toolbar-background` / `--page-toolbar-pad-block` / `--page-toolbar-divider` — three theme declarations, zero call-site classes.",
       "DO: Set `headerScale='chrome'` when the page's top row is CHROME rather than a document title — a chat channel header, a mail thread's subject line, an IDE tab, a conversation view. The `<h1>` drops to the body type step (--page-title-font-size-chrome) at every width, so the header band stops eating the height the content needs: a consumer chat page measured a 61px band with a 24px channel name where the design asked for ~40px at the `sm` step. Pair it with `variant='ghost'` for the full quiet chrome header — ghost drops the header's bottom pad and lets no divider inherit in — and with `fill` + `toolbar` + `footer`/`stickyFooter` for the canonical chat surface. The heading stays an `<h1>`: this is a type step, never a heading-level downgrade. The same attribute also drops the page's top padding to `--page-pad-block-start-chrome` (0), so the band sits ON the frame instead of floating in a document's top margin — four consequences of ONE fact (this row is furniture), not four props a call site has to keep in lockstep: the subtitle drops to `--page-subtitle-font-size-chrome` (~11px) so the caption under a channel name stops matching the name's own size, and the `extra` cluster centres on the bar instead of top-packing against a heading that is no longer tall. If a design wants its chrome inset or a different caption step, the theme retunes those tokens once; never pad, negative-margin or `self-center` the page at the call site.",
@@ -5241,7 +5241,7 @@ import { Flex } from "@godxjp/ui/layout";
       'DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text ("Unread"/"Read"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON\'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.',
       'DO pass `density="compact"` for the canonical invitation / history row — an Avatar, a title (+ description) and one or two small trailing Buttons that must read as ONE line inside a narrow card (≈326px content at 390px), or a history row whose status Badge + ISO-8601 date belongs beside the title. Measured at 390px: 62px tall vs 126px at the default density (where the actions wrapped), history row 41px vs 114px. DON\'T reach for it just to "make things tighter" on a roomy page — the default density is the entity-row measure.',
       'DON\'T add one-off `min-width`/wrapping CSS in the consumer app for a long title + two trailing Buttons. The row already shrinks and WRAPS: the content column keeps only `min(var(--list-row-body-min-width), 100%)` and the trailing actions drop onto their own line below the threshold. Retune the threshold with `--list-row-body-min-width` (default 12rem) and the action gap with `--list-row-trailing-gap`; pass `overflow="wrap"` (usually with `align="start"`) when the title must stay fully readable at 390px instead of truncating.',
-      'DO expect rows placed DIRECTLY in a padded (non-flush) `CardContent` — or in a `Flex as="ul"` there — to drop their own inline padding: the card already holds the inset, so the row text lines up with the CardTitle instead of sitting 16px inside it. Inside `CardContent flush` (the documented home, with edge-to-edge dividers) the row keeps `--list-row-padding-x`.',
+      'DO expect rows ANYWHERE inside a padded (non-flush) `CardContent` — directly, in a `Flex as="ul"`, or wrapped (`DataState` children in a div > `Flex as="ul"` > `ListRow as="li" asChild` > link, gh#1325) — to drop their own inline padding: the card already holds the inset, so the row text lines up with the CardTitle instead of sitting 16px inside it. A row keeps `--list-row-padding-x` inside `CardContent flush` (the documented home, with edge-to-edge dividers) — including a flush CardContent nested in a padded one — and inside a table cell.',
     ],
     useCases: [
       "Account security page — a list of active sessions (device + last-seen as title/description, a destructive 'Revoke' Button in trailing).",
@@ -9554,12 +9554,13 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       "DO put a tab's count in `count` (+ `countLabel`), not inside `label`. A number concatenated into the label loses the pill's size, its tone as the tab is selected/deselected, and — measured on Button in gh#734 — the accessible name: the digits run straight onto the label («未対応12»). With the slot the tab announces \"未対応, 12 件の課題\". DON'T drop a `<Badge>` into `label` to get the same look; there is one counting API and Button, Toggle and Tabs all draw it.",
       "DON'T go looking for antd's `tabBarGutter`, `tabBarStyle`, `renderTabBar`, `classNames`/`styles` or `more.popupRender` — each is declined on the record, not missing. The gutter between triggers is a theme knob (`--tabs-list-line-space-gap`, `--tabs-card-list-space-gap`; the pill strip has no gutter by design) because a px number is a constant, not a semantic axis; the other four exist upstream to let a consumer replace the rendered markup, and this library answers that layer with tokens (docs/DESIGN-AUTHORITY.md refuses them by name).",
       "DON'T re-centre the strip with a `justify-center` utility. `TabsList` aligns with `safe center` on purpose: plain centring splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one, so the leading tab ends up permanently outside the scrollport and no gesture reaches it. `safe` keeps the centred look while the tabs fit and falls back to start alignment the moment they don't.",
+      "DON'T draw a list status view as Tabs. A list status view (All / Active / Closed, each with its count) that shows the SAME table — same columns, same row actions, a different query — is a filter, so it is `Segmented` with `count`, placed in the list's `Toolbar`; past 4 statuses it is a `Select`. `Tabs` only when each status is a genuinely different panel (its own columns, actions or empty state), declared as `TabsContent` or pointed at with `controls` (WAI-ARIA APG: a tab selects a panel, a radiogroup selects a value) (gh#1324).",
     ],
     useCases: [
       "Detail drawers or pages that need full per-panel control — e.g. an accounting journal-entry sheet where one panel has `forceMount` to keep a live chart mounted, requiring custom `TabsContent` props that `Tabs` cannot pass.",
       "Controlled tabs driven by URL search params (e.g. `?tab=history`) where the parent reads/writes the active key and passes it to `value` / `onValueChange`.",
       'Vertical side-rail navigation inside a `SplitPane` or settings layout where `orientation="vertical"` on the root and `variant="line"` on `TabsList` combine to produce a sidebar-style tab strip.',
-      "Lightweight widget tabs on a dashboard card — e.g. switching a `DataTable` between 'Pending' and 'Paid' invoice views — where an uncontrolled `defaultValue` is sufficient and no URL state is needed.",
+      "Lightweight widget tabs on a dashboard card — e.g. a 'Pending' panel (due date, remind action) and a 'Paid' panel (paid date, receipt link), each its own `DataTable` with its own columns — where an uncontrolled `defaultValue` is sufficient and no URL state is needed. Two views of the SAME table are a filter: `Segmented`.",
       "Admin entity profile pages (company, partner, employee) where each `TabsContent` wraps an Inertia deferred prop panel, lazy-loading expensive data only when the tab is first activated.",
     ],
     related: [
@@ -14862,6 +14863,7 @@ export default function PasswordBlock() {
     ],
     usage: [
       "DO use it for a closed set of 2-4 peer choices that are cheap to show — theme, view mode, a date range preset.",
+      "DO use it for a list status view. A list status view (All / Active / Closed, each with its count) that shows the SAME table — same columns, same row actions, a different query — is a filter, so it is `Segmented` with `count`, placed in the list's `Toolbar`; past 4 statuses it is a `Select`. `Tabs` only when each status is a genuinely different panel (its own columns, actions or empty state), declared as `TabsContent` or pointed at with `controls` (WAI-ARIA APG: a tab selects a panel, a radiogroup selects a value) (gh#1324).",
       "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
       "DON'T use ToggleGroup for a one-of-N choice unless you also pass `disallowEmptySelection`: without it, type=single is a row of aria-pressed toggle buttons that can end up with nothing selected, which a setting can never be (gh#744). Segmented is the one-of-N control and needs no such switch.",
       "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
@@ -15619,6 +15621,130 @@ import { Text } from "@godxjp/ui/general";
   footer={<Text size="xs" tone="muted">{t("dashboard.lastUpdated", { at: new Date().toISOString() })}</Text>}
 />`,
     storyPath: "charts/compact-bar-trend.tsx",
+    rules: [],
+  },
+  {
+    name: "HeatmapChart",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts/heatmap-chart",
+    tagline:
+      "DEPENDENCY-FREE rows × columns heatmap — weekday × hour revenue / order counts, cell intensity from the sequential CVD-safe --chart-heat-1..5 ramp. Empty ≠ zero (dashed outline + 'no data' text), optional top-N ring, per-cell tooltip, APG grid keyboard, the table itself is the text alternative. Needs NO recharts. Matrix / punch card / activity heatmap / busy-hours chart.",
+    props: [
+      {
+        name: "rows",
+        type: "{ key: string | number; label: string }[]",
+        required: true,
+        description:
+          "Row categories, top to bottom (the y axis — weekdays). `label` is already translated.",
+      },
+      {
+        name: "columns",
+        type: "{ key: string | number; label: string }[]",
+        required: true,
+        description:
+          "Column categories, start to end (the x axis — hours). `label` is already translated.",
+      },
+      {
+        name: "data",
+        type: "{ row: string | number; column: string | number; value: number | null | undefined }[]",
+        required: true,
+        description:
+          "Cell values keyed by row + column key. A cell that is absent, null, undefined or NaN is EMPTY ('no data') — never painted as a zero.",
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Accessible name of the figure and its grid + visible caption.",
+      },
+      {
+        name: "showCaption",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Paint `label` as a visible caption. Set false under a CardTitle that already says it — the caption stays sr-only so the grid keeps its name.",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Extra context prepended to the screen-reader summary.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "CELL size tier (--chart-heatmap-cell-size-*: 24/28/32/40px) — not a canvas height. A cell never shrinks below it; when the columns do not fit, the matrix scrolls inside its own box with the row header pinned.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        description:
+          "Locale-aware formatting for cell values, the tooltip, the legend ranges and the summary (e.g. `{ style: 'currency', currency: 'JPY' }`).",
+      },
+      {
+        name: "topN",
+        type: "number",
+        description:
+          "Emphasize the N highest cells with an outline ring plus a 'Top k' note in the tooltip, the cell text and the legend — never colour alone. Ties keep `data` order.",
+      },
+      {
+        name: "showLegend",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Colour-scale legend (min … max, one readable range per swatch) plus the 'no data' and 'top N' keys when they apply.",
+      },
+      {
+        name: "emptyMessage",
+        type: "string",
+        description: "Shown when there are no rows, no columns or no cells with a value.",
+      },
+      {
+        name: "ref",
+        type: "React.Ref<HTMLElement>",
+        description: "Forwarded to the <figure> element.",
+      },
+    ],
+    usage: [
+      'DO import from the isolated entry: `import { HeatmapChart } from "@godxjp/ui/charts/heatmap-chart";` — it never links the optional `recharts` peer.',
+      "DO derive axis labels with Intl in the active locale — weekdays via `Intl.DateTimeFormat(locale, { weekday: 'short' })`, hours via `Intl.NumberFormat(locale)` — and pass money through `numberFormat`, never a hand-built '¥' string.",
+      "DO leave a slot OUT of `data` (or pass `value: null`) when there is no measurement — a closed hour, a day before the store opened. Pass `0` only for a real zero. The two render differently (dashed outline vs filled) and read differently ('No data' vs '¥0').",
+      "DO use `topN` to call out the peak slots; the ring is a shape and the rank is text, so the emphasis survives greyscale and colour-vision deficiency.",
+      "DO retheme through the tokens: the ramp is the foundation `--chart-heat-1..5` (light + dark), geometry and cues are `--chart-heatmap-*`. NEVER tint cells from the app, add page CSS, or fake the matrix with a styled Table.",
+      'DON\'T add a separate sr-only table: the matrix IS a native data table with `role="grid"` and header cells, so the visible chart and its text alternative cannot drift apart.',
+      "DON'T use it for a continuous series over time (LineChart / AreaChart) or one row of values (CompactBarTrend).",
+    ],
+    useCases: [
+      "Restaurant / retail HQ: revenue or order count by weekday × hour across the chain (POS busy-hours).",
+      "Support desk: ticket volume by weekday × hour, to plan staffing.",
+      "Any categorical matrix where intensity matters more than the exact figure: store × week, region × product.",
+    ],
+    related: [
+      "CompactBarTrend — one row of values; the other dependency-free chart.",
+      "BarChart — exact comparison across a single category axis (recharts peer).",
+      "DataTable — when the reader needs to sort, filter or read exact numbers first.",
+    ],
+    example: `import { HeatmapChart } from "@godxjp/ui/charts/heatmap-chart";
+import { useTranslation } from "@godxjp/ui/i18n";
+
+const { t, locale } = useTranslation();
+const weekday = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
+const rows = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map((key, day) => ({
+  key,
+  label: weekday.format(new Date(Date.UTC(2024, 0, 1 + day))), // 2024-01-01 is a Monday
+}));
+const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new Intl.NumberFormat(locale).format(hour) }));
+
+<HeatmapChart
+  label={t("dashboard.revenueByHour")}
+  rows={rows}
+  columns={columns}
+  data={slots /* [{ row: "fri", column: 19, value: 48000 }, …] — omit closed hours */}
+  numberFormat={{ style: "currency", currency: "JPY" }}
+  topN={3}
+/>`,
+    storyPath: "charts/heatmap-chart.tsx",
     rules: [],
   },
   {

@@ -32,13 +32,12 @@ import { Plus, Download, Filter, Search } from "lucide-react";
  * the default band can sit beside the painted one. NEVER put `className="bg-card"` on the strip at
  * the call site: that is hand-laid page chrome, and it cannot be re-themed per tenant.
  *
- * The inset comes with it, and it is the band's ONLY breathing room: the band sits FLUSH against
- * the header above and the body below, because chrome is attached · a painted, ruled band adrift
- * between two 16px voids divides nothing. `--page-toolbar-pad-block` still stays `0` by default on
- * purpose · a transparent band is not a surface and has no inside to breathe, and under `fill`
- * every pixel of it is taken from the transcript. A band that is PAINTED does have an inside, so
- * the theme that paints it also sets its inset here rather than reaching for a `py-*` utility on
- * the strip.
+ * The inset comes with it: the band's BOX sits FLUSH against the header above and the body
+ * below, because chrome is attached · a painted, ruled band adrift between two 16px voids divides
+ * nothing. Unset, `--page-toolbar-pad-block` defaults to the page's band gap, so a transparent
+ * filter strip sits one band gap from the header and the body like any other band (gh#1323). A
+ * band that is PAINTED takes a tighter inset, so the theme that paints it also sets the inset here
+ * rather than reaching for a `py-*` utility on the strip.
  */
 const TOOLBAR_CHROME_TOKENS = {
   "--page-toolbar-background": "hsl(var(--card))",
@@ -666,9 +665,10 @@ export default function Demo() {
           スクロール領域の外に置かれる（flex: none）。呼び出し側で position: sticky を手置き
           しないための唯一の正規スロット。ページ余白と measure はヘッダー／本文と共有され、
           帯の内側余白と下罫線はトークン所有（--page-toolbar-pad-block / --page-toolbar-divider）。
-          帯は上下の帯に密着します（.ui-page-container の段間はこの帯だけ打ち消される）· クロムは
+          帯の箱は上下の帯に密着します（.ui-page-container の段間はこの帯だけ打ち消される）· クロムは
           くっつくものであり、空白に浮く「3 つ目のセクション」ではないからです。呼吸する場所は
-          帯の内側（--page-toolbar-pad-block）だけ。 */}
+          帯の内側（--page-toolbar-pad-block）· 未設定なら段間と同じ値なので、透明なフィルター帯の
+          中身はヘッダーとも本文とも段間ぶん離れます（gh#1323）。 */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
         {/* fill · 帯は固定、トランスクリプトだけがその下でスクロールする（帯の下に潜り込まない）。 */}
         {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
@@ -871,7 +871,7 @@ export default function Demo() {
           乗せる」と言うときは、呼び出し側に className="bg-card" を書くのではなく、テーマで
           --page-toolbar-background を一度だけ宣言します。手置きのページクロムは禁止であり、
           テナントごとの再テーマも効かなくなるためです。帯を塗るなら内側の余白も一緒に
-          （--page-toolbar-pad-block）· 既定の 0 は「透明な帯には内側がない」ことに由来します。 */}
+          （--page-toolbar-pad-block: var(--space-2) など）· 未設定の既定は段間と同じ値です。 */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
         {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border">

@@ -337,6 +337,9 @@ const CARD_LIMIT = 5;
 const BADGE_LIMIT = 5;
 const ALERT_LIMIT = 4;
 const STATCARD_ROW = 3;
+/** design-complex-admin anti-pattern #3: 3+ fields is a create flow, not a filter (gh#1324). */
+const FORM_ON_LIST_FIELDS = 3;
+const LIST_TAGS = new Set(["DataTable", "Table", "List", "ListRow"]);
 
 /**
  * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string,
@@ -999,6 +1002,16 @@ const RULES = [
     spansElement: true,
     matches: kpiRowMatches,
     message: `${STATCARD_ROW}+ StatCards outside a dashboard — a row count is not a KPI. Keep StatCard rows for a dashboard with comparison or trend (delta); a list shows its total in Pagination showTotal.`,
+  },
+  {
+    id: "form-on-list-page",
+    replacement:
+      "the create form on its own route (or a focused Dialog/Sheet); the list page links to it",
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    matches: formOnListPageMatches,
+    message: `A Form with ${FORM_ON_LIST_FIELDS}+ FormFields and a DataTable/Table/List/ListRow on the same page — a create form inlined beside its list. Give create its own route (or a focused Dialog/Sheet) and keep the list page a list (design-complex-admin anti-pattern #3).`,
   },
   {
     id: "empty-state-icon-in-card",
@@ -1792,6 +1805,70 @@ function* nestedCardMatches(source) {
   for (const { tag, index, openTag, stack } of jsxElements(source)) {
     if ((tag === "Card" || tag === "StatCard") && stack.some((f) => f.tag === "Card")) {
       yield { 0: openTag, index };
+    }
+  }
+}
+
+/** Overlay surfaces: a form inside one is the focused create flow, not an inline one. */
+const OVERLAY_TAG = /^(?:Dialog|AlertDialog|Sheet|Drawer|Popover|Modal)/;
+/**
+ * `onSubmit={(e) => e.preventDefault()}` — a Form that never submits is a filter or parameter bar
+ * laid out with FormFields, not a create flow. Measured on the consumer repos (gh#1324): all 4
+ * first-draft hits had this shape (2 filter bars, 1 review-workspace editor, 1 precheck parameter
+ * form), and none was a create form.
+ */
+const NO_OP_SUBMIT =
+  /\bonSubmit\s*=\s*\{\s*\(?\s*(\w+)\s*\)?\s*=>\s*(?:\{\s*)?\1\.preventDefault\(\)\s*;?\s*\}?\s*\}/;
+
+/**
+ * `form-on-list-page`: a Form holding ≥FORM_ON_LIST_FIELDS FormFields and a list surface
+ * (DataTable / Table / List / ListRow) in the same file — unless each sits in a DIFFERENT
+ * PageContainer (a file that renders a list page and a create page pairs nothing across them; a
+ * create sub-component with no PageContainer of its own still pairs with the page's list) —
+ * neither inside an overlay, the list not inside the
+ * Form (an editor with a line-items Table is a form, not a list page), and the Form actually
+ * submitting (see NO_OP_SUBMIT). One finding per such Form.
+ */
+function* formOnListPageMatches(source) {
+  const opened = []; // Forms whose children frame has not been seen yet
+  const byFrame = new Map(); // a Form's children-frame id → { index, openTag, scope, skip, fields }
+  const listScopes = new Set(); // PageContainer children-frame ids (or "file") holding a list
+  for (const { tag, index, openTag, stack } of jsxElements(source)) {
+    // A Form's children frame is pushed when its opening tag closes, so the first time an unknown
+    // one shows up in a stack it belongs to the LATEST Form still waiting (a Form with no element
+    // children never claims one and simply stays behind).
+    for (const f of stack) {
+      if (f.tag === "Form" && !f.attr && !byFrame.has(f.id) && opened.length) {
+        byFrame.set(f.id, opened.pop());
+      }
+    }
+    const overlay = stack.some((f) => OVERLAY_TAG.test(f.tag));
+    const scope = stack.findLast((f) => f.tag === "PageContainer" && !f.attr)?.id ?? "file";
+    if (tag === "Form") {
+      if (!/\/\s*>$/.test(openTag)) {
+        const attrs = topLevelAttrs(openTag);
+        // No onSubmit / action / spread: the Form cannot submit, so it is a filter or parameter
+        // bar laid out with FormFields, like the NO_OP_SUBMIT shape.
+        const submits = /\b(?:onSubmit|action)\s*=/.test(attrs) || /\{\s*\.\.\./.test(openTag);
+        const skip = overlay || !submits || NO_OP_SUBMIT.test(openTag);
+        opened.push({ index, openTag, scope, skip, fields: 0 });
+      }
+    } else if (tag === "FormField") {
+      const form = stack.findLast((f) => f.tag === "Form" && !f.attr);
+      const entry = form && byFrame.get(form.id);
+      // `label={false}` is a layout slot (the submit row), not a field the user fills in.
+      const isField = !/\blabel\s*=\s*\{\s*false\s*\}/.test(openTag);
+      if (entry && isField) entry.fields += 1;
+    } else if (LIST_TAGS.has(tag) && !overlay && !stack.some((f) => f.tag === "Form")) {
+      listScopes.add(scope);
+    }
+  }
+  for (const form of byFrame.values()) {
+    const samePage =
+      listScopes.size > 0 &&
+      (form.scope === "file" || listScopes.has("file") || listScopes.has(form.scope));
+    if (!form.skip && form.fields >= FORM_ON_LIST_FIELDS && samePage) {
+      yield { 0: `${form.fields} FormFields beside a list: ${form.openTag}`, index: form.index };
     }
   }
 }

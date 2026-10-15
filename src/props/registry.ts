@@ -2927,6 +2927,42 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "ref", local: true, reason: "Forwarded ref to the <figure> element." },
     ],
   },
+  HeatmapChartProp: {
+    group: "data-display",
+    file: "components/charts.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "DescriptionProp",
+      "SizeProp",
+      "EmptyMessageProp",
+      "ClassNameProp",
+      "IdProp",
+      { field: "rows", local: true, reason: "Row categories (y axis) — key + translated label." },
+      {
+        field: "columns",
+        local: true,
+        reason: "Column categories (x axis) — key + translated label.",
+      },
+      { field: "data", local: true, reason: "Cell values keyed by row + column." },
+      {
+        field: "showCaption",
+        local: true,
+        reason: "Paint the caption; false keeps it sr-only so the accessible name survives.",
+      },
+      {
+        field: "numberFormat",
+        local: true,
+        reason: "Intl.NumberFormat options for cell values, tooltip and legend.",
+      },
+      {
+        field: "topN",
+        local: true,
+        reason: "Emphasize the N highest cells (ring + text note, never colour alone).",
+      },
+      { field: "showLegend", local: true, reason: "Chart-specific legend toggle." },
+      { field: "ref", local: true, reason: "Forwarded ref to the <figure> element." },
+    ],
+  },
   AreaChartProp: {
     group: "data-display",
     file: "components/charts.prop.ts",

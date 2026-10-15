@@ -769,6 +769,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Dash pattern of the cartesian background grid (any `stroke-dasharray` value; `none` = solid)."
   },
   {
+    "name": "--chart-heatmap-cell-size-xs",
+    "value": "1.5rem",
+    "description": "Minimum cell edge per tier. `xs` is still 24px — a cell is a hover/focus target (WCAG 2.5.8)."
+  },
+  {
+    "name": "--chart-heatmap-cell-size-sm",
+    "value": "1.75rem",
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
+  },
+  {
+    "name": "--chart-heatmap-cell-size-md",
+    "value": "2rem",
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
+  },
+  {
+    "name": "--chart-heatmap-cell-size-lg",
+    "value": "2.5rem",
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
+  },
+  {
+    "name": "--chart-heatmap-cell-size",
+    "value": "var(--chart-heatmap-cell-size-md)",
+    "description": "Active tier — chart-layout.css re-points this per `data-size`."
+  },
+  {
+    "name": "--chart-heatmap-cell-gap",
+    "value": "var(--stroke-md)",
+    "description": "Surface gap between neighbouring cells (the table's border-spacing)."
+  },
+  {
+    "name": "--chart-heatmap-cell-radius",
+    "value": "initial",
+    "description": "default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)), resolved at the call site"
+  },
+  {
+    "name": "--chart-heatmap-empty-border",
+    "value": "initial",
+    "description": "EMPTY cell outline — the non-colour cue that tells \"no data\" from a zero (WCAG 1.4.1). Role-mirror knob, `initial` at :root; default at the call site = `var(--stroke-hairline) dashed hsl(var(--muted-foreground))`."
+  },
+  {
+    "name": "--chart-heatmap-emphasis-border",
+    "value": "initial",
+    "description": "Top-N emphasis ring — a SHAPE cue, never colour alone. Colour is a role-mirror knob (default `hsl(var(--foreground))` at the call site); width is a plain constant."
+  },
+  {
+    "name": "--chart-heatmap-emphasis-width",
+    "value": "var(--stroke-md)",
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
+  },
+  {
+    "name": "--chart-heatmap-row-header-background",
+    "value": "initial",
+    "description": "The pinned row-header column paints over cells scrolled beneath it, so it needs a ground. Role-mirror knob; default = `hsl(var(--card))` at the call site."
+  },
+  {
+    "name": "--chart-heatmap-tick-font-size",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
+  },
+  {
+    "name": "--chart-heatmap-legend-swatch-size",
+    "value": "var(--space-3)",
+    "description": "Legend rhythm: the swatch edge and the gap between legend items / plot ↔ legend."
+  },
+  {
+    "name": "--chart-heatmap-legend-gap",
+    "value": "var(--space-2)",
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
+  },
+  {
     "name": "--chat-bubble-background",
     "value": "initial",
     "description": "Bubble fill. `initial` so the --muted default re-resolves at the CALL SITE under a scoped theme; a :root binding to a role var freezes at :root (docs/TOKENS.md — the :root freeze rule). Documented default = hsl(var(--muted))."

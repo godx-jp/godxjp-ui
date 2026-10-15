@@ -564,6 +564,13 @@
         "dialog-layout.css"
       ]
     },
+    "HeatmapChart": {
+      "layers": [
+        "layout.css",
+        "dialog-layout.css",
+        "chart-layout.css"
+      ]
+    },
     "Icon": {
       "layers": [
         "icon-layout.css"

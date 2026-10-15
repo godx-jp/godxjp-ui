@@ -126,6 +126,17 @@ it under a different key, and an agent cannot tell them apart by tool name. `npx
 sync-rules` (and `init-agent`) read that file and report any such entry — key, pin, and the
 `claude mcp remove <key> -s <scope>` command — but never edit it: it is outside the project.
 
+**A session that started outside the project has no MCP.** Claude Code loads `.mcp.json`,
+`CLAUDE.md` and `.claude/settings.json` only from the directory it starts in (gh#1324). Two
+answers ship for that:
+
+- `npx --no-install @godxjp/ui mcp-call <tool> '<json args>'`, run from the project, launches the
+  project's own `.mcp.json` entry as `godx-ui-mcp call <tool> <json>` and prints the same text the
+  MCP tool returns (no tool lists them).
+- `npx @godxjp/ui init-agent --user` installs a user-level guard that every session loads. It blocks
+  a `.tsx`/`.jsx` write in a project that mounts this server until the agent has consulted the
+  catalog, and runs the project's audit hook when the project's own hooks did not load.
+
 ### Codex CLI
 
 `~/.codex/config.toml`:

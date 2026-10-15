@@ -23,6 +23,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Neutral decorative chart series palette. The @godxjp/ui/charts components (LineChart/BarChart/AreaChart/PieChart) read these by series index automatically — a service rethemes every chart at once by overriding --chart-1..6; per-series/per-slice overrides go through the component's series.color / colors props.",
   },
   {
+    name: "--chart-heat-1..5",
+    category: "primitive",
+    tier: "primitive",
+    role: "HeatmapChart sequential ramp (gh#1330). One hue (the --chart-1 blue, 204°) stepped by lightness only, so step order survives every colour-vision deficiency. Light: luminance 0.805→0.064 (1.21/1.74/2.72/4.62/9.03:1 vs --card); the dark block inverts it (1.37→11.90:1) so 'more' always reads 'further from the surface'. Retint every heatmap by overriding these five; an empty cell never uses them (dashed outline instead).",
+  },
+  {
     name: "--space-0..12 / --space-20 / --space-24",
     category: "primitive",
     tier: "primitive",
@@ -74,7 +80,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--font-sans-{ja,ko,vi,zh-hans,zh-hant}",
     category: "semantic",
     tier: "semantic",
-    role: 'Per-language font SLOT tokens. styles/base.css wires each [lang] to read its slot with --font-sans-base as fallback, so a consumer switches a locale\'s face by setting e.g. `--font-sans-ja: "Noto Sans JP", var(--font-sans-base)` — NO [lang] selectors to write. Empty by default. zh-hans matches lang zh|zh-Hans|zh-CN; zh-hant matches zh-Hant|zh-TW. Deciding which @font-face ships on which locale route is the consumer\'s font pipeline, not the library. The opt-in @godxjp/ui/styles/fonts only fills --font-sans-vi (with the bundled "Noto Sans JP", "M PLUS 2" stack); the other slots stay empty and fall back to --font-sans-base.',
+    role: 'Per-language font SLOT tokens. styles/base.css wires each [lang] to read its slot with --font-sans-base as fallback, so a consumer switches a locale\'s face by setting e.g. `--font-sans-ja: "Noto Sans JP", var(--font-sans-base)` — NO [lang] selectors to write. It applies on `<html lang>` itself (the [lang] rules come after foundation\'s `:root` default at the same specificity — gh#1326; before that fix the slots only reached nested [lang] elements) and on any nested [lang] element; a theme\'s own `:root { --font-family-sans }` loaded after the package still wins. Empty by default. zh-hans matches lang zh|zh-Hans|zh-CN; zh-hant matches zh-Hant|zh-TW. Deciding which @font-face ships on which locale route is the consumer\'s font pipeline, not the library. The opt-in @godxjp/ui/styles/fonts only fills --font-sans-vi (with the bundled "Noto Sans JP", "M PLUS 2" stack); the other slots stay empty and fall back to --font-sans-base.',
   },
   {
     name: "--duration-{fast,base,slow}",
@@ -287,7 +293,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--page-toolbar-{background,pad-block,divider}",
     category: "semantic",
     tier: "semantic",
-    role: "PageContainer `toolbar` band chrome — the FIXED strip between the page header and the (scrolling) body. All three knobs are quiet by default (rule #44). `--page-toolbar-background` (default `transparent`) is the band's GROUND: set it ONCE in a service theme — `--page-toolbar-background: hsl(var(--card));` — to lift the band off the page ground the way a chat channel's workflow rail or a collection's filter strip usually wants. It is bound at `:root` rather than `initial` because its default is a plain CSS keyword, not another role token, so there is nothing for a scoped override to re-resolve; it is the `background` shorthand, so a gradient works too. NEVER write `className=\"bg-card\"` on the strip at the call site — that is hand-laid page chrome, it is invisible to per-tenant theming, and it paints the strip rather than the band (so it misses the page gutters and the `measure` cap). `--page-toolbar-pad-block` (default 0) is the band's own block inset. It is the band's ONLY breathing room: the band sits FLUSH against the header and the body (the container's band gap is cancelled on the band itself — chrome is attached, not a third section floating between two voids), so there is no outside space to tune. It stays 0 even now that the band can be painted: a TRANSPARENT band is not a surface and has no inside for an inset to breathe, and under `fill` every pixel of band height is taken from the scroll viewport the slot exists to protect. The corollary is that a theme which PAINTS the band must also set the inset here (`--page-toolbar-pad-block: var(--space-2)`) — the two go together, and neither belongs in a `py-*` utility at the call site. `--page-toolbar-divider` is declared `initial` and resolved at the CALL SITE as `var(--page-toolbar-divider, var(--page-header-divider))` — so ONE `--page-header-divider` opt-in rules the whole page chrome consistently, a scoped [data-tenant]/.dark override of it still reaches the band (a `:root` binding would freeze it), and `--page-toolbar-divider: none` silences just the band. `variant=\"ghost\"` keeps the divider quiet regardless (it does NOT clear the background — ghost is about rules and pads, not grounds). The band's inline gutters and its `measure` cap are shared with the header and body — they are not separate knobs, which is what keeps the three bands aligned.",
+    role: "PageContainer `toolbar` band chrome — the FIXED strip between the page header and the (scrolling) body. All three knobs are quiet by default (rule #44). `--page-toolbar-background` (default `transparent`) is the band's GROUND: set it ONCE in a service theme — `--page-toolbar-background: hsl(var(--card));` — to lift the band off the page ground the way a chat channel's workflow rail or a collection's filter strip usually wants. It is bound at `:root` rather than `initial` because its default is a plain CSS keyword, not another role token, so there is nothing for a scoped override to re-resolve; it is the `background` shorthand, so a gradient works too. NEVER write `className=\"bg-card\"` on the strip at the call site — that is hand-laid page chrome, it is invisible to per-tenant theming, and it paints the strip rather than the band (so it misses the page gutters and the `measure` cap). `--page-toolbar-pad-block` is the band's own block inset, declared `initial` and resolved at the CALL SITE as `var(--page-toolbar-pad-block, var(--page-band-gap))`. The band's BOX sits FLUSH against the header and the body (the container's band gap is cancelled on the band itself — chrome is attached, not a third section floating between two voids), and the default inset hands that gap back to the band's CONTENT: a transparent filter strip sits one band gap from the header and from the body, exactly like any other band (gh#1323 — the old `0` default made a Segmented strip touch both, 0px). A theme which PAINTS or RULES the band sets a tighter inset here in the same declaration (`--page-toolbar-pad-block: var(--space-2)`); `0px` restores a strip flush to both edges. Neither belongs in a `py-*` utility at the call site. `--page-toolbar-divider` is declared `initial` and resolved at the CALL SITE as `var(--page-toolbar-divider, var(--page-header-divider))` — so ONE `--page-header-divider` opt-in rules the whole page chrome consistently, a scoped [data-tenant]/.dark override of it still reaches the band (a `:root` binding would freeze it), and `--page-toolbar-divider: none` silences just the band. `variant=\"ghost\"` keeps the divider quiet regardless (it does NOT clear the background — ghost is about rules and pads, not grounds). The band's inline gutters and its `measure` cap are shared with the header and body — they are not separate knobs, which is what keeps the three bands aligned.",
   },
   {
     name: "--page-title-font-size-chrome",
@@ -560,6 +566,24 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "CompactBarTrend fills — role-mirror knobs declared `initial` with the role default at the call site. Muted marks default to hsl(var(--muted-foreground) / --chart-trend-bar-background-alpha) (0.75, which clears the 3:1 non-text contrast floor); the emphasized 'current' mark defaults to hsl(var(--primary)). Point them at --chart-N to tint a trend to a series colour.",
+  },
+  {
+    name: "--chart-heatmap-cell-size{,-xs,-sm,-md,-lg} / --chart-heatmap-cell-{gap,radius}",
+    category: "component",
+    tier: "component",
+    role: "HeatmapChart cell geometry: per-`size` minimum cell edge (24/28/32/40px — xs still clears the 24px target), the active tier (re-pointed per data-size), the surface gap between cells (--stroke-md) and the cell radius (`initial`, default resolves to the φ-derived small radius at the call site).",
+  },
+  {
+    name: "--chart-heatmap-empty-border / --chart-heatmap-emphasis-{border,width}",
+    category: "component",
+    tier: "component",
+    role: "HeatmapChart non-colour cues. Empty cell outline — role-mirror knob, `initial`, default `var(--stroke-hairline) dashed hsl(var(--muted-foreground))` (tells 'no data' from zero without colour). Top-N ring colour — role-mirror, default hsl(var(--foreground)), drawn with a --card keyline inside so it reads on every ramp step; width default --stroke-md.",
+  },
+  {
+    name: "--chart-heatmap-row-header-background / --chart-heatmap-tick-font-size / --chart-heatmap-legend-{swatch-size,gap}",
+    category: "component",
+    tier: "component",
+    role: "HeatmapChart chrome: the pinned row-header ground (role-mirror, default hsl(var(--card)) — set it to the surface the chart sits on), the axis/legend type size (--font-size-xs) and the legend swatch edge + rhythm.",
   },
   {
     name: "--chart-trend-baseline-border",

@@ -348,6 +348,29 @@ describe("newly-added components are catalogued with the expected API", () => {
     expect((trend?.related ?? []).join(" ")).toMatch(/BarChart/);
   });
 
+  // gh#1330 — the weekday × hour heatmap. A consumer that cannot find it hand-rolls a Table with
+  // tinted cells (raw palette, colour-only empties) or a recharts ScatterChart stopgap.
+  it("HeatmapChart is catalogued as the recharts-free matrix with empty ≠ zero and top-N", () => {
+    const heat = findComponent("HeatmapChart");
+    expect(heat, "HeatmapChart entry").toBeDefined();
+    expect(heat?.group).toBe("data-display");
+    expect(heat?.importPath).toBe("@godxjp/ui/charts/heatmap-chart");
+    const props = new Map((heat?.props ?? []).map((p) => [p.name, p] as const));
+    for (const p of ["rows", "columns", "data", "label"]) {
+      expect(props.get(p)?.required, `HeatmapChart.${p} required`).toBe(true);
+    }
+    for (const p of ["numberFormat", "topN", "size", "showLegend", "emptyMessage", "ref"]) {
+      expect(props.has(p), `HeatmapChart.${p}`).toBe(true);
+    }
+    expect(props.get("size")?.type).toMatch(/"xs".*"sm".*"md".*"lg"/);
+    const usage = (heat?.usage ?? []).join(" ");
+    expect(usage).toMatch(/(?:\bno\b|never|without|free of)[^.]*`?recharts`?/i);
+    expect(usage).toMatch(/--chart-heat-/);
+    // the empty-vs-zero contract must be taught, not left to the reader
+    expect(usage).toMatch(/null/);
+    expect(usage).toMatch(/real zero/i);
+  });
+
   // the exception surface REGRESSED once by being shipped as a docs-only
   // composition pattern (a consumer cannot `import` a docs page), and the MCP catalog was the
   // surface that taught "there is NO ErrorSurface". These assertions make that specific untruth
