@@ -147,3 +147,40 @@ describe("hand-rolled-filter-bar", () => {
     });
   });
 });
+
+describe("a Form that stacks its own fields is a parameter form, not a filter strip", () => {
+  /* gino-cloud's 提出用一式 page: a non-submitting label-left Form above a table. */
+  const PARAMS = (layout: string) => `      <Card>
+        <CardContent>
+          <Form layout="${layout}" labelWidth="11rem" onSubmit={(event) => event.preventDefault()} noValidate>
+            <FormField id="channel" label="提出方法">
+              <Select id="channel" value={channel} options={channels} onValueChange={setChannel} />
+            </FormField>
+            <FormField id="planned" label="提出予定日">
+              <DatePicker value={planned} onValueChange={setPlanned} />
+            </FormField>
+          </Form>
+        </CardContent>
+      </Card>
+${table}`;
+
+  it("layout horizontal (label-left) and vertical are not flagged", () => {
+    expect(findings(page(PARAMS("horizontal")))).toEqual([]);
+    expect(findings(page(PARAMS("vertical")))).toEqual([]);
+  });
+
+  it("layout inline IS a strip and is flagged", () => {
+    expect(findings(page(PARAMS("inline")))).toHaveLength(1);
+  });
+
+  it("a row container placed inside a stacked Form is still flagged", () => {
+    const body = PARAMS("vertical")
+      .replace("noValidate>", `noValidate>\n            <Flex gap="md" justify="between">`)
+      .replace("          </Form>", "            </Flex>\n          </Form>");
+    expect(findings(page(body)).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("the 送出機関 spread strip is still flagged", () => {
+    expect(findings(page(`${GINO}\n${table}`)).length).toBeGreaterThanOrEqual(1);
+  });
+});

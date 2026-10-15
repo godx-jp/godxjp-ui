@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.4.1] - 2026-10-15
+
+### 🐛 Fixed
+
+- **`hand-rolled-filter-bar` no longer flags a parameter Form that stacks its own fields.** A non-submitting `<Form layout="horizontal">` (label-left) or the default vertical layout lays its FormFields out one per row — a parameter form above a table (gino-cloud's 提出用一式 page: 提出方法 + 提出予定日), not a filter strip. Only `layout="inline"`, or a row container placed inside the Form, is a strip; the 送出機関 spread strip is still flagged. Four regression tests.
+
 ## [33.4.0] - 2026-10-15
 
 ### Added

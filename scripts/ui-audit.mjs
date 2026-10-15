@@ -1961,6 +1961,17 @@ function* handRolledFilterBarMatches(source) {
     ) {
       continue;
     }
+    // A Form that lays out its own fields (layout vertical — the default — or horizontal, i.e.
+    // label-left) STACKS them: a parameter form, not a filter row. Only `layout="inline"`, or a
+    // row container placed inside the Form, makes a strip. Measured: gino-cloud's 提出用一式 page
+    // (channel + planned date, `layout="horizontal"`) was a false positive.
+    const formAt = stack.findLastIndex((f) => f.tag === "Form" && !f.attr);
+    if (formAt >= 0) {
+      const formTag = openTags.get(stack[formAt].id)?.openTag ?? "";
+      const inline = /\blayout\s*=\s*\{?\s*["']inline["']/.test(topLevelAttrs(formTag));
+      const rowInside = stack.slice(formAt + 1).some((f) => !f.attr && STRIP_CONTAINER.test(f.tag));
+      if (!inline && !rowInside) continue;
+    }
     const field = stack.findLastIndex((f) => f.tag === "FormField" && !f.attr);
     if (field >= 0) {
       // `label={false}` is a layout slot (a submit row), not a labelled filter.
