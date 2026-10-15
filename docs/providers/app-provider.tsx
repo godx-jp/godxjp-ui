@@ -1,6 +1,6 @@
 import { AppProvider, useAppContext } from "@godxjp/ui/app";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Label } from "@godxjp/ui/data-entry";
+import { FormField, Label, TranslatableInput } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
@@ -18,6 +18,7 @@ export default function Demo() {
       defaultTimezone="Asia/Tokyo"
       defaultDateFormat="iso"
       defaultTimeFormat="24h"
+      contentLocales={["ja", "en", "vi"]}
       theme="light"
       brand="brand"
       density="comfortable"
@@ -144,6 +145,22 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
+              <CardTitle level={2}>contentLocales · コンテンツの言語</CardTitle>
+              <CardDescription>
+                ユーザーが入力するコンテンツを保存する言語を、元の言語を先頭に一度だけ宣言する。UI
+                の言語（defaultLocale）とは別の設定。locales を持たないすべての TranslatableInput /
+                TranslatableTextarea がこの順でタブを並べ、先頭の言語のタブを開く。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FormField id="content-locales-demo" label="商品名">
+                <TranslatableInput defaultValue={{ ja: "醤油ラーメン", en: "Shoyu Ramen" }} />
+              </FormField>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle>テーマ軸 · theme / brand / density / fontSize</CardTitle>
               <CardDescription>
                 見た目の状態も AppProvider が一元管理する。各 picker は HTML の data 属性と
@@ -183,7 +200,8 @@ function ProviderState() {
         <Text as="p">
           locale={state.locale} · timezone={state.timezone} · date={state.dateFormat} · time=
           {state.timeFormat} · theme={state.theme} · brand={state.brand ?? "custom"} · density=
-          {state.density} · fontSize={state.fontSize} · scaling={state.scaling ?? "density default"}
+          {state.density} · fontSize={state.fontSize} · scaling={state.scaling ?? "density default"}{" "}
+          · contentLocales={state.contentLocales?.join(", ") ?? "unset"}
         </Text>
       </CardContent>
     </Card>

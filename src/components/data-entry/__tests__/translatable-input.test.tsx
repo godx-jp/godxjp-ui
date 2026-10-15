@@ -1,7 +1,8 @@
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen, userEvent, within } from "@/test/render";
-import { AppProvider } from "../../../app/app-provider";
+import { AppProvider, useOptionalAppContext } from "../../../app/app-provider";
+import { getRegisteredLocales } from "../../../app/locales";
 import { FormField } from "../form-field";
 import {
   TranslatableInput,
@@ -295,6 +296,113 @@ describe("TranslatableInput inside FormField", () => {
       </FormField>,
     );
     expect(screen.getByRole("alert")).toHaveTextContent("Server says no");
+  });
+});
+
+/** gh#1347 — the app states its content languages once; 28 fields stop repeating `locales`. */
+describe("TranslatableInput with AppProvider contentLocales", () => {
+  const tabLocales = () => screen.getAllByRole("tab").map((tab) => tab.getAttribute("data-locale"));
+
+  it("the app-level list orders the tabs of every field that has no locales of its own", () => {
+    render(
+      <AppProvider persist={false} defaultLocale="en" contentLocales={["ja", "en", "vi"]}>
+        <TranslatableInput aria-label="Name" />
+        <TranslatableTextarea aria-label="Description" />
+      </AppProvider>,
+    );
+    const [input, textarea] = screen.getAllByRole("tablist");
+    for (const list of [input!, textarea!]) {
+      expect(
+        within(list)
+          .getAllByRole("tab")
+          .map((tab) => tab.getAttribute("data-locale")),
+      ).toEqual(["ja", "en", "vi"]);
+    }
+  });
+
+  it("the first tab is the list's first entry (the source language), not the UI locale", () => {
+    render(
+      <AppProvider persist={false} defaultLocale="en" contentLocales={["ja", "en", "vi"]}>
+        <TranslatableInput aria-label="Name" />
+      </AppProvider>,
+    );
+    expect(screen.getByRole("tab", { selected: true })).toHaveAttribute("data-locale", "ja");
+    expect(screen.getByRole("textbox")).toHaveAttribute("lang", "ja");
+  });
+
+  it("per-field locales override the app list; the source tab still opens first when it is in them", () => {
+    render(
+      <AppProvider persist={false} defaultLocale="en" contentLocales={["ja", "en", "vi"]}>
+        <TranslatableInput aria-label="Name" locales={["en", "ja"]} />
+      </AppProvider>,
+    );
+    expect(tabLocales()).toEqual(["en", "ja"]);
+    expect(screen.getByRole("tab", { selected: true })).toHaveAttribute("data-locale", "ja");
+  });
+
+  it("per-field locales without the source language open on the UI locale", () => {
+    render(
+      <AppProvider persist={false} defaultLocale="en" contentLocales={["ja", "en", "vi"]}>
+        <TranslatableInput aria-label="Name" locales={["vi", "en"]} />
+      </AppProvider>,
+    );
+    expect(tabLocales()).toEqual(["vi", "en"]);
+    expect(screen.getByRole("tab", { selected: true })).toHaveAttribute("data-locale", "en");
+  });
+
+  it("a per-field defaultLocale still wins over the source language", () => {
+    render(
+      <AppProvider persist={false} defaultLocale="en" contentLocales={["ja", "en", "vi"]}>
+        <TranslatableInput aria-label="Name" defaultLocale="vi" />
+      </AppProvider>,
+    );
+    expect(screen.getByRole("tab", { selected: true })).toHaveAttribute("data-locale", "vi");
+  });
+
+  it("unset (or empty): tabs = registered locales in their order, first tab = the UI locale", () => {
+    for (const contentLocales of [undefined, []]) {
+      const { unmount } = render(
+        <AppProvider persist={false} defaultLocale="en" contentLocales={contentLocales}>
+          <TranslatableInput aria-label="Name" />
+        </AppProvider>,
+      );
+      expect(tabLocales()).toEqual([...getRegisteredLocales()]);
+      expect(screen.getByRole("tab", { selected: true })).toHaveAttribute("data-locale", "en");
+      unmount();
+    }
+  });
+
+  it("works outside AppProvider with no locales: the registered locales", () => {
+    render(<TranslatableInput aria-label="Name" />);
+    expect(tabLocales()).toEqual([...getRegisteredLocales()]);
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
+  });
+
+  it("an inline list re-rendered with the same entries keeps the context value stable", async () => {
+    const user = userEvent.setup();
+    const seen: unknown[] = [];
+    function Probe() {
+      seen.push(useOptionalAppContext());
+      return null;
+    }
+    function Host() {
+      const [, force] = React.useState(0);
+      return (
+        <>
+          <button type="button" onClick={() => force((n) => n + 1)}>
+            again
+          </button>
+          <AppProvider persist={false} defaultLocale="en" contentLocales={["ja", "en"]}>
+            <MemoProbe />
+          </AppProvider>
+        </>
+      );
+    }
+    const MemoProbe = React.memo(Probe);
+    render(<Host />);
+    const before = seen.length;
+    await user.click(screen.getByRole("button", { name: "again" }));
+    expect(seen.length).toBe(before);
   });
 });
 

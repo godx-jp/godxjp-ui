@@ -65,6 +65,15 @@ export type AppProviderProp = {
    * the full IANA list; set to restrict (e.g.
    */
   timezoneOptions?: readonly AppTimezone[];
+  /**
+   * The languages the app stores USER CONTENT in (a product name in `ja`/`en`/`vi`), in order —
+   * source language first. Not the UI locale and not the registered UI catalogs: a Japanese UI
+   * can edit content in ja · en · vi, and content may be stored in a language the UI has no
+   * catalog for. Every `TranslatableInput` / `TranslatableTextarea` without its own `locales`
+   * takes its tabs from here and selects the first one. Omit to keep the per-field default
+   * (`getRegisteredLocales()`, first tab = the UI locale). App configuration, never persisted.
+   */
+  contentLocales?: readonly string[];
   /** localStorage key. Default: `godxjp.app`. */
   storageKey?: string;
   /**
@@ -196,6 +205,8 @@ export type AppContextValue = {
   requestHeaders: AppRequestHeaders;
   /** Configured timezone list; `undefined` → full IANA in the timezone-picker recipe. */
   timezoneOptions?: readonly AppTimezone[];
+  /** The app's content languages, source first; `undefined` when `contentLocales` is not set. */
+  contentLocales?: readonly string[];
   /**
    * Current theme axes (mirror `<html data-*>` / inline `--scaling`). `theme` is the user's
    * CHOICE — it can be `"system"`, which `<html data-theme>` never is.

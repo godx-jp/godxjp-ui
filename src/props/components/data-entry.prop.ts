@@ -288,11 +288,15 @@ type TranslatableFieldProp = {
   /** The WHOLE map after an edit — every other locale's text is carried over untouched. */
   onValueChange?: OnValueChangeProp<TranslatableValue>;
   /**
-   * The locales the field edits, in tab order. Default: every locale registered with the app
-   * (`getRegisteredLocales()` — the built-in `vi`/`en`/`ja` plus `registerLocale(...)`).
+   * The locales the field edits, in tab order. Default: the AppProvider's `contentLocales` when
+   * set, else every locale registered with the app (`getRegisteredLocales()` — the built-in
+   * `vi`/`en`/`ja` plus `registerLocale(...)`).
    */
   locales?: readonly string[];
-  /** The locale tab selected first. Default: the AppProvider's active locale when it is in `locales`. */
+  /**
+   * The locale tab selected first. Default: the first of the AppProvider's `contentLocales` (the
+   * source language) when set and in `locales`, else the AppProvider's active locale when it is.
+   */
   defaultLocale?: string;
   /**
    * The locale whose text shows as the placeholder of an EMPTY locale. Default: the AppProvider's

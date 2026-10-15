@@ -8416,13 +8416,13 @@ export function PrioritySelect({ value, onValueChange }) {
         name: "locales",
         type: "readonly string[]",
         description:
-          "The BCP-47 tags the field edits, in tab order. Default: every locale registered with the app (`getRegisteredLocales()` — built-in `vi`/`en`/`ja` plus `registerLocale`). Tabs are named by `Intl.DisplayNames` in the reader's UI language; the tags stay the keys.",
+          "The BCP-47 tags the field edits, in tab order. Default: AppProvider `contentLocales` when set (gh#1347 — state the content languages once at the root instead of on every field), else every locale registered with the app (`getRegisteredLocales()` — built-in `vi`/`en`/`ja` plus `registerLocale`). Tabs are named by `Intl.DisplayNames` in the reader's UI language; the tags stay the keys.",
       },
       {
         name: "defaultLocale",
         type: "string",
         description:
-          "The locale tab selected first. Default: the AppProvider's active locale when it is in `locales`, else the fallback locale.",
+          "The locale tab selected first. Default: the first of AppProvider `contentLocales` (the source language) when set and in `locales`, else the AppProvider's active locale when it is in `locales`, else the fallback locale.",
       },
       {
         name: "fallbackLocale",
@@ -8463,6 +8463,7 @@ export function PrioritySelect({ value, onValueChange }) {
       { name: "className", type: "string", description: "Root (strip + field) class override." },
     ],
     usage: [
+      'DO set the app\'s content languages ONCE on the root provider — `<AppProvider contentLocales={["ja", "en", "vi"]}>` — when every translatable field edits the same list; each field then needs no `locales` and opens on the source language (the first). Pass `locales` on a field only where it differs.',
       "DO wrap it in FormField: the label names the control together with the active locale («商品名 English») and names the tab strip («商品名 Language»), `required`/`helper` reach the control, and the active locale's error renders in FormField's error line.",
       "DO pass the per-locale error map from your validator as `errors` (e.g. Laravel `name.ja` → `errors.ja`). Don't pass the same message to FormField `error` as well: FormField's own `error` wins over the reported one, and it would mark the field invalid on every locale.",
       "DO set `fallbackLocale` to the content's SOURCE language (often `ja`) when it differs from the AppProvider's UI fallback — the placeholder of an untranslated locale then shows the source text to translate from.",
@@ -8528,12 +8529,13 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
         name: "locales",
         type: "readonly string[]",
         description:
-          "The BCP-47 tags the field edits, in tab order. Default: the app's registered locales.",
+          "The BCP-47 tags the field edits, in tab order. Default: AppProvider `contentLocales` when set, else the app's registered locales.",
       },
       {
         name: "defaultLocale",
         type: "string",
-        description: "The locale tab selected first. Default: the AppProvider's active locale.",
+        description:
+          "The locale tab selected first. Default: the first of AppProvider `contentLocales` when set and in `locales`, else the AppProvider's active locale.",
       },
       {
         name: "fallbackLocale",
@@ -10521,6 +10523,12 @@ import { FormField, Input, Select, DatePicker } from "@godxjp/ui/data-entry";
           'Which viewer preferences survive a reload: `true` every axis, `false` none, or a LIST — `persist={["theme", "density", "fontSize"]}`. The list exists because THE AXES DO NOT SHARE AN OWNER. theme/brand/density/fontSize/scaling are the VIEWER\'s and belong in this browser; locale/timezone/timeFormat/dateFormat are frequently the SERVER\'s, resolved per request from a cookie, an account row or a header — and a stored copy then WINS over the value the server just sent, because storage is read after the props. Given one all-or-nothing flag, that consumer sets `persist={false}` and loses the viewer\'s theme along with it (measured: a hosted Inertia app whose theme toggle reset on every full page load). Naming the axes keeps both owners.',
       },
       {
+        name: "contentLocales",
+        type: "readonly string[]",
+        description:
+          'The languages the app stores USER CONTENT in, in order, source language first — e.g. `["ja", "en", "vi"]` for a Japanese-first catalogue (gh#1347). A different fact from the UI locale (`defaultLocale`) and from the registered UI catalogs: a Japanese UI can edit content in three languages, and content may be stored in a language the UI has no catalog for. Every `TranslatableInput` / `TranslatableTextarea` without its own `locales` takes its tabs from this list and opens on its first entry; a field\'s `locales` / `defaultLocale` still override. Omit (or `[]`) to keep the field default (`getRegisteredLocales()`, first tab = the UI locale). App configuration: not persisted, no setter. Read it from `useAppContext().contentLocales` (`undefined` when unset).',
+      },
+      {
         name: "emitFieldNames",
         type: "boolean",
         defaultValue: "false",
@@ -10538,6 +10546,7 @@ import { FormField, Input, Select, DatePicker } from "@godxjp/ui/data-entry";
       "DO set `defaultTimezone='system'` together with `systemTimezone={serverTimezone}` when your backend knows the legal entity's canonical timezone (e.g. 'Asia/Ho_Chi_Minh'). Use `defaultTimezone='browser'` (the default) only when you want the user's browser clock. Do NOT pass a raw IANA string to `defaultTimezone` if the user may be in a different zone — use the named aliases.",
       "DO wire `onLocaleChange`, `onTimezoneChange`, `onTimeFormatChange`, `onDateFormatChange` to persist changes server-side (e.g. patch user profile via Inertia router) in addition to the automatic localStorage write. These callbacks fire after state is set, so the new value is already reflected in context.",
       "DO set `emitFieldNames` on AppProvider when the app is driven by screen automation (RPA) or posts native forms \u2014 every control under a FormField then carries a real `name` taken from the field key, and legacy automation that addressed controls by `name` keeps working after a rewrite. Leave it off (the default) otherwise: it changes what a native submit sends. The `data-field` attribute is emitted either way, so e2e selectors do not depend on this flag.",
+      'DO pass `contentLocales` when the app edits translatable content (`TranslatableInput` / `TranslatableTextarea`) — `contentLocales={["ja", "en", "vi"]}` — so the tab order and the source-language first tab are stated once, not repeated as `locales` on every field. It is NOT the UI language list: leave `defaultLocale` / `registerLocale` to the UI.',
       'DO restrict the timezone dropdown by passing `timezoneOptions={APP_TIMEZONE_PRESET}` (an exported constant) to AppProvider — every `AppSettingPicker kind="timezone"` inherits this restricted list from context. Without it the picker offers the full IANA list (~600 entries).',
     ],
     useCases: [
