@@ -3337,6 +3337,18 @@ export const COMPONENT_PROP_REGISTRY = {
       "ChildrenProp",
     ],
   },
+  SearchFormProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "DefaultOpenProp",
+      "OnOpenChangeProp",
+      "LabelProp",
+      "PendingProp",
+      "ChildrenProp",
+    ],
+  },
   FilterBarClearDisplayProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",

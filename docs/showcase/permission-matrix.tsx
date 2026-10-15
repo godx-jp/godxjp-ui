@@ -45,7 +45,8 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
-import { Form, FormField, Label, Select, Switch } from "@godxjp/ui/data-entry";
+import { Select, Switch } from "@godxjp/ui/data-entry";
+import { FilterBar, FilterBarGroup } from "@godxjp/ui/navigation";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { cn } from "@godxjp/ui/lib/utils";
@@ -170,52 +171,49 @@ export default function Demo() {
             </Text>
           </CardHeader>
           <CardContent>
-            <Form>
-              <Flex direction="row" wrap align="end" gap="md">
-                <FormField label="比較 A">
-                  <Select
-                    value={compareA}
-                    onValueChange={setCompareA}
-                    options={roleOptions}
-                    className="w-40"
-                  />
-                </FormField>
-                <FormField label="比較 B">
-                  <Select
-                    value={compareB}
-                    onValueChange={setCompareB}
-                    options={roleOptions}
-                    className="w-40"
-                  />
-                </FormField>
-                <Flex direction="row" align="center" gap="sm">
-                  <Switch
-                    id="pm-diff-only"
-                    size="sm"
-                    checked={diffOnly}
-                    onCheckedChange={setDiffOnly}
-                    disabled={sameRole}
-                  />
-                  <Label htmlFor="pm-diff-only">差分のみ</Label>
-                </Flex>
-                <Flex direction="row" align="center" gap="xs" aria-live="polite">
-                  {sameRole ? (
+            <FilterBar>
+              <FilterBarGroup label="比較 A" controlId="pm-compare-a">
+                <Select
+                  id="pm-compare-a"
+                  value={compareA}
+                  onValueChange={setCompareA}
+                  options={roleOptions}
+                />
+              </FilterBarGroup>
+              <FilterBarGroup label="比較 B" controlId="pm-compare-b">
+                <Select
+                  id="pm-compare-b"
+                  value={compareB}
+                  onValueChange={setCompareB}
+                  options={roleOptions}
+                />
+              </FilterBarGroup>
+              <FilterBarGroup label="差分のみ" controlId="pm-diff-only">
+                <Switch
+                  id="pm-diff-only"
+                  size="sm"
+                  checked={diffOnly}
+                  onCheckedChange={setDiffOnly}
+                  disabled={sameRole}
+                />
+              </FilterBarGroup>
+              <Flex direction="row" align="center" gap="xs" aria-live="polite">
+                {sameRole ? (
+                  <Text size="xs" tone="muted">
+                    同一ロールを比較中
+                  </Text>
+                ) : (
+                  <>
+                    <Badge tone={diffN > 0 ? "warning" : "success"} variant="outline">
+                      差分 {diffN} 件
+                    </Badge>
                     <Text size="xs" tone="muted">
-                      同一ロールを比較中
+                      {roleName(compareA)} vs {roleName(compareB)}
                     </Text>
-                  ) : (
-                    <>
-                      <Badge tone={diffN > 0 ? "warning" : "success"} variant="outline">
-                        差分 {diffN} 件
-                      </Badge>
-                      <Text size="xs" tone="muted">
-                        {roleName(compareA)} vs {roleName(compareB)}
-                      </Text>
-                    </>
-                  )}
-                </Flex>
+                  </>
+                )}
               </Flex>
-            </Form>
+            </FilterBar>
           </CardContent>
         </Card>
 

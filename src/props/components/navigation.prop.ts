@@ -1,7 +1,7 @@
 /** Navigation component prop types — @see docs/COMPONENTS.md#navigation */
 import type * as React from "react";
 import type { ReactNode } from "react";
-import type { AffixProp, AffixTargetProp } from "./layout.prop";
+import type { AffixProp, AffixTargetProp, ResponsiveGridColumnsProp } from "./layout.prop";
 import type {
   ActionsProp,
   ChildrenProp,
@@ -12,12 +12,15 @@ import type {
   IdProp,
   LabelProp,
   OnClearFiltersProp,
+  OnOpenChangeProp,
+  OpenProp,
+  DefaultOpenProp,
   PendingProp,
   PlaceholderProp,
   StickyProp,
   TextAlignProp,
 } from "../vocabulary";
-import type { SearchSelectOptionProp } from "./data-entry.prop";
+import type { FormProp, SearchSelectOptionProp } from "./data-entry.prop";
 
 /**
  * Renders the canonical SearchInput as the FIRST control of the strip, with a token-owned
@@ -143,6 +146,50 @@ export type FilterBarViewsPlacementProp = "above" | "inline";
 
 /** @see ToolbarProp.clearDisplay */
 export type FilterBarClearDisplayProp = "label" | "icon";
+
+/**
+ * @see SearchForm — the submit-driven 検索条件フォーム (Ant Design ProComponents `QueryFilter`): a
+ * grid of labelled conditions, an explicit Search (検索) + Clear (クリア) pair, the conditions past
+ * the first row behind one 詳細条件を開く toggle, and a 検索条件 summary + result count after the
+ * search. A live FilterBar applies each change at once; a SearchForm applies them on submit.
+ */
+export type SearchFormProp = Omit<
+  FormProp,
+  "role" | "onReset" | "children" | "columns" | "asChild" | "aria-label"
+> & {
+  /** One FormField per condition, in reading order. Each direct child is one grid cell. */
+  children: ChildrenProp;
+  /** Grid columns per breakpoint. Default `{ base: 1, md: 2, lg: 3 }`: one column on a phone. */
+  columns?: ResponsiveGridColumnsProp;
+  /**
+   * How many conditions stay visible while the detail section is closed (antd
+   * `defaultFormItemsNumber`). Defaults to the widest `columns` step: the first row.
+   */
+  visibleFields?: number;
+  /** Whether the conditions past `visibleFields` are shown (controlled). */
+  open?: OpenProp;
+  /** Initial open state when uncontrolled. Default `false`: collapsed to the first row. */
+  defaultOpen?: DefaultOpenProp;
+  /** Fires when the 詳細条件を開く / 閉じる toggle is pressed. */
+  onOpenChange?: OnOpenChangeProp;
+  /** Clear (クリア) handler. The Clear button renders only when this is set. */
+  onReset?: () => void;
+  /** Overrides the localized Search (検索) button text. */
+  searchLabel?: LabelProp;
+  /** Overrides the localized Clear (クリア) button text. */
+  resetLabel?: LabelProp;
+  /**
+   * The conditions the CURRENT results were searched with, shown after the localized 検索条件
+   * label in a `role="status"` line (e.g. 「国: ベトナム / 状態: 稼働中」).
+   */
+  summary?: ReactNode;
+  /** Localized, pluralized result count shown in the same status line. */
+  resultCount?: number;
+  /** Puts the Search button in its loading state while the query runs. */
+  loading?: PendingProp;
+  /** Accessible name of the `search` landmark. Defaults to a localized "Search conditions". */
+  label?: string;
+};
 
 /** @see ToolbarGroup */
 export type ToolbarGroupProp = {

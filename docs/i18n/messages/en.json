@@ -1907,5 +1907,337 @@
       "en": "Enter the English product name",
       "vi": "Enter the Vietnamese product name"
     }
+  },
+  "filterBarLayoutsDocs": {
+    "page": {
+      "title": "FilterBar layouts",
+      "subtitle": "Eleven filter layouts from leading products, every one built from FilterBar and existing primitives. Filters pack at the start; only the actions slot sits at the far end."
+    },
+    "mirrors": "Mirrors {products}.",
+    "country": {
+      "vn": "Vietnam",
+      "id": "Indonesia",
+      "ph": "Philippines",
+      "mm": "Myanmar"
+    },
+    "status": {
+      "active": "Active",
+      "review": "In review",
+      "suspended": "Suspended"
+    },
+    "occupation": {
+      "construction": "Construction",
+      "care": "Nursing care",
+      "food": "Food processing"
+    },
+    "col": {
+      "name": "Organisation",
+      "country": "Country",
+      "status": "Status",
+      "trainees": "Trainees"
+    },
+    "empty": "No sending organisations match these filters",
+    "results": "Sending organisations",
+    "label": {
+      "country": "Country",
+      "status": "Status",
+      "occupation": "Occupation",
+      "period": "Period",
+      "dateRange": "Start – end date",
+      "includeSuspended": "Include suspended"
+    },
+    "chip": {
+      "country": "Country: {value}",
+      "status": "Status: {value}",
+      "occupation": "Occupation: {value}"
+    },
+    "all": "All",
+    "search": {
+      "placeholder": "Search by name or ID",
+      "label": "Search sending organisations",
+      "inView": "Search this view",
+      "keyword": "Keyword",
+      "short": "Search"
+    },
+    "filterMenu": "Filter",
+    "appliedCount": "filters applied",
+    "more": {
+      "button": "More filters",
+      "description": "Applied filters also show as chips above the list."
+    },
+    "showResults": "Show results",
+    "showCount": "Show {count} results",
+    "views": {
+      "all": "All",
+      "active": "Active",
+      "review": "Needs review",
+      "vn": "Vietnam",
+      "countLabel": "results"
+    },
+    "actions": {
+      "export": "Export CSV",
+      "add": "Add organisation"
+    },
+    "facets": {
+      "button": "Filters",
+      "description": "Each count is the result of that filter alone."
+    },
+    "card": {
+      "title": "Assigned organisations",
+      "searchLabel": "Search assigned organisations"
+    },
+    "range": {
+      "7d": "7 days",
+      "30d": "30 days",
+      "q": "Quarter",
+      "custom": "Custom"
+    },
+    "dock": {
+      "open": "Open filter panel",
+      "close": "Close filter panel",
+      "title": "Filters",
+      "sheetDescription": "On a wide screen this panel docks beside the table."
+    },
+    "layout": {
+      "a": {
+        "title": "Inline packed bar",
+        "when": "2–4 filters a user changes often, on a generic admin list",
+        "mirrors": "Ant Design ProTable's collapsed query form"
+      },
+      "b": {
+        "title": "Search first, one Filter menu, applied chips",
+        "when": "Keyboard-heavy lists where search does most of the work and filters are occasional",
+        "mirrors": "Linear's Filter menu and GitHub's issue filters"
+      },
+      "c": {
+        "title": "Promoted filters + one More filters Sheet",
+        "when": "More than 2–4 filters: keep the most-used inline, the rest one click away with a count",
+        "mirrors": "Shopify Polaris IndexFilters (pattern list-filters, rule #51)"
+      },
+      "d": {
+        "title": "Saved views above the bar",
+        "when": "Teams that return to the same few filter sets; a view picks a whole set, not one filter",
+        "mirrors": "Shopify Polaris IndexTable views and Jira saved filters"
+      },
+      "e": {
+        "title": "Two rows: a wide search, filters under it",
+        "when": "Search-results pages where the query is the main input and filters refine it",
+        "mirrors": "Gmail search and Amazon results"
+      },
+      "f": {
+        "title": "Filters at the start, actions at the end, sticky",
+        "when": "A list with page-level actions (export, create, bulk); the bar stays pinned while the table scrolls",
+        "mirrors": "Ant Design ProTable toolbar and Stripe's list headers"
+      },
+      "g": {
+        "title": "Faceted sidebar",
+        "when": "Catalogue-style browsing with many multi-select facets and per-facet counts",
+        "mirrors": "Amazon and Rakuten search facets"
+      },
+      "h": {
+        "title": "Compact bar inside the table card",
+        "when": "A secondary table inside a detail page or dashboard, where the filters belong to that one card",
+        "mirrors": "GitHub's repository file and Actions run tables"
+      },
+      "i": {
+        "title": "Date range with quick ranges",
+        "when": "Analytics and reporting screens where time is the first filter",
+        "mirrors": "Stripe Dashboard and Google Analytics date controls"
+      },
+      "j": {
+        "title": "Phone: one stacked column + a Sheet",
+        "when": "Below 640px every FilterBar stacks: search full width, the rest one tap away in a bottom Sheet",
+        "mirrors": "Shopify admin and Airbnb mobile filters"
+      },
+      "k": {
+        "title": "Docked filter panel",
+        "when": "Long working sessions on one table, where filters change while the user works; becomes a Sheet below 1024px",
+        "mirrors": "Airtable and Notion view filters, Jira's advanced filter panel, Gmail's side panel"
+      }
+    }
+  },
+  "searchFormDocs": {
+    "page": {
+      "subtitle": "Submit-driven search for lists: a 検索条件 form, a condition builder, an advanced-search form and a list view with a docked filter panel.",
+      "decision": "Which shape: a few filters applied as the user changes them → FilterBar. Many conditions, a heavy query, or users who expect an explicit Search button → SearchForm (l). Power users combining any field with any operator and saving the result as a view → a condition builder (m, o). A one-off expert query with syntax help → an advanced-search form (n)."
+    },
+    "mirrors": "Mirrors {products}.",
+    "nationality": {
+      "vn": "Vietnam",
+      "id": "Indonesia",
+      "ph": "Philippines",
+      "mm": "Myanmar"
+    },
+    "status": {
+      "training": "In training",
+      "preparing": "Preparing to enter",
+      "completed": "Completed",
+      "withdrawn": "Returned early"
+    },
+    "occupation": {
+      "construction": "Construction",
+      "care": "Nursing care",
+      "food": "Food processing",
+      "agriculture": "Agriculture"
+    },
+    "col": {
+      "name": "Name",
+      "nationality": "Nationality",
+      "status": "Status",
+      "occupation": "Occupation",
+      "months": "Months enrolled"
+    },
+    "field": {
+      "name": "Name",
+      "match": "Match",
+      "nationality": "Nationality",
+      "status": "Status",
+      "entry": "Entry date",
+      "months": "Months enrolled",
+      "occupation": "Occupation",
+      "agency": "Sending organisation"
+    },
+    "match": {
+      "partial": "Partial match",
+      "exact": "Exact match"
+    },
+    "all": "All",
+    "anytime": "Any time",
+    "empty": "No trainees match these conditions",
+    "noConditions": "none",
+    "rangeMin": "From",
+    "rangeMax": "To",
+    "variant": {
+      "labelLeft": "The same form with labels on the left (table style)"
+    },
+    "resultLine": "{count} trainees · filtered by {summary}",
+    "builderMatch": {
+      "all": "Match all conditions",
+      "any": "Match any condition",
+      "custom": "Custom logic"
+    },
+    "operator": {
+      "contains": "contains",
+      "notContains": "does not contain",
+      "eq": "equals (=)",
+      "neq": "not equal (≠)",
+      "in": "is any of",
+      "notIn": "is none of",
+      "gte": "at least (≥)",
+      "lte": "at most (≤)"
+    },
+    "direction": {
+      "asc": "Ascending",
+      "desc": "Descending"
+    },
+    "builder": {
+      "title": "Filter conditions",
+      "match": "Combine conditions",
+      "rows": "Conditions",
+      "row": "Condition {n}",
+      "field": "Field",
+      "operator": "Operator",
+      "value": "Value",
+      "remove": "Remove condition {n}",
+      "add": "Add condition",
+      "addAfter": "Add a condition after condition {n}",
+      "logic": "Filter logic",
+      "logicHelper": "Combine the numbered conditions with AND, OR, NOT and parentheses, e.g. 1 AND (2 OR 3).",
+      "logicError": "Use only the numbers of existing conditions, AND, OR, NOT and balanced parentheses.",
+      "sort": "Sort by",
+      "direction": "Sort direction",
+      "viewName": "Save as view",
+      "saveView": "Save view",
+      "savedViews": "Saved views",
+      "cancel": "Cancel",
+      "revert": "Revert changes",
+      "apply": "Apply"
+    },
+    "advanced": {
+      "find": "Find trainees with…",
+      "narrow": "Then narrow the results by…",
+      "all": "all these words:",
+      "allHelper": "Type the important words: Esuhai care",
+      "exact": "this exact word or phrase:",
+      "exactHelper": "Put exact words in quotes: \"Nguyễn Văn\"",
+      "any": "any of these words:",
+      "anyHelper": "Type OR between the words: Esuhai OR Kyoei",
+      "none": "none of these words:",
+      "noneHelper": "Put a minus sign before words you don't want: -withdrawn",
+      "range": "months enrolled from:",
+      "rangeHelper": "Put two periods between the numbers: 6..18",
+      "nationality": "nationality:",
+      "nationalityHelper": "Only trainees of the nationality you pick.",
+      "updated": "last update:",
+      "updatedHelper": "Records updated within the time you pick.",
+      "agency": "sending organisation:",
+      "agencyHelper": "One organisation, like a site in a web search: agency:Esuhai",
+      "scope": "terms appearing:",
+      "scopeHelper": "Search the whole record, only the name, or only the notes.",
+      "document": "document type:",
+      "documentHelper": "Only trainees with this document on file.",
+      "submit": "Advanced search",
+      "query": "Query: {query} · {count} trainees"
+    },
+    "updated": {
+      "day": "past 24 hours",
+      "week": "past week",
+      "month": "past month",
+      "year": "past year"
+    },
+    "scope": {
+      "all": "anywhere in the record",
+      "name": "in the name",
+      "notes": "in the notes"
+    },
+    "document": {
+      "passport": "Passport",
+      "residence": "Residence card",
+      "contract": "Employment contract"
+    },
+    "listView": {
+      "picker": "List views",
+      "recent": "Recently viewed",
+      "all": "All trainees",
+      "mine": "My trainees",
+      "careVn": "Care · Vietnam",
+      "pinned": "pinned",
+      "pin": "Pin this list view",
+      "unpin": "Pinned list view",
+      "controls": "List view controls",
+      "new": "New",
+      "clone": "Clone",
+      "sharing": "Sharing settings",
+      "search": "Search this list",
+      "filters": "Filters",
+      "filtersApplied": "filters applied",
+      "sheetDescription": "On a wide screen this panel docks beside the list.",
+      "showMe": "Show me",
+      "showAll": "All trainees",
+      "showMine": "My trainees",
+      "summary": "{count} items · filtered by {summary}"
+    },
+    "layout": {
+      "l": {
+        "title": "検索条件フォーム — SearchForm",
+        "when": "Many conditions or a heavy query, for users who expect an explicit Search button (Japanese business systems)",
+        "mirrors": "Ant Design ProComponents QueryFilter"
+      },
+      "m": {
+        "title": "Condition builder",
+        "when": "Power users combining any field with any operator, with all/any or numbered custom logic, saved as a view",
+        "mirrors": "kintone record filters and Salesforce filter logic"
+      },
+      "n": {
+        "title": "Advanced search form",
+        "when": "A one-off expert query: each row says which search-box syntax it stands for",
+        "mirrors": "Google Advanced Search"
+      },
+      "o": {
+        "title": "List view with a docked filter panel",
+        "when": "Records apps where people switch between saved list views and refine them in a panel beside the list",
+        "mirrors": "Salesforce Lightning list views"
+      }
+    }
   }
 }

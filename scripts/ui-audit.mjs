@@ -1011,7 +1011,19 @@ const RULES = [
     severity: "warn",
     spansElement: true,
     matches: formOnListPageMatches,
-    message: `A Form with ${FORM_ON_LIST_FIELDS}+ FormFields and a DataTable/Table/List/ListRow on the same page — a create form inlined beside its list. Give create its own route (or a focused Dialog/Sheet) and keep the list page a list (design-complex-admin anti-pattern #3).`,
+    message: `A Form with ${FORM_ON_LIST_FIELDS}+ FormFields and a DataTable/Table/List/ListRow on the same page — a create form inlined beside its list. Give create its own route (or a focused Dialog/Sheet) and keep the list page a list (design-complex-admin anti-pattern #3). A SEARCH form over the list is not this: use <SearchForm> or mark the Form role="search".`,
+  },
+  {
+    id: "hand-rolled-filter-bar",
+    replacement:
+      "<FilterBar> (filters packed at the start; past 2–4 filters, pattern list-filters)",
+    scope: "consumer",
+    severity: "warn",
+    standard: "@godxjp/ui cardinal rule #51",
+    spansElement: true,
+    matches: handRolledFilterBarMatches,
+    message:
+      'A hand-built filter strip on a list page: 2+ filter controls (labelled Select/SearchInput/Switch/Checkbox/DatePicker) laid out in your own Flex/div/Card above a DataTable/Table/List, outside FilterBar. Use <FilterBar> (search / filters / actions slots): it packs the filters at the START with one gap, wraps at every width and owns the clear + chips row. Never spread filters with justify="between"/"around"/"evenly" — the only far-end element of a filter bar is its `actions` slot. Past 2–4 filters, the rest go behind one "More filters" Sheet (MCP: get_rule 51, get_pattern list-filters). Not findings: a Form that submits (a search form), a SearchForm, a Sheet/Dialog/Drawer body, FilterBar/Toolbar children, a single search box. Many conditions or an explicit 検索 button → <SearchForm> (pattern search-form); field × operator rows → pattern condition-builder.',
   },
   {
     id: "empty-state-icon-in-card",
@@ -1850,7 +1862,10 @@ function* formOnListPageMatches(source) {
         // No onSubmit / action / spread: the Form cannot submit, so it is a filter or parameter
         // bar laid out with FormFields, like the NO_OP_SUBMIT shape.
         const submits = /\b(?:onSubmit|action)\s*=/.test(attrs) || /\{\s*\.\.\./.test(openTag);
-        const skip = overlay || !submits || NO_OP_SUBMIT.test(openTag);
+        // `role="search"` marks a 検索条件フォーム: a submitting SEARCH over the list, not a create
+        // form inlined beside it (the same shape SearchForm renders).
+        const search = /\brole\s*=\s*\{?\s*["']search["']/.test(attrs);
+        const skip = overlay || !submits || search || NO_OP_SUBMIT.test(openTag);
         opened.push({ index, openTag, scope, skip, fields: 0 });
       }
     } else if (tag === "FormField") {
@@ -1870,6 +1885,136 @@ function* formOnListPageMatches(source) {
     if (!form.skip && form.fields >= FORM_ON_LIST_FIELDS && samePage) {
       yield { 0: `${form.fields} FormFields beside a list: ${form.openTag}`, index: form.index };
     }
+  }
+}
+
+/** Value controls a list filter is built from (the label comes from FormField or aria-label). */
+const FILTER_VALUE_CONTROL =
+  /^(?:Select|SearchSelect|SearchInput|Combobox|Switch|Checkbox|CheckboxGroup|Checkbox\.Group|RadioGroup|DatePicker|DateRangePicker|MonthPicker|Segmented|TreeSelect|Cascader)$/;
+/** A filter control here is already inside the library's filter surface. */
+const FILTER_SURFACE =
+  /^(?:FilterBar|Toolbar|FilterBarGroup|ToolbarGroup|DataTable\.Toolbar|SearchForm)$/;
+/** Elements whose children are laid out by the consumer: the box a hand-built strip is drawn in. */
+const STRIP_CONTAINER =
+  /^(?:Flex|div|section|header|Card|CardContent|CardHeader|CardBar|ResponsiveGrid|Grid|Space|Row)$/;
+const COLUMN_STACK = /\bdirection\s*=\s*\{?\s*["'](?:col|column)["']|(?<![\w-])flex-col(?![\w-])/;
+const SPREAD_JUSTIFY =
+  /\bjustify\s*=\s*\{?\s*["'](?:between|around|evenly)["']|(?<![\w-])justify-(?:between|around|evenly)(?![\w-])/;
+
+/**
+ * `hand-rolled-filter-bar` (cardinal rule #51): a list page whose filters are laid out by hand.
+ * gino-cloud's 送出機関 list put three FormFields (two Selects, a Switch) in
+ * `<Card><CardContent><Flex wrap justify="between">`, each Select in its own `<Flex width={280}>`,
+ * above a DataTable — three controls pushed to the far left, middle and far right of a wide card.
+ * `formfield-needs-form` cannot see it (each field has a different immediate parent), so the
+ * grouping here is by SUBTREE: every container counts the filter controls anywhere below it, and
+ * the LOWEST container holding 2+ is the strip. A filter control is a FormField (not
+ * `label={false}`) holding a value control, or a bare value control that names itself
+ * (`aria-label`, `label`, or a SearchInput). Not counted: anything inside FilterBar/Toolbar and
+ * its groups, an overlay (a Sheet of filters is the list-filters pattern), a Form that SUBMITS (a
+ * search form; one that never submits is a filter strip in disguise, as in form-on-list-page), or
+ * a table (an inline cell editor). The strip must share a page with a list surface, paired by
+ * PageContainer exactly as `form-on-list-page` pairs them. Separately, a container that spreads
+ * filters with justify between/around/evenly across 2+ of its direct children is named in the
+ * snippet: that is the defect the consumer saw.
+ */
+function* handRolledFilterBarMatches(source) {
+  const submitSpans = [];
+  for (const m of source.matchAll(/<(Form|FormRoot)(?=[\s>])/g)) {
+    const end = jsxOpeningEnd(source, m.index);
+    const openTag = source.slice(m.index, end + 1);
+    if (/\/\s*>$/.test(openTag)) continue;
+    const submits =
+      (/\b(?:onSubmit|action)\s*=/.test(topLevelAttrs(openTag)) || /\{\s*\.\.\./.test(openTag)) &&
+      !NO_OP_SUBMIT.test(openTag);
+    if (!submits) continue;
+    const close = closingTagRange(source, m[1], end + 1);
+    submitSpans.push([m.index, close ? close.start : source.length]);
+  }
+  const inSubmittingForm = (i) => submitSpans.some(([a, b]) => i > a && i < b);
+
+  const openTags = new Map(); // children-frame id → { tag, index, openTag }
+  const pendingOpen = []; // openings whose children frame has not been seen yet
+  const units = new Map(); // unit key → frames above the control (a copy of the stack)
+  const listScopes = new Set();
+  for (const { tag, index, openTag, stack } of jsxElements(source)) {
+    // A container's children frame appears in the stack after its opening tag closes: claim it.
+    for (const f of stack) {
+      if (!f.attr && !openTags.has(f.id) && pendingOpen.length) {
+        const i = pendingOpen.findLastIndex((p) => p.tag === f.tag && p.index < index);
+        if (i >= 0) openTags.set(f.id, pendingOpen.splice(i, 1)[0]);
+      }
+    }
+    if (!/\/\s*>$/.test(openTag)) pendingOpen.push({ tag, index, openTag });
+    const overlay = stack.some((f) => OVERLAY_TAG.test(f.tag));
+    if (LIST_TAGS.has(tag)) {
+      if (!overlay && !stack.some((f) => f.tag === "Form")) {
+        listScopes.add(stack.findLast((f) => f.tag === "PageContainer" && !f.attr)?.id ?? "file");
+      }
+      continue;
+    }
+    if (!FILTER_VALUE_CONTROL.test(tag)) continue;
+    if (
+      overlay ||
+      stack.some((f) => FILTER_SURFACE.test(f.tag) || LIST_TAGS.has(f.tag)) ||
+      inSubmittingForm(index)
+    ) {
+      continue;
+    }
+    const field = stack.findLastIndex((f) => f.tag === "FormField" && !f.attr);
+    if (field >= 0) {
+      // `label={false}` is a layout slot (a submit row), not a labelled filter.
+      const fieldTag = openTags.get(stack[field].id)?.openTag ?? "";
+      if (/\blabel\s*=\s*\{\s*false\s*\}/.test(topLevelAttrs(fieldTag))) continue;
+      const key = `field:${stack[field].id}`;
+      if (!units.has(key)) units.set(key, stack.slice(0, field));
+    } else if (
+      !stack.some((f) => f.attr) &&
+      (tag === "SearchInput" || /\b(?:aria-label|label)\s*=/.test(topLevelAttrs(openTag)))
+    ) {
+      units.set(`ctl:${index}`, stack.slice());
+    }
+  }
+  if (units.size < 2 || listScopes.size === 0) return;
+
+  const counts = new Map(); // container frame id → { n, children: Set<child frame id> }
+  for (const [key, frames] of units) {
+    frames.forEach((f, i) => {
+      if (f.attr || !STRIP_CONTAINER.test(f.tag)) return;
+      const c =
+        counts.get(f.id) ?? counts.set(f.id, { n: 0, children: new Set(), frames }).get(f.id);
+      c.n += 1;
+      c.children.add(frames[i + 1]?.id ?? key);
+    });
+  }
+  const strips = [...counts.entries()].filter(([, c]) => c.n >= 2);
+  const reported = new Set();
+  for (const [id, c] of strips) {
+    const open = openTags.get(id);
+    if (!open) continue;
+    const scope = c.frames.findLast((f) => f.tag === "PageContainer" && !f.attr)?.id ?? "file";
+    const samePage = scope === "file" || listScopes.has("file") || listScopes.has(scope);
+    if (!samePage) continue;
+    const spread = SPREAD_JUSTIFY.test(open.openTag) && c.children.size >= 2;
+    // The LOWEST container holding 2+ filters is the strip; an ancestor is reported only when it
+    // is the one that spreads them.
+    const lowest = !strips.some(([other, oc]) => {
+      const at = oc.frames.findIndex((f) => f.id === id);
+      return other !== id && at >= 0 && at < oc.frames.findIndex((f) => f.id === other);
+    });
+    if (!lowest && !spread) continue;
+    // A vertical stack of fields is a form or an editor panel (theme editors, a settings column),
+    // not a strip: a filter bar is a ROW. Measured on this repo's docs: all 6 column hits were
+    // live-apply editors, every row/grid hit was a real filter strip.
+    if (!spread && COLUMN_STACK.test(topLevelAttrs(open.openTag))) continue;
+    if (reported.has(open.index)) continue;
+    reported.add(open.index);
+    yield {
+      0: spread
+        ? `${c.n} filter controls spread by justify: ${open.openTag}`
+        : `${c.n} filter controls outside a FilterBar: ${open.openTag}`,
+      index: open.index,
+    };
   }
 }
 
@@ -2080,7 +2225,7 @@ function staleOwnedRules() {
  * Pagination also renders <Form>, but around its own controls, not a consumer's fields. Add a tag
  * here when another exported wrapper starts rendering <Form> around children.
  */
-const FORM_TAGS = new Set(["Form", "FormRoot"]);
+const FORM_TAGS = new Set(["Form", "FormRoot", "SearchForm"]);
 const formOpenTag = new RegExp(`<(${[...FORM_TAGS].join("|")})(?=[\\s>])([^>]*)>`, "g");
 function formTagWalk(scanContent) {
   const formSpans = [];

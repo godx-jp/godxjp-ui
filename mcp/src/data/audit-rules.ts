@@ -103,7 +103,14 @@ export const AUDIT_RULES: AuditRule[] = [
     severity: "warn",
     category: "composition",
     standard: null,
-    fix: "A submitting Form with 3+ FormFields and a DataTable/Table/List/ListRow on the same page is a create form inlined beside its list (design-complex-admin anti-pattern #3). Give create its own route, or a focused Dialog/Sheet, and link to it from the list page's PageContainer `extra`. Not findings: a Form inside a Dialog/Sheet/Drawer, a Form that never submits (no onSubmit, or one that only calls preventDefault: a filter bar), a 1-2 field form, an editor whose Table sits inside its Form, and a list page and a create page that one file renders in two PageContainers.",
+    fix: 'A submitting Form with 3+ FormFields and a DataTable/Table/List/ListRow on the same page is a create form inlined beside its list (design-complex-admin anti-pattern #3). Give create its own route, or a focused Dialog/Sheet, and link to it from the list page\'s PageContainer `extra`. Not findings: a Form inside a Dialog/Sheet/Drawer, a `role="search"` Form or a SearchForm (a 検索条件フォーム searches the list, it does not create into it), a Form that never submits (no onSubmit, or one that only calls preventDefault: a filter bar), a 1-2 field form, an editor whose Table sits inside its Form, and a list page and a create page that one file renders in two PageContainers.',
+  },
+  {
+    id: "hand-rolled-filter-bar",
+    severity: "warn",
+    category: "composition",
+    standard: "@godxjp/ui cardinal rule #51",
+    fix: 'A list page (DataTable/Table/List/ListRow in the same PageContainer) whose 2+ filter controls (a FormField holding Select/SearchInput/Switch/Checkbox/DatePicker…, or a self-labelled bare one) sit in your own Flex/div/Card/ResponsiveGrid instead of a <FilterBar>. Move them into <FilterBar> (`search` / `filters` / FilterBarGroup children / `actions`): it packs filters at the START with one gap, wraps, and owns clear + chips. justify="between"|"around"|"evenly" across filters is named in the snippet — the only far-end element of a filter bar is its `actions` slot. Past 2–4 filters use pattern list-filters; for other layouts (saved views, faceted sidebar, docked panel…) see pattern filter-bar-layouts. Not findings: FilterBar/Toolbar/SearchForm children, a condition builder inside a submitting `role="search"` Form, a Sheet/Dialog/Drawer/Popover body, a Form that submits (a search form), a column of fields (an editor panel), cell editors inside a table, a single search box.',
   },
   {
     id: "empty-state-icon-in-card",

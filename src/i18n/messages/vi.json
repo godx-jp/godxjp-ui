@@ -575,6 +575,15 @@
       "removeFilter": "Bỏ bộ lọc: {label}",
       "resultCount": "{count} kết quả"
     },
+    "searchForm": {
+      "label": "Điều kiện tìm kiếm",
+      "search": "Tìm kiếm",
+      "reset": "Xoá điều kiện",
+      "expand": "Mở thêm điều kiện",
+      "collapse": "Thu gọn điều kiện",
+      "hiddenCount": "điều kiện đang ẩn",
+      "summary": "Điều kiện tìm kiếm:"
+    },
     "localePicker": {
       "ariaLabel": "Ngôn ngữ"
     },

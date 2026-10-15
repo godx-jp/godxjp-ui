@@ -11,7 +11,7 @@
  * not transcription" rule. Composition map (prototype block → @godxjp/ui primitive):
  *   page chrome ............... AppShell + Sidebar + Topbar
  *   page header + bulk-approve  PageContainer (extra slot) + Button (live count)
- *   4-col filter bar .......... Card + ResponsiveGrid + FormField + Select + DatePicker
+ *   filter bar ................ FilterBar + FilterBarGroup + Select + DatePicker
  *   bulk toolbar .............. DataTable.Toolbar + DataTable.BulkActions
  *   selectable approval table . DataTable (selectable, getRowId) + ColumnDef
  *   type / status cells ....... Badge tone (fixed color signaling)
@@ -43,13 +43,13 @@ import {
   AvatarFallback,
 } from "@godxjp/ui/data-display";
 import { Alert, AlertDescription, SkeletonTable } from "@godxjp/ui/feedback";
-import { Form, DatePicker, FormField, Input, Select } from "@godxjp/ui/data-entry";
+import { DatePicker, FormField, Input, Select } from "@godxjp/ui/data-entry";
+import { FilterBar, FilterBarGroup } from "@godxjp/ui/navigation";
 import { toIsoDate } from "@godxjp/ui/datetime";
 import {
   AppShell,
   Flex,
   PageContainer,
-  ResponsiveGrid,
   Sidebar,
   type SidebarSectionProp,
   Topbar,
@@ -349,47 +349,38 @@ export default function Demo() {
         }
       >
         <Flex direction="col" gap="lg">
-          {/* ── 4-column filter bar ───────────────────────────────────────── */}
-          <Card className="self-start">
-            <CardContent>
-              <Flex direction="col" gap="md">
-                <Form>
-                  <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-                    <FormField id="f-type" label="区分">
-                      <Select
-                        options={TYPE_OPTIONS}
-                        value={type}
-                        onValueChange={setType}
-                        placeholder="すべて"
-                      />
-                    </FormField>
-                    <FormField id="f-status" label="状態">
-                      <Select
-                        options={STATUS_OPTIONS}
-                        value={status}
-                        onValueChange={setStatus}
-                        placeholder="すべて"
-                      />
-                    </FormField>
-                    <FormField id="f-from" label="期間 (開始)">
-                      <DatePicker value={from} onValueChange={setFrom} placeholder="YYYY-MM-DD" />
-                    </FormField>
-                    <FormField id="f-to" label="期間 (終了)">
-                      <DatePicker value={to} onValueChange={setTo} placeholder="YYYY-MM-DD" />
-                    </FormField>
-                  </ResponsiveGrid>
-                </Form>
-                {hasActiveFilters && (
-                  <Flex direction="row" justify="end">
-                    <Button variant="ghost" size="sm" onClick={clearFilters}>
-                      <X aria-hidden="true" />
-                      条件をクリア
-                    </Button>
-                  </Flex>
-                )}
-              </Flex>
-            </CardContent>
-          </Card>
+          {/* ── Filter bar: packed at the start, wraps (cardinal rule #51) ─── */}
+          <FilterBar hasActiveFilters={hasActiveFilters} onClear={clearFilters}>
+            <FilterBarGroup label="区分" controlId="f-type">
+              <Select
+                id="f-type"
+                options={TYPE_OPTIONS}
+                value={type}
+                onValueChange={setType}
+                placeholder="すべて"
+              />
+            </FilterBarGroup>
+            <FilterBarGroup label="状態" controlId="f-status">
+              <Select
+                id="f-status"
+                options={STATUS_OPTIONS}
+                value={status}
+                onValueChange={setStatus}
+                placeholder="すべて"
+              />
+            </FilterBarGroup>
+            <FilterBarGroup label="期間 (開始)" controlId="f-from">
+              <DatePicker
+                id="f-from"
+                value={from}
+                onValueChange={setFrom}
+                placeholder="YYYY-MM-DD"
+              />
+            </FilterBarGroup>
+            <FilterBarGroup label="期間 (終了)" controlId="f-to">
+              <DatePicker id="f-to" value={to} onValueChange={setTo} placeholder="YYYY-MM-DD" />
+            </FilterBarGroup>
+          </FilterBar>
 
           {/* ── Inline reject prompt (conditional, reason required) ────────── */}
           {rejectTarget && (

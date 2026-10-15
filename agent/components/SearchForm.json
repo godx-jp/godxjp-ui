@@ -1,0 +1,115 @@
+{
+  "absorbed": [
+    "QueryFilter",
+    "SearchPanel"
+  ],
+  "docPath": "navigation/search-form",
+  "example": "import { SearchForm } from \"@godxjp/ui/navigation\";\nimport { FormField, Input, Select, DatePicker } from \"@godxjp/ui/data-entry\";\n\n<SearchForm\n  controlWidth=\"100%\"\n  onSubmit={(e) => { e.preventDefault(); setApplied(draft); }}\n  onReset={() => { setDraft(EMPTY); setApplied(EMPTY); }}\n  summary=\"国籍: ベトナム / 状態: 実習中\"\n  resultCount={rows.length}\n>\n  <FormField label=\"氏名\" id=\"q-name\"><Input id=\"q-name\" value={draft.name} onChange={(e) => set({ name: e.target.value })} /></FormField>\n  <FormField label=\"国籍\" id=\"q-nat\"><Select id=\"q-nat\" options={nationalities} value={draft.nationality} onValueChange={(v) => set({ nationality: v })} /></FormField>\n  <FormField label=\"入国日\" id=\"q-entry\"><DatePicker id=\"q-entry\" range /></FormField>\n  <FormField label=\"職種\" id=\"q-occ\"><Select id=\"q-occ\" options={occupations} value={draft.occupation} onValueChange={(v) => set({ occupation: v })} /></FormField>\n</SearchForm>",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "SearchForm",
+  "props": [
+    {
+      "description": "One FormField per condition, in reading order. Each direct child is one grid cell; a range (「日付」 From〜To, 「金額」 「下限〜上限」) is ONE FormField holding both controls.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "{ base: 1, md: 2, lg: 3 }",
+      "description": "Grid columns per container breakpoint — one column on a phone, aligned columns above. Conditions never spread to the edges.",
+      "name": "columns",
+      "type": "ResponsiveGridColumnsProp"
+    },
+    {
+      "description": "Conditions shown while collapsed (antd `defaultFormItemsNumber`). Default: the widest `columns` step, i.e. the first row.",
+      "name": "visibleFields",
+      "type": "number"
+    },
+    {
+      "description": "Controlled: whether the conditions past `visibleFields` are shown.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Uncontrolled initial state — collapsed to the first row by default.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Fires when the 「詳細条件を開く」 / 「閉じる」 toggle is pressed.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Search (「検索」) — the native form submit. Call `preventDefault()` and copy the draft conditions into the applied query; the form never searches on each keystroke.",
+      "name": "onSubmit",
+      "type": "FormEventHandler<HTMLFormElement>"
+    },
+    {
+      "description": "Clear (「クリア」). The button renders only when this is set.",
+      "name": "onReset",
+      "type": "() => void"
+    },
+    {
+      "description": "The conditions the CURRENT results were searched with, shown after the localized 「検索条件」 label in the status line (e.g. 「国「籍」: 「ベトナム」 / 「状態」: 「実習」中」).",
+      "name": "summary",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Localized, pluralized result count in the same `role=\"status\"` line.",
+      "name": "resultCount",
+      "type": "number"
+    },
+    {
+      "description": "Puts the Search button in its loading state while the query runs.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "Overrides the localized Search (「検索」) text.",
+      "name": "searchLabel",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Overrides the localized Clear (「クリア」) text.",
+      "name": "resetLabel",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Accessible name of the `search` landmark (default: localized 'Search conditions').",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "Passed to the underlying Form: `layout=\"vertical\"` (default) is label-top; `layout=\"horizontal\"` + `labelWidth` is the label-left table style of Japanese business systems. Set `controlWidth` once here so Selects fill their column.",
+      "name": "layout / labelWidth / controlWidth / labelAlign",
+      "type": "Form props"
+    }
+  ],
+  "related": [
+    "Toolbar — FilterBar, the live filter strip; use it for a few filters applied as the user changes them.",
+    "Form — the layout container SearchForm renders (`role=\"search\"`); its `layout`, `labelWidth` and `controlWidth` pass through.",
+    "FormField — one per condition; a range is one FormField holding two controls.",
+    "DataTable — the results under the form."
+  ],
+  "rules": [
+    23,
+    51
+  ],
+  "storyPath": "navigation/search-form.tsx",
+  "tagline": "Submit-driven 「検索条件フォーム」 (Ant Design ProComponents QueryFilter): a `search` landmark holding a grid of labelled conditions aligned in columns, Search 「検索」 + Clear 「クリア」, the conditions past the first row behind ONE 「詳細条件を開く」 toggle that names how many are hidden, and a 「検索条件」 summary + result count in a role=\"status\" line after the search. Use it instead of a live FilterBar when the conditions are many, the query is heavy, or users expect an explicit 「検索」 button (rule #51 decision table).",
+  "usage": [
+    "DO pick the shape from rule #51's decision table: a few filters applied instantly → FilterBar; many conditions / a heavy query / users who expect an explicit 「検索」 button → SearchForm; arbitrary field × operator conditions saved as views → pattern `condition-builder`.",
+    "DO put one FormField per condition as a direct child. Ranges (「入国日」 From〜To, 「金額」 「下限〜上限」) are ONE FormField with both controls; 「部分一致」 / 「完全一致」 is a RadioGroup inside the name field.",
+    "DO keep a draft and an applied copy of the conditions: inputs edit the draft, onSubmit copies it to the applied query, onReset clears both. Pass the applied conditions as `summary` and the hit count as `resultCount`.",
+    "DO NOT wrap it in another Form, and do not rebuild it as a Form + ResponsiveGrid + Collapsible by hand — the collapse, the hidden-count toggle, the search landmark and the status line are what this component owns. Hidden conditions stay mounted, so a typed value survives collapsing.",
+    "A SearchForm (or any `<Form role=\"search\" onSubmit>`) above a table is NOT flagged by ui-audit `form-on-list-page` or `hand-rolled-filter-bar`; a submitting create form without role=\"search\" still is."
+  ],
+  "useCases": [
+    "「検索条件フォーム」 on a Japanese business-system list (「基幹系」 / 「業務システム」): 6–12 conditions, 「検索」 and 「クリア」 buttons, 「詳細条件を開く」.",
+    "Search screens over a heavy query where searching on every keystroke would be too expensive.",
+    "Label-left (「表形式」) or label-top search panels above a DataTable, with the applied conditions summarized after the search."
+  ]
+}

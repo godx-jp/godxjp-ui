@@ -443,9 +443,11 @@ export type ResponsiveGridPresetProp = "pricing-plans";
  * Block-axis alignment of the cells in each grid row — antd `Row align`, spelled with Flex's
  * `FlexAlignProp` values (antd `top` → `start`; `stretch` is the same word). `stretch` gives every
  * cell the height of the tallest one, so an empty Kanban lane is still a full-height drop zone.
+ * `center` is antd `middle`: cells of different heights share one centre line (a condition row's
+ * number and ＋/− buttons beside taller controls).
  * Omitted, each flow keeps its own alignment: `columns` → `start`, `rows` → the grid's stretch.
  */
-export type ResponsiveGridAlignProp = Extract<FlexAlignProp, "start" | "stretch">;
+export type ResponsiveGridAlignProp = Extract<FlexAlignProp, "start" | "center" | "stretch">;
 
 export type MasterDetailRailWidthProp = "narrow" | "compact" | "standard" | "wide";
 export type MasterDetailRailProp = "master" | "detail";

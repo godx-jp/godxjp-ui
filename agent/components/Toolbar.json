@@ -101,7 +101,8 @@
     "DataTable.Toolbar — the in-table strip for column/density/bulk-action controls; Toolbar (this) is the page-level filter strip that sits ABOVE the table.",
     "SearchInput — the debounced free-text control placed as the first child of Toolbar.",
     "Badge — compose Badge + a sibling icon Button to render each active-filter chip; Badge itself is a non-interactive leaf.",
-    "Sheet — holds the filters beyond the 2–4 inline ones, opened by ONE 'More filters' Button inside the bar (pattern `list-filters`, rule #51). Not a ScrollArea: a filter strip never scrolls sideways."
+    "Sheet — holds the filters beyond the 2–4 inline ones, opened by ONE 'More filters' Button inside the bar (pattern `list-filters`, rule #51). Not a ScrollArea: a filter strip never scrolls sideways.",
+    "SearchForm — the submit-driven 「検索条件フォーム」 for many conditions or an explicit 「検索」 button (rule #51 decision table); FilterBar is the live strip."
   ],
   "rules": [
     23,
@@ -116,7 +117,7 @@
     "FilterBar",
     "FilterBarGroup"
   ],
-  "tagline": "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. It WRAPS and never scrolls sideways; many filters → 2–4 inline + ONE 'More filters' Sheet (rule #51, pattern `list-filters`). `FilterBar`/`FilterBarGroup` are the same components under their alias names.",
+  "tagline": "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. It WRAPS and never scrolls sideways; many filters → 2–4 inline + ONE 'More filters' Sheet (rule #51, pattern `list-filters`). `FilterBar`/`FilterBarGroup` are the same components under their alias names. Eleven layouts (inline, Filter menu + chips, More-filters Sheet, saved views, two rows, actions + sticky, faceted sidebar, compact in a card, date range, phone, docked panel) → pattern `filter-bar-layouts`.",
   "usage": [
     "DO prefer the typed model on a canonical list page — `search`/`filters`/`chips`/`onChipRemove`/`actions`/`resultCount` (+ `loading`/`disabled`/`error`) make the bar own layout, widths, chip lifecycle and keyboard order through --filter-bar-* tokens while ALL state stays consumer data. Children composition remains fully supported and unchanged when no model prop is passed.",
     "DO place Toolbar ABOVE the table Card, never inside a `CardContent flush`. Put SearchInput as a direct child (it self-labels) and wrap every other control in a ToolbarGroup with a `label`.",
@@ -124,6 +125,7 @@
     "DO set `sticky` for long list pages so the filters stay reachable while scrolling; if a topbar sits above the list, raise `--filter-bar-sticky-offset` so the strip parks below it.",
     "DO pass `controlId` on a ToolbarGroup that wraps ONE control and give that control the same `id` — the visible caption then becomes the control's real `<label htmlFor>` (WCAG 2.5.3 label-in-name). Without it the caption only names the group wrapper and the control itself is NAMELESS (axe: select-name / button-name), so you must fall back to an `aria-label` that repeats the caption.",
     "DO let the strip WRAP — cardinal rule #51 (`get_rule 51`). It stacks below 640px and wraps onto extra rows above; it never scrolls sideways, and neither may anything you wrap it in (`ScrollArea orientation=\"horizontal\"`, an `overflow-x-auto` box): the `overflow` prop and its `scroll` strategy were removed in 33.0.0 because a sideways strip hid filters off-screen and clipped the first label. When the filters are many, keep the 2–4 most-used ones inline and put the rest behind ONE 'More filters' Button (`count` = hidden filters applied) that opens a Sheet holding them as FilterBarGroup + control; every applied filter, inline or hidden, is a chip in `chips` (the chips row wraps too). Copy-paste composition: pattern `list-filters` (`get_pattern list-filters`); there is no dedicated component. Never re-implement the geometry in the page: no page-local flex/grid/width/overflow rules on a filter strip.",
+    "DO keep filters PACKED at the start of the bar with its one gap. Never lay them out yourself in a Flex/div/Card/ResponsiveGrid of FormFields above the table, and never spread them with `justify=\"between\"|\"around\"|\"evenly\"` — the only far-end element of a filter bar is its `actions` slot (with the clear button). ui-audit `hand-rolled-filter-bar` flags both. For a layout other than one strip (saved views, a Filter menu with chips, a faceted sidebar, a docked side panel, a compact bar inside a table card, a date range with quick ranges, a phone Sheet), copy pattern `filter-bar-layouts` (docs page navigation/filter-bar-layouts).",
     "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
     "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
     "Prefer the typed model for a canonical list page: pass `search` + `filters` + `chips` + `resultCount` and the bar owns the layout, widths, chip lifecycle, keyboard order (search → filters → children → reset → actions → chip removes) and responsive stacking through --filter-bar-* tokens. Everything stays consumer data — the bar renders state, never owns it.",
@@ -134,6 +136,7 @@
   "useCases": [
     "Master list screens (members, organizations, subscriptions, invoices) that need free-text search plus a few dropdown filters above a DataTable.",
     "Sticky filter strip over a tall list where the filters must remain visible as the user scrolls the results.",
-    "Filtered views that surface applied conditions as removable chips (clear-one via each chip's × Button, clear-all via `onClear`)."
+    "Filtered views that surface applied conditions as removable chips (clear-one via each chip's × Button, clear-all via `onClear`).",
+    "Filter layout choices — saved views filter tabs above the bar, a search-first bar with one Filter menu, a faceted filter sidebar with per-facet counts, a docked filter panel beside the table, a compact table toolbar, a date range filter with quick ranges, a phone filter Sheet: pattern `filter-bar-layouts`."
   ]
 }

@@ -853,6 +853,16 @@
         "data-display-layout.css"
       ]
     },
+    "SearchForm": {
+      "layers": [
+        "layout.css",
+        "control.css",
+        "text-layout.css",
+        "dialog-layout.css",
+        "alert-layout.css",
+        "form-layout.css"
+      ]
+    },
     "SearchInput": {
       "layers": [
         "control.css"

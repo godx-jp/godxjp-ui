@@ -548,6 +548,11 @@
   .ui-responsive-grid[data-align="stretch"] {
     align-items: stretch;
   }
+  /* antd `Row align="middle"`: cells of different heights share one optical centre line — a
+   * condition row whose row number and ＋/− buttons sit beside taller controls. */
+  .ui-responsive-grid[data-align="center"] {
+    align-items: center;
+  }
 
   /* `gap` prop: the same steps as Flex. */
   .ui-responsive-grid[data-gap="none"] {
@@ -1915,6 +1920,46 @@
 
   .ui-filter-bar-error {
     color: hsl(var(--text-error));
+  }
+
+  /* SearchForm — the submit-driven 検索条件フォーム. It reuses the filter family's gaps so a search
+   * form and a FilterBar on neighbouring screens share one rhythm. The toggle sits at the start of
+   * the action row; Clear + Search park at the inline end (the only far-end element). */
+  .ui-search-form-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--filter-bar-section-gap);
+  }
+
+  .ui-search-form-more {
+    min-inline-size: 0;
+  }
+
+  .ui-search-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--filter-bar-gap);
+  }
+
+  .ui-search-form-submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-inline-start: auto;
+  }
+
+  .ui-search-form-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+    font-size: var(--filter-label-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-search-form-summary-label {
+    font-weight: var(--font-weight-medium);
   }
 
   /* Every value reads a `--legal-document-*` component token, so a service re-tunes the measure,

@@ -281,6 +281,91 @@
   },
   {
     "aliases": [
+      "filter-layouts",
+      "faceted-filter",
+      "faceted-sidebar",
+      "saved-views-filter",
+      "docked-filter-panel",
+      "filter-panel",
+      "filter-menu"
+    ],
+    "name": "filter-bar-layouts",
+    "tagline": "Eleven list-filter layouts from leading products, all FilterBar + existing primitives: (a) inline packed, (b) search-first + ONE Filter menu + chips, (c) promoted + More-filters Sheet, (d) saved views above the bar, (e) wide search then filters, (f) actions at the end + sticky, (g) faceted sidebar, (h) compact bar in a table card, (i) date range + quick ranges, (j) phone stack + Sheet, (k) docked side panel. Filters always pack at the START.",
+    "tags": [
+      "filter",
+      "filters",
+      "layout",
+      "faceted",
+      "facets",
+      "saved views",
+      "docked",
+      "panel",
+      "sidebar",
+      "chips",
+      "date range",
+      "mobile",
+      "list",
+      "datatable"
+    ]
+  },
+  {
+    "aliases": [
+      "検索条件",
+      "検索フォーム",
+      "query-filter",
+      "query filter",
+      "advanced search",
+      "advanced-search",
+      "search-panel"
+    ],
+    "name": "search-form",
+    "tagline": "「検索条件フォーム」 — SearchForm (Ant Design ProComponents QueryFilter): labelled conditions in aligned columns (label-top or label-left 「表形式」), ranges From〜To, 「部分一致」/「完全一致」, explicit 「検索」 + 「クリア」 (search on SUBMIT), the rest behind 「詳細条件を開く」, then a 「検索条件」 summary + result count. Plus the Google Advanced Search shape (label | input | what the row means).",
+    "tags": [
+      "search",
+      "search form",
+      "query",
+      "filter",
+      "検索",
+      "検索条件",
+      "japanese",
+      "business",
+      "advanced search",
+      "list",
+      "datatable"
+    ]
+  },
+  {
+    "aliases": [
+      "絞り込み条件",
+      "条件ビルダー",
+      "filter-builder",
+      "query-builder",
+      "kintone filter",
+      "kintone-filter",
+      "salesforce list view filter",
+      "salesforce-filter",
+      "filter logic",
+      "list-view-filter"
+    ],
+    "name": "condition-builder",
+    "tagline": "Condition builder — numbered rows of field / operator / value, 「すべての条件を満たす」 / 「いずれかの条件を満たす」 / custom logic `1 AND (2 OR 3)`, add/remove rows, 「並び順」, save as a named view; applied on SUBMIT inside a role=\"search\" Form. Composition, not a component. Docked beside the list it is the Salesforce list-view filter panel.",
+    "tags": [
+      "filter",
+      "condition",
+      "builder",
+      "query",
+      "logic",
+      "and",
+      "or",
+      "kintone",
+      "salesforce",
+      "saved view",
+      "絞り込み",
+      "list"
+    ]
+  },
+  {
+    "aliases": [
       "organization-switcher",
       "workspace-switcher",
       "received-invitations",
