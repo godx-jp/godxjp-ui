@@ -2,6 +2,7 @@ import { AppProvider, useAppContext } from "@godxjp/ui/app";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Label, TranslatableInput } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
@@ -143,21 +144,7 @@ export default function Demo() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle level={2}>contentLocales · コンテンツの言語</CardTitle>
-              <CardDescription>
-                ユーザーが入力するコンテンツを保存する言語を、元の言語を先頭に一度だけ宣言する。UI
-                の言語（defaultLocale）とは別の設定。locales を持たないすべての TranslatableInput /
-                TranslatableTextarea がこの順でタブを並べ、先頭の言語のタブを開く。
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FormField id="content-locales-demo" label="商品名">
-                <TranslatableInput defaultValue={{ ja: "醤油ラーメン", en: "Shoyu Ramen" }} />
-              </FormField>
-            </CardContent>
-          </Card>
+          <ContentLocalesCard />
 
           <Card>
             <CardHeader>
@@ -183,6 +170,24 @@ export default function Demo() {
         </Flex>
       </PageContainer>
     </AppProvider>
+  );
+}
+
+/** `contentLocales` on the provider above: this field passes no `locales`, yet shows ja · en · vi, ja open. */
+function ContentLocalesCard() {
+  const { t } = useTranslation();
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle level={2}>{t("translatableInputDocs.appLevelTitle")}</CardTitle>
+        <CardDescription>{t("translatableInputDocs.appLevelHint")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <FormField id="content-locales-demo" label={t("translatableInputDocs.productName")}>
+          <TranslatableInput defaultValue={{ ja: "醤油ラーメン", en: "Shoyu Ramen" }} />
+        </FormField>
+      </CardContent>
+    </Card>
   );
 }
 
