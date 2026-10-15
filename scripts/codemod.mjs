@@ -10,7 +10,10 @@
  * Transforms (each one idempotent: running twice changes nothing the second time):
  *  1. fonts are opt-in (gh#1221): after an import of "@godxjp/ui/styles", add the fonts import.
  *  2. with --godx (gh#1220): add the preset stylesheet after it, and `preset={godxPreset}` (+ its
- *     import) to every `<AppProvider` that has no `preset`.
+ *     import) to every element bound to @godxjp/ui's AppProvider (aliases followed) that has no
+ *     `preset`. An app's own component that happens to be named AppProvider is not one (gh#1327).
+ * Rules only rewrite code: never string or template text, comments, or JSX text, and a file no
+ * rule applies to is left byte-identical (gh#1327).
  *  3. component renames/moves (gh#1223): import specifiers rewritten from RENAMES below.
  * Reported, not changed: an `<AppProvider` with no `defaultLocale` and no preset now starts in `en`
  * (or `<html lang>`), not `vi` (gh#1219).
@@ -304,6 +307,248 @@ const GODX_TOKENS_CSS = "@godxjp/ui/themes/godx-tokens.css";
 const CORE_IMPORT_CSS = /^([ \t]*)@import\s+(["'])@godxjp\/ui\/styles\/core\2\s*;[ \t]*$/m;
 const CORE_IMPORT_JS = /^([ \t]*)import\s+(["'])@godxjp\/ui\/styles\/core\2\s*;?[ \t]*$/m;
 
+/**
+ * gh#1327: which characters of `source` are code. String and template text, regex literals,
+ * comments and JSX text are not, so no rule ever rewrites `"…within <AppProvider>"` or a
+ * commented-out import. A small hand lexer, not a parser: the codemod ships with no dependencies.
+ * Where it is unsure (a TS generic arrow in .tsx), it treats the text as code, as before.
+ */
+export function codeMask(file, src) {
+  const n = src.length;
+  const code = new Uint8Array(n);
+  const mark = (from, to) => code.fill(1, from, Math.min(to, n));
+  if (file.endsWith(".css")) {
+    let i = 0;
+    while (i < n) {
+      const c = src[i];
+      if (c === "/" && src[i + 1] === "*") {
+        const end = src.indexOf("*/", i + 2);
+        i = end < 0 ? n : end + 2;
+      } else if (c === '"' || c === "'") {
+        i = skipQuoted(src, i);
+      } else {
+        code[i] = 1;
+        i += 1;
+      }
+    }
+    return code;
+  }
+  const jsx = !/\.[mc]?ts$/.test(file);
+  const isId = (c) => c !== undefined && /[\w$]/.test(c);
+  const EXPR_WORDS =
+    /^(return|case|default|yield|await|typeof|void|delete|in|of|new|else|do|throw|instanceof)$/;
+
+  // Code until an unmatched `}` (when `closer`) or the end. Returns the index of that `}`.
+  function scanCode(i, closer) {
+    let depth = 0;
+    let prev = ""; // last significant character
+    let word = ""; // last identifier, when prev ended one
+    const exprStart = () =>
+      prev === "" || "([{,;:=!&|?+-*%^~<>}".includes(prev) || EXPR_WORDS.test(word);
+    while (i < n) {
+      const c = src[i];
+      if (c === "/" && src[i + 1] === "/") {
+        const end = src.indexOf("\n", i);
+        i = end < 0 ? n : end;
+        continue;
+      }
+      if (c === "/" && src[i + 1] === "*") {
+        const end = src.indexOf("*/", i + 2);
+        i = end < 0 ? n : end + 2;
+        continue;
+      }
+      if (c === '"' || c === "'") {
+        i = skipQuoted(src, i);
+        prev = '"';
+        word = "";
+        continue;
+      }
+      if (c === "`") {
+        i = scanTemplate(i);
+        prev = '"';
+        word = "";
+        continue;
+      }
+      if (c === "/" && exprStart()) {
+        i = skipRegex(i);
+        prev = '"';
+        word = "";
+        continue;
+      }
+      if (c === "<" && jsx && exprStart()) {
+        const end = scanJsxElement(i);
+        if (end > 0) {
+          i = end;
+          prev = ")";
+          word = "";
+          continue;
+        }
+      }
+      code[i] = 1;
+      if (c === "{") depth += 1;
+      if (c === "}") {
+        if (depth === 0 && closer) return i;
+        depth -= 1;
+      }
+      if (/\s/.test(c)) {
+        if (isId(prev)) prev = " "; // `else return`: two words, not `elsereturn`
+      } else {
+        if (isId(c)) word = isId(prev) && word ? word + c : c;
+        else word = "";
+        prev = c;
+      }
+      i += 1;
+    }
+    return n;
+  }
+
+  function scanTemplate(i) {
+    i += 1; // opening backtick
+    while (i < n) {
+      const c = src[i];
+      if (c === "\\") i += 2;
+      else if (c === "`") return i + 1;
+      else if (c === "$" && src[i + 1] === "{") {
+        mark(i, i + 2);
+        i = scanCode(i + 2, true);
+        mark(i, i + 1);
+        i += 1;
+      } else i += 1;
+    }
+    return n;
+  }
+
+  function skipRegex(i) {
+    let inClass = false;
+    i += 1;
+    while (i < n && src[i] !== "\n") {
+      const c = src[i];
+      if (c === "\\") {
+        i += 2;
+        continue;
+      }
+      if (c === "/" && !inClass) {
+        i += 1;
+        while (isId(src[i])) i += 1;
+        return i;
+      }
+      if (c === "[") inClass = true;
+      if (c === "]") inClass = false;
+      i += 1;
+    }
+    return i;
+  }
+
+  // A JSX element (or fragment) starting at `<`. Returns the index after it, or -1 when the `<`
+  // is not JSX (a comparison, a TS generic).
+  function scanJsxElement(start) {
+    let i = start + 1;
+    while (/\s/.test(src[i] ?? "")) i += 1;
+    if (src[i] === ">") {
+      mark(start, i + 1);
+      return scanJsxChildren(i + 1);
+    }
+    const name = /^[A-Za-z_$][\w$.:-]*/.exec(src.slice(i, i + 200));
+    if (!name) return -1;
+    i += name[0].length;
+    // `<T,>(x) =>` / `<T extends …>`: a generic arrow in .tsx, not an element.
+    const after = /^\s*(,|extends\b)/.exec(src.slice(i, i + 20));
+    if (after) return -1;
+    mark(start, i);
+    while (i < n) {
+      const c = src[i];
+      if (c === '"' || c === "'") {
+        const end = src.indexOf(c, i + 1); // JSX attribute strings have no escapes
+        i = end < 0 ? n : end + 1;
+      } else if (c === "/" && src[i + 1] === "/") {
+        const end = src.indexOf("\n", i);
+        i = end < 0 ? n : end;
+      } else if (c === "/" && src[i + 1] === "*") {
+        const end = src.indexOf("*/", i + 2);
+        i = end < 0 ? n : end + 2;
+      } else if (c === "{") {
+        mark(i, i + 1);
+        i = scanCode(i + 1, true);
+        mark(i, i + 1);
+        i += 1;
+      } else if (c === "/" && src[i + 1] === ">") {
+        mark(i, i + 2);
+        return i + 2;
+      } else if (c === ">") {
+        mark(i, i + 1);
+        return scanJsxChildren(i + 1);
+      } else {
+        code[i] = 1;
+        i += 1;
+      }
+    }
+    return n;
+  }
+
+  // Children until the matching closing tag. Returns the index after it.
+  function scanJsxChildren(i) {
+    while (i < n) {
+      const c = src[i];
+      if (c === "{") {
+        mark(i, i + 1);
+        i = scanCode(i + 1, true);
+        mark(i, i + 1);
+        i += 1;
+      } else if (c === "<" && src[i + 1] === "/") {
+        const end = src.indexOf(">", i);
+        mark(i, end < 0 ? n : end + 1);
+        return end < 0 ? n : end + 1;
+      } else if (c === "<") {
+        const end = scanJsxElement(i);
+        i = end > 0 ? end : i + 1;
+      } else i += 1; // JSX text: apostrophes and quotes here are prose, not strings
+    }
+    return n;
+  }
+
+  scanCode(0, false);
+  return code;
+}
+
+function skipQuoted(src, i) {
+  const q = src[i];
+  i += 1;
+  while (i < src.length && src[i] !== q && src[i] !== "\n") i += src[i] === "\\" ? 2 : 1;
+  return i + 1;
+}
+
+const globalRe = (re) => (re.global ? re : new RegExp(re.source, `${re.flags}g`));
+/** `source.replace(re, fn)`, applied only to matches that start in code (gh#1327). */
+function replaceInCode(file, source, re, fn) {
+  const code = codeMask(file, source);
+  return source.replace(globalRe(re), (...args) => {
+    const offset = args[args.length - 2];
+    return code[offset] ? fn(...args) : args[0];
+  });
+}
+/** Every match of `re` that starts in code. */
+function codeMatches(file, source, re) {
+  const code = codeMask(file, source);
+  return [...source.matchAll(globalRe(re))].filter((m) => code[m.index]);
+}
+const escapeRe = (s) => s.replace(/[$.]/g, "\\$&");
+
+/**
+ * gh#1327: the local names `AppProvider` from @godxjp/ui (any subpath) is bound to in this file,
+ * aliases resolved. A JSX element named AppProvider that is the app's own wrapper is not one.
+ */
+function providerBindings(file, source) {
+  const names = new Set();
+  for (const m of codeMatches(file, source, IMPORT_RE)) {
+    if (m[1] || !/^@godxjp\/ui(\/|$)/.test(m[4])) continue;
+    for (const raw of m[2].split(",")) {
+      const [name, alias] = raw.trim().split(/\s+as\s+/);
+      if (name === "AppProvider") names.add(alias ?? name);
+    }
+  }
+  return [...names];
+}
+
 export function transformSource(file, source, { godx = false } = {}) {
   let out = source;
   const notes = [];
@@ -312,7 +557,7 @@ export function transformSource(file, source, { godx = false } = {}) {
   const coreImport = isCss ? CORE_IMPORT_CSS : CORE_IMPORT_JS;
   const written = (indent, q, spec) =>
     isCss ? `${indent}@import ${q}${spec}${q};` : `${indent}import ${q}${spec}${q};`;
-  const m = out.match(styleImport);
+  const [m] = codeMatches(file, out, styleImport);
   if (m) {
     const [line, indent, q] = m;
     const add = [];
@@ -323,58 +568,68 @@ export function transformSource(file, source, { godx = false } = {}) {
     } else if (!out.includes(FONTS) && !out.includes("@godxjp/ui/styles/fonts")) {
       add.push(FONTS);
     }
-    if (add.length)
-      out = out.replace(line, `${line}\n${add.map((spec) => written(indent, q, spec)).join("\n")}`);
+    if (add.length) {
+      const at = m.index + line.length;
+      out = `${out.slice(0, at)}\n${add.map((spec) => written(indent, q, spec)).join("\n")}${out.slice(at)}`;
+    }
   }
   // styles/core (a shadow root or an app with its own fonts): the colour tokens, never the fonts.
-  const c = out.match(coreImport);
+  const [c] = codeMatches(file, out, coreImport);
   if (c && godx && !out.includes(GODX_TOKENS_CSS) && !out.includes(GODX_CSS)) {
     const [line, indent, q] = c;
-    out = out.replace(line, `${line}\n${written(indent, q, GODX_TOKENS_CSS)}`);
+    const at = c.index + line.length;
+    out = `${out.slice(0, at)}\n${written(indent, q, GODX_TOKENS_CSS)}${out.slice(at)}`;
   }
   // A file the 32.0.0 codemod already touched carries BOTH godx.css and fonts.css: drop the second.
   if (out.includes(GODX_CSS)) {
-    out = out.replace(
+    const [f] = codeMatches(
+      file,
+      out,
       isCss
         ? /^[ \t]*@import\s+["']@godxjp\/ui\/styles\/fonts(?:\.css)?["']\s*;[ \t]*\n/m
         : /^[ \t]*import\s+["']@godxjp\/ui\/styles\/fonts(?:\.css)?["']\s*;?[ \t]*\n/m,
-      "",
     );
+    if (f) out = out.slice(0, f.index) + out.slice(f.index + f[0].length);
   }
-  if (!isCss && /<AppProvider\b/.test(out)) {
-    const tags = out.match(/<AppProvider\b[^>]*>/g) ?? [];
-    for (const tag of tags) {
-      if (/\bpreset=/.test(tag)) continue;
-      if (godx) {
-        out = out.replace(tag, tag.replace(/^<AppProvider\b/, "<AppProvider preset={godxPreset}"));
-      } else if (!/\bdefaultLocale=/.test(tag)) {
-        notes.push(
-          "<AppProvider> has no defaultLocale and no preset: v32 starts in <html lang> or en (was vi). " +
-            'Add defaultLocale="vi" if that is what you meant, or rerun with --godx.',
-        );
-      }
+  if (!isCss) {
+    // gh#1327: only elements bound to @godxjp/ui's AppProvider, under whatever local name.
+    for (const name of providerBindings(file, out)) {
+      const tagRe = new RegExp(`<${escapeRe(name)}(?=[\\s>/])[^>]*>`, "g");
+      out = replaceInCode(file, out, tagRe, (tag) => {
+        if (/\bpreset=/.test(tag)) return tag;
+        if (godx) return `<${name} preset={godxPreset}${tag.slice(name.length + 1)}`;
+        if (!/\bdefaultLocale=/.test(tag)) {
+          notes.push(
+            "<AppProvider> has no defaultLocale and no preset: v32 starts in <html lang> or en (was vi). " +
+              'Add defaultLocale="vi" if that is what you meant, or rerun with --godx.',
+          );
+        }
+        return tag;
+      });
     }
     if (
       godx &&
-      out.includes("preset={godxPreset}") &&
+      codeMatches(file, out, /preset=\{godxPreset\}/).length &&
       !/\bgodxPreset\b[^\n]*from\s+["']@godxjp\/ui\/themes\/godx["']/.test(out)
     ) {
-      out = addImport(out, 'import { godxPreset } from "@godxjp/ui/themes/godx";');
+      out = addImport(file, out, 'import { godxPreset } from "@godxjp/ui/themes/godx";');
     }
   }
-  if (!isCss) out = applyRenames(out, notes);
-  if (!isCss) out = narrowLocaleType(out, notes, godx);
+  if (!isCss) out = applyRenames(file, out, notes);
+  if (!isCss) out = narrowLocaleType(file, out, notes, godx);
   return { out, changed: out !== source, notes };
 }
 
 const IMPORT_RE =
   /import\s*(type\s+)?\{([^}]*)\}\s*from\s*(["'])(@godxjp\/[\w-]+(?:\/[\w-]+)?)\3\s*;?/g;
 
-function applyRenames(source, notes) {
+const DROPPED = "\u0000codemod-dropped-import\u0000";
+
+function applyRenames(file, source, notes) {
   let out = source;
   const moved = new Map(); // toMod -> [{ spec, typeOnly }]
   const jsxRenames = [];
-  out = out.replace(IMPORT_RE, (stmt, typeKw, body, q, mod) => {
+  out = replaceInCode(file, out, IMPORT_RE, (stmt, typeKw, body, q, mod) => {
     const keep = [];
     let touched = false;
     for (const raw of body
@@ -398,16 +653,24 @@ function applyRenames(source, notes) {
       const list = moved.get(toMod) ?? [];
       list.push({ spec: newSpec, typeOnly: Boolean(typeKw) || inlineType });
       moved.set(toMod, list);
-      if (!alias && (toName !== name || r.add || r.map)) jsxRenames.push([name, toName, r]);
+      // gh#1327: an aliased import keeps its local name, but still needs the merge's props.
+      if (alias && (r.add || r.map)) jsxRenames.push([alias, alias, r]);
+      else if (!alias && (toName !== name || r.add || r.map)) jsxRenames.push([name, toName, r]);
       if (r.note) notes.push(`${name} → ${toName}${toMod !== mod ? ` (${toMod})` : ""}: ${r.note}`);
     }
     if (!touched) return stmt;
-    return keep.length ? `import ${typeKw ?? ""}{ ${keep.join(", ")} } from ${q}${mod}${q};` : "";
+    return keep.length
+      ? `import ${typeKw ?? ""}{ ${keep.join(", ")} } from ${q}${mod}${q};`
+      : DROPPED;
   });
+  // An emptied import goes with its own line break; nothing else is re-spaced (gh#1327).
+  out = out.replace(new RegExp(`${DROPPED}[ \\t]*\\n?`, "g"), "");
   for (const [from, to, r] of jsxRenames) {
     // Opening tags first, so the props the merge needs land on the element itself.
-    out = out.replace(
-      new RegExp(`<${from}(?=[\\s>/])([^>]*?)(/?)>`, "g"),
+    out = replaceInCode(
+      file,
+      out,
+      new RegExp(`<${escapeRe(from)}(?=[\\s>/])([^>]*?)(/?)>`, "g"),
       (_all, attrs, selfClose) => {
         let a = attrs;
         for (const [prop, values] of Object.entries(r.map ?? {})) {
@@ -429,7 +692,12 @@ function applyRenames(source, notes) {
       },
     );
     // Closing tags and compound members (`</Callout>`, `<Callout.Title>`).
-    out = out.replace(new RegExp(`(</|<)${from}(?=[.>])`, "g"), `$1${to}`);
+    out = replaceInCode(
+      file,
+      out,
+      new RegExp(`(</|<)${escapeRe(from)}(?=[.>])`, "g"),
+      (_all, open) => `${open}${to}`,
+    );
   }
   for (const [toMod, specs] of moved) {
     for (const typeOnly of [false, true]) {
@@ -438,26 +706,27 @@ function applyRenames(source, notes) {
       const existing = new RegExp(
         `import\\s*${typeOnly ? "type\\s+" : ""}\\{([^}]*)\\}\\s*from\\s*(["'])${toMod.replace(/[/]/g, "\\/")}\\2\\s*;?`,
       );
-      const m = out.match(existing);
+      const [m] = codeMatches(file, out, existing);
       if (m) {
         const have = m[1]
           .split(",")
           .map((x) => x.trim())
           .filter(Boolean);
         const merged = [...new Set([...have, ...names])];
-        out = out.replace(
-          m[0],
-          `import ${typeOnly ? "type " : ""}{ ${merged.join(", ")} } from ${m[2]}${toMod}${m[2]};`,
-        );
+        out =
+          out.slice(0, m.index) +
+          `import ${typeOnly ? "type " : ""}{ ${merged.join(", ")} } from ${m[2]}${toMod}${m[2]};` +
+          out.slice(m.index + m[0].length);
       } else {
         out = addImport(
+          file,
           out,
           `import ${typeOnly ? "type " : ""}{ ${[...new Set(names)].join(", ")} } from "${toMod}";`,
         );
       }
     }
   }
-  return out.replace(/\n{3,}/g, "\n\n");
+  return out;
 }
 
 /**
@@ -466,8 +735,10 @@ function applyRenames(source, notes) {
  * A GoDX product only uses the built-ins, so under --godx the type is renamed (behaviour unchanged).
  * Otherwise it is reported: the app decides whether it will register other locales.
  */
-function narrowLocaleType(source, notes, godx) {
-  const imp = source.match(
+function narrowLocaleType(file, source, notes, godx) {
+  const [imp] = codeMatches(
+    file,
+    source,
     /import\s*(type\s+)?\{[^}]*\bAppLocale\b[^}]*\}\s*from\s*["']@godxjp\/ui(?:\/app)?["']/,
   );
   if (!imp) return source;
@@ -477,11 +748,11 @@ function narrowLocaleType(source, notes, godx) {
     );
     return source;
   }
-  return source.replace(/\bAppLocale\b/g, "BuiltInLocale");
+  return replaceInCode(file, source, /\bAppLocale\b/g, () => "BuiltInLocale");
 }
 
-function addImport(source, line) {
-  const imports = [...source.matchAll(/^import[^;]*;[ \t]*$/gm)];
+function addImport(file, source, line) {
+  const imports = codeMatches(file, source, /^import[^;]*;[ \t]*$/gm);
   if (!imports.length) return `${line}\n${source}`;
   const last = imports[imports.length - 1];
   const at = last.index + last[0].length;
