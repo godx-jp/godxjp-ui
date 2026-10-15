@@ -401,7 +401,9 @@ export const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProp>(function Meg
     if (openKey === null) return;
     const onPointerDown = (event: PointerEvent) => {
       const node = rootRef.current;
-      if (node && event.target instanceof Node && !node.contains(event.target)) close();
+      // `composedPath()`: inside a shadow root the target reaching `document` is the host, which
+      // the nav never contains, so `contains(event.target)` closed on every press (gh#1340).
+      if (node && !event.composedPath().includes(node)) close();
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);

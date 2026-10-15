@@ -624,17 +624,21 @@ function ClickContent({
   React.useEffect(() => {
     if (!open) return;
     const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null;
-      if (!target) return;
-      if (contentRef.current?.contains(target)) return;
-      if (triggerRef.current?.contains(target)) return;
+      // `composedPath()`, not `contains(event.target)`: by the time a press inside a SHADOW ROOT
+      // reaches `document`, its target has been retargeted to the shadow host, so `contains()`
+      // read every press inside the panel as outside and closed it before the click landed
+      // (gh#1340, GoDX Dock under `OverlayPortalProvider`). The path still lists the real nodes.
+      const path = event.composedPath();
+      const within = (node: Element | null) => node !== null && path.includes(node);
+      if (within(contentRef.current)) return;
+      if (within(triggerRef.current)) return;
       // An ANCHORED popover positions itself against `PopoverAnchor` instead of the trigger, and
       // that anchor is part of the widget, not the outside world: in ChatSuggestion the anchor IS
       // the textarea the panel is completing. Without this, a click into the draft box closed the
       // panel here and the owner's own caret read reopened it a frame later — the list visibly
       // flickered. The owner decides what a click inside its own input means; this handler only
       // covers the genuine outside.
-      if (anchored && anchorRef.current?.contains(target)) return;
+      if (anchored && within(anchorRef.current)) return;
       setOpen(false);
     };
     document.addEventListener("pointerdown", onPointerDown);
