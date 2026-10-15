@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.14.0] - 2026-10-15
+
+### Added
+
+- **`ui-audit` rule `form-on-list-page` (warn) (#1324).** Flags a submitting Form with 3+ FormFields next to a DataTable/Table/List/ListRow on the same page — a create form inlined beside its list (design-complex-admin anti-pattern #3). Forms in a Dialog/Sheet/Drawer, forms that never submit (filter bars), editors whose table sits inside the Form, and list/create pages in separate PageContainers are not findings.
+- **`npx @godxjp/ui init-agent --user` (#1324).** A user-level Claude Code guard for sessions started outside the app: it blocks a `.tsx`/`.jsx` write in a repo whose `.mcp.json` mounts `@godxjp/ui-mcp` until the agent has consulted the catalog, and runs the repo's audit hook when the repo's own hooks did not load. Merges into `~/.claude/settings.json`, idempotent, no network, fails open.
+- **`godxjp-ui mcp-call <tool> [json]` / `godx-ui-mcp call <tool> [json]` (#1324).** Query the catalog over plain stdio without an MCP client, through the repo's pinned `.mcp.json` entry and the server's own handlers.
+
+### Changed
+
+- **Tabs / Segmented guidance (#1324).** A list status view of the same table (All / Active / Closed) is `Segmented` with `count` (a `Select` past 4 statuses); `Tabs` only when each status is its own panel. Written into the MCP catalog and the `inertia-list-page` pattern.
+- **The managed CLAUDE.md block names the `mcp-call` fallback (#1324)** for sessions without the MCP; consumers see it on their next `sync-rules`.
+
+### Fixed
+
+- **Language font stacks apply on `<html lang>` (#1326).** `[lang="vi"]`/`[lang="ja"]`/… were declared before foundation's `:root { --font-family-sans }` and lost the cascade at equal specificity, so a Vietnamese page rendered the Japanese-first base stack. A theme's own `:root` override loaded after the package still wins.
+- **PageContainer `toolbar` no longer touches the header and the body (#1323).** `--page-toolbar-pad-block` is now `initial` and defaults to the page's band gap at the call site: a Segmented strip sits 16px from the header and from the body (was 0px). A painted or ruled band stays attached and keeps its themed inset; `--page-toolbar-pad-block: 0px` restores the flush strip.
+- **ListRow inside a padded CardContent drops its inline inset at any depth (#1325)** — DataState wrapper, `Flex as="ul"`, `as="li" asChild` — not only as a direct child (row text vs CardTitle: 16px → 0). Rows inside a nested flush CardContent or a table cell keep theirs.
+- **`codemod v32` follows import bindings, never edits strings, and leaves untouched files alone (#1327).** `--godx` added `preset={godxPreset}` to every JSX element named `AppProvider`, including an app's own wrapper, and missed `AppProvider as DesignSystemProvider` from `@godxjp/ui/app`; it now matches only elements bound to `@godxjp/ui`'s `AppProvider` (any subpath, aliases followed). No rule rewrites string/template text, comments or JSX text. A file no rule applies to stays byte-identical and is not reported (on the reporting admin: 15 files reported → 0). Aliased renames now get the merge's props too (`TagInput as Tags` → `<Tags open={false} mode="tags" …>`).
+
 ## [32.13.1] - 2026-10-15
 
 The first release of everything listed under 32.13.0 below: its main CI was red (two typography
