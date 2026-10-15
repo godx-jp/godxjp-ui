@@ -1882,5 +1882,30 @@
       "heading": "Existing values",
       "create": "+ Create \"{value}\""
     }
+  },
+  "translatableInputDocs": {
+    "subtitle": "Edit a value per language in one field · ja / en / vi",
+    "editTitle": "Edit product",
+    "editHint": "Vietnamese is not translated yet, so the Japanese name shows as its placeholder. Save with an empty language and its tab is marked with an error.",
+    "productName": "Product name",
+    "productNameHelper": "Shown on the menu and the order screen",
+    "description": "Description",
+    "save": "Save",
+    "saved": "Saved",
+    "errorsTitle": "Validation errors",
+    "errorsHint": "English and Vietnamese have errors. The selected language's message shows under the field; the others are carried by the tab mark and its spoken name.",
+    "categoryName": "Category name",
+    "variantsTitle": "Sizes, locale list and disabled",
+    "variantsHint": "size follows Input's steps. locales narrows the languages per field.",
+    "storeName": "Store display name",
+    "storeNameHelper": "A field that only has Japanese and English",
+    "storeNamePlaceholder": "Store name",
+    "supplierNote": "Supplier note",
+    "supplierNoteHelper": "Not editable. The language tabs still work, for reading.",
+    "required": {
+      "ja": "Enter the Japanese product name",
+      "en": "Enter the English product name",
+      "vi": "Enter the Vietnamese product name"
+    }
   }
 }

@@ -1,10 +1,10 @@
 {
   "counts": {
     "anti-ai-tells": 35,
-    "components": 163,
+    "components": 165,
     "patterns": 25,
     "rules": 44,
-    "tokens": 2228,
+    "tokens": 2230,
     "vocabulary": 14
   },
   "design": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md",
@@ -16,7 +16,7 @@
     },
     {
       "file": "components-index.json",
-      "note": "49 KB — name + group + tagline for all 163. FETCH THIS FIRST, then fetch only the components you chose.",
+      "note": "49 KB — name + group + tagline for all 165. FETCH THIS FIRST, then fetch only the components you chose.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json"
     },
     {
@@ -61,7 +61,7 @@
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1899,
+      "component": 1901,
       "foundation": 216,
       "semantic": 113
     },

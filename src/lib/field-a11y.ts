@@ -198,3 +198,30 @@ export function pickGroupFieldA11y(props: FieldA11yProps): {
     ...(props["data-field"] !== undefined ? { "data-field": props["data-field"] } : {}),
   };
 }
+
+/**
+ * A control that owns SEVERAL values reports which of its messages is current (gh#1336). A
+ * `TranslatableInput` holds one value per locale and gets one message per locale; only the active
+ * locale's message describes the text the user is looking at, and only the control knows which
+ * locale that is. FormField reads the report as the lowest-precedence source of its `error` — its
+ * own `error` prop and the form's error bag both win — so the message renders in FormField's own
+ * error line and reaches the control through the same `aria-invalid` / `aria-errormessage` wiring
+ * every other field uses. `null` outside a FormField.
+ */
+export const FieldErrorReportContext = React.createContext<
+  ((message: React.ReactNode) => void) | null
+>(null);
+
+/**
+ * Report `message` (or its absence) to the enclosing FormField. Returns `true` when a FormField is
+ * listening — a caller with no FormField above it has to render its own message.
+ */
+export function useReportFieldError(message: React.ReactNode): boolean {
+  const report = React.useContext(FieldErrorReportContext);
+  React.useEffect(() => {
+    if (!report) return;
+    report(message);
+    return () => report(undefined);
+  }, [report, message]);
+  return report !== null;
+}

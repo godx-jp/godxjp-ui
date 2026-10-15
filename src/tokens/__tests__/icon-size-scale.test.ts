@@ -143,6 +143,8 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--table-toolbar-icon-size": ["1rem", "1rem", "1rem"],
   "--toast-icon-size": ["1rem", "1rem", "1rem"],
   "--transfer-action-icon-size": ["1rem", "1rem", "1rem"],
+  // The error mark on a TranslatableInput locale tab (gh#1336): the fixed --icon-size-xs step.
+  "--translatable-field-error-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   // The two placeholder marks minted in gh#720. They were `controlIconClass` — 32px of CONTROL
   // height inside a media placeholder, off this scale entirely — and the avatar and the
   // picture-card tile are the same 96px box drawing two different sizes. Both now read a step:

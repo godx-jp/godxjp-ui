@@ -4,7 +4,12 @@ import { useTranslation } from "../../i18n/use-translation";
 
 import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
-import { FieldIdentityContext, FieldNameContext, mergeAriaIds } from "../../lib/field-a11y";
+import {
+  FieldErrorReportContext,
+  FieldIdentityContext,
+  FieldNameContext,
+  mergeAriaIds,
+} from "../../lib/field-a11y";
 import { useOptionalAppContext } from "../../app/app-provider";
 import { useFormLayout } from "./form";
 import { firstBagMessage, useClaimErrorKey, useFormErrorsRegistry } from "./form-errors";
@@ -59,9 +64,15 @@ export function FormField({
   // mirroring Laravel's `$errors->first()`).
   const errorsRegistry = useFormErrorsRegistry();
   useClaimErrorKey(name);
+  // A multi-value child (TranslatableInput, gh#1336) reports the message for the value it is
+  // showing; the field's own `error` and the form's bag still win over it.
+  const [reportedError, setReportedError] = React.useState<React.ReactNode>(undefined);
   const error =
     errorProp ??
-    (name && errorsRegistry ? firstBagMessage(errorsRegistry.errors[name]) : undefined);
+    (name && errorsRegistry ? firstBagMessage(errorsRegistry.errors[name]) : undefined) ??
+    (reportedError === null || reportedError === false || reportedError === ""
+      ? undefined
+      : reportedError);
 
   // `id` is optional: when omitted the field auto-generates one and injects it
   // into the child, so every control under FormField always carries an id
@@ -291,13 +302,15 @@ export function FormField({
         ) : (
           <FieldNameContext.Provider value={fieldNameContext}>
             <FieldIdentityContext.Provider value={fieldIdentityContext}>
-              <fieldset
-                role="presentation"
-                className="contents"
-                disabled={form?.disabled && childProps?.disabled !== false}
-              >
-                {childWithA11y}
-              </fieldset>
+              <FieldErrorReportContext.Provider value={setReportedError}>
+                <fieldset
+                  role="presentation"
+                  className="contents"
+                  disabled={form?.disabled && childProps?.disabled !== false}
+                >
+                  {childWithA11y}
+                </fieldset>
+              </FieldErrorReportContext.Provider>
             </FieldIdentityContext.Provider>
           </FieldNameContext.Provider>
         )}

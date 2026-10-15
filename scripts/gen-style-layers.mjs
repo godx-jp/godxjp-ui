@@ -162,7 +162,14 @@ const OWNERS = {
     "Tree",
     "Accordion",
   ],
-  "data-entry-layout.css": ["BranchScopePicker", "PasswordStrength", "Upload", "RecordPicker"],
+  "data-entry-layout.css": [
+    "BranchScopePicker",
+    "PasswordStrength",
+    "Upload",
+    "RecordPicker",
+    "TranslatableInput",
+    "TranslatableTextarea",
+  ],
   "form-layout.css": ["Form", "FormField", "FormFieldControl", "Field"],
   "navigation-layout.css": [
     "Tabs",

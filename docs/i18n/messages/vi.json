@@ -1875,5 +1875,30 @@
       "heading": "Giá trị hiện có",
       "create": "+ Tạo \"{value}\""
     }
+  },
+  "translatableInputDocs": {
+    "subtitle": "Sửa giá trị theo từng ngôn ngữ trong một trường · ja / en / vi",
+    "editTitle": "Sửa sản phẩm",
+    "editHint": "Tiếng Việt chưa được dịch nên tên tiếng Nhật hiện làm placeholder. Lưu khi còn ngôn ngữ trống thì tab của ngôn ngữ đó được đánh dấu lỗi.",
+    "productName": "Tên sản phẩm",
+    "productNameHelper": "Hiển thị trên thực đơn và màn hình gọi món",
+    "description": "Mô tả",
+    "save": "Lưu",
+    "saved": "Đã lưu",
+    "errorsTitle": "Lỗi kiểm tra",
+    "errorsHint": "Tiếng Anh và tiếng Việt có lỗi. Thông báo của ngôn ngữ đang chọn hiện dưới trường; các ngôn ngữ khác được báo bằng dấu trên tab và tên được đọc.",
+    "categoryName": "Tên danh mục",
+    "variantsTitle": "Kích thước, danh sách ngôn ngữ và vô hiệu",
+    "variantsHint": "size theo các bậc của Input. locales giới hạn ngôn ngữ cho từng trường.",
+    "storeName": "Tên hiển thị cửa hàng",
+    "storeNameHelper": "Trường chỉ có tiếng Nhật và tiếng Anh",
+    "storeNamePlaceholder": "Tên cửa hàng",
+    "supplierNote": "Ghi chú nhà cung cấp",
+    "supplierNoteHelper": "Không sửa được. Tab ngôn ngữ vẫn bấm được để xem.",
+    "required": {
+      "ja": "Nhập tên sản phẩm tiếng Nhật",
+      "en": "Nhập tên sản phẩm tiếng Anh",
+      "vi": "Nhập tên sản phẩm tiếng Việt"
+    }
   }
 }
