@@ -1736,6 +1736,9 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
    * Drawn under `asChild` too (gh#1171): the pill goes inside the child element, after its own
    * children, so a bell that is a link (`<TopbarItem asChild badge={3}><a …/></TopbarItem>`) keeps
    * its count.
+   *
+   * Nothing renders for `undefined`, `""` or the NUMBER `0` (gh#1341), so pass the count as it is.
+   * To show a zero deliberately, pass the string `"0"`.
    */
   badge?: ReactNode;
   /**

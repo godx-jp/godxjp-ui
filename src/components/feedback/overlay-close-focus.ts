@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { getActiveElement } from "../../lib/active-element";
+
 /**
  * Trả tiêu điểm về nơi nó đứng trước khi lớp phủ mở — ĐỒNG BỘ, ngay trong lượt đóng.
  *
@@ -41,7 +43,9 @@ export function useOverlayCloseFocus(
   if (isOpen !== renderedOpen.current) {
     renderedOpen.current = isOpen;
     if (isOpen && typeof document !== "undefined") {
-      const active = document.activeElement;
+      // Through shadow roots: `document.activeElement` is the shadow HOST there, and restoring
+      // focus to the host loses the trigger (gh#1340).
+      const active = getActiveElement();
       nodeToRestore.current = active === document.body ? null : (active as HTMLElement | null);
     }
   }
@@ -52,7 +56,7 @@ export function useOverlayCloseFocus(
       onCloseAutoFocus?.(event);
       const node = nodeToRestore.current;
       nodeToRestore.current = null;
-      const active = document.activeElement;
+      const active = getActiveElement();
       const focusMovedAway =
         contentRef != null &&
         active != null &&

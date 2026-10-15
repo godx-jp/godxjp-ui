@@ -4,6 +4,7 @@ import * as React from "react";
 import { ChevronDown } from "lucide-react";
 
 import { cn } from "../lib/utils";
+import { getActiveElement } from "../lib/active-element";
 import { useTranslation } from "../i18n/use-translation";
 import type {
   MegaMenuGroupProp,
@@ -401,7 +402,9 @@ export const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProp>(function Meg
     if (openKey === null) return;
     const onPointerDown = (event: PointerEvent) => {
       const node = rootRef.current;
-      if (node && event.target instanceof Node && !node.contains(event.target)) close();
+      // `composedPath()`: inside a shadow root the target reaching `document` is the host, which
+      // the nav never contains, so `contains(event.target)` closed on every press (gh#1340).
+      if (node && !event.composedPath().includes(node)) close();
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
@@ -612,7 +615,7 @@ export const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProp>(function Meg
       closeTimer.current = null;
       const node = rootRef.current;
       // Focus inside the nav outranks the pointer having left it.
-      if (node && node.contains(document.activeElement)) return;
+      if (node && node.contains(getActiveElement(node))) return;
       commitOpen(null);
     }, closeDelay);
   };

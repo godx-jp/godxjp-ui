@@ -298,6 +298,16 @@
     --control-height-sm: var(--app-shell-nav-rail-item-size);
   }
 
+  /* A count pill's surface ring (gh#1341) is the surface it sits on, and a rail is not the bar:
+   * the docked rail paints --muted and the drawer's strip sits on the sheet. */
+  .app-nav-rail {
+    --topbar-item-badge-ring-color: var(--app-shell-nav-rail-background, hsl(var(--muted)));
+  }
+
+  .app-mobile-nav-rail {
+    --topbar-item-badge-ring-color: var(--sheet-surface-background, hsl(var(--background)));
+  }
+
   /* The `end` edge: the same column, mirrored, so the border faces the content it separates. */
   .app-nav-rail[data-edge="end"] {
     border-inline-start: var(--stroke-hairline) solid hsl(var(--border));
@@ -1174,6 +1184,10 @@
     flex-direction: column;
     border-inline-end: var(--stroke-hairline) solid hsl(var(--border));
     inline-size: var(--app-shell-nav-rail-width);
+    /* The docked rail's own inset. Also the room a cell's count pill rides up into (gh#1341): this
+     * strip scrolls, so it clips at its padding box with no margin, and without the inset the first
+     * cell's pill lost its top 6px. */
+    padding-block: var(--app-shell-nav-rail-inset);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -3169,14 +3183,34 @@
     position: absolute;
     /* Anchored to the GLYPH's corner, not the cell's: the cell is as tall as the bar, so a pill
      * pinned to the cell's own top-end edge would float half a bar above the bell it counts. The
-     * cell centres its glyph, so the glyph's corner is `50% - icon/2` in from each edge, and the
-     * two knobs push the pill outward from there. Logical on both axes, so the pill moves to the
-     * other corner under dir="rtl" with the glyph it marks. */
+     * cell centres its glyph, so the glyph's corner is `50% ± icon/2` from each edge. Logical on
+     * both axes, so the pill moves to the other corner under dir="rtl" with the glyph it marks.
+     *
+     * OFF the glyph, not on it (gh#1341, Material 3 badges / Apple HIG): at most a quarter of the
+     * glyph covered, measured in Chromium against the old 56% (one digit) and 75% ("99+"). The
+     * two knobs keep their meaning — how far a one-digit pill's top / end edge sits OUTSIDE the
+     * glyph's — and default to fractions of the pill instead of a flat 4px:
+     *   - Inline, half a pill: a one-digit pill is centred on the corner. The pill is placed by its
+     *     END edge, clamped with `max()` to stay a ring's width inside the cell's own end edge, so
+     *     nothing past the cell — where the rail and the bar cluster clip — is ever needed: a 40px
+     *     rail leaves 10px beside a 16px glyph, and "99+" is 30px, so a long count grows back
+     *     across the glyph instead. Placing it by its START edge and bounding it with
+     *     `justify-self: start` was tried and measured: identical numbers in every host, but box
+     *     alignment on an absolutely positioned box only shipped in Chrome 122 / Firefox 134 /
+     *     Safari 26 (MDN browser-compat-data `css.properties.justify-self.position_absolute_context`),
+     *     and without it "99+" was clipped 3-11px in the rail. `max()` works everywhere.
+     *   - Block, three quarters of a pill: a quarter reaches into the glyph, so even a "99+"
+     *     across the whole glyph width covers 16 x 4 of its 16 x 16. The rest rides above the
+     *     glyph — into the bar's own height, or the rail's gap and inset — which nothing there
+     *     clips. */
     inset-block-start: calc(
-      50% - var(--topbar-icon-size) / 2 - var(--topbar-item-badge-offset-block)
+      50% - var(--topbar-icon-size) / 2 -
+        var(--topbar-item-badge-offset-block, var(--topbar-item-badge-size) * 3 / 4)
     );
-    inset-inline-end: calc(
-      50% - var(--topbar-icon-size) / 2 - var(--topbar-item-badge-offset-inline)
+    inset-inline-end: max(
+      var(--topbar-item-badge-ring-width),
+      50% - var(--topbar-icon-size) / 2 -
+        var(--topbar-item-badge-offset-inline, var(--topbar-item-badge-size) / 2)
     );
     display: inline-flex;
     min-inline-size: var(--topbar-item-badge-size);
@@ -3190,6 +3224,9 @@
     font-size: var(--topbar-item-badge-font-size);
     font-weight: var(--font-weight-medium);
     line-height: 1;
+    /* A ring in the surface colour cuts the pill out of the glyph it overlaps (gh#1341). */
+    box-shadow: 0 0 0 var(--topbar-item-badge-ring-width)
+      var(--topbar-item-badge-ring-color, hsl(var(--card)));
     /* The pill is decoration ON the trigger, never a second hit target inside it. */
     pointer-events: none;
   }

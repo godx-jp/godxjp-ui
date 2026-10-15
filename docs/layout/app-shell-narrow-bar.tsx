@@ -99,7 +99,7 @@ export default function Demo() {
       <TopbarItem aria-label="メッセージ" icon={<MessageSquare aria-hidden="true" />} />
       <TopbarItem
         aria-label={`通知 ${String(unread)} 件`}
-        badge={unread === 0 ? undefined : unread}
+        badge={unread}
         badgeTone="destructive"
         icon={<Bell aria-hidden="true" />}
         onClick={() => setUnread(0)}
