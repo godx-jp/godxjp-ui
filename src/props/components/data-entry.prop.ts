@@ -407,7 +407,7 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
 /**
  * @see FormField — exactly one of `children` (an interactive control) or `staticText`:
  * a read-only VALUE row inside the same Form, styled to match `Descriptions.Item`'s value
- * typography (`text-sm break-all`) byte-for-byte. This is the "mixed read-only + editable fields
+ * typography (the `--descriptions-value-*` tokens, wrapping only where a word would overflow) byte-for-byte. This is the "mixed read-only + editable fields
  * on one form" case (an immutable name/email row above an editable role Select, for example) —
  * putting the read-only rows through FormField itself, not a separate `Descriptions` composed
  * alongside it, gets perfect layout/labelAlign/row-gap sync FOR FREE because it IS the same
