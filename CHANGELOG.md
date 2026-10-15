@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.6.2] - 2026-10-16
+
+### Fixed
+
+- **ui-audit `no-emoji-in-ui` no longer flags text-presentation symbols.** It matched every
+  `Extended_Pictographic` code point, so ↔ (U+2194) in gino-cloud's 職種 ↔ 分野 copy was an
+  "emoji". Now only `Emoji_Presentation=Yes` pictographs (✅ 🎉) and any pictograph followed by
+  U+FE0F (↔️ ❤️) are flagged. The ©/®/™ exemption is the same rule applied generally.
+
 ## [33.6.1] - 2026-10-16
 
 ### Fixed

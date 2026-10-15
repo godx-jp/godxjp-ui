@@ -45,6 +45,19 @@ describe("consumer audit CLI regressions", () => {
     expect(audit("<Text>\ud83c\udf89</Text>").output).toContain('"no-emoji-in-ui"');
   });
 
+  /**
+   * The same holds for every other `Emoji_Presentation=No` pictograph: ↔ (U+2194) is notation in
+   * gino-cloud's 職種 ↔ 分野 copy, rendered as text on every OS. Only an emoji-presentation code
+   * point, or a text one with U+FE0F, is an emoji.
+   */
+  it("does not call a text-presentation symbol like ↔ an emoji, unless VS16 asks for emoji", () => {
+    expect(audit("<Text>\u8077\u7a2e \u2194 \u5206\u91ce</Text>").output).not.toContain(
+      '"no-emoji-in-ui"',
+    );
+    expect(audit("<Text>\u2194\ufe0f</Text>").output).toContain('"no-emoji-in-ui"');
+    expect(audit("<Text>\u2764\ufe0f</Text>").output).toContain('"no-emoji-in-ui"');
+  });
+
   it("distinguishes framework test support and API prose from shipped JSX", () => {
     expect(audit("<button>Fixture</button>", true, "src/test").output).not.toContain(
       '"no-raw-button"',

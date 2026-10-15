@@ -219,7 +219,11 @@ const PALETTE =
  * ✅🎉🔥🚀 etc. but NOT typographic punctuation (· — × ✓), which have their own rules.
  */
 /*
- * EMOJI — pictographs, but NOT the three typographic marks that happen to carry the property.
+ * EMOJI — pictographs that render AS emoji: `Emoji_Presentation=Yes`, or any pictograph with U+FE0F.
+ *
+ * A pictograph with `Emoji_Presentation=No` defaults to text presentation: ↔ in gino-cloud's
+ * 職種 ↔ 分野 copy is notation, drawn by the text font on every OS. The first case found was the
+ * typographic three below.
  *
  * `\p{Extended_Pictographic}` includes U+00A9 ©, U+00AE ® and U+2122 ™. All three are
  * `Emoji_Presentation=No`: they default to TEXT presentation, they have been in typography since
@@ -231,7 +235,7 @@ const PALETTE =
  * Followed by U+FE0F they are asking for emoji presentation on purpose, and then they ARE emoji —
  * so that spelling is still caught.
  */
-const EMOJI = /[\u00A9\u00AE\u2122]\uFE0F|(?![\u00A9\u00AE\u2122])\p{Extended_Pictographic}/u;
+const EMOJI = /\p{Extended_Pictographic}\uFE0F|(?=\p{Extended_Pictographic})\p{Emoji_Presentation}/u;
 /** Regional-indicator pairs = emoji flags (🇯🇵) — broken on Win/Linux; use Intl.DisplayNames. */
 const EMOJI_FLAG = /\p{Regional_Indicator}/u;
 
