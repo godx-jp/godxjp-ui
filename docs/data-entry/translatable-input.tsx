@@ -16,34 +16,34 @@ import {
   type TranslatableValue,
 } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
  * TranslatableInput / TranslatableTextarea — a restaurant menu admin editing one product whose
  * name and description are stored per locale (ja / en / vi), the `*_translations` shape a Laravel
  * Astrotomic backend sends. Composed only from real @godxjp/ui components; the tab names come from
- * Intl.DisplayNames in the app's UI language, so switching the app locale relabels them.
+ * Intl.DisplayNames in the app's UI language, so switching the app locale relabels them. The seeded
+ * VALUES are per-locale content (a ja product name stays Japanese whatever the UI language is).
  */
 
 const LOCALES = ["ja", "en", "vi"] as const;
 
 type Errors = Partial<Record<string, string>>;
-
-const REQUIRED: Record<string, string> = {
-  ja: "日本語の商品名を入力してください",
-  en: "英語の商品名を入力してください",
-  vi: "ベトナム語の商品名を入力してください",
-};
+type T = ReturnType<typeof useTranslation>["t"];
 
 /** One error per EMPTY locale — what a `required` rule on every locale returns. */
-function validate(value: TranslatableValue): Errors {
+function validate(value: TranslatableValue, t: T): Errors {
   const errors: Errors = {};
-  for (const code of LOCALES) if (!value[code]?.trim()) errors[code] = REQUIRED[code];
+  for (const code of LOCALES) {
+    if (!value[code]?.trim()) errors[code] = t(`translatableInputDocs.required.${code}`);
+  }
   return errors;
 }
 
 /** Card 1 — the edit form. Vietnamese is untranslated, so it shows the Japanese text through. */
 function ProductEditForm() {
+  const { t } = useTranslation();
   const [name, setName] = React.useState<TranslatableValue>({
     ja: "醤油ラーメン",
     en: "Shoyu Ramen",
@@ -58,7 +58,7 @@ function ProductEditForm() {
     <Form
       onSubmit={(event) => {
         event.preventDefault();
-        const next = validate(name);
+        const next = validate(name, t);
         setErrors(next);
         setSaved(Object.keys(next).length === 0);
       }}
@@ -67,9 +67,9 @@ function ProductEditForm() {
         <Flex direction="col" gap="md">
           <FormField
             id="product-name"
-            label="商品名"
+            label={t("translatableInputDocs.productName")}
             required
-            helper="メニューと注文画面に表示されます"
+            helper={t("translatableInputDocs.productNameHelper")}
           >
             <TranslatableInput
               locales={LOCALES}
@@ -78,13 +78,13 @@ function ProductEditForm() {
               value={name}
               onValueChange={(next) => {
                 setName(next);
-                if (Object.keys(errors).length) setErrors(validate(next));
+                if (Object.keys(errors).length) setErrors(validate(next, t));
               }}
               errors={errors}
               allowClear
             />
           </FormField>
-          <FormField id="product-description" label="説明">
+          <FormField id="product-description" label={t("translatableInputDocs.description")}>
             <TranslatableTextarea
               locales={LOCALES}
               fallbackLocale="ja"
@@ -100,8 +100,10 @@ function ProductEditForm() {
       </CardContent>
       <CardFooter>
         <Flex direction="row" justify="end" gap="sm" align="center">
-          {saved ? <CardDescription role="status">保存しました</CardDescription> : null}
-          <Button type="submit">保存</Button>
+          {saved ? (
+            <CardDescription role="status">{t("translatableInputDocs.saved")}</CardDescription>
+          ) : null}
+          <Button type="submit">{t("translatableInputDocs.save")}</Button>
         </Flex>
       </CardFooter>
     </Form>
@@ -110,16 +112,20 @@ function ProductEditForm() {
 
 /** Card 2 — the state after a failed save, staged at rest: two locales marked, the active one says why. */
 function ValidationErrorsAtRest() {
+  const { t } = useTranslation();
   const [name, setName] = React.useState<TranslatableValue>({ ja: "味噌ラーメン" });
   return (
-    <FormField id="category-name" label="カテゴリー名" required>
+    <FormField id="category-name" label={t("translatableInputDocs.categoryName")} required>
       <TranslatableInput
         locales={LOCALES}
         fallbackLocale="ja"
         defaultLocale="en"
         value={name}
         onValueChange={setName}
-        errors={{ en: REQUIRED.en, vi: REQUIRED.vi }}
+        errors={{
+          en: t("translatableInputDocs.required.en"),
+          vi: t("translatableInputDocs.required.vi"),
+        }}
       />
     </FormField>
   );
@@ -127,8 +133,9 @@ function ValidationErrorsAtRest() {
 
 /** Card 3 — sizes, a two-locale field, uncontrolled, and disabled. */
 function Variants() {
+  const { t } = useTranslation();
   return (
-    <Flex direction="col" gap="md">
+    <Form>
       <FormField id="size-xs" label="xs">
         <TranslatableInput size="xs" locales={LOCALES} defaultValue={{ ja: "替え玉" }} />
       </FormField>
@@ -141,19 +148,23 @@ function Variants() {
       <FormField id="size-lg" label="lg">
         <TranslatableInput size="lg" locales={LOCALES} defaultValue={{ ja: "メンマ" }} />
       </FormField>
-      <FormField id="two-locales" label="店舗の表示名" helper="日本語と英語だけを持つ項目">
+      <FormField
+        id="two-locales"
+        label={t("translatableInputDocs.storeName")}
+        helper={t("translatableInputDocs.storeNameHelper")}
+      >
         <TranslatableInput
           locales={["ja", "en"]}
           defaultLocale="en"
           fallbackLocale="ja"
           defaultValue={{ ja: "渋谷本店" }}
-          placeholder="Store name"
+          placeholder={t("translatableInputDocs.storeNamePlaceholder")}
         />
       </FormField>
       <FormField
         id="disabled-field"
-        label="仕入先メモ"
-        helper="編集できません。言語タブは閲覧のために操作できます"
+        label={t("translatableInputDocs.supplierNote")}
+        helper={t("translatableInputDocs.supplierNoteHelper")}
       >
         <TranslatableTextarea
           locales={LOCALES}
@@ -161,35 +172,27 @@ function Variants() {
           defaultValue={{ ja: "毎週火曜に麺を納品", en: "Noodles delivered every Tuesday" }}
         />
       </FormField>
-    </Flex>
+    </Form>
   );
 }
 
 export default function Demo() {
+  const { t } = useTranslation();
   return (
-    <PageContainer
-      title="TranslatableInput"
-      subtitle="言語ごとの値を 1 つのフィールドで編集 · ja / en / vi"
-    >
+    <PageContainer title="TranslatableInput" subtitle={t("translatableInputDocs.subtitle")}>
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle level={2}>商品を編集</CardTitle>
-            <CardDescription>
-              ベトナム語は未翻訳のため、日本語の商品名がプレースホルダーとして表示されます。
-              空のまま保存すると、未入力の言語タブにエラーの印が付きます。
-            </CardDescription>
+            <CardTitle level={2}>{t("translatableInputDocs.editTitle")}</CardTitle>
+            <CardDescription>{t("translatableInputDocs.editHint")}</CardDescription>
           </CardHeader>
           <ProductEditForm />
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>検証エラー</CardTitle>
-            <CardDescription>
-              英語とベトナム語にエラー。選択中の言語のメッセージがフィールドの下に表示され、
-              他の言語はタブの印と読み上げで伝わります。
-            </CardDescription>
+            <CardTitle level={2}>{t("translatableInputDocs.errorsTitle")}</CardTitle>
+            <CardDescription>{t("translatableInputDocs.errorsHint")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ValidationErrorsAtRest />
@@ -198,10 +201,8 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>サイズ・言語の指定・無効</CardTitle>
-            <CardDescription>
-              size は Input と同じ段階。locales で項目ごとに言語を絞り込めます。
-            </CardDescription>
+            <CardTitle level={2}>{t("translatableInputDocs.variantsTitle")}</CardTitle>
+            <CardDescription>{t("translatableInputDocs.variantsHint")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Variants />
