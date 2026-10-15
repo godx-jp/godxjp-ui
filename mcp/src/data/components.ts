@@ -8482,14 +8482,15 @@ export function PrioritySelect({ value, onValueChange }) {
     ],
     example: `import { FormField, TranslatableInput, TranslatableTextarea, type TranslatableValue } from "@godxjp/ui/data-entry";
 
-const [name, setName] = React.useState<TranslatableValue>({ ja: "醤油ラーメン" });
+const [productName, setProductName] = React.useState<TranslatableValue>({ ja: "醤油ラーメン" });
+const [description, setDescription] = React.useState<TranslatableValue>({});
 
 <FormField label="商品名" required>
   <TranslatableInput
     locales={["ja", "en", "vi"]}
     fallbackLocale="ja"
-    value={name}
-    onValueChange={setName}
+    value={productName}
+    onValueChange={setProductName}
     errors={{ en: "英語名を入力してください" }}
   />
 </FormField>

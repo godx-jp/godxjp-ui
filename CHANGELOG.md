@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.2.1] - 2026-10-15
+
+The first release of everything listed under 33.2.0 below: its main CI was red and the release gate stopped before tagging, so 33.2.0 never reached npm.
+
+### Fixed
+
+- **The `TranslatableInput` catalog example compiles (#1336).** Its state variable was named `name`, which redeclares the DOM global `name` in a script-scope check (`check:catalog-snippets`: TS2451). Renamed to `productName`, and the `description` state the example uses is now declared.
+
 ## [33.2.0] - 2026-10-15
 
 ### Added
