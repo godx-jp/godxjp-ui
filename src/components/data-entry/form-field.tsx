@@ -305,7 +305,7 @@ export function FormField({
               <FieldErrorReportContext.Provider value={setReportedError}>
                 <fieldset
                   role="presentation"
-                  className="contents"
+                  className="ui-form-field-input"
                   disabled={form?.disabled && childProps?.disabled !== false}
                 >
                   {childWithA11y}

@@ -16,7 +16,7 @@
       "type": "number | string"
     },
     {
-      "description": "Cap the control width (number→px). Omit to fill the column.",
+      "description": "Cap the control width (number→px). Omit to fill the column. Caps the control only — the helper and error still span the field column.",
       "name": "controlWidth",
       "type": "number | string"
     },

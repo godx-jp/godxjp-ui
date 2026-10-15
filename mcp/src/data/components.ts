@@ -6777,7 +6777,8 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
       {
         name: "controlWidth",
         type: "number | string",
-        description: "Cap the control width (number→px). Omit to fill the column.",
+        description:
+          "Cap the control width (number→px). Omit to fill the column. Caps the control only — the helper and error still span the field column.",
       },
       {
         name: "labelAlign",
@@ -6918,7 +6919,8 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
       {
         name: "controlWidth",
         type: "number | string",
-        description: "Override the Form's control width for this field.",
+        description:
+          "Override the Form's control width for this field. Caps the control only — the helper and error still span the field column.",
       },
       {
         name: "colSpan",
