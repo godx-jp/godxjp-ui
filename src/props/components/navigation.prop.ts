@@ -20,12 +20,6 @@ import type {
 import type { SearchSelectOptionProp } from "./data-entry.prop";
 
 /**
- * `wrap` (default) stacks on narrow viewports then wraps onto extra rows; `scroll` keeps ONE
- * bounded row that scrolls inline, so a wide filter set never pushes the list below the fold.
- */
-export type FilterBarOverflowProp = "wrap" | "scroll";
-
-/**
  * Renders the canonical SearchInput as the FIRST control of the strip, with a token-owned
  * consistent width (`--filter-bar-search-width`, full-width below 640px). Controlled by consumer
  * data via the `value`/`defaultValue`/ `onValueChange` triad; `onSearch` mirrors SearchInput's
@@ -78,7 +72,15 @@ export type FilterBarChipProp = {
   disabled?: DisabledProp;
 };
 
-/** @see Toolbar */
+/**
+ * @see Toolbar
+ *
+ * A filter bar WRAPS — stacked below 640px, extra rows above — and never scrolls sideways: a
+ * horizontal strip hides filters off-screen and clips labels at its edges. When the filters are
+ * many, keep the few common ones in the bar and put the rest behind ONE "More filters" Button that
+ * opens a Sheet (or Popover) holding them. The library ships no dedicated component for that; it
+ * is a composition of Button + Sheet + FilterBarGroup.
+ */
 export type ToolbarProp = {
   onClear?: OnClearFiltersProp;
   hasActiveFilters?: HasActiveFiltersProp;
@@ -87,11 +89,6 @@ export type ToolbarProp = {
    * `--filter-bar-sticky-offset` / `--filter-bar-sticky-background` theme knobs.
    */
   sticky?: StickyProp;
-  /**
-   * Default `wrap`. Use `scroll` for list pages with many filters (long JA/EN/VI labels) where a
-   * wrapped 3-row strip would push the table off screen.
-   */
-  overflow?: FilterBarOverflowProp;
   /**
    * When ANY model prop (`search`/`filters`/`chips`/
    * `onChipRemove`/`actions`/`resultCount`/`loading`/`disabled`/`error`) is present the bar
@@ -405,7 +402,7 @@ export type TabsOnEditProp = (
  * @see Tabs — what the trigger strip does when there are more tabs than fit its container.
  *
  * This is Ant Design's `more`, mapped onto the `overflow` vocabulary this package already uses
- * for the same question (`FilterBarOverflowProp` on Toolbar) rather than re-spelled: antd names
+ * for the same question (`overflow` on Topbar) rather than re-spelled: antd names
  * the AFFORDANCE it happens to draw, this library names the BEHAVIOUR and owns the affordance.
  *
  * `scroll` (the default, and what every strip does today) keeps one bounded row that scrolls its

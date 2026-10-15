@@ -267,6 +267,24 @@ it("rejects Select onChange and accepts the supported value callback", () => {
   );
 });
 
+it("rejects the removed FilterBar overflow prop and leaves Tabs/Topbar overflow alone", () => {
+  for (const source of [
+    '<FilterBar overflow="scroll" onClear={clear}>{groups}</FilterBar>',
+    '<Toolbar\n  sticky\n  overflow="scroll"\n>{groups}</Toolbar>',
+  ]) {
+    expect(audit(source).output, source).toContain('"filter-bar-no-overflow"');
+  }
+  for (const source of [
+    "<FilterBar onClear={clear}>{groups}</FilterBar>",
+    '<Tabs overflow="menu" />',
+    '<Topbar overflow="scroll" />',
+    '<FilterBarGroup label="x"><Tabs overflow="scroll" /></FilterBarGroup>',
+    '<FilterBar onClear={clear}><Tabs overflow="menu" /></FilterBar>',
+  ]) {
+    expect(audit(source).output, source).not.toContain('"filter-bar-no-overflow"');
+  }
+});
+
 describe("card composition (godx-jp/id#496, #498)", () => {
   it("does not call a Form-wrapped body a missing body", () => {
     // The only correct composition for a card whose submit button lives in CardFooter: the <form>

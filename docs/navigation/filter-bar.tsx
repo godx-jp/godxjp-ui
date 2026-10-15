@@ -215,15 +215,15 @@ export default function Demo() {
           </FilterBar>
         </Flex>
 
-        {/* overflow="scroll" — one bounded inline-scrolling row at >= 640px. The long JA/EN/VI
-            captions are the point: with `wrap` this same set becomes a three-row strip. */}
+        {/* Long JA/EN/VI captions WRAP onto extra rows — a filter bar never scrolls sideways.
+            With many filters, keep the common ones here and move the rest behind one
+            "More filters" Button that opens a Sheet. */}
         <Flex direction="col" gap="xs">
           <Text size="xs" tone="muted">
-            overflow=&quot;scroll&quot; · many filters with long JA/EN/VI labels stay on ONE bounded
-            row (still stacked below 640px)
+            Long JA/EN/VI labels wrap onto extra rows (stacked below 640px); the bar never scrolls
+            sideways
           </Text>
           <FilterBar
-            overflow="scroll"
             hasActiveFilters={department !== "all" || approval !== "all" || period !== "all"}
             onClear={() => {
               setDepartment("all");

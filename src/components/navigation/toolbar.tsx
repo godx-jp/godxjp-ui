@@ -15,7 +15,6 @@ export type {
   FilterBarChipProp as FilterBarChipProps,
   FilterBarFilterProp,
   FilterBarFilterProp as FilterBarFilterProps,
-  FilterBarOverflowProp,
   FilterBarSearchProp,
   FilterBarSearchProp as FilterBarSearchProps,
   ToolbarGroupProp,
@@ -32,7 +31,6 @@ export function Toolbar({
   onClear,
   hasActiveFilters = true,
   sticky = false,
-  overflow = "wrap",
   search,
   filters,
   chips,
@@ -110,13 +108,6 @@ export function Toolbar({
       <div
         role="toolbar"
         aria-label={t("navigation.toolbar.ariaLabel")}
-        // `data-overflow` drives the responsive strategy in CSS (never JS measurement, so it is
-        // container-width truthful at 1440/1024/390 with long JA/EN/VI labels alike):
-        //   wrap   — groups stack on narrow, then wrap onto extra rows (default)
-        //   scroll — one bounded row that scrolls inline; groups never shrink or wrap
-        // The scroll region needs no tabIndex: every filter group holds a focusable control, so it
-        // is already keyboard-reachable (axe scrollable-region-focusable / WCAG 2.1.1).
-        data-overflow={overflow}
         className={cn("ui-toolbar", sticky && "ui-toolbar-sticky", className)}
       >
         {children}
@@ -143,7 +134,6 @@ export function Toolbar({
         role="toolbar"
         aria-label={t("navigation.toolbar.ariaLabel")}
         aria-busy={loading || undefined}
-        data-overflow={overflow}
         className="ui-toolbar"
       >
         {views != null && viewsPlacement === "inline" && (

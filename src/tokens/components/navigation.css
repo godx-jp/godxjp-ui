@@ -293,10 +293,6 @@
   /* Fill painted only when the filter strip is pinned. Role-mirror knob (rule #45): `initial`
    * so --background re-resolves at the call site under a scoped [data-tenant]/.dark theme. */
   --filter-bar-sticky-background: initial;
-  /* Scrollbar gutter reserved under a `overflow="scroll"` filter strip (#216) so the inline
-   * scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid
-   * (0 on an overlay-scrollbar platform). */
-  --filter-bar-scroll-padding-y: var(--space-1);
 
   /* FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME
    * search width, filter width, chip rhythm and section stacking without page-local CSS.

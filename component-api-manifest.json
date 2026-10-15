@@ -7161,14 +7161,6 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
-          "name": "overflow",
-          "origin": "owned",
-          "required": false,
-          "type": "FilterBarOverflowProp | undefined",
-          "values": ["scroll", "wrap"],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
           "name": "resultCount",
           "origin": "owned",
           "required": false,
@@ -9389,8 +9381,8 @@
           "name": "overflow",
           "origin": "owned",
           "required": false,
-          "type": "\"wrap\" | \"truncate\" | undefined",
-          "values": ["wrap", "truncate"],
+          "type": "\"truncate\" | \"wrap\" | undefined",
+          "values": ["truncate", "wrap"],
           "declaredIn": ["src/components/data-display/list-row.tsx"]
         },
         {
@@ -17777,14 +17769,6 @@
           "required": false,
           "type": "OnClearFiltersProp | undefined",
           "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "overflow",
-          "origin": "owned",
-          "required": false,
-          "type": "FilterBarOverflowProp | undefined",
-          "values": ["scroll", "wrap"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {

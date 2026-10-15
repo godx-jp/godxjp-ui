@@ -808,12 +808,6 @@ export const TOKENS: TokenEntry[] = [
     role: "ListRow shrink + unread state. `--list-row-body-min-width` (12rem) is consumed as `min(<token>, 100%)` — the `min()` is load-bearing, a bare length re-inflates the row's intrinsic width and reintroduces page-root overflow. `--list-row-trailing-gap` spaces wrapped trailing actions. The unread trio are role-mirror knobs declared `initial` with the role at the call site: `--list-row-unread-background` defaults to `hsl(var(--muted))` NOT `--accent` — accent measured 4.23:1 against the xs muted-foreground description line, below WCAG AA; muted is 4.63:1 light / 5.47:1 dark. `--list-row-indicator-color` (→ `--primary`) and `--list-row-indicator-size` drive the unread dot, whose meaning is carried by localized sr-only text, never by colour alone.",
   },
   {
-    name: "--filter-bar-scroll-padding-y",
-    category: "component",
-    tier: "component",
-    role: 'Scrollbar gutter for `<FilterBar overflow="scroll">`, default `var(--space-1)`. Only applies at ≥640px, where a wide filter set becomes a single nowrap strip with a sticky inline-end clear-all; below that the bar still stacks, so the gutter would be dead space. Pair with the existing `--filter-bar-sticky-background` (already an `initial` role-mirror knob) when theming the strip.',
-  },
-  {
     name: "--filter-bar-{search-width,filter-width,chip-gap,section-gap}",
     category: "component",
     tier: "component",

@@ -1841,44 +1841,6 @@
     font-size: var(--filter-label-font-size);
   }
 
-  /* Below 640px the strip still stacks (the `wrap` base rules above own that): a 390px viewport
-   * must never hide a filter behind a horizontal scroll it cannot see. */
-  @media (min-width: 640px) {
-    .ui-toolbar[data-overflow="scroll"] {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      overscroll-behavior-x: contain;
-      scrollbar-gutter: stable;
-      padding-block-end: var(--filter-bar-scroll-padding-y);
-    }
-
-    .ui-toolbar[data-overflow="scroll"] > .ui-toolbar-group {
-      flex: 0 0 auto;
-    }
-
-    /* The clear action stays parked at the inline end of the VIEWPORT of the scroll region, not at
-     * the end of its scroll width — `margin-inline-start: auto` would push it past the fold and
-     * make "clear all" unreachable without scrolling. */
-    .ui-toolbar[data-overflow="scroll"] > .ui-toolbar-clear {
-      position: sticky;
-      inset-inline-end: 0;
-      margin-inline-start: auto;
-      flex: 0 0 auto;
-      /* Above the scrolling groups, and opaque, so a filter never slides underneath it. */
-      z-index: 1;
-      background: hsl(var(--filter-bar-sticky-background, var(--background)));
-    }
-
-    .ui-toolbar[data-overflow="scroll"] > .ui-filter-bar-end {
-      position: sticky;
-      inset-inline-end: 0;
-      margin-inline-start: auto;
-      flex: 0 0 auto;
-      z-index: 1;
-      background: hsl(var(--filter-bar-sticky-background, var(--background)));
-    }
-  }
-
   /* Geometry is entirely token-owned (`--filter-bar-*`); stacking below 640px reuses the
    * `.ui-toolbar` base rules, so 1440/1024/390 behave identically to the composition form. */
   .ui-filter-bar {

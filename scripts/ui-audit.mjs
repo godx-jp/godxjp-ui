@@ -478,6 +478,19 @@ const RULES = [
       "Abstract value components use onValueChange, not onChange. Reserve onChange for DOM events.",
   },
   {
+    id: "filter-bar-no-overflow",
+    replacement: "the default wrapping FilterBar",
+    severity: "error",
+    spansElement: true,
+    // `overflow` was removed from FilterBar/Toolbar in 33.0.0. Its `scroll` value made the bar one
+    // horizontally scrolling strip — measured in a consumer at 1240px (vi): 1945px of filters in a
+    // 921px frame, the first label clipped. Tabs and Topbar keep their own `overflow`; only the
+    // filter bar's opening tag is matched (`<FilterBarGroup` and `<DataTable.Toolbar` are not).
+    test: new RegExp(`<(?:FilterBar|Toolbar)\\b${ATTRS}\\boverflow=`, "g"),
+    message:
+      "FilterBar/Toolbar has no `overflow` prop (removed in 33.0.0) — a filter bar wraps and never scrolls sideways. Delete the prop; with many filters keep the common ones in the bar and put the rest behind one 'More filters' Button that opens a Sheet.",
+  },
+  {
     id: "no-arbitrary-hex",
     replacement: "a semantic token",
     classOnly: true,

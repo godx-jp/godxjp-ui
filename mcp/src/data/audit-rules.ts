@@ -322,6 +322,13 @@ export const AUDIT_RULES: AuditRule[] = [
     standard: null,
     fix: "Abstract value components use onValueChange, not onChange.",
   },
+  {
+    id: "filter-bar-no-overflow",
+    severity: "error",
+    category: "api",
+    standard: null,
+    fix: "FilterBar/Toolbar has no `overflow` prop (removed in 33.0.0): the bar wraps and never scrolls sideways. Delete it; put rarely used filters behind one 'More filters' Button that opens a Sheet.",
+  },
 
   // ── a11y (WCAG 2.2 + WAI-ARIA APG) ───────────────────────────────────────
   {
