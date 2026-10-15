@@ -11,7 +11,7 @@
  * `godx.css` is exactly this file plus the bundled fonts. Import one or the other, never both:
  * the tokens are the same, and two font imports ship every @font-face twice.
  *
- * THE COLOUR IS EMERALD-TEAL SINCE 33.5.0 (gh#1345), replacing the violet #7A00FF. The violet read
+ * THE COLOUR IS EMERALD-TEAL SINCE 33.6.0 (gh#1345), replacing the violet #7A00FF. The violet read
  * garish at 100% saturation (OKLCH chroma 0.293) and was the "oversaturated brand accent" our own
  * anti-AI-tells name. The green is the logo's colour too, so the mark and the primary button are
  * one colour. Hue 168 keeps it a sibling of the emerald mark while moving it away from `--success`

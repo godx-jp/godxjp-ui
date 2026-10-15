@@ -21,7 +21,7 @@ import {
  * gh#1228 — since v32 the email palette follows the neutral foundation, so a GoDX email lost the
  * violet on primary / brand / focus and the mark lost its "GoDX" label (Platform patched its own
  * sync script). The GoDX preset for email puts back what 31.31.8 shipped as the default — in the
- * preset's colour, which gh#1345 (33.5.0) moved from violet to emerald-teal.
+ * preset's colour, which gh#1345 (33.6.0) moved from violet to emerald-teal.
  */
 const V31_LIGHT = hslToHex("268.7 100% 50%"); // 31.31.8 EMAIL_COLOR_SOURCE primary/brand/focus
 const GODX_LIGHT = hslToHex("168 100% 25%"); // gh#1345 — #008066

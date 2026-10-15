@@ -69,6 +69,11 @@
       "type": "boolean | readonly AppPreferenceAxis[]"
     },
     {
+      "description": "The languages the app stores USER CONTENT in, in order, source language first — e.g. `[\"ja\", \"en\", \"vi\"]` for a Japanese-first catalogue (gh#1347). A different fact from the UI locale (`defaultLocale`) and from the registered UI catalogs: a Japanese UI can edit content in three languages, and content may be stored in a language the UI has no catalog for. Every `TranslatableInput` / `TranslatableTextarea` without its own `locales` takes its tabs from this list and opens on its first entry; a field's `locales` / `defaultLocale` still override. Omit (or `[]`) to keep the field default (`getRegisteredLocales()`, first tab = the UI locale). App configuration: not persisted, no setter. Read it from `useAppContext().contentLocales` (`undefined` when unset).",
+      "name": "contentLocales",
+      "type": "readonly string[]"
+    },
+    {
       "defaultValue": "false",
       "description": "OFF by default and deliberately opt-in: `name` decides what a native <form> submit sends, so switching it on for every consumer of a shared package would make apps start posting new keys to their backend on a library upgrade. Turn it on for apps that need native form posts or a screen-automation (RPA) contract on their controls. The inert `data-field` companion attribute is emitted regardless; a `name` written on the control itself always wins. NOT persisted to localStorage: it is the app's configuration, not a user choice.",
       "name": "emitFieldNames",
@@ -100,6 +105,7 @@
     "DO set `defaultTimezone='system'` together with `systemTimezone={serverTimezone}` when your backend knows the legal entity's canonical timezone (e.g. 'Asia/Ho_Chi_Minh'). Use `defaultTimezone='browser'` (the default) only when you want the user's browser clock. Do NOT pass a raw IANA string to `defaultTimezone` if the user may be in a different zone — use the named aliases.",
     "DO wire `onLocaleChange`, `onTimezoneChange`, `onTimeFormatChange`, `onDateFormatChange` to persist changes server-side (e.g. patch user profile via Inertia router) in addition to the automatic localStorage write. These callbacks fire after state is set, so the new value is already reflected in context.",
     "DO set `emitFieldNames` on AppProvider when the app is driven by screen automation (RPA) or posts native forms — every control under a FormField then carries a real `name` taken from the field key, and legacy automation that addressed controls by `name` keeps working after a rewrite. Leave it off (the default) otherwise: it changes what a native submit sends. The `data-field` attribute is emitted either way, so e2e selectors do not depend on this flag.",
+    "DO pass `contentLocales` when the app edits translatable content (`TranslatableInput` / `TranslatableTextarea`) — `contentLocales={[\"ja\", \"en\", \"vi\"]}` — so the tab order and the source-language first tab are stated once, not repeated as `locales` on every field. It is NOT the UI language list: leave `defaultLocale` / `registerLocale` to the UI.",
     "DO restrict the timezone dropdown by passing `timezoneOptions={APP_TIMEZONE_PRESET}` (an exported constant) to AppProvider — every `AppSettingPicker kind=\"timezone\"` inherits this restricted list from context. Without it the picker offers the full IANA list (~600 entries)."
   ],
   "useCases": [

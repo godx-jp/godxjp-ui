@@ -1,7 +1,8 @@
 import { AppProvider, useAppContext } from "@godxjp/ui/app";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Label } from "@godxjp/ui/data-entry";
+import { FormField, Label, TranslatableInput } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
@@ -18,6 +19,7 @@ export default function Demo() {
       defaultTimezone="Asia/Tokyo"
       defaultDateFormat="iso"
       defaultTimeFormat="24h"
+      contentLocales={["ja", "en", "vi"]}
       theme="light"
       brand="brand"
       density="comfortable"
@@ -142,6 +144,8 @@ export default function Demo() {
             </CardContent>
           </Card>
 
+          <ContentLocalesCard />
+
           <Card>
             <CardHeader>
               <CardTitle>テーマ軸 · theme / brand / density / fontSize</CardTitle>
@@ -169,6 +173,24 @@ export default function Demo() {
   );
 }
 
+/** `contentLocales` on the provider above: this field passes no `locales`, yet shows ja · en · vi, ja open. */
+function ContentLocalesCard() {
+  const { t } = useTranslation();
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle level={2}>{t("translatableInputDocs.appLevelTitle")}</CardTitle>
+        <CardDescription>{t("translatableInputDocs.appLevelHint")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <FormField id="content-locales-demo" label={t("translatableInputDocs.productName")}>
+          <TranslatableInput defaultValue={{ ja: "醤油ラーメン", en: "Shoyu Ramen" }} />
+        </FormField>
+      </CardContent>
+    </Card>
+  );
+}
+
 function ProviderState() {
   const state = useAppContext();
   return (
@@ -183,7 +205,8 @@ function ProviderState() {
         <Text as="p">
           locale={state.locale} · timezone={state.timezone} · date={state.dateFormat} · time=
           {state.timeFormat} · theme={state.theme} · brand={state.brand ?? "custom"} · density=
-          {state.density} · fontSize={state.fontSize} · scaling={state.scaling ?? "density default"}
+          {state.density} · fontSize={state.fontSize} · scaling={state.scaling ?? "density default"}{" "}
+          · contentLocales={state.contentLocales?.join(", ") ?? "unset"}
         </Text>
       </CardContent>
     </Card>

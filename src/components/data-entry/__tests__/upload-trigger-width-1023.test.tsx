@@ -50,7 +50,9 @@ async function widths(variant: "button" | "picture") {
       label.style.position = "absolute";
       document.body.append(label);
       return {
-        column: w(document.querySelector(".ui-form-field-control")),
+        // The box `controlWidth` caps — the fieldset around the control since gh#1343, which
+        // left the field column (and its helper/error) at full width.
+        column: w(document.querySelector(".ui-form-field-input")),
         trigger: w(trigger),
         intrinsic: w(label),
         list: w(document.querySelector(".ui-form-field-control ul")),

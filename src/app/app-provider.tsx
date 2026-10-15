@@ -128,6 +128,7 @@ export function AppProvider({
   defaultTimeFormat = "locale",
   defaultDateFormat = "locale",
   timezoneOptions,
+  contentLocales: contentLocalesProp,
   storageKey = DEFAULT_STORAGE_KEY,
   persist = true,
   theme: initialTheme = "light",
@@ -196,6 +197,14 @@ export function AppProvider({
    * and putting that in the init effect's deps would re-run it and reset every axis on each pass.
    */
   const persistKey = Array.isArray(persist) ? [...persist].sort().join(",") : String(persist);
+  // Keyed by content for the same reason: an inline `contentLocales={["ja", "en"]}` would otherwise
+  // hand every context consumer a new value on each render of the provider's parent.
+  const contentLocalesKey = contentLocalesProp?.join(",");
+  const contentLocales = React.useMemo(
+    () => contentLocalesProp,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [contentLocalesKey],
+  );
   const persistedAxes = React.useMemo(
     () => resolvePersistedAxes(persist),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -521,6 +530,7 @@ export function AppProvider({
       dayPickerLocale: getDayPickerLocale(locale),
       requestHeaders,
       timezoneOptions,
+      contentLocales,
       theme,
       brand,
       density,
@@ -546,6 +556,7 @@ export function AppProvider({
       dateFnsLocale,
       requestHeaders,
       timezoneOptions,
+      contentLocales,
       theme,
       brand,
       density,

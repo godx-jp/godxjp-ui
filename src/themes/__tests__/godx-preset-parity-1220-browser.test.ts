@@ -15,7 +15,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
  * loaded the bundled fonts — compiled the same way), and is pinned here so the comparison does not
  * depend on a git ref being present on the runner.
  *
- * gh#1345 (33.5.0) re-seeded the preset on purpose: violet #7A00FF / #DCBCFF became emerald-teal
+ * gh#1345 (33.6.0) re-seeded the preset on purpose: violet #7A00FF / #DCBCFF became emerald-teal
  * #008066 / #5CD6BE. The COLOUR rows below are the new seed (31.31.8 painted rgb(122, 0, 255) /
  * rgb(220, 188, 255), link #6500d4 / #dcbcff); fonts, labels, ring wiring and the mark are still
  * 31.x's, unchanged.

@@ -2,7 +2,7 @@
  *
  * Since v32 the package defaults are neutral: `--primary` and `--brand` are an ink (≈ zinc-900)
  * in light and a near-white in dark. This file puts the GoDX identity colour back — emerald-teal
- * #008066 since 33.5.0 (gh#1345; 31.x–33.4 shipped violet #7A00FF) — plus the brand-tinted shadow
+ * #008066 since 33.6.0 (gh#1345; 31.x–33.5 shipped violet #7A00FF) — plus the brand-tinted shadow
  * ink, and nothing else: every other role was already brand-neutral and is not restated here.
  *
  *     @import "@godxjp/ui/styles";

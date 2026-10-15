@@ -6,7 +6,7 @@ import { Logo } from "../components/general/logo";
 /**
  * The GoDX PRESET (v32, gh#1220): the product defaults GoDX surfaces shipped with in 31.x, now
  * opt-in so the package's own defaults stay neutral. Pair it with the stylesheet that restores the
- * GoDX identity colour (emerald-teal #008066 since 33.5.0, gh#1345):
+ * GoDX identity colour (emerald-teal #008066 since 33.6.0, gh#1345):
  *
  *     import "@godxjp/ui/themes/godx.css";
  *     import { godxPreset } from "@godxjp/ui/themes/godx";

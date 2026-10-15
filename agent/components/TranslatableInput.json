@@ -20,12 +20,12 @@
       "type": "(value: TranslatableValue) => void"
     },
     {
-      "description": "The BCP-47 tags the field edits, in tab order. Default: every locale registered with the app (`getRegisteredLocales()` — built-in `vi`/`en`/`ja` plus `registerLocale`). Tabs are named by `Intl.DisplayNames` in the reader's UI language; the tags stay the keys.",
+      "description": "The BCP-47 tags the field edits, in tab order. Default: AppProvider `contentLocales` when set (gh#1347 — state the content languages once at the root instead of on every field), else every locale registered with the app (`getRegisteredLocales()` — built-in `vi`/`en`/`ja` plus `registerLocale`). Tabs are named by `Intl.DisplayNames` in the reader's UI language; the tags stay the keys.",
       "name": "locales",
       "type": "readonly string[]"
     },
     {
-      "description": "The locale tab selected first. Default: the AppProvider's active locale when it is in `locales`, else the fallback locale.",
+      "description": "The locale tab selected first. Default: the first of AppProvider `contentLocales` (the source language) when set and in `locales`, else the AppProvider's active locale when it is in `locales`, else the fallback locale.",
       "name": "defaultLocale",
       "type": "string"
     },
@@ -77,6 +77,7 @@
   "storyPath": "data-entry/translatable-input.tsx",
   "tagline": "ONE text field holding a value per locale (`{ ja, en, vi }`), switched by locale tabs above it (gh#1336). For user content stored per locale — a product name, a category label, a menu description (Astrotomic / Spatie `*_translations`). Locales, first tab and fallback come from AppProvider; an empty locale shows the fallback locale's text as its placeholder; a locale with an error is marked on its tab. Every other `Input` prop applies to the one control.",
   "usage": [
+    "DO set the app's content languages ONCE on the root provider — `<AppProvider contentLocales={[\"ja\", \"en\", \"vi\"]}>` — when every translatable field edits the same list; each field then needs no `locales` and opens on the source language (the first). Pass `locales` on a field only where it differs.",
     "DO wrap it in FormField: the label names the control together with the active locale («商品名 English») and names the tab strip («商品名 Language»), `required`/`helper` reach the control, and the active locale's error renders in FormField's error line.",
     "DO pass the per-locale error map from your validator as `errors` (e.g. Laravel `name.ja` → `errors.ja`). Don't pass the same message to FormField `error` as well: FormField's own `error` wins over the reported one, and it would mark the field invalid on every locale.",
     "DO set `fallbackLocale` to the content's SOURCE language (often `ja`) when it differs from the AppProvider's UI fallback — the placeholder of an untranslated locale then shows the source text to translate from.",

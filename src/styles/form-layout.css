@@ -139,8 +139,6 @@
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-stack-xs); /* 4px between control and helper/error */
     min-width: 0;
-    /* Cap the control width when a controlWidth is set; otherwise fill the column. */
-    max-inline-size: var(--form-control-width, none);
     /* Reserve the control-row height and centre the content so a SHORT control (switch, slider,
      * rating, a bare checkbox/radio — anything thinner than an input) lines up with the label in a
      * horizontal field instead of sitting high. */
@@ -157,6 +155,36 @@
     align-items: center;
   }
 
+  /* gh#1343 — `controlWidth` caps the CONTROL, not the column. The cap used to sit on
+   * `.ui-form-field-control`, which also holds the helper and the error, so a 120px region code
+   * squeezed its helper to 3 lines beside ~1000px of empty column (GoDX QC; measured in Chromium at
+   * 1280: 120px → 3 lines, 200px → 2, 240px → 3, all 1 line at the column width). antd Form.Item
+   * draws `extra`/`help` as wide as the wrapper col, and so does this.
+   *
+   * The cap goes on the box that wraps the control: the `<fieldset>` (it used to be
+   * `display: contents`, which cannot carry a width) or the static-text span. It cannot go on the
+   * control itself — `.ui-select-root` is `display: contents` too, so a cap there has no box to
+   * bite. The fieldset is a one-column grid like the column, so the control inside it stretches and
+   * caps exactly as it did as a direct grid item; the UA's fieldset margin, padding, border and
+   * `min-inline-size: min-content` are reset so it adds nothing of its own. */
+  .ui-form-field-control > :not(.ui-form-field-note, .ui-form-feedback) {
+    max-inline-size: var(--form-control-width, none);
+  }
+
+  .ui-form-field-input {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: inherit;
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .ui-form-field-input > * {
+    min-width: 0;
+  }
+
   /* A helper placed BEFORE the control is the first row; it keeps its own height. */
   .ui-form-field-control:has(> .ui-form-field-note:first-child) {
     grid-template-rows: none;
@@ -166,7 +194,12 @@
    * taller than the band, so centring it would put its FIRST option at the top of the band and the
    * field label 5px below it (measured: label 241, first option 236). Its first line box — one
    * `.ui-choice-control` cell, the gh#709 geometry — is centred on the band instead, which is where
-   * the label's line sits. Outside the horizontal layout the band is unset and the margin is 0. */
+   * the label's line sits. Outside the horizontal layout the band is unset and the margin is 0.
+   * Since gh#1343 the fieldset is the grid item in the band, so it starts at the band top too. */
+  .ui-form-field-control
+    > fieldset:has(> :is(.ui-choice-group[data-orientation="vertical"], .ui-choice-field)) {
+    align-self: start;
+  }
   .ui-form-field-control
     > fieldset
     > :is(.ui-choice-group[data-orientation="vertical"], .ui-choice-field) {

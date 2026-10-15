@@ -1,5 +1,6 @@
 import * as React from "react";
 import { CircleAlert } from "lucide-react";
+import { useOptionalAppContext } from "../../app/app-provider";
 import { useTranslation } from "../../i18n/use-translation";
 import { getRegisteredLocales } from "../../i18n/locale-tags";
 import { mergeAriaIds, useReportFieldError } from "../../lib/field-a11y";
@@ -71,19 +72,24 @@ function TranslatableField({
   ...rest
 }: FieldProps & { forwardedRef: React.ForwardedRef<HTMLInputElement | HTMLTextAreaElement> }) {
   const { t, locale: uiLocale, fallbackLocale: appFallbackLocale } = useTranslation();
+  // The app's content languages (AppProvider `contentLocales`, gh#1347), source language first.
+  const appContentLocales = useOptionalAppContext()?.contentLocales;
+  const contentLocales = appContentLocales?.length ? appContentLocales : undefined;
 
   const locales = React.useMemo<readonly string[]>(() => {
-    const list = localesProp ?? getRegisteredLocales();
+    const list = localesProp ?? contentLocales ?? getRegisteredLocales();
     return list.length > 0 ? list : [uiLocale];
-  }, [localesProp, uiLocale]);
+  }, [localesProp, contentLocales, uiLocale]);
 
   const pick = (candidates: Array<string | undefined>) =>
     candidates.find((code): code is string => code !== undefined && locales.includes(code)) ??
     locales[0]!;
   const fallbackLocale = pick([fallbackLocaleProp, appFallbackLocale]);
 
+  // With app content locales set, the SOURCE language (their first) is the tab a field opens on —
+  // when the field's own list holds it; otherwise the UI locale, as before.
   const [activeState, setActiveState] = React.useState(() =>
-    pick([defaultLocale, uiLocale, fallbackLocale]),
+    pick([defaultLocale, contentLocales?.[0], uiLocale, fallbackLocale]),
   );
   // A `locales` list that no longer holds the selected tab falls back rather than selecting nothing.
   const active = locales.includes(activeState)
@@ -225,8 +231,8 @@ function TranslatableField({
 
 /**
  * TranslatableInput — ONE text field that holds a value per locale (`{ ja, en, vi }`), switched by
- * locale tabs above it (gh#1336). The locale list, the first tab and the fallback come from
- * `AppProvider` and are overridable per field; an empty locale shows the fallback locale's text as
+ * locale tabs above it (gh#1336). The locale list and the first tab come from `AppProvider`
+ * `contentLocales` (gh#1347), the fallback from its `fallbackLocale`; each is overridable per field; an empty locale shows the fallback locale's text as
  * its placeholder; a locale with an error is marked on its tab. Every other `Input` prop applies to
  * the single control, and `ref` is that control's `<input>`.
  */
