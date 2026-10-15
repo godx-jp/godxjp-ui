@@ -3,9 +3,10 @@ import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { controlIconLeadingClass } from "../../lib/control-styles";
-import type { CommandProp } from "../../props/components/data-entry.prop";
+import type { CommandProp, CommandSeparatorProp } from "../../props/components/data-entry.prop";
 
 export type { CommandProp, CommandProp as CommandProps };
+export type { CommandSeparatorProp, CommandSeparatorProp as CommandSeparatorProps };
 
 export const Command = React.forwardRef<
   React.ComponentRef<typeof CommandPrimitive>,
@@ -90,3 +91,31 @@ export const CommandItem = React.forwardRef<
   <CommandPrimitive.Item ref={ref} className={cn("ui-command-item", className)} {...props} />
 ));
 CommandItem.displayName = CommandPrimitive.Item.displayName;
+
+/**
+ * A hairline between two groups of one list — e.g. the matches, then `+ Create "<q>"` (gh#1335).
+ * It is cmdk's own `Command.Separator`, so it must sit inside the same `Command` as its groups.
+ *
+ * `alwaysRender` defaults to `true`, the OPPOSITE of cmdk: cmdk drops a separator as soon as the
+ * search is non-empty, because in a palette the groups collapse under filtering. A "Create" group
+ * exists only BECAUSE the user typed, so with cmdk's default the rule vanished exactly when it
+ * was needed. Pass `alwaysRender={false}` for cmdk's palette behaviour.
+ *
+ * `aria-hidden` by default: the rule is decorative, and a `role="separator"` child is not allowed
+ * in the `listbox` CommandList renders (ARIA owns only `option` / `group` there); the groups'
+ * headings carry the structure.
+ */
+export const CommandSeparator = React.forwardRef<
+  React.ComponentRef<typeof CommandPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Separator> & CommandSeparatorProp
+>(({ className, alwaysRender = true, ...props }, ref) => (
+  <CommandPrimitive.Separator
+    ref={ref}
+    className={cn("ui-command-separator", className)}
+    data-slot="command-separator"
+    aria-hidden="true"
+    alwaysRender={alwaysRender}
+    {...props}
+  />
+));
+CommandSeparator.displayName = CommandPrimitive.Separator.displayName;

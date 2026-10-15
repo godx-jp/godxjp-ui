@@ -18,8 +18,10 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "@godxjp/ui/data-entry";
 import { Skeleton } from "@godxjp/ui/feedback";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { ChevronDown } from "lucide-react";
@@ -50,7 +52,10 @@ const MEMBERS: Suggestion[] = [
   { value: "m-005", label: "PHAM THAI DUONG（プロジェクト外）" },
 ];
 
+const COLOR_VALUES = ["ブラック", "ブルー", "ブラウン", "ホワイト", "レッド"];
+
 export default function Demo() {
+  const { t } = useTranslation();
   // Card 1: grouped quick-select. Controlled `value` pre-highlights an item so the
   // [aria-selected=true] accent is visible at rest, without keyboard interaction.
   const [account, setAccount] = useState<string>("1020");
@@ -70,6 +75,13 @@ export default function Demo() {
     setAssignees((current) =>
       current.includes(member) ? current.filter((m) => m !== member) : [...current, member],
     );
+
+  // Card 5: option-value builder — matches, a separator, then "+ 作成" for the typed text.
+  // Pre-typed so the separator and the create row are visible at rest.
+  const [colorQuery, setColorQuery] = useState<string>("ブル");
+  const [colorValues, setColorValues] = useState<string[]>(COLOR_VALUES);
+  const colorTerm = colorQuery.trim();
+  const showCreate = colorTerm !== "" && !colorValues.includes(colorTerm);
 
   useEffect(() => {
     let active = true;
@@ -329,6 +341,51 @@ export default function Demo() {
                         ))}
                       </CommandGroup>
                     ) : null}
+                  </>
+                )}
+              </CommandList>
+            </Command>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("commandDocs.createExample.title")}</CardTitle>
+            <CardDescription>
+              {t("commandDocs.createExample.description", { count: colorValues.length })}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Command label={t("commandDocs.createExample.label")}>
+              <CommandInput
+                placeholder={t("commandDocs.createExample.placeholder")}
+                value={colorQuery}
+                onValueChange={setColorQuery}
+              />
+              <CommandList>
+                <CommandEmpty>{t("commandDocs.createExample.empty")}</CommandEmpty>
+                <CommandGroup heading={t("commandDocs.createExample.heading")}>
+                  {colorValues.map((value) => (
+                    <CommandItem key={value} value={value} onSelect={setColorQuery}>
+                      {value}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                {showCreate && (
+                  <>
+                    <CommandSeparator />
+                    <CommandGroup forceMount>
+                      <CommandItem
+                        forceMount
+                        value={`__create__${colorTerm}`}
+                        onSelect={() => {
+                          setColorValues((current) => [...current, colorTerm]);
+                          setColorQuery("");
+                        }}
+                      >
+                        {t("commandDocs.createExample.create", { value: colorTerm })}
+                      </CommandItem>
+                    </CommandGroup>
                   </>
                 )}
               </CommandList>

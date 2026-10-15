@@ -2001,6 +2001,18 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  CommandSeparatorProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "alwaysRender",
+        local: true,
+        reason:
+          "cmdk's own Command.Separator prop name, kept so the cmdk docs still apply; only its default differs (true) so the rule stays above a `+ Create` group while the user types (gh#1335).",
+      },
+    ],
+  },
   TextareaProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

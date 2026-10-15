@@ -69,7 +69,7 @@ screen anatomy, the visual target the rules below do not give you. Then fetch in
 5. `anti-ai-tells.json` — 35 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
 
-**Do not fetch `components.json`.** It is 1.2 MB, and most URL fetchers truncate a
+**Do not fetch `components.json`.** It is 1.3 MB, and most URL fetchers truncate a
 response that size and return the head without telling you. You get the first few entries, believe
 you read the catalog, and answer the rest from memory — which is the failure this file exists to
 prevent. The per-component files say the same thing without the cliff.

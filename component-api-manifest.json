@@ -4432,6 +4432,22 @@
         }
       ]
     },
+    "CommandSeparator": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "alwaysRender",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": [
+            "node_modules/cmdk/dist/index.d.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        }
+      ]
+    },
     "CompactBarTrend": {
       "group": "charts",
       "props": [

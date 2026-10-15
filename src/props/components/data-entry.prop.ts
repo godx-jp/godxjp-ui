@@ -168,6 +168,15 @@ export type CommandProp = {
   split?: boolean;
 };
 
+export type CommandSeparatorProp = {
+  /**
+   * Keep the separator while a search query is typed. Default `true` — the opposite of cmdk, which
+   * hides it under a query; a `+ Create "<q>"` group only exists while the user types, so the rule
+   * above it must stay. `false` restores cmdk's palette behaviour.
+   */
+  alwaysRender?: boolean;
+};
+
 export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> & {
   onValueChange?: (value: string) => void;
   /**

@@ -1871,5 +1871,16 @@
     "emptyTitle": "No data yet",
     "emptyHint": "A store that has not synced its POS shows the empty state.",
     "emptyMessage": "This store has not sent any sales yet"
+  },
+  "commandDocs": {
+    "createExample": {
+      "title": "Add an option value (CommandSeparator)",
+      "description": "A CommandSeparator sits below the matching values, followed by a row that creates the typed text as a new value. The separator stays while you search (alwaysRender defaults to true). Saved: {count}",
+      "label": "Color values",
+      "placeholder": "Search or create a value...",
+      "empty": "No matching value.",
+      "heading": "Existing values",
+      "create": "+ Create \"{value}\""
+    }
   }
 }

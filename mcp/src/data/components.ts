@@ -12490,7 +12490,14 @@ export function ReportRangeFilter() {
   },
   {
     name: "Command",
-    subParts: ["CommandEmpty", "CommandGroup", "CommandInput", "CommandItem", "CommandList"],
+    subParts: [
+      "CommandEmpty",
+      "CommandGroup",
+      "CommandInput",
+      "CommandItem",
+      "CommandList",
+      "CommandSeparator",
+    ],
     group: "data-entry",
     tagline:
       "Accessible, keyboard-navigable command palette / combobox list built on cmdk — always pair CommandInput inside its own wrapper div, never render items outside CommandList.",
@@ -12626,6 +12633,13 @@ export function ReportRangeFilter() {
         description:
           "Renders automatically only when there are no matching results. Place inside CommandList.",
       },
+      {
+        name: "CommandSeparator.alwaysRender",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'CommandSeparator is cmdk\'s Command.Separator (data-slot="command-separator", ref forwarded, className merged): a hairline between two groups of one list. Default true — the OPPOSITE of cmdk, which drops the separator once the search is non-empty; a `+ Create "<q>"` group only exists while the user types, so the rule above it must stay. Pass false for cmdk\'s palette behaviour. Hidden automatically beside a group cmdk has hidden (no matching rows) and under `split` (which already rules group boundaries). aria-hidden: decorative, since a separator is not an allowed listbox child. Tokens: --command-item-divider-width / --command-item-divider-color (→ --stroke-hairline / --border), margin-block --command-group-padding.',
+      },
     ],
     usage: [
       "DO compose the full tree: Command > CommandInput + CommandList > (CommandEmpty | CommandGroup > CommandItem | CommandItem). Every interactive element must live inside CommandList; items outside it are invisible to the keyboard engine.",
@@ -12633,6 +12647,7 @@ export function ReportRangeFilter() {
       "DO always provide a stable explicit value prop on CommandItem when the item's text content can change between renders — relying on inferred textContent with dynamic labels causes selection bugs.",
       "DO include CommandEmpty inside CommandList to show a no-results message. It renders automatically only when the filtered count is zero; do not conditionally render it yourself.",
       "DO use split for checkbox/option lists (a filter facet, a picker: Popover + PopoverContent flush + Command split) — rows get a divider between them and 0 list padding, so they read as one box. Keep the default (unsplit) for a command palette. Never re-create the look with page CSS (border on items, padding 0 on the group): retune --command-item-divider-color / --command-item-divider-width instead.",
+      'DO divide a result group from an action group with CommandSeparator — matches, then `<CommandSeparator />`, then `<CommandGroup forceMount><CommandItem forceMount value={`__create__${q}`}>+ Create "{q}"</CommandItem></CommandGroup>` rendered only while the query has no exact match. Give the create item an explicit value (never inferred from its changing text) and forceMount both it and its group so the filter cannot hide it. Never keep a local copy of the Command family for the divider — a compound must come from one cmdk instance.',
       "DON'T use CommandInput as a standalone search input — it is only meaningful inside a Command root (the root manages shared filter state). For a standalone search field use SearchInput instead.",
       "DON'T hand-roll keyboard navigation on a list of items; Command handles arrow keys, Enter, Escape, Home/End, and vim bindings. Adding your own keyDown handlers on top creates conflicts — use onSelect on CommandItem for selection logic.",
     ],

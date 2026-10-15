@@ -82,8 +82,9 @@ export {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "./command";
-export type { CommandProps } from "./command";
+export type { CommandProps, CommandSeparatorProps } from "./command";
 export { CommandPalette } from "./command-palette";
 export type {
   CommandPaletteGroup,

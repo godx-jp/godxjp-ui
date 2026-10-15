@@ -1864,5 +1864,16 @@
     "emptyTitle": "Chưa có dữ liệu",
     "emptyHint": "Cửa hàng chưa đồng bộ POS sẽ hiện trạng thái trống.",
     "emptyMessage": "Cửa hàng này chưa gửi doanh thu nào"
+  },
+  "commandDocs": {
+    "createExample": {
+      "title": "Thêm giá trị tùy chọn (CommandSeparator)",
+      "description": "CommandSeparator nằm dưới các giá trị khớp, tiếp theo là dòng tạo giá trị mới từ chữ đang gõ. Đường phân cách vẫn hiển thị khi tìm kiếm (alwaysRender mặc định là true). Đã lưu: {count}",
+      "label": "Giá trị màu",
+      "placeholder": "Tìm hoặc tạo giá trị...",
+      "empty": "Không có giá trị phù hợp.",
+      "heading": "Giá trị hiện có",
+      "create": "+ Tạo \"{value}\""
+    }
   }
 }
