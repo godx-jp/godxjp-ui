@@ -1,6 +1,12 @@
-// GoDX service icons — one system: 64-grid tile, radius 14, brand gradient, white glyph at stroke 4,
-// round caps/joins, glyph inside the 16..48 live area. Original geometry only.
+// GoDX service icons — one system: 64-grid tile, radius 14, flat brand green, white glyph at
+// stroke 4, round caps/joins, glyph inside the 16..48 live area. Original geometry only.
+//
+// gh#1345: the tile is the GoDX preset's light --primary/--brand, #008066 — the logo's colour and
+// the primary button's. It replaced a violet→navy 3-stop gradient (#7A00FF → #3700A6 → #0B0F3B),
+// which is the "purple-blue gradient" anti-AI-tell. White on it measures 4.91:1 (≥ 3:1 non-text).
 import { writeFileSync, mkdirSync } from "node:fs";
+/** The tile colour: `--brand` in src/themes/godx-tokens.css, 168 100% 25%. */
+const BRAND = "#008066";
 const out = process.argv[2];
 mkdirSync(out, { recursive: true });
 const G = {
@@ -30,8 +36,7 @@ const tile = (
   glyph,
   rx = 14,
 ) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="${id}">
-  <defs><linearGradient id="g" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7A00FF"/><stop offset="0.55" stop-color="#3700A6"/><stop offset="1" stop-color="#0B0F3B"/></linearGradient></defs>
-  <rect width="64" height="64" rx="${rx}" fill="url(#g)"/>
+  <rect width="64" height="64" rx="${rx}" fill="${BRAND}"/>
   <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">${glyph}</g>
 </svg>
 `;

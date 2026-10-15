@@ -3,8 +3,8 @@
 :root {
   /* Color system (HSL components) — the reference design: warm hue-60 neutral spine, a NEUTRAL INK
    * primary (v32, gh#1220), 和色/wa-iro semantics. The neutral spine still carries SmartHR's
-   * values and says so per line. The GoDX violet identity is a preset now, not a default:
-   * `@godxjp/ui/themes/godx.css` restores it exactly. */
+   * values and says so per line. The GoDX identity colour is a preset now, not a default:
+   * `@godxjp/ui/themes/godx.css` (emerald-teal #008066 since gh#1345). */
   --background: 60 33% 99%; /* #fdfdfb warm off-white */
   --foreground: 48 8% 13%; /* #23221e SmartHR TEXT_BLACK */
   /* ── THE TRANSLUCENCY AXIS, SEPARATE FROM THE COLOUR AXIS (gh#901) ──────────────────────────
@@ -124,7 +124,7 @@
    *   success      #68be8d    2.19:1  ✗            7.08:1  ✓
    *   attention    #eb6101    3.32:1  ✗            4.68:1  ✓
    *   warning      #f8b500    1.74:1  ✗            8.91:1  ✓  (already dark — the precedent)
-   *   primary      #18181b   17.45:1  ✓  (the GoDX preset violet #7a00ff: 6.32:1)
+   *   primary      #18181b   17.45:1  ✓  (the GoDX preset #008066: 4.86:1)
    *   destructive  …          6.10:1  ✓
    *   info         #4c6cb3    5.00:1  ✓
    *

@@ -14,6 +14,11 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
  * stylesheet (`git archive 385c7915 src/styles src/tokens`, its `styles/index.css` — which still
  * loaded the bundled fonts — compiled the same way), and is pinned here so the comparison does not
  * depend on a git ref being present on the runner.
+ *
+ * gh#1345 (33.5.0) re-seeded the preset on purpose: violet #7A00FF / #DCBCFF became emerald-teal
+ * #008066 / #5CD6BE. The COLOUR rows below are the new seed (31.31.8 painted rgb(122, 0, 255) /
+ * rgb(220, 188, 255), link #6500d4 / #dcbcff); fonts, labels, ring wiring and the mark are still
+ * 31.x's, unchanged.
  */
 const ROOT = process.cwd();
 const ENTRY = `
@@ -68,6 +73,9 @@ interface Measured {
   link: string;
   font: string;
   mark: string | null;
+  /** The mark box's own fill. `tone: "primary"` (gh#1345) must not paint a --primary square
+   * behind the artwork: the `[data-mark="godx"]` rule keeps it transparent. */
+  markBackground: string | null;
 }
 
 /** The body font stack 31.x painted, with its bundled faces loaded by `styles/index.css`. */
@@ -76,34 +84,36 @@ const GODX_FONT =
   '"Yu Gothic Medium", YuGothic, "M PLUS 2", Meiryo, -apple-system, "system-ui", "Segoe UI", ' +
   "Roboto, system-ui, sans-serif";
 
-/** 31.31.8, measured as described above. */
-const V31: Record<"light" | "dark", Measured> = {
+/** 31.31.8, measured as described above — with the gh#1345 colour (see the header). */
+const GODX: Record<"light" | "dark", Measured> = {
   light: {
     tokens: {
-      "--primary": "268.7 100% 50%",
+      "--primary": "168 100% 25%",
       "--primary-foreground": "60 33% 99%",
-      "--brand": "268.7 100% 50%",
+      "--brand": "168 100% 25%",
       "--brand-foreground": "60 33% 99%",
-      "--ring": "268.7 100% 50%",
+      "--ring": "168 100% 25%",
     },
-    button: { background: "rgb(122, 0, 255)", color: "rgb(253, 253, 252)" },
-    // The link ink derives one ramp step down at the call site (relative colour) — #6500d4.
-    link: "color(srgb 0.397973 0 0.832)",
+    button: { background: "rgb(0, 128, 102)", color: "rgb(253, 253, 252)" },
+    // The link ink derives one ramp step down at the call site (relative colour) — 168 100% 16.6%.
+    link: "color(srgb 0 0.332 0.2656)",
     font: GODX_FONT,
     mark: "godx",
+    markBackground: "rgba(0, 0, 0, 0)",
   },
   dark: {
     tokens: {
-      "--primary": "268.7 100% 86.9%",
+      "--primary": "168 60% 60%",
       "--primary-foreground": "48 9% 9%",
-      "--brand": "268.7 100% 86.9%",
+      "--brand": "168 60% 60%",
       "--brand-foreground": "48 9% 9%",
-      "--ring": "268.7 100% 86.9%",
+      "--ring": "168 60% 60%",
     },
-    button: { background: "rgb(220, 188, 255)", color: "rgb(25, 24, 21)" },
-    link: "color(srgb 0.863323 0.738 1)",
+    button: { background: "rgb(92, 214, 190)", color: "rgb(25, 24, 21)" },
+    link: "color(srgb 0.36 0.84 0.744)",
     font: GODX_FONT,
     mark: "godx",
+    markBackground: "rgba(0, 0, 0, 0)",
   },
 };
 
@@ -169,18 +179,26 @@ async function measure(css: string, query: string): Promise<Measured> {
         '"system-ui"',
       ),
       mark: document.querySelector('[data-slot="logo"]')?.getAttribute("data-mark") ?? null,
+      markBackground: (() => {
+        const logo = document.querySelector('[data-slot="logo"]');
+        return logo ? getComputedStyle(logo).backgroundColor : null;
+      })(),
     };
   }, TOKENS);
   await page.close();
   return result;
 }
 
-describe("the GoDX preset reproduces 31.x (gh#1220)", { timeout: 60_000 }, () => {
-  it.each(["light", "dark"] as const)("%s", async (theme) => {
-    const got = await measure(godxCss, `theme=${theme}&preset=godx`);
-    expect(got).toEqual(V31[theme]);
-  });
-});
+describe(
+  "the GoDX preset reproduces 31.x, in the gh#1345 colour (gh#1220)",
+  { timeout: 60_000 },
+  () => {
+    it.each(["light", "dark"] as const)("%s", async (theme) => {
+      const got = await measure(godxCss, `theme=${theme}&preset=godx`);
+      expect(got).toEqual(GODX[theme]);
+    });
+  },
+);
 
 describe("without the preset the identity is neutral (gh#1220)", { timeout: 60_000 }, () => {
   it("light: ink primary, near-white label, ring = primary, no mark", async () => {
@@ -195,7 +213,7 @@ describe("without the preset the identity is neutral (gh#1220)", { timeout: 60_0
     expect(got.button.background).toBe("rgb(24, 24, 27)");
     expect(got.mark).toBeNull();
     // Fonts are opt-in since v32 (#1221): the neutral stack is not the GoDX one.
-    expect(got.font).not.toBe(V31.light.font);
+    expect(got.font).not.toBe(GODX.light.font);
   });
 
   it("dark: near-white primary on an ink label, no mark", async () => {
@@ -213,13 +231,13 @@ describe("without the preset the identity is neutral (gh#1220)", { timeout: 60_0
 });
 
 describe("GoDX colour tokens without fonts, for a shadow root (gh#1228)", () => {
-  it("godx-tokens.css paints the 31.x violet and declares no @font-face", async () => {
+  it("godx-tokens.css paints the GoDX colour and declares no @font-face", async () => {
     // The Dock compiles styles/core into a shadow root, where @font-face is ignored; it needs the
     // GoDX colours alone. godx.css = these tokens + the fonts; importing both doubled every face.
     expect(godxTokensCss).not.toMatch(/@font-face/);
     expect(godxCss).toMatch(/@font-face/);
     const got = await measure(godxTokensCss, "theme=light&preset=godx");
-    expect(got.tokens).toEqual(V31.light.tokens);
-    expect(got.button).toEqual(V31.light.button);
+    expect(got.tokens).toEqual(GODX.light.tokens);
+    expect(got.button).toEqual(GODX.light.button);
   });
 });

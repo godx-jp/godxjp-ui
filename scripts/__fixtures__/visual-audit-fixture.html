@@ -27,14 +27,13 @@
       </button>
 
       <!--
-        gh#823 — the SAME rule must stay SILENT on the accent this package ships. `--primary` is
-        `268.7 100% 50%` (#7A00FF, chroma 0.293), so every primary button in every consumer used to
-        trip 渋み over a colour they receive from us and cannot change. Written as `hsl()` with the
-        raw triplet, exactly as a component does, so this also exercises the engine round trip the
-        BRAND_ACCENT_TOLERANCE comment measures. Asserted by the smoke gate's FORBIDDEN list: no
-        finding may mention `rgb 122,0,255`.
+        gh#823 — the SAME rule must stay SILENT on the accent this package ships. The GoDX preset's
+        `--primary` was `268.7 100% 50%` (#7A00FF, chroma 0.293) and needed an exemption; since
+        gh#1345 it is `168 100% 25%` (#008066, chroma 0.103), quiet by the bound itself. Written as
+        `hsl()` with the raw triplet, exactly as a component does. Asserted by the smoke gate's
+        FORBIDDEN list: no finding may mention `rgb 0,128,102`.
       -->
-      <button style="background: hsl(268.7 100% 50%); color: #fff; border: 0; padding: 8px 16px">
+      <button style="background: hsl(168 100% 25%); color: #fff; border: 0; padding: 8px 16px">
         Save changes
       </button>
 

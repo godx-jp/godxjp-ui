@@ -25,7 +25,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  *     src/components/data-display/__tests__/prose-link-717.test.tsx.
  *
  * Measured on the card surface (#fdfdfc light / #21201c dark):
- *   resolved   --text-link  #6400d4 → 8.29:1 light · #dcbcff → 9.85:1 dark
+ *   resolved   --text-link  #005544 → 8.66:1 light · #5cd6be → 9.17:1 dark (GoDX preset since gh#1345)
  *   unresolved --text-error #aa181f → 7.25:1 light · #eb7076 → 5.51:1 dark
  * The TEXT tier, never `--destructive`: that is the FILL tier, tuned for a white label on top of
  * it, and it measures 2.95:1 as ink on the dark card (gh#610).

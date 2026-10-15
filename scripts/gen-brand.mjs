@@ -11,7 +11,7 @@
  *     every screen and no inbox. `hslToHex` is exported for exactly this and documented for it, but
  *     a consumer still has to know that, and know which roles to map.
  *   · THE DARK SEED IS AUTHORED, NOT DERIVED. Nothing in CSS lifts a light seed onto the dark
- *     spine, so a brand file that sets `--primary` only in `:root` keeps the GoDX violet in dark
+ *     spine, so a brand file that sets `--primary` only in `:root` keeps the package dark seed in dark
  *     mode — and nothing says so.
  *
  * So this emits both, from one `#rrggbb`, and MEASURES what it emits rather than asserting it.

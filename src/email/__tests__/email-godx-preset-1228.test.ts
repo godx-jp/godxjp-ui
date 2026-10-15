@@ -20,16 +20,20 @@ import {
 /**
  * gh#1228 — since v32 the email palette follows the neutral foundation, so a GoDX email lost the
  * violet on primary / brand / focus and the mark lost its "GoDX" label (Platform patched its own
- * sync script). The GoDX preset for email puts back exactly what 31.31.8 shipped as the default.
+ * sync script). The GoDX preset for email puts back what 31.31.8 shipped as the default — in the
+ * preset's colour, which gh#1345 (33.5.0) moved from violet to emerald-teal.
  */
 const V31_LIGHT = hslToHex("268.7 100% 50%"); // 31.31.8 EMAIL_COLOR_SOURCE primary/brand/focus
-const V31_DARK = hslToHex("268.7 100% 86.9%");
+const GODX_LIGHT = hslToHex("168 100% 25%"); // gh#1345 — #008066
+const GODX_DARK = hslToHex("168 60% 60%"); // gh#1345 — #5cd6be
 
-describe("the GoDX preset for email (gh#1228)", () => {
-  it("restores the 31.x violet on primary, brand and focus, light and dark", () => {
+describe("the GoDX preset for email (gh#1228, gh#1345)", () => {
+  it("paints the GoDX emerald-teal on primary, brand and focus, light and dark", () => {
+    expect(GODX_LIGHT).toBe("#008066");
+    expect(GODX_DARK).toBe("#5cd6be");
     for (const role of ["primary", "brand", "focus"] as const) {
-      expect(EMAIL_COLORS_GODX[role], role).toBe(V31_LIGHT);
-      expect(EMAIL_COLORS_GODX_DARK[role], role).toBe(V31_DARK);
+      expect(EMAIL_COLORS_GODX[role], role).toBe(GODX_LIGHT);
+      expect(EMAIL_COLORS_GODX_DARK[role], role).toBe(GODX_DARK);
     }
     expect(EMAIL_TOKENS_GODX.colors).toBe(EMAIL_COLORS_GODX);
   });
@@ -52,15 +56,21 @@ describe("the GoDX preset for email (gh#1228)", () => {
       color: EMAIL_COLORS_GODX.brand,
     });
     expect(svg).toContain('aria-label="GoDX"');
-    expect(svg.toLowerCase()).toContain(V31_LIGHT.toLowerCase());
+    expect(svg.toLowerCase()).toContain(GODX_LIGHT.toLowerCase());
   });
 
-  it("prebuilds the GoDX mark, byte-identical to what 31.31.8 shipped as the default", () => {
+  it("prebuilds the GoDX mark — 31.31.8's bytes with only the colour moved (gh#1345)", () => {
     // Fixture: EMAIL_TOKENS.brandMark.{svg,dataUri,tableHtml} from the published @godxjp/ui@31.31.8.
+    // Geometry, label, size and table layout are byte-identical; the violet fill is the one change.
+    const recolour = (text: string) =>
+      text
+        .replaceAll(V31_LIGHT.toLowerCase(), GODX_LIGHT.toLowerCase())
+        .replaceAll(`%23${V31_LIGHT.slice(1).toLowerCase()}`, `%23${GODX_LIGHT.slice(1)}`);
+    expect(V31_MARK.svg.toLowerCase()).toContain(V31_LIGHT.toLowerCase());
     expect(EMAIL_TOKENS_GODX.brandMark).toBe(EMAIL_BRAND_MARK_GODX);
-    expect(EMAIL_BRAND_MARK_GODX.svg).toBe(V31_MARK.svg);
-    expect(EMAIL_BRAND_MARK_GODX.dataUri).toBe(V31_MARK.dataUri);
-    expect(EMAIL_BRAND_MARK_GODX.tableHtml).toBe(V31_MARK.tableHtml);
+    expect(EMAIL_BRAND_MARK_GODX.svg).toBe(recolour(V31_MARK.svg));
+    expect(EMAIL_BRAND_MARK_GODX.dataUri).toBe(recolour(V31_MARK.dataUri));
+    expect(EMAIL_BRAND_MARK_GODX.tableHtml).toBe(recolour(V31_MARK.tableHtml));
     // Geometry is shared; the neutral default stays decorative.
     expect({ ...EMAIL_BRAND_MARK_GODX, svg: "", dataUri: "", tableHtml: "" }).toEqual({
       ...EMAIL_BRAND_MARK,

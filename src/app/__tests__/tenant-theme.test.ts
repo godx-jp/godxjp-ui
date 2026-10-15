@@ -114,7 +114,7 @@ describe("the label clears WCAG 2.2 SC 1.4.3 AA for every seed (gh#868 gap 2)", 
    */
   const CUSTOMERS = [
     ["#0071bd", "GoDX blue (the seed both consumer repos quote)"],
-    ["#7a00ff", "GoDX violet — the package's own seed"],
+    ["#7a00ff", "GoDX violet — the GoDX preset seed until 33.4"],
     ["#FFD400", "a very LIGHT seed — 'always white' fails here"],
     ["#0A1F44", "a very DARK seed — 'always black' fails here"],
     ["#E30613", "a saturated red"],
@@ -445,13 +445,23 @@ describe("the brand INK clears AA on the surface it lands on (gh#887)", () => {
     expect(triplet(seed.vars["--text-link"])).toEqual([268.71, 100, 41.6]);
     expect(triplet(seed.vars["--text-brand"])).toEqual([268.71, 100, 41.6]);
     expect(triplet(seed.vars["--text-primary"])).toEqual([268.71, 100, 34.5]);
-    // v32 (gh#1220): the violet fallback literals moved out of core `derived.css` into the GoDX
-    // preset, which is where the #7A00FF seed now lives.
+  });
+
+  it("THE GoDX PRESET SEED (emerald-teal, gh#1345) — the clamp is a no-op and the preset's literals are the ramp", () => {
+    // #008066 is `168 100% 25%` rounded to sRGB; its link ink clears --accent without the clamp, so
+    // tenantTheme lands exactly on the derived.css step (l − 8.4, l − 15.5).
+    const seed = tenantTheme("#008066");
+    const [h, s, l] = triplet(hexToHsl("#008066")!);
+    const step = (by: number) => [h, s, round2(l - by)];
+    expect(triplet(seed.vars["--text-link"])).toEqual(step(8.4));
+    expect(triplet(seed.vars["--text-brand"])).toEqual(step(8.4));
+    expect(triplet(seed.vars["--text-primary"])).toEqual(step(15.5));
+    // The preset's `@supports not` literals are the same steps on its exact seed.
     const godxPreset = readFileSync(join(process.cwd(), "src/themes/godx-tokens.css"), "utf8");
     for (const [role, expected] of [
-      ["text-link", "268.7 100% 41.6%"],
-      ["text-brand", "268.7 100% 41.6%"],
-      ["text-primary", "268.7 100% 34.5%"],
+      ["text-link", "168 100% 16.6%"],
+      ["text-brand", "168 100% 16.6%"],
+      ["text-primary", "168 100% 9.5%"],
     ] as const) {
       expect(godxPreset).toContain(`--${role}: ${expected};`);
     }

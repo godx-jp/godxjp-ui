@@ -47,11 +47,12 @@
    * identity v2.3 makes the fill #7A00FF in light and #DCBCFF in dark — dark and light
    * respectively — so a single ink cannot serve both: measured, near-black on the light-theme
    * violet is 2.77:1, a real AA failure, while the same ink on the dark-theme violet is 10.72:1.
+   * The GoDX emerald-teal of gh#1345 keeps the same polarity (#008066 light, #5CD6BE dark).
    *
-   * So the ink now FLIPS with the theme, and each side is measured:
+   * So the ink now FLIPS with the theme, and each side is measured on the GoDX preset:
    *
-   *   light  ink 60 33% 99% (#fdfdfb) on #7A00FF  =  6.30:1
-   *   dark   ink 48 9%  9%  (#191815) on #DCBCFF  = 10.72:1
+   *   light  ink 60 33% 99% (#fdfdfb) on #008066  =  4.86:1
+   *   dark   ink 48 9%  9%  (#191815) on #5CD6BE  =  9.99:1
    *
    * The dark override lives HERE and not in foundation.css on purpose: `:root` and `.dark` have
    * equal specificity, and tokens/base.css imports this file AFTER foundation.css — so a `.dark`
@@ -274,7 +275,7 @@
 }
 
 /* The other half of the ink flip above — see --logo-identity-foreground. The dark fill is the
-   LIGHT violet, so the glyph goes back to the near-black spine (10.72:1). */
+   LIGHT green #5CD6BE in the GoDX preset, so the glyph goes back to the near-black spine (9.99:1). */
 .dark,
 :root[data-theme="dark"] {
   --logo-identity-foreground: 48 9% 9%;

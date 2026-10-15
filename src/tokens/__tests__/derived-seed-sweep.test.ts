@@ -39,7 +39,7 @@ const AA_TEXT = 4.5;
 
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
 const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
-/** The GoDX preset (v32, gh#1220) — the violet seed the identity kit's ramp was authored on. */
+/** The GoDX preset (v32, gh#1220; emerald-teal since gh#1345). */
 const godx = readFileSync(join(process.cwd(), "src/themes/godx-tokens.css"), "utf8");
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
@@ -95,8 +95,10 @@ describe("on the package's own (neutral) seed the core fallback is the formula's
   });
 });
 
-describe("on the GoDX preset's seed the formula reproduces the identity kit", () => {
-  /** The literals 25.4.0 shipped — the kit's own ramp, hue-snapped (see derived.css). */
+describe("on the violet seed the identity kit was authored on, the formula reproduces the kit", () => {
+  /** The literals 25.4.0 shipped — the kit's own ramp, hue-snapped (see derived.css). The GoDX
+   * preset left this violet in gh#1345; the formula still has to land on the kit it was fitted to. */
+  const VIOLET = { light: "268.7 100% 50%", dark: "268.7 100% 86.9%" } as const;
   const KIT = {
     light: {
       "primary-hover": "#6500d4",
@@ -113,24 +115,52 @@ describe("on the GoDX preset's seed the formula reproduces the identity kit", ()
   } as const;
 
   describe.each(THEMES)("$theme", (theme) => {
+    const seed = triplet(VIOLET[theme.theme]);
+
+    it.each(FAMILY)("--%s", (name) => {
+      expect(hex(state(theme, name, seed))).toBe(KIT[theme.theme][name]);
+    });
+  });
+});
+
+describe("on the GoDX preset's seed (emerald-teal, gh#1345) the preset fallback is the formula's answer", () => {
+  /** What every engine with relative colour paints on the preset's seed. Pinned, so a seed or
+   * formula change lands here first. */
+  const PRESET = {
+    light: {
+      "primary-hover": "#005544",
+      "primary-active": "#003027",
+      "primary-border": "#21b093",
+      "control-outline": "#006450",
+    },
+    dark: {
+      "primary-hover": "#73dcc7",
+      "primary-active": "#8be2d1",
+      "primary-border": "#1e3530",
+      "control-outline": "#248e79",
+    },
+  } as const;
+  const ALL = [...FAMILY, "text-link", "text-brand", "text-primary"] as const;
+
+  describe.each(THEMES)("$theme", (theme) => {
     const seed = hsl(
       block(godx, theme.theme === "light" ? ":root {" : '.dark, :root[data-theme="dark"] {'),
       "primary",
     );
 
     it.each(FAMILY)("--%s", (name) => {
-      expect(hex(state(theme, name, seed))).toBe(KIT[theme.theme][name]);
+      expect(hex(state(theme, name, seed))).toBe(PRESET[theme.theme][name]);
     });
 
-    it("the preset's no-relative-colour fallback carries the same four values", () => {
+    it("the preset's no-relative-colour fallback carries the formula's value for every token", () => {
       // Chrome/Edge 111–118 cannot evaluate the formula; they get these literals instead. Held equal
       // here so the fallback can never drift from what every other engine paints.
       const fallback = godx.slice(godx.indexOf("@supports not (color: hsl(from red h s l))"));
       expect(fallback.length, "the @supports fallback block must exist").toBeGreaterThan(50);
       const body = block(fallback, theme.theme === "light" ? "  :root {" : "  .dark,");
-      for (const name of FAMILY) {
+      for (const name of ALL) {
         expect(hex(triplet(declaration(body, name))), `fallback --${name}`).toBe(
-          KIT[theme.theme][name],
+          hex(state(theme, name, seed)),
         );
       }
     });
@@ -201,8 +231,8 @@ describe("the family is a knob with a live default everywhere it is read", () =>
 const SWEEP: ReadonlyArray<{ theme: "light" | "dark"; seed: string; why: string }> = [
   { theme: "light", seed: "240 6% 10%", why: "the package seed (neutral ink)" },
   { theme: "dark", seed: "0 0% 98%", why: "the package seed (neutral ink)" },
-  { theme: "light", seed: "268.7 100% 50%", why: "the GoDX preset seed" },
-  { theme: "dark", seed: "268.7 100% 86.9%", why: "the GoDX preset seed" },
+  { theme: "light", seed: "168 100% 25%", why: "the GoDX preset seed" },
+  { theme: "dark", seed: "168 60% 60%", why: "the GoDX preset seed" },
   { theme: "light", seed: "204 100% 37%", why: "consumer blue" },
   { theme: "dark", seed: "204 90% 60%", why: "consumer blue, dark" },
   { theme: "light", seed: "173 80% 28%", why: "consumer teal" },
@@ -220,8 +250,8 @@ const SWEEP: ReadonlyArray<{ theme: "light" | "dark"; seed: string; why: string 
 const MEASURED: Record<string, [number, number, number]> = {
   "light 240 6% 10%": [17.45, 13.1, 15.32],
   "dark 0 0% 98%": [16.97, 14.89, 12.97],
-  "light 268.7 100% 50%": [6.32, 8.23, 10.31],
-  "dark 268.7 100% 86.9%": [10.72, 13.51, 8.41],
+  "light 168 100% 25%": [4.86, 8.72, 14.17],
+  "dark 168 60% 60%": [9.99, 10.82, 11.74],
   "light 204 100% 37%": [5.04, 7.4, 10.35],
   "dark 204 90% 60%": [7.07, 8.09, 9.27],
   "light 173 80% 28%": [4.72, 7.98, 12.53],

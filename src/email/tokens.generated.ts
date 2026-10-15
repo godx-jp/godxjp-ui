@@ -162,7 +162,7 @@ export const EMAIL_COLOR_SOURCE_GODX = {
   },
   "primary": {
     "cssVar": "--primary",
-    "hsl": "268.7 100% 50%"
+    "hsl": "168 100% 25%"
   },
   "primaryForeground": {
     "cssVar": "--primary-foreground",
@@ -170,11 +170,11 @@ export const EMAIL_COLOR_SOURCE_GODX = {
   },
   "focus": {
     "cssVar": "--primary",
-    "hsl": "268.7 100% 50%"
+    "hsl": "168 100% 25%"
   },
   "brand": {
     "cssVar": "--brand",
-    "hsl": "268.7 100% 50%"
+    "hsl": "168 100% 25%"
   },
   "brandForeground": {
     "cssVar": "--brand-foreground",
@@ -222,7 +222,7 @@ export const EMAIL_COLOR_SOURCE_GODX_DARK = {
   },
   "primary": {
     "cssVar": "--primary",
-    "hsl": "268.7 100% 86.9%"
+    "hsl": "168 60% 60%"
   },
   "primaryForeground": {
     "cssVar": "--primary-foreground",
@@ -230,11 +230,11 @@ export const EMAIL_COLOR_SOURCE_GODX_DARK = {
   },
   "focus": {
     "cssVar": "--primary",
-    "hsl": "268.7 100% 86.9%"
+    "hsl": "168 60% 60%"
   },
   "brand": {
     "cssVar": "--brand",
-    "hsl": "268.7 100% 86.9%"
+    "hsl": "168 60% 60%"
   },
   "brandForeground": {
     "cssVar": "--brand-foreground",

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 // The visual-audit decision logic is pure (no browser) so it is unit-tested here;
 // scripts/visual-audit.mjs only collects measurements from a real page and feeds them in.
@@ -13,7 +13,6 @@ import {
   CHROMA_LIMIT,
   isShippedBrandAccent,
   mixedButtonHeights,
-  BRAND_ACCENT_TOLERANCE,
   // @ts-expect-error — plain .mjs script module, no types
 } from "../../../scripts/visual-audit-rules.mjs";
 // @ts-expect-error — generated .mjs (scripts/gen-email-tokens.mjs), no types
@@ -45,34 +44,36 @@ describe("oklchChroma / isOversaturated (渋み ≤ 0.18)", () => {
  * every page with a primary button, in every consumer, about a colour they receive from us and
  * cannot change. The carve-out is worth nothing unless it proves BOTH directions, so every test
  * here pairs "the brand goes quiet" with "a chosen accent still does not".
+ *
+ * gh#1345 — the GoDX preset is emerald-teal #008066 now, chroma 0.103: inside the bound, so the
+ * generator lists only accents OVER it and the list is empty. The brand stays quiet by measurement,
+ * not by exemption, and the retired violet is judged like any colour a tenant picks.
  */
-describe("isShippedBrandAccent (gh#823 brand carve-out)", () => {
-  const BRAND = { r: 122, g: 0, b: 255 }; // --primary: 268.7 100% 50% → #7A00FF
+describe("isShippedBrandAccent (gh#823 brand carve-out, gh#1345 emerald-teal)", () => {
+  const GODX_GREEN = { r: 0, g: 128, b: 102 }; // --primary: 168 100% 25% → #008066
+  const RETIRED_VIOLET = { r: 122, g: 0, b: 255 }; // 268.7 100% 50% → #7A00FF, GoDX until 33.4
 
-  it("the generated source really carries the shipped accent (the carve-out is not empty)", () => {
-    // Without this the two directions below could both pass on an empty list — one because the
-    // exemption never matched, the other because there was nothing to match.
-    expect(SHIPPED_BRAND_ACCENTS.length).toBeGreaterThan(0);
-    // v32 (gh#1220): core `--primary` is a neutral ink and the violet ships in the GoDX preset, so
-    // find the violet entry by its source rather than taking the first `--primary`.
-    const primary = SHIPPED_BRAND_ACCENTS.find(
-      (a: { cssVars: string[]; source?: string }) =>
-        a.cssVars.includes("--primary") && a.source === "src/themes/godx-tokens.css",
-    );
-    expect(primary).toBeTruthy();
-    expect(primary.rgb).toEqual(BRAND);
-    expect(primary.hsl).toBe("268.7 100% 50%");
+  it("the generated list carries ONLY accents over the bound (today: none)", () => {
+    for (const accent of SHIPPED_BRAND_ACCENTS as Array<{ rgb: typeof GODX_GREEN }>) {
+      expect(oklchChroma(accent.rgb)).toBeGreaterThan(CHROMA_LIMIT);
+    }
+    expect(SHIPPED_BRAND_ACCENTS).toEqual([]);
   });
 
-  it("the shipped brand accent is over the bound but produces NO finding", () => {
-    // The exemption must be an exemption, not a quietly relaxed limit: the chroma is still 0.293.
-    expect(oklchChroma(BRAND)).toBeCloseTo(0.293, 3);
-    expect(oklchChroma(BRAND)).toBeGreaterThan(CHROMA_LIMIT);
-    expect(isShippedBrandAccent(BRAND)).toBe(true);
-    expect(isOversaturated(BRAND)).toBe(false);
+  it("the GoDX green is inside the bound, so it produces NO finding without any exemption", () => {
+    expect(oklchChroma(GODX_GREEN)).toBeCloseTo(0.104, 3);
+    expect(oklchChroma(GODX_GREEN)).toBeLessThanOrEqual(CHROMA_LIMIT);
+    expect(isShippedBrandAccent(GODX_GREEN)).toBe(false);
+    expect(isOversaturated(GODX_GREEN)).toBe(false);
   });
 
-  it("a deliberately garish non-brand purple is STILL flagged", () => {
+  it("the retired violet is no longer exempt — it is flagged like any chosen accent", () => {
+    expect(oklchChroma(RETIRED_VIOLET)).toBeCloseTo(0.293, 3);
+    expect(isShippedBrandAccent(RETIRED_VIOLET)).toBe(false);
+    expect(isOversaturated(RETIRED_VIOLET)).toBe(true);
+  });
+
+  it("a deliberately garish purple is STILL flagged", () => {
     // #9D00FF and #B026FF are what a tenant picks when they want "louder than the brand".
     for (const loud of [
       { r: 157, g: 0, b: 255 }, // #9D00FF, chroma 0.296
@@ -84,13 +85,30 @@ describe("isShippedBrandAccent (gh#823 brand carve-out)", () => {
     }
   });
 
-  it("tolerance ±1 absorbs an hsl() round trip but not a different colour", () => {
-    expect(BRAND_ACCENT_TOLERANCE).toBe(1);
-    // Inside: the furthest colour the window admits (ΔE 0.0027 — ~1/7 of a JND).
-    expect(isOversaturated({ r: 123, g: 1, b: 254 })).toBe(false);
-    // Outside by one step on a single channel — flagged again.
-    expect(isOversaturated({ r: 124, g: 0, b: 255 })).toBe(true);
-    expect(isOversaturated({ r: 120, g: 0, b: 255 })).toBe(true);
+  it("with an over-bound accent listed, tolerance ±1 absorbs an hsl() round trip but not a different colour", async () => {
+    // The mechanism outlives today's empty list: prove it against the accent it was built for.
+    vi.resetModules();
+    vi.doMock("../../../scripts/brand-accent.generated.mjs", () => ({
+      SHIPPED_BRAND_ACCENTS: [
+        { cssVars: ["--primary"], hsl: "268.7 100% 50%", rgb: RETIRED_VIOLET },
+      ],
+    }));
+    try {
+      // @ts-expect-error — plain .mjs script module, no types
+      const rules = await import("../../../scripts/visual-audit-rules.mjs");
+      expect(rules.BRAND_ACCENT_TOLERANCE).toBe(1);
+      expect(rules.isOversaturated(RETIRED_VIOLET)).toBe(false);
+      // Inside: the furthest colour the window admits (ΔE 0.0027 — ~1/7 of a JND).
+      expect(rules.isOversaturated({ r: 123, g: 1, b: 254 })).toBe(false);
+      // Outside by one step on a single channel — flagged again.
+      expect(rules.isOversaturated({ r: 124, g: 0, b: 255 })).toBe(true);
+      expect(rules.isOversaturated({ r: 120, g: 0, b: 255 })).toBe(true);
+      // A chosen loud purple is still flagged with the exemption live.
+      expect(rules.isOversaturated({ r: 157, g: 0, b: 255 })).toBe(true);
+    } finally {
+      vi.doUnmock("../../../scripts/brand-accent.generated.mjs");
+      vi.resetModules();
+    }
   });
 });
 

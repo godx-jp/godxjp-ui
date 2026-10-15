@@ -16,8 +16,8 @@
  * and its `--check` guard compare against, so the email mark cannot drift from the package's own
  * flat artwork — the drift that was caught once already.
  *
- * MONOCHROME. The kit also ships a gradient cut (#7A00FF → #3700A6 → #0B0F3B). It is deliberately
- * not used: this mark is painted by a token (`--logo-godx-color` on the web, a colour argument in
+ * MONOCHROME. The kit also ships a gradient cut (violet #7A00FF → #3700A6 → #0B0F3B, retired from
+ * the web artwork too in gh#1345). It is deliberately not used: this mark is painted by a token (`--logo-godx-color` on the web, a colour argument in
  * email) so it re-tints per theme and knocks out on dark surfaces. A baked gradient can do neither,
  * and email clients are worse at gradients than they are at paths.
  */

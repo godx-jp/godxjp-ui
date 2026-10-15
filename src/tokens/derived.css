@@ -195,7 +195,7 @@
  * the partial support caniuse lists there is `currentcolor` only, which nothing here uses). The
  * call-site formula would be invalid at computed-value time and paint nothing, so these engines get
  * the default seed's values as literal knobs — the formula evaluated on the NEUTRAL ink seed since
- * v32 (gh#1220); the GoDX preset carries its own violet set in themes/godx.css. A consumer seed
+ * v32 (gh#1220); the GoDX preset carries its own set in themes/godx-tokens.css. A consumer seed
  * does not follow there. derived-seed-sweep.test.ts holds these equal to the formula. */
 @supports not (color: hsl(from red h s l)) {
   :root {

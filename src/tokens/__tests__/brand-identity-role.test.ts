@@ -112,19 +112,29 @@ describe("--brand: the GoDX identity role (gh#250)", () => {
     expect(hex(hslToRgb(hsl(THEMES.dark, "brand")))).toBe("#fafafa");
   });
 
-  it("the GoDX preset's light --brand IS the canonical GoDX violet #7A00FF", () => {
-    // Brand identity v2.3 (`01_GoDX`, `06_UI_Design_System/dist/godx.theme.resolved.json` →
-    // core.action.primary.bg). It replaced 翠 emerald #009766, which this line pinned from gh#250
-    // until the identity itself changed; v32 moved it from the defaults into themes/godx.css.
-    expect(hex(hslToRgb(hsl(GODX.light, "brand")))).toBe("#7a00ff");
+  it("the GoDX preset's light --brand IS the GoDX emerald-teal #008066 (gh#1345)", () => {
+    // Product-owner decision gh#1345 (2026-10-15): the violet #7A00FF of brand identity v2.3 —
+    // which had itself replaced 翠 emerald #009766, pinned here from gh#250 — became emerald-teal,
+    // one colour with the logo. #009766 verbatim fails 4.5:1 under white (3.74:1); #008066 clears it.
+    expect(hex(hslToRgb(hsl(GODX.light, "brand")))).toBe("#008066");
   });
 
-  it("the GoDX preset's dark --brand keeps the canonical hue and chroma, lifted only in lightness", () => {
-    const [lh, ls] = hsl(GODX.light, "brand");
+  it("the GoDX preset's dark --brand keeps the canonical hue, lifted in lightness and calmed in saturation", () => {
+    const [lh, ls, ll] = hsl(GODX.light, "brand");
     const [dh, ds, dl] = hsl(GODX.dark, "brand");
     expect(dh).toBe(lh);
-    expect(ds).toBe(ls);
-    expect(dl).toBeGreaterThan(hsl(GODX.light, "brand")[2]);
+    // #5CD6BE: 60% saturation, so the dark fill does not glow on the dark canvas.
+    expect([dh, ds, dl]).toEqual([168, 60, 60]);
+    expect(ds).toBeLessThan(ls);
+    expect(dl).toBeGreaterThan(ll);
+  });
+
+  it("the GoDX preset's --brand is visibly DIFFERENT from the 若竹 --success it sits beside", () => {
+    // Hue 168, not 160, so an action never reads as a "done" state (gh#1345).
+    for (const [theme, body] of Object.entries(GODX)) {
+      const success = hsl(THEMES[theme as keyof typeof THEMES], "success");
+      expect(deltaE76(hslToRgb(hsl(body, "brand")), hslToRgb(success))).toBeGreaterThan(10);
+    }
   });
 
   it("--success stays 若竹 wakatake — the STATUS green is untouched by the identity fix", () => {
@@ -142,8 +152,8 @@ describe("--brand: the GoDX identity role (gh#250)", () => {
   it("--brand is DECLARED independently of --primary, even while they hold the same value", () => {
     /*
      * This used to compare VALUES, which worked only while the identity was green and the action
-     * colour blue. Under identity v2.3 both are #7A00FF, and value inequality would now fail on a
-     * design that is correct.
+     * colour blue. Under identity v2.3 both were #7A00FF (and in the GoDX preset both are #008066
+     * since gh#1345), and value inequality would fail on a design that is correct.
      *
      * The property that actually matters — and the one gh#250 was written for — is that --brand
      * does not READ --primary. A service re-theming the action colour must not drag the identity

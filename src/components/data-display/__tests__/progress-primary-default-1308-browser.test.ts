@@ -28,7 +28,7 @@ createRoot(document.getElementById("root")).render(
       <Progress id="over" value={140} over aria-label="Quota" />
       <div id="probe-primary" style={{ background: "hsl(var(--primary))" }} />
       <div id="probe-success" style={{ background: "hsl(var(--text-success))" }} />
-      <div data-tenant style={{ "--primary": "268.7 100% 50%" }}>
+      <div data-tenant style={{ "--primary": "168 100% 25%" }}>
         <Progress id="themed" value={47} aria-label="Themed" />
       </div>
     </div>
@@ -126,8 +126,8 @@ describe("Progress meter defaults to the brand role (gh#1308)", { timeout: 60_00
       expect(m.success).not.toBe(m.plain);
       expect(m.over).toBe("destructive");
       expect(m.vsTrack).toBeGreaterThanOrEqual(3);
-      // A theme's --primary arrives (rgb 122,0,255 is the GoDX violet).
-      expect(m.themed).toBe("122,0,255");
+      // A theme's --primary arrives (rgb 0,128,102 is the GoDX emerald-teal, gh#1345).
+      expect(m.themed).toBe("0,128,102");
     });
   }
 });

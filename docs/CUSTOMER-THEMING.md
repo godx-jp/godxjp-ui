@@ -75,12 +75,13 @@ choose the colour rather than at the point a user cannot read a link.
 **The two things it does that hand-authoring keeps getting wrong:**
 
 - **A dark seed.** Nothing in CSS lifts a light seed onto the dark spine, so a brand file that sets
-  `--primary` only in `:root` keeps the GoDX violet in dark mode and nothing says so. The generator
+  `--primary` only in `:root` keeps the package's (or the GoDX preset's) dark seed in dark mode and
+  nothing says so. The generator
   holds your hue and saturation and moves lightness until the dark seed reads against the dark
   canvas the way the light seed reads against the light one.
 - **Email.** `src/email/tokens.generated.ts` bakes literal hex at build time, because Gmail strips
   `<style>` and Outlook ignores custom properties. Those literals are _this package's_ seed, so a
-  re-themed product still sends GoDX-violet mail — the one surface no amount of CSS reaches. The
+  re-themed product still sends mail in the package's colours — the one surface no amount of CSS reaches. The
   emitted `acme.email.ts` is the override that corrects it.
 
 **What it deliberately leaves out**, because writing them would be a regression:
@@ -415,7 +416,7 @@ Measured, for the two shapes where a naive rule fails:
 | customer hex | label chosen | ratio   | what "always white" would have given |
 | ------------ | ------------ | ------- | ------------------------------------ |
 | `#0071bd`    | `#ffffff`    | 5.13:1  | 5.13:1                               |
-| `#7a00ff`    | `#ffffff`    | 6.42:1  | 6.42:1                               |
+| `#008066`    | `#ffffff`    | 4.91:1  | 4.91:1                               |
 | `#FFD400`    | `#000000`    | 14.67:1 | **1.29:1**                           |
 | `#0A1F44`    | `#ffffff`    | 16.25:1 | 16.25:1                              |
 | `#E30613`    | `#ffffff`    | 4.88:1  | 4.88:1                               |
@@ -475,8 +476,8 @@ tenantTheme("#FFD400").vars["--text-brand"]; // "49.88 100% 24.4%" — 4.56:1, n
 tenantTheme("#7C3AED").vars["--text-brand"]; // "262.12 83.26% 49.44%" — the ramp step, untouched
 ```
 
-**A seed whose ramp step already clears is emitted unchanged**, so the package's own violet is
-byte-identical to what it shipped before, and so are the middle seeds. `tenant-theme.test.ts` sweeps
+**A seed whose ramp step already clears is emitted unchanged**, so the GoDX preset's emerald-teal
+`#008066` gets exactly the derived.css ramp step, and so do the middle seeds. `tenant-theme.test.ts` sweeps
 the whole sRGB cube: the worst case is 4.5:1 on either surface, for all three roles.
 
 **`surface` is the darkest surface the ink lands on, not the page canvas.** It defaults to the

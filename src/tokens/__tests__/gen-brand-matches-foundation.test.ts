@@ -29,7 +29,7 @@ afterAll(() => rmSync(out, { recursive: true, force: true }));
 
 execFileSync(
   "node",
-  [join(ROOT, "scripts/gen-brand.mjs"), "#7A00FF", "--name", "seed", "--out", out],
+  [join(ROOT, "scripts/gen-brand.mjs"), "#008066", "--name", "seed", "--out", out],
   {
     stdio: "pipe",
   },
@@ -68,12 +68,16 @@ const emitted = {
 
 describe("gen:brand reproduces foundation.css on foundation.css's own seed", () => {
   it("emits the seed back unchanged", () => {
-    // #7A00FF is the GoDX preset's seed since v32 (gh#1220); the core default is a neutral ink.
+    // #008066 is the GoDX preset's seed since gh#1345 (#7A00FF from v32, gh#1220, to 33.4); the
+    // core default is a neutral ink. The preset authors the round `168 100% 25%` and the generator
+    // derives `167.8 100% 25.1%` from the hex, so the two are compared as the sRGB colour they
+    // paint — the same #008066.
     const preset = blockOf(
       readFileSync(join(ROOT, "src/themes/godx-tokens.css"), "utf8"),
       ":root {",
     );
-    expect(role(emitted.light, "primary")).toEqual(role(preset, "primary"));
+    const srgb = (value: ReturnType<typeof role>) => hslToRgb(value).map(Math.round);
+    expect(srgb(role(emitted.light, "primary"))).toEqual(srgb(role(preset, "primary")));
   });
 
   /* THE GENERATOR WRITES THREE TOKENS PER THEME AND NOTHING ELSE. Everything a brand needs beyond

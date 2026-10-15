@@ -9,48 +9,60 @@
  *     @import "@godxjp/ui/themes/godx-tokens.css";   // AFTER the base stylesheet
  *
  * `godx.css` is exactly this file plus the bundled fonts. Import one or the other, never both:
- * the tokens are the same, and two font imports ship every @font-face twice. */
+ * the tokens are the same, and two font imports ship every @font-face twice.
+ *
+ * THE COLOUR IS EMERALD-TEAL SINCE 33.5.0 (gh#1345), replacing the violet #7A00FF. The violet read
+ * garish at 100% saturation (OKLCH chroma 0.293) and was the "oversaturated brand accent" our own
+ * anti-AI-tells name. The green is the logo's colour too, so the mark and the primary button are
+ * one colour. Hue 168 keeps it a sibling of the emerald mark while moving it away from `--success`
+ * (146 40% 58%), and it sits far darker (OKLCH L 0.53 vs 0.74), so an action never reads as "done". */
 :root {
-  /* GoDX violet #7A00FF — identity v2.3 core.action.primary.bg. 6.32:1 under its near-white label. */
-  --primary: 268.7 100% 50%;
+  /* #008066 — OKLCH 0.533 0.103 172. 4.86:1 under its near-white label. (#009766, the mark's
+   * older emerald, measures 3.74:1 under white, below 4.5:1 for a button label.) */
+  --primary: 168 100% 25%;
   --primary-foreground: 60 33% 99%;
-  /* The identity role: the same violet, a separate declaration (gh#250). */
-  --brand: 268.7 100% 50%;
+  /* The identity role: the same green, a separate declaration (gh#250). */
+  --brand: 168 100% 25%;
   --brand-foreground: 60 33% 99%;
+  /* Elevation: a desaturated ink of the brand hue, hsl(168 40% 12%), instead of pure black. The
+   * foundation's alphas and layers are unchanged — this tints the shadow, it adds no glow. */
+  --shadow-color: 18 43 38;
 }
 
 .dark,
 :root[data-theme="dark"] {
-  /* #DCBCFF — identity v2.3 dark action.primary.bg, hue snapped to the light tone. 9.56:1 on the
-   * dark canvas. */
-  --primary: 268.7 100% 86.9%;
+  /* #5CD6BE — OKLCH 0.801 0.115 178. 9.99:1 with its dark label. */
+  --primary: 168 60% 60%;
   --primary-foreground: 48 9% 9%;
-  --brand: 268.7 100% 86.9%;
+  --brand: 168 60% 60%;
   --brand-foreground: 48 9% 9%;
+  /* hsl(168 40% 4%): near-black, same hue. A lighter tint would read as glow on a dark canvas. */
+  --shadow-color: 6 14 13;
 }
 
-/* Engines without relative colour (Chrome/Edge 111–118) get the derived tier as literals. These are
- * the violet ramp 31.x shipped there, restated so the preset stays exact whatever the package's
- * own fallback holds for its neutral seed. */
+/* Engines without relative colour (Chrome/Edge 111–118) get the derived tier as literals: the
+ * formulas in src/tokens/derived.css evaluated on the seeds above, so the preset stays exact
+ * whatever the package's own fallback holds for its neutral seed. derived-seed-sweep.test.ts holds
+ * these equal to the formula. */
 @supports not (color: hsl(from red h s l)) {
   :root {
-    --primary-hover: 268.7 100% 41.6%;
-    --primary-active: 268.7 100% 34.5%;
-    --primary-border: 268.7 68% 66%;
-    --control-outline: 268.7 100% 44.7%;
-    --text-link: 268.7 100% 41.6%;
-    --text-brand: 268.7 100% 41.6%;
-    --text-primary: 268.7 100% 34.5%;
+    --primary-hover: 168 100% 16.6%;
+    --primary-active: 168 100% 9.5%;
+    --primary-border: 168 68% 41%;
+    --control-outline: 168 100% 19.7%;
+    --text-link: 168 100% 16.6%;
+    --text-brand: 168 100% 16.6%;
+    --text-primary: 168 100% 9.5%;
   }
 
   .dark,
   :root[data-theme="dark"] {
-    --primary-hover: 268.7 100% 92.7%;
-    --primary-active: 268.7 100% 81.1%;
-    --primary-border: 268.7 46.7% 23.5%;
-    --control-outline: 268.7 99% 61.8%;
-    --text-link: 268.7 100% 86.9%;
-    --text-brand: 268.7 100% 86.9%;
-    --text-primary: 268.7 100% 92.7%;
+    --primary-hover: 168 60% 65.8%;
+    --primary-active: 168 60% 71.6%;
+    --primary-border: 168 28% 16.2%;
+    --control-outline: 168 59.4% 34.9%;
+    --text-link: 168 60% 60%;
+    --text-brand: 168 60% 60%;
+    --text-primary: 168 60% 65.8%;
   }
 }
