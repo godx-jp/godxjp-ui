@@ -377,7 +377,7 @@ export default function Demo() {
           >
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" count={moreHiddenApplied} countLabel="applied">
+                <Button variant="outline" count={moreHiddenApplied} showZero={false} countLabel="applied">
                   <SlidersHorizontal aria-hidden="true" />
                   More filters
                 </Button>
