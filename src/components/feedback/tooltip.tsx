@@ -10,6 +10,7 @@ import {
 } from "react-aria-components";
 
 import { cn } from "../../lib/utils";
+import { getActiveElement } from "../../lib/active-element";
 import { Slot } from "../../lib/slot";
 
 /*
@@ -337,7 +338,7 @@ export function EllipsisTooltip({
       show(DEFAULT_DELAY_DURATION);
     };
     const onFocusIn = () => {
-      const active = document.activeElement;
+      const active = getActiveElement(node);
       if (active && (active === host || node.contains(active)) && isFocusVisible(active)) show(0);
     };
 

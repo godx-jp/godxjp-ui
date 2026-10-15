@@ -4,6 +4,7 @@ import { chain, mergeRefs } from "@react-aria/utils";
 import { Popover as AriaPopover, type Placement } from "react-aria-components";
 
 import { cn } from "../../lib/utils";
+import { getActiveElement } from "../../lib/active-element";
 import { Slot } from "../../lib/slot";
 import { useOverlayCloseFocus } from "../feedback/overlay-close-focus";
 import type { FlushProp } from "../../props/vocabulary";
@@ -610,7 +611,9 @@ function ClickContent({
        */
       const target = firstTabbable(node);
       target?.focus({ preventScroll: true });
-      if (!node.contains(document.activeElement)) {
+      // Not `document.activeElement`: inside a shadow root it is the HOST, and this branch then
+      // stole focus from the first tabbable onto the panel (gh#1340).
+      if (!node.contains(getActiveElement(node))) {
         node.focus({ preventScroll: true });
       }
     }
@@ -624,17 +627,21 @@ function ClickContent({
   React.useEffect(() => {
     if (!open) return;
     const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null;
-      if (!target) return;
-      if (contentRef.current?.contains(target)) return;
-      if (triggerRef.current?.contains(target)) return;
+      // `composedPath()`, not `contains(event.target)`: by the time a press inside a SHADOW ROOT
+      // reaches `document`, its target has been retargeted to the shadow host, so `contains()`
+      // read every press inside the panel as outside and closed it before the click landed
+      // (gh#1340, GoDX Dock under `OverlayPortalProvider`). The path still lists the real nodes.
+      const path = event.composedPath();
+      const within = (node: Element | null) => node !== null && path.includes(node);
+      if (within(contentRef.current)) return;
+      if (within(triggerRef.current)) return;
       // An ANCHORED popover positions itself against `PopoverAnchor` instead of the trigger, and
       // that anchor is part of the widget, not the outside world: in ChatSuggestion the anchor IS
       // the textarea the panel is completing. Without this, a click into the draft box closed the
       // panel here and the owner's own caret read reopened it a frame later — the list visibly
       // flickered. The owner decides what a click inside its own input means; this handler only
       // covers the genuine outside.
-      if (anchored && anchorRef.current?.contains(target)) return;
+      if (anchored && within(anchorRef.current)) return;
       setOpen(false);
     };
     document.addEventListener("pointerdown", onPointerDown);
@@ -649,6 +656,13 @@ function ClickContent({
       isOpen={root.open}
       onOpenChange={onAriaOpenChange}
       isNonModal={root.isNonModal}
+      /*
+       * The trigger is not "outside". RAC closes a non-modal panel when focus leaves it, and a press
+       * on the trigger moves focus there first — so the panel closed on `focusout`, then the
+       * trigger's own `onClick` read `open === false` and reopened it: `[false, true]`, measured in
+       * Chromium (gh#1340). Leaving the trigger to its click makes one press close it.
+       */
+      shouldCloseOnInteractOutside={(element) => !triggerRef.current?.contains(element)}
       triggerRef={root.anchored ? root.anchorRef : root.triggerRef}
       placement={toPlacement(side, align)}
       offset={sideOffset}

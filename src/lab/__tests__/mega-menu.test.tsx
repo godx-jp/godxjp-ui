@@ -489,3 +489,55 @@ describe("MegaMenu — the panel escapes a clipping ancestor", () => {
     expect(nav.style.marginBlockStart).toBe("8px");
   });
 });
+
+/**
+ * gh#1340 — inside a SHADOW ROOT the target a `document` listener sees is the shadow host, which
+ * the nav never contains, so `contains(event.target)` closed the panel on every press: a link
+ * inside it unmounted before its click, and the trigger closed-then-reopened.
+ */
+describe("MegaMenu in a shadow root (gh#1340)", () => {
+  function mountShadowHost() {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shadow = host.attachShadow({ mode: "open" });
+    shadow.append(document.createElement("div"));
+    const outside = document.createElement("p");
+    outside.textContent = "elsewhere";
+    document.body.append(outside);
+    return { host, shadow, outside };
+  }
+
+  function shadowTrigger(shadow: ShadowRoot, name: string) {
+    return [...shadow.querySelectorAll("button")].find(
+      (button) => button.textContent === name,
+    ) as HTMLElement;
+  }
+
+  it("a press inside the open panel keeps it open; a press outside the host closes it", async () => {
+    const user = userEvent.setup();
+    const { host, shadow, outside } = mountShadowHost();
+    const onOpenChange = vi.fn();
+    const view = renderWithUi(<MegaMenu label={NAV} items={ITEMS} onOpenChange={onOpenChange} />, {
+      container: shadow.firstElementChild as HTMLElement,
+    });
+
+    await user.click(shadowTrigger(shadow, "Products"));
+    expect(shadowTrigger(shadow, "Products")).toHaveAttribute("aria-expanded", "true");
+    expect(onOpenChange.mock.calls).toEqual([["products"]]);
+
+    // Press (no release, so jsdom does not try to navigate) on a link inside the panel.
+    const link = shadow.querySelector('a[href="/hr"]') as HTMLElement;
+    await user.pointer({ keys: "[MouseLeft>]", target: link });
+    expect(shadowTrigger(shadow, "Products")).toHaveAttribute("aria-expanded", "true");
+    expect(shadow.querySelector('a[href="/hr"]')).not.toBeNull();
+    expect(onOpenChange).not.toHaveBeenCalledWith(null);
+    await user.pointer({ keys: "[/MouseLeft]", target: outside });
+
+    await user.click(outside);
+    expect(shadowTrigger(shadow, "Products")).toHaveAttribute("aria-expanded", "false");
+
+    view.unmount();
+    host.remove();
+    outside.remove();
+  });
+});
