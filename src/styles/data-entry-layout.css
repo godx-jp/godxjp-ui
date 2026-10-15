@@ -987,3 +987,31 @@
     border-radius: var(--radius-md);
   }
 }
+
+@layer components {
+  /* TranslatableInput / TranslatableTextarea (gh#1336) — the locale tab strip stacked above the
+   * ONE field it switches. The strip hugs its tabs (it is a switcher, not a section header) and
+   * keeps to the start edge, so under an RTL locale it sits over the field's start like the label. */
+  .ui-translatable-field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--translatable-field-gap);
+    min-inline-size: 0;
+  }
+  .ui-translatable-field-tabs {
+    align-self: flex-start;
+    max-inline-size: 100%;
+  }
+  .ui-translatable-field-panel {
+    min-inline-size: 0;
+  }
+  /* A glyph, not a dot: the mark carries a SHAPE so it never depends on colour alone (WCAG
+   * 1.4.1), and the tab's accessible name carries the words. */
+  .ui-translatable-field-error-mark {
+    inline-size: var(--translatable-field-error-icon-size);
+    block-size: var(--translatable-field-error-icon-size);
+    flex: none;
+    color: hsl(var(--text-error));
+  }
+}

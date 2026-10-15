@@ -2001,6 +2001,18 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  CommandSeparatorProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "alwaysRender",
+        local: true,
+        reason:
+          "cmdk's own Command.Separator prop name, kept so the cmdk docs still apply; only its default differs (true) so the rule stays above a `+ Create` group while the user types (gh#1335).",
+      },
+    ],
+  },
   TextareaProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -2012,6 +2024,82 @@ export const COMPONENT_PROP_REGISTRY = {
       "OnChangeProp",
       "IdProp",
       "ClassNameProp",
+    ],
+  },
+  TranslatableInputProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "SizeProp",
+      "PlaceholderProp",
+      "DisabledProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "locales",
+        local: true,
+        reason:
+          "The BCP-47 tags the field edits, in tab order (gh#1336). Defaults to the app's registered locales; a per-field list, not a value.",
+      },
+      {
+        field: "defaultLocale",
+        local: true,
+        reason:
+          "The locale tab selected first — the AppProvider's own `defaultLocale` spelling, scoped to one field. Defaults to the active app locale.",
+      },
+      {
+        field: "fallbackLocale",
+        local: true,
+        reason:
+          "The locale whose text an EMPTY locale shows as its placeholder — the AppProvider's own `fallbackLocale` spelling, scoped to one field.",
+      },
+      {
+        field: "errors",
+        local: true,
+        reason:
+          "Per-locale validation messages keyed by BCP-47 tag; marks each locale's tab and sends the ACTIVE one through FormField. `error` (one message) cannot say which locale failed.",
+      },
+    ],
+  },
+  TranslatableTextareaProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "SizeProp",
+      "PlaceholderProp",
+      "DisabledProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "locales",
+        local: true,
+        reason:
+          "The BCP-47 tags the field edits, in tab order (gh#1336). Defaults to the app's registered locales; a per-field list, not a value.",
+      },
+      {
+        field: "defaultLocale",
+        local: true,
+        reason:
+          "The locale tab selected first — the AppProvider's own `defaultLocale` spelling, scoped to one field. Defaults to the active app locale.",
+      },
+      {
+        field: "fallbackLocale",
+        local: true,
+        reason:
+          "The locale whose text an EMPTY locale shows as its placeholder — the AppProvider's own `fallbackLocale` spelling, scoped to one field.",
+      },
+      {
+        field: "errors",
+        local: true,
+        reason:
+          "Per-locale validation messages keyed by BCP-47 tag; marks each locale's tab and sends the ACTIVE one through FormField. `error` (one message) cannot say which locale failed.",
+      },
     ],
   },
   NumberInputProp: {

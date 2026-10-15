@@ -1864,5 +1864,41 @@
     "emptyTitle": "データ未登録",
     "emptyHint": "POS 未連携の店舗は空状態を表示します。",
     "emptyMessage": "この店舗の売上データはまだありません"
+  },
+  "commandDocs": {
+    "createExample": {
+      "title": "オプション値の追加（CommandSeparator）",
+      "description": "既存の値に一致する候補の下に CommandSeparator を挟み、入力中の文字列を新しい値として作成する行を出します。区切り線は検索中も表示されます（alwaysRender の既定値 true）。登録済み: {count} 件",
+      "label": "カラーの値",
+      "placeholder": "値を検索または作成...",
+      "empty": "該当する値がありません。",
+      "heading": "既存の値",
+      "create": "+ 「{value}」を作成"
+    }
+  },
+  "translatableInputDocs": {
+    "subtitle": "言語ごとの値を 1 つのフィールドで編集 · ja / en / vi",
+    "editTitle": "商品を編集",
+    "editHint": "ベトナム語は未翻訳のため、日本語の商品名がプレースホルダーとして表示されます。空のまま保存すると、未入力の言語タブにエラーの印が付きます。",
+    "productName": "商品名",
+    "productNameHelper": "メニューと注文画面に表示されます",
+    "description": "説明",
+    "save": "保存",
+    "saved": "保存しました",
+    "errorsTitle": "検証エラー",
+    "errorsHint": "英語とベトナム語にエラー。選択中の言語のメッセージがフィールドの下に表示され、他の言語はタブの印と読み上げで伝わります。",
+    "categoryName": "カテゴリー名",
+    "variantsTitle": "サイズ・言語の指定・無効",
+    "variantsHint": "size は Input と同じ段階。locales で項目ごとに言語を絞り込めます。",
+    "storeName": "店舗の表示名",
+    "storeNameHelper": "日本語と英語だけを持つ項目",
+    "storeNamePlaceholder": "店舗名",
+    "supplierNote": "仕入先メモ",
+    "supplierNoteHelper": "編集できません。言語タブは閲覧のために操作できます",
+    "required": {
+      "ja": "日本語の商品名を入力してください",
+      "en": "英語の商品名を入力してください",
+      "vi": "ベトナム語の商品名を入力してください"
+    }
   }
 }

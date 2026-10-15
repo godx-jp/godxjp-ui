@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-10-09",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 283,
-    "dimensionCells": 3962,
+    "exports": 286,
+    "dimensionCells": 4004,
     "covered": 89,
-    "untested": 2173,
-    "notApplicable": 1700,
+    "untested": 2200,
+    "notApplicable": 1715,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -2875,6 +2875,34 @@
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
         "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "CommandSeparator": {
+      "group": "data-entry",
+      "owner": "data-entry/command",
+      "frames": [
+        "docs/data-entry/command.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -8289,6 +8317,62 @@
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
         "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "TranslatableInput": {
+      "group": "data-entry",
+      "owner": "data-entry/translatable-input",
+      "frames": [
+        "docs/data-entry/translatable-input.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 4,
+        "untested": 10
+      },
+      "dimensions": {
+        "variants": "untested",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "untested",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "TranslatableTextarea": {
+      "group": "data-entry",
+      "owner": "data-entry/translatable-input",
+      "frames": [
+        "docs/data-entry/translatable-input.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 4,
+        "untested": 10
+      },
+      "dimensions": {
+        "variants": "untested",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "untested",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",

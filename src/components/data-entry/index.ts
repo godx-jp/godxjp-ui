@@ -20,6 +20,14 @@ export { CheckboxGroup } from "./checkbox-group";
 export { Radio, RadioGroup, RadioItem, RadioGroupRoot } from "./radio";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
+export { TranslatableInput, TranslatableTextarea } from "./translatable-input";
+export type {
+  TranslatableValue,
+  TranslatableInputProp,
+  TranslatableInputProps,
+  TranslatableTextareaProp,
+  TranslatableTextareaProps,
+} from "./translatable-input";
 export { Form, useFormLayout, type FormLayoutContextValue } from "./form";
 export type { FormProp, FormProps } from "./form";
 export { FormField } from "./form-field";
@@ -82,8 +90,9 @@ export {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "./command";
-export type { CommandProps } from "./command";
+export type { CommandProps, CommandSeparatorProps } from "./command";
 export { CommandPalette } from "./command-palette";
 export type {
   CommandPaletteGroup,

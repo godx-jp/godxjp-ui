@@ -168,6 +168,15 @@ export type CommandProp = {
   split?: boolean;
 };
 
+export type CommandSeparatorProp = {
+  /**
+   * Keep the separator while a search query is typed. Default `true` — the opposite of cmdk, which
+   * hides it under a query; a `+ Create "<q>"` group only exists while the user types, so the rule
+   * above it must stay. `false` restores cmdk's palette behaviour.
+   */
+  alwaysRender?: boolean;
+};
+
 export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> & {
   onValueChange?: (value: string) => void;
   /**
@@ -262,6 +271,55 @@ export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   /** Character counter — antd `count`. */
   count?: ControlCountProp;
 };
+
+/**
+ * One translatable field's per-locale values, keyed by BCP-47 tag: `{ ja: "…", en: "…", vi: "…" }`.
+ * A locale with no key (or `""`) is empty. The shape a `*_translations` backend (Astrotomic,
+ * Spatie translatable, Rails Mobility) already sends.
+ */
+export type TranslatableValue = Partial<Record<string, string>>;
+
+/** The locale + value contract shared by {@link TranslatableInputProp} and {@link TranslatableTextareaProp}. */
+type TranslatableFieldProp = {
+  /** Controlled per-locale values. */
+  value?: ValueProp<TranslatableValue>;
+  /** Uncontrolled initial per-locale values. */
+  defaultValue?: DefaultValueProp<TranslatableValue>;
+  /** The WHOLE map after an edit — every other locale's text is carried over untouched. */
+  onValueChange?: OnValueChangeProp<TranslatableValue>;
+  /**
+   * The locales the field edits, in tab order. Default: every locale registered with the app
+   * (`getRegisteredLocales()` — the built-in `vi`/`en`/`ja` plus `registerLocale(...)`).
+   */
+  locales?: readonly string[];
+  /** The locale tab selected first. Default: the AppProvider's active locale when it is in `locales`. */
+  defaultLocale?: string;
+  /**
+   * The locale whose text shows as the placeholder of an EMPTY locale. Default: the AppProvider's
+   * `fallbackLocale`, or the first of `locales` when that is not one of them.
+   */
+  fallbackLocale?: string;
+  /**
+   * Per-locale validation messages. A locale that has one gets an error mark on its tab (a glyph
+   * plus screen-reader text, never colour alone); the ACTIVE locale's message sets `aria-invalid`
+   * and is shown by the enclosing `FormField` (or under the field when there is none).
+   */
+  errors?: Partial<Record<string, ErrorProp>>;
+};
+
+/** @see TranslatableInput — one `Input` holding a value per locale, switched by locale tabs. */
+export type TranslatableInputProp = Omit<
+  InputProp,
+  "value" | "defaultValue" | "onValueChange" | "lang"
+> &
+  TranslatableFieldProp;
+
+/** @see TranslatableTextarea — the `Textarea` counterpart of {@link TranslatableInputProp}. */
+export type TranslatableTextareaProp = Omit<
+  TextareaProp,
+  "value" | "defaultValue" | "onValueChange" | "lang"
+> &
+  TranslatableFieldProp;
 
 /**
  * @see NumberInput — localized numeric spinbutton (composes `Input` + step `Button`s).

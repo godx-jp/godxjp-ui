@@ -1097,6 +1097,24 @@
         "navigation-layout.css"
       ]
     },
+    "TranslatableInput": {
+      "layers": [
+        "control.css",
+        "toggle.css",
+        "dialog-layout.css",
+        "data-entry-layout.css",
+        "navigation-layout.css"
+      ]
+    },
+    "TranslatableTextarea": {
+      "layers": [
+        "control.css",
+        "toggle.css",
+        "dialog-layout.css",
+        "data-entry-layout.css",
+        "navigation-layout.css"
+      ]
+    },
     "Tree": {
       "layers": [
         "layout.css",

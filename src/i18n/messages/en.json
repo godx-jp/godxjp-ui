@@ -278,6 +278,10 @@
         "number": "Contains number",
         "symbol": "Contains symbol"
       }
+    },
+    "translatable": {
+      "languages": "Language",
+      "hasError": "has an error"
     }
   },
   "feedback": {

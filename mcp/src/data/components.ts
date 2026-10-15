@@ -8388,6 +8388,199 @@ export function PrioritySelect({ value, onValueChange }) {
     rules: [],
   },
   {
+    name: "TranslatableInput",
+    group: "data-entry",
+    tagline:
+      "ONE text field holding a value per locale (`{ ja, en, vi }`), switched by locale tabs above it (gh#1336). For user content stored per locale — a product name, a category label, a menu description (Astrotomic / Spatie `*_translations`). Locales, first tab and fallback come from AppProvider; an empty locale shows the fallback locale's text as its placeholder; a locale with an error is marked on its tab. Every other `Input` prop applies to the one control.",
+    props: [
+      {
+        name: "value",
+        type: "TranslatableValue",
+        description:
+          'Controlled per-locale values — `Partial<Record<string, string>>` keyed by BCP-47 tag. A missing key or `""` is an empty locale.',
+      },
+      {
+        name: "defaultValue",
+        type: "TranslatableValue",
+        description: "Uncontrolled initial per-locale values.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: TranslatableValue) => void",
+        description:
+          "The WHOLE map after an edit: only the active locale's key changes, every other locale is carried over untouched. The ✕ of `allowClear` empties the active locale only.",
+      },
+      {
+        name: "locales",
+        type: "readonly string[]",
+        description:
+          "The BCP-47 tags the field edits, in tab order. Default: every locale registered with the app (`getRegisteredLocales()` — built-in `vi`/`en`/`ja` plus `registerLocale`). Tabs are named by `Intl.DisplayNames` in the reader's UI language; the tags stay the keys.",
+      },
+      {
+        name: "defaultLocale",
+        type: "string",
+        description:
+          "The locale tab selected first. Default: the AppProvider's active locale when it is in `locales`, else the fallback locale.",
+      },
+      {
+        name: "fallbackLocale",
+        type: "string",
+        description:
+          "The locale whose text an EMPTY locale shows as its placeholder. Default: the AppProvider's `fallbackLocale`, or the first of `locales` when that is not one of them.",
+      },
+      {
+        name: "errors",
+        type: "Partial<Record<string, ReactNode>>",
+        description:
+          "Per-locale validation messages. Each locale that has one gets an error mark on its tab — a glyph plus screen-reader text («Vietnamese, has an error»), never colour alone. The ACTIVE locale's message sets `aria-invalid` and is shown in the enclosing FormField's own error line (wired by `aria-errormessage`); without a FormField it is shown under the field.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "The field's control tier, as on Input. The tab strip uses the Tabs `sm` tier (`md` for an `lg` field).",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        description:
+          "Shown while the active locale is empty and there is no fallback text to show (the fallback locale itself, or an empty fallback).",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description:
+          "Disables the control; the locale tabs stay operable so every locale can still be read.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Lands on the control, so a FormField label click focuses it.",
+      },
+      { name: "className", type: "string", description: "Root (strip + field) class override." },
+    ],
+    usage: [
+      "DO wrap it in FormField: the label names the control together with the active locale («商品名 English») and names the tab strip («商品名 Language»), `required`/`helper` reach the control, and the active locale's error renders in FormField's error line.",
+      "DO pass the per-locale error map from your validator as `errors` (e.g. Laravel `name.ja` → `errors.ja`). Don't pass the same message to FormField `error` as well: FormField's own `error` wins over the reported one, and it would mark the field invalid on every locale.",
+      "DO set `fallbackLocale` to the content's SOURCE language (often `ja`) when it differs from the AppProvider's UI fallback — the placeholder of an untranslated locale then shows the source text to translate from.",
+      "DON'T build a local wrapper of Tabs + Input for this: the tab↔panel ARIA, the lang attribute, the error marks and the FormField wiring are what this component exists for.",
+      "DON'T use it for a choice of language that IS the form's value (a user's preferred language): that is `AppSettingPicker kind=\"locale\"` or a Select.",
+      "The locale switcher is the WAI-ARIA APG tabs pattern (tablist → one tabpanel holding the field), not a Segmented radio group: the locale is not form state — every locale is submitted together — the tab only chooses which locale the one field shows.",
+    ],
+    useCases: [
+      "Product / menu item name in ja, en and vi on an admin edit form",
+      "Category or section label stored per locale (Astrotomic `*_translations`)",
+      "Translated description or recipe text (TranslatableTextarea)",
+    ],
+    related: [
+      "TranslatableTextarea — the same contract over a Textarea.",
+      "Input — the control it composes; every Input prop applies.",
+      "FormField — the label / helper / error wiring it reports into.",
+      "Tabs — the switcher it composes (strip-only, `controls` → the field's panel).",
+      'AppSettingPicker kind="locale" — chooses the UI language, not per-locale content.',
+    ],
+    example: `import { FormField, TranslatableInput, TranslatableTextarea, type TranslatableValue } from "@godxjp/ui/data-entry";
+
+const [name, setName] = React.useState<TranslatableValue>({ ja: "醤油ラーメン" });
+
+<FormField label="商品名" required>
+  <TranslatableInput
+    locales={["ja", "en", "vi"]}
+    fallbackLocale="ja"
+    value={name}
+    onValueChange={setName}
+    errors={{ en: "英語名を入力してください" }}
+  />
+</FormField>
+
+<FormField label="説明">
+  <TranslatableTextarea locales={["ja", "en", "vi"]} value={description} onValueChange={setDescription} rows={3} />
+</FormField>`,
+    storyPath: "data-entry/translatable-input.tsx",
+    rules: [],
+  },
+  {
+    name: "TranslatableTextarea",
+    group: "data-entry",
+    tagline:
+      "TranslatableInput over a Textarea (gh#1336): one multi-line field holding a value per locale, switched by locale tabs. Same locale, fallback-placeholder, error-mark and FormField contract; every Textarea prop (rows, autoGrow, count…) applies to the one control.",
+    props: [
+      {
+        name: "value",
+        type: "TranslatableValue",
+        description: "Controlled per-locale values, keyed by BCP-47 tag.",
+      },
+      {
+        name: "defaultValue",
+        type: "TranslatableValue",
+        description: "Uncontrolled initial per-locale values.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: TranslatableValue) => void",
+        description: "The whole map after an edit; only the active locale's key changes.",
+      },
+      {
+        name: "locales",
+        type: "readonly string[]",
+        description:
+          "The BCP-47 tags the field edits, in tab order. Default: the app's registered locales.",
+      },
+      {
+        name: "defaultLocale",
+        type: "string",
+        description: "The locale tab selected first. Default: the AppProvider's active locale.",
+      },
+      {
+        name: "fallbackLocale",
+        type: "string",
+        description:
+          "The locale whose text an empty locale shows as its placeholder. Default: the AppProvider's `fallbackLocale`.",
+      },
+      {
+        name: "errors",
+        type: "Partial<Record<string, ReactNode>>",
+        description:
+          "Per-locale messages: tab marks for each, `aria-invalid` + FormField's error line for the active one.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "The field's control tier, as on Textarea.",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        description: "Shown while the active locale is empty and there is no fallback text.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disables the control; the locale tabs stay operable.",
+      },
+      { name: "id", type: "string", description: "Lands on the control." },
+      { name: "className", type: "string", description: "Root class override." },
+    ],
+    usage: [
+      "DO use it for per-locale multi-line content (a description, a recipe); for a single line use TranslatableInput.",
+      "DO wrap it in FormField, exactly as TranslatableInput.",
+    ],
+    useCases: ["Menu item description in ja, en and vi", "Recipe or notice body stored per locale"],
+    related: [
+      "TranslatableInput — the single-line form and the full contract.",
+      "Textarea — the control it composes.",
+    ],
+    example: `import { FormField, TranslatableTextarea } from "@godxjp/ui/data-entry";
+
+<FormField label="説明">
+  <TranslatableTextarea locales={["ja", "en", "vi"]} value={description} onValueChange={setDescription} autoGrow minRows={3} />
+</FormField>`,
+    storyPath: "data-entry/translatable-input.tsx",
+    rules: [],
+  },
+  {
     name: "Label",
     group: "data-entry",
     tagline: "Styled React Aria Label; use htmlFor to associate with a control.",
@@ -12490,7 +12683,14 @@ export function ReportRangeFilter() {
   },
   {
     name: "Command",
-    subParts: ["CommandEmpty", "CommandGroup", "CommandInput", "CommandItem", "CommandList"],
+    subParts: [
+      "CommandEmpty",
+      "CommandGroup",
+      "CommandInput",
+      "CommandItem",
+      "CommandList",
+      "CommandSeparator",
+    ],
     group: "data-entry",
     tagline:
       "Accessible, keyboard-navigable command palette / combobox list built on cmdk — always pair CommandInput inside its own wrapper div, never render items outside CommandList.",
@@ -12626,6 +12826,13 @@ export function ReportRangeFilter() {
         description:
           "Renders automatically only when there are no matching results. Place inside CommandList.",
       },
+      {
+        name: "CommandSeparator.alwaysRender",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'CommandSeparator is cmdk\'s Command.Separator (data-slot="command-separator", ref forwarded, className merged): a hairline between two groups of one list. Default true — the OPPOSITE of cmdk, which drops the separator once the search is non-empty; a `+ Create "<q>"` group only exists while the user types, so the rule above it must stay. Pass false for cmdk\'s palette behaviour. Hidden automatically beside a group cmdk has hidden (no matching rows) and under `split` (which already rules group boundaries). aria-hidden: decorative, since a separator is not an allowed listbox child. Tokens: --command-item-divider-width / --command-item-divider-color (→ --stroke-hairline / --border), margin-block --command-group-padding.',
+      },
     ],
     usage: [
       "DO compose the full tree: Command > CommandInput + CommandList > (CommandEmpty | CommandGroup > CommandItem | CommandItem). Every interactive element must live inside CommandList; items outside it are invisible to the keyboard engine.",
@@ -12633,6 +12840,7 @@ export function ReportRangeFilter() {
       "DO always provide a stable explicit value prop on CommandItem when the item's text content can change between renders — relying on inferred textContent with dynamic labels causes selection bugs.",
       "DO include CommandEmpty inside CommandList to show a no-results message. It renders automatically only when the filtered count is zero; do not conditionally render it yourself.",
       "DO use split for checkbox/option lists (a filter facet, a picker: Popover + PopoverContent flush + Command split) — rows get a divider between them and 0 list padding, so they read as one box. Keep the default (unsplit) for a command palette. Never re-create the look with page CSS (border on items, padding 0 on the group): retune --command-item-divider-color / --command-item-divider-width instead.",
+      'DO divide a result group from an action group with CommandSeparator — matches, then `<CommandSeparator />`, then `<CommandGroup forceMount><CommandItem forceMount value={`__create__${q}`}>+ Create "{q}"</CommandItem></CommandGroup>` rendered only while the query has no exact match. Give the create item an explicit value (never inferred from its changing text) and forceMount both it and its group so the filter cannot hide it. Never keep a local copy of the Command family for the divider — a compound must come from one cmdk instance.',
       "DON'T use CommandInput as a standalone search input — it is only meaningful inside a Command root (the root manages shared filter state). For a standalone search field use SearchInput instead.",
       "DON'T hand-roll keyboard navigation on a list of items; Command handles arrow keys, Enter, Escape, Home/End, and vim bindings. Adding your own keyDown handlers on top creates conflicts — use onSelect on CommandItem for selection logic.",
     ],

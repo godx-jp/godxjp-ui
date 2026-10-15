@@ -1290,6 +1290,20 @@
     opacity: 0.5;
   }
 
+  /* CommandSeparator (gh#1335) — the same hairline tier as a split row's divider, full-bleed in the
+   * list like CommandInput's rule, spaced by the group rhythm. A rule beside a group cmdk has hidden
+   * (`[hidden]`: no matching rows) would divide nothing, so it goes with that group. */
+  .ui-command-separator {
+    height: var(--command-item-divider-width, var(--stroke-hairline));
+    margin-block: var(--command-group-padding);
+    background: hsl(var(--command-item-divider-color, var(--border)));
+  }
+
+  .ui-command-group[hidden] + .ui-command-separator,
+  .ui-command-separator:has(+ .ui-command-group[hidden]) {
+    display: none;
+  }
+
   /* SPLIT — a list drawn as ONE ruled box, not a stack of floating pills (antd `List split`, gh#699).
    *
    * The resting `.ui-command-item` is a palette row: inset, rounded, no rule, because its home is a
@@ -1329,6 +1343,11 @@
   .ui-command[data-split] .ui-command-group:not([hidden]) ~ .ui-command-group:not([hidden]) {
     border-block-start: var(--command-item-divider-width, var(--stroke-hairline)) solid
       hsl(var(--command-item-divider-color, var(--border)));
+  }
+
+  /* Split already rules every group boundary; a separator there would draw it twice. */
+  .ui-command[data-split] .ui-command-separator {
+    display: none;
   }
 
   [data-slot="dialog-content"].ui-command-palette {

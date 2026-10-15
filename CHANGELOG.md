@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.2.0] - 2026-10-15
+
+### Added
+
+- **`CommandSeparator` (data-entry, #1335):** cmdk's `Command.Separator` from the same instance as the rest of the Command family, with `data-slot="command-separator"`, ref forwarded and `className`/props passed through. The hairline reads the existing `--command-item-divider-width` / `--command-item-divider-color` knobs (default `--stroke-hairline` / `--border`); the block margin is `--command-group-padding`. `alwaysRender` defaults to `true` (cmdk: `false`) so the rule stays above a `+ Create "<q>"` group while the user types; pass `false` for cmdk's hide-while-searching behaviour. It hides next to a group cmdk has hidden and under `split`. Decorative (`aria-hidden`), because a separator is not an allowed `listbox` child. New prop type `CommandSeparatorProp`.
+- **`TranslatableInput` / `TranslatableTextarea` + `TranslatableValue` (data-entry, #1336):** one field holding a value per locale (`{ ja, en, vi }`), switched by locale tabs (WAI-ARIA tabs pattern, one panel, so `ref`, the FormField `id` and an in-progress IME entry stay on one element). Locales, first tab and fallback come from `AppProvider` (registered locales, active locale, `fallbackLocale`) and can be overridden per field with `locales` / `defaultLocale` / `fallbackLocale`; tab names come from `Intl.DisplayNames`. An empty locale shows the fallback locale's text as its placeholder; `lang` follows the active locale. `errors` marks each failing locale's tab with an icon and screen-reader text, and the active locale's message sets `aria-invalid` and shows in the enclosing `FormField`'s error line. New tokens `--translatable-field-gap`, `--translatable-field-error-icon-size`.
+
+### Changed
+
+- **`FormField` shows a message reported by a multi-value child control (#1336).** Its own `error` and the form's error bag still win.
+
 ## [33.1.1] - 2026-10-15
 
 ### 🐛 Fixed
