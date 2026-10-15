@@ -347,7 +347,10 @@
     height: auto;
     min-height: 0;
     padding: 0;
-    border: 0;
+    /* Width only: the `border` shorthand also resets `border-color` to `currentColor`, beating
+     * base.css's universal border-color rule, so a consumer `border` utility drew a text-coloured
+     * frame (gh#1344). */
+    border-width: 0;
     background: transparent;
     color: inherit;
     font: inherit;
@@ -1218,7 +1221,7 @@
     width: 100%;
     flex: 1;
     height: var(--control-height);
-    border: 0;
+    border-width: 0; /* width only, keep the theme border colour (gh#1344) */
     background: transparent;
     padding-inline: 0;
     box-shadow: none;

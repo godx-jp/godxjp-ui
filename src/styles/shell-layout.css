@@ -3137,7 +3137,7 @@
     justify-content: center;
     gap: var(--topbar-item-gap);
     padding-inline: var(--topbar-item-padding-inline);
-    border: 0;
+    border-width: 0; /* width only, keep the theme border colour (gh#1344) */
     border-radius: var(--topbar-item-radius);
     background: transparent;
     color: hsl(var(--topbar-item-color, var(--muted-foreground)));
