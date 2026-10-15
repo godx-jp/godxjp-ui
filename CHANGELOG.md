@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`DatePicker showTime`: a typed date-time commits on blur.** `needConfirm` (on by default with `showTime`) also gated the input's blur, so typing `2026-10-13 06:00` (the displayed format) and tabbing away normalised the text while `onValueChange` never fired — a controlled form saved nothing. Blur now commits typed text as Enter already did; `needConfirm` still governs panel picks. Measured: showTime typed + blur 0 calls → 1; unparseable text still reverts to the previous value.
+
 ## [33.5.0] - 2026-10-16
 
 ### Added
