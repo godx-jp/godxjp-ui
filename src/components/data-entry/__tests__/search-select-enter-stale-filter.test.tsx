@@ -56,4 +56,21 @@ describe("Select showSearch — Enter acts on the list for the CURRENT query", (
     typeThenEnter(box, "zzz");
     expect(onValueChange).not.toHaveBeenCalled();
   });
+
+  it("keeps the row the user arrowed to after the search debounce has elapsed", async () => {
+    const onValueChange = vi.fn();
+    const box = await openSearch(onValueChange);
+    act(() => {
+      fireEvent.change(box, { target: { value: "Máy" } });
+    });
+    act(() => {
+      fireEvent.keyDown(box, { key: "ArrowDown" });
+    });
+    // Past the 250ms debounce: with a static list nothing may re-pick the first row.
+    await act(() => new Promise((resolve) => setTimeout(resolve, 300)));
+    act(() => {
+      fireEvent.keyDown(box, { key: "Enter" });
+    });
+    expect(onValueChange.mock.calls[0]?.[0]).toBe("grinder");
+  });
 });

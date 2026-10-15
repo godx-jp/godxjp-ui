@@ -328,16 +328,18 @@ export function SearchSelect(props: SearchSelectProp) {
   );
 
   // (Re)load the first page when opened or the search term changes.
+  // A static list has nothing to fetch and no debounced term to wait for: opening re-picks the
+  // first enabled row, and the debounce landing later must not yank the row the user moved to.
+  const remoteQuery = loadOptions ? debouncedQuery : null;
   React.useEffect(() => {
     if (!open) return;
     setActiveIndex(0);
-    // A static list has nothing to fetch; opening still re-picks the first enabled row.
-    if (!loadOptions) {
+    if (remoteQuery === null) {
       setFreshPage((tick) => tick + 1);
       return;
     }
-    void fetchPage(1, debouncedQuery, false);
-  }, [open, debouncedQuery, fetchPage, loadOptions]);
+    void fetchPage(1, remoteQuery, false);
+  }, [open, remoteQuery, fetchPage]);
   /** The rows the panel draws from: the loaded page, or the static list filtered right now. */
   const listed = loadOptions ? loaded : staticListed;
 

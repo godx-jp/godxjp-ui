@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **`Select showSearch` with static `options`: Enter right after typing committed the wrong row.** The static filter ran behind the 250ms search debounce and an async load, so within that window the panel still held the unfiltered list and Enter committed its first row — on qc.godx.jp, typing "Máy xay" + Enter picked "Máy pha espresso". The static list is now filtered synchronously from the typed text (`SearchSelect`); Enter commits the first match, or nothing when nothing matches. Measured with type-then-Enter and no timer advance: committed `espresso` → `grinder`; no-match query committed 1 value → 0. `loadOptions` (remote) lists keep their debounce.
+- **`Select showSearch` with static `options`: Enter right after typing committed the wrong row.** The static filter ran behind the 250ms search debounce and an async load, so within that window the panel still held the unfiltered list and Enter committed its first row — on qc.godx.jp, typing "Máy xay" + Enter picked "Máy pha espresso". The static list is now filtered synchronously from the typed text (`SearchSelect`); Enter commits the first match, or nothing when nothing matches. Measured with type-then-Enter and no timer advance: committed `espresso` → `grinder`; no-match query committed 1 value → 0; a row reached with ArrowDown was re-reset to row 0 when the debounce landed 250ms later (`espresso` → `grinder`). `loadOptions` (remote) lists keep their debounce.
 
 ## [33.6.0] - 2026-10-16
 
