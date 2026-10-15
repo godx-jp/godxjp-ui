@@ -1,12 +1,17 @@
-// GoDX service icons — one system: 64-grid tile, radius 14, flat brand green, white glyph at
-// stroke 4, round caps/joins, glyph inside the 16..48 live area. Original geometry only.
+// GoDX service icons — one system: 64-grid tile, radius 14, brand gradient, white glyph at stroke 4,
+// round caps/joins, glyph inside the 16..48 live area. Original geometry only.
 //
-// gh#1345: the tile is the GoDX preset's light --primary/--brand, #008066 — the logo's colour and
-// the primary button's. It replaced a violet→navy 3-stop gradient (#7A00FF → #3700A6 → #0B0F3B),
-// which is the "purple-blue gradient" anti-AI-tell. White on it measures 4.91:1 (≥ 3:1 non-text).
+// gh#1345 (option B): the same 3-stop gradient as before, its stops mapped exactly as the logo
+// master's are (scripts/gen-brand-artwork.mjs STOP_RECOLOUR): #7A00FF → #008066, #3700A6 → #00513F,
+// #0B0F3B → #03241D. One hue, so no violet→navy shift. The LIGHTEST point is the #008066 stop;
+// white on it measures 4.91:1 (≥ 3:1 non-text), and every other point of the tile is darker.
 import { writeFileSync, mkdirSync } from "node:fs";
-/** The tile colour: `--brand` in src/themes/godx-tokens.css, 168 100% 25%. */
-const BRAND = "#008066";
+/** The tile gradient: [offset, colour]. The first stop is `--brand`, 168 100% 25%. */
+const STOPS = [
+  [0, "#008066"],
+  [0.55, "#00513F"],
+  [1, "#03241D"],
+];
 const out = process.argv[2];
 mkdirSync(out, { recursive: true });
 const G = {
@@ -36,7 +41,8 @@ const tile = (
   glyph,
   rx = 14,
 ) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="${id}">
-  <rect width="64" height="64" rx="${rx}" fill="${BRAND}"/>
+  <defs><linearGradient id="g" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">${STOPS.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join("")}</linearGradient></defs>
+  <rect width="64" height="64" rx="${rx}" fill="url(#g)"/>
   <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">${glyph}</g>
 </svg>
 `;

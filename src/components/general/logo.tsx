@@ -261,29 +261,28 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
     );
   }
   /*
-   * THE KIT ARTWORK, BOTH VARIANTS, IN THE BRAND GREEN (brand identity v2.3 geometry, gh#1345).
+   * THE MASTER ARTWORK, BOTH VARIANTS, NO FILTER (brand identity v2.3; colour per gh#1345).
    *
    * The guidelines are explicit:
    *
    *   "Logo dùng master SVG đúng biến thể sáng/tối."
    *   "Dark asset: cung cấp biến thể phù hợp; không dùng filter đảo màu ảnh/logo."
    *
-   * So BOTH variants render and CSS shows one (styles/logo-layout.css). Not a filter and not one
-   * artwork with swapped token values — the light and dark variants are separate artworks. Since
-   * gh#1345 they are the kit's FLAT cut mapped to the GoDX preset's emerald-teal (#008066 light,
-   * #5CD6BE dark) by scripts/gen-brand-artwork.mjs, so the mark is the primary button's colour; the
-   * violet→navy gradient master is retired.
+   * So BOTH variants render and CSS shows one (styles/logo-layout.css). Not a filter, not one
+   * artwork with swapped token values — the light and dark masters are different files in the kit
+   * and they stay different files here. Since gh#1345 their gradient stops are mapped to the
+   * emerald-teal ramp anchored on the preset's --primary #008066 (scripts/gen-brand-artwork.mjs,
+   * STOP_RECOLOUR); geometry and solid fills are the kit's.
    *
-   * `dangerouslySetInnerHTML` because the artwork's coordinates must stay byte-exact ("không đổi
-   * hình G, wordmark… construction"). It is
+   * `dangerouslySetInnerHTML` because the artwork is 8 gradients, a clipPath and 10 paths whose
+   * coordinates must stay byte-exact ("không đổi hình G, wordmark… construction"). It is
    * package-owned generated content, never user input — see brand/godx-artwork.generated.ts.
    */
   /*
    * A UNIQUE ID PREFIX PER INSTANCE.
    *
    * SVG ids are unique per DOCUMENT, not per file, so two <Logo>s on one page would otherwise emit
-   * the same path and group ids (the gradient masters before gh#1345 also carried a clipPath and
-   * eight gradient ids, referenced by `url(#…)`).
+   * the same `arrowClip` and the same eight gradient ids.
    *
    * WHAT THIS DOES NOT FIX, stated because the first version of this comment claimed otherwise and
    * was wrong: it is not a rendering bug. Measured — two lockups, remove the first, screenshot the
@@ -294,7 +293,7 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
    * aria/label reference that lands on one, and they multiply with every Logo on the page. A
    * design system should not be the thing emitting them.
    *
-   * Memoised because the substitution runs over several KB of markup: once per instance, not once per
+   * Memoised because the substitution runs over ~18 KB of markup: once per instance, not once per
    * render, which is what the first cut did.
    */
   return (

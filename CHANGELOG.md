@@ -26,16 +26,18 @@ affected.
 - **Brand-tinted shadow in the GoDX preset (#1345).** `--shadow-color` is a desaturated ink of the
   brand hue: `18 43 38` (hsl 168 40% 12%) in light and `6 14 13` (hsl 168 40% 4%) in dark, where it
   was pure black. The elevation alphas and layers have not changed.
-- **GoDX logo (#1345).** `mark="godx"` and `mark="godx-lockup"` now use the brand kit's flat cut,
-  with the same geometry, in the brand green: #008066 in light, and #5CD6BE with white letters in
-  dark. They replace the violet→navy gradient master. `godxPreset.brandMark` uses
-  `tone: "primary"`. The email mark (`EMAIL_BRAND_MARK_GODX`) and `EMAIL_COLORS_GODX*` carry the
+- **GoDX logo (#1345).** `mark="godx"` and `mark="godx-lockup"` keep the brand kit's gradient
+  master (geometry, gradients and arrow fold unchanged), with every gradient stop mapped to a
+  same-hue emerald-teal ramp anchored on #008066 (`STOP_RECOLOUR` in
+  `scripts/gen-brand-artwork.mjs`). The letters keep the kit's #0B0F3B (light) and white (dark).
+  `godxPreset.brandMark` uses `tone: "primary"`. The email mark (`EMAIL_BRAND_MARK_GODX`) and `EMAIL_COLORS_GODX*` carry the
   new colour.
 - **Visual audit (#1345).** The `oversaturated-accent` rule now exempts only shipped accents above
   the chroma bound. That list is empty now, so the retired violet #7A00FF is reported like any
   other loud accent.
-- **Service icons (`assets/service-icons/`, not part of the npm package).** The tiles are flat
-  #008066 instead of the violet→navy gradient, and the white glyph measures 4.91:1 on them.
+- **Service icons (`assets/service-icons/`, not part of the npm package).** The 3-stop tile
+  gradient is one hue now (#008066 → #00513F → #03241D, was violet → navy). The white glyph measures
+  4.91:1 at the lightest point of the tile.
 
 ## [33.4.1] - 2026-10-15
 

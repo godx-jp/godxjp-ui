@@ -1,32 +1,28 @@
 #!/usr/bin/env node
 /**
- * Embed the GoDX logo SVGs into the package (brand identity v2.3 geometry; colour per gh#1345).
+ * Embed the GoDX master logo SVGs into the package (brand identity v2.3 geometry; colour per
+ * gh#1345).
  *
- * The brand guidelines (`06_UI_Design_System/UI_UX_Guidelines.html`) are explicit about the
- * GEOMETRY, and an earlier attempt broke these rules by redrawing a token-tinted copy:
+ * The brand guidelines (`06_UI_Design_System/UI_UX_Guidelines.html`) are explicit:
  *
  *   · "Logo dùng master SVG đúng biến thể sáng/tối."
  *   · "Dark asset: cung cấp biến thể phù hợp; không dùng filter đảo màu ảnh/logo."
  *   · "Không đổi hình G, wordmark, tỷ lệ vàng hoặc construction chỉ vì theme cần khác màu."
  *
- * So the kit's files are embedded path-for-path — the G, the arrow, the wordmark, every coordinate
- * byte-exact — and the theme selects a light or dark VARIANT rather than filtering one.
+ * So both masters ship path-for-path — every gradient, the clipPath, the arrow fold — and the theme
+ * selects a VARIANT rather than filtering one. Nothing here edits geometry.
  *
- * THE COLOUR IS THE ONE THING THIS SCRIPT CHANGES (gh#1345, product-owner decision 2026-10-15).
- * The kit's colour masters paint a violet→navy→magenta gradient (#7A00FF → #3700A6 → #0B0F3B,
- * #FF3DFF) — the "purple-blue gradient" and "oversaturated accent" our own anti-AI-tells name — and
- * the GoDX preset's colour is now emerald-teal. The source is therefore the kit's FLAT cut (same
- * geometry, one fill per shape, no gradients), and its two colours are mapped:
- *
- *   light  mark + X #7A00FF → #008066 (the light --primary/--brand)   letters #0B0F3B kept
- *   dark   mark + X #7A00FF → #5CD6BE (the dark --primary/--brand)    letters → #FFFFFF, the
- *          letter colour of the kit's own reverse master
- *
- * so the logo and the primary button are one colour. A colour the map does not know aborts the
- * run: a kit revision that adds one must be mapped deliberately, not shipped in violet.
+ * THE GRADIENT STOPS ARE RECOLOURED, AND NOTHING ELSE (gh#1345, product-owner decision, option B).
+ * The kit's masters paint a violet→navy→magenta gradient; the GoDX preset is emerald-teal now. The
+ * master is KEPT and every `stop-color` is mapped through STOP_RECOLOUR below to the same-hue green
+ * ramp, so the depth of the master survives and its anchor is the preset's --primary #008066.
+ * Solid `fill` colours are untouched: the wordmark letters stay the kit's #0B0F3B (light) and
+ * #FFFFFF (reverse). The table is applied to the kit file on every run, so a kit refresh re-applies
+ * it; a stop colour the table does not know aborts the run rather than shipping violet.
  *
  * The other transformation is ID NAMESPACING. Both variants are inlined in the same document, and
- * they use identical ids; without a prefix the second copy's ids would collide with the first's.
+ * they use identical ids (`iconBodyGradient`, `arrowClip`, …); without a prefix the second copy's
+ * `url(#…)` would resolve to the first copy's gradient and paint the wrong variant.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 
@@ -39,23 +35,38 @@ if (!KIT) {
   process.exit(2);
 }
 
-/** The kit's flat-cut colours → the GoDX preset's (gh#1345). Keys upper-case. */
-const RECOLOUR = {
-  light: { "#7A00FF": "#008066", "#0B0F3B": "#0B0F3B" },
-  dark: { "#7A00FF": "#5CD6BE", "#0B0F3B": "#FFFFFF" },
+/**
+ * Kit stop colour → GoDX emerald-teal stop (gh#1345, option B). Upper-case keys. Applies to
+ * `stop-color` ONLY — `#0B0F3B` as a solid letter `fill` is not a stop and is kept.
+ */
+const STOP_RECOLOUR = {
+  "#7A00FF": "#008066", // the anchor — the preset's light --primary/--brand
+  "#3700A6": "#00513F",
+  "#0B0F3B": "#03241D", // as a gradient stop only
+  "#980BFF": "#00A383",
+  "#6500E5": "#006E57",
+  "#A611FF": "#00A383",
+  "#FF3DFF": "#5CE6C4",
+  "#310077": "#024034",
+  "#990DFF": "#00A383",
+  "#21005D": "#023328",
+  "#9A45FF": "#2FBF9C",
+  "#D8BCFF": "#B8EBDD",
+  "#E8DAFF": "#D9F5EE",
+  "#B264FF": "#4FD1AE",
 };
 
-function recolour(svg, scheme, file) {
-  return svg.replace(/#[0-9A-Fa-f]{6}\b/g, (hex) => {
-    const to = RECOLOUR[scheme][hex.toUpperCase()];
-    if (!to) throw new Error(`${file}: colour ${hex} has no ${scheme} mapping in RECOLOUR`);
-    return to;
+function recolour(svg, file) {
+  return svg.replace(/stop-color="(#[0-9A-Fa-f]{6})"/g, (_, hex) => {
+    const to = STOP_RECOLOUR[hex.toUpperCase()];
+    if (!to) throw new Error(`${file}: stop colour ${hex} has no entry in STOP_RECOLOUR`);
+    return `stop-color="${to}"`;
   });
 }
 
 /** Everything between <svg …> and </svg>, with ids namespaced so two copies can coexist. */
-function inner(file, prefix, scheme) {
-  const svg = recolour(readFileSync(`${KIT}/${file}`, "utf8"), scheme, file);
+function inner(file, prefix) {
+  const svg = recolour(readFileSync(`${KIT}/${file}`, "utf8"), file);
   const body = svg.replace(/^[\s\S]*?<svg\b[^>]*>/, "").replace(/<\/svg>\s*$/, "");
   const ids = [...body.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
   // The prefix is a PLACEHOLDER the component substitutes per instance. A fixed prefix is not
@@ -74,19 +85,20 @@ function inner(file, prefix, scheme) {
 }
 
 const variants = {
-  lockupLight: inner("GoDX-logo-flat.svg", "gx-lockup-l", "light"),
-  lockupDark: inner("GoDX-logo-flat.svg", "gx-lockup-d", "dark"),
-  markLight: inner("GoDX-icon-flat.svg", "gx-mark-l", "light"),
-  markDark: inner("GoDX-icon-flat.svg", "gx-mark-d", "dark"),
+  lockupLight: inner("GoDX-logo-purple.svg", "gx-lockup-l"),
+  lockupDark: inner("GoDX-logo-reverse.svg", "gx-lockup-d"),
+  markLight: inner("GoDX-icon-purple.svg", "gx-mark-l"),
+  markDark: inner("GoDX-icon-reverse.svg", "gx-mark-d"),
 };
 
 const ts = `// AUTO-GENERATED by scripts/gen-brand-artwork.mjs — do not hand-edit.
-// Source: GoDX brand identity v2.3, 01_GoDX/assets/logos/*-flat.svg — geometry verbatim, colour
-// mapped to the GoDX preset's emerald-teal (gh#1345; the map is RECOLOUR in the script).
+// Source: GoDX brand identity v2.3, 01_GoDX/assets/logos/*-{purple,reverse}.svg — the masters,
+// geometry verbatim; gradient stops recoloured to emerald-teal (gh#1345, STOP_RECOLOUR in the script).
 //
-// WHY TWO VARIANTS: the brand guidelines forbid inverting the logo with a filter and require a
-// proper light/dark variant. So both artworks are here, apart from ID namespacing (both use the
-// same ids, and two copies in one document would otherwise collide).
+// WHY TWO VARIANTS: the brand guidelines forbid inverting the logo with a filter and require
+// "master SVG đúng biến thể sáng/tối". So the light and dark masters are both here, apart from the
+// stop map and ID namespacing (both files use the same gradient ids, and two copies in one document
+// would otherwise cross-resolve).
 //
 // Regenerate: node scripts/gen-brand-artwork.mjs <kit>/01_GoDX/assets/logos
 
