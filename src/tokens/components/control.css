@@ -18,6 +18,12 @@
   --control-height-sm: calc(var(--control-height) - calc(0.25rem * var(--scaling)));
   --control-height-lg: calc(var(--control-height) + calc(0.25rem * var(--scaling)));
   --control-height-xs: calc(var(--control-height) - calc(0.5rem * var(--scaling)));
+  /* THE GLOVE TIER (gh#1304) — `size="touch"` on Button, Segmented, Toggle/ToggleGroup and
+   * `RadioGroup optionType="button"`. 56px: wet or gloved hands at a food-production station need
+   * more than the 44px WCAG 2.2 SC 2.5.5 target, so this sits one band above
+   * `--number-input-touch-height`. A band, NOT derived from `--control-height` — not by density,
+   * not by a shell's tier — because the floor is the hand's, not the layout's. */
+  --control-height-touch: var(--band-height-3xl);
   --control-padding-x: var(--control-padding-x-default);
   --control-gap: var(--space-inline-sm);
   --control-gap-sm: var(--space-inline-xs);
@@ -111,6 +117,15 @@
    * A service that wants the 44px row back sets this to `var(--band-height-xl)` and takes 22px
    * targets with it. */
   --number-input-touch-height: var(--band-height-2xl);
+
+  /* `size="touch"` (gh#1304). The SPACE between two glove targets: ToggleGroup items, Segmented
+   * segments and the buttons of a `RadioGroup optionType="button"` bar stand this far apart at the
+   * touch step (8px), so a gloved press on one edge cannot land on the neighbour. Button has no
+   * siblings of its own — lay a row of touch Buttons out with a gap of at least this. */
+  --control-touch-gap: var(--space-2);
+  /* Button's inline inset at the touch step — one rung under `lg`'s, because a touch Button is
+   * usually a short verdict (良 / 否) and its 56px min-inline-size already makes the box. */
+  --button-touch-space-inline: var(--space-6);
 
   /* CHROME VARIANT — antd's `variant` axis. `outlined` needs no token: it is what a field already
    * draws. `filled` swaps the boundary for a tinted surface; `borderless` drops both. Kept as

@@ -4,7 +4,7 @@
     "components": 166,
     "patterns": 28,
     "rules": 44,
-    "tokens": 2232,
+    "tokens": 2235,
     "vocabulary": 14
   },
   "design": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md",
@@ -54,19 +54,19 @@
   "note": "Pin to the tag that matches the @godxjp/ui version you installed. A catalog newer than your package describes props you do not have; older, and it hides props you do.",
   "read": {
     "live": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json",
-    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v33.6.2/agent/index.json"
+    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v33.7.0/agent/index.json"
   },
   "source": "mcp/src/data — the same data @godxjp/ui-mcp serves — plus the foundation and semantic token tiers, read from src/tokens/*.css",
   "start": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md",
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1903,
+      "component": 1906,
       "foundation": 216,
       "semantic": 113
     },
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",
     "semantic": "named roles that follow the seeds — --ring, --text-link, --overlay-background"
   },
-  "version": "33.6.2"
+  "version": "33.7.0"
 }

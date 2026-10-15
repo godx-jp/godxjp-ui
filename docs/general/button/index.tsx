@@ -127,6 +127,7 @@ export default function Demo() {
                 <Button size="sm">Small</Button>
                 <Button>Default</Button>
                 <Button size="lg">Large</Button>
+                <Button size="touch">Touch</Button>
               </Flex>
               <Flex direction="row" wrap align="center" gap="md">
                 <Button size="icon-xs" variant="ghost" aria-label="Edit">

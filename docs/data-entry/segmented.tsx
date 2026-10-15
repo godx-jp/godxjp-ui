@@ -1,8 +1,15 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Segmented, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
+import {
+  FormField,
+  RadioGroup,
+  Segmented,
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@godxjp/ui/data-entry";
 import { Button, Text, VisuallyHidden } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-react";
 
@@ -13,6 +20,7 @@ import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-r
  * Input or a Button on the same row.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [theme, setTheme] = useState("system");
   const [view, setView] = useState("list");
   const [range, setRange] = useState("week");
@@ -210,6 +218,54 @@ export default function Demo() {
               <Text as="p" size="xs" tone="muted">
                 いずれも --control-height-xs（24px）。
               </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("segmentedDocs.touch.title")}</CardTitle>
+            <CardDescription>{t("segmentedDocs.touch.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Segmented
+                aria-label={t("segmentedDocs.touch.verdictSegmented")}
+                size="touch"
+                block
+                defaultValue="ok"
+                options={[
+                  { value: "ok", label: t("segmentedDocs.touch.ok") },
+                  { value: "ng", label: t("segmentedDocs.touch.ng") },
+                ]}
+              />
+              <ToggleGroup
+                type="single"
+                size="touch"
+                disallowEmptySelection
+                defaultValue="ok"
+                aria-label={t("segmentedDocs.touch.verdictToggleGroup")}
+              >
+                <ToggleGroupItem value="ok">{t("segmentedDocs.touch.ok")}</ToggleGroupItem>
+                <ToggleGroupItem value="ng">{t("segmentedDocs.touch.ng")}</ToggleGroupItem>
+              </ToggleGroup>
+              <RadioGroup
+                aria-label={t("segmentedDocs.touch.verdictRadioGroup")}
+                optionType="button"
+                size="touch"
+                orientation="horizontal"
+                defaultValue="ok"
+                options={[
+                  { value: "ok", label: t("segmentedDocs.touch.ok") },
+                  { value: "ng", label: t("segmentedDocs.touch.ng") },
+                ]}
+              />
+              <Flex direction="row" gap="sm">
+                <Button size="touch" variant="outline">
+                  {t("segmentedDocs.touch.ng")}
+                </Button>
+                <Button size="touch">{t("segmentedDocs.touch.ok")}</Button>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>

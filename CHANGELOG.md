@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.7.0] - 2026-10-16
+
+### Added
+
+- **`size="touch"` — the glove step (#1304)** on `Button`, `Segmented`, `Toggle` / `ToggleGroup` and `RadioGroup optionType="button"` (new `size?: "md" | "touch"` there). Every target is at least **56×56 CSS px** and, where the component owns its siblings, targets stand at least **8px** apart (ToggleGroup items, Segmented segments, and the radio bar, which un-welds into separate buttons at this step). Unconditional — not behind `(pointer: coarse)`. For wet or gloved hands at food-production stations, where godx-qc measured the largest available control at 152×32 on a HACCP 良/否 screen (390×844). Measured in Chromium at 390×844 by `button-touch-size-1304.test.ts`, under a mouse and a finger. `touch` is NOT added to `SizeProp`, so a control that cannot honour it does not type-check it.
+- Tokens: `--control-height-touch` (`var(--band-height-3xl)`, 56px — a band, not derived from `--control-height`, so density / shell tier / pointer do not move it), `--control-touch-gap` (`var(--space-2)`, 8px), `--button-touch-space-inline` (`var(--space-6)`).
+
+### Fixed
+
+- **`Select showSearch` with static `options`: Enter right after typing committed the wrong row (#1351).** The static filter ran behind the 250ms search debounce and an async load, so within that window Enter committed the unfiltered list's first row — on qc.godx.jp, typing "Máy xay" + Enter picked "Máy pha espresso". The static list is now filtered synchronously from the typed text; Enter commits the first match, or nothing when nothing matches (committed `espresso` → `grinder`; no-match 1 value → 0; an arrowed-to row is no longer reset when the debounce lands). `loadOptions` lists keep their debounce.
+- **`DatePicker showTime`: a typed date-time commits on blur (#1352).** `needConfirm` also gated the input's blur, so typing `2026-10-13 06:00` and tabbing away normalised the text while `onValueChange` never fired. Blur now commits typed text as Enter already did; `needConfirm` still governs panel picks (typed + blur 0 calls → 1; unparseable text still reverts).
+- **A `Descriptions.Item` value (and `FormField staticText`) no longer breaks mid-word (#1355).** The value carried `break-all`, so "La Marzocco" wrapped as "La Ma|rzocco" with a space available. It now uses `overflow-wrap: anywhere`: lines break between words, and a single unbreakable token still wraps instead of overflowing.
+
 ## [33.6.2] - 2026-10-16
 
 ### Fixed

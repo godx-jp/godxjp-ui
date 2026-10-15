@@ -448,7 +448,8 @@ export const VOCABULARY_REGISTRY = {
   ButtonSizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Button size preset; includes documented icon-only subset",
+    description:
+      "Button size preset; includes documented icon-only subset and the 56px glove step `touch` (gh#1304)",
   },
   BadgeVariantProp: {
     file: "vocabulary/interaction.prop.ts",

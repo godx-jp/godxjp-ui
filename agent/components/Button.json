@@ -12,9 +12,9 @@
     },
     {
       "defaultValue": "\"default\"",
-      "description": "Size preset (height, padding, icon dims).",
+      "description": "Size preset (height, padding, icon dims). `touch` (gh#1304) is the glove step for wet or gloved hands — food-production stations, a HACCP 良/否 verdict: 56px tall (`--control-height-touch`) and never narrower than it is tall, under a mouse as well as a finger. Button owns no siblings, so lay a row of touch Buttons out with a gap of at least `--control-touch-gap` (8px), e.g. `Flex direction=\"row\" gap=\"sm\"` (8px); pair with `fullWidth` for a full-width bar.",
       "name": "size",
-      "type": "\"default\" | \"xs\" | \"sm\" | \"lg\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\""
+      "type": "\"default\" | \"xs\" | \"sm\" | \"lg\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | \"touch\""
     },
     {
       "defaultValue": "\"default\"",

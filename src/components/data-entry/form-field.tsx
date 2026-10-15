@@ -166,7 +166,7 @@ export function FormField({
   const childWithA11y = isStatic ? (
     // read-only FormField row and a Descriptions value are indistinguishable when mixed. That
     // cannot drift. --descriptions-value-line-height is the mandatory companion: `text-sm` also
-    <span className="text-[length:var(--descriptions-value-font-size)] leading-[var(--descriptions-value-line-height)] break-all">
+    <span className="text-[length:var(--descriptions-value-font-size)] leading-[var(--descriptions-value-line-height)] [overflow-wrap:anywhere]">
       {staticText}
     </span>
   ) : React.isValidElement(children) ? (

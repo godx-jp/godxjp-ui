@@ -139,7 +139,9 @@ describe("FormField staticText (gh#294 — a read-only VALUE row on the same For
     // leading (the bug).
     expect(value.className).toContain("text-[length:var(--descriptions-value-font-size)]");
     expect(value.className).toContain("leading-[var(--descriptions-value-line-height)]");
-    expect(value.className).toContain("break-all");
+    // Wraps a long value only where a word would overflow — never mid-word like `break-all` ("La Ma|rzocco").
+    expect(value.className).toContain("[overflow-wrap:anywhere]");
+    expect(value.className).not.toContain("break-all");
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });
 

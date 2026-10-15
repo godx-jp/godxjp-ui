@@ -2234,5 +2234,27 @@
         "mirrors": "Salesforce Lightning のリストビュー"
       }
     }
+  },
+  "toggleDocs": {
+    "touch": "手袋",
+    "touchLabel": "手袋サイズ"
+  },
+  "segmentedDocs": {
+    "touch": {
+      "title": "手袋・濡れた手でも押せる · size=\"touch\"",
+      "description": "厨房や包装ラインの HACCP チェックでは、手袋や濡れた手で 良 / 否 を押します。size=\"touch\" はどの押す場所も 56×56px 以上（--control-height-touch）、隣との間は 8px 以上（--control-touch-gap）。マウスでもタッチでも同じ大きさです。Segmented は block と組み合わせると幅いっぱいのバーになります。",
+      "verdictSegmented": "判定（Segmented）",
+      "verdictToggleGroup": "判定（ToggleGroup）",
+      "verdictRadioGroup": "判定（RadioGroup）",
+      "ok": "良",
+      "ng": "否"
+    }
+  },
+  "toggleGroupDocs": {
+    "touch": {
+      "day": "日次",
+      "month": "月次",
+      "year": "年次"
+    }
   }
 }

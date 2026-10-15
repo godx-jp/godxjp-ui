@@ -407,7 +407,7 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
 /**
  * @see FormField — exactly one of `children` (an interactive control) or `staticText`:
  * a read-only VALUE row inside the same Form, styled to match `Descriptions.Item`'s value
- * typography (`text-sm break-all`) byte-for-byte. This is the "mixed read-only + editable fields
+ * typography (the `--descriptions-value-*` tokens, wrapping only where a word would overflow) byte-for-byte. This is the "mixed read-only + editable fields
  * on one form" case (an immutable name/email row above an editable role Select, for example) —
  * putting the read-only rows through FormField itself, not a separate `Descriptions` composed
  * alongside it, gets perfect layout/labelAlign/row-gap sync FOR FREE because it IS the same
@@ -665,6 +665,12 @@ export type RadioGroupProp = FieldA11yProps & {
   optionType?: RadioOptionTypeProp;
   /** antd `buttonStyle` — fill of the selected choice while `optionType="button"`. */
   buttonStyle?: RadioButtonStyleProp;
+  /**
+   * Button-bar size while `optionType="button"`: `md` (default, the control band) or `touch`
+   * (gh#1304) — every button at least 56×56 CSS px, the bar un-welded into buttons standing
+   * `--control-touch-gap` (8px) apart, for wet or gloved hands. No effect on radio dots.
+   */
+  size?: Extract<SizeProp, "md"> | "touch";
 };
 
 /** antd `RadioGroupOptionType` — a radio group drawn as dots or as a welded button bar. */

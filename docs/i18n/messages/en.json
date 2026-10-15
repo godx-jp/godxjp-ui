@@ -2241,5 +2241,27 @@
         "mirrors": "Salesforce Lightning list views"
       }
     }
+  },
+  "toggleDocs": {
+    "touch": "Glove",
+    "touchLabel": "Glove size"
+  },
+  "segmentedDocs": {
+    "touch": {
+      "title": "Pressable with gloves or wet hands · size=\"touch\"",
+      "description": "In HACCP checks on a kitchen or packing line, staff press Pass / Fail with gloves or wet hands. size=\"touch\" makes every target at least 56×56px (--control-height-touch) with at least 8px to its neighbour (--control-touch-gap), the same under a mouse or a finger. With block, Segmented becomes a full-width bar.",
+      "verdictSegmented": "Verdict (Segmented)",
+      "verdictToggleGroup": "Verdict (ToggleGroup)",
+      "verdictRadioGroup": "Verdict (RadioGroup)",
+      "ok": "Pass",
+      "ng": "Fail"
+    }
+  },
+  "toggleGroupDocs": {
+    "touch": {
+      "day": "Daily",
+      "month": "Monthly",
+      "year": "Yearly"
+    }
   }
 }

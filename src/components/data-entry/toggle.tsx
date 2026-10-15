@@ -32,6 +32,9 @@ const toggleVariants = cva("ui-toggle", {
       sm: "ui-toggle-sm",
       md: "ui-toggle-default-size",
       lg: "ui-toggle-lg",
+      // The glove step (gh#1304): ≥56×56, `--control-height-touch`; a ToggleGroup at this step
+      // also spaces its items `--control-touch-gap` (8px) apart.
+      touch: "ui-toggle-touch",
     },
     // Corner shape at parity with `Button` and `Badge` — the same three values mapped to the same
     // two radius tokens, so `shape="pill"` means one thing across the library. `default` is empty

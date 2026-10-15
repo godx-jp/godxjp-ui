@@ -22,9 +22,9 @@
     },
     {
       "defaultValue": "\"md\"",
-      "description": "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px. Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716). Every step clears the WCAG 2.2 SC 2.5.8 24px target floor, xs exactly.",
+      "description": "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px · touch ≥56×56 (gh#1304, the glove step, `--control-height-touch`). Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716). Every step clears the WCAG 2.2 SC 2.5.8 24px target floor, xs exactly.",
       "name": "size",
-      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"touch\""
     },
     {
       "defaultValue": "\"default\"",

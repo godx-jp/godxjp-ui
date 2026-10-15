@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /** A folder's tag facets — more chips than any rail is wide, which is the `wrap` case (gh#741). */
@@ -37,6 +38,7 @@ const sortOrders = [
  * buttons for this pattern. Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<string>("monthly");
   const [formats, setFormats] = useState<string[]>(["pdf"]);
   const [view, setView] = useState<string>("list");
@@ -77,17 +79,19 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>disallowEmptySelection · 空を許すかどうかが role を決める</CardTitle>
+            <CardTitle level={2}>
+              disallowEmptySelection · 空を許すかどうかが role を決める
+            </CardTitle>
             <CardDescription>
-              ARIA には「もう一度押して選択を外す」という radio
-              がない。選択のある radiogroup には必ずちょうど一つ checked
-              な項目があるので、ユーザーが今押したばかりの radiogroup
-              が空になった状態はスクリーンリーダーが読み上げられない。だから空を許すかどうかが
-              role を決める（gh#744）。既定（空を許す）は role=&quot;group&quot; ＋ 各項目
-              aria-pressed で、同じチップをもう一度押せば選択が外れ onValueChange(&quot;&quot;)
+              ARIA には「もう一度押して選択を外す」という radio がない。選択のある radiogroup
+              には必ずちょうど一つ checked な項目があるので、ユーザーが今押したばかりの radiogroup
+              が空になった状態はスクリーンリーダーが読み上げられない。だから空を許すかどうかが role
+              を決める（gh#744）。既定（空を許す）は role=&quot;group&quot; ＋ 各項目 aria-pressed
+              で、同じチップをもう一度押せば選択が外れ onValueChange(&quot;&quot;)
               が飛ぶ。disallowEmptySelection を付けると role=&quot;radiogroup&quot; ＋
-              role=&quot;radio&quot; / aria-checked になり、選択中の項目をもう一度押しても外れず、矢印キーが
-              APG の radio group どおり選択ごと動く。
+              role=&quot;radio&quot; / aria-checked
+              になり、選択中の項目をもう一度押しても外れず、矢印キーが APG の radio group
+              どおり選択ごと動く。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -177,12 +181,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ToggleGroup
-              type="single"
-              disallowEmptySelection
-              value={view}
-              onValueChange={setView}
-            >
+            <ToggleGroup type="single" disallowEmptySelection value={view} onValueChange={setView}>
               <ToggleGroupItem value="list">一覧</ToggleGroupItem>
               <ToggleGroupItem value="card">カード</ToggleGroupItem>
               <ToggleGroupItem value="compact">コンパクト</ToggleGroupItem>
@@ -378,6 +377,18 @@ export default function Demo() {
                   <ToggleGroupItem value="day">日次</ToggleGroupItem>
                   <ToggleGroupItem value="month">月次</ToggleGroupItem>
                   <ToggleGroupItem value="year">年次</ToggleGroupItem>
+                </ToggleGroup>
+              </Flex>
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  size=&quot;touch&quot;
+                </Text>
+                <ToggleGroup type="single" size="touch" defaultValue="day">
+                  <ToggleGroupItem value="day">{t("toggleGroupDocs.touch.day")}</ToggleGroupItem>
+                  <ToggleGroupItem value="month">
+                    {t("toggleGroupDocs.touch.month")}
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="year">{t("toggleGroupDocs.touch.year")}</ToggleGroupItem>
                 </ToggleGroup>
               </Flex>
             </Flex>
