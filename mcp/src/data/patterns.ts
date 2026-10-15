@@ -732,6 +732,8 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
           <Toolbar hasActiveFilters={q !== "" || status !== "all"} onClear={() => { setQ(""); setStatus("all"); setPage(1) }}>
             {/* SearchInput is value + onSearch(v) — NOT onChange */}
             <SearchInput placeholder="クーポン名で検索" value={q} onSearch={(v) => { setQ(v); setPage(1) }} />
+            {/* Status view of the SAME table = a filter: Segmented with count for 2-4 statuses, this
+                Select past 4. Never Tabs: Tabs switch panels with their own columns (gh#1324). */}
             <ToolbarGroup label="ステータス">
               <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1) }}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
