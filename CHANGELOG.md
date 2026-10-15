@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.4.2] - 2026-10-15
+
+### Fixed
+
+- **FormField `controlWidth` caps the control only (#1343).** The cap sat on `.ui-form-field-control`, which also holds the helper and the error, so a 120px control squeezed its helper to 3 lines beside ~1000px of empty column. Horizontal form at 1280: helpers under 120/200/240px controls 3/2/3 lines → 1/1/1 at the 1104px column; vertical 1/1/1; 390px 1/1/2. Helper, error and the `hasFeedback` line span the field column (as antd Form.Item's `help`/`extra`). The `<fieldset>` around the control is now a one-column grid box (`.ui-form-field-input`, was `display: contents`) and carries `--form-control-width`; CSS that measured `.ui-form-field-control` as the control width must target `.ui-form-field-input`. Inline layout is unchanged.
+- **A consumer `border` utility no longer draws a text-coloured frame (#1344)** on `Button variant="bare"`, `Image`, `TopbarItem`, `CommandInput` and `CardBar` (`border="none" | "block-start" | "block-end"`). They reset the whole `border` shorthand, which also set `border-color` to `currentColor` in the components layer and beat base.css's `hsl(var(--border))`; they now reset only `border-width`. Measured: 7/7 cases drew the text colour → 0/7. Consumers can drop the `border-border` workaround.
+
 ## [33.4.1] - 2026-10-15
 
 ### 🐛 Fixed
