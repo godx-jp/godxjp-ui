@@ -234,6 +234,9 @@ Before any JSX for a screen:
 3. \`get_exemplar\` (no argument lists the archetypes: list, detail, editor, reader, settings,
    dashboard, approval-queue) — match its structure.
 
+No \`mcp__godx-ui__*\` tools (the session started outside this repo)? The same catalog over stdio:
+\`npx --no-install @godxjp/ui mcp-call search_components '{"query":"<area>"}'\` (no tool lists them).
+
 After building:
 4. \`npx @godxjp/ui audit <files>\` and \`npx @godxjp/ui visual-audit <url> <routes>\` (6 widths) — zero.
 5. Inspect every screenshot at every width, region by region; no top-N cap. Report "probes passed;
@@ -564,6 +567,121 @@ export function ensureClaudeHooks(root) {
 
   writeFileAtomic(path, JSON.stringify(json, null, read.state === "ok" ? read.indent : 2) + "\n");
   return added;
+}
+
+/**
+ * The nearest `.mcp.json` at or above `fromDir` that serves the catalog: `{ dir, key, entry }`, or
+ * null. Read-only; a malformed file reads as "no catalog here".
+ */
+export function findUiMcpConfig(fromDir) {
+  for (let dir = resolve(fromDir); ; dir = dirname(dir)) {
+    const read = readJsonFile(join(dir, ".mcp.json"));
+    if (read.state === "ok") {
+      const servers = read.json.mcpServers;
+      if (servers && typeof servers === "object" && !Array.isArray(servers)) {
+        // The `godx-ui` key under any launcher (a local `node …/mcp/dist/index.js` link included),
+        // else whichever key launches @godxjp/ui-mcp.
+        const key = servers[MCP_KEY]
+          ? MCP_KEY
+          : Object.keys(servers).find((name) => runsUiMcp(servers[name]));
+        if (key) return { dir, key, entry: servers[key] };
+      }
+    }
+    if (dirname(dir) === dir) return null;
+  }
+}
+
+/** Where `init-agent --user` puts the guard shim, under Claude Code's user config dir. */
+export const USER_GUARD_FILE = "godxjp-ui-guard.mjs";
+const USER_GUARD_SOURCE = join(SELF_ROOT, "scripts", "user-guard.mjs");
+
+/** Claude Code's user config dir: `$CLAUDE_CONFIG_DIR`, else `~/.claude` (HOME-relative). */
+export function userConfigDir(env = process.env) {
+  return env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
+}
+
+/**
+ * `init-agent --user` (gh#1324): copy the guard shim to `<config>/hooks/godxjp-ui-guard.mjs` and
+ * register it in `<config>/settings.json` for PreToolUse and PostToolUse on Write|Edit|MultiEdit.
+ * Merges: every other key and hook is kept, an existing godxjp-ui-guard entry is left as it is,
+ * and the file is only rewritten when something was added. A settings.json that cannot be read,
+ * parsed or recognised is refused with a sidecar, like the project files.
+ * Returns the lines to print.
+ */
+export function ensureUserGuard(configDir = userConfigDir()) {
+  const lines = [];
+  const shim = join(configDir, "hooks", USER_GUARD_FILE);
+  const source = readFileSync(USER_GUARD_SOURCE, "utf8");
+  let current = null;
+  try {
+    current = readFileSync(shim, "utf8");
+  } catch {
+    // Not installed yet.
+  }
+  if (current === source) lines.push(`${shim} — present`);
+  else {
+    mkdirp(dirname(shim));
+    writeFileAtomic(shim, source);
+    lines.push(`${shim} — ${current === null ? "created" : "updated"}`);
+  }
+
+  const path = join(configDir, "settings.json");
+  const group = (event) => ({
+    matcher: "Write|Edit|MultiEdit",
+    hooks: [{ type: "command", command: `node "${shim}" ${event}` }],
+  });
+  const suggested = {
+    hooks: { PreToolUse: [group("pre")], PostToolUse: [group("post")] },
+  };
+  const read = readJsonFile(path);
+  if (read.state !== "ok" && read.state !== "missing") {
+    lines.push(
+      `${path} — ` +
+        refuseAndSuggest(path, JSON.stringify(suggested, null, 2) + "\n", READ_FAILURE[read.state]),
+    );
+    return lines;
+  }
+  const json = read.state === "ok" ? read.json : {};
+  if (
+    json.hooks !== undefined &&
+    (json.hooks === null || typeof json.hooks !== "object" || Array.isArray(json.hooks))
+  ) {
+    lines.push(
+      `${path} — ` +
+        refuseAndSuggest(
+          path,
+          JSON.stringify(suggested, null, 2) + "\n",
+          "`hooks` is not an object",
+        ),
+    );
+    return lines;
+  }
+  json.hooks = json.hooks ?? {};
+  const added = [];
+  for (const [event, arg] of [
+    ["PreToolUse", "pre"],
+    ["PostToolUse", "post"],
+  ]) {
+    const groups = json.hooks[event] ?? [];
+    if (!Array.isArray(groups)) {
+      lines.push(`${path} — hooks.${event} is not an array, left untouched`);
+      continue;
+    }
+    const has = groups.some((g) =>
+      (g?.hooks ?? []).some((h) => String(h?.command ?? "").includes(USER_GUARD_FILE)),
+    );
+    if (has) continue;
+    json.hooks[event] = [...groups, group(arg)];
+    added.push(event);
+  }
+  if (added.length === 0) {
+    lines.push(`${path} — guard hooks already present`);
+    return lines;
+  }
+  mkdirp(dirname(path));
+  writeFileAtomic(path, JSON.stringify(json, null, read.state === "ok" ? read.indent : 2) + "\n");
+  lines.push(`${path} — added ${added.join(" + ")} (Write|Edit|MultiEdit)`);
+  return lines;
 }
 
 /** Write the workflow mandate the SessionStart hook reads (only if absent). */
