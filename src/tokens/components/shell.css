@@ -452,9 +452,21 @@
    * of --secondary/--destructive still reaches the pill (docs/TOKENS.md).
    * Defaults = hsl(var(--secondary)) · hsl(var(--muted-foreground)) ·
    * hsl(var(--destructive)) · hsl(var(--destructive-foreground)). */
-  --topbar-item-badge-offset-block: var(--space-1);
-  --topbar-item-badge-offset-inline: var(--space-1);
+  /* How far a one-digit pill's top edge (block) and end edge (inline) sit OUTSIDE the glyph's.
+   * Fractions of the pill, not a flat length (gh#1341 — Material 3 badges / Apple HIG): half a
+   * pill inline centres it on the glyph's corner, three quarters block leaves a quarter of it on
+   * the glyph, so at most a quarter of the glyph is covered — a longer count grows outward. They
+   * used to be a flat 4px, which left a 16px pill covering 56% of a 16px bell. Declared `initial`
+   * with the default resolved at the call site, so a scoped --topbar-item-badge-size still moves
+   * them (the freeze rule).
+   * The ring is the surface colour drawn round the pill so it reads cut out of the glyph;
+   * role-mirror knob, default = hsl(var(--card)) (the bar) at the call site, and the nav rail sets
+   * it to its own surface. */
+  --topbar-item-badge-offset-block: initial; /* default = calc(var(--topbar-item-badge-size) * 3 / 4) */
+  --topbar-item-badge-offset-inline: initial; /* default = calc(var(--topbar-item-badge-size) / 2) */
   --topbar-item-badge-size: 1rem;
+  --topbar-item-badge-ring-width: var(--stroke-md);
+  --topbar-item-badge-ring-color: initial;
   --topbar-item-badge-padding-inline: var(--space-1);
   --topbar-item-badge-font-size: var(
     --font-size-2xs,
