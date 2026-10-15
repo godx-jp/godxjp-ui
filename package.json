@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "32.14.0",
-  "godxUiMcp": "32.14.0",
+  "version": "32.15.0",
+  "godxUiMcp": "32.15.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -124,6 +124,10 @@
     "./charts/compact-bar-trend": {
       "types": "./dist/components/charts/compact-bar-trend.d.ts",
       "import": "./dist/components/charts/compact-bar-trend.js"
+    },
+    "./charts/heatmap-chart": {
+      "types": "./dist/components/charts/heatmap-chart.d.ts",
+      "import": "./dist/components/charts/heatmap-chart.js"
     },
     "./charts/line-chart": {
       "types": "./dist/components/charts/line-chart.d.ts",

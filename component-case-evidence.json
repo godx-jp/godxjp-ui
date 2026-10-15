@@ -939,6 +939,21 @@
         }
       }
     },
+    "HeatmapChart": {
+      "props": {
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/charts/heatmap-chart.tsx"
+          ]
+        }
+      }
+    },
     "CredentialReveal": {
       "props": {
         "tone": {

@@ -154,6 +154,67 @@ export type CompactBarTrendProp = {
   ref?: React.Ref<HTMLElement>;
 };
 
+/** One category on a HeatmapChart axis — a row (weekday) or a column (hour). */
+export type HeatmapCategory = {
+  /** Stable key the `data` cells refer to (`row` / `column`). */
+  key: string | number;
+  /** Already-translated display label — the axis tick and the table header. */
+  label: string;
+};
+
+/** One HeatmapChart cell. A cell absent from `data`, or with a non-finite `value`, is EMPTY. */
+export type HeatmapDatum = {
+  /** `key` of the row this cell belongs to. */
+  row: string | number;
+  /** `key` of the column this cell belongs to. */
+  column: string | number;
+  /** The measured value. `null`/`undefined`/`NaN` mean "no data" — not zero. */
+  value: number | null | undefined;
+};
+
+/**
+ * @see HeatmapChart
+ *
+ * Dependency-free (no `recharts`) rows × columns matrix — a weekday × hour heatmap. Cell intensity
+ * steps through the `--chart-heat-1..5` ramp; an empty cell is outlined, a zero cell is filled.
+ */
+export type HeatmapChartProp = {
+  /** Row categories, top to bottom (the y axis — weekdays). */
+  rows: HeatmapCategory[];
+  /** Column categories, start to end (the x axis — hours). */
+  columns: HeatmapCategory[];
+  /** Cell values, keyed by `row` + `column`. Order does not matter; a missing cell is empty. */
+  data: HeatmapDatum[];
+  /** Accessible name + visible caption for the chart. REQUIRED (the grid needs a name). */
+  label: LabelProp;
+  /**
+   * Paint `label` as a visible caption above the plot. `false` keeps it in the DOM as `sr-only`,
+   * so the figure and its grid keep their accessible name.
+   */
+  showCaption?: boolean;
+  /** Extra context appended to the screen-reader description. */
+  description?: DescriptionProp;
+  /**
+   * CELL size tier — `xs|sm|md|lg` (`--chart-heatmap-cell-size-*`). Not a canvas height: the matrix
+   * is as tall as its rows, and when the columns do not fit it scrolls inside its own box.
+   */
+  size?: SizeProp;
+  /** `Intl.NumberFormat` options for cell values, the tooltip and the legend (locale is automatic). */
+  numberFormat?: Intl.NumberFormatOptions;
+  /**
+   * Emphasize the N highest cells with an outline ring and a "top N" note in the tooltip and the
+   * text alternative — never colour alone. Ties keep `data` order. Omitted or 0 = no emphasis.
+   */
+  topN?: number;
+  /** Show the colour-scale legend under the matrix. */
+  showLegend?: boolean;
+  /** Message shown when there are no rows, no columns or no cells. Defaults to a localized "no data". */
+  emptyMessage?: EmptyMessageProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+  ref?: React.Ref<HTMLElement>;
+};
+
 /** @see AreaChart */
 export type AreaChartProp = ChartCartesianBase & {
   /** Stack series areas instead of overlaying them. */

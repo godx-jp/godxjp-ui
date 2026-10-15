@@ -3,7 +3,12 @@
  * alternative (WCAG 1.1.1). No JSX — filename pascal is intentionally NOT
  * exported, so this is not a catalog primitive.
  */
-import type { ChartDatum, ChartSeriesProp } from "../../props/components/charts.prop";
+import type {
+  ChartDatum,
+  ChartSeriesProp,
+  HeatmapCategory,
+  HeatmapDatum,
+} from "../../props/components/charts.prop";
 
 type Formatter = Intl.NumberFormat;
 
@@ -99,4 +104,87 @@ export function resolveEmphasizedIndex(index: number | undefined, length: number
   if (index === undefined || !Number.isInteger(index) || length === 0) return -1;
   const resolved = index < 0 ? length + index : index;
   return resolved >= 0 && resolved < length ? resolved : -1;
+}
+
+/** Number of steps in the `--chart-heat-1..N` ramp. */
+export const HEAT_STEPS = 5;
+
+/** The lookup key of one heatmap cell. */
+export function heatmapCellKey(row: string | number, column: string | number): string {
+  return `${String(row)}\u0000${String(column)}`;
+}
+
+export type HeatmapModel = {
+  /** Finite values by cell key. A key that is absent is an EMPTY cell, never a zero. */
+  values: Map<string, number>;
+  /** Ramp step 1..HEAT_STEPS by cell key. */
+  steps: Map<string, number>;
+  /** 1-based rank of the top-N cells by cell key. */
+  ranks: Map<string, number>;
+  /** Scale domain: `min(0, smallest)` .. largest. */
+  min: number;
+  max: number;
+  /** Count of cells with a value inside the rows × columns matrix. */
+  present: number;
+  /** Count of matrix cells with no value. */
+  empty: number;
+  /** The highest cell, for the one-line summary. */
+  highest: { row: HeatmapCategory; column: HeatmapCategory; value: number } | null;
+};
+
+/**
+ * Bin a heatmap's cells onto the sequential ramp. The domain starts at zero (or the smallest value,
+ * when that is negative) so the fill encodes MAGNITUDE — a heatmap of 900..1000 whose 900 painted
+ * as "empty-light" would read as a quiet hour. Cells outside `rows` × `columns` are ignored.
+ */
+export function buildHeatmapModel(
+  rows: HeatmapCategory[],
+  columns: HeatmapCategory[],
+  data: HeatmapDatum[],
+  topN?: number,
+): HeatmapModel {
+  const rowByKey = new Map(rows.map((row) => [String(row.key), row] as const));
+  const columnByKey = new Map(columns.map((column) => [String(column.key), column] as const));
+  const values = new Map<string, number>();
+  const order: { key: string; value: number; row: HeatmapCategory; column: HeatmapCategory }[] = [];
+  for (const datum of data) {
+    const row = rowByKey.get(String(datum.row));
+    const column = columnByKey.get(String(datum.column));
+    if (!row || !column) continue;
+    if (typeof datum.value !== "number" || !Number.isFinite(datum.value)) continue;
+    const key = heatmapCellKey(row.key, column.key);
+    if (values.has(key)) continue;
+    values.set(key, datum.value);
+    order.push({ key, value: datum.value, row, column });
+  }
+
+  let min = 0;
+  let max = 0;
+  for (const { value } of order) {
+    if (value < min) min = value;
+    if (value > max) max = value;
+  }
+  const steps = new Map<string, number>();
+  for (const { key, value } of order) {
+    const ratio = max > min ? (value - min) / (max - min) : max > 0 ? 1 : 0;
+    steps.set(key, Math.min(HEAT_STEPS, Math.floor(ratio * HEAT_STEPS) + 1));
+  }
+
+  // Stable sort: equal values keep `data` order, so a tie is decided by the caller, not by chance.
+  const ranked = [...order].sort((a, b) => b.value - a.value);
+  const ranks = new Map<string, number>();
+  const n = topN !== undefined && Number.isInteger(topN) && topN > 0 ? topN : 0;
+  ranked.slice(0, n).forEach((cell, index) => ranks.set(cell.key, index + 1));
+
+  const top = ranked[0];
+  return {
+    values,
+    steps,
+    ranks,
+    min,
+    max,
+    present: order.length,
+    empty: rows.length * columns.length - order.length,
+    highest: top ? { row: top.row, column: top.column, value: top.value } : null,
+  };
 }

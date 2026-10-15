@@ -1852,5 +1852,24 @@
     "logOut": "Log out",
     "body": "The search starts on the same line as this title. Below 640px it folds to a search button that opens the field across the bar; Escape closes it and returns focus to the button. The account cell shows only the avatar there, and the name moves into its menu.",
     "lastQuery": "Last search"
+  },
+  "heatmapChartDocs": {
+    "title": "Store performance",
+    "subtitle": "All 42 stores · last 4 weeks · tax included",
+    "weekRevenue": "Weekly revenue",
+    "weekOrders": "Weekly orders",
+    "peakSlot": "Busiest slot",
+    "stores": "Stores reporting",
+    "revenueTitle": "Revenue by weekday and hour",
+    "revenueHint": "Average per week. Stores are closed 03:00–10:00, so those slots have no data; the three busiest slots are outlined.",
+    "ordersTitle": "Orders by weekday and hour",
+    "ordersHint": "Receipts per slot, compact cells.",
+    "newStoreTitle": "Shinjuku South (opened Thursday)",
+    "newStoreHint": "Days before the opening have no data, which is not the same as no sales.",
+    "sizesTitle": "Cell sizes",
+    "sizesHint": "size picks the cell tier xs · sm · md · lg (--chart-heatmap-cell-size-*). Dinner window, Friday to Sunday.",
+    "emptyTitle": "No data yet",
+    "emptyHint": "A store that has not synced its POS shows the empty state.",
+    "emptyMessage": "This store has not sent any sales yet"
   }
 }

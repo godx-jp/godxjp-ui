@@ -23,6 +23,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Neutral decorative chart series palette. The @godxjp/ui/charts components (LineChart/BarChart/AreaChart/PieChart) read these by series index automatically — a service rethemes every chart at once by overriding --chart-1..6; per-series/per-slice overrides go through the component's series.color / colors props.",
   },
   {
+    name: "--chart-heat-1..5",
+    category: "primitive",
+    tier: "primitive",
+    role: "HeatmapChart sequential ramp (gh#1330). One hue (the --chart-1 blue, 204°) stepped by lightness only, so step order survives every colour-vision deficiency. Light: luminance 0.805→0.064 (1.21/1.74/2.72/4.62/9.03:1 vs --card); the dark block inverts it (1.37→11.90:1) so 'more' always reads 'further from the surface'. Retint every heatmap by overriding these five; an empty cell never uses them (dashed outline instead).",
+  },
+  {
     name: "--space-0..12 / --space-20 / --space-24",
     category: "primitive",
     tier: "primitive",
@@ -560,6 +566,24 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "CompactBarTrend fills — role-mirror knobs declared `initial` with the role default at the call site. Muted marks default to hsl(var(--muted-foreground) / --chart-trend-bar-background-alpha) (0.75, which clears the 3:1 non-text contrast floor); the emphasized 'current' mark defaults to hsl(var(--primary)). Point them at --chart-N to tint a trend to a series colour.",
+  },
+  {
+    name: "--chart-heatmap-cell-size{,-xs,-sm,-md,-lg} / --chart-heatmap-cell-{gap,radius}",
+    category: "component",
+    tier: "component",
+    role: "HeatmapChart cell geometry: per-`size` minimum cell edge (24/28/32/40px — xs still clears the 24px target), the active tier (re-pointed per data-size), the surface gap between cells (--stroke-md) and the cell radius (`initial`, default resolves to the φ-derived small radius at the call site).",
+  },
+  {
+    name: "--chart-heatmap-empty-border / --chart-heatmap-emphasis-{border,width}",
+    category: "component",
+    tier: "component",
+    role: "HeatmapChart non-colour cues. Empty cell outline — role-mirror knob, `initial`, default `var(--stroke-hairline) dashed hsl(var(--muted-foreground))` (tells 'no data' from zero without colour). Top-N ring colour — role-mirror, default hsl(var(--foreground)), drawn with a --card keyline inside so it reads on every ramp step; width default --stroke-md.",
+  },
+  {
+    name: "--chart-heatmap-row-header-background / --chart-heatmap-tick-font-size / --chart-heatmap-legend-{swatch-size,gap}",
+    category: "component",
+    tier: "component",
+    role: "HeatmapChart chrome: the pinned row-header ground (role-mirror, default hsl(var(--card)) — set it to the surface the chart sits on), the axis/legend type size (--font-size-xs) and the legend swatch edge + rhythm.",
   },
   {
     name: "--chart-trend-baseline-border",

@@ -761,7 +761,14 @@
     "summaryCartesian": "{series}系列・{points}データ点のグラフ",
     "summaryPie": "{slices}区分の円グラフ",
     "summaryTrend": "{points}データ点の推移棒グラフ",
-    "trendCurrent": "現在"
+    "trendCurrent": "現在",
+    "heatmapSummary": "ヒートマップ（{rows}行×{columns}列）",
+    "heatmapHighest": "最大 {value}（{row}・{column}）",
+    "heatmapNoData": "データなし",
+    "heatmapTop": "上位{rank}位",
+    "heatmapLegend": "色の濃さの凡例",
+    "heatmapLegendTop": "上位{count}件",
+    "heatmapCell": "{row}・{column}：{value}"
   },
   "rangeTimeline": {
     "childRows": "子の行",

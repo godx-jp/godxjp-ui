@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [32.15.0] - 2026-10-15
+
+### Added
+
+- **HeatmapChart (#1330)** (`@godxjp/ui/charts/heatmap-chart`, also in the `charts` barrel): a dependency-free rows × columns matrix (weekday × hour revenue, order counts). Cells step through a new sequential, colour-blind-safe ramp `--chart-heat-1..5` (single hue, lightness only; inverted on dark). An empty cell (absent, `null`, `NaN`) is unfilled with a dashed outline and reads "No data"; a zero is filled and reads its value. `topN` rings the highest cells and names them in text. The matrix is a native data table with `role="grid"`, so it is also the screen-reader text alternative; keyboard follows the WAI-ARIA APG grid pattern, with one shared tooltip per hovered or focused cell (Escape dismisses). Values, tooltip, legend and summary are formatted with `Intl` through `numberFormat`. `size` picks the minimum cell size (24–40px); on narrow screens the matrix scrolls inside its own box with the row header pinned, so the page never scrolls sideways (390px: 0px page overflow). New component tokens `--chart-heatmap-*` (cell size, gap, radius, empty outline, emphasis ring, row-header background, legend rhythm). New docs page `charts/heatmap-chart` (restaurant HQ dashboard).
+
 ## [32.14.0] - 2026-10-15
 
 ### Added
