@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **A `Descriptions.Item` value (and `FormField staticText`) no longer breaks mid-word.** The
+  value carried `break-all`, so a long equipment name wrapped as "La Ma|rzocco" even when a
+  space was available (measured on godx-qc's check page, 1440px, 539px column). It now uses
+  `overflow-wrap: anywhere`: lines break between words, and a single unbreakable token (a URL,
+  a code) still wraps instead of overflowing.
+
 ## [33.6.2] - 2026-10-16
 
 ### Fixed
@@ -340,7 +348,7 @@ and editor headings stayed small — and `visual-audit` called a partly applied 
 - **Prose / BlockEditor headings scale with user text size:** h1–h6 default sizes are relative to
   the prose text (`1em` × ratio steps; default sizes unchanged), so they follow enlarged text and work
   inside the editor (ProseMirror strips per-block attributes, so blocks only inherit). `Prose
-  size="sm"` headings and code blocks now scale down with the body. `--heading-h*` overrides unchanged.
+size="sm"` headings and code blocks now scale down with the body. `--heading-h*` overrides unchanged.
 
 ### 🐛 Fixed
 

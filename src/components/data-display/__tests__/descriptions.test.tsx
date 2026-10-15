@@ -149,3 +149,18 @@ describe("Descriptions row gap (gh#294 — themeable, not hardcoded)", () => {
     expect(dl.className).not.toMatch(/\bgap-y-\d/);
   });
 });
+
+describe("Descriptions — value wrapping", () => {
+  it("breaks a long value between words, not mid-word (no break-all)", () => {
+    render(
+      <Descriptions>
+        <Descriptions.Item label="Equipment">
+          Mahlkönig E65S · La Marzocco Linea PB
+        </Descriptions.Item>
+      </Descriptions>,
+    );
+    const dd = screen.getByText("Mahlkönig E65S · La Marzocco Linea PB").closest("dd")!;
+    expect(dd.className).not.toContain("break-all");
+    expect(dd.className).toContain("[overflow-wrap:anywhere]");
+  });
+});

@@ -216,7 +216,7 @@ function DescriptionsItem({ label, mono, span, className, children }: Descriptio
         // it survives the face moving from a utility to a token.
         data-mono={mono ? "" : undefined}
         className={cn(
-          "text-[length:var(--descriptions-value-font-size)] leading-[var(--descriptions-value-line-height)] break-all",
+          "text-[length:var(--descriptions-value-font-size)] leading-[var(--descriptions-value-line-height)] [overflow-wrap:anywhere]",
           mono && "font-mono",
         )}
       >
