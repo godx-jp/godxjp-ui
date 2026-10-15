@@ -258,6 +258,15 @@ describe("the guard — PreToolUse block/allow (gh#1324)", () => {
     expect(r.status).toBe(2);
   });
 
+  it("leaves the @godxjp/ui repo itself alone — primitives are built from raw elements", () => {
+    const ctx = setup();
+    writeFileSync(join(ctx.repo, "package.json"), JSON.stringify({ name: "@godxjp/ui" }));
+    const t = transcript(ctx.home, []);
+    const r = hook(ctx, "pre", { tool_input: { file_path: ctx.page }, transcript_path: t });
+    expect(r.status).toBe(0);
+    expect(r.stderr).toBe("");
+  });
+
   it("leaves non-UI files, test files and repos without the catalog alone", () => {
     const ctx = setup();
     const t = transcript(ctx.home, []);

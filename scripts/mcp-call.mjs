@@ -25,7 +25,6 @@ const r = spawnSync(entry.command, args, {
   stdio: ["ignore", "pipe", "inherit"],
   encoding: "utf8",
   maxBuffer: 64 * 1024 * 1024,
-  shell: process.platform === "win32", // npx is npx.cmd there
 });
 if (r.error) {
   console.error(`mcp-call: could not launch ${entry.command}: ${r.error.message}`);
