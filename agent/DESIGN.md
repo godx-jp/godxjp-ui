@@ -125,7 +125,7 @@ Colour is scarce. Most of the screen is canvas, ink and hairline.
 
 - **PageContainer** is the page shell: `title`, optional `subtitle`, `breadcrumb`, `extra` (page actions, primary last), `toolbar`, `footer`. Omit `title` only when the content draws the page's one `<h1>` (a document reader); PageContainer then renders no heading.
 - **Card** only for a real boundary: a table with its own toolbar and pagination, a list of setting rows, a dashboard panel, a danger zone (`accent="destructive"`), a selectable item. Not around every section, never nested. `CardContent flush` for tables and row lists.
-- **Toolbar** (+ `ToolbarGroup`) is the filter strip: search, labelled filters, clear-all, result count. It sits above the table, never in the page header.
+- **Toolbar** (+ `ToolbarGroup`) is the filter strip: search, labelled filters, clear-all, result count. It sits above the table, never in the page header. It wraps and never scrolls sideways; the 2–4 most-used filters stay inline and the rest go behind one "More filters" Button that opens a `Sheet` (cardinal rule #51, pattern `list-filters`).
 - **DataTable** for lists: sort, selection with `DataTable.BulkActions`, density, empty/loading/error states. Row actions in one kebab `DropdownMenu`.
 - **Descriptions** for record metadata. **ListRow** for setting rows (`trailing` holds the control).
 - **Form + FormField** for every input; actions at the end of the form or in a sticky `PageContainer footer`. Create/edit is a page, not a dialog.
@@ -192,7 +192,7 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 - Check 390, 768 and 1280 wide. Nothing scrolls horizontally except a wide table inside its own container.
 - `DataTable` hides `hiddenOnMobile` columns and can stack rows (`collapseBelow`); `Table preset="action-collection"` keeps the actions column visible at 390.
 - `ResponsiveGrid` columns follow its container. `AppShell` turns the sidebar into a drawer on narrow screens.
-- Header `extra` wraps under the title; a toolbar wraps its filters. Touch targets 44px at `comfortable`.
+- Header `extra` wraps under the title; a toolbar wraps its filters at every width, phone included: no sideways-scrolling strip of filters or filter chips (rule #51). Touch targets 44px at `comfortable`.
 - Below 640px: at most 2 direct actions in `extra` plus one overflow `DropdownMenu` for the rest; it wraps but never prioritises for you.
 - Bar search is `TopbarSearch`, never a bare `SearchInput`: it folds to a named search cell below 640px. To share the content keyline, keep the default `topbarSpan="content"` and put it first in `Topbar start`.
 - Account cell: `TopbarItem icon={<Avatar/>} labelHideBelow="sm"` with the name repeated in the menu's `DropdownMenuLabel`, so a phone shows the avatar only.

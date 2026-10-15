@@ -135,7 +135,7 @@
   ],
   "related": [
     "Steps (@godxjp/ui/navigation) — sequential wizard/progress indicator. Use Steps when order and completion state matter (multi-step forms, onboarding flows); use Tabs when panels are non-sequential and any tab can be visited freely.",
-    "Toolbar / ToolbarGroup (@godxjp/ui/navigation) — horizontal filter chip row. Visually resembles `line`-variant tabs but is semantically different: Toolbar filters a dataset, it does not switch content panels. Never use Tabs as a filter control.",
+    "Toolbar / ToolbarGroup (@godxjp/ui/navigation) — the list-page filter strip; it WRAPS onto extra rows and never scrolls sideways the way a tab strip may (rule #51). Visually resembles `line`-variant tabs but is semantically different: Toolbar filters a dataset, it does not switch content panels. Never use Tabs as a filter control.",
     "DropdownMenu (@godxjp/ui/navigation) — use for space-constrained contexts where showing all tab triggers at once is impractical (e.g. mobile overflow menu). If only 2-3 options exist and screen space is tight, a Segmented control is a lighter alternative to a full tab strip."
   ],
   "rules": [],

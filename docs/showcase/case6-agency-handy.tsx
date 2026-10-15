@@ -623,33 +623,35 @@ function InboundTab({
 
   return (
     <Flex direction="col" gap="md">
-      {/* Filter chips — horizontal scroll, count pills */}
+      {/* Filter chips WRAP onto a second line — even on a phone a filter row never scrolls
+          sideways (cardinal rule #51): chips past the edge would be out of sight with no cue. */}
       <ToggleGroup
         type="single"
         value={filter}
         onValueChange={(v) => {
           if (v) setFilter(v);
         }}
-        className="w-full overflow-x-auto"
+        variant="soft"
+        shape="pill"
+        size="xs"
+        wrap
+        aria-label="Lọc danh sách"
       >
-        <Flex justify="start" gap="sm">
-          {FILTERS.map((f) => (
-            <ToggleGroupItem
-              key={f.id}
-              value={f.id}
-              className="text-[length:var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))] h-9 shrink-0 rounded-full whitespace-nowrap"
-              // The library's OWN counter pill, not a `Text` at 70% opacity (gh#643). The
-              // hand-rolled one measured 2.15:1 on the selected chip's --primary fill, because
-              // `opacity-70` blends whatever ink it inherits back towards the fill underneath it —
-              // `tone="inherit"` cannot help with that. `.ui-toggle[data-state="on"]
-              // .ui-toggle-count` inverts instead (--primary on --primary-foreground, 6.32:1) and
-              // folds the number into the accessible name.
-              count={f.count}
-            >
-              {f.label}
-            </ToggleGroupItem>
-          ))}
-        </Flex>
+        {FILTERS.map((f) => (
+          <ToggleGroupItem
+            key={f.id}
+            value={f.id}
+            // The library's OWN counter pill, not a `Text` at 70% opacity (gh#643). The
+            // hand-rolled one measured 2.15:1 on the selected chip's --primary fill, because
+            // `opacity-70` blends whatever ink it inherits back towards the fill underneath it —
+            // `tone="inherit"` cannot help with that. `.ui-toggle[data-state="on"]
+            // .ui-toggle-count` inverts instead (--primary on --primary-foreground, 6.32:1) and
+            // folds the number into the accessible name.
+            count={f.count}
+          >
+            {f.label}
+          </ToggleGroupItem>
+        ))}
       </ToggleGroup>
 
       {state === "loading" ? (

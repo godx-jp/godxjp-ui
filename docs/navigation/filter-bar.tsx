@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, SlidersHorizontal } from "lucide-react";
 
 import { Button, Text } from "@godxjp/ui/general";
 import {
@@ -11,6 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@godxjp/ui/data-entry";
+import {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@godxjp/ui/feedback";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { FilterBar, FilterBarGroup } from "@godxjp/ui/navigation";
 
@@ -31,6 +42,35 @@ const MODEL_ROLES = [
   { value: "manager", label: "Quản lý" },
 ];
 
+const MORE_FILTERS = [
+  {
+    key: "region",
+    label: "Region",
+    options: [
+      { value: "kanto", label: "Kanto" },
+      { value: "kansai", label: "Kansai" },
+    ],
+  },
+  {
+    key: "channel",
+    label: "Sales channel",
+    options: [
+      { value: "web", label: "Web" },
+      { value: "store", label: "Store" },
+    ],
+  },
+  {
+    key: "period",
+    label: "Period",
+    options: [
+      { value: "month", label: "This month" },
+      { value: "quarter", label: "This quarter" },
+    ],
+  },
+] as const;
+
+type MoreFilterKey = (typeof MORE_FILTERS)[number]["key"];
+
 /** FilterBar — domain-neutral list filtering with consumer-owned state and clear behavior. */
 export default function Demo() {
   const [query, setQuery] = useState("");
@@ -38,6 +78,33 @@ export default function Demo() {
   const [department, setDepartment] = useState("all");
   const [approval, setApproval] = useState("all");
   const [period, setPeriod] = useState("all");
+
+  // Many filters (rule #51, MCP pattern `list-filters`): two inline, the rest in ONE Sheet.
+  const [moreStatus, setMoreStatus] = useState("");
+  const [moreValues, setMoreValues] = useState<Record<MoreFilterKey, string>>({
+    region: "kansai",
+    channel: "",
+    period: "",
+  });
+  const moreHiddenApplied = MORE_FILTERS.filter((f) => moreValues[f.key] !== "").length;
+  const moreChips = [
+    ...(moreStatus !== ""
+      ? [
+          {
+            value: "status",
+            label: `Status: ${STATUSES.find((s) => s.value === moreStatus)?.label}`,
+          },
+        ]
+      : []),
+    ...MORE_FILTERS.filter((f) => moreValues[f.key] !== "").map((f) => ({
+      value: f.key,
+      label: `${f.label}: ${f.options.find((o) => o.value === moreValues[f.key])?.label}`,
+    })),
+  ];
+  const removeMoreChip = (value: string) => {
+    if (value === "status") setMoreStatus("");
+    else setMoreValues((cur) => ({ ...cur, [value]: "" }));
+  };
   const hasActiveFilters = query !== "" || status !== "all";
 
   // Typed model — ALL state is consumer data; the bar only renders it.
@@ -78,7 +145,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="FilterBar"
-      subtitle="Search, labelled filters, active state, consumer-owned reset, and both responsive overflow strategies"
+      subtitle="Search, labelled filters, active state, consumer-owned reset; the bar wraps and never scrolls sideways"
     >
       <Flex direction="col" gap="lg">
         {/* Typed model — search/filters/chips/reset/result-count/actions as DATA.
@@ -179,10 +246,10 @@ export default function Demo() {
           />
         </Flex>
 
-        {/* overflow="wrap" (default) — stacked below 640px, wrapping rows above. */}
+        {/* Children composition — stacked below 640px, wrapping rows above. */}
         <Flex direction="col" gap="xs">
           <Text size="xs" tone="muted">
-            overflow=&quot;wrap&quot; (default) · a small filter set wraps onto extra rows
+            children composition · a small filter set wraps onto extra rows
           </Text>
           <FilterBar
             hasActiveFilters={hasActiveFilters}
@@ -270,6 +337,90 @@ export default function Demo() {
                 </SelectContent>
               </Select>
             </FilterBarGroup>
+          </FilterBar>
+        </Flex>
+
+        {/* MANY filters — cardinal rule #51, MCP pattern `list-filters`. The most-used filters stay
+            inline; the rest sit behind ONE "More filters" Button whose count says how many hidden
+            filters are applied, opening a Sheet. Every applied filter is a chip, and the chips
+            wrap. Prior art: Shopify Polaris Filters (2–3 promoted + a sheet), Linear (one Filter
+            menu), IBM Carbon (a closed filter panel shows its applied count). */}
+        <Flex direction="col" gap="xs">
+          <Text size="xs" tone="muted">
+            many filters · common ones inline, the rest behind one &quot;More filters&quot; Sheet,
+            applied filters as wrapping chips
+          </Text>
+          <FilterBar
+            search={{
+              value: modelQuery,
+              onValueChange: setModelQuery,
+              placeholder: "Search orders",
+              ariaLabel: "Search orders",
+            }}
+            filters={[
+              {
+                value: "status",
+                label: "Status",
+                options: STATUSES.filter((s) => s.value !== "all"),
+                selected: moreStatus,
+                onSelectedChange: setMoreStatus,
+                placeholder: "All",
+              },
+            ]}
+            chips={moreChips}
+            onChipRemove={removeMoreChip}
+            hasActiveFilters={moreChips.length > 0}
+            onClear={() => {
+              setMoreStatus("");
+              setMoreValues({ region: "", channel: "", period: "" });
+            }}
+          >
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" count={moreHiddenApplied} countLabel="applied">
+                  <SlidersHorizontal aria-hidden="true" />
+                  More filters
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <SheetHeader>
+                  <SheetTitle>More filters</SheetTitle>
+                  <SheetDescription>
+                    Applied filters also show as chips above the list.
+                  </SheetDescription>
+                </SheetHeader>
+                <SheetBody>
+                  <Flex direction="col" gap="md">
+                    {MORE_FILTERS.map((f) => (
+                      <FilterBarGroup key={f.key} label={f.label} controlId={`fb-more-${f.key}`}>
+                        <Select
+                          value={moreValues[f.key]}
+                          onValueChange={(v: string) =>
+                            setMoreValues((cur) => ({ ...cur, [f.key]: v }))
+                          }
+                        >
+                          <SelectTrigger id={`fb-more-${f.key}`}>
+                            <SelectValue placeholder="All" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {f.options.map((o) => (
+                              <SelectItem key={o.value} value={o.value}>
+                                {o.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FilterBarGroup>
+                    ))}
+                  </Flex>
+                </SheetBody>
+                <SheetFooter>
+                  <SheetClose asChild>
+                    <Button>Show results</Button>
+                  </SheetClose>
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
           </FilterBar>
         </Flex>
       </Flex>

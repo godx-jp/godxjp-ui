@@ -21,6 +21,9 @@ your theme, or import a preset (`@godxjp/ui/themes/godx.css`). Details: `docs/CU
   surface (a table, a form block), never a frame around every section.
 - No `subtitle` that restates the `title`. Leave it out unless it adds a fact.
 - Filters sit ABOVE the table they filter, never after it.
+- A filter bar (`FilterBar`) WRAPS and never scrolls sideways — no horizontal strip of filters
+  or filter chips. 2–4 filters inline; the rest behind ONE "More filters" `Sheet`. `get_rule 51`,
+  `get_pattern list-filters`.
 - KPI tiles (`StatCard`) only on dashboards, 3–4 at most. A list page opens with its list.
 - `EmptyState` = one sentence + one action. Inside a Card it has no icon.
 - `Alert` only for something the user must act on now; not a page decoration.

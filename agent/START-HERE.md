@@ -3,7 +3,7 @@
 You are about to write code against a design system you did not author. This file is the whole
 contract. Read it before you write JSX.
 
-**This catalog describes `@godxjp/ui` 33.0.0.** If the project you are editing has a different
+**This catalog describes `@godxjp/ui` 33.1.0.** If the project you are editing has a different
 version in its `package.json`, read the pinned catalog for THAT version instead
 (`…/v<their-version>/agent/…`). A catalog newer than the installed package describes props that do
 not exist yet; older, and it hides props that do. Neither failure announces itself.
@@ -48,18 +48,18 @@ inspect every screenshot at every width region by region (no top-N cap), and han
 → These files are for you. Read `DESIGN.md` (in this folder) first: tokens, scarcity rules and
 screen anatomy, the visual target the rules below do not give you. Then fetch in this order:
 
-0. `patterns-index.json` — 24 whole-task patterns as name + tagline + tags. **If your
+0. `patterns-index.json` — 25 whole-task patterns as name + tagline + tags. **If your
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
    filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
    copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".
-1. `components-index.json` — 48 KB, all 163 components as name + group +
+1. `components-index.json` — 49 KB, all 163 components as name + group +
    tagline. Read this when you already know the SHAPE you need. Each entry may carry `absorbed`:
    names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
    `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field
    first; it exists because that is the mistake.
 2. `components/<Name>.json` — one file per component (1 KB–37 KB, median 6 KB), carrying its props,
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
-3. `rules.json` — 43 cardinal rules. The ones about raw HTML and hardcoded colour are not
+3. `rules.json` — 44 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
 4. `tokens.json` — 2228 design tokens, each tagged with its `tier`. **If you were handed a
    brand, read the 216 `foundation` entries first** — `--primary`, `--background`,
@@ -167,18 +167,19 @@ theme, every tenant scope and every audit in this package.
 import { PageContainer, Flex } from "@godxjp/ui/layout";
 import { Card, CardContent, DataTable } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
-import { Select, SearchInput } from "@godxjp/ui/data-entry";
+import { FilterBar } from "@godxjp/ui/navigation";
 
 export default function InvoicesPage() {
   return (
     <PageContainer title="請求一覧" extra={<Button>請求を作成</Button>}>
       <Flex direction="col" gap="sm">
-        {/* filters sit ABOVE the table they filter */}
-        <Flex direction="row" gap="sm" wrap>
-          <SearchInput aria-label="請求を検索" />
-          <Select width="auto" options={statuses} defaultValue="unpaid" aria-label="状態" />
-          <Button variant="outline">CSV</Button>
-        </Flex>
+        {/* filters sit ABOVE the table they filter, in ONE FilterBar that wraps — never a
+            sideways-scrolling strip (rule #51); many filters → patterns/list-filters.json */}
+        <FilterBar
+          search={{ ariaLabel: "請求を検索", placeholder: "請求を検索" }}
+          filters={[{ value: "status", label: "状態", options: statuses, defaultSelected: "unpaid" }]}
+          actions={<Button variant="outline">CSV</Button>}
+        />
 
         {/* `flush` because DataTable draws its own edges — a padded body double-insets it */}
         <Card>

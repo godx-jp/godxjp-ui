@@ -285,6 +285,27 @@ it("rejects the removed FilterBar overflow prop and leaves Tabs/Topbar overflow 
   }
 });
 
+it("rejects a hand-rolled sideways filter strip and leaves tables, vertical panes and chip rows alone", () => {
+  for (const source of [
+    '<Flex className="overflow-x-auto"><FilterBar onClear={clear}>{groups}</FilterBar></Flex>',
+    '<ScrollArea orientation="horizontal" label="Filters">\n  <Flex>\n    <FormField label="Status"><Select options={o} /></FormField>\n  </Flex>\n</ScrollArea>',
+    '<div className="w-full overflow-x-scroll"><div><SearchInput aria-label="q" /></div></div>',
+  ]) {
+    expect(audit(source).output, source).toContain('"filter-strip-no-scroll"');
+  }
+  for (const source of [
+    '<div className="overflow-x-auto"><Table><TableBody><Input aria-label="qty" /></TableBody></Table></div>',
+    '<ScrollArea orientation="horizontal"><ResponsiveGrid flow="columns">{lanes.map((l) => <Card key={l}><CardContent><Select options={o} /></CardContent></Card>)}</ResponsiveGrid></ScrollArea>',
+    '<SheetBody className="overflow-y-auto"><FormField label="Region"><Select options={o} /></FormField></SheetBody>',
+    '<ScrollArea orientation="vertical" label="Filters"><FilterBarGroup label="x"><Select options={o} /></FilterBarGroup></ScrollArea>',
+    '<div className="overflow-x-auto"><ToggleGroup type="single" aria-label="Filters"><ToggleGroupItem value="a">A</ToggleGroupItem></ToggleGroup></div>',
+    '<Flex className="overflow-x-auto" /><FilterBar onClear={clear}>{groups}</FilterBar>',
+    "<FilterBar onClear={clear}>{groups}</FilterBar>",
+  ]) {
+    expect(audit(source).output, source).not.toContain('"filter-strip-no-scroll"');
+  }
+});
+
 describe("card composition (godx-jp/id#496, #498)", () => {
   it("does not call a Form-wrapped body a missing body", () => {
     // The only correct composition for a card whose submit button lives in CardFooter: the <form>

@@ -258,6 +258,29 @@
   },
   {
     "aliases": [
+      "more-filters",
+      "many-filters",
+      "filter-sheet",
+      "advanced-filters",
+      "add-filter"
+    ],
+    "name": "list-filters",
+    "tagline": "A list page with MANY filters (cardinal rule #51) — FilterBar WRAPS; the 2–4 most-used filters stay inline, the rest sit behind ONE 'More filters' Button (count = hidden filters applied) that opens a Sheet; every applied filter is a removable chip. Never a sideways-scrolling strip.",
+    "tags": [
+      "filter",
+      "filters",
+      "list",
+      "toolbar",
+      "filter-bar",
+      "sheet",
+      "chips",
+      "search",
+      "responsive",
+      "datatable"
+    ]
+  },
+  {
+    "aliases": [
       "organization-switcher",
       "workspace-switcher",
       "received-invitations",
