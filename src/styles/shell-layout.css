@@ -3191,28 +3191,27 @@
      * two knobs keep their meaning — how far a one-digit pill's top / end edge sits OUTSIDE the
      * glyph's — and default to fractions of the pill instead of a flat 4px:
      *   - Inline, half a pill: a one-digit pill is centred on the corner. The pill is placed by its
-     *     START edge, so a longer count grows OUTWARD, away from the glyph. `inset-inline-end` +
-     *     `justify-self: start` bound that growth at the cell's own end edge (the margin keeps the
-     *     ring inside it too — an overflowing abspos box is shifted to fit its margin box): a
-     *     count too long for the room left is shifted back toward the glyph rather than past the
-     *     cell, where the rail and the bar cluster clip it — a 40px rail leaves 10px beside a 16px
-     *     glyph, and "99+" is 30px.
+     *     END edge, clamped with `max()` to stay a ring's width inside the cell's own end edge, so
+     *     nothing past the cell — where the rail and the bar cluster clip — is ever needed: a 40px
+     *     rail leaves 10px beside a 16px glyph, and "99+" is 30px, so a long count grows back
+     *     across the glyph instead. Placing it by its START edge and bounding it with
+     *     `justify-self: start` was tried and measured: identical numbers in every host, but box
+     *     alignment on an absolutely positioned box only shipped in Chrome 122 / Firefox 134 /
+     *     Safari 26 (MDN browser-compat-data `css.properties.justify-self.position_absolute_context`),
+     *     and without it "99+" was clipped 3-11px in the rail. `max()` works everywhere.
      *   - Block, three quarters of a pill: a quarter reaches into the glyph, so even a "99+"
-     *     shifted across the whole glyph width covers 16 x 4 of its 16 x 16. The rest rides above
-     *     the glyph — into the bar's own height, or the rail's gap and inset — which nothing
-     *     there clips. */
+     *     across the whole glyph width covers 16 x 4 of its 16 x 16. The rest rides above the
+     *     glyph — into the bar's own height, or the rail's gap and inset — which nothing there
+     *     clips. */
     inset-block-start: calc(
       50% - var(--topbar-icon-size) / 2 -
         var(--topbar-item-badge-offset-block, var(--topbar-item-badge-size) * 3 / 4)
     );
-    inset-inline-start: calc(
-      50% + var(--topbar-icon-size) / 2 - var(--topbar-item-badge-size) +
+    inset-inline-end: max(
+      var(--topbar-item-badge-ring-width),
+      50% - var(--topbar-icon-size) / 2 -
         var(--topbar-item-badge-offset-inline, var(--topbar-item-badge-size) / 2)
     );
-    inset-inline-end: 0;
-    margin-inline-end: var(--topbar-item-badge-ring-width);
-    justify-self: start;
-    inline-size: max-content;
     display: inline-flex;
     min-inline-size: var(--topbar-item-badge-size);
     block-size: var(--topbar-item-badge-size);

@@ -455,7 +455,8 @@
   /* How far a one-digit pill's top edge (block) and end edge (inline) sit OUTSIDE the glyph's.
    * Fractions of the pill, not a flat length (gh#1341 — Material 3 badges / Apple HIG): half a
    * pill inline centres it on the glyph's corner, three quarters block leaves a quarter of it on
-   * the glyph, so at most a quarter of the glyph is covered — a longer count grows outward. They
+   * the glyph, so at most a quarter of the glyph is covered; a longer count stays inside the cell
+   * and grows back across the glyph, still covering at most a quarter of it. They
    * used to be a flat 4px, which left a 16px pill covering 56% of a 16px bell. Declared `initial`
    * with the default resolved at the call site, so a scoped --topbar-item-badge-size still moves
    * them (the freeze rule).

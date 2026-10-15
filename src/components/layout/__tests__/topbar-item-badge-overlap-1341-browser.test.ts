@@ -77,13 +77,20 @@ afterAll(async () => {
   await fixture?.close();
 });
 
-async function measure(host: string, dir: "ltr" | "rtl", width = 1280) {
+async function measure(host: string, dir: "ltr" | "rtl", width = 1280, noBoxAlign = false) {
   const page = await fixture.open(`?host=${host}&dir=${dir}`, { width, height: 800 });
   await page.locator('[data-case="many"] [data-slot="topbar-item-badge"]').last().waitFor();
   // AppProvider writes `dir` from the locale on mount; flip it afterwards, as an RTL app would.
   await page.evaluate((d) => {
     document.documentElement.dir = d;
   }, dir);
+  // A browser without box alignment for absolutely positioned boxes (before Chrome 122 /
+  // Firefox 134 / Safari 26): the placement must not depend on it.
+  if (noBoxAlign) {
+    await page.addStyleTag({
+      content: ".ui-topbar-item-badge{justify-self:auto!important;align-self:auto!important}",
+    });
+  }
   // The drawer slides in; measure where it comes to rest.
   await page.waitForFunction(() =>
     document.getAnimations().every((a) => a.playState !== "running"),
@@ -185,6 +192,22 @@ describe(
           }
         });
       }
+    }
+  },
+);
+
+describe(
+  "…and without box alignment on abspos (older Safari / Firefox)",
+  { timeout: 120_000 },
+  () => {
+    for (const [host, width] of CASES) {
+      it(`${host}: "99+" is still not clipped and covers at most 25%`, async () => {
+        const m = await measure(host, "ltr", width, true);
+        for (const key of ["one", "many"] as const) {
+          expect(m[key].overlap, `${key} overlap`).toBeLessThanOrEqual(0.25);
+          expect(m[key].clipped, `${key} clipped by`).toBeNull();
+        }
+      });
     }
   },
 );

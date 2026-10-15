@@ -2136,7 +2136,7 @@ import { PanelLeftClose, Search } from "lucide-react";
         name: "badge",
         type: "ReactNode",
         description:
-          'Overlaid count; does not change the bar cell width. Rendered under asChild too (gh#1171): the pill goes inside the child element after its children, so `<TopbarItem asChild badge={3}><a href="/notifications">…</a></TopbarItem>` keeps its count.',
+          'Overlaid count; does not change the bar cell width. Rendered under asChild too (gh#1171): the pill goes inside the child element after its children, so `<TopbarItem asChild badge={3}><a href="/notifications">…</a></TopbarItem>` keeps its count. Nothing renders for `undefined`, `""` or the number `0` (gh#1341) — pass the count as it is, never `count === 0 ? undefined : count`; pass the string `"0"` to show a zero on purpose.',
       },
       {
         name: "badgeTone",
