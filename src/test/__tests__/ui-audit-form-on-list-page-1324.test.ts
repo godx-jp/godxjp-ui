@@ -133,6 +133,25 @@ ${form(5)}
     expect(findings(file)).toHaveLength(0);
   });
 
+  it("does not flag the page's own editor, submitted by id from the header, beside a read-only list", () => {
+    // gino-cloud 実習終了: PageContainer extra holds <Button type="submit" form={FORM_ID}> (the
+    // page-editor exemplar's shape); the ListRows beside the Form list the filings the chosen
+    // reason triggers. The Form IS the page, so nothing is inlined beside a list.
+    const editor = (id: string, target: string) => `export const Page = () => (
+  <PageContainer title="End" extra={<Button type="submit" form=${target}>Save</Button>}>
+    <Form id=${id} onSubmit={save}>
+${fields(4)}
+    </Form>
+    <ul><ListRow as="li" title="a" /></ul>
+  </PageContainer>
+);
+`;
+    expect(findings(editor("{FORM_ID}", "{FORM_ID}"))).toHaveLength(0);
+    expect(findings(editor('"end-form"', '"end-form"'))).toHaveLength(0);
+    // A submit Button aimed at ANOTHER form leaves this one a create form beside a list.
+    expect(findings(editor('"end-form"', '"other-form"'))).toHaveLength(1);
+  });
+
   it("does not flag a Form with no onSubmit, and does not count a label={false} slot", () => {
     const bar = form(3).replace(" onSubmit={save}", ' layout="horizontal"');
     expect(findings(page(`<Flex>\n${bar}\n${table}\n</Flex>`))).toHaveLength(0);

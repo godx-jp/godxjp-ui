@@ -1839,9 +1839,27 @@ const NO_OP_SUBMIT =
  * create sub-component with no PageContainer of its own still pairs with the page's list) —
  * neither inside an overlay, the list not inside the
  * Form (an editor with a line-items Table is a form, not a list page), and the Form actually
- * submitting (see NO_OP_SUBMIT). One finding per such Form.
+ * submitting (see NO_OP_SUBMIT), and not the page's own editor: a Form whose `id` a Button
+ * submits from elsewhere (`<Button type="submit" form={FORM_ID}>` in the header, the page-editor
+ * exemplar's shape) IS the page, so a read-only list beside it is part of that editor — gino-cloud
+ * 実習終了 listed the filings the chosen reason triggers next to its form. One finding per such Form.
  */
 function* formOnListPageMatches(source) {
+  // The tag's OWN `name=` value (topLevelAttrs blanks nested braces but keeps offsets): a string
+  // literal or a bare identifier, normalized so `form={FORM_ID}` pairs with `id={FORM_ID}`.
+  const attrValue = (openTag, name) => {
+    const at = new RegExp(`\\b${name}\\s*=\\s*`).exec(topLevelAttrs(openTag));
+    if (!at) return null;
+    const lit = /^(?:"([^"]*)"|'([^']*)'|\{\s*([\w.$]+)\s*\})/.exec(
+      openTag.slice(at.index + at[0].length),
+    );
+    return lit ? (lit[1] ?? lit[2] ?? `{${lit[3]}}`) : null;
+  };
+  const submitTargets = new Set();
+  for (const { tag, openTag } of jsxElements(source)) {
+    const target = tag === "Button" ? attrValue(openTag, "form") : null;
+    if (target !== null) submitTargets.add(target);
+  }
   const opened = []; // Forms whose children frame has not been seen yet
   const byFrame = new Map(); // a Form's children-frame id → { index, openTag, scope, skip, fields }
   const listScopes = new Set(); // PageContainer children-frame ids (or "file") holding a list
@@ -1865,7 +1883,9 @@ function* formOnListPageMatches(source) {
         // `role="search"` marks a 検索条件フォーム: a submitting SEARCH over the list, not a create
         // form inlined beside it (the same shape SearchForm renders).
         const search = /\brole\s*=\s*\{?\s*["']search["']/.test(attrs);
-        const skip = overlay || !submits || search || NO_OP_SUBMIT.test(openTag);
+        const id = attrValue(openTag, "id");
+        const editor = id !== null && submitTargets.has(id);
+        const skip = overlay || !submits || search || editor || NO_OP_SUBMIT.test(openTag);
         opened.push({ index, openTag, scope, skip, fields: 0 });
       }
     } else if (tag === "FormField") {
