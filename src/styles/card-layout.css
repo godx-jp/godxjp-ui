@@ -957,15 +957,17 @@
   .ui-card-bar[data-surface="muted"] {
     background: hsl(var(--muted));
   }
+  /* Widths only: a `border-block*: 0` shorthand also resets that side's colour to `currentColor`,
+   * so a consumer `border` utility drew those sides text-coloured (gh#1344). */
   .ui-card-bar[data-border="none"] {
-    border-block: 0;
+    border-block-width: 0;
   }
   .ui-card-bar[data-border="block-start"] {
-    border-block-end: 0;
+    border-block-end-width: 0;
     border-block-start: var(--stroke-hairline) solid hsl(var(--border));
   }
   .ui-card-bar[data-border="block-end"] {
-    border-block-start: 0;
+    border-block-start-width: 0;
     border-block-end: var(--stroke-hairline) solid hsl(var(--border));
   }
   .ui-card-bar[data-border="both"] {

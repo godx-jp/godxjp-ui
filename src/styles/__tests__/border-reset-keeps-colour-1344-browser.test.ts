@@ -20,6 +20,7 @@ import { Button } from "./src/components/general/button";
 import { Image } from "./src/components/data-display/image";
 import { TopbarItem } from "./src/components/layout/topbar-item";
 import { Command, CommandInput } from "./src/components/data-entry/command";
+import { CardBar } from "./src/components/data-display/card";
 const SRC = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 const both = (name, render) =>
   [["border", "with"], [undefined, "without"]].map(([cls, id]) => (
@@ -32,16 +33,22 @@ createRoot(document.getElementById("root")).render(
     {both("image", (cls) => <Image src={SRC} alt="" width={16} height={16} className={cls} />)}
     {both("topbar", (cls) => <TopbarItem className={cls}>Item</TopbarItem>)}
     {both("command", (cls) => <Command><CommandInput className={cls} /></Command>)}
+    {both("cardbar-none", (cls) => <CardBar border="none" className={cls}>Bar</CardBar>)}
+    {both("cardbar-start", (cls) => <CardBar border="block-start" className={cls}>Bar</CardBar>)}
+    {both("cardbar-end", (cls) => <CardBar border="block-end" className={cls}>Bar</CardBar>)}
   </div>,
 );
 `;
 
-/** The element that carries the consumer `className`, per case. */
-const ROOT: Record<string, string> = {
-  button: "button",
-  image: '[data-slot="image"]',
-  topbar: '[data-slot="topbar-item"]',
-  command: "input",
+/** The element that carries the consumer `className`, and the side its rule zeroes, per case. */
+const ROOT: Record<string, [selector: string, side: "Top" | "Bottom"]> = {
+  button: ["button", "Top"],
+  image: ['[data-slot="image"]', "Top"],
+  topbar: ['[data-slot="topbar-item"]', "Top"],
+  command: ["input", "Top"],
+  "cardbar-none": ['[data-slot="card-bar"]', "Top"],
+  "cardbar-start": ['[data-slot="card-bar"]', "Bottom"],
+  "cardbar-end": ['[data-slot="card-bar"]', "Top"],
 };
 
 let fixture: ChromiumFixture;
@@ -56,23 +63,31 @@ afterAll(async () => {
   await fixture?.close();
 });
 
-const border = (selector: string) =>
-  page.$eval(selector, (el) => {
-    const s = getComputedStyle(el);
-    return { width: s.borderTopWidth, colour: s.borderTopColor, text: s.color };
-  });
+const border = (selector: string, side: "Top" | "Bottom" = "Top") =>
+  page.$eval(
+    selector,
+    (el, side) => {
+      const s = getComputedStyle(el);
+      return {
+        width: s.getPropertyValue(`border-${side.toLowerCase()}-width`),
+        colour: s.getPropertyValue(`border-${side.toLowerCase()}-color`),
+        text: s.color,
+      };
+    },
+    side,
+  );
 
 describe("a zeroed border keeps the theme border colour (gh#1344)", { timeout: 60_000 }, () => {
-  for (const [name, root] of Object.entries(ROOT)) {
+  for (const [name, [root, side]] of Object.entries(ROOT)) {
     it(`${name}: a consumer \`border\` class draws 1px in hsl(var(--border)), not currentColor`, async () => {
       const expected = (await border("#probe")).colour;
-      const got = await border(`[data-case="${name}-with"] ${root}`);
+      const got = await border(`[data-case="${name}-with"] ${root}`, side);
       expect(got.colour).not.toBe(got.text);
       expect(got).toMatchObject({ width: "1px", colour: expected });
     });
 
     it(`${name}: without the class the width stays 0`, async () => {
-      expect((await border(`[data-case="${name}-without"] ${root}`)).width).toBe("0px");
+      expect((await border(`[data-case="${name}-without"] ${root}`, side)).width).toBe("0px");
     });
   }
 });
