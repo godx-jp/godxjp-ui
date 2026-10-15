@@ -1,8 +1,9 @@
 /* GoDX PRESET — the GoDX identity (brand identity v2.3) as an opt-in theme (v32, gh#1220).
  *
  * Since v32 the package defaults are neutral: `--primary` and `--brand` are an ink (≈ zinc-900)
- * in light and a near-white in dark. This file puts back exactly what 31.x shipped as the default,
- * and nothing else — every other role was already brand-neutral and is not restated here.
+ * in light and a near-white in dark. This file puts the GoDX identity colour back — emerald-teal
+ * #008066 since 33.6.0 (gh#1345; 31.x–33.5 shipped violet #7A00FF) — plus the brand-tinted shadow
+ * ink, and nothing else: every other role was already brand-neutral and is not restated here.
  *
  *     @import "@godxjp/ui/styles";
  *     @import "@godxjp/ui/themes/godx.css";   // AFTER the base stylesheet
@@ -18,8 +19,8 @@
  * that re-seeds `--primary` goes after this one in turn.
  *
  * The derived tier (hover, pressed, border, halo, link ink, `--ring`) is not restated: it follows
- * `--primary` at the element that paints it (src/tokens/derived.css), so the violet seed alone
- * reproduces the whole 31.x ramp. Held equal to 31.x in Chromium by
+ * `--primary` at the element that paints it (src/tokens/derived.css), so the seed alone
+ * reproduces the whole ramp. Held in Chromium by
  * src/themes/__tests__/godx-preset-parity-1220-browser.test.ts.
  *
  * FONTS. 31.x's `@godxjp/ui/styles` loaded the bundled M PLUS 2 / Noto Sans JP faces; since v32

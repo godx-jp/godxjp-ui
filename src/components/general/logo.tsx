@@ -261,18 +261,18 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
     );
   }
   /*
-   * THE MASTER ARTWORK, BOTH VARIANTS, NOT RE-TINTED (brand identity v2.3).
+   * THE MASTER ARTWORK, BOTH VARIANTS, NO FILTER (brand identity v2.3; colour per gh#1345).
    *
-   * The guidelines are explicit and an earlier cut of this component broke every one of them by
-   * shipping the FLAT artwork painted with a token:
+   * The guidelines are explicit:
    *
-   *   "Logo master không bị nhuộm lại theo màu của một module."
    *   "Logo dùng master SVG đúng biến thể sáng/tối."
    *   "Dark asset: cung cấp biến thể phù hợp; không dùng filter đảo màu ảnh/logo."
    *
-   * So BOTH variants render and CSS shows one (styles/logo-layout.css). Not a filter, not a
-   * recolour, not one artwork with swapped token values — the light and dark masters are different
-   * files in the kit and they stay different files here.
+   * So BOTH variants render and CSS shows one (styles/logo-layout.css). Not a filter, not one
+   * artwork with swapped token values — the light and dark masters are different files in the kit
+   * and they stay different files here. Since gh#1345 their gradient stops are mapped to the
+   * emerald-teal ramp anchored on the preset's --primary #008066 (scripts/gen-brand-artwork.mjs,
+   * STOP_RECOLOUR); geometry and solid fills are the kit's.
    *
    * `dangerouslySetInnerHTML` because the artwork is 8 gradients, a clipPath and 10 paths whose
    * coordinates must stay byte-exact ("không đổi hình G, wordmark… construction"). It is
@@ -432,8 +432,8 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
           {/* `data-logotype` marks this as brand-name artwork: WCAG 2.2 SC 1.4.3 exempts "text
            * that is part of a logo or brand name" from the contrast minimum, and check:contrast
            * reads exactly this attribute. The wordmark is typeset identity, not readable UI copy —
-           * the canonical GoDX emerald (--brand, #009766) is the brand's colour, not a choice the
-           * library may darken. */}
+           * the brand's colour (--brand; the GoDX preset's emerald-teal #008066 since gh#1345, the
+           * same colour as its primary button) is not a choice the library may darken. */}
           {hasWordmark ? (
             <span data-slot="logo-wordmark" data-logotype className="ui-logo-wordmark">
               {wordmark}

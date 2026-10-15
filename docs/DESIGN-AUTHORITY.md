@@ -18,7 +18,7 @@ It changes no code by itself. It is the tie-breaker a reviewer points at.
 | Behaviour primitives                                               | **Radix**                                       | already the implementation — 193 references                                                                                                                                                                |
 | Component composition shape                                        | **shadcn**                                      | already the structural convention — 23 references                                                                                                                                                          |
 | Component taxonomy / grouping                                      | **Ant Design** groups                           | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general` — a naming precedent, nothing is installed                                                          |
-| Colour foundation                                                  | **SmartHR**, brand roles aside                  | the NEUTRAL spine is SmartHR's — `--foreground` = TEXT_BLACK, `--border` = BORDER. `--primary` was SmartHR MAIN `#0071bd` until identity v2.3 took the brand roles back: it is GoDX violet `#7A00FF` today |
+| Colour foundation                                                  | **SmartHR**, brand roles aside                  | the NEUTRAL spine is SmartHR's — `--foreground` = TEXT_BLACK, `--border` = BORDER. `--primary` was SmartHR MAIN `#0071bd` until identity v2.3 took the brand roles back: GoDX preset — `#008066` (gh#1345) |
 | **Derived colour — the interaction states hanging off each seed**  | **Measured contrast (WCAG 2.2 / JIS X 8341-3)** | Authored in `src/tokens/derived.css`; no algorithm derives them. Four contrast suites read that file and hold every value to a threshold, and a fifth holds it to the seed's HUE (gh#648) — see below      |
 | **Japanese UI convention — density, JP typography, form patterns** | **SmartHR**                                     | **NEW — this decision.** Extends SmartHR from "where the colours came from" to the authority for how a JP business screen behaves                                                                          |
 | **Japanese accessibility / public-sector convention**              | **デジタル庁 Design System** (Digital Agency)   | **NEW — this decision.** The reference when a JP customer asks which standard a screen meets (JIS X 8341-3)                                                                                                |
@@ -665,6 +665,11 @@ the kit's `action.primary.hover` and then reflects the pressed step, because the
 | light `--primary-active` | kit #5200B0                  | #5400b0 · 10.31:1               |
 | dark `--primary-hover`   | kit #E8DAFF                  | #ecdaff · 13.51:1               |
 | dark `--primary-active`  | #fbf7ff · 1.056:1 from white | #cd9fff · 8.41:1 (sign flipped) |
+
+The formula was fitted on that violet and still reproduces it (`derived-seed-sweep.test.ts`). Since
+gh#1345 the GoDX preset's seed is emerald-teal `168 100% 25%` / `168 60% 60%`, and the same formula
+gives light hover #005544 · 8.72:1 and pressed #003027 · 14.17:1, dark hover #73dcc7 · 10.82:1 and
+pressed #8be2d1 · 11.74:1 — no reflection, because the dark seed sits at 60% L.
 
 **The ratio is blind to hue, and that cost a release (gh#648).** Identity v2.3 moved the seed 63
 degrees and this tier stayed on the blue it was derived from: 24.0.0 and 24.1.0 shipped a primary

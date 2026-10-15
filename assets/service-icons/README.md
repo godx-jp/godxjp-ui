@@ -3,9 +3,10 @@
 One icon per production service, keyed by its `services.slug`. They are original geometry, with no
 third-party logos and no emoji.
 
-The system: a 64×64 grid with a radius-14 tile filled by the GoDX brand gradient
-(#7A00FF → #3700A6 → #0B0F3B). Each tile carries one white glyph at stroke 4, with round caps and
-joins, inside the 16–48 live area. Every icon is legible from 24 to 64 px. At 24 px the closest pair
+The system: a 64×64 grid with a radius-14 tile filled by the GoDX brand gradient, one hue since
+gh#1345 (#008066 → #00513F → #03241D — the logo master's stop map; it was violet → navy). Each tile
+carries one white glyph at stroke 4, with round caps and joins, inside the 16–48 live area. White
+measures 4.91:1 at the lightest point of the tile (#008066) and more everywhere else. Every icon is legible from 24 to 64 px. At 24 px the closest pair
 still differs in 50 of 576 pixels.
 
 | file                 | use                                                                                                                                                                                                        |

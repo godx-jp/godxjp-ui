@@ -7,34 +7,9 @@
  * that the consumer did not choose and cannot change without abandoning the GoDX brand (gh#823).
  * `scripts/visual-audit-rules.mjs` exempts exactly these from the 渋み chroma bound.
  *
- * LIGHT SCHEME ONLY, deliberately: the dark `--primary`/`--brand` (#DCBCFF) measures OKLCH
- * chroma 0.097, comfortably inside the 0.18 bound, so it never reaches an exemption. Listing it
- * would widen the carve-out for nothing.
+ * ONLY ACCENTS OVER THE BOUND (OKLCH chroma > 0.18), and LIGHT SCHEME ONLY: an accent
+ * inside the bound never reaches an exemption, so listing it would widen the carve-out for nothing.
+ * Empty since gh#1345 — the GoDX emerald-teal #008066 measures chroma 0.103 (the violet it replaced,
+ * #7A00FF, measured 0.293), and the neutral ink is grey.
  */
-export const SHIPPED_BRAND_ACCENTS = [
-  {
-    "cssVars": [
-      "--primary",
-      "--brand"
-    ],
-    "hsl": "240 6% 10%",
-    "rgb": {
-      "r": 24,
-      "g": 24,
-      "b": 27
-    }
-  },
-  {
-    "cssVars": [
-      "--primary",
-      "--brand"
-    ],
-    "hsl": "268.7 100% 50%",
-    "rgb": {
-      "r": 122,
-      "g": 0,
-      "b": 255
-    },
-    "source": "src/themes/godx-tokens.css"
-  }
-];
+export const SHIPPED_BRAND_ACCENTS = [];

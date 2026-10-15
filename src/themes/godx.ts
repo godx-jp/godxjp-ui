@@ -6,7 +6,7 @@ import { Logo } from "../components/general/logo";
 /**
  * The GoDX PRESET (v32, gh#1220): the product defaults GoDX surfaces shipped with in 31.x, now
  * opt-in so the package's own defaults stay neutral. Pair it with the stylesheet that restores the
- * violet identity:
+ * GoDX identity colour (emerald-teal #008066 since 33.6.0, gh#1345):
  *
  *     import "@godxjp/ui/themes/godx.css";
  *     import { godxPreset } from "@godxjp/ui/themes/godx";
@@ -24,6 +24,9 @@ import { Logo } from "../components/general/logo";
 export const godxPreset: AppPreset = Object.freeze({
   name: "godx",
   defaultLocale: "vi",
-  brandMark: createElement(Logo, { mark: "godx", tone: "success" }),
+  // `tone: "primary"` (gh#1345): the mark, its wordmark and the primary button are ONE colour —
+  // the brand green the stylesheet sets on `--primary` and `--brand` alike. "success" would name
+  // the 若竹 status role, which this mark is not.
+  brandMark: createElement(Logo, { mark: "godx", tone: "primary" }),
   emailBrandLabel: "GoDX",
 });

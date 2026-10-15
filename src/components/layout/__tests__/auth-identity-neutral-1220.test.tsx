@@ -46,7 +46,8 @@ describe("AuthIdentity with a preset (gh#1220)", () => {
     const { container } = withPreset(<AuthIdentity title="GoDX ID" />);
     const mark = logoOf(container)!;
     expect(mark).toHaveAttribute("data-mark", "godx");
-    expect(mark).toHaveAttribute("data-tone", "success");
+    // gh#1345: the GoDX mark is the primary colour — one green for the logo and the button.
+    expect(mark).toHaveAttribute("data-tone", "primary");
     expect(mark).toHaveAttribute("aria-hidden", "true");
   });
 

@@ -106,6 +106,10 @@ export const CHROMA_LIMIT = 0.18;
 /**
  * Per-channel sRGB tolerance for "this IS the accent we ship" (gh#823).
  *
+ * The measurements below were taken on the violet #7A00FF the GoDX preset shipped until gh#1345.
+ * Its emerald-teal successor sits inside the bound, so the exemption list is empty today; the
+ * tolerance is kept for the next accent that would need it.
+ *
  * The audit reads a computed `rgb()` off a live page, so the match has to survive whatever rounding
  * the engine applied on the way there. Measured in Chromium (playwright 1.61), all four routes to
  * the token — `#7A00FF`, `hsl(268.7 100% 50%)`, the legacy comma form, and `hsl(var(--primary))` —
@@ -142,8 +146,8 @@ export function isShippedBrandAccent({ r, g, b }) {
 
 /**
  * @returns {boolean} true when an accent surface exceeds the 渋み chroma limit.
- * The shipped brand accent is exempt — it is over the bound (chroma 0.293) but it is not a choice
- * any consumer made, so reporting it warns every page about a colour nobody can act on, and the
+ * A shipped brand accent over the bound is exempt (the violet was, chroma 0.293, until gh#1345) —
+ * it is not a choice any consumer made, so reporting it warns every page about a colour nobody can act on, and the
  * first reader to hit it silences the rule along with every real finding it would have caught.
  */
 export function isOversaturated(rgb, limit = CHROMA_LIMIT) {

@@ -31,7 +31,7 @@ import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 
 // The package default `--radius` is `calc(0.375rem * 1)`; a literal is used here because jsdom
 // re-serialises `calc()` without the spaces and the whitespace is not what is under test.
-const ROOT = { primary: "268.7 100% 50%", radius: "6px", card: "60 33% 99%" };
+const ROOT = { primary: "168 100% 25%", radius: "6px", card: "60 33% 99%" };
 const ACME = { primary: "204 100% 37%", radius: "20px", card: "0 0% 20%" };
 const INNER = { primary: "12 100% 45%", radius: "4px", card: "0 0% 10%" };
 

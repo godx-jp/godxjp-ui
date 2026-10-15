@@ -178,8 +178,8 @@ export type SeedPreset = {
 };
 
 export const SEED_PRESETS: SeedPreset[] = [
-  /* The package's own `--primary`: the export must reproduce foundation.css's light block. */
-  { id: "godx", hex: "#7A00FF" },
+  /* The GoDX preset's `--primary` (themes/godx-tokens.css, emerald-teal since gh#1345). */
+  { id: "godx", hex: "#008066" },
   /* An ordinary, well-behaved brand — every row clears, so a passing readout is visible too. */
   { id: "blue", hex: "#2563EB" },
   /* Near-white: the label flips to black and the fill cannot clear 3:1 on a near-white canvas. */

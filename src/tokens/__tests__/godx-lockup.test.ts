@@ -16,6 +16,10 @@ import { describe, expect, it } from "vitest";
  *
  * Each rule gets an assertion, because each was violated by an implementation that looked
  * reasonable and rendered plausibly.
+ *
+ * gh#1345 (product-owner decision, option B): the master stays — gradients, clipPath, arrow fold —
+ * and only its gradient STOPS are mapped to the emerald-teal ramp by scripts/gen-brand-artwork.mjs
+ * (STOP_RECOLOUR). Solid fills (the wordmark letters) are the kit's, unchanged.
  */
 const root = process.cwd();
 const read = (rel: string) => readFileSync(join(root, rel), "utf8");
@@ -36,6 +40,36 @@ describe("the master artwork ships as-is", () => {
     // The master is a gradient artwork; a variant that lost them would be the flat cut smuggled in.
     const gradients = artwork.match(/Gradient/g) ?? [];
     expect(gradients.length).toBeGreaterThan(20);
+  });
+
+  it("paints its gradient stops in the emerald-teal ramp, not the kit's violet (gh#1345)", () => {
+    const stops = [...artwork.matchAll(/stop-color=\\"(#[0-9A-Fa-f]{6})\\"/g)].map((m) =>
+      m[1].toUpperCase(),
+    );
+    expect(stops.length).toBeGreaterThan(20);
+    const RAMP = new Set([
+      "#008066",
+      "#00513F",
+      "#03241D",
+      "#00A383",
+      "#006E57",
+      "#5CE6C4",
+      "#024034",
+      "#023328",
+      "#2FBF9C",
+      "#B8EBDD",
+      "#D9F5EE",
+      "#4FD1AE",
+    ]);
+    for (const stop of stops) expect(RAMP.has(stop), stop).toBe(true);
+    // The anchor is the preset's light --primary, so the logo and the primary button share it.
+    expect(stops).toContain("#008066");
+    // Solid letter fills are the kit's own: indigo on light, white on the reverse master.
+    expect(artwork).toMatch(/letter-g\\" fill=\\"#0B0F3B\\"/);
+    expect(artwork).toMatch(/letter-g\\" fill=\\"#FFFFFF\\"/);
+    for (const violet of ["#7A00FF", "#3700A6", "#FF3DFF", "#D8BCFF"]) {
+      expect(artwork.toUpperCase()).not.toContain(violet);
+    }
   });
 
   it("namespaces the ids per VARIANT and per INSTANCE", () => {

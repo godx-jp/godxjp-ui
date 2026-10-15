@@ -28,8 +28,9 @@ describe("AuthIdentity", () => {
     );
     const mark = container.querySelector('[data-slot="logo"]')!;
     expect(mark).toHaveAttribute("data-mark", "godx");
-    // tone="success" → the identity fill role, NOT --primary.
-    expect(mark).toHaveAttribute("data-tone", "success");
+    // tone="primary" (gh#1345): in the GoDX preset the mark, its wordmark and the primary button
+    // are one colour; "success" would name the 若竹 status role.
+    expect(mark).toHaveAttribute("data-tone", "primary");
     expect(mark).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("GoDX ID にログイン");
   });

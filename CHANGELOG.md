@@ -6,6 +6,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.6.0] - 2026-10-16
+
+**The GoDX preset is emerald-teal now, and the logo is the same colour as the primary button
+(#1345).** Apps that load `@godxjp/ui/themes/godx.css` (or `godx-tokens.css`) and
+`godxPreset` pick up the new colour when they upgrade. They do not need to change any code. The
+package's own defaults are still neutral, and a service theme that sets its own `--primary` is not
+affected.
+
+### Changed
+
+- **GoDX preset colour (#1345).** `--primary` / `--brand` moved from violet `268.7 100% 50%`
+  (#7A00FF) to `168 100% 25%` (#008066) in light, and from `268.7 100% 86.9%` (#DCBCFF) to
+  `168 60% 60%` (#5CD6BE) in dark. The labels stay the same (`60 33% 99%` light, `48 9% 9%` dark)
+  and measure 4.86:1 and 9.99:1. The new green has an OKLCH chroma of 0.103, inside the 渋み bound
+  of 0.18; the violet's was 0.293. Hover, pressed, border, focus halo and the link inks still derive
+  from `--primary`. The `@supports not (color: hsl(from …))` fallback for Chrome/Edge 111–118 is
+  recomputed with the same `derived.css` formulas.
+- **Brand-tinted shadow in the GoDX preset (#1345).** `--shadow-color` is a desaturated ink of the
+  brand hue: `18 43 38` (hsl 168 40% 12%) in light and `6 14 13` (hsl 168 40% 4%) in dark, where it
+  was pure black. The elevation alphas and layers have not changed.
+- **GoDX logo (#1345).** `mark="godx"` and `mark="godx-lockup"` keep the brand kit's gradient
+  master (geometry, gradients and arrow fold unchanged), with every gradient stop mapped to a
+  same-hue emerald-teal ramp anchored on #008066 (`STOP_RECOLOUR` in
+  `scripts/gen-brand-artwork.mjs`). The letters keep the kit's #0B0F3B (light) and white (dark).
+  `godxPreset.brandMark` uses `tone: "primary"`. The email mark (`EMAIL_BRAND_MARK_GODX`) and `EMAIL_COLORS_GODX*` carry the
+  new colour.
+- **Visual audit (#1345).** The `oversaturated-accent` rule now exempts only shipped accents above
+  the chroma bound. That list is empty now, so the retired violet #7A00FF is reported like any
+  other loud accent.
+- **Service icons (`assets/service-icons/`, not part of the npm package).** The 3-stop tile
+  gradient is one hue now (#008066 → #00513F → #03241D, was violet → navy). The white glyph measures
+  4.91:1 at the lightest point of the tile.
+
 ## [33.5.0] - 2026-10-16
 
 ### Added

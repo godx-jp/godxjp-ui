@@ -55,7 +55,7 @@ describe("parseThemeTokens reads the DEFAULT scope, not every scope", () => {
     const tokens = parse(`/* Foundation. Written as \`:root { --x: 1 }\` elsewhere. */
 :root {
   /* The seed. */
-  --primary: 268.7 100% 50%;
+  --primary: 168 100% 25%;
 }`);
     expect(tokens.map((t) => t.name)).toEqual(["--primary"]);
     expect(tokens[0].description).toBe("The seed.");

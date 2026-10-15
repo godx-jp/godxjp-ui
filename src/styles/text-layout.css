@@ -320,8 +320,8 @@
     text-decoration-thickness: var(--text-link-underline-width);
   }
   /* A link's DEFAULT tone is `primary`, and a link paints the LINK ink rather than the fill role
-   * (gh#664). `--primary` is #7A00FF — the action FILL — and the guideline gives links their own
-   * `--gx-link` #6400D4. Scoped to `[data-tone="primary"]` so an explicit `link tone="destructive"`
+   * (gh#664). `--primary` is the action FILL (#008066 in the GoDX preset since gh#1345) and links
+   * take their own ink one ramp step down (`--text-link`; #005544 there). Scoped to `[data-tone="primary"]` so an explicit `link tone="destructive"`
    * still wins, and so `data-tone` stays exactly what `typography-link.test.tsx` pins.
    *
    * `:not([data-disabled])` is load-bearing, not tidiness: this selector is (0,3,0) and the disabled

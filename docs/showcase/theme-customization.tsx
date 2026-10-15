@@ -173,7 +173,7 @@ import { ChatBubble, ThoughtChain, Welcome } from "@godxjp/chat";
  *
  *   palette  light seed  label   fill/canvas   dark seed   label    fill/canvas
  *   neutral  #18181B    17.45:1 17.45:1        #FAFAFA     16.97:1  16.97:1  (the package default)
- *   godx     #7A00FF     6.42:1  6.42:1        #DCBCFF     12.68:1  10.61:1  (themes/godx.css)
+ *   godx     #008066     4.91:1  4.91:1        #5CD6BE     11.82:1   9.99:1  (themes/godx-tokens.css, gh#1345)
  *   indigo   #4338CA     7.90:1  7.90:1        #A5B4FC     10.53:1   8.81:1
  *   teal     #0F766E     5.47:1  5.47:1        #5EEAD4     14.20:1  11.88:1
  *   amber    #B45309     5.02:1  5.02:1        #FCD34D     14.56:1  12.18:1
@@ -188,13 +188,13 @@ import { ChatBubble, ThoughtChain, Welcome } from "@godxjp/chat";
  * `godx` block is the seed `@godxjp/ui/themes/godx.css` restores for the GoDX preset.
  * ──────────────────────────────────────────────────────────────────────────────────────────── */
 const THEME_CSS = `
-[data-godx-theme="godx"]   { --primary: 268.7 100% 50%;  --primary-foreground: 0 0% 100%; }
+[data-godx-theme="godx"]   { --primary: 168 100% 25%;    --primary-foreground: 0 0% 100%; }
 [data-godx-theme="indigo"] { --primary: 244.5 57.9% 50.6%; --primary-foreground: 0 0% 100%; }
 [data-godx-theme="teal"]   { --primary: 175.3 77.4% 26.1%; --primary-foreground: 0 0% 100%; }
 [data-godx-theme="amber"]  { --primary: 26 90.5% 37.1%;  --primary-foreground: 0 0% 100%; }
 [data-godx-theme="rose"]   { --primary: 345.3 82.7% 40.8%; --primary-foreground: 0 0% 100%; }
 
-:root[data-theme="dark"] [data-godx-theme="godx"],   .dark [data-godx-theme="godx"]   { --primary: 268.7 100% 86.9%; --primary-foreground: 0 0% 0%; }
+:root[data-theme="dark"] [data-godx-theme="godx"],   .dark [data-godx-theme="godx"]   { --primary: 168 60% 60%;     --primary-foreground: 0 0% 0%; }
 :root[data-theme="dark"] [data-godx-theme="indigo"], .dark [data-godx-theme="indigo"] { --primary: 229.7 93.5% 81.8%; --primary-foreground: 0 0% 0%; }
 :root[data-theme="dark"] [data-godx-theme="teal"],   .dark [data-godx-theme="teal"]   { --primary: 170.6 76.9% 64.3%; --primary-foreground: 0 0% 0%; }
 :root[data-theme="dark"] [data-godx-theme="amber"],  .dark [data-godx-theme="amber"]  { --primary: 45.9 96.7% 64.5%; --primary-foreground: 0 0% 0%; }
@@ -229,7 +229,7 @@ const THEME_CSS = `
 /** The hex each palette chip stands for, in the LIGHT theme — what the Swatch beside it samples. */
 const PALETTE_SEED: Record<string, string> = {
   neutral: "#18181B",
-  godx: "#7A00FF",
+  godx: "#008066",
   indigo: "#4338CA",
   teal: "#0F766E",
   amber: "#B45309",
