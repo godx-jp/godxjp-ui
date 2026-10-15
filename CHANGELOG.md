@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.6.1] - 2026-10-16
+
+### Fixed
+
+- **ui-audit `form-on-list-page` no longer flags a page's own editor.** A Form whose `id` a Button
+  submits from elsewhere (`<Button type="submit" form={FORM_ID}>` in the PageContainer header, the
+  `page-editor` exemplar's shape) IS the page, so a read-only list beside it (gino-cloud 実習終了 lists
+  the filings the chosen reason triggers) is part of that editor, not a list page with a create form
+  inlined. A submit Button aimed at a different form still leaves the Form flagged.
+
 ## [33.6.0] - 2026-10-16
 
 **The GoDX preset is emerald-teal now, and the logo is the same colour as the primary button

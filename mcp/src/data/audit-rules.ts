@@ -103,7 +103,7 @@ export const AUDIT_RULES: AuditRule[] = [
     severity: "warn",
     category: "composition",
     standard: null,
-    fix: 'A submitting Form with 3+ FormFields and a DataTable/Table/List/ListRow on the same page is a create form inlined beside its list (design-complex-admin anti-pattern #3). Give create its own route, or a focused Dialog/Sheet, and link to it from the list page\'s PageContainer `extra`. Not findings: a Form inside a Dialog/Sheet/Drawer, a `role="search"` Form or a SearchForm (a 検索条件フォーム searches the list, it does not create into it), a Form that never submits (no onSubmit, or one that only calls preventDefault: a filter bar), a 1-2 field form, an editor whose Table sits inside its Form, and a list page and a create page that one file renders in two PageContainers.',
+    fix: 'A submitting Form with 3+ FormFields and a DataTable/Table/List/ListRow on the same page is a create form inlined beside its list (design-complex-admin anti-pattern #3). Give create its own route, or a focused Dialog/Sheet, and link to it from the list page\'s PageContainer `extra`. Not findings: a Form inside a Dialog/Sheet/Drawer, a `role="search"` Form or a SearchForm (a 検索条件フォーム searches the list, it does not create into it), a Form that never submits (no onSubmit, or one that only calls preventDefault: a filter bar), a 1-2 field form, an editor whose Table sits inside its Form, the page\'s own editor (a Form whose `id` a header `<Button type="submit" form={FORM_ID}>` submits, with a read-only list beside it), and a list page and a create page that one file renders in two PageContainers.',
   },
   {
     id: "hand-rolled-filter-bar",
