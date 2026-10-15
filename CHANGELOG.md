@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.4.0] - 2026-10-15
+
+### Added
+
+- **`--topbar-item-badge-ring-width` / `--topbar-item-badge-ring-color` (#1341).** A surface-coloured ring around a `TopbarItem` badge (width default `var(--stroke-md)`; colour is a role-mirror knob, `initial`, defaulting to `hsl(var(--card))` in the bar, the rail background in `.app-nav-rail`, the sheet background in the drawer's rail strip).
+
+### Changed
+
+- **`TopbarItem` badge placement (#1341).** `--topbar-item-badge-offset-inline` / `--topbar-item-badge-offset-block` default to half and three quarters of `--topbar-item-badge-size` (were `var(--space-1)`), declared `initial` with the defaults at the call site. The badge's end edge is clamped with `max()` to stay inside its cell, independent of `justify-self` support on absolutely positioned elements. The drawer's rail strip (`.app-mobile-nav-rail`) gets the docked rail's block padding (`--app-shell-nav-rail-inset`). `badge={0}` now renders nothing; pass the string `"0"` to show a zero.
+
+### Fixed
+
+- **`TopbarItem` count badge covered most of its icon (#1341):** 56% of a 16px icon for one digit, 75% for "99+". It now sits on the icon's top-end corner and covers 12.5% (one digit) and at most 25% ("99+") in LTR and RTL, unclipped in the bar, the nav rail on any edge, a fixed 40px rail, the mobile drawer and MobileShell.
+- **`PopoverContent` and `MegaMenu` no longer close on a press inside them in a shadow root (#1340).** Their document-level outside-press listeners compared `contains(event.target)`, which is retargeted to the shadow host, so a button inside the panel never got its click (0/1 → 1/1). They now read `event.composedPath()`, as `FloatButton.Group` already did. Consumers can drop the `keepPanelPressesInside()` stopgap.
+- **Shadow DOM focus checks read the element that really has focus (#1340).** `PopoverContent` no longer moves focus from its first input onto the panel on open; `useOverlayCloseFocus` (Popover, Dialog, Sheet) records the real trigger; `EllipsisTooltip` shows on keyboard focus; `MegaMenu` (hover) stays open with focus inside; the shortcut gate (`SearchInput`, `CommandPalette`, `DropdownMenu`) reads `composedPath()[0]`, so a `/` typed in a shadow-root input stays text. Measured in Chromium in a shadow root: focus after open → the search input (was the panel); typing `a/b` → `a/b` (was `a`); tooltip on keyboard focus 0 → 1.
+- **Pressing the trigger of an open `Popover` closes it (#1340).** react-aria closed the panel on `focusout` and the trigger's click reopened it (`onOpenChange` `[false, true]`, Chromium, light DOM and shadow root); one press now gives `[false]`.
+
 ## [33.3.0] - 2026-10-15
 
 **A hand-built filter strip is now caught, and FilterBar has a gallery of eleven layouts.** Rule
