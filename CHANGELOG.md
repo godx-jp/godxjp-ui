@@ -53,8 +53,8 @@ No public API changes.
 - Docs: the Card page's CardBar demo is a tool strip (添付 / メンション / テンプレート), not a
   scrolling row of status filters.
 - Docs: the filter-bar page no longer describes "both responsive overflow strategies" or an
-  `overflow="wrap"` default; the `case6-agency-handy` showcase's filter chips wrap
-  (`ToggleGroup wrap`) instead of scrolling sideways in an `overflow-x-auto` box.
+  `overflow="wrap"` default; the `case6-agency-handy` showcase's filter chips wrap onto a second
+  line instead of scrolling sideways in an `overflow-x-auto` box.
 
 ## [33.0.0] - 2026-10-15
 

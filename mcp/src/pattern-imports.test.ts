@@ -77,6 +77,8 @@ describe("common alias slugs resolve to the right pattern", () => {
   it.each([
     ["loading-states", "async-data-state"],
     ["filter-bar", "data-table-page"],
+    ["more-filters", "list-filters"],
+    ["many-filters", "list-filters"],
     ["settings-tabs", "settings-page-responsive"],
     ["organization-switcher", "organization-memberships"],
     ["backup-codes", "account-recovery-settings"],
