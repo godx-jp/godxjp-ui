@@ -273,6 +273,10 @@
         "number": "数字を含む",
         "symbol": "記号を含む"
       }
+    },
+    "translatable": {
+      "languages": "言語",
+      "hasError": "エラーあり"
     }
   },
   "feedback": {

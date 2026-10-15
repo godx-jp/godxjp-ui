@@ -274,6 +274,10 @@
         "number": "Có chữ số",
         "symbol": "Có ký hiệu"
       }
+    },
+    "translatable": {
+      "languages": "Ngôn ngữ",
+      "hasError": "có lỗi"
     }
   },
   "feedback": {

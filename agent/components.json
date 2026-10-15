@@ -7127,6 +7127,182 @@
     ]
   },
   {
+    "example": "import { FormField, TranslatableInput, TranslatableTextarea, type TranslatableValue } from \"@godxjp/ui/data-entry\";\n\nconst [name, setName] = React.useState<TranslatableValue>({ ja: \"醤油ラーメン\" });\n\n<FormField label=\"商品名\" required>\n  <TranslatableInput\n    locales={[\"ja\", \"en\", \"vi\"]}\n    fallbackLocale=\"ja\"\n    value={name}\n    onValueChange={setName}\n    errors={{ en: \"英語名を入力してください\" }}\n  />\n</FormField>\n\n<FormField label=\"説明\">\n  <TranslatableTextarea locales={[\"ja\", \"en\", \"vi\"]} value={description} onValueChange={setDescription} rows={3} />\n</FormField>",
+    "group": "data-entry",
+    "importPath": "@godxjp/ui/data-entry",
+    "name": "TranslatableInput",
+    "props": [
+      {
+        "description": "Controlled per-locale values — `Partial<Record<string, string>>` keyed by BCP-47 tag. A missing key or `\"\"` is an empty locale.",
+        "name": "value",
+        "type": "TranslatableValue"
+      },
+      {
+        "description": "Uncontrolled initial per-locale values.",
+        "name": "defaultValue",
+        "type": "TranslatableValue"
+      },
+      {
+        "description": "The WHOLE map after an edit: only the active locale's key changes, every other locale is carried over untouched. The ✕ of `allowClear` empties the active locale only.",
+        "name": "onValueChange",
+        "type": "(value: TranslatableValue) => void"
+      },
+      {
+        "description": "The BCP-47 tags the field edits, in tab order. Default: every locale registered with the app (`getRegisteredLocales()` — built-in `vi`/`en`/`ja` plus `registerLocale`). Tabs are named by `Intl.DisplayNames` in the reader's UI language; the tags stay the keys.",
+        "name": "locales",
+        "type": "readonly string[]"
+      },
+      {
+        "description": "The locale tab selected first. Default: the AppProvider's active locale when it is in `locales`, else the fallback locale.",
+        "name": "defaultLocale",
+        "type": "string"
+      },
+      {
+        "description": "The locale whose text an EMPTY locale shows as its placeholder. Default: the AppProvider's `fallbackLocale`, or the first of `locales` when that is not one of them.",
+        "name": "fallbackLocale",
+        "type": "string"
+      },
+      {
+        "description": "Per-locale validation messages. Each locale that has one gets an error mark on its tab — a glyph plus screen-reader text («Vietnamese, has an error»), never colour alone. The ACTIVE locale's message sets `aria-invalid` and is shown in the enclosing FormField's own error line (wired by `aria-errormessage`); without a FormField it is shown under the field.",
+        "name": "errors",
+        "type": "Partial<Record<string, ReactNode>>"
+      },
+      {
+        "defaultValue": "\"md\"",
+        "description": "The field's control tier, as on Input. The tab strip uses the Tabs `sm` tier (`md` for an `lg` field).",
+        "name": "size",
+        "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+      },
+      {
+        "description": "Shown while the active locale is empty and there is no fallback text to show (the fallback locale itself, or an empty fallback).",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "description": "Disables the control; the locale tabs stay operable so every locale can still be read.",
+        "name": "disabled",
+        "type": "boolean"
+      },
+      {
+        "description": "Lands on the control, so a FormField label click focuses it.",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "description": "Root (strip + field) class override.",
+        "name": "className",
+        "type": "string"
+      }
+    ],
+    "related": [
+      "TranslatableTextarea — the same contract over a Textarea.",
+      "Input — the control it composes; every Input prop applies.",
+      "FormField — the label / helper / error wiring it reports into.",
+      "Tabs — the switcher it composes (strip-only, `controls` → the field's panel).",
+      "AppSettingPicker kind=\"locale\" — chooses the UI language, not per-locale content."
+    ],
+    "rules": [],
+    "storyPath": "data-entry/translatable-input.tsx",
+    "tagline": "ONE text field holding a value per locale (`{ ja, en, vi }`), switched by locale tabs above it (gh#1336). For user content stored per locale — a product name, a category label, a menu description (Astrotomic / Spatie `*_translations`). Locales, first tab and fallback come from AppProvider; an empty locale shows the fallback locale's text as its placeholder; a locale with an error is marked on its tab. Every other `Input` prop applies to the one control.",
+    "usage": [
+      "DO wrap it in FormField: the label names the control together with the active locale («商品名 English») and names the tab strip («商品名 Language»), `required`/`helper` reach the control, and the active locale's error renders in FormField's error line.",
+      "DO pass the per-locale error map from your validator as `errors` (e.g. Laravel `name.ja` → `errors.ja`). Don't pass the same message to FormField `error` as well: FormField's own `error` wins over the reported one, and it would mark the field invalid on every locale.",
+      "DO set `fallbackLocale` to the content's SOURCE language (often `ja`) when it differs from the AppProvider's UI fallback — the placeholder of an untranslated locale then shows the source text to translate from.",
+      "DON'T build a local wrapper of Tabs + Input for this: the tab↔panel ARIA, the lang attribute, the error marks and the FormField wiring are what this component exists for.",
+      "DON'T use it for a choice of language that IS the form's value (a user's preferred language): that is `AppSettingPicker kind=\"locale\"` or a Select.",
+      "The locale switcher is the WAI-ARIA APG tabs pattern (tablist → one tabpanel holding the field), not a Segmented radio group: the locale is not form state — every locale is submitted together — the tab only chooses which locale the one field shows."
+    ],
+    "useCases": [
+      "Product / menu item name in ja, en and vi on an admin edit form",
+      "Category or section label stored per locale (Astrotomic `*_translations`)",
+      "Translated description or recipe text (TranslatableTextarea)"
+    ]
+  },
+  {
+    "example": "import { FormField, TranslatableTextarea } from \"@godxjp/ui/data-entry\";\n\n<FormField label=\"説明\">\n  <TranslatableTextarea locales={[\"ja\", \"en\", \"vi\"]} value={description} onValueChange={setDescription} autoGrow minRows={3} />\n</FormField>",
+    "group": "data-entry",
+    "importPath": "@godxjp/ui/data-entry",
+    "name": "TranslatableTextarea",
+    "props": [
+      {
+        "description": "Controlled per-locale values, keyed by BCP-47 tag.",
+        "name": "value",
+        "type": "TranslatableValue"
+      },
+      {
+        "description": "Uncontrolled initial per-locale values.",
+        "name": "defaultValue",
+        "type": "TranslatableValue"
+      },
+      {
+        "description": "The whole map after an edit; only the active locale's key changes.",
+        "name": "onValueChange",
+        "type": "(value: TranslatableValue) => void"
+      },
+      {
+        "description": "The BCP-47 tags the field edits, in tab order. Default: the app's registered locales.",
+        "name": "locales",
+        "type": "readonly string[]"
+      },
+      {
+        "description": "The locale tab selected first. Default: the AppProvider's active locale.",
+        "name": "defaultLocale",
+        "type": "string"
+      },
+      {
+        "description": "The locale whose text an empty locale shows as its placeholder. Default: the AppProvider's `fallbackLocale`.",
+        "name": "fallbackLocale",
+        "type": "string"
+      },
+      {
+        "description": "Per-locale messages: tab marks for each, `aria-invalid` + FormField's error line for the active one.",
+        "name": "errors",
+        "type": "Partial<Record<string, ReactNode>>"
+      },
+      {
+        "defaultValue": "\"md\"",
+        "description": "The field's control tier, as on Textarea.",
+        "name": "size",
+        "type": "\"sm\" | \"md\" | \"lg\""
+      },
+      {
+        "description": "Shown while the active locale is empty and there is no fallback text.",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "description": "Disables the control; the locale tabs stay operable.",
+        "name": "disabled",
+        "type": "boolean"
+      },
+      {
+        "description": "Lands on the control.",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "description": "Root class override.",
+        "name": "className",
+        "type": "string"
+      }
+    ],
+    "related": [
+      "TranslatableInput — the single-line form and the full contract.",
+      "Textarea — the control it composes."
+    ],
+    "rules": [],
+    "storyPath": "data-entry/translatable-input.tsx",
+    "tagline": "TranslatableInput over a Textarea (gh#1336): one multi-line field holding a value per locale, switched by locale tabs. Same locale, fallback-placeholder, error-mark and FormField contract; every Textarea prop (rows, autoGrow, count…) applies to the one control.",
+    "usage": [
+      "DO use it for per-locale multi-line content (a description, a recipe); for a single line use TranslatableInput.",
+      "DO wrap it in FormField, exactly as TranslatableInput."
+    ],
+    "useCases": [
+      "Menu item description in ja, en and vi",
+      "Recipe or notice body stored per locale"
+    ]
+  },
+  {
     "example": "import { Label } from \"@godxjp/ui/data-entry\";\n\n<Label htmlFor=\"stackable\">併用を許可</Label>",
     "group": "data-entry",
     "importPath": "@godxjp/ui/data-entry",

@@ -410,6 +410,16 @@
   },
   {
     "group": "data-entry",
+    "name": "TranslatableInput",
+    "tagline": "ONE text field holding a value per locale (`{ ja, en, vi }`), switched by locale tabs above it (gh#1336). For user content stored per locale — a product name, a category label, a menu description (Astrotomic / Spatie `*_translations`). Locales, first tab and fallback come from AppProvider; an empty locale shows the fallback locale's text as its placeholder; a locale with an error is marked on its tab. Every other `Input` prop applies to the one control."
+  },
+  {
+    "group": "data-entry",
+    "name": "TranslatableTextarea",
+    "tagline": "TranslatableInput over a Textarea (gh#1336): one multi-line field holding a value per locale, switched by locale tabs. Same locale, fallback-placeholder, error-mark and FormField contract; every Textarea prop (rows, autoGrow, count…) applies to the one control."
+  },
+  {
+    "group": "data-entry",
     "name": "Label",
     "tagline": "Styled React Aria Label; use htmlFor to associate with a control."
   },

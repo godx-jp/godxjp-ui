@@ -508,6 +508,18 @@ export const TOKENS: TokenEntry[] = [
     role: "Label↔control column gap in horizontal Form layout. Default 16px (--space-4).",
   },
   {
+    name: "--translatable-field-gap",
+    category: "component",
+    tier: "component",
+    role: "TranslatableInput / TranslatableTextarea (gh#1336): the gap between the locale tab strip and the field it switches. Default 4px (--space-1).",
+  },
+  {
+    name: "--translatable-field-error-icon-size",
+    category: "component",
+    tier: "component",
+    role: "TranslatableInput / TranslatableTextarea: size of the error mark on a locale tab that carries an error (the mark is a glyph + screen-reader text, never colour alone). Default 12px (--icon-size-xs).",
+  },
+  {
     name: "--dialog-* / --alert-* / --skeleton-*",
     category: "component",
     tier: "component",

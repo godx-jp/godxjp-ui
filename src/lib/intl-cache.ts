@@ -66,3 +66,7 @@ export function pluralRules(locale: string, options?: Intl.PluralRulesOptions): 
 export function listFormat(locale: string, options?: Intl.ListFormatOptions): Intl.ListFormat {
   return memoise("lf", locale, options, () => new Intl.ListFormat(locale, options));
 }
+
+export function displayNames(locale: string, options: Intl.DisplayNamesOptions): Intl.DisplayNames {
+  return memoise("dn", locale, options, () => new Intl.DisplayNames(locale, options));
+}

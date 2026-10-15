@@ -3784,6 +3784,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Bounded height of the scrollable branch list (was `max-h-64`). Flat by design: the box is a keyboard-reachable scroll region whose job is to cap the control's measure, so it must not grow with density and push the surrounding form off a 390px frame."
   },
   {
+    "name": "--translatable-field-gap",
+    "value": "var(--space-1)",
+    "description": "TranslatableInput / TranslatableTextarea (gh#1336). The rhythm between the locale tab strip and the field it switches — a service aligning its forms to a tighter grid sets it once. 4px"
+  },
+  {
+    "name": "--translatable-field-error-icon-size",
+    "value": "var(--icon-size-xs)",
+    "description": "The error mark beside a locale's name on its tab. The ICON scale one step below the tab's own 14px text, so it reads as a mark on the label rather than a second word. 12px"
+  },
+  {
     "name": "--descriptions-label-width",
     "value": "8rem",
     "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). A rem value gives a fixed aligned column; set `max-content` to size each label to its text. (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
