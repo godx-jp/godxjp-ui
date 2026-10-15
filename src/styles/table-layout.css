@@ -242,8 +242,9 @@
    * (Avatar md, a two-line block) still grows it — that is content, not alignment.
    *
    * Scoped to a component that IS the cell's content or one wrapper deep, never inside a wrapping
-   * container (`Flex wrap`, the action-collection cell): there a negative margin would let wrapped
-   * lines overlap. */
+   * container (`Flex wrap`, the action-collection cell) or a column stack (`Flex direction="col"`, a
+   * status Badge over a date line in gino-cloud): there a negative margin would let the lines
+   * overlap. */
   [data-slot="table-cell"]
     > :is(
       [data-slot="button"],
@@ -255,7 +256,12 @@
       [data-slot="swatch"]
     ),
   [data-slot="table-cell"]
-    > :not([data-wrap], .ui-table-actions-content)
+    > :not(
+      [data-wrap],
+      [data-direction="col"],
+      [data-direction="responsive"],
+      .ui-table-actions-content
+    )
     > :is(
       [data-slot="button"],
       [data-slot="avatar"],
