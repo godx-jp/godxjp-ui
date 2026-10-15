@@ -210,4 +210,17 @@ describe("ResponsiveGrid align", () => {
     expect(stretch?.index ?? -1).toBeGreaterThan(flowAt);
     expect(css).toMatch(/\.ui-responsive-grid\[data-align="start"\]\s*\{[^}]*align-items:\s*start/);
   });
+
+  it('align="center" stamps the attribute and centres the cells (antd Row align="middle")', () => {
+    const { container } = render(
+      <ResponsiveGrid align="center">
+        <span>1</span>
+      </ResponsiveGrid>,
+    );
+    expect(container.querySelector(".ui-responsive-grid")).toHaveAttribute("data-align", "center");
+    const css = readFileSync(join(process.cwd(), "src/styles/layout.css"), "utf8");
+    expect(css).toMatch(
+      /\.ui-responsive-grid\[data-align="center"\]\s*\{[^}]*align-items:\s*center/,
+    );
+  });
 });

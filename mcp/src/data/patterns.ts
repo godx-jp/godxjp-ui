@@ -729,7 +729,8 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
       <PageContainer title="クーポン管理">
         <Flex direction="col" gap="lg">
           {/* Toolbar is the filter-bar primitive (standalone, above the table surface). It WRAPS and
-              never scrolls sideways (rule #51); past 2–4 filters, see the "list-filters" pattern. */}
+              never scrolls sideways (rule #51); past 2–4 filters, see the "list-filters" pattern. Never a
+              hand-built Flex/Card of FormFields (ui-audit hand-rolled-filter-bar). */}
           <Toolbar hasActiveFilters={q !== "" || status !== "all"} onClear={() => { setQ(""); setStatus("all"); setPage(1) }}>
             {/* SearchInput is value + onSearch(v) — NOT onChange */}
             <SearchInput placeholder="クーポン名で検索" value={q} onSearch={(v) => { setQ(v); setPage(1) }} />
@@ -1110,7 +1111,8 @@ export function MembersTablePage({ orgId }: { orgId?: string }) {
     <Flex direction="col" gap="lg">
       {/* Toolbar (filter bar) is STANDALONE and always visible so the user can change filters even
           while a query is idle/loading/empty. Changing a filter resets to page 1. It WRAPS, never
-          scrolls sideways (rule #51); more than 2–4 filters → the "list-filters" pattern. */}
+          scrolls sideways (rule #51); more than 2–4 filters → the "list-filters" pattern. Never a
+          hand-built Flex/Card of FormFields (ui-audit hand-rolled-filter-bar). */}
       <Toolbar hasActiveFilters={q !== "" || status !== "all"}
         onClear={() => { setQ(""); setStatus("all"); setPage(1); }}>
         <SearchInput placeholder="氏名で検索" value={q} onSearch={(v) => { setQ(v); setPage(1); }} />
@@ -1180,6 +1182,9 @@ export function MembersTablePage({ orgId }: { orgId?: string }) {
 // RULE #51: a filter bar WRAPS — stacked below 640px, extra rows above — at every width.
 // ❌ FilterBar overflow="scroll" (removed in 33.0.0), <ScrollArea orientation="horizontal"> or an
 //    overflow-x-auto box around filters: the strip runs off-screen and clips its first label.
+// ❌ your own <Flex>/<Card> of FormFields above the table, worst of all justify="between" (filters
+//    pushed to the far ends): ui-audit hand-rolled-filter-bar. Filters pack at the START; the
+//    only far-end element is FilterBar's \`actions\` slot.
 // ✅ the common filters inline + ONE "More filters" Sheet for the rest + wrapping chips.
 import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
@@ -1281,6 +1286,549 @@ export function OrderFilters({ value, onValueChange, resultCount }: {
 // Phone width: the bar stacks (search, each filter, More filters, reset) and the chips wrap.
 // A row of filter CHIPS (ToggleGroup) takes \`wrap\` — it does not scroll sideways either.
 // Few filters (≤ 4)? Drop the Sheet: the plain bar in the data-table-page pattern is enough.`,
+  },
+
+  {
+    name: "filter-bar-layouts",
+    aliases: [
+      "filter-layouts",
+      "faceted-filter",
+      "faceted-sidebar",
+      "saved-views-filter",
+      "docked-filter-panel",
+      "filter-panel",
+      "filter-menu",
+    ],
+    tagline:
+      "Eleven list-filter layouts from leading products, all FilterBar + existing primitives: (a) inline packed, (b) search-first + ONE Filter menu + chips, (c) promoted + More-filters Sheet, (d) saved views above the bar, (e) wide search then filters, (f) actions at the end + sticky, (g) faceted sidebar, (h) compact bar in a table card, (i) date range + quick ranges, (j) phone stack + Sheet, (k) docked side panel. Filters always pack at the START.",
+    tags: [
+      "filter",
+      "filters",
+      "layout",
+      "faceted",
+      "facets",
+      "saved views",
+      "docked",
+      "panel",
+      "sidebar",
+      "chips",
+      "date range",
+      "mobile",
+      "list",
+      "datatable",
+    ],
+    code: `// Live gallery: docs page navigation/filter-bar-layouts (every layout working, JA/EN/VI data,
+// measured at 1280 and 390: filters 12px apart, no sideways overflow).
+//
+// THE ONE RULE ALL ELEVEN SHARE: filters are PACKED at the start of the bar with its one gap.
+// The only element at the far end is FilterBar's actions slot (with the clear button). A Flex/Card
+// of FormFields above a table — worst with justify="between" — is ui-audit hand-rolled-filter-bar.
+//
+// a  inline packed ........ 2–4 frequent filters · Ant Design ProTable query form (collapsed)
+//    <FilterBar search={…} filters={[…]} resultCount={n} onClear={…}> + FilterBarGroup(Switch)
+// b  search + Filter menu .. search does most of the work · Linear, GitHub issues
+// c  promoted + More ....... more than 2–4 filters · Shopify Polaris IndexFilters → pattern list-filters
+// d  saved views ........... a view = a whole filter set · Polaris IndexTable views, Jira
+//    views={<Tabs controls="results-id">…<TabsTrigger count={n} countLabel="件">…} on FilterBar
+// e  two rows .............. the query is the main input · Gmail, Amazon
+//    <Flex direction="col" gap="sm"><SearchInput …/><FilterBar filters={[…]}>…</FilterBar></Flex>
+// f  actions at the end .... page actions + pinned bar · ProTable toolbar, Stripe lists
+//    <FilterBar sticky search filters actions={<><Button>CSV</Button><Button>追加</Button></>} />
+// g  faceted sidebar ....... many multi-select facets with counts · Amazon, Rakuten
+// h  compact in a card ..... a secondary table owns its filters · GitHub file / Actions tables
+//    <Card><CardContent><Flex direction="col" gap="sm"><CardTitle/><FilterBar clearDisplay="icon">…
+//    </FilterBar></Flex></CardContent><CardContent flush><DataTable density="compact"/></CardContent></Card>
+//    (FilterBar has no size prop; density comes from the app/PageContainer density axis.)
+// i  date range ............ time is the first filter · Stripe, Google Analytics
+//    <FilterBarGroup label="期間"><Segmented options={7日/30日/四半期/期間指定} /></FilterBarGroup>
+//    + <DatePicker range /> in a second FilterBarGroup only when 期間指定 is picked
+// j  phone ................. below 640px every FilterBar stacks; extra filters in <SheetContent side="bottom">
+// k  docked panel .......... long sessions on one table · Airtable/Notion view filters, Jira, Gmail
+//
+// SUBMIT-DRIVEN SHAPES (docs page navigation/search-form) — when a live bar is the wrong tool:
+// l  検索条件フォーム ....... many conditions / heavy query / users expect 検索 · Ant Design
+//    ProComponents QueryFilter → component SearchForm, pattern search-form
+// m  condition builder ...... field / operator / value rows, all · any · "1 AND (2 OR 3)", saved
+//    views · kintone filters, Salesforce filter logic → pattern condition-builder
+// n  advanced search ........ label | input | what the row means · Google Advanced Search → pattern search-form
+// o  list view + docked panel  list-view picker, pin, search, Filters panel · Salesforce Lightning
+//    list views → pattern condition-builder
+//
+// Below: b, g and k in full — the three that compose more than FilterBar.
+import * as React from "react";
+import { ListFilter, PanelRightClose, PanelRightOpen, SlidersHorizontal } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
+import { Checkbox } from "@godxjp/ui/data-entry";
+import {
+  Sheet, SheetBody, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger,
+} from "@godxjp/ui/feedback";
+import { Button } from "@godxjp/ui/general";
+import { useMediaQuery } from "@godxjp/ui/hooks";
+import { Flex, MasterDetail, ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@godxjp/ui/layout";
+import {
+  DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger,
+  FilterBar, FilterBarGroup,
+} from "@godxjp/ui/navigation";
+import type { PanelImperativeHandle } from "react-resizable-panels";
+
+type Row = { id: string; name: string; country: string };
+type Option = { value: string; label: string };
+const COUNTRIES: Option[] = [{ value: "vn", label: "Việt Nam" }, { value: "ph", label: "Philippines" }];
+const toggle = (list: string[], v: string, on: boolean) => (on ? [...list, v] : list.filter((x) => x !== v));
+
+// ── b. Search first + ONE Filter menu + chips (Linear / GitHub) ──────────────────────────────
+export function SearchFirstMenu({ q, setQ, countries, setCountries }: {
+  q: string; setQ: (v: string) => void; countries: string[]; setCountries: (v: string[]) => void;
+}) {
+  const chips = countries.map((c) => ({ value: c, label: "国: " + COUNTRIES.find((o) => o.value === c)?.label }));
+  return (
+    <FilterBar
+      search={{ value: q, onValueChange: setQ, placeholder: "Search", ariaLabel: "Search" }}
+      chips={chips}
+      onChipRemove={(v) => setCountries(countries.filter((c) => c !== v))}
+      hasActiveFilters={chips.length > 0 || q !== ""}
+      onClear={() => { setQ(""); setCountries([]); }}
+      clearDisplay="icon"
+    >
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" count={chips.length} showZero={false} countLabel="filters applied">
+            <ListFilter aria-hidden="true" />Filter
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>国 · Country</DropdownMenuLabel>
+          {COUNTRIES.map((c) => (
+            <DropdownMenuCheckboxItem key={c.value} checked={countries.includes(c.value)}
+              onCheckedChange={(on) => setCountries(toggle(countries, c.value, on === true))}>
+              {c.label}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </FilterBar>
+  );
+}
+
+// Facets: a column of FilterBarGroups holding checkboxes — shared by g and k.
+function Facets({ countries, setCountries }: { countries: string[]; setCountries: (v: string[]) => void }) {
+  return (
+    <FilterBarGroup label="国 · Country">
+      <Flex direction="col" gap="xs">
+        {COUNTRIES.map((c) => (
+          <Checkbox key={c.value} checked={countries.includes(c.value)}
+            onCheckedChange={(on) => setCountries(toggle(countries, c.value, on === true))}>
+            {c.label}
+          </Checkbox>
+        ))}
+      </Flex>
+    </FilterBarGroup>
+  );
+}
+
+// ── g. Faceted sidebar (Amazon / Rakuten): MasterDetail rail on the left; a Sheet when narrow ─
+export function FacetedList({ rows, columns, countries, setCountries }: {
+  rows: Row[]; columns: ColumnDef<Row>[]; countries: string[]; setCountries: (v: string[]) => void;
+}) {
+  const wide = useMediaQuery("(min-width: 768px)");
+  const table = <Card><CardContent flush><DataTable data={rows} columns={columns} getRowId={(r) => r.id} /></CardContent></Card>;
+  if (wide) {
+    return (
+      <MasterDetail rail="master" railWidth="narrow" collapseBelow={false} masterLabel="絞り込み"
+        detailLabel="一覧" master={<Facets countries={countries} setCountries={setCountries} />}>
+        {table}
+      </MasterDetail>
+    );
+  }
+  return (
+    <Flex direction="col" gap="sm">
+      <FilterBar hasActiveFilters={countries.length > 0} onClear={() => setCountries([])}>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" count={countries.length} showZero={false} countLabel="filters applied">
+              <SlidersHorizontal aria-hidden="true" />絞り込み
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <SheetHeader><SheetTitle>絞り込み</SheetTitle></SheetHeader>
+            <SheetBody><Facets countries={countries} setCountries={setCountries} /></SheetBody>
+            <SheetFooter><SheetClose asChild><Button>結果を表示</Button></SheetClose></SheetFooter>
+          </SheetContent>
+        </Sheet>
+      </FilterBar>
+      {table}
+    </Flex>
+  );
+}
+
+// ── k. Docked filter panel (Airtable / Jira / Gmail side panel) ──────────────────────────────
+// Persistent (not an overlay), resizable, collapsible, remembers open/closed; chips stay in the
+// bar above the table; below 1024px the same facets open in a Sheet instead.
+const DOCK_KEY = "my-app:list-filter-panel-open";
+export function DockedFilterList({ rows, columns, countries, setCountries }: {
+  rows: Row[]; columns: ColumnDef<Row>[]; countries: string[]; setCountries: (v: string[]) => void;
+}) {
+  const docked = useMediaQuery("(min-width: 1024px)");
+  const panelRef = React.useRef<PanelImperativeHandle | null>(null);
+  const [open, setOpen] = React.useState(() => {
+    try { return localStorage.getItem(DOCK_KEY) !== "false"; } catch { return true; }
+  });
+  const remember = (next: boolean) => {
+    setOpen(next);
+    try { localStorage.setItem(DOCK_KEY, String(next)); } catch { /* not remembered, still works */ }
+  };
+  const chips = countries.map((c) => ({ value: c, label: "国: " + COUNTRIES.find((o) => o.value === c)?.label }));
+  const table = <Card><CardContent flush><DataTable data={rows} columns={columns} getRowId={(r) => r.id} /></CardContent></Card>;
+  return (
+    <Flex direction="col" gap="sm">
+      <FilterBar
+        chips={chips}
+        onChipRemove={(v) => setCountries(countries.filter((c) => c !== v))}
+        hasActiveFilters={chips.length > 0}
+        onClear={() => setCountries([])}
+        actions={docked ? (
+          <Button variant="outline" size="sm" aria-expanded={open} aria-controls="list-filter-panel"
+            count={chips.length} showZero={false} countLabel="filters applied"
+            onClick={() => { if (open) panelRef.current?.collapse(); else panelRef.current?.expand(); remember(!open); }}>
+            {open ? <PanelRightClose aria-hidden="true" /> : <PanelRightOpen aria-hidden="true" />}
+            {open ? "フィルターパネルを閉じる" : "フィルターパネルを開く"}
+          </Button>
+        ) : (
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" count={chips.length} showZero={false} countLabel="filters applied">
+                <SlidersHorizontal aria-hidden="true" />フィルター
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <SheetHeader><SheetTitle>フィルター</SheetTitle></SheetHeader>
+              <SheetBody><Facets countries={countries} setCountries={setCountries} /></SheetBody>
+            </SheetContent>
+          </Sheet>
+        )}
+      />
+      {docked ? (
+        <ResizablePanelGroup orientation="horizontal">
+          <ResizablePanel id="list-main" defaultSize="72%" minSize="50%">{table}</ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel id="list-filter-panel" panelRef={panelRef} collapsible collapsedSize="0%"
+            defaultSize={open ? "28%" : "0%"} minSize="20%" maxSize="40%"
+            onResize={(size) => { const next = size.asPercentage > 0; if (next !== open) remember(next); }}>
+            {/* Render nothing while collapsed: content squeezed to 0px wraps one glyph per line. */}
+            {open && (
+              <Card>
+                <CardHeader><CardTitle level={3}>フィルター</CardTitle></CardHeader>
+                <CardContent><Facets countries={countries} setCountries={setCountries} /></CardContent>
+              </Card>
+            )}
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      ) : table}
+    </Flex>
+  );
+}
+// SplitPane is the non-resizable alternative for k (its aside is always inline-end; aside={null}
+// closes it). A LEFT docked panel is g's MasterDetail rail="master".`,
+  },
+
+  {
+    name: "search-form",
+    aliases: [
+      "検索条件",
+      "検索フォーム",
+      "query-filter",
+      "query filter",
+      "advanced search",
+      "advanced-search",
+      "search-panel",
+    ],
+    tagline:
+      "「検索条件フォーム」 — SearchForm (Ant Design ProComponents QueryFilter): labelled conditions in aligned columns (label-top or label-left 「表形式」), ranges From〜To, 「部分一致」/「完全一致」, explicit 「検索」 + 「クリア」 (search on SUBMIT), the rest behind 「詳細条件を開く」, then a 「検索条件」 summary + result count. Plus the Google Advanced Search shape (label | input | what the row means).",
+    tags: [
+      "search",
+      "search form",
+      "query",
+      "filter",
+      "検索",
+      "検索条件",
+      "japanese",
+      "business",
+      "advanced search",
+      "list",
+      "datatable",
+    ],
+    code: `// Live examples: docs page navigation/search-form (l = SearchForm label-top and label-left,
+// n = advanced-search form). Research: Ant Design ProComponents QueryFilter (defaultCollapsed
+// true, defaultFormItemsNumber, layout vertical/horizontal, labelWidth, search/reset text);
+// Google Advanced Search (rows: all these words / this exact phrase / any of these words /
+// none of these words / numbers ranging from; then narrow by language, region, last update,
+// site, terms appearing, file type).
+//
+// WHICH SHAPE (rule #51): few filters applied as they change → FilterBar. Many conditions, a heavy
+// query, or users who expect a 検索 button → SearchForm. Arbitrary field × operator conditions,
+// all/any/custom logic, saved views → pattern condition-builder.
+import { useState, type FormEvent } from "react";
+import { Card, CardContent, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
+import { DatePicker, FormField, Input, NumberInput, RadioGroup, Select } from "@godxjp/ui/data-entry";
+import { Flex } from "@godxjp/ui/layout";
+import { Text } from "@godxjp/ui/general";
+import { SearchForm } from "@godxjp/ui/navigation";
+
+type Option = { value: string; label: string };
+type Conditions = {
+  name: string; match: "partial" | "exact"; nationality: string; occupation: string;
+  monthsMin: number | null; monthsMax: number | null;
+};
+const EMPTY: Conditions = { name: "", match: "partial", nationality: "", occupation: "", monthsMin: null, monthsMax: null };
+
+export function TraineeSearch<T extends { id: string }>({ rows, columns, nationalities, occupations, search }: {
+  rows: T[]; columns: ColumnDef<T>[]; nationalities: Option[]; occupations: Option[];
+  search: (c: Conditions) => T[];
+}) {
+  // Inputs edit the DRAFT; 検索 copies it to APPLIED; クリア empties both.
+  const [draft, setDraft] = useState<Conditions>(EMPTY);
+  const [applied, setApplied] = useState<Conditions>(EMPTY);
+  const set = (patch: Partial<Conditions>) => setDraft((cur) => ({ ...cur, ...patch }));
+  const results = search(applied);
+  const summary = [
+    applied.name && "氏名: " + applied.name + (applied.match === "exact" ? "（完全一致）" : "（部分一致）"),
+    applied.nationality && "国籍: " + nationalities.find((o) => o.value === applied.nationality)?.label,
+    (applied.monthsMin != null || applied.monthsMax != null) && "在籍月数: " + (applied.monthsMin ?? "") + "〜" + (applied.monthsMax ?? ""),
+  ].filter(Boolean).join(" / ") || "指定なし";
+
+  return (
+    <Flex direction="col" gap="md">
+      <Card>
+        <CardContent>
+          {/* layout="horizontal" labelWidth="7rem" columns={{ base: 1, lg: 2 }} = label-left 表形式 */}
+          <SearchForm
+            controlWidth="100%"
+            onSubmit={(e: FormEvent) => { e.preventDefault(); setApplied(draft); }}
+            onReset={() => { setDraft(EMPTY); setApplied(EMPTY); }}
+            summary={summary}
+            resultCount={results.length}
+          >
+            <FormField label="氏名" id="ts-name">
+              <Flex direction="col" gap="xs">
+                <Input id="ts-name" value={draft.name} onChange={(e) => set({ name: e.target.value })} />
+                <RadioGroup aria-label="一致条件" orientation="horizontal" value={draft.match}
+                  options={[{ value: "partial", label: "部分一致" }, { value: "exact", label: "完全一致" }]}
+                  onValueChange={(v) => set({ match: v === "exact" ? "exact" : "partial" })} />
+              </Flex>
+            </FormField>
+            <FormField label="国籍" id="ts-nat">
+              <Select id="ts-nat" options={nationalities} value={draft.nationality} placeholder="すべて" allowClear
+                onValueChange={(v: string) => set({ nationality: v })} />
+            </FormField>
+            <FormField label="入国日" id="ts-entry">
+              <DatePicker id="ts-entry" range />
+            </FormField>
+            {/* past the first row: behind 詳細条件を開く, still mounted */}
+            <FormField label="在籍月数" id="ts-min">
+              <Flex gap="xs" align="center">
+                <NumberInput id="ts-min" aria-label="下限" min={0} value={draft.monthsMin} onValueChange={(v) => set({ monthsMin: v })} />
+                <Text tone="muted">〜</Text>
+                <NumberInput aria-label="上限" min={0} value={draft.monthsMax} onValueChange={(v) => set({ monthsMax: v })} />
+              </Flex>
+            </FormField>
+            <FormField label="職種" id="ts-occ">
+              <Select id="ts-occ" options={occupations} value={draft.occupation} placeholder="すべて" allowClear
+                onValueChange={(v: string) => set({ occupation: v })} />
+            </FormField>
+          </SearchForm>
+        </CardContent>
+      </Card>
+      <Card><CardContent flush><DataTable data={results} columns={columns} getRowId={(r) => r.id} /></CardContent></Card>
+    </Flex>
+  );
+}
+
+// ADVANCED-SEARCH SHAPE (Google): one <Form role="search" layout="horizontal" labelWidth="12rem"
+// controlWidth="100%" onSubmit>; each row is <ResponsiveGrid columns={{ base: 1, lg: 2 }}> holding
+// the FormField and a <Text tone="muted"> that says which search-box syntax the row stands for
+// ("Put a minus sign before words you don't want: -withdrawn"); two <Heading level={3}> sections
+// (find… / then narrow the results by…); ONE submit Button at the end of the form, and the
+// equivalent query string shown with the result count after the search.`,
+  },
+
+  {
+    name: "condition-builder",
+    aliases: [
+      "絞り込み条件",
+      "条件ビルダー",
+      "filter-builder",
+      "query-builder",
+      "kintone filter",
+      "kintone-filter",
+      "salesforce list view filter",
+      "salesforce-filter",
+      "filter logic",
+      "list-view-filter",
+    ],
+    tagline:
+      'Condition builder — numbered rows of field / operator / value, 「すべての条件を満たす」 / 「いずれかの条件を満たす」 / custom logic `1 AND (2 OR 3)`, add/remove rows, 「並び順」, save as a named view; applied on SUBMIT inside a role="search" Form. Composition, not a component. Docked beside the list it is the Salesforce list-view filter panel.',
+    tags: [
+      "filter",
+      "condition",
+      "builder",
+      "query",
+      "logic",
+      "and",
+      "or",
+      "kintone",
+      "salesforce",
+      "saved view",
+      "絞り込み",
+      "list",
+    ],
+    code: `// Live examples: docs page navigation/search-form (m = builder, o = list view with the builder in a
+// docked panel). Research: kintone's filter rows are field / operator / value (「次のいずれかを
+// 含む」, ≦ …) combined with 「すべての条件を満たす」, conditions added with 「絞り込み条件を
+// 追加」; the kintone query language joins conditions with and / or and groups them with
+// parentheses, sorted by order by. Salesforce numbers each filter (Filter 1, 2, …) and combines
+// them with AND / OR / NOT, e.g. (1 AND 2) OR 3; list views are switched from a picker, pinned
+// as the default, and edited in a Filters panel (Add Filter → field / operator / value).
+//
+// A COMPOSITION, not a component: only one of the design systems the library follows names a
+// condition builder, the operators are domain policy, and every piece is an existing primitive.
+import { useRef, useState } from "react";
+import { Minus, Plus } from "lucide-react";
+import { Badge } from "@godxjp/ui/data-display";
+import { Form, FormField, Input, NumberInput, RadioGroup, Select } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
+import { Flex, ResponsiveGrid } from "@godxjp/ui/layout";
+
+type Kind = "text" | "choice" | "number";
+type Field = { value: string; label: string; kind: Kind; options?: { value: string; label: string }[] };
+type Row = { id: number; field: string; operator: string; value: string };
+export type Conditions = { match: "all" | "any" | "custom"; logic: string; rows: Row[] };
+
+const OPERATORS: Record<Kind, { value: string; label: string }[]> = {
+  text: [{ value: "contains", label: "次のキーワードを含む" }, { value: "notContains", label: "次のキーワードを含まない" }, { value: "eq", label: "＝" }, { value: "neq", label: "≠" }],
+  choice: [{ value: "in", label: "次のいずれかを含む" }, { value: "notIn", label: "次のいずれも含まない" }],
+  number: [{ value: "eq", label: "＝" }, { value: "neq", label: "≠" }, { value: "gte", label: "≥（以上）" }, { value: "lte", label: "≤（以下）" }],
+};
+
+/** Numbered-row logic: "1 AND (2 OR 3)", "NOT 2". null = malformed → show the field error. */
+export function compileLogic(expr: string, count: number): ((hits: boolean[]) => boolean) | null {
+  const tokens = expr.toUpperCase().match(/\\d+|AND|OR|NOT|\\(|\\)|\\S/g) ?? [];
+  let pos = 0;
+  type Node = (h: boolean[]) => boolean;
+  const or = (): Node | null => { let l = and(); while (l && tokens[pos] === "OR") { pos++; const r = and(); if (!r) return null; const a = l; l = (h) => a(h) || r(h); } return l; };
+  const and = (): Node | null => { let l = not(); while (l && tokens[pos] === "AND") { pos++; const r = not(); if (!r) return null; const a = l; l = (h) => a(h) && r(h); } return l; };
+  const not = (): Node | null => {
+    if (tokens[pos] === "NOT") { pos++; const i = not(); return i ? (h) => !i(h) : null; }
+    if (tokens[pos] === "(") { pos++; const i = or(); if (!i || tokens[pos] !== ")") return null; pos++; return i; }
+    const n = Number(tokens[pos]);
+    if (!Number.isInteger(n) || n < 1 || n > count) return null;
+    pos++; return (h) => h[n - 1] ?? false;
+  };
+  const tree = tokens.length ? or() : null;
+  return tree && pos === tokens.length ? tree : null;
+}
+
+export function ConditionBuilder({ fields, value, onApply }: {
+  fields: Field[]; value: Conditions; onApply: (c: Conditions) => void;
+}) {
+  const [draft, setDraft] = useState(value);
+  const nextId = useRef(Math.max(0, ...value.rows.map((r) => r.id)) + 1);
+  const valid = draft.match !== "custom" || compileLogic(draft.logic, draft.rows.length) !== null;
+  const patch = (id: number, p: Partial<Row>) => setDraft((c) => ({ ...c, rows: c.rows.map((r) => (r.id === id ? { ...r, ...p } : r)) }));
+  const kindOf = (f: string) => fields.find((x) => x.value === f)?.kind ?? "text";
+  /** kintone's ＋ adds a blank condition right after its own row; null appends one. */
+  const insertAfter = (rows: Row[], afterId: number | null): Row[] => {
+    const blank: Row = { id: nextId.current++, field: fields[0].value, operator: OPERATORS[fields[0].kind][0].value, value: "" };
+    const at = afterId === null ? rows.length : rows.findIndex((r) => r.id === afterId) + 1;
+    return [...rows.slice(0, at), blank, ...rows.slice(at)];
+  };
+
+  // role="search" + a real submit: neither form-on-list-page nor hand-rolled-filter-bar flags it.
+  return (
+    <Form role="search" aria-label="絞り込み条件" controlWidth="100%"
+      onSubmit={(e) => { e.preventDefault(); if (valid) onApply(draft); }}>
+      <Flex direction="col" gap="md">
+        <FormField label="条件の組み合わせ">
+          <RadioGroup aria-label="条件の組み合わせ" orientation="horizontal" value={draft.match}
+            options={[{ value: "all", label: "すべての条件を満たす" }, { value: "any", label: "いずれかの条件を満たす" }, { value: "custom", label: "条件式を指定" }]}
+            onValueChange={(v) => setDraft((c) => ({ ...c, match: v as Conditions["match"] }))} />
+        </FormField>
+        {draft.rows.map((row, i) => {
+          const field = fields.find((f) => f.value === row.field);
+          const n = i + 1;
+          return (
+            // ONE line per condition, kintone-style: [No.] [field] [operator] [value] [＋][−].
+            // Container grid: 24 tracks from lg (field 6, operator 5 — narrower but wide enough for
+            // 「次のキーワードを含まない」 — value 10), 12 at md (the operator gets the extra track so its
+            // longest label is not cut). Below md (a docked panel, a phone) it is 4 tracks and
+            // \`dense\` backfills the ＋/− cell beside the number: No. and buttons on the first line,
+            // field / operator / value stacked below. align="center" = antd Row align="middle".
+            <Flex key={row.id} direction="col" role="group" aria-label={"条件 " + n}>
+              <ResponsiveGrid columns={{ base: 4, md: 12, lg: 24 }} gap="sm" align="center" dense>
+                <ResponsiveGrid.Item span={{ base: 1, md: 1, lg: 1 }}>
+                  <Badge variant="outline">{n}</Badge>
+                </ResponsiveGrid.Item>
+                <ResponsiveGrid.Item span={{ base: 4, md: 3, lg: 6 }}>
+                  <Select aria-label={"条件 " + n + " · フィールド"} options={fields} value={row.field}
+                    onValueChange={(f: string) => patch(row.id, { field: f, operator: OPERATORS[kindOf(f)][0].value, value: "" })} />
+                </ResponsiveGrid.Item>
+                <ResponsiveGrid.Item span={{ base: 4, md: 4, lg: 5 }}>
+                  <Select aria-label={"条件 " + n + " · 演算子"} options={OPERATORS[kindOf(row.field)]} value={row.operator}
+                    onValueChange={(op: string) => patch(row.id, { operator: op })} />
+                </ResponsiveGrid.Item>
+                <ResponsiveGrid.Item span={{ base: 4, md: 3, lg: 10 }}>
+                  {field?.kind === "choice" ? (
+                    <Select aria-label={"条件 " + n + " · 値"} options={field.options ?? []} value={row.value}
+                      onValueChange={(v: string) => patch(row.id, { value: v })} />
+                  ) : field?.kind === "number" ? (
+                    <NumberInput aria-label={"条件 " + n + " · 値"} value={row.value === "" ? null : Number(row.value)}
+                      onValueChange={(v) => patch(row.id, { value: v == null ? "" : String(v) })} />
+                  ) : (
+                    <Input aria-label={"条件 " + n + " · 値"} value={row.value} onChange={(e) => patch(row.id, { value: e.target.value })} />
+                  )}
+                </ResponsiveGrid.Item>
+                <ResponsiveGrid.Item span={{ base: 3, md: 1, lg: 2 }}>
+                  <Flex gap="xs" justify="end">
+                    <Button type="button" variant="ghost" size="icon-sm" aria-label={"条件 " + n + " の後に条件を追加"}
+                      onClick={() => setDraft((c) => ({ ...c, rows: insertAfter(c.rows, row.id) }))}>
+                      <Plus aria-hidden="true" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="icon-sm" aria-label={"条件 " + n + " を削除"}
+                      onClick={() => setDraft((c) => ({ ...c, rows: c.rows.filter((r) => r.id !== row.id) }))}>
+                      <Minus aria-hidden="true" />
+                    </Button>
+                  </Flex>
+                </ResponsiveGrid.Item>
+              </ResponsiveGrid>
+            </Flex>
+          );
+        })}
+        {/* With every row removed there is no ＋ left to press: offer one. */}
+        {draft.rows.length === 0 && (
+          <Flex>
+            <Button type="button" variant="outline" size="sm"
+              onClick={() => setDraft((c) => ({ ...c, rows: insertAfter(c.rows, null) }))}>
+              <Plus aria-hidden="true" />条件を追加
+            </Button>
+          </Flex>
+        )}
+        {draft.match === "custom" && (
+          <FormField label="条件式" id="cb-logic" helper="番号付きの条件を AND・OR・NOT と括弧で組み合わせます（例: 1 AND (2 OR 3)）。"
+            error={valid ? undefined : "存在する条件の番号、AND・OR・NOT、対応の取れた括弧だけを使ってください。"}>
+            <Input id="cb-logic" value={draft.logic} onChange={(e) => setDraft((c) => ({ ...c, logic: e.target.value }))} />
+          </FormField>
+        )}
+        <Flex gap="sm" justify="end" wrap>
+          <Button type="button" variant="ghost" onClick={() => setDraft(value)}>変更を元に戻す</Button>
+          <Button type="submit" disabled={!valid}>適用</Button>
+        </Flex>
+      </Flex>
+    </Form>
+  );
+}
+// Add 並び順 (Select + Segmented 昇順/降順) and "save as view" (Input + Button) as two more
+// FormFields when the screen keeps saved views. Docked beside the list (Salesforce list view):
+// <SplitPane asideWidth="lg" aside={open ? <Card>…<ConditionBuilder/>…</Card> : null}> with a
+// counted Filters toggle in FilterBar's actions; below 1024px the same builder opens in a Sheet.`,
   },
 
   {

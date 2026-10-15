@@ -588,6 +588,15 @@
         "other": "{count} results"
       }
     },
+    "searchForm": {
+      "label": "Search conditions",
+      "search": "Search",
+      "reset": "Clear",
+      "expand": "More conditions",
+      "collapse": "Fewer conditions",
+      "hiddenCount": "hidden conditions",
+      "summary": "Searched with:"
+    },
     "localePicker": {
       "ariaLabel": "Language"
     },

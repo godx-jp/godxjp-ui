@@ -21,9 +21,9 @@
       "type": "\"rows\" | \"columns\""
     },
     {
-      "description": "antd `Row align`, spelled with Flex's FlexAlignProp values (antd `top` → \"start\"). \"stretch\" makes every cell as tall as the tallest one. Omitted, flow=\"columns\" keeps \"start\" and flow=\"rows\" keeps the grid's natural stretch.",
+      "description": "antd `Row align`, spelled with Flex's FlexAlignProp values (antd `top` → \"start\", `middle` → \"center\"). \"center\" puts cells of different heights on one centre line (a condition row's number and ＋/− buttons beside taller controls). \"stretch\" makes every cell as tall as the tallest one. Omitted, flow=\"columns\" keeps \"start\" and flow=\"rows\" keeps the grid's natural stretch.",
       "name": "align",
-      "type": "\"start\" | \"stretch\""
+      "type": "\"start\" | \"center\" | \"stretch\""
     },
     {
       "defaultValue": "4",

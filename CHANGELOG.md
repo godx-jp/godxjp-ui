@@ -6,6 +6,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.3.0] - 2026-10-15
+
+**A hand-built filter strip is now caught, and FilterBar has a gallery of eleven layouts.** Rule
+#51 and pattern `list-filters` taught FilterBar for list-page filters, but nothing caught a page
+that laid its filters out by hand. gino-cloud's 送出機関 list did: two Selects and a Switch in
+`<Card><CardContent><Flex wrap justify="between">`, each Select in its own `<Flex width={280}>`,
+above a DataTable, which pushed the three controls to the far left, the middle and the far right of
+a wide card. The release also adds **`SearchForm`**, the submit-driven 検索条件フォーム, and
+three more search shapes (a condition builder, an advanced-search form, and a list view with a
+docked filter panel), so rule #51 now reads as a decision between three shapes instead of "FilterBar
+only".
+
+### Added
+
+- **`SearchForm`** (`@godxjp/ui/navigation`, alias names `QueryFilter` / `SearchPanel` in the
+  catalog). It is the submit-driven 検索条件フォーム, following Ant Design ProComponents
+  `QueryFilter`.
+  - It is a `role="search"` landmark: a `<Form>` that holds a container-query grid of FormFields
+    aligned in columns (`columns`, default `{ base: 1, md: 2, lg: 3 }`). `layout`, `labelWidth` and
+    `controlWidth` pass through to the Form, which gives the label-top and the label-left (表形式)
+    variants.
+  - It has a Search (検索) submit button, plus a Clear (クリア) button when `onReset` is set.
+  - The conditions past `visibleFields` (default: the first row) sit behind ONE 詳細条件を開く /
+    閉じる toggle. The toggle has `aria-expanded`, `aria-controls` and a count of the hidden
+    conditions. The hidden conditions stay mounted, so a typed value survives a collapse.
+    `open` / `defaultOpen` / `onOpenChange` control it.
+  - `summary` and `resultCount` are shown after the localized 検索条件 label in a `role="status"`
+    line.
+  - The labels are localized in ja, en and vi (`navigation.searchForm.*`).
+- **Docs: `navigation/search-form`**, with four working shapes:
+  - (l) SearchForm, label-top and label-left
+  - (m) a condition builder: one line per condition, kintone-style — [No.] [field] [operator]
+    [value] [＋][−] — on a container grid (24 tracks wide: field 6, operator 5, value 10). Below
+    the md container step (a docked panel, a phone) the row stacks, with the number and ＋/− still
+    on the first line; すべての条件を満たす /
+    いずれかの条件を満たす / custom logic `1 AND (2 OR 3)`, add and remove rows, 並び順, save as
+    a view
+  - (n) a Google-Advanced-Search-style form: label, input, and the search-box syntax the row stands
+    for
+  - (o) a Salesforce-style list view: a list-view picker, pin, search, list view controls, and the
+    builder docked in a Filters panel, which becomes a Sheet below 1024px
+- **`ResponsiveGrid align="center"`** (antd `Row align="middle"`): cells of different heights
+  share one centre line. The condition builder uses it so the row number and the ＋/− buttons
+  sit on the same line as the taller controls.
+- **MCP patterns `search-form`** (aliases 検索条件, 検索フォーム, query filter, advanced search…)
+  **and `condition-builder`** (aliases 絞り込み条件, kintone filter, salesforce list view filter,
+  filter logic…). The condition builder is a composition, not a component. Gate 0 fails for it:
+  only one of the design systems the library follows names one, and its operators are domain
+  policy. `route_consumer_task` and `suggest_primitive` reach both patterns.
+
+- **ui-audit `hand-rolled-filter-bar`** (warn, consumer scope, mirrored in MCP `list_audit_rules`).
+  It flags a list page (DataTable/Table/List/ListRow in the same PageContainer) that lays out 2+
+  filter controls in its own Flex/div/Card/ResponsiveGrid instead of a FilterBar. A filter control
+  is a labelled FormField holding a Select, SearchInput, Switch, Checkbox or a date picker, or a
+  self-labelled bare control. When the container spreads them with
+  `justify="between"|"around"|"evenly"` (or `justify-*`), the snippet says so. It does not flag
+  FilterBar/Toolbar children, a Sheet/Dialog/Drawer/Popover body, a Form that submits (a search
+  form), a column of fields (an editor panel), cell editors inside a table, or a single search box.
+  `formfield-needs-form` could not see the gino shape, because each field had a different
+  immediate parent. This rule groups controls by subtree instead.
+- **Docs: `navigation/filter-bar-layouts`**, a working gallery of eleven layouts with JA/EN/VI
+  data: (a) inline packed, (b) search-first + one Filter menu + chips, (c) promoted + More-filters
+  Sheet, (d) saved views above the bar, (e) wide search then filters, (f) actions at the end +
+  sticky, (g) faceted sidebar, (h) compact bar in a table card, (i) date range + quick ranges,
+  (j) phone stack + Sheet, (k) docked side panel that is resizable and collapsible, remembers
+  whether it is open, and becomes a Sheet below 1024px. Each one is built from FilterBar and
+  existing primitives (DropdownMenu, Tabs `controls`, MasterDetail, ResizablePanelGroup, Sheet,
+  Segmented, DatePicker `range`). Measured at 1280 and 390: filters sit 12px apart in every bar,
+  with no sideways overflow.
+- **MCP pattern `filter-bar-layouts`** (aliases `filter-layouts`, `faceted-filter`,
+  `faceted-sidebar`, `saved-views-filter`, `docked-filter-panel`, `filter-panel`, `filter-menu`):
+  an index of all eleven layouts, plus the full code for the Filter menu, the faceted sidebar and
+  the docked panel. The Toolbar catalog entry, `suggest_primitive "filter"` and
+  `route_consumer_task` (filter layout, faceted filter, saved views, docked filter, filter panel)
+  point to it.
+
+### Changed
+
+- **Rule #51 now carries a decision table.**
+  - A few filters applied instantly: FilterBar.
+  - Many conditions, a heavy query, or users who expect a 検索 button: SearchForm.
+  - Field × operator conditions saved as views: the condition builder.
+- **`form-on-list-page`** no longer flags a `role="search"` Form or a SearchForm. A search over
+  the list is not a create form inlined beside it.
+- **`hand-rolled-filter-bar`** treats SearchForm as a filter surface.
+- **`formfield-needs-form`** counts SearchForm as a Form.
+- Rule #51, `docs/CONSUMER-RULES.md` rule 3, the Toolbar catalog entry, the consumer skill
+  `crud-list/filter-bar` and the patterns `list-filters`, `data-table-page` and
+  `inertia-list-page` now say that filters are packed at the start, and that the only far-end
+  element is the `actions` slot. They also name `hand-rolled-filter-bar`.
+- Three docs showcases hand-built filter strips and now use FilterBar: `case3-approval-workflow`
+  (a 4-column Card + Form + ResponsiveGrid), `caimono-price-comparison` (a Form +
+  ResponsiveGrid, then a separate checkbox row) and `permission-matrix` (Form + Flex comparison
+  controls).
+
 ## [33.2.1] - 2026-10-15
 
 The first release of everything listed under 33.2.0 below: its main CI was red and the release gate stopped before tagging, so 33.2.0 never reached npm.

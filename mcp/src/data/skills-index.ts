@@ -412,14 +412,24 @@ scrolls (a ToggleGroup chip row takes wrap). Keep the 2–4 most-used filters in
 put the rest behind ONE "More filters" Button (count = hidden filters applied) that
 opens a Sheet holding them as FilterBarGroup + control. Every applied filter, inline
 or hidden, is a removable chip in the bar's chips row. Copy it from
-get_pattern list-filters; get_rule 51 is the canonical wording.`,
+get_pattern list-filters; get_rule 51 is the canonical wording. Never lay filters out
+yourself in a <Flex>/<Card> of FormFields above the table, and never spread them with
+justify="between": FilterBar packs them at the start, and its actions slot is the only
+far-end element (ui-audit hand-rolled-filter-bar). Other filter layouts — saved views,
+search-first + chips, faceted sidebar, docked panel, compact table toolbar, date ranges,
+phone — are in get_pattern filter-bar-layouts.`,
       },
       {
         id: "search-form",
-        title: "Search panel is Form + FormField + real pickers",
+        title: "Search panel is SearchForm (検索条件フォーム) + FormField + real pickers",
         tagline:
           "No ad-hoc labels/inputs; date ranges use the range pickers; no hard-coded text sizes.",
-        body: `Build the search conditions with <Form>/<FormField> (label +
+        body: `A submit-driven search panel is <SearchForm> (pattern search-form): a
+role="search" form with the conditions in aligned columns, 検索 + クリア, the
+rest behind 詳細条件を開く, and a 検索条件 summary + result count. Choose it over
+a live FilterBar when the conditions are many, the query is heavy, or users
+expect a 検索 button; arbitrary field × operator conditions saved as views are
+pattern condition-builder. Build each condition with <FormField> (label +
 a11y wiring), real DatePicker/NumberInput/
 Select for each field — never bare <input> or hand-rolled labels. Let the
 fields wrap (Form columns) — never one sideways-scrolling row. Group advanced
@@ -1719,16 +1729,33 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
       "filter strip",
       "filtering",
       "faceted search",
+      "faceted filter",
+      "facet",
+      "filter layout",
+      "saved views",
+      "saved view",
+      "docked filter",
+      "filter panel",
+      "filter sidebar",
       "絞り込み",
+      "検索条件",
+      "検索フォーム",
+      "絞り込み条件",
+      "advanced search",
+      "query filter",
+      "kintone filter",
+      "salesforce list view filter",
+      "list view filter",
+      "condition builder",
+      "filter logic",
       "フィルター",
       "bộ lọc",
     ],
     "crud-list",
     "filter-bar",
-    "Cardinal rule #51: FilterBar wraps, never scrolls sideways; 2–4 filters inline, the rest behind ONE 'More filters' Sheet (get_pattern list-filters).",
+    "Cardinal rule #51: FilterBar wraps, never scrolls sideways, filters packed at the start; 2–4 filters inline, the rest behind ONE 'More filters' Sheet (get_pattern list-filters). Other layouts — saved views, Filter menu + chips, faceted sidebar, docked panel, compact in-card, date range, phone — get_pattern filter-bar-layouts. Submit-driven: 検索条件フォーム / advanced search → SearchForm (get_pattern search-form); kintone / Salesforce-style field × operator rows → get_pattern condition-builder.",
     ["crud-list/search-form"],
   );
-
   // Premium / agency / Awwwards — marketing only
   marketingRoute(
     ["premium", "awwwards", "agency", "linear", "apple", "high-end", "luxury"],

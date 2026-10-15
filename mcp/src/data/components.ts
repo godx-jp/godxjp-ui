@@ -1210,9 +1210,9 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "align",
-        type: '"start" | "stretch"',
+        type: '"start" | "center" | "stretch"',
         description:
-          'antd `Row align`, spelled with Flex\'s FlexAlignProp values (antd `top` → "start"). "stretch" makes every cell as tall as the tallest one. Omitted, flow="columns" keeps "start" and flow="rows" keeps the grid\'s natural stretch.',
+          'antd `Row align`, spelled with Flex\'s FlexAlignProp values (antd `top` → "start", `middle` → "center"). "center" puts cells of different heights on one centre line (a condition row\'s number and ＋/− buttons beside taller controls). "stretch" makes every cell as tall as the tallest one. Omitted, flow="columns" keeps "start" and flow="rows" keeps the grid\'s natural stretch.',
       },
       {
         name: "columns",
@@ -10150,7 +10150,7 @@ import { Button } from "@godxjp/ui/general";
     subParts: ["ToolbarGroup", "FilterBar", "FilterBarGroup"],
     group: "navigation",
     tagline:
-      "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. It WRAPS and never scrolls sideways; many filters → 2–4 inline + ONE 'More filters' Sheet (rule #51, pattern `list-filters`). `FilterBar`/`FilterBarGroup` are the same components under their alias names.",
+      "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. It WRAPS and never scrolls sideways; many filters → 2–4 inline + ONE 'More filters' Sheet (rule #51, pattern `list-filters`). `FilterBar`/`FilterBarGroup` are the same components under their alias names. Eleven layouts (inline, Filter menu + chips, More-filters Sheet, saved views, two rows, actions + sticky, faceted sidebar, compact in a card, date range, phone, docked panel) → pattern `filter-bar-layouts`.",
     props: [
       {
         name: "children",
@@ -10265,6 +10265,7 @@ import { Button } from "@godxjp/ui/general";
       "DO set `sticky` for long list pages so the filters stay reachable while scrolling; if a topbar sits above the list, raise `--filter-bar-sticky-offset` so the strip parks below it.",
       "DO pass `controlId` on a ToolbarGroup that wraps ONE control and give that control the same `id` — the visible caption then becomes the control's real `<label htmlFor>` (WCAG 2.5.3 label-in-name). Without it the caption only names the group wrapper and the control itself is NAMELESS (axe: select-name / button-name), so you must fall back to an `aria-label` that repeats the caption.",
       "DO let the strip WRAP — cardinal rule #51 (`get_rule 51`). It stacks below 640px and wraps onto extra rows above; it never scrolls sideways, and neither may anything you wrap it in (`ScrollArea orientation=\"horizontal\"`, an `overflow-x-auto` box): the `overflow` prop and its `scroll` strategy were removed in 33.0.0 because a sideways strip hid filters off-screen and clipped the first label. When the filters are many, keep the 2–4 most-used ones inline and put the rest behind ONE 'More filters' Button (`count` = hidden filters applied) that opens a Sheet holding them as FilterBarGroup + control; every applied filter, inline or hidden, is a chip in `chips` (the chips row wraps too). Copy-paste composition: pattern `list-filters` (`get_pattern list-filters`); there is no dedicated component. Never re-implement the geometry in the page: no page-local flex/grid/width/overflow rules on a filter strip.",
+      'DO keep filters PACKED at the start of the bar with its one gap. Never lay them out yourself in a Flex/div/Card/ResponsiveGrid of FormFields above the table, and never spread them with `justify="between"|"around"|"evenly"` — the only far-end element of a filter bar is its `actions` slot (with the clear button). ui-audit `hand-rolled-filter-bar` flags both. For a layout other than one strip (saved views, a Filter menu with chips, a faceted sidebar, a docked side panel, a compact bar inside a table card, a date range with quick ranges, a phone Sheet), copy pattern `filter-bar-layouts` (docs page navigation/filter-bar-layouts).',
       "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
       "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
       "Prefer the typed model for a canonical list page: pass `search` + `filters` + `chips` + `resultCount` and the bar owns the layout, widths, chip lifecycle, keyboard order (search → filters → children → reset → actions → chip removes) and responsive stacking through --filter-bar-* tokens. Everything stays consumer data — the bar renders state, never owns it.",
@@ -10276,6 +10277,7 @@ import { Button } from "@godxjp/ui/general";
       "Master list screens (members, organizations, subscriptions, invoices) that need free-text search plus a few dropdown filters above a DataTable.",
       "Sticky filter strip over a tall list where the filters must remain visible as the user scrolls the results.",
       "Filtered views that surface applied conditions as removable chips (clear-one via each chip's × Button, clear-all via `onClear`).",
+      "Filter layout choices — saved views filter tabs above the bar, a search-first bar with one Filter menu, a faceted filter sidebar with per-facet counts, a docked filter panel beside the table, a compact table toolbar, a date range filter with quick ranges, a phone filter Sheet: pattern `filter-bar-layouts`.",
     ],
     related: [
       "ToolbarGroup — the labelled wrapper for each individual filter control inside a Toolbar (SearchInput is placed directly, without a group).",
@@ -10283,6 +10285,7 @@ import { Button } from "@godxjp/ui/general";
       "SearchInput — the debounced free-text control placed as the first child of Toolbar.",
       "Badge — compose Badge + a sibling icon Button to render each active-filter chip; Badge itself is a non-interactive leaf.",
       "Sheet — holds the filters beyond the 2–4 inline ones, opened by ONE 'More filters' Button inside the bar (pattern `list-filters`, rule #51). Not a ScrollArea: a filter strip never scrolls sideways.",
+      "SearchForm — the submit-driven 「検索条件フォーム」 for many conditions or an explicit 「検索」 button (rule #51 decision table); FilterBar is the live strip.",
     ],
     example: `import { Toolbar, ToolbarGroup } from "@godxjp/ui/navigation";
 import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry";
@@ -10302,6 +10305,136 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
     docPath: "navigation/toolbar",
     storyPath: "navigation/toolbar.tsx",
     rules: [23, 44, 45, 46, 51],
+  },
+  {
+    name: "SearchForm",
+    group: "navigation",
+    absorbed: ["QueryFilter", "SearchPanel"],
+    tagline:
+      'Submit-driven 「検索条件フォーム」 (Ant Design ProComponents QueryFilter): a `search` landmark holding a grid of labelled conditions aligned in columns, Search 「検索」 + Clear 「クリア」, the conditions past the first row behind ONE 「詳細条件を開く」 toggle that names how many are hidden, and a 「検索条件」 summary + result count in a role="status" line after the search. Use it instead of a live FilterBar when the conditions are many, the query is heavy, or users expect an explicit 「検索」 button (rule #51 decision table).',
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description:
+          "One FormField per condition, in reading order. Each direct child is one grid cell; a range (「日付」 From〜To, 「金額」 「下限〜上限」) is ONE FormField holding both controls.",
+      },
+      {
+        name: "columns",
+        type: "ResponsiveGridColumnsProp",
+        defaultValue: "{ base: 1, md: 2, lg: 3 }",
+        description:
+          "Grid columns per container breakpoint — one column on a phone, aligned columns above. Conditions never spread to the edges.",
+      },
+      {
+        name: "visibleFields",
+        type: "number",
+        description:
+          "Conditions shown while collapsed (antd `defaultFormItemsNumber`). Default: the widest `columns` step, i.e. the first row.",
+      },
+      {
+        name: "open",
+        type: "boolean",
+        description: "Controlled: whether the conditions past `visibleFields` are shown.",
+      },
+      {
+        name: "defaultOpen",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Uncontrolled initial state — collapsed to the first row by default.",
+      },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Fires when the 「詳細条件を開く」 / 「閉じる」 toggle is pressed.",
+      },
+      {
+        name: "onSubmit",
+        type: "FormEventHandler<HTMLFormElement>",
+        description:
+          "Search (「検索」) — the native form submit. Call `preventDefault()` and copy the draft conditions into the applied query; the form never searches on each keystroke.",
+      },
+      {
+        name: "onReset",
+        type: "() => void",
+        description: "Clear (「クリア」). The button renders only when this is set.",
+      },
+      {
+        name: "summary",
+        type: "ReactNode",
+        description:
+          "The conditions the CURRENT results were searched with, shown after the localized 「検索条件」 label in the status line (e.g. 「国「籍」: 「ベトナム」 / 「状態」: 「実習」中」).",
+      },
+      {
+        name: "resultCount",
+        type: "number",
+        description: 'Localized, pluralized result count in the same `role="status"` line.',
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        description: "Puts the Search button in its loading state while the query runs.",
+      },
+      {
+        name: "searchLabel",
+        type: "ReactNode",
+        description: "Overrides the localized Search (「検索」) text.",
+      },
+      {
+        name: "resetLabel",
+        type: "ReactNode",
+        description: "Overrides the localized Clear (「クリア」) text.",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          "Accessible name of the `search` landmark (default: localized 'Search conditions').",
+      },
+      {
+        name: "layout / labelWidth / controlWidth / labelAlign",
+        type: "Form props",
+        description:
+          'Passed to the underlying Form: `layout="vertical"` (default) is label-top; `layout="horizontal"` + `labelWidth` is the label-left table style of Japanese business systems. Set `controlWidth` once here so Selects fill their column.',
+      },
+    ],
+    usage: [
+      "DO pick the shape from rule #51's decision table: a few filters applied instantly → FilterBar; many conditions / a heavy query / users who expect an explicit 「検索」 button → SearchForm; arbitrary field × operator conditions saved as views → pattern `condition-builder`.",
+      "DO put one FormField per condition as a direct child. Ranges (「入国日」 From〜To, 「金額」 「下限〜上限」) are ONE FormField with both controls; 「部分一致」 / 「完全一致」 is a RadioGroup inside the name field.",
+      "DO keep a draft and an applied copy of the conditions: inputs edit the draft, onSubmit copies it to the applied query, onReset clears both. Pass the applied conditions as `summary` and the hit count as `resultCount`.",
+      "DO NOT wrap it in another Form, and do not rebuild it as a Form + ResponsiveGrid + Collapsible by hand — the collapse, the hidden-count toggle, the search landmark and the status line are what this component owns. Hidden conditions stay mounted, so a typed value survives collapsing.",
+      'A SearchForm (or any `<Form role="search" onSubmit>`) above a table is NOT flagged by ui-audit `form-on-list-page` or `hand-rolled-filter-bar`; a submitting create form without role="search" still is.',
+    ],
+    useCases: [
+      "「検索条件フォーム」 on a Japanese business-system list (「基幹系」 / 「業務システム」): 6–12 conditions, 「検索」 and 「クリア」 buttons, 「詳細条件を開く」.",
+      "Search screens over a heavy query where searching on every keystroke would be too expensive.",
+      "Label-left (「表形式」) or label-top search panels above a DataTable, with the applied conditions summarized after the search.",
+    ],
+    related: [
+      "Toolbar — FilterBar, the live filter strip; use it for a few filters applied as the user changes them.",
+      'Form — the layout container SearchForm renders (`role="search"`); its `layout`, `labelWidth` and `controlWidth` pass through.',
+      "FormField — one per condition; a range is one FormField holding two controls.",
+      "DataTable — the results under the form.",
+    ],
+    example: `import { SearchForm } from "@godxjp/ui/navigation";
+import { FormField, Input, Select, DatePicker } from "@godxjp/ui/data-entry";
+
+<SearchForm
+  controlWidth="100%"
+  onSubmit={(e) => { e.preventDefault(); setApplied(draft); }}
+  onReset={() => { setDraft(EMPTY); setApplied(EMPTY); }}
+  summary="国籍: ベトナム / 状態: 実習中"
+  resultCount={rows.length}
+>
+  <FormField label="氏名" id="q-name"><Input id="q-name" value={draft.name} onChange={(e) => set({ name: e.target.value })} /></FormField>
+  <FormField label="国籍" id="q-nat"><Select id="q-nat" options={nationalities} value={draft.nationality} onValueChange={(v) => set({ nationality: v })} /></FormField>
+  <FormField label="入国日" id="q-entry"><DatePicker id="q-entry" range /></FormField>
+  <FormField label="職種" id="q-occ"><Select id="q-occ" options={occupations} value={draft.occupation} onValueChange={(v) => set({ occupation: v })} /></FormField>
+</SearchForm>`,
+    docPath: "navigation/search-form",
+    storyPath: "navigation/search-form.tsx",
+    rules: [23, 51],
   },
 
   // ─── providers / datetime ───────────────────────────────────────────────

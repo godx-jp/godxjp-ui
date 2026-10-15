@@ -12483,7 +12483,7 @@
           "origin": "owned",
           "required": false,
           "type": "ResponsiveGridAlignProp | undefined",
-          "values": ["start", "stretch"],
+          "values": ["center", "start", "stretch"],
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
@@ -12706,6 +12706,198 @@
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
           "declaredIn": ["src/components/data-display/scroll-area.tsx"]
+        }
+      ]
+    },
+    "SearchForm": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "collapseBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "false | BreakpointProp | undefined",
+          "values": [false, "sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "columns",
+          "origin": "owned",
+          "required": false,
+          "type": "ResponsiveGridColumnsProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "controlWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "defaultOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "density",
+          "origin": "owned",
+          "required": false,
+          "type": "DensityProp | undefined",
+          "values": ["compact", "default", "comfortable"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "errors",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<string, string | string[]>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "labelAlign",
+          "origin": "owned",
+          "required": false,
+          "type": "\"start\" | \"end\" | undefined",
+          "values": ["start", "end"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "labelWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "layout",
+          "origin": "owned",
+          "required": false,
+          "type": "FormLayoutProp | undefined",
+          "values": ["vertical", "horizontal", "inline"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "OnOpenChangeProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onReset",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "open",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "requiredMark",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | \"optional\" | undefined",
+          "values": [false, true, "optional"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "resetLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "resultCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "searchLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "summary",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "visibleFields",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]
     },

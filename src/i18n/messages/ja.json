@@ -574,6 +574,15 @@
       "removeFilter": "フィルターを解除: {label}",
       "resultCount": "{count} 件の結果"
     },
+    "searchForm": {
+      "label": "検索条件",
+      "search": "検索",
+      "reset": "クリア",
+      "expand": "詳細条件を開く",
+      "collapse": "詳細条件を閉じる",
+      "hiddenCount": "件の条件が非表示",
+      "summary": "検索条件:"
+    },
     "localePicker": {
       "ariaLabel": "言語"
     },

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 286,
-    dimensionCells: 4004,
+    exports: 287,
+    dimensionCells: 4018,
     covered: 89,
-    untested: 2200,
-    notApplicable: 1715,
+    untested: 2210,
+    notApplicable: 1719,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -291,6 +291,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"Reveal","group":"general","frame":"docs/general/reveal.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"ScrollArea","group":"data-display","frame":"docs/data-display/scroll-area.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"ScrollBar","group":"data-display","frame":"docs/data-display/scroll-area.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"SearchForm","group":"navigation","frame":"docs/navigation/search-form.tsx","covered":[],"untested":["accessibleName","async","contentStress","density","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["shapes","sizes","tones","variants"]},
   {"name":"SearchInput","group":"data-entry","frame":"docs/data-entry/search-input.tsx","covered":["variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones"]},
   {"name":"Segmented","group":"data-entry","frame":"docs/data-entry/segmented.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones","variants"]},
   {"name":"Select","group":"data-entry","frame":"docs/data-entry/select.tsx","covered":["sizes","variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones"]},

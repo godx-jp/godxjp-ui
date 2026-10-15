@@ -1537,8 +1537,14 @@ function suggestPrimitive(useCase: string): string {
   );
   check(
     ["filter"],
-    "Toolbar/ToolbarGroup + pattern 'filter-bar' (→ data-table-page); many filters → pattern 'list-filters'",
+    "Toolbar/ToolbarGroup + pattern 'filter-bar' (→ data-table-page); many filters → pattern 'list-filters'; other layouts (saved views, faceted sidebar, docked panel…) → pattern 'filter-bar-layouts'",
     "Standalone Toolbar filter bar above a table; it WRAPS and never scrolls sideways (rule #51). Past 2–4 filters, the rest go behind ONE 'More filters' Sheet.",
+    4,
+  );
+  check(
+    ["search form", "検索", "query filter", "advanced search", "condition builder", "filter logic"],
+    "SearchForm + pattern 'search-form'; field × operator rows → pattern 'condition-builder'",
+    'Submit-driven search: SearchForm (検索条件フォーム — aligned columns, 検索/クリア, 詳細条件を開く, 検索条件 summary). A condition builder (kintone / Salesforce filter logic) is a composition in a role="search" Form.',
     4,
   );
   check(

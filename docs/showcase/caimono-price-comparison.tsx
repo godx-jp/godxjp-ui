@@ -16,15 +16,7 @@ import {
   EmptyState,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
-import {
-  Form,
-  Checkbox,
-  FormField,
-  NumberInput,
-  SearchInput,
-  Segmented,
-  Select,
-} from "@godxjp/ui/data-entry";
+import { Form, Checkbox, FormField, NumberInput, Segmented, Select } from "@godxjp/ui/data-entry";
 import {
   Alert,
   AlertDescription,
@@ -36,7 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@godxjp/ui/feedback";
-import { AppSettingPicker } from "@godxjp/ui/navigation";
+import { AppSettingPicker, FilterBar } from "@godxjp/ui/navigation";
 import { AreaChart } from "@godxjp/ui/charts";
 import { useTranslation } from "@godxjp/ui/i18n";
 
@@ -547,38 +539,38 @@ export default function CaimonoPriceComparison() {
         <Text tone="muted" size="sm">
           {t("caimono.snapshot", { date: date(snapshot) })}
         </Text>
-        <Form>
-          <ResponsiveGrid columns={{ base: 1, md: 3 }} gap="md">
-            <FormField label={t("caimono.findShop")}>
-              <SearchInput
-                value={query}
-                onValueChange={setQuery}
-                placeholder={t("caimono.searchPlaceholder")}
-              />
-            </FormField>
-            <FormField label={t("caimono.deliverTo")}>
-              <Select
-                value={destination}
-                onValueChange={(v: string) => setDestination(v === "Osaka" ? "Osaka" : "Tokyo")}
-                options={["Tokyo", "Osaka"].map((value) => ({
-                  value,
-                  label: t(`caimono.${value}`),
-                }))}
-              />
-            </FormField>
-            <FormField label={t("caimono.sort")}>
-              <Select
-                value={sort}
-                onValueChange={setSort}
-                options={[
-                  { value: "total", label: t("caimono.totalSort") },
-                  { value: "delivery", label: t("caimono.deliverySort") },
-                ]}
-              />
-            </FormField>
-          </ResponsiveGrid>
-        </Form>
-        <Flex gap="md" wrap align="center">
+        <FilterBar
+          search={{
+            label: t("caimono.findShop"),
+            value: query,
+            onValueChange: setQuery,
+            placeholder: t("caimono.searchPlaceholder"),
+          }}
+          filters={[
+            {
+              value: "destination",
+              label: t("caimono.deliverTo"),
+              selected: destination,
+              onSelectedChange: (v) => setDestination(v === "Osaka" ? "Osaka" : "Tokyo"),
+              options: ["Tokyo", "Osaka"].map((value) => ({
+                value,
+                label: t(`caimono.${value}`),
+              })),
+            },
+            {
+              value: "sort",
+              label: t("caimono.sort"),
+              selected: sort,
+              onSelectedChange: setSort,
+              options: [
+                { value: "total", label: t("caimono.totalSort") },
+                { value: "delivery", label: t("caimono.deliverySort") },
+              ],
+            },
+          ]}
+          hasActiveFilters={query !== "" || free || stock || fast}
+          onClear={reset}
+        >
           <Checkbox checked={free} onCheckedChange={(v) => setFree(v === true)}>
             {t("caimono.free")}
           </Checkbox>
@@ -594,10 +586,7 @@ export default function CaimonoPriceComparison() {
               }).format(1),
             })}
           </Checkbox>
-          <Button variant="ghost" size="sm" onClick={reset}>
-            {t("caimono.reset")}
-          </Button>
-        </Flex>
+        </FilterBar>
         <Text role="status" size="sm">
           {t("caimono.counts", { total: number(rows.length), eligible: number(eligible.length) })}
         </Text>

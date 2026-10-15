@@ -493,7 +493,16 @@
   {
     "group": "navigation",
     "name": "Toolbar",
-    "tagline": "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. It WRAPS and never scrolls sideways; many filters → 2–4 inline + ONE 'More filters' Sheet (rule #51, pattern `list-filters`). `FilterBar`/`FilterBarGroup` are the same components under their alias names."
+    "tagline": "List-page filter strip — SearchInput + labelled ToolbarGroup filter slots (or the typed `search`/`filters`/`chips` model) + a clear-all affordance, optionally sticky. It WRAPS and never scrolls sideways; many filters → 2–4 inline + ONE 'More filters' Sheet (rule #51, pattern `list-filters`). `FilterBar`/`FilterBarGroup` are the same components under their alias names. Eleven layouts (inline, Filter menu + chips, More-filters Sheet, saved views, two rows, actions + sticky, faceted sidebar, compact in a card, date range, phone, docked panel) → pattern `filter-bar-layouts`."
+  },
+  {
+    "absorbed": [
+      "QueryFilter",
+      "SearchPanel"
+    ],
+    "group": "navigation",
+    "name": "SearchForm",
+    "tagline": "Submit-driven 「検索条件フォーム」 (Ant Design ProComponents QueryFilter): a `search` landmark holding a grid of labelled conditions aligned in columns, Search 「検索」 + Clear 「クリア」, the conditions past the first row behind ONE 「詳細条件を開く」 toggle that names how many are hidden, and a 「検索条件」 summary + result count in a role=\"status\" line after the search. Use it instead of a live FilterBar when the conditions are many, the query is heavy, or users expect an explicit 「検索」 button (rule #51 decision table)."
   },
   {
     "group": "providers",

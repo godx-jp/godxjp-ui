@@ -1900,5 +1900,337 @@
       "en": "Nhập tên sản phẩm tiếng Anh",
       "vi": "Nhập tên sản phẩm tiếng Việt"
     }
+  },
+  "filterBarLayoutsDocs": {
+    "page": {
+      "title": "Bố cục FilterBar",
+      "subtitle": "Mười một bố cục bộ lọc từ các sản phẩm hàng đầu, tất cả dựng từ FilterBar và các primitive sẵn có. Bộ lọc xếp sát đầu; chỉ khe actions nằm ở cuối."
+    },
+    "mirrors": "Tham khảo: {products}.",
+    "country": {
+      "vn": "Việt Nam",
+      "id": "Indonesia",
+      "ph": "Philippines",
+      "mm": "Myanmar"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "review": "Đang thẩm định",
+      "suspended": "Tạm dừng"
+    },
+    "occupation": {
+      "construction": "Xây dựng",
+      "care": "Điều dưỡng",
+      "food": "Chế biến thực phẩm"
+    },
+    "col": {
+      "name": "Tên tổ chức",
+      "country": "Quốc gia",
+      "status": "Trạng thái",
+      "trainees": "Thực tập sinh"
+    },
+    "empty": "Không có tổ chức phái cử phù hợp",
+    "results": "Danh sách tổ chức phái cử",
+    "label": {
+      "country": "Quốc gia",
+      "status": "Trạng thái",
+      "occupation": "Ngành nghề",
+      "period": "Khoảng thời gian",
+      "dateRange": "Từ ngày – đến ngày",
+      "includeSuspended": "Hiện cả tổ chức tạm dừng"
+    },
+    "chip": {
+      "country": "Quốc gia: {value}",
+      "status": "Trạng thái: {value}",
+      "occupation": "Ngành nghề: {value}"
+    },
+    "all": "Tất cả",
+    "search": {
+      "placeholder": "Tìm theo tên hoặc mã",
+      "label": "Tìm tổ chức phái cử",
+      "inView": "Tìm trong chế độ xem này",
+      "keyword": "Từ khoá",
+      "short": "Tìm kiếm"
+    },
+    "filterMenu": "Bộ lọc",
+    "appliedCount": "bộ lọc đang áp dụng",
+    "more": {
+      "button": "Bộ lọc khác",
+      "description": "Bộ lọc đã áp dụng cũng hiện thành chip phía trên danh sách."
+    },
+    "showResults": "Xem kết quả",
+    "showCount": "Xem {count} kết quả",
+    "views": {
+      "all": "Tất cả",
+      "active": "Đang hoạt động",
+      "review": "Cần thẩm định",
+      "vn": "Việt Nam",
+      "countLabel": "kết quả"
+    },
+    "actions": {
+      "export": "Xuất CSV",
+      "add": "Thêm tổ chức"
+    },
+    "facets": {
+      "button": "Lọc",
+      "description": "Mỗi con số là kết quả khi chỉ dùng điều kiện đó."
+    },
+    "card": {
+      "title": "Tổ chức phụ trách",
+      "searchLabel": "Tìm tổ chức phụ trách"
+    },
+    "range": {
+      "7d": "7 ngày",
+      "30d": "30 ngày",
+      "q": "Quý",
+      "custom": "Tuỳ chọn"
+    },
+    "dock": {
+      "open": "Mở bảng lọc",
+      "close": "Đóng bảng lọc",
+      "title": "Bộ lọc",
+      "sheetDescription": "Trên màn hình rộng, bảng này được neo bên cạnh bảng dữ liệu."
+    },
+    "layout": {
+      "a": {
+        "title": "Thanh lọc xếp gọn",
+        "when": "Danh sách quản trị có 2–4 bộ lọc hay đổi",
+        "mirrors": "form truy vấn thu gọn của Ant Design ProTable"
+      },
+      "b": {
+        "title": "Tìm kiếm trước, một menu Lọc, chip điều kiện",
+        "when": "Danh sách chủ yếu dùng tìm kiếm, thỉnh thoảng mới lọc",
+        "mirrors": "menu Filter của Linear và bộ lọc issue của GitHub"
+      },
+      "c": {
+        "title": "Bộ lọc chính + một Sheet Bộ lọc khác",
+        "when": "Hơn 2–4 bộ lọc: giữ cái hay dùng, phần còn lại cách một cú nhấp, kèm số đếm",
+        "mirrors": "Shopify Polaris IndexFilters (pattern list-filters, quy tắc #51)"
+      },
+      "d": {
+        "title": "Chế độ xem đã lưu phía trên thanh lọc",
+        "when": "Nhóm hay quay lại vài bộ điều kiện cố định; một chế độ xem chọn cả bộ",
+        "mirrors": "chế độ xem của Shopify Polaris IndexTable và bộ lọc đã lưu của Jira"
+      },
+      "e": {
+        "title": "Hai hàng: ô tìm kiếm rộng, bộ lọc bên dưới",
+        "when": "Trang kết quả tìm kiếm, từ khoá là chính, bộ lọc để thu hẹp",
+        "mirrors": "tìm kiếm Gmail và kết quả Amazon"
+      },
+      "f": {
+        "title": "Bộ lọc ở đầu, thao tác ở cuối, ghim cố định",
+        "when": "Danh sách có thao tác cấp trang (xuất, thêm, hàng loạt); thanh lọc ghim khi cuộn bảng",
+        "mirrors": "thanh công cụ Ant Design ProTable và đầu danh sách của Stripe"
+      },
+      "g": {
+        "title": "Thanh bên dạng facet",
+        "when": "Duyệt kiểu danh mục, nhiều facet chọn nhiều kèm số đếm",
+        "mirrors": "facet tìm kiếm của Amazon và Rakuten"
+      },
+      "h": {
+        "title": "Thanh lọc gọn trong thẻ bảng",
+        "when": "Bảng phụ trong trang chi tiết hoặc dashboard, bộ lọc thuộc riêng thẻ đó",
+        "mirrors": "bảng tệp và bảng Actions của GitHub"
+      },
+      "i": {
+        "title": "Khoảng ngày với lựa chọn nhanh",
+        "when": "Màn phân tích, báo cáo mà thời gian là bộ lọc đầu tiên",
+        "mirrors": "bộ chọn ngày của Stripe Dashboard và Google Analytics"
+      },
+      "j": {
+        "title": "Điện thoại: một cột xếp chồng + Sheet",
+        "when": "Dưới 640px mọi FilterBar xếp chồng: ô tìm kiếm full chiều rộng, phần còn lại trong Sheet từ dưới lên",
+        "mirrors": "bộ lọc di động của Shopify admin và Airbnb"
+      },
+      "k": {
+        "title": "Bảng lọc neo cạnh bảng",
+        "when": "Làm việc lâu trên một bảng, vừa làm vừa đổi điều kiện; dưới 1024px thành Sheet",
+        "mirrors": "bộ lọc chế độ xem của Airtable và Notion, bảng lọc nâng cao của Jira, bảng bên của Gmail"
+      }
+    }
+  },
+  "searchFormDocs": {
+    "page": {
+      "subtitle": "Tìm kiếm theo kiểu gửi biểu mẫu cho danh sách: form điều kiện tìm kiếm, trình dựng điều kiện, form tìm kiếm nâng cao và chế độ xem danh sách có bảng lọc neo bên cạnh.",
+      "decision": "Chọn dạng nào: vài bộ lọc áp dụng ngay khi đổi → FilterBar. Nhiều điều kiện, truy vấn nặng, hoặc người dùng quen bấm nút Tìm kiếm → SearchForm (l). Người dùng thành thạo kết hợp trường và toán tử tuỳ ý rồi lưu thành chế độ xem → trình dựng điều kiện (m, o). Một truy vấn chuyên sâu có hướng dẫn cú pháp → form tìm kiếm nâng cao (n)."
+    },
+    "mirrors": "Tham khảo: {products}.",
+    "nationality": {
+      "vn": "Việt Nam",
+      "id": "Indonesia",
+      "ph": "Philippines",
+      "mm": "Myanmar"
+    },
+    "status": {
+      "training": "Đang thực tập",
+      "preparing": "Chuẩn bị nhập cảnh",
+      "completed": "Đã hoàn thành",
+      "withdrawn": "Về nước giữa chừng"
+    },
+    "occupation": {
+      "construction": "Xây dựng",
+      "care": "Điều dưỡng",
+      "food": "Chế biến thực phẩm",
+      "agriculture": "Nông nghiệp"
+    },
+    "col": {
+      "name": "Họ tên",
+      "nationality": "Quốc tịch",
+      "status": "Trạng thái",
+      "occupation": "Ngành nghề",
+      "months": "Số tháng"
+    },
+    "field": {
+      "name": "Họ tên",
+      "match": "Cách khớp",
+      "nationality": "Quốc tịch",
+      "status": "Trạng thái",
+      "entry": "Ngày nhập cảnh",
+      "months": "Số tháng",
+      "occupation": "Ngành nghề",
+      "agency": "Tổ chức phái cử"
+    },
+    "match": {
+      "partial": "Khớp một phần",
+      "exact": "Khớp chính xác"
+    },
+    "all": "Tất cả",
+    "anytime": "Bất kỳ lúc nào",
+    "empty": "Không có thực tập sinh phù hợp",
+    "noConditions": "không có",
+    "rangeMin": "Từ",
+    "rangeMax": "Đến",
+    "variant": {
+      "labelLeft": "Cùng form, nhãn bên trái (kiểu bảng)"
+    },
+    "resultLine": "{count} thực tập sinh · lọc theo {summary}",
+    "builderMatch": {
+      "all": "Thoả tất cả điều kiện",
+      "any": "Thoả bất kỳ điều kiện nào",
+      "custom": "Logic tuỳ chỉnh"
+    },
+    "operator": {
+      "contains": "chứa",
+      "notContains": "không chứa",
+      "eq": "bằng (=)",
+      "neq": "khác (≠)",
+      "in": "là một trong",
+      "notIn": "không là",
+      "gte": "ít nhất (≥)",
+      "lte": "nhiều nhất (≤)"
+    },
+    "direction": {
+      "asc": "Tăng dần",
+      "desc": "Giảm dần"
+    },
+    "builder": {
+      "title": "Điều kiện lọc",
+      "match": "Kết hợp điều kiện",
+      "rows": "Các điều kiện",
+      "row": "Điều kiện {n}",
+      "field": "Trường",
+      "operator": "Toán tử",
+      "value": "Giá trị",
+      "remove": "Xoá điều kiện {n}",
+      "add": "Thêm điều kiện",
+      "addAfter": "Thêm điều kiện sau điều kiện {n}",
+      "logic": "Logic lọc",
+      "logicHelper": "Kết hợp các điều kiện đánh số bằng AND, OR, NOT và dấu ngoặc, ví dụ 1 AND (2 OR 3).",
+      "logicError": "Chỉ dùng số của các điều kiện hiện có, AND, OR, NOT và dấu ngoặc cân đối.",
+      "sort": "Sắp xếp theo",
+      "direction": "Chiều sắp xếp",
+      "viewName": "Lưu thành chế độ xem",
+      "saveView": "Lưu",
+      "savedViews": "Chế độ xem đã lưu",
+      "cancel": "Huỷ",
+      "revert": "Hoàn tác thay đổi",
+      "apply": "Áp dụng"
+    },
+    "advanced": {
+      "find": "Tìm thực tập sinh có…",
+      "narrow": "Sau đó thu hẹp kết quả theo…",
+      "all": "tất cả các từ này:",
+      "allHelper": "Nhập các từ quan trọng: Esuhai care",
+      "exact": "đúng cụm từ này:",
+      "exactHelper": "Đặt cụm từ chính xác trong ngoặc kép: \"Nguyễn Văn\"",
+      "any": "bất kỳ từ nào sau đây:",
+      "anyHelper": "Gõ OR giữa các từ: Esuhai OR Kyoei",
+      "none": "không có các từ này:",
+      "noneHelper": "Đặt dấu trừ trước từ không muốn: -withdrawn",
+      "range": "số tháng từ:",
+      "rangeHelper": "Đặt hai dấu chấm giữa hai số: 6..18",
+      "nationality": "quốc tịch:",
+      "nationalityHelper": "Chỉ thực tập sinh có quốc tịch đã chọn.",
+      "updated": "cập nhật lần cuối:",
+      "updatedHelper": "Hồ sơ được cập nhật trong khoảng thời gian đã chọn.",
+      "agency": "tổ chức phái cử:",
+      "agencyHelper": "Giới hạn một tổ chức, như chỉ định trang web: agency:Esuhai",
+      "scope": "từ khoá xuất hiện ở:",
+      "scopeHelper": "Tìm trong toàn bộ hồ sơ, chỉ họ tên, hoặc chỉ ghi chú.",
+      "document": "loại giấy tờ:",
+      "documentHelper": "Chỉ thực tập sinh có giấy tờ này.",
+      "submit": "Tìm kiếm nâng cao",
+      "query": "Truy vấn: {query} · {count} thực tập sinh"
+    },
+    "updated": {
+      "day": "24 giờ qua",
+      "week": "tuần qua",
+      "month": "tháng qua",
+      "year": "năm qua"
+    },
+    "scope": {
+      "all": "toàn bộ hồ sơ",
+      "name": "trong họ tên",
+      "notes": "trong ghi chú"
+    },
+    "document": {
+      "passport": "Hộ chiếu",
+      "residence": "Thẻ cư trú",
+      "contract": "Hợp đồng lao động"
+    },
+    "listView": {
+      "picker": "Chế độ xem danh sách",
+      "recent": "Đã xem gần đây",
+      "all": "Tất cả thực tập sinh",
+      "mine": "Thực tập sinh của tôi",
+      "careVn": "Điều dưỡng · Việt Nam",
+      "pinned": "đã ghim",
+      "pin": "Ghim chế độ xem này",
+      "unpin": "Chế độ xem đã ghim",
+      "controls": "Điều khiển chế độ xem",
+      "new": "Mới",
+      "clone": "Nhân bản",
+      "sharing": "Cài đặt chia sẻ",
+      "search": "Tìm trong danh sách",
+      "filters": "Bộ lọc",
+      "filtersApplied": "bộ lọc đang áp dụng",
+      "sheetDescription": "Trên màn hình rộng, bảng này neo bên cạnh danh sách.",
+      "showMe": "Hiển thị",
+      "showAll": "Tất cả",
+      "showMine": "Của tôi",
+      "summary": "{count} mục · lọc theo {summary}"
+    },
+    "layout": {
+      "l": {
+        "title": "Form điều kiện tìm kiếm — SearchForm",
+        "when": "Nhiều điều kiện hoặc truy vấn nặng, người dùng quen bấm nút Tìm kiếm (hệ thống nghiệp vụ Nhật)",
+        "mirrors": "QueryFilter của Ant Design ProComponents"
+      },
+      "m": {
+        "title": "Trình dựng điều kiện",
+        "when": "Người dùng thành thạo kết hợp trường và toán tử tuỳ ý, theo tất cả/bất kỳ hoặc logic đánh số, lưu thành chế độ xem",
+        "mirrors": "bộ lọc bản ghi của kintone và filter logic của Salesforce"
+      },
+      "n": {
+        "title": "Form tìm kiếm nâng cao",
+        "when": "Một truy vấn chuyên sâu: mỗi dòng nói nó tương đương cú pháp nào",
+        "mirrors": "Tìm kiếm nâng cao của Google"
+      },
+      "o": {
+        "title": "Chế độ xem danh sách có bảng lọc neo",
+        "when": "Ứng dụng hồ sơ chuyển giữa các chế độ xem đã lưu và tinh chỉnh trong bảng bên cạnh",
+        "mirrors": "chế độ xem danh sách của Salesforce Lightning"
+      }
+    }
   }
 }

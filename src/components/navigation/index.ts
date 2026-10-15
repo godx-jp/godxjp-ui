@@ -24,6 +24,8 @@ export type {
   ToolbarGroupProps,
   ToolbarProps,
 } from "./toolbar";
+export { SearchForm } from "./search-form";
+export type { SearchFormProp, SearchFormProps } from "./search-form";
 export { AppSettingPicker } from "./app-setting-picker";
 export type {
   AppSettingPickerProp,

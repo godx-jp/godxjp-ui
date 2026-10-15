@@ -1900,5 +1900,337 @@
       "en": "英語の商品名を入力してください",
       "vi": "ベトナム語の商品名を入力してください"
     }
+  },
+  "filterBarLayoutsDocs": {
+    "page": {
+      "title": "FilterBar のレイアウト",
+      "subtitle": "主要プロダクトの絞り込みレイアウト 11 種。すべて FilterBar と既存のプリミティブで構成。フィルターは先頭に詰めて並べ、末端に置くのは actions スロットだけ。"
+    },
+    "mirrors": "参考: {products}",
+    "country": {
+      "vn": "ベトナム",
+      "id": "インドネシア",
+      "ph": "フィリピン",
+      "mm": "ミャンマー"
+    },
+    "status": {
+      "active": "稼働中",
+      "review": "審査中",
+      "suspended": "停止中"
+    },
+    "occupation": {
+      "construction": "建設",
+      "care": "介護",
+      "food": "食品製造"
+    },
+    "col": {
+      "name": "機関名",
+      "country": "国",
+      "status": "状態",
+      "trainees": "在籍実習生"
+    },
+    "empty": "該当する送出機関がありません",
+    "results": "送出機関の一覧",
+    "label": {
+      "country": "国",
+      "status": "状態",
+      "occupation": "職種",
+      "period": "期間",
+      "dateRange": "開始日〜終了日",
+      "includeSuspended": "停止中も表示"
+    },
+    "chip": {
+      "country": "国: {value}",
+      "status": "状態: {value}",
+      "occupation": "職種: {value}"
+    },
+    "all": "すべて",
+    "search": {
+      "placeholder": "機関名・ID で検索",
+      "label": "送出機関を検索",
+      "inView": "このビュー内を検索",
+      "keyword": "キーワード",
+      "short": "検索"
+    },
+    "filterMenu": "フィルター",
+    "appliedCount": "件の条件を適用中",
+    "more": {
+      "button": "その他の絞り込み",
+      "description": "適用した条件は一覧の上にチップで表示されます。"
+    },
+    "showResults": "結果を表示",
+    "showCount": "{count} 件を表示",
+    "views": {
+      "all": "すべて",
+      "active": "稼働中",
+      "review": "要審査",
+      "vn": "ベトナム",
+      "countLabel": "件"
+    },
+    "actions": {
+      "export": "CSV 出力",
+      "add": "送出機関を追加"
+    },
+    "facets": {
+      "button": "絞り込み",
+      "description": "件数は各条件だけで絞り込んだ場合の数です。"
+    },
+    "card": {
+      "title": "担当の送出機関",
+      "searchLabel": "担当の送出機関を検索"
+    },
+    "range": {
+      "7d": "7日",
+      "30d": "30日",
+      "q": "四半期",
+      "custom": "期間指定"
+    },
+    "dock": {
+      "open": "フィルターパネルを開く",
+      "close": "フィルターパネルを閉じる",
+      "title": "フィルター",
+      "sheetDescription": "広い画面ではこのパネルが表の横に固定されます。"
+    },
+    "layout": {
+      "a": {
+        "title": "インライン（詰めて並べる）",
+        "when": "よく変える 2〜4 個のフィルターを持つ一般的な管理画面の一覧",
+        "mirrors": "Ant Design ProTable の折りたたんだ検索フォーム"
+      },
+      "b": {
+        "title": "検索優先 + フィルターメニュー + 条件チップ",
+        "when": "検索が中心で、フィルターはときどき使う一覧",
+        "mirrors": "Linear のフィルターメニュー、GitHub の Issue フィルター"
+      },
+      "c": {
+        "title": "主要フィルター + 「その他の絞り込み」Sheet",
+        "when": "フィルターが 2〜4 個を超えるとき。よく使うものだけ並べ、残りは件数付きで 1 クリック先へ",
+        "mirrors": "Shopify Polaris IndexFilters（パターン list-filters、ルール #51）"
+      },
+      "d": {
+        "title": "バーの上に保存ビュー",
+        "when": "同じ条件セットを繰り返し使うチーム。ビューは条件 1 つではなくセット全体を選ぶ",
+        "mirrors": "Shopify Polaris IndexTable のビュー、Jira の保存済みフィルター"
+      },
+      "e": {
+        "title": "2 段: 広い検索欄 + その下にフィルター",
+        "when": "検索語が主役で、フィルターで結果を絞り込む検索結果ページ",
+        "mirrors": "Gmail の検索、Amazon の検索結果"
+      },
+      "f": {
+        "title": "フィルターは先頭、アクションは末尾、固定表示",
+        "when": "ページ単位の操作（出力・追加・一括）がある一覧。表をスクロールしてもバーは固定",
+        "mirrors": "Ant Design ProTable のツールバー、Stripe の一覧ヘッダー"
+      },
+      "g": {
+        "title": "ファセット型サイドバー",
+        "when": "多数の複数選択ファセットと件数を持つカタログ型の閲覧",
+        "mirrors": "Amazon、楽天の検索ファセット"
+      },
+      "h": {
+        "title": "表カード内のコンパクトなバー",
+        "when": "詳細ページやダッシュボード内の補助的な表。フィルターはそのカードに属する",
+        "mirrors": "GitHub のファイル一覧、Actions の実行一覧"
+      },
+      "i": {
+        "title": "期間 + クイック選択",
+        "when": "時間が最初の絞り込み条件になる分析・レポート画面",
+        "mirrors": "Stripe ダッシュボード、Google アナリティクスの期間指定"
+      },
+      "j": {
+        "title": "スマートフォン: 縦 1 列 + Sheet",
+        "when": "640px 未満では FilterBar は縦に積まれる。検索は全幅、残りは下からの Sheet に",
+        "mirrors": "Shopify 管理画面、Airbnb のモバイル絞り込み"
+      },
+      "k": {
+        "title": "固定表示のフィルターパネル",
+        "when": "1 つの表で長時間作業し、作業しながら条件を変える場合。1024px 未満では Sheet になる",
+        "mirrors": "Airtable・Notion のビューフィルター、Jira の詳細フィルター、Gmail のサイドパネル"
+      }
+    }
+  },
+  "searchFormDocs": {
+    "page": {
+      "subtitle": "送信して検索する一覧の絞り込み: 検索条件フォーム、条件ビルダー、詳細検索フォーム、フィルターパネル付きのリストビュー。",
+      "decision": "どれを使うか: 少数の条件を変更と同時に反映 → FilterBar。条件が多い・検索が重い・「検索」ボタンが前提の業務利用 → SearchForm（l）。任意の項目と演算子を組み合わせてビューとして保存する上級者 → 条件ビルダー（m・o）。構文の説明付きで一度だけ組む高度な検索 → 詳細検索フォーム（n）。"
+    },
+    "mirrors": "参考: {products}",
+    "nationality": {
+      "vn": "ベトナム",
+      "id": "インドネシア",
+      "ph": "フィリピン",
+      "mm": "ミャンマー"
+    },
+    "status": {
+      "training": "実習中",
+      "preparing": "入国準備中",
+      "completed": "修了",
+      "withdrawn": "途中帰国"
+    },
+    "occupation": {
+      "construction": "建設",
+      "care": "介護",
+      "food": "食品製造",
+      "agriculture": "農業"
+    },
+    "col": {
+      "name": "氏名",
+      "nationality": "国籍",
+      "status": "状態",
+      "occupation": "職種",
+      "months": "在籍月数"
+    },
+    "field": {
+      "name": "氏名",
+      "match": "一致条件",
+      "nationality": "国籍",
+      "status": "状態",
+      "entry": "入国日",
+      "months": "在籍月数",
+      "occupation": "職種",
+      "agency": "送出機関"
+    },
+    "match": {
+      "partial": "部分一致",
+      "exact": "完全一致"
+    },
+    "all": "すべて",
+    "anytime": "指定なし",
+    "empty": "条件に一致する実習生はいません",
+    "noConditions": "指定なし",
+    "rangeMin": "下限",
+    "rangeMax": "上限",
+    "variant": {
+      "labelLeft": "同じフォームをラベル左（表形式）で"
+    },
+    "resultLine": "{count} 件 · 絞り込み条件: {summary}",
+    "builderMatch": {
+      "all": "すべての条件を満たす",
+      "any": "いずれかの条件を満たす",
+      "custom": "条件式を指定"
+    },
+    "operator": {
+      "contains": "次のキーワードを含む",
+      "notContains": "次のキーワードを含まない",
+      "eq": "＝",
+      "neq": "≠",
+      "in": "次のいずれかを含む",
+      "notIn": "次のいずれも含まない",
+      "gte": "≥（以上）",
+      "lte": "≤（以下）"
+    },
+    "direction": {
+      "asc": "昇順",
+      "desc": "降順"
+    },
+    "builder": {
+      "title": "絞り込み条件",
+      "match": "条件の組み合わせ",
+      "rows": "条件",
+      "row": "条件 {n}",
+      "field": "フィールド",
+      "operator": "演算子",
+      "value": "値",
+      "remove": "条件 {n} を削除",
+      "add": "条件を追加",
+      "addAfter": "条件 {n} の後に条件を追加",
+      "logic": "条件式",
+      "logicHelper": "番号付きの条件を AND・OR・NOT と括弧で組み合わせます（例: 1 AND (2 OR 3)）。",
+      "logicError": "存在する条件の番号、AND・OR・NOT、対応の取れた括弧だけを使ってください。",
+      "sort": "並び順",
+      "direction": "並び順の向き",
+      "viewName": "ビューとして保存",
+      "saveView": "保存",
+      "savedViews": "保存済みのビュー",
+      "cancel": "キャンセル",
+      "revert": "変更を元に戻す",
+      "apply": "適用"
+    },
+    "advanced": {
+      "find": "次の条件に一致する実習生を検索",
+      "narrow": "検索結果の絞り込み",
+      "all": "すべてのキーワードを含む:",
+      "allHelper": "重要なキーワードを入力: Esuhai 介護",
+      "exact": "語順も含め完全一致:",
+      "exactHelper": "完全一致で検索する語句を二重引用符で囲む: \"Nguyễn Văn\"",
+      "any": "いずれかのキーワードを含む:",
+      "anyHelper": "キーワードの間に OR を挿入: Esuhai OR Kyoei",
+      "none": "含めないキーワード:",
+      "noneHelper": "除外するキーワードの先頭にマイナス記号を付ける: -途中帰国",
+      "range": "在籍月数の範囲:",
+      "rangeHelper": "2 つの数値の間にピリオドを 2 つ挿入: 6..18",
+      "nationality": "国籍:",
+      "nationalityHelper": "選んだ国籍の実習生だけを表示します。",
+      "updated": "最終更新:",
+      "updatedHelper": "指定した期間内に更新された記録を表示します。",
+      "agency": "送出機関:",
+      "agencyHelper": "特定の送出機関に限定（ウェブ検索のサイト指定と同じ）: agency:Esuhai",
+      "scope": "検索対象の範囲:",
+      "scopeHelper": "記録全体、氏名のみ、メモのみから選びます。",
+      "document": "書類の種類:",
+      "documentHelper": "この書類が登録されている実習生だけを表示します。",
+      "submit": "詳細検索",
+      "query": "検索式: {query} · {count} 件"
+    },
+    "updated": {
+      "day": "24 時間以内",
+      "week": "1 週間以内",
+      "month": "1 か月以内",
+      "year": "1 年以内"
+    },
+    "scope": {
+      "all": "記録全体",
+      "name": "氏名",
+      "notes": "メモ"
+    },
+    "document": {
+      "passport": "パスポート",
+      "residence": "在留カード",
+      "contract": "雇用契約書"
+    },
+    "listView": {
+      "picker": "リストビュー",
+      "recent": "最近参照したデータ",
+      "all": "すべての実習生",
+      "mine": "自分の担当",
+      "careVn": "介護・ベトナム",
+      "pinned": "固定済み",
+      "pin": "このリストビューを固定",
+      "unpin": "固定中のリストビュー",
+      "controls": "リストビューコントロール",
+      "new": "新規",
+      "clone": "コピー",
+      "sharing": "共有設定",
+      "search": "このリストを検索",
+      "filters": "フィルター",
+      "filtersApplied": "件の条件を適用中",
+      "sheetDescription": "広い画面ではこのパネルが一覧の横に固定されます。",
+      "showMe": "表示対象",
+      "showAll": "すべての実習生",
+      "showMine": "自分の担当",
+      "summary": "{count} 件 · 絞り込み条件: {summary}"
+    },
+    "layout": {
+      "l": {
+        "title": "検索条件フォーム（SearchForm）",
+        "when": "条件が多い・検索が重い・「検索」ボタンが前提の業務システム",
+        "mirrors": "Ant Design ProComponents の QueryFilter"
+      },
+      "m": {
+        "title": "条件ビルダー",
+        "when": "任意の項目と演算子を、すべて/いずれか、または番号付きの条件式で組み合わせ、ビューとして保存する上級者向け",
+        "mirrors": "kintone の絞り込み、Salesforce の条件ロジック"
+      },
+      "n": {
+        "title": "詳細検索フォーム",
+        "when": "1 回限りの高度な検索。各行が検索ボックスのどの構文に相当するかを説明する",
+        "mirrors": "Google の検索オプション"
+      },
+      "o": {
+        "title": "フィルターパネル付きリストビュー",
+        "when": "保存済みのリストビューを切り替え、一覧横のパネルで絞り込む業務アプリ",
+        "mirrors": "Salesforce Lightning のリストビュー"
+      }
+    }
   }
 }
