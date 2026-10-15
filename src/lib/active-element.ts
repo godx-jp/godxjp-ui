@@ -10,13 +10,12 @@
  * root at all. Without it, the walk starts at `document` and descends through open shadow roots.
  */
 export function getActiveElement(scope?: Node | null): Element | null {
+  if (typeof document === "undefined") return null;
   const root = scope?.getRootNode();
   let active: Element | null =
     root instanceof Document || root instanceof ShadowRoot
       ? root.activeElement
-      : typeof document === "undefined"
-        ? null
-        : document.activeElement;
+      : document.activeElement;
   while (active?.shadowRoot?.activeElement) active = active.shadowRoot.activeElement;
   return active;
 }
