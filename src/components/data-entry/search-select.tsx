@@ -274,25 +274,23 @@ export function SearchSelect(props: SearchSelectProp) {
 
   // Provide ONE of `loadOptions` (remote) or `options` (static, client-side filtered). With a
   // static list this becomes a plain searchable combobox — superseding the legacy Autocomplete.
-  const resolvedLoad = React.useMemo<NonNullable<SearchSelectProp["loadOptions"]>>(
-    () =>
-      loadOptions ??
-      (async ({ query: search }) => {
-        const needle = search.trim();
-        const list = staticOptions ?? [];
-        const kept = needle ? list.filter((option) => matchesQuery(option, needle)) : list;
-        // antd `filterSort` runs AFTER the filter and only on the client — with `loadOptions` the
-        // server owns the order, so sorting the page here would fight it. Sort a COPY: `list` is
-        // the caller's own `options` array and reordering it in place would mutate a prop.
-        return {
-          options: filterSort
-            ? [...kept].sort((a, b) => filterSort(a, b, { searchValue: needle }))
-            : kept,
-          hasMore: false,
-        };
-      }),
-    [loadOptions, staticOptions, matchesQuery, filterSort],
-  );
+  const typedText = query.trim();
+  /**
+   * The static list, filtered SYNCHRONOUSLY against what is typed now. It used to go through the
+   * debounced, async load, so for 250ms after a keystroke the panel still drew the previous list
+   * and an Enter committed its row 0 — "Máy xay" + Enter picked "Máy pha espresso".
+   */
+  const staticListed = React.useMemo<SearchSelectOptionProp[]>(() => {
+    if (loadOptions) return [];
+    const list = staticOptions ?? [];
+    const kept = typedText ? list.filter((option) => matchesQuery(option, typedText)) : list;
+    // antd `filterSort` runs AFTER the filter and only on the client — with `loadOptions` the
+    // server owns the order, so sorting the page here would fight it. Sort a COPY: `list` is
+    // the caller's own `options` array and reordering it in place would mutate a prop.
+    return filterSort
+      ? [...kept].sort((a, b) => filterSort(a, b, { searchValue: typedText }))
+      : kept;
+  }, [loadOptions, staticOptions, typedText, matchesQuery, filterSort]);
 
   // Debounce the search term — one fetch per pause, not per keystroke.
   React.useEffect(() => {
@@ -302,11 +300,12 @@ export function SearchSelect(props: SearchSelectProp) {
 
   const fetchPage = React.useCallback(
     async (nextPage: number, search: string, append: boolean) => {
+      if (!loadOptions) return; // a static list is filtered synchronously above
       const ticket = ++reqId.current;
       setLoading(true);
       if (!append) setError(false);
       try {
-        const result = await resolvedLoad({ query: search, page: nextPage });
+        const result = await loadOptions({ query: search, page: nextPage });
         if (ticket !== reqId.current) return; // a newer request superseded this one
         setLoaded((prev) => (append ? [...prev, ...result.options] : result.options));
         // The active row is re-chosen against the rows actually DRAWN (below), not this page:
@@ -325,15 +324,22 @@ export function SearchSelect(props: SearchSelectProp) {
         if (ticket === reqId.current) setLoading(false);
       }
     },
-    [resolvedLoad],
+    [loadOptions],
   );
 
   // (Re)load the first page when opened or the search term changes.
   React.useEffect(() => {
     if (!open) return;
     setActiveIndex(0);
+    // A static list has nothing to fetch; opening still re-picks the first enabled row.
+    if (!loadOptions) {
+      setFreshPage((tick) => tick + 1);
+      return;
+    }
     void fetchPage(1, debouncedQuery, false);
-  }, [open, debouncedQuery, fetchPage]);
+  }, [open, debouncedQuery, fetchPage, loadOptions]);
+  /** The rows the panel draws from: the loaded page, or the static list filtered right now. */
+  const listed = loadOptions ? loaded : staticListed;
 
   /**
    * What the panel lists. In `tags` mode that is more than what loaded — in rc-select's order:
@@ -348,10 +354,9 @@ export function SearchSelect(props: SearchSelectProp) {
    *     unremovable from the panel. Last, not first: a held tag ahead of the create row made it
    *     the active row, and Enter took it off instead of creating (gh#1064).
    */
-  const typedText = query.trim();
   const { displayOptions, createOption } = React.useMemo(() => {
-    if (!tagsMode) return { displayOptions: loaded, createOption: undefined };
-    const known = new Set(loaded.map((option) => option.value));
+    if (!tagsMode) return { displayOptions: listed, createOption: undefined };
+    const known = new Set(listed.map((option) => option.value));
     const extras: SearchSelectOptionProp[] = [];
     for (const entry of working) {
       if (known.has(entry)) continue;
@@ -363,7 +368,7 @@ export function SearchSelect(props: SearchSelectProp) {
     const typed = fold(typedText);
     const exists =
       [...known].some((entry) => fold(entry) === typed) ||
-      [...(staticOptions ?? []), ...loaded].some(
+      [...(staticOptions ?? []), ...listed].some(
         (option) => fold(option.value) === typed || fold(option.label) === typed,
       );
     const create: SearchSelectOptionProp | undefined =
@@ -371,23 +376,23 @@ export function SearchSelect(props: SearchSelectProp) {
         ? { value: typedText, label: typedText }
         : undefined;
     const exact = typedText
-      ? loaded.find(
+      ? listed.find(
           (option) =>
             !working.includes(option.value) &&
             (fold(option.value) === typed || fold(option.label) === typed),
         )
       : undefined;
-    const rest = exact ? loaded.filter((option) => option !== exact) : loaded;
+    const rest = exact ? listed.filter((option) => option !== exact) : listed;
     return {
       displayOptions:
         create || exact || extras.length
           ? [...(create ? [create] : []), ...(exact ? [exact] : []), ...rest, ...extras]
-          : loaded,
+          : listed,
       createOption: create,
     };
   }, [
     tagsMode,
-    loaded,
+    listed,
     working,
     typedText,
     pickedOptions,
@@ -444,7 +449,7 @@ export function SearchSelect(props: SearchSelectProp) {
   const optionFor = (optionValue: string): SearchSelectOptionProp | null =>
     pickedOptions[optionValue] ??
     (staticOptions ?? []).find((option) => option.value === optionValue) ??
-    loaded.find((option) => option.value === optionValue) ??
+    listed.find((option) => option.value === optionValue) ??
     null;
   // `selectedLabel` covers an async value whose option isn't loaded yet.
   const selectedOption = value ? optionFor(value) : null;
