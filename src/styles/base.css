@@ -64,26 +64,6 @@
  * See docs/TOKENS.md · "The layer contract". */
 @layer godxjp-ui-responsive;
 
-/* Per-language font wiring — token-only, NO hardcoded faces. */
-[lang="ja"] {
-  --font-family-sans: var(--font-sans-ja, var(--font-sans-base));
-}
-[lang="ko"] {
-  --font-family-sans: var(--font-sans-ko, var(--font-sans-base));
-}
-[lang="vi"] {
-  --font-family-sans: var(--font-sans-vi, var(--font-sans-base));
-}
-[lang="zh"],
-[lang="zh-Hans"],
-[lang="zh-CN"] {
-  --font-family-sans: var(--font-sans-zh-hans, var(--font-sans-base));
-}
-[lang="zh-Hant"],
-[lang="zh-TW"] {
-  --font-family-sans: var(--font-sans-zh-hant, var(--font-sans-base));
-}
-
 /* Guarantee the full set of semantic color utilities ships in the compiled CSS even when the
  * library itself only references a few — consumers (and the token docs) must be able to use
  * bg/text/border for EVERY semantic role. */
@@ -114,6 +94,34 @@
  * reads the same four tokens from ONE rule (styles/focus-ring.css). */
 @import "./focus-ring.css";
 @import "./density.css";
+
+/* Per-language font wiring — token-only, NO hardcoded faces.
+ *
+ * SOURCE ORDER IS THE CONTRACT (gh#1326): this block must come AFTER `@import "../tokens/base.css"`.
+ * foundation.css declares the default `:root { --font-family-sans: var(--font-sans-base) }`, and
+ * `lang` sits on `<html>`, which IS `:root` — both rules match the same element at the same
+ * specificity (0,1,0), unlayered, so the LATER one wins. Placed before the import, every `[lang]`
+ * rule lost on `<html>` and a Vietnamese page rendered the Japanese-first base stack. Same
+ * specificity (not `:root[lang]`) on purpose: a consumer theme loaded after the package that sets
+ * `:root { --font-family-sans: … }` still wins on `<html>`, exactly as it did. */
+[lang="ja"] {
+  --font-family-sans: var(--font-sans-ja, var(--font-sans-base));
+}
+[lang="ko"] {
+  --font-family-sans: var(--font-sans-ko, var(--font-sans-base));
+}
+[lang="vi"] {
+  --font-family-sans: var(--font-sans-vi, var(--font-sans-base));
+}
+[lang="zh"],
+[lang="zh-Hans"],
+[lang="zh-CN"] {
+  --font-family-sans: var(--font-sans-zh-hans, var(--font-sans-base));
+}
+[lang="zh-Hant"],
+[lang="zh-TW"] {
+  --font-family-sans: var(--font-sans-zh-hant, var(--font-sans-base));
+}
 
 /* `inline` (NOT a bare @theme): Tailwind inlines each expression — e.g. `hsl(var(--primary))` —
  * directly into every utility (`bg-primary` becomes `background-color: hsl(var(--primary))`) instead

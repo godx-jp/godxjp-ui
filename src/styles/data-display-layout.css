@@ -1242,11 +1242,19 @@
   /* A PADDED CardContent already holds the card's inline inset, so a row's own inset on top of it
    * pushed the row text 16px inside the heading's axis (gh#1257: text x=49 under a heading at
    * x=33). The row gives up its inline padding there and keeps its block rhythm; inside a flush
-   * CardContent — the documented home — nothing changes. */
-  [data-slot="card-content"]:not([data-flush]) > [data-slot="list-row"],
+   * CardContent — the documented home — nothing changes.
+   *
+   * DESCENDANT, not child (gh#1325): `CardContent > DataState wrapper (div) > Flex as="ul" >
+   * ListRow as="li" asChild > Link` puts the row four levels down, and a child-combinator rule
+   * missed it twice — the row text sat 16px inside the CardTitle again. Excluded, because there the
+   * row's inset IS the alignment: a row inside a nested flush CardContent (the inner card's edge is
+   * its axis) and a row inside a table cell (the cell's own padding). Both exclusions sit in
+   * `:where()`, so the rule's specificity is what the child form had. Known gap: a padded
+   * CardContent nested inside a flush one also matches the flush exclusion. */
   [data-slot="card-content"]:not([data-flush])
-    > :is(ul, ol, [role="list"])
-    > [data-slot="list-row"] {
+    [data-slot="list-row"]:not(
+      :where([data-slot="card-content"][data-flush], [data-slot="table-cell"], td, th) *
+    ) {
     padding-inline: 0;
   }
   /* A cut title or description UNFOLDS while the row holds keyboard focus (gh#1298) — the row

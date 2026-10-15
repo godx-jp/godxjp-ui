@@ -32,6 +32,7 @@ import {
 
 import { TOOL_DEFINITIONS, dispatchTool } from "./tools/registry.js";
 import { RESOURCE_DEFINITIONS, readResource } from "./resources/registry.js";
+import { runCall } from "./cli.js";
 import pkg from "../package.json";
 
 /**
@@ -98,7 +99,21 @@ async function main() {
   console.error("[godx-ui-mcp] connected (stdio)");
 }
 
-main().catch((err) => {
-  console.error("[godx-ui-mcp] fatal:", err);
-  process.exit(1);
-});
+if (process.argv[2] === "call") {
+  // Plain-stdio fallback, no MCP handshake (gh#1324) — see ./cli.ts.
+  runCall(process.argv.slice(3)).then(
+    ({ code, stdout, stderr }) => {
+      if (stderr) process.stderr.write(stderr);
+      process.stdout.write(stdout, () => process.exit(code)); // exit once the pipe has drained
+    },
+    (err) => {
+      console.error("[godx-ui-mcp] call failed:", err);
+      process.exit(1);
+    },
+  );
+} else {
+  main().catch((err) => {
+    console.error("[godx-ui-mcp] fatal:", err);
+    process.exit(1);
+  });
+}

@@ -99,6 +99,13 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: "3+ StatCards outside a file whose path names a dashboard. A row count is not a KPI: drop the row and show the total in <Pagination showTotal>. StatCard rows are for a dashboard with comparison or trend (delta).",
   },
   {
+    id: "form-on-list-page",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: "A submitting Form with 3+ FormFields and a DataTable/Table/List/ListRow on the same page is a create form inlined beside its list (design-complex-admin anti-pattern #3). Give create its own route, or a focused Dialog/Sheet, and link to it from the list page's PageContainer `extra`. Not findings: a Form inside a Dialog/Sheet/Drawer, a Form that never submits (no onSubmit, or one that only calls preventDefault: a filter bar), a 1-2 field form, an editor whose Table sits inside its Form, and a list page and a create page that one file renders in two PageContainers.",
+  },
+  {
     id: "empty-state-icon-in-card",
     severity: "warn",
     category: "composition",
