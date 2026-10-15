@@ -65,7 +65,7 @@ function cell(rowLabel: string, columnIndex: number) {
   return within(row).getAllByRole("gridcell")[columnIndex]!;
 }
 
-describe("HeatmapChart — structure", () => {
+describe("HeatmapChart: structure", () => {
   it("is a named figure holding ONE grid with column and row headers and a cell per slot", () => {
     renderIn("en", chart());
     const figure = screen.getByRole("figure", { name: "Revenue by weekday and hour" });
@@ -117,7 +117,7 @@ describe("HeatmapChart — structure", () => {
   });
 });
 
-describe("HeatmapChart — empty is not zero", () => {
+describe("HeatmapChart: empty is not zero", () => {
   it("marks absent, null and NaN cells empty and reads them as 'No data'; a zero is filled and reads 0", () => {
     renderIn("en", chart());
     const zero = cell("Mon", 2);
@@ -154,7 +154,7 @@ describe("HeatmapChart — empty is not zero", () => {
   });
 });
 
-describe("HeatmapChart — Intl formatting", () => {
+describe("HeatmapChart: Intl formatting", () => {
   it("formats cell values, the summary and the legend with the active locale (en vs ja)", () => {
     const en = renderIn("en", chart());
     expect(cell("Mon", 1).textContent).toBe(
@@ -184,7 +184,7 @@ describe("HeatmapChart — Intl formatting", () => {
   });
 });
 
-describe("HeatmapChart — keyboard (APG grid)", () => {
+describe("HeatmapChart: keyboard (APG grid)", () => {
   it("has ONE tab stop and moves with arrows, Home/End and Ctrl+Home/End", async () => {
     const user = userEvent.setup();
     renderIn("en", chart());
@@ -249,7 +249,7 @@ describe("HeatmapChart — keyboard (APG grid)", () => {
   });
 });
 
-describe("HeatmapChart — top-N emphasis", () => {
+describe("HeatmapChart: top-N emphasis", () => {
   it("rings the N highest cells and says so in text, not colour alone", async () => {
     const user = userEvent.setup();
     renderIn("en", chart({ topN: 2 }));
@@ -286,7 +286,7 @@ describe("HeatmapChart — top-N emphasis", () => {
   });
 });
 
-describe("HeatmapChart — text alternative", () => {
+describe("HeatmapChart: text alternative", () => {
   it("describes the figure with a one-line summary plus the caller's description", () => {
     renderIn("en", chart({ description: "Last 4 weeks, tax included." }));
     const figure = screen.getByRole("figure");

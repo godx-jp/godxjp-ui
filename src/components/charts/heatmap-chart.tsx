@@ -276,7 +276,11 @@ export function HeatmapChart({
                 <span className="ui-chart-heatmap-legend-label" aria-hidden="true">
                   {fmt.format(model.min)}
                 </span>
-                <ul className="ui-chart-heatmap-legend-ramp" aria-label={t("chart.heatmapLegend")}>
+                <ul
+                  role="list"
+                  className="ui-chart-heatmap-legend-ramp"
+                  aria-label={t("chart.heatmapLegend")}
+                >
                   {RAMP.map((step) => (
                     <li key={step} className="ui-chart-heatmap-legend-swatch" data-step={step}>
                       <span className="sr-only">
