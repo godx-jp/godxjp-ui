@@ -79,6 +79,7 @@ Files: [`agent/`](agent/) · entry [`agent/llms.txt`](agent/llms.txt) · manifes
 Skills are split by audience (see **`.claude/skills/README.md`** for the full map):
 
 - **CORE** (this repo's `src/`/`docs/`/`mcp/`) → the `godxjp-ui-*` skills in `.claude/skills/`. Start with **`godxjp-ui-component`** (below), then its follow-map: interaction-feel → behavioral-test → example-page → best-ux → **`godxjp-ui-mcp-catalog-sync`** (keep the MCP catalog + tests in sync on any public-API change). - **CONSUMER** (an app importing `@godxjp/ui`) → served by the `godxjp-ui` MCP, never these files: `list_consumer_skills` / `route_consumer_task` / `get_consumer_skill` (`design-to-page`, `compose-a-screen`, taste family) + `draft_bug_report` for filing library bugs.
+- **SHIPPED** (`skills/` at the root, in the npm tarball) → `godxjp-ui-form`, `godxjp-ui-navigation`, `godxjp-ui-design`. Consumers install them into their own `.claude/skills/` with `gx skills` (`{"from": "npm:@godxjp/ui", "version": "match-package"}` in `godx.skills.json`), pinned to the package version they run. Written in English and consumer-agnostic like `agent/` (no product names — `check:no-consumer-coupling` does not scan this directory, so read the diff). Each folder name equals its frontmatter `name`, or `gx skills sync` refuses it.
 
 ## MANDATORY: read the component skill before touching UI
 

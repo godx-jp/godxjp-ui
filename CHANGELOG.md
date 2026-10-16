@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.8.0] - 2026-10-16
+
+### Added
+
+- **The package ships agent skills in `skills/`.** `godxjp-ui-form` (forms: page not modal, `Form` +
+  `FormField`, GOV.UK input widths), `godxjp-ui-navigation` (menus, role landing pages, mobile tab
+  bar, cross-links, with its sourced principles) and `godxjp-ui-design` (design do/don't from review).
+  A consumer installs the set that matches its installed version with `gx skills`
+  (`{"from": "npm:@godxjp/ui", "version": "match-package"}` in `godx.skills.json`; add
+  `"root": "<dir>"` when the package is installed below a subdirectory). `.claude/skills/` stays
+  the repository's own contributor skills and is not shipped.
+
 ## [33.7.2] - 2026-10-16
 
 ### Fixed
