@@ -262,7 +262,10 @@ export function ToolbarGroup({ label, controlId, className, children }: ToolbarG
           </div>
         )
       ) : null}
-      {children}
+      {/* The control cell (gh#1362): `--control-height` tall with the control centred in it, so a
+       * Switch (20px) or any control shorter than the inputs beside it lines up on their centre,
+       * and every group's label lands on the same row. */}
+      <div className="ui-toolbar-control">{children}</div>
     </div>
   );
 }

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.8.1] - 2026-10-17
+
+### Fixed
+
+- **Toolbar / FilterBar controls are vertically centred (#1362).** Every control now sits in a `--control-height` cell and is centred in it (`ToolbarGroup` wraps its control in `.ui-toolbar-control`; the clear/actions cluster gets the same minimum height). A Switch in a `ToolbarGroup` sat 6px and the clear button 2px below the inputs' centre, and the group's label sat 12px below the filter labels; all three are now 0 at 1512 and 390, in RTL, and at bar steps sm/md/lg/touch. No consumer CSS needed. A single control taller than the bar (`size="lg"` in an md bar) still grows its own cell; set `--control-height` on the bar for that.
+
 ## [33.8.0] - 2026-10-16
 
 ### Added

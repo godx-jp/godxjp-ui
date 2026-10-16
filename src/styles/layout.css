@@ -1839,6 +1839,18 @@
     }
   }
 
+  /* Every control in the strip sits in a cell `--control-height` tall and is centred in it
+   * (gh#1362). The row stays `align-items: flex-end`, so with labelled and unlabelled items alike
+   * the cells share one bottom edge — equal cells, equal centres, equal label tops. A grid (not a
+   * row flex) so the auto track still stretches a Select to the group's width. */
+  .ui-toolbar-control {
+    display: grid;
+    align-items: center;
+    gap: var(--space-stack-xs);
+    min-block-size: var(--control-height);
+    min-width: 0;
+  }
+
   .ui-toolbar-label {
     display: flex;
     align-items: center;
@@ -1864,12 +1876,15 @@
     inline-size: 100%;
   }
 
+  /* The same `--control-height` cell as `.ui-toolbar-control` (gh#1362): the 28px clear button
+   * centres on the inputs' centre instead of sitting on their bottom edge. */
   .ui-filter-bar-end {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
     width: 100%;
+    min-block-size: var(--control-height);
   }
 
   /* Inside the end cluster the clear button gives up its own auto margin — the CLUSTER is what
