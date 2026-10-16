@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.7.2] - 2026-10-16
+
+### Fixed
+
+- **ui-audit density rules count what can be on screen together.** `badge-wall`, `alert-per-page`
+  and `card-per-section` counted JSX tags, so mutually exclusive branches of one state read as a
+  wall. Now the else branch of a ternary and the second `return` of the same function count once
+  (gino-cloud 実習生詳細: 6 Badge tags, at most 3 visible → 3 counted). `alert-per-page` skips an
+  Alert behind a condition (`?`, `&&`, a `.map` callback) — that is a state, which is what the rule
+  asks Alerts to be (申請案件詳細: 5 conditional Alerts → 0). `card-per-section` skips a file whose
+  path names a dashboard, as `kpi-row-off-dashboard` already does.
+
 ## [33.7.1] - 2026-10-16
 
 ### Fixed

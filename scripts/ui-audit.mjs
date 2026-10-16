@@ -235,7 +235,8 @@ const PALETTE =
  * Followed by U+FE0F they are asking for emoji presentation on purpose, and then they ARE emoji —
  * so that spelling is still caught.
  */
-const EMOJI = /\p{Extended_Pictographic}\uFE0F|(?=\p{Extended_Pictographic})\p{Emoji_Presentation}/u;
+const EMOJI =
+  /\p{Extended_Pictographic}\uFE0F|(?=\p{Extended_Pictographic})\p{Emoji_Presentation}/u;
 /** Regional-indicator pairs = emoji flags (🇯🇵) — broken on Win/Linux; use Intl.DisplayNames. */
 const EMOJI_FLAG = /\p{Regional_Indicator}/u;
 
@@ -995,7 +996,9 @@ const RULES = [
     scope: "consumer",
     severity: "warn",
     spansElement: true,
-    matches: (source) => densityMatches(source, ["Card"], CARD_LIMIT),
+    // A dashboard's tiles ARE its surfaces — the same path test kpi-row-off-dashboard uses.
+    matches: (source, rel = "") =>
+      /dashboard/i.test(rel) ? [] : densityMatches(source, ["Card"], CARD_LIMIT),
     message: `${CARD_LIMIT}+ Cards in one file — a Card per section. Mark sections with a Heading and section spacing (PageContainer children, Flex gap="lg"); keep Card for a real boundary (a table surface, a selectable item).`,
   },
   {
@@ -1055,7 +1058,8 @@ const RULES = [
     scope: "consumer",
     severity: "warn",
     spansElement: true,
-    matches: (source) => densityMatches(source, ["Alert"], ALERT_LIMIT),
+    // An Alert behind a condition IS a state (what the message asks Alerts to be); count the standing ones.
+    matches: (source) => densityMatches(source, ["Alert"], ALERT_LIMIT, { skipConditional: true }),
     message: `${ALERT_LIMIT}+ Alerts in one file. An Alert is for a state that blocks or changes the task; field errors belong in FormField, results in a toast, and standing info in plain text.`,
   },
 ];
@@ -1810,9 +1814,45 @@ function* mixedButtonSizeMatches(source) {
 }
 
 /** One finding per file, at the `limit`-th occurrence of any tag in `tags`, naming the count. */
-function* densityMatches(source, tags, limit) {
+/**
+ * The JS token before a JSX element, as the expression that places it: `?` / `:` (a ternary
+ * branch), `&&` / `||` (a guard), `=>` (a callback, e.g. `.map`), `return`, or "" when the element
+ * is a plain JSX child. An opening `(` is skipped — `cond ? (\n  <Alert` reads as `?`.
+ */
+function placementBefore(source, index) {
+  let i = index - 1;
+  while (i >= 0 && (/\s/.test(source[i]) || source[i] === "(")) i -= 1;
+  if (source[i] === "?" || source[i] === ":") return source[i];
+  if (source.slice(i - 1, i + 1) === "&&" || source.slice(i - 1, i + 1) === "||") return "&&";
+  if (source.slice(i - 1, i + 1) === "=>") return "=>";
+  if (/\breturn$/.test(source.slice(Math.max(0, i - 5), i + 1))) return "return";
+  return "";
+}
+
+/**
+ * ≥limit elements of `tags` that can be on screen TOGETHER. Mutually exclusive branches of one state
+ * count once: the else branch of a ternary (`a ? <X/> : <X/>`) is the same slot as its `?` branch,
+ * and a function that returns the element from several `if`s returns ONE of them — gino-cloud's
+ * 実習生詳細 had 6 Badge tags and showed at most 3. `skipConditional` drops elements behind a
+ * condition altogether (a guard, a ternary, a `.map`).
+ */
+function* densityMatches(source, tags, limit, { skipConditional = false } = {}) {
   const hits = [];
-  for (const { tag, index } of jsxElements(source)) if (tags.includes(tag)) hits.push(index);
+  const returnedIn = new Set(); // function starts that already returned one of `tags`
+  for (const { tag, index } of jsxElements(source)) {
+    if (!tags.includes(tag)) continue;
+    const how = placementBefore(source, index);
+    if (skipConditional && (how === "?" || how === ":" || how === "&&" || how === "=>")) continue;
+    if (how === ":") continue;
+    if (how === "return" || how === "?") {
+      const head = source.slice(0, index);
+      const arrows = [...head.matchAll(/=>\s*\{/g)];
+      const fn = Math.max(head.lastIndexOf("function "), arrows.at(-1)?.index ?? -1);
+      if (returnedIn.has(fn)) continue;
+      returnedIn.add(fn);
+    }
+    hits.push(index);
+  }
   if (hits.length >= limit) yield { 0: `${hits.length} in this file`, index: hits[limit - 1] };
 }
 

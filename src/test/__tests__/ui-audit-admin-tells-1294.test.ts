@@ -218,3 +218,89 @@ describe("alert-per-page", () => {
     ).toHaveLength(0);
   });
 });
+
+/**
+ * gino-cloud 2026-10-16: the density rules counted JSX TAGS, so mutually exclusive branches of one
+ * state read as a wall. 実習生詳細 had 6 Badge tags and showed at most 3 (DaysLeft's overdue/left
+ * pair, the dormitory report's done/overdue/due triple, the header status); 申請案件詳細 had 5
+ * Alerts, every one behind a condition (a data gap, a four-eyes block, corrections needed); the
+ * dashboard's tiles are its surfaces, as kpi-row-off-dashboard already accepts.
+ */
+describe("density counts what can render together", () => {
+  it("badge-wall counts the branches of one state once — ternary and early returns", () => {
+    const body = `function DaysLeft({ days }) {
+  if (days < 0) {
+    return <Badge tone="destructive">late</Badge>;
+  }
+  return <Badge tone="muted">left</Badge>;
+}
+function Report({ at, due, asOf }) {
+  if (at !== null) {
+    return <Badge tone="success">done</Badge>;
+  }
+  return due < asOf ? <Badge tone="destructive">overdue</Badge> : <Badge tone="warning">due</Badge>;
+}
+export const Page = () => (
+  <Flex>
+    <Badge tone="success">working</Badge>
+  </Flex>
+);
+`;
+    expect(findings("badge-wall", body)).toHaveLength(0);
+    // Arrow components too; and a NEW component that returns a Badge counts again.
+    const arrows = `const A = ({ x }) => {
+  if (x) {
+    return <Badge tone="success">a</Badge>;
+  }
+  return <Badge tone="muted">b</Badge>;
+};
+${repeat(5, "")}const B = () => {
+  return <Badge>c</Badge>;
+};
+const C = () => {
+  return <Badge>d</Badge>;
+};
+const D = () => {
+  return <Badge>e</Badge>;
+};
+const E = () => {
+  return <Badge>f</Badge>;
+};
+`;
+    // A·B·C·D·E = 5 Badges that can all be on screen at once (A's pair counts once).
+    expect(findings("badge-wall", arrows)).toHaveLength(1);
+    // Five Badges side by side are still a wall.
+    expect(
+      findings("badge-wall", page(`<Flex>\n${repeat(5, `<Badge>c</Badge>`)}\n</Flex>`)),
+    ).toHaveLength(1);
+  });
+
+  it("alert-per-page does not count an Alert rendered only under a condition (a state)", () => {
+    const conditional = (cond: string) =>
+      `{${cond} ? (\n  <Alert tone="warning"><AlertDescription>x</AlertDescription></Alert>\n) : null}`;
+    const body = page(`<Flex direction="col">
+${conditional("missing")}
+${conditional("blocked")}
+{gap && <Alert tone="warning">gap</Alert>}
+{warnings.map((w) => (
+  <Alert key={w} tone="warning">{w}</Alert>
+))}
+<Alert tone="info">standing note</Alert>
+</Flex>`);
+    expect(findings("alert-per-page", body)).toHaveLength(0);
+    // Four unconditional Alerts are still too many.
+    expect(
+      findings(
+        "alert-per-page",
+        page(`<Flex direction="col">\n${repeat(4, `<Alert tone="info">x</Alert>`)}\n</Flex>`),
+      ),
+    ).toHaveLength(1);
+  });
+
+  it("card-per-section does not fire on a dashboard, like kpi-row-off-dashboard", () => {
+    const card = `  <Card><CardContent>x</CardContent></Card>`;
+    const body = page(`<PageContainer title="t">\n${repeat(5, card)}\n</PageContainer>`);
+    expect(findings("card-per-section", body, "pages/gino/dashboard.tsx")).toHaveLength(0);
+    expect(findings("card-per-section", body, "pages/gino/settings.tsx")).toHaveLength(1);
+  });
+});
