@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.11.2] - 2026-10-17
+
+The first release of everything listed under 33.11.0 and 33.11.1 below: main CI was red on both (a CSS rule test, then a timing-sensitive focus assertion) and the release gate stopped before tagging, so neither reached npm.
+
+### Fixed
+
+- **The Topbar identity browser test waits for focus to return** after Escape closes the account menu; it asserted on the same frame and failed intermittently. No runtime change.
+
 ## [33.11.1] - 2026-10-17
 
 The first release of everything listed under 33.11.0 below: its main CI was red and the release gate stopped before tagging, so 33.11.0 never reached npm.
