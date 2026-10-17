@@ -2073,10 +2073,28 @@ export const COMPONENT_PROP_REGISTRY = {
       "DefaultValueProp",
       "OnValueChangeProp",
       {
-        field: "locales / defaultLocale / fallbackLocale / errors",
+        field: "locales",
         local: true,
         reason:
-          "The per-locale contract every translatable control shares (gh#1336, gh#1365) — see TranslatableFieldProp for each field.",
+          "The BCP-47 tags a translatable control edits, in tab order (gh#1336). A per-field list, not a value.",
+      },
+      {
+        field: "defaultLocale",
+        local: true,
+        reason:
+          "The locale tab selected first — the AppProvider's `defaultLocale`, scoped to one field.",
+      },
+      {
+        field: "fallbackLocale",
+        local: true,
+        reason:
+          "The locale whose text an EMPTY locale shows as its placeholder — the AppProvider's `fallbackLocale`, scoped to one field.",
+      },
+      {
+        field: "errors",
+        local: true,
+        reason:
+          "Per-locale validation messages keyed by BCP-47 tag; `error` (one message) cannot say which locale failed.",
       },
     ],
   },

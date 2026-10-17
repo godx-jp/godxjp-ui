@@ -1,4 +1,5 @@
 import * as React from "react";
+import { renderToString } from "react-dom/server";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, userEvent, waitFor, within } from "@/test/render";
 
@@ -342,6 +343,28 @@ describe("TranslatableRichText", () => {
       "data-placeholder",
       "濃厚な醤油スープ",
     );
+  });
+
+  it("server-renders an empty locale with a fallback without DOMParser (no crash)", () => {
+    // A server has no DOMParser. The editor itself is not built there (`immediatelyRender: false`),
+    // but the fallback placeholder is computed during render.
+    vi.stubGlobal("DOMParser", undefined);
+    try {
+      const html = renderToString(
+        <AppProvider persist={false} defaultLocale="en" fallbackLocale="ja">
+          <TranslatableRichText
+            aria-label="Description"
+            locales={LOCALES}
+            value={initial}
+            fallbackLocale="ja"
+            defaultLocale="vi"
+          />
+        </AppProvider>,
+      );
+      expect(html).toContain('data-locale="vi"');
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("marks a locale with an error on its tab; the active one's error reaches FormField", async () => {

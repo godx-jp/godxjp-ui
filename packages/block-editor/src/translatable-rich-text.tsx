@@ -16,9 +16,15 @@ export type TranslatableRichTextProps = Omit<
     size?: "sm" | "md" | "lg";
   };
 
-/** The text of an HTML string, for a placeholder. Parsed inert (DOMParser runs no script). */
+/**
+ * The text of an HTML string, for a placeholder. Parsed inert (DOMParser runs no script). A server
+ * render has no DOMParser; there the tags are stripped instead, which is enough for HTML the
+ * editor's own schema wrote (entities may show undecoded until hydration).
+ */
 const htmlToText = (html: string) =>
-  new DOMParser().parseFromString(html, "text/html").body.textContent?.trim() ?? "";
+  typeof DOMParser === "undefined"
+    ? html.replace(/<[^>]*>/g, "").trim()
+    : (new DOMParser().parseFromString(html, "text/html").body.textContent?.trim() ?? "");
 
 /**
  * TranslatableRichText (gh#1365) — ONE {@link RichTextEditor} holding an HTML value per locale
