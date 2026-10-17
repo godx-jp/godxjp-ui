@@ -243,8 +243,17 @@
 
   /* Responsive page typography is independent from density. Density changes information spacing;
    * these tokens change only page chrome so mobile keeps readable body text and touch targets. */
-  --page-title-font-size: calc(var(--font-size-base) * 2);
-  --page-title-font-size-compact: calc(var(--font-size-base) * 1.5);
+  --page-title-font-size: var(
+    --heading-h1,
+    calc(
+      var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+        var(--font-size-ratio)
+    )
+  );
+  --page-title-font-size-compact: var(
+    --heading-h2,
+    calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+  );
   --page-subtitle-font-size: var(--font-size-base);
   --page-subtitle-font-size-compact: var(--font-size-sm, var(--font-size-base));
 

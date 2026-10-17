@@ -20,7 +20,7 @@ describe("Form field-to-field row rhythm (gh#295)", () => {
 
   it("carries block-to-block rhythm via margin on ANY direct child pair (e.g. CardContent -> CardFooter)", () => {
     expect(formCssFlat).toContain(".ui-form>*+*{margin-block-start:var(--form-block-gap);}");
-    expect(formTokens).toMatch(/--form-block-gap:\s*var\(\s*--space-4\)/);
+    expect(formTokens).toMatch(/--form-block-gap:\s*var\(\s*--space-6\)/);
   });
 
   it("carries field-to-field rhythm via a MORE SPECIFIC margin rule on adjacent FormFields", () => {

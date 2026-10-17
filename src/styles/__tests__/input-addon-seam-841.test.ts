@@ -89,13 +89,14 @@ describe("Input addon glyph — a control glyph, not a source library's default 
     }
   });
 
-  it("puts the glyph at half the control box, where the screenshot showed three quarters", () => {
+  it("keeps the glyph at most half the modern control box", () => {
     // The ratio is the defect, not the absolute size: 24 in a 32px box is what "quá to" means.
     const box = px(resolveToken("--control-height", env));
     const glyph = px(resolveToken("--control-icon-size", env));
-    expect(box).toBe(32);
-    expect(glyph / box).toBe(0.5);
-    expect(24 / box).toBe(0.75); // what was measured, kept so the comparison is in the file
+    expect(box).toBe(36);
+    expect(glyph).toBe(16);
+    expect(glyph / box).toBeLessThanOrEqual(0.5);
+    expect(24 / 32).toBe(0.75); // what was measured, kept so the comparison is in the file
   });
 });
 

@@ -182,13 +182,13 @@ export const TOKENS: TokenEntry[] = [
     name: "--space-page-x / --space-page-y / --page-title-font-size / --page-title-font-size-compact / --overlay-background",
     category: "semantic",
     tier: "semantic",
-    role: "Modern defaults: desktop page gutters 32px, section rhythm remains 16px, page title 28px and compact 21px, scrim 40% black. Mobile gutters stay 16px.",
+    role: "Modern defaults: desktop page gutters 32px, section rhythm remains 16px, page titles retain the h1/h2 responsive steps for Japanese phrase wrapping, scrim 40% black. Mobile gutters stay 16px.",
   },
   {
     name: "--card-space-body-y / --card-title-font-size / --card-shadow / --form-field-row-gap / --form-block-gap / --control-height-default / --table-row-height-default / --control-focus-ring-width",
     category: "component",
     tier: "component",
-    role: "Modern defaults: card header-to-body spacing 24px, horizontal insets remain aligned with tables at 16px; card title base \u00d7 type ratio (~15.7px), resting card shadow none, form row gap 20px and block gap 24px; controls and rows use band-height-lg (36px). Field focus width stroke-md (2px). Override each knob directly; compact/coarse density contracts remain.",
+    role: "Modern defaults: card header-to-body spacing 24px, horizontal insets remain aligned with tables at 16px; card title base \u00d7 type ratio (~15.7px), resting card shadow none, form row gap retains 12px to match Descriptions, block gap 24px; controls and rows use band-height-lg (36px). Field focus width stroke-md (2px). Override each knob directly; compact/coarse density contracts remain.",
   },
   {
     name: "--focus-outline-weight / --focus-outline-offset",

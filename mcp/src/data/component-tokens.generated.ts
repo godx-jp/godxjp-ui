@@ -4996,7 +4996,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--form-block-gap",
     "value": "var(--space-6)",
-    "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN direct children (no Card framing). Unchanged from the historical value. 24px"
+    "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN direct children (no Card framing). Modern block spacing is 24px. 24px"
   },
   {
     "name": "--form-feedback-icon-size",
@@ -5005,13 +5005,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--form-field-row-gap",
-    "value": "var(--space-5)",
-    "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` composition every real Save-button form needs), so it holds at any DOM depth relative to Form. 20px"
+    "value": "var(--space-3)",
+    "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` composition every real Save-button form needs), so it holds at any DOM depth relative to Form. 12px — shared with Descriptions"
   },
   {
     "name": "--form-grid-row-gap",
     "value": "var(--form-field-row-gap)",
-    "description": "Row rhythm between the ROWS of a `<Form columns={n}>` grid (gh#304). The grid path cannot use the margin above — a per-item margin inside a grid double-counts the track gap AND leaves the first item of row 1 unshifted while its row-mates drop, so row 1's columns end up misaligned. The rhythm therefore rides the grid's own `row-gap`, and it DEFAULTS TO THE SAME --form-field-row-gap the stacked path uses so `columns={1}` — and every `columns={n}` form once it collapses to one column on a narrow container — is pixel-identical to a Form with no `columns` at all. Retune this alone only to give multi-column forms a looser row rhythm than stacked ones; retune --form-field-row-gap to move both together. 20px"
+    "description": "Row rhythm between the ROWS of a `<Form columns={n}>` grid (gh#304). The grid path cannot use the margin above — a per-item margin inside a grid double-counts the track gap AND leaves the first item of row 1 unshifted while its row-mates drop, so row 1's columns end up misaligned. The rhythm therefore rides the grid's own `row-gap`, and it DEFAULTS TO THE SAME --form-field-row-gap the stacked path uses so `columns={1}` — and every `columns={n}` form once it collapses to one column on a narrow container — is pixel-identical to a Form with no `columns` at all. Retune this alone only to give multi-column forms a looser row rhythm than stacked ones; retune --form-field-row-gap to move both together. 12px"
   },
   {
     "name": "--form-grid-column-gap",

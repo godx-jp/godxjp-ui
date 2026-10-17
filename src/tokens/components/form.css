@@ -32,7 +32,7 @@
 
   /* Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's
    * CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN
-   * direct children (no Card framing). Unchanged from the historical value. */
+   * direct children (no Card framing). Modern block spacing is 24px. */
   --form-block-gap: var(--space-6); /* 24px */
 
   /* THE VALIDATION FEEDBACK GLYPH. It was `controlIconClass`, which is
@@ -48,7 +48,7 @@
    * rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`,
    * which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*`
    * composition every real Save-button form needs), so it holds at any DOM depth relative to Form. */
-  --form-field-row-gap: var(--space-5); /* 20px */
+  --form-field-row-gap: var(--space-3); /* 12px — shared with Descriptions */
 
   /* Row rhythm between the ROWS of a `<Form columns={n}>` grid (gh#304). The grid path cannot use
    * the margin above — a per-item margin inside a grid double-counts the track gap AND leaves the
@@ -58,7 +58,7 @@
    * it collapses to one column on a narrow container — is pixel-identical to a Form with no
    * `columns` at all. Retune this alone only to give multi-column forms a looser row rhythm than
    * stacked ones; retune --form-field-row-gap to move both together. */
-  --form-grid-row-gap: var(--form-field-row-gap); /* 20px */
+  --form-grid-row-gap: var(--form-field-row-gap); /* 12px */
 
   /* Gutter between the COLUMNS of a `<Form columns={n}>` grid (gh#304). Was ResponsiveGrid's
    * generic 16px stack gap with no way to say otherwise; it is a form's inter-field gutter and a

@@ -492,12 +492,12 @@ Fifteen existing token defaults build on the eight first-pass changes. Body stay
 | `--space-page-x` | `var(--space-6)` | `var(--space-8)` |
 | `--space-page-y` | `var(--space-6)` | `var(--space-8)` |
 | `--card-space-body-y` | `var(--space-section-active)` | `var(--space-6)` |
-| `--page-title-font-size` | `var( --heading-h1, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )` | `calc(var(--font-size-base) * 2)` |
-| `--page-title-font-size-compact` | `var( --heading-h2, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )` | `calc(var(--font-size-base) * 1.5)` |
+| `--page-title-font-size` | `var( --heading-h1, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )` | `var( --heading-h1, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )` |
+| `--page-title-font-size-compact` | `var( --heading-h2, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )` | `var( --heading-h2, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )` |
 | `--overlay-background` | `rgb(0 0 0 / 0.5)` | `rgb(0 0 0 / 0.4)` |
 | `--card-title-font-size` | `var(--font-size-base)` | `calc(var(--font-size-base) * var(--font-size-ratio))` |
 | `--card-shadow` | `initial` | `none` |
-| `--form-field-row-gap` | `var(--space-3)` | `var(--space-5)` |
+| `--form-field-row-gap` | `var(--space-3)` | `var(--space-3)` |
 | `--form-block-gap` | `var(--space-4)` | `var(--space-6)` |
 | `--control-height-default` | `var(--band-height-md)` | `var(--band-height-lg)` |
 | `--control-focus-ring-width` | `initial` | `var(--stroke-md)` |
