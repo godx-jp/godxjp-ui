@@ -156,8 +156,9 @@ describe('size="touch" glove targets (Chromium, gh#1304)', { timeout: 40_000 }, 
     const m = await measure(false);
     expect(m.coarse).toBe(false);
     expectGloveTargets(m);
-    // The existing ladder is untouched: lg is still its 36px desk step.
-    expect(m.single["button-lg"]!.height).toBe(36);
+    // The existing ladder is untouched: lg is still one step (0.25rem) above the default control
+    // height. Since 33.10.0 the default is 36px, so lg is its 40px desk step, not the 56px glove step.
+    expect(m.single["button-lg"]!.height).toBe(40);
   });
 
   it("holds the same floor under a finger", async () => {

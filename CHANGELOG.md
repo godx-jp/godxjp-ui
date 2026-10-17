@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.10.1] - 2026-10-17
+
+The first release of everything listed under 33.10.0 below: its main CI was red (a frozen test expectation) and the release gate stopped before tagging, so 33.10.0 never reached npm.
+
+### Fixed
+
+- **The touch-size test follows the refreshed control ladder.** `size="lg"` is one step (0.25rem) above the default control height, so with the 36px default of 33.10.0 it is 40px; the test had frozen the old 36px. The glove step (`size="touch"`, 56×56) is unchanged.
+
 ## [33.10.0] - 2026-10-17
 
 ### Changed
