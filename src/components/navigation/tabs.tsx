@@ -781,7 +781,6 @@ export function Tabs({
           ...props,
           dir,
           "data-slot": "tabs",
-          "data-route-strip": "true",
           "data-orientation": resolvedOrientation,
           "data-variant": variant,
           "data-placement": placement,
