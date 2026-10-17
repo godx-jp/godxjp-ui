@@ -1,0 +1,70 @@
+{
+  "docPath": "docs/data-entry/rich-text-editor.tsx",
+  "example": "import { TranslatableRichText } from \"@godxjp/block-editor\";\nimport { FormField, type TranslatableValue } from \"@godxjp/ui/data-entry\";\n\nconst [description, setDescription] = React.useState<TranslatableValue>({ ja: \"<p>醤油ラーメン</p>\" });\n\n<FormField label=\"説明\" required>\n  <TranslatableRichText\n    locales={[\"ja\", \"en\", \"vi\"]}\n    fallbackLocale=\"ja\"\n    value={description}\n    onValueChange={setDescription}\n    errors={{ vi: \"ベトナム語の説明を入力してください\" }}\n  />\n</FormField>",
+  "group": "data-entry",
+  "importPath": "@godxjp/block-editor",
+  "name": "TranslatableRichText",
+  "props": [
+    {
+      "description": "Controlled per-locale HTML, keyed by BCP-47 tag. A missing key or `\"\"` is an empty locale.",
+      "name": "value",
+      "type": "TranslatableValue"
+    },
+    {
+      "description": "Uncontrolled initial per-locale HTML.",
+      "name": "defaultValue",
+      "type": "TranslatableValue"
+    },
+    {
+      "description": "The WHOLE map after an edit; only the active locale's HTML changes.",
+      "name": "onValueChange",
+      "type": "(value: TranslatableValue) => void"
+    },
+    {
+      "description": "Tab order. Default: AppProvider `contentLocales` when set, else the registered locales.",
+      "name": "locales",
+      "type": "readonly string[]"
+    },
+    {
+      "description": "First tab. Default: the first of `contentLocales` when in `locales`, else the UI locale.",
+      "name": "defaultLocale",
+      "type": "string"
+    },
+    {
+      "description": "Whose text an empty locale shows as its placeholder. Default: AppProvider `fallbackLocale`.",
+      "name": "fallbackLocale",
+      "type": "string"
+    },
+    {
+      "description": "Per-locale messages: tab marks for each (glyph + screen-reader text), `aria-invalid` and FormField's error line for the active one.",
+      "name": "errors",
+      "type": "Partial<Record<string, ReactNode>>"
+    },
+    {
+      "description": "The tab strip's tier, as on TranslatableTextarea.",
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "As on RichTextEditor; `ref` is the editor's handle.",
+      "name": "placeholder / disabled / readOnly / labels / id",
+      "type": "—"
+    }
+  ],
+  "related": [
+    "RichTextEditor — the single-locale editor it composes.",
+    "TranslatableTextarea — the same contract over plain text.",
+    "TranslatableField — the engine, for another control."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/rich-text-editor.tsx",
+  "tagline": "ONE RichTextEditor holding an HTML value per locale (`{ ja, en, vi }`), switched by locale tabs (gh#1365). The kit's TranslatableField engine — the same as TranslatableInput / TranslatableTextarea: locales and first tab from AppProvider `contentLocales`, fallback from its `fallbackLocale`, per-locale error marks, the active locale's error in FormField. An empty locale shows the fallback locale's TEXT (not its HTML) as its placeholder; switching tabs swaps the HTML without calling onValueChange.",
+  "usage": [
+    "DO set `<AppProvider contentLocales={[\"ja\", \"en\", \"vi\"]}>` once; the field then needs no `locales` and opens on the source language.",
+    "DO wrap it in FormField and pass your validator's per-locale messages as `errors` (Laravel `description.vi` → `errors.vi`).",
+    "DON'T build Tabs + RichTextEditor yourself: the tab↔panel ARIA, lang, error marks and FormField report are the TranslatableField engine's."
+  ],
+  "useCases": [
+    "Product / material / recipe description stored as per-locale HTML (Astrotomic / Spatie translatable)"
+  ]
+}

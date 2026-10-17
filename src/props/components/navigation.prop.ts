@@ -1,7 +1,12 @@
 /** Navigation component prop types — @see docs/COMPONENTS.md#navigation */
 import type * as React from "react";
 import type { ReactNode } from "react";
-import type { AffixProp, AffixTargetProp, ResponsiveGridColumnsProp } from "./layout.prop";
+import type {
+  AffixProp,
+  AffixTargetProp,
+  ResponsiveGridColumnsProp,
+  SidebarLinkComponentProp,
+} from "./layout.prop";
 import type {
   ActionsProp,
   ChildrenProp,
@@ -365,6 +370,17 @@ export type TabItemProp = {
    */
   content?: React.ReactNode;
   disabled?: boolean;
+  /**
+   * ROUTE TAB (gh#1364). The tab's destination. When ANY item carries an `href` the strip is a
+   * route strip: it renders a `<nav>` landmark of real links instead of a tablist — the current
+   * route (`value`) gets `aria-current="page"`, no `tabpanel` is rendered (`content` is ignored;
+   * the route renders its own page), and a plain, modified or middle click is never intercepted,
+   * so "open in new tab" works. An item without `href` (or a `disabled` one) is an inert anchor.
+   * A route strip always scrolls its overflow. `overflow="menu"` also exposes hidden routes
+   * as native links in a menu, preserving browser link actions.
+   * Links go through `TabsProp.linkComponent` when set.
+   */
+  href?: string;
   /** Leading glyph inside the trigger (Ant Design `Tab.icon`). */
   icon?: React.ReactNode;
   /**
@@ -653,6 +669,14 @@ export type TabsProp = {
    * (`radiogroup`), not a strip-only `Tabs`.
    */
   controls?: IdProp;
+  /**
+   * Router link component for a ROUTE strip (items with `href`, gh#1364) — the SAME contract and
+   * the same value as `Sidebar.linkComponent` / `NavList.linkComponent`: Inertia's `<Link>`, or a
+   * React Router / TanStack link wrapped by `createSidebarLink(Link, "to")`. It must forward every
+   * prop to its `<a>` — the strip's `data-slot` / `data-state` styling hooks travel with them.
+   * Without it each route is a plain `<a href>`.
+   */
+  linkComponent?: SidebarLinkComponentProp;
   className?: ClassNameProp;
   listClassName?: ClassNameProp;
   contentClassName?: ClassNameProp;

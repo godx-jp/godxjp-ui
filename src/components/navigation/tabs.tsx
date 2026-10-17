@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import {
+  syncActiveTabIntoView,
   useKeepActiveTabVisible,
   useTabsOverflowValues,
   useTabsScrollReporter,
@@ -28,6 +29,7 @@ import type {
   TabsPlacementProp,
   TabsProp,
 } from "../../props/components/navigation.prop";
+import type { SidebarLinkProp } from "../../props/components/layout.prop";
 
 export type {
   TabItemProp,
@@ -177,6 +179,21 @@ function TabCount({
   const { pill } = useCounterPill({ count, overflowCount, showZero, countLabel, slot: "tabs" });
   return pill;
 }
+
+/**
+ * The strip's base classes, shared by `TabsList` and the route strip's `<nav>` (gh#1364) so a
+ * route strip paints byte for byte like a tablist. The reasoning behind each step is recorded at
+ * `TabsList`'s call site.
+ */
+const TABS_LIST_BASE_CLASS_NAME =
+  "group/tabs-list text-muted-foreground inline-flex w-fit max-w-full min-w-0 items-center justify-center-safe rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-[var(--tabs-list-line-space-gap)] data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden";
+
+/**
+ * The trigger's base classes, shared by `TabsTrigger` and the route strip's links (gh#1364). The
+ * reasoning behind each step is recorded at `TabsTrigger`'s call site.
+ */
+const TABS_TRIGGER_BASE_CLASS_NAME =
+  "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all data-[overflow-hidden]:transition-none data-[overflow-hidden]:opacity-0 data-[overflow-hidden]:pointer-events-none group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:flex-none group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none";
 
 const NO_LIST_LABEL: TabsFrame["listLabel"] = {};
 
@@ -377,6 +394,7 @@ export function Tabs({
   moreIcon,
   onTabScroll,
   controls,
+  linkComponent,
   listClassName,
   contentClassName,
   children,
@@ -441,7 +459,9 @@ export function Tabs({
    * re-homes them. The menu is an additional POINTER route to the ones a mouse user cannot
    * currently see, so it is driven purely by measurement.
    */
-  const collapsible = items != null && overflow === "menu";
+  // ROUTE STRIP (gh#1364): any `href` makes the strip a `<nav>` of links — see `TabsRouteStrip`.
+  const routeStrip = items != null && items.some((item) => item.href !== undefined);
+  const collapsible = items != null && overflow === "menu" && !routeStrip;
   const listRef = React.useRef<HTMLDivElement | null>(null);
   const [hiddenValues, setHiddenValues] = React.useState<readonly string[]>([]);
   const itemValues = React.useMemo(
@@ -544,6 +564,99 @@ export function Tabs({
     end: "rounded-e-[var(--tabs-card-radius)] rounded-s-none data-[state=active]:border-s-[hsl(var(--tabs-panel-background,var(--background)))]",
   };
 
+  // The strip's own classes and every trigger's, hoisted so the route strip (gh#1364) paints with
+  // the very same steps as the tablist.
+  const itemsListClassName = cn(
+    // The inset override is an arbitrary value reading the knob (never `p-0`): it must
+    // stay a UTILITY so tailwind-merge still drops the strip's own padding step.
+    //
+    // IT IS SPLIT INTO `px-`/`py-` FOR THE FOCUS RING (gh#376). The strip clips its
+    // block axis (`overflow-y: hidden` beside `overflow-x: auto`), and this variant's
+    // inset is 0px, so a focused trigger had NO block headroom at all — measured in
+    // Chromium, 0px top and bottom, i.e. the entire ring was shaved. The headroom has to
+    // come from layout: `overflow-y: visible` next to `overflow-x: auto` computes back
+    // to `auto` per spec (a second scroll container, not a ring), and Chromium honours
+    // `overflow-clip-margin` only when BOTH axes are `clip`. So the block padding carries
+    // the ring's outer reach and an equal negative block margin hands it straight back —
+    // the ring paints inside the scrollport and the strip's OUTER box is unchanged
+    // (measured: 38px before and after). Both values read the same token the ring is
+    // sized from, so the two can never drift apart.
+    //
+    // The cost, recorded rather than hidden: the rail hairline (`border-b`, drawn at the
+    // border box) now sits the ring's reach below the triggers instead of flush. That is
+    // where a hand-composed <TabsList variant="line"> already put it — its `p-1` gives
+    // the same block inset — so the two construction paths now agree. A service that
+    // wants the active bar parked back on the hairline raises `--tabs-indicator-offset`,
+    // which exists for exactly that.
+    // `w-full` is scoped to the HORIZONTAL axis. Unscoped it also applied when the root is
+    // vertical, where the strip is a COLUMN beside the panel: `width: 100%` made the strip
+    // claim the whole row and the panel collapsed to its own min-content floor. Measured at a
+    // 1232px root: strip 1133.72px (92%) / panel 90.28px (7%). And it is not a layer problem —
+    // tailwind-merge drops the base `w-fit` as a same-group conflict, so `w-fit` never reached
+    // the DOM at all. Scoping puts it back on the axis it was written for.
+    variant === "line" &&
+      "my-[calc(-1_*_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] h-auto justify-start border-b px-[var(--tabs-list-line-space-inset)] py-[calc(var(--tabs-list-line-space-inset)_+_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] data-[orientation=horizontal]:w-full",
+    // CARD strip. The list keeps `data-variant="default"` on purpose (a hand-composed
+    // <TabsList> must be unaffected), so the card face is selected from the ROOT — but the
+    // three properties the base list already claims as utilities (`bg-muted`, `p-1`,
+    // `rounded-lg`) have to be replaced with utilities too, or the components layer loses.
+    card &&
+      "items-end justify-start gap-[var(--tabs-card-list-space-gap)] rounded-[var(--tabs-card-list-radius)] p-[var(--tabs-card-list-space-inset)] data-[orientation=horizontal]:w-full data-[variant=default]:bg-transparent",
+    // CENTERED. Two independent moves, because the strip has two shapes: the pill/card strip
+    // is `w-fit` (auto inline margins centre the BOX) and the line strip is `w-full`
+    // (`justify-content` centres its CONTENT). `safe` keeps the overflow rule the strip
+    // already depends on — plain `center` strands the leading tab outside the scrollport.
+    centered && "mx-auto justify-center-safe",
+    listClassName,
+  );
+  const itemTriggerClassName = cn(
+    // Geometry only — the active underline is the token-owned `::after` bar the
+    // line variant already owns (never a second, hand-rolled border-b indicator).
+    // They are arbitrary-value utilities so tailwind-merge keeps dropping the pill
+    // trigger's own radius / padding steps from the base class list.
+    variant === "line" &&
+      "rounded-[var(--tabs-trigger-line-radius)] px-[var(--tabs-trigger-line-padding-x)] py-[var(--tabs-trigger-line-padding-y)]",
+    sizeTriggerClassName,
+    // A centred strip must let its triggers SHRINK to their labels first. The base
+    // trigger is `flex-1`, so on a full-width (`line`) strip they already fill every
+    // pixel and `justify-content` has nothing left to centre — measured, the leading and
+    // trailing gaps were both 0px with `centered` on and off.
+    centered && "flex-none",
+    // LINE face: same argument as the card face below, and from the same source — antd
+    // puts no `flex-grow` on a tab of ANY `type`, so a line tab is content-width too.
+    // `card` was fixed on that reasoning (gh#736); `line` was left on the base `flex-1`
+    // and kept stretching. Measured by a consumer on a 1200px strip: three tabs at
+    // 321px each for labels needing 83 / 84 / 56px, so the active underline ran 321px
+    // under a 56px label.
+    //
+    // `centered` is NOT the escape hatch for this: it centres, which trades one wrong
+    // geometry for another, and it is antd's prop for centring rather than for width.
+    variant === "line" && "flex-none",
+    // The merged edge is the SURFACE colour, never `transparent`: the rail is an inset
+    // shadow at the strip's padding-box edge, so a see-through border would let that 1px
+    // of rail run straight across the tab it is joined to.
+    // CARD face: a real boundary on every side, opened toward the panel by
+    // `CARD_FACE`. `flex-none` is antd's geometry, not a preference — its
+    // `nav-list` is a plain `display: flex` with no `flex-grow` on the tab, so a
+    // card tab is CONTENT-WIDTH. The base trigger is `flex-1`, which made every
+    // card tab stretch to an equal share of the strip: measured, three tabs in a
+    // 942px strip came out 311px each for labels needing ~70px, and with
+    // `justify-center` the label and its × floated in the middle of that box —
+    // the × ended up 90px from the tab's own trailing edge (179px on a two-tab
+    // strip). antd's is 8px away. This is also why the face read as a free-standing
+    // bordered box rather than a tab.
+    //
+    // THE ACTIVE FACE IS THE BODY'S SURFACE, from the same knob the body reads
+    // (gh#762). The base trigger's `data-[state=active]:bg-background` was right only
+    // while the two could not disagree; once a service can retint the body, an active
+    // tab still painting `--background` reads as a DIFFERENT box sitting on the panel
+    // — which is the "two stacked boxes" complaint in one property. Same utilities
+    // group, so tailwind-merge drops the base step instead of stacking two fills.
+    card &&
+      "flex-none border-[color:hsl(var(--border))] bg-[hsl(var(--tabs-card-background,var(--muted)))] data-[state=active]:bg-[hsl(var(--tabs-panel-background,var(--background)))]",
+    card && CARD_FACE[placement],
+  );
+
   const list = items ? (
     <TabsList
       ref={listRef}
@@ -553,49 +666,7 @@ export function Tabs({
       // `card` and `editable-card` keep the default list chrome; their own card geometry is
       // selected from the ROOT's `data-variant`, so a hand-composed <TabsList> is unaffected.
       variant={variant === "line" ? "line" : "default"}
-      className={cn(
-        // The inset override is an arbitrary value reading the knob (never `p-0`): it must
-        // stay a UTILITY so tailwind-merge still drops the strip's own padding step.
-        //
-        // IT IS SPLIT INTO `px-`/`py-` FOR THE FOCUS RING (gh#376). The strip clips its
-        // block axis (`overflow-y: hidden` beside `overflow-x: auto`), and this variant's
-        // inset is 0px, so a focused trigger had NO block headroom at all — measured in
-        // Chromium, 0px top and bottom, i.e. the entire ring was shaved. The headroom has to
-        // come from layout: `overflow-y: visible` next to `overflow-x: auto` computes back
-        // to `auto` per spec (a second scroll container, not a ring), and Chromium honours
-        // `overflow-clip-margin` only when BOTH axes are `clip`. So the block padding carries
-        // the ring's outer reach and an equal negative block margin hands it straight back —
-        // the ring paints inside the scrollport and the strip's OUTER box is unchanged
-        // (measured: 38px before and after). Both values read the same token the ring is
-        // sized from, so the two can never drift apart.
-        //
-        // The cost, recorded rather than hidden: the rail hairline (`border-b`, drawn at the
-        // border box) now sits the ring's reach below the triggers instead of flush. That is
-        // where a hand-composed <TabsList variant="line"> already put it — its `p-1` gives
-        // the same block inset — so the two construction paths now agree. A service that
-        // wants the active bar parked back on the hairline raises `--tabs-indicator-offset`,
-        // which exists for exactly that.
-        // `w-full` is scoped to the HORIZONTAL axis. Unscoped it also applied when the root is
-        // vertical, where the strip is a COLUMN beside the panel: `width: 100%` made the strip
-        // claim the whole row and the panel collapsed to its own min-content floor. Measured at a
-        // 1232px root: strip 1133.72px (92%) / panel 90.28px (7%). And it is not a layer problem —
-        // tailwind-merge drops the base `w-fit` as a same-group conflict, so `w-fit` never reached
-        // the DOM at all. Scoping puts it back on the axis it was written for.
-        variant === "line" &&
-          "my-[calc(-1_*_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] h-auto justify-start border-b px-[var(--tabs-list-line-space-inset)] py-[calc(var(--tabs-list-line-space-inset)_+_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] data-[orientation=horizontal]:w-full",
-        // CARD strip. The list keeps `data-variant="default"` on purpose (a hand-composed
-        // <TabsList> must be unaffected), so the card face is selected from the ROOT — but the
-        // three properties the base list already claims as utilities (`bg-muted`, `p-1`,
-        // `rounded-lg`) have to be replaced with utilities too, or the components layer loses.
-        card &&
-          "items-end justify-start gap-[var(--tabs-card-list-space-gap)] rounded-[var(--tabs-card-list-radius)] p-[var(--tabs-card-list-space-inset)] data-[orientation=horizontal]:w-full data-[variant=default]:bg-transparent",
-        // CENTERED. Two independent moves, because the strip has two shapes: the pill/card strip
-        // is `w-fit` (auto inline margins centre the BOX) and the line strip is `w-full`
-        // (`justify-content` centres its CONTENT). `safe` keeps the overflow rule the strip
-        // already depends on — plain `center` strands the leading tab outside the scrollport.
-        centered && "mx-auto justify-center-safe",
-        listClassName,
-      )}
+      className={itemsListClassName}
     >
       {items.map((item) => {
         // antd's own rule (`getRemovable`): a tab is removable only on an editable bar, only when
@@ -628,53 +699,7 @@ export function Tabs({
                   }
                 : undefined
             }
-            className={cn(
-              // Geometry only — the active underline is the token-owned `::after` bar the
-              // line variant already owns (never a second, hand-rolled border-b indicator).
-              // They are arbitrary-value utilities so tailwind-merge keeps dropping the pill
-              // trigger's own radius / padding steps from the base class list.
-              variant === "line" &&
-                "rounded-[var(--tabs-trigger-line-radius)] px-[var(--tabs-trigger-line-padding-x)] py-[var(--tabs-trigger-line-padding-y)]",
-              sizeTriggerClassName,
-              // A centred strip must let its triggers SHRINK to their labels first. The base
-              // trigger is `flex-1`, so on a full-width (`line`) strip they already fill every
-              // pixel and `justify-content` has nothing left to centre — measured, the leading and
-              // trailing gaps were both 0px with `centered` on and off.
-              centered && "flex-none",
-              // LINE face: same argument as the card face below, and from the same source — antd
-              // puts no `flex-grow` on a tab of ANY `type`, so a line tab is content-width too.
-              // `card` was fixed on that reasoning (gh#736); `line` was left on the base `flex-1`
-              // and kept stretching. Measured by a consumer on a 1200px strip: three tabs at
-              // 321px each for labels needing 83 / 84 / 56px, so the active underline ran 321px
-              // under a 56px label.
-              //
-              // `centered` is NOT the escape hatch for this: it centres, which trades one wrong
-              // geometry for another, and it is antd's prop for centring rather than for width.
-              variant === "line" && "flex-none",
-              // The merged edge is the SURFACE colour, never `transparent`: the rail is an inset
-              // shadow at the strip's padding-box edge, so a see-through border would let that 1px
-              // of rail run straight across the tab it is joined to.
-              // CARD face: a real boundary on every side, opened toward the panel by
-              // `CARD_FACE`. `flex-none` is antd's geometry, not a preference — its
-              // `nav-list` is a plain `display: flex` with no `flex-grow` on the tab, so a
-              // card tab is CONTENT-WIDTH. The base trigger is `flex-1`, which made every
-              // card tab stretch to an equal share of the strip: measured, three tabs in a
-              // 942px strip came out 311px each for labels needing ~70px, and with
-              // `justify-center` the label and its × floated in the middle of that box —
-              // the × ended up 90px from the tab's own trailing edge (179px on a two-tab
-              // strip). antd's is 8px away. This is also why the face read as a free-standing
-              // bordered box rather than a tab.
-              //
-              // THE ACTIVE FACE IS THE BODY'S SURFACE, from the same knob the body reads
-              // (gh#762). The base trigger's `data-[state=active]:bg-background` was right only
-              // while the two could not disagree; once a service can retint the body, an active
-              // tab still painting `--background` reads as a DIFFERENT box sitting on the panel
-              // — which is the "two stacked boxes" complaint in one property. Same utilities
-              // group, so tailwind-merge drops the base step instead of stacking two fills.
-              card &&
-                "flex-none border-[color:hsl(var(--border))] bg-[hsl(var(--tabs-card-background,var(--muted)))] data-[state=active]:bg-[hsl(var(--tabs-panel-background,var(--background)))]",
-              card && CARD_FACE[placement],
-            )}
+            className={itemTriggerClassName}
           >
             {item.icon ? (
               <span
@@ -736,6 +761,41 @@ export function Tabs({
       })}
     </TabsList>
   ) : null;
+
+  if (routeStrip) {
+    return (
+      <TabsRouteStrip
+        items={items}
+        activeValue={activeValue}
+        overflow={overflow}
+        orientation={resolvedOrientation}
+        linkComponent={linkComponent}
+        onTabClick={onTabClick}
+        onTabScroll={onTabScroll}
+        listLabel={listLabel}
+        listClassName={itemsListClassName}
+        listVariant={variant === "line" ? "line" : "default"}
+        triggerClassName={itemTriggerClassName}
+        extraStart={extraStart}
+        extraEnd={extraEnd}
+        className={cn("group/tabs flex data-[orientation=horizontal]:flex-col", className)}
+        rootProps={{
+          ...props,
+          dir,
+          "data-slot": "tabs",
+          "data-orientation": resolvedOrientation,
+          "data-variant": variant,
+          "data-placement": placement,
+          "data-size": size,
+          "data-centered": centered ? "true" : undefined,
+          "data-animated-ink-bar": motion.inkBar ? "true" : "false",
+          "data-animated-tab-pane": motion.tabPane ? "true" : "false",
+          "data-indicator-size": indicatorSize,
+          "data-indicator-align": indicatorAlign,
+        }}
+      />
+    );
+  }
 
   return (
     <TabsFrameContext.Provider value={frame}>
@@ -899,6 +959,211 @@ export function Tabs({
   );
 }
 
+/**
+ * The element a route tab renders through: the consumer's `linkComponent`, or a plain `<a>`.
+ * Widened from `SidebarLinkProp` only by the `data-*` styling hooks — the public contract stays
+ * `SidebarLinkComponentProp` exactly, so `createSidebarLink(Link, "to")` is accepted unchanged.
+ */
+type RouteTabLinkProps = Omit<SidebarLinkProp, "role"> & {
+  role?: "link";
+  "data-slot": string;
+  "data-state": "active" | "inactive";
+  "data-orientation": TabsOrientation;
+  "data-value": string;
+};
+
+/**
+ * ROUTE STRIP (gh#1364) — `Tabs` whose items carry `href`.
+ *
+ * A strip of sibling ROUTES is navigation, not a tab widget, and it is rendered as one: a `<nav>`
+ * landmark (named from the root's `aria-label` / `aria-labelledby`) holding real links, the current
+ * route marked `aria-current="page"` — the WAI-ARIA APG shape for a set of links to pages, and the
+ * one `NavList` / `Sidebar` already use. The APG Tabs pattern is for layered panels in ONE page;
+ * here every "panel" is a different document the router renders.
+ *
+ * REJECTED — React Aria link tabs (`<Tab href>`). They render `<a role="tab">`, which hides the
+ * link role (a screen reader never learns the tab opens a page), and `useSelectableItem` gives every
+ * link item `onClick = e => { if (!openLink.isOpening) e.preventDefault() }` (react-aria 3.53.0):
+ * a real Ctrl/⌘-click is cancelled and replayed as a synthetic click. A route strip's whole
+ * contract is that the browser owns the link — middle-click, "open in new tab", the context menu —
+ * so NOTHING here calls `preventDefault`, and a click does not move the selection: the active tab
+ * is whatever `value` (the current route) says.
+ *
+ * It paints from the SAME classes and `data-*` hooks as the tablist (`data-slot="tabs-list"` /
+ * `"tabs-trigger"`, `data-state`), so every variant, size and token applies unchanged, and the
+ * strip scrolls its overflow through the same `tabs-scroll` hooks that keep the active tab in view.
+ * Keyboard is the browser's: Tab walks the links, Enter follows one.
+ */
+function TabsRouteStrip({
+  overflow,
+  items,
+  activeValue,
+  orientation,
+  linkComponent,
+  onTabClick,
+  onTabScroll,
+  listLabel,
+  listClassName,
+  listVariant,
+  triggerClassName,
+  extraStart,
+  extraEnd,
+  className,
+  rootProps,
+}: {
+  overflow: TabsProp["overflow"];
+  items: TabItemProp[];
+  activeValue: string | undefined;
+  orientation: TabsOrientation;
+  linkComponent: TabsProp["linkComponent"];
+  onTabClick: TabsProp["onTabClick"];
+  onTabScroll: TabsProp["onTabScroll"];
+  listLabel: TabsFrame["listLabel"];
+  listClassName: string;
+  listVariant: "default" | "line";
+  triggerClassName: string;
+  extraStart: React.ReactNode;
+  extraEnd: React.ReactNode;
+  className: string;
+  rootProps: Record<string, unknown>;
+}) {
+  const { t } = useTranslation();
+  const navRef = React.useRef<HTMLElement | null>(null);
+  useKeepActiveTabVisible(navRef);
+  useTabsScrollReporter(navRef, orientation === "vertical", onTabScroll);
+  const [hiddenValues, setHiddenValues] = React.useState<string[]>([]);
+  useTabsOverflowValues(
+    navRef,
+    overflow === "menu" ? items.map((item) => item.value) : undefined,
+    setHiddenValues,
+  );
+  const hiddenItems =
+    overflow === "menu" ? items.filter((item) => hiddenValues.includes(item.value)) : [];
+  const MenuLink = linkComponent ?? "a";
+  const Link = (linkComponent ?? "a") as React.ElementType<RouteTabLinkProps>;
+  const named = listLabel["aria-label"] !== undefined || listLabel["aria-labelledby"] !== undefined;
+
+  const nav = (
+    <nav
+      ref={navRef}
+      data-slot="tabs-list"
+      data-variant={listVariant}
+      data-orientation={orientation}
+      aria-label={named ? listLabel["aria-label"] : t("navigation.tabs.routeNav")}
+      aria-labelledby={listLabel["aria-labelledby"]}
+      onFocus={() => syncActiveTabIntoView(navRef.current)}
+      className={cn(
+        TABS_LIST_BASE_CLASS_NAME,
+        listClassName,
+        // Keep the first/last link's focus ring inside the clipped inline scrollport too.
+        listVariant === "line" &&
+          "scroll-px-[var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width)))] px-[max(var(--tabs-list-line-space-inset),var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))]",
+      )}
+    >
+      {items.map((item) => {
+        const active = item.value === activeValue;
+        const inert = item.disabled === true || item.href === undefined;
+        return (
+          <Link
+            key={item.value}
+            href={inert ? undefined : item.href}
+            // An inert route keeps the link role `createSidebarLink` gives one, so the plain `<a>`
+            // and the adapter announce the same thing.
+            role={inert && linkComponent === undefined ? "link" : undefined}
+            aria-current={active ? "page" : undefined}
+            aria-disabled={inert ? true : undefined}
+            data-active={active ? "true" : undefined}
+            data-slot="tabs-trigger"
+            data-state={active ? "active" : "inactive"}
+            data-orientation={orientation}
+            data-value={item.value}
+            className={cn(
+              TABS_TRIGGER_BASE_CLASS_NAME,
+              // `disabled:` never matches an anchor; an inert route reads `aria-disabled` instead.
+              "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+              triggerClassName,
+            )}
+            onClick={
+              onTabClick
+                ? (event: React.MouseEvent<Element>) =>
+                    // The published event type names the tablist's <button>; here currentTarget
+                    // is the <a>. Never `preventDefault()` — the browser owns the link.
+                    onTabClick(item.value, event as React.MouseEvent<HTMLButtonElement>)
+                : undefined
+            }
+          >
+            {item.icon ? (
+              <span
+                data-slot="tabs-trigger-icon"
+                className="ui-tabs-trigger-icon"
+                aria-hidden="true"
+              >
+                {item.icon}
+              </span>
+            ) : null}
+            {item.label}
+            <TabCount
+              count={item.count}
+              overflowCount={item.overflowCount}
+              showZero={item.showZero}
+              countLabel={item.countLabel}
+            />
+          </Link>
+        );
+      })}
+    </nav>
+  );
+
+  return (
+    <div {...rootProps} className={className}>
+      {extraStart || extraEnd || overflow === "menu" ? (
+        <div data-slot="tabs-bar" className="ui-tabs-bar">
+          {extraStart ? (
+            <div data-slot="tabs-extra" data-side="start" className="ui-tabs-extra">
+              {extraStart}
+            </div>
+          ) : null}
+          {nav}
+          {hiddenItems.length > 0 ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className="ui-tabs-overflow"
+                aria-label={t("navigation.tabs.moreTabs")}
+              >
+                <MoreHorizontal className="ui-tabs-overflow-icon" aria-hidden="true" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent placement="bottomEnd">
+                {hiddenItems.map((item) => (
+                  <DropdownMenuItem
+                    key={item.value}
+                    asChild
+                    disabled={item.disabled || item.href === undefined}
+                  >
+                    <MenuLink
+                      className=""
+                      href={item.disabled ? undefined : item.href}
+                      aria-current={item.value === activeValue ? "page" : undefined}
+                    >
+                      {item.label}
+                    </MenuLink>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
+          {extraEnd ? (
+            <div data-slot="tabs-extra" data-side="end" className="ui-tabs-extra">
+              {extraEnd}
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        nav
+      )}
+    </div>
+  );
+}
+
 /*
  * Prop types below are DELIBERATELY not exported.
  *
@@ -976,7 +1241,7 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
           // stayed opaque `--muted`. Nothing about the card/line strips changes: both clear the
           // track with utilities of their own (`data-[variant=default]:bg-transparent`,
           // `data-[variant=line]:bg-transparent`), and a utility still outranks the new rule.
-          "group/tabs-list text-muted-foreground inline-flex w-fit max-w-full min-w-0 items-center justify-center-safe rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-[var(--tabs-list-line-space-gap)] data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden",
+          TABS_LIST_BASE_CLASS_NAME,
           className,
         )}
         render={(domProps) =>
@@ -1063,7 +1328,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
           // — Segmented — has been `--segmented-item-selected-background` since gh#848, and these
           // two are documented as the same pair. The card face and the line strip both restate the
           // fill as utilities, which still outrank the new rule, so neither moves.
-          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:flex-none group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+          TABS_TRIGGER_BASE_CLASS_NAME,
           // The tier the root was given. Without this the compound form ignored `size` outright.
           triggerSizeClassName(size),
           className,

@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.9.0] - 2026-10-17
+
+### Added
+
+- **`Tabs` route strip (#1364).** `items[].href` renders the strip as a `<nav>` of real links: each tab is an `<a href>` (middle-click, Ctrl/⌘-click and open-in-new-tab work; no click is `preventDefault`ed), the item whose `value` matches gets `aria-current="page"`, no tabpanel is rendered. New `linkComponent` takes the same value as `Sidebar.linkComponent` / `NavList.linkComponent` (`createSidebarLink(Link, "to")`, Inertia `<Link>`). Same variants, sizes and `--tabs-*` tokens. React Aria link tabs were rejected: `<Tab href>` renders `<a role="tab">` and preventDefaults every real click. New message `navigation.tabs.routeNav`. Docs: `/isolate/navigation-tabs-route-links`.
+- **`@godxjp/block-editor` `RichTextEditor` (#1365):** an HTML-valued form field with one APG toolbar (bold, italic, strike, inline code · H1–H3, lists, quote · undo/redo; roving tab stop, RTL arrows). The schema is the sanitiser: `value`/`onValueChange` carry only `p br h1 h2 h3 ul ol li blockquote strong em s code` (`RICH_TEXT_ALLOWED_TAGS`), the only attribute an integer `start` on `<ol>`; empty is `""`. An outside value change re-syncs without calling `onValueChange`, never during IME composition. FormField `id`/`aria-*` wiring; ja/en/vi strings.
+- **`@godxjp/block-editor` `TranslatableRichText` (#1365):** one `RichTextEditor` holding HTML per locale (`{ ja, en, vi }`) with the `TranslatableInput` contract (AppProvider `contentLocales`, per-locale error marks, active error in FormField, fallback-locale text as placeholder).
+- **`TranslatableField` (`@godxjp/ui/data-entry`, #1365):** the locale-tab engine behind `TranslatableInput` / `TranslatableTextarea`, now public with `renderControl` and `toPlaceholder`, so other controls can be made translatable. No behaviour change for the existing two.
+
+### Fixed
+
+- **`Tabs` overflow (both modes, #1364):** the overflow menu now lists exactly the triggers that are not fully visible (a tab was shown in the strip AND in the menu), and no trigger is painted partially cut beside the menu button, LTR and RTL. `tabs-scroll` recognises `[data-slot="tabs-trigger"]`, so a route strip keeps its active link in view.
+
 ## [33.8.1] - 2026-10-17
 
 ### Fixed

@@ -6153,6 +6153,170 @@ import { FormField } from "@godxjp/ui/data-entry";
     rules: [],
   },
   {
+    name: "RichTextEditor",
+    group: "data-entry",
+    importPath: "@godxjp/block-editor",
+    tagline:
+      "A form field that edits HTML (sibling package `@godxjp/block-editor`, gh#1365): a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted / numbered list, quote · undo, redo — over a Tiptap surface whose SCHEMA is the sanitiser. `value` / `onValueChange` carry HTML holding only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s, code (`RICH_TEXT_ALLOWED_TAGS`), with one attribute in all (an integer `start` on `<ol>`); anything else in `value` or a paste is kept as its text. For content already stored as HTML; new content belongs in Markdown (BlockEditor / MarkdownEditor).",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        description:
+          "Controlled HTML body (with `onValueChange`). Read through the schema: script, links, images, attributes, styles, h4–h6, tables are dropped to their text.",
+      },
+      { name: "defaultValue", type: "string", description: "Uncontrolled initial HTML." },
+      {
+        name: "onValueChange",
+        type: "(html: string) => void",
+        description:
+          'The schema\'s HTML after each edit — `""` for an empty body, never `<p></p>`. A new `value` from outside (a reset, a locale tab) replaces the document WITHOUT calling it, and never during an IME composition.',
+      },
+      { name: "placeholder", type: "string", description: "Shown while the body is empty." },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "Validation state the frame paints, as on Input; FormField's error arrives as `aria-invalid`.",
+      },
+      {
+        name: "lang",
+        type: "string",
+        description: "BCP-47 tag of the body's language, on the editable.",
+      },
+      {
+        name: "labels",
+        type: "Partial<RichTextEditorLabels>",
+        description: "Override any toolbar string (defaults: kit ja / en / vi, `blockEditor.*`).",
+      },
+      {
+        name: "disabled / readOnly",
+        type: "boolean",
+        description: "Not editable. readOnly drops the toolbar; disabled keeps it, disabled.",
+      },
+      {
+        name: "id / aria-*",
+        type: "string",
+        description:
+          "Land on the editable `textbox` — FormField's id, label, helper, required and error wiring reach it directly.",
+      },
+    ],
+    usage: [
+      "DO wrap it in FormField, like any field: the label names the editable, `required` and the error reach it as `aria-required` / `aria-invalid` + `aria-errormessage`.",
+      "DO store what onValueChange returns: it is already sanitised by the schema, and render it as HTML. Sanitise again on the server if other clients can write the same column.",
+      "DO use TranslatableRichText for a per-locale `{ ja, en, vi }` map instead of wrapping Tabs around it.",
+      "DON'T pick it for NEW content: Markdown (BlockEditor, MarkdownEditor) is the kit's storage format; this exists for columns that already hold HTML.",
+      "Keyboard: each toolbar group is one tab stop with arrow keys; ⌘/Ctrl+B / I / Z / Shift+Z and the Markdown input rules (`# `, `- `, `1. `, `> `) work in the body.",
+    ],
+    useCases: [
+      "Product, material or recipe description stored as HTML and rendered by a storefront",
+      "Notice or email body column that already holds HTML",
+    ],
+    related: [
+      "TranslatableRichText — the same editor holding one HTML value per locale.",
+      "BlockEditor — the Markdown block editor in the same package.",
+      "MarkdownEditor — Markdown in a Textarea.",
+    ],
+    example: `import { RichTextEditor } from "@godxjp/block-editor";
+import { FormField } from "@godxjp/ui/data-entry";
+
+<FormField label="説明" required error={errors.description}>
+  <RichTextEditor value={description} onValueChange={setDescription} />
+</FormField>`,
+    docPath: "docs/data-entry/rich-text-editor.tsx",
+    storyPath: "data-entry/rich-text-editor.tsx",
+    rules: [],
+  },
+  {
+    name: "TranslatableRichText",
+    group: "data-entry",
+    importPath: "@godxjp/block-editor",
+    tagline:
+      "ONE RichTextEditor holding an HTML value per locale (`{ ja, en, vi }`), switched by locale tabs (gh#1365). The kit's TranslatableField engine — the same as TranslatableInput / TranslatableTextarea: locales and first tab from AppProvider `contentLocales`, fallback from its `fallbackLocale`, per-locale error marks, the active locale's error in FormField. An empty locale shows the fallback locale's TEXT (not its HTML) as its placeholder; switching tabs swaps the HTML without calling onValueChange.",
+    props: [
+      {
+        name: "value",
+        type: "TranslatableValue",
+        description:
+          'Controlled per-locale HTML, keyed by BCP-47 tag. A missing key or `""` is an empty locale.',
+      },
+      {
+        name: "defaultValue",
+        type: "TranslatableValue",
+        description: "Uncontrolled initial per-locale HTML.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: TranslatableValue) => void",
+        description: "The WHOLE map after an edit; only the active locale's HTML changes.",
+      },
+      {
+        name: "locales",
+        type: "readonly string[]",
+        description:
+          "Tab order. Default: AppProvider `contentLocales` when set, else the registered locales.",
+      },
+      {
+        name: "defaultLocale",
+        type: "string",
+        description:
+          "First tab. Default: the first of `contentLocales` when in `locales`, else the UI locale.",
+      },
+      {
+        name: "fallbackLocale",
+        type: "string",
+        description:
+          "Whose text an empty locale shows as its placeholder. Default: AppProvider `fallbackLocale`.",
+      },
+      {
+        name: "errors",
+        type: "Partial<Record<string, ReactNode>>",
+        description:
+          "Per-locale messages: tab marks for each (glyph + screen-reader text), `aria-invalid` and FormField's error line for the active one.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        description: "The tab strip's tier, as on TranslatableTextarea.",
+      },
+      {
+        name: "placeholder / disabled / readOnly / labels / id",
+        type: "—",
+        description: "As on RichTextEditor; `ref` is the editor's handle.",
+      },
+    ],
+    usage: [
+      'DO set `<AppProvider contentLocales={["ja", "en", "vi"]}>` once; the field then needs no `locales` and opens on the source language.',
+      "DO wrap it in FormField and pass your validator's per-locale messages as `errors` (Laravel `description.vi` → `errors.vi`).",
+      "DON'T build Tabs + RichTextEditor yourself: the tab↔panel ARIA, lang, error marks and FormField report are the TranslatableField engine's.",
+    ],
+    useCases: [
+      "Product / material / recipe description stored as per-locale HTML (Astrotomic / Spatie translatable)",
+    ],
+    related: [
+      "RichTextEditor — the single-locale editor it composes.",
+      "TranslatableTextarea — the same contract over plain text.",
+      "TranslatableField — the engine, for another control.",
+    ],
+    example: `import { TranslatableRichText } from "@godxjp/block-editor";
+import { FormField, type TranslatableValue } from "@godxjp/ui/data-entry";
+
+const [description, setDescription] = React.useState<TranslatableValue>({ ja: "<p>醤油ラーメン</p>" });
+
+<FormField label="説明" required>
+  <TranslatableRichText
+    locales={["ja", "en", "vi"]}
+    fallbackLocale="ja"
+    value={description}
+    onValueChange={setDescription}
+    errors={{ vi: "ベトナム語の説明を入力してください" }}
+  />
+</FormField>`,
+    docPath: "docs/data-entry/rich-text-editor.tsx",
+    storyPath: "data-entry/rich-text-editor.tsx",
+    rules: [],
+  },
+  {
     name: "Prose",
     group: "data-display",
     tagline:
@@ -8587,6 +8751,79 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
     rules: [],
   },
   {
+    name: "TranslatableField",
+    group: "data-entry",
+    tagline:
+      "The locale-tab engine behind TranslatableInput, TranslatableTextarea and `@godxjp/block-editor`'s TranslatableRichText (gh#1365): the locale list and first tab (AppProvider `contentLocales`), the per-locale map, the fallback placeholder, the error marks and the FormField error report — around ONE control you render with `renderControl`. Use it only to make another control translatable; for text use TranslatableInput / TranslatableTextarea.",
+    props: [
+      {
+        name: "renderControl",
+        type: "(control: TranslatableFieldControlProp) => ReactNode",
+        description:
+          "Renders the one control in the panel. Spread `control` onto it: `lang`, `value` / `onValueChange` (the active locale's text), the resolved `placeholder`, `status`, `size`, and the field-a11y props (`aria-labelledby` with the locale's name, `aria-invalid`, `aria-errormessage`) plus every prop the field does not own (`id`, `disabled`, …).",
+      },
+      {
+        name: "toPlaceholder",
+        type: "(fallbackText: string) => string",
+        description:
+          "Turns the fallback locale's stored text into the plain placeholder an empty locale shows (HTML → text for a rich-text control). Default: the text as stored.",
+      },
+      {
+        name: "value / defaultValue / onValueChange",
+        type: "TranslatableValue",
+        description:
+          "The per-locale map; onValueChange gets the whole map, only the active key changed.",
+      },
+      {
+        name: "locales / defaultLocale / fallbackLocale / errors",
+        type: "—",
+        description: "Exactly as on TranslatableInput.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description: "Passed to the control; the tab strip uses Tabs `sm` (`md` for `lg`).",
+      },
+      { name: "placeholder", type: "string", description: "Shown when there is no fallback text." },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description: "Passed to the control; the active locale's error turns it into `error`.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Passed to the control, so a FormField label click focuses it.",
+      },
+      { name: "className", type: "string", description: "Root (strip + panel) class override." },
+    ],
+    usage: [
+      "DO render ONE control and spread `control` onto it (`<X {...control} ref={ref} />`): the engine swaps its value per tab, so the ref, FormField id and IME composition stay on one node.",
+      "DO make the control accept `lang`, `status`, `placeholder` and the field-a11y props on its focus target — that is how the locale, the error and the label reach it.",
+      "DON'T use it for a plain text field: TranslatableInput / TranslatableTextarea are this engine with an Input / Textarea already.",
+    ],
+    useCases: [
+      "Making a rich-text, date or custom control hold one value per locale with the kit's tab / error / fallback contract",
+    ],
+    related: [
+      "TranslatableInput — the engine around an Input.",
+      "TranslatableTextarea — the engine around a Textarea.",
+      "TranslatableRichText (@godxjp/block-editor) — the engine around a RichTextEditor.",
+    ],
+    example: `import { FormField, TranslatableField, Textarea } from "@godxjp/ui/data-entry";
+
+<FormField label="説明">
+  <TranslatableField
+    locales={["ja", "en", "vi"]}
+    value={description}
+    onValueChange={setDescription}
+    renderControl={(control) => <Textarea {...control} rows={4} />}
+  />
+</FormField>`,
+    storyPath: "data-entry/translatable-input.tsx",
+    rules: [],
+  },
+  {
     name: "Label",
     group: "data-entry",
     tagline: "Styled React Aria Label; use htmlFor to associate with a control.",
@@ -9604,9 +9841,9 @@ toast.error("保存に失敗しました"); // also carries a close button`,
     props: [
       {
         name: "items",
-        type: "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean; icon?: React.ReactNode; closable?: boolean; closeIcon?: React.ReactNode; forceRender?: boolean; count?: number; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
+        type: "{ value: string; label: React.ReactNode; content?: React.ReactNode; href?: string; disabled?: boolean; icon?: React.ReactNode; closable?: boolean; closeIcon?: React.ReactNode; forceRender?: boolean; count?: number; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
         description:
-          'Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled. `icon` is a leading glyph in the trigger (Ant Design `Tab.icon`). `closable` / `closeIcon` only apply under `variant="editable-card"`; `closable: false` opts one tab out of removal (Ant Design `getRemovable`). `forceRender` (Ant Design `Tab.forceRender`) mounts THAT panel up front and keeps it mounted while another tab is selected, without switching the whole strip over with `destroyOnHidden={false}` — antd\'s per-item `destroyOnHidden` is deliberately not offered, because on this component "kept mounted" is one state and it would be a second spelling of `forceRender`. `count` (+ `overflowCount`, default 99; `showZero`, default true; `countLabel`) draws the counter pill beside the label — 「未対応 12」 — in the SAME vocabulary Button and Toggle publish and through the same helper, formatted with `Intl.NumberFormat` in the active locale. Pass `countLabel` to say what the number is: the pill is `aria-hidden` and an `sr-only` clause carries the digits, so the tab announces "未対応, 12 件の課題" and never the concatenated "未対応12". Prefer this over antd\'s answer, which is to put a Badge inside `label` — with the number inside the label the package owns neither its size nor its tone as the tab moves between selected / unselected / disabled, so every consumer aligns it differently.',
+          'Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled. `icon` is a leading glyph in the trigger (Ant Design `Tab.icon`). `closable` / `closeIcon` only apply under `variant="editable-card"`; `closable: false` opts one tab out of removal (Ant Design `getRemovable`). `forceRender` (Ant Design `Tab.forceRender`) mounts THAT panel up front and keeps it mounted while another tab is selected, without switching the whole strip over with `destroyOnHidden={false}` — antd\'s per-item `destroyOnHidden` is deliberately not offered, because on this component "kept mounted" is one state and it would be a second spelling of `forceRender`. `count` (+ `overflowCount`, default 99; `showZero`, default true; `countLabel`) draws the counter pill beside the label — 「未対応 12」 — in the SAME vocabulary Button and Toggle publish and through the same helper, formatted with `Intl.NumberFormat` in the active locale. Pass `countLabel` to say what the number is: the pill is `aria-hidden` and an `sr-only` clause carries the digits, so the tab announces "未対応, 12 件の課題" and never the concatenated "未対応12". Prefer this over antd\'s answer, which is to put a Badge inside `label` — with the number inside the label the package owns neither its size nor its tone as the tab moves between selected / unselected / disabled, so every consumer aligns it differently. `href` makes the strip a ROUTE strip (gh#1364) — see `linkComponent`.',
       },
       { name: "value", type: "string", description: "Controlled active tab key." },
       {
@@ -9737,6 +9974,12 @@ toast.error("保存に失敗しました"); // also carries a close button`,
           "Ant Design `onTabScroll`, fired whenever the trigger strip's own scrollport moves — a swipe, a wheel, or the component re-pinning the active trigger (antd reports its own re-pins too). LOGICAL VALUES instead of antd's `left | right | top | bottom`: two of those four are just the other axis of the same event, and upstream's pair is read off the sign of an inner transform, so in an RTL strip its `left` means the opposite of what it means in LTR. `start`/`end` say the same thing on whichever axis and in whichever direction the strip is written. Only fires for the `items` API, which is the path that owns the strip element.",
       },
       {
+        name: "linkComponent",
+        type: "SidebarLinkComponentProp",
+        description:
+          'ROUTE STRIP (gh#1364). When ANY item carries `href`, Tabs renders a `<nav>` landmark of real links instead of a tablist: each tab is an `<a href>` (middle-click, Ctrl/⌘-click, "open in new tab" and the context menu all work — no click is ever `preventDefault`ed), the item whose `value` equals `value` gets `aria-current="page"`, and no tabpanel is rendered (`content` is ignored; the route renders its own page). Pass the CURRENT ROUTE as `value` (derive it from the pathname). `linkComponent` is the SAME contract and the same value as `Sidebar.linkComponent` / `NavList.linkComponent` — Inertia `<Link>`, or `createSidebarLink(Link, "to")` for React Router / TanStack — and must forward every prop to its `<a>`. Without it each tab is a plain `<a href>`. Name the nav with `aria-label`. Same variants, sizes and `--tabs-*` tokens as the tablist, and the strip scrolls its overflow exactly like one (`overflow="menu"` additionally exposes hidden routes as native links). Keyboard is the browser\'s: Tab walks the links, Enter follows one. WHY NOT React Aria link tabs: `<Tab href>` renders `<a role="tab">` (the link role is hidden) and React Aria preventDefaults every real click on it to replay a synthetic one.',
+      },
+      {
         name: "listClassName",
         type: "string",
         description:
@@ -9765,6 +10008,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       "DO put a tab's count in `count` (+ `countLabel`), not inside `label`. A number concatenated into the label loses the pill's size, its tone as the tab is selected/deselected, and — measured on Button in gh#734 — the accessible name: the digits run straight onto the label («未対応12»). With the slot the tab announces \"未対応, 12 件の課題\". DON'T drop a `<Badge>` into `label` to get the same look; there is one counting API and Button, Toggle and Tabs all draw it.",
       "DON'T go looking for antd's `tabBarGutter`, `tabBarStyle`, `renderTabBar`, `classNames`/`styles` or `more.popupRender` — each is declined on the record, not missing. The gutter between triggers is a theme knob (`--tabs-list-line-space-gap`, `--tabs-card-list-space-gap`; the pill strip has no gutter by design) because a px number is a constant, not a semantic axis; the other four exist upstream to let a consumer replace the rendered markup, and this library answers that layer with tokens (docs/DESIGN-AUTHORITY.md refuses them by name).",
       "DON'T re-centre the strip with a `justify-center` utility. `TabsList` aligns with `safe center` on purpose: plain centring splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one, so the leading tab ends up permanently outside the scrollport and no gesture reaches it. `safe` keeps the centred look while the tabs fit and falls back to start alignment the moment they don't.",
+      "DO give a strip of sibling ROUTES (a settings area: /settings/cart-timeout, /settings/customer, …) `items[].href` + `linkComponent` and pass the current route as `value`. DON'T hand-roll it from `Link` pills in an `inline-flex rounded-lg bg-muted p-1` div (no `aria-current`, flagged by ui-audit), and DON'T drive a button tablist with `onValueChange` + `router.push` — that loses open-in-new-tab and middle-click (gh#1364).",
       "DON'T draw a list status view as Tabs. A list status view (All / Active / Closed, each with its count) that shows the SAME table — same columns, same row actions, a different query — is a filter, so it is `Segmented` with `count`, placed in the list's `Toolbar`; past 4 statuses it is a `Select`. `Tabs` only when each status is a genuinely different panel (its own columns, actions or empty state), declared as `TabsContent` or pointed at with `controls` (WAI-ARIA APG: a tab selects a panel, a radiogroup selects a value) (gh#1324).",
     ],
     useCases: [
@@ -9772,6 +10016,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       "Controlled tabs driven by URL search params (e.g. `?tab=history`) where the parent reads/writes the active key and passes it to `value` / `onValueChange`.",
       'Vertical side-rail navigation inside a `SplitPane` or settings layout where `orientation="vertical"` on the root and `variant="line"` on `TabsList` combine to produce a sidebar-style tab strip.',
       "Lightweight widget tabs on a dashboard card — e.g. a 'Pending' panel (due date, remind action) and a 'Paid' panel (paid date, receipt link), each its own `DataTable` with its own columns — where an uncontrolled `defaultValue` is sufficient and no URL state is needed. Two views of the SAME table are a filter: `Segmented`.",
+      "A settings area with ~14 sibling routes shown as a horizontal strip above the page body — `items[].href` + `linkComponent`, `value` = the current route; it scrolls at phone width (gh#1364).",
       "Admin entity profile pages (company, partner, employee) where each `TabsContent` wraps an Inertia deferred prop panel, lazy-loading expensive data only when the tab is first activated.",
     ],
     related: [

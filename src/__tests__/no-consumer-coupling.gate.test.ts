@@ -85,6 +85,16 @@ describe("check:no-consumer-coupling — docs chrome matcher (gh#846)", () => {
     expect(scanDocsChrome(src)).toEqual([]);
   });
 
+  it("does NOT flag an HTML body held as DATA in a string (gh#1365), but still flags JSX text", () => {
+    const data = [
+      `const seed = { ja: "<p>鶏ガラの<strong>澄んだスープ</strong>。</p><ul><li><p>味玉</p></li></ul>" };`,
+      "const note = `<h3>仕込み</h3><p>前日に炊く。</p>`;",
+    ].join("\n");
+    expect(scanDocsChrome(data)).toEqual([]);
+    const jsx = `<Button variant="ghost">保存</Button><p>Say "hi"</p><b>日本</b>`;
+    expect(scanDocsChrome(jsx).map((h) => h.match)).toEqual(["保存", "日本"]);
+  });
+
   it("does NOT mistake a TS generic followed by a data array for JSX text", () => {
     const src = `const [rows] = React.useState<Row[]>([{ name: "鈴木 一郎" }]);`;
     expect(scanDocsChrome(src)).toEqual([]);

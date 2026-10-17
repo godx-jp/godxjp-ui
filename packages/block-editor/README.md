@@ -53,3 +53,30 @@ import { BlockEditor } from "@godxjp/block-editor";
 The grammar it reads and writes is specified in `@godxjp/markdown`'s README ("Grammar v1 and the
 codec"). The editor's schema is tested to round-trip every fixture exactly:
 `serialize(editor.getJSON()) === normalize(markdown)`.
+
+## RichTextEditor and TranslatableRichText — HTML fields
+
+For columns that already hold **HTML** (a product description a storefront renders), the package
+also ships a form field with a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted /
+numbered list, quote · undo, redo — and its per-locale form (gh#1365).
+
+```tsx
+import { RichTextEditor, TranslatableRichText } from "@godxjp/block-editor";
+import { FormField } from "@godxjp/ui/data-entry";
+
+<FormField label="説明" required>
+  <TranslatableRichText value={description} onValueChange={setDescription} errors={errors} />
+</FormField>;
+```
+
+- The schema is the sanitiser: `value` (and a paste) is parsed into, and `onValueChange` emits, only
+  `p br h1 h2 h3 ul ol li blockquote strong em s code` (`RICH_TEXT_ALLOWED_TAGS`) with no
+  attributes except an integer `start` on `<ol>`. Anything else — script, links, images, styles, h4–h6, tables — is kept as its text.
+  An empty body is `""`.
+- A `value` from outside (a reset, a locale tab) replaces the document without calling
+  `onValueChange`, and never while an IME composition is open.
+- It takes FormField's `id` / `aria-*` on the editable; `status` / `aria-invalid` paint the frame.
+- `TranslatableRichText` is the kit's `TranslatableField` engine around it — the same contract as
+  `TranslatableInput`: locales and first tab from AppProvider `contentLocales`, per-locale error
+  marks, the active error in FormField, and the fallback locale's text as an empty locale's
+  placeholder.

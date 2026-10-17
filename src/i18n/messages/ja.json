@@ -547,7 +547,8 @@
     "tabs": {
       "addTab": "タブを追加",
       "removeTab": "タブを閉じる",
-      "moreTabs": "他のタブ"
+      "moreTabs": "他のタブ",
+      "routeNav": "セクションナビゲーション"
     },
     "steps": {
       "ariaLabel": "進行状況",
