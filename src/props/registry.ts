@@ -2065,6 +2065,103 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  TranslatableLocaleProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      {
+        field: "locales",
+        local: true,
+        reason:
+          "The BCP-47 tags a translatable control edits, in tab order (gh#1336). A per-field list, not a value.",
+      },
+      {
+        field: "defaultLocale",
+        local: true,
+        reason:
+          "The locale tab selected first — the AppProvider's `defaultLocale`, scoped to one field.",
+      },
+      {
+        field: "fallbackLocale",
+        local: true,
+        reason:
+          "The locale whose text an EMPTY locale shows as its placeholder — the AppProvider's `fallbackLocale`, scoped to one field.",
+      },
+      {
+        field: "errors",
+        local: true,
+        reason:
+          "Per-locale validation messages keyed by BCP-47 tag; `error` (one message) cannot say which locale failed.",
+      },
+    ],
+  },
+  TranslatableFieldControlProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "OnValueChangeProp",
+      "PlaceholderProp",
+      {
+        field: "lang",
+        local: true,
+        reason:
+          "The active locale's BCP-47 tag, handed to the control as its HTML `lang` attribute.",
+      },
+    ],
+  },
+  TranslatableFieldProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "SizeProp",
+      "PlaceholderProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "locales",
+        local: true,
+        reason:
+          "The BCP-47 tags the field edits, in tab order (gh#1336). Defaults to the app's content / registered locales; a per-field list, not a value.",
+      },
+      {
+        field: "defaultLocale",
+        local: true,
+        reason:
+          "The locale tab selected first — the AppProvider's own `defaultLocale` spelling, scoped to one field.",
+      },
+      {
+        field: "fallbackLocale",
+        local: true,
+        reason:
+          "The locale whose text an EMPTY locale shows as its placeholder — the AppProvider's own `fallbackLocale` spelling, scoped to one field.",
+      },
+      {
+        field: "errors",
+        local: true,
+        reason:
+          "Per-locale validation messages keyed by BCP-47 tag; marks each locale's tab and sends the ACTIVE one through FormField.",
+      },
+      {
+        field: "renderControl",
+        local: true,
+        reason:
+          "The one control in the panel, rendered from the active locale's props (gh#1365) — the engine is shared by TranslatableInput, TranslatableTextarea and @godxjp/block-editor's TranslatableRichText. `render*` as in renderPreview / renderEmbed.",
+      },
+      {
+        field: "toPlaceholder",
+        local: true,
+        reason:
+          "Turns the fallback locale's stored text into a plain placeholder (HTML → text for a rich-text control). No vocabulary entry describes a value-to-placeholder mapping.",
+      },
+    ],
+  },
   TranslatableTextareaProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

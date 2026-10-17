@@ -2342,5 +2342,30 @@
     },
     "configuration": "Current configuration",
     "scope": "Applies to"
+  },
+  "richTextEditorDocs": {
+    "subtitle": "@godxjp/block-editor · HTML value · fixed toolbar · per-locale tabs",
+    "edit": {
+      "title": "Edit a product",
+      "description": "The description is stored as HTML per locale. Switch the language tab to edit another locale; an empty one shows the Japanese text as a hint.",
+      "name": "Product name",
+      "descriptionLabel": "Description",
+      "helper": "Enter a description in each language. An empty translation shows the Japanese description as a hint.",
+      "required": "Enter a description in this language",
+      "save": "Save",
+      "saved": "Changes saved for this preview."
+    },
+    "saved": {
+      "title": "What it saves",
+      "description": "The per-locale map of sanitised HTML — only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s and code; the only attribute is an integer start on a numbered list."
+    },
+    "single": {
+      "title": "Kitchen notes",
+      "description": "RichTextEditor on its own, for an HTML field that is not translated.",
+      "label": "Prep note",
+      "placeholder": "Write the prep steps",
+      "readOnly": "Prep note (read only)",
+      "disabled": "Prep note (disabled)"
+    }
   }
 }

@@ -1,0 +1,73 @@
+{
+  "docPath": "docs/data-entry/rich-text-editor.tsx",
+  "example": "import { RichTextEditor } from \"@godxjp/block-editor\";\nimport { FormField } from \"@godxjp/ui/data-entry\";\n\n<FormField label=\"説明\" required error={errors.description}>\n  <RichTextEditor value={description} onValueChange={setDescription} />\n</FormField>",
+  "group": "data-entry",
+  "importPath": "@godxjp/block-editor",
+  "name": "RichTextEditor",
+  "props": [
+    {
+      "description": "Controlled HTML body (with `onValueChange`). Read through the schema: script, links, images, attributes, styles, h4–h6, tables are dropped to their text.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial HTML.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "The schema's HTML after each edit — `\"\"` for an empty body, never `<p></p>`. A new `value` from outside (a reset, a locale tab) replaces the document WITHOUT calling it, and never during an IME composition.",
+      "name": "onValueChange",
+      "type": "(html: string) => void"
+    },
+    {
+      "description": "Shown while the body is empty.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "description": "Validation state the frame paints, as on Input; FormField's error arrives as `aria-invalid`.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "BCP-47 tag of the body's language, on the editable.",
+      "name": "lang",
+      "type": "string"
+    },
+    {
+      "description": "Override any toolbar string (defaults: kit ja / en / vi, `blockEditor.*`).",
+      "name": "labels",
+      "type": "Partial<RichTextEditorLabels>"
+    },
+    {
+      "description": "Not editable. readOnly drops the toolbar; disabled keeps it, disabled.",
+      "name": "disabled / readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Land on the editable `textbox` — FormField's id, label, helper, required and error wiring reach it directly.",
+      "name": "id / aria-*",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "TranslatableRichText — the same editor holding one HTML value per locale.",
+    "BlockEditor — the Markdown block editor in the same package.",
+    "MarkdownEditor — Markdown in a Textarea."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/rich-text-editor.tsx",
+  "tagline": "A form field that edits HTML (sibling package `@godxjp/block-editor`, gh#1365): a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted / numbered list, quote · undo, redo — over a Tiptap surface whose SCHEMA is the sanitiser. `value` / `onValueChange` carry HTML holding only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s, code (`RICH_TEXT_ALLOWED_TAGS`), with one attribute in all (an integer `start` on `<ol>`); anything else in `value` or a paste is kept as its text. For content already stored as HTML; new content belongs in Markdown (BlockEditor / MarkdownEditor).",
+  "usage": [
+    "DO wrap it in FormField, like any field: the label names the editable, `required` and the error reach it as `aria-required` / `aria-invalid` + `aria-errormessage`.",
+    "DO store what onValueChange returns: it is already sanitised by the schema, and render it as HTML. Sanitise again on the server if other clients can write the same column.",
+    "DO use TranslatableRichText for a per-locale `{ ja, en, vi }` map instead of wrapping Tabs around it.",
+    "DON'T pick it for NEW content: Markdown (BlockEditor, MarkdownEditor) is the kit's storage format; this exists for columns that already hold HTML.",
+    "Keyboard: each toolbar group is one tab stop with arrow keys; ⌘/Ctrl+B / I / Z / Shift+Z and the Markdown input rules (`# `, `- `, `1. `, `> `) work in the body."
+  ],
+  "useCases": [
+    "Product, material or recipe description stored as HTML and rendered by a storefront",
+    "Notice or email body column that already holds HTML"
+  ]
+}

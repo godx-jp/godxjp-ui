@@ -314,6 +314,16 @@
     "tagline": "Notion / note.com style block editor (sibling package `@godxjp/block-editor`, versioned with the kit) that reads and writes MARKDOWN through `@godxjp/markdown/codec`: what onValueChange returns is byte-for-byte normalize(body). `/` block menu at the caret, ⋮⋮ handle (drag, turn into, duplicate, move, delete), floating format toolbar, `[[` wikilink suggestions, paste / drop uploads through the host, IME-safe, ja / en / vi (gh#1156)."
   },
   {
+    "group": "data-entry",
+    "name": "RichTextEditor",
+    "tagline": "A form field that edits HTML (sibling package `@godxjp/block-editor`, gh#1365): a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted / numbered list, quote · undo, redo — over a Tiptap surface whose SCHEMA is the sanitiser. `value` / `onValueChange` carry HTML holding only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s, code (`RICH_TEXT_ALLOWED_TAGS`), with one attribute in all (an integer `start` on `<ol>`); anything else in `value` or a paste is kept as its text. For content already stored as HTML; new content belongs in Markdown (BlockEditor / MarkdownEditor)."
+  },
+  {
+    "group": "data-entry",
+    "name": "TranslatableRichText",
+    "tagline": "ONE RichTextEditor holding an HTML value per locale (`{ ja, en, vi }`), switched by locale tabs (gh#1365). The kit's TranslatableField engine — the same as TranslatableInput / TranslatableTextarea: locales and first tab from AppProvider `contentLocales`, fallback from its `fallbackLocale`, per-locale error marks, the active locale's error in FormField. An empty locale shows the fallback locale's TEXT (not its HTML) as its placeholder; switching tabs swaps the HTML without calling onValueChange."
+  },
+  {
     "group": "data-display",
     "name": "Prose",
     "tagline": "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from. To RENDER Markdown, use the sibling package `@godxjp/markdown` inside it — `<Prose><Markdown>{body}</Markdown></Prose>` — the one GFM renderer + sanitiser + Mermaid gate shared by every GoDX app; do not assemble react-markdown + rehype-sanitize per app (gh#1108). Tables: `@godxjp/markdown` wraps each in `.ui-prose-table-scroll`, which Prose scrolls horizontally (focusable only while it overflows), and table cells keep their words whole — a short code like `F02` never breaks (gh#1131)."
@@ -417,6 +427,11 @@
     "group": "data-entry",
     "name": "TranslatableTextarea",
     "tagline": "TranslatableInput over a Textarea (gh#1336): one multi-line field holding a value per locale, switched by locale tabs. Same locale, fallback-placeholder, error-mark and FormField contract; every Textarea prop (rows, autoGrow, count…) applies to the one control."
+  },
+  {
+    "group": "data-entry",
+    "name": "TranslatableField",
+    "tagline": "The locale-tab engine behind TranslatableInput, TranslatableTextarea and `@godxjp/block-editor`'s TranslatableRichText (gh#1365): the locale list and first tab (AppProvider `contentLocales`), the per-locale map, the fallback placeholder, the error marks and the FormField error report — around ONE control you render with `renderControl`. Use it only to make another control translatable; for text use TranslatableInput / TranslatableTextarea."
   },
   {
     "group": "data-entry",

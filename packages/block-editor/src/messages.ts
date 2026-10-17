@@ -79,6 +79,9 @@ export const BLOCK_EDITOR_MESSAGES = {
     replaceImage: "画像を差し替え",
     removeImage: "画像を削除",
     properties: "プロパティ（YAML）",
+    textStyle: "段落スタイル",
+    undo: "元に戻す",
+    redo: "やり直す",
   },
   en: {
     editor: "Editor",
@@ -154,6 +157,9 @@ export const BLOCK_EDITOR_MESSAGES = {
     replaceImage: "Replace image",
     removeImage: "Remove image",
     properties: "Properties (YAML)",
+    textStyle: "Text style",
+    undo: "Undo",
+    redo: "Redo",
   },
   vi: {
     editor: "Trình soạn thảo",
@@ -228,6 +234,9 @@ export const BLOCK_EDITOR_MESSAGES = {
     replaceImage: "Thay ảnh",
     removeImage: "Xoá ảnh",
     properties: "Thuộc tính (YAML)",
+    textStyle: "Kiểu đoạn văn",
+    undo: "Hoàn tác",
+    redo: "Làm lại",
   },
 } as const;
 
