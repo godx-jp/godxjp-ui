@@ -6,22 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Topbar `identity` slot and TopbarItem `truncate` for a bounded, always-visible shared-device name, including full title/accessibility text and RTL support (#1370).
-- Theme knobs `--topbar-identity-max-inline-size` (40%) and `--topbar-identity-min-text-inline-size` (3ch).
+## [33.11.0] - 2026-10-17
 
-### Fixed
-- Truncated TopbarItem names and organization labels retain their own text direction, preserving the beginning of Latin, Japanese, Vietnamese, and Arabic text in LTR and RTL bars (#1370).
+### Added
+
+- **Topbar `identity` slot and TopbarItem `truncate` (#1370).** A bounded, always-visible signed-in name for shared devices: the avatar stays, only the name ellipsises within `--topbar-identity-max-inline-size` (40%, min `--topbar-identity-min-text-inline-size` 3ch), the full name goes to `title` and the accessible name, and identity never moves into the overflow menu. Measured at 390: bar scrollWidth 472 → 390, identity off-screen 50 → 0px.
+- **`--control-affix-touch-target-size` (#1371),** 44px by default under a coarse pointer, shared by every input action button.
 
 ### Changed
-- C04 accepts measured compact identity while continuing to flag unbounded phone account names. Other Topbar clusters retain their overflow policy; identity never moves into that menu.
 
-
-- Shared `--control-affix-touch-target-size` token (44px by default) for coarse-pointer input actions (#1371).
+- **visual-audit C04 (#1370)** accepts the measured compact identity and still flags unbounded phone account names.
 
 ### Fixed
 
-- Input clear, password reveal, date/time picker actions and select-family clear buttons now reserve a full touch target. Input measures trailing content so adjacent actions and counters cannot cover its text, including 200px fields and RTL. NumberInput touch steppers sit side by side as borderless ghost actions with independent targets contained inside the field border; SearchInput shares the same target token. Fine-pointer sizing is unchanged (#1371).
+- Truncated TopbarItem names and organization labels keep their own text direction (`dir="auto"`), so Latin, Japanese, Vietnamese and Arabic names show their beginning in LTR and RTL bars (#1370).
+- **Coarse-pointer input actions reach 44×44 (#1371).** Input clear, password reveal, date/time picker actions and select-family clear buttons now reserve a full touch target. Input measures trailing content so adjacent actions and counters cannot cover its text, including 200px fields and RTL. NumberInput touch steppers sit side by side as borderless ghost actions with independent targets contained inside the field border; SearchInput shares the same target token. Fine-pointer sizing is unchanged (#1371).
 
 ## [33.10.1] - 2026-10-17
 

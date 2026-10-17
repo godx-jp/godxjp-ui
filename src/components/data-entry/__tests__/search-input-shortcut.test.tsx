@@ -83,8 +83,11 @@ describe("SearchInput shortcut (gh#1250)", () => {
     const box = screen.getByRole("searchbox");
     expect(box.className).toContain("!pe-[calc(var(--search-input-end-padding)_-_var(--control-icon-size)_-_var(--control-gap)_+_6ch)]");
     await user.type(box, "a");
-    expect(box.className).toContain("!pe-[var(--search-input-end-padding)]");
+    // Once typed, the key-cap padding is gone and the ✕ padding comes from the stylesheet
+    // (`.ui-search-input-control`, which a coarse-pointer target token can widen — gh#1371),
+    // not from a utility class; its clearance is measured in input-affix-coarse-1371-browser.
     expect(box.className).not.toContain("6ch");
+    expect(box.className).toContain("ui-search-input-control");
   });
 
   it("off by default, and off while disabled: no hint, no focus", async () => {
