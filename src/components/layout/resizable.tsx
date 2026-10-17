@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ResizablePrimitive from "react-resizable-panels";
 
+import { revealKeyboardFocus } from "../../lib/focus-reveal";
 import { cn } from "../../lib/utils";
 import { useScrollableRegionTabIndex } from "../../lib/hooks";
 
@@ -20,6 +21,7 @@ ResizablePanelGroup.displayName = "ResizablePanelGroup";
 export const ResizablePanel = ({
   className,
   elementRef,
+  onFocusCapture,
   ...props
 }: React.ComponentPropsWithoutRef<typeof ResizablePrimitive.Panel>) => {
   // Every panel is a scroll container: react-resizable-panels hardcodes `overflow: auto` on the
@@ -44,6 +46,10 @@ export const ResizablePanel = ({
       className={cn("ui-resizable-panel", className)}
       elementRef={setRootElement}
       {...props}
+      onFocusCapture={(event) => {
+        revealKeyboardFocus(event, scrollRegion ?? event.currentTarget);
+        onFocusCapture?.(event);
+      }}
     />
   );
 };

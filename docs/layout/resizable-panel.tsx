@@ -151,7 +151,8 @@ function VerticalCard() {
               <GripHorizontal aria-hidden="true" size={16} />
             </ResizableHandle>
             <ResizablePanel id="preview-panel" defaultSize="50%" minSize="25%">
-              <Flex direction="col" gap="sm" style={{ padding: "1rem", height: "100%" }}>
+              {/* Let the content grow when the panel shrinks, retaining its trailing ring room. */}
+              <Flex direction="col" gap="sm" style={{ padding: "1rem", minHeight: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   プレビュー
                 </Text>

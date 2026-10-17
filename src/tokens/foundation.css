@@ -522,7 +522,7 @@
    * heading anchor — marks where a radius-hugging shadow would touch the
    * glyph). The shadow form ignores it by construction. */
   --focus-ring-offset: var(--focus-outline-offset);
-  /* Inside clipping surfaces, preserve the mark and gap without changing layout. */
+  /* Opt-in for individual clipped focus carriers, never inherited from containers. */
   --focus-ring-inset-offset: calc(-1 * (var(--focus-ring-width) + var(--focus-outline-offset)));
   --focus-ring-contained-offset: initial;
   /* Ring headroom for clipped chrome (`overflow-clip-margin` on the topbar family, gh#291).

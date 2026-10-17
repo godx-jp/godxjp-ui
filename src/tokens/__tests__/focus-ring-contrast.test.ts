@@ -508,7 +508,6 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
       ".sb-nav-item",
       '.ui-app-setting-picker-icon[data-appearance="bar"]',
       ".ui-legal-document-toc-link",
-      '[data-slot="anchor-link"]',
     ]) {
       expect(rule).toContain(selector);
     }

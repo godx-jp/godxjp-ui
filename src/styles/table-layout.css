@@ -515,6 +515,17 @@
       saturate(var(--surface-backdrop-saturate, 160%));
   }
 
+  .ui-data-table-surface:focus-within {
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
+  }
+
+  @supports not (overflow-clip-margin: 1px) {
+    .ui-data-table-surface:focus-within {
+      overflow: visible;
+    }
+  }
+
   .ui-data-table-surface[data-preset="action-collection"] {
     min-inline-size: 0;
   }
@@ -661,6 +672,10 @@
     overflow-x: auto;
     margin-inline: calc(-1 * var(--space-page-active-x));
     padding-inline: var(--space-page-active-x);
+    /* Ring headroom (gh#1378): a focused cell's outside ring fits inside the scroller instead of
+     * being clipped by overflow-x, so cells keep the outside ring rather than an inset one. */
+    padding-block: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
+    scroll-padding-block: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
   }
 
   /* Scroll-hint fade — a SCROLL affordance, so it only shows while the region actually overflows

@@ -202,6 +202,7 @@
         var(--focus-ring-opacity, 1)
     );
     outline-offset: var(--focus-ring-contained-offset, var(--focus-ring-offset));
+    scroll-margin: calc(var(--focus-ring-width) + var(--focus-outline-offset));
     /* Both are zeroed, so the mark appears the instant focus lands rather than easing in. */
     transition:
       outline-offset 0s,
@@ -395,36 +396,32 @@
   tr.ui-focus-ring,
   .sb-nav-item,
   .ui-app-setting-picker-icon[data-appearance="bar"],
-  .ui-legal-document-toc-link,
-  [data-slot="anchor-link"] {
+  .ui-legal-document-toc-link {
     --focus-ring-offset: calc(-1 * var(--focus-ring-width));
   }
 
-  /* Clipped surfaces share one inset geometry. Inherit the context, not padding: a
-   * full-bleed control keeps its size and scroll range, including nested RTL scrollers.
-   * The 2px mark keeps the usual 2px gap, on the inside of the boundary. */
+  /* Containment belongs to the actual clipped focus carrier, NEVER its ancestors
+   * (gh#1378). Focus-only assignment cannot leak into a descendant tab stop.
+   * Padded strip/rail items have room for this inner mark; plain text links and
+   * filled buttons keep their outside mark and contrasting surface gap. */
   :is(
-    .ui-pagination,
-    .ui-pagination-list,
-    [data-slot="card"],
-    [data-slot="tabs-list"],
-    .ui-topbar,
-    .app-topbar,
-    .ui-anchor-list,
-    .app-main,
-    .ui-data-table-scroll,
+    .ui-mobile-shell-tabbar .ui-button--ghost,
+    [data-slot="tabs-list"] [role="tab"],
+    [data-slot="tabs-list"] .ui-tabs-add,
+    .ui-app-setting-picker-icon[data-appearance="bar"],
+    .ui-legal-document-rail .ui-legal-document-toc-link,
+    .ui-table-scroll [data-slot="table-cell"] .ui-button--ghost,
+    .ui-data-table-scroll [data-slot="table-cell"] .ui-button--ghost,
+    .ui-search-select-value-remove,
+    .ui-table-scroll tr.ui-focus-ring,
+    .ui-data-table-scroll tr.ui-focus-ring,
+    .ui-resizable-handle,
     .ui-scroll-area,
     .ui-table-scroll,
-    .ui-mobile-shell,
-    .ui-resizable-panel-group,
-    .ui-legal-document-rail,
-    .ui-command-input-wrapper,
-    .ui-attachments
-  ) {
+    .ui-data-table-scroll,
+    .ui-resizable-panel
+  ):focus-visible {
     --focus-ring-contained-offset: var(--focus-ring-inset-offset);
-    /* The halo rule composes the surface backing at the FOCUSED element, so a
-     * nested dark or tenant scope re-resolves its live background instead of
-     * inheriting a colour frozen on this container. */
   }
 
   /* Outline-form gaps — marks where a mark hugging the box would touch the glyph. */

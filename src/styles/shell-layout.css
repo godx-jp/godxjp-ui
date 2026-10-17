@@ -428,6 +428,10 @@
   }
 
   .app-main {
+    /* Scroll containers ignore overflow-clip-margin. Reserve the outside mark + gap
+     * at the scroll origin and end instead of inverting every descendant (#1378). */
+    padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
+    scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     grid-area: main;
     min-width: 0;
     overflow: auto;
@@ -3051,9 +3055,22 @@
    * still has its room (an `overflow: auto` on both axes would shave the ring flush, which is the
    * whole reason `clip` + `overflow-clip-margin` is there). */
   .ui-topbar[data-overflow="scroll"] {
+    /* Expand the scrollport into the parent's existing clip margin, preserving
+     * the available width and position of its cells at compact breakpoints. */
+    margin-inline: calc(-1 * (var(--focus-ring-weight) + var(--focus-outline-offset)));
+    max-width: calc(100% + 2 * (var(--focus-ring-weight) + var(--focus-outline-offset)));
+    padding-inline: calc(
+      var(--topbar-inset) + var(--focus-ring-weight) + var(--focus-outline-offset)
+    );
     overflow-x: auto; /* rtl-ignore — an axis, not a side: `x` does not flip under RTL */
     overscroll-behavior-inline: contain;
     scrollbar-width: none;
+  }
+
+  /* An auto-height standalone bar otherwise hugs its tallest control exactly.
+   * Fixed-height shell/bar cells retain their intentional contained geometry. */
+  .ui-topbar[data-overflow="scroll"]:not([data-height]):not(.app-topbar .ui-topbar) {
+    padding-block: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
   }
 
   .ui-topbar[data-overflow="scroll"]::-webkit-scrollbar {

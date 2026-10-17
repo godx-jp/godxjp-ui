@@ -24,7 +24,7 @@
  * in the consumer, then passed to DataTable as the already-filtered `data`.
  */
 import * as React from "react";
-import { X, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
 
 import { Button, Text } from "@godxjp/ui/general";
 import {
@@ -263,17 +263,8 @@ function FilterChip({
   onRemove: () => void;
 }) {
   return (
-    <Badge tone={tone ?? "neutral"} variant="outline">
+    <Badge tone={tone ?? "neutral"} variant="outline" onRemove={onRemove}>
       {label}
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        className="size-4 rounded-sm"
-        aria-label={`${label} のフィルターを解除`}
-        onClick={onRemove}
-      >
-        <X className="size-3" aria-hidden="true" />
-      </Button>
     </Badge>
   );
 }

@@ -107,7 +107,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent flush>
             {/* A scroll container so the sticky strip stays pinned while the list scrolls. */}
-            <div className="max-h-80 overflow-y-auto">
+            <div className="max-h-80 overflow-y-auto p-[var(--focus-ring-clip-margin)]">
               <Toolbar
                 sticky
                 hasActiveFilters={hasMemberFilters}

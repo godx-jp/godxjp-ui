@@ -111,13 +111,13 @@ const RADIUS_CROP_EXEMPT: ReadonlyArray<
     "card-layout.css",
     '[data-slot="card"]',
     '[data-slot="card"]',
-    "rounds a full-bleed cover / table to the card corners",
+    "resting radius crop; focus-within opens ring headroom",
   ],
   [
     "card-layout.css",
     '[data-slot="card"]:has([data-slot="card-header"][data-banded])',
     '[data-slot="card"]',
-    "same crop, re-asserted when a banded header makes the card a two-band surface",
+    "resting band crop; focus-within opens ring headroom",
   ],
   [
     "dialog-layout.css",
@@ -128,6 +128,17 @@ const RADIUS_CROP_EXEMPT: ReadonlyArray<
 ];
 
 describe("focus-ring clip margin", () => {
+  it("opens card headroom only while focus is inside, without changing descendant geometry", () => {
+    const rule = rules().find(
+      (r) => r.file === "card-layout.css" && r.selector.includes('[data-slot="card"]:focus-within'),
+    );
+    expect(rule?.body).toMatch(/overflow:\s*clip/);
+    expect(rule?.body).toContain("overflow-clip-margin: var(--focus-ring-clip-margin)");
+    expect(read("focus-ring.css")).not.toMatch(
+      /(?:\.app-main|\[data-slot="card"\])[^{}]*\{[^}]*--focus-ring-contained-offset:/,
+    );
+  });
+
   it("never pairs the clip margin with a keyword that ignores it", () => {
     const dead = rules()
       .filter((r) => /overflow-clip-margin\s*:/.test(r.body))
@@ -172,8 +183,7 @@ describe("focus-ring clip margin", () => {
       /\[data-slot="[a-z-]*content"\]/,
       /:has\(/,
     ];
-    // ScrollArea now carries the shared inset context; its hidden cross-axis remains
-    // necessary, while both its own mark and descendant marks stay inside that clip.
+    // Only the focused ScrollArea itself is contained; descendants stay outside.
     expect(read("focus-ring.css")).toMatch(
       /\.ui-scroll-area,[\s\S]*?--focus-ring-contained-offset:\s*var\(--focus-ring-inset-offset\)/,
     );

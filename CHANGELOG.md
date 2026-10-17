@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.2] - 2026-10-17
+
+### Fixed
+
+- **Focus rings (#1378):** restore outside rings for text links and filled controls; restrict containment to clipped component carriers and give cards ring headroom.
+
 ## [33.12.1] - 2026-10-17
 
 The first release of everything listed under 33.12.0 below: its main CI was red on a timing-sensitive browser assertion and the release gate stopped before tagging, so 33.12.0 never reached npm.
