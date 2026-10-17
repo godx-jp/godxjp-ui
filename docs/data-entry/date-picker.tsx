@@ -1,3 +1,4 @@
+import { useTranslation } from "@godxjp/ui/i18n";
 import { useState } from "react";
 import { ja } from "date-fns/locale";
 
@@ -15,6 +16,7 @@ import type { DateRange } from "react-day-picker";
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [issueDate, setIssueDate] = useState<Date | undefined>(new Date(2026, 0, 15));
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [closingDate, setClosingDate] = useState<Date | undefined>(undefined);
@@ -32,6 +34,20 @@ export default function Demo() {
       subtitle="日付入力 · ISO-8601 タイプ入力 + カレンダーポップオーバー"
     >
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("affixTouchExamples.title")}</CardTitle>
+            <CardDescription>{t("affixTouchExamples.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="vertical" controlWidth={200}>
+              <FormField id="affix-touch-date" label={t("affixTouchExamples.date")}>
+                <DatePicker id="affix-touch-date" defaultValue={new Date(2026, 9, 17)} />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>基本 (controlled)</CardTitle>

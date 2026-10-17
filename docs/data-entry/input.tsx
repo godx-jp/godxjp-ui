@@ -1,3 +1,4 @@
+import { useTranslation } from "@godxjp/ui/i18n";
 import { useState } from "react";
 
 import { Building2, CalendarDays, Hash, Link2, Mail, MapPin, Phone } from "lucide-react";
@@ -25,6 +26,7 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
  * label, an address that overflows the box, zero versus empty, Arabic.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [contractValue, setContractValue] = useState("制御値");
   const [emptyText, setEmptyText] = useState("");
   const [zeroText, setZeroText] = useState("0");
@@ -41,6 +43,25 @@ export default function Demo() {
       subtitle="Text field · pair with FormField for label / helper / error"
     >
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("affixTouchExamples.title")}</CardTitle>
+            <CardDescription>{t("affixTouchExamples.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="vertical" controlWidth={200}>
+              <FormField id="affix-touch-text" label={t("affixTouchExamples.text")}>
+                <Input
+                  id="affix-touch-text"
+                  defaultValue="REF-2026-1017"
+                  allowClear
+                  count={{ show: true }}
+                />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>サイズ · 高さラダー</CardTitle>

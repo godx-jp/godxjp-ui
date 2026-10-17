@@ -4,7 +4,7 @@
     "components": 169,
     "patterns": 28,
     "rules": 44,
-    "tokens": 2235,
+    "tokens": 2236,
     "vocabulary": 14
   },
   "design": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md",
@@ -61,7 +61,7 @@
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1906,
+      "component": 1907,
       "foundation": 216,
       "semantic": 113
     },

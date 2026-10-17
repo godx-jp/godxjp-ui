@@ -7307,6 +7307,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged. The trailing slot is measured, so adjacent actions and counters reserve their combined width; allowClear still replaces trailingIcon/suffix.",
       "DO always wrap Input in FormField when the field needs a label, helper text, or validation error — FormField injects aria-describedby and aria-invalid onto Input automatically; never wire these attributes by hand.",
       "DO match the `id` prop on Input to the `id` prop on its parent FormField so that `htmlFor` linkage and the generated helper/error ids are consistent.",
       "DO use Input in controlled mode (`value` + `onChange`) for forms driven by Inertia's `useForm` or React state; uncontrolled usage (no `value`) is only acceptable for fire-and-forget inline edits where form state is not needed.",
@@ -7463,6 +7464,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged. The increment/decrement actions sit side by side on touch screens so each owns a non-overlapping target.",
       "DO use NumberInput (not `<Input type='number'>`) whenever numeric entry wants steppers, min/max clamping, precision rounding, or a ¥/% affix — it is the canonical numeric primitive. Plain Input has no stepper and no clamp.",
       "DO drive it controlled with `value` + `onValueChange` carrying `number | null` (the vocabulary triad — NOT `onChange`). `null` means the field is empty; never substitute 0 for empty.",
       "DON'T pass `value` without `onValueChange` — like every controlled @godxjp/ui input it would freeze. Omit both for uncontrolled (use `defaultValue`).",
@@ -7580,6 +7582,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       "DON'T drop a bare SearchInput into a Topbar slot \u2014 use `TopbarSearch` (layout), which passes every SearchInput prop through and folds to a search cell below 40rem instead of shrinking under 8ch (ADR C02).",
       "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",
       "DO: choose controlled vs uncontrolled deliberately. Pass `value` + `onValueChange` together for controlled mode; optionally add `onSearch` for debounced effects (e.g. when search state lives in a URL param or shared parent). For local-only ephemeral search pass only `defaultValue` + `onSearch` — omitting `value` puts the component in uncontrolled mode.",
@@ -8200,6 +8203,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       'FREE-TEXT TAGS WITH NO LIST (keywords, email recipients, labels typed from scratch): `<Select mode="tags" open={false} value={tags} onValueChange={setTags} />` — the inline chip field. Use plain `mode="tags"` (popup) only when there is a list of existing tags to pick from. There is no `TagInput` component.',
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
       "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
@@ -9296,6 +9300,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       'ONE component covers every date-shaped field. `picker` is the granularity axis, `range` and `multiple` are the cardinality axis, and they compose: `<DatePicker range picker="month" />` is a month range.',
       "DO use `name` to make the field form-submittable — it emits ISO-8601 at the picker's own precision (`2026-03` for a month, `2026` for a year, `2026-03-01` for a day). No hidden input of your own is needed.",
       "DO wrap it in FormField like every other labelled control; FormField injects the id/aria wiring onto the input.",
@@ -11141,6 +11146,7 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
       "DO give it a name in native forms. It submits HH:mm or HH:mm:ss, regardless of display format; the component manages any hidden canonical field.",
       "DO use the controlled pattern (`value` + `onValueChange`) in React-managed forms (e.g. useForm). For simple HTML forms without React state, omit `value` and use `defaultValue` for the uncontrolled pattern.",
@@ -11408,6 +11414,7 @@ export function CutoffTimeForm() {
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       "DO pass a string[] path as value in single mode (e.g. ['country','region','city']). DON'T pass a flat string ID — the component treats value as an ordered path array and will render nothing if you pass a bare string.",
       "DO use value + onChange together for controlled mode, or defaultValue alone for uncontrolled. DON'T mix both — providing value without onChange makes the field read-only (the internal state won't update).",
       "DO set multiple={true} and pass value as string[][] (array of paths) for multi-selection. onChange receives string[][] in that mode. Mixing single-mode shape with multiple={true} silently produces no selection.",
@@ -11729,6 +11736,7 @@ function MultiRegionPicker() {
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       "DO pair with a `<label htmlFor={id}>` and pass the matching `id` prop so screen readers announce the control correctly. The underlying trigger is a `<Button role='combobox'>` — not a native `<select>` — so an explicit label is required.",
       "DO use `treeCheckable` (+ optionally `showCheckedStrategy`) for selecting multiple nodes with parent–child cascade; use `multiple` only when you want multi-select WITHOUT the checkbox cascade behaviour.",
       "DO use the static constants `TreeSelect.SHOW_CHILD`, `TreeSelect.SHOW_PARENT`, `TreeSelect.SHOW_ALL` (or the named exports `SHOW_CHILD`/`SHOW_PARENT`/`SHOW_ALL` from the same import path) instead of raw string literals for `showCheckedStrategy`.",
@@ -15142,6 +15150,7 @@ import { Separator } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       'DO use for any password / secret field instead of `<Input type="password">` so users get the show/hide affordance.',
       'DO pass `name` + `autoComplete="current-password"|"new-password"` for correct form/password-manager behavior.',
       "DON'T add your own eye button — it's built in (and excluded from the tab order).",
