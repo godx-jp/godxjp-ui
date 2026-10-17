@@ -1994,6 +1994,12 @@ export default function Shell() {
     tagline:
       "A PURE SLOT bar for the app shell — positions three clusters (start / center / end) and owns ONLY the bar layout. It bakes NO chrome: no product switcher, no search box, no notification bell, no language picker. The CONSUMER composes those from real primitives and drops them into a slot; whether a control is icon-only / labelled / bordered is that control's own config, never the shell's.",
     props: [
+      {
+        name: "identity",
+        type: "ReactNode",
+        description:
+          'Opt-in pinned shared-device identity: one TopbarItem truncate with Avatar in icon and a string name. Capped at --topbar-identity-max-inline-size (40%); --topbar-identity-min-text-inline-size reserves 3ch. Stays outside scroll/menu while primary cells retain their minima. Only other clusters follow overflow; children overrides all slots. Do not combine identity with hideBelow, labelHideBelow or iconHideFrom. At extreme widths choose overflow="menu" to keep other controls reachable.',
+      },
       { name: "pad", type: "PadProp", description: "Instance inset using logical token steps." },
       {
         name: "height",
@@ -2024,7 +2030,7 @@ export default function Shell() {
       },
       {
         name: "overflow",
-        type: '"scroll" | "clip"',
+        type: '"scroll" | "clip" | "menu"',
         defaultValue: '"scroll"',
         description:
           "What a bar that does not fit does with the cells that do not fit (gh#728). scroll (default) lets the BAR scroll on the inline axis while the start and end clusters keep their cells whole — every cell stays in the DOM and in the accessibility tree, Tab reaches each one in order, and the browser scrolls a focused cell into view; the scrollbar is suppressed (a horizontal bar inside a 48px chrome row would eat the height that caused the deficit), so the pointer affordance is drag/wheel. clip is the pre-gh#728 behaviour: a cell past the cluster's edge is simply not painted — still focusable, still announced, invisible and unreachable by pointer. Independent of TopbarItem hideBelow, which REMOVES a cell at a step; this is only about what happens once there is no budget left.",
@@ -2034,7 +2040,7 @@ export default function Shell() {
         type: "ReactNode",
         defaultValue: "undefined",
         description:
-          "Escape hatch — render fully custom bar content instead of the three slots. When set, `start`/`center`/`end` are ignored.",
+          "Escape hatch — render fully custom bar content instead of the three slots. When set, `start`/`center`/`end`/`identity` are ignored.",
       },
       {
         name: "className",
@@ -2043,6 +2049,7 @@ export default function Shell() {
       },
     ],
     usage: [
+      'For shared devices use identity={<TopbarItem truncate icon={<Avatar aria-hidden="true"><AvatarFallback>DB</AvatarFallback></Avatar>}>{user.name}</TopbarItem>}, optionally wrapped in DropdownMenuTrigger asChild. Keep the locale picker icon-only with appearance="bar" in end. The name stays visible and bounded; full string children become title and accessible text. AccountChip is a separate avatar/name/action row, not a full-height menu cell.',
       "DO use `TopbarSearch`, not a bare `SearchInput`, for the bar's search (ADR C02): a SearchInput in a slot shrinks with the cluster \u2014 measured at 390px in a consumer bar its text area was 0ch. TopbarSearch keeps at least 8ch from 40rem up and folds to a named search cell below it.",
       'DO align the bar\'s search with the content column (ADR C11) by composition: keep AppShell\'s default `topbarSpan="content"` and put `TopbarSearch` FIRST in `start` \u2014 the bar then starts on the rail edge with the same inset as PageContainer, measured 0px apart at 1024/1280/1440. Under `topbarSpan="full"` the bar starts at the window edge after the brand, so no keyline is shared; there, put the search in `end` deliberately rather than near a column it cannot meet.',
       "DO compose the bar yourself: a brand mark (an `Avatar`) + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
@@ -2115,6 +2122,13 @@ import { PanelLeftClose, Search } from "lucide-react";
       "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
     props: [
       {
+        name: "truncate",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Same vocabulary as Text.truncate: allow the cell to shrink to its control minimum and ellipse only its label. Keeps the icon; overrides labelHideBelow. Full text remains accessible; string children supply title automatically (including asChild). Pass title explicitly for rich children. Use in Topbar identity for a bounded always-visible shared-device name; default phone accounts still use labelHideBelow="sm".',
+      },
+      {
         name: "icon",
         type: "ReactNode",
         description:
@@ -2168,7 +2182,7 @@ import { PanelLeftClose, Search } from "lucide-react";
       },
     ],
     usage: [
-      'DO collapse the account cell to its avatar on a phone (ADR C04): `<DropdownMenuTrigger asChild><TopbarItem aria-label={t("account")} icon={<Avatar>\u2026</Avatar>} labelHideBelow="sm">{name}</TopbarItem></DropdownMenuTrigger>` and repeat the name (and email) in the menu\'s `DropdownMenuLabel`. Measured at 390px: without `labelHideBelow` the name took 74px of a 390px bar; with it the cell is 48x47, named, and the name is read in the open menu.',
+      'By default collapse the account cell to its avatar on a phone (ADR C04); shared devices opt into Topbar identity + TopbarItem truncate instead: `<DropdownMenuTrigger asChild><TopbarItem aria-label={t("account")} icon={<Avatar>\u2026</Avatar>} labelHideBelow="sm">{name}</TopbarItem></DropdownMenuTrigger>` and repeat the name (and email) in the menu\'s `DropdownMenuLabel`. Measured at 390px: without `labelHideBelow` the name took 74px of a 390px bar; with it the cell is 48x47, named, and the name is read in the open menu.',
       "DO put bar triggers in a Topbar slot as TopbarItem, not as Button — that is the difference between chrome and a control that landed in the chrome.",
       "DO wrap it in a DropdownMenuTrigger asChild for a user menu; the open state lights the cell via [data-state=open].",
       "DON'T set a height: the cell stretches to whatever the bar is (AppShell's grid row, --topbar-height, or the coarse-pointer bar), which is why there is no height knob.",
@@ -7307,6 +7321,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged. The trailing slot is measured, so adjacent actions and counters reserve their combined width; allowClear still replaces trailingIcon/suffix.",
       "DO always wrap Input in FormField when the field needs a label, helper text, or validation error — FormField injects aria-describedby and aria-invalid onto Input automatically; never wire these attributes by hand.",
       "DO match the `id` prop on Input to the `id` prop on its parent FormField so that `htmlFor` linkage and the generated helper/error ids are consistent.",
       "DO use Input in controlled mode (`value` + `onChange`) for forms driven by Inertia's `useForm` or React state; uncontrolled usage (no `value`) is only acceptable for fire-and-forget inline edits where form state is not needed.",
@@ -7463,6 +7478,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged. The increment/decrement actions sit side by side on touch screens so each owns a non-overlapping target.",
       "DO use NumberInput (not `<Input type='number'>`) whenever numeric entry wants steppers, min/max clamping, precision rounding, or a ¥/% affix — it is the canonical numeric primitive. Plain Input has no stepper and no clamp.",
       "DO drive it controlled with `value` + `onValueChange` carrying `number | null` (the vocabulary triad — NOT `onChange`). `null` means the field is empty; never substitute 0 for empty.",
       "DON'T pass `value` without `onValueChange` — like every controlled @godxjp/ui input it would freeze. Omit both for uncontrolled (use `defaultValue`).",
@@ -7580,6 +7596,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       "DON'T drop a bare SearchInput into a Topbar slot \u2014 use `TopbarSearch` (layout), which passes every SearchInput prop through and folds to a search cell below 40rem instead of shrinking under 8ch (ADR C02).",
       "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",
       "DO: choose controlled vs uncontrolled deliberately. Pass `value` + `onValueChange` together for controlled mode; optionally add `onSearch` for debounced effects (e.g. when search state lives in a URL param or shared parent). For local-only ephemeral search pass only `defaultValue` + `onSearch` — omitting `value` puts the component in uncontrolled mode.",
@@ -8200,6 +8217,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       'FREE-TEXT TAGS WITH NO LIST (keywords, email recipients, labels typed from scratch): `<Select mode="tags" open={false} value={tags} onValueChange={setTags} />` — the inline chip field. Use plain `mode="tags"` (popup) only when there is a list of existing tags to pick from. There is no `TagInput` component.',
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
       "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
@@ -9296,6 +9314,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       'ONE component covers every date-shaped field. `picker` is the granularity axis, `range` and `multiple` are the cardinality axis, and they compose: `<DatePicker range picker="month" />` is a month range.',
       "DO use `name` to make the field form-submittable — it emits ISO-8601 at the picker's own precision (`2026-03` for a month, `2026` for a year, `2026-03-01` for a day). No hidden input of your own is needed.",
       "DO wrap it in FormField like every other labelled control; FormField injects the id/aria wiring onto the input.",
@@ -11141,6 +11160,7 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
       "DO give it a name in native forms. It submits HH:mm or HH:mm:ss, regardless of display format; the component manages any hidden canonical field.",
       "DO use the controlled pattern (`value` + `onValueChange`) in React-managed forms (e.g. useForm). For simple HTML forms without React state, omit `value` and use `defaultValue` for the uncontrolled pattern.",
@@ -11408,6 +11428,7 @@ export function CutoffTimeForm() {
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       "DO pass a string[] path as value in single mode (e.g. ['country','region','city']). DON'T pass a flat string ID — the component treats value as an ordered path array and will render nothing if you pass a bare string.",
       "DO use value + onChange together for controlled mode, or defaultValue alone for uncontrolled. DON'T mix both — providing value without onChange makes the field read-only (the internal state won't update).",
       "DO set multiple={true} and pass value as string[][] (array of paths) for multi-selection. onChange receives string[][] in that mode. Mixing single-mode shape with multiple={true} silently produces no selection.",
@@ -11729,6 +11750,7 @@ function MultiRegionPicker() {
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       "DO pair with a `<label htmlFor={id}>` and pass the matching `id` prop so screen readers announce the control correctly. The underlying trigger is a `<Button role='combobox'>` — not a native `<select>` — so an explicit label is required.",
       "DO use `treeCheckable` (+ optionally `showCheckedStrategy`) for selecting multiple nodes with parent–child cascade; use `multiple` only when you want multi-select WITHOUT the checkbox cascade behaviour.",
       "DO use the static constants `TreeSelect.SHOW_CHILD`, `TreeSelect.SHOW_PARENT`, `TreeSelect.SHOW_ALL` (or the named exports `SHOW_CHILD`/`SHOW_PARENT`/`SHOW_ALL` from the same import path) instead of raw string literals for `showCheckedStrategy`.",
@@ -15142,6 +15164,7 @@ import { Separator } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       'DO use for any password / secret field instead of `<Input type="password">` so users get the show/hide affordance.',
       'DO pass `name` + `autoComplete="current-password"|"new-password"` for correct form/password-manager behavior.',
       "DON'T add your own eye button — it's built in (and excluded from the tab order).",

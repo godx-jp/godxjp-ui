@@ -28,6 +28,7 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
     icon,
     iconHideFrom,
     labelHideBelow,
+    truncate = false,
     badge,
     badgeTone,
     children,
@@ -64,17 +65,22 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
         {icon}
       </span>
     ) : null;
-  // The label box exists ONLY when a breakpoint asks for one, so a cell without `labelHideBelow`
-  // renders the node it always has. Below the step the label is VISUALLY hidden, never
+  // The label box exists when hiding or truncation asks for one; default cells keep their DOM.
+  // Truncation outranks hiding. Below the step an otherwise hidden label is VISUALLY hidden, never
   // `display: none`: it is the cell's accessible name, and an icon-only cell still needs one.
   const labelOf = (label: React.ReactNode) =>
-    labelHideBelow === undefined || label === undefined || label === null || label === false ? (
+    (!truncate && labelHideBelow === undefined) ||
+    label === undefined ||
+    label === null ||
+    label === false ? (
       label
     ) : (
       <span
+        // Names keep their own inline direction, including the ellipsis edge, in RTL bars.
+        dir={truncate ? "auto" : undefined}
         data-slot="topbar-item-label"
         className="ui-topbar-item-label"
-        data-hide-below={labelHideBelow}
+        data-hide-below={truncate ? undefined : labelHideBelow}
       >
         {label}
       </span>
@@ -95,7 +101,7 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
   ) : null;
   const slotted =
     asChild &&
-    (iconNode !== null || labelHideBelow !== undefined || badgeNode !== null) &&
+    (iconNode !== null || truncate || labelHideBelow !== undefined || badgeNode !== null) &&
     React.isValidElement<{ children?: React.ReactNode }>(children)
       ? React.cloneElement(
           children,
@@ -105,10 +111,16 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
           badgeNode,
         )
       : children;
+  const label =
+    asChild && React.isValidElement<{ children?: React.ReactNode }>(children)
+      ? children.props.children
+      : children;
   return (
     <Comp
       ref={ref}
       data-slot="topbar-item"
+      data-truncate={truncate ? "true" : undefined}
+      title={truncate && typeof label === "string" ? label : undefined}
       data-hide-below={hideBelow}
       className={cn("ui-topbar-item ui-focus-ring", className)}
       // A bare `<button>` inside a form defaults to `type="submit"`; under `asChild` the child owns

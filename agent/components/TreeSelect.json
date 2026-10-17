@@ -214,6 +214,7 @@
   "storyPath": "data-entry/tree-select.tsx",
   "tagline": "Hierarchical tree picker in a Popover (single or multi-select with checkboxes) — `onValueChange` receives `string` in single mode and `string[]` in multi/checkable mode; never use a raw `<select>` for tree-structured data.",
   "usage": [
+    "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
     "DO pair with a `<label htmlFor={id}>` and pass the matching `id` prop so screen readers announce the control correctly. The underlying trigger is a `<Button role='combobox'>` — not a native `<select>` — so an explicit label is required.",
     "DO use `treeCheckable` (+ optionally `showCheckedStrategy`) for selecting multiple nodes with parent–child cascade; use `multiple` only when you want multi-select WITHOUT the checkbox cascade behaviour.",
     "DO use the static constants `TreeSelect.SHOW_CHILD`, `TreeSelect.SHOW_PARENT`, `TreeSelect.SHOW_ALL` (or the named exports `SHOW_CHILD`/`SHOW_PARENT`/`SHOW_ALL` from the same import path) instead of raw string literals for `showCheckedStrategy`.",

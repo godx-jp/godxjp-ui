@@ -1624,6 +1624,14 @@ export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> 
   /** Inline-end cluster — settings pickers, notifications, the user menu. */
   end?: ReactNode;
   /**
+   * Opt-in shared-device identity, pinned outside scrolling/overflow menus. Pass one
+   * TopbarItem with `truncate` and an Avatar in `icon`; use a plain string name so its full
+   * title is automatic. Never combine with hideBelow/labelHideBelow/iconHideFrom.
+   * Capped by --topbar-identity-max-inline-size (40%); primary controls retain their floors.
+   * At extreme widths only the other clusters scroll or move to the menu. Ignored with children.
+   */
+  identity?: ReactNode;
+  /**
    * What a bar that does not fit does with the cells that do not fit (gh#728).
    *
    * - `"scroll"` (default) — the BAR scrolls on the inline axis while the `start` and `end`
@@ -1723,6 +1731,11 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
    * accessible name. Under `asChild` the child element's own children are the label.
    */
   labelHideBelow?: BreakpointProp;
+  /** Ellipse the label in the available width, keeping the icon and control minimum.
+   * Same boolean vocabulary as Text.truncate. Overrides labelHideBelow; the complete text
+   * remains the accessible name. String children automatically supply title (asChild too).
+   */
+  truncate?: boolean;
   /**
    * Unread count OVERLAID on the cell's glyph — the notification-bell affordance the cell's own use
    * cases name (gh#398). Pass the CONTENT ONLY, exactly like `SidebarItemProp.badge`: a number, a

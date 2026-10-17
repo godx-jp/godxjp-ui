@@ -181,6 +181,7 @@
   "storyPath": "data-entry/time-picker.tsx",
   "tagline": "Time combobox with hours, minutes, optional seconds, confirmation and 12-hour formatting. Native submission stays canonical 24-hour time.",
   "usage": [
+    "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
     "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
     "DO give it a name in native forms. It submits HH:mm or HH:mm:ss, regardless of display format; the component manages any hidden canonical field.",
     "DO use the controlled pattern (`value` + `onValueChange`) in React-managed forms (e.g. useForm). For simple HTML forms without React state, omit `value` and use `defaultValue` for the uncontrolled pattern.",

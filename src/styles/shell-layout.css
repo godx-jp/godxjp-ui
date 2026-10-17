@@ -3110,6 +3110,47 @@
   /* (The floor this rule used to carry now lives on `.ui-topbar-start` itself — see gh#789. It was
    * never mode-specific; `clip` had simply never been given it.) */
 
+  /* Opt-in identity: only the controls scroll/fold. The name remains anchored inline-end.
+   * The controls' cells retain their own floors; truncatable labels pay the deficit first.
+   * Impossible compositions use the selected overflow policy, never shrink a primary target. */
+  .ui-topbar[data-identity="true"] {
+    overflow: clip;
+  }
+  .ui-topbar-controls {
+    padding-inline: 0;
+    height: auto;
+    background: none;
+    backdrop-filter: none;
+  }
+  /* Flatten only the start cluster into the controls flex line. Its cells then contribute
+   * their OWN minima, rather than one cluster min-content width preserving an entire org name.
+   * This lets labels shrink without stretching an organisation trigger across a desktop bar. */
+  .ui-topbar-controls > .ui-topbar-start {
+    display: contents;
+  }
+  .ui-topbar-identity {
+    display: flex;
+    align-self: stretch;
+    flex: 0 0 auto;
+    min-inline-size: 0;
+    max-inline-size: var(--topbar-identity-max-inline-size);
+    margin-inline-start: auto;
+  }
+  .ui-topbar-item[data-truncate="true"] {
+    flex: 0 1 auto;
+    min-inline-size: var(--topbar-item-min-width);
+    max-inline-size: 100%;
+  }
+  .ui-topbar-item[data-truncate="true"] > .ui-topbar-item-label {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ui-topbar-identity .ui-topbar-item[data-truncate="true"] > .ui-topbar-item-label {
+    min-inline-size: var(--topbar-identity-min-text-inline-size);
+  }
+
   /* ── TOPBAR BAR ITEM ──────────────────────────────────────────────────────────────────────
    * A cell that IS the bar, not a control dropped into it. The knobs and the outside precedent are
    * recorded in tokens/components/shell.css.

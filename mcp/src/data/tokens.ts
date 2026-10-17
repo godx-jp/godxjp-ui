@@ -53,6 +53,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Raw BAND-HEIGHT scale — the vertical extent of a horizontal strip that content is centred in: 24 / 28 / 32 (md) / 36 (lg, default control and row band) / 44 (the WCAG 2.2 AA touch floor, rule #24) / 48 / 56 px. `height` split the same way `width` did: a control, a table row, a menu item, a sidebar nav row and the app-shell top bar are ONE decision sharing seven values, each declared by two to five tokens, while a chart plot's height, a transfer pane's min-height and a popover's max-height are container measures chosen per surface with almost no repeated value and stay literal. The case for this is that `PageContainer`'s chrome band had no height token while `AppShell`'s bar did, so nothing could be aligned to it — the axis had no name. NOT A SUBSTITUTE FOR --control-height-*: the control tier is a RUNTIME LADDER (it multiplies by --scaling, steps ±--space-1 for sm/lg/xs, and `@media (pointer: coarse)` lifts the whole thing to the 44px tap floor); this scale is the STATIC vocabulary the ladder is ANCHORED on (`--control-height-default: var(--band-height-lg)`), exactly as --font-size-base anchors the type scale. Point a band token at --control-height-* to \"reuse a step\" and you silently enrol it in density AND in the coarse-pointer growth — that is a geometry change, not a rename, and it is why --table-row-height-default reads var(--band-height-lg) instead. NOT --scaling-multiplied here: whether a band breathes with density is a per-token decision (--control-height opts in, --app-shell-bar-height deliberately does not).",
   },
   {
+    name: "--control-affix-touch-target-size",
+    category: "component",
+    tier: "component",
+    role: "Coarse-pointer input-affix target floor, default var(--band-height-xl) (44px). Shared by Input clear, DatePicker/TimePicker actions, PasswordInput toggle, Select/SearchSelect/Cascader/TreeSelect clear, SearchInput clear and NumberInput steppers. Inline actions occupy real layout space; Input measures the entire trailing slot for text padding, including adjacent actions and counters. NumberInput steppers sit side by side on coarse pointers. Fine-pointer geometry and glyph sizes are unchanged. Override this token on a field or theme; no targetSize prop is needed. --input-trailing-measured-size is internal measured layout, not a theme knob.",
+  },
+  {
     name: "--control-height-touch / --control-touch-gap / --button-touch-space-inline",
     category: "component",
     tier: "component",
@@ -872,6 +878,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "AppShell top-bar chrome — `--app-shell-bar-inset` is the bar's inline padding, `--app-shell-bar-inset-compact` the tighter value below the compact step, `--app-shell-bar-gap` the gap between the bar's direct children (default --space-3). ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS: the bar sits in the SAME grid track as `.app-main`, directly above the page, so its first control and the page title are on one vertical edge. The two insets used to name their own values (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and nothing reconciled them — measured in Chromium, the bar's content started at x=80 and the page header's at x=88 (1512px), and because the two sides stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even constant (8px at 1512, 12px between 720 and 900, 4px below 720), which a consumer cannot correct by hand. The page gutter now OWNS the axis and these knobs read it: `--app-shell-bar-inset: var(--space-page-x)` (32px after the modern refresh), `--app-shell-bar-inset-compact: var(--space-page-compact-x)` (16px), stepping at the PAGE's `(max-width: 720px)`, not the shell's 900px restructure. GEOMETRY MOVED — the bar's inline padding went 16px → 24px (12px → 16px compact, and 12px → 24px between 720 and 900); the page did not move. The NAMES are unchanged, so a theme that already sets either knob keeps working, and a bar that genuinely wants to sit tighter than its page still has its own. Height stays `--app-shell-bar-height` (3rem) at EVERY width, and it is also the owner of the chrome BAND-HEIGHT axis — see `--page-header-min-block-size-chrome`.",
+  },
+  {
+    name: "--topbar-identity-{max-inline-size,min-text-inline-size}",
+    category: "component",
+    tier: "component",
+    role: "Opt-in Topbar identity share cap and minimum visible name measure. Primary control floors remain intact; only other clusters scroll/fold. The C04 compact-identity policy permits at most 40% of the bar; increasing the theme cap beyond that requires independent design review.",
   },
   {
     name: "--topbar-{height,inset,gap}",

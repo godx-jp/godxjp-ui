@@ -398,6 +398,7 @@
   ],
   "tagline": "Polymorphic single-select: pass options/loadOptions for the data-driven (Ant-style) API, or compose sub-parts manually — never use a raw <select>.",
   "usage": [
+    "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
     "FREE-TEXT TAGS WITH NO LIST (keywords, email recipients, labels typed from scratch): `<Select mode=\"tags\" open={false} value={tags} onValueChange={setTags} />` — the inline chip field. Use plain `mode=\"tags\"` (popup) only when there is a list of existing tags to pick from. There is no `TagInput` component.",
     "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
     "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",

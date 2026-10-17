@@ -1680,6 +1680,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
+      {
+        field: "identity",
+        local: true,
+        reason: "Reserved shared-device account slot; bounded and outside the overflow policy.",
+      },
       "ChildrenProp",
       {
         field: "overflow",
@@ -1695,6 +1700,11 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [
       "ChildrenProp",
       "ClassNameProp",
+      {
+        field: "truncate",
+        local: true,
+        reason: "Text.truncate boolean vocabulary applied to the bar cell label.",
+      },
       { field: "asChild", local: true, reason: "Radix Slot passthrough — merges onto the child" },
       "BreakpointProp",
       {

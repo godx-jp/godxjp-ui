@@ -105,6 +105,26 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
       [ref],
     );
 
+    // The trailing slot can contain a counter or several actions. Measure its actual layout
+    // rather than guessing one icon's width; CSS consumes this only on coarse pointers.
+    // A callback ref also handles the slot appearing/disappearing after clear or a prop change.
+    const setTrailingRef = React.useCallback((node: HTMLSpanElement | null) => {
+      if (!node) return;
+      const wrapper = node.parentElement!;
+      const sync = () =>
+        wrapper.style.setProperty(
+          "--input-trailing-measured-size",
+          `${node.getBoundingClientRect().width}px`,
+        );
+      sync();
+      const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(sync);
+      observer?.observe(node);
+      return () => {
+        observer?.disconnect();
+        wrapper.style.removeProperty("--input-trailing-measured-size");
+      };
+    }, []);
+
     const [text, setText] = React.useState(() => String(value ?? defaultValue ?? ""));
     const hasText = text.length > 0;
     // Keep the ✕ and the counter in sync with a controlled value.
@@ -226,7 +246,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
           {...appearance}
         />
         {trailing != null || counter !== null ? (
-          <span className="ui-input-trailing">
+          <span className="ui-input-trailing" ref={setTrailingRef}>
             {counter ? (
               <span
                 data-slot="input-count"

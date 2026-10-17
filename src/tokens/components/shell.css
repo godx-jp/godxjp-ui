@@ -371,6 +371,9 @@
   --topbar-height: auto;
   --topbar-inset: 0px;
   --topbar-gap: var(--space-2);
+  /* Shared-device identity gets a bounded share, not the primary controls' width. */
+  --topbar-identity-max-inline-size: 40%;
+  --topbar-identity-min-text-inline-size: 3ch;
   /* THE GLASS BAR (gh#831) — the same two declarations two unrelated website showcases each
    * hand-wrote on their own sticky header: a translucent page fill plus a backdrop blur. Both knobs
    * are `initial`, i.e. QUIET by default in exactly the sense the paragraph above describes: a

@@ -1,4 +1,10 @@
 {
+  "affixTouchExamples": {
+    "title": "Ô nhập hẹp và thao tác chạm",
+    "description": "Ở chiều rộng 200px, nút xoá và nút chọn không đè lên văn bản. Vùng chạm là 44px; khoảng cách trên máy tính không đổi.",
+    "date": "Ngày",
+    "text": "Mã tham chiếu"
+  },
   "textExamples": {
     "preservedText": "Văn bản thuần",
     "sampleText": "Dòng đầu\n  Dòng thụt vào\n\nDòng cuối",
@@ -2360,5 +2366,17 @@
       "readOnly": "Ghi chú sơ chế (chỉ đọc)",
       "disabled": "Ghi chú sơ chế (vô hiệu)"
     }
+  },
+  "topbarIdentityDocs": {
+    "title": "Danh tính trên thiết bị dùng chung",
+    "name": "Demo Barista",
+    "longName": "Nguyễn Thị Minh Phương Hoàng",
+    "org": "Chi nhánh trung tâm",
+    "otherOrg": "Bộ phận vận hành quốc tế",
+    "navigation": "Điều hướng",
+    "navigationOpen": "Đã mở điều hướng.",
+    "switchUser": "Đổi người dùng mẫu",
+    "description": "Tên người đăng nhập luôn hiển thị. Topbar identity dành tối đa 40% thanh; TopbarItem truncate chỉ rút gọn tên, giữ tên đầy đủ trong title và văn bản hỗ trợ tiếp cận.",
+    "policy": "Các điều khiển chính giữ kích thước tối thiểu. Khi quá hẹp, các cụm khác dùng scroll, clip hoặc menu; danh tính ở bên ngoài. Dùng TopbarSearch để tìm kiếm. Không kết hợp identity với labelHideBelow, hideBelow hoặc iconHideFrom. Token: --topbar-identity-max-inline-size / --topbar-identity-min-text-inline-size."
   }
 }

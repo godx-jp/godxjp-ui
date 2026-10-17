@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { AppShell, Flex, PageContainer, Sidebar, Topbar, TopbarItem } from "@godxjp/ui/layout";
 import type { SidebarSectionProp } from "@godxjp/ui/layout";
 import {
@@ -74,6 +75,7 @@ const TOPBAR_COPY = {
 type DemoLocale = keyof typeof TOPBAR_COPY;
 
 export default function Demo() {
+  const { t } = useTranslation();
   const [activeId, setActiveId] = useState("dashboard");
   const [collapsed, setCollapsed] = useState(false);
   const [activeEntity, setActiveEntity] = useState<(typeof ENTITIES)[number]>(ENTITIES[0]);
@@ -225,6 +227,7 @@ export default function Demo() {
         breadcrumb={[{ label: "ホーム", to: "/" }, { label: "Topbar デモ" }]}
       >
         <Flex direction="col" gap="lg">
+          <Text>{t("topbarIdentityDocs.description")}</Text>
           <Card>
             <CardHeader>
               <CardTitle level={2}>現在の状態</CardTitle>

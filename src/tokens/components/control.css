@@ -414,6 +414,8 @@
    * concern, not a per-component one. */
   --control-affix-inset-inline-end: var(--space-2);
   --control-affix-action-size: 1.5rem;
+  /* Shared coarse-pointer floor; independent of density and the desktop glyph size. */
+  --control-affix-touch-target-size: var(--band-height-xl);
   --control-affix-action-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --control-affix-icon-size: var(--icon-size-md);
   /* Resting weight of an affix glyph — it must read as secondary until hovered/focused. */
@@ -937,7 +939,8 @@
     /* SearchInput's text stops at the clear ✕'s 44px TARGET, not at its 24px box (gh#1148): edge
      * inset + half the box (where the glyph's centre is) + half the target. */
     --search-input-end-padding: calc(
-      var(--search-input-edge-inset) + var(--touch-target-min) / 2 + var(--band-height-xl) / 2
+      var(--search-input-edge-inset) + var(--touch-target-min) / 2 +
+        var(--control-affix-touch-target-size) / 2
     );
   }
 }
