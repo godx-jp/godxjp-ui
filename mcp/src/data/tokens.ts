@@ -53,6 +53,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Raw BAND-HEIGHT scale — the vertical extent of a horizontal strip that content is centred in: 24 / 28 / 32 (md) / 36 (lg, default control and row band) / 44 (the WCAG 2.2 AA touch floor, rule #24) / 48 / 56 px. `height` split the same way `width` did: a control, a table row, a menu item, a sidebar nav row and the app-shell top bar are ONE decision sharing seven values, each declared by two to five tokens, while a chart plot's height, a transfer pane's min-height and a popover's max-height are container measures chosen per surface with almost no repeated value and stay literal. The case for this is that `PageContainer`'s chrome band had no height token while `AppShell`'s bar did, so nothing could be aligned to it — the axis had no name. NOT A SUBSTITUTE FOR --control-height-*: the control tier is a RUNTIME LADDER (it multiplies by --scaling, steps ±--space-1 for sm/lg/xs, and `@media (pointer: coarse)` lifts the whole thing to the 44px tap floor); this scale is the STATIC vocabulary the ladder is ANCHORED on (`--control-height-default: var(--band-height-lg)`), exactly as --font-size-base anchors the type scale. Point a band token at --control-height-* to \"reuse a step\" and you silently enrol it in density AND in the coarse-pointer growth — that is a geometry change, not a rename, and it is why --table-row-height-default reads var(--band-height-lg) instead. NOT --scaling-multiplied here: whether a band breathes with density is a per-token decision (--control-height opts in, --app-shell-bar-height deliberately does not).",
   },
   {
+    name: "--control-affix-touch-target-size",
+    category: "component",
+    tier: "component",
+    role: "Coarse-pointer input-affix target floor, default var(--band-height-xl) (44px). Shared by Input clear, DatePicker/TimePicker actions, PasswordInput toggle, Select/SearchSelect/Cascader/TreeSelect clear, SearchInput clear and NumberInput steppers. Inline actions occupy real layout space; Input measures the entire trailing slot for text padding, including adjacent actions and counters. NumberInput steppers sit side by side on coarse pointers. Fine-pointer geometry and glyph sizes are unchanged. Override this token on a field or theme; no targetSize prop is needed. --input-trailing-measured-size is internal measured layout, not a theme knob.",
+  },
+  {
     name: "--control-height-touch / --control-touch-gap / --button-touch-space-inline",
     category: "component",
     tier: "component",

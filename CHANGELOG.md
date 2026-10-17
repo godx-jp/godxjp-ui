@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - C04 accepts measured compact identity while continuing to flag unbounded phone account names. Other Topbar clusters retain their overflow policy; identity never moves into that menu.
 
 
+- Shared `--control-affix-touch-target-size` token (44px by default) for coarse-pointer input actions (#1371).
+
+### Fixed
+
+- Input clear, password reveal, date/time picker actions and select-family clear buttons now reserve a full touch target. Input measures trailing content so adjacent actions and counters cannot cover its text, including 200px fields and RTL. NumberInput touch steppers sit side by side as borderless ghost actions with independent targets contained inside the field border; SearchInput shares the same target token. Fine-pointer sizing is unchanged (#1371).
+
 ## [33.10.1] - 2026-10-17
 
 The first release of everything listed under 33.10.0 below: its main CI was red (a frozen test expectation) and the release gate stopped before tagging, so 33.10.0 never reached npm.

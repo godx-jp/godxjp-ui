@@ -1595,7 +1595,10 @@
 
   .ui-search-input-control {
     padding-inline-start: var(--search-input-start-padding);
-    padding-inline-end: var(--search-input-end-padding);
+    padding-inline-end: max(
+      var(--search-input-end-padding),
+      var(--search-input-affix-min-padding, 0px)
+    );
   }
 
   /*
@@ -1648,8 +1651,8 @@
     .ui-search-input-clear::after {
       content: "";
       position: absolute;
-      inset-block: min(0px, calc((100% - var(--control-height-default)) / 2));
-      inset-inline: min(0px, calc((100% - var(--control-height-default)) / 2));
+      inset-block: min(0px, calc((100% - var(--control-affix-touch-target-size)) / 2));
+      inset-inline: min(0px, calc((100% - var(--control-affix-touch-target-size)) / 2));
     }
   }
 
@@ -4812,5 +4815,134 @@
 
   .ui-segmented[data-size="touch"] > .ui-segmented-item[data-slot="segmented-item"] {
     min-inline-size: var(--control-height-touch);
+  }
+}
+
+/* gh#1371: touch actions occupy their target in layout. Inflating only ::after would
+ * make adjacent actions steal each other's taps. Glyphs and all fine-pointer rules stay put. */
+@layer components {
+  @media (pointer: coarse) {
+    .ui-control-inline-affix-action:not(.ui-badge-remove),
+    .ui-control-affix-action,
+    .ui-tree-select-clear,
+    .ui-password-input-toggle,
+    .ui-search-input-clear,
+    .ui-number-input-step {
+      min-inline-size: var(--control-affix-touch-target-size);
+      min-block-size: var(--control-affix-touch-target-size);
+      flex-shrink: 0;
+    }
+
+    /* Symmetric insets work in both directions; translate(-50%) did not centre in RTL. */
+    .ui-control-inline-affix-action:not(.ui-badge-remove)::after {
+      inset: 0;
+      translate: none;
+    }
+
+    .ui-input-affix-wrapper:has(.ui-control-inline-affix-action) > .ui-input {
+      min-block-size: var(--control-affix-touch-target-size);
+    }
+
+    .ui-input--trailing-affix {
+      padding-inline-end: max(
+        var(--control-inline-affix-space-inline-end),
+        calc(
+          var(--input-trailing-measured-size, var(--control-affix-touch-target-size)) +
+            var(--control-inline-affix-inset-inline) + var(--control-inline-affix-space-gap)
+        )
+      );
+    }
+
+    .ui-control-trigger-affixed {
+      min-block-size: var(--control-affix-touch-target-size);
+      padding-inline-end: max(
+        var(--control-trigger-space-inline-end),
+        calc(
+          var(--control-affix-touch-target-size) + var(--control-affix-inset-inline-end) +
+            var(--control-inline-affix-space-gap)
+        )
+      );
+    }
+
+    .ui-tree-select-trigger-affixed {
+      min-block-size: var(--control-affix-touch-target-size);
+      padding-inline-end: calc(
+        var(--control-affix-touch-target-size) + var(--space-3) +
+          var(--control-inline-affix-space-gap)
+      );
+    }
+
+    .ui-password-input-field {
+      min-block-size: var(--control-affix-touch-target-size);
+      padding-inline-end: calc(
+        var(--control-affix-touch-target-size) + var(--control-inline-affix-space-gap)
+      );
+    }
+
+    /* Two full-width targets fit in one band. Stacking them would require an 88px field. */
+    .ui-number-input-steppers {
+      flex-direction: row;
+      align-items: center;
+      inset-block: var(--control-border-width, var(--stroke-hairline));
+    }
+    /* Ghost paint inside the field; keep the fine-pointer outline buttons unchanged. */
+    .ui-number-input-step {
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .ui-number-input-step:hover {
+      background: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+    .ui-number-input-step::after {
+      inset-block: calc((100% - var(--control-affix-touch-target-size)) / 2) auto;
+      inset-inline: calc((100% - var(--control-affix-touch-target-size)) / 2) auto;
+      inline-size: var(--control-affix-touch-target-size);
+      block-size: var(--control-affix-touch-target-size);
+      translate: none;
+    }
+    .ui-search-input-control {
+      min-block-size: var(--control-affix-touch-target-size);
+      /* Derived on the field so a scoped target override cannot freeze at :root. */
+      --search-input-affix-min-padding: max(
+        var(--control-affix-touch-target-size),
+        calc(
+          var(--search-input-edge-inset) + var(--touch-target-min) / 2 +
+            var(--control-affix-touch-target-size) / 2
+        )
+      );
+    }
+    [data-slot="textarea-affix-wrapper"]:has(.ui-textarea-clear) > textarea {
+      min-block-size: calc(
+        var(--control-affix-touch-target-size) + 2 * var(--textarea-clear-inset-block-start)
+      );
+    }
+    .ui-search-input-clear {
+      inset-inline-end: max(
+        0px,
+        calc(
+          var(--search-input-edge-inset) + var(--touch-target-min) / 2 -
+            var(--control-affix-touch-target-size) / 2
+        )
+      );
+    }
+    .ui-number-input-field {
+      min-block-size: calc(
+        var(--control-affix-touch-target-size) + 2 *
+          var(--control-border-width, var(--stroke-hairline))
+      );
+      padding-inline-end: calc(2 * var(--control-affix-touch-target-size) + var(--space-2));
+    }
+    .ui-number-input:not([data-controls="off"]) [data-slot="number-input-suffix"] {
+      inset-inline-end: calc(2 * var(--control-affix-touch-target-size) + var(--space-2));
+    }
+    .ui-number-input:not([data-controls="off"]):has([data-slot="number-input-suffix"])
+      .ui-number-input-field {
+      padding-inline-end: calc(
+        2 * var(--control-affix-touch-target-size) + var(--space-2) +
+          var(--control-inline-affix-size)
+      );
+    }
   }
 }

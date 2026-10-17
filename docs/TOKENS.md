@@ -543,3 +543,14 @@ Load after library and preset styles. The original input colors restore the orig
   --space-section: var(--space-4);
 }
 ```
+
+### Input affix touch targets
+
+`--control-affix-touch-target-size` defaults to `var(--band-height-xl)` (44px) and applies
+only under `pointer: coarse`. It sizes the action box, not the glyph. Input reserves the measured
+width of its complete trailing slot plus the existing inset and gap, including two adjacent
+44px actions in a 200px field. `--input-trailing-measured-size` is runtime measurement, not a
+service override. `allowClear` still replaces the suffix; DatePicker and TimePicker still swap
+clear and open actions. NumberInput lays out its two steppers horizontally on coarse pointers.
+SearchInput retains its glyph centre while sharing this target token. Fine-pointer geometry is
+unchanged. Override the token on the field or in the service theme; no new prop is required.

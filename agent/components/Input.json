@@ -105,6 +105,7 @@
   "storyPath": "data-entry/input.tsx",
   "tagline": "Styled wrapper around native <input>; accepts all HTML input attributes. Pair with FormField for labelled fields.",
   "usage": [
+    "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged. The trailing slot is measured, so adjacent actions and counters reserve their combined width; allowClear still replaces trailingIcon/suffix.",
     "DO always wrap Input in FormField when the field needs a label, helper text, or validation error — FormField injects aria-describedby and aria-invalid onto Input automatically; never wire these attributes by hand.",
     "DO match the `id` prop on Input to the `id` prop on its parent FormField so that `htmlFor` linkage and the generated helper/error ids are consistent.",
     "DO use Input in controlled mode (`value` + `onChange`) for forms driven by Inertia's `useForm` or React state; uncontrolled usage (no `value`) is only acceptable for fire-and-forget inline edits where form state is not needed.",

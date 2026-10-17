@@ -1,4 +1,10 @@
 {
+  "affixTouchExamples": {
+    "title": "狭い入力欄とタッチ操作",
+    "description": "幅200pxでも、クリアと選択ボタンの領域は文字と重なりません。タッチ領域は44px、デスクトップの間隔は変わりません。",
+    "date": "日付",
+    "text": "管理番号"
+  },
   "textExamples": {
     "preservedText": "プレーンテキスト",
     "sampleText": "最初の行\n  字下げした行\n\n最後の行",

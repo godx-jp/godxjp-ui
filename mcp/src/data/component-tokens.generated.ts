@@ -1754,6 +1754,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--control-affix-touch-target-size",
+    "value": "var(--band-height-xl)",
+    "description": "Shared coarse-pointer floor; independent of density and the desktop glyph size."
+  },
+  {
     "name": "--control-affix-action-radius",
     "value": "initial",
     "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
@@ -2645,7 +2650,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--search-input-end-padding",
-    "value": "calc( var(--search-input-edge-inset) + var(--touch-target-min) / 2 + var(--band-height-xl) / 2 )",
+    "value": "calc( var(--search-input-edge-inset) + var(--touch-target-min) / 2 + var(--control-affix-touch-target-size) / 2 )",
     "description": "SearchInput's text stops at the clear ✕'s 44px TARGET, not at its 24px box (gh#1148): edge inset + half the box (where the glyph's centre is) + half the target."
   },
   {

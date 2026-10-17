@@ -135,7 +135,7 @@ export function SearchInput({
             // cap), so a theme that retunes that token still moves this padding (default: edge inset + 6ch, as before).
             showShortcut
               ? "!pe-[calc(var(--search-input-end-padding)_-_var(--control-icon-size)_-_var(--control-gap)_+_6ch)]"
-              : "!pe-[var(--search-input-end-padding)]",
+              : undefined,
             inputClassName,
           )}
           disabled={disabled}

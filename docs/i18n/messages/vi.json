@@ -1,4 +1,10 @@
 {
+  "affixTouchExamples": {
+    "title": "Ô nhập hẹp và thao tác chạm",
+    "description": "Ở chiều rộng 200px, nút xoá và nút chọn không đè lên văn bản. Vùng chạm là 44px; khoảng cách trên máy tính không đổi.",
+    "date": "Ngày",
+    "text": "Mã tham chiếu"
+  },
   "textExamples": {
     "preservedText": "Văn bản thuần",
     "sampleText": "Dòng đầu\n  Dòng thụt vào\n\nDòng cuối",
