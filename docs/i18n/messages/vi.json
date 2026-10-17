@@ -2256,5 +2256,68 @@
       "month": "Theo tháng",
       "year": "Theo năm"
     }
+  },
+  "routeTabsDocs": {
+    "title": "Cài đặt cửa hàng",
+    "subtitle": "Acme chi nhánh chính",
+    "navLabel": "Các mục cài đặt cửa hàng",
+    "routes": {
+      "cart-timeout": {
+        "label": "Thời gian giữ giỏ",
+        "summary": "Thời gian giữ giỏ hàng chưa thanh toán"
+      },
+      "customer": {
+        "label": "Khách hàng",
+        "summary": "Trường bắt buộc khi đăng ký và kiểm tra trùng lặp"
+      },
+      "line": {
+        "label": "LINE",
+        "summary": "Tài khoản chính thức và gửi tin nhắn"
+      },
+      "payment": {
+        "label": "Thanh toán",
+        "summary": "Phương thức thanh toán và phí"
+      },
+      "shipping": {
+        "label": "Vận chuyển",
+        "summary": "Đơn vị vận chuyển, phí và khung giờ giao"
+      },
+      "tax": {
+        "label": "Thuế suất",
+        "summary": "Thuế suất tiêu chuẩn và giảm"
+      },
+      "receipt": {
+        "label": "Hóa đơn",
+        "summary": "Người nhận, nội dung và cách xuất"
+      },
+      "notification": {
+        "label": "Thông báo",
+        "summary": "Người gửi và nội dung email đơn hàng, giao hàng"
+      },
+      "staff": {
+        "label": "Nhân viên",
+        "summary": "Mời nhân viên và phân quyền"
+      },
+      "store": {
+        "label": "Thông tin cửa hàng",
+        "summary": "Tên, địa chỉ và giờ mở cửa"
+      },
+      "coupon": {
+        "label": "Phiếu giảm giá",
+        "summary": "Điều kiện phát hành và quy tắc kết hợp"
+      },
+      "point": {
+        "label": "Điểm thưởng",
+        "summary": "Tỷ lệ tích điểm và hạn dùng"
+      },
+      "api": {
+        "label": "API",
+        "summary": "Khóa API và webhook"
+      },
+      "audit": {
+        "label": "Nhật ký kiểm toán",
+        "summary": "Lịch sử thay đổi cài đặt"
+      }
+    }
   }
 }

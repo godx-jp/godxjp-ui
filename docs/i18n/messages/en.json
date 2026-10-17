@@ -2263,5 +2263,68 @@
       "month": "Monthly",
       "year": "Yearly"
     }
+  },
+  "routeTabsDocs": {
+    "title": "Store settings",
+    "subtitle": "Acme Main Store",
+    "navLabel": "Store settings sections",
+    "routes": {
+      "cart-timeout": {
+        "label": "Cart timeout",
+        "summary": "How long an unpaid cart is held"
+      },
+      "customer": {
+        "label": "Customers",
+        "summary": "Required sign-up fields and duplicate checks"
+      },
+      "line": {
+        "label": "LINE",
+        "summary": "Official account and message delivery"
+      },
+      "payment": {
+        "label": "Payments",
+        "summary": "Accepted payment methods and fees"
+      },
+      "shipping": {
+        "label": "Shipping",
+        "summary": "Carriers, shipping fees and delivery slots"
+      },
+      "tax": {
+        "label": "Tax rates",
+        "summary": "Standard and reduced tax rates"
+      },
+      "receipt": {
+        "label": "Receipts",
+        "summary": "Addressee, purpose line and issuing method"
+      },
+      "notification": {
+        "label": "Notifications",
+        "summary": "Sender and wording of order and shipping emails"
+      },
+      "staff": {
+        "label": "Staff",
+        "summary": "Staff invitations and permissions"
+      },
+      "store": {
+        "label": "Store profile",
+        "summary": "Store name, address and opening hours"
+      },
+      "coupon": {
+        "label": "Coupons",
+        "summary": "Issuing conditions and stacking rules"
+      },
+      "point": {
+        "label": "Points",
+        "summary": "Earn rate and expiry"
+      },
+      "api": {
+        "label": "API",
+        "summary": "API keys and webhooks"
+      },
+      "audit": {
+        "label": "Audit log",
+        "summary": "History of settings changes"
+      }
+    }
   }
 }

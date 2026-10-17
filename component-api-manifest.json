@@ -16227,6 +16227,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "SidebarLinkComponentProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "listClassName",
           "origin": "owned",
           "required": false,

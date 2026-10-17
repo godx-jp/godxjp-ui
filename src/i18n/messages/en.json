@@ -558,7 +558,8 @@
     "tabs": {
       "addTab": "Add tab",
       "removeTab": "Close tab",
-      "moreTabs": "More tabs"
+      "moreTabs": "More tabs",
+      "routeNav": "Section navigation"
     },
     "steps": {
       "ariaLabel": "Progress",

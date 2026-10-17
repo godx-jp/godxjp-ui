@@ -36,18 +36,25 @@ export function isTabFullyVisible(scrollport: TabsScrollBox, trigger: TabsScroll
 /**
  * The trigger the strip must keep reachable: the focused trigger when the roving focus is inside
  * this list (manual activation can park focus off the selected tab), otherwise the active one.
+ *
+ * A route strip's triggers are links, not `role="tab"` (gh#1364), so a trigger is recognised by
+ * either mark: the tab role or the `data-slot="tabs-trigger"` hook both kinds carry.
  */
+const TAB_TRIGGER_SELECTOR = '[role="tab"], [data-slot="tabs-trigger"]';
+
 export function resolveTabScrollTarget(list: HTMLElement): HTMLElement | null {
   const focused = list.ownerDocument?.activeElement;
   if (
     focused instanceof HTMLElement &&
     focused !== list &&
     list.contains(focused) &&
-    focused.getAttribute("role") === "tab"
+    focused.matches(TAB_TRIGGER_SELECTOR)
   ) {
     return focused;
   }
-  return list.querySelector<HTMLElement>('[role="tab"][data-state="active"]');
+  return list.querySelector<HTMLElement>(
+    '[role="tab"][data-state="active"], [data-slot="tabs-trigger"][data-state="active"]',
+  );
 }
 
 /** `true` when the user has asked for reduced motion (falsy/unsupported environments say no). */

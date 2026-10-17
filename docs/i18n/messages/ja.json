@@ -2256,5 +2256,68 @@
       "month": "月次",
       "year": "年次"
     }
+  },
+  "routeTabsDocs": {
+    "title": "店舗設定",
+    "subtitle": "Acme 本店",
+    "navLabel": "店舗設定のセクション",
+    "routes": {
+      "cart-timeout": {
+        "label": "カート保持時間",
+        "summary": "未決済カートを保持する時間"
+      },
+      "customer": {
+        "label": "顧客",
+        "summary": "会員登録の必須項目と重複判定"
+      },
+      "line": {
+        "label": "LINE 連携",
+        "summary": "公式アカウントとメッセージ配信"
+      },
+      "payment": {
+        "label": "決済",
+        "summary": "利用できる決済手段と手数料"
+      },
+      "shipping": {
+        "label": "配送",
+        "summary": "配送業者・送料・お届け日時"
+      },
+      "tax": {
+        "label": "税率",
+        "summary": "標準税率と軽減税率の適用"
+      },
+      "receipt": {
+        "label": "領収書",
+        "summary": "宛名・但し書き・発行方法"
+      },
+      "notification": {
+        "label": "通知",
+        "summary": "注文・発送メールの差出人と文面"
+      },
+      "staff": {
+        "label": "スタッフ",
+        "summary": "スタッフ招待と権限"
+      },
+      "store": {
+        "label": "店舗情報",
+        "summary": "店舗名・所在地・営業時間"
+      },
+      "coupon": {
+        "label": "クーポン",
+        "summary": "発行条件と併用ルール"
+      },
+      "point": {
+        "label": "ポイント",
+        "summary": "付与率と有効期限"
+      },
+      "api": {
+        "label": "API",
+        "summary": "API キーと Webhook"
+      },
+      "audit": {
+        "label": "監査ログ",
+        "summary": "設定変更の履歴"
+      }
+    }
   }
 }
