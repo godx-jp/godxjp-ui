@@ -45,12 +45,23 @@ export function measureFocus() {
   const ringShadows = cs.boxShadow
     .split(/,(?![^()]*\))/)
     .filter((layer) => color && layer.includes(color) && /0px 0px 0px [\d.]+px/.test(layer));
-  const shadow = cs.outlineStyle !== "auto" && ringShadows.length > 0;
+  const blockShadows = cs.boxShadow
+    .split(/,(?![^()]*\))/)
+    .filter(
+      (layer) =>
+        layer.includes(color) && layer.includes("inset") && /0px -?[\d.]+px 0px 0px/.test(layer),
+    );
+  const blockBands = blockShadows.map((layer) =>
+    Number(layer.match(/0px (-?[\d.]+)px 0px 0px/)?.[1] || 0),
+  );
+  const shadow =
+    cs.outlineStyle !== "auto" && (ringShadows.length > 0 || blockBands.some((n) => n !== 0));
   const rect = el.getBoundingClientRect();
   const extent = outline
     ? Math.max(offset, -Math.min(rect.width, rect.height) / 2) + width
     : shadow
       ? Math.max(
+          0,
           ...ringShadows.map((layer) =>
             layer.includes("inset") ? 0 : Number(layer.match(/0px 0px 0px ([\d.]+)px/)?.[1] || 0),
           ),
@@ -162,7 +173,9 @@ export function measureFocus() {
     .split(/,(?![^()]*\))/)
     .find(
       (layer) =>
-        layer.includes("inset") && Number(layer.match(/0px 0px 0px ([\d.]+)px/)?.[1] || 0) > 0,
+        !layer.includes(color) &&
+        layer.includes("inset") &&
+        Number(layer.match(/0px 0px 0px ([\d.]+)px/)?.[1] || 0) > 0,
     );
   if (offset < 0 && backing) {
     const paint = backing.match(/(?:rgba?|oklch|color)\([^)]*\)/)?.[0];
@@ -179,7 +192,10 @@ export function measureFocus() {
     contrast = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
   // Test the inner edge against actual text ranges, not the element's padded box.
   const textOverlap = [];
-  if (outline && offset < 0 && el.matches('a,button,[role="tab"],[role="link"]')) {
+  if (
+    ((outline && offset < 0) || blockBands.length) &&
+    el.matches('a,button,[role="tab"],[role="link"]')
+  ) {
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       if (!node.textContent.trim()) continue;
@@ -222,10 +238,21 @@ export function measureFocus() {
           text.bottom > t + 0.75 &&
           text.top < b - 0.75;
         if (
-          intersects(inner.left - width, inner.top - width, inner.left, inner.bottom + width) ||
-          intersects(inner.right, inner.top - width, inner.right + width, inner.bottom + width) ||
-          intersects(inner.left, inner.top - width, inner.right, inner.top) ||
-          intersects(inner.left, inner.bottom, inner.right, inner.bottom + width)
+          (outline &&
+            (intersects(inner.left - width, inner.top - width, inner.left, inner.bottom + width) ||
+              intersects(
+                inner.right,
+                inner.top - width,
+                inner.right + width,
+                inner.bottom + width,
+              ) ||
+              intersects(inner.left, inner.top - width, inner.right, inner.top) ||
+              intersects(inner.left, inner.bottom, inner.right, inner.bottom + width))) ||
+          blockBands.some((n) =>
+            n > 0
+              ? intersects(rect.left, rect.top, rect.right, rect.top + n)
+              : intersects(rect.left, rect.bottom + n, rect.right, rect.bottom),
+          )
         )
           textOverlap.push({ text: node.textContent, ...text });
       }
@@ -234,7 +261,16 @@ export function measureFocus() {
   // At -4px the backing ends exactly at the ring's INNER edge: the adjacent
   // pixels there are the control fill, not the backing used by the old probe.
   const fill = parse(cs.backgroundColor);
-  const fillLum = lum(fill);
+  // An inset surface backing that extends BEYOND the outline's inner edge is
+  // the adjacent colour. A backing ending at that edge (the #1378 defect)
+  // still leaves the fill adjacent and must continue to fail.
+  const innerEdge = Math.max(0, -offset);
+  const innerBacking = cs.boxShadow.split(/,(?![^()]*\))/).find((layer) => {
+    const spread = Number(layer.match(/0px 0px 0px ([\d.]+)px/)?.[1] || 0);
+    return layer.includes("inset") && spread > innerEdge && !layer.includes(color);
+  });
+  const adjacent = innerBacking?.match(/rgba?\([^)]+\)/)?.[0];
+  const fillLum = lum(adjacent ? parse(adjacent) : fill);
   const filledContrast = (Math.max(a, fillLum) + 0.05) / (Math.min(a, fillLum) + 0.05);
   const filledContrastFailure =
     outline &&

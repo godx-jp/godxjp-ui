@@ -799,7 +799,6 @@
   }
 
   .ui-resizable-panel {
-    padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     min-height: 0;
     min-width: 0;
@@ -1714,7 +1713,6 @@
   }
 
   .ui-pagination-list {
-    padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     display: flex;
     min-width: 0;
@@ -2061,7 +2059,6 @@
   }
 
   .ui-legal-document-rail {
-    padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     display: flex;
     flex-direction: column;

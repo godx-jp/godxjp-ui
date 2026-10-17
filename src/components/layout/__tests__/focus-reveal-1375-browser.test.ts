@@ -1,6 +1,17 @@
 import { afterAll, beforeAll, expect, it } from "vitest";
 import { bootChromium, type ChromiumFixture } from "../../../test/chromium-fixture";
 
+// @ts-expect-error JavaScript browser probe shared with the static-preview audit.
+import { measureFocus } from "../../../../scripts/focus-ring-audit-1375.mjs";
+
+type FocusMeasurement = {
+  brand: boolean;
+  clipped: unknown[];
+  textOverlap: unknown[];
+  filledContrastFailure: boolean;
+};
+const measure = measureFocus as () => FocusMeasurement;
+
 let fixture: ChromiumFixture;
 beforeAll(async () => {
   fixture = await bootChromium(`
@@ -43,6 +54,11 @@ for (const width of [1280, 390])
           }
           expect(reached).toBe(true);
           await page.waitForTimeout(200);
+          const focus = await page.evaluate(measure);
+          expect(focus.brand).toBe(true);
+          expect(focus.clipped).toEqual([]);
+          expect(focus.textOverlap).toEqual([]);
+          expect(focus.filledContrastFailure).toBe(false);
           const geometry = await page.locator('[data-testid="target"]').evaluate((el) => {
             const port = el.closest(
               ".app-main,.ui-data-table-scroll,.ui-topbar,.ui-resizable-panel",

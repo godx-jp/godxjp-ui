@@ -1,4 +1,4 @@
 :root {
-  /* Room for the shared inset focus mark and gap, including handles without a grip. */
-  --resizable-handle-size: var(--space-2);
+  /* Separator layout thickness; focus paint must not reserve extra space. */
+  --resizable-handle-size: var(--control-border-width, var(--stroke-hairline));
 }

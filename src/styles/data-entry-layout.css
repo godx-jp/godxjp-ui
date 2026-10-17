@@ -784,7 +784,6 @@
    * keyboard-reachable (WCAG 2.1.1 / axe scrollable-region-focusable) even when every checkbox in
    * it is disabled. */
   .ui-branch-scope-picker-list {
-    padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     max-block-size: var(--branch-scope-picker-list-max-height);
     overflow-y: auto;

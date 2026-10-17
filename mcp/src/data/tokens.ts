@@ -242,7 +242,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--resizable-handle-size",
     category: "component",
     tier: "component",
-    role: "Resizable separator thickness (default var(--space-2), 8px). Keeps empty handles visible and provides room for the shared 2px inset focus mark and gap. Applies to the inline axis for a vertical separator and block axis for a horizontal separator.",
+    role: "Resizable separator layout thickness (default var(--control-border-width, var(--stroke-hairline)), 1px). Focus paint stays inside the separator without reserving ring space. Applies to the inline axis for a vertical separator and block axis for a horizontal separator.",
   },
   {
     name: "--focus-ring-inset-offset",

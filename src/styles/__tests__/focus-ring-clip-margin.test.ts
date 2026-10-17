@@ -188,6 +188,9 @@ describe("focus-ring clip margin", () => {
       /\.ui-scroll-area,[\s\S]*?--focus-ring-contained-offset:\s*var\(--focus-ring-inset-offset\)/,
     );
     const reviewed = new Set([
+      // Menu overflow needs scrollWidth for collapse measurement. Its padded
+      // controls carry inset focus (covered by the Topbar browser regressions).
+      'shell-layout.css::.ui-topbar[data-overflow="menu"]',
       'data-display-layout.css::.ui-scroll-area[data-orientation="vertical"]',
       'data-display-layout.css::.ui-scroll-area[data-orientation="horizontal"]',
       ...CONVERTED.map(([f, s]) => `${f}::${s}`),
