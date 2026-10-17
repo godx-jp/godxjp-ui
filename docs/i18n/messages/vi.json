@@ -2264,60 +2264,76 @@
     "routes": {
       "cart-timeout": {
         "label": "Thời gian giữ giỏ",
-        "summary": "Thời gian giữ giỏ hàng chưa thanh toán"
+        "summary": "Thời gian giữ giỏ hàng chưa thanh toán",
+        "configuration": "Giỏ hàng chưa thanh toán hết hạn sau ba mươi phút"
       },
       "customer": {
         "label": "Khách hàng",
-        "summary": "Trường bắt buộc khi đăng ký và kiểm tra trùng lặp"
+        "summary": "Trường bắt buộc khi đăng ký và kiểm tra trùng lặp",
+        "configuration": "Bắt buộc email khi đăng ký"
       },
       "line": {
         "label": "LINE",
-        "summary": "Tài khoản chính thức và gửi tin nhắn"
+        "summary": "Tài khoản chính thức và gửi tin nhắn",
+        "configuration": "Đã kết nối tài khoản chính thức"
       },
       "payment": {
         "label": "Thanh toán",
-        "summary": "Phương thức thanh toán và phí"
+        "summary": "Phương thức thanh toán và phí",
+        "configuration": "Thẻ tín dụng và chuyển khoản"
       },
       "shipping": {
         "label": "Vận chuyển",
-        "summary": "Đơn vị vận chuyển, phí và khung giờ giao"
+        "summary": "Đơn vị vận chuyển, phí và khung giờ giao",
+        "configuration": "Giao hàng tiêu chuẩn trong Nhật Bản"
       },
       "tax": {
         "label": "Thuế suất",
-        "summary": "Thuế suất tiêu chuẩn và giảm"
+        "summary": "Thuế suất tiêu chuẩn và giảm",
+        "configuration": "Áp dụng thuế suất theo sản phẩm"
       },
       "receipt": {
         "label": "Hóa đơn",
-        "summary": "Người nhận, nội dung và cách xuất"
+        "summary": "Người nhận, nội dung và cách xuất",
+        "configuration": "Gửi biên lai điện tử sau thanh toán"
       },
       "notification": {
         "label": "Thông báo",
-        "summary": "Người gửi và nội dung email đơn hàng, giao hàng"
+        "summary": "Người gửi và nội dung email đơn hàng, giao hàng",
+        "configuration": "Bật email xác nhận đơn hàng và giao hàng"
       },
       "staff": {
         "label": "Nhân viên",
-        "summary": "Mời nhân viên và phân quyền"
+        "summary": "Mời nhân viên và phân quyền",
+        "configuration": "Quyền truy cập theo vai trò được giao"
       },
       "store": {
         "label": "Thông tin cửa hàng",
-        "summary": "Tên, địa chỉ và giờ mở cửa"
+        "summary": "Tên, địa chỉ và giờ mở cửa",
+        "configuration": "Nhận đơn trực tuyến mỗi ngày"
       },
       "coupon": {
         "label": "Phiếu giảm giá",
-        "summary": "Điều kiện phát hành và quy tắc kết hợp"
+        "summary": "Điều kiện phát hành và quy tắc kết hợp",
+        "configuration": "Một mã giảm giá cho mỗi đơn hàng"
       },
       "point": {
         "label": "Điểm thưởng",
-        "summary": "Tỷ lệ tích điểm và hạn dùng"
+        "summary": "Tỷ lệ tích điểm và hạn dùng",
+        "configuration": "Điểm hết hạn sau một năm"
       },
       "api": {
         "label": "API",
-        "summary": "Khóa API và webhook"
+        "summary": "Khóa API và webhook",
+        "configuration": "Đã bật thông báo webhook"
       },
       "audit": {
         "label": "Nhật ký kiểm toán",
-        "summary": "Lịch sử thay đổi cài đặt"
+        "summary": "Lịch sử thay đổi cài đặt",
+        "configuration": "Ghi lại thay đổi và nhân viên thực hiện"
       }
-    }
+    },
+    "configuration": "Cấu hình hiện tại",
+    "scope": "Áp dụng cho"
   }
 }

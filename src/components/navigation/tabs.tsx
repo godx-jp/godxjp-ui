@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import {
+  syncActiveTabIntoView,
   useKeepActiveTabVisible,
   useTabsOverflowValues,
   useTabsScrollReporter,
@@ -192,7 +193,7 @@ const TABS_LIST_BASE_CLASS_NAME =
  * reasoning behind each step is recorded at `TabsTrigger`'s call site.
  */
 const TABS_TRIGGER_BASE_CLASS_NAME =
-  "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:flex-none group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none";
+  "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all data-[overflow-hidden]:transition-none data-[overflow-hidden]:opacity-0 data-[overflow-hidden]:pointer-events-none group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:flex-none group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none";
 
 const NO_LIST_LABEL: TabsFrame["listLabel"] = {};
 
@@ -766,6 +767,7 @@ export function Tabs({
       <TabsRouteStrip
         items={items}
         activeValue={activeValue}
+        overflow={overflow}
         orientation={resolvedOrientation}
         linkComponent={linkComponent}
         onTabClick={onTabClick}
@@ -993,6 +995,7 @@ type RouteTabLinkProps = Omit<SidebarLinkProp, "role"> & {
  * Keyboard is the browser's: Tab walks the links, Enter follows one.
  */
 function TabsRouteStrip({
+  overflow,
   items,
   activeValue,
   orientation,
@@ -1008,6 +1011,7 @@ function TabsRouteStrip({
   className,
   rootProps,
 }: {
+  overflow: TabsProp["overflow"];
   items: TabItemProp[];
   activeValue: string | undefined;
   orientation: TabsOrientation;
@@ -1027,6 +1031,15 @@ function TabsRouteStrip({
   const navRef = React.useRef<HTMLElement | null>(null);
   useKeepActiveTabVisible(navRef);
   useTabsScrollReporter(navRef, orientation === "vertical", onTabScroll);
+  const [hiddenValues, setHiddenValues] = React.useState<string[]>([]);
+  useTabsOverflowValues(
+    navRef,
+    overflow === "menu" ? items.map((item) => item.value) : undefined,
+    setHiddenValues,
+  );
+  const hiddenItems =
+    overflow === "menu" ? items.filter((item) => hiddenValues.includes(item.value)) : [];
+  const MenuLink = linkComponent ?? "a";
   const Link = (linkComponent ?? "a") as React.ElementType<RouteTabLinkProps>;
   const named = listLabel["aria-label"] !== undefined || listLabel["aria-labelledby"] !== undefined;
 
@@ -1038,7 +1051,14 @@ function TabsRouteStrip({
       data-orientation={orientation}
       aria-label={named ? listLabel["aria-label"] : t("navigation.tabs.routeNav")}
       aria-labelledby={listLabel["aria-labelledby"]}
-      className={cn(TABS_LIST_BASE_CLASS_NAME, listClassName)}
+      onFocus={() => syncActiveTabIntoView(navRef.current)}
+      className={cn(
+        TABS_LIST_BASE_CLASS_NAME,
+        listClassName,
+        // Keep the first/last link's focus ring inside the clipped inline scrollport too.
+        listVariant === "line" &&
+          "scroll-px-[var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width)))] px-[max(var(--tabs-list-line-space-inset),var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))]",
+      )}
     >
       {items.map((item) => {
         const active = item.value === activeValue;
@@ -1096,7 +1116,7 @@ function TabsRouteStrip({
 
   return (
     <div {...rootProps} className={className}>
-      {extraStart || extraEnd ? (
+      {extraStart || extraEnd || overflow === "menu" ? (
         <div data-slot="tabs-bar" className="ui-tabs-bar">
           {extraStart ? (
             <div data-slot="tabs-extra" data-side="start" className="ui-tabs-extra">
@@ -1104,6 +1124,33 @@ function TabsRouteStrip({
             </div>
           ) : null}
           {nav}
+          {hiddenItems.length > 0 ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className="ui-tabs-overflow"
+                aria-label={t("navigation.tabs.moreTabs")}
+              >
+                <MoreHorizontal className="ui-tabs-overflow-icon" aria-hidden="true" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent placement="bottomEnd">
+                {hiddenItems.map((item) => (
+                  <DropdownMenuItem
+                    key={item.value}
+                    asChild
+                    disabled={item.disabled || item.href === undefined}
+                  >
+                    <MenuLink
+                      className=""
+                      href={item.disabled ? undefined : item.href}
+                      aria-current={item.value === activeValue ? "page" : undefined}
+                    >
+                      {item.label}
+                    </MenuLink>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
           {extraEnd ? (
             <div data-slot="tabs-extra" data-side="end" className="ui-tabs-extra">
               {extraEnd}

@@ -151,7 +151,7 @@ export function useKeepActiveTabVisible(listRef: React.RefObject<HTMLElement | n
  */
 export function resolveHiddenTabValues(list: HTMLElement, values: readonly string[]): string[] {
   const scrollport = list.getBoundingClientRect();
-  const triggers = [...list.querySelectorAll<HTMLElement>('[role="tab"]')];
+  const triggers = [...list.querySelectorAll<HTMLElement>(TAB_TRIGGER_SELECTOR)];
   const hidden: string[] = [];
   triggers.forEach((trigger, index) => {
     const value = values[index];
@@ -233,7 +233,7 @@ export function useTabsScrollReporter(
  * removed) and the strip scrolling (the user swiping, or `useKeepActiveTabVisible` re-pinning a
  * trigger).
  *
- * `values` is joined into the effect key rather than passed as a dependency, so a consumer that
+ * `values` is serialized into the effect key rather than passed as a dependency, so a consumer that
  * rebuilds its `items` array on every render does not re-arm the observers on every render.
  *
  * The first measurement ALWAYS reports, even when nothing is hidden. Suppressing it looks harmless
@@ -250,17 +250,44 @@ export function useTabsOverflowValues(
     onChangeRef.current = onChange;
   });
 
-  const key = values === undefined ? null : values.join(" ");
-  React.useEffect(() => {
+  const key = values === undefined ? null : JSON.stringify(values);
+  React.useLayoutEffect(() => {
     if (key === null) return undefined;
     const list = listRef.current;
     if (!list) return undefined;
-    const all = key === "" ? [] : key.split(" ");
+    const all: string[] = JSON.parse(key);
 
     let last: string | null = null;
     const measure = () => {
-      const hidden = resolveHiddenTabValues(list, all);
-      const next = hidden.join(" ");
+      const triggers = [...list.querySelectorAll<HTMLElement>(TAB_TRIGGER_SELECTOR)];
+      const menu = list.parentElement?.querySelector<HTMLElement>(".ui-tabs-overflow");
+      const vertical = list.dataset.orientation === "vertical";
+      const style = getComputedStyle(list);
+      const boxes = triggers.map((trigger) => trigger.getBoundingClientRect());
+      const extent = boxes.length
+        ? Math.max(...boxes.map((box) => (vertical ? box.bottom : box.right))) -
+          Math.min(...boxes.map((box) => (vertical ? box.top : box.left)))
+        : 0;
+      const padding = vertical
+        ? parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
+        : parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const box = list.getBoundingClientRect();
+      const menuBox = menu?.getBoundingClientRect();
+      const gap =
+        menu && list.parentElement ? parseFloat(getComputedStyle(list.parentElement).gap) || 0 : 0;
+      // On expansion, account for the space released by removing the menu button.
+      // Otherwise a strip that fits without the button can keep that button forever.
+      const fitsWithoutMenu =
+        menuBox &&
+        extent + padding <=
+          (vertical ? box.height + menuBox.height : box.width + menuBox.width) + gap;
+      const hidden = fitsWithoutMenu ? [] : resolveHiddenTabValues(list, all);
+      // Retain geometry and keyboard reachability, but never paint half a label. Opacity
+      // (not display/visibility) lets native Tab and RAC roving focus scroll it into view.
+      triggers.forEach((trigger, index) => {
+        trigger.toggleAttribute("data-overflow-hidden", hidden.includes(all[index]));
+      });
+      const next = JSON.stringify(hidden);
       if (next === last) return;
       last = next;
       onChangeRef.current(hidden);
@@ -276,12 +303,20 @@ export function useTabsOverflowValues(
     if (typeof ResizeObserver !== "undefined") {
       const resizeObserver = new ResizeObserver(measure);
       resizeObserver.observe(list);
+      // Fonts, translated labels and counters can change the hidden set without resizing
+      // the scrollport. Watching only the list leaves a stale menu (including visible tabs).
+      list.querySelectorAll<HTMLElement>(TAB_TRIGGER_SELECTOR).forEach((trigger) => {
+        resizeObserver.observe(trigger);
+      });
       cleanups.push(() => {
         resizeObserver.disconnect();
       });
     }
     return () => {
       for (const cleanup of cleanups) cleanup();
+      list.querySelectorAll(TAB_TRIGGER_SELECTOR).forEach((trigger) => {
+        trigger.removeAttribute("data-overflow-hidden");
+      });
     };
   }, [key, listRef]);
 }

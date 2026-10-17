@@ -2271,60 +2271,76 @@
     "routes": {
       "cart-timeout": {
         "label": "Cart timeout",
-        "summary": "How long an unpaid cart is held"
+        "summary": "How long an unpaid cart is held",
+        "configuration": "Unpaid carts expire after thirty minutes"
       },
       "customer": {
         "label": "Customers",
-        "summary": "Required sign-up fields and duplicate checks"
+        "summary": "Required sign-up fields and duplicate checks",
+        "configuration": "Email address required at sign-up"
       },
       "line": {
         "label": "LINE",
-        "summary": "Official account and message delivery"
+        "summary": "Official account and message delivery",
+        "configuration": "Official account connected"
       },
       "payment": {
         "label": "Payments",
-        "summary": "Accepted payment methods and fees"
+        "summary": "Accepted payment methods and fees",
+        "configuration": "Credit card and bank transfer"
       },
       "shipping": {
         "label": "Shipping",
-        "summary": "Carriers, shipping fees and delivery slots"
+        "summary": "Carriers, shipping fees and delivery slots",
+        "configuration": "Standard delivery within Japan"
       },
       "tax": {
         "label": "Tax rates",
-        "summary": "Standard and reduced tax rates"
+        "summary": "Standard and reduced tax rates",
+        "configuration": "Standard and reduced rates applied by product"
       },
       "receipt": {
         "label": "Receipts",
-        "summary": "Addressee, purpose line and issuing method"
+        "summary": "Addressee, purpose line and issuing method",
+        "configuration": "Digital receipt sent after payment"
       },
       "notification": {
         "label": "Notifications",
-        "summary": "Sender and wording of order and shipping emails"
+        "summary": "Sender and wording of order and shipping emails",
+        "configuration": "Order and shipping confirmation emails enabled"
       },
       "staff": {
         "label": "Staff",
-        "summary": "Staff invitations and permissions"
+        "summary": "Staff invitations and permissions",
+        "configuration": "Access managed by assigned role"
       },
       "store": {
         "label": "Store profile",
-        "summary": "Store name, address and opening hours"
+        "summary": "Store name, address and opening hours",
+        "configuration": "Online orders accepted every day"
       },
       "coupon": {
         "label": "Coupons",
-        "summary": "Issuing conditions and stacking rules"
+        "summary": "Issuing conditions and stacking rules",
+        "configuration": "One coupon per order"
       },
       "point": {
         "label": "Points",
-        "summary": "Earn rate and expiry"
+        "summary": "Earn rate and expiry",
+        "configuration": "Points expire one year after purchase"
       },
       "api": {
         "label": "API",
-        "summary": "API keys and webhooks"
+        "summary": "API keys and webhooks",
+        "configuration": "Webhook notifications enabled"
       },
       "audit": {
         "label": "Audit log",
-        "summary": "History of settings changes"
+        "summary": "History of settings changes",
+        "configuration": "Settings changes recorded with staff identity"
       }
-    }
+    },
+    "configuration": "Current configuration",
+    "scope": "Applies to"
   }
 }

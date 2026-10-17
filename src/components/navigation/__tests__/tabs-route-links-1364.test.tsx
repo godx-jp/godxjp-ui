@@ -130,6 +130,64 @@ describe("Tabs route links (gh#1364)", () => {
     expect(clicked).toHaveBeenCalledTimes(1);
   });
 
+  it("scrolls a partially clipped route fully into view on keyboard focus", async () => {
+    const user = userEvent.setup();
+    strip();
+    const nav = screen.getByRole("navigation");
+    const link = screen.getByRole("link", { name: "Cart timeout" });
+    vi.spyOn(nav, "getBoundingClientRect").mockReturnValue({
+      left: 0,
+      right: 200,
+      top: 0,
+      bottom: 40,
+    } as DOMRect);
+    vi.spyOn(link, "getBoundingClientRect").mockReturnValue({
+      left: 150,
+      right: 250,
+      top: 0,
+      bottom: 40,
+    } as DOMRect);
+    const scroll = vi.spyOn(link, "scrollIntoView");
+    await user.tab();
+    expect(link).toHaveFocus();
+    expect(scroll).toHaveBeenCalledWith(
+      expect.objectContaining({ inline: "nearest", block: "nearest" }),
+    );
+    vi.restoreAllMocks();
+  });
+
+  it("overflow menu keeps hidden destinations as real links", async () => {
+    const user = userEvent.setup();
+    const { container } = strip({ overflow: "menu" });
+    const nav = screen.getByRole("navigation");
+    const box = (left: number, right: number) => ({
+      left,
+      right,
+      top: 0,
+      bottom: 32,
+      width: right - left,
+      height: 32,
+      x: left,
+      y: 0,
+      toJSON() {},
+    });
+    vi.spyOn(nav, "getBoundingClientRect").mockReturnValue(box(0, 200));
+    within(nav)
+      .getAllByRole("link")
+      .forEach((link, i) => {
+        vi.spyOn(link, "getBoundingClientRect").mockReturnValue(box(i * 100, (i + 1) * 100));
+      });
+    fireEvent.scroll(nav);
+    await user.click(container.querySelector<HTMLButtonElement>(".ui-tabs-overflow")!);
+    const link = screen.getByRole("menuitem", { name: "LINE" });
+    expect(link.tagName).toBe("A");
+    expect(link.getAttribute("href")).toBe("/settings/line");
+    expect(screen.getByRole("menuitem", { name: "Billing" }).hasAttribute("href")).toBe(false);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("menu")).toBeNull();
+    vi.restoreAllMocks();
+  });
+
   it("the keep-active-visible scroll target resolves to the active link", () => {
     const { container } = strip();
     const list = container.querySelector<HTMLElement>('[data-slot="tabs-list"]');

@@ -2264,60 +2264,76 @@
     "routes": {
       "cart-timeout": {
         "label": "カート保持時間",
-        "summary": "未決済カートを保持する時間"
+        "summary": "未決済カートを保持する時間",
+        "configuration": "未決済のカートは30分後に期限切れ"
       },
       "customer": {
         "label": "顧客",
-        "summary": "会員登録の必須項目と重複判定"
+        "summary": "会員登録の必須項目と重複判定",
+        "configuration": "会員登録時にメールアドレスが必須"
       },
       "line": {
         "label": "LINE 連携",
-        "summary": "公式アカウントとメッセージ配信"
+        "summary": "公式アカウントとメッセージ配信",
+        "configuration": "公式アカウント連携済み"
       },
       "payment": {
         "label": "決済",
-        "summary": "利用できる決済手段と手数料"
+        "summary": "利用できる決済手段と手数料",
+        "configuration": "クレジットカード・銀行振込"
       },
       "shipping": {
         "label": "配送",
-        "summary": "配送業者・送料・お届け日時"
+        "summary": "配送業者・送料・お届け日時",
+        "configuration": "日本国内への通常配送"
       },
       "tax": {
         "label": "税率",
-        "summary": "標準税率と軽減税率の適用"
+        "summary": "標準税率と軽減税率の適用",
+        "configuration": "商品ごとに標準税率・軽減税率を適用"
       },
       "receipt": {
         "label": "領収書",
-        "summary": "宛名・但し書き・発行方法"
+        "summary": "宛名・但し書き・発行方法",
+        "configuration": "決済後に電子領収書を送信"
       },
       "notification": {
         "label": "通知",
-        "summary": "注文・発送メールの差出人と文面"
+        "summary": "注文・発送メールの差出人と文面",
+        "configuration": "注文確認・発送通知メールを送信"
       },
       "staff": {
         "label": "スタッフ",
-        "summary": "スタッフ招待と権限"
+        "summary": "スタッフ招待と権限",
+        "configuration": "担当ロールに応じたアクセス権限"
       },
       "store": {
         "label": "店舗情報",
-        "summary": "店舗名・所在地・営業時間"
+        "summary": "店舗名・所在地・営業時間",
+        "configuration": "オンライン注文は毎日受付"
       },
       "coupon": {
         "label": "クーポン",
-        "summary": "発行条件と併用ルール"
+        "summary": "発行条件と併用ルール",
+        "configuration": "1回の注文につきクーポン1枚"
       },
       "point": {
         "label": "ポイント",
-        "summary": "付与率と有効期限"
+        "summary": "付与率と有効期限",
+        "configuration": "購入から1年後にポイント失効"
       },
       "api": {
         "label": "API",
-        "summary": "API キーと Webhook"
+        "summary": "API キーと Webhook",
+        "configuration": "Webhook通知を有効化"
       },
       "audit": {
         "label": "監査ログ",
-        "summary": "設定変更の履歴"
+        "summary": "設定変更の履歴",
+        "configuration": "変更内容と担当スタッフを記録"
       }
-    }
+    },
+    "configuration": "現在の設定",
+    "scope": "適用店舗"
   }
 }

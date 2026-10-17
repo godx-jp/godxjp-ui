@@ -376,8 +376,8 @@ export type TabItemProp = {
    * route (`value`) gets `aria-current="page"`, no `tabpanel` is rendered (`content` is ignored;
    * the route renders its own page), and a plain, modified or middle click is never intercepted,
    * so "open in new tab" works. An item without `href` (or a `disabled` one) is an inert anchor.
-   * A route strip always scrolls its overflow (`overflow="menu"` is not applied: a menu item
-   * cannot be a link the browser owns).
+   * A route strip always scrolls its overflow. `overflow="menu"` also exposes hidden routes
+   * as native links in a menu, preserving browser link actions.
    * Links go through `TabsProp.linkComponent` when set.
    */
   href?: string;
