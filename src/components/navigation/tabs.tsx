@@ -1080,7 +1080,7 @@ function TabsRouteStrip({
             className={cn(
               TABS_TRIGGER_BASE_CLASS_NAME,
               // `disabled:` never matches an anchor; an inert route reads `aria-disabled` instead.
-              "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+              "aria-disabled:pointer-events-none aria-disabled:opacity-[var(--disabled-opacity)]",
               triggerClassName,
             )}
             onClick={
