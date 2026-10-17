@@ -2,7 +2,7 @@
 
 :root {
   --table-row-height-compact: var(--band-height-sm);
-  --table-row-height-default: var(--band-height-md);
+  --table-row-height-default: var(--band-height-lg);
   --table-row-height-comfortable: var(--band-height-xl);
   --table-row-height: calc(var(--table-row-height-default) * var(--scaling));
   --table-cell-padding-y: var(--space-2);

@@ -375,7 +375,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-space-body-y",
-    "value": "var(--space-section-active)",
+    "value": "var(--space-6)",
     "description": "Gap between the header and the body, and the body's own top padding — the breathing room under a title before content begins."
   },
   {
@@ -400,7 +400,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-title-font-size",
-    "value": "var(--font-size-base)",
+    "value": "calc(var(--font-size-base) * var(--font-size-ratio))",
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
@@ -455,8 +455,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-shadow",
-    "value": "initial",
-    "description": "The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm elevation layer. Consumers can still flatten or lift cards through this knob. `initial`, NOT `var(--shadow-sm)` — a role-mirror knob written here binds at `<html>` and a scope below root that restates the elevation ramp can never reach it (docs/TOKEN-RESOLUTION.md §3). The default now resolves on `.ui-card`, so a `[data-tenant]`/`[data-theme]` region that sets `--shadow-sm` moves its own cards and nothing else. gh#880 item 7. default = var(--shadow-sm), resolved at the call site"
+    "value": "none",
+    "description": "Flat resting cards: the hairline defines the surface; elevation is reserved for overlays. Set --card-shadow to a shadow value for opt-in elevation, or to initial to restore the live --shadow-sm fallback at the call site (including scoped shadow ramps)."
   },
   {
     "name": "--card-glow",
@@ -985,7 +985,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-height-default",
-    "value": "var(--band-height-md)",
+    "value": "var(--band-height-lg)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1060,8 +1060,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--button-radius",
-    "value": "var(--radius-md, calc(var(--radius) / var(--radius-ratio)))",
-    "description": "Button corner radius — defaults to the button's historical `rounded-md` so nothing changes by default, but is its OWN knob so a service theme can retune the button radius INDEPENDENTLY of input/control radius (issue #124). The `var(--radius-md, …)` fallback is gh#888, NOT the same fix as this token's own freeze: Button reads this value through `rounded-[var(--button-radius)]`, a Tailwind utility (`@layer utilities`) that this package cannot give a fallback to from CSS — so this knob is deliberately NOT flipped to `initial` (that would still be unreachable from a scoped theme, gh#824 measured `--control-radius: 37px` on `:root` moving 0 buttons). What DOES need the fallback is the read of `--radius-md` itself: gh#888 unfreezes the φ tier globally, so without this fallback `--radius-md` resolves to nothing and `--button-radius` — and therefore every Button's corner — would go to 0. The formula keeps this declaration byte-identical to before gh#888 (still frozen at :root against --radius, same historical limitation)."
+    "value": "var(--radius)",
+    "description": "Match the default 6px field corner while retaining an independent Button knob. The utility consumes a concrete value, so this remains a root alias; scoped services override --button-radius directly. Pill and sharp shapes keep their own tokens."
   },
   {
     "name": "--button-default-background",
@@ -1120,7 +1120,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-shadow",
-    "value": "var(--shadow-xs)",
+    "value": "none",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1355,8 +1355,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-focus-ring-width",
-    "value": "initial",
-    "description": "Mark width for a BORDERED FIELD. This knob exists because a field is the one control that already owns a boundary, so it is the one place the mark could plausibly be dropped and the recoloured border left to carry the state — which is the established treatment for a bordered field: a primary border plus a translucent halo, nothing in between. It ships at the same step as `--focus-outline-weight`, the hairline stroke, so a field and a button carry the same weight. A gate asserts the two stay equal, because this token cannot literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is `weight × --focus-outline`, so a field's mark is still switched off with everything else — a knob that bypassed the switch would be a hole in it. If a service sets this, note the unit: the halo's spread is summed with a length in `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`. default = var(--stroke-hairline), resolved at the call site (gh#906)"
+    "value": "var(--stroke-md)",
+    "description": "Mark width for a BORDERED FIELD. This knob exists because a field is the one control that already owns a boundary, so it is the one place the mark could plausibly be dropped and the recoloured border left to carry the state — which is the established treatment for a bordered field: a primary border plus a translucent halo, nothing in between. It ships at the same step as `--focus-outline-weight`, the hairline stroke, so a field and a button carry the same weight. A gate asserts the two stay equal, because this token cannot literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is `weight × --focus-outline`, so a field's mark is still switched off with everything else — a knob that bypassed the switch would be a hole in it. If a service sets this, note the unit: the halo's spread is summed with a length in `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`. modern 2px mark, matching global focus"
   },
   {
     "name": "--rating-focus-ring-offset",
@@ -4226,12 +4226,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sheet-overlay-background",
     "value": "initial",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather than a private literal, so a service retints every backdrop with one --overlay-background while the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather than a private literal, so a service retints every backdrop with one --overlay-background while the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a modal Dialog. Defaults resolve to rgb(0 0 0 / 0.16) (sheet) and rgb(0 0 0 / 0.24) (dialog)."
   },
   {
     "name": "--sheet-overlay-alpha",
     "value": "40%",
-    "description": "A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886). The base is a finished colour that already carries `/0.5`, so `40%` composites to **0.20**, and a theme author who sets `62%` gets 0.31. That is the library-wide convention for a `--*-alpha` knob in the `color-mix(in srgb, <base> <alpha>, transparent)` share form — 100% means \"the base as authored\", 0% means gone — and it is deliberate: the calibrated depth lives ONCE in `--overlay-background` so a service retints every scrim with one line. Want an absolute opacity instead? Set `--sheet-overlay-background` directly; it wins outright. Pinned by src/styles/__tests__/overlay-alpha-share-886.test.ts. 40% of rgb(0 0 0 / 0.5) = rgb(0 0 0 / 0.20)"
+    "description": "A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886). The base is a finished colour that already carries `/0.4`, so `40%` composites to **0.16**, and a theme author who sets `62%` gets 0.248. That is the library-wide convention for a `--*-alpha` knob in the `color-mix(in srgb, <base> <alpha>, transparent)` share form — 100% means \"the base as authored\", 0% means gone — and it is deliberate: the calibrated depth lives ONCE in `--overlay-background` so a service retints every scrim with one line. Want an absolute opacity instead? Set `--sheet-overlay-background` directly; it wins outright. Pinned by src/styles/__tests__/overlay-alpha-share-886.test.ts. 40% of rgb(0 0 0 / 0.4) = rgb(0 0 0 / 0.16)"
   },
   {
     "name": "--sheet-overlay-backdrop-blur-size",
@@ -4341,7 +4341,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dialog-overlay-alpha",
     "value": "60%",
-    "description": "A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886) — the miss that was reported, because this knob carried no note of its own and `60%` reads as \"0.6\". The base is a finished colour with `/0.5` baked in, so the product is **0.30**, and `62%` gives 0.31 rather than the darker scrim that was asked for. See `--sheet-overlay-alpha` above for the convention and for the escape hatch: `--dialog-overlay-background` is an absolute colour and wins outright. Pinned by src/styles/__tests__/overlay-alpha-share-886.test.ts. 60% of rgb(0 0 0 / 0.5) = rgb(0 0 0 / 0.30)"
+    "description": "A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886) — the miss that was reported, because this knob carried no note of its own and `60%` reads as \"0.6\". The base is a finished colour with `/0.4` baked in, so the product is **0.24**, and `62%` gives 0.248 rather than the darker scrim that was asked for. See `--sheet-overlay-alpha` above for the convention and for the escape hatch: `--dialog-overlay-background` is an absolute colour and wins outright. Pinned by src/styles/__tests__/overlay-alpha-share-886.test.ts. 60% of rgb(0 0 0 / 0.4) = rgb(0 0 0 / 0.24)"
   },
   {
     "name": "--dialog-overlay-backdrop-blur-size",
@@ -4995,8 +4995,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--form-block-gap",
-    "value": "var(--space-4)",
-    "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN direct children (no Card framing). Unchanged from the historical value. 16px"
+    "value": "var(--space-6)",
+    "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN direct children (no Card framing). Modern block spacing is 24px. 24px"
   },
   {
     "name": "--form-feedback-icon-size",
@@ -5006,7 +5006,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--form-field-row-gap",
     "value": "var(--space-3)",
-    "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` composition every real Save-button form needs), so it holds at any DOM depth relative to Form. 12px"
+    "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` composition every real Save-button form needs), so it holds at any DOM depth relative to Form. 12px — shared with Descriptions"
   },
   {
     "name": "--form-grid-row-gap",
@@ -7301,12 +7301,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-shell-mobile-nav-background",
     "value": "initial",
-    "description": "Mobile-drawer scrim — `initial` so the shared --overlay-background default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding freezes at :root). Default = var(--app-shell-mobile-nav-alpha) of the global scrim, i.e. rgb(0 0 0 / 0.2) out of the box."
+    "description": "Mobile-drawer scrim — `initial` so the shared --overlay-background default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding freezes at :root). Default = var(--app-shell-mobile-nav-alpha) of the global scrim, i.e. rgb(0 0 0 / 0.16) out of the box."
   },
   {
     "name": "--app-shell-mobile-nav-alpha",
     "value": "40%",
-    "description": "Share of the global --overlay-background this drawer's scrim uses. A slide-in drawer washes the page more lightly than a modal dialog; keeping it a RATIO means a service retints the whole system with one --overlay-background and every overlay keeps its calibrated depth. A SHARE, not the resulting alpha (gh#886): the base already carries `/0.5`, so the product is 0.20. 40% of rgb(0 0 0 / 0.5) = rgb(0 0 0 / 0.20)"
+    "description": "Share of the global --overlay-background this drawer's scrim uses. A slide-in drawer washes the page more lightly than a modal dialog; keeping it a RATIO means a service retints the whole system with one --overlay-background and every overlay keeps its calibrated depth. A SHARE, not the resulting alpha (gh#886): the base already carries `/0.4`, so the product is 0.16. 40% of rgb(0 0 0 / 0.4) = rgb(0 0 0 / 0.16)"
   },
   {
     "name": "--app-shell-mobile-nav-inset",
@@ -8525,7 +8525,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-row-height-default",
-    "value": "var(--band-height-md)",
+    "value": "var(--band-height-lg)",
     "description": "Table component tokens: row height, cell padding."
   },
   {

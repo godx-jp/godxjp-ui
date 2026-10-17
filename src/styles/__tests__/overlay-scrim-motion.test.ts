@@ -54,7 +54,7 @@ const SCRIM_ROLE_EXCEPTIONS = [
 
 describe("shared overlay scrim (gh#215)", () => {
   it("still declares ONE shared scrim in the semantic tier", () => {
-    expect(semanticLayout).toContain("--overlay-background: rgb(0 0 0 / 0.5);");
+    expect(semanticLayout).toContain("--overlay-background: rgb(0 0 0 / 0.4);");
   });
 
   it("declares every per-overlay scrim knob `initial`, never a private literal", () => {

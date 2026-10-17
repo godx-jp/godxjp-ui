@@ -69,6 +69,7 @@ describe.each(THEMES)("--input as a control boundary ($theme)", ({ selector }) =
     // Filter bars and toolbars are --muted/--secondary panels.
     ["a muted panel", () => muted],
     ["a secondary panel", () => secondary],
+    ["an accent panel", () => accent],
     ["a striped table row", () => over(muted, background, STRIPE_ALPHA)],
     ["a hovered table row", () => over(accent, background, HOVER_ALPHA)],
   ])("clears 3:1 on %s", (_label, surface) => {

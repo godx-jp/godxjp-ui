@@ -2,7 +2,7 @@
 
 :root {
   --control-height-compact: var(--band-height-sm);
-  --control-height-default: var(--band-height-md);
+  --control-height-default: var(--band-height-lg);
   --control-height-comfortable: var(--band-height-xl);
   --control-padding-x-compact: var(--space-2);
   --control-padding-x-default: var(--space-3);
@@ -28,19 +28,10 @@
   --control-gap: var(--space-inline-sm);
   --control-gap-sm: var(--space-inline-xs);
   --control-radius: var(--radius);
-  /* Button corner radius — defaults to the button's historical `rounded-md` so nothing
-   * changes by default, but is its OWN knob so a service theme can retune the button
-   * radius INDEPENDENTLY of input/control radius (issue #124).
-   * The `var(--radius-md, …)` fallback is gh#888, NOT the same fix as this token's own freeze:
-   * Button reads this value through `rounded-[var(--button-radius)]`, a Tailwind utility
-   * (`@layer utilities`) that this package cannot give a fallback to from CSS — so this knob is
-   * deliberately NOT flipped to `initial` (that would still be unreachable from a scoped theme,
-   * gh#824 measured `--control-radius: 37px` on `:root` moving 0 buttons). What DOES need the
-   * fallback is the read of `--radius-md` itself: gh#888 unfreezes the φ tier globally, so without
-   * this fallback `--radius-md` resolves to nothing and `--button-radius` — and therefore every
-   * Button's corner — would go to 0. The formula keeps this declaration byte-identical to before
-   * gh#888 (still frozen at :root against --radius, same historical limitation). */
-  --button-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+  /* Match the default 6px field corner while retaining an independent Button knob.
+   * The utility consumes a concrete value, so this remains a root alias; scoped services
+   * override --button-radius directly. Pill and sharp shapes keep their own tokens. */
+  --button-radius: var(--radius);
   /* THE BUTTON'S OWN SURFACE — one knob per painted variant (gh#880, standard §1).
    *
    * Every variant painted a bare role (`hsl(var(--primary))`, `hsl(var(--background))`,
@@ -82,7 +73,7 @@
    * the historical look (font-size-base, 1px border, shadow-xs). */
   --control-font-size: var(--font-size-base);
   --control-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
-  --control-shadow: var(--shadow-xs);
+  --control-shadow: none;
   --control-icon-size: calc(var(--icon-size-md) * var(--scaling));
   --control-icon-size-sm: calc(var(--icon-size-sm) * var(--scaling));
 
@@ -224,7 +215,7 @@
    * If a service sets this, note the unit: the halo's spread is summed with a length in
    * `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole
    * box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`. */
-  --control-focus-ring-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
+  --control-focus-ring-width: var(--stroke-md); /* modern 2px mark, matching global focus */
 
   /* Outline-form gaps — marks where a radius-hugging ring would touch the glyph. */
   --rating-focus-ring-offset: 2px;

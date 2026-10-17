@@ -5,8 +5,8 @@
    * the linear `--space-*` scale (NOT the golden φ scale — golden ratio is for modular SIZE scales
    * like type/radius, not the spacing grid; mixing the two left an incoherent density rhythm). The
    * φ tokens remain available as an optional golden-layout utility, just not the spacing baseline. */
-  --space-page-x: var(--space-6); /* 24px — page gutter */
-  --space-page-y: var(--space-6); /* 24px */
+  --space-page-x: var(--space-8); /* 32px — page gutter */
+  --space-page-y: var(--space-8); /* 32px */
   --space-section: var(--space-4); /* 16px */
   /* THE MARKETING BAND RHYTHM (gh#831). `--space-section` is the gap BETWEEN the blocks of one
    * admin page; these two are the block-axis padding of a full-bleed marketing BAND and of the
@@ -110,7 +110,7 @@
    * `:root` binding would freeze and a scoped `[data-tenant]`/`.dark` override of this token would
    * never reach the overlay. Overlays are portaled, so a tenant scope must also sit on the portal
    * container (see docs/CUSTOMER-THEMING.md). */
-  --overlay-background: rgb(0 0 0 / 0.5);
+  --overlay-background: rgb(0 0 0 / 0.4);
 
   /* RECESSED SURFACE role (gh#399) — "the ground a card sits on", one step BEHIND `--card`.
    *

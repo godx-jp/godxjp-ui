@@ -83,9 +83,12 @@ describe.each(THEMES)("calendar grid line ($theme)", ({ selector }) => {
       const Y = luminance(c);
       return Y > 0.008856 ? 116 * Math.cbrt(Y) - 16 : 903.3 * Y;
     };
-    const before = lightness(over(rgb("input"), rgb("popover"), 0.5));
-    const after = lightness(line);
     const light = selector === ":root {";
+    // Freeze the actual 27.6.0 boundary, not today's accessibility-strengthened --input.
+    // The live-token contrast relationships above remain independently enforced.
+    const historicalInput = hslToRgb(light ? [30, 7, 53] : [45, 6, 47]);
+    const before = lightness(over(historicalInput, rgb("popover"), 0.5));
+    const after = lightness(line);
     expect(before).toBeCloseTo(light ? 78.71 : 33.07, 1);
     expect(after).toBeCloseTo(light ? 93.86 : 20.75, 1);
     // Either theme, the line moves TOWARD the surface it is drawn on — that is what "lighter"

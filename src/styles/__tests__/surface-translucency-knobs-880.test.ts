@@ -78,7 +78,9 @@ const BLUR_KNOBS: Array<[knob: string, tokenFile: string, sheet: string]> = [
 
 describe("gh#880 · a backdrop-blur knob on every floating surface", () => {
   it.each(BLUR_KNOBS)("%s ships OFF as `initial`", (knob, tokenFile) => {
-    expect(tokenFile).toMatch(new RegExp(`${knob}:\\s*initial;`));
+    expect(tokenFile).toMatch(
+      new RegExp(`${knob}:\\s*${knob === "--card-shadow" ? "none" : "initial"};`),
+    );
   });
 
   it.each(BLUR_KNOBS)("%s is read through blur() with NO literal fallback", (knob, _t, sheet) => {
@@ -165,7 +167,9 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
       ["--button-outline-background", "--background"],
       ["--button-secondary-background", "--secondary"],
     ]) {
-      expect(controlTokens).toMatch(new RegExp(`${knob}:\\s*initial;`));
+      expect(controlTokens).toMatch(
+        new RegExp(`${knob}:\\s*${knob === "--card-shadow" ? "none" : "initial"};`),
+      );
       /* The role default may now carry the knob's OPACITY companion (gh#901) and Prettier wraps
        * the longer value, so this tolerates both spellings and any line breaking. What it still
        * pins is the contract: the knob resolves its role default AT THE CALL SITE. */
@@ -316,7 +320,9 @@ describe("gh#880 · the frozen --*-shadow mirrors", () => {
   it.each(MIRRORS)(
     "%s is `initial` with the ramp at the call site",
     (knob, tokenFile, sheet, tier) => {
-      expect(tokenFile).toMatch(new RegExp(`${knob}:\\s*initial;`));
+      expect(tokenFile).toMatch(
+        new RegExp(`${knob}:\\s*${knob === "--card-shadow" ? "none" : "initial"};`),
+      );
       expect(code(tokenFile)).not.toMatch(new RegExp(`${knob}:\\s*var\\(${tier}\\);`));
       expect(sheet).toMatch(new RegExp(`var\\(${knob}, var\\(${tier}\\)\\)`));
     },

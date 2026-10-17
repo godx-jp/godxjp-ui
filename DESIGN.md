@@ -14,7 +14,7 @@ colors:
   muted: "#f4f3f0" # --muted / --secondary (quiet fills, zebra, hover)
   accent: "#ebe9e5" # --accent (hover/selected background, NOT a brand colour)
   hairline: "#eeedec" # --border (dividers, card edges, table rules)
-  control-edge: "#90877f" # --input (the edge of an input; 3:1 against canvas)
+  control-edge: "#8b8279" # --input (the edge of an input; 3:1 against canvas)
   success: "#68be8d" # --success  若竹
   warning: "#f8b500" # --warning  山吹
   info: "#4c6cb3" # --info     群青
@@ -28,9 +28,9 @@ colors:
 typography:
   family: "system stack (--font-sans-base); Noto Sans JP via opt-in @godxjp/ui/styles/fonts"
   base: 14px # --font-size-base; every step derives from it (ratio --font-size-ratio 1.1227)
-  page-title: { size: "~20px (--heading-h1)", weight: 500, lineHeight: 1.25 }
+  page-title: { size: "28px (--page-title-font-size); 21px compact", weight: 500, lineHeight: 1.25 }
   section-title: { size: "~17.6px (--heading-h2)", weight: 500, lineHeight: 1.25 }
-  card-title: { size: "14px (--card-title-font-size)", weight: 500, lineHeight: 1.25 }
+  card-title: { size: "~15.7px (--card-title-font-size)", weight: 500, lineHeight: 1.25 }
   body: { size: 14px, weight: 400, lineHeight: 1.7 } # --line-height-body
   caption: { size: "~12.5px (--font-size-xs)", weight: 400, lineHeight: 1.5 }
   weights: [400, 500, 700] # --font-weight-semibold is 500; there is no 600
@@ -46,13 +46,13 @@ spacing:
   scale: "--space-1..24 = 4px steps (4, 8, 12, 16, 20, 24, 32, 40, 48, 80, 96)"
   stack: { xs: 4px, sm: 8px, md: 16px, lg: 24px, xl: 40px } # Flex direction="col" gap
   inline: { xs: 4px, sm: 8px, md: 12px, lg: 16px, xl: 24px } # Flex direction="row" gap
-  page: { x: 24px, y: 24px } # --space-page-x / -y
+  page: { x: 32px, y: 32px } # --space-page-x / -y
   section: 16px # --space-section
 
 density:
   axis: "AppProvider density / PageContainer density / data-density"
   compact: "--scaling 0.92 (data-heavy tables)"
-  default: "--scaling 1 (control and row height 32px, --band-height-md)"
+  default: "--scaling 1 (control and row height 36px, --band-height-lg)"
   comfortable: "--scaling 1.08 (login, public, touch)"
   touch-floor: 44px # --band-height-xl
 
@@ -75,7 +75,7 @@ components:
     {
       background: "{colors.canvas}",
       border: "1px {colors.hairline}",
-      shadow: "--shadow-sm",
+      shadow: "none (--card-shadow)",
       radius: "{rounded.card}",
       padding: "--card-space-inset",
     }
@@ -117,7 +117,7 @@ Colour is scarce. Most of the screen is canvas, ink and hairline.
 
 ## Elevation
 
-- Flat. A card is canvas with a 1px `--border` hairline and a near-invisible `--shadow-sm`; nothing heavier at rest.
+- Flat. A card is canvas with a 1px `--border` hairline and no resting shadow; elevation is reserved for floating surfaces.
 - `--shadow-md`/`--shadow-lg` belong to things that float: popover, dropdown, dialog, sheet, toast.
 - No hover lift on data cards. Depth never signals importance.
 
@@ -217,3 +217,5 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 - Dark theme (`data-theme="dark"`) is supported; the exemplars are reviewed in light.
 - From 640px up, `BlockEditor` text does not share the keyline of the `Input` above it: measured at 768/1024/1280, input text 13px inside its frame, editor text 57px inside (Δ44px), because the ⋮⋮/+ handles (two 24px targets) sit in a start gutter inside the frame. Aligning the text would put the handles outside the field border, where a content column 24px from the viewport edge has no room. Below 640px the gutter collapses (C05). `--block-editor-gutter-inline-size` sets the gutter width; it cannot close the gap, because the handles live inside it. Accepted, not a defect to fix in the app.
 - On narrow screens the `PageContainer` title steps down (≈17.6px) while body h2 stays ≈15.7px — one step apart. A document page not built on `LegalDocumentShell` keeps only that step on phones; there is no intermediate page-title size yet.
+
+Modern refresh: field rows use 20px; form blocks 24px. Keyboard focus uses a 2px ring and 2px offset (navigation keeps its existing inset). Overlay scrim uses 40% black. Compact page gutters remain 16px. See docs/TOKENS.md for complete restoration.

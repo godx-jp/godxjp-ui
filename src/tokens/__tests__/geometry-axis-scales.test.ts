@@ -71,13 +71,15 @@ const BAND: ReadonlyArray<readonly [string, string, number]> = [
  * `.ui-scale-fixed` while the page is comfortable]. Captured from the CSS source before the
  * rewrite; a single moved value fails.
  */
+// Modern refresh deliberately advances default controls/rows one band and focus to 2px.
+// Compact/coarse and scale-fixed explicit steps retain their independent contracts.
 const FROZEN: Record<string, [string, string, string, string]> = {
   // The focus mark ships ON since gh#544 (`--focus-outline: 1`), so the PAINTED width is now the
   // weight itself — the hairline — and it must NOT follow density: a focus mark that thickens with
   // the comfortable scale is a different mark, and SC 1.4.11 is about contrast, not thickness.
-  "--focus-ring-width": ["1px", "1px", "1px", "1px"],
-  "--focus-ring-weight": ["1px", "1px", "1px", "1px"],
-  "--focus-outline-weight": ["1px", "1px", "1px", "1px"],
+  "--focus-ring-width": ["2px", "2px", "2px", "2px"],
+  "--focus-ring-weight": ["2px", "2px", "2px", "2px"],
+  "--focus-outline-weight": ["2px", "2px", "2px", "2px"],
   "--card-accent-rail-width": ["6px", "6px", "6px", "6px"],
   "--card-accent-perimeter-width": ["1px", "1px", "1px", "1px"],
   "--card-accent-perimeter-ring-width": ["1px", "1px", "1px", "1px"],
@@ -96,12 +98,12 @@ const FROZEN: Record<string, [string, string, string, string]> = {
   "--upload-dropzone-border-width": ["2px", "2px", "2px", "2px"],
   "--upload-avatar-border-width": ["2px", "2px", "2px", "2px"],
   "--control-height-compact": ["1.75rem", "1.75rem", "1.75rem", "1.75rem"],
-  "--control-height-default": ["2rem", "2rem", "2rem", "2rem"],
+  "--control-height-default": ["2.25rem", "2.25rem", "2.25rem", "2.25rem"],
   "--control-height-comfortable": ["2.75rem", "2.75rem", "2.75rem", "2.75rem"],
-  "--control-height": ["2rem", "1.84rem", "2.16rem", "2rem"],
-  "--control-height-sm": ["1.75rem", "1.61rem", "1.89rem", "1.75rem"],
-  "--control-height-lg": ["2.25rem", "2.07rem", "2.43rem", "2.25rem"],
-  "--control-height-xs": ["1.5rem", "1.38rem", "1.62rem", "1.5rem"],
+  "--control-height": ["2.25rem", "2.07rem", "2.43rem", "2.25rem"],
+  "--control-height-sm": ["2rem", "1.84rem", "2.16rem", "1.75rem"],
+  "--control-height-lg": ["2.5rem", "2.3rem", "2.7rem", "2.25rem"],
+  "--control-height-xs": ["1.75rem", "1.61rem", "1.89rem", "1.5rem"],
   // `--button-xs-height` is no longer pinned HERE because it no longer carries these values: it is
   // `initial` at :root and `.ui-button--xs` renders `var(--button-xs-height, var(--control-height-xs))`,
   // so the four numbers the xs Button renders are exactly the `--control-height-xs` row above. The
@@ -109,9 +111,9 @@ const FROZEN: Record<string, [string, string, string, string]> = {
   // a MobileShell ever reached it; mobile-shell-control-ladder.test.ts pins the fallback.
   "--input-file-button-height": ["1.75rem", "1.75rem", "1.75rem", "1.75rem"],
   "--table-row-height-compact": ["1.75rem", "1.75rem", "1.75rem", "1.75rem"],
-  "--table-row-height-default": ["2rem", "2rem", "2rem", "2rem"],
+  "--table-row-height-default": ["2.25rem", "2.25rem", "2.25rem", "2.25rem"],
   "--table-row-height-comfortable": ["2.75rem", "2.75rem", "2.75rem", "2.75rem"],
-  "--table-row-height": ["2rem", "1.84rem", "2.16rem", "2rem"],
+  "--table-row-height": ["2.25rem", "2.07rem", "2.43rem", "2.25rem"],
   "--table-action-collection-row-height-compact": ["1.75rem", "1.75rem", "1.75rem", "1.75rem"],
   "--sidebar-nav-item-height": ["2rem", "2rem", "2rem", "2rem"],
   "--org-switcher-trigger-height": ["2.75rem", "2.75rem", "2.75rem", "2.75rem"],
@@ -120,11 +122,11 @@ const FROZEN: Record<string, [string, string, string, string]> = {
   "--auth-account-summary-min-height": ["2.75rem", "2.75rem", "2.75rem", "2.75rem"],
   "--app-shell-bar-height": ["3rem", "3rem", "3rem", "3rem"],
   "--centered-shell-bar-height": ["3rem", "3rem", "3rem", "3rem"],
-  "--admin-collection-control-height": ["2rem", "2rem", "2rem", "2rem"],
-  "--admin-collection-table-row-height": ["2rem", "2rem", "2rem", "2rem"],
-  "--app-setting-picker-compact-control-height": ["1.75rem", "1.61rem", "1.89rem", "1.75rem"],
+  "--admin-collection-control-height": ["2.25rem", "2.25rem", "2.25rem", "2.25rem"],
+  "--admin-collection-table-row-height": ["2.25rem", "2.25rem", "2.25rem", "2.25rem"],
+  "--app-setting-picker-compact-control-height": ["2rem", "1.84rem", "2.16rem", "1.75rem"],
   "--card-service-launcher-icon-size": ["2.25rem", "2.07rem", "2.43rem", "2.25rem"],
-  "--card-service-launcher-cta-min-height": ["9rem", "8.28rem", "9.72rem", "9rem"],
+  "--card-service-launcher-cta-min-height": ["10rem", "9.2rem", "10.8rem", "9rem"],
   "--table-skeleton-line-height": ["1rem", "1rem", "1rem", "1rem"],
   "--activity-bar-height": ["0.25em", "0.25em", "0.25em", "0.25em"],
   "--table-skeleton-line-block-size": ["1rem", "1rem", "1rem", "1rem"],
@@ -200,7 +202,7 @@ describe("stroke scale — tier 1 (gh#324)", () => {
     expect(root.get("--focus-ring-weight")).toBe(
       "var(--focus-outline-weight, var(--stroke-hairline))",
     );
-    expect(root.get("--focus-outline-weight")).toBe("initial");
+    expect(root.get("--focus-outline-weight")).toBe("var(--stroke-md)");
     expect(CALL_SITE_DEFAULT.get("--focus-outline-weight")).toBe("--stroke-hairline");
   });
 });
@@ -234,10 +236,10 @@ describe("band-height scale — tier 1 (gh#324)", () => {
     // the static vocabulary it is anchored on. A band token pointed at `--control-height-*` would
     // silently enrol in both, which is a geometry change — `--table-row-height-default` is
     // `var(--band-height-md)` for exactly that reason, and the coarse column below is the proof.
-    expect(root.get("--control-height-default")).toBe("var(--band-height-md)");
-    expect(root.get("--table-row-height-default")).toBe("var(--band-height-md)");
+    expect(root.get("--control-height-default")).toBe("var(--band-height-lg)");
+    expect(root.get("--table-row-height-default")).toBe("var(--band-height-lg)");
     expect(resolveToken("--control-height-default", coarse)).toBe("2.75rem");
-    expect(resolveToken("--table-row-height-default", coarse)).toBe("2rem");
+    expect(resolveToken("--table-row-height-default", coarse)).toBe("2.25rem");
   });
 });
 

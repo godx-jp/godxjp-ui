@@ -103,9 +103,9 @@ function declarationNote(knob: string): string {
 
 /** The four the audit found. A FIFTH appearing is the signal that the convention needs restating. */
 const SHARE_OF_SHARE: Record<string, { baseAlpha: number; product?: number }> = {
-  "--dialog-overlay-alpha": { baseAlpha: 0.5, product: 0.3 },
-  "--sheet-overlay-alpha": { baseAlpha: 0.5, product: 0.2 },
-  "--app-shell-mobile-nav-alpha": { baseAlpha: 0.5, product: 0.2 },
+  "--dialog-overlay-alpha": { baseAlpha: 0.4, product: 0.24 },
+  "--sheet-overlay-alpha": { baseAlpha: 0.4, product: 0.16 },
+  "--app-shell-mobile-nav-alpha": { baseAlpha: 0.4, product: 0.16 },
   // The zebra switch ships at 0%, so its interesting number is the base alpha, not the product.
   "--table-row-striped-alpha": { baseAlpha: 0.8 },
 };
