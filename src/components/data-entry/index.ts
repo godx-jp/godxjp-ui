@@ -20,9 +20,13 @@ export { CheckboxGroup } from "./checkbox-group";
 export { Radio, RadioGroup, RadioItem, RadioGroupRoot } from "./radio";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
-export { TranslatableInput, TranslatableTextarea } from "./translatable-input";
+export { TranslatableField, TranslatableInput, TranslatableTextarea } from "./translatable-input";
 export type {
   TranslatableValue,
+  TranslatableLocaleProp,
+  TranslatableFieldProp,
+  TranslatableFieldProps,
+  TranslatableFieldControlProp,
   TranslatableInputProp,
   TranslatableInputProps,
   TranslatableTextareaProp,

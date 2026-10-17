@@ -2191,6 +2191,52 @@
     gap: var(--space-1);
   }
 
+  /* RICH TEXT EDITOR (@godxjp/block-editor, gh#1365): the HTML form field — the block editor's
+   * framed field and editing surface (`.ui-block-editor-content`, its tokens), with a fixed
+   * toolbar row on top instead of a gutter and a floating toolbar. */
+  .ui-rich-text-editor {
+    border: var(--stroke-hairline) solid hsl(var(--input));
+    border-radius: var(--control-radius, var(--radius));
+    background-color: hsl(var(--background));
+    transition: border-color var(--duration-fast);
+  }
+
+  .ui-rich-text-editor:focus-within {
+    border-color: hsl(var(--ring));
+  }
+
+  /* After :focus-within, so an invalid field keeps its edge while it holds the caret — the same
+   * edge `.ui-control-surface` paints for `status` / `aria-invalid`. */
+  .ui-rich-text-editor[data-status="error"] {
+    border-color: var(--control-status-error-border-color);
+  }
+
+  .ui-rich-text-editor[data-status="warning"] {
+    border-color: var(--control-status-warning-border-color, hsl(var(--text-warning)));
+  }
+
+  .ui-rich-text-editor[data-disabled] {
+    background-color: hsl(var(--muted));
+  }
+
+  .ui-rich-text-editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+  }
+
+  .ui-rich-text-editor-toolbar svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+  }
+
+  .ui-rich-text-editor .ui-block-editor-content {
+    padding: var(--block-editor-frame-padding);
+  }
+
   .ui-block-editor-wikilink {
     color: hsl(var(--prose-link-color, var(--text-link, var(--primary))));
     text-decoration-line: underline;
