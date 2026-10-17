@@ -279,8 +279,12 @@ export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
  */
 export type TranslatableValue = Partial<Record<string, string>>;
 
-/** The locale + value contract shared by {@link TranslatableInputProp} and {@link TranslatableTextareaProp}. */
-type TranslatableFieldProp = {
+/**
+ * The locale + value contract shared by every translatable control: {@link TranslatableInputProp},
+ * {@link TranslatableTextareaProp}, {@link TranslatableFieldProp} and `@godxjp/block-editor`'s
+ * `TranslatableRichText`.
+ */
+export type TranslatableLocaleProp = {
   /** Controlled per-locale values. */
   value?: ValueProp<TranslatableValue>;
   /** Uncontrolled initial per-locale values. */
@@ -311,19 +315,64 @@ type TranslatableFieldProp = {
   errors?: Partial<Record<string, ErrorProp>>;
 };
 
+/**
+ * What {@link TranslatableFieldProp}'s `renderControl` hands the ONE control in the panel: the
+ * active locale's text and setter, its `lang`, the resolved placeholder, and the field-a11y contract
+ * with the active locale's error folded in. Every prop the field does not own (`id`, `disabled`,
+ * `aria-describedby`, `rows`, …) is passed through as well.
+ */
+export type TranslatableFieldControlProp = FieldA11yProps &
+  Record<string, unknown> & {
+    /** The active locale's BCP-47 tag — the control's `lang`. */
+    lang: string;
+    /** The active locale's text (`""` when empty). */
+    value: string;
+    /** Writes the active locale's text; the field reports the whole map. */
+    onValueChange: (text: string) => void;
+    /** The fallback locale's text while the active locale is empty, else the field's `placeholder`. */
+    placeholder?: string;
+    /** `"error"` while the active locale has an error. */
+    status?: ControlStatusProp;
+  };
+
+/**
+ * @see TranslatableField — the locale-tab engine behind every translatable control (gh#1336,
+ * gh#1365): the tab strip, the per-locale error marks, the fallback placeholder and the FormField
+ * error report, around ONE control the caller renders. `TranslatableInput`, `TranslatableTextarea`
+ * and `@godxjp/block-editor`'s `TranslatableRichText` are this field around an `Input`, a
+ * `Textarea` and a `RichTextEditor`.
+ */
+export type TranslatableFieldProp = TranslatableLocaleProp &
+  FieldA11yProps & {
+    /** Renders the one control in the panel from the active locale's props. */
+    renderControl: (control: TranslatableFieldControlProp) => React.ReactNode;
+    /**
+     * Turns the fallback locale's stored text into the plain text an EMPTY locale shows as its
+     * placeholder — HTML to its text, for a rich-text control. Default: the text as stored.
+     */
+    toPlaceholder?: (fallbackText: string) => string;
+    /** The control's tier; the tab strip uses the Tabs `sm` tier (`md` for an `lg` field). */
+    size?: SizeProp;
+    /** Shown while the active locale is empty and there is no fallback text to show. */
+    placeholder?: PlaceholderProp;
+    status?: ControlStatusProp;
+    id?: IdProp;
+    className?: ClassNameProp;
+  };
+
 /** @see TranslatableInput — one `Input` holding a value per locale, switched by locale tabs. */
 export type TranslatableInputProp = Omit<
   InputProp,
   "value" | "defaultValue" | "onValueChange" | "lang"
 > &
-  TranslatableFieldProp;
+  TranslatableLocaleProp;
 
 /** @see TranslatableTextarea — the `Textarea` counterpart of {@link TranslatableInputProp}. */
 export type TranslatableTextareaProp = Omit<
   TextareaProp,
   "value" | "defaultValue" | "onValueChange" | "lang"
 > &
-  TranslatableFieldProp;
+  TranslatableLocaleProp;
 
 /**
  * @see NumberInput — localized numeric spinbutton (composes `Input` + step `Button`s).

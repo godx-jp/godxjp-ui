@@ -10,6 +10,8 @@ import { Tabs, TabsList, TabsTrigger } from "../navigation/tabs";
 import { Input } from "./input";
 import { Textarea } from "./textarea";
 import type {
+  TranslatableFieldControlProp,
+  TranslatableFieldProp,
   TranslatableInputProp,
   TranslatableTextareaProp,
   TranslatableValue,
@@ -17,6 +19,10 @@ import type {
 
 export type {
   TranslatableValue,
+  TranslatableLocaleProp,
+  TranslatableFieldProp,
+  TranslatableFieldProp as TranslatableFieldProps,
+  TranslatableFieldControlProp,
   TranslatableInputProp,
   TranslatableInputProp as TranslatableInputProps,
   TranslatableTextareaProp,
@@ -37,12 +43,12 @@ function localeName(code: string, uiLocale: string): string {
 /** `id` → a fragment safe inside another id, whatever the tag spells (`zh-Hant-TW`). */
 const idPart = (code: string) => code.replace(/[^A-Za-z0-9_-]/g, "_");
 
-type FieldProps = (TranslatableInputProp | TranslatableTextareaProp) & {
-  kind: "input" | "textarea";
-};
-
 /**
- * The shared engine of {@link TranslatableInput} and {@link TranslatableTextarea}.
+ * TranslatableField — the shared engine of {@link TranslatableInput}, {@link TranslatableTextarea}
+ * and `@godxjp/block-editor`'s `TranslatableRichText` (gh#1365): it owns the locale list, the active
+ * tab, the per-locale map, the fallback placeholder, the error marks and the FormField error report,
+ * and renders the ONE control in the panel through `renderControl`. Every prop it does not own is
+ * passed through to that control.
  *
  * WHY THE SWITCHER IS `Tabs`, NOT `Segmented`. The WAI-ARIA APG radio group is for CHOOSING A VALUE
  * — a segmented control's choice is form state and is submitted with the form. The locale here is
@@ -51,13 +57,14 @@ type FieldProps = (TranslatableInputProp | TranslatableTextareaProp) & {
  * tab controls one tabpanel — so a screen reader announces "English, tab, 2 of 3" and the region
  * that follows, instead of offering a "language" question the form never asks.
  *
- * ONE CONTROL, NOT ONE PER LOCALE. The panel holds a single `Input`/`Textarea` whose value, `lang`
- * and placeholder follow the active tab (`Tabs.controls` points the tab at it, gh#1021). Swapping
+ * ONE CONTROL, NOT ONE PER LOCALE. The panel holds a single control whose value, `lang` and
+ * placeholder follow the active tab (`Tabs.controls` points the tab at it, gh#1021). Swapping
  * elements per tab would hand the forwarded `ref`, the FormField `id` and an IME composition to a
  * new node on every switch.
  */
-function TranslatableField({
-  kind,
+export function TranslatableField({
+  renderControl,
+  toPlaceholder,
   value: valueProp,
   defaultValue,
   onValueChange,
@@ -68,9 +75,8 @@ function TranslatableField({
   size,
   placeholder,
   className,
-  forwardedRef,
   ...rest
-}: FieldProps & { forwardedRef: React.ForwardedRef<HTMLInputElement | HTMLTextAreaElement> }) {
+}: TranslatableFieldProp) {
   const { t, locale: uiLocale, fallbackLocale: appFallbackLocale } = useTranslation();
   // The app's content languages (AppProvider `contentLocales`, gh#1347), source language first.
   const appContentLocales = useOptionalAppContext()?.contentLocales;
@@ -133,13 +139,13 @@ function TranslatableField({
   const ariaLabel = rest["aria-label"];
   const showOwnError = hasActiveError && !insideFormField;
 
-  const controlProps = {
+  const controlProps: TranslatableFieldControlProp = {
     ...rest,
-    ref: forwardedRef,
+    size,
     lang: active,
     value: activeText,
     onValueChange: handleText,
-    placeholder: fallbackText ? fallbackText : placeholder,
+    placeholder: fallbackText ? (toPlaceholder?.(fallbackText) ?? fallbackText) : placeholder,
     // The control is named by the field AND the locale it holds: "商品名 English".
     "aria-labelledby": labelledBy ? `${labelledBy} ${localeNameId}` : undefined,
     "aria-invalid": hasActiveError ? true : rest["aria-invalid"],
@@ -208,17 +214,7 @@ function TranslatableField({
         aria-labelledby={tabId(active)}
         className="ui-translatable-field-panel"
       >
-        {kind === "input" ? (
-          <Input
-            {...(controlProps as unknown as React.ComponentProps<typeof Input>)}
-            size={size as TranslatableInputProp["size"]}
-          />
-        ) : (
-          <Textarea
-            {...(controlProps as unknown as React.ComponentProps<typeof Textarea>)}
-            size={size as TranslatableTextareaProp["size"]}
-          />
-        )}
+        {renderControl(controlProps)}
       </div>
       {showOwnError ? (
         <p id={ownErrorId} role="alert" className="ui-form-field-note text-error-strong text-xs">
@@ -240,8 +236,9 @@ export const TranslatableInput = React.forwardRef<HTMLInputElement, Translatable
   (props, ref) => (
     <TranslatableField
       {...props}
-      kind="input"
-      forwardedRef={ref as React.ForwardedRef<HTMLInputElement | HTMLTextAreaElement>}
+      renderControl={(control) => (
+        <Input {...(control as unknown as React.ComponentProps<typeof Input>)} ref={ref} />
+      )}
     />
   ),
 );
@@ -252,8 +249,9 @@ export const TranslatableTextarea = React.forwardRef<HTMLTextAreaElement, Transl
   (props, ref) => (
     <TranslatableField
       {...props}
-      kind="textarea"
-      forwardedRef={ref as React.ForwardedRef<HTMLInputElement | HTMLTextAreaElement>}
+      renderControl={(control) => (
+        <Textarea {...(control as unknown as React.ComponentProps<typeof Textarea>)} ref={ref} />
+      )}
     />
   ),
 );

@@ -137,7 +137,9 @@ describe("card face — antd genCardStyle, all four placements", () => {
   it("a card tab is CONTENT-WIDTH, not an equal share of the strip", () => {
     // antd: `nav-list { display: flex }`, no `flex-grow` on the tab. The base trigger here is
     // `flex-1`, so the card branch has to cancel it or every tab stretches.
-    const branch = tabsSource.slice(tabsSource.indexOf("              card &&"));
+    // Anchored on the hoisted trigger class list (gh#1364), not on an indentation depth.
+    const trigger = tabsSource.slice(tabsSource.indexOf("const itemTriggerClassName"));
+    const branch = trigger.slice(trigger.indexOf("card &&"));
     expect(branch.slice(0, 400)).toContain("flex-none");
   });
 

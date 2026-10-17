@@ -8,8 +8,26 @@ import { Button } from "@godxjp/ui/general";
 
 import { useLabel } from "./labels";
 
-const MARKS = ["bold", "italic", "strike", "code"] as const;
+export const MARKS = ["bold", "italic", "strike", "code"] as const;
 type MarkName = (typeof MARKS)[number];
+
+/** The marks on at the caret / selection, in toolbar order. */
+export const activeMarks = (editor: Editor): MarkName[] =>
+  MARKS.filter((mark) => editor.isActive(mark));
+
+/** Toggles every mark whose pressed state differs between `current` and `next`, as one step. */
+export function applyMarks(editor: Editor, current: readonly string[], next: readonly string[]) {
+  const chain = editor.chain().focus();
+  for (const mark of MARKS) {
+    const on = next.includes(mark);
+    if (on === current.includes(mark)) continue;
+    if (mark === "bold") chain.toggleBold();
+    else if (mark === "italic") chain.toggleItalic();
+    else if (mark === "strike") chain.toggleStrike();
+    else chain.toggleCode();
+  }
+  chain.run();
+}
 
 /**
  * The floating format toolbar over a text selection: the kit ToggleGroup (a WAI-ARIA toolbar of
@@ -21,23 +39,12 @@ export function FormatToolbar({ editor, onEditLink }: { editor: Editor; onEditLi
   const state = useEditorState({
     editor,
     selector: ({ editor: e }) => ({
-      marks: MARKS.filter((mark) => e.isActive(mark)),
+      marks: activeMarks(e),
       link: (e.getAttributes("link").href as string | undefined) ?? null,
     }),
   });
 
-  const toggle = (next: string[]) => {
-    const chain = editor.chain().focus();
-    for (const mark of MARKS) {
-      const on = next.includes(mark);
-      if (on === state.marks.includes(mark)) continue;
-      if (mark === "bold") chain.toggleBold();
-      else if (mark === "italic") chain.toggleItalic();
-      else if (mark === "strike") chain.toggleStrike();
-      else chain.toggleCode();
-    }
-    chain.run();
-  };
+  const toggle = (next: string[]) => applyMarks(editor, state.marks, next);
 
   return (
     <BubbleMenu

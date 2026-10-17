@@ -1,7 +1,7 @@
 {
   "counts": {
     "anti-ai-tells": 35,
-    "components": 166,
+    "components": 169,
     "patterns": 28,
     "rules": 44,
     "tokens": 2235,
@@ -16,7 +16,7 @@
     },
     {
       "file": "components-index.json",
-      "note": "50 KB — name + group + tagline for all 166. FETCH THIS FIRST, then fetch only the components you chose.",
+      "note": "52 KB — name + group + tagline for all 169. FETCH THIS FIRST, then fetch only the components you chose.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json"
     },
     {
@@ -54,7 +54,7 @@
   "note": "Pin to the tag that matches the @godxjp/ui version you installed. A catalog newer than your package describes props you do not have; older, and it hides props you do.",
   "read": {
     "live": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json",
-    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v33.8.1/agent/index.json"
+    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v33.9.1/agent/index.json"
   },
   "source": "mcp/src/data — the same data @godxjp/ui-mcp serves — plus the foundation and semantic token tiers, read from src/tokens/*.css",
   "start": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md",
@@ -68,5 +68,5 @@
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",
     "semantic": "named roles that follow the seeds — --ring, --text-link, --overlay-background"
   },
-  "version": "33.8.1"
+  "version": "33.9.1"
 }

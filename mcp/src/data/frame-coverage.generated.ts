@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 287,
-    dimensionCells: 4018,
+    exports: 288,
+    dimensionCells: 4032,
     covered: 89,
-    untested: 2211,
-    notApplicable: 1718,
+    untested: 2220,
+    notApplicable: 1723,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -371,6 +371,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"TopbarItem","group":"layout","frame":"docs/layout/topbar-item.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"TopbarSearch","group":"layout","frame":"docs/layout/topbar-search.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states","variants"],"notApplicable":["density","shapes","sizes","tones"]},
   {"name":"Transfer","group":"data-entry","frame":"docs/data-entry/transfer.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
+  {"name":"TranslatableField","group":"data-entry","frame":"docs/data-entry/translatable-input.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes"],"notApplicable":["density","shapes","states","tones","variants"]},
   {"name":"TranslatableInput","group":"data-entry","frame":"docs/data-entry/translatable-input.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","variants"],"notApplicable":["density","shapes","states","tones"]},
   {"name":"TranslatableTextarea","group":"data-entry","frame":"docs/data-entry/translatable-input.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","variants"],"notApplicable":["density","shapes","states","tones"]},
   {"name":"Tree","group":"data-display","frame":"docs/data-display/tree.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states","variants"],"notApplicable":["density","shapes","tones"]},

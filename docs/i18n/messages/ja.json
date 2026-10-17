@@ -2256,5 +2256,109 @@
       "month": "月次",
       "year": "年次"
     }
+  },
+  "routeTabsDocs": {
+    "title": "店舗設定",
+    "subtitle": "Acme 本店",
+    "navLabel": "店舗設定のセクション",
+    "routes": {
+      "cart-timeout": {
+        "label": "カート保持時間",
+        "summary": "未決済カートを保持する時間",
+        "configuration": "未決済のカートは30分後に期限切れ"
+      },
+      "customer": {
+        "label": "顧客",
+        "summary": "会員登録の必須項目と重複判定",
+        "configuration": "会員登録時にメールアドレスが必須"
+      },
+      "line": {
+        "label": "LINE 連携",
+        "summary": "公式アカウントとメッセージ配信",
+        "configuration": "公式アカウント連携済み"
+      },
+      "payment": {
+        "label": "決済",
+        "summary": "利用できる決済手段と手数料",
+        "configuration": "クレジットカード・銀行振込"
+      },
+      "shipping": {
+        "label": "配送",
+        "summary": "配送業者・送料・お届け日時",
+        "configuration": "日本国内への通常配送"
+      },
+      "tax": {
+        "label": "税率",
+        "summary": "標準税率と軽減税率の適用",
+        "configuration": "商品ごとに標準税率・軽減税率を適用"
+      },
+      "receipt": {
+        "label": "領収書",
+        "summary": "宛名・但し書き・発行方法",
+        "configuration": "決済後に電子領収書を送信"
+      },
+      "notification": {
+        "label": "通知",
+        "summary": "注文・発送メールの差出人と文面",
+        "configuration": "注文確認・発送通知メールを送信"
+      },
+      "staff": {
+        "label": "スタッフ",
+        "summary": "スタッフ招待と権限",
+        "configuration": "担当ロールに応じたアクセス権限"
+      },
+      "store": {
+        "label": "店舗情報",
+        "summary": "店舗名・所在地・営業時間",
+        "configuration": "オンライン注文は毎日受付"
+      },
+      "coupon": {
+        "label": "クーポン",
+        "summary": "発行条件と併用ルール",
+        "configuration": "1回の注文につきクーポン1枚"
+      },
+      "point": {
+        "label": "ポイント",
+        "summary": "付与率と有効期限",
+        "configuration": "購入から1年後にポイント失効"
+      },
+      "api": {
+        "label": "API",
+        "summary": "API キーと Webhook",
+        "configuration": "Webhook通知を有効化"
+      },
+      "audit": {
+        "label": "監査ログ",
+        "summary": "設定変更の履歴",
+        "configuration": "変更内容と担当スタッフを記録"
+      }
+    },
+    "configuration": "現在の設定",
+    "scope": "適用店舗"
+  },
+  "richTextEditorDocs": {
+    "subtitle": "@godxjp/block-editor · HTML の値 · 固定ツールバー · 言語ごとのタブ",
+    "edit": {
+      "title": "商品を編集",
+      "description": "説明は言語ごとに HTML で保存されます。言語タブで編集する言語を切り替えます。未入力の言語には日本語の本文がヒントとして表示されます。",
+      "name": "商品名",
+      "descriptionLabel": "説明",
+      "helper": "各言語の商品説明を入力してください。未翻訳の欄には日本語の説明がヒントとして表示されます。",
+      "required": "この言語の説明を入力してください",
+      "save": "保存",
+      "saved": "このプレビュー内で変更を保存しました。"
+    },
+    "saved": {
+      "title": "保存される値",
+      "description": "言語ごとのサニタイズ済み HTML。p・br・h1〜h3・ul・ol・li・blockquote・strong・em・s・code のみで、属性は番号付きリストの開始番号（整数の start）だけです。"
+    },
+    "single": {
+      "title": "厨房向けメモ",
+      "description": "翻訳しない HTML 項目には RichTextEditor を単独で使います。",
+      "label": "仕込みメモ",
+      "placeholder": "仕込みの手順を入力",
+      "readOnly": "仕込みメモ（読み取り専用）",
+      "disabled": "仕込みメモ（無効）"
+    }
   }
 }
