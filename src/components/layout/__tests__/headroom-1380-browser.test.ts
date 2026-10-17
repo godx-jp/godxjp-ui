@@ -1,4 +1,3 @@
-import { mkdirSync, writeFileSync } from "node:fs";
 import { afterAll, beforeAll, expect, it } from "vitest";
 import { bootChromium, type ChromiumFixture } from "../../../test/chromium-fixture";
 
@@ -17,57 +16,55 @@ createRoot(document.getElementById('root')).render(<AppProvider defaultLocale="e
 <LegalDocumentShell title="Terms" sections={[{id:'intro',title:'Introduction',content:<p>Service terms.</p>},{id:'privacy',title:'Privacy',content:<p>Privacy terms.</p>}]}/>
 </PageContainer></AppShell></AppProvider>);
 `;
-let golden: ChromiumFixture, current: ChromiumFixture;
-const evidence: unknown[] = [];
+// Font-independent content geometry of v33.11.2 (gh#1380), measured once from that release's
+// stylesheet. Only x positions, widths and the card→header offset are pinned: they come from
+// gutters and borders alone, so they hold on every OS font stack (heights/y would not). A
+// headroom regression (padding on app-main, the table scroller or the rail) moves exactly these.
+const GOLDEN = {
+  1280: { title: 32, card: [32, 1216], thead: [33, 1214], toc: [32, 240] },
+  390: { title: 16, card: [16, 358], thead: [17, 640], toc: [16] },
+} as const;
+let current: ChromiumFixture;
 beforeAll(async () => {
-  golden = await bootChromium(entry, "v33.11.2");
-  current = await bootChromium(entry, process.env.GEOMETRY_CSS_REVISION);
+  current = await bootChromium(entry);
 }, 180000);
 afterAll(async () => {
-  mkdirSync("codex-shots", { recursive: true });
-  writeFileSync(
-    `codex-shots/geometry-1380-${process.env.GEOMETRY_CSS_REVISION || "after"}.json`,
-    JSON.stringify(evidence, null, 2),
-  );
   await current?.close();
-  await golden?.close();
 });
-for (const width of [1280, 390])
-  it(`matches v33.11.2 content geometry at ${width}`, async () => {
-    const measurements = [];
-    for (const fixture of [golden, current]) {
-      const page = await fixture.open("", { width, height: 900 });
-      try {
-        await page.locator(".ui-legal-document-toc-link").last().waitFor();
-        await page.evaluate(() => document.fonts.ready);
-        await page.screenshot({
-          path: `codex-shots/geometry-1380-${fixture === golden ? "golden" : process.env.GEOMETRY_CSS_REVISION || "after"}-${width}.png`,
-        });
-        measurements.push(
-          await page.evaluate(() => {
-            const selectors = [
-              ".ui-page-header",
-              ".ui-page-title",
-              '[data-slot="card"]',
-              "thead tr",
-              ".ui-legal-document-toc-link",
-            ];
-            return Object.fromEntries(
-              selectors.map((selector) => [
-                selector,
-                [...document.querySelectorAll(selector)].map((el) => {
-                  const { x, y, width, height } = el.getBoundingClientRect();
-                  return { x, y, width, height };
-                }),
-              ]),
-            );
-          }),
-        );
-      } finally {
-        await page.close();
+for (const width of [1280, 390] as const)
+  it(`keeps v33.11.2 content geometry at ${width}`, async () => {
+    const page = await current.open("", { width, height: 900 });
+    try {
+      await page.locator(".ui-legal-document-toc-link").last().waitFor();
+      await page.evaluate(() => document.fonts.ready);
+      const m = await page.evaluate(() => {
+        const box = (el: Element) => el.getBoundingClientRect();
+        const title = box(document.querySelector(".ui-page-title")!);
+        const card = box(document.querySelector('[data-slot="card"]')!);
+        const thead = box(document.querySelector("thead tr")!);
+        const toc = [...document.querySelectorAll(".ui-legal-document-toc-link")].map(box);
+        return {
+          title: title.x,
+          card: [card.x, card.width],
+          thead: [thead.x, thead.width],
+          theadOffset: thead.y - card.y,
+          toc: toc.map((r) => [r.x, r.width]),
+        };
+      });
+      const g = GOLDEN[width];
+      expect(m.title).toBeCloseTo(g.title, 1);
+      expect(m.card[0]).toBeCloseTo(g.card[0], 1);
+      expect(m.card[1]).toBeCloseTo(g.card[1], 1);
+      expect(m.thead[0]).toBeCloseTo(g.thead[0], 1);
+      expect(m.thead[1]).toBeCloseTo(g.thead[1], 1);
+      // The table header row sits directly under the card's 1px border: no block headroom.
+      expect(m.theadOffset).toBeCloseTo(1, 1);
+      expect(m.toc.length).toBe(2);
+      for (const [x, w] of m.toc) {
+        expect(x).toBeCloseTo(g.toc[0], 1);
+        if (g.toc.length > 1) expect(w).toBeCloseTo(g.toc[1]!, 1);
       }
+    } finally {
+      await page.close();
     }
-    evidence.push({ width, golden: measurements[0], actual: measurements[1] });
-    for (const boxes of Object.values(measurements[0]!)) expect(boxes.length).toBeGreaterThan(0);
-    expect(measurements[1]).toEqual(measurements[0]);
   });

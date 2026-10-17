@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.4] - 2026-10-17
+
+The first release of everything listed under 33.12.3 below: its main CI was red (the new geometry test read the v33.11.2 stylesheet through a git tag the CI checkout does not have) and the release gate stopped before tagging, so 33.12.3 never reached npm.
+
+### Fixed
+
+- **The #1380 geometry test no longer depends on git history.** It pins v33.11.2's font-independent content geometry (x positions, widths, the card → table-header offset) as constants, so it runs on any checkout and any OS font stack, and it no longer writes evidence files into the working tree.
+
 ## [33.12.3] - 2026-10-17
 
 ### Fixed
