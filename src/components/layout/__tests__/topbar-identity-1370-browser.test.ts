@@ -144,7 +144,8 @@ describe("Topbar compact identity priority (Chromium, gh#1370)", () => {
         await page.keyboard.press("Enter");
         await page.getByRole("menuitem", { name: "Profile" }).waitFor();
         await page.keyboard.press("Escape");
-        expect(await account.evaluate((el) => el === document.activeElement)).toBe(true);
+        // Focus returns to the trigger when the menu finishes closing (a frame later).
+        await expect.poll(() => account.evaluate((el) => el === document.activeElement)).toBe(true);
         expect(errors).toEqual([]);
         await page.close();
       });
@@ -222,7 +223,7 @@ describe("Topbar compact identity priority (Chromium, gh#1370)", () => {
     await trigger.click();
     await page.getByRole("searchbox").fill("coffee");
     await page.keyboard.press("Escape");
-    expect(await trigger.evaluate((el) => el === document.activeElement)).toBe(true);
+    await expect.poll(() => trigger.evaluate((el) => el === document.activeElement)).toBe(true);
     expect((await measure(page)).label).toBeGreaterThan(10);
     expect(errors).toEqual([]);
     await page.close();
