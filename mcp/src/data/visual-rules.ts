@@ -125,9 +125,9 @@ export const VISUAL_RULES: VisualRule[] = [
     severity: "warn",
     category: "a11y",
     standard:
-      "compact (<600px) bar shows no account name (repo-chosen threshold); trigger name per WCAG 2.2 SC 4.1.2",
+      "compact (<600px) bar shows avatar-only or measured bounded shared-device identity (repo-chosen threshold); trigger name per WCAG 2.2 SC 4.1.2",
     kind: "probe",
-    fix: "Below 600px the bar shows the avatar only: hide the account name (it belongs in the opened account menu) and make the avatar the trigger — accessible name + aria-haspopup, opening identity and account controls.",
+    fix: "Shared-device exception: Topbar identity with TopbarItem truncate keeps a bounded, ellipsised name and full title/accessible name. Otherwise below 600px the bar shows the avatar only: hide the account name (it belongs in the opened account menu) and make the avatar the trigger — accessible name + aria-haspopup, opening identity and account controls.",
   },
   {
     id: "c05-compact-editor-inset",

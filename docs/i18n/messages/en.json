@@ -2367,5 +2367,17 @@
       "readOnly": "Prep note (read only)",
       "disabled": "Prep note (disabled)"
     }
+  },
+  "topbarIdentityDocs": {
+    "title": "Shared-device identity",
+    "name": "Demo Barista",
+    "longName": "Alexandra Catherine Montgomery",
+    "org": "Central branch",
+    "otherOrg": "International operations division",
+    "navigation": "Navigation",
+    "navigationOpen": "Navigation is open.",
+    "switchUser": "Switch demo user",
+    "description": "The signed-in name stays visible. Topbar identity reserves at most 40% of the bar; TopbarItem truncate ellipsises only the name and keeps the full name in its title and accessible text.",
+    "policy": "Primary controls keep their minimum sizes. At extreme widths the other clusters follow scroll, clip or menu; identity stays outside. Use TopbarSearch for search. Do not combine identity with labelHideBelow, hideBelow or iconHideFrom. Theme knobs: --topbar-identity-max-inline-size and --topbar-identity-min-text-inline-size."
   }
 }

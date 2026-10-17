@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Topbar `identity` slot and TopbarItem `truncate` for a bounded, always-visible shared-device name, including full title/accessibility text and RTL support (#1370).
+- Theme knobs `--topbar-identity-max-inline-size` (40%) and `--topbar-identity-min-text-inline-size` (3ch).
+
+### Fixed
+- Truncated TopbarItem names and organization labels retain their own text direction, preserving the beginning of Latin, Japanese, Vietnamese, and Arabic text in LTR and RTL bars (#1370).
+
+### Changed
+- C04 accepts measured compact identity while continuing to flag unbounded phone account names. Other Topbar clusters retain their overflow policy; identity never moves into that menu.
+
+
 ## [33.10.1] - 2026-10-17
 
 The first release of everything listed under 33.10.0 below: its main CI was red (a frozen test expectation) and the release gate stopped before tagging, so 33.10.0 never reached npm.

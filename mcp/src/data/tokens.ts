@@ -874,6 +874,12 @@ export const TOKENS: TokenEntry[] = [
     role: "AppShell top-bar chrome — `--app-shell-bar-inset` is the bar's inline padding, `--app-shell-bar-inset-compact` the tighter value below the compact step, `--app-shell-bar-gap` the gap between the bar's direct children (default --space-3). ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS: the bar sits in the SAME grid track as `.app-main`, directly above the page, so its first control and the page title are on one vertical edge. The two insets used to name their own values (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and nothing reconciled them — measured in Chromium, the bar's content started at x=80 and the page header's at x=88 (1512px), and because the two sides stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even constant (8px at 1512, 12px between 720 and 900, 4px below 720), which a consumer cannot correct by hand. The page gutter now OWNS the axis and these knobs read it: `--app-shell-bar-inset: var(--space-page-x)` (32px after the modern refresh), `--app-shell-bar-inset-compact: var(--space-page-compact-x)` (16px), stepping at the PAGE's `(max-width: 720px)`, not the shell's 900px restructure. GEOMETRY MOVED — the bar's inline padding went 16px → 24px (12px → 16px compact, and 12px → 24px between 720 and 900); the page did not move. The NAMES are unchanged, so a theme that already sets either knob keeps working, and a bar that genuinely wants to sit tighter than its page still has its own. Height stays `--app-shell-bar-height` (3rem) at EVERY width, and it is also the owner of the chrome BAND-HEIGHT axis — see `--page-header-min-block-size-chrome`.",
   },
   {
+    name: "--topbar-identity-{max-inline-size,min-text-inline-size}",
+    category: "component",
+    tier: "component",
+    role: "Opt-in Topbar identity share cap and minimum visible name measure. Primary control floors remain intact; only other clusters scroll/fold. The C04 compact-identity policy permits at most 40% of the bar; increasing the theme cap beyond that requires independent design review.",
+  },
+  {
     name: "--topbar-{height,inset,gap}",
     category: "component",
     tier: "component",

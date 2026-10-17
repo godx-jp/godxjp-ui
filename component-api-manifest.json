@@ -18296,6 +18296,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "identity",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "overflow",
           "origin": "owned",
           "required": false,
@@ -18397,6 +18405,14 @@
           "required": false,
           "type": "BreakpointProp | undefined",
           "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "truncate",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

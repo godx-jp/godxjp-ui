@@ -5,6 +5,12 @@
   "name": "TopbarItem",
   "props": [
     {
+      "defaultValue": "false",
+      "description": "Same vocabulary as Text.truncate: allow the cell to shrink to its control minimum and ellipse only its label. Keeps the icon; overrides labelHideBelow. Full text remains accessible; string children supply title automatically (including asChild). Pass title explicitly for rich children. Use in Topbar identity for a bounded always-visible shared-device name; default phone accounts still use labelHideBelow=\"sm\".",
+      "name": "truncate",
+      "type": "boolean"
+    },
+    {
       "description": "The cell's leading glyph, placed in a slot the CELL sizes (--topbar-icon-size). Prefer it over passing the glyph as a child whenever the glyph is wrapped: `.ui-topbar-item > svg` only reaches a DIRECT child, so a glyph inside a `<Flex hideBelow>` renders at lucide's intrinsic 24px — measured at 390px on an org-switcher cell, 1.5x the cell's step (gh#712). Decorative by convention (the cell's name comes from its own aria-label); pass <Icon as={…} size=… label=… /> here when the glyph needs a name or a different step. Rendered with asChild too (gh#726): the sized slot is inserted INSIDE the child element, ahead of that element's own children, and the child element (e.g. an <a>) stays the rendered root with every merged prop.",
       "name": "icon",
       "type": "ReactNode"
@@ -65,7 +71,7 @@
   "storyPath": "layout/topbar-item.tsx",
   "tagline": "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
   "usage": [
-    "DO collapse the account cell to its avatar on a phone (ADR C04): `<DropdownMenuTrigger asChild><TopbarItem aria-label={t(\"account\")} icon={<Avatar>…</Avatar>} labelHideBelow=\"sm\">{name}</TopbarItem></DropdownMenuTrigger>` and repeat the name (and email) in the menu's `DropdownMenuLabel`. Measured at 390px: without `labelHideBelow` the name took 74px of a 390px bar; with it the cell is 48x47, named, and the name is read in the open menu.",
+    "By default collapse the account cell to its avatar on a phone (ADR C04); shared devices opt into Topbar identity + TopbarItem truncate instead: `<DropdownMenuTrigger asChild><TopbarItem aria-label={t(\"account\")} icon={<Avatar>…</Avatar>} labelHideBelow=\"sm\">{name}</TopbarItem></DropdownMenuTrigger>` and repeat the name (and email) in the menu's `DropdownMenuLabel`. Measured at 390px: without `labelHideBelow` the name took 74px of a 390px bar; with it the cell is 48x47, named, and the name is read in the open menu.",
     "DO put bar triggers in a Topbar slot as TopbarItem, not as Button — that is the difference between chrome and a control that landed in the chrome.",
     "DO wrap it in a DropdownMenuTrigger asChild for a user menu; the open state lights the cell via [data-state=open].",
     "DON'T set a height: the cell stretches to whatever the bar is (AppShell's grid row, --topbar-height, or the coarse-pointer bar), which is why there is no height knob.",

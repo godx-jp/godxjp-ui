@@ -453,9 +453,9 @@ export const PROBE_RULES = [
     id: "c04-compact-account-name",
     severity: "warn",
     category: "a11y",
-    standard: `compact (<600px) bar shows no account name (${RC}); trigger name per WCAG 2.2 SC 4.1.2`,
+    standard: `compact (<600px) bar shows avatar-only or measured bounded shared-device identity (${RC}); trigger name per WCAG 2.2 SC 4.1.2`,
     kind: "probe",
-    fix: "Below 600px the bar shows the avatar only: hide the account name (it belongs in the opened account menu) and make the avatar the trigger — accessible name + aria-haspopup, opening identity and account controls.",
+    fix: "Shared-device exception: Topbar identity with TopbarItem truncate keeps a bounded, ellipsised name and full title/accessible name. Otherwise below 600px the bar shows the avatar only: hide the account name (it belongs in the opened account menu) and make the avatar the trigger — accessible name + aria-haspopup, opening identity and account controls.",
   },
   {
     id: "c05-compact-editor-inset",
@@ -733,7 +733,7 @@ export function evaluateProbes(raw, { url, viewport }) {
   // C04 — compact account access without the name in the bar.
   const accounts = applies("c04-compact-account-name") ? raw.c04?.mapped || [] : [];
   for (const a of accounts) {
-    if (a.nameVisible)
+    if (a.nameVisible && !a.compactIdentity)
       add(
         "c04-compact-account-name",
         a.element,
@@ -1158,7 +1158,37 @@ export function collectProbes(opts) {
   const pushAccount = (region, nameEl, avatar, t, nameText) => {
     if (avatar) accountAvatars.add(avatar);
     const text = nameText ?? (nameEl && shown(nameEl) ? snippet(nameEl.textContent) : "");
+    const label = region.querySelector('[data-slot="topbar-item-label"]');
+    const identity = region.closest('[data-slot="topbar-identity"]');
+    const bar = identity?.closest('[data-slot="topbar"]');
+    const r = region.getBoundingClientRect();
+    const b = bar?.getBoundingClientRect();
+    const l = label?.getBoundingClientRect();
+    // An opt-in is not an exemption by itself: measure the visible label, bounded share,
+    // containment, and full-name recovery. Old full-width labels still fail C04.
+    const compactIdentity = !!(
+      identity &&
+      b &&
+      label &&
+      l &&
+      text &&
+      region.getAttribute("data-truncate") === "true" &&
+      cs(label).textOverflow === "ellipsis" &&
+      cs(label).whiteSpace === "nowrap" &&
+      l.width > 1 &&
+      l.height > 1 &&
+      l.left >= r.left - 1 &&
+      l.right <= r.right + 1 &&
+      r.width <= b.width * 0.4 + 1 &&
+      r.left >= b.left - 1 &&
+      r.right <= b.right + 1 &&
+      r.left >= -1 &&
+      r.right <= width + 1 &&
+      region.getAttribute("title")?.includes(label.textContent) &&
+      accName(region).includes(label.textContent)
+    );
     accounts.push({
+      compactIdentity,
       element: desc(region),
       nameVisible: !!text,
       nameText: text,

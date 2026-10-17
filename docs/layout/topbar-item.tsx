@@ -107,6 +107,7 @@ export default function Demo() {
     >
       <PageContainer title="TopbarItem" subtitle="バーの一部として読める、バーの高さのセル">
         <Flex direction="col" gap="lg">
+          <Text>{t("topbarIdentityDocs.description")}</Text>
           <Card>
             <CardHeader>
               <CardTitle level={2}>上のバーがこのコンポーネントです</CardTitle>

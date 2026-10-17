@@ -18,6 +18,7 @@ export function Topbar({
   start,
   center,
   end,
+  identity,
   className,
   children,
   height,
@@ -27,8 +28,10 @@ export function Topbar({
   ...props
 }: TopbarProp) {
   const barRef = React.useRef<HTMLDivElement | null>(null);
+  const controlsRef = React.useRef<HTMLDivElement | null>(null);
+  const hasIdentity = identity != null && children == null;
   const foldable = overflow === "menu" && children == null;
-  const collapsed = useCollapsesToMenu(barRef, foldable);
+  const collapsed = useCollapsesToMenu(hasIdentity ? controlsRef : barRef, foldable);
   const clusters = (
     <>
       {start != null ? (
@@ -53,6 +56,7 @@ export function Topbar({
     <div
       ref={barRef}
       data-height={height}
+      data-identity={hasIdentity ? "true" : undefined}
       // The overflow contract, published on the bar (gh#728). Always emitted, including for the
       // default, because "scroll" is what the shipped bar DOES and a consumer reading the DOM —
       // or a gate measuring it — must not have to know which value is the default one.
@@ -69,7 +73,26 @@ export function Topbar({
       className={cn("ui-topbar", className)}
       {...props}
     >
-      {children ?? (collapsed ? <TopbarOverflowMenu>{clusters}</TopbarOverflowMenu> : clusters)}
+      {children ??
+        (hasIdentity ? (
+          <>
+            <div
+              ref={controlsRef}
+              data-slot="topbar-controls"
+              data-overflow={overflow}
+              className="ui-topbar ui-topbar-controls"
+            >
+              {collapsed ? <TopbarOverflowMenu>{clusters}</TopbarOverflowMenu> : clusters}
+            </div>
+            <div data-slot="topbar-identity" className="ui-topbar-identity">
+              {identity}
+            </div>
+          </>
+        ) : collapsed ? (
+          <TopbarOverflowMenu>{clusters}</TopbarOverflowMenu>
+        ) : (
+          clusters
+        ))}
     </div>
   );
 }
@@ -131,7 +154,14 @@ function useCollapsesToMenu(
     observer.observe(bar);
     // The clusters too: a larger text size grows their content while the bar's own box stays put,
     // and only a cluster resize says so (gh#1320).
-    if (!collapsed) for (const cluster of bar.children) observer.observe(cluster);
+    if (!collapsed)
+      for (const cluster of bar.children) {
+        observer.observe(cluster);
+        // The identity layout flattens start with display: contents; observe its real boxes too.
+        if (cluster.getAttribute("data-slot") === "topbar-start") {
+          for (const cell of cluster.children) observer.observe(cell);
+        }
+      }
     return () => observer.disconnect();
   }, [ref, enabled, collapsed]);
 

@@ -2360,5 +2360,17 @@
       "readOnly": "仕込みメモ（読み取り専用）",
       "disabled": "仕込みメモ（無効）"
     }
+  },
+  "topbarIdentityDocs": {
+    "title": "共有端末のログイン情報",
+    "name": "山田 花子",
+    "longName": "アレクサンドラ キャサリン モンゴメリー",
+    "org": "中央支店",
+    "otherOrg": "国際事業運営管理本部",
+    "navigation": "ナビゲーション",
+    "navigationOpen": "ナビゲーションを開きました。",
+    "switchUser": "デモユーザーを切り替え",
+    "description": "ログイン中の名前を常に表示します。Topbar identity はバーの最大40%を確保し、TopbarItem truncate は名前だけを省略します。名前全体は title とアクセシブルなテキストに残ります。",
+    "policy": "主要操作の最小サイズを維持します。極端に狭い幅では、他のスロットに scroll・clip・menu が適用され、identity は外に残ります。検索には TopbarSearch を使い、identity に labelHideBelow・hideBelow・iconHideFrom を併用しないでください。テーマ設定: --topbar-identity-max-inline-size / --topbar-identity-min-text-inline-size。"
   }
 }

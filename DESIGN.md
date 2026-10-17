@@ -195,6 +195,7 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 - Header `extra` wraps under the title; a toolbar wraps its filters at every width, phone included: no sideways-scrolling strip of filters or filter chips (rule #51). Touch targets 44px at `comfortable`.
 - Below 640px: at most 2 direct actions in `extra` plus one overflow `DropdownMenu` for the rest; it wraps but never prioritises for you.
 - Bar search is `TopbarSearch`, never a bare `SearchInput`: it folds to a named search cell below 640px. To share the content keyline, keep the default `topbarSpan="content"` and put it first in `Topbar start`.
+- Shared-device exception (#1370): `Topbar identity={<TopbarItem truncate icon={<Avatar/>}>{name}</TopbarItem>}` keeps the name visible within a 40% share. Only the label ellipsises; the full string is the title and accessible text. Primary control floors remain intact; only the other clusters scroll or fold into `overflow="menu"`. Never use label/icon hiding props on this identity. C04 checks the bounds and recovery text, not just the opt-in.
 - Account cell: `TopbarItem icon={<Avatar/>} labelHideBelow="sm"` with the name repeated in the menu's `DropdownMenuLabel`, so a phone shows the avatar only.
 - A sidebar collapse toggle goes in `Sidebar action` (it receives `collapsed`), not in the bar beside the brand. The phone drawer has its own trigger.
 
