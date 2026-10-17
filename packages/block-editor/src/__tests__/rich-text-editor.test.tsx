@@ -111,7 +111,9 @@ describe("RichTextEditor — HTML value", () => {
       '<script>alert(1)</script><p onclick="alert(2)" style="color:red" class="x">a' +
       '<a href="javascript:alert(3)">link</a><img src="x" onerror="alert(4)"><u>under</u>' +
       '<span style="font-size:40px">span</span></p><h4>four</h4><table><tr><td>cell</td></tr></table>' +
-      '<pre><code>block</code></pre><hr><iframe src="https://evil"></iframe><style>p{}</style>';
+      '<pre><code>block</code></pre><hr><iframe src="https://evil"></iframe><style>p{}</style>' +
+      '<ol type="a" style="list-style-type:upper-roman" data-x="1"><li style="list-style-type:disc"><p>item</p></li></ol>' +
+      '<ol start="x3"><li><p>bad start</p></li></ol>';
     const handle = React.createRef<RichTextEditorHandle>();
     renderIn(<Controlled initial={dirty} handle={handle} />);
     await mounted();
@@ -121,10 +123,18 @@ describe("RichTextEditor — HTML value", () => {
     }
     expect(html).not.toMatch(/<[a-z0-9]+\s/i); // no attribute on any element
     expect(html).not.toMatch(/alert|javascript|evil/);
+    expect(html).toContain("<ol><li><p>item</p></li></ol><ol><li><p>bad start</p></li></ol>");
     for (const text of ["link", "under", "span", "four", "cell", "block"]) {
       expect(html).toContain(text); // the content survives as text
     }
     expect(document.querySelector("script, img, iframe, a, u, table")).toBeNull();
+  });
+
+  it("a numbered list keeps an integer start, its only attribute", async () => {
+    const handle = React.createRef<RichTextEditorHandle>();
+    renderIn(<Controlled initial={'<ol start="3"><li><p>third</p></li></ol>'} handle={handle} />);
+    await mounted();
+    expect(handle.current!.editor!.getHTML()).toBe('<ol start="3"><li><p>third</p></li></ol>');
   });
 
   it("an empty body is '' both ways, never <p></p>", async () => {

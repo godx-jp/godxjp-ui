@@ -2277,7 +2277,7 @@
     },
     "saved": {
       "title": "What it saves",
-      "description": "The per-locale map of sanitised HTML — only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s and code, with no attributes."
+      "description": "The per-locale map of sanitised HTML — only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s and code; the only attribute is an integer start on a numbered list."
     },
     "single": {
       "title": "One locale",

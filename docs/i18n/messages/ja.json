@@ -2270,7 +2270,7 @@
     },
     "saved": {
       "title": "保存される値",
-      "description": "言語ごとのサニタイズ済み HTML。p・br・h1〜h3・ul・ol・li・blockquote・strong・em・s・code のみで、属性は付きません。"
+      "description": "言語ごとのサニタイズ済み HTML。p・br・h1〜h3・ul・ol・li・blockquote・strong・em・s・code のみで、属性は番号付きリストの開始番号（整数の start）だけです。"
     },
     "single": {
       "title": "単一言語",

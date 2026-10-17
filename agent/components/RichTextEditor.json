@@ -58,7 +58,7 @@
   ],
   "rules": [],
   "storyPath": "data-entry/rich-text-editor.tsx",
-  "tagline": "A form field that edits HTML (sibling package `@godxjp/block-editor`, gh#1365): a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted / numbered list, quote · undo, redo — over a Tiptap surface whose SCHEMA is the sanitiser. `value` / `onValueChange` carry HTML holding only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s, code (`RICH_TEXT_ALLOWED_TAGS`), with no attributes; anything else in `value` or a paste is kept as its text. For content already stored as HTML; new content belongs in Markdown (BlockEditor / MarkdownEditor).",
+  "tagline": "A form field that edits HTML (sibling package `@godxjp/block-editor`, gh#1365): a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted / numbered list, quote · undo, redo — over a Tiptap surface whose SCHEMA is the sanitiser. `value` / `onValueChange` carry HTML holding only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s, code (`RICH_TEXT_ALLOWED_TAGS`), with one attribute in all (an integer `start` on `<ol>`); anything else in `value` or a paste is kept as its text. For content already stored as HTML; new content belongs in Markdown (BlockEditor / MarkdownEditor).",
   "usage": [
     "DO wrap it in FormField, like any field: the label names the editable, `required` and the error reach it as `aria-required` / `aria-invalid` + `aria-errormessage`.",
     "DO store what onValueChange returns: it is already sanitised by the schema, and render it as HTML. Sanitise again on the server if other clients can write the same column.",

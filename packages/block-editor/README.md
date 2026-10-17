@@ -71,7 +71,7 @@ import { FormField } from "@godxjp/ui/data-entry";
 
 - The schema is the sanitiser: `value` (and a paste) is parsed into, and `onValueChange` emits, only
   `p br h1 h2 h3 ul ol li blockquote strong em s code` (`RICH_TEXT_ALLOWED_TAGS`) with no
-  attributes. Anything else — script, links, images, styles, h4–h6, tables — is kept as its text.
+  attributes except an integer `start` on `<ol>`. Anything else — script, links, images, styles, h4–h6, tables — is kept as its text.
   An empty body is `""`.
 - A `value` from outside (a reset, a locale tab) replaces the document without calling
   `onValueChange`, and never while an IME composition is open.

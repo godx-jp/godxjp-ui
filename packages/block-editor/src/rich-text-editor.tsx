@@ -2,6 +2,7 @@ import * as React from "react";
 import type { Editor } from "@tiptap/core";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { OrderedList } from "@tiptap/extension-list";
 import { Placeholder } from "@tiptap/extensions";
 import {
   Bold,
@@ -77,7 +78,8 @@ export type RichTextEditorHandle = {
 /**
  * Every element `onValueChange` can emit. It is the editor's SCHEMA, not a filter run afterwards:
  * HTML in `value` (or pasted) is parsed into these nodes and marks, anything else is dropped to its
- * text, and `getHTML()` writes only these back — with no attributes at all.
+ * text, and `getHTML()` writes only these back — with one attribute in all: `start` on an `<ol>`
+ * that does not start at 1, always an integer.
  */
 export const RICH_TEXT_ALLOWED_TAGS = [
   "p",
@@ -95,6 +97,24 @@ export const RICH_TEXT_ALLOWED_TAGS = [
   "code",
 ] as const;
 
+/**
+ * A numbered list keeps where it starts and nothing else: Tiptap's own list also reads `type` from
+ * the tag, its inline style or a Google Docs `<li>`, and writes it back as a free string.
+ */
+const OrderedListStartOnly = OrderedList.extend({
+  addAttributes() {
+    return {
+      start: {
+        default: 1,
+        parseHTML: (element: HTMLElement) => {
+          const start = Number.parseInt(element.getAttribute("start") ?? "", 10);
+          return Number.isSafeInteger(start) ? start : 1;
+        },
+      },
+    };
+  },
+});
+
 /** StarterKit cut down to the toolbar's set: no code block, rule, link, underline or trailing node. */
 const richTextExtensions = (placeholder: () => string) => [
   StarterKit.configure({
@@ -104,7 +124,9 @@ const richTextExtensions = (placeholder: () => string) => [
     link: false,
     underline: false,
     trailingNode: false,
+    orderedList: false,
   }),
+  OrderedListStartOnly,
   Placeholder.configure({ placeholder }),
 ];
 

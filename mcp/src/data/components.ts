@@ -6157,7 +6157,7 @@ import { FormField } from "@godxjp/ui/data-entry";
     group: "data-entry",
     importPath: "@godxjp/block-editor",
     tagline:
-      "A form field that edits HTML (sibling package `@godxjp/block-editor`, gh#1365): a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted / numbered list, quote · undo, redo — over a Tiptap surface whose SCHEMA is the sanitiser. `value` / `onValueChange` carry HTML holding only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s, code (`RICH_TEXT_ALLOWED_TAGS`), with no attributes; anything else in `value` or a paste is kept as its text. For content already stored as HTML; new content belongs in Markdown (BlockEditor / MarkdownEditor).",
+      "A form field that edits HTML (sibling package `@godxjp/block-editor`, gh#1365): a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted / numbered list, quote · undo, redo — over a Tiptap surface whose SCHEMA is the sanitiser. `value` / `onValueChange` carry HTML holding only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s, code (`RICH_TEXT_ALLOWED_TAGS`), with one attribute in all (an integer `start` on `<ol>`); anything else in `value` or a paste is kept as its text. For content already stored as HTML; new content belongs in Markdown (BlockEditor / MarkdownEditor).",
     props: [
       {
         name: "value",

@@ -2270,7 +2270,7 @@
     },
     "saved": {
       "title": "Giá trị được lưu",
-      "description": "Bản đồ HTML đã làm sạch theo từng ngôn ngữ — chỉ p, br, h1–h3, ul, ol, li, blockquote, strong, em, s và code, không có thuộc tính."
+      "description": "Bản đồ HTML đã làm sạch theo từng ngôn ngữ — chỉ p, br, h1–h3, ul, ol, li, blockquote, strong, em, s và code; thuộc tính duy nhất là số bắt đầu (start, số nguyên) của danh sách đánh số."
     },
     "single": {
       "title": "Một ngôn ngữ",
