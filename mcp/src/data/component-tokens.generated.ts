@@ -6750,8 +6750,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--resizable-handle-size",
-    "value": "var(--space-2)",
-    "description": "Room for the shared inset focus mark and gap, including handles without a grip."
+    "value": "var(--control-border-width, var(--stroke-hairline))",
+    "description": "Separator layout thickness; focus paint must not reserve extra space."
   },
   {
     "name": "--scroll-area-scrollbar-width",

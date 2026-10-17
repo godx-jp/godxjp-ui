@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
@@ -16,8 +17,14 @@ export async function compileRealCss(
   markup: string,
   /** Layer files to leave out of `styles/core` (e.g. `["control.css"]`) — a control page for a
    *  check that must notice a missing layer (gh#1307). */
-  { omit = [] }: { omit?: string[] } = {},
+  { omit = [], revision }: { omit?: string[]; revision?: string } = {},
 ): Promise<string> {
+  const readCss = (path: string) =>
+    revision && path.startsWith(join(ROOT, "src") + "/")
+      ? execFileSync("git", ["show", `${revision}:${path.slice(ROOT.length + 1)}`], {
+          encoding: "utf8",
+        })
+      : readFileSync(path, "utf8");
   const loadStylesheet = async (id: string, base: string) => {
     let path: string;
     if (id.startsWith(".") || id.startsWith("/")) path = resolve(base, id);
@@ -29,10 +36,10 @@ export async function compileRealCss(
         path = join(pkg, manifest.exports?.["."]?.style ?? manifest.style ?? "index.css");
       } else return { path: pkg, base, content: "" };
     }
-    return { path, base: dirname(path), content: readFileSync(path, "utf8") };
+    return { path, base: dirname(path), content: readCss(path) };
   };
   const entry = join(ROOT, "src/styles/core.css");
-  let source = readFileSync(entry, "utf8");
+  let source = readCss(entry);
   for (const file of omit) {
     const line = `@import "./${file}";`;
     if (!source.includes(line)) throw new Error(`compileRealCss: core.css does not import ${file}`);

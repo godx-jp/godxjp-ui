@@ -1470,7 +1470,6 @@
    * SITE via the var() fallback (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`") — that is
    * what keeps a scoped `[data-tenant]` / `.dark` retint reaching the thumb. */
   .ui-scroll-area {
-    padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     position: relative;
     scrollbar-width: var(--scroll-area-scrollbar-width);

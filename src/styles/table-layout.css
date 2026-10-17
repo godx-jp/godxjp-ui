@@ -672,9 +672,6 @@
     overflow-x: auto;
     margin-inline: calc(-1 * var(--space-page-active-x));
     padding-inline: var(--space-page-active-x);
-    /* Ring headroom (gh#1378): a focused cell's outside ring fits inside the scroller instead of
-     * being clipped by overflow-x, so cells keep the outside ring rather than an inset one. */
-    padding-block: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     scroll-padding-block: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
   }
 

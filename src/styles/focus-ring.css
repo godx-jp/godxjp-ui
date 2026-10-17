@@ -392,6 +392,7 @@
    * Full-height bar cells and rail links share this mechanism (gh#1375): scroll containers
    * cannot preserve an outside outline with overflow-clip-margin. Rebind only the offset;
    * the shared mark above still owns color, width, theme and the off switch. */
+  .ui-scroll-area [data-slot="anchor-link"],
   a.ui-list-row,
   tr.ui-focus-ring,
   .sb-nav-item,
@@ -405,6 +406,14 @@
    * Padded strip/rail items have room for this inner mark; plain text links and
    * filled buttons keep their outside mark and contrasting surface gap. */
   :is(
+    .ui-topbar .ui-button--ghost,
+    .ui-topbar .ui-app-setting-picker-icon,
+    .ui-legal-document-rail .ui-button,
+    .ui-pagination-link,
+    .ui-pagination .ui-button,
+    .ui-pagination .ui-control,
+    .ui-pagination .ui-input,
+    .ui-topbar .ui-search-input-control,
     .ui-mobile-shell-tabbar .ui-button--ghost,
     [data-slot="tabs-list"] [role="tab"],
     [data-slot="tabs-list"] .ui-tabs-add,
@@ -422,6 +431,52 @@
     .ui-resizable-panel
   ):focus-visible {
     --focus-ring-contained-offset: var(--focus-ring-inset-offset);
+  }
+
+  /* A flush filled button has no outside room at a scroll boundary (#1380).
+   * Paint inside its existing padding, with a surface gap on the INNER side
+   * of the mark so brand-coloured fills cannot swallow the brand ring. */
+  :root:not([data-focus-outline="off"]) .ui-button[data-focus-contained]:focus-visible,
+  :root:not([data-focus-outline="off"]) .ui-pagination-link:focus-visible,
+  :root:not([data-focus-outline="off"])
+    .ui-branch-scope-picker-list
+    .ui-checkbox[data-focus-visible] {
+    --focus-ring-contained-offset: calc(-1 * var(--focus-ring-width));
+    --focus-field-shadow: inset 0 0 0 calc(var(--focus-ring-width) + var(--focus-outline-offset))
+      hsl(var(--background));
+  }
+
+  /* Horizontal text anchors have block padding but no inline padding. Paint
+   * the two block edges inside that existing space, never across the glyphs. */
+  :root:not([data-focus-outline="off"])
+    .ui-anchor[data-direction="horizontal"]
+    [data-slot="anchor-link"]:focus-visible,
+  :root:not([data-focus-outline="off"])
+    .ui-topbar
+    .ui-button:has([data-slot="avatar"]):focus-visible {
+    outline-style: none;
+    box-shadow:
+      inset 0 var(--focus-ring-width) 0
+        hsl(
+          var(--focus-outline-color, var(--focus-ring-color, var(--ring))) /
+            var(--focus-ring-opacity, 1)
+        ),
+      inset 0 calc(-1 * var(--focus-ring-width)) 0
+        hsl(
+          var(--focus-outline-color, var(--focus-ring-color, var(--ring))) /
+            var(--focus-ring-opacity, 1)
+        );
+  }
+
+  /* A hairline separator has no room for an outline plus gap. Its focus
+   * shadow paints the carrier itself without widening either adjacent panel. */
+  :root:not([data-focus-outline="off"]) .ui-resizable-handle[role="separator"]:focus-visible {
+    outline-style: none;
+    box-shadow: inset 0 0 0 var(--focus-ring-width)
+      hsl(
+        var(--focus-outline-color, var(--focus-ring-color, var(--ring))) /
+          var(--focus-ring-opacity, 1)
+      );
   }
 
   /* Outline-form gaps — marks where a mark hugging the box would touch the glyph. */

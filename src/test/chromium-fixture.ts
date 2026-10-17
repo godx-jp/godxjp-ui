@@ -17,7 +17,7 @@ export type ChromiumFixture = {
   close: () => Promise<void>;
 };
 
-export async function bootChromium(entry: string): Promise<ChromiumFixture> {
+export async function bootChromium(entry: string, cssRevision?: string): Promise<ChromiumFixture> {
   const ROOT = process.cwd();
   // esbuild's Node API checks `TextEncoder`/`Uint8Array` identity, which jsdom replaces.
   const realm = { encoder: globalThis.TextEncoder, bytes: globalThis.Uint8Array };
@@ -42,7 +42,9 @@ export async function bootChromium(entry: string): Promise<ChromiumFixture> {
     globalThis.Uint8Array = realm.bytes;
   }
   const tokens = [...new Set(js.match(/[\w:./[\]()%#!=-]+/g) ?? [])].join(" ");
-  const css = await compileRealCss(`<div class="${tokens.replaceAll('"', "")}"></div>`);
+  const css = await compileRealCss(`<div class="${tokens.replaceAll('"', "")}"></div>`, {
+    revision: cssRevision,
+  });
   const browser: Browser = await chromium.launch({ headless: true });
   return {
     async open(search, viewport = { width: 1280, height: 800 }) {

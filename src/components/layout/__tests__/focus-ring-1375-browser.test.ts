@@ -21,14 +21,14 @@ import { Button } from './src/components/general/button';
 import { PasswordInput } from './src/components/data-entry/password-input';
 import { Pagination } from './src/components/navigation/pagination';
 import { Tabs } from './src/components/navigation/tabs';
-import { Topbar } from './src/components/layout';
+import { Topbar, AppShell, PageContainer } from './src/components/layout';
 import { AppSettingPicker } from './src/components/navigation';
 import { Logo } from './src/components/general/logo';
 import { Anchor } from './src/lab/anchor';
 import { LegalDocumentShell } from './src/lab/legal-document-shell';
 createRoot(document.getElementById('root')).render(<AppProvider defaultLocale="en" persist={false}>
 <Topbar height="bar" start={<Logo wordmark="Engineering handbook" asChild><a href="#home" aria-label="Home" /></Logo>} end={<><AppSettingPicker kind="locale" appearance="bar"/><AppSettingPicker kind="theme" appearance="bar"/></>}/>
-<main className="app-main"><Card><CardContent><Breadcrumb items={[{label:"Engineering handbook",to:"#home"},{label:"Current"}]}/><div style={{display:"flex",gap:16,flexWrap:"wrap",paddingBlock:8}}><Logo wordmark="Engineering handbook" asChild><a href="#home" data-testid="wordmark"/></Logo><Button data-testid="primary">Edit</Button><Button variant="outline" data-testid="outline">Share</Button></div><Table><TableBody><TableRow><TableCell><a href="#intro" data-testid="table-link">Setup guide</a></TableCell></TableRow></TableBody></Table></CardContent></Card>
+<AppShell><PageContainer><Card><CardContent><Breadcrumb items={[{label:"Engineering handbook",to:"#home"},{label:"Current"}]}/><div style={{display:"flex",gap:16,flexWrap:"wrap",paddingBlock:8}}><Logo wordmark="Engineering handbook" asChild><a href="#home" data-testid="wordmark"/></Logo><Button data-testid="primary">Edit</Button><Button variant="outline" data-testid="outline">Share</Button></div><Table><TableBody><TableRow><TableCell><a href="#intro" data-testid="table-link">Setup guide</a></TableCell></TableRow></TableBody></Table></CardContent></Card>
 <Anchor affix={false} items={[{key:'intro',href:'#intro',title:'On this page'}]}/>
 <LegalDocumentShell title="Terms" sections={[{id:'intro',title:'Introduction',content:<p>Terms of service.</p>},{id:'details',title:'Details',content:<p>Details.</p>}]}/>
 <Pagination responsive={false} total={100} value={2} pageSize={10}/>
@@ -41,7 +41,7 @@ createRoot(document.getElementById('root')).render(<AppProvider defaultLocale="e
 <DataTable data={[{id:'1',name:'Wide table'}]} scroll={{x:1800}} columns={[{key:'name',header:'Name',width:'w-[1800px]'}]} />
 <ResizablePanelGroup orientation="horizontal" style={{height:160}}><ResizablePanel defaultSize="50%" minSize="10%">Start</ResizablePanel><ResizableHandle aria-label="Resize columns"/><ResizablePanel defaultSize="50%" minSize="10%">End</ResizablePanel></ResizablePanelGroup>
 <ResizablePanelGroup orientation="vertical" style={{height:160}}><ResizablePanel defaultSize="50%" minSize="10%">Top</ResizablePanel><ResizableHandle aria-label="Resize rows"/><ResizablePanel defaultSize="50%" minSize="10%">Bottom</ResizablePanel></ResizablePanelGroup>
-</main></AppProvider>);
+</PageContainer></AppShell></AppProvider>);
 `);
 }, 180000);
 afterAll(async () => {
@@ -149,7 +149,7 @@ for (const width of [1280, 390])
             if (name.startsWith("resize-")) {
               const handle = page.locator(selector!);
               const box = await handle.boundingBox();
-              expect(Math.min(box!.width, box!.height)).toBeGreaterThanOrEqual(8);
+              expect(Math.min(box!.width, box!.height)).toBe(1);
               const before = await handle.getAttribute("aria-valuenow");
               await page.keyboard.press(name === "resize-rows" ? "ArrowDown" : "ArrowRight");
               await expect

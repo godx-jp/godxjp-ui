@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Focus geometry (#1380):** remove ring-space padding and top-bar expansion from scroll containers, restoring pre-33.12 content positions, table density and hairline resize separators. Keep clipped controls' focus marks inside their existing carriers, with a contrasting inner gap for flush filled buttons.
+
 ## [33.12.2] - 2026-10-17
 
 ### Fixed
