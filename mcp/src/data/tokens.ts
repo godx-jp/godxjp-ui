@@ -50,7 +50,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--band-height-{xs,sm,md,lg,xl,2xl,3xl}",
     category: "primitive",
     tier: "primitive",
-    role: "Raw BAND-HEIGHT scale — the vertical extent of a horizontal strip that content is centred in: 24 / 28 / 32 (md, the default control and row band) / 36 / 44 (the WCAG 2.2 AA touch floor, rule #24) / 48 / 56 px. `height` split the same way `width` did: a control, a table row, a menu item, a sidebar nav row and the app-shell top bar are ONE decision sharing seven values, each declared by two to five tokens, while a chart plot's height, a transfer pane's min-height and a popover's max-height are container measures chosen per surface with almost no repeated value and stay literal. The case for this is that `PageContainer`'s chrome band had no height token while `AppShell`'s bar did, so nothing could be aligned to it — the axis had no name. NOT A SUBSTITUTE FOR --control-height-*: the control tier is a RUNTIME LADDER (it multiplies by --scaling, steps ±--space-1 for sm/lg/xs, and `@media (pointer: coarse)` lifts the whole thing to the 44px tap floor); this scale is the STATIC vocabulary the ladder is ANCHORED on (`--control-height-default: var(--band-height-md)`), exactly as --font-size-base anchors the type scale. Point a band token at --control-height-* to \"reuse a step\" and you silently enrol it in density AND in the coarse-pointer growth — that is a geometry change, not a rename, and it is why --table-row-height-default reads var(--band-height-md) instead. NOT --scaling-multiplied here: whether a band breathes with density is a per-token decision (--control-height opts in, --app-shell-bar-height deliberately does not).",
+    role: "Raw BAND-HEIGHT scale — the vertical extent of a horizontal strip that content is centred in: 24 / 28 / 32 (md) / 36 (lg, default control and row band) / 44 (the WCAG 2.2 AA touch floor, rule #24) / 48 / 56 px. `height` split the same way `width` did: a control, a table row, a menu item, a sidebar nav row and the app-shell top bar are ONE decision sharing seven values, each declared by two to five tokens, while a chart plot's height, a transfer pane's min-height and a popover's max-height are container measures chosen per surface with almost no repeated value and stay literal. The case for this is that `PageContainer`'s chrome band had no height token while `AppShell`'s bar did, so nothing could be aligned to it — the axis had no name. NOT A SUBSTITUTE FOR --control-height-*: the control tier is a RUNTIME LADDER (it multiplies by --scaling, steps ±--space-1 for sm/lg/xs, and `@media (pointer: coarse)` lifts the whole thing to the 44px tap floor); this scale is the STATIC vocabulary the ladder is ANCHORED on (`--control-height-default: var(--band-height-lg)`), exactly as --font-size-base anchors the type scale. Point a band token at --control-height-* to \"reuse a step\" and you silently enrol it in density AND in the coarse-pointer growth — that is a geometry change, not a rename, and it is why --table-row-height-default reads var(--band-height-lg) instead. NOT --scaling-multiplied here: whether a band breathes with density is a per-token decision (--control-height opts in, --app-shell-bar-height deliberately does not).",
   },
   {
     name: "--control-height-touch / --control-touch-gap / --button-touch-space-inline",
@@ -92,7 +92,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--duration-{fast,base,slow}",
     category: "primitive",
     tier: "primitive",
-    role: "Motion durations (150 / 250 / 500ms). Read these instead of a literal `0.5s` for enter/transition timing (rule #2). the reference design keeps motion short; honour `prefers-reduced-motion` at the call site. RE-THEMING: a brand that ships its own timing TABLE (press/hover/state/enter/hero-once) does not need a fork or new CSS — redeclare these three plus the four `--ease-*` and the two `--reveal-*` in its theme scope, and `Reveal`, Card `hoverable`, Dialog/Sheet enter and every token-driven transition retune themselves. A whole brand motion spec has been reproduced in EIGHT declarations; see the `brand-theme-block` pattern.",
+    role: "Motion durations (120 / 180 / 320ms). Read these instead of a literal `0.5s` for enter/transition timing (rule #2). the reference design keeps motion short; honour `prefers-reduced-motion` at the call site. RE-THEMING: a brand that ships its own timing TABLE (press/hover/state/enter/hero-once) does not need a fork or new CSS — redeclare these three plus the four `--ease-*` and the two `--reveal-*` in its theme scope, and `Reveal`, Card `hoverable`, Dialog/Sheet enter and every token-driven transition retune themselves. A whole brand motion spec has been reproduced in EIGHT declarations; see the `brand-theme-block` pattern.",
   },
   {
     name: "--ease-{standard,emphasized,decelerate,accelerate}",
@@ -179,6 +179,36 @@ export const TOKENS: TokenEntry[] = [
     role: "Mark ink for `Activity`. ROLE-MIRROR KNOB — declared `initial` at :root with the role default at the CALL SITE (`hsl(var(--activity-color, var(--muted-foreground)))`), so a scoped `[data-tenant]` / `.dark` override of `--muted-foreground` still reaches it (docs/TOKENS.md · 'Role-mirror knobs MUST be initial'). It retints the default `tone='muted'`; an explicit non-muted `tone` sets its own semantic role.",
   },
   {
+    name: "--space-page-x / --space-page-y / --page-title-font-size / --page-title-font-size-compact / --overlay-background",
+    category: "semantic",
+    tier: "semantic",
+    role: "Modern defaults: desktop page gutters 32px, section rhythm remains 16px, page title 28px and compact 21px, scrim 40% black. Mobile gutters stay 16px.",
+  },
+  {
+    name: "--card-space-body-y / --card-title-font-size / --card-shadow / --form-field-row-gap / --form-block-gap / --control-height-default / --table-row-height-default / --control-focus-ring-width",
+    category: "component",
+    tier: "component",
+    role: "Modern defaults: card header-to-body spacing 24px, horizontal insets remain aligned with tables at 16px; card title base \u00d7 type ratio (~15.7px), resting card shadow none, form row gap 20px and block gap 24px; controls and rows use band-height-lg (36px). Field focus width stroke-md (2px). Override each knob directly; compact/coarse density contracts remain.",
+  },
+  {
+    name: "--focus-outline-weight / --focus-outline-offset",
+    category: "primitive",
+    tier: "primitive",
+    role: "Keyboard focus defaults to stroke-md (2px) with 2px offset. Existing nav inset and opt-out behavior remain. Full restoration of both refresh passes is documented in docs/TOKENS.md.",
+  },
+  {
+    name: "--shadow-{md,lg}",
+    category: "primitive",
+    tier: "primitive",
+    role: "Floating elevation: md uses 0 6px 16px -4px at 8% plus 0 1px 3px at 8%; lg uses 0 12px 28px -6px at 10% plus 0 2px 6px -2px at 8%. Both use --shadow-color RGB channels. Override the complete shadow value to restore or retune depth; no glow is added.",
+  },
+  {
+    name: "--button-radius / --control-shadow",
+    category: "component",
+    tier: "component",
+    role: "Button defaults to var(--radius), matching the 6px input corner at default scaling; pill and sharp remain separate shape tokens. Resting controls default to no shadow. Independent theme overrides: --button-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio))); --control-shadow: var(--shadow-xs) restores the previous appearance. Root aliases retain their existing resolution behavior; override component knobs directly within a scoped theme.",
+  },
+  {
     name: "--shadow-color",
     category: "primitive",
     tier: "primitive",
@@ -206,13 +236,13 @@ export const TOKENS: TokenEntry[] = [
     name: "--focus-ring-weight",
     category: "primitive",
     tier: "primitive",
-    role: "THE thickness knob for every keyboard-focus ring; default var(--focus-outline-weight) = var(--stroke-hairline) = 1px, the light mark the ON state ships. Measured in Chromium: switched on it paints a 1px ring in the focus hue at 5.05:1 light / 7.07:1 dark, so WCAG 2.2 SC 1.4.11 (3:1) is met on thickness-independent grounds. For SC 2.4.13 Focus Appearance (AAA), which wants a >=2px perimeter, set --focus-ring-weight: var(--stroke-md) (2px, measured 2px painted, same hue and ratio); var(--stroke-lg) is the heavy 3px mark. Pair with --focus-ring-offset (gap, outline form only) and --focus-ring-color (hue).",
+    role: "THE thickness knob for every keyboard-focus ring; default var(--focus-outline-weight) = var(--stroke-md) = 2px, the offset mark the ON state ships. Measured in Chromium: switched on it paints a 2px ring in the focus hue at 5.05:1 light / 7.07:1 dark, so WCAG 2.2 SC 1.4.11 (3:1) is met on thickness-independent grounds. For SC 2.4.13 Focus Appearance (AAA), which wants a >=2px perimeter, set --focus-ring-weight: var(--stroke-md) (2px, measured 2px painted, same hue and ratio); var(--stroke-lg) is the heavy 3px mark. Pair with --focus-ring-offset (gap, outline form only) and --focus-ring-color (hue).",
   },
   {
     name: '--focus-outline (axis: <html data-focus-outline="on">)',
     category: "primitive",
     tier: "primitive",
-    role: 'The one 0/1 switch for the whole keyboard-focus indicator, and it SHIPS OFF (0): nothing paints a focus mark by default, which forfeits WCAG 2.2 SC 2.4.7 (AA) and a JIS X 8341-3 AA claim — a product decision recorded with its cost in docs/DESIGN-AUTHORITY.md. A consumer turns it on with ONE attribute on the root element: <html data-focus-outline="on"> (AppProvider has the equivalent). Every painted focus length multiplies by it, so no per-component rebind can bring the mark back while it is off.',
+    role: 'The one 0/1 switch for the whole keyboard-focus indicator, and it SHIPS ON (1): keyboard focus is visible by default. A consumer turns it on with ONE attribute on the root element: <html data-focus-outline="on"> (AppProvider has the equivalent). Every painted focus length multiplies by it, so no per-component rebind can bring the mark back while it is off.',
   },
   {
     name: "--gradient-{brand,hero,glow}",
@@ -275,7 +305,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--border / --input",
     category: "semantic",
     tier: "semantic",
-    role: "TWO roles, NOT synonyms — never set one to the other. --border is DECORATIVE chrome: table rules, card edges, section dividers, Separator. WCAG 2.2 SC 1.4.11 does not reach it (a divider is not \"required to identify a component or its state\") and this system's dense JP grid depends on it staying quiet — light `30 7% 83%`, dark `45 6% 22%`. --input is the CONTROL BOUNDARY: the 1px edge of Input/Textarea/Select/outline Button/TagInput/the composite date field/the topbar search (the Tailwind `border-input` utility reads it), plus the Switch's unchecked track fill. A field has no fill of its own and no shadow, so that edge is the whole visual claim that you may type there — it owes SC 1.4.11's 3:1 against EVERY surface a control sits on, not just the plain page: light `30 7% 53%` (3.47:1 on --background/--card/--popover, 3.18:1 on --muted/--secondary, 3.35:1 on a zebra row), dark `45 6% 47%` (4.22:1 on --background, 3.88:1 on --card/--popover, 3.17:1 on --muted). They shipped sharing one value and put every text field at 1.46:1. A service re-theming neutrals MUST move the two independently; `src/tokens/__tests__/input-boundary-contrast.test.ts` recomputes the ratios and fails below 3:1 or if the two roles are re-coupled. To quieten the Switch off-track without dragging --input back down, override --switch-unchecked-background instead.",
+    role: "TWO roles, NOT synonyms — never set one to the other. --border is DECORATIVE chrome: table rules, card edges, section dividers, Separator. WCAG 2.2 SC 1.4.11 does not reach it (a divider is not \"required to identify a component or its state\") and this system's dense JP grid depends on it staying quiet — light `30 7% 83%`, dark `45 6% 22%`. --input is the CONTROL BOUNDARY: the 1px edge of Input/Textarea/Select/outline Button/TagInput/the composite date field/the topbar search (the Tailwind `border-input` utility reads it), plus the Switch's unchecked track fill. A field has no fill of its own and no shadow, so that edge is the whole visual claim that you may type there — it owes SC 1.4.11's 3:1 against EVERY surface a control sits on, not just the plain page: light `30 7% 51%`, dark `45 6% 51%` (both clear 3:1 on background, card, popover, muted and the full accent surface). They shipped sharing one value and put every text field at 1.46:1. A service re-theming neutrals MUST move the two independently; `src/tokens/__tests__/input-boundary-contrast.test.ts` recomputes the ratios and fails below 3:1 or if the two roles are re-coupled. To quieten the Switch off-track without dragging --input back down, override --switch-unchecked-background instead.",
   },
   {
     name: "--page-header-divider",
@@ -293,7 +323,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--overlay-background",
     category: "semantic",
     tier: "semantic",
-    role: "Modal scrim — the single backdrop colour shared by every overlay (Dialog, AlertDialog, Sheet, Drawer, AppShell mobile nav). Default `rgb(0 0 0 / 0.5)`. A service tints it once, e.g. a navy `rgb(12 26 49 / .55)`. HOW IT REACHES AN OVERLAY: each surface declares its own `--*-overlay-background` knob `initial` and resolves a SHARE of this colour at the call site, `color-mix(in srgb, var(--overlay-background) var(--*-overlay-alpha), transparent)`, so the calibrated per-surface depth survives (Sheet/drawer 40% = 0.2, Dialog 60% = 0.3) while ONE override here retints them all. NOTE: portaled overlays render outside a [data-tenant] subtree, so for multi-tenant scoping put the tenant attribute on the portal container too.",
+    role: "Modal scrim — the single backdrop colour shared by every overlay (Dialog, AlertDialog, Sheet, Drawer, AppShell mobile nav). Default `rgb(0 0 0 / 0.4)`. A service tints it once, e.g. a navy `rgb(12 26 49 / .55)`. HOW IT REACHES AN OVERLAY: each surface declares its own `--*-overlay-background` knob `initial` and resolves a SHARE of this colour at the call site, `color-mix(in srgb, var(--overlay-background) var(--*-overlay-alpha), transparent)`, so the calibrated per-surface depth survives (Sheet/drawer 40% = 0.16, Dialog 60% = 0.24) while ONE override here retints them all. NOTE: portaled overlays render outside a [data-tenant] subtree, so for multi-tenant scoping put the tenant attribute on the portal container too.",
   },
   {
     name: "--page-toolbar-{background,pad-block,divider}",
@@ -841,7 +871,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--app-shell-bar-{inset,inset-compact,gap}",
     category: "component",
     tier: "component",
-    role: "AppShell top-bar chrome — `--app-shell-bar-inset` is the bar's inline padding, `--app-shell-bar-inset-compact` the tighter value below the compact step, `--app-shell-bar-gap` the gap between the bar's direct children (default --space-3). ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS: the bar sits in the SAME grid track as `.app-main`, directly above the page, so its first control and the page title are on one vertical edge. The two insets used to name their own values (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and nothing reconciled them — measured in Chromium, the bar's content started at x=80 and the page header's at x=88 (1512px), and because the two sides stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even constant (8px at 1512, 12px between 720 and 900, 4px below 720), which a consumer cannot correct by hand. The page gutter now OWNS the axis and these knobs read it: `--app-shell-bar-inset: var(--space-page-x)` (24px), `--app-shell-bar-inset-compact: var(--space-page-compact-x)` (16px), stepping at the PAGE's `(max-width: 720px)`, not the shell's 900px restructure. GEOMETRY MOVED — the bar's inline padding went 16px → 24px (12px → 16px compact, and 12px → 24px between 720 and 900); the page did not move. The NAMES are unchanged, so a theme that already sets either knob keeps working, and a bar that genuinely wants to sit tighter than its page still has its own. Height stays `--app-shell-bar-height` (3rem) at EVERY width, and it is also the owner of the chrome BAND-HEIGHT axis — see `--page-header-min-block-size-chrome`.",
+    role: "AppShell top-bar chrome — `--app-shell-bar-inset` is the bar's inline padding, `--app-shell-bar-inset-compact` the tighter value below the compact step, `--app-shell-bar-gap` the gap between the bar's direct children (default --space-3). ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS: the bar sits in the SAME grid track as `.app-main`, directly above the page, so its first control and the page title are on one vertical edge. The two insets used to name their own values (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and nothing reconciled them — measured in Chromium, the bar's content started at x=80 and the page header's at x=88 (1512px), and because the two sides stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even constant (8px at 1512, 12px between 720 and 900, 4px below 720), which a consumer cannot correct by hand. The page gutter now OWNS the axis and these knobs read it: `--app-shell-bar-inset: var(--space-page-x)` (32px after the modern refresh), `--app-shell-bar-inset-compact: var(--space-page-compact-x)` (16px), stepping at the PAGE's `(max-width: 720px)`, not the shell's 900px restructure. GEOMETRY MOVED — the bar's inline padding went 16px → 24px (12px → 16px compact, and 12px → 24px between 720 and 900); the page did not move. The NAMES are unchanged, so a theme that already sets either knob keeps working, and a bar that genuinely wants to sit tighter than its page still has its own. Height stays `--app-shell-bar-height` (3rem) at EVERY width, and it is also the owner of the chrome BAND-HEIGHT axis — see `--page-header-min-block-size-chrome`.",
   },
   {
     name: "--topbar-{height,inset,gap}",
@@ -853,7 +883,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--{dialog,sheet}-overlay-background / --app-shell-mobile-nav-background (+ -alpha)",
     category: "component",
     tier: "component",
-    role: "Overlay scrims. All three are ROLE-MIRROR knobs declared `initial` at `:root`, with the default resolved at the CALL SITE as a SHARE of the one semantic `--overlay-background` — `color-mix(in srgb, var(--overlay-background) var(--<x>-overlay-alpha), transparent)`. Previously each carried a private literal, so setting `--overlay-background` had NO effect anywhere. The share knobs (`--dialog-overlay-alpha` 60%, `--sheet-overlay-alpha` 40%, `--app-shell-mobile-nav-alpha` 40%) keep every default byte-identical (0.3 / 0.2 / 0.2 black) while letting one `--overlay-background` override retint the whole system, including scoped `[data-tenant]` / `.dark` themes. Setting a `*-overlay-background` knob directly still wins outright. NOTE: overlays render in a portal, so a multi-tenant scope must also sit on the portal container.",
+    role: "Overlay scrims. All three are ROLE-MIRROR knobs declared `initial` at `:root`, with the default resolved at the CALL SITE as a SHARE of the one semantic `--overlay-background` — `color-mix(in srgb, var(--overlay-background) var(--<x>-overlay-alpha), transparent)`. Previously each carried a private literal, so setting `--overlay-background` had NO effect anywhere. The share knobs (`--dialog-overlay-alpha` 60%, `--sheet-overlay-alpha` 40%, `--app-shell-mobile-nav-alpha` 40%) compose to 0.24 / 0.16 / 0.16 black with the modern 40% base while letting one `--overlay-background` override retint the whole system, including scoped `[data-tenant]` / `.dark` themes. Setting a `*-overlay-background` knob directly still wins outright. NOTE: overlays render in a portal, so a multi-tenant scope must also sit on the portal container.",
   },
 ];
 

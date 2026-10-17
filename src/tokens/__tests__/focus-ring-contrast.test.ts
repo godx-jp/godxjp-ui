@@ -479,11 +479,9 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
     expect(focusRing).toContain('[data-focus-outline="on"]');
   });
 
-  it("the weight is the hairline stroke, not the heavy one", () => {
-    // The complaint was weight, not existence: 3px of opaque brand around an already-shaded
-    // selected nav row is two heavy treatments on one element. The FIELD form of this indicator
-    // is one hairline, and WCAG's AA bar for an indicator is CONTRAST, not thickness.
-    expect(root).toMatch(/--focus-outline-weight:\s*initial/);
+  it("the modern focus weight is the 2px stroke", () => {
+    // The modern default advances to 2px; contrast assertions below still guard every surface.
+    expect(root).toMatch(/--focus-outline-weight:\s*var\(--stroke-md\)/);
     expect(css).toMatch(/--stroke-hairline:\s*1px;/);
     // The heavier outline weight stays one token away.
     expect(css).toMatch(/--stroke-lg:\s*3px;/);

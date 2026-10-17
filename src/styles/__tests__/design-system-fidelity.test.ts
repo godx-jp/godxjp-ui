@@ -115,10 +115,8 @@ describe("DXS hi-fi visual contract", () => {
     expect(read("../card-layout.css")).toMatch(
       /border-radius: var\(--card-radius, calc\(var\(--radius\) \* var\(--radius-ratio\)\)\);/,
     );
-    // `shadow-sm` IS still the surface; gh#880 moved WHERE it is stated. A `:root` binding to the
-    // ramp substitutes on `<html>`, so a scope that restates the ramp could never move the card —
-    // the knob is `initial` and the ramp default now resolves on `.ui-card`.
-    expect(card).toMatch(/--card-shadow:\s*initial;/);
+    // Modern defaults flatten resting cards. An explicit initial restores the scoped ramp fallback.
+    expect(card).toMatch(/--card-shadow:\s*none;/);
     expect(read("../card-layout.css")).toMatch(
       /box-shadow: var\(--card-shadow, var\(--shadow-sm\)\), var\(--card-glow\);/,
     );

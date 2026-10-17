@@ -6,6 +6,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Calm enterprise refresh, configurable through existing tokens.** Button corners now match
+  inputs (`--button-radius: var(--radius)`, 6px instead of ~3.7px); resting controls are flat
+  (`--control-shadow: none`). Floating `--shadow-md` / `--shadow-lg` use softer ambient/contact
+  layers. Motion defaults (`--duration-fast/base/slow`) are 120/180/320ms instead of 150/250/500ms;
+  reduced-motion handling is preserved. No new props or tokens.
+- **Input boundaries clear 3:1 on the full accent surface.** `--input` changes from `30 7% 53%`
+  to `30 7% 51%` in light and from `45 6% 47%` to `45 6% 51%` in dark. Decorative dividers,
+  and the GoDX emerald-teal palette are unchanged.
+
+- **Second pass: visible hierarchy and breathing room.** Page titles 28px (21px compact), card titles ~15.7px, desktop gutters 32px, card header-to-body gap 24px, form rows 20px, default controls/table rows 36px. Flat resting cards, 40% scrim, and 2px focus with 2px offset. Body/label weights and mobile gutters stay unchanged. Full token table: `docs/TOKENS.md`.
+
+Restore the previous look by loading this after the library and preset styles. Omit the input
+lines to retain the accessibility repair (the old accent-boundary ratios were 2.91/2.69:1):
+
+```css
+:root {
+  --space-page-x: var(--space-6);
+  --space-page-y: var(--space-6);
+  --card-space-body-y: var(--space-section-active);
+  --page-title-font-size: var(     --heading-h1,     calc(       var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *         var(--font-size-ratio)     )   );
+  --page-title-font-size-compact: var(     --heading-h2,     calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))   );
+  --overlay-background: rgb(0 0 0 / 0.5);
+  --card-title-font-size: var(--font-size-base);
+  --card-shadow: initial;
+  --form-field-row-gap: var(--space-3);
+  --form-block-gap: var(--space-4);
+  --control-height-default: var(--band-height-md);
+  --control-focus-ring-width: initial;
+  --table-row-height-default: var(--band-height-md);
+  --focus-outline-weight: initial;
+  --focus-outline-offset: 0px;
+  --button-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+  --control-shadow: var(--shadow-xs);
+  --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 500ms;
+  --input: 30 7% 53%;
+}
+.dark, :root[data-theme="dark"] { --input: 45 6% 47%; }
+
+.ui-scale-fixed {
+  --space-page-x: var(--space-6);
+  --space-page-y: var(--space-6);
+  --space-section: var(--space-4);
+}
+```
+
 ## [33.8.1] - 2026-10-17
 
 ### Fixed

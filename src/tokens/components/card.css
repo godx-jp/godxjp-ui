@@ -16,7 +16,7 @@
   --card-space-header-y: var(--space-stack-sm);
   /* Gap between the header and the body, and the body's own top padding — the breathing
    * room under a title before content begins. */
-  --card-space-body-y: var(--space-section-active);
+  --card-space-body-y: var(--space-6);
   /* Symmetric block padding for a SOLO content slot, so a composed shell can tune block and
    * inline spacing independently without targeting CardContent.
    * Declared `initial` for the SAME reason as --card-space-shell-y above: written as
@@ -36,7 +36,7 @@
   --card-space-divided-y: var(--card-space-header-y);
   /* Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header). */
   --card-space-gap: var(--space-stack-xs);
-  --card-title-font-size: var(--font-size-base);
+  --card-title-font-size: calc(var(--font-size-base) * var(--font-size-ratio));
   --card-title-line-height: var(--line-height-tight);
   --card-title-font-weight: var(--font-weight-semibold);
   --card-description-font-size: var(--font-size-sm, var(--font-size-base));
@@ -59,14 +59,10 @@
    * Default = 1px solid hsl(var(--card-border)) (resolved at the call site). */
   --card-header-border-bottom: initial;
   --card-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) * var(--radius-ratio)) */
-  /* The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm
-   * elevation layer. Consumers can still flatten or lift cards through this knob.
-   *
-   * `initial`, NOT `var(--shadow-sm)` — a role-mirror knob written here binds at `<html>` and a
-   * scope below root that restates the elevation ramp can never reach it (docs/TOKEN-RESOLUTION.md
-   * §3). The default now resolves on `.ui-card`, so a `[data-tenant]`/`[data-theme]` region that
-   * sets `--shadow-sm` moves its own cards and nothing else. gh#880 item 7. */
-  --card-shadow: initial; /* default = var(--shadow-sm), resolved at the call site */
+  /* Flat resting cards: the hairline defines the surface; elevation is reserved for overlays.
+   * Set --card-shadow to a shadow value for opt-in elevation, or to initial to restore the
+   * live --shadow-sm fallback at the call site (including scoped shadow ramps). */
+  --card-shadow: none;
   /* Brand glow layer — invisible no-op at rest (rule #44). Paired AFTER --card-shadow in the
    * surface box-shadow so a service can wash every card with the global glow, e.g.
    * --card-glow: var(--shadow-glow), with no markup change. */

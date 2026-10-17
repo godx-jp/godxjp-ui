@@ -1,13 +1,9 @@
 /* FOCUS — the ONE place the keyboard-focus affordance is drawn, and the ONE switch that turns it
  * on.
  *
- * THE SWITCH SHIPS OFF. `--focus-outline` is `0` (tokens/foundation.css) — one 0/1 flag, and
- * every painted length here multiplies by it. With the switch off the outline resolves to `0px`,
- * `--focus-field-shadow` is `none`, and the boundary rule below never matches. Nothing paints.
- *
- * THE `:focus-visible` MACHINERY STAYS. Not one selector was removed to achieve that. A consumer
- * who needs the indicator sets `data-focus-outline="on"` on the root element and the whole thing
- * returns — see the axis in tokens/axes.css and the cost recorded in docs/DESIGN-AUTHORITY.md.
+ * THE SWITCH SHIPS ON. `--focus-outline: 1` in foundation.css enables the existing keyboard
+ * indicator. `data-focus-outline="off"` is an explicit consumer opt-out; the default remains
+ * visible. The lengths below multiply by the switch without changing layout.
  *
  * WHAT THE ON STATE PAINTS. The focus shape has two forms (docs/DESIGN-AUTHORITY.md); this file
  * ships the LIGHTER of them, applied uniformly:
@@ -18,8 +14,7 @@
  *     outline form (3px of `--primary-border`). Two reasons, both measured: `--primary-border` is
  *     #a66de3, which reaches 3.49:1 on the page but only 2.92:1 on an accent panel, so it cannot
  *     satisfy SC 1.4.11 on every surface at any thickness; and 3px of opaque brand around an
- *     already-shaded selected nav row is exactly the weight that was reported as intrusive. One
- *     hairline in the focus hue measures at worst 5.30:1 light / 6.87:1 dark.
+ *     already-shaded selected nav row is exactly the weight that was reported as intrusive. The default 2px mark in the focus hue measures at worst 5.30:1 light / 6.87:1 dark.
  *
  * NO LAYOUT SHIFT IS POSSIBLE. The field form never changes a border WIDTH, only its colour, and
  * an `outline` is painted outside the box model. Nothing here can move a control's box. */

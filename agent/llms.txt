@@ -11,7 +11,7 @@ that can only fetch URLs.
 
 - [START-HERE.md](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md): the whole contract — the four rules, the token override model, a page that passes review. Read this first; it is self-contained.
 - [index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json): version, counts, and the URL of every file.
-- [DESIGN.md](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md): 17 KB — the visual spec: tokens, colour scarcity, admin screen anatomy (list, detail, form, settings, dashboard), do/don't. Read it before composing a screen.
+- [DESIGN.md](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md): 18 KB — the visual spec: tokens, colour scarcity, admin screen anatomy (list, detail, form, settings, dashboard), do/don't. Read it before composing a screen.
 
 ## Catalog
 

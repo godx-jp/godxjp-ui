@@ -100,14 +100,11 @@
    *     only thing that says "you may type here". That is squarely SC 1.4.11's 3:1 minimum.
    *
    * They shipped sharing `30 7% 83%`, which measured 1.46:1 on --background/--card — the one
-   * live WCAG failure a full DXS Platform sweep turned up. 53% clears 3:1 with margin on every
-   * surface a control actually sits on, not just the plain page (the gh#299 lesson: a value that
-   * passes on a card and fails inside a filter bar is not a line anyone can defend):
-   * --background/--card/--popover 3.47:1 · --muted/--secondary 3.18:1 · zebra stripe 3.35:1 ·
-   * row hover 3.32:1. It also lifts the Switch's unchecked track from 1.46:1 to 3.47:1 against
-   * both the page and its own white thumb, so "off" is finally a visible state.
+   * live WCAG failure a full DXS Platform sweep turned up. The modern refresh uses 51%
+   * lightness: the previous 53% passed the translucent hovered row but fell below 3:1 on
+   * the full --accent ground. The boundary test now includes that ground in both themes.
    * Guarded by src/tokens/__tests__/input-boundary-contrast.test.ts. */
-  --input: 30 7% 53%; /* #90877f — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
+  --input: 30 7% 51%; /* #8b8279 — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
   /* --ring lives in the DERIVED tier: there is no separate focus colour, a focused field simply
    * recolours its border to the primary. See src/tokens/derived.css. */
   /* STATUS FILLS AND THE INK THAT RIDES ON THEM.
@@ -363,9 +360,9 @@
   --shadow-xs: 0 1px 1px 0 rgb(var(--shadow-color) / 0.04);
   --shadow-sm: 0 1px 2px 0 rgb(var(--shadow-color) / 0.05);
   --shadow-md:
-    0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.1);
+    0 6px 16px -4px rgb(var(--shadow-color) / 0.08), 0 1px 3px 0 rgb(var(--shadow-color) / 0.08);
   --shadow-lg:
-    0 10px 15px -3px rgb(var(--shadow-color) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
+    0 12px 28px -6px rgb(var(--shadow-color) / 0.1), 0 2px 6px -2px rgb(var(--shadow-color) / 0.08);
   --shadow-xl:
     0 20px 25px -5px rgb(var(--shadow-color) / 0.1), 0 8px 10px -6px rgb(var(--shadow-color) / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(var(--shadow-color) / 0.25);
@@ -448,24 +445,12 @@
    * resolves to `0px`, the halo's spread resolves to `0px`, and `--focus-field-shadow` is `none`.
    * The `:focus-visible` selectors themselves stay exactly where they are: only the paint goes.
    *
-   * ── THE ON WEIGHT ────────────────────────────────────────────────────────────────────────
-   *
-   * `--focus-outline-weight` is the ON state's thickness, and it is deliberately the HAIRLINE
-   * (1px) rather than the heavy outline weight (3px). The heavy mark is what the complaint was
-   * about: a 3px opaque outline stacked on an already-shaded selected nav row reads as two
-   * treatments on one element. WCAG's AA bar for an indicator is CONTRAST (SC 1.4.11, 3:1), not
-   * thickness, so the weight can come all the way down to the FIELD indicator — one hairline of
-   * `--ring`, which measures at worst 5.30:1 light and 6.87:1 dark across every surface a control
-   * sits on — while the criterion is still met. The 3px weight is one token away: set
-   * `--focus-outline-weight: var(--stroke-lg)`.
-   *
-   * The hue is the focus hue itself, NOT `--primary-border`. That is the one place the ON state
-   * departs from the OUTLINE form, and it is forced: `--primary-border` for this seed is #a66de3,
-   * which reaches 3.49:1 on the page and 2.92:1 light / 1.03:1 dark on an accent panel, so it
-   * cannot satisfy SC 1.4.11 on every surface at any thickness.
-   * A mark that fails the criterion is not an indicator. */
-  --focus-outline: 1; /* the switch — 1 = on (shipped default since gh#544), 0 = off */
-  --focus-outline-weight: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
+   * ── THE ON WEIGHT ──────────────────────────────────────────────────────
+   * The modern default is a 2px mark with 2px offset. Hue remains --ring for
+   * at least 3:1 contrast on supported surfaces; navigation keeps its inset.
+   * Consumers can retune the two thickness knobs or use the existing opt-out. */
+  --focus-outline: 1; /* 1 = on, 0 = off */
+  --focus-outline-weight: var(--stroke-md);
   /* the heavy alternative is --stroke-lg */
   /* default = var(--focus-ring-color, var(--ring)), resolved at the focused element — a `:root`
    * binding froze on the root's --ring, so a nested tenant scope never re-tinted the outline
@@ -473,7 +458,7 @@
   --focus-outline-color: initial;
   /* the field halo spread */
   --control-outline-width: calc(var(--stroke-md) * var(--focus-outline));
-  --focus-outline-offset: 0px;
+  --focus-outline-offset: 2px;
 
   /* FOCUS RING — the two global knobs for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).
    * `--focus-ring-color` is the themeable hue (HSL components, defaults to --ring) and
@@ -946,9 +931,9 @@
    * instead of a literal 0.5s / cubic-bezier(...) / translateY(10px) (cardinal rule #2).
    * the reference design keeps motion LOW: short durations, a calm decelerate curve, a small reveal shift.
    * Consumers honour prefers-reduced-motion at the call site. */
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 500ms;
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 320ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-emphasized: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-decelerate: cubic-bezier(0, 0, 0, 1);
@@ -1044,8 +1029,8 @@
   --table-row-height: var(--table-row-height-default);
   --table-cell-padding-y: var(--space-2);
   --phi-unit: var(--space-4);
-  --space-page-x: var(--space-6);
-  --space-page-y: var(--space-6);
+  --space-page-x: var(--space-8);
+  --space-page-y: var(--space-8);
   --space-section: var(--space-4);
   --space-section-band: var(--space-20);
   --space-section-hero: var(--space-24);
@@ -1108,12 +1093,10 @@
   --border: 45 6% 19%;
   /* Control boundary (dark) — recomputed on the dark spine, not merely lightened by eye
    * (gh#315). The dark pair shared `45 6% 22%`, which sat at 1.55:1 on --background and 1.43:1
-   * on the --card/--popover surface where dialogs put their fields. 47% gives
-   * --background 4.22:1 · --card/--popover 3.88:1 · --muted/--secondary 3.17:1 · zebra 3.81:1 ·
-   * hover 3.71:1. --border does NOT follow it up here — dividers are decorative and a dark grid
-   * at 47% would read as a wireframe; it sits at 19%, antd's split tier, for the reason recorded
-   * above it. See the light block for the full reasoning. */
-  --input: 45 6% 47%; /* #7f7b71 — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
+   * on the --card/--popover surface where dialogs put their fields. The refresh uses 51%
+   * so even the full --accent ground clears 3:1. --border stays at 19%: decorative dividers
+   * must not become control boundaries. See the light block for the shared rationale. */
+  --input: 45 6% 51%; /* #8a867b — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
   /* --ring and the dark halo alpha live in the DERIVED tier. The dark halo needs roughly 2.5× the
    * light alpha to read at all on a near-black ground — 0.29 dark against 0.11 light, which is
    * what the eyeballed 0.3 was reaching for. It is not restated here; see src/tokens/derived.css

@@ -65,7 +65,7 @@ describe(
   { timeout: 60_000 },
   () => {
     it.each(["ui-checkbox", "ui-radio"])(
-      "%s resolves to a 150ms colour transition, none under reduce",
+      "%s resolves to a 120ms colour transition, none under reduce",
       async (cls) => {
         const read = async (reducedMotion: "reduce" | "no-preference") => {
           const page = await browser.newPage();
@@ -82,7 +82,7 @@ describe(
         };
         const normal = await read("no-preference");
         expect(normal.property).toBe("background-color, border-color, color");
-        expect(normal.duration.split(", ").every((d) => d === "0.15s")).toBe(true);
+        expect(normal.duration.split(", ").every((d) => d === "0.12s")).toBe(true);
         const reduced = await read("reduce");
         expect(reduced.duration.split(", ").every((d) => d === "0s")).toBe(true);
       },

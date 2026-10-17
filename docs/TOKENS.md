@@ -175,7 +175,7 @@ These two look like synonyms and are not. Keep them apart:
 | `--border` | Decorative chrome — table rules, card edges, section dividers, `<Separator>`                                                                                    | **None.** WCAG 2.2 SC 1.4.11 does not reach a divider; this system's dense JP grid depends on it staying quiet                                         |
 | `--input`  | The boundary that **is** the control — Input, Textarea, Select, outline Button, TagInput, composite date field, topbar search, and the Switch's unchecked track | **≥ 3:1** (SC 1.4.11 Non-text Contrast) against every surface a control sits on — page, card, popover, muted/secondary panel, striped and hovered rows |
 
-A field here has no fill of its own (`background: hsl(var(--background))`) and no shadow to speak of, so that 1px edge is the whole visual claim that you may type there. Current values: `30 7% 53%` light (3.47:1 on `--background`/`--card`, 3.18:1 on `--muted`) and `45 6% 47%` dark (4.22:1 on `--background`, 3.88:1 on `--card`/`--popover`, 3.17:1 on `--muted`).
+A field here has no fill of its own (`background: hsl(var(--background))`) and no shadow to speak of, so that 1px edge is the whole visual claim that you may type there. Current values: `30 7% 51%` light and `45 6% 51%` dark. Both clear 3:1 on background, card, popover, muted and the full accent surface. The earlier 53% / 47% pair passed translucent table hover backgrounds but failed the full accent surface (2.91:1 / 2.69:1).
 
 **Re-theming rule:** a service theme that retints neutrals must move these two **independently** — setting `--input: var(--border)` re-opens the bug. `src/tokens/__tests__/input-boundary-contrast.test.ts` recomputes the ratios from `foundation.css` and fails below 3:1, and fails outright if the two roles are given the same value again.
 
@@ -482,3 +482,64 @@ It is reserved for `@container` / `@media` re-points. Everything static stays in
 ## MCP
 
 `godxjp_ui_guide` topic=`golden-ratio` · `tokens`
+
+## Second pass: hierarchy and rhythm
+
+Fifteen existing token defaults build on the eight first-pass changes. Body stays 14px/1.7, labels and headings stay 500, with no Latin-style negative tracking on Japanese. Mobile gutters remain 16px. Zebra stays off; table numeric alignment and sidebar active styling are unchanged. Card header-to-body spacing grows to 24px; horizontal card/table insets and section gaps stay 16px so fixed-width date columns remain on one line. No new token or component API.
+
+| Token | Previous | New |
+|---|---|---|
+| `--space-page-x` | `var(--space-6)` | `var(--space-8)` |
+| `--space-page-y` | `var(--space-6)` | `var(--space-8)` |
+| `--card-space-body-y` | `var(--space-section-active)` | `var(--space-6)` |
+| `--page-title-font-size` | `var( --heading-h1, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )` | `calc(var(--font-size-base) * 2)` |
+| `--page-title-font-size-compact` | `var( --heading-h2, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )` | `calc(var(--font-size-base) * 1.5)` |
+| `--overlay-background` | `rgb(0 0 0 / 0.5)` | `rgb(0 0 0 / 0.4)` |
+| `--card-title-font-size` | `var(--font-size-base)` | `calc(var(--font-size-base) * var(--font-size-ratio))` |
+| `--card-shadow` | `initial` | `none` |
+| `--form-field-row-gap` | `var(--space-3)` | `var(--space-5)` |
+| `--form-block-gap` | `var(--space-4)` | `var(--space-6)` |
+| `--control-height-default` | `var(--band-height-md)` | `var(--band-height-lg)` |
+| `--control-focus-ring-width` | `initial` | `var(--stroke-md)` |
+| `--table-row-height-default` | `var(--band-height-md)` | `var(--band-height-lg)` |
+| `--focus-outline-weight` | `initial` | `var(--stroke-md)` |
+| `--focus-outline-offset` | `0px` | `2px` |
+
+### Complete restoration (both passes)
+
+Load after library and preset styles. The original input colors restore the original sub-3:1 accent-boundary limitation.
+
+```css
+:root {
+  --space-page-x: var(--space-6);
+  --space-page-y: var(--space-6);
+  --card-space-body-y: var(--space-section-active);
+  --page-title-font-size: var(     --heading-h1,     calc(       var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *         var(--font-size-ratio)     )   );
+  --page-title-font-size-compact: var(     --heading-h2,     calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))   );
+  --overlay-background: rgb(0 0 0 / 0.5);
+  --card-title-font-size: var(--font-size-base);
+  --card-shadow: initial;
+  --form-field-row-gap: var(--space-3);
+  --form-block-gap: var(--space-4);
+  --control-height-default: var(--band-height-md);
+  --control-focus-ring-width: initial;
+  --table-row-height-default: var(--band-height-md);
+  --focus-outline-weight: initial;
+  --focus-outline-offset: 0px;
+  --button-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+  --control-shadow: var(--shadow-xs);
+  --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 500ms;
+  --input: 30 7% 53%;
+}
+.dark, :root[data-theme="dark"] { --input: 45 6% 47%; }
+
+.ui-scale-fixed {
+  --space-page-x: var(--space-6);
+  --space-page-y: var(--space-6);
+  --space-section: var(--space-4);
+}
+```

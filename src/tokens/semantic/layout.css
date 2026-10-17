@@ -5,8 +5,8 @@
    * the linear `--space-*` scale (NOT the golden φ scale — golden ratio is for modular SIZE scales
    * like type/radius, not the spacing grid; mixing the two left an incoherent density rhythm). The
    * φ tokens remain available as an optional golden-layout utility, just not the spacing baseline. */
-  --space-page-x: var(--space-6); /* 24px — page gutter */
-  --space-page-y: var(--space-6); /* 24px */
+  --space-page-x: var(--space-8); /* 32px — page gutter */
+  --space-page-y: var(--space-8); /* 32px */
   --space-section: var(--space-4); /* 16px */
   /* THE MARKETING BAND RHYTHM (gh#831). `--space-section` is the gap BETWEEN the blocks of one
    * admin page; these two are the block-axis padding of a full-bleed marketing BAND and of the
@@ -110,7 +110,7 @@
    * `:root` binding would freeze and a scoped `[data-tenant]`/`.dark` override of this token would
    * never reach the overlay. Overlays are portaled, so a tenant scope must also sit on the portal
    * container (see docs/CUSTOMER-THEMING.md). */
-  --overlay-background: rgb(0 0 0 / 0.5);
+  --overlay-background: rgb(0 0 0 / 0.4);
 
   /* RECESSED SURFACE role (gh#399) — "the ground a card sits on", one step BEHIND `--card`.
    *
@@ -243,17 +243,8 @@
 
   /* Responsive page typography is independent from density. Density changes information spacing;
    * these tokens change only page chrome so mobile keeps readable body text and touch targets. */
-  --page-title-font-size: var(
-    --heading-h1,
-    calc(
-      var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
-        var(--font-size-ratio)
-    )
-  );
-  --page-title-font-size-compact: var(
-    --heading-h2,
-    calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
-  );
+  --page-title-font-size: calc(var(--font-size-base) * 2);
+  --page-title-font-size-compact: calc(var(--font-size-base) * 1.5);
   --page-subtitle-font-size: var(--font-size-base);
   --page-subtitle-font-size-compact: var(--font-size-sm, var(--font-size-base));
 
