@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.9.1] - 2026-10-17
+
+The first release of everything listed under 33.9.0 below: its main CI was red (`check:no-hardcoded-geometry`) and the release gate stopped before tagging, so 33.9.0 never reached npm.
+
+### Fixed
+
+- **A disabled route tab reads `--disabled-opacity` (#1364).** It used the literal `opacity-50`, which a service theme could not reach.
+
 ## [33.9.0] - 2026-10-17
 
 ### Added
