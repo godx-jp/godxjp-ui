@@ -2264,16 +2264,17 @@
       "description": "Mô tả được lưu dưới dạng HTML theo từng ngôn ngữ. Chuyển tab ngôn ngữ để sửa ngôn ngữ khác; ngôn ngữ còn trống hiển thị nội dung tiếng Nhật làm gợi ý.",
       "name": "Tên sản phẩm",
       "descriptionLabel": "Mô tả",
-      "helper": "In đậm, danh sách và tiêu đề được giữ lại; phần còn lại được lưu dưới dạng văn bản.",
+      "helper": "Nhập mô tả cho từng ngôn ngữ. Bản dịch còn trống hiển thị mô tả tiếng Nhật để tham khảo.",
       "required": "Nhập mô tả cho ngôn ngữ này",
-      "save": "Lưu"
+      "save": "Lưu",
+      "saved": "Đã lưu thay đổi trong bản xem trước này."
     },
     "saved": {
       "title": "Giá trị được lưu",
       "description": "Bản đồ HTML đã làm sạch theo từng ngôn ngữ — chỉ p, br, h1–h3, ul, ol, li, blockquote, strong, em, s và code; thuộc tính duy nhất là số bắt đầu (start, số nguyên) của danh sách đánh số."
     },
     "single": {
-      "title": "Một ngôn ngữ",
+      "title": "Ghi chú bếp",
       "description": "Dùng RichTextEditor riêng cho trường HTML không cần dịch.",
       "label": "Ghi chú sơ chế",
       "placeholder": "Nhập các bước sơ chế",

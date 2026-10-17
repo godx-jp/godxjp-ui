@@ -18,8 +18,9 @@ import {
   TextQuote,
   Undo2,
 } from "lucide-react";
-import { ToggleGroup, ToggleGroupItem, type FieldA11yProps } from "@godxjp/ui/data-entry";
+import { Toggle, type FieldA11yProps } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
+import { Flex } from "@godxjp/ui/layout";
 import { useTranslation } from "@godxjp/ui/i18n";
 
 import { ensureBlockEditorMessages, type BlockEditorLabels } from "./messages";
@@ -296,74 +297,139 @@ function RichTextToolbar({
     }),
   });
 
+  const [focusKey, setFocusKey] = React.useState("bold");
+  const enabledKeys = disabled
+    ? []
+    : [
+        "bold",
+        "italic",
+        "strike",
+        "code",
+        "heading1",
+        "heading2",
+        "heading3",
+        "bulletList",
+        "orderedList",
+        "quote",
+        ...(state.canUndo ? ["undo"] : []),
+        ...(state.canRedo ? ["redo"] : []),
+      ];
+  const tabStop = enabledKeys.includes(focusKey) ? focusKey : enabledKeys[0];
+  const focusProps = (key: string) => ({
+    "data-command": key,
+    tabIndex: key === tabStop ? 0 : -1,
+    onFocus: () => setFocusKey(key),
+  });
+  const marks = [
+    ["bold", "bold", Bold],
+    ["italic", "italic", Italic],
+    ["strike", "strike", Strikethrough],
+    ["code", "inlineCode", Code],
+  ] as const;
+  const blocks = [
+    [
+      ["heading1", "heading1", Heading1],
+      ["heading2", "heading2", Heading2],
+      ["heading3", "heading3", Heading3],
+    ],
+    [
+      ["bulletList", "bulletList", List],
+      ["orderedList", "numberedList", ListOrdered],
+      ["quote", "quote", TextQuote],
+    ],
+  ] as const;
+
   return (
-    <div className="ui-rich-text-editor-toolbar">
-      <ToggleGroup
-        type="multiple"
-        size="sm"
-        aria-label={label("formatting")}
-        value={state.marks}
-        onValueChange={(next) => applyMarks(editor, state.marks, next)}
-        disabled={disabled}
-      >
-        <ToggleGroupItem value="bold" aria-label={label("bold")}>
-          <Bold />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="italic" aria-label={label("italic")}>
-          <Italic />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="strike" aria-label={label("strike")}>
-          <Strikethrough />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="code" aria-label={label("inlineCode")}>
-          <Code />
-        </ToggleGroupItem>
-      </ToggleGroup>
-      <ToggleGroup
-        type="single"
-        size="sm"
-        aria-label={label("textStyle")}
-        value={state.block}
-        onValueChange={(next) => applyBlock(editor, next)}
-        disabled={disabled}
-      >
-        <ToggleGroupItem value="heading1" aria-label={label("heading1")}>
-          <Heading1 />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="heading2" aria-label={label("heading2")}>
-          <Heading2 />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="heading3" aria-label={label("heading3")}>
-          <Heading3 />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="bulletList" aria-label={label("bulletList")}>
-          <List />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="orderedList" aria-label={label("numberedList")}>
-          <ListOrdered />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="quote" aria-label={label("quote")}>
-          <TextQuote />
-        </ToggleGroupItem>
-      </ToggleGroup>
-      <Button
-        size="icon-sm"
-        variant="ghost"
-        aria-label={label("undo")}
-        disabled={disabled || !state.canUndo}
-        onClick={() => editor.chain().focus().undo().run()}
-      >
-        <Undo2 />
-      </Button>
-      <Button
-        size="icon-sm"
-        variant="ghost"
-        aria-label={label("redo")}
-        disabled={disabled || !state.canRedo}
-        onClick={() => editor.chain().focus().redo().run()}
-      >
-        <Redo2 />
-      </Button>
+    <div
+      className="ui-rich-text-editor-toolbar"
+      role="toolbar"
+      aria-label={label("formatting")}
+      aria-orientation="horizontal"
+      onKeyDown={(event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || !enabledKeys.length) return;
+        const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
+        const index = enabledKeys.indexOf((event.target as HTMLElement).dataset.command ?? "");
+        let next: number;
+        if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = enabledKeys.length - 1;
+        else if (event.key === "ArrowRight") next = index + (rtl ? -1 : 1);
+        else if (event.key === "ArrowLeft") next = index + (rtl ? 1 : -1);
+        else return;
+        event.preventDefault();
+        const key = enabledKeys[(next + enabledKeys.length) % enabledKeys.length];
+        event.currentTarget.querySelector<HTMLButtonElement>(`[data-command="${key}"]`)?.focus();
+      }}
+    >
+      <Flex direction="row" gap="xs">
+        {marks.map(([key, labelKey, Icon]) => (
+          <Toggle
+            key={key}
+            type="button"
+            size="sm"
+            variant="quiet"
+            aria-label={label(labelKey)}
+            title={label(labelKey)}
+            pressed={state.marks.includes(key)}
+            onPressedChange={(pressed) =>
+              applyMarks(
+                editor,
+                state.marks,
+                pressed ? [...state.marks, key] : state.marks.filter((mark) => mark !== key),
+              )
+            }
+            disabled={disabled}
+            {...focusProps(key)}
+          >
+            <Icon aria-hidden="true" />
+          </Toggle>
+        ))}
+      </Flex>
+      {blocks.map((group, index) => (
+        <Flex key={index} direction="row" gap="xs">
+          {group.map(([key, labelKey, Icon]) => (
+            <Toggle
+              key={key}
+              type="button"
+              size="sm"
+              variant="quiet"
+              aria-label={label(labelKey)}
+              title={label(labelKey)}
+              pressed={state.block === key}
+              onPressedChange={(pressed) => applyBlock(editor, pressed ? key : "")}
+              disabled={disabled}
+              {...focusProps(key)}
+            >
+              <Icon aria-hidden="true" />
+            </Toggle>
+          ))}
+        </Flex>
+      ))}
+      <Flex direction="row" gap="xs">
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="ghost"
+          aria-label={label("undo")}
+          title={label("undo")}
+          disabled={disabled || !state.canUndo}
+          onClick={() => editor.chain().focus().undo().run()}
+          {...focusProps("undo")}
+        >
+          <Undo2 aria-hidden="true" />
+        </Button>
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="ghost"
+          aria-label={label("redo")}
+          title={label("redo")}
+          disabled={disabled || !state.canRedo}
+          onClick={() => editor.chain().focus().redo().run()}
+          {...focusProps("redo")}
+        >
+          <Redo2 aria-hidden="true" />
+        </Button>
+      </Flex>
     </div>
   );
 }

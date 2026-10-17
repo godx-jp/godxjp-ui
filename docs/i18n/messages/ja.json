@@ -2264,16 +2264,17 @@
       "description": "説明は言語ごとに HTML で保存されます。言語タブで編集する言語を切り替えます。未入力の言語には日本語の本文がヒントとして表示されます。",
       "name": "商品名",
       "descriptionLabel": "説明",
-      "helper": "太字・箇条書き・見出しは保持され、それ以外はテキストとして保存されます。",
+      "helper": "各言語の商品説明を入力してください。未翻訳の欄には日本語の説明がヒントとして表示されます。",
       "required": "この言語の説明を入力してください",
-      "save": "保存"
+      "save": "保存",
+      "saved": "このプレビュー内で変更を保存しました。"
     },
     "saved": {
       "title": "保存される値",
       "description": "言語ごとのサニタイズ済み HTML。p・br・h1〜h3・ul・ol・li・blockquote・strong・em・s・code のみで、属性は番号付きリストの開始番号（整数の start）だけです。"
     },
     "single": {
-      "title": "単一言語",
+      "title": "厨房向けメモ",
       "description": "翻訳しない HTML 項目には RichTextEditor を単独で使います。",
       "label": "仕込みメモ",
       "placeholder": "仕込みの手順を入力",

@@ -1,16 +1,7 @@
 import * as React from "react";
 import { RichTextEditor, TranslatableRichText } from "@godxjp/block-editor";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  CodeBlock,
-} from "@godxjp/ui/data-display";
 import { Form, FormField, TranslatableInput, type TranslatableValue } from "@godxjp/ui/data-entry";
-import { Button } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -43,91 +34,76 @@ export default function Demo() {
     "<h3>仕込み</h3><p>スープは前日に<em>8時間</em>炊く。</p>",
   );
 
+  const [saved, setSaved] = React.useState(false);
+
   return (
-    <PageContainer title="RichTextEditor" subtitle={t("richTextEditorDocs.subtitle")}>
-      <Card>
-        <CardHeader>
-          <CardTitle level={2}>{t("richTextEditorDocs.edit.title")}</CardTitle>
-          <CardDescription>{t("richTextEditorDocs.edit.description")}</CardDescription>
-        </CardHeader>
-        <Form
-          onSubmit={(event) => {
-            event.preventDefault();
-            const next: Errors = {};
-            for (const code of LOCALES) {
-              if (isBlank(description[code])) next[code] = t("richTextEditorDocs.edit.required");
-            }
-            setErrors(next);
-          }}
+    <PageContainer
+      title={t("richTextEditorDocs.edit.title")}
+      measure="narrow"
+      extra={
+        <Button type="submit" form="product-edit">
+          {t("richTextEditorDocs.edit.save")}
+        </Button>
+      }
+    >
+      <Form
+        id="product-edit"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const next: Errors = {};
+          for (const code of LOCALES) {
+            if (isBlank(description[code])) next[code] = t("richTextEditorDocs.edit.required");
+          }
+          setErrors(next);
+          setSaved(Object.keys(next).length === 0);
+        }}
+      >
+        <FormField id="product-name" label={t("richTextEditorDocs.edit.name")} required>
+          <TranslatableInput
+            locales={LOCALES}
+            fallbackLocale="ja"
+            value={name}
+            onValueChange={(next) => {
+              setName(next);
+              setSaved(false);
+            }}
+          />
+        </FormField>
+        <FormField
+          id="product-description"
+          label={t("richTextEditorDocs.edit.descriptionLabel")}
+          required
+          helper={t("richTextEditorDocs.edit.helper")}
         >
-          <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="product-name" label={t("richTextEditorDocs.edit.name")} required>
-                <TranslatableInput
-                  locales={LOCALES}
-                  fallbackLocale="ja"
-                  value={name}
-                  onValueChange={setName}
-                />
-              </FormField>
-              <FormField
-                id="product-description"
-                label={t("richTextEditorDocs.edit.descriptionLabel")}
-                required
-                helper={t("richTextEditorDocs.edit.helper")}
-              >
-                <TranslatableRichText
-                  locales={LOCALES}
-                  fallbackLocale="ja"
-                  value={description}
-                  onValueChange={(next) => {
-                    setDescription(next);
-                    setErrors({});
-                  }}
-                  errors={errors}
-                />
-              </FormField>
-            </Flex>
-          </CardContent>
-          <CardFooter>
-            <Flex direction="row" justify="end" gap="sm" align="center">
-              <Button type="submit">{t("richTextEditorDocs.edit.save")}</Button>
-            </Flex>
-          </CardFooter>
-        </Form>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle level={2}>{t("richTextEditorDocs.saved.title")}</CardTitle>
-          <CardDescription>{t("richTextEditorDocs.saved.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <CodeBlock language="json">{JSON.stringify(description, null, 2)}</CodeBlock>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle level={2}>{t("richTextEditorDocs.single.title")}</CardTitle>
-          <CardDescription>{t("richTextEditorDocs.single.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form onSubmit={(event) => event.preventDefault()}>
-            <FormField id="prep-note" label={t("richTextEditorDocs.single.label")}>
-              <RichTextEditor
-                value={note}
-                onValueChange={setNote}
-                placeholder={t("richTextEditorDocs.single.placeholder")}
-              />
-            </FormField>
-            <FormField id="prep-note-readonly" label={t("richTextEditorDocs.single.readOnly")}>
-              <RichTextEditor value={note} readOnly />
-            </FormField>
-            <FormField id="prep-note-disabled" label={t("richTextEditorDocs.single.disabled")}>
-              <RichTextEditor value={note} disabled />
-            </FormField>
-          </Form>
-        </CardContent>
-      </Card>
+          <TranslatableRichText
+            locales={LOCALES}
+            fallbackLocale="ja"
+            value={description}
+            onValueChange={(next) => {
+              setDescription(next);
+              setErrors({});
+              setSaved(false);
+            }}
+            errors={errors}
+          />
+        </FormField>
+        <Flex direction="col" gap="md">
+          <Heading level={2}>{t("richTextEditorDocs.single.title")}</Heading>
+          <FormField id="prep-note" label={t("richTextEditorDocs.single.label")}>
+            <RichTextEditor
+              value={note}
+              onValueChange={(next) => {
+                setNote(next);
+                setSaved(false);
+              }}
+              placeholder={t("richTextEditorDocs.single.placeholder")}
+            />
+          </FormField>
+        </Flex>
+        <Text role="status" tone="muted">
+          {saved ? t("richTextEditorDocs.edit.saved") : ""}
+        </Text>
+      </Form>
     </PageContainer>
   );
 }

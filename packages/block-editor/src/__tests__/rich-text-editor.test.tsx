@@ -222,6 +222,72 @@ describe("RichTextEditor — HTML value", () => {
     );
   });
 
+  it("uses one toolbar tab stop across groups, skips disabled history and exits to the editor", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderIn(<RichTextEditor defaultValue="<p>hello</p>" onValueChange={onChange} />);
+    await mounted();
+    const toolbar = screen.getByRole("toolbar", { name: "Formatting" });
+    const buttons = within(toolbar).getAllByRole("button");
+    expect(buttons.filter((button) => button.tabIndex === 0)).toHaveLength(1);
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Bold" })).toHaveFocus();
+    await user.keyboard("{ArrowRight}{ArrowRight}{ArrowRight}{ArrowRight}");
+    expect(screen.getByRole("button", { name: "Heading 1" })).toHaveFocus();
+    await user.keyboard("{End}");
+    expect(screen.getByRole("button", { name: "Quote" })).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("button", { name: "Bold" })).toHaveFocus();
+    await user.keyboard("{End}{Home}");
+    expect(screen.getByRole("button", { name: "Bold" })).toHaveFocus();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.tab();
+    expect(editable()).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(screen.getByRole("button", { name: "Bold" })).toHaveFocus();
+    expect(buttons.filter((button) => button.tabIndex === 0)).toHaveLength(1);
+  });
+
+  it("reverses horizontal toolbar arrows in RTL without changing the document", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderIn(<RichTextEditor defaultValue="<p>hello</p>" onValueChange={onChange} />);
+    await mounted();
+    // jsdom does not inherit computed direction from an ancestor.
+    screen.getByRole("toolbar").style.direction = "rtl";
+    await user.tab();
+    await user.keyboard("{ArrowLeft}");
+    expect(screen.getByRole("button", { name: "Italic" })).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("button", { name: "Bold" })).toHaveFocus();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("formatting never submits the enclosing form, and history joins the roving order when enabled", async () => {
+    const user = userEvent.setup();
+    const submit = vi.fn((event: React.FormEvent) => event.preventDefault());
+    const handle = React.createRef<RichTextEditorHandle>();
+    renderIn(
+      <form onSubmit={submit}>
+        <RichTextEditor ref={handle} defaultValue="<p>hello</p>" />
+      </form>,
+    );
+    await mounted();
+    act(() => {
+      handle.current!.editor!.commands.selectAll();
+    });
+    await user.click(screen.getByRole("button", { name: "Bold" }));
+    await waitFor(() => expect(editable()).toHaveFocus());
+    const bold = screen.getByRole("button", { name: "Bold" });
+    act(() => bold.focus());
+    await user.keyboard("{End}");
+    expect(screen.getByRole("button", { name: "Undo" })).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("button", { name: "Undo" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Bold" })).toHaveAttribute("tabindex", "0");
+    expect(submit).not.toHaveBeenCalled();
+  });
+
   it.each([
     ["ja", "太字", "見出し1", "元に戻す", "書式"],
     ["en", "Bold", "Heading 1", "Undo", "Formatting"],
