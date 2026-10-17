@@ -105,23 +105,32 @@ for (const mode of ["route", "panel"] as const) {
             await expect
               .poll(() => page.locator(".ui-tabs-overflow").count())
               .toBe(width === 390 ? 1 : 0);
-            const geometry = await list.evaluate((element) => {
-              const box = element.getBoundingClientRect();
-              return [...element.querySelectorAll<HTMLElement>('[data-slot="tabs-trigger"]')].map(
-                (tab) => {
-                  const rect = tab.getBoundingClientRect();
-                  return {
-                    label: tab.textContent,
-                    painted: getComputedStyle(tab).opacity !== "0",
-                    inside:
-                      rect.left >= box.left - 1 &&
-                      rect.right <= box.right + 1 &&
-                      rect.top >= box.top - 1 &&
-                      rect.bottom <= box.bottom + 1,
-                  };
-                },
-              );
-            });
+            // The overflow hook settles in a ResizeObserver callback after the menu button
+            // appears, so wait for the steady state before reading the whole geometry.
+            const measure = () =>
+              list.evaluate((element) => {
+                const box = element.getBoundingClientRect();
+                return [...element.querySelectorAll<HTMLElement>('[data-slot="tabs-trigger"]')].map(
+                  (tab) => {
+                    const rect = tab.getBoundingClientRect();
+                    return {
+                      label: tab.textContent,
+                      painted: getComputedStyle(tab).opacity !== "0",
+                      inside:
+                        rect.left >= box.left - 1 &&
+                        rect.right <= box.right + 1 &&
+                        rect.top >= box.top - 1 &&
+                        rect.bottom <= box.bottom + 1,
+                    };
+                  },
+                );
+              });
+            await expect
+              .poll(
+                async () => (await measure()).filter((tab) => tab.painted && !tab.inside).length,
+              )
+              .toBe(0);
+            const geometry = await measure();
             expect(geometry.filter((tab) => tab.painted && !tab.inside)).toEqual([]);
             if (width === 1280) expect(geometry.filter((tab) => tab.painted)).toHaveLength(14);
             else {
