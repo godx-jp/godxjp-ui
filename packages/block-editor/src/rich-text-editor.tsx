@@ -108,8 +108,8 @@ const richTextExtensions = (placeholder: () => string) => [
   Placeholder.configure({ placeholder }),
 ];
 
-const BLOCKS = ["heading1", "heading2", "heading3", "bulletList", "orderedList", "quote"] as const;
-type BlockName = (typeof BLOCKS)[number] | "";
+/** The text-style group's value; `""` is a paragraph. */
+type BlockName = "heading1" | "heading2" | "heading3" | "bulletList" | "orderedList" | "quote" | "";
 
 const activeBlock = (editor: Editor): BlockName => {
   for (const level of [1, 2, 3] as const) {
@@ -236,11 +236,9 @@ export const RichTextEditor = React.forwardRef<RichTextEditorHandle, RichTextEdi
       editor?.setEditable(!disabled && !readOnly);
     }, [editor, disabled, readOnly]);
 
-    React.useImperativeHandle(
-      ref,
-      () => ({ focus: () => editor?.commands.focus(), editor }),
-      [editor],
-    );
+    React.useImperativeHandle(ref, () => ({ focus: () => editor?.commands.focus(), editor }), [
+      editor,
+    ]);
 
     return (
       <div

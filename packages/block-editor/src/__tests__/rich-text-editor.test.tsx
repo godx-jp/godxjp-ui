@@ -63,7 +63,10 @@ function Controlled({
           onChange?.(next);
         }}
       />
-      <button type="button" onClick={() => setValue('<p style="color:red">from the <b>server</b></p>')}>
+      <button
+        type="button"
+        onClick={() => setValue('<p style="color:red">from the <b>server</b></p>')}
+      >
         external
       </button>
       <output data-testid="mirror">{value}</output>
@@ -108,7 +111,7 @@ describe("RichTextEditor — HTML value", () => {
       '<script>alert(1)</script><p onclick="alert(2)" style="color:red" class="x">a' +
       '<a href="javascript:alert(3)">link</a><img src="x" onerror="alert(4)"><u>under</u>' +
       '<span style="font-size:40px">span</span></p><h4>four</h4><table><tr><td>cell</td></tr></table>' +
-      "<pre><code>block</code></pre><hr><iframe src=\"https://evil\"></iframe><style>p{}</style>";
+      '<pre><code>block</code></pre><hr><iframe src="https://evil"></iframe><style>p{}</style>';
     const handle = React.createRef<RichTextEditorHandle>();
     renderIn(<Controlled initial={dirty} handle={handle} />);
     await mounted();
@@ -149,7 +152,12 @@ describe("RichTextEditor — HTML value", () => {
     const onChange = vi.fn();
     const handle = React.createRef<RichTextEditorHandle>();
     const { rerender } = renderIn(
-      <RichTextEditor aria-label="Body" ref={handle} value="<p>にほ</p>" onValueChange={onChange} />,
+      <RichTextEditor
+        aria-label="Body"
+        ref={handle}
+        value="<p>にほ</p>"
+        onValueChange={onChange}
+      />,
     );
     await mounted();
     const editor = handle.current!.editor!;
@@ -157,7 +165,12 @@ describe("RichTextEditor — HTML value", () => {
     expect(editor.view.composing).toBe(true);
     rerender(
       <AppProvider persist={false} defaultLocale="en" fallbackLocale="ja">
-        <RichTextEditor aria-label="Body" ref={handle} value="<p>reset</p>" onValueChange={onChange} />
+        <RichTextEditor
+          aria-label="Body"
+          ref={handle}
+          value="<p>reset</p>"
+          onValueChange={onChange}
+        />
       </AppProvider>,
     );
     expect(editable()).toHaveTextContent("にほ");
@@ -193,7 +206,9 @@ describe("RichTextEditor — HTML value", () => {
     await user.click(screen.getByRole("button", { name: "Bulleted list" }));
     expect(onChange).toHaveBeenLastCalledWith("<p><strong>hello</strong></p>");
     await user.click(screen.getByRole("button", { name: "Quote" }));
-    expect(onChange).toHaveBeenLastCalledWith("<blockquote><p><strong>hello</strong></p></blockquote>");
+    expect(onChange).toHaveBeenLastCalledWith(
+      "<blockquote><p><strong>hello</strong></p></blockquote>",
+    );
   });
 
   it.each([
@@ -262,8 +277,7 @@ function ControlledTranslatable({
   );
 }
 
-const tabLocales = () =>
-  screen.getAllByRole("tab").map((tab) => tab.getAttribute("data-locale"));
+const tabLocales = () => screen.getAllByRole("tab").map((tab) => tab.getAttribute("data-locale"));
 
 describe("TranslatableRichText", () => {
   const initial = { ja: "<p>濃厚な<strong>醤油</strong>スープ</p>", en: "<p>Rich soy broth</p>" };
@@ -271,9 +285,13 @@ describe("TranslatableRichText", () => {
   it("switching the locale tab swaps the HTML and lang without echoing onValueChange", async () => {
     const onChange = vi.fn();
     const user = userEvent.setup();
-    renderIn(<ControlledTranslatable locales={LOCALES} initial={initial} onChange={onChange} />, "en", {
-      contentLocales: ["ja", "en", "vi"],
-    });
+    renderIn(
+      <ControlledTranslatable locales={LOCALES} initial={initial} onChange={onChange} />,
+      "en",
+      {
+        contentLocales: ["ja", "en", "vi"],
+      },
+    );
     await mounted();
     expect(editable()).toHaveTextContent("濃厚な醤油スープ");
     expect(editable()).toHaveAttribute("lang", "ja");
@@ -289,9 +307,13 @@ describe("TranslatableRichText", () => {
   it("an edit writes only the active locale's HTML into the whole map", async () => {
     const onChange = vi.fn();
     const user = userEvent.setup();
-    renderIn(<ControlledTranslatable locales={LOCALES} initial={initial} onChange={onChange} />, "en", {
-      contentLocales: ["ja", "en", "vi"],
-    });
+    renderIn(
+      <ControlledTranslatable locales={LOCALES} initial={initial} onChange={onChange} />,
+      "en",
+      {
+        contentLocales: ["ja", "en", "vi"],
+      },
+    );
     await mounted();
     await user.click(screen.getByRole("tab", { name: "English" }));
     await waitFor(() => expect(editable()).toHaveTextContent("Rich soy broth"));

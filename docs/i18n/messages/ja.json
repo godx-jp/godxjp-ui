@@ -2256,5 +2256,29 @@
       "month": "月次",
       "year": "年次"
     }
+  },
+  "richTextEditorDocs": {
+    "subtitle": "@godxjp/block-editor · HTML の値 · 固定ツールバー · 言語ごとのタブ",
+    "edit": {
+      "title": "商品を編集",
+      "description": "説明は言語ごとに HTML で保存されます。言語タブで編集する言語を切り替えます。未入力の言語には日本語の本文がヒントとして表示されます。",
+      "name": "商品名",
+      "descriptionLabel": "説明",
+      "helper": "太字・箇条書き・見出しは保持され、それ以外はテキストとして保存されます。",
+      "required": "この言語の説明を入力してください",
+      "save": "保存"
+    },
+    "saved": {
+      "title": "保存される値",
+      "description": "言語ごとのサニタイズ済み HTML。p・br・h1〜h3・ul・ol・li・blockquote・strong・em・s・code のみで、属性は付きません。"
+    },
+    "single": {
+      "title": "単一言語",
+      "description": "翻訳しない HTML 項目には RichTextEditor を単独で使います。",
+      "label": "仕込みメモ",
+      "placeholder": "仕込みの手順を入力",
+      "readOnly": "仕込みメモ（読み取り専用）",
+      "disabled": "仕込みメモ（無効）"
+    }
   }
 }

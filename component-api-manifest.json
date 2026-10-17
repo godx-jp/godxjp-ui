@@ -18707,6 +18707,123 @@
         }
       ]
     },
+    "TranslatableField": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "defaultLocale",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<string, string>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "errors",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<string, React.ReactNode>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "fallbackLocale",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "locales",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "OnValueChangeProp<Partial<Record<string, string>>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placeholder",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderControl",
+          "origin": "owned",
+          "required": true,
+          "type": "(control: TranslatableFieldControlProp) => React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "toPlaceholder",
+          "origin": "owned",
+          "required": false,
+          "type": "((fallbackText: string) => string) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<string, string>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
     "TranslatableInput": {
       "group": "data-entry",
       "props": [

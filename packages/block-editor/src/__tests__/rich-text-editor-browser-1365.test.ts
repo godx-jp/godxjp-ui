@@ -112,8 +112,16 @@ describe("TranslatableRichText (Chromium, gh#1365)", { timeout: 40_000 }, () => 
     await textbox(page).click();
     await page.keyboard.press("End");
     const cdp = await page.context().newCDPSession(page);
-    await cdp.send("Input.imeSetComposition", { text: "らーめん", selectionStart: 4, selectionEnd: 4 });
-    await cdp.send("Input.imeSetComposition", { text: "ラーメン", selectionStart: 4, selectionEnd: 4 });
+    await cdp.send("Input.imeSetComposition", {
+      text: "らーめん",
+      selectionStart: 4,
+      selectionEnd: 4,
+    });
+    await cdp.send("Input.imeSetComposition", {
+      text: "ラーメン",
+      selectionStart: 4,
+      selectionEnd: 4,
+    });
     // Mid-composition the controlled loop has re-rendered; the composing text is still there.
     await expect.poll(() => textbox(page).textContent()).toBe("醤油ラーメン");
     await cdp.send("Input.insertText", { text: "ラーメン" });

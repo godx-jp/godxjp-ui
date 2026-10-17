@@ -6153,6 +6153,170 @@ import { FormField } from "@godxjp/ui/data-entry";
     rules: [],
   },
   {
+    name: "RichTextEditor",
+    group: "data-entry",
+    importPath: "@godxjp/block-editor",
+    tagline:
+      "A form field that edits HTML (sibling package `@godxjp/block-editor`, gh#1365): a fixed toolbar — bold, italic, strike, inline code · H1–H3, bulleted / numbered list, quote · undo, redo — over a Tiptap surface whose SCHEMA is the sanitiser. `value` / `onValueChange` carry HTML holding only p, br, h1–h3, ul, ol, li, blockquote, strong, em, s, code (`RICH_TEXT_ALLOWED_TAGS`), with no attributes; anything else in `value` or a paste is kept as its text. For content already stored as HTML; new content belongs in Markdown (BlockEditor / MarkdownEditor).",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        description:
+          "Controlled HTML body (with `onValueChange`). Read through the schema: script, links, images, attributes, styles, h4–h6, tables are dropped to their text.",
+      },
+      { name: "defaultValue", type: "string", description: "Uncontrolled initial HTML." },
+      {
+        name: "onValueChange",
+        type: "(html: string) => void",
+        description:
+          'The schema\'s HTML after each edit — `""` for an empty body, never `<p></p>`. A new `value` from outside (a reset, a locale tab) replaces the document WITHOUT calling it, and never during an IME composition.',
+      },
+      { name: "placeholder", type: "string", description: "Shown while the body is empty." },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "Validation state the frame paints, as on Input; FormField's error arrives as `aria-invalid`.",
+      },
+      {
+        name: "lang",
+        type: "string",
+        description: "BCP-47 tag of the body's language, on the editable.",
+      },
+      {
+        name: "labels",
+        type: "Partial<RichTextEditorLabels>",
+        description: "Override any toolbar string (defaults: kit ja / en / vi, `blockEditor.*`).",
+      },
+      {
+        name: "disabled / readOnly",
+        type: "boolean",
+        description: "Not editable. readOnly drops the toolbar; disabled keeps it, disabled.",
+      },
+      {
+        name: "id / aria-*",
+        type: "string",
+        description:
+          "Land on the editable `textbox` — FormField's id, label, helper, required and error wiring reach it directly.",
+      },
+    ],
+    usage: [
+      "DO wrap it in FormField, like any field: the label names the editable, `required` and the error reach it as `aria-required` / `aria-invalid` + `aria-errormessage`.",
+      "DO store what onValueChange returns: it is already sanitised by the schema, and render it as HTML. Sanitise again on the server if other clients can write the same column.",
+      "DO use TranslatableRichText for a per-locale `{ ja, en, vi }` map instead of wrapping Tabs around it.",
+      "DON'T pick it for NEW content: Markdown (BlockEditor, MarkdownEditor) is the kit's storage format; this exists for columns that already hold HTML.",
+      "Keyboard: each toolbar group is one tab stop with arrow keys; ⌘/Ctrl+B / I / Z / Shift+Z and the Markdown input rules (`# `, `- `, `1. `, `> `) work in the body.",
+    ],
+    useCases: [
+      "Product, material or recipe description stored as HTML and rendered by a storefront",
+      "Notice or email body column that already holds HTML",
+    ],
+    related: [
+      "TranslatableRichText — the same editor holding one HTML value per locale.",
+      "BlockEditor — the Markdown block editor in the same package.",
+      "MarkdownEditor — Markdown in a Textarea.",
+    ],
+    example: `import { RichTextEditor } from "@godxjp/block-editor";
+import { FormField } from "@godxjp/ui/data-entry";
+
+<FormField label="説明" required error={errors.description}>
+  <RichTextEditor value={description} onValueChange={setDescription} />
+</FormField>`,
+    docPath: "docs/data-entry/rich-text-editor.tsx",
+    storyPath: "data-entry/rich-text-editor.tsx",
+    rules: [],
+  },
+  {
+    name: "TranslatableRichText",
+    group: "data-entry",
+    importPath: "@godxjp/block-editor",
+    tagline:
+      "ONE RichTextEditor holding an HTML value per locale (`{ ja, en, vi }`), switched by locale tabs (gh#1365). The kit's TranslatableField engine — the same as TranslatableInput / TranslatableTextarea: locales and first tab from AppProvider `contentLocales`, fallback from its `fallbackLocale`, per-locale error marks, the active locale's error in FormField. An empty locale shows the fallback locale's TEXT (not its HTML) as its placeholder; switching tabs swaps the HTML without calling onValueChange.",
+    props: [
+      {
+        name: "value",
+        type: "TranslatableValue",
+        description:
+          'Controlled per-locale HTML, keyed by BCP-47 tag. A missing key or `""` is an empty locale.',
+      },
+      {
+        name: "defaultValue",
+        type: "TranslatableValue",
+        description: "Uncontrolled initial per-locale HTML.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: TranslatableValue) => void",
+        description: "The WHOLE map after an edit; only the active locale's HTML changes.",
+      },
+      {
+        name: "locales",
+        type: "readonly string[]",
+        description:
+          "Tab order. Default: AppProvider `contentLocales` when set, else the registered locales.",
+      },
+      {
+        name: "defaultLocale",
+        type: "string",
+        description:
+          "First tab. Default: the first of `contentLocales` when in `locales`, else the UI locale.",
+      },
+      {
+        name: "fallbackLocale",
+        type: "string",
+        description:
+          "Whose text an empty locale shows as its placeholder. Default: AppProvider `fallbackLocale`.",
+      },
+      {
+        name: "errors",
+        type: "Partial<Record<string, ReactNode>>",
+        description:
+          "Per-locale messages: tab marks for each (glyph + screen-reader text), `aria-invalid` and FormField's error line for the active one.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        description: "The tab strip's tier, as on TranslatableTextarea.",
+      },
+      {
+        name: "placeholder / disabled / readOnly / labels / id",
+        type: "—",
+        description: "As on RichTextEditor; `ref` is the editor's handle.",
+      },
+    ],
+    usage: [
+      'DO set `<AppProvider contentLocales={["ja", "en", "vi"]}>` once; the field then needs no `locales` and opens on the source language.',
+      "DO wrap it in FormField and pass your validator's per-locale messages as `errors` (Laravel `description.vi` → `errors.vi`).",
+      "DON'T build Tabs + RichTextEditor yourself: the tab↔panel ARIA, lang, error marks and FormField report are the TranslatableField engine's.",
+    ],
+    useCases: [
+      "Product / material / recipe description stored as per-locale HTML (Astrotomic / Spatie translatable)",
+    ],
+    related: [
+      "RichTextEditor — the single-locale editor it composes.",
+      "TranslatableTextarea — the same contract over plain text.",
+      "TranslatableField — the engine, for another control.",
+    ],
+    example: `import { TranslatableRichText } from "@godxjp/block-editor";
+import { FormField, type TranslatableValue } from "@godxjp/ui/data-entry";
+
+const [description, setDescription] = React.useState<TranslatableValue>({ ja: "<p>醤油ラーメン</p>" });
+
+<FormField label="説明" required>
+  <TranslatableRichText
+    locales={["ja", "en", "vi"]}
+    fallbackLocale="ja"
+    value={description}
+    onValueChange={setDescription}
+    errors={{ vi: "ベトナム語の説明を入力してください" }}
+  />
+</FormField>`,
+    docPath: "docs/data-entry/rich-text-editor.tsx",
+    storyPath: "data-entry/rich-text-editor.tsx",
+    rules: [],
+  },
+  {
     name: "Prose",
     group: "data-display",
     tagline:
@@ -8582,6 +8746,79 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
 
 <FormField label="説明">
   <TranslatableTextarea locales={["ja", "en", "vi"]} value={description} onValueChange={setDescription} autoGrow minRows={3} />
+</FormField>`,
+    storyPath: "data-entry/translatable-input.tsx",
+    rules: [],
+  },
+  {
+    name: "TranslatableField",
+    group: "data-entry",
+    tagline:
+      "The locale-tab engine behind TranslatableInput, TranslatableTextarea and `@godxjp/block-editor`'s TranslatableRichText (gh#1365): the locale list and first tab (AppProvider `contentLocales`), the per-locale map, the fallback placeholder, the error marks and the FormField error report — around ONE control you render with `renderControl`. Use it only to make another control translatable; for text use TranslatableInput / TranslatableTextarea.",
+    props: [
+      {
+        name: "renderControl",
+        type: "(control: TranslatableFieldControlProp) => ReactNode",
+        description:
+          "Renders the one control in the panel. Spread `control` onto it: `lang`, `value` / `onValueChange` (the active locale's text), the resolved `placeholder`, `status`, `size`, and the field-a11y props (`aria-labelledby` with the locale's name, `aria-invalid`, `aria-errormessage`) plus every prop the field does not own (`id`, `disabled`, …).",
+      },
+      {
+        name: "toPlaceholder",
+        type: "(fallbackText: string) => string",
+        description:
+          "Turns the fallback locale's stored text into the plain placeholder an empty locale shows (HTML → text for a rich-text control). Default: the text as stored.",
+      },
+      {
+        name: "value / defaultValue / onValueChange",
+        type: "TranslatableValue",
+        description:
+          "The per-locale map; onValueChange gets the whole map, only the active key changed.",
+      },
+      {
+        name: "locales / defaultLocale / fallbackLocale / errors",
+        type: "—",
+        description: "Exactly as on TranslatableInput.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description: "Passed to the control; the tab strip uses Tabs `sm` (`md` for `lg`).",
+      },
+      { name: "placeholder", type: "string", description: "Shown when there is no fallback text." },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description: "Passed to the control; the active locale's error turns it into `error`.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Passed to the control, so a FormField label click focuses it.",
+      },
+      { name: "className", type: "string", description: "Root (strip + panel) class override." },
+    ],
+    usage: [
+      "DO render ONE control and spread `control` onto it (`<X {...control} ref={ref} />`): the engine swaps its value per tab, so the ref, FormField id and IME composition stay on one node.",
+      "DO make the control accept `lang`, `status`, `placeholder` and the field-a11y props on its focus target — that is how the locale, the error and the label reach it.",
+      "DON'T use it for a plain text field: TranslatableInput / TranslatableTextarea are this engine with an Input / Textarea already.",
+    ],
+    useCases: [
+      "Making a rich-text, date or custom control hold one value per locale with the kit's tab / error / fallback contract",
+    ],
+    related: [
+      "TranslatableInput — the engine around an Input.",
+      "TranslatableTextarea — the engine around a Textarea.",
+      "TranslatableRichText (@godxjp/block-editor) — the engine around a RichTextEditor.",
+    ],
+    example: `import { FormField, TranslatableField, Textarea } from "@godxjp/ui/data-entry";
+
+<FormField label="説明">
+  <TranslatableField
+    locales={["ja", "en", "vi"]}
+    value={description}
+    onValueChange={setDescription}
+    renderControl={(control) => <Textarea {...control} rows={4} />}
+  />
 </FormField>`,
     storyPath: "data-entry/translatable-input.tsx",
     rules: [],

@@ -211,11 +211,24 @@ const lineAt = (src, index) => src.slice(0, index).split("\n").length;
  * Scan a docs example for hard-coded locale content in CHROME positions. Returns
  * [{ token, match, line }] — the same shape as scanText/scanLocale. Exported for the self-test.
  */
+/**
+ * Is `index` inside a `"…"` or `` `…` `` string literal on its line? An HTML body held as DATA — a
+ * per-locale description seeded into a rich-text field (gh#1365) — has `>text<` in it, but it is
+ * content in a string, not JSX text. Single quotes are not counted: an apostrophe in JSX text
+ * ("Don't") earlier on the line would flip the parity.
+ */
+function insideStringLiteral(src, index) {
+  const before = src.slice(src.lastIndexOf("\n", index) + 1, index);
+  const odd = (quote) => before.split(quote).length % 2 === 0;
+  return odd('"') || odd("`");
+}
+
 export function scanDocsChrome(text) {
   const src = stripComments(text);
   const out = [];
   for (const m of src.matchAll(/>([^<>]*)</g)) {
     if (NOT_JSX_TEXT.test(m[1])) continue;
+    if (insideStringLiteral(src, m.index)) continue;
     const cleaned = m[1].replace(/\{[^{}]*\}/g, "").trim();
     if (!CJK.test(cleaned)) continue;
     out.push({ token: "CJK in JSX text", match: cleaned, line: lineAt(src, m.index) });

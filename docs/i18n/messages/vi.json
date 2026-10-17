@@ -2256,5 +2256,29 @@
       "month": "Theo tháng",
       "year": "Theo năm"
     }
+  },
+  "richTextEditorDocs": {
+    "subtitle": "@godxjp/block-editor · giá trị HTML · thanh công cụ cố định · tab theo ngôn ngữ",
+    "edit": {
+      "title": "Sửa sản phẩm",
+      "description": "Mô tả được lưu dưới dạng HTML theo từng ngôn ngữ. Chuyển tab ngôn ngữ để sửa ngôn ngữ khác; ngôn ngữ còn trống hiển thị nội dung tiếng Nhật làm gợi ý.",
+      "name": "Tên sản phẩm",
+      "descriptionLabel": "Mô tả",
+      "helper": "In đậm, danh sách và tiêu đề được giữ lại; phần còn lại được lưu dưới dạng văn bản.",
+      "required": "Nhập mô tả cho ngôn ngữ này",
+      "save": "Lưu"
+    },
+    "saved": {
+      "title": "Giá trị được lưu",
+      "description": "Bản đồ HTML đã làm sạch theo từng ngôn ngữ — chỉ p, br, h1–h3, ul, ol, li, blockquote, strong, em, s và code, không có thuộc tính."
+    },
+    "single": {
+      "title": "Một ngôn ngữ",
+      "description": "Dùng RichTextEditor riêng cho trường HTML không cần dịch.",
+      "label": "Ghi chú sơ chế",
+      "placeholder": "Nhập các bước sơ chế",
+      "readOnly": "Ghi chú sơ chế (chỉ đọc)",
+      "disabled": "Ghi chú sơ chế (vô hiệu)"
+    }
   }
 }
