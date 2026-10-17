@@ -248,13 +248,13 @@ export const TOKENS: TokenEntry[] = [
     name: "--focus-ring-inset-offset",
     category: "primitive",
     tier: "primitive",
-    role: "Negative outline offset inside clipping surfaces: minus the focus width plus the outline gap (default -4px). Keeps the 2px mark and 2px gap inside pagination, tabs, cards, bars and scroll regions without padding or layout shifts.",
+    role: "Negative outline offset inside clipping surfaces: minus the focus width plus the outline gap (default -4px). Used only on padded tab/rail items, bar picker cells, table rows, resize handles and focused scroll regions; never inherited from cards or app-main.",
   },
   {
     name: "--focus-ring-contained-offset",
     category: "primitive",
     tier: "primitive",
-    role: "Clipping-context override, initial at root. Kit clipping containers inherit --focus-ring-inset-offset through their descendants; the focus painter reads this before the ordinary offset.",
+    role: "Element-local clipping override, initial at root. Assigned only to specific focused component carriers, never to an ancestor container. Ordinary text links and filled buttons keep the outside offset.",
   },
   {
     name: "--region-focus-ring-width",

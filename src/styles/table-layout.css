@@ -515,6 +515,17 @@
       saturate(var(--surface-backdrop-saturate, 160%));
   }
 
+  .ui-data-table-surface:focus-within {
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
+  }
+
+  @supports not (overflow-clip-margin: 1px) {
+    .ui-data-table-surface:focus-within {
+      overflow: visible;
+    }
+  }
+
   .ui-data-table-surface[data-preset="action-collection"] {
     min-inline-size: 0;
   }
@@ -657,6 +668,8 @@
   }
 
   .ui-data-table-scroll {
+    padding-block: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
+    scroll-padding-block: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     position: relative;
     overflow-x: auto;
     margin-inline: calc(-1 * var(--space-page-active-x));

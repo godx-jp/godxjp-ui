@@ -177,6 +177,71 @@ export function measureFocus() {
   const a = lum(parse(color)),
     b = lum(bg),
     contrast = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  // Test the inner edge against actual text ranges, not the element's padded box.
+  const textOverlap = [];
+  if (outline && offset < 0 && el.matches('a,button,[role="tab"],[role="link"]')) {
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      if (!node.textContent.trim()) continue;
+      // Decorative badges are separately painted/positioned; measure the control's
+      // own label, not aria-hidden count overlays or screen-reader-only content.
+      if (node.parentElement.closest('[aria-hidden="true"],.sr-only')) continue;
+      let positionedDecoration = false;
+      for (let p = node.parentElement; p && p !== el; p = p.parentElement)
+        if (["absolute", "fixed"].includes(getComputedStyle(p).position))
+          positionedDecoration = true;
+      if (positionedDecoration) continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      for (const r of range.getClientRects()) {
+        if (!r.width || !r.height) continue;
+        const text = { left: r.left, right: r.right, top: r.top, bottom: r.bottom };
+        // Ranges include truncated/hidden text. Intersect with its own clipping
+        // ancestors before checking the four painted border bands.
+        for (let p = node.parentElement; p && p !== el; p = p.parentElement) {
+          const st = getComputedStyle(p),
+            pr = p.getBoundingClientRect();
+          if (/hidden|clip|auto|scroll/.test(st.overflowX)) {
+            text.left = Math.max(text.left, pr.left);
+            text.right = Math.min(text.right, pr.right);
+          }
+          if (/hidden|clip|auto|scroll/.test(st.overflowY)) {
+            text.top = Math.max(text.top, pr.top);
+            text.bottom = Math.min(text.bottom, pr.bottom);
+          }
+        }
+        const inner = {
+          left: rect.left - offset,
+          right: rect.right + offset,
+          top: rect.top - offset,
+          bottom: rect.bottom + offset,
+        };
+        const intersects = (l, t, r, b) =>
+          text.right > l + 0.75 &&
+          text.left < r - 0.75 &&
+          text.bottom > t + 0.75 &&
+          text.top < b - 0.75;
+        if (
+          intersects(inner.left - width, inner.top - width, inner.left, inner.bottom + width) ||
+          intersects(inner.right, inner.top - width, inner.right + width, inner.bottom + width) ||
+          intersects(inner.left, inner.top - width, inner.right, inner.top) ||
+          intersects(inner.left, inner.bottom, inner.right, inner.bottom + width)
+        )
+          textOverlap.push({ text: node.textContent, ...text });
+      }
+    }
+  }
+  // At -4px the backing ends exactly at the ring's INNER edge: the adjacent
+  // pixels there are the control fill, not the backing used by the old probe.
+  const fill = parse(cs.backgroundColor);
+  const fillLum = lum(fill);
+  const filledContrast = (Math.max(a, fillLum) + 0.05) / (Math.min(a, fillLum) + 0.05);
+  const filledContrastFailure =
+    outline &&
+    offset < 0 &&
+    fill[3] === 1 &&
+    el.matches('button,.ui-button,[role="button"]') &&
+    filledContrast < 3;
   return {
     tag: el.tagName,
     classes: el.getAttribute("class") || "",
@@ -187,6 +252,9 @@ export function measureFocus() {
     shadow: cs.boxShadow,
     color,
     contrast,
+    textOverlap,
+    filledContrast,
+    filledContrastFailure,
     clipped,
     intentionalClips,
     rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
@@ -300,7 +368,7 @@ async function main() {
             results.push({ route, width, samples });
             writeFileSync(`codex-shots/focus-audit-${phase}-pages.json`, JSON.stringify(results));
             console.log(
-              `${width} ${route}: ${samples.length} focused, ${samples.filter((s) => !s.brand || s.clipped.length).length} offenders`,
+              `${width} ${route}: ${samples.length} focused, ${samples.filter((s) => !s.brand || s.clipped.length || s.textOverlap.length || s.filledContrastFailure).length} offenders`,
             );
           } catch (e) {
             results.push({ route, width, error: String(e) });
@@ -316,7 +384,9 @@ async function main() {
   results.sort((a, b) => b.width - a.width || a.route.localeCompare(b.route));
   const offenders = results.flatMap((r) =>
     (r.samples || [])
-      .filter((s) => !s.brand || s.clipped.length)
+      .filter(
+        (s) => !s.brand || s.clipped.length || s.textOverlap.length || s.filledContrastFailure,
+      )
       .map((s) => ({ route: r.route, width: r.width, ...s })),
   );
   const report = {
@@ -325,6 +395,11 @@ async function main() {
     pages: results.length,
     focused: results.reduce((n, r) => n + (r.samples?.length || 0), 0),
     offenders: offenders.length,
+    clipped: results.flatMap((r) => r.samples || []).filter((s) => s.clipped.length).length,
+    nonBrand: results.flatMap((r) => r.samples || []).filter((s) => !s.brand).length,
+    textOverlap: results.flatMap((r) => r.samples || []).filter((s) => s.textOverlap.length).length,
+    filledContrast: results.flatMap((r) => r.samples || []).filter((s) => s.filledContrastFailure)
+      .length,
     errors: results.filter((r) => r.error),
     findings: offenders,
     contrastFindings: results.flatMap((r) =>
@@ -342,9 +417,14 @@ async function main() {
       pages: report.pages,
       focused: report.focused,
       offenders: report.offenders,
+      clipped: report.clipped,
+      nonBrand: report.nonBrand,
+      textOverlap: report.textOverlap,
+      filledContrast: report.filledContrast,
       errors: report.errors,
     }),
   );
+  if (report.offenders || report.errors.length) process.exitCode = 1;
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href)
   await main();

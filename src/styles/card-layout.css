@@ -78,6 +78,21 @@
     overflow: hidden;
   }
 
+  /* Preserve the resting radius crop. While a descendant has focus, expand
+   * the clip edge so its outside ring can paint without changing layout. */
+  [data-slot="card"]:focus-within,
+  [data-slot="card"]:has([data-slot="card-header"][data-banded]):focus-within {
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
+  }
+
+  @supports not (overflow-clip-margin: 1px) {
+    [data-slot="card"]:focus-within,
+    [data-slot="card"]:has([data-slot="card-header"][data-banded]):focus-within {
+      overflow: visible;
+    }
+  }
+
   /* `asChild` (gh#740) — the card box is the CONSUMER's element, so it may be an `<a>` or a
    * `<button>` instead of the `div`. Measured on /isolate/data-display-card-index at 1440 with
    * the same inner markup on all three: Tailwind's preflight already levels the font, the fill,

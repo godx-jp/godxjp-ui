@@ -790,6 +790,8 @@
    * frame-geometry gate counts exactly that: a control the user cannot bring into view. Scrolling
    * the row is the browser's own answer, and the gate treats scroll-reachable as fine. */
   .ui-pagination {
+    padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
+    scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     max-inline-size: 100%;
     overflow-x: auto;
     scrollbar-width: thin;
@@ -1900,6 +1902,8 @@
   }
 
   .ui-anchor[data-direction="horizontal"] .ui-anchor-list {
+    padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
+    scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     display: flex;
     gap: var(--anchor-gap);
     /* One row that scrolls, never a second row: a wrapped horizontal anchor would put the ink
