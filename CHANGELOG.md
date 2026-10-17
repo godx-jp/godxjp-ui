@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.11.1] - 2026-10-17
+
+The first release of everything listed under 33.11.0 below: its main CI was red and the release gate stopped before tagging, so 33.11.0 never reached npm.
+
+### Fixed
+
+- **A truncated TopbarItem label owns its line box (#1370).** `.ui-topbar-item[data-truncate="true"] > .ui-topbar-item-label` clips with `overflow: hidden` but inherited its line-height, so a tight inherited value could shear descenders and Vietnamese tone marks at the clip edge (gh#254 rule). It now declares `line-height: var(--line-height-normal)`.
+
 ## [33.11.0] - 2026-10-17
 
 ### Added
