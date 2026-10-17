@@ -172,7 +172,14 @@ describe("focus-ring clip margin", () => {
       /\[data-slot="[a-z-]*content"\]/,
       /:has\(/,
     ];
+    // ScrollArea now carries the shared inset context; its hidden cross-axis remains
+    // necessary, while both its own mark and descendant marks stay inside that clip.
+    expect(read("focus-ring.css")).toMatch(
+      /\.ui-scroll-area,[\s\S]*?--focus-ring-contained-offset:\s*var\(--focus-ring-inset-offset\)/,
+    );
     const reviewed = new Set([
+      'data-display-layout.css::.ui-scroll-area[data-orientation="vertical"]',
+      'data-display-layout.css::.ui-scroll-area[data-orientation="horizontal"]',
       ...CONVERTED.map(([f, s]) => `${f}::${s}`),
       ...RADIUS_CROP_EXEMPT.map(([f, s]) => `${f}::${s}`),
     ]);

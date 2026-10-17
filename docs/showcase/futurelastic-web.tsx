@@ -191,7 +191,7 @@ function Hero() {
           Futurelastic là pháp nhân holding của nhóm công ty công nghệ &amp; AI vận hành xuyên Nhật
           Bản và Việt Nam, từ logistics, fintech đến F&amp;B và thương mại.
         </Text>
-        <Flex direction="row" gap="md" className="fl-hero-actions">
+        <Flex direction="row" gap="md" wrap className="fl-hero-actions">
           <Button size="lg">Khám phá hệ sinh thái</Button>
           <Button variant="outline" size="lg">
             Liên hệ hợp tác

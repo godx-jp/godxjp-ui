@@ -135,7 +135,7 @@
     23
   ],
   "storyPath": "layout/app-shell.tsx",
-  "tagline": "Root application shell — composes sidebar, topbar rail, main content area, and optional footer.",
+  "tagline": "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width).",
   "usage": [
     "DO put a sidebar collapse toggle IN the rail, not floating in the bar (ADR C10): the shell does not render one, so pass it through `Sidebar action={(collapsed) => <Button variant=\"ghost\" size=\"icon\" aria-label={t(\"toggleSidebar\")} aria-expanded={!collapsed} …/>}` (or the `footer` render-prop), which keeps it attached to the rail in both states. A toggle in `Topbar start` under `topbarSpan=\"full\"` lands beside the brand, detached from the rail it controls. The shell has no edge-mounted toggle (a control straddling the rail border); `Sidebar action` keeps it inside the rail head, which is the supported placement. Below the navigation boundary the drawer has its own trigger; render no collapse toggle there.",
     "useAppShellNavigationMode() returns drawer/docked at the same 56.25rem boundary as AppShell. The root also publishes data-navigation. Use this instead of a consumer media query.",

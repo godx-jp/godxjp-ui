@@ -239,6 +239,30 @@ export const TOKENS: TokenEntry[] = [
     role: "DERIVED, do not set: `calc(var(--focus-ring-weight) * var(--focus-outline))` — the painted thickness, weight times the on/off switch. Setting it directly paints a ring even while the indicator is switched OFF, which is why src/tokens/__tests__/focus-ring-contrast.test.ts fails the build when any stylesheet rebinds it. Retune --focus-ring-weight instead.",
   },
   {
+    name: "--resizable-handle-size",
+    category: "component",
+    tier: "component",
+    role: "Resizable separator thickness (default var(--space-2), 8px). Keeps empty handles visible and provides room for the shared 2px inset focus mark and gap. Applies to the inline axis for a vertical separator and block axis for a horizontal separator.",
+  },
+  {
+    name: "--focus-ring-inset-offset",
+    category: "primitive",
+    tier: "primitive",
+    role: "Negative outline offset inside clipping surfaces: minus the focus width plus the outline gap (default -4px). Keeps the 2px mark and 2px gap inside pagination, tabs, cards, bars and scroll regions without padding or layout shifts.",
+  },
+  {
+    name: "--focus-ring-contained-offset",
+    category: "primitive",
+    tier: "primitive",
+    role: "Clipping-context override, initial at root. Kit clipping containers inherit --focus-ring-inset-offset through their descendants; the focus painter reads this before the ordinary offset.",
+  },
+  {
+    name: "--region-focus-ring-width",
+    category: "primitive",
+    tier: "primitive",
+    role: "Inset keyboard-scroll region mark weight, default var(--focus-ring-weight). The paint multiplies this by the global focus switch. Set 0 for an explicit region-only opt-out.",
+  },
+  {
     name: "--focus-ring-weight",
     category: "primitive",
     tier: "primitive",

@@ -1,3 +1,4 @@
+import { revealKeyboardFocus } from "../../lib/focus-reveal";
 import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
@@ -47,6 +48,7 @@ const PaginationContent = React.forwardRef<
   return (
     <ul
       ref={setListElement}
+      onFocusCapture={revealKeyboardFocus}
       className={cn("ui-pagination-list", className)}
       role="list"
       {...props}
@@ -239,6 +241,7 @@ export function Pagination({
   if (compact) {
     return (
       <nav
+        onFocusCapture={revealKeyboardFocus}
         aria-label={navLabel}
         data-simple="true"
         data-size={size}
@@ -277,6 +280,7 @@ export function Pagination({
 
   return (
     <nav
+      onFocusCapture={revealKeyboardFocus}
       aria-label={navLabel}
       data-size={size}
       data-align={align}

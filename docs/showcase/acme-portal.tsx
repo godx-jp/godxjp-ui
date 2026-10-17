@@ -89,7 +89,7 @@ const THEME = `
   /* Brand / action */
   --primary: 41 73% 53%;             /* gold #DFA930 */
   --primary-foreground: 217 61% 12%; /* navy text on gold */
-  --ring: 41 73% 53%;                /* gold focus ring */
+  --ring: 41 73% 33%;                /* dark gold focus ring on light surfaces */
   --accent: 42 81% 96%;              /* gold-50 hover tint */
   --accent-foreground: 41 72% 44%;   /* gold-700 */
   /* Surfaces / text */
@@ -128,8 +128,8 @@ const THEME = `
   --shadow-color: 12 26 49;
   --card-shadow: 0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.22);
   --shadow-glow: 0 6px 18px hsl(41 73% 53% / 0.34);
-  /* Focus ring → brand gold (also covered by --ring, set explicitly for clarity) */
-  --focus-ring-color: 41 73% 53%;
+  /* Dark brand gold clears 3:1 on the light surfaces; navy navigation scopes it below. */
+  --focus-ring-color: var(--ring);
   /* Gradients - a faint gold hero wash (keeps navy text readable) + an ambient corner glow */
   --gradient-hero: linear-gradient(180deg, hsl(42 81% 96%), transparent);
   --gradient-glow: radial-gradient(50% 60% at 92% -8%, hsl(41 73% 53% / 0.10), transparent 70%);
@@ -146,6 +146,7 @@ const THEME = `
  * --muted-foreground / --accent / --border, so re-pointing them here turns the whole nav dark with
  * NO component change. The active row uses the new --sidebar-item-active-* knobs for a gold tint. */
 [data-tenant="acme"] .app-sidebar {
+  --focus-ring-color: var(--primary); /* light gold on navy */
   --card: 217 61% 12%;              /* navy #0C1A31 surface */
   --foreground: 0 0% 100%;          /* white logo + active text base */
   --muted-foreground: 217 40% 74%;  /* navy-200 inactive nav text */

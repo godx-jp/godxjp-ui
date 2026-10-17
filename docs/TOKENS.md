@@ -277,7 +277,11 @@ The census confirmed the number and rejected the diagnosis: **`width` is not one
 
 **Px, never rem.** A stroke is a _device_ line: its job is to read as one crisp rule at any type size, so it must not grow when the root font-size does. Every token that moved onto this scale was already `px` for that reason; a `rem` thickness (`--slider-track-height: 0.375rem`) is a different decision and stayed where it was. **Not `--scaling`-multiplied** either — `--scaling` is a density knob, and a 1px divider at 0.92px would blur rather than tighten.
 
-The focus mark reads this scale too, through `--focus-ring-weight` — `var(--focus-outline-weight)`, which is `var(--stroke-hairline)` (the light 1px mark the ON state ships). `--focus-ring-width` is DERIVED from it (`weight × --focus-outline`, the on/off switch) and must never be set directly; a theme that wants a 2px focus perimeter (WCAG 2.2 SC 2.4.13) sets `--focus-ring-weight: var(--stroke-md)`. See docs/CUSTOMER-THEMING.md.
+The focus mark reads this scale through `--focus-ring-weight`: the default is `--stroke-md` (2px), with a 2px outline gap. `--focus-ring-width` is derived from the weight and the global `--focus-outline` switch; do not set it directly.
+
+Clipping surfaces use `--focus-ring-inset-offset` (default minus the mark width plus the gap, -4px) through the inherited `--focus-ring-contained-offset` context. Pagination, tab strips, cards, bars and scrolling surfaces keep the mark inside their boundary without adding padding. A surface-coloured inset backing separates the brand mark from brand-filled controls. Keyboard-scroll regions show their inset mark by default; `--region-focus-ring-width: 0` is an explicit opt-out.
+
+Resize separators use `--resizable-handle-size` (default `--space-2`, 8px), with the inline or block axis selected by ARIA orientation. This reserves room for the inset mark even on an empty handle; focusing does not change its size.
 
 #### `--band-height-*` — the vertical extent of a horizontal band
 
@@ -487,23 +491,23 @@ It is reserved for `@container` / `@media` re-points. Everything static stays in
 
 Fifteen existing token defaults build on the eight first-pass changes. Body stays 14px/1.7, labels and headings stay 500, with no Latin-style negative tracking on Japanese. Mobile gutters remain 16px. Zebra stays off; table numeric alignment and sidebar active styling are unchanged. Card header-to-body spacing grows to 24px; horizontal card/table insets and section gaps stay 16px so fixed-width date columns remain on one line. No new token or component API.
 
-| Token | Previous | New |
-|---|---|---|
-| `--space-page-x` | `var(--space-6)` | `var(--space-8)` |
-| `--space-page-y` | `var(--space-6)` | `var(--space-8)` |
-| `--card-space-body-y` | `var(--space-section-active)` | `var(--space-6)` |
-| `--page-title-font-size` | `var( --heading-h1, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )` | `var( --heading-h1, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )` |
-| `--page-title-font-size-compact` | `var( --heading-h2, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )` | `var( --heading-h2, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )` |
-| `--overlay-background` | `rgb(0 0 0 / 0.5)` | `rgb(0 0 0 / 0.4)` |
-| `--card-title-font-size` | `var(--font-size-base)` | `calc(var(--font-size-base) * var(--font-size-ratio))` |
-| `--card-shadow` | `initial` | `none` |
-| `--form-field-row-gap` | `var(--space-3)` | `var(--space-3)` |
-| `--form-block-gap` | `var(--space-4)` | `var(--space-6)` |
-| `--control-height-default` | `var(--band-height-md)` | `var(--band-height-lg)` |
-| `--control-focus-ring-width` | `initial` | `var(--stroke-md)` |
-| `--table-row-height-default` | `var(--band-height-md)` | `var(--band-height-lg)` |
-| `--focus-outline-weight` | `initial` | `var(--stroke-md)` |
-| `--focus-outline-offset` | `0px` | `2px` |
+| Token                            | Previous                                                                                                                        | New                                                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `--space-page-x`                 | `var(--space-6)`                                                                                                                | `var(--space-8)`                                                                                                                |
+| `--space-page-y`                 | `var(--space-6)`                                                                                                                | `var(--space-8)`                                                                                                                |
+| `--card-space-body-y`            | `var(--space-section-active)`                                                                                                   | `var(--space-6)`                                                                                                                |
+| `--page-title-font-size`         | `var( --heading-h1, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )` | `var( --heading-h1, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )` |
+| `--page-title-font-size-compact` | `var( --heading-h2, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )`                            | `var( --heading-h2, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )`                            |
+| `--overlay-background`           | `rgb(0 0 0 / 0.5)`                                                                                                              | `rgb(0 0 0 / 0.4)`                                                                                                              |
+| `--card-title-font-size`         | `var(--font-size-base)`                                                                                                         | `calc(var(--font-size-base) * var(--font-size-ratio))`                                                                          |
+| `--card-shadow`                  | `initial`                                                                                                                       | `none`                                                                                                                          |
+| `--form-field-row-gap`           | `var(--space-3)`                                                                                                                | `var(--space-3)`                                                                                                                |
+| `--form-block-gap`               | `var(--space-4)`                                                                                                                | `var(--space-6)`                                                                                                                |
+| `--control-height-default`       | `var(--band-height-md)`                                                                                                         | `var(--band-height-lg)`                                                                                                         |
+| `--control-focus-ring-width`     | `initial`                                                                                                                       | `var(--stroke-md)`                                                                                                              |
+| `--table-row-height-default`     | `var(--band-height-md)`                                                                                                         | `var(--band-height-lg)`                                                                                                         |
+| `--focus-outline-weight`         | `initial`                                                                                                                       | `var(--stroke-md)`                                                                                                              |
+| `--focus-outline-offset`         | `0px`                                                                                                                           | `2px`                                                                                                                           |
 
 ### Complete restoration (both passes)
 
@@ -514,8 +518,17 @@ Load after library and preset styles. The original input colors restore the orig
   --space-page-x: var(--space-6);
   --space-page-y: var(--space-6);
   --card-space-body-y: var(--space-section-active);
-  --page-title-font-size: var(     --heading-h1,     calc(       var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *         var(--font-size-ratio)     )   );
-  --page-title-font-size-compact: var(     --heading-h2,     calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))   );
+  --page-title-font-size: var(
+    --heading-h1,
+    calc(
+      var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+        var(--font-size-ratio)
+    )
+  );
+  --page-title-font-size-compact: var(
+    --heading-h2,
+    calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+  );
   --overlay-background: rgb(0 0 0 / 0.5);
   --card-title-font-size: var(--font-size-base);
   --card-shadow: initial;
@@ -528,14 +541,19 @@ Load after library and preset styles. The original input colors restore the orig
   --focus-outline-offset: 0px;
   --button-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   --control-shadow: var(--shadow-xs);
-  --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
+  --shadow-md:
+    0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(var(--shadow-color) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 500ms;
   --input: 30 7% 53%;
 }
-.dark, :root[data-theme="dark"] { --input: 45 6% 47%; }
+.dark,
+:root[data-theme="dark"] {
+  --input: 45 6% 47%;
+}
 
 .ui-scale-fixed {
   --space-page-x: var(--space-6);

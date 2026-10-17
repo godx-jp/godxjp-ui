@@ -42,7 +42,7 @@ import { Flex, ResponsiveGrid } from "@godxjp/ui/layout";
 const THEME = `
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
 [data-tenant="acme-web"] {
-  --primary: 41 73% 53%; --primary-foreground: 217 61% 12%; --ring: 41 73% 53%;
+  --primary: 41 73% 53%; --primary-foreground: 217 61% 12%; --ring: 41 73% 33%;
   --accent: 42 81% 96%; --accent-foreground: 41 72% 44%;
   --background: 210 33% 97%; --foreground: 217 61% 12%;
   --card: 0 0% 100%; --card-foreground: 217 61% 12%;
@@ -58,7 +58,7 @@ const THEME = `
   --shadow-color: 38 79 145;
   --card-shadow: 0 1px 3px rgb(38 79 145 / 0.08), 0 1px 2px rgb(38 79 145 / 0.06);
   --shadow-glow: 0 8px 20px hsl(41 73% 53% / 0.32);
-  --focus-ring-color: 41 73% 53%;
+  --focus-ring-color: var(--ring);
   --font-family-display: "Source Sans 3", system-ui, sans-serif;
   --font-family-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-family-sans: var(--font-family-body);
@@ -113,6 +113,7 @@ const THEME = `
   margin-block-start: 2.25rem; padding-block-start: var(--space-5); border-block-start: var(--stroke-hairline) solid hsl(0 0% 100% / 0.1); }
 /* Navy region: role scoping so descendants render on-dark (white text, glass cards, outline btns). */
 [data-tenant="acme-web"] .tx-navy {
+  --focus-ring-color: var(--primary); /* light brand gold on navy */
   background: hsl(217 61% 12%); --foreground: 0 0% 100%;
   --card: 217 45% 18%; --card-foreground: 0 0% 100%;
   --card-background: hsl(0 0% 100% / 0.06); --card-border: 0 0% 100% / 0.12;

@@ -1,0 +1,4 @@
+:root {
+  /* Room for the shared inset focus mark and gap, including handles without a grip. */
+  --resizable-handle-size: var(--space-2);
+}

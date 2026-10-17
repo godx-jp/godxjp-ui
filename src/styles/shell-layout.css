@@ -443,12 +443,7 @@
     background-color: var(--app-shell-main-background, var(--surface-recessed));
   }
 
-  /* `.app-main` carries tabindex="0" (axe scrollable-region-focusable, dbad118) because it IS the
-   * page's scroll region and must stay reachable by keyboard; that is why it keeps its
-   * focusability where a plain content div would lose it. Its mark is OFF twice over — the
-   * region ring's own opt-in token is `0`, and the width is multiplied by the global
-   * `--focus-outline` switch so a service that opts the region ring in still cannot paint an
-   * indicator while the library-wide switch is off. */
+  /* Keyboard-scroll regions paint their token-controlled brand mark inside the viewport. */
   .app-main:focus-visible {
     outline: none;
     box-shadow: inset 0 0 0 calc(var(--region-focus-ring-width) * var(--focus-outline))
@@ -1034,6 +1029,13 @@
   }
 
   /* Brand links must not add an inline baseline/descender gap below the lockup. */
+  /* Legacy left/right slots keep their keyboard targets reachable when the row
+   * is wider than a phone. The dedicated Topbar component owns its own scroller. */
+  .app-topbar-rail:has(> .app-topbar-right) {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
   .app-topbar-logo,
   .app-topbar-logo > a {
     display: flex;
@@ -2835,6 +2837,13 @@
   .ui-topbar-center {
     flex: 1 1 0%;
     justify-content: center;
+  }
+
+  /* A bare action cannot shrink like the dedicated stretchy search field. Preserve
+   * its content floor so the bar's scroll mode reveals the whole keyboard target. */
+  .ui-topbar[data-overflow="scroll"]
+    > .ui-topbar-center:has(> :is(button, a, [role="button"]):not(.ui-topbar-search, .tb-search)) {
+    min-inline-size: min-content;
   }
 
   /* ── TOPBAR SEARCH (ADR C02) ─────────────────────────────────────────────────────────────

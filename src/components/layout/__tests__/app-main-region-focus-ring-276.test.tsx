@@ -2,12 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-/**
- * The keyboard-scroll focus ring on `.app-main` is token-gated and
- * DEFAULT OFF (`--region-focus-ring-width: 0`, a deliberate product tradeoff
- * against WCAG 2.4.7): a control-strength brand frame around the whole content
- * region reads as a glitch to mouse-first users. Services opt in via the token.
- */
+/** Keyboard-scroll regions now ship a visible inset mark (#1375), with an opt-out token. */
 
 const css = () => readFileSync(join(__dirname, "../../../styles/shell-layout.css"), "utf8");
 const tokens = () => readFileSync(join(__dirname, "../../../tokens/foundation.css"), "utf8");
@@ -23,8 +18,8 @@ describe("AppShell region focus ring (gh#276)", () => {
     );
   });
 
-  it("defaults the region ring OFF and keeps the colour token call-site-resolved", () => {
-    expect(tokens()).toMatch(/--region-focus-ring-width: 0;/);
+  it("defaults the region ring ON and keeps the colour token call-site-resolved", () => {
+    expect(tokens()).toMatch(/--region-focus-ring-width: var\(--focus-ring-weight\);/);
     // `initial` — a :root var() binding would freeze against scoped theme overrides.
     expect(tokens()).toMatch(/--region-focus-ring-color: initial;/);
   });

@@ -109,7 +109,7 @@
     "PaginationNext",
     "PaginationPrevious"
   ],
-  "tagline": "Offset/page-based pagination bar. Sits below a table card.",
+  "tagline": "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
   "usage": [
     "DO always control Pagination externally: store `value` (page) and `pageSize` in React state (or URL params), and update both in the `onValueChange(page, pageSize)` callback. Pagination is fully controlled — it has no internal state and will not move unless `value` changes.",
     "DO let Pagination hide itself for zero items and single pages (`hideOnSinglePage`, default true) — it is navigation between multiple result pages. Render it inside a table footer only in the DATA state: never during loading, empty, error, or an unmet prerequisite. Pass `hideOnSinglePage={false}` only when you still want the bar on one page to keep `showTotal` visible.",

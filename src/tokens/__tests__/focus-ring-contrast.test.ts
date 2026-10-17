@@ -64,7 +64,8 @@ const flatFocusRing = focusRing
  * otherwise the colour resolves against THIS element's glow colour or live `--primary`.
  */
 const HALO_DEFAULT =
-  "var(--focus-field-shadow, 0 0 0 var(--focus-ring-glow-width) hsl(var(--focus-ring-glow-color, " +
+  "var(--focus-field-shadow, inset 0 0 0 calc(-1 * var(--focus-ring-contained-offset, 0px)) hsl(var(--background)), " +
+  "0 0 0 var(--focus-ring-glow-width) hsl(var(--focus-ring-glow-color, " +
   "var(--control-outline, from hsl(var(--primary)) var(--control-outline-channels))) / " +
   "var(--focus-ring-glow-alpha)))";
 
@@ -428,7 +429,7 @@ describe("the switch is ON by default, and the OFF position still zeroes everyth
     parts.push(buffer);
     for (const part of parts.filter((p) => p.trim())) {
       expect(part.trim(), `every boundary selector must be gated: ${part.trim()}`).toContain(
-        '[data-focus-outline="on"]',
+        ':not([data-focus-outline="off"])',
       );
     }
   });
@@ -461,7 +462,9 @@ describe("the switch is ON by default, and the OFF position still zeroes everyth
     const markSelector = focusRing.slice(start, focusRing.indexOf("{", start));
     expect(markSelector, "the mark rule must exist").not.toBe("");
     for (const container of [".ui-legal-document-section", "body", "html", ".app-main"]) {
-      expect(markSelector, `${container} must not carry a focus indicator`).not.toContain(
+      // A descendant link selector does not paint its container.
+      const carrierSelectors = markSelector.replace(/\.app-main a\[href\]/g, "");
+      expect(carrierSelectors, `${container} must not carry a focus indicator`).not.toContain(
         container,
       );
     }
@@ -476,7 +479,7 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
     expect(on).toMatch(/--focus-outline:\s*1;/);
     // `initial` = the painting default composed at the element (see HALO_DEFAULT), not `none`.
     expect(on).toMatch(/--focus-field-shadow:\s*initial;/);
-    expect(focusRing).toContain('[data-focus-outline="on"]');
+    expect(focusRing).toContain(':not([data-focus-outline="off"])');
   });
 
   it("the modern focus weight is the 2px stroke", () => {
@@ -499,8 +502,16 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
     // The lighter read the sidebar asked for: the mark sits within the row rather than
     // surrounding an already-shaded selected surface. The offset tracks the width, so it is
     // switched off with everything else.
-    const rule = focusRing.match(/a\.ui-list-row,[\s\S]{0,80}?\.sb-nav-item \{[^}]*\}/)?.[0] ?? "";
+    const rule = focusRing.match(/a\.ui-list-row,\s*tr\.ui-focus-ring,[^{}]*\{[^}]*\}/)?.[0] ?? "";
     expect(rule, "the inset rule must cover both row families").not.toBe("");
+    for (const selector of [
+      ".sb-nav-item",
+      '.ui-app-setting-picker-icon[data-appearance="bar"]',
+      ".ui-legal-document-toc-link",
+      '[data-slot="anchor-link"]',
+    ]) {
+      expect(rule).toContain(selector);
+    }
     expect(rule).toContain("calc(-1 * var(--focus-ring-width))");
   });
 

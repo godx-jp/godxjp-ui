@@ -60,6 +60,10 @@ describe("Card `asChild` — the focus mark lands on the card box", () => {
   it("keys on the ELEMENT, so a plain div card is still a container and not a control", () => {
     // focus-ring.css's own rule: containers are not on the list. A bare `[data-slot="card"]`
     // entry would put a mark on every card on the page the moment one took programmatic focus.
-    expect(stripComments(focusRing)).not.toMatch(/(?<![a-z\]])\[data-slot="card"\]/);
+    const paintingRules = stripComments(focusRing)
+      .split("}")
+      .filter((rule) => /outline-(width|style):|box-shadow:/.test(rule))
+      .join("}");
+    expect(paintingRules).not.toMatch(/(?<![a-z\]])\[data-slot="card"\]/);
   });
 });

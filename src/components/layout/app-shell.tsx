@@ -1,3 +1,4 @@
+import { revealKeyboardFocus } from "../../lib/focus-reveal";
 import * as React from "react";
 import { Menu } from "lucide-react";
 
@@ -213,12 +214,12 @@ export function AppShell({
 
   const resolvedTopbar =
     topbar !== undefined ? (
-      <div className="app-topbar-rail">
+      <div onFocusCapture={revealKeyboardFocus} className="app-topbar-rail">
         {!logoInRail && logo !== undefined && <div className="app-topbar-logo">{brand}</div>}
         <div className="app-topbar-custom">{topbar}</div>
       </div>
     ) : (
-      <div className="app-topbar-rail">
+      <div onFocusCapture={revealKeyboardFocus} className="app-topbar-rail">
         {!logoInRail && logo !== undefined && <div className="app-topbar-logo">{brand}</div>}
         {topbarLeft !== undefined && <div className="app-topbar-left">{topbarLeft}</div>}
         <div className="app-topbar-spacer" />
@@ -385,7 +386,12 @@ export function AppShell({
           {bar}
         </>
       )}
-      <main className="app-main" aria-label={t("layout.appShell.mainLabel")} tabIndex={0}>
+      <main
+        onFocusCapture={revealKeyboardFocus}
+        className="app-main"
+        aria-label={t("layout.appShell.mainLabel")}
+        tabIndex={0}
+      >
         {breadcrumb !== undefined && <div className="app-breadcrumb">{breadcrumb}</div>}
         {children}
       </main>

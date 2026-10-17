@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- ACME showcase themes use dark brand gold for focus on light surfaces and light gold on navy; the Futurelastic hero actions wrap before they clip on phones (#1375).
+- Keyboard focus reveals partially clipped controls in shell and table scrollports; collapsed zero-size regions no longer become invisible tab stops (#1375).
+- Bare Topbar center actions retain their content width in scroll mode, so keyboard focus can reveal the whole target (#1375).
+- **Focus rings in bars and contents rails (#1375):** AppSettingPicker bar cells, LegalDocumentShell contents links and Anchor links share the token-driven inset ring; Logo asChild and Anchor use the brand focus ring instead of the browser outline.
+- Resize separators now follow their ARIA orientation and have a token-sized focusable area, including handles without grip content (#1375).
+- Keyboard focus inside pagination, tabs, cards, bars and scrolling surfaces now uses a shared inset offset, preserving the brand mark and gap without changing layout (#1375). Breadcrumbs, password toggles, resize handles, chip removals, overflow actions and composite input carriers use the shared focus painter. Keyboard-scroll regions now show their inset brand mark by default.
+
+### Added
+
+- `--resizable-handle-size` controls separator thickness (default `--space-2`).
+- `--focus-ring-inset-offset` and `--focus-ring-contained-offset` configure contained focus geometry without padding changes (#1375).
+
 ## [33.11.2] - 2026-10-17
 
 The first release of everything listed under 33.11.0 and 33.11.1 below: main CI was red on both (a CSS rule test, then a timing-sensitive focus assertion) and the release gate stopped before tagging, so neither reached npm.
@@ -80,14 +94,19 @@ lines to retain the accessibility repair (the old accent-boundary ratios were 2.
   --focus-outline-offset: 0px;
   --button-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   --control-shadow: var(--shadow-xs);
-  --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
+  --shadow-md:
+    0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(var(--shadow-color) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 500ms;
   --input: 30 7% 53%;
 }
-.dark, :root[data-theme="dark"] { --input: 45 6% 47%; }
+.dark,
+:root[data-theme="dark"] {
+  --input: 45 6% 47%;
+}
 
 .ui-scale-fixed {
   --space-page-x: var(--space-6);
@@ -95,7 +114,6 @@ lines to retain the accessibility repair (the old accent-boundary ratios were 2.
   --space-section: var(--space-4);
 }
 ```
-
 
 ## [33.9.1] - 2026-10-17
 
@@ -506,7 +524,7 @@ and editor headings stayed small — and `visual-audit` called a partly applied 
 - **Prose / BlockEditor headings scale with user text size:** h1–h6 default sizes are relative to
   the prose text (`1em` × ratio steps; default sizes unchanged), so they follow enlarged text and work
   inside the editor (ProseMirror strips per-block attributes, so blocks only inherit). `Prose
-  size="sm"` headings and code blocks now scale down with the body. `--heading-h*` overrides unchanged.
+size="sm"` headings and code blocks now scale down with the body. `--heading-h*` overrides unchanged.
 
 ### 🐛 Fixed
 
