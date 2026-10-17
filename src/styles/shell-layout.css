@@ -3143,6 +3143,9 @@
   }
   .ui-topbar-item[data-truncate="true"] > .ui-topbar-item-label {
     min-inline-size: 0;
+    /* A clipping single-line box owns its line box (gh#254): an inherited tight value would shear
+     * descenders and Vietnamese tone marks at the clip edge. */
+    line-height: var(--line-height-normal);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
