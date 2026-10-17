@@ -60,7 +60,9 @@ describe("gh#885 · the focus mark is three longhands, never the `outline` short
   });
 
   it("keeps outline-offset, which the shorthand never carried", () => {
-    expect(markRule).toMatch(/outline-offset:\s*var\(\s*--focus-ring-offset\)/);
+    expect(markRule).toMatch(
+      /outline-offset:\s*var\(\s*--focus-ring-contained-offset,\s*var\(--focus-ring-offset\)\)/,
+    );
   });
 
   it("uses no `outline:` shorthand whose colour comes from a token, anywhere in the file", () => {

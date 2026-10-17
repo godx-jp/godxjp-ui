@@ -6749,6 +6749,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Room around the chart inside its scroll region, so an edge box's focus ring is not clipped."
   },
   {
+    "name": "--resizable-handle-size",
+    "value": "var(--space-2)",
+    "description": "Room for the shared inset focus mark and gap, including handles without a grip."
+  },
+  {
     "name": "--scroll-area-scrollbar-width",
     "value": "thin",
     "description": "`thin` reproduces the old 10px rail closely on the platforms that draw a classic scrollbar; `auto` gives the full-width platform bar, which is what a touch/coarse-pointer console wants. Only `auto | thin | none` are valid — a length is not (that is the standard property's whole bargain, and the reason `--scroll-area-bar-size` could not survive as a rem)."

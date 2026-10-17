@@ -160,9 +160,16 @@ export function useScrollableRegionTabIndex(element: HTMLElement | null): void {
         element.querySelector(SCROLLABLE_REGION_FOCUSABLE_SELECTOR) !== null;
       // Guard both writes: setting an attribute to the value it already holds still emits a
       // MutationRecord, which would call this back forever.
-      if (scrolls && !hasFocusableContent) {
+      // A collapsed pane may still have overflowing content, but has no visible
+      // focus surface. ResizeObserver restores the stop when it expands again.
+      const hasVisibleBox = element.clientWidth > 0 && element.clientHeight > 0;
+      if (!hasVisibleBox) {
+        // Chromium also makes overflow boxes natively tabbable without tabindex.
+        // An explicit -1 is required while a pane is collapsed to zero on either axis.
+        if (element.getAttribute("tabindex") !== "-1") element.setAttribute("tabindex", "-1");
+      } else if (scrolls && !hasFocusableContent) {
         if (element.getAttribute("tabindex") !== "0") element.setAttribute("tabindex", "0");
-      } else if (element.getAttribute("tabindex") === "0") {
+      } else if (["0", "-1"].includes(element.getAttribute("tabindex") ?? "")) {
         element.removeAttribute("tabindex");
       }
     };

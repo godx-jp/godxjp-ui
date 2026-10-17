@@ -1,3 +1,4 @@
+import { revealKeyboardFocus } from "../../lib/focus-reveal";
 // DataTable — the one compound, TanStack-powered admin list component.
 //
 // Encapsulates: sticky header, density toggle, per-row click navigation, bulk
@@ -1727,6 +1728,7 @@ DataTable.Content = function DataTableContent() {
   return (
     <div
       ref={scrollRef}
+      onFocusCapture={revealKeyboardFocus}
       className={cn(
         "ui-data-table-scroll",
         hasPinEnd && "ui-data-table-has-pin-end",

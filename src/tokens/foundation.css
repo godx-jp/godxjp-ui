@@ -522,6 +522,9 @@
    * heading anchor — marks where a radius-hugging shadow would touch the
    * glyph). The shadow form ignores it by construction. */
   --focus-ring-offset: var(--focus-outline-offset);
+  /* Inside clipping surfaces, preserve the mark and gap without changing layout. */
+  --focus-ring-inset-offset: calc(-1 * (var(--focus-ring-width) + var(--focus-outline-offset)));
+  --focus-ring-contained-offset: initial;
   /* Ring headroom for clipped chrome (`overflow-clip-margin` on the topbar family, gh#291).
    * MUST stay a plain length consumed via a bare var(): Chromium rejects any calc() in
    * overflow-clip-margin at parse time (even calc(2 * 2px)), silently dropping the
@@ -530,16 +533,9 @@
    * non-retina (dpr 1) displays or fractional browser zoom could consume, shaving the
    * ring's outer edge. 8px keeps ≥5px of slack under any rounding regime. */
   --focus-ring-clip-margin: 8px;
-  /* REGION focus ring — the keyboard-scroll affordance on large scroll REGIONS (`.app-main`,
-   * gh#271/gh#276), separate from the control ring above. A control-strength 2px brand frame
-   * around the entire content area reads as a glitch to mouse-first users (`:focus-visible`
-   * promotes on any keypress after a click-focus), so the DEFAULT IS OFF — a deliberate,
-   * product-owner tradeoff against WCAG 2.4.7 for keyboard-scroll visibility. A service that
-   * needs the visible affordance opts in with ONE token:
-   *   --region-focus-ring-width: var(--focus-ring-width);
-   * `--region-focus-ring-color` is declared `initial` (NOT a :root var binding — the freeze
-   * rule) and resolves to the live focus-ring hue at the element that paints it. */
-  --region-focus-ring-width: 0;
+  /* Keyboard-scroll regions use an inset brand mark by default. Both the region
+   * weight and the global focus switch remain configurable. */
+  --region-focus-ring-width: var(--focus-ring-weight);
   --region-focus-ring-color: initial; /* default = hsl(var(--focus-ring-color, var(--ring))) */
 
   /* GRADIENTS — opt-in decorative fills exposed at the token layer so a service can paint a hero

@@ -1,3 +1,4 @@
+import { revealKeyboardFocus } from "../../lib/focus-reveal";
 import { MoreHorizontal } from "lucide-react";
 import * as React from "react";
 
@@ -25,6 +26,7 @@ export function Topbar({
   overflow = "scroll",
   pad,
   style,
+  onFocusCapture,
   ...props
 }: TopbarProp) {
   const barRef = React.useRef<HTMLDivElement | null>(null);
@@ -55,6 +57,10 @@ export function Topbar({
   return (
     <div
       ref={barRef}
+      onFocusCapture={(event) => {
+        onFocusCapture?.(event);
+        if (!event.defaultPrevented) revealKeyboardFocus(event);
+      }}
       data-height={height}
       data-identity={hasIdentity ? "true" : undefined}
       // The overflow contract, published on the bar (gh#728). Always emitted, including for the
@@ -78,6 +84,7 @@ export function Topbar({
           <>
             <div
               ref={controlsRef}
+              onFocusCapture={revealKeyboardFocus}
               data-slot="topbar-controls"
               data-overflow={overflow}
               className="ui-topbar ui-topbar-controls"

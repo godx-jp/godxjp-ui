@@ -1,5 +1,7 @@
 "use client";
 
+import { revealKeyboardFocus } from "../lib/focus-reveal";
+
 import * as React from "react";
 
 import { useTranslation } from "../i18n/use-translation";
@@ -451,7 +453,12 @@ export function Anchor({
               : undefined
           }
         />
-        <ul ref={listRef} data-slot="anchor-list" className="ui-anchor-list">
+        <ul
+          onFocusCapture={revealKeyboardFocus}
+          ref={listRef}
+          data-slot="anchor-list"
+          className="ui-anchor-list"
+        >
           {renderItems(items ?? [], false)}
         </ul>
       </div>

@@ -100,7 +100,7 @@
     "TableHeader",
     "TableRow"
   ],
-  "tagline": "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables.",
+  "tagline": "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
   "usage": [
     "DO compose all six sub-parts in order: wrap with `<Table>`, then `<TableHeader>` containing `<TableRow><TableHead>…</TableRow>`, then `<TableBody>` containing one or more `<TableRow><TableCell>…` rows. Skipping any layer (e.g. bare `<th>` inside `<Table>`) bypasses the design tokens and hover/border styles.",
     "DO use `TableHead` (not `TableCell`) for header cells — it renders `<th>` with `data-slot=\"table-head\"` and the `--table-row-height` CSS variable for consistent header sizing across the design system. `TableCell` renders `<td>` with `data-slot=\"table-cell\"` and is for body rows only.",

@@ -34,6 +34,13 @@ describe("useScrollableRegionTabIndex", () => {
     expect(screen.getByTestId("region")).toHaveAttribute("tabindex", "0");
   });
 
+  it.each(["clientWidth", "clientHeight"] as const)("does not focus a collapsed %s", (axis) => {
+    stubScrollGeometry({ overflows: true });
+    vi.spyOn(HTMLElement.prototype, axis, "get").mockReturnValue(0);
+    renderWithUi(<Region>Collapsed text content</Region>);
+    expect(screen.getByTestId("region")).toHaveAttribute("tabindex", "-1");
+  });
+
   it("adds no tab stop when the content is already focusable", () => {
     stubScrollGeometry({ overflows: true });
     renderWithUi(

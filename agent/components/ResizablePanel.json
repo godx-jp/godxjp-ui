@@ -51,7 +51,7 @@
     "ResizableHandle",
     "ResizablePanelGroup"
   ],
-  "tagline": "Resizable panel group/child/handle primitives from react-resizable-panels.",
+  "tagline": "Resizable panel group/child/handle primitives from react-resizable-panels. --resizable-handle-size sets separator thickness; ARIA orientation controls its axis. Handles use the shared inset focus ring, including empty handles.",
   "usage": [
     "DO put the layout on `<ResizablePanelGroup orientation=\"horizontal|vertical\">`, the resizable regions in `<ResizablePanel>`, and a `<ResizableHandle>` BETWEEN every adjacent pair — a group of N panels needs N-1 handles or there is nothing to drag.",
     "DO express `defaultSize`/`minSize`/`maxSize` as PERCENTAGE STRINGS like `defaultSize=\"35%\"` (react-resizable-panels v4: a bare number is PIXELS, so `defaultSize={35}` renders a 35px sliver, NOT 35% — pass the string). Don't fight sizing with a fixed `w-[280px]` className on the panel.",

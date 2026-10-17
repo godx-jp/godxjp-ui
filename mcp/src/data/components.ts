@@ -1285,7 +1285,7 @@ import { StatCard } from "@godxjp/ui/data-display";
     name: "AppShell",
     group: "layout",
     tagline:
-      "Root application shell — composes sidebar, topbar rail, main content area, and optional footer.",
+      "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width).",
     props: [
       {
         name: "sidebar",
@@ -4011,7 +4011,7 @@ import { Icon, Text } from "@godxjp/ui/general";
     absorbed: ["DataGrid"],
     group: "data-display",
     tagline:
-      "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack).",
+      "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack). Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
       {
         name: "data",
@@ -6599,7 +6599,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
     subParts: ["TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"],
     group: "data-display",
     tagline:
-      "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables.",
+      "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
       {
         name: "interactive",
@@ -10066,7 +10066,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       "PaginationPrevious",
     ],
     group: "navigation",
-    tagline: "Offset/page-based pagination bar. Sits below a table card.",
+    tagline: "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
       {
         name: "ariaLabel",
@@ -13776,7 +13776,7 @@ export function ControlledPopover() {
     subParts: ["ScrollBar"],
     group: "data-display",
     tagline:
-      "A native scrolling box (no scroll library since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
+      "Keyboard focus on the scroll viewport and its descendants uses the shared inset brand ring (--focus-ring-inset-offset), without padding changes. A native scrolling box (no scroll library since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
     props: [
       {
         name: "className",
@@ -15551,7 +15551,8 @@ export default function PasswordBlock() {
     name: "ResizablePanel",
     subParts: ["ResizableHandle", "ResizablePanelGroup"],
     group: "layout",
-    tagline: "Resizable panel group/child/handle primitives from react-resizable-panels.",
+    tagline:
+      "Resizable panel group/child/handle primitives from react-resizable-panels. --resizable-handle-size sets separator thickness; ARIA orientation controls its axis. Handles use the shared inset focus ring, including empty handles.",
     props: [
       {
         name: "orientation",
@@ -19281,7 +19282,7 @@ const [pinned, setPinned] = useState(false);
     importPath: "@godxjp/ui/lab",
     group: "navigation",
     tagline:
-      "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`.",
+      "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
       {
         name: "items",

@@ -804,7 +804,7 @@
   }
 
   .ui-resizable-handle {
-    width: var(--control-border-width, var(--stroke-hairline));
+    inline-size: var(--resizable-handle-size);
     background: hsl(var(--border));
     position: relative;
     flex-shrink: 0;
@@ -814,9 +814,10 @@
     color: hsl(var(--muted-foreground));
   }
 
-  .ui-resizable-handle[aria-orientation="vertical"] {
-    width: auto;
-    height: var(--control-border-width, var(--stroke-hairline));
+  /* ARIA describes the separator line, not the panel group's flow axis. */
+  .ui-resizable-handle[aria-orientation="horizontal"] {
+    inline-size: auto;
+    block-size: var(--resizable-handle-size);
   }
 
   .ui-resizable-handle:hover,

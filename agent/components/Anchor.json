@@ -105,7 +105,7 @@
     45
   ],
   "storyPath": "navigation/anchor.tsx",
-  "tagline": "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`.",
+  "tagline": "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
   "tier": "lab",
   "usage": [
     "DO give every target a real `id` and point `href` at it as `#id`. The links are real anchors: middle-clickable, deep-linkable, and correct before JavaScript boots.",

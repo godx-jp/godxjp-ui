@@ -56,3 +56,5 @@
 @import "./components/marquee.css";
 @import "./components/affix.css";
 @import "./components/anchor.css";
+
+@import "./components/resizable.css";

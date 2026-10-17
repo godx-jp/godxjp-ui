@@ -1,3 +1,4 @@
+import { revealKeyboardFocus } from "../../lib/focus-reveal";
 import * as React from "react";
 import { useTranslation } from "../../i18n/use-translation";
 import { tableHeadHeightClass } from "../../lib/control-styles";
@@ -320,7 +321,9 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       // step attribute; with `preset="default"` neither is emitted, so the box is byte-identical.
       <div
         ref={scrollRef}
+        onFocusCapture={revealKeyboardFocus}
         className={cn(
+          "ui-table-scroll",
           scrollable ? "relative w-full overflow-auto" : "relative w-full",
           preset === "action-collection" && "ui-table-collection",
           preset === "stacked-record-collection" && "ui-table-stacked-collection",

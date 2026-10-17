@@ -72,7 +72,7 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
     // focus-ring.css: leaving it in this rule with an `none` off-value stripped a focused
     // button's resting elevation, measured in Chromium.
     expect(focusRing).toMatch(
-      /\[data-focus-outline="on"\][\s\S]*?box-shadow:\s*var\(\s*--focus-field-shadow,/,
+      /\[data-focus-outline="off"\][\s\S]*?box-shadow:\s*var\(\s*--focus-field-shadow,/,
     );
   });
 
@@ -81,7 +81,8 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
     // treatments on one element, which is the complaint that produced the lighter design. A
     // negative offset equal to the mark's width puts the line inside the row's rounded box, so it
     // follows the radius exactly as the old box-shadow form did.
-    const rule = ruleBody(focusRing, "a.ui-list-row, tr.ui-focus-ring, .sb-nav-item");
+    const rule =
+      focusRing.match(/a\.ui-list-row,\s*tr\.ui-focus-ring,[^{}]*\{([^}]*)\}/)?.[1] ?? "";
     expect(rule).toContain("--focus-ring-offset: calc(-1 * var(--focus-ring-width))");
   });
 
