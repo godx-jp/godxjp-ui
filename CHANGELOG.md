@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.2] - 2026-10-17
+
 ### Fixed
 
 - **Focus rings (#1378):** restore outside rings for text links and filled controls; restrict containment to clipped component carriers and give cards ring headroom.
