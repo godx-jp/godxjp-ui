@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.1] - 2026-10-17
+
+The first release of everything listed under 33.12.0 below: its main CI was red on a timing-sensitive browser assertion and the release gate stopped before tagging, so 33.12.0 never reached npm.
+
+### Fixed
+
+- **The Tabs overflow browser test waits for all 14 triggers to be painted at 1280** after expanding from 390; on a slow runner the re-show lands a frame after the menu button disappears. No runtime change.
+
 ## [33.12.0] - 2026-10-17
 
 ### Fixed
