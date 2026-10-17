@@ -132,8 +132,13 @@ for (const mode of ["route", "panel"] as const) {
               .toBe(0);
             const geometry = await measure();
             expect(geometry.filter((tab) => tab.painted && !tab.inside)).toEqual([]);
-            if (width === 1280) expect(geometry.filter((tab) => tab.painted)).toHaveLength(14);
-            else {
+            if (width === 1280) {
+              // Expanding re-shows the hidden triggers in the same ResizeObserver pass that removes
+              // the menu button; on a slow runner it can land a frame later, so wait for all 14.
+              await expect
+                .poll(async () => (await measure()).filter((tab) => tab.painted).length)
+                .toBe(14);
+            } else {
               await page.locator(".ui-tabs-overflow").click();
               const menu = page.getByRole("menuitem");
               await menu.first().waitFor();
