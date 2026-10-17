@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.0] - 2026-10-17
+
 ### Fixed
 
 - ACME showcase themes use dark brand gold for focus on light surfaces and light gold on navy; the Futurelastic hero actions wrap before they clip on phones (#1375).
