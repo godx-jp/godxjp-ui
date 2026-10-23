@@ -12,6 +12,8 @@
   --responsive-grid-trio-gap: var(--space-6);
   --responsive-grid-lead-track-size: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   --responsive-grid-lead-gap: var(--space-10);
+  --responsive-grid-panels-track-size: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  --responsive-grid-panels-gap: var(--space-6);
   --sidebar-section-label-font-size: var(
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))

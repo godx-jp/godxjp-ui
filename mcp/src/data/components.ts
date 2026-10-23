@@ -1064,6 +1064,52 @@ export default function OrdersPage() {
 </EditorialSection>`,
   },
   {
+    name: "EditorialArticle",
+    group: "layout",
+    tagline:
+      "The reading column of a long-form editorial page (gh#1440): the ruled kicker, the page's one h1, an intro set off by a rule, then `EditorialArticleSection`s (an h2 and paragraphs at the reading leading), an `EditorialNote` and a trailing `EditorialTextLink`. Block flow with collapsing margins, so the design's rhythm holds. Geometry: `--editorial-article-*`, `--editorial-note-*`.",
+    subParts: ["EditorialArticleSection", "EditorialNote"],
+    props: [
+      { name: "title", type: "ReactNode", required: true, description: "The page's h1." },
+      { name: "eyebrow", type: "ReactNode", description: "Kicker above it (an Eyebrow)." },
+      { name: "intro", type: "ReactNode", description: "Lead paragraph under it." },
+      { name: "children", type: "ReactNode", description: "Sections, note, link." },
+      { name: "titleId", type: "string", description: "Id on the h1." },
+    ],
+    usage: [
+      'DO put it in an EditorialSection after an EditorialBreadcrumb on a `flow="sections"` page.',
+      "DO pass each prose paragraph in `EditorialArticleSection paragraphs`, not raw `<p>`.",
+      "DON'T use it for a versioned legal/admin document — that is LegalDocumentShell.",
+    ],
+    related: ["EditorialBreadcrumb, EditorialTextLink, LegalDocumentShell."],
+    example: `import { EditorialArticle, EditorialArticleSection, EditorialNote, Eyebrow } from "@godxjp/ui/layout";
+
+<EditorialArticle eyebrow={<Eyebrow>PRICE GUIDE</Eyebrow>} title="A fair comparison starts with the details." intro="A matching card name is only the beginning.">
+  <EditorialArticleSection title="Check it is the same card" paragraphs={["Confirm the game, card number and set."]} />
+  <EditorialNote>An original guide, not a price forecast.</EditorialNote>
+</EditorialArticle>`,
+  },
+  {
+    name: "EditorialPanel",
+    group: "layout",
+    tagline:
+      'A bordered panel with a short tag, a heading and a list (gh#1440) — a roadmap group. Lay a row of them out with `ResponsiveGrid preset="panels"` (tracks and gap are `--responsive-grid-panels-*`, re-declared at the theme\'s own steps). Geometry: `--editorial-panel-*`.',
+    props: [
+      { name: "title", type: "ReactNode", required: true, description: "The heading." },
+      { name: "tag", type: "ReactNode", description: "Short tag above it." },
+      { name: "items", type: "ReactNode[]", description: "List items." },
+      { name: "children", type: "ReactNode", description: "Anything after the list." },
+      { name: "level", type: "2 | 3", defaultValue: "2", description: "Heading level." },
+    ],
+    usage: ['DO lay a row of panels out with `ResponsiveGrid preset="panels"`.'],
+    related: ['ResponsiveGrid — `preset="panels"`.'],
+    example: `import { EditorialPanel, ResponsiveGrid } from "@godxjp/ui/layout";
+
+<ResponsiveGrid preset="panels">
+  <EditorialPanel tag="NEXT" title="More ways to discover." items={["Products and their contents"]} />
+</ResponsiveGrid>`,
+  },
+  {
     name: "EditorialPageHeader",
     group: "layout",
     tagline:

@@ -486,6 +486,13 @@
         "navigation-layout.css"
       ]
     },
+    "EditorialArticle": {
+      "layers": [
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
+      ]
+    },
     "EditorialBanner": {
       "layers": [
         "layout.css",
@@ -536,6 +543,13 @@
       ]
     },
     "EditorialPageHeader": {
+      "layers": [
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
+      ]
+    },
+    "EditorialPanel": {
       "layers": [
         "layout.css",
         "dialog-layout.css",
