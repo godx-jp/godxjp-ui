@@ -102,24 +102,34 @@ type MermaidApi = {
 };
 
 let loading: Promise<MermaidApi | null> | null = null;
+let initializedTheme: string | null = null;
 
-/** Lazy, once. `mermaid` is an OPTIONAL peer: a host that does not install it gets code blocks. */
-function loadMermaid(): Promise<MermaidApi | null> {
+/**
+ * Lazy, once. `mermaid` is an OPTIONAL peer: a host that does not install it gets code blocks.
+ * The theme is read on EVERY render, not once for the page: a diagram drawn after the reader
+ * switched to dark is drawn dark (re-initialising only when `data-theme` changed).
+ */
+async function loadMermaid(): Promise<MermaidApi | null> {
   loading ??= import("mermaid")
-    .then((module) => {
-      const api = (module as { default: MermaidApi }).default;
-      api.initialize({
-        startOnLoad: false,
-        securityLevel: "strict",
-        // SVG text labels, not HTML in <foreignObject> — which the gate rejects outright.
-        htmlLabels: false,
-        flowchart: { htmlLabels: false },
-        theme: document.documentElement.dataset.theme === "dark" ? "dark" : "default",
-      });
-      return api;
-    })
+    .then((module) => (module as { default: MermaidApi }).default)
     .catch(() => null);
-  return loading;
+  const api = await loading;
+  const theme = document.documentElement.dataset.theme === "dark" ? "dark" : "default";
+  if (api && theme !== initializedTheme) {
+    api.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      // SVG text labels, not HTML in <foreignObject> — which the gate rejects outright.
+      htmlLabels: false,
+      flowchart: { htmlLabels: false },
+      // Journey wraps its labels in <switch><foreignObject> by default ("element switch" at the
+      // gate, so every journey fell back to code); tspan placement draws them as SVG text.
+      journey: { textPlacement: "tspan" },
+      theme,
+    });
+    initializedTheme = theme;
+  }
+  return api;
 }
 
 export type MermaidDiagramProps = {

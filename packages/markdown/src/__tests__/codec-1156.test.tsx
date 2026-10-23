@@ -38,13 +38,18 @@ const GRAMMAR = [
   "- [ ] todo\n- [x] done\n\n1. one\n2. two\n\n- tight\n- list",
   "- loose\n\n- list",
   "time 10:30, note:x, a :b c",
+  // Math (renderer v6 / kit-md@2): verbatim raw nodes, inside containers too.
+  "Inline $a\\,b$ and $$x$$1, $$ a$$, $x\\\\$ y.\n\n$$\n\\frac{1}{2}\n$$\n\n```math\nx\n```",
+  "> [!NOTE]\n> $$\n> E = mc^2\n> $$\n\n- $a$ item\n- $$\n  b\n  $$",
+  "costs $5 and $10, $5-$10, \\$x\\$, $5-\\$10",
 ];
 
 const ALL = [...MARKDOWN_FIXTURES.map((f) => f.markdown), ...JA, ...GRAMMAR];
 
 describe("codec (gh#1156)", () => {
   it("identifies its output format", () => {
-    expect(CODEC_ID).toBe("kit-md@1");
+    // @2: math — `$` is now special in prose, so a literal `$x$` is written `\\$x$` (renderer v6).
+    expect(CODEC_ID).toBe("kit-md@2");
   });
 
   it.each(ALL)("is idempotent and lossless: %j", (markdown) => {
@@ -214,5 +219,42 @@ describe("codec (gh#1156)", () => {
       expect(once.trimEnd(), marked).toBe(marked);
       expect(html(once), marked).toBe(html(marked));
     }
+  });
+
+  it("keeps math verbatim and dollar amounts unescaped", () => {
+    for (const verbatim of [
+      "$x^2$ and $\\,$",
+      "$$\n\\frac{a}{b}\n$$",
+      "```math\nx\n```",
+      "costs $5 and $10",
+      "$5-$10",
+    ]) {
+      expect(normalize(verbatim)).toBe(`${verbatim}\n`);
+    }
+    expect(parse("a $x$ b").content[0]).toMatchObject({
+      type: "paragraph",
+      content: [
+        { type: "text" },
+        { type: "rawInline", attrs: { source: "$x$" } },
+        { type: "text" },
+      ],
+    });
+    expect(parse("$$\nx\n$$").content[0]).toMatchObject({
+      type: "rawBlock",
+      attrs: { source: "$$\nx\n$$" },
+    });
+    // A literal pair keeps the one escape it needs; `$$x$$` before a digit keeps its double dollar.
+    expect(normalize("\\$x\\$")).toBe("\\$x$\n");
+    expect(normalize("$$x$$1")).toBe("$$x$$1\n");
+  });
+
+  it("serializes hand-built text with dollars so it reads back as the same text", () => {
+    const doc: DocNode = {
+      type: "doc",
+      content: [{ type: "paragraph", content: [{ type: "text", text: "$x$ costs $5" }] }],
+    };
+    const markdown = serialize(doc);
+    expect(markdown).toBe("\\$x$ costs $5\n");
+    expect(parse(markdown)).toEqual(doc);
   });
 });

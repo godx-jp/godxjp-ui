@@ -17,24 +17,31 @@ const render = (markdown: string, props: Partial<Parameters<typeof Markdown>[0]>
     "",
   );
 
-/** remark-math's shape: inline code marked by class. */
-const remarkMathMarker = () => (tree: Root) => {
-  visit(tree, "inlineCode", (node) => {
-    node.data = { hProperties: { className: ["math-inline"] } };
-  });
-};
+/** A host marker on inline code, by class (remark-math's shape, under a host's own name). */
+const remarkCodeMarker =
+  (className = "host-formula") =>
+  () =>
+  (tree: Root) => {
+    visit(tree, "inlineCode", (node) => {
+      node.data = { hProperties: { className: [className] } };
+    });
+  };
 
 describe("@godxjp/markdown host control (gh#1116)", () => {
-  it("an extension WIDENS an attribute rule the base constrains (code className + math-inline)", () => {
+  it("an extension WIDENS an attribute rule the base constrains (code className + a host class)", () => {
     const html = render("`E = mc^2`", {
-      remarkPlugins: [remarkMathMarker],
-      schema: { attributes: { code: [["className", "math-inline", "math-display"]] } },
+      remarkPlugins: [remarkCodeMarker()],
+      schema: { attributes: { code: [["className", "host-formula", "host-display"]] } },
     });
-    expect(html).toBe('<p><code class="math-inline">E = mc^2</code></p>');
+    expect(html).toBe('<p><code class="host-formula">E = mc^2</code></p>');
+    // Renderer v6 draws math itself: a host still marking `math-inline` gets KaTeX, not its code.
+    expect(render("`E = mc^2`", { remarkPlugins: [remarkCodeMarker("math-inline")] })).toContain(
+      '<span class="katex">',
+    );
     // …and the base value it widened still passes: fences keep their language class.
     expect(
       render("```ts\nx\n```", {
-        schema: { attributes: { code: [["className", "math-inline"]] } },
+        schema: { attributes: { code: [["className", "host-formula"]] } },
       }),
     ).toContain('class="language-ts"');
   });

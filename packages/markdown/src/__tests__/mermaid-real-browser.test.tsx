@@ -21,6 +21,8 @@ export const DIAGRAMS: Record<string, string> = {
   er: "erDiagram\n  PAGE ||--o{ VERSION : has\n  VERSION { int number }",
   gantt: "gantt\n  dateFormat YYYY-MM-DD\n  section P1\n  Design :a1, 2026-10-01, 5d",
   pie: 'pie title Files\n  "md" : 70\n  "png" : 30',
+  // Journey put its labels in <switch><foreignObject> until `journey.textPlacement: "tspan"`.
+  journey: "journey\n  title 出社\n  section 朝\n    起きる: 3: 私\n    通勤: 2: 私, 同僚",
 };
 
 const ENTRY = `
@@ -28,6 +30,9 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { MermaidDiagram } from "./packages/markdown/src/mermaid";
 const DIAGRAMS = ${JSON.stringify(DIAGRAMS)};
+// The theme test mounts one more diagram after flipping data-theme.
+window.mountLate = (id) =>
+  createRoot(document.getElementById(id)).render(<MermaidDiagram source={DIAGRAMS.flowchart} />);
 createRoot(document.getElementById("root")).render(
   <>{Object.entries(DIAGRAMS).map(([name, source]) => (
     <div key={name} id={name} style={{ width: 600 }}><MermaidDiagram source={source} label={name} /></div>
@@ -112,7 +117,44 @@ describe("MermaidDiagram with real mermaid (Chromium, gh#1108)", () => {
       expect(text.sequence).toContain("POST /pages");
       expect(text.class).toContain("Page");
       expect(text.er).toContain("VERSION");
+      expect(text.journey).toContain("通勤");
       expect(errors).toEqual([]);
+    } finally {
+      await page.close();
+    }
+  }, 60_000);
+
+  it("reads the theme per diagram: one drawn after the switch to dark is dark", async () => {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    try {
+      await page.setContent(
+        '<!doctype html><html><body><div id="root"></div><div id="late"></div></body></html>',
+      );
+      await page.addScriptTag({ content: js });
+      await page.waitForFunction(
+        () => document.querySelector('#flowchart figure[data-mermaid="diagram"]'),
+        undefined,
+        { timeout: 30_000 },
+      );
+      await page.evaluate(() => {
+        document.documentElement.dataset.theme = "dark";
+        (window as unknown as { mountLate: (id: string) => void }).mountLate("late");
+      });
+      await page.waitForFunction(
+        () => document.querySelector('#late figure[data-mermaid="diagram"]'),
+        undefined,
+        { timeout: 30_000 },
+      );
+      const [light, dark] = await page.evaluate(() =>
+        ["#flowchart", "#late"].map(
+          (id) =>
+            document
+              .querySelector(`${id} svg style`)
+              ?.textContent?.replace(/#godx-mermaid-[\w-]+/g, "") ?? "",
+        ),
+      );
+      expect(light).not.toBe("");
+      expect(dark).not.toBe(light);
     } finally {
       await page.close();
     }

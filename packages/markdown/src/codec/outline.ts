@@ -6,9 +6,18 @@ import { parseMdast } from "./parse";
 
 export type OutlineEntry = { depth: number; text: string; id: string };
 
-/** A heading's text as the renderer reads it: text and code, never an image's alt (gh#1163). */
+/**
+ * A heading's text as the renderer reads it: text, code and a formula's TeX source (the anchor is
+ * slugged before KaTeX draws it), never an image's alt (gh#1163).
+ */
 function textOf(node: Nodes | PhrasingContent): string {
-  if (node.type === "text" || node.type === "inlineCode" || node.type === "html") return node.value;
+  if (
+    node.type === "text" ||
+    node.type === "inlineCode" ||
+    node.type === "inlineMath" ||
+    node.type === "html"
+  )
+    return node.value;
   if (node.type === "image" || node.type === "imageReference") return "";
   if ("children" in node) return (node.children as Nodes[]).map(textOf).join("");
   return "";

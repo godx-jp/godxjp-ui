@@ -69,9 +69,28 @@ function leafText(value: string, marks: Mark[]): DocNode {
   return marks.length ? { type: "text", text: value, marks } : { type: "text", text: value };
 }
 
+/**
+ * Inline math, kept verbatim as a raw inline: `$x$`, or `$$…$$` where a single dollar would not
+ * read back as math (Pandoc's rule in syntax.ts: content at the edge is whitespace, it ends in a
+ * backslash, a digit follows). The delimiter is longer than any `$` run inside; padding as in `mdast-util-math`.
+ */
+function inlineMathSource(value: string, after: string): string {
+  let size = /^\s|[\s\\]$/.test(value) || /^\d/.test(after) ? 2 : 1;
+  const runs = new Set([...value.matchAll(/\$+/g)].map((run) => run[0].length));
+  while (runs.has(size)) size++;
+  const fence = "$".repeat(size);
+  const pad = /^\$|\$$/.test(value) || /^\s[^]*\s$/.test(value) ? " " : "";
+  return `${fence}${pad}${value}${pad}${fence}`;
+}
+
 function inline(nodes: PhrasingContent[], marks: Mark[] = []): DocNode[] {
-  return nodes.flatMap((node): DocNode[] => {
+  return nodes.flatMap((node, index): DocNode[] => {
     switch (node.type) {
+      case "inlineMath": {
+        const next = nodes[index + 1];
+        const source = inlineMathSource(node.value, next?.type === "text" ? next.value : "");
+        return [withMarks({ type: "rawInline", attrs: { source } }, marks)];
+      }
       case "text":
         return text(node.value, marks);
       case "emphasis":

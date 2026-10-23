@@ -5087,7 +5087,7 @@
         "type": "string"
       },
       {
-        "description": "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@1, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
+        "description": "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@2, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
         "name": "calloutTitles",
         "type": "Partial<Record<'note' | 'tip' | 'important' | 'warning' | 'caution', string>>"
       },
@@ -5095,6 +5095,12 @@
         "defaultValue": "true",
         "description": "`false` keeps ```mermaid fences as code. Diagrams need the optional peer `mermaid`.",
         "name": "mermaid",
+        "type": "boolean"
+      },
+      {
+        "defaultValue": "true",
+        "description": "Fenced code in a known language is tokenised at parse time as `<span data-code-token>` with the kit's twelve names, which Prose colours (renderer v6). `false` leaves plain text for a host `pre` with its own highlighter.",
+        "name": "highlight",
         "type": "boolean"
       }
     ],
@@ -5111,6 +5117,7 @@
       "Table of contents: outline(markdown) from @godxjp/markdown/codec returns { depth, text, id }[] with exactly the ids <Markdown> writes — feed it to the kit Anchor. YAML front matter is kept verbatim and never rendered; frontmatterOf(markdown) returns it (gh#1163).",
       "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
       "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
+      "DO `import \"@godxjp/markdown/katex.css\"` once in the app: `$…$`, `$$…$$` and ```math are drawn by KaTeX at parse time (trust: false, renderer v6) and need its stylesheet and fonts. A single `$` follows Pandoc's rule, so `$5 and $10` stays text.",
       "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate."
     ]
   },
@@ -5198,7 +5205,7 @@
         "type": "string"
       },
       {
-        "description": "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@1).",
+        "description": "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@2).",
         "name": "onValueChange",
         "type": "(markdown: string) => void"
       },

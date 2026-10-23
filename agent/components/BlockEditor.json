@@ -16,7 +16,7 @@
       "type": "string"
     },
     {
-      "description": "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@1).",
+      "description": "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@2).",
       "name": "onValueChange",
       "type": "(markdown: string) => void"
     },

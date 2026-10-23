@@ -9,6 +9,8 @@ import type { Element, Root } from "hast";
 import { visit } from "unist-util-visit";
 
 import { rehypeHeadingIds, type HeadingIdResolver } from "./headings";
+import { rehypeHighlight } from "./highlight";
+import { rehypeMath } from "./math";
 import { MermaidDiagram } from "./mermaid";
 import { TableScroll } from "./table-scroll";
 import { extendSchema, safeUrl, type SchemaExtension } from "./schema";
@@ -28,7 +30,9 @@ export const MARKDOWN_FORMAT = "md";
 // 3 — short single-token table cells carry `data-short` (gh#1150).
 // 4 — grammar v1: callouts, toggles, columns; CJK-friendly emphasis (gh#1156).
 // 5 — YAML front matter renders nothing (was an <hr> + a setext <h2> of the YAML) (gh#1163).
-export const RENDERER_VERSION = 5;
+// 6 — math (`$…$`, `$$…$$`, ```math) drawn by KaTeX; fenced code tokenised as
+//     `<span data-code-token>`.
+export const RENDERER_VERSION = 6;
 
 export type MarkdownProps = {
   /** The Markdown source. */
@@ -63,6 +67,12 @@ export type MarkdownProps = {
    * `pre` (or plain code) as well (gh#1116).
    */
   mermaid?: boolean;
+  /**
+   * Tokenise fenced code in a known language as `<span data-code-token="keyword">` … (default
+   * true), which `Prose` colours. `false` leaves the code as plain text — a host `pre` that runs
+   * its own highlighter.
+   */
+  highlight?: boolean;
   /**
    * NARROW the elements a body may produce — an activity feed that shows only inline formatting.
    * react-markdown's own options, applied after the sanitiser; they can only remove, never allow
@@ -202,7 +212,7 @@ function fenceOf(node: Element | undefined): { language?: string; text: string }
 
 /**
  * THE ONE RENDERER (gh#1108). GFM — tables, task lists, fenced code, autolinks, footnotes,
- * strikethrough — plus heading anchors, sanitised by `markdownSchema`, with ```mermaid drawn only
+ * strikethrough — plus heading anchors, KaTeX math, highlighted code, sanitised by `markdownSchema`, with ```mermaid drawn only
  * through the SVG gate. Raw HTML in the source is never parsed into elements (no `rehype-raw`): it
  * stays visible text. Output matches `react-markdown` + `remark-gfm` + `rehype-sanitize`, which is
  * what godx-task and godx-content rendered before, so the swap is drop-in.
@@ -219,6 +229,7 @@ export function Markdown({
   resolveUrl,
   headingId,
   mermaid = true,
+  highlight = true,
   allowedElements,
   disallowedElements,
   allowElement,
@@ -270,6 +281,9 @@ export function Markdown({
       rehypePlugins={[
         [rehypeResolveUrls, { resolve: resolveUrl }],
         [rehypeHeadingIds, { resolve: headingId }],
+        // Both BEFORE the sanitiser, which judges their output (schema.ts).
+        rehypeMath,
+        ...(highlight ? [rehypeHighlight] : []),
         [rehypeSanitize, sanitizeSchema],
         [rehypeShortCells, { max: shortCellLength }],
         [rehypeExternalLinks, { policy: externalLinks, origin }],

@@ -43,9 +43,9 @@ export const MARKDOWN_FIXTURES: MarkdownFixture[] = [
     html: '<ul class="contains-task-list">\n<li class="task-list-item"><input type="checkbox" disabled="" checked=""/> done</li>\n<li class="task-list-item"><input type="checkbox" disabled=""/> todo</li>\n</ul>',
   },
   {
-    name: "fenced code keeps its language class",
+    name: "fenced code keeps its language class, tokenised (renderer v6)",
     markdown: "```ts\nconst a = 1;\n```",
-    html: '<pre><code class="language-ts">const a = 1;\n</code></pre>',
+    html: '<pre><code class="language-ts"><span data-code-token="keyword">const</span> a = <span data-code-token="constant">1</span>;\n</code></pre>',
   },
   {
     name: "links and autolinks",
@@ -147,5 +147,62 @@ export const MARKDOWN_FIXTURES: MarkdownFixture[] = [
     markdown: "---\ntitle: Spec\ntags: [a]\n---\n\n# Heading\n\nBody",
     html: '<h1 id="heading">Heading</h1>\n<p>Body</p>',
     forbidden: ["title: Spec", "<hr"],
+  },
+  // Renderer v6: math (KaTeX, before the sanitiser) and syntax colour (`data-code-token`).
+  {
+    name: "inline and display math are drawn by KaTeX; `\\,` keeps its backslash",
+    markdown: "Inline $a\\,b$ and display:\n\n$$\nx^2\n$$",
+    html: '<p>Inline <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mtext> </mtext><mi>b</mi></mrow><annotation encoding="application/x-tex">a\\,b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em"></span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.1667em"></span><span class="mord mathnormal">b</span></span></span></span> and display:</p>\n<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">x^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8641em"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em"><span style="top:-3.113em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span>',
+  },
+  {
+    name: "a ```math fence is display math",
+    markdown: "```math\n\\frac{1}{2}\n```",
+    html: '<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">\\frac{1}{2}\n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em"><span style="top:-2.314em"><span class="pstrut" style="height:3em"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.677em"><span class="pstrut" style="height:3em"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>',
+  },
+  {
+    name: "prices stay text: a single `$` follows Pandoc's rule",
+    markdown: "$5 and $10, $5-$10, \\$x\\$",
+    html: "<p>$5 and $10, $5-$10, $x$</p>",
+    forbidden: ["katex"],
+  },
+  {
+    name: "a formula that does not parse shows its source",
+    markdown: "$\\frac{1$",
+    html: '<p><span class="katex-error" title="ParseError: KaTeX parse error: Unexpected end of input in a macro argument, expected &#x27;}&#x27; at end of input: \\frac{1" style="color:#cc0000">\\frac{1</span></p>',
+  },
+  {
+    name: "KaTeX \\href, \\url and \\includegraphics stay text (trust: false)",
+    hostile: true,
+    markdown:
+      "$\\href{javascript:alert(1)}{a}$ $\\url{https://evil.example}$ $\\includegraphics{https://evil.example/i.png}$",
+    html: '<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathcolor="#cc0000"><mtext>\\href</mtext></mstyle></mrow><annotation encoding="application/x-tex">\\href{javascript:alert(1)}{a}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord text" style="color:#cc0000"><span class="mord" style="color:#cc0000">\\href</span></span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathcolor="#cc0000"><mtext>\\url</mtext></mstyle></mrow><annotation encoding="application/x-tex">\\url{https://evil.example}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord text" style="color:#cc0000"><span class="mord" style="color:#cc0000">\\url</span></span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathcolor="#cc0000"><mtext>\\includegraphics</mtext></mstyle></mrow><annotation encoding="application/x-tex">\\includegraphics{https://evil.example/i.png}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord text" style="color:#cc0000"><span class="mord" style="color:#cc0000">\\includegraphics</span></span></span></span></span></p>',
+    forbidden: ["<a ", "href=", "<img", "src="],
+  },
+  {
+    name: "KaTeX \\htmlClass, \\htmlId, \\htmlStyle and \\htmlData stay text",
+    hostile: true,
+    markdown:
+      "$\\htmlClass{ui-pwn}{a}$ $\\htmlId{pwn}{b}$ $\\htmlStyle{background:url(https://evil.example)}{c}$ $\\htmlData{pwn=1}{d}$",
+    html: '<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathcolor="#cc0000"><mtext>\\htmlClass</mtext></mstyle></mrow><annotation encoding="application/x-tex">\\htmlClass{ui-pwn}{a}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord text" style="color:#cc0000"><span class="mord" style="color:#cc0000">\\htmlClass</span></span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathcolor="#cc0000"><mtext>\\htmlId</mtext></mstyle></mrow><annotation encoding="application/x-tex">\\htmlId{pwn}{b}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord text" style="color:#cc0000"><span class="mord" style="color:#cc0000">\\htmlId</span></span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathcolor="#cc0000"><mtext>\\htmlStyle</mtext></mstyle></mrow><annotation encoding="application/x-tex">\\htmlStyle{background:url(https://evil.example)}{c}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord text" style="color:#cc0000"><span class="mord" style="color:#cc0000">\\htmlStyle</span></span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathcolor="#cc0000"><mtext>\\htmlData</mtext></mstyle></mrow><annotation encoding="application/x-tex">\\htmlData{pwn=1}{d}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord text" style="color:#cc0000"><span class="mord" style="color:#cc0000">\\htmlData</span></span></span></span></span></p>',
+    forbidden: ['class="ui-pwn"', 'id="pwn"', "data-pwn", 'style="background'],
+  },
+  {
+    name: "a user-sized KaTeX box is capped at 10em",
+    hostile: true,
+    markdown: "$\\rule{9999em}{9999em}$",
+    html: '<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mpadded height="0em" voffset="0em"><mspace mathbackground="black" width="10em" height="10em"></mspace></mpadded></mrow><annotation encoding="application/x-tex">\\rule{9999em}{9999em}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:10em"></span><span class="mord rule" style="border-right-width:10em;border-top-width:10em;bottom:0em"></span></span></span></span></p>',
+    forbidden: ["width:9999em", 'width="9999em"'],
+  },
+  {
+    name: "HTML in a highlighted fence stays text",
+    hostile: true,
+    markdown: "```html\n<script>alert(1)</script>\n```",
+    html: '<pre><code class="language-html"><span data-code-token="punctuation">&lt;<span data-code-token="keyword">script</span>&gt;</span>alert(1)<span data-code-token="punctuation">&lt;/<span data-code-token="keyword">script</span>&gt;</span>\n</code></pre>',
+    forbidden: ["<script"],
+  },
+  {
+    name: "a fence in an unknown language stays plain",
+    markdown: "```unknown\nlet a = 1\n```",
+    html: '<pre><code class="language-unknown">let a = 1\n</code></pre>',
   },
 ];

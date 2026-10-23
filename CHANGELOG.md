@@ -6,6 +6,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.18.0] - 2026-10-24
+
+### Added
+
+- **`@godxjp/markdown` draws math with KaTeX (renderer v6).** `$…$` and `$$…$$` inline, a `$$`
+  block and a ` ```math ` fence render at parse time (the same HTML in a browser, on a server
+  and in a Worker) as HTML plus MathML; before, they were literal text and Markdown ate escapes such
+  as `\,`. KaTeX runs with `trust: false`, `strict: "error"` and `maxSize: 10`, BEFORE the
+  sanitiser, and `markdownSchema` allows exactly KaTeX's vocabulary (MathML, its class names,
+  geometry-only inline styles, `svg` paths): `\href`, `\url`, `\includegraphics`, `\htmlClass`,
+  `\htmlId`, `\htmlStyle` and `\htmlData` render as their own source. A single `$` follows Pandoc's
+  rule, so `$5 and $10` and `$5-$10` stay prose. **Load the stylesheet once:**
+  `import "@godxjp/markdown/katex.css"` (new export; it `@import`s the matching
+  `katex/dist/katex.min.css` and lets a wide display formula scroll).
+- **`@godxjp/markdown` colours fenced code (renderer v6).** A fence in one of 18 curated languages
+  (bash, shell, css, diff, dockerfile, go, ini, java, javascript, json, markdown, php, python, rust,
+  sql, typescript, xml/html, yaml, with their aliases) is tokenised by highlight.js through lowlight
+  into `<span data-code-token>` with the twelve names `Prose` / `CodeBlock` already colour — before,
+  a fence had no token spans and drew in one colour. ` ```mermaid `, ` ```math ` and
+  unknown languages stay plain; a host `pre` receives the tokenised code; `highlight={false}` turns
+  it off.
+- New fixtures in `MARKDOWN_FIXTURES` for math, dollar prices, KaTeX hostile commands, the size cap,
+  highlighted and unknown-language fences.
+
+### Changed
+
+- **`RENDERER_VERSION` 6** (math, code tokens; the existing `ts` fence fixture now carries tokens).
+- **`CODEC_ID` `kit-md@2`.** The codec reads the same math grammar (kept verbatim as raw nodes, so
+  `@godxjp/block-editor` needs no new node). Because `$` is now special in prose, a literal `$x$`
+  pair in text is serialized `\$x$`; a lone `$` (a price) is never escaped, and `normalize` stays
+  idempotent over the whole corpus.
+- **`outline()` slugs a heading's formula from its TeX source**, as `<Markdown>` does, so
+  `## Energy $E=mc^2$` is `energy-emc2` in both.
+
+### Fixed
+
+- **Mermaid `journey` diagrams draw instead of falling back to code.** Journey wrapped its labels in
+  `<switch><foreignObject>`, which the SVG gate refuses (`element switch`); it is now initialised
+  with `journey.textPlacement: "tspan"`. The gate is unchanged.
+- **Mermaid reads the theme per diagram.** The theme was fixed by `data-theme` on the first diagram
+  of the page; a diagram drawn after switching to dark is now dark (already drawn diagrams are not
+  redrawn).
+
 ## [33.17.0] - 2026-10-24
 
 ### Fixed
