@@ -1,6 +1,9 @@
 import { defaultSchema } from "rehype-sanitize";
 import type { Options as SanitizeSchema } from "rehype-sanitize";
 
+import { CODE_TOKENS } from "./highlight";
+import { katexSchema } from "./math";
+
 /**
  * THE ONE SANITISER SCHEMA (gh#1108). godx-task and godx-content each carried their own copy of
  * this; every consumer now renders through this one, so a policy change happens once.
@@ -15,11 +18,15 @@ import type { Options as SanitizeSchema } from "rehype-sanitize";
  * - `protocols`: links and images allow only `http`, `https`, `mailto` (links) and relative URLs.
  *   `javascript:`, `data:`, `vbscript:` and every other scheme are dropped.
  * - Task-list checkboxes stay `disabled` (the default): ticking one would be a write to the body.
+ * - KaTeX's output (math.ts `katexSchema`: MathML, its own classes, geometry-only inline styles,
+ *   `svg` paths for radicals and stretchy arrows) and the code tokens (`data-code-token`, the kit's
+ *   twelve names) — both produced by the pipeline before this schema judges them (renderer v6).
  *
  * Hosts extend it with `extendSchema`, never by editing a copy.
  */
 export const markdownSchema: SanitizeSchema = {
   ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames ?? []), ...katexSchema.tagNames],
   clobberPrefix: "",
   protocols: {
     ...defaultSchema.protocols,
@@ -29,6 +36,8 @@ export const markdownSchema: SanitizeSchema = {
   },
   attributes: {
     ...defaultSchema.attributes,
+    ...katexSchema.attributes,
+    span: [...katexSchema.attributes.span, ["dataCodeToken", ...CODE_TOKENS]],
     // Heading anchors (rehype-headings, below) and the code fence language.
     h1: [...(defaultSchema.attributes?.h1 ?? []), "id"],
     h2: [...(defaultSchema.attributes?.h2 ?? []), "id"],

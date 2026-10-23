@@ -5950,7 +5950,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "calloutTitles",
         type: "Partial<Record<'note' | 'tip' | 'important' | 'warning' | 'caution', string>>",
         description:
-          "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@1, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
+          "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@2, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
       },
       {
         name: "mermaid",
@@ -5959,12 +5959,20 @@ import { Flex } from "@godxjp/ui/layout";
         description:
           "`false` keeps ```mermaid fences as code. Diagrams need the optional peer `mermaid`.",
       },
+      {
+        name: "highlight",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Fenced code in a known language is tokenised at parse time as `<span data-code-token>` with the kit's twelve names, which Prose colours (renderer v6). `false` leaves plain text for a host `pre` with its own highlighter.",
+      },
     ],
     usage: [
       'DO let the document language do Japanese line breaking: under `:lang(ja)` (AppProvider sets `<html lang>`) every prose paragraph and list item breaks between PHRASES — `word-break: auto-phrase` + `line-break: strict`, the `Text break="phrase"` behaviour (gh#1310) — so 「新しく参加」 is not cut 「新し｜く参加」. Latin and Vietnamese wrap unchanged; a phrase longer than the line still breaks inside itself. A browser without `auto-phrase` keeps its own CJK breaking.',
       "Table of contents: outline(markdown) from @godxjp/markdown/codec returns { depth, text, id }[] with exactly the ids <Markdown> writes — feed it to the kit Anchor. YAML front matter is kept verbatim and never rendered; frontmatterOf(markdown) returns it (gh#1163).",
       "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
       "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
+      'DO `import "@godxjp/markdown/katex.css"` once in the app: `$…$`, `$$…$$` and ```math are drawn by KaTeX at parse time (trust: false, renderer v6) and need its stylesheet and fonts. A single `$` follows Pandoc\'s rule, so `$5 and $10` stays text.',
       "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate.",
     ],
     related: [
@@ -6077,7 +6085,7 @@ import { FormField } from "@godxjp/ui/data-entry";
         name: "onValueChange",
         type: "(markdown: string) => void",
         description:
-          "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@1).",
+          "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@2).",
       },
       {
         name: "upload",

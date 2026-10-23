@@ -245,6 +245,26 @@ function decodeAttentionReferences(markdown: string): string {
   return out;
 }
 
+/**
+ * Math makes `$` special in prose, so `mdast-util-to-markdown` escapes every `$` in
+ * text — `costs $5` would be saved as `costs \$5`. An escape is removed wherever the result parses
+ * to the SAME document, exactly as for the references above: all at once first (a body whose
+ * dollars are prices), then one by one, last first, for a body that also holds a literal `$x$`.
+ */
+function decodeDollarEscapes(markdown: string): string {
+  if (!markdown.includes("\\$")) return markdown;
+  const target = JSON.stringify(parse(markdown));
+  const all = markdown.replace(/\\\$/g, "$");
+  if (JSON.stringify(parse(all)) === target) return all;
+  let out = markdown;
+  for (const escape of [...markdown.matchAll(/\\\$/g)].reverse()) {
+    const at = escape.index!;
+    const candidate = out.slice(0, at) + out.slice(at + 1);
+    if (JSON.stringify(parse(candidate)) === target) out = candidate;
+  }
+  return out;
+}
+
 /** Document → canonical Markdown. Pure: no DOM. */
 export function serialize(doc: Doc | DocNode): string {
   const root: Root = { type: "root", children: flow(doc.content ?? []) };
@@ -257,5 +277,5 @@ export function serialize(doc: Doc | DocNode): string {
     .replace(/\n{3,}/g, "\n\n")
     .replace(/^\n+/, "")
     .replace(/\n+$/, "\n");
-  return decodeAttentionReferences(tidy);
+  return decodeDollarEscapes(decodeAttentionReferences(tidy));
 }

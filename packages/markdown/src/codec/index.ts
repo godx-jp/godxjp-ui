@@ -12,7 +12,8 @@ export { CALLOUT_KINDS, COLUMNS_MAX, COLUMNS_MIN } from "./model";
  * Identifies the serializer's output. Bumped whenever `serialize` would write a stored body
  * differently, so a host can tell which normalization a saved `normalized_body` came from.
  */
-export const CODEC_ID = "kit-md@1";
+// 2 — math: `$` is special in prose, so a literal `$x$` pair is written `\$x$` (renderer v6).
+export const CODEC_ID = "kit-md@2";
 
 /** `serialize(parse(markdown))` — the canonical form of a body, exactly what the editor saves. */
 export function normalize(markdown: string): string {
