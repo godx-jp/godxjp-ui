@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.5] - 2026-10-23
+
 ### Fixed
 
 - **Input and Textarea no longer throw "Maximum update depth exceeded" or drop a character under a burst of keystrokes (#1384).** A controlled `value` was mirrored into state from an effect, leaving a deferred update behind every keystroke; an IME (Telex/VNI) or a fast typist delivering 50+ input events without a pause hit React's nested-update limit, the throwing keystroke was lost. The controlled value is now read straight from props.
