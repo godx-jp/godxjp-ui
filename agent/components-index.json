@@ -265,6 +265,11 @@
   },
   {
     "group": "data-display",
+    "name": "Persona",
+    "tagline": "Compact person identity: fixed avatar, independently truncated name and muted secondary line, optional inline badge."
+  },
+  {
+    "group": "data-display",
     "name": "ListRow",
     "tagline": "Single-line entity row (leading · title/description · trailing action) for SHORT lists inside a Card — sessions, API tokens, linked accounts, passkeys, MFA factors, invitations."
   },

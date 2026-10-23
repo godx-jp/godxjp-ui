@@ -1543,3 +1543,14 @@ export type TextDiffProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"
   lang?: string;
   className?: ClassNameProp;
 };
+
+/** @see Persona — static identity; pass translated labels and badge content from the consumer. */
+export type PersonaProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> & {
+  name: string;
+  description?: string;
+  avatarSrc?: string;
+  avatarFallback?: React.ReactNode;
+  /** Optional inline badge beside the name, never part of the clipped name. */
+  trailing?: React.ReactNode;
+  size?: Extract<SizeProp, "sm" | "md">;
+};

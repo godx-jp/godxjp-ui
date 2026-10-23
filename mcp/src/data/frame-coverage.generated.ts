@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 288,
-    dimensionCells: 4032,
+    exports: 289,
+    dimensionCells: 4046,
     covered: 89,
-    untested: 2220,
-    notApplicable: 1723,
+    untested: 2228,
+    notApplicable: 1729,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -265,6 +265,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"PasswordInput","group":"data-entry","frame":"docs/data-entry/password-input.tsx","covered":["sizes","variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones"]},
   {"name":"PasswordStrength","group":"data-entry","frame":"docs/data-entry/password-strength.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},
   {"name":"PermissionMatrix","group":"data-display","frame":"docs/data-display/permission-matrix.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
+  {"name":"Persona","group":"data-display","frame":"docs/data-display/persona.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"PieChart","group":"charts","frame":"docs/data-display/charts.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"Popover","group":"data-display","frame":"docs/data-display/popover.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},
   {"name":"PopoverAnchor","group":"data-display","frame":"docs/data-display/popover.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},

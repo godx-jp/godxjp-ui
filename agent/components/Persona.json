@@ -1,0 +1,66 @@
+{
+  "docPath": "data-display/persona.tsx",
+  "example": "import { Persona } from \"@godxjp/ui/data-display\";\n\n<Persona name={member.name} description={member.email} size=\"sm\" />",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Persona",
+  "props": [
+    {
+      "description": "Full primary label, retained in native title and accessible text; dir=auto preserves its beginning in RTL.",
+      "name": "name",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Optional full secondary label (email/handle), independently truncated and titled with dir=auto.",
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "description": "Optional image URL; Avatar owns loading and fallback.",
+      "name": "avatarSrc",
+      "type": "string"
+    },
+    {
+      "description": "Fallback content; defaults to the first Unicode code point of name. Avatar is decorative beside the full name.",
+      "name": "avatarFallback",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Optional noninteractive badge beside the name, outside its truncation box.",
+      "name": "trailing",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Avatar control tier and name type scale; secondary text stays xs.",
+      "name": "size",
+      "type": "\"sm\" | \"md\""
+    },
+    {
+      "description": "Root class; native span attributes and ref are forwarded.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Avatar — mark only",
+    "ListRow — padded short-list row with actions",
+    "AccountChip — signed-in account control"
+  ],
+  "rules": [
+    6,
+    45
+  ],
+  "storyPath": "data-display/persona.tsx",
+  "tagline": "Compact person identity: fixed avatar, independently truncated name and muted secondary line, optional inline badge.",
+  "usage": [
+    "Use inside DataTable renderers and stacked rows. Persona owns no row padding, navigation, account action or business state.",
+    "Pass localized labels and badge content. Retune --persona-* tokens; avatar sizing uses existing --avatar-* tokens.",
+    "Both full labels stay in the accessibility tree and native titles. Keep trailing content noninteractive."
+  ],
+  "useCases": [
+    "Member lists",
+    "Assignee and owner cells"
+  ]
+}

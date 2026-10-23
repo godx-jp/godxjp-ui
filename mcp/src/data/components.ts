@@ -4124,7 +4124,7 @@ import { Icon, Text } from "@godxjp/ui/general";
         type: "'default' | 'action-collection' | 'stacked-record-collection'",
         defaultValue: "'default'",
         description:
-          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). In card mode the row inset defaults to the live --card-space-inset minus its own border, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column's `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
+          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a key-value record with a single separator between records (--table-stacked-collection-*). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). In card mode the row inset defaults to the live --card-space-inset, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column's `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
       },
       {
         name: "collapseBelow",
@@ -4283,6 +4283,7 @@ import { Icon, Text } from "@godxjp/ui/general";
       },
     ],
     usage: [
+      "Ellipsis cells expose full rendered text for default/custom renderers, including stacked layout. Renderer-owned descendant titles or aria-describedby tooltips suppress a duplicate cell title (#1406).",
       "DO use `striped` on dense list tables (many columns, a row the eye must follow across the width). To stripe EVERY Table and DataTable in a service, set it ONCE in the theme — `:root { --table-row-striped-alpha: 100%; }` — instead of passing `striped` at each call site; `striped={false}` then opts one table out. Retint with `--table-row-striped-background`, never with a `rowClassName` utility or `:nth-child` page CSS (those count DOM rows, so an expanded detail row shifts every stripe after it).",
       "DO pass loading={isFetching} during data fetches — it renders a loading row in the table body and suppresses the empty state. Never show a spinner outside DataTable while the table is visible.",
       "DO NOT add a data.length===0 conditional around DataTable. When data is empty and loading is false, the built-in EmptyState renders automatically. Pass empty={<EmptyState title='...'/>} only when you need a custom message.",
@@ -5194,6 +5195,71 @@ import { Flex } from "@godxjp/ui/layout";
     docPath: "data-display/feature-list.tsx",
     storyPath: "data-display/feature-list.tsx",
     rules: [],
+  },
+  {
+    name: "Persona",
+    group: "data-display",
+    tagline:
+      "Compact person identity: fixed avatar, independently truncated name and muted secondary line, optional inline badge.",
+    props: [
+      {
+        name: "name",
+        type: "string",
+        required: true,
+        description:
+          "Full primary label, retained in native title and accessible text; dir=auto preserves its beginning in RTL.",
+      },
+      {
+        name: "description",
+        type: "string",
+        description:
+          "Optional full secondary label (email/handle), independently truncated and titled with dir=auto.",
+      },
+      {
+        name: "avatarSrc",
+        type: "string",
+        description: "Optional image URL; Avatar owns loading and fallback.",
+      },
+      {
+        name: "avatarFallback",
+        type: "ReactNode",
+        description:
+          "Fallback content; defaults to the first Unicode code point of name. Avatar is decorative beside the full name.",
+      },
+      {
+        name: "trailing",
+        type: "ReactNode",
+        description: "Optional noninteractive badge beside the name, outside its truncation box.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md"',
+        defaultValue: '"md"',
+        description: "Avatar control tier and name type scale; secondary text stays xs.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class; native span attributes and ref are forwarded.",
+      },
+    ],
+    usage: [
+      "Use inside DataTable renderers and stacked rows. Persona owns no row padding, navigation, account action or business state.",
+      "Pass localized labels and badge content. Retune --persona-* tokens; avatar sizing uses existing --avatar-* tokens.",
+      "Both full labels stay in the accessibility tree and native titles. Keep trailing content noninteractive.",
+    ],
+    useCases: ["Member lists", "Assignee and owner cells"],
+    related: [
+      "Avatar — mark only",
+      "ListRow — padded short-list row with actions",
+      "AccountChip — signed-in account control",
+    ],
+    example: `import { Persona } from "@godxjp/ui/data-display";
+
+<Persona name={member.name} description={member.email} size="sm" />`,
+    docPath: "data-display/persona.tsx",
+    storyPath: "data-display/persona.tsx",
+    rules: [6, 45],
   },
   {
     name: "ListRow",
@@ -6685,7 +6751,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
         type: '"default" | "action-collection" | "stacked-record-collection"',
         defaultValue: '"default"',
         description:
-          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). In card mode the row inset defaults to the live --card-space-inset minus its own border, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column\'s `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
+          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a key-value record with a single separator between records (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). In card mode the row inset defaults to the live --card-space-inset, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column\'s `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
       },
       {
         name: "collapseBelow",

@@ -1,4 +1,21 @@
 {
+  "personaExamples": {
+    "role": "Vai trò",
+    "admin": "Quản trị viên",
+    "editor": "Biên tập viên",
+    "lastActive": "Hoạt động gần nhất",
+    "status": "Trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Không hoạt động",
+    "sizes": "Kích thước danh tính",
+    "minimal": "Chỉ tên và nhãn hai chiều",
+    "dark": "Ảnh và nền tối",
+    "name": "Alex Morgan, Nghiên cứu và Phát triển",
+    "you": "(bạn)",
+    "member": "Thành viên",
+    "email": "Địa chỉ email",
+    "members": "Thành viên"
+  },
   "affixTouchExamples": {
     "title": "Ô nhập hẹp và thao tác chạm",
     "description": "Ở chiều rộng 200px, nút xoá và nút chọn không đè lên văn bản. Vùng chạm là 44px; khoảng cách trên máy tính không đổi.",

@@ -11,10 +11,71 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--persona-avatar-gap",
+    category: "component",
+    tier: "component",
+    role: "Avatar-to-label gap, default var(--space-2).",
+  },
+  {
+    name: "--persona-label-gap",
+    category: "component",
+    tier: "component",
+    role: "Gap between name and secondary line, default 0.",
+  },
+  {
+    name: "--persona-trailing-gap",
+    category: "component",
+    tier: "component",
+    role: "Name-to-badge gap, default var(--space-1).",
+  },
+  {
+    name: "--persona-label-line-height",
+    category: "component",
+    tier: "component",
+    role: "Label line height, default 1.5.",
+  },
+  {
+    name: "--persona-name-font-size",
+    category: "component",
+    tier: "component",
+    role: "Name size md, default var(--font-size-sm).",
+  },
+  {
+    name: "--persona-name-font-size-sm",
+    category: "component",
+    tier: "component",
+    role: "Name size sm, default var(--font-size-xs).",
+  },
+  {
+    name: "--persona-name-font-weight",
+    category: "component",
+    tier: "component",
+    role: "Name weight, default var(--font-weight-medium).",
+  },
+  {
+    name: "--persona-description-font-size",
+    category: "component",
+    tier: "component",
+    role: "Secondary size, default var(--font-size-xs).",
+  },
+  {
+    name: "--persona-name-color",
+    category: "component",
+    tier: "component",
+    role: "Role mirror initial, default hsl(var(--foreground)) at call site.",
+  },
+  {
+    name: "--persona-description-color",
+    category: "component",
+    tier: "component",
+    role: "Role mirror initial, default hsl(var(--muted-foreground)) at call site.",
+  },
+
+  {
     name: "--table-stacked-collection-card-padding-x",
     category: "component",
     tier: "component",
-    role: "Stacked Table/DataTable row inset. Declared initial; resolves at the row to calc(var(--card-space-inset) - var(--stroke-hairline)), aligning the bordered row content with CardTitle across density and RTL. Scoped Card inset changes remain live; an explicit stacked token overrides row padding independently (#1394).",
+    role: "Stacked Table/DataTable row inset. Declared initial; resolves at the row to var(--card-space-inset), aligning the separator-only row content with CardTitle across density and RTL. Scoped Card inset changes remain live; an explicit stacked token overrides row padding independently (#1394).",
   },
   {
     name: "--wa-*",
