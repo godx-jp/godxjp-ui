@@ -3648,6 +3648,11 @@
     cursor: pointer;
   }
 
+  .ui-catalog-card-favorite:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+
   .ui-catalog-card-favorite[aria-pressed="true"] {
     background: hsl(var(--accent));
     color: hsl(var(--primary));

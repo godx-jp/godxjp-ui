@@ -1194,8 +1194,8 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "favorite",
-        type: "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string }",
-        description: "Overlaid toggle.",
+        type: "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string; disabled?: boolean }",
+        description: "Overlaid toggle; disabled while the saved state is loading.",
       },
       { name: "overline", type: "ReactNode", description: "Line above the title." },
       { name: "level", type: "2 | 3 | 4", defaultValue: "3", description: "Heading level." },

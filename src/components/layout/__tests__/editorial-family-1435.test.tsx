@@ -305,6 +305,14 @@ describe("CatalogCard (gh#1435)", () => {
     expect(toggle).toHaveAttribute("aria-pressed", "false");
     fireEvent.click(toggle);
     expect(onPressedChange).toHaveBeenCalledWith(true);
+    const { getAllByRole } = render(
+      <CatalogCard
+        media={<img alt="" src="card.png" />}
+        favorite={{ pressed: false, onPressedChange, label: "保存（読み込み中）", disabled: true }}
+        title={<a href="/cards/2/">リザードンex</a>}
+      />,
+    );
+    expect(getAllByRole("button", { name: "保存（読み込み中）" })[0]).toBeDisabled();
     const heading = screen.getByRole("heading", { level: 3, name: "ピカチュウex" });
     expect(heading.querySelector("a")).toHaveAttribute("href", "/cards/1/");
     expect(screen.getByText("SAR")).toHaveClass("ui-catalog-card-tag");

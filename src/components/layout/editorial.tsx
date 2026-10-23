@@ -428,6 +428,7 @@ export function CatalogCard({
           type="button"
           aria-pressed={favorite.pressed}
           aria-label={favorite.label}
+          disabled={favorite.disabled}
           className="ui-catalog-card-favorite ui-focus-ring"
           onClick={() => favorite.onPressedChange(!favorite.pressed)}
         >

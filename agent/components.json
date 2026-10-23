@@ -1242,9 +1242,9 @@
         "type": "\"card\" | \"sealed\""
       },
       {
-        "description": "Overlaid toggle.",
+        "description": "Overlaid toggle; disabled while the saved state is loading.",
         "name": "favorite",
-        "type": "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string }"
+        "type": "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string; disabled?: boolean }"
       },
       {
         "description": "Line above the title.",

@@ -2389,7 +2389,13 @@ export type CatalogCardProp = {
   /** The picture — usually a link (tabIndex -1, aria-hidden) wrapping an `<img>`. */
   media: ReactNode;
   /** The overlaid favourite toggle. Omit for none. */
-  favorite?: { pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string };
+  favorite?: {
+    pressed: boolean;
+    onPressedChange: (pressed: boolean) => void;
+    label: string;
+    /** While the saved state is unknown (loading) or a change is in flight. */
+    disabled?: boolean;
+  };
   overline?: ReactNode;
   /** The title — the item link. Rendered inside a heading (see `level`). */
   title: TitleProp;

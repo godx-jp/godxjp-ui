@@ -3846,7 +3846,7 @@
           "name": "favorite",
           "origin": "owned",
           "required": false,
-          "type": "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string; } | undefined",
+          "type": "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string; disabled?: boolean; } | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
