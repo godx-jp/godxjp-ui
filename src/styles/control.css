@@ -2407,8 +2407,7 @@
   .ui-number-input-step::after {
     content: "";
     position: absolute;
-    inset-inline-start: 50%;
-    translate: -50% 0;
+    inset-inline-start: calc((100% - var(--touch-target-min)) / 2);
     inline-size: var(--touch-target-min);
     block-size: var(--touch-target-min);
   }
@@ -3384,6 +3383,7 @@
   .ui-calendar {
     position: relative;
     inline-size: fit-content;
+    max-inline-size: 100%;
     padding: var(--calendar-space-inset);
   }
 
@@ -3742,10 +3742,38 @@
     block-size: var(--calendar-chevron-size);
   }
 
+  /* The seven date columns (eight with week numbers) keep their natural desktop width,
+   * but share a constrained container without shrinking a date target below 24px. */
+  .ui-calendar-month {
+    min-inline-size: 0;
+  }
+
+  .ui-calendar-day,
+  .ui-calendar-weekday {
+    flex: 0 1 var(--control-height);
+    min-inline-size: calc(var(--touch-target-min) + var(--stroke-hairline));
+  }
+
   .ui-calendar-grid {
     margin-block-start: var(--calendar-grid-space-block-start);
-    inline-size: 100%;
+    inline-size: calc(7 * var(--control-height));
+    max-inline-size: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
+  }
+
+  .ui-calendar[data-bordered="true"] .ui-calendar-grid {
+    inline-size: calc(7 * var(--control-height) + var(--stroke-hairline));
+  }
+
+  /* The optional week-number column keeps its intrinsic label measure on desktop. */
+  .ui-calendar .ui-calendar-grid:has(.ui-calendar-week-number) {
+    inline-size: 100%;
+    table-layout: auto;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-grid {
+    inline-size: 100%;
   }
 
   .ui-calendar-weekday {
@@ -3790,6 +3818,7 @@
      * ships — the major component libraries mention weekends in zero files, and Google Calendar
      * paints all seven headers the same) in the app where it belongs. The state rules above still win: they name the button. */
     color: inherit;
+    max-inline-size: 100%;
     inline-size: var(--control-height);
     block-size: var(--control-height);
     padding: 0;

@@ -127,7 +127,7 @@ describe("Table stacked-record-collection preset (gh#293 restore — SCR-215)", 
       "--table-stacked-collection-label-font-size",
     ]) {
       expect(tableTokens).toContain(`${token}:`);
-      expect(tableCssFlat).toContain(`var(${token})`);
+      expect(tableCssFlat).toMatch(new RegExp(`var\\(${token}(?:,|\\))`));
     }
   });
 
