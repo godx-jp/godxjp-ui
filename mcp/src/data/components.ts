@@ -916,6 +916,423 @@ export default function OrdersPage() {
     rules: [23],
   },
   {
+    name: "EditorialSection",
+    group: "layout",
+    tagline:
+      'One full-width band of an editorial page (gh#1435): put it straight inside `CenteredShell preset="public-landing" flow="sections"`. Its ground (`tone`) and block hairlines (`divider`) run edge to edge while its content sits in the landing column (max width + gutter). `spacing="section"` pads it by the section rhythm. Geometry: `--editorial-section-*`.',
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description: "Band content, already in the landing column.",
+      },
+      {
+        name: "tone",
+        type: '"default" | "surface" | "subtle" | "hero"',
+        defaultValue: '"default"',
+        description: "Ground: page canvas, card surface, muted, or the hero wash.",
+      },
+      {
+        name: "divider",
+        type: '"none" | "end" | "both"',
+        defaultValue: '"none"',
+        description: "Hairlines on the block edges.",
+      },
+      {
+        name: "spacing",
+        type: '"none" | "section"',
+        defaultValue: '"none"',
+        description: "Section rhythm as block padding.",
+      },
+      {
+        name: "as",
+        type: '"section" | "div" | "nav"',
+        defaultValue: '"section"',
+        description: "Landmark element.",
+      },
+      { name: "aria-label", type: "string", description: "Landmark name." },
+      {
+        name: "aria-labelledby",
+        type: "string",
+        description: "Landmark name reference (the section head's titleId).",
+      },
+      { name: "id", type: "string", description: "Id on the band." },
+    ],
+    usage: [
+      'DO stack bands directly in a `flow="sections"` shell — the shell drops its column cap, gap and main padding for them.',
+      "DO NOT nest a band inside a capped column: it cannot reach the edges there.",
+    ],
+    related: [
+      'CenteredShell — `flow="sections"`.',
+      "EditorialHero, EditorialSectionHead — what goes inside.",
+    ],
+    example: `import { CenteredShell, EditorialSection, EditorialSectionHead } from "@godxjp/ui/layout";
+
+<CenteredShell preset="public-landing" flow="sections" topbar={<SiteHeader />} footer={<SiteFooter />}>
+  <EditorialSection tone="subtle" divider="both" spacing="section" aria-labelledby="sets">
+    <EditorialSectionHead titleId="sets" title="Every expansion, a new chapter." />
+  </EditorialSection>
+</CenteredShell>`,
+  },
+  {
+    name: "EditorialHero",
+    group: "layout",
+    tagline:
+      'The opening of an editorial page (gh#1435): a copy column — kicker, the page\'s one h1, a lead, a search and a line of suggested queries — beside a media column. Put it in `EditorialSection tone="hero" divider="end"`. Geometry: `--editorial-hero-*` (tracks, min-height, h1 size/leading/tracking and every gap).',
+    props: [
+      {
+        name: "title",
+        type: "ReactNode",
+        required: true,
+        description: 'The h1. Emphasise a second line with `<Text tone="brand" size="inherit">`.',
+      },
+      { name: "eyebrow", type: "ReactNode", description: "Kicker above the title (an Eyebrow)." },
+      { name: "description", type: "ReactNode", description: "Lead paragraph." },
+      { name: "search", type: "ReactNode", description: "The search (an EditorialSearch)." },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description: "Suggested-query links under the search (plain links; the slot styles them).",
+      },
+      {
+        name: "media",
+        type: "ReactNode",
+        description: 'Media column (a CardShowcase preset="fan").',
+      },
+    ],
+    usage: ["DO keep it the page's only h1."],
+    related: ["EditorialSearch, CardShowcase, Eyebrow."],
+    example: `import { EditorialHero, EditorialSection, EditorialSearch, Eyebrow } from "@godxjp/ui/layout";
+
+<EditorialSection tone="hero" divider="end">
+  <EditorialHero
+    eyebrow={<Eyebrow>FOR EVERY CARD, EVERY COLLECTOR.</Eyebrow>}
+    title="Discover. Compare."
+    description="Your next favourite card."
+    search={<EditorialSearch label="Card name or number" submitLabel="Search" onSearch={go} />}
+  />
+</EditorialSection>`,
+  },
+  {
+    name: "Eyebrow",
+    group: "layout",
+    tagline:
+      'The small uppercase kicker above an editorial heading (gh#1435), led by a short ornament rule (`variant="ruled"`, default) or bare (`"plain"`). Face, size, tracking, colour and rule: `--editorial-eyebrow-*`, `--editorial-kicker-*`, `--editorial-ornament-color`.',
+    props: [
+      { name: "children", type: "ReactNode", required: true, description: "Kicker text." },
+      {
+        name: "variant",
+        type: '"ruled" | "plain"',
+        defaultValue: '"ruled"',
+        description: "With or without the leading rule.",
+      },
+      { name: "as", type: '"p" | "span" | "div"', defaultValue: '"p"', description: "Element." },
+    ],
+    usage: [
+      "DO use it in the eyebrow slot of EditorialHero / EditorialSectionHead / EditorialBanner.",
+    ],
+    related: ["EditorialSectionHead."],
+    example: `import { Eyebrow } from "@godxjp/ui/layout";
+
+<Eyebrow>THE CURATED SELECTION</Eyebrow>`,
+  },
+  {
+    name: "EditorialSectionHead",
+    group: "layout",
+    tagline:
+      "A section's head (gh#1435): kicker, an editorial h2, one line of description and a trailing action on the title's row — usually an `EditorialTextLink` \"view all →\" (an inline-flex link with a trailing arrow, `asChild` for a router link). Geometry: `--editorial-section-head-*`, `--editorial-text-link-*`.",
+    subParts: ["EditorialTextLink"],
+    props: [
+      { name: "title", type: "ReactNode", required: true, description: "The heading." },
+      { name: "eyebrow", type: "ReactNode", description: "Kicker above it." },
+      { name: "description", type: "ReactNode", description: "One line under it." },
+      { name: "action", type: "ReactNode", description: "Trailing call to action." },
+      { name: "level", type: "2 | 3", defaultValue: "2", description: "Heading level." },
+      {
+        name: "titleId",
+        type: "string",
+        description: "Id on the title, for the section's aria-labelledby.",
+      },
+    ],
+    usage: ["DO name the EditorialSection with `aria-labelledby={titleId}`."],
+    related: ["EditorialSection, EditorialTextLink."],
+    example: `import { EditorialSectionHead, EditorialTextLink, Eyebrow } from "@godxjp/ui/layout";
+
+<EditorialSectionHead
+  eyebrow={<Eyebrow>THE TCG-M JOURNAL</Eyebrow>}
+  title="A little knowledge. More enjoyment."
+  titleId="journal"
+  action={<EditorialTextLink asChild><a href="/journal/">View all</a></EditorialTextLink>}
+/>`,
+  },
+  {
+    name: "EditorialSearch",
+    group: "layout",
+    tagline:
+      'The inset site search (gh#1435): ONE bordered box holding a search glyph, the field and the submit button, under a visually hidden label that also names the `role="search"` landmark. `onSearch` gets the trimmed query; without JavaScript the form GETs `action`. Geometry: `--editorial-search-*`.',
+    props: [
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Accessible label (visually hidden).",
+      },
+      { name: "submitLabel", type: "ReactNode", required: true, description: "Button text." },
+      { name: "placeholder", type: "string", description: "Placeholder." },
+      { name: "name", type: "string", defaultValue: '"q"', description: "Query parameter." },
+      { name: "defaultValue", type: "string", description: "Initial query." },
+      { name: "action", type: "string", description: "Form action for the no-JS submit." },
+      { name: "onSearch", type: "(query: string) => void", description: "Submit handler." },
+      { name: "id", type: "string", description: "Field id." },
+    ],
+    usage: ["DO use it for a site search that submits; use SearchInput for a live filter."],
+    related: ["SearchInput — a debounced filter field.", "EditorialHero — the `search` slot."],
+    example: `import { EditorialSearch } from "@godxjp/ui/layout";
+
+<EditorialSearch label="Card name or number" placeholder="Search a card" submitLabel="Search" action="/cards/" onSearch={(q) => navigate(q)} />`,
+  },
+  {
+    name: "EditorialPillNav",
+    group: "layout",
+    tagline:
+      'A horizontal band of section links (gh#1435) — a site\'s "browse by game" row: an optional lead label, then `EditorialPillNavItem`s (an icon or a small `"dot"` marker; `aria-current="page"` on the link marks the current one). Scrolls sideways when it overflows. Geometry: `--editorial-pill-*`.',
+    subParts: ["EditorialPillNavItem"],
+    props: [
+      { name: "aria-label", type: "string", required: true, description: "Landmark name." },
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description: "EditorialPillNavItem elements.",
+      },
+      {
+        name: "label",
+        type: "ReactNode",
+        description: "Visible lead text (aria-hidden; the landmark is named).",
+      },
+    ],
+    usage: [
+      'DO put it in `EditorialSection as="div" tone="surface" divider="end"` for a band under the header.',
+    ],
+    related: ["EditorialSection."],
+    example: `import { EditorialPillNav, EditorialPillNavItem } from "@godxjp/ui/layout";
+
+<EditorialPillNav aria-label="Browse by game" label="YOUR GAME">
+  <EditorialPillNavItem asChild icon="dot"><a href="/cards/?game=pokemon">Pokémon</a></EditorialPillNavItem>
+</EditorialPillNav>`,
+  },
+  {
+    name: "CardShowcase",
+    group: "layout",
+    tagline:
+      'A staged composition of product pictures (gh#1435). `preset="fan"`: three cards fanned (start, centre, end) over ornament orbits, stars and a glow, with a corner `label` and a `caption` card. `preset="binder"`: a tilted binder page of up to six pockets. Decorations are aria-hidden; each item keeps its own accessible name. Geometry: `--editorial-showcase-*`, `--editorial-binder-*`.',
+    props: [
+      { name: "preset", type: '"fan" | "binder"', required: true, description: "Composition." },
+      {
+        name: "items",
+        type: "ReactNode[]",
+        required: true,
+        description: "Pictures in reading order (links wrapping an img, or imgs).",
+      },
+      { name: "label", type: "ReactNode", description: "fan: corner label." },
+      {
+        name: "caption",
+        type: "{ icon?: ReactNode; overline?: ReactNode; title: ReactNode }",
+        description: "fan: caption card.",
+      },
+    ],
+    usage: ["DO give each linked picture an accessible name; the stage itself is decoration."],
+    related: ["EditorialHero — the `media` slot.", "EditorialBanner — the `media` slot (binder)."],
+    example: `import { CardShowcase } from "@godxjp/ui/layout";
+
+<CardShowcase preset="fan" label="ONE PLACE. MANY WORLDS." caption={{ overline: "A whole world in your hands.", title: "Find your next favourite." }} items={cards.map((c) => <a key={c.id} href={c.href} aria-label={c.name}><img src={c.image} alt={c.name} /></a>)} />`,
+  },
+  {
+    name: "EditorialBanner",
+    group: "layout",
+    tagline:
+      "A rounded brand panel inside the column (gh#1435): kicker, title, description and a call to action beside a media slot, in the inverse palette. The kit Button in `action` is re-pointed to the inverse roles. Colours and geometry: `--editorial-banner-*`.",
+    props: [
+      { name: "title", type: "ReactNode", required: true, description: "The heading." },
+      { name: "eyebrow", type: "ReactNode", description: "Kicker." },
+      { name: "description", type: "ReactNode", description: "Paragraph." },
+      { name: "action", type: "ReactNode", description: "Call to action (a kit Button)." },
+      {
+        name: "media",
+        type: "ReactNode",
+        description: 'Media column (a CardShowcase preset="binder").',
+      },
+      { name: "level", type: "2 | 3", defaultValue: "2", description: "Heading level." },
+    ],
+    usage: ['DO put it in an EditorialSection with spacing="section".'],
+    related: ["CardShowcase."],
+    example: `import { CardShowcase, EditorialBanner, Eyebrow } from "@godxjp/ui/layout";
+import { Button } from "@godxjp/ui/general";
+
+<EditorialBanner eyebrow={<Eyebrow>YOUR COLLECTION HAS A STORY.</Eyebrow>} title="A home for the cards that matter." action={<Button asChild><a href="/collection/">Start your collection</a></Button>} media={<CardShowcase preset="binder" items={pockets} />} />`,
+  },
+  {
+    name: "CatalogCard",
+    group: "layout",
+    tagline:
+      'A catalog tile (gh#1435): the framed picture with an overlaid circular favourite toggle, then an overline, the title (a heading wrapping the item link, clamped to two lines), a metadata row with `CatalogCardTag`s, a price caption and line (price + change), and a footer row. `variant="sealed"` frames a wider, unshadowed product picture. Geometry: `--editorial-catalog-card-*`.',
+    subParts: ["CatalogCardTag"],
+    props: [
+      {
+        name: "media",
+        type: "ReactNode",
+        required: true,
+        description: "The picture (a link, tabIndex -1 + aria-hidden, wrapping an img).",
+      },
+      { name: "title", type: "ReactNode", required: true, description: "The item link." },
+      {
+        name: "variant",
+        type: '"card" | "sealed"',
+        defaultValue: '"card"',
+        description: "Picture frame.",
+      },
+      {
+        name: "favorite",
+        type: "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string }",
+        description: "Overlaid toggle.",
+      },
+      { name: "overline", type: "ReactNode", description: "Line above the title." },
+      { name: "level", type: "2 | 3 | 4", defaultValue: "3", description: "Heading level." },
+      { name: "meta", type: "ReactNode", description: "Metadata row." },
+      { name: "priceLabel", type: "ReactNode", description: "Price caption." },
+      { name: "price", type: "ReactNode", description: "Price figure." },
+      { name: "change", type: "ReactNode", description: "Price change." },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description: "Bottom row (links inside get the row's link style).",
+      },
+    ],
+    usage: ['DO lay tiles out with `ResponsiveGrid preset="catalog"`.'],
+    related: ['ResponsiveGrid — `preset="catalog"`.'],
+    example: `import { CatalogCard, CatalogCardTag } from "@godxjp/ui/layout";
+
+<CatalogCard media={<a href={href} tabIndex={-1} aria-hidden><img src={img} alt="" /></a>} favorite={{ pressed: saved, onPressedChange: setSaved, label: saveLabel }} overline="Pokémon" title={<a href={href}>{name}</a>} meta={<><span>132/106</span><CatalogCardTag>SAR</CatalogCardTag></>} price="¥12,800" change="↓ −4.2%" />`,
+  },
+  {
+    name: "EditorialCard",
+    group: "layout",
+    tagline:
+      'A whole-card link (gh#1435). `variant="journal"`: an edge-to-edge cover, category, title, two lines of description and a footer with a circled arrow; the link is named by its title (aria-labelledby). `variant="spotlight"`: kicker, title and a line beside a tilted picture. Pass the link element (router Link or `<a href>`) as `link`; the card content is rendered into it. Geometry: `--editorial-journal-*`, `--editorial-spotlight-*`.',
+    props: [
+      { name: "variant", type: '"journal" | "spotlight"', required: true, description: "Shape." },
+      {
+        name: "link",
+        type: "ReactElement",
+        required: true,
+        description: "The link element the card renders into.",
+      },
+      { name: "title", type: "ReactNode", required: true, description: "The heading." },
+      { name: "media", type: "ReactNode", description: "Cover (journal) or picture (spotlight)." },
+      {
+        name: "overline",
+        type: "ReactNode",
+        description: "Category (journal) or kicker (spotlight).",
+      },
+      { name: "description", type: "ReactNode", description: "Lines under the title." },
+      { name: "action", type: "ReactNode", description: "journal: footer call to action." },
+      { name: "level", type: "2 | 3 | 4", defaultValue: "3", description: "Heading level." },
+      { name: "titleId", type: "string", description: "Title id (generated when omitted)." },
+    ],
+    usage: ['DO lay journal cards out with `ResponsiveGrid preset="trio"`.'],
+    related: ['ResponsiveGrid — `preset="trio"`.'],
+    example: `import { EditorialCard } from "@godxjp/ui/layout";
+
+<EditorialCard variant="journal" link={<a href="/journal/price-guide/" />} media={<img src={cover} alt="" />} overline="Price guide" title="Why the same card has different prices." description="Condition, language and edition all move the price." action="Read the story" />`,
+  },
+  {
+    name: "EditorialMasthead",
+    group: "layout",
+    tagline:
+      'A public site\'s header row (gh#1435) for CenteredShell\'s `topbar` slot: the logo, primary navigation (`EditorialMastheadLink`; `aria-current="page"` underlines the current one) and end actions (`EditorialMastheadSelect` for the interface language, `EditorialMastheadAction` 44px icon controls, `variant="outline"` for the account). The bar holding it turns sticky and translucent. `menu` is the phone-only trigger shown when the theme hides `nav`. Geometry: `--editorial-masthead-*`.',
+    subParts: ["EditorialMastheadLink", "EditorialMastheadAction", "EditorialMastheadSelect"],
+    props: [
+      { name: "brand", type: "ReactNode", required: true, description: "The logo link." },
+      { name: "nav", type: "ReactNode", description: "Primary navigation links." },
+      { name: "navLabel", type: "string", description: "Navigation landmark name." },
+      { name: "actions", type: "ReactNode", description: "End actions." },
+      {
+        name: "menu",
+        type: "ReactNode",
+        description: "Phone-only menu trigger (a Sheet trigger).",
+      },
+    ],
+    usage: ["DO pass it as CenteredShell `topbar`; the bar becomes sticky with a blur."],
+    related: ["CenteredShell — `topbar`.", "Sheet + NavList — the phone menu."],
+    example: `import { EditorialMasthead, EditorialMastheadAction, EditorialMastheadLink } from "@godxjp/ui/layout";
+import { Moon } from "lucide-react";
+
+<EditorialMasthead
+  brand={<a href="/" aria-label="Home"><img src="/logo.svg" alt="" /></a>}
+  navLabel="Main navigation"
+  nav={<EditorialMastheadLink href="/cards/" aria-current="page">Cards</EditorialMastheadLink>}
+  actions={<EditorialMastheadAction aria-label="Toggle colour theme"><Moon aria-hidden /></EditorialMastheadAction>}
+/>`,
+  },
+  {
+    name: "EditorialFooter",
+    group: "layout",
+    tagline:
+      'A public site\'s footer content (gh#1435) for `CenteredShell footerTone="inverse"`: logo and tagline, link groups (a heading + links each), and a bottom row with the rights line and a note. The footer holding it takes the editorial spacing. Geometry and colours: `--editorial-footer-*`.',
+    props: [
+      { name: "brand", type: "ReactNode", required: true, description: "The logo link." },
+      {
+        name: "groups",
+        type: "{ title: ReactNode; links: ReactNode[] }[]",
+        required: true,
+        description: "Link groups.",
+      },
+      { name: "tagline", type: "ReactNode", description: "Line under the logo." },
+      {
+        name: "level",
+        type: "2 | 3",
+        defaultValue: "2",
+        description: "Heading level of the group titles.",
+      },
+      { name: "legal", type: "ReactNode", description: "Rights line." },
+      { name: "note", type: "ReactNode", description: "Note paragraph." },
+    ],
+    usage: ["DO pass plain links in each group; the footer styles them."],
+    related: ['CenteredShell — `footer`, `footerTone="inverse"`.'],
+    example: `import { EditorialFooter } from "@godxjp/ui/layout";
+
+<EditorialFooter brand={<a href="/" aria-label="Home"><img src="/logo.svg" alt="" /></a>} tagline="Discover. Compare." groups={[{ title: "DISCOVER", links: [<a key="c" href="/cards/">Cards</a>] }]} legal="© 2026 TCG-M." />`,
+  },
+  {
+    name: "EditorialFilterBar",
+    group: "layout",
+    tagline:
+      'A row of underlined filter toggles above a collection (gh#1435): a named `role="group"` of `aria-pressed` buttons (one pressed at a time) and a trailing note, over a hairline. The collection below is the consumer\'s. Geometry: `--editorial-filter-bar-*`.',
+    props: [
+      { name: "aria-label", type: "string", required: true, description: "Group name." },
+      {
+        name: "options",
+        type: "{ value: string; label: ReactNode }[]",
+        required: true,
+        description: "The toggles.",
+      },
+      { name: "value", type: "string", required: true, description: "Pressed toggle." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        required: true,
+        description: "Change handler.",
+      },
+      { name: "extra", type: "ReactNode", description: "Trailing note." },
+    ],
+    usage: ["DO use Tabs when each option owns a panel; this bar only filters one collection."],
+    related: ["Tabs — panels.", "Segmented — a compact single choice."],
+    example: `import { EditorialFilterBar } from "@godxjp/ui/layout";
+
+<EditorialFilterBar aria-label="Selection" value={tab} onValueChange={setTab} options={[{ value: "all", label: "Selected cards" }, { value: "down", label: "Price drops" }]} extra="vs. 30 days ago" />`,
+  },
+  {
     name: "PageCover",
     tier: "lab",
     importPath: "@godxjp/ui/lab",
@@ -2154,6 +2571,12 @@ import { PanelLeftClose, Search } from "lucide-react";
         type: "BreakpointProp",
         description:
           "VISUALLY hide the label BELOW a breakpoint step (Flex hideBelow's contract, scoped to the label), so the cell collapses to icon-only on a narrow bar. The label stays in the accessibility tree (clipped, not display:none), so the icon-only cell keeps its accessible name. Under asChild the child element's own children are the label (gh#726).",
+      },
+      {
+        name: "hideFrom",
+        type: "BreakpointProp",
+        description:
+          "Remove the whole cell FROM a breakpoint step upwards (Flex hideFrom's contract) — a phone-only cell such as the menu trigger that opens the same navigation in a sheet (gh#1428).",
       },
       {
         name: "badge",

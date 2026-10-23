@@ -52,6 +52,71 @@
   },
   {
     "group": "layout",
+    "name": "EditorialSection",
+    "tagline": "One full-width band of an editorial page (gh#1435): put it straight inside `CenteredShell preset=\"public-landing\" flow=\"sections\"`. Its ground (`tone`) and block hairlines (`divider`) run edge to edge while its content sits in the landing column (max width + gutter). `spacing=\"section\"` pads it by the section rhythm. Geometry: `--editorial-section-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialHero",
+    "tagline": "The opening of an editorial page (gh#1435): a copy column — kicker, the page's one h1, a lead, a search and a line of suggested queries — beside a media column. Put it in `EditorialSection tone=\"hero\" divider=\"end\"`. Geometry: `--editorial-hero-*` (tracks, min-height, h1 size/leading/tracking and every gap)."
+  },
+  {
+    "group": "layout",
+    "name": "Eyebrow",
+    "tagline": "The small uppercase kicker above an editorial heading (gh#1435), led by a short ornament rule (`variant=\"ruled\"`, default) or bare (`\"plain\"`). Face, size, tracking, colour and rule: `--editorial-eyebrow-*`, `--editorial-kicker-*`, `--editorial-ornament-color`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialSectionHead",
+    "tagline": "A section's head (gh#1435): kicker, an editorial h2, one line of description and a trailing action on the title's row — usually an `EditorialTextLink` \"view all →\" (an inline-flex link with a trailing arrow, `asChild` for a router link). Geometry: `--editorial-section-head-*`, `--editorial-text-link-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialSearch",
+    "tagline": "The inset site search (gh#1435): ONE bordered box holding a search glyph, the field and the submit button, under a visually hidden label that also names the `role=\"search\"` landmark. `onSearch` gets the trimmed query; without JavaScript the form GETs `action`. Geometry: `--editorial-search-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialPillNav",
+    "tagline": "A horizontal band of section links (gh#1435) — a site's \"browse by game\" row: an optional lead label, then `EditorialPillNavItem`s (an icon or a small `\"dot\"` marker; `aria-current=\"page\"` on the link marks the current one). Scrolls sideways when it overflows. Geometry: `--editorial-pill-*`."
+  },
+  {
+    "group": "layout",
+    "name": "CardShowcase",
+    "tagline": "A staged composition of product pictures (gh#1435). `preset=\"fan\"`: three cards fanned (start, centre, end) over ornament orbits, stars and a glow, with a corner `label` and a `caption` card. `preset=\"binder\"`: a tilted binder page of up to six pockets. Decorations are aria-hidden; each item keeps its own accessible name. Geometry: `--editorial-showcase-*`, `--editorial-binder-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialBanner",
+    "tagline": "A rounded brand panel inside the column (gh#1435): kicker, title, description and a call to action beside a media slot, in the inverse palette. The kit Button in `action` is re-pointed to the inverse roles. Colours and geometry: `--editorial-banner-*`."
+  },
+  {
+    "group": "layout",
+    "name": "CatalogCard",
+    "tagline": "A catalog tile (gh#1435): the framed picture with an overlaid circular favourite toggle, then an overline, the title (a heading wrapping the item link, clamped to two lines), a metadata row with `CatalogCardTag`s, a price caption and line (price + change), and a footer row. `variant=\"sealed\"` frames a wider, unshadowed product picture. Geometry: `--editorial-catalog-card-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialCard",
+    "tagline": "A whole-card link (gh#1435). `variant=\"journal\"`: an edge-to-edge cover, category, title, two lines of description and a footer with a circled arrow; the link is named by its title (aria-labelledby). `variant=\"spotlight\"`: kicker, title and a line beside a tilted picture. Pass the link element (router Link or `<a href>`) as `link`; the card content is rendered into it. Geometry: `--editorial-journal-*`, `--editorial-spotlight-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialMasthead",
+    "tagline": "A public site's header row (gh#1435) for CenteredShell's `topbar` slot: the logo, primary navigation (`EditorialMastheadLink`; `aria-current=\"page\"` underlines the current one) and end actions (`EditorialMastheadSelect` for the interface language, `EditorialMastheadAction` 44px icon controls, `variant=\"outline\"` for the account). The bar holding it turns sticky and translucent. `menu` is the phone-only trigger shown when the theme hides `nav`. Geometry: `--editorial-masthead-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialFooter",
+    "tagline": "A public site's footer content (gh#1435) for `CenteredShell footerTone=\"inverse\"`: logo and tagline, link groups (a heading + links each), and a bottom row with the rights line and a note. The footer holding it takes the editorial spacing. Geometry and colours: `--editorial-footer-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialFilterBar",
+    "tagline": "A row of underlined filter toggles above a collection (gh#1435): a named `role=\"group\"` of `aria-pressed` buttons (one pressed at a time) and a trailing note, over a hairline. The collection below is the consumer's. Geometry: `--editorial-filter-bar-*`."
+  },
+  {
+    "group": "layout",
     "name": "PageCover",
     "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
     "tier": "lab"

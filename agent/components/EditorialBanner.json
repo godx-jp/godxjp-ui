@@ -1,0 +1,47 @@
+{
+  "example": "import { CardShowcase, EditorialBanner, Eyebrow } from \"@godxjp/ui/layout\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<EditorialBanner eyebrow={<Eyebrow>YOUR COLLECTION HAS A STORY.</Eyebrow>} title=\"A home for the cards that matter.\" action={<Button asChild><a href=\"/collection/\">Start your collection</a></Button>} media={<CardShowcase preset=\"binder\" items={pockets} />} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialBanner",
+  "props": [
+    {
+      "description": "The heading.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Kicker.",
+      "name": "eyebrow",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Paragraph.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Call to action (a kit Button).",
+      "name": "action",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Media column (a CardShowcase preset=\"binder\").",
+      "name": "media",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "2",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3"
+    }
+  ],
+  "related": [
+    "CardShowcase."
+  ],
+  "tagline": "A rounded brand panel inside the column (gh#1435): kicker, title, description and a call to action beside a media slot, in the inverse palette. The kit Button in `action` is re-pointed to the inverse roles. Colours and geometry: `--editorial-banner-*`.",
+  "usage": [
+    "DO put it in an EditorialSection with spacing=\"section\"."
+  ]
+}

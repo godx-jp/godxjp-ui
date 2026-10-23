@@ -164,7 +164,7 @@
     cursor: pointer;
     gap: var(--control-gap);
     white-space: nowrap;
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--button-font-weight);
     transition-property: color, background-color, border-color, box-shadow;
     transition-duration: 150ms;
   }
@@ -394,8 +394,8 @@
 
   .ui-button--default-size {
     height: var(--control-height);
-    padding-inline: var(--control-padding-x);
-    font-size: var(--font-size-base);
+    padding-inline: var(--button-padding-inline);
+    font-size: var(--button-font-size);
   }
 
   .ui-button--sm {

@@ -1,0 +1,59 @@
+{
+  "example": "import { EditorialSearch } from \"@godxjp/ui/layout\";\n\n<EditorialSearch label=\"Card name or number\" placeholder=\"Search a card\" submitLabel=\"Search\" action=\"/cards/\" onSearch={(q) => navigate(q)} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialSearch",
+  "props": [
+    {
+      "description": "Accessible label (visually hidden).",
+      "name": "label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Button text.",
+      "name": "submitLabel",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Placeholder.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"q\"",
+      "description": "Query parameter.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Initial query.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Form action for the no-JS submit.",
+      "name": "action",
+      "type": "string"
+    },
+    {
+      "description": "Submit handler.",
+      "name": "onSearch",
+      "type": "(query: string) => void"
+    },
+    {
+      "description": "Field id.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "SearchInput — a debounced filter field.",
+    "EditorialHero — the `search` slot."
+  ],
+  "tagline": "The inset site search (gh#1435): ONE bordered box holding a search glyph, the field and the submit button, under a visually hidden label that also names the `role=\"search\"` landmark. `onSearch` gets the trimmed query; without JavaScript the form GETs `action`. Geometry: `--editorial-search-*`.",
+  "usage": [
+    "DO use it for a site search that submits; use SearchInput for a live filter."
+  ]
+}

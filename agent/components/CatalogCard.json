@@ -1,0 +1,77 @@
+{
+  "example": "import { CatalogCard, CatalogCardTag } from \"@godxjp/ui/layout\";\n\n<CatalogCard media={<a href={href} tabIndex={-1} aria-hidden><img src={img} alt=\"\" /></a>} favorite={{ pressed: saved, onPressedChange: setSaved, label: saveLabel }} overline=\"Pokémon\" title={<a href={href}>{name}</a>} meta={<><span>132/106</span><CatalogCardTag>SAR</CatalogCardTag></>} price=\"¥12,800\" change=\"↓ −4.2%\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "CatalogCard",
+  "props": [
+    {
+      "description": "The picture (a link, tabIndex -1 + aria-hidden, wrapping an img).",
+      "name": "media",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "The item link.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"card\"",
+      "description": "Picture frame.",
+      "name": "variant",
+      "type": "\"card\" | \"sealed\""
+    },
+    {
+      "description": "Overlaid toggle.",
+      "name": "favorite",
+      "type": "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string }"
+    },
+    {
+      "description": "Line above the title.",
+      "name": "overline",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "3",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3 | 4"
+    },
+    {
+      "description": "Metadata row.",
+      "name": "meta",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Price caption.",
+      "name": "priceLabel",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Price figure.",
+      "name": "price",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Price change.",
+      "name": "change",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Bottom row (links inside get the row's link style).",
+      "name": "footer",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "ResponsiveGrid — `preset=\"catalog\"`."
+  ],
+  "subParts": [
+    "CatalogCardTag"
+  ],
+  "tagline": "A catalog tile (gh#1435): the framed picture with an overlaid circular favourite toggle, then an overline, the title (a heading wrapping the item link, clamped to two lines), a metadata row with `CatalogCardTag`s, a price caption and line (price + change), and a footer row. `variant=\"sealed\"` frames a wider, unshadowed product picture. Geometry: `--editorial-catalog-card-*`.",
+  "usage": [
+    "DO lay tiles out with `ResponsiveGrid preset=\"catalog\"`."
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "example": "import { EditorialSectionHead, EditorialTextLink, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialSectionHead\n  eyebrow={<Eyebrow>THE TCG-M JOURNAL</Eyebrow>}\n  title=\"A little knowledge. More enjoyment.\"\n  titleId=\"journal\"\n  action={<EditorialTextLink asChild><a href=\"/journal/\">View all</a></EditorialTextLink>}\n/>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialSectionHead",
+  "props": [
+    {
+      "description": "The heading.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Kicker above it.",
+      "name": "eyebrow",
+      "type": "ReactNode"
+    },
+    {
+      "description": "One line under it.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Trailing call to action.",
+      "name": "action",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "2",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3"
+    },
+    {
+      "description": "Id on the title, for the section's aria-labelledby.",
+      "name": "titleId",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "EditorialSection, EditorialTextLink."
+  ],
+  "subParts": [
+    "EditorialTextLink"
+  ],
+  "tagline": "A section's head (gh#1435): kicker, an editorial h2, one line of description and a trailing action on the title's row — usually an `EditorialTextLink` \"view all →\" (an inline-flex link with a trailing arrow, `asChild` for a router link). Geometry: `--editorial-section-head-*`, `--editorial-text-link-*`.",
+  "usage": [
+    "DO name the EditorialSection with `aria-labelledby={titleId}`."
+  ]
+}

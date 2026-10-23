@@ -266,6 +266,11 @@
         "navigation-layout.css"
       ]
     },
+    "CardShowcase": {
+      "layers": [
+        "layout.css"
+      ]
+    },
     "Carousel": {
       "layers": [
         "data-display-layout.css"
@@ -276,6 +281,11 @@
         "control.css",
         "dialog-layout.css",
         "data-display-layout.css"
+      ]
+    },
+    "CatalogCard": {
+      "layers": [
+        "layout.css"
       ]
     },
     "CenteredShell": {
@@ -471,6 +481,56 @@
         "navigation-layout.css"
       ]
     },
+    "EditorialBanner": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialCard": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialFilterBar": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialFooter": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialHero": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialMasthead": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialPillNav": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialSearch": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialSection": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialSectionHead": {
+      "layers": [
+        "layout.css"
+      ]
+    },
     "EmojiPicker": {
       "layers": [
         "control.css",
@@ -491,6 +551,11 @@
         "text-layout.css",
         "dialog-layout.css",
         "data-display-layout.css"
+      ]
+    },
+    "Eyebrow": {
+      "layers": [
+        "layout.css"
       ]
     },
     "FeatureList": {

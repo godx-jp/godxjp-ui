@@ -1,0 +1,64 @@
+{
+  "example": "import { EditorialCard } from \"@godxjp/ui/layout\";\n\n<EditorialCard variant=\"journal\" link={<a href=\"/journal/price-guide/\" />} media={<img src={cover} alt=\"\" />} overline=\"Price guide\" title=\"Why the same card has different prices.\" description=\"Condition, language and edition all move the price.\" action=\"Read the story\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialCard",
+  "props": [
+    {
+      "description": "Shape.",
+      "name": "variant",
+      "required": true,
+      "type": "\"journal\" | \"spotlight\""
+    },
+    {
+      "description": "The link element the card renders into.",
+      "name": "link",
+      "required": true,
+      "type": "ReactElement"
+    },
+    {
+      "description": "The heading.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Cover (journal) or picture (spotlight).",
+      "name": "media",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Category (journal) or kicker (spotlight).",
+      "name": "overline",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Lines under the title.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "journal: footer call to action.",
+      "name": "action",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "3",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3 | 4"
+    },
+    {
+      "description": "Title id (generated when omitted).",
+      "name": "titleId",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "ResponsiveGrid — `preset=\"trio\"`."
+  ],
+  "tagline": "A whole-card link (gh#1435). `variant=\"journal\"`: an edge-to-edge cover, category, title, two lines of description and a footer with a circled arrow; the link is named by its title (aria-labelledby). `variant=\"spotlight\"`: kicker, title and a line beside a tilted picture. Pass the link element (router Link or `<a href>`) as `link`; the card content is rendered into it. Geometry: `--editorial-journal-*`, `--editorial-spotlight-*`.",
+  "usage": [
+    "DO lay journal cards out with `ResponsiveGrid preset=\"trio\"`."
+  ]
+}

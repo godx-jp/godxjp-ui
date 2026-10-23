@@ -1,0 +1,47 @@
+{
+  "example": "import { EditorialMasthead, EditorialMastheadAction, EditorialMastheadLink } from \"@godxjp/ui/layout\";\nimport { Moon } from \"lucide-react\";\n\n<EditorialMasthead\n  brand={<a href=\"/\" aria-label=\"Home\"><img src=\"/logo.svg\" alt=\"\" /></a>}\n  navLabel=\"Main navigation\"\n  nav={<EditorialMastheadLink href=\"/cards/\" aria-current=\"page\">Cards</EditorialMastheadLink>}\n  actions={<EditorialMastheadAction aria-label=\"Toggle colour theme\"><Moon aria-hidden /></EditorialMastheadAction>}\n/>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialMasthead",
+  "props": [
+    {
+      "description": "The logo link.",
+      "name": "brand",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Primary navigation links.",
+      "name": "nav",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Navigation landmark name.",
+      "name": "navLabel",
+      "type": "string"
+    },
+    {
+      "description": "End actions.",
+      "name": "actions",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Phone-only menu trigger (a Sheet trigger).",
+      "name": "menu",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "CenteredShell — `topbar`.",
+    "Sheet + NavList — the phone menu."
+  ],
+  "subParts": [
+    "EditorialMastheadLink",
+    "EditorialMastheadAction",
+    "EditorialMastheadSelect"
+  ],
+  "tagline": "A public site's header row (gh#1435) for CenteredShell's `topbar` slot: the logo, primary navigation (`EditorialMastheadLink`; `aria-current=\"page\"` underlines the current one) and end actions (`EditorialMastheadSelect` for the interface language, `EditorialMastheadAction` 44px icon controls, `variant=\"outline\"` for the account). The bar holding it turns sticky and translucent. `menu` is the phone-only trigger shown when the theme hides `nav`. Geometry: `--editorial-masthead-*`.",
+  "usage": [
+    "DO pass it as CenteredShell `topbar`; the bar becomes sticky with a blur."
+  ]
+}

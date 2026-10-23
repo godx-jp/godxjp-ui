@@ -1,0 +1,62 @@
+{
+  "example": "import { CenteredShell, EditorialSection, EditorialSectionHead } from \"@godxjp/ui/layout\";\n\n<CenteredShell preset=\"public-landing\" flow=\"sections\" topbar={<SiteHeader />} footer={<SiteFooter />}>\n  <EditorialSection tone=\"subtle\" divider=\"both\" spacing=\"section\" aria-labelledby=\"sets\">\n    <EditorialSectionHead titleId=\"sets\" title=\"Every expansion, a new chapter.\" />\n  </EditorialSection>\n</CenteredShell>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialSection",
+  "props": [
+    {
+      "description": "Band content, already in the landing column.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Ground: page canvas, card surface, muted, or the hero wash.",
+      "name": "tone",
+      "type": "\"default\" | \"surface\" | \"subtle\" | \"hero\""
+    },
+    {
+      "defaultValue": "\"none\"",
+      "description": "Hairlines on the block edges.",
+      "name": "divider",
+      "type": "\"none\" | \"end\" | \"both\""
+    },
+    {
+      "defaultValue": "\"none\"",
+      "description": "Section rhythm as block padding.",
+      "name": "spacing",
+      "type": "\"none\" | \"section\""
+    },
+    {
+      "defaultValue": "\"section\"",
+      "description": "Landmark element.",
+      "name": "as",
+      "type": "\"section\" | \"div\" | \"nav\""
+    },
+    {
+      "description": "Landmark name.",
+      "name": "aria-label",
+      "type": "string"
+    },
+    {
+      "description": "Landmark name reference (the section head's titleId).",
+      "name": "aria-labelledby",
+      "type": "string"
+    },
+    {
+      "description": "Id on the band.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "CenteredShell — `flow=\"sections\"`.",
+    "EditorialHero, EditorialSectionHead — what goes inside."
+  ],
+  "tagline": "One full-width band of an editorial page (gh#1435): put it straight inside `CenteredShell preset=\"public-landing\" flow=\"sections\"`. Its ground (`tone`) and block hairlines (`divider`) run edge to edge while its content sits in the landing column (max width + gutter). `spacing=\"section\"` pads it by the section rhythm. Geometry: `--editorial-section-*`.",
+  "usage": [
+    "DO stack bands directly in a `flow=\"sections\"` shell — the shell drops its column cap, gap and main padding for them.",
+    "DO NOT nest a band inside a capped column: it cannot reach the edges there."
+  ]
+}

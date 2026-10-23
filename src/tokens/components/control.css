@@ -32,6 +32,11 @@
    * The utility consumes a concrete value, so this remains a root alias; scoped services
    * override --button-radius directly. Pill and sharp shapes keep their own tokens. */
   --button-radius: var(--radius);
+  /* Label weight and the default-size label size (gh#1435): a brand whose buttons are semibold
+   * 14px sets them here, without moving every medium-weight label in the kit. */
+  --button-font-weight: var(--font-weight-medium);
+  --button-font-size: var(--font-size-base);
+  --button-padding-inline: var(--control-padding-x);
   /* THE BUTTON'S OWN SURFACE — one knob per painted variant (gh#880, standard §1).
    *
    * Every variant painted a bare role (`hsl(var(--primary))`, `hsl(var(--background))`,

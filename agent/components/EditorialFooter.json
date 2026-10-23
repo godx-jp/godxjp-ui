@@ -1,0 +1,48 @@
+{
+  "example": "import { EditorialFooter } from \"@godxjp/ui/layout\";\n\n<EditorialFooter brand={<a href=\"/\" aria-label=\"Home\"><img src=\"/logo.svg\" alt=\"\" /></a>} tagline=\"Discover. Compare.\" groups={[{ title: \"DISCOVER\", links: [<a key=\"c\" href=\"/cards/\">Cards</a>] }]} legal=\"© 2026 TCG-M.\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialFooter",
+  "props": [
+    {
+      "description": "The logo link.",
+      "name": "brand",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Link groups.",
+      "name": "groups",
+      "required": true,
+      "type": "{ title: ReactNode; links: ReactNode[] }[]"
+    },
+    {
+      "description": "Line under the logo.",
+      "name": "tagline",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "2",
+      "description": "Heading level of the group titles.",
+      "name": "level",
+      "type": "2 | 3"
+    },
+    {
+      "description": "Rights line.",
+      "name": "legal",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Note paragraph.",
+      "name": "note",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "CenteredShell — `footer`, `footerTone=\"inverse\"`."
+  ],
+  "tagline": "A public site's footer content (gh#1435) for `CenteredShell footerTone=\"inverse\"`: logo and tagline, link groups (a heading + links each), and a bottom row with the rights line and a note. The footer holding it takes the editorial spacing. Geometry and colours: `--editorial-footer-*`.",
+  "usage": [
+    "DO pass plain links in each group; the footer styles them."
+  ]
+}

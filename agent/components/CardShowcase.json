@@ -1,0 +1,38 @@
+{
+  "example": "import { CardShowcase } from \"@godxjp/ui/layout\";\n\n<CardShowcase preset=\"fan\" label=\"ONE PLACE. MANY WORLDS.\" caption={{ overline: \"A whole world in your hands.\", title: \"Find your next favourite.\" }} items={cards.map((c) => <a key={c.id} href={c.href} aria-label={c.name}><img src={c.image} alt={c.name} /></a>)} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "CardShowcase",
+  "props": [
+    {
+      "description": "Composition.",
+      "name": "preset",
+      "required": true,
+      "type": "\"fan\" | \"binder\""
+    },
+    {
+      "description": "Pictures in reading order (links wrapping an img, or imgs).",
+      "name": "items",
+      "required": true,
+      "type": "ReactNode[]"
+    },
+    {
+      "description": "fan: corner label.",
+      "name": "label",
+      "type": "ReactNode"
+    },
+    {
+      "description": "fan: caption card.",
+      "name": "caption",
+      "type": "{ icon?: ReactNode; overline?: ReactNode; title: ReactNode }"
+    }
+  ],
+  "related": [
+    "EditorialHero — the `media` slot.",
+    "EditorialBanner — the `media` slot (binder)."
+  ],
+  "tagline": "A staged composition of product pictures (gh#1435). `preset=\"fan\"`: three cards fanned (start, centre, end) over ornament orbits, stars and a glow, with a corner `label` and a `caption` card. `preset=\"binder\"`: a tilted binder page of up to six pockets. Decorations are aria-hidden; each item keeps its own accessible name. Geometry: `--editorial-showcase-*`, `--editorial-binder-*`.",
+  "usage": [
+    "DO give each linked picture an accessible name; the stage itself is decoration."
+  ]
+}

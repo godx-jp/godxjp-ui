@@ -43,6 +43,7 @@ function PageLayout({
   align = "start",
   preset = "default",
   footerTone = "default",
+  flow = "column",
   className,
 }: CenteredShellPageProp) {
   const { t } = useTranslation();
@@ -52,6 +53,8 @@ function PageLayout({
       data-slot="centered-shell"
       // `data-preset` is only emitted for a REAL preset, so the default shell keeps its exact
       data-preset={preset === "default" ? undefined : preset}
+      // Emitted only for the section flow, so a column page keeps its exact box (gh#1435).
+      data-flow={flow === "sections" ? "sections" : undefined}
       className={cn("ui-centered-shell", className)}
     >
       {topbar !== undefined && (

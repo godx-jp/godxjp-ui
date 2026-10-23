@@ -4,6 +4,14 @@
 
 :root {
   --responsive-grid-column-width: 20rem;
+  /* Token-driven ResponsiveGrid presets (gh#1435). The defaults fill the row with as many tracks
+   * as fit; a theme re-declares them at its own breakpoints for exact column counts. */
+  --responsive-grid-catalog-track-size: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  --responsive-grid-catalog-gap: var(--space-6);
+  --responsive-grid-trio-track-size: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  --responsive-grid-trio-gap: var(--space-6);
+  --responsive-grid-lead-track-size: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  --responsive-grid-lead-gap: var(--space-10);
   --sidebar-section-label-font-size: var(
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
