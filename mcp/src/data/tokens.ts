@@ -109,6 +109,12 @@ export const TOKENS: TokenEntry[] = [
   },
 
   {
+    name: "--table-stacked-collection-card-gap",
+    tier: "component",
+    category: "component",
+    role: "Stacked Table/DataTable inter-record gap. Defaults to 0 for a continuous list with exactly one separator between records; themes may explicitly override this existing knob.",
+  },
+  {
     name: "--table-stacked-collection-card-padding-x",
     category: "component",
     tier: "component",

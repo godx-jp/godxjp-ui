@@ -8876,7 +8876,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-stacked-collection-card-padding-y",
     "value": "var(--space-stack-sm)",
-    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered key-value card; these tokens own the card's own geometry (unlike action-collection, there is no column-priority measure to retune — the whole row becomes one block)."
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, heterogeneous record collection. Below the collapse step every `<tr>` becomes a continuous key-value record; these tokens own the record's geometry (unlike action-collection, there is no column-priority measure to retune — the whole row becomes one block)."
   },
   {
     "name": "--table-stacked-collection-card-padding-x",
@@ -8885,7 +8885,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-stacked-collection-card-gap",
-    "value": "var(--space-stack-sm)",
+    "value": "0",
     "description": "Table component tokens: row height, cell padding."
   },
   {
