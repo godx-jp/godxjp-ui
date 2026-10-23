@@ -31,6 +31,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NumberInput fine-pointer hit areas centre correctly in RTL. The step-target gate measures
   intersection on both axes for the horizontal 44px coarse targets and pins the intended
   24×15 desktop paint of the 36px control band (#1383).
+## [33.12.8] - 2026-10-23
+
+### Fixed
+
+- **A Dialog or Sheet exposes one 「閉じる」, not two (#1401).** React Aria's `Modal` renders a
+  visually hidden `DismissButton` beside every dismissable dialog (the default `Dialog`, every
+  `Sheet`); next to the visible ✕ that was the same action under the same name, announced twice
+  (gino-cloud: `button · 閉じる · page` + `button · 閉じる · dialog`; Chromium count 2 → 1 for both
+  Dialog and Sheet). With the ✕ rendered, the hidden twin is `display: none`; with
+  `showCloseButton={false}` it stays, so a screen-reader user who cannot press Escape keeps a way
+  out. Escape and backdrop dismissal are unchanged.
+- **The DatePicker calendar dialog is named after its field (#1400).** It was always
+  「カレンダーを開く」 / 「Mở lịch」, so every day button was announced as being in a dialog that said
+  nothing about which date it set. The dialog now takes the FormField label (or the caller's
+  `aria-labelledby` / `aria-label`), then `triggerLabel`, then the old default.
+
+### Changed
+
+- **An unselected plain `Select` shows the catalogue placeholder (#1399).** Only the `showSearch`
+  branch defaulted to 「選択…」 / 「Chọn…」; without it the trigger was empty — just the chevron
+  (gino-cloud: 320px triggers with no text on a create form, 「選択…」 on the filter bar of the same
+  app). Both branches now show the same default. It is display only: an unlabelled trigger is still
+  named only by a placeholder you pass (gh#643), never by the generic default.
 
 ## [33.12.7] - 2026-10-23
 

@@ -7903,7 +7903,8 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "placeholder",
         type: "string",
-        description: "Placeholder shown in the trigger when no value is selected.",
+        description:
+          "Placeholder shown in the trigger when no value is selected. Default: the catalogue's 「選択…」 / 'Chọn…' / 'Select…' — the same string with or without `showSearch`, so an unselected field never shows an empty trigger. Only a placeholder YOU pass can name an unlabelled trigger; the default never becomes the accessible name.",
       },
       {
         name: "searchPlaceholder",
@@ -9326,7 +9327,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
         name: "triggerLabel",
         type: "string",
         description:
-          "Accessible NAME of the calendar button. The default (「カレンダーを開く」 / 'Open calendar') is right for one picker on a page and useless for three: a screen-reader user hears the same sentence three times with nothing to say which field each button belongs to (WCAG 2.2 SC 2.4.6). Name it after the FIELD — `開始日のカレンダーを開く`. Same axis and same reason as Select's `clearLabel`.",
+          "Accessible NAME of the calendar button. The default (「カレンダーを開く」 / 'Open calendar') is right for one picker on a page and useless for three: a screen-reader user hears the same sentence three times with nothing to say which field each button belongs to (WCAG 2.2 SC 2.4.6). Name it after the FIELD — `開始日のカレンダーを開く`. Same axis and same reason as Select's `clearLabel`. The calendar DIALOG is named after the field too: the FormField label (or your `aria-labelledby` / `aria-label`) first, then `triggerLabel`, then the default.",
       },
     ],
     usage: [

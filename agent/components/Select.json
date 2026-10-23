@@ -81,7 +81,7 @@
       "type": "React.ReactNode"
     },
     {
-      "description": "Placeholder shown in the trigger when no value is selected.",
+      "description": "Placeholder shown in the trigger when no value is selected. Default: the catalogue's 「選択…」 / 'Chọn…' / 'Select…' — the same string with or without `showSearch`, so an unselected field never shows an empty trigger. Only a placeholder YOU pass can name an unlabelled trigger; the default never becomes the accessible name.",
       "name": "placeholder",
       "type": "string"
     },
