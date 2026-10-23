@@ -4,6 +4,7 @@ import type { ElementType, ReactNode } from "react";
 import { useTranslation } from "../../i18n/use-translation";
 import { BreadcrumbCrumbText, trailEllipsis } from "./breadcrumb-ellipsis";
 import type {
+  BreadcrumbCurrentItemProp,
   BreadcrumbItemProp,
   BreadcrumbItemRenderProp,
   BreadcrumbProp,
@@ -18,6 +19,8 @@ import {
 
 export type BreadcrumbProps = {
   items: BreadcrumbProp;
+  /** Last item is current by default; none keeps an ancestor-only trail linked. */
+  currentItem?: BreadcrumbCurrentItemProp;
   linkComponent?: ElementType;
   /** Override the `<nav>` landmark's accessible name. Defaults to a localized "Breadcrumb". */
   ariaLabel?: string;
@@ -37,6 +40,7 @@ export type BreadcrumbProps = {
 
 export function Breadcrumb({
   items,
+  currentItem = "last",
   linkComponent: LinkComponent = "a",
   ariaLabel,
   separator,
@@ -67,7 +71,15 @@ export function Breadcrumb({
                   {separatorNode}
                 </span>
               ) : null}
-              {renderBreadcrumbSegment({ item, index, isLast, items, itemRender, LinkComponent })}
+              {renderBreadcrumbSegment({
+                item,
+                index,
+                isLast,
+                isCurrent: isLast && currentItem === "last",
+                items,
+                itemRender,
+                LinkComponent,
+              })}
             </li>
           );
         })}
@@ -85,6 +97,7 @@ function renderBreadcrumbSegment({
   item,
   index,
   isLast,
+  isCurrent,
   items,
   itemRender,
   LinkComponent,
@@ -92,6 +105,7 @@ function renderBreadcrumbSegment({
   item: BreadcrumbItemProp;
   index: number;
   isLast: boolean;
+  isCurrent: boolean;
   items: BreadcrumbProp;
   itemRender?: BreadcrumbItemRenderProp;
   LinkComponent: ElementType;
@@ -130,7 +144,7 @@ function renderBreadcrumbSegment({
     );
   }
 
-  if (item.to && !isLast) {
+  if (item.to && !isCurrent) {
     return (
       <BreadcrumbCrumbText item={item}>
         <LinkComponent href={item.to} to={item.to} className="ui-breadcrumb-link">
@@ -142,7 +156,7 @@ function renderBreadcrumbSegment({
 
   return (
     <BreadcrumbCrumbText item={item}>
-      <span className="ui-breadcrumb-current" aria-current={isLast ? "page" : undefined}>
+      <span className="ui-breadcrumb-current" aria-current={isCurrent ? "page" : undefined}>
         {item.label}
       </span>
     </BreadcrumbCrumbText>

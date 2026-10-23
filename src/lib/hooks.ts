@@ -23,7 +23,7 @@
  * agree.
  */
 import { useLayoutEffect } from "@react-aria/utils";
-import { type RefObject, useEffect, useState } from "react";
+import { type RefObject, useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { flushSync } from "react-dom";
 
 /**
@@ -93,38 +93,40 @@ export function useControlledLatch(valueIsDefined: boolean): boolean {
   return valueIsDefined || latched;
 }
 
+/** The server cannot evaluate a media query: it always renders the "no match" branch. */
+const getServerMatch = () => false;
+
+/**
+ * Live `matchMedia(query).matches`, hydration-safe. Built on `useSyncExternalStore` so that during
+ * hydration React renders with the SERVER snapshot (`false`, what SSR sent) and switches to the live
+ * match immediately after — the first client render never differs from the server HTML. Reading
+ * `matchMedia` in the initial `useState` made a phone hydrate a different tree than the server sent
+ * (AppShell `data-navigation` "docked" → "drawer", an attribute mismatch React does not patch up).
+ * A client-only mount still gets the live value on its first render.
+ */
 export function useMediaQuery(query: string): boolean {
-  const isBrowser = typeof window !== "undefined";
-
-  const getMatch = () => (isBrowser ? window.matchMedia(query).matches : false);
-
-  const [matches, setMatches] = useState<boolean>(getMatch());
-
-  useEffect(() => {
-    if (!isBrowser) return undefined;
-
-    const mediaQuery = window.matchMedia(query);
-
-    const updateMatch = () => {
-      setMatches(mediaQuery.matches);
-    };
-
-    updateMatch();
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", updateMatch);
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      if (typeof window === "undefined" || typeof window.matchMedia !== "function") return () => {};
+      const mediaQuery = window.matchMedia(query);
+      if (typeof mediaQuery.addEventListener === "function") {
+        mediaQuery.addEventListener("change", onChange);
+        return () => {
+          mediaQuery.removeEventListener("change", onChange);
+        };
+      }
+      mediaQuery.addListener(onChange);
       return () => {
-        mediaQuery.removeEventListener("change", updateMatch);
+        mediaQuery.removeListener(onChange);
       };
-    }
-
-    mediaQuery.addListener(updateMatch);
-    return () => {
-      mediaQuery.removeListener(updateMatch);
-    };
-  }, [isBrowser, query]);
-
-  return matches;
+    },
+    [query],
+  );
+  const getMatch = () =>
+    typeof window !== "undefined" && typeof window.matchMedia === "function"
+      ? window.matchMedia(query).matches
+      : false;
+  return useSyncExternalStore(subscribe, getMatch, getServerMatch);
 }
 
 export function useIsMobile(): boolean {

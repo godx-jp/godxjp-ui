@@ -1,0 +1,13 @@
+/* Identity geometry. Initial spacing/type defaults resolve against the local density. */
+:root {
+  --persona-avatar-gap: initial; /* Default var(--space-2). */
+  --persona-label-gap: initial; /* Default zero, set at the call site. */
+  --persona-trailing-gap: initial; /* Default var(--space-1). */
+  --persona-label-line-height: 1.5;
+  --persona-name-font-size: initial; /* Default var(--font-size-sm). */
+  --persona-name-font-size-sm: initial; /* Default var(--font-size-xs). */
+  --persona-name-font-weight: initial; /* Default var(--font-weight-medium). */
+  --persona-description-font-size: initial; /* Default var(--font-size-xs). */
+  --persona-name-color: initial; /* Role mirror: hsl(var(--foreground)). */
+  --persona-description-color: initial; /* Role mirror: hsl(var(--muted-foreground)). */
+}

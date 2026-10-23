@@ -149,9 +149,13 @@ describe("a one-file Upload states the file, not a count (gh#1288 A)", { timeout
 });
 
 describe("the trigger's name inside a FormField (gh#1288 B)", { timeout: 60_000 }, () => {
-  it("dropzone: a label the action already says is not read twice", async () => {
+  // gh#1412: the dropzone is named by its VISIBLE hint, which does not repeat 「ファイル」, so the
+  // label leads it like any other — and is still read once.
+  it("dropzone: the label is read once, then the visible hint", async () => {
     const page = await open("single");
-    expect(await buttonNames(page)).toEqual(["ファイルをアップロード"]);
+    expect(await buttonNames(page)).toEqual([
+      "ファイル ここにドラッグ＆ドロップ、またはクリックして選択",
+    ]);
     await page.context().close();
   });
 
@@ -163,7 +167,9 @@ describe("the trigger's name inside a FormField (gh#1288 B)", { timeout: 60_000 
 
   it("dropzone: any other label still leads the name", async () => {
     const page = await open("other-label");
-    expect(await buttonNames(page)).toEqual(["在留カード ファイルをアップロード"]);
+    expect(await buttonNames(page)).toEqual([
+      "在留カード ここにドラッグ＆ドロップ、またはクリックして選択",
+    ]);
     await page.context().close();
   });
 

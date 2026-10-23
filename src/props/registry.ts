@@ -507,6 +507,12 @@ export const VOCABULARY_REGISTRY = {
     description:
       "Heading level 1-4 — the semantic element, and the --heading-h* size it takes unless `size` (TextSizeProp) overrides it",
   },
+  HeadingFamilyProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Heading face display | editorial — editorial reads --font-family-editorial (an opt-in serif for a hero or a public page section), falling back to --font-family-display",
+  },
   TextAlignProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -662,6 +668,11 @@ export const VOCABULARY_REGISTRY = {
     category: "navigation",
     description: "One-line truncation of a breadcrumb segment, with the full label in a tooltip",
   },
+  BreadcrumbCurrentItemProp: {
+    file: "vocabulary/navigation.prop.ts",
+    category: "navigation",
+    description: "Current breadcrumb item: last (default) or none for ancestors only",
+  },
   BreadcrumbProp: {
     file: "vocabulary/navigation.prop.ts",
     category: "navigation",
@@ -775,6 +786,60 @@ export const VOCABULARY_REGISTRY = {
 export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
 
 export const COMPONENT_PROP_REGISTRY = {
+  DashboardGridProp: {
+    group: "layout",
+    file: "components/dashboard-grid.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "items",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "layout",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "defaultLayout",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "onLayoutChange",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "columns",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "rowHeight",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "editable",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+    ],
+  },
+  DashboardGridItemProp: {
+    group: "layout",
+    file: "components/dashboard-grid.prop.ts",
+    vocabulary: [
+      { field: "id", local: true, reason: "Persisted grid cell coordinate or identity." },
+      { field: "x", local: true, reason: "Persisted grid cell coordinate or identity." },
+      { field: "y", local: true, reason: "Persisted grid cell coordinate or identity." },
+      { field: "w", local: true, reason: "Persisted grid cell coordinate or identity." },
+      { field: "h", local: true, reason: "Persisted grid cell coordinate or identity." },
+    ],
+  },
   AppProviderProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ChildrenProp"] },
   ThemeScopeProp: {
     group: "app",
@@ -860,6 +925,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ExtraProp",
       "FooterProp",
       "BreadcrumbProp",
+      "BreadcrumbCurrentItemProp",
       "DensityProp",
       "PageContainerVariantProp",
       {
@@ -1972,6 +2038,7 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/general.prop.ts",
     vocabulary: [
       "HeadingLevelProp",
+      "HeadingFamilyProp",
       "TextSizeProp",
       "TextToneProp",
       "TextAlignProp",
@@ -2818,6 +2885,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "OnColumnFilterChangeProp",
     ],
   },
+  PersonaProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["SizeProp", "ClassNameProp", "DescriptionProp"],
+  },
   ListRowDensityProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
@@ -3018,6 +3090,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3054,6 +3131,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3127,6 +3209,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3163,6 +3250,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3200,6 +3292,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -4833,6 +4930,21 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: [
+      {
+        field: "selectionMode",
+        local: true,
+        reason: "Single navigation scope or existing multiple-branch subset editor.",
+      },
+      {
+        field: "allowAll",
+        local: true,
+        reason: "Whether organization-wide branch scope is selectable.",
+      },
+      {
+        field: "hideWhenSingle",
+        local: true,
+        reason: "Hide a settled single-branch navigation scope without changing consumer state.",
+      },
       "ValueProp",
       "DefaultValueProp",
       "OnValueChangeProp",

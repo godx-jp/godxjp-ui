@@ -790,6 +790,8 @@
    * frame-geometry gate counts exactly that: a control the user cannot bring into view. Scrolling
    * the row is the browser's own answer, and the gate treats scroll-reachable as fine. */
   .ui-pagination {
+    /* The enclosing content/footer owns the keyline; item gaps stay inside the control. */
+    padding-inline: 0;
     scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     max-inline-size: 100%;
     overflow-x: auto;

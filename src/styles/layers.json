@@ -215,7 +215,8 @@
         "alert-layout.css",
         "badge-layout.css",
         "data-entry-layout.css",
-        "form-layout.css"
+        "form-layout.css",
+        "navigation-layout.css"
       ]
     },
     "Breadcrumb": {
@@ -401,6 +402,15 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css"
+      ]
+    },
+    "DashboardGrid": {
+      "layers": [
+        "control.css",
+        "toggle.css",
+        "card-layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "DataState": {
@@ -765,6 +775,11 @@
         "badge-layout.css",
         "data-display-layout.css",
         "form-layout.css"
+      ]
+    },
+    "Persona": {
+      "layers": [
+        "data-display-layout.css"
       ]
     },
     "PieChart": {

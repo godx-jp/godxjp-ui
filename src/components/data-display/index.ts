@@ -1,3 +1,5 @@
+export { Persona } from "./persona";
+export type { PersonaProp, PersonaProps } from "./persona";
 export { Badge, StatusBadge } from "./badge";
 export type { BadgeProps, BadgeTone } from "./badge";
 export { Legend } from "./legend";
@@ -47,7 +49,15 @@ export type {
   ServiceLauncherCardSkeletonProps,
   ServiceLauncherStatusTone,
 } from "./service-launcher-card";
-export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./table";
 export { Descriptions } from "./descriptions";
 export { DataTable, flexRender } from "./data-table";
 export type { ColumnDef, Density as TableDensity } from "./data-table";

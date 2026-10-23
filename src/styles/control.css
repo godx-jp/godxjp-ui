@@ -2407,8 +2407,7 @@
   .ui-number-input-step::after {
     content: "";
     position: absolute;
-    inset-inline-start: 50%;
-    translate: -50% 0;
+    inset-inline-start: calc((100% - var(--touch-target-min)) / 2);
     inline-size: var(--touch-target-min);
     block-size: var(--touch-target-min);
   }
@@ -3384,6 +3383,7 @@
   .ui-calendar {
     position: relative;
     inline-size: fit-content;
+    max-inline-size: 100%;
     padding: var(--calendar-space-inset);
   }
 
@@ -3742,10 +3742,38 @@
     block-size: var(--calendar-chevron-size);
   }
 
+  /* The seven date columns (eight with week numbers) keep their natural desktop width,
+   * but share a constrained container without shrinking a date target below 24px. */
+  .ui-calendar-month {
+    min-inline-size: 0;
+  }
+
+  .ui-calendar-day,
+  .ui-calendar-weekday {
+    flex: 0 1 var(--control-height);
+    min-inline-size: calc(var(--touch-target-min) + var(--stroke-hairline));
+  }
+
   .ui-calendar-grid {
     margin-block-start: var(--calendar-grid-space-block-start);
-    inline-size: 100%;
+    inline-size: calc(7 * var(--control-height));
+    max-inline-size: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
+  }
+
+  .ui-calendar[data-bordered="true"] .ui-calendar-grid {
+    inline-size: calc(7 * var(--control-height) + var(--stroke-hairline));
+  }
+
+  /* The optional week-number column keeps its intrinsic label measure on desktop. */
+  .ui-calendar .ui-calendar-grid:has(.ui-calendar-week-number) {
+    inline-size: 100%;
+    table-layout: auto;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-grid {
+    inline-size: 100%;
   }
 
   .ui-calendar-weekday {
@@ -3790,6 +3818,7 @@
      * ships — the major component libraries mention weekends in zero files, and Google Calendar
      * paints all seven headers the same) in the app where it belongs. The state rules above still win: they name the button. */
     color: inherit;
+    max-inline-size: 100%;
     inline-size: var(--control-height);
     block-size: var(--control-height);
     padding: 0;
@@ -4943,6 +4972,88 @@
         2 * var(--control-affix-touch-target-size) + var(--space-2) +
           var(--control-inline-affix-size)
       );
+    }
+  }
+}
+
+@layer components {
+  .ui-dashboard-grid,
+  .ui-dashboard-grid-items,
+  .ui-dashboard-grid-item,
+  .ui-dashboard-grid-content {
+    min-inline-size: 0;
+  }
+  .ui-dashboard-grid-items {
+    display: grid;
+    grid-template-columns: repeat(var(--dashboard-grid-columns, 1), minmax(0, 1fr));
+    grid-auto-rows: var(--dashboard-grid-row-height);
+    gap: var(--dashboard-grid-gap);
+  }
+  .ui-dashboard-grid-item {
+    position: relative;
+    border-radius: var(--dashboard-grid-item-radius);
+  }
+  .ui-dashboard-grid-surface {
+    display: flex;
+    flex-direction: column;
+    block-size: 100%;
+  }
+  .ui-dashboard-grid-item .ui-dashboard-grid-header {
+    padding-inline-start: calc(
+      var(--dashboard-grid-handle-size) + var(--dashboard-grid-handle-inset) * 2
+    );
+  }
+  .ui-dashboard-grid-items[data-stacked] {
+    grid-auto-rows: auto;
+  }
+  .ui-dashboard-grid-content {
+    flex: 1;
+    min-block-size: 0;
+    overflow: auto;
+  }
+  .ui-dashboard-grid-item[data-held] {
+    outline: var(--focus-ring-width) solid
+      hsl(var(--dashboard-grid-preview-ring-color, var(--ring)));
+    outline-offset: var(--focus-ring-offset);
+  }
+  .ui-dashboard-grid-move,
+  .ui-dashboard-grid-resize {
+    position: absolute;
+    z-index: 1;
+    inline-size: var(--dashboard-grid-handle-size);
+    block-size: var(--dashboard-grid-handle-size);
+    min-inline-size: var(--touch-target-min);
+    min-block-size: var(--touch-target-min);
+    touch-action: none;
+  }
+  .ui-dashboard-grid-move {
+    inset-block-start: var(--dashboard-grid-handle-inset);
+    inset-inline-start: var(--dashboard-grid-handle-inset);
+    cursor: grab;
+  }
+  .ui-dashboard-grid-resize {
+    inset-block-end: var(--dashboard-grid-handle-inset);
+    inset-inline-end: var(--dashboard-grid-handle-inset);
+    cursor: nwse-resize;
+    opacity: 0;
+  }
+  .ui-dashboard-grid-item:dir(rtl) .ui-dashboard-grid-resize {
+    cursor: nesw-resize;
+    transform: scaleX(-1);
+  }
+  .ui-dashboard-grid-item:hover .ui-dashboard-grid-resize,
+  .ui-dashboard-grid-item:focus-within .ui-dashboard-grid-resize {
+    opacity: 1;
+  }
+  .ui-dashboard-grid-item[data-held] .ui-dashboard-grid-move {
+    cursor: grabbing;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-dashboard-grid-item,
+    .ui-dashboard-grid-move,
+    .ui-dashboard-grid-resize {
+      transition: none;
+      animation: none;
     }
   }
 }

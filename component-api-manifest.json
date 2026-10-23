@@ -1851,6 +1851,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "series",
           "origin": "owned",
           "required": true,
@@ -2439,6 +2447,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "series",
           "origin": "owned",
           "required": true,
@@ -2516,6 +2532,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "allowAll",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "branches",
           "origin": "owned",
           "required": true,
@@ -2569,6 +2593,14 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "hideWhenSingle",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -2644,6 +2676,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "selectionMode",
+          "origin": "owned",
+          "required": false,
+          "type": "\"single\" | \"multiple\" | undefined",
+          "values": ["single", "multiple"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
@@ -2662,6 +2702,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/components/layout/breadcrumb.tsx"]
+        },
+        {
+          "name": "currentItem",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbCurrentItemProp | undefined",
+          "values": ["none", "last"],
           "declaredIn": ["src/components/layout/breadcrumb.tsx"]
         },
         {
@@ -4725,6 +4773,67 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
+    "DashboardGrid": {
+      "group": "lab",
+      "props": [
+        {
+          "name": "columns",
+          "origin": "owned",
+          "required": false,
+          "type": "number | ({ base: number; } & Partial<Record<BreakpointProp, number>>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "defaultLayout",
+          "origin": "owned",
+          "required": false,
+          "type": "DashboardGridItemProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "editable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "{ id: string; label: string; content: React.ReactNode; }[]",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "layout",
+          "origin": "owned",
+          "required": false,
+          "type": "DashboardGridItemProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "onLayoutChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((layout: DashboardGridItemProp[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "rowHeight",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
         }
       ]
     },
@@ -7920,6 +8029,14 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "family",
+          "origin": "owned",
+          "required": false,
+          "type": "HeadingFamilyProp | undefined",
+          "values": ["display", "editorial"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "level",
           "origin": "owned",
           "required": false,
@@ -8034,6 +8151,14 @@
           "origin": "owned",
           "required": false,
           "type": "Intl.NumberFormatOptions | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<HeatmapDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
@@ -9006,6 +9131,14 @@
           "origin": "owned",
           "required": false,
           "type": "((datum: ChartDatum, index: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
@@ -10416,6 +10549,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "breadcrumbCurrentItem",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbCurrentItemProp | undefined",
+          "values": ["none", "last"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "breadcrumbLabel",
           "origin": "owned",
           "required": false,
@@ -11262,6 +11403,59 @@
         }
       ]
     },
+    "Persona": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "avatarFallback",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "avatarSrc",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "name",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | undefined",
+          "values": ["sm", "md"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "trailing",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
     "PieChart": {
       "group": "charts",
       "props": [
@@ -11358,6 +11552,14 @@
           "origin": "owned",
           "required": false,
           "type": "Intl.NumberFormatOptions | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
@@ -15947,6 +16149,10 @@
       ]
     },
     "TableBody": {
+      "group": "data-display",
+      "props": []
+    },
+    "TableCaption": {
       "group": "data-display",
       "props": []
     },

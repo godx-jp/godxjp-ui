@@ -1,4 +1,34 @@
 {
+  "chartDrillDocs": {
+    "title": "Tổng quan cửa hàng",
+    "chart": "Doanh thu theo cửa hàng",
+    "hint": "Chọn cột để lọc đơn hàng. Dùng phím mũi tên để di chuyển và Enter hoặc Space để chọn.",
+    "store": "Cửa hàng",
+    "sales": "Doanh thu",
+    "east": "Cửa hàng Đông",
+    "central": "Cửa hàng Trung tâm",
+    "west": "Cửa hàng Tây",
+    "filter": "Đơn hàng: {store}",
+    "all": "Tất cả cửa hàng",
+    "reset": "Xóa bộ lọc"
+  },
+  "personaExamples": {
+    "role": "Vai trò",
+    "admin": "Quản trị viên",
+    "editor": "Biên tập viên",
+    "lastActive": "Hoạt động gần nhất",
+    "status": "Trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Không hoạt động",
+    "sizes": "Kích thước danh tính",
+    "minimal": "Chỉ tên và nhãn hai chiều",
+    "dark": "Ảnh và nền tối",
+    "name": "Alex Morgan, Nghiên cứu và Phát triển",
+    "you": "(bạn)",
+    "member": "Thành viên",
+    "email": "Địa chỉ email",
+    "members": "Thành viên"
+  },
   "affixTouchExamples": {
     "title": "Ô nhập hẹp và thao tác chạm",
     "description": "Ở chiều rộng 200px, nút xoá và nút chọn không đè lên văn bản. Vùng chạm là 44px; khoảng cách trên máy tính không đổi.",
@@ -24,7 +54,8 @@
     "ellipsisLongTitle": "Kiểm thử tích hợp quý 3 · mô-đun thanh toán · kịch bản xuất lại hoá đơn và rà soát tiêu chí nghiệm thu",
     "ellipsisShortTitle": "Kiểm thử nhanh đăng nhập",
     "ellipsisLongHeader": "Tên lần chạy gần nhất (bản ứng viên 2026-09)",
-    "migrateFromAntdTitle": "Chuyển từ antd Typography"
+    "migrateFromAntdTitle": "Chuyển từ antd Typography",
+    "editorialHeading": "Tìm kiếm. So sánh."
   },
   "themeShowcase": {
     "page": {
@@ -1625,6 +1656,8 @@
     }
   },
   "breadcrumbExamples": {
+    "parentsDescription": "currentItem=\"none\" giữ liên kết cho mọi trang cha, không đánh dấu trang hiện tại. PageContainer dùng breadcrumbCurrentItem=\"none\" khi tên bản ghi nằm trong tiêu đề. Nhãn rút gọn có tên truy cập và title đầy đủ, không lặp mô tả tooltip.",
+    "parentsAria": "Các trang cha",
     "ellipsisTitle": "ellipsis · một đoạn dài trên một dòng",
     "ellipsisDescription": "ellipsis trên một đoạn giữ breadcrumb trên một dòng và cắt nhãn đó bằng \"…\"; toàn văn hiện trong tooltip khi rê chuột và khi liên kết của đoạn nhận tiêu điểm bàn phím. Breadcrumb của antd không có ellipsis theo từng mục — hình dạng lấy theo Typography. breadcrumb của PageContainer nhận cùng trường này.",
     "ellipsisAria": "Breadcrumb có cắt chữ",
@@ -2378,5 +2411,38 @@
     "switchUser": "Đổi người dùng mẫu",
     "description": "Tên người đăng nhập luôn hiển thị. Topbar identity dành tối đa 40% thanh; TopbarItem truncate chỉ rút gọn tên, giữ tên đầy đủ trong title và văn bản hỗ trợ tiếp cận.",
     "policy": "Các điều khiển chính giữ kích thước tối thiểu. Khi quá hẹp, các cụm khác dùng scroll, clip hoặc menu; danh tính ở bên ngoài. Dùng TopbarSearch để tìm kiếm. Không kết hợp identity với labelHideBelow, hideBelow hoặc iconHideFrom. Token: --topbar-identity-max-inline-size / --topbar-identity-min-text-inline-size."
+  },
+  "docs": {
+    "branchNavigation": {
+      "title": "Phạm vi chi nhánh",
+      "intro": "Dùng phạm vi chi nhánh chung trong điều hướng và chọn chi nhánh của bản ghi độc lập.",
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "guidance": "Phạm vi xem được lưu trong URL. Biểu mẫu bản ghi dùng trạng thái riêng và phải chọn một chi nhánh cụ thể, không bao giờ là Tất cả.",
+      "record": "Chi nhánh của bản ghi",
+      "required": "Chọn một chi nhánh được phép.",
+      "save": "Lưu",
+      "saved": "Đã lưu",
+      "more": "Thêm",
+      "scope": "Phạm vi xem"
+    }
+  },
+  "dashboardGridDocs": {
+    "title": "Tổng quan kinh doanh",
+    "period": "Tháng 10 năm 2026 · so với tháng 9",
+    "revenue": "Doanh thu",
+    "orders": "Đơn hàng",
+    "revenueDelta": "+8,2% so với tháng 9",
+    "ordersDelta": "+42 so với tháng 9",
+    "edit": "Sửa bố cục",
+    "done": "Kết thúc chỉnh sửa",
+    "hint": "Enter hoặc Space để nắm. Mũi tên để di chuyển, Shift + mũi tên để đổi kích thước, Escape để hủy. Thả để lưu một lần.",
+    "trend": "Doanh thu theo tuần",
+    "channels": "Đơn hàng theo kênh",
+    "channel": "Kênh",
+    "direct": "Trực tiếp",
+    "organic": "Tìm kiếm tự nhiên",
+    "referral": "Giới thiệu",
+    "email": "Email"
   }
 }

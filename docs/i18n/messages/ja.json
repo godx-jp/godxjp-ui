@@ -1,4 +1,34 @@
 {
+  "chartDrillDocs": {
+    "title": "店舗ダッシュボード",
+    "chart": "店舗別売上",
+    "hint": "棒を選ぶと注文を絞り込みます。矢印キーで移動し、Enter または Space で選択します。",
+    "store": "店舗",
+    "sales": "売上",
+    "east": "東店",
+    "central": "中央店",
+    "west": "西店",
+    "filter": "注文: {store}",
+    "all": "全店舗",
+    "reset": "絞り込みを解除"
+  },
+  "personaExamples": {
+    "role": "権限",
+    "admin": "管理者",
+    "editor": "編集者",
+    "lastActive": "最終アクセス",
+    "status": "状態",
+    "active": "有効",
+    "inactive": "無効",
+    "sizes": "表示サイズ",
+    "minimal": "名前のみ・双方向のラベル",
+    "dark": "画像とダーク表示",
+    "name": "アレックス・モーガン 研究開発部",
+    "you": "（あなた）",
+    "member": "メンバー",
+    "email": "メールアドレス",
+    "members": "メンバー一覧"
+  },
   "affixTouchExamples": {
     "title": "狭い入力欄とタッチ操作",
     "description": "幅200pxでも、クリアと選択ボタンの領域は文字と重なりません。タッチ領域は44px、デスクトップの間隔は変わりません。",
@@ -24,7 +54,8 @@
     "ellipsisLongTitle": "第3四半期 結合テスト 決済モジュール 請求書再発行シナリオと受入基準のレビュー",
     "ellipsisShortTitle": "ログインのスモークテスト",
     "ellipsisLongHeader": "最新の実行名（2026年9月 リリース候補）",
-    "migrateFromAntdTitle": "antd Typography から移行する"
+    "migrateFromAntdTitle": "antd Typography から移行する",
+    "editorialHeading": "探す。比べる。"
   },
   "themeShowcase": {
     "page": {
@@ -1625,6 +1656,8 @@
     }
   },
   "breadcrumbExamples": {
+    "parentsDescription": "currentItem=\"none\" はすべての祖先ページをリンクとして表示し、現在ページを示しません。レコード名を見出しに置く PageContainer では breadcrumbCurrentItem=\"none\" を指定します。省略したラベルも完全なアクセシブル名と title を持ち、ツールチップの説明は重複しません。",
+    "parentsAria": "祖先ページ",
     "ellipsisTitle": "ellipsis · 長いセグメントを 1 行に",
     "ellipsisDescription": "セグメントに ellipsis を付けるとパンくずは 1 行のまま、そのラベルを「…」で省略します。全文はホバーと、パンくずのリンクへのキーボードフォーカスでツールチップに出ます。antd の Breadcrumb に項目単位の省略はなく、形は Typography に合わせています。PageContainer の breadcrumb も同じ項目フィールドを受け付けます。",
     "ellipsisAria": "省略付きパンくずリスト",
@@ -2378,5 +2411,38 @@
     "switchUser": "デモユーザーを切り替え",
     "description": "ログイン中の名前を常に表示します。Topbar identity はバーの最大40%を確保し、TopbarItem truncate は名前だけを省略します。名前全体は title とアクセシブルなテキストに残ります。",
     "policy": "主要操作の最小サイズを維持します。極端に狭い幅では、他のスロットに scroll・clip・menu が適用され、identity は外に残ります。検索には TopbarSearch を使い、identity に labelHideBelow・hideBelow・iconHideFrom を併用しないでください。テーマ設定: --topbar-identity-max-inline-size / --topbar-identity-min-text-inline-size。"
+  },
+  "docs": {
+    "branchNavigation": {
+      "title": "支店の表示範囲",
+      "intro": "ナビゲーションで支店の表示範囲を切り替え、レコードの所属支店は別に選択するレシピです。",
+      "tokyo": "東京本社",
+      "osaka": "大阪支店",
+      "guidance": "表示範囲は URL に保存します。レコードの支店は独立した値で、必ず具体的な 1 件を指定します。「すべて」は保存できません。",
+      "record": "レコードの支店",
+      "required": "利用可能な支店を 1 件選択してください。",
+      "save": "保存",
+      "saved": "保存しました",
+      "more": "その他",
+      "scope": "表示範囲"
+    }
+  },
+  "dashboardGridDocs": {
+    "title": "事業概況",
+    "period": "2026年10月 · 9月との比較",
+    "revenue": "売上高",
+    "orders": "受注数",
+    "revenueDelta": "9月比 +8.2%",
+    "ordersDelta": "9月比 +42件",
+    "edit": "配置を編集",
+    "done": "編集を終了",
+    "hint": "Enter またはスペースでつかみます。矢印で移動、Shift + 矢印でサイズ変更、Escape で取消。確定時に一度保存します。",
+    "trend": "週別売上",
+    "channels": "チャネル別注文",
+    "channel": "チャネル",
+    "direct": "直接流入",
+    "organic": "自然検索",
+    "referral": "紹介",
+    "email": "メール"
   }
 }

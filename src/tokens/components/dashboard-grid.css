@@ -1,0 +1,14 @@
+:root {
+  /* Gap between DashboardGrid tiles, both axes (#1397). */
+  --dashboard-grid-gap: var(--space-4);
+  /* Height of one grid row; a tile's `h` is a multiple of it. */
+  --dashboard-grid-row-height: var(--space-20);
+  /* Size of the drag and resize handles in edit mode (≥24px target). */
+  --dashboard-grid-handle-size: var(--control-height);
+  /* Inset of the resize handle from the tile's bottom-end corner. */
+  --dashboard-grid-handle-inset: var(--space-1);
+  /* Corner radius of a tile; defaults to the Card radius. */
+  --dashboard-grid-item-radius: var(--card-radius);
+  /* Colour of the drop-preview ring while moving or resizing (role-mirror knob; defaults to the focus ring colour). */
+  --dashboard-grid-preview-ring-color: initial;
+}

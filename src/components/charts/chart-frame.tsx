@@ -47,6 +47,7 @@ export function useChartNumberFormat(options?: Intl.NumberFormatOptions): Intl.N
 }
 
 type ChartFrameProps = {
+  interactive?: boolean;
   /** Visible caption; also the accessible name via `aria-labelledby` → `<figcaption>`. */
   label: React.ReactNode;
   /**
@@ -87,6 +88,7 @@ type ChartFrameProps = {
  * a sibling visually-hidden list referenced by the figure's `aria-describedby`.
  */
 export function ChartFrame({
+  interactive = false,
   label,
   showCaption = true,
   description,
@@ -124,7 +126,7 @@ export function ChartFrame({
         ref={canvasRef}
         className="ui-chart-canvas"
         style={{ height }}
-        role="img"
+        role={interactive ? "group" : "img"}
         aria-label={imgSummary}
       >
         {children}

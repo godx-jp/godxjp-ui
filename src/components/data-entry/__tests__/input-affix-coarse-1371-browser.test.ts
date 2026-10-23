@@ -1,5 +1,4 @@
 import { TextEncoder as NodeTextEncoder } from "node:util";
-import { mkdirSync, writeFileSync } from "node:fs";
 import { chromium, type Browser, type Page } from "playwright";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { compileRealCss } from "./compile-real-css";
@@ -39,7 +38,6 @@ createRoot(document.getElementById('root')).render(<Demo/>);
 let browser: Browser;
 let css = "";
 let js = "";
-const measurements: unknown[] = [];
 beforeAll(async () => {
   const realm = { encoder: globalThis.TextEncoder, bytes: globalThis.Uint8Array };
   globalThis.TextEncoder = NodeTextEncoder as unknown as typeof TextEncoder;
@@ -67,13 +65,6 @@ beforeAll(async () => {
 }, 180_000);
 afterAll(async () => {
   await browser?.close();
-  if (process.env.AFFIX_EVIDENCE) {
-    mkdirSync("codex-shots", { recursive: true });
-    writeFileSync(
-      `codex-shots/${process.env.AFFIX_EVIDENCE}-geometry.json`,
-      JSON.stringify(measurements, null, 2),
-    );
-  }
 });
 async function open(coarse = true, width = 390, locale = "en", dir = "ltr", extra = "") {
   const page = await browser.newPage({ viewport: { width, height: 1050 }, hasTouch: coarse });
@@ -125,7 +116,6 @@ describe("input affixes: coarse targets and reserved text (gh#1371)", () => {
     it(`200px field: every action owns 44px without overlap (${dir})`, async () => {
       const page = await open(true, 390, "en", dir);
       const rows = await geometry(page);
-      measurements.push({ coarse: true, dir, rows });
       for (const row of rows.filter((r) => r.label && !["Select", "Combobox"].includes(r.label))) {
         expect(row.width, `${row.id}: width`).toBeGreaterThanOrEqual(44);
         expect(row.height, `${row.id}: height`).toBeGreaterThanOrEqual(44);
@@ -183,7 +173,6 @@ describe("input affixes: coarse targets and reserved text (gh#1371)", () => {
             expect(row.shadow).toBe("none");
             expect(row.background).toBe("rgba(0, 0, 0, 0)");
           }
-          measurements.push({ dir, target, size, ghost: rows });
         }
       await page.close();
     }
@@ -269,7 +258,6 @@ describe("input affixes: coarse targets and reserved text (gh#1371)", () => {
   it("fine pointer retains the 20px inline affix and 36px padding", async () => {
     const page = await open(false, 1280);
     const rows = await geometry(page);
-    measurements.push({ coarse: false, rows });
     expect(rows.find((r) => r.id === "date")!.width).toBe(20);
     expect(rows.find((r) => r.id === "date")!.height).toBe(20);
     expect(

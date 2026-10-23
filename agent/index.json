@@ -1,11 +1,11 @@
 {
   "counts": {
     "anti-ai-tells": 35,
-    "components": 169,
+    "components": 171,
     "patterns": 28,
     "rules": 44,
-    "tokens": 2241,
-    "vocabulary": 14
+    "tokens": 2263,
+    "vocabulary": 16
   },
   "design": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md",
   "files": [
@@ -16,12 +16,12 @@
     },
     {
       "file": "components-index.json",
-      "note": "53 KB — name + group + tagline for all 169. FETCH THIS FIRST, then fetch only the components you chose.",
+      "note": "54 KB — name + group + tagline for all 171. FETCH THIS FIRST, then fetch only the components you chose.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json"
     },
     {
       "file": "components/<Name>.json",
-      "note": "One file per component (1 KB–37 KB, median 6 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.3 MB blob.",
+      "note": "One file per component (1 KB–38 KB, median 6 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.3 MB blob.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/<Name>.json"
     },
     {
@@ -54,19 +54,19 @@
   "note": "Pin to the tag that matches the @godxjp/ui version you installed. A catalog newer than your package describes props you do not have; older, and it hides props you do.",
   "read": {
     "live": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json",
-    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v33.13.0/agent/index.json"
+    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v33.18.0/agent/index.json"
   },
   "source": "mcp/src/data — the same data @godxjp/ui-mcp serves — plus the foundation and semantic token tiers, read from src/tokens/*.css",
   "start": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md",
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1910,
-      "foundation": 218,
+      "component": 1930,
+      "foundation": 220,
       "semantic": 113
     },
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",
     "semantic": "named roles that follow the seeds — --ring, --text-link, --overlay-background"
   },
-  "version": "33.13.0"
+  "version": "33.18.0"
 }

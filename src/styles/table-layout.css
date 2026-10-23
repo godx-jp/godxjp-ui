@@ -280,6 +280,17 @@
     vertical-align: middle;
   }
 
+  /* ── CAPTION — the table's accessible name and its visible "what / under which conditions" line.
+   * Muted, one step under the cells, on the cells' own inline inset so it shares their text axis. */
+  [data-slot="table-caption"] {
+    caption-side: top;
+    padding-block: var(--table-caption-space-y, var(--space-2));
+    padding-inline: var(--table-cell-space-x, var(--space-section-active));
+    color: hsl(var(--table-caption-color, var(--muted-foreground)));
+    font-size: var(--table-caption-font-size, var(--font-size-sm, var(--font-size-base)));
+    text-align: start;
+  }
+
   /* ── COLUMN AXES (gh#410) — `align` / `numeric` / `wrap` on TableHead and TableCell ───────────
    * Every one of these was a `className` before, and the alignment utility the catalog recommended
    * (`text-right`) is a physical direction this package lints against everywhere else.
@@ -290,6 +301,7 @@
   :is([data-slot="table-head"], [data-slot="table-cell"])[data-numeric] {
     font-variant-numeric: tabular-nums;
     text-align: end;
+    font-family: var(--font-family-tabular, inherit);
   }
 
   :is([data-slot="table-head"], [data-slot="table-cell"])[data-align="start"] {
@@ -896,6 +908,18 @@
     table-layout: fixed;
   }
 
+  /* gh#1409 — under the fixed layout a column's width no longer comes from its content, so the
+   * grid's `nowrap` default stops protecting anything: one `ellipsis` column (or a `width`, or
+   * `scroll.x`) switched the whole table, and every OTHER body cell then painted its text across
+   * the next column with no title — measured in Chromium, a 379px Vietnamese label in a 175px
+   * cell. A cell the consumer did not mark `ellipsis` wraps instead, as antd's cells do under the
+   * same layout: nothing is cut, so nothing needs a title. The `ellipsis` cell keeps its one line. */
+  .ui-data-table-surface[data-table-layout="fixed"]
+    [data-slot="table-cell"]:not(.ui-data-table-ellipsis) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
   /* ── antd `scroll` ────────────────────────────────────────────────────
    * Both lengths are CONSUMER data, published as custom properties by the component; the geometry
    * that reads them lives here. */
@@ -1106,7 +1130,7 @@
 }
 
 @layer components {
-  /* Below `collapseBelow` the `<thead>` hides and every `<tr>` becomes a bordered key-value CARD:
+  /* Below `collapseBelow` the `<thead>` hides and every `<tr>` becomes a key-value record with a single separator:
    * each `TableCell`'s own `label` (its column header text, carried per-cell since the `<th>`
    * association is now hidden) renders inline above the value, taking over the accessible-name
    * role. */
@@ -1416,6 +1440,13 @@
       display: none;
     }
 
+    /* The table is a block now: a `table-caption` box would get an anonymous shrink-to-fit wrapper
+     * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
+    [data-collapse-below="sm"] [data-slot="table-caption"] {
+      display: block;
+      padding-inline: var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
+    }
+
     [data-collapse-below="sm"] [data-slot="table"] > tbody {
       display: block;
     }
@@ -1425,19 +1456,25 @@
       /* A stacked row is a CARD, so its height is whatever its cells need. Without this reset the
        * fixed row height from control.css still applies and the cells spill past the card edge. */
       height: auto;
-      border: var(--stroke-hairline) solid hsl(var(--border));
-      border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+      /* One boundary per record: a full card outline plus the next card
+       * outline painted two hairlines between stacked records. */
+      border: 0;
+      border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+      border-radius: 0;
       padding: var(--table-stacked-collection-card-padding-y)
-        var(--table-stacked-collection-card-padding-x);
+        var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
       margin-block-end: var(--table-stacked-collection-card-gap);
     }
 
     [data-collapse-below="sm"] .ui-table-row:last-child {
       margin-block-end: 0;
+      border-block-end-width: 0;
     }
 
     [data-collapse-below="sm"] [data-slot="table-cell"] {
       display: block;
+      /* Desktop column widths are inline styles; stacked fields fill the record. */
+      inline-size: auto !important;
       padding-block: var(--table-stacked-collection-cell-padding-y);
       /* The CARD owns the inline inset (gh#1102): a folded cell keeping the table's
        * --table-cell-space-x inside --table-stacked-collection-card-padding-x lost 32px of
@@ -1474,6 +1511,13 @@
       display: none;
     }
 
+    /* The table is a block now: a `table-caption` box would get an anonymous shrink-to-fit wrapper
+     * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
+    [data-collapse-below="md"] [data-slot="table-caption"] {
+      display: block;
+      padding-inline: var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
+    }
+
     [data-collapse-below="md"] [data-slot="table"] > tbody {
       display: block;
     }
@@ -1483,19 +1527,25 @@
       /* A stacked row is a CARD, so its height is whatever its cells need. Without this reset the
        * fixed row height from control.css still applies and the cells spill past the card edge. */
       height: auto;
-      border: var(--stroke-hairline) solid hsl(var(--border));
-      border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+      /* One boundary per record: a full card outline plus the next card
+       * outline painted two hairlines between stacked records. */
+      border: 0;
+      border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+      border-radius: 0;
       padding: var(--table-stacked-collection-card-padding-y)
-        var(--table-stacked-collection-card-padding-x);
+        var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
       margin-block-end: var(--table-stacked-collection-card-gap);
     }
 
     [data-collapse-below="md"] .ui-table-row:last-child {
       margin-block-end: 0;
+      border-block-end-width: 0;
     }
 
     [data-collapse-below="md"] [data-slot="table-cell"] {
       display: block;
+      /* Desktop column widths are inline styles; stacked fields fill the record. */
+      inline-size: auto !important;
       padding-block: var(--table-stacked-collection-cell-padding-y);
       padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
@@ -1527,6 +1577,13 @@
       display: none;
     }
 
+    /* The table is a block now: a `table-caption` box would get an anonymous shrink-to-fit wrapper
+     * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
+    [data-collapse-below="lg"] [data-slot="table-caption"] {
+      display: block;
+      padding-inline: var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
+    }
+
     [data-collapse-below="lg"] [data-slot="table"] > tbody {
       display: block;
     }
@@ -1536,19 +1593,25 @@
       /* A stacked row is a CARD, so its height is whatever its cells need. Without this reset the
        * fixed row height from control.css still applies and the cells spill past the card edge. */
       height: auto;
-      border: var(--stroke-hairline) solid hsl(var(--border));
-      border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+      /* One boundary per record: a full card outline plus the next card
+       * outline painted two hairlines between stacked records. */
+      border: 0;
+      border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+      border-radius: 0;
       padding: var(--table-stacked-collection-card-padding-y)
-        var(--table-stacked-collection-card-padding-x);
+        var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
       margin-block-end: var(--table-stacked-collection-card-gap);
     }
 
     [data-collapse-below="lg"] .ui-table-row:last-child {
       margin-block-end: 0;
+      border-block-end-width: 0;
     }
 
     [data-collapse-below="lg"] [data-slot="table-cell"] {
       display: block;
+      /* Desktop column widths are inline styles; stacked fields fill the record. */
+      inline-size: auto !important;
       padding-block: var(--table-stacked-collection-cell-padding-y);
       padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;
@@ -1580,6 +1643,13 @@
       display: none;
     }
 
+    /* The table is a block now: a `table-caption` box would get an anonymous shrink-to-fit wrapper
+     * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
+    [data-collapse-below="xl"] [data-slot="table-caption"] {
+      display: block;
+      padding-inline: var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
+    }
+
     [data-collapse-below="xl"] [data-slot="table"] > tbody {
       display: block;
     }
@@ -1589,19 +1659,25 @@
       /* A stacked row is a CARD, so its height is whatever its cells need. Without this reset the
        * fixed row height from control.css still applies and the cells spill past the card edge. */
       height: auto;
-      border: var(--stroke-hairline) solid hsl(var(--border));
-      border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+      /* One boundary per record: a full card outline plus the next card
+       * outline painted two hairlines between stacked records. */
+      border: 0;
+      border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+      border-radius: 0;
       padding: var(--table-stacked-collection-card-padding-y)
-        var(--table-stacked-collection-card-padding-x);
+        var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
       margin-block-end: var(--table-stacked-collection-card-gap);
     }
 
     [data-collapse-below="xl"] .ui-table-row:last-child {
       margin-block-end: 0;
+      border-block-end-width: 0;
     }
 
     [data-collapse-below="xl"] [data-slot="table-cell"] {
       display: block;
+      /* Desktop column widths are inline styles; stacked fields fill the record. */
+      inline-size: auto !important;
       padding-block: var(--table-stacked-collection-cell-padding-y);
       padding-inline: var(--table-stacked-collection-cell-padding-x);
       white-space: normal;

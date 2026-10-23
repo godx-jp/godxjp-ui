@@ -138,12 +138,12 @@ describe("DataTable ellipsis keeps truncated text reachable (gh#1262)", { timeou
     await page.close();
   });
 
-  it("a cell that fits gets neither", async () => {
+  it("a cell that fits keeps text recovery without a tab stop", async () => {
     const page = await open();
     expect(await cell(page, "short")).toMatchObject({
       truncated: false,
       tabindex: null,
-      title: null,
+      title: "OK",
     });
     await page.close();
   });
@@ -185,7 +185,7 @@ describe("DataTable ellipsis keeps truncated text reachable (gh#1262)", { timeou
     await page.close();
   });
 
-  it("a cell that stops being truncated loses the title it was given and its tab stop", async () => {
+  it("a cell that stops being truncated keeps full text recovery and loses its tab stop", async () => {
     const page = await open();
     await page.evaluate(() => (window as unknown as { __widen: () => void }).__widen());
     await page.waitForFunction(
@@ -197,7 +197,7 @@ describe("DataTable ellipsis keeps truncated text reachable (gh#1262)", { timeou
     expect(await cell(page, "subject")).toMatchObject({
       truncated: false,
       tabindex: null,
-      title: null,
+      title: "A very long issue subject that cannot possibly fit in a narrow column",
     });
     await page.close();
   });

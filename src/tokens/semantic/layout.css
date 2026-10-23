@@ -359,9 +359,12 @@
 /* Dark arm of the recessed-surface role (gh#399). Stated per theme, exactly like the surface roles
  * in foundation.css, because "one step behind the card" is not the same expression on both spines.
  * `.dark` stays an equal alias of the `data-theme` axis, matching foundation.css. */
-.dark,
-:root[data-theme="dark"] {
-  --surface-recessed: hsl(var(--background));
+/* Paper uses the existing light declarations; no second colour table (gh#1416). */
+@media not print {
+  .dark,
+  :root[data-theme="dark"] {
+    --surface-recessed: hsl(var(--background));
+  }
 }
 
 /* Canonical admin collection composition. Services may retune these semantic knobs once. */

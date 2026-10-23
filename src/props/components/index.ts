@@ -65,6 +65,7 @@ export type {
   QrCodeProp,
 } from "./data-display.prop";
 export type {
+  ChartDatumSelect,
   ChartDatum,
   ChartSeriesProp,
   LineChartProp,

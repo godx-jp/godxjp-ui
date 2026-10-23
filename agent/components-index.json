@@ -72,7 +72,7 @@
   {
     "group": "layout",
     "name": "AppShell",
-    "tagline": "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width)."
+    "tagline": "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. In print, navigation, topbar, breadcrumb and footer are hidden; main content flows across the paper width on the light --background. Put every consumer-authored dark theme override inside @media not print, with light declarations outside it, matching the package themes. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width)."
   },
   {
     "absorbed": [
@@ -215,7 +215,7 @@
   {
     "group": "data-display",
     "name": "Card",
-    "tagline": "Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab TOOL strip inside the card (composer or editor tools) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. List FILTERS (search, filter selects, filter chips) are NOT a CardBar: CardBar's main slot scrolls sideways, and a filter strip never does — they go in a FilterBar ABOVE the card, which wraps (cardinal rule #51, pattern `list-filters`)."
+    "tagline": "Surface container that requests break-inside: avoid in print, with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab TOOL strip inside the card (composer or editor tools) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. List FILTERS (search, filter selects, filter chips) are NOT a CardBar: CardBar's main slot scrolls sideways, and a filter strip never does — they go in a FilterBar ABOVE the card, which wraps (cardinal rule #51, pattern `list-filters`)."
   },
   {
     "group": "data-display",
@@ -262,6 +262,11 @@
     "group": "data-display",
     "name": "FeatureList",
     "tagline": "A list of STATEMENTS, each with a leading state glyph (included ✓ / limited − / excluded ✗), an optional wrapping description, and the glyph aligned to the first text line."
+  },
+  {
+    "group": "data-display",
+    "name": "Persona",
+    "tagline": "Compact person identity: fixed avatar, independently truncated name and muted secondary line, optional inline badge."
   },
   {
     "group": "data-display",
@@ -493,7 +498,7 @@
   {
     "group": "navigation",
     "name": "Pagination",
-    "tagline": "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout."
+    "tagline": "Offset/page-based pagination bar. Its container owns the inset: no outer inline padding, including inside CardContent, CardFooter or PageContainer footer. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout."
   },
   {
     "group": "navigation",
@@ -770,6 +775,12 @@
     "group": "data-entry",
     "name": "EmojiPicker",
     "tagline": "Page icon / reaction picker in a Popover (gh#1164): search by the active language's CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and \"remove icon\". No skin tones.",
+    "tier": "lab"
+  },
+  {
+    "group": "layout",
+    "name": "DashboardGrid",
+    "tagline": "BI widget layout editor with deterministic push-down collisions and vertical compaction. Static CSS grid in view mode; temporary pointer/touch/keyboard previews commit once on drop.",
     "tier": "lab"
   },
   {

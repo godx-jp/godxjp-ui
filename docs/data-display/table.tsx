@@ -8,12 +8,12 @@ import {
   ListRow,
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
-import { Text } from "@godxjp/ui/general";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -41,11 +41,9 @@ export default function Demo() {
           </CardHeader>
           <CardContent flush>
             <Table>
-              <caption className="text-start" style={{ padding: "var(--space-2) var(--space-4)" }}>
-                <Text size="xs" tone="muted">
-                  2026年5月 売上計上（税込）
-                </Text>
-              </caption>
+              {/* The caption names the table AND states its scope (gh#1418) — first child, muted,
+                  on the cells' own inline inset. */}
+              <TableCaption>2026年5月 売上計上（税込）</TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead>勘定科目</TableHead>

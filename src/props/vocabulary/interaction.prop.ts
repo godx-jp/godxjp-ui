@@ -93,6 +93,13 @@ export type FontWeightProp = "regular" | "medium" | "semibold" | "bold";
 /** Heading level — drives both the `--heading-h*` size token and the semantic `<h1..h4>` element. */
 export type HeadingLevelProp = 1 | 2 | 3 | 4;
 
+/**
+ * Which heading face — `display` (default: --font-family-display, every heading) or `editorial`
+ * (--font-family-editorial: an opt-in magazine/serif face for a hero or a public page section,
+ * falling back to the display face until a theme names one).
+ */
+export type HeadingFamilyProp = "display" | "editorial";
+
 /** Inline text alignment (logical, RTL-safe). */
 export type TextAlignProp = "start" | "center" | "end";
 

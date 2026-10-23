@@ -29,6 +29,7 @@
  * family derive from the `--primary` in scope (gh#678), and `--brand` is an independent identity
  * role (gh#250). Nothing here restates a formula.
  */
+import { readCssBlock } from "./read-css-block.mjs";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -91,10 +92,14 @@ if (!hex || !/^#[\da-f]{6}$/i.test(hex)) {
 /* ── what the STYLESHEETS say, read here because only this side has a filesystem ───────────── */
 const foundation = readFileSync(join(ROOT, "src/tokens/foundation.css"), "utf8");
 const blockOf = (selector) => {
-  const at = foundation.indexOf(selector);
+  const pattern = selector
+    .split(/\s+/)
+    .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("\\s+");
+  const at = foundation.search(new RegExp(pattern));
   if (at === -1) throw new Error(`gen-brand: selector not found in foundation.css: ${selector}`);
   const open = foundation.indexOf("{", at);
-  return foundation.slice(open + 1, foundation.indexOf("\n}", open));
+  return readCssBlock(foundation, open);
 };
 const roleOf = (body, role) => {
   const m = new RegExp(`^\\s*--${role}:\\s*([\\d.]+\\s+[\\d.]+%\\s+[\\d.]+%)\\s*;`, "m").exec(body);
@@ -103,7 +108,7 @@ const roleOf = (body, role) => {
 };
 
 const derived = readFileSync(join(ROOT, "src/tokens/derived.css"), "utf8");
-const derivedLight = derived.slice(derived.indexOf(":root {"), derived.indexOf("\n.dark,"));
+const derivedLight = derived.slice(derived.indexOf(":root {"), derived.search(/\n\s*\.dark,/));
 const step = (pair) => channelsOf(`primary-${pair}`, derivedLight);
 
 const brand = deriveBrand({

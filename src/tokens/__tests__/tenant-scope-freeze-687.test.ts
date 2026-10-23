@@ -93,8 +93,10 @@ describe("the brand text roles derive from the --primary in scope (gh#664)", () 
   });
 
   it.each(BRAND_TEXT)("declares --%s-channels in BOTH themes", (name) => {
-    const light = derived.slice(derived.indexOf(":root {"), derived.indexOf("\n.dark,"));
-    const dark = derived.slice(derived.indexOf("\n.dark,"));
+    const darkStart = derived.search(/\n\s*\.dark,/);
+    expect(darkStart).toBeGreaterThan(derived.indexOf(":root {"));
+    const light = derived.slice(derived.indexOf(":root {"), darkStart);
+    const dark = derived.slice(darkStart);
     expect(light).toMatch(new RegExp(`--${name}-channels:`));
     expect(dark).toMatch(new RegExp(`--${name}-channels:`));
   });

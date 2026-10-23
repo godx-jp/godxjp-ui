@@ -69,6 +69,7 @@
    * its own; `font-variant-numeric` inherits. */
   [data-slot="badge"][data-tabular] {
     font-variant-numeric: tabular-nums;
+    font-family: var(--font-family-tabular, inherit);
   }
 
   [data-slot="badge"][data-tinted] {

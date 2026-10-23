@@ -5,6 +5,11 @@
   "name": "PieChart",
   "props": [
     {
+      "description": "Opt-in pointer and Enter/Space selection. seriesKey is dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      "name": "onDatumSelect",
+      "type": "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void"
+    },
+    {
       "description": "Row data: one slice per row.",
       "name": "data",
       "required": true,
@@ -85,6 +90,7 @@
   "rules": [],
   "tagline": "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
   "usage": [
+    "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
     "DO import from the charts entry: `import { PieChart } from \"@godxjp/ui/charts\";` (recharts optional peer required).",
     "DO import only the chart a screen uses — `import { PieChart } from \"@godxjp/ui/charts/pie-chart\";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.",
     "DO keep slices few (≈2–6) — pies are unreadable past a handful; use BarChart for many categories.",

@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [33.13.0] - 2026-10-23
+## [33.18.0] - 2026-10-24
 
 ### Added
 
@@ -48,6 +48,147 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Mermaid reads the theme per diagram.** The theme was fixed by `data-theme` on the first diagram
   of the page; a diagram drawn after switching to dark is now dark (already drawn diagrams are not
   redrawn).
+
+## [33.17.0] - 2026-10-24
+
+### Fixed
+
+- Complete light-paper printing across shipped brand, logo and service-theme dark overrides; remove the recessed AppShell background band in print.
+- Parse generator CSS blocks with balanced braces while ignoring comments and quoted strings, preserving generated output.
+
+### Added
+
+- Print presentation: existing light token values apply on paper even in dark mode, AppShell chrome is hidden and main content flows at full width; Cards avoid page breaks when possible (#1416).
+
+- `TableCaption` — the table's `<caption>`: its accessible name and visible scope line, as the first child of `<Table>`. Knobs `--table-caption-{color,font-size,space-y}` (all `initial`; defaults `--muted-foreground` · `--font-size-sm` · `--space-2`), above the rows; a `stacked-record-collection` keeps it a full-width line when the rows fold (#1418).
+- `--font-family-tabular` — opt-in figures face read by `Text tabular`, `Badge tabular` and numeric `TableHead`/`TableCell`. `initial` = inherit, so nothing changes until a theme names a face (#1419).
+- `Heading family="editorial"` + `--font-family-editorial` — an opt-in editorial (serif) face for a public page's hero and section headings; the `PageContainer headerScale="display"` title reads the same token. Falls back to `--font-family-display`, so it is inert by default (#1420).
+- `--dialog-radius` — the Dialog panel corner as its own knob; default unchanged (`--radius-lg` → `--radius`) (#1421).
+
+### Fixed
+
+- Dialog centres within the viewport in RTL as well as LTR; symmetric logical insets replace the direction-dependent anchor.
+- `--dialog-radius` now honours an explicit override on phones as well as desktop; the square mobile default is unchanged.
+- Stacked `TableCaption` follows the record inset token, preserving its text keyline when a service changes the stacked-card padding. Published `HeadingFamilyProp` in the MCP vocabulary and translated the editorial-heading example for en/ja/vi.
+
+- `useMediaQuery` / `useIsMobile` are hydration-safe: built on `useSyncExternalStore` with a `false` server snapshot, so SSR hydration no longer mismatches — `AppShell` published `data-navigation="docked"` from the server and `"drawer"` on a phone's hydration render, an attribute mismatch React does not patch up (#1417).
+- `Topbar start` ending in a control (e.g. the brand, then `TopbarSearch`) no longer clips that cell: the text-truncation rule skips `.ui-topbar-search`, and such a cluster is floored at its content instead of one cell, so a bar that does not fit reaches its `overflow` mode (scroll/menu) rather than cutting the folded search trigger (48px → 21px at 390) (#1422).
+
+## [33.16.0] - 2026-10-23
+
+### Added
+
+- Charts: `onDatumSelect(datum, { seriesKey, index })` on BarChart, LineChart, AreaChart, PieChart and HeatmapChart for pointer and keyboard dashboard drill-through (#1398). Interactive marks have localized names, roving arrow navigation and the shared brand focus ring; charts without a handler retain their behavior. Added a store-to-table dashboard recipe.
+- Lab `DashboardGrid` (#1397): responsive static grid and transactional pointer/touch/keyboard editing, deterministic push-down collisions and vertical compaction, RTL, ja/en/vi announcements. Inset header grips and hover/focus resize corners keep view/edit content fixed; single-column tiles use natural heights. The BI example combines compact metrics, a BarChart and DataTable. Owner-approved C7 exception (2026-10-23); promotion requires ≥2 importing repos.
+- Dashboard grid gap, row-height, handle-size/inset, item-radius and role-mirror preview-ring-color tokens.
+
+### Fixed
+
+- Stacked record collections now default to zero inter-record gap, preserving a single separator and the themeable gap token (#1414).
+- Explicitly keep Pagination free of outer inline padding so Card, CardFooter and page containers own its keyline; internal item spacing is unchanged (#1415).
+
+## [33.15.0] - 2026-10-23
+
+### Changed
+
+- **Upload `variant="dropzone"` is named by its visible hint (#1412, WCAG 2.5.3 Label in Name).**
+  The drop area was `role="button"` with `aria-label` 「ファイルをアップロード」 / "Upload files" /
+  「Tải file lên」, a string shown nowhere on screen; its accessible name is now the hint paragraph
+  it displays (「ここにドラッグ＆ドロップ、またはクリックして選択」), after a FormField label as before
+  (gh#1288), and a caller's own `aria-label` still replaces it. **Tests that query the dropzone by
+  the old name must query the hint or pass their own `aria-label`.** The unused
+  `dataEntry.upload.dropzoneLabel` message is removed.
+
+### Fixed
+
+- **DataTable: under the fixed table layout, an unmarked body cell wraps inside its column instead
+  of painting over the next one (#1409, gino-cloud).** One `ellipsis` column (or a `width`, or
+  `scroll.x`) switches the whole table to `table-layout: fixed`; every other cell kept the grid's
+  `nowrap` with visible overflow and no title. Measured in Chromium (700px table, vi): 379 / 175 and
+  326 / 175 px → 175 / 175, `white-space: normal`. The `ellipsis` cell keeps its one line, title
+  and tab stop; an auto-layout table keeps `nowrap`.
+- DataTable `preset="action-collection"` docs: the column-priority percentages apply at every
+  width, and `collapseBelow` switches them to the compact tier — the catalog said they applied only
+  below `collapseBelow` (#1408). Docs only; behaviour unchanged (gh#253).
+
+## [33.14.0] - 2026-10-23
+
+### Added
+
+- Persona: compact sm/md identity with a fixed avatar, independently titled bidi-safe name and secondary line, and an optional name-line badge; members-table docs (#1405).
+- Persona theme knobs for avatar/label/badge gaps, label typography and scoped role colors (#1405).
+
+### Fixed
+
+- DataTable stacked records use one separator between rows instead of adjacent card outlines.
+
+- DataTable ellipsis now recovers custom-rendered full text before measurement, including stacked cells, and avoids duplicating a renderer-owned title or tooltip (#1406).
+
+## [33.13.0] - 2026-10-23
+
+### Added
+
+- Breadcrumb `currentItem="none"` and PageContainer `breadcrumbCurrentItem="none"` for linked ancestor-only trails; the default remains `"last"` (#1391).
+- BranchScopePicker: `selectionMode="single"`, `allowAll`, and `hideWhenSingle` for all/one-branch navigation and concrete record fields (#1389). Existing multiple-branch editing stays the default.
+- Sidebar and MobileShell More recipes with URL-owned viewing scope and independent, validated record branch state. No new shell component or router dependency.
+- **`visual-audit` runs on a `playwright-core` + Chrome the app already has (#1390).** New flags
+  `--playwright-module /abs/path/playwright-core` (a package dir or entry file exporting
+  `chromium`) and `--executable-path <chrome>` (passed to `chromium.launch`, over
+  `PLAYWRIGHT_CHROMIUM_EXECUTABLE`). Without the flag the engine is the `playwright` peer, then
+  `playwright-core`, looked up from the package and from the cwd. A bad explicit path is an error,
+  never a fallback, and the "nothing found" bootstrap error lists every place it looked.
+
+### Fixed
+
+- Truncated breadcrumb labels expose their full accessible name and title without a duplicate tooltip description in both trails. C01 explicitly validates the kit recovery pattern and still reports unrecoverable clipping (#1393).
+- Stacked DataTable/Table rows share the Card heading keyline at every density and in RTL
+  (#1394). The default inset resolves the live `--card-space-inset` minus the row border;
+  `--table-stacked-collection-card-padding-x` remains an independent override.
+- Calendar columns shrink inside narrow containers without reducing date targets below 24px;
+  desktop columns and embedded full-width calendars retain their sizing (#1383).
+- NumberInput fine-pointer hit areas centre correctly in RTL. The step-target gate measures
+  intersection on both axes for the horizontal 44px coarse targets and pins the intended
+  24×15 desktop paint of the 36px control band (#1383).
+
+## [33.12.8] - 2026-10-23
+
+### Fixed
+
+- **A Dialog or Sheet exposes one 「閉じる」, not two (#1401).** React Aria's `Modal` renders a
+  visually hidden `DismissButton` beside every dismissable dialog (the default `Dialog`, every
+  `Sheet`); next to the visible ✕ that was the same action under the same name, announced twice
+  (gino-cloud: `button · 閉じる · page` + `button · 閉じる · dialog`; Chromium count 2 → 1 for both
+  Dialog and Sheet). With the ✕ rendered, the hidden twin is `display: none`; with
+  `showCloseButton={false}` it stays, so a screen-reader user who cannot press Escape keeps a way
+  out. Escape and backdrop dismissal are unchanged.
+- **The DatePicker calendar dialog is named after its field (#1400).** It was always
+  「カレンダーを開く」 / 「Mở lịch」, so every day button was announced as being in a dialog that said
+  nothing about which date it set. The dialog now takes the FormField label (or the caller's
+  `aria-labelledby` / `aria-label`), then `triggerLabel`, then the old default.
+
+### Changed
+
+- **An unselected plain `Select` shows the catalogue placeholder (#1399).** Only the `showSearch`
+  branch defaulted to 「選択…」 / 「Chọn…」; without it the trigger was empty — just the chevron
+  (gino-cloud: 320px triggers with no text on a create form, 「選択…」 on the filter bar of the same
+  app). Both branches now show the same default. It is display only: an unlabelled trigger is still
+  named only by a placeholder you pass (gh#643), never by the generic default.
+
+## [33.12.7] - 2026-10-23
+
+### Fixed
+
+- **`TimelineGrid` never cuts a block's text through the glyphs (#1395).** The block always stacked
+  time → title → description in a clipped flex column, so a 60-minute block shrank the title to
+  11.3px of a 16.7px line (the bottom of every letter cut, Vietnamese marks included) and a 15/30
+  minute block cut its time line and hid the title entirely. The block now picks its shape from its
+  drawn length (`data-layout`): `compact` (one line, no block padding) and `single` (one line —
+  title first, truncated, then the start time) for short blocks; `stacked` for tall ones — title
+  first, clamped by whole lines (`--timeline-grid-event-title-lines`), time below, the description
+  only when a line is left. Measured after: 0 of 8 text boxes cut at 1440 and 390 px (15/30/60/120
+  min). The full name ("title, 16:00–17:00, description") is the block's tooltip and, when
+  `onEventSelect` makes it a button, its accessible name; one-line blocks keep the end time for
+  screen readers.
 
 ## [33.12.6] - 2026-10-23
 

@@ -11,6 +11,116 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--dashboard-grid-gap",
+    category: "component",
+    tier: "component",
+    role: "Gap between tracks; var(--space-4).",
+  },
+  {
+    name: "--dashboard-grid-row-height",
+    category: "component",
+    tier: "component",
+    role: "Row track size; var(--space-20), overridden per instance by rowHeight.",
+  },
+  {
+    name: "--dashboard-grid-handle-size",
+    category: "component",
+    tier: "component",
+    role: "Move and resize handle size; var(--control-height), 24px floor.",
+  },
+  {
+    name: "--dashboard-grid-handle-inset",
+    category: "component",
+    tier: "component",
+    role: "Edit handle edge inset; var(--space-1).",
+  },
+  {
+    name: "--dashboard-grid-item-radius",
+    category: "component",
+    tier: "component",
+    role: "Tile radius; var(--card-radius).",
+  },
+  {
+    name: "--dashboard-grid-preview-ring-color",
+    category: "component",
+    tier: "component",
+    role: "Role-mirror preview outline; initial, resolves --ring at the call site.",
+  },
+
+  {
+    name: "--persona-avatar-gap",
+    category: "component",
+    tier: "component",
+    role: "Avatar-to-label gap, default var(--space-2).",
+  },
+  {
+    name: "--persona-label-gap",
+    category: "component",
+    tier: "component",
+    role: "Gap between name and secondary line, default 0.",
+  },
+  {
+    name: "--persona-trailing-gap",
+    category: "component",
+    tier: "component",
+    role: "Name-to-badge gap, default var(--space-1).",
+  },
+  {
+    name: "--persona-label-line-height",
+    category: "component",
+    tier: "component",
+    role: "Label line height, default 1.5.",
+  },
+  {
+    name: "--persona-name-font-size",
+    category: "component",
+    tier: "component",
+    role: "Name size md, default var(--font-size-sm).",
+  },
+  {
+    name: "--persona-name-font-size-sm",
+    category: "component",
+    tier: "component",
+    role: "Name size sm, default var(--font-size-xs).",
+  },
+  {
+    name: "--persona-name-font-weight",
+    category: "component",
+    tier: "component",
+    role: "Name weight, default var(--font-weight-medium).",
+  },
+  {
+    name: "--persona-description-font-size",
+    category: "component",
+    tier: "component",
+    role: "Secondary size, default var(--font-size-xs).",
+  },
+  {
+    name: "--persona-name-color",
+    category: "component",
+    tier: "component",
+    role: "Role mirror initial, default hsl(var(--foreground)) at call site.",
+  },
+  {
+    name: "--persona-description-color",
+    category: "component",
+    tier: "component",
+    role: "Role mirror initial, default hsl(var(--muted-foreground)) at call site.",
+  },
+
+  {
+    name: "--table-stacked-collection-card-gap",
+    tier: "component",
+    category: "component",
+    role: "Stacked Table/DataTable inter-record gap. Defaults to 0 for a continuous list with exactly one separator between records; themes may explicitly override this existing knob.",
+  },
+  {
+    name: "--table-stacked-collection-card-padding-x",
+    category: "component",
+    tier: "component",
+    role: "Stacked Table/DataTable row inset. Declared initial; resolves at the row to var(--card-space-inset), aligning the separator-only row content with CardTitle across density and RTL. Scoped Card inset changes remain live; an explicit stacked token overrides row padding independently (#1394).",
+  },
+  {
     name: "--wa-*",
     category: "primitive",
     tier: "primitive",
@@ -81,6 +191,18 @@ export const TOKENS: TokenEntry[] = [
     category: "primitive",
     tier: "primitive",
     role: "Raw typography scale. `--font-size-display` is the BASE KNOB of the display ramp (`3xl`/`4xl`/`5xl` derive from it), so one declaration moves a marketing hero AND the two steps under it — never restate `--font-size-5xl`. It takes any length expression, so a FLUID hero is `--font-size-display: clamp(2.125rem, 4vw, 3.5rem)`; pinned at a single rem it paints the desktop size on a phone (measured: 56px at a 390 viewport where the brand scale said 34px). Pair with `--font-family-display`, and for a CJK product do NOT put a Latin-only face first in that stack — the browser falls through per glyph so it LOOKS fine, while the Latin inside a Japanese headline silently renders in a different face than the headline. Keep the CJK face as the display family and opt into the Latin face per element (eyebrow, price, code).",
+  },
+  {
+    name: "--font-family-editorial",
+    category: "semantic",
+    tier: "semantic",
+    role: 'The opt-in EDITORIAL face — a magazine/serif family for a public page\'s hero and section headings beside a sans UI. Read by `<Heading family="editorial">` and by the PageContainer `headerScale="display"` title; `initial`, so both fall back to --font-family-display until a theme names a face. Prefer it to re-pointing --font-family-display, which re-faces every heading in the product.',
+  },
+  {
+    name: "--font-family-tabular",
+    category: "semantic",
+    tier: "semantic",
+    role: "The opt-in FIGURES face for tabular numbers — `Text tabular`, `Badge tabular` and numeric TableHead/TableCell. A brand that sets prices in a figure face (e.g. DM Sans) beside a CJK UI face names it here once. `initial` = the declaration inherits, so figures keep the surrounding family until a theme sets it. Cut the figure face to digits/signs/currency with unicode-range if it lacks the UI's letters (a Latin word must not mix two faces).",
   },
   {
     name: "--font-sans-base",
@@ -550,6 +672,12 @@ export const TOKENS: TokenEntry[] = [
   },
   { name: "--table-*", category: "component", tier: "component", role: "Table row/cell sizing." },
   {
+    name: "--table-caption-{color,font-size,space-y}",
+    category: "component",
+    tier: "component",
+    role: "TableCaption — the table's accessible name and visible scope line (`<TableCaption>` as the first child of `<Table>`). It sits above the rows (HTML's own caption side). All three are `initial` with the default at the call site: ink --muted-foreground (HSL components), size --font-size-sm, block inset --space-2; the inline inset follows --table-cell-space-x on desktop and --table-stacked-collection-card-padding-x (fallback --card-space-inset) when stacked, so the caption shares the rows' text axis.",
+  },
+  {
     name: "--table-pagination-padding-{y,x}",
     category: "component",
     tier: "component",
@@ -584,6 +712,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "TranslatableInput / TranslatableTextarea: size of the error mark on a locale tab that carries an error (the mark is a glyph + screen-reader text, never colour alone). Default 12px (--icon-size-xs).",
+  },
+  {
+    name: "--dialog-radius",
+    category: "component",
+    tier: "component",
+    role: "Explicit overrides apply at every viewport width; the unset mobile default remains square. Corner of the Dialog panel. `initial`: square below 640px, --radius-lg → --radius above it, resolved at the call site. A brand whose dialogs are rounder than its cards and controls (cards 8px, dialogs 16px) sets it once instead of moving --radius for every control.",
   },
   {
     name: "--dialog-* / --alert-* / --skeleton-*",

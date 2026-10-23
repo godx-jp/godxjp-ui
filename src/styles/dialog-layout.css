@@ -91,7 +91,9 @@
 
   [data-slot="dialog-content"] {
     position: fixed;
-    inset-inline-start: 50%;
+    /* Symmetric logical insets centre the panel in either writing direction. */
+    inset-inline: 0;
+    margin-inline: auto;
     top: 50%;
     z-index: var(--overlay-z-index);
     /* A COLUMN CAPPED TO THE VIEWPORT (gh#1242). `dialog-body` caps itself at `min(60vh, 32rem)`,
@@ -112,7 +114,7 @@
      * of the zoom/fade without a utility class a theme could not reach (gh#1178). */
     --tw-animation-duration: var(--dialog-motion-duration, var(--duration-fast));
     max-width: none;
-    transform: translate(-50%, -50%);
+    transform: translateY(-50%);
     gap: var(--dialog-space-gap);
     border: var(--stroke-hairline) solid hsl(var(--border));
     /* A KNOB, NOT A HARD-CODED ROLE (gh#880 item 4). `hsl(var(--background))` here was one of the
@@ -121,6 +123,8 @@
      * A whole colour in the knob can be `rgb(255 255 255 / .12)`. The default resolves HERE, so a
      * scoped theme's `--background` is the one that arrives (docs/TOKEN-RESOLUTION.md §3). */
     background-color: var(--dialog-surface-background, hsl(var(--background)));
+    /* Keep square mobile panels by default; an explicit corner knob applies at every width. */
+    border-radius: var(--dialog-radius, 0px);
     /* THE INK HAS TO BE DECLARED HERE, not inherited (gh#877).
      *
      * This surface paints `--background` and, until now, took its text colour from whatever it
@@ -140,7 +144,7 @@
 
   @media (min-width: 640px) {
     [data-slot="dialog-content"] {
-      border-radius: var(--radius-lg, var(--radius));
+      border-radius: var(--dialog-radius, var(--radius-lg, var(--radius)));
     }
   }
 
@@ -288,6 +292,18 @@
 
   .ui-dialog-close:hover {
     opacity: 1;
+  }
+
+  /* gino VD-298 — one 「閉じる」 per modal, not two. React Aria's `Modal` renders a visually hidden
+   * `DismissButton` beside the dialog whenever the overlay is dismissable (the default Dialog and
+   * every Sheet), for screen-reader users who cannot press Escape. When the visible ✕ is there it
+   * is the same action under the same name, so a screen reader met 「閉じる」 twice. With the ✕
+   * present, the hidden twin leaves the accessibility tree; with `showCloseButton={false}` it
+   * stays, so that user still has a way out. Escape and backdrop clicks are untouched — they do
+   * not go through that button. `.ui-overlay-modal` is the `Modal` element (dialog.tsx,
+   * sheet.tsx), whose only children are that button's wrapper and the dialog section. */
+  .ui-overlay-modal:has(> section > :is(.ui-dialog-close, .ui-sheet-close)) > :not(section) {
+    display: none;
   }
 
   [data-slot="dialog-title"] {

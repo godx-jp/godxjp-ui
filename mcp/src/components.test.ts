@@ -245,3 +245,38 @@ it("documents an optional AppShell sidebar without reserving empty navigation", 
   expect(sidebar?.required).not.toBe(true);
   expect(sidebar?.description).toContain("grid track");
 });
+
+describe("ancestor-only breadcrumb API (#1391 / #1393)", () => {
+  it.each([
+    ["Breadcrumb", "currentItem"],
+    ["PageContainer", "breadcrumbCurrentItem"],
+  ])("%s documents the mode and full-name recovery", async (name, prop) => {
+    const out = await dispatchTool("get_component", { name });
+    expect(out).toContain(prop);
+    expect(out).toContain("BreadcrumbCurrentItemProp");
+    expect(out).toContain("none");
+    expect(out).toContain("aria-label");
+    expect(out).toContain("title");
+  });
+});
+
+describe("DashboardGrid lab admission (#1397)", () => {
+  it("round-trips the approved exception and transactional API", async () => {
+    const component = COMPONENTS.find((entry) => entry.name === "DashboardGrid")!;
+    expect(component.tier).toBe("lab");
+    expect(component.importPath).toBe("@godxjp/ui/lab");
+    expect(component.usage!.join(" ")).toContain(
+      "C7 exception approved by the owner, BI precedents (Tableau/Power BI/Grafana/react-grid-layout)",
+    );
+    const out = await dispatchTool("get_component", { name: "DashboardGrid", verbose: true });
+    for (const prop of [
+      "layout",
+      "defaultLayout",
+      "onLayoutChange",
+      "columns",
+      "rowHeight",
+      "editable",
+    ])
+      expect(out).toContain(prop);
+  });
+});

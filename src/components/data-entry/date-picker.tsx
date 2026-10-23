@@ -757,9 +757,20 @@ export function DatePicker(props: DatePickerProp) {
     <PopoverContent
       id={dialogId}
       role="dialog"
+      // Named after the FIELD (gino VD-328): every day button inside is announced as being in this
+      // dialog, so 「カレンダーを開く」 on all of them said nothing about which date it sets. The
+      // field label first, then a caller `aria-label`, then `triggerLabel` (gh#551), then the
+      // catalogue default.
+      aria-labelledby={fieldA11y["aria-labelledby"]}
       aria-label={
-        (isPeriod ? t("dataEntry.monthPicker.openGrid") : t("dataEntry.datePicker.openCalendar")) ??
-        "Calendar"
+        fieldA11y["aria-labelledby"] !== undefined
+          ? undefined
+          : ((ariaProps["aria-label"] as string | undefined) ??
+            triggerLabel ??
+            (isPeriod
+              ? t("dataEntry.monthPicker.openGrid")
+              : t("dataEntry.datePicker.openCalendar")) ??
+            "Calendar")
       }
       className={isPeriod ? "ui-month-picker-panel" : "ui-control-panel-flush"}
       side={placement.startsWith("top") ? "top" : "bottom"}

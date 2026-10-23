@@ -1,4 +1,34 @@
 {
+  "chartDrillDocs": {
+    "title": "Store dashboard",
+    "chart": "Sales by store",
+    "hint": "Select a bar to filter orders. Use arrow keys to move and Enter or Space to select.",
+    "store": "Store",
+    "sales": "Sales",
+    "east": "East store",
+    "central": "Central store",
+    "west": "West store",
+    "filter": "Orders: {store}",
+    "all": "All stores",
+    "reset": "Clear filter"
+  },
+  "personaExamples": {
+    "role": "Role",
+    "admin": "Administrator",
+    "editor": "Editor",
+    "lastActive": "Last active",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "sizes": "Identity sizes",
+    "minimal": "Name only and bidirectional labels",
+    "dark": "Image and dark surface",
+    "name": "Alex Morgan, Research and Development",
+    "you": "(you)",
+    "member": "Member",
+    "email": "Email address",
+    "members": "Members"
+  },
   "affixTouchExamples": {
     "title": "Narrow field · touch actions",
     "description": "At 200px, clear and picker actions reserve their own text space. Touch targets are 44px; desktop spacing stays compact.",
@@ -24,7 +54,8 @@
     "ellipsisLongTitle": "Q3 integration test · payment module · invoice re-issue scenarios and acceptance criteria review",
     "ellipsisShortTitle": "Login smoke test",
     "ellipsisLongHeader": "Latest run name (release candidate 2026-09)",
-    "migrateFromAntdTitle": "Migrating from antd Typography"
+    "migrateFromAntdTitle": "Migrating from antd Typography",
+    "editorialHeading": "Find. Compare."
   },
   "themeShowcase": {
     "page": {
@@ -1632,6 +1663,8 @@
     }
   },
   "breadcrumbExamples": {
+    "parentsDescription": "currentItem=\"none\" keeps every ancestor linked without marking a current page. PageContainer uses breadcrumbCurrentItem=\"none\" when the record name is its title. Ellipsis preserves the full accessible name and title, with no repeated tooltip description.",
+    "parentsAria": "Ancestor pages",
     "ellipsisTitle": "ellipsis · a long segment on one line",
     "ellipsisDescription": "ellipsis on a segment keeps the trail on one line and cuts that label with \"…\"; the full label shows in a tooltip on hover and when the crumb link takes keyboard focus. antd Breadcrumb has no per-item ellipsis — the shape is Typography’s. PageContainer breadcrumb takes the same item field.",
     "ellipsisAria": "Truncated breadcrumb",
@@ -2385,5 +2418,38 @@
     "switchUser": "Switch demo user",
     "description": "The signed-in name stays visible. Topbar identity reserves at most 40% of the bar; TopbarItem truncate ellipsises only the name and keeps the full name in its title and accessible text.",
     "policy": "Primary controls keep their minimum sizes. At extreme widths the other clusters follow scroll, clip or menu; identity stays outside. Use TopbarSearch for search. Do not combine identity with labelHideBelow, hideBelow or iconHideFrom. Theme knobs: --topbar-identity-max-inline-size and --topbar-identity-min-text-inline-size."
+  },
+  "docs": {
+    "branchNavigation": {
+      "title": "Branch scope",
+      "intro": "Use a shared branch scope in navigation while keeping record branch selection independent.",
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "guidance": "Viewing scope is saved in the URL. Record forms require one concrete branch and keep separate state; All branches is never a record branch.",
+      "record": "Record branch",
+      "required": "Choose one permitted branch.",
+      "save": "Save",
+      "saved": "Saved",
+      "more": "More",
+      "scope": "Viewing scope"
+    }
+  },
+  "dashboardGridDocs": {
+    "title": "Business overview",
+    "period": "October 2026 · compared with September",
+    "revenue": "Revenue",
+    "orders": "Orders",
+    "revenueDelta": "+8.2% compared with September",
+    "ordersDelta": "+42 compared with September",
+    "edit": "Edit layout",
+    "done": "Finish editing",
+    "hint": "Grab a handle with Enter or Space. Arrows move, Shift + arrows resize, Escape cancels. Drop saves once.",
+    "trend": "Weekly revenue",
+    "channels": "Orders by channel",
+    "channel": "Channel",
+    "direct": "Direct",
+    "organic": "Organic search",
+    "referral": "Referral",
+    "email": "Email"
   }
 }

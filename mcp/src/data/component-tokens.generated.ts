@@ -2764,6 +2764,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The `{ type: \"divider\" }` rule between two runs."
   },
   {
+    "name": "--dashboard-grid-gap",
+    "value": "var(--space-4)",
+    "description": "Gap between DashboardGrid tiles, both axes (#1397)."
+  },
+  {
+    "name": "--dashboard-grid-row-height",
+    "value": "var(--space-20)",
+    "description": "Height of one grid row; a tile's `h` is a multiple of it."
+  },
+  {
+    "name": "--dashboard-grid-handle-size",
+    "value": "var(--control-height)",
+    "description": "Size of the drag and resize handles in edit mode (≥24px target)."
+  },
+  {
+    "name": "--dashboard-grid-handle-inset",
+    "value": "var(--space-1)",
+    "description": "Inset of the resize handle from the tile's bottom-end corner."
+  },
+  {
+    "name": "--dashboard-grid-item-radius",
+    "value": "var(--card-radius)",
+    "description": "Corner radius of a tile; defaults to the Card radius."
+  },
+  {
+    "name": "--dashboard-grid-preview-ring-color",
+    "value": "initial",
+    "description": "Colour of the drop-preview ring while moving or resizing (role-mirror knob; defaults to the focus ring colour)."
+  },
+  {
     "name": "--accordion-chevron-size",
     "value": "var(--icon-size-md)",
     "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because neither selector contains the word \"icon\"."
@@ -4312,6 +4342,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--dialog-width-default",
     "value": "32rem",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--dialog-radius",
+    "value": "initial",
+    "description": "Corner of the dialog panel. `initial`: square mobile, --radius-lg → --radius desktop at the call site; a brand whose dialogs are rounder than its cards (cards 8px, dialogs 16px) sets it once here."
   },
   {
     "name": "--dialog-width",
@@ -6749,6 +6784,56 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Room around the chart inside its scroll region, so an edge box's focus ring is not clipped."
   },
   {
+    "name": "--persona-avatar-gap",
+    "value": "initial",
+    "description": "Default var(--space-2)."
+  },
+  {
+    "name": "--persona-label-gap",
+    "value": "initial",
+    "description": "Default zero, set at the call site."
+  },
+  {
+    "name": "--persona-trailing-gap",
+    "value": "initial",
+    "description": "Default var(--space-1)."
+  },
+  {
+    "name": "--persona-label-line-height",
+    "value": "1.5",
+    "description": "Identity geometry. Initial spacing/type defaults resolve against the local density."
+  },
+  {
+    "name": "--persona-name-font-size",
+    "value": "initial",
+    "description": "Default var(--font-size-sm)."
+  },
+  {
+    "name": "--persona-name-font-size-sm",
+    "value": "initial",
+    "description": "Default var(--font-size-xs)."
+  },
+  {
+    "name": "--persona-name-font-weight",
+    "value": "initial",
+    "description": "Default var(--font-weight-medium)."
+  },
+  {
+    "name": "--persona-description-font-size",
+    "value": "initial",
+    "description": "Default var(--font-size-xs)."
+  },
+  {
+    "name": "--persona-name-color",
+    "value": "initial",
+    "description": "Role mirror: hsl(var(--foreground))."
+  },
+  {
+    "name": "--persona-description-color",
+    "value": "initial",
+    "description": "Role mirror: hsl(var(--muted-foreground))."
+  },
+  {
     "name": "--resizable-handle-size",
     "value": "var(--control-border-width, var(--stroke-hairline))",
     "description": "Separator layout thickness; focus paint must not reserve extra space."
@@ -8796,16 +8881,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-stacked-collection-card-padding-y",
     "value": "var(--space-stack-sm)",
-    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered key-value card; these tokens own the card's own geometry (unlike action-collection, there is no column-priority measure to retune — the whole row becomes one block)."
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, heterogeneous record collection. Below the collapse step every `<tr>` becomes a continuous key-value record; these tokens own the record's geometry (unlike action-collection, there is no column-priority measure to retune — the whole row becomes one block)."
   },
   {
     "name": "--table-stacked-collection-card-padding-x",
-    "value": "var(--space-inline-md)",
-    "description": "Table component tokens: row height, cell padding."
+    "value": "initial",
+    "description": "default = Card inset, resolved at the row"
   },
   {
     "name": "--table-stacked-collection-card-gap",
-    "value": "var(--space-stack-sm)",
+    "value": "0",
     "description": "Table component tokens: row height, cell padding."
   },
   {
@@ -8896,6 +8981,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-tone-wash-alpha",
     "value": "0.06",
+    "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-caption-color",
+    "value": "initial",
+    "description": "TableCaption — `initial`, defaults resolved at the call site (table-layout.css): ink --muted-foreground, size --font-size-sm, block inset --space-2. It sits above the rows (HTML's own side)."
+  },
+  {
+    "name": "--table-caption-font-size",
+    "value": "initial",
+    "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-caption-space-y",
+    "value": "initial",
     "description": "Table component tokens: row height, cell padding."
   },
   {

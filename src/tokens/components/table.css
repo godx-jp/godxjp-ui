@@ -258,13 +258,13 @@
 }
 
 /* Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE,
- * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered
- * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no
+ * heterogeneous record collection. Below the collapse step every `<tr>` becomes a continuous
+ * key-value record; these tokens own the record's geometry (unlike action-collection, there is no
  * column-priority measure to retune — the whole row becomes one block). */
 :root {
   --table-stacked-collection-card-padding-y: var(--space-stack-sm);
-  --table-stacked-collection-card-padding-x: var(--space-inline-md);
-  --table-stacked-collection-card-gap: var(--space-stack-sm);
+  --table-stacked-collection-card-padding-x: initial; /* default = Card inset, resolved at the row */
+  --table-stacked-collection-card-gap: 0;
   --table-stacked-collection-cell-padding-y: var(--space-stack-xs);
   /* Inline inset of a folded cell inside its card (gh#1102). 0: the card's own
    * --table-stacked-collection-card-padding-x is the inset, so a value line gets the card's full
@@ -333,4 +333,9 @@
    * and the row's own status cell are for. */
   --table-row-tone-rail-width: initial; /* default = var(--stroke-2xl), resolved at the call site (gh#906) */
   --table-row-tone-wash-alpha: 0.06;
+  /* TableCaption — `initial`, defaults resolved at the call site (table-layout.css): ink
+   * --muted-foreground, size --font-size-sm, block inset --space-2. It sits above the rows (HTML's own side). */
+  --table-caption-color: initial;
+  --table-caption-font-size: initial;
+  --table-caption-space-y: initial;
 }

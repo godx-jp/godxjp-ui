@@ -4,6 +4,7 @@
  * blocks and demand LITERAL inline values, so a Blade/Twig/MJML template can never `var()` the
  * design tokens.
  */
+import { readCssBlock } from "./read-css-block.mjs";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -74,9 +75,7 @@ function readBlock(css, selectorPattern, file) {
   const start = css.search(selectorPattern);
   if (start < 0) throw new Error(`${file}: block ${selectorPattern} not found`);
   const open = css.indexOf("{", start);
-  const close = css.indexOf("\n}", open);
-  if (open < 0 || close < 0) throw new Error(`${file}: block ${selectorPattern} is unterminated`);
-  const body = css.slice(open + 1, close);
+  const body = readCssBlock(css, open);
   const decls = {};
   for (const m of body.matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/g)) {
     decls[m[1]] = m[2].replace(/\s+/g, " ").trim();
@@ -117,7 +116,7 @@ function collectPalette(decls, where) {
 const foundation = readFileSync(FOUNDATION, "utf8");
 const light = collectPalette(readBlock(foundation, /^:root\s*\{/m, FOUNDATION), "foundation :root");
 const dark = collectPalette(
-  readBlock(foundation, /^\.dark,\s*\n:root\[data-theme="dark"\]\s*\{/m, FOUNDATION),
+  readBlock(foundation, /^\s*\.dark,\s*\n\s*:root\[data-theme="dark"\]\s*\{/m, FOUNDATION),
   "foundation .dark",
 );
 
@@ -130,7 +129,11 @@ const dark = collectPalette(
 const GODX_TOKENS = join(ROOT, "src/themes/godx-tokens.css");
 const godxTokensCss = readFileSync(GODX_TOKENS, "utf8");
 const lightBase = readBlock(foundation, /^:root\s*\{/m, FOUNDATION);
-const darkBase = readBlock(foundation, /^\.dark,\s*\n:root\[data-theme="dark"\]\s*\{/m, FOUNDATION);
+const darkBase = readBlock(
+  foundation,
+  /^\s*\.dark,\s*\n\s*:root\[data-theme="dark"\]\s*\{/m,
+  FOUNDATION,
+);
 const godxLight = collectPalette(
   { ...lightBase, ...readBlock(godxTokensCss, /^:root\s*\{/m, GODX_TOKENS) },
   "godx-tokens :root",
@@ -138,7 +141,7 @@ const godxLight = collectPalette(
 const godxDark = collectPalette(
   {
     ...darkBase,
-    ...readBlock(godxTokensCss, /^\.dark,\s*\n:root\[data-theme="dark"\]\s*\{/m, GODX_TOKENS),
+    ...readBlock(godxTokensCss, /^\s*\.dark,\s*\n\s*:root\[data-theme="dark"\]\s*\{/m, GODX_TOKENS),
   },
   "godx-tokens .dark",
 );

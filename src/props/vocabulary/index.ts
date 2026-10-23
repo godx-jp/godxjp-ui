@@ -82,6 +82,7 @@ export type {
   TextToneProp,
   FontWeightProp,
   HeadingLevelProp,
+  HeadingFamilyProp,
   TextAlignProp,
   TextWhitespaceProp,
   TextBreakProp,
@@ -114,6 +115,7 @@ export type {
 export type {
   BreadcrumbItemProp,
   BreadcrumbProp,
+  BreadcrumbCurrentItemProp,
   BreadcrumbItemMenuProp,
   BreadcrumbItemEllipsisProp,
   BreadcrumbItemMenuEntryProp,

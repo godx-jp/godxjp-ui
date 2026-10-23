@@ -690,6 +690,13 @@ export const COMPONENTS: ComponentEntry[] = [
       "Mandatory page shell — EVERY page wraps its content in PageContainer (title/subtitle/extra/footer/breadcrumb).",
     props: [
       {
+        name: "breadcrumbCurrentItem",
+        type: "BreadcrumbCurrentItemProp",
+        defaultValue: '"last"',
+        description:
+          "last | none, identical to Breadcrumb.currentItem. none keeps every supplied ancestor destination linked and emits no aria-current; the record name belongs in title. breadcrumb items also support ellipsis with the full label in aria-label and title, without a duplicate tooltip description.",
+      },
+      {
         name: "footerPad",
         type: "PadProp",
         description: "Instance footer inset; omitted preserves the theme.",
@@ -1285,7 +1292,7 @@ import { StatCard } from "@godxjp/ui/data-display";
     name: "AppShell",
     group: "layout",
     tagline:
-      "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width).",
+      "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. In print, navigation, topbar, breadcrumb and footer are hidden; main content flows across the paper width on the light --background. Put every consumer-authored dark theme override inside @media not print, with light declarations outside it, matching the package themes. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width).",
     props: [
       {
         name: "sidebar",
@@ -1706,6 +1713,7 @@ export function MyPage() {
       },
     ],
     usage: [
+      "Compose a More destination in tabBar with SheetTrigger + Sheet + BranchScopePicker selectionMode=single; see layout/mobile-branch-scope.tsx. MobileShell does not own routes or a built-in More menu.",
       "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · the auth CenteredShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
       "DO let `children` be the only thing that scrolls. Put the primary verb in `actions` and navigation in `tabBar` — both sit outside the scroll region, so neither needs `position: sticky`, a z-index, or bottom padding to clear the other.",
       "DO NOT compose one out of <Card> + `ui-card-inset*` + `overflow-y-auto` (what docs/showcase/case6 did before gh#354). That reproduces the look and neither behaviour that matters on a device: the document still scrolls, and nothing pads out of env(safe-area-inset-*), so the notch covers the app bar and the home indicator covers the primary button.",
@@ -1868,6 +1876,7 @@ export function HandyInbound() {
       },
     ],
     usage: [
+      "For app-local branch viewing scope, put one BranchScopePicker selectionMode=single in action above navigation; see data-entry/branch-scope-navigation.tsx. This differs from platform OrgSwitcher.",
       "DO: Define all nav items as a SidebarSectionProp[] data structure and pass it to sections — never hand-roll nav buttons alongside or instead of the Sidebar.",
       "DO: Add children: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The group auto-opens and highlights when activeId matches any descendant. The SAME field drives NavList (gh#815), so one grouped settings nav is one NavList and one <nav> landmark.",
       "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
@@ -3015,11 +3024,18 @@ export function TermsPage() {
     tagline: "Standalone breadcrumb nav rendering an ordered trail of page segments.",
     props: [
       {
+        name: "currentItem",
+        type: "BreadcrumbCurrentItemProp",
+        defaultValue: '"last"',
+        description:
+          "last | none. none renders an ancestor-only trail: every item with to stays linked and no default segment has aria-current. Missing paths remain text. menu and itemRender keep owning their segment bodies; custom renderers own their ARIA.",
+      },
+      {
         name: "items",
         type: "BreadcrumbItemProp[]",
         required: true,
         description:
-          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
+          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, with the full label as aria-label and title on the clipped element (no duplicate aria-describedby), showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
       },
       {
         name: "separator",
@@ -3042,7 +3058,7 @@ export function TermsPage() {
     ],
     usage: [
       "DO import from `@godxjp/ui/layout` (not from a navigation or general sub-path) and pass a single `items` prop — an ordered array of `{ label, to? }` objects. No children, no sub-components, no render-prop API.",
-      'DO omit `to` on the last (current-page) segment — the component automatically renders it as a `<span aria-current="page">` instead of a router `<Link>`. Passing `to` on the last item does NOT make it a link; drop it intentionally.',
+      'DO omit `to` on the last (current-page) segment — the component automatically renders it as a `<span aria-current="page">` instead of a router `<Link>`. In the default currentItem="last" mode, passing `to` on the last item does NOT make it a link. For ancestor-only trails use currentItem="none" and supply every ancestor destination.',
       "DO pass the Breadcrumb node as a ReactNode to the `breadcrumb` prop of `AppShell` (or `AppShell`) for shell-level breadcrumbs, or to `PageContainer`'s `breadcrumb` prop (which accepts `BreadcrumbItemProp[]` directly — not a ReactNode). When passing to `PageContainer`, pass the raw array; when passing to `AppShell`, wrap it: `breadcrumb={<Breadcrumb items={…} />}`.",
       'DON\'T hand-roll a breadcrumb strip (divs with chevrons, anchors, separators) — Breadcrumb ships the `<nav aria-label="Breadcrumb">` + `<ol>` + `aria-hidden` chevrons. Any custom trail is a violation of the no-hand-roll rule and will fail `npm run ui:audit`.',
       "DON'T use Breadcrumb for tab-style or step-style navigation (multi-step forms, wizard progress). Those flows belong to `Steps`. Breadcrumb is strictly a spatial location trail, not a process indicator.",
@@ -3573,6 +3589,13 @@ import { Trash2 } from "lucide-react";
       },
       { name: "align", type: '"start" | "center" | "end"', description: "Logical text alignment." },
       { name: "truncate", type: "boolean", description: "Single-line ellipsis." },
+      {
+        name: "family",
+        type: '"display" | "editorial"',
+        defaultValue: '"display"',
+        description:
+          "Heading face. `editorial` sets this heading in --font-family-editorial — the opt-in serif a public/editorial page uses for its hero and section headings while every UI heading stays in the display face. Until a theme names --font-family-editorial it falls back to --font-family-display, so the prop is inert by default. Prefer it over moving --font-family-display, which re-faces EVERY heading (card titles, empty states, form sections).",
+      },
     ],
     usage: [
       'DO use `<Heading level>` for section titles instead of a raw `<h2 className="text-lg font-semibold">`. The level drives both the token size and the semantic element.',
@@ -4108,7 +4131,7 @@ import { Icon, Text } from "@godxjp/ui/general";
         type: "'default' | 'action-collection' | 'stacked-record-collection'",
         defaultValue: "'default'",
         description:
-          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). In card mode the CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column's `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
+          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: at EVERY width the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*: primary 18% · secondary 22% · meta 12% · actions a 3.5rem floor, the unmarked column takes the rest) under table-layout: fixed, and below collapseBelow they switch to the compact tier (24% · 22% · 20% · 2.75rem) — collapseBelow picks the TIER, it does not turn the measures on (gh#1408). Cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a key-value record with zero gap and a single separator between records (--table-stacked-collection-*; --table-stacked-collection-card-gap defaults to 0 and remains themeable). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). In card mode the row inset defaults to the live --card-space-inset, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column's `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
       },
       {
         name: "collapseBelow",
@@ -4267,6 +4290,7 @@ import { Icon, Text } from "@godxjp/ui/general";
       },
     ],
     usage: [
+      "Ellipsis cells expose full rendered text for default/custom renderers, including stacked layout. Renderer-owned descendant titles or aria-describedby tooltips suppress a duplicate cell title (#1406).",
       "DO use `striped` on dense list tables (many columns, a row the eye must follow across the width). To stripe EVERY Table and DataTable in a service, set it ONCE in the theme — `:root { --table-row-striped-alpha: 100%; }` — instead of passing `striped` at each call site; `striped={false}` then opts one table out. Retint with `--table-row-striped-background`, never with a `rowClassName` utility or `:nth-child` page CSS (those count DOM rows, so an expanded detail row shifts every stripe after it).",
       "DO pass loading={isFetching} during data fetches — it renders a loading row in the table body and suppresses the empty state. Never show a spinner outside DataTable while the table is visible.",
       "DO NOT add a data.length===0 conditional around DataTable. When data is empty and loading is false, the built-in EmptyState renders automatically. Pass empty={<EmptyState title='...'/>} only when you need a custom message.",
@@ -4385,7 +4409,7 @@ export default function InvoiceList({
     ],
     group: "data-display",
     tagline:
-      "Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab TOOL strip inside the card (composer or editor tools) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. List FILTERS (search, filter selects, filter chips) are NOT a CardBar: CardBar's main slot scrolls sideways, and a filter strip never does — they go in a FilterBar ABOVE the card, which wraps (cardinal rule #51, pattern `list-filters`).",
+      "Surface container that requests break-inside: avoid in print, with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab TOOL strip inside the card (composer or editor tools) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. List FILTERS (search, filter selects, filter chips) are NOT a CardBar: CardBar's main slot scrolls sideways, and a filter strip never does — they go in a FilterBar ABOVE the card, which wraps (cardinal rule #51, pattern `list-filters`).",
     props: [
       {
         name: "accent",
@@ -5178,6 +5202,71 @@ import { Flex } from "@godxjp/ui/layout";
     docPath: "data-display/feature-list.tsx",
     storyPath: "data-display/feature-list.tsx",
     rules: [],
+  },
+  {
+    name: "Persona",
+    group: "data-display",
+    tagline:
+      "Compact person identity: fixed avatar, independently truncated name and muted secondary line, optional inline badge.",
+    props: [
+      {
+        name: "name",
+        type: "string",
+        required: true,
+        description:
+          "Full primary label, retained in native title and accessible text; dir=auto preserves its beginning in RTL.",
+      },
+      {
+        name: "description",
+        type: "string",
+        description:
+          "Optional full secondary label (email/handle), independently truncated and titled with dir=auto.",
+      },
+      {
+        name: "avatarSrc",
+        type: "string",
+        description: "Optional image URL; Avatar owns loading and fallback.",
+      },
+      {
+        name: "avatarFallback",
+        type: "ReactNode",
+        description:
+          "Fallback content; defaults to the first Unicode code point of name. Avatar is decorative beside the full name.",
+      },
+      {
+        name: "trailing",
+        type: "ReactNode",
+        description: "Optional noninteractive badge beside the name, outside its truncation box.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md"',
+        defaultValue: '"md"',
+        description: "Avatar control tier and name type scale; secondary text stays xs.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class; native span attributes and ref are forwarded.",
+      },
+    ],
+    usage: [
+      "Use inside DataTable renderers and stacked rows. Persona owns no row padding, navigation, account action or business state.",
+      "Pass localized labels and badge content. Retune --persona-* tokens; avatar sizing uses existing --avatar-* tokens.",
+      "Both full labels stay in the accessibility tree and native titles. Keep trailing content noninteractive.",
+    ],
+    useCases: ["Member lists", "Assignee and owner cells"],
+    related: [
+      "Avatar — mark only",
+      "ListRow — padded short-list row with actions",
+      "AccountChip — signed-in account control",
+    ],
+    example: `import { Persona } from "@godxjp/ui/data-display";
+
+<Persona name={member.name} description={member.email} size="sm" />`,
+    docPath: "data-display/persona.tsx",
+    storyPath: "data-display/persona.tsx",
+    rules: [6, 45],
   },
   {
     name: "ListRow",
@@ -6604,7 +6693,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
   },
   {
     name: "Table",
-    subParts: ["TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"],
+    subParts: ["TableBody", "TableCaption", "TableCell", "TableHead", "TableHeader", "TableRow"],
     group: "data-display",
     tagline:
       "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
@@ -6677,7 +6766,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
         type: '"default" | "action-collection" | "stacked-record-collection"',
         defaultValue: '"default"',
         description:
-          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). In card mode the CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column\'s `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
+          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a key-value record with zero gap and a single separator between records (--table-stacked-collection-*; --table-stacked-collection-card-gap defaults to 0 and remains themeable). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). In card mode the row inset defaults to the live --card-space-inset, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column\'s `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
       },
       {
         name: "collapseBelow",
@@ -7895,7 +7984,8 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "placeholder",
         type: "string",
-        description: "Placeholder shown in the trigger when no value is selected.",
+        description:
+          "Placeholder shown in the trigger when no value is selected. Default: the catalogue's 「選択…」 / 'Chọn…' / 'Select…' — the same string with or without `showSearch`, so an unselected field never shows an empty trigger. Only a placeholder YOU pass can name an unlabelled trigger; the default never becomes the accessible name.",
       },
       {
         name: "searchPlaceholder",
@@ -9318,7 +9408,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
         name: "triggerLabel",
         type: "string",
         description:
-          "Accessible NAME of the calendar button. The default (「カレンダーを開く」 / 'Open calendar') is right for one picker on a page and useless for three: a screen-reader user hears the same sentence three times with nothing to say which field each button belongs to (WCAG 2.2 SC 2.4.6). Name it after the FIELD — `開始日のカレンダーを開く`. Same axis and same reason as Select's `clearLabel`.",
+          "Accessible NAME of the calendar button. The default (「カレンダーを開く」 / 'Open calendar') is right for one picker on a page and useless for three: a screen-reader user hears the same sentence three times with nothing to say which field each button belongs to (WCAG 2.2 SC 2.4.6). Name it after the FIELD — `開始日のカレンダーを開く`. Same axis and same reason as Select's `clearLabel`. The calendar DIALOG is named after the field too: the FormField label (or your `aria-labelledby` / `aria-label`) first, then `triggerLabel`, then the default.",
       },
     ],
     usage: [
@@ -10082,7 +10172,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
     ],
     group: "navigation",
     tagline:
-      "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
+      "Offset/page-based pagination bar. Its container owns the inset: no outer inline padding, including inside CardContent, CardFooter or PageContainer footer. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
       {
         name: "ariaLabel",
@@ -12045,7 +12135,7 @@ export function AccountMapping() {
         type: '"dropzone" | "button" | "picture-card" | "picture" | "avatar" | "avatar-crop"',
         defaultValue: '"dropzone"',
         description:
-          "Controls the visual rendering mode. dropzone = large dashed drop area + file list; button = compact outline button + file list; picture-card = grid of 96×96 image thumbnails; picture = single image preview with change/remove actions; avatar = circular single-image picker; avatar-crop = avatar with an in-dialog crop step before the item is staged.",
+          "Controls the visual rendering mode. dropzone = large dashed drop area + file list, named by its VISIBLE hint (「ここにドラッグ＆ドロップ、またはクリックして選択」 — WCAG 2.5.3 label-in-name, gh#1412; a FormField label leads it, a caller aria-label replaces it); button = compact outline button + file list; picture-card = grid of 96×96 image thumbnails; picture = single image preview with change/remove actions; avatar = circular single-image picker; avatar-crop = avatar with an in-dialog crop step before the item is staged.",
       },
       {
         name: "listType",
@@ -15908,6 +15998,12 @@ export function NotifyRow() {
       "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot.",
     props: [
       {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
+      {
         name: "data",
         type: "ChartDatum[]",
         required: true,
@@ -16005,6 +16101,7 @@ export function NotifyRow() {
       },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the tree-shaken charts entry: `import { LineChart } from "@godxjp/ui/charts";`. Importing any other subpath never pulls in recharts.',
       'DO import only the chart a screen uses — `import { LineChart } from "@godxjp/ui/charts/line-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO install the `recharts` optional peer dependency in the consuming app — charts are the only part of @godxjp/ui that needs it, so apps without charts never pay for it.",
@@ -16045,6 +16142,12 @@ export function NotifyRow() {
     tagline:
       "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16137,6 +16240,7 @@ export function NotifyRow() {
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { BarChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { BarChart } from "@godxjp/ui/charts/bar-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `horizontal` when category labels are long (they read better on the y-axis).",
@@ -16286,6 +16390,12 @@ import { Text } from "@godxjp/ui/general";
       "DEPENDENCY-FREE rows × columns heatmap — weekday × hour revenue / order counts, cell intensity from the sequential CVD-safe --chart-heat-1..5 ramp. Empty ≠ zero (dashed outline + 'no data' text), optional top-N ring, per-cell tooltip, APG grid keyboard, the table itself is the text alternative. Needs NO recharts. Matrix / punch card / activity heatmap / busy-hours chart.",
     props: [
       {
+        name: "onDatumSelect",
+        type: "(datum: HeatmapDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is String(column key); index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
+      {
         name: "rows",
         type: "{ key: string | number; label: string }[]",
         required: true,
@@ -16362,6 +16472,7 @@ import { Text } from "@godxjp/ui/general";
       },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the isolated entry: `import { HeatmapChart } from "@godxjp/ui/charts/heatmap-chart";` — it never links the optional `recharts` peer.',
       "DO derive axis labels with Intl in the active locale — weekdays via `Intl.DateTimeFormat(locale, { weekday: 'short' })`, hours via `Intl.NumberFormat(locale)` — and pass money through `numberFormat`, never a hand-built '¥' string.",
       "DO leave a slot OUT of `data` (or pass `value: null`) when there is no measurement — a closed hour, a day before the store opened. Pass `0` only for a real zero. The two render differently (dashed outline vs filled) and read differently ('No data' vs '¥0').",
@@ -16409,6 +16520,12 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     tagline:
       "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16508,6 +16625,7 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { AreaChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { AreaChart } from "@godxjp/ui/charts/area-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `stacked` to show how parts accumulate into a total over time.",
@@ -16544,6 +16662,12 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     tagline:
       "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16616,6 +16740,7 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { PieChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { PieChart } from "@godxjp/ui/charts/pie-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO keep slices few (≈2–6) — pies are unreadable past a handful; use BarChart for many categories.",
@@ -16814,6 +16939,83 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     docPath: "docs/data-entry/emoji-picker.tsx",
     storyPath: "data-entry/emoji-picker.tsx",
     rules: [],
+  },
+  {
+    name: "DashboardGrid",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
+    group: "layout",
+    tagline:
+      "BI widget layout editor with deterministic push-down collisions and vertical compaction. Static CSS grid in view mode; temporary pointer/touch/keyboard previews commit once on drop.",
+    props: [
+      {
+        name: "items",
+        type: "{ id: string; label: string; content: ReactNode }[]",
+        description:
+          "Stable ids, visible header labels (also accessible region names) and widget body content. Wrap padded bodies in CardContent, tables in CardContent flush; DashboardGrid owns the Card and header. DOM reading order remains items order.",
+        required: true,
+      },
+      {
+        name: "layout",
+        type: "DashboardGridItemProp[]",
+        description:
+          "Controlled layout: {id,x,y,w,h}, integer cells, zero-based x from inline-start.",
+      },
+      {
+        name: "defaultLayout",
+        type: "DashboardGridItemProp[]",
+        description: "Uncontrolled initial layout.",
+      },
+      {
+        name: "onLayoutChange",
+        type: "(layout: DashboardGridItemProp[]) => void",
+        description: "One callback per changed drop; Escape restores without saving.",
+      },
+      {
+        name: "columns",
+        type: "number | { base: number; sm?: number; md?: number; lg?: number; xl?: number }",
+        description:
+          "Default 12. Responsive viewport breakpoints; a single column stacks at natural content heights. Narrow projection never overwrites saved layout.",
+      },
+      {
+        name: "rowHeight",
+        type: "number",
+        description: "Positive pixel row track size. Omitted uses --dashboard-grid-row-height.",
+      },
+      {
+        name: "editable",
+        type: "boolean",
+        description:
+          "Default false. Inset header grip and bottom-end resize corner (on hover/focus); header space is reserved in view mode to prevent content shift. Enter/Space grab/drop, arrows move, Shift+arrows resize, Escape cancels.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Root id.",
+      },
+    ],
+    usage: [
+      "C7 exception approved by the owner, BI precedents (Tableau/Power BI/Grafana/react-grid-layout). Approved 2026-10-23. Lab §2.1: same gates as core; promotion only once ≥2 repos import it.",
+      "Use stable unique ids and order items by reading priority. Persist only onLayoutChange.",
+      "Coordinates are normalized and compacted. View mode exposes content semantics, not an ARIA data grid.",
+      "RTL mirrors x and horizontal keyboard/pointer deltas. Touch-action none is confined to handles.",
+      "Theme --dashboard-grid-gap, row-height, handle-size, handle-inset, item-radius and preview-ring-color.",
+    ],
+    useCases: ["BI dashboards with rearrangeable and resizable widgets."],
+    related: [
+      "ResponsiveGrid — static flow layout.",
+      "SortableList — ordering without cell geometry.",
+    ],
+    example:
+      'import { DashboardGrid } from "@godxjp/ui/lab";\n\n<DashboardGrid items={[{ id: "revenue", label: "Revenue", content: "Revenue" }]} defaultLayout={[{ id: "revenue", x: 0, y: 0, w: 2, h: 3 }]} columns={{ base: 1, lg: 4 }} editable />',
+    docPath: "docs/lab/dashboard-grid.tsx",
+    storyPath: "lab/dashboard-grid.tsx",
+    rules: [44, 45],
   },
   {
     name: "SortableList",
@@ -17517,6 +17719,27 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
     tagline: "Canonical scope control: all branches vs an explicit subset.",
     props: [
       {
+        name: "selectionMode",
+        type: '"single" | "multiple"',
+        defaultValue: '"multiple"',
+        description:
+          "Single compact Select for all/one branch; multiple keeps the existing all/subset editor.",
+      },
+      {
+        name: "allowAll",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Allow organization-wide scope. Set false for record fields, then validate exactly one permitted concrete branch on submit. Invalid supplied values are not silently coerced.",
+      },
+      {
+        name: "hideWhenSingle",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Hide after a successful read of one enabled branch, except validation errors. Does not emit a change or normalize URL/default values; the app does that.",
+      },
+      {
         name: "value",
         type: "BranchScopeValueProp",
         description: "Giá trị có kiểm soát: phạm vi đang chọn.",
@@ -17587,7 +17810,7 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
         name: "name",
         type: "string",
         description:
-          "Native form name, forwarded to the MODE radio group — the all / selected choice is what submits under it. The checked branch ids are not native fields; they live in the single `{ mode, branchIds }` value and are yours to serialise.",
+          "Native form name: multiple submits the MODE radio; single submits the Select key (`all` or `branch:<id>`). Serialize the public `{ mode, branchIds }` value yourself for domain records; native keys are not branch ownership.",
       },
       {
         name: "id",
@@ -17597,6 +17820,8 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
       },
     ],
     usage: [
+      "Use selectionMode=single in Sidebar action (above navigation) and a Sheet opened from MobileShell tabBar More. These are compositions, not a new switcher. OrgSwitcher changes organization and stays in platform chrome.",
+      "The app owns URL parsing, validation against authorized branches, popstate/router updates, and onValueChange navigation. Resolve a single authorized branch in the app before hiding the picker. Viewing scope is not record ownership: record forms use separate state, selectionMode=single and allowAll=false, and validate exactly one permitted id on submit. Future groups need an explicit value contract; do not encode them as branch ids.",
       "DO treat scope as ONE form field: the single { mode, branchIds } value goes through FormField like any other control.",
       "DO import it from @godxjp/ui/data-entry — never compose an ad-hoc radio+checkbox scope block per screen.",
       "DO use `error` ONLY for validation (e.g. mode=selected with zero branches checked); a failed branch fetch is `listError`, a 403 is `denied`.",

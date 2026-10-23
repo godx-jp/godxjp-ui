@@ -73,7 +73,6 @@
       "presetEmpty": "Trống"
     },
     "upload": {
-      "dropzoneLabel": "Tải file lên",
       "dropzoneHint": "Kéo thả file vào đây, hoặc bấm để chọn",
       "dropzoneMeta": "Tệp đã chọn sẽ hiển thị tại đây.",
       "buttonLabel": "Chọn file",
@@ -167,7 +166,8 @@
       "error": "Không tải được danh sách chi nhánh",
       "denied": "Bạn không có quyền xem chi nhánh",
       "loading": "Đang tải chi nhánh…",
-      "noMatches": "Không có chi nhánh khớp với tìm kiếm"
+      "noMatches": "Không có chi nhánh khớp với tìm kiếm",
+      "choose": "Chọn chi nhánh"
     },
     "formErrors": {
       "title": "Dữ liệu nhập có lỗi, vui lòng kiểm tra"
@@ -772,6 +772,7 @@
     }
   },
   "chart": {
+    "datumLabel": "{label}, {series}: {value}",
     "empty": "Không có dữ liệu",
     "summaryCartesian": "Biểu đồ gồm {series} chuỗi trên {points} điểm dữ liệu",
     "summaryPie": "Biểu đồ tròn gồm {slices} phần",
@@ -842,5 +843,14 @@
         "error": "thất bại"
       }
     }
+  },
+  "dashboardGrid": {
+    "move": "Di chuyển {label}",
+    "resize": "Đổi kích thước {label}",
+    "hint": "Enter hoặc Space để nắm và thả. Phím mũi tên để di chuyển; Shift và mũi tên để đổi kích thước. Escape để hủy.",
+    "grabbed": "Đã nắm {label}. Cột {x}, hàng {y}, rộng {w}, cao {h}.",
+    "moved": "{label}. Cột {x}, hàng {y}, rộng {w}, cao {h}.",
+    "dropped": "Đã lưu {label}. Cột {x}, hàng {y}, rộng {w}, cao {h}.",
+    "cancelled": "Đã hủy thay đổi {label}."
   }
 }

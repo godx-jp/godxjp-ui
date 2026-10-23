@@ -245,7 +245,7 @@
       "type": "boolean | { clearIcon?: ReactNode; label?: string }"
     },
     {
-      "description": "Accessible NAME of the calendar button. The default (「カレンダーを開く」 / 'Open calendar') is right for one picker on a page and useless for three: a screen-reader user hears the same sentence three times with nothing to say which field each button belongs to (WCAG 2.2 SC 2.4.6). Name it after the FIELD — `開始日のカレンダーを開く`. Same axis and same reason as Select's `clearLabel`.",
+      "description": "Accessible NAME of the calendar button. The default (「カレンダーを開く」 / 'Open calendar') is right for one picker on a page and useless for three: a screen-reader user hears the same sentence three times with nothing to say which field each button belongs to (WCAG 2.2 SC 2.4.6). Name it after the FIELD — `開始日のカレンダーを開く`. Same axis and same reason as Select's `clearLabel`. The calendar DIALOG is named after the field too: the FormField label (or your `aria-labelledby` / `aria-label`) first, then `triggerLabel`, then the default.",
       "name": "triggerLabel",
       "type": "string"
     }

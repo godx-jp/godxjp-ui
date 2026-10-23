@@ -2394,6 +2394,12 @@ export type BranchScopePickerProp = FieldA11yProps & {
   defaultValue?: BranchScopeValueProp;
   /** Value change handler (fires for mode switches AND branch checks). */
   onValueChange?: (value: BranchScopeValueProp) => void;
+  /** Single compact Select for navigation/record fields; multiple preserves the all/subset editor. */
+  selectionMode?: "single" | "multiple";
+  /** Permit organization-wide scope. Set false for record forms; validate one concrete branch on submit. Default true. */
+  allowAll?: boolean;
+  /** Hide after a successful one-branch read, unless disabled branch or validation error. Does not emit or normalize value. Default false. */
+  hideWhenSingle?: boolean;
   /** Disable the whole control. */
   disabled?: DisabledProp;
   /** Render the current value without any editable affordance (locked view). */

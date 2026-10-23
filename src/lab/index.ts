@@ -113,3 +113,5 @@ export type {
   AnchorProp,
   AnchorProps,
 } from "./anchor";
+export { DashboardGrid } from "./dashboard-grid";
+export type { DashboardGridProp, DashboardGridProps, DashboardGridItemProp } from "./dashboard-grid";

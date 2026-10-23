@@ -1,4 +1,62 @@
 @layer components {
+  .ui-persona {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    gap: var(--persona-avatar-gap, var(--space-2));
+  }
+
+  .ui-persona [data-slot="persona-body"] {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-inline-size: 0;
+    gap: var(--persona-label-gap, 0);
+  }
+
+  .ui-persona [data-slot="persona-name-line"] {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+    gap: var(--persona-trailing-gap, var(--space-1));
+  }
+
+  .ui-persona [data-slot="persona-name"],
+  .ui-persona [data-slot="persona-description"] {
+    display: block;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: start;
+    line-height: var(--persona-label-line-height);
+  }
+
+  .ui-persona [data-slot="persona-name"] {
+    font-size: var(--persona-name-font-size, var(--font-size-sm));
+    font-weight: var(--persona-name-font-weight, var(--font-weight-medium));
+    color: var(--persona-name-color, hsl(var(--foreground)));
+  }
+
+  .ui-persona[data-size="sm"] [data-slot="persona-name"] {
+    font-size: var(--persona-name-font-size-sm, var(--font-size-xs));
+  }
+
+  .ui-persona [data-slot="persona-description"] {
+    align-self: flex-start;
+    max-inline-size: 100%;
+    font-size: var(--persona-description-font-size, var(--font-size-xs));
+    color: var(--persona-description-color, hsl(var(--muted-foreground)));
+  }
+
+  .ui-persona [data-slot="persona-trailing"] {
+    flex: none;
+    display: inline-flex;
+    white-space: nowrap;
+  }
+
   .ui-avatar {
     position: relative;
     display: inline-flex;
@@ -2565,6 +2623,44 @@
     font-weight: var(--font-weight-medium);
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /*
+   * Text is laid out in WHOLE lines, never cut by the block's edge (the component picks the shape
+   * from the block's length — see eventTextLayout). One line: title first and truncated, then the
+   * start time, which never shrinks. Too short for the inset: the same line without block padding.
+   */
+  .ui-timeline-grid-event:is([data-layout="single"], [data-layout="compact"])
+    .ui-timeline-grid-event-body {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-1);
+  }
+
+  .ui-timeline-grid-event[data-layout="compact"] .ui-timeline-grid-event-body {
+    align-items: center;
+    padding-block: 0;
+  }
+
+  .ui-timeline-grid-event:is([data-layout="single"], [data-layout="compact"])
+    .ui-timeline-grid-event-title {
+    min-inline-size: 0;
+  }
+
+  .ui-timeline-grid-event:is([data-layout="single"], [data-layout="compact"])
+    .ui-timeline-grid-event-time {
+    flex: none;
+  }
+
+  /* Several lines: the title wraps and is clamped to the lines the block has room for. */
+  .ui-timeline-grid-event[data-layout="stacked"] .ui-timeline-grid-event-title {
+    display: -webkit-box;
+    flex: none;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--timeline-grid-event-title-lines, 1);
+    line-clamp: var(--timeline-grid-event-title-lines, 1);
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .ui-timeline-grid-event-description {
