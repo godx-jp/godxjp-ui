@@ -5,6 +5,11 @@
   "name": "AreaChart",
   "props": [
     {
+      "description": "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      "name": "onDatumSelect",
+      "type": "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void"
+    },
+    {
       "description": "Row data: one category per row with a numeric value per series.",
       "name": "data",
       "required": true,
@@ -108,6 +113,7 @@
   "rules": [],
   "tagline": "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot.",
   "usage": [
+    "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
     "DO import from the charts entry: `import { AreaChart } from \"@godxjp/ui/charts\";` (recharts optional peer required).",
     "DO import only the chart a screen uses — `import { AreaChart } from \"@godxjp/ui/charts/area-chart\";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.",
     "DO use `stacked` to show how parts accumulate into a total over time.",

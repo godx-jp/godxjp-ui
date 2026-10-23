@@ -498,7 +498,7 @@
   {
     "group": "navigation",
     "name": "Pagination",
-    "tagline": "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout."
+    "tagline": "Offset/page-based pagination bar. Its container owns the inset: no outer inline padding, including inside CardContent, CardFooter or PageContainer footer. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout."
   },
   {
     "group": "navigation",
@@ -775,6 +775,12 @@
     "group": "data-entry",
     "name": "EmojiPicker",
     "tagline": "Page icon / reaction picker in a Popover (gh#1164): search by the active language's CLDR keywords (ja / en / vi — emojibase-data, loaded lazily for that locale only), categories, per-user recents, a WAI-ARIA grid (one tab stop, arrows, Home / End, Enter), and \"remove icon\". No skin tones.",
+    "tier": "lab"
+  },
+  {
+    "group": "layout",
+    "name": "DashboardGrid",
+    "tagline": "BI widget layout editor with deterministic push-down collisions and vertical compaction. Static CSS grid in view mode; temporary pointer/touch/keyboard previews commit once on drop.",
     "tier": "lab"
   },
   {

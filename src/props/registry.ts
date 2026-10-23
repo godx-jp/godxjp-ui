@@ -780,6 +780,60 @@ export const VOCABULARY_REGISTRY = {
 export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
 
 export const COMPONENT_PROP_REGISTRY = {
+  DashboardGridProp: {
+    group: "layout",
+    file: "components/dashboard-grid.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "items",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "layout",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "defaultLayout",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "onLayoutChange",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "columns",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "rowHeight",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+      {
+        field: "editable",
+        local: true,
+        reason: "DashboardGrid cell-layout editing contract (#1397), owner-approved lab API.",
+      },
+    ],
+  },
+  DashboardGridItemProp: {
+    group: "layout",
+    file: "components/dashboard-grid.prop.ts",
+    vocabulary: [
+      { field: "id", local: true, reason: "Persisted grid cell coordinate or identity." },
+      { field: "x", local: true, reason: "Persisted grid cell coordinate or identity." },
+      { field: "y", local: true, reason: "Persisted grid cell coordinate or identity." },
+      { field: "w", local: true, reason: "Persisted grid cell coordinate or identity." },
+      { field: "h", local: true, reason: "Persisted grid cell coordinate or identity." },
+    ],
+  },
   AppProviderProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ChildrenProp"] },
   ThemeScopeProp: {
     group: "app",
@@ -3029,6 +3083,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3065,6 +3124,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3138,6 +3202,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3174,6 +3243,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3211,6 +3285,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",

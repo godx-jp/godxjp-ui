@@ -172,8 +172,8 @@ export default function Demo() {
             query, not a viewport one, so the same table folds by the width it is GIVEN: the two
             blocks below are one component and one column list, rendered wide and narrow.
 
-            Below `collapseBelow` the header row hides and every `<tr>` becomes a bordered
-            key-value card. The per-cell labels are DERIVED from the same `ColumnDef.header` the
+            Below `collapseBelow` the header row hides and every `<tr>` becomes a key-value record in a continuous list: zero gap and one separator.
+            The existing --table-stacked-collection-card-gap token remains themeable. The per-cell labels are DERIVED from the same `ColumnDef.header` the
             `<th>` uses (gh#864) — one declaration, so the card can never drift from the table it
             collapsed out of, and the value that loses its header keeps its name. */}
         <Flex direction="col" gap="sm" id="stacked-record-collection">

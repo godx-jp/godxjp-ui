@@ -21,5 +21,5 @@ export { AreaChart } from "./area-chart";
 export type { AreaChartProp, AreaChartProps } from "./area-chart";
 export { PieChart } from "./pie-chart";
 export type { PieChartProp, PieChartProps } from "./pie-chart";
-export type { ChartSeriesProp, ChartDatum } from "../../props/components/charts.prop";
+export type { ChartSeriesProp, ChartDatum, ChartDatumSelect } from "../../props/components/charts.prop";
 export { CHART_COLORS } from "./chart-frame";

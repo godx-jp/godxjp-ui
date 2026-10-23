@@ -4124,7 +4124,7 @@ import { Icon, Text } from "@godxjp/ui/general";
         type: "'default' | 'action-collection' | 'stacked-record-collection'",
         defaultValue: "'default'",
         description:
-          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: at EVERY width the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*: primary 18% · secondary 22% · meta 12% · actions a 3.5rem floor, the unmarked column takes the rest) under table-layout: fixed, and below collapseBelow they switch to the compact tier (24% · 22% · 20% · 2.75rem) — collapseBelow picks the TIER, it does not turn the measures on (gh#1408). Cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a key-value record with a single separator between records (--table-stacked-collection-*). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). In card mode the row inset defaults to the live --card-space-inset, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column's `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
+          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: at EVERY width the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*: primary 18% · secondary 22% · meta 12% · actions a 3.5rem floor, the unmarked column takes the rest) under table-layout: fixed, and below collapseBelow they switch to the compact tier (24% · 22% · 20% · 2.75rem) — collapseBelow picks the TIER, it does not turn the measures on (gh#1408). Cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a key-value record with zero gap and a single separator between records (--table-stacked-collection-*; --table-stacked-collection-card-gap defaults to 0 and remains themeable). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). In card mode the row inset defaults to the live --card-space-inset, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column's `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
       },
       {
         name: "collapseBelow",
@@ -6751,7 +6751,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
         type: '"default" | "action-collection" | "stacked-record-collection"',
         defaultValue: '"default"',
         description:
-          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a key-value record with a single separator between records (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). In card mode the row inset defaults to the live --card-space-inset, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column\'s `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
+          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a key-value record with zero gap and a single separator between records (--table-stacked-collection-*; --table-stacked-collection-card-gap defaults to 0 and remains themeable). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). In card mode the row inset defaults to the live --card-space-inset, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column\'s `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
       },
       {
         name: "collapseBelow",
@@ -10157,7 +10157,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
     ],
     group: "navigation",
     tagline:
-      "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
+      "Offset/page-based pagination bar. Its container owns the inset: no outer inline padding, including inside CardContent, CardFooter or PageContainer footer. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
       {
         name: "ariaLabel",
@@ -15983,6 +15983,12 @@ export function NotifyRow() {
       "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot.",
     props: [
       {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
+      {
         name: "data",
         type: "ChartDatum[]",
         required: true,
@@ -16080,6 +16086,7 @@ export function NotifyRow() {
       },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the tree-shaken charts entry: `import { LineChart } from "@godxjp/ui/charts";`. Importing any other subpath never pulls in recharts.',
       'DO import only the chart a screen uses — `import { LineChart } from "@godxjp/ui/charts/line-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO install the `recharts` optional peer dependency in the consuming app — charts are the only part of @godxjp/ui that needs it, so apps without charts never pay for it.",
@@ -16120,6 +16127,12 @@ export function NotifyRow() {
     tagline:
       "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16212,6 +16225,7 @@ export function NotifyRow() {
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { BarChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { BarChart } from "@godxjp/ui/charts/bar-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `horizontal` when category labels are long (they read better on the y-axis).",
@@ -16361,6 +16375,12 @@ import { Text } from "@godxjp/ui/general";
       "DEPENDENCY-FREE rows × columns heatmap — weekday × hour revenue / order counts, cell intensity from the sequential CVD-safe --chart-heat-1..5 ramp. Empty ≠ zero (dashed outline + 'no data' text), optional top-N ring, per-cell tooltip, APG grid keyboard, the table itself is the text alternative. Needs NO recharts. Matrix / punch card / activity heatmap / busy-hours chart.",
     props: [
       {
+        name: "onDatumSelect",
+        type: "(datum: HeatmapDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is String(column key); index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
+      {
         name: "rows",
         type: "{ key: string | number; label: string }[]",
         required: true,
@@ -16437,6 +16457,7 @@ import { Text } from "@godxjp/ui/general";
       },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the isolated entry: `import { HeatmapChart } from "@godxjp/ui/charts/heatmap-chart";` — it never links the optional `recharts` peer.',
       "DO derive axis labels with Intl in the active locale — weekdays via `Intl.DateTimeFormat(locale, { weekday: 'short' })`, hours via `Intl.NumberFormat(locale)` — and pass money through `numberFormat`, never a hand-built '¥' string.",
       "DO leave a slot OUT of `data` (or pass `value: null`) when there is no measurement — a closed hour, a day before the store opened. Pass `0` only for a real zero. The two render differently (dashed outline vs filled) and read differently ('No data' vs '¥0').",
@@ -16484,6 +16505,12 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     tagline:
       "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16583,6 +16610,7 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { AreaChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { AreaChart } from "@godxjp/ui/charts/area-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `stacked` to show how parts accumulate into a total over time.",
@@ -16619,6 +16647,12 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     tagline:
       "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16691,6 +16725,7 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { PieChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { PieChart } from "@godxjp/ui/charts/pie-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO keep slices few (≈2–6) — pies are unreadable past a handful; use BarChart for many categories.",
@@ -16889,6 +16924,83 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     docPath: "docs/data-entry/emoji-picker.tsx",
     storyPath: "data-entry/emoji-picker.tsx",
     rules: [],
+  },
+  {
+    name: "DashboardGrid",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
+    group: "layout",
+    tagline:
+      "BI widget layout editor with deterministic push-down collisions and vertical compaction. Static CSS grid in view mode; temporary pointer/touch/keyboard previews commit once on drop.",
+    props: [
+      {
+        name: "items",
+        type: "{ id: string; label: string; content: ReactNode }[]",
+        description:
+          "Stable ids, visible header labels (also accessible region names) and widget body content. Wrap padded bodies in CardContent, tables in CardContent flush; DashboardGrid owns the Card and header. DOM reading order remains items order.",
+        required: true,
+      },
+      {
+        name: "layout",
+        type: "DashboardGridItemProp[]",
+        description:
+          "Controlled layout: {id,x,y,w,h}, integer cells, zero-based x from inline-start.",
+      },
+      {
+        name: "defaultLayout",
+        type: "DashboardGridItemProp[]",
+        description: "Uncontrolled initial layout.",
+      },
+      {
+        name: "onLayoutChange",
+        type: "(layout: DashboardGridItemProp[]) => void",
+        description: "One callback per changed drop; Escape restores without saving.",
+      },
+      {
+        name: "columns",
+        type: "number | { base: number; sm?: number; md?: number; lg?: number; xl?: number }",
+        description:
+          "Default 12. Responsive viewport breakpoints; a single column stacks at natural content heights. Narrow projection never overwrites saved layout.",
+      },
+      {
+        name: "rowHeight",
+        type: "number",
+        description: "Positive pixel row track size. Omitted uses --dashboard-grid-row-height.",
+      },
+      {
+        name: "editable",
+        type: "boolean",
+        description:
+          "Default false. Inset header grip and bottom-end resize corner (on hover/focus); header space is reserved in view mode to prevent content shift. Enter/Space grab/drop, arrows move, Shift+arrows resize, Escape cancels.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Root id.",
+      },
+    ],
+    usage: [
+      "C7 exception approved by the owner, BI precedents (Tableau/Power BI/Grafana/react-grid-layout). Approved 2026-10-23. Lab §2.1: same gates as core; promotion only once ≥2 repos import it.",
+      "Use stable unique ids and order items by reading priority. Persist only onLayoutChange.",
+      "Coordinates are normalized and compacted. View mode exposes content semantics, not an ARIA data grid.",
+      "RTL mirrors x and horizontal keyboard/pointer deltas. Touch-action none is confined to handles.",
+      "Theme --dashboard-grid-gap, row-height, handle-size, handle-inset, item-radius and preview-ring-color.",
+    ],
+    useCases: ["BI dashboards with rearrangeable and resizable widgets."],
+    related: [
+      "ResponsiveGrid — static flow layout.",
+      "SortableList — ordering without cell geometry.",
+    ],
+    example:
+      'import { DashboardGrid } from "@godxjp/ui/lab";\n\n<DashboardGrid items={[{ id: "revenue", label: "Revenue", content: "Revenue" }]} defaultLayout={[{ id: "revenue", x: 0, y: 0, w: 2, h: 3 }]} columns={{ base: 1, lg: 4 }} editable />',
+    docPath: "docs/lab/dashboard-grid.tsx",
+    storyPath: "lab/dashboard-grid.tsx",
+    rules: [44, 45],
   },
   {
     name: "SortableList",

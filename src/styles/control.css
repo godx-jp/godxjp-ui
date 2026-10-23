@@ -4975,3 +4975,85 @@
     }
   }
 }
+
+@layer components {
+  .ui-dashboard-grid,
+  .ui-dashboard-grid-items,
+  .ui-dashboard-grid-item,
+  .ui-dashboard-grid-content {
+    min-inline-size: 0;
+  }
+  .ui-dashboard-grid-items {
+    display: grid;
+    grid-template-columns: repeat(var(--dashboard-grid-columns, 1), minmax(0, 1fr));
+    grid-auto-rows: var(--dashboard-grid-row-height);
+    gap: var(--dashboard-grid-gap);
+  }
+  .ui-dashboard-grid-item {
+    position: relative;
+    border-radius: var(--dashboard-grid-item-radius);
+  }
+  .ui-dashboard-grid-surface {
+    display: flex;
+    flex-direction: column;
+    block-size: 100%;
+  }
+  .ui-dashboard-grid-item .ui-dashboard-grid-header {
+    padding-inline-start: calc(
+      var(--dashboard-grid-handle-size) + var(--dashboard-grid-handle-inset) * 2
+    );
+  }
+  .ui-dashboard-grid-items[data-stacked] {
+    grid-auto-rows: auto;
+  }
+  .ui-dashboard-grid-content {
+    flex: 1;
+    min-block-size: 0;
+    overflow: auto;
+  }
+  .ui-dashboard-grid-item[data-held] {
+    outline: var(--focus-ring-width) solid
+      hsl(var(--dashboard-grid-preview-ring-color, var(--ring)));
+    outline-offset: var(--focus-ring-offset);
+  }
+  .ui-dashboard-grid-move,
+  .ui-dashboard-grid-resize {
+    position: absolute;
+    z-index: 1;
+    inline-size: var(--dashboard-grid-handle-size);
+    block-size: var(--dashboard-grid-handle-size);
+    min-inline-size: var(--touch-target-min);
+    min-block-size: var(--touch-target-min);
+    touch-action: none;
+  }
+  .ui-dashboard-grid-move {
+    inset-block-start: var(--dashboard-grid-handle-inset);
+    inset-inline-start: var(--dashboard-grid-handle-inset);
+    cursor: grab;
+  }
+  .ui-dashboard-grid-resize {
+    inset-block-end: var(--dashboard-grid-handle-inset);
+    inset-inline-end: var(--dashboard-grid-handle-inset);
+    cursor: nwse-resize;
+    opacity: 0;
+  }
+  .ui-dashboard-grid-item:dir(rtl) .ui-dashboard-grid-resize {
+    cursor: nesw-resize;
+    transform: scaleX(-1);
+  }
+  .ui-dashboard-grid-item:hover .ui-dashboard-grid-resize,
+  .ui-dashboard-grid-item:focus-within .ui-dashboard-grid-resize {
+    opacity: 1;
+  }
+  .ui-dashboard-grid-item[data-held] .ui-dashboard-grid-move {
+    cursor: grabbing;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-dashboard-grid-item,
+    .ui-dashboard-grid-move,
+    .ui-dashboard-grid-resize {
+      transition: none;
+      animation: none;
+    }
+  }
+}

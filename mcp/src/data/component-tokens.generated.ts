@@ -2764,6 +2764,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The `{ type: \"divider\" }` rule between two runs."
   },
   {
+    "name": "--dashboard-grid-gap",
+    "value": "var(--space-4)",
+    "description": "Gap between DashboardGrid tiles, both axes (#1397)."
+  },
+  {
+    "name": "--dashboard-grid-row-height",
+    "value": "var(--space-20)",
+    "description": "Height of one grid row; a tile's `h` is a multiple of it."
+  },
+  {
+    "name": "--dashboard-grid-handle-size",
+    "value": "var(--control-height)",
+    "description": "Size of the drag and resize handles in edit mode (≥24px target)."
+  },
+  {
+    "name": "--dashboard-grid-handle-inset",
+    "value": "var(--space-1)",
+    "description": "Inset of the resize handle from the tile's bottom-end corner."
+  },
+  {
+    "name": "--dashboard-grid-item-radius",
+    "value": "var(--card-radius)",
+    "description": "Corner radius of a tile; defaults to the Card radius."
+  },
+  {
+    "name": "--dashboard-grid-preview-ring-color",
+    "value": "initial",
+    "description": "Colour of the drop-preview ring while moving or resizing (role-mirror knob; defaults to the focus ring colour)."
+  },
+  {
     "name": "--accordion-chevron-size",
     "value": "var(--icon-size-md)",
     "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because neither selector contains the word \"icon\"."
@@ -8846,7 +8876,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-stacked-collection-card-padding-y",
     "value": "var(--space-stack-sm)",
-    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered key-value card; these tokens own the card's own geometry (unlike action-collection, there is no column-priority measure to retune — the whole row becomes one block)."
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, heterogeneous record collection. Below the collapse step every `<tr>` becomes a continuous key-value record; these tokens own the record's geometry (unlike action-collection, there is no column-priority measure to retune — the whole row becomes one block)."
   },
   {
     "name": "--table-stacked-collection-card-padding-x",
@@ -8855,7 +8885,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-stacked-collection-card-gap",
-    "value": "var(--space-stack-sm)",
+    "value": "0",
     "description": "Table component tokens: row height, cell padding."
   },
   {
