@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.14.0] - 2026-10-23
+
 ### Added
 
 - Persona: compact sm/md identity with a fixed avatar, independently titled bidi-safe name and secondary line, and an optional name-line badge; members-table docs (#1405).

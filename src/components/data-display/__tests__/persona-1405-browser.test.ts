@@ -140,7 +140,7 @@ describe("stacked DataTable record boundaries", () => {
             const rows = await page.locator("tbody tr").evaluateAll((nodes) =>
               nodes.map((node) => {
                 const css = getComputedStyle(node);
-                const cell = node.querySelector("td");
+                const cell = node.querySelector("td")!;
                 return {
                   top: css.borderTopWidth,
                   bottom: css.borderBottomWidth,
