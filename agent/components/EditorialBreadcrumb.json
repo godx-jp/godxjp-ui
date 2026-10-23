@@ -1,0 +1,32 @@
+{
+  "example": "import { EditorialBreadcrumb, EditorialSection } from \"@godxjp/ui/layout\";\n\n<EditorialSection>\n  <EditorialBreadcrumb items={[{ label: \"Home\", to: \"/\" }, { label: \"Journal\", to: \"/journal/\" }, { label: \"Price guide\" }]} />\n</EditorialSection>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialBreadcrumb",
+  "props": [
+    {
+      "description": "Trail, root first; the last item is the current page.",
+      "name": "items",
+      "required": true,
+      "type": "BreadcrumbItemProp[]"
+    },
+    {
+      "description": "Router link for ancestors.",
+      "name": "linkComponent",
+      "type": "ElementType"
+    },
+    {
+      "description": "Name of the nav landmark.",
+      "name": "ariaLabel",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "EditorialPageHeader, Breadcrumb."
+  ],
+  "tagline": "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page.",
+  "usage": [
+    "DO put it first in an EditorialSection of a `flow=\"sections\"` page.",
+    "DON'T nest it in a PageContainer — that page shell has its own trail."
+  ]
+}

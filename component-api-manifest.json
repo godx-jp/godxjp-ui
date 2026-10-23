@@ -7024,6 +7024,43 @@
         }
       ]
     },
+    "EditorialBreadcrumb": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "ariaLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "BreadcrumbProp",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
     "EditorialCard": {
       "group": "layout",
       "props": [
@@ -7465,6 +7502,83 @@
           "origin": "owned",
           "required": true,
           "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "EditorialPageHeader": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "breadcrumb",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "breadcrumbLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "eyebrow",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "titleId",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }

@@ -2,12 +2,14 @@ import * as React from "react";
 import { ArrowRight, Bookmark, Search } from "lucide-react";
 
 import { Slot } from "../../lib/slot";
+import { Breadcrumb } from "./breadcrumb";
 import { cn } from "../../lib/utils";
 import type {
   CardShowcaseProp,
   CatalogCardProp,
   CatalogCardTagProp,
   EditorialBannerProp,
+  EditorialBreadcrumbProp,
   EditorialCardProp,
   EditorialFilterBarProp,
   EditorialFooterProp,
@@ -16,6 +18,7 @@ import type {
   EditorialMastheadProp,
   EditorialMastheadSelectProp,
   EditorialHeroProp,
+  EditorialPageHeaderProp,
   EditorialPillNavItemProp,
   EditorialPillNavProp,
   EditorialSearchProp,
@@ -26,6 +29,10 @@ import type {
 } from "../../props/components/layout.prop";
 
 export type {
+  EditorialBreadcrumbProp,
+  EditorialBreadcrumbProp as EditorialBreadcrumbProps,
+  EditorialPageHeaderProp,
+  EditorialPageHeaderProp as EditorialPageHeaderProps,
   CardShowcaseProp,
   CardShowcaseProp as CardShowcaseProps,
   CatalogCardProp,
@@ -166,6 +173,57 @@ export function EditorialSectionHead({
         )}
       </div>
       {action != null && <div className="ui-editorial-section-head-action">{action}</div>}
+    </div>
+  );
+}
+
+/** The trail at the top of an editorial page: `Breadcrumb` with the editorial rhythm (gh#1437). */
+export function EditorialBreadcrumb({
+  items,
+  linkComponent,
+  ariaLabel,
+  className,
+}: EditorialBreadcrumbProp) {
+  return (
+    <div data-slot="editorial-breadcrumb" className={cn("ui-editorial-breadcrumb", className)}>
+      <Breadcrumb items={items} linkComponent={linkComponent} ariaLabel={ariaLabel} />
+    </div>
+  );
+}
+
+/** The intro of an editorial listing page: trail, kicker, the page's h1, a lead and an action. */
+export function EditorialPageHeader({
+  breadcrumb,
+  linkComponent,
+  breadcrumbLabel,
+  eyebrow,
+  title,
+  description,
+  actions,
+  titleId,
+  className,
+}: EditorialPageHeaderProp) {
+  return (
+    <div data-slot="editorial-page-header" className={cn("ui-editorial-page-header", className)}>
+      {breadcrumb && breadcrumb.length > 0 && (
+        <EditorialBreadcrumb
+          items={breadcrumb}
+          linkComponent={linkComponent}
+          ariaLabel={breadcrumbLabel}
+        />
+      )}
+      <header className="ui-editorial-page-header-row">
+        <div className="ui-editorial-page-header-copy">
+          {eyebrow}
+          <h1 id={titleId} className="ui-editorial-page-header-title">
+            {title}
+          </h1>
+          {description != null && (
+            <p className="ui-editorial-page-header-description">{description}</p>
+          )}
+        </div>
+        {actions != null && <div className="ui-editorial-page-header-actions">{actions}</div>}
+      </header>
     </div>
   );
 }
