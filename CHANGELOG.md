@@ -6,6 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.13.0] - 2026-10-23
+
+### Added
+
+- Breadcrumb `currentItem="none"` and PageContainer `breadcrumbCurrentItem="none"` for linked ancestor-only trails; the default remains `"last"` (#1391).
+- BranchScopePicker: `selectionMode="single"`, `allowAll`, and `hideWhenSingle` for all/one-branch navigation and concrete record fields (#1389). Existing multiple-branch editing stays the default.
+- Sidebar and MobileShell More recipes with URL-owned viewing scope and independent, validated record branch state. No new shell component or router dependency.
+- **`visual-audit` runs on a `playwright-core` + Chrome the app already has (#1390).** New flags
+  `--playwright-module /abs/path/playwright-core` (a package dir or entry file exporting
+  `chromium`) and `--executable-path <chrome>` (passed to `chromium.launch`, over
+  `PLAYWRIGHT_CHROMIUM_EXECUTABLE`). Without the flag the engine is the `playwright` peer, then
+  `playwright-core`, looked up from the package and from the cwd. A bad explicit path is an error,
+  never a fallback, and the "nothing found" bootstrap error lists every place it looked.
+
+### Fixed
+
+- Truncated breadcrumb labels expose their full accessible name and title without a duplicate tooltip description in both trails. C01 explicitly validates the kit recovery pattern and still reports unrecoverable clipping (#1393).
+- Stacked DataTable/Table rows share the Card heading keyline at every density and in RTL
+  (#1394). The default inset resolves the live `--card-space-inset` minus the row border;
+  `--table-stacked-collection-card-padding-x` remains an independent override.
+- Calendar columns shrink inside narrow containers without reducing date targets below 24px;
+  desktop columns and embedded full-width calendars retain their sizing (#1383).
+- NumberInput fine-pointer hit areas centre correctly in RTL. The step-target gate measures
+  intersection on both axes for the horizontal 44px coarse targets and pins the intended
+  24×15 desktop paint of the 36px control band (#1383).
+
 ## [33.12.7] - 2026-10-23
 
 ### Fixed
@@ -21,36 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   min). The full name ("title, 16:00–17:00, description") is the block's tooltip and, when
   `onEventSelect` makes it a button, its accessible name; one-line blocks keep the end time for
   screen readers.
-### Added
-
-- Breadcrumb `currentItem="none"` and PageContainer `breadcrumbCurrentItem="none"` for linked ancestor-only trails; the default remains `"last"` (#1391).
-
-### Fixed
-
-- Truncated breadcrumb labels expose their full accessible name and title without a duplicate tooltip description in both trails. C01 explicitly validates the kit recovery pattern and still reports unrecoverable clipping (#1393).
-### Fixed
-
-- Stacked DataTable/Table rows share the Card heading keyline at every density and in RTL
-  (#1394). The default inset resolves the live `--card-space-inset` minus the row border;
-  `--table-stacked-collection-card-padding-x` remains an independent override.
-- Calendar columns shrink inside narrow containers without reducing date targets below 24px;
-  desktop columns and embedded full-width calendars retain their sizing (#1383).
-- NumberInput fine-pointer hit areas centre correctly in RTL. The step-target gate measures
-  intersection on both axes for the horizontal 44px coarse targets and pins the intended
-  24×15 desktop paint of the 36px control band (#1383).
-### Added
-
-- BranchScopePicker: `selectionMode="single"`, `allowAll`, and `hideWhenSingle` for all/one-branch navigation and concrete record fields (#1389). Existing multiple-branch editing stays the default.
-- Sidebar and MobileShell More recipes with URL-owned viewing scope and independent, validated record branch state. No new shell component or router dependency.
-
-### Added
-
-- **`visual-audit` runs on a `playwright-core` + Chrome the app already has (#1390).** New flags
-  `--playwright-module /abs/path/playwright-core` (a package dir or entry file exporting
-  `chromium`) and `--executable-path <chrome>` (passed to `chromium.launch`, over
-  `PLAYWRIGHT_CHROMIUM_EXECUTABLE`). Without the flag the engine is the `playwright` peer, then
-  `playwright-core`, looked up from the package and from the cwd. A bad explicit path is an error,
-  never a fallback, and the "nothing found" bootstrap error lists every place it looked.
 
 ## [33.12.6] - 2026-10-23
 

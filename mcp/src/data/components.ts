@@ -692,7 +692,7 @@ export const COMPONENTS: ComponentEntry[] = [
       {
         name: "breadcrumbCurrentItem",
         type: "BreadcrumbCurrentItemProp",
-        default: "last",
+        defaultValue: '"last"',
         description:
           "last | none, identical to Breadcrumb.currentItem. none keeps every supplied ancestor destination linked and emits no aria-current; the record name belongs in title. breadcrumb items also support ellipsis with the full label in aria-label and title, without a duplicate tooltip description.",
       },
@@ -3026,7 +3026,7 @@ export function TermsPage() {
       {
         name: "currentItem",
         type: "BreadcrumbCurrentItemProp",
-        default: "last",
+        defaultValue: '"last"',
         description:
           "last | none. none renders an ancestor-only trail: every item with to stays linked and no default segment has aria-current. Missing paths remain text. menu and itemRender keep owning their segment bodies; custom renderers own their ARIA.",
       },
