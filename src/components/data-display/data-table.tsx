@@ -139,6 +139,40 @@ import { pageSizeOptionsWith } from "../navigation/pagination-utils";
 // DataTable supports all three density tiers (compact 28 / default 36 /
 // comfortable 48) so a 表示密度 control can drive the full set, not just a
 // 2-way toggle.
+/** Read the rendered DOM: a custom component may own recovery behind an opaque React boundary. */
+function recoverCellText(cell: HTMLTableCellElement | null) {
+  if (!cell) return;
+  const part = truncatedPart(cell);
+  const value =
+    part && part !== cell
+      ? part
+      : (cell.querySelector(".ui-table-stacked-collection-value") ?? cell);
+  const selector = '[title]:not([title=""]), [aria-describedby]';
+  const carrier = value.closest(selector);
+  const recovery = carrier && carrier !== cell ? carrier : value.querySelector(selector);
+  if (recovery) {
+    if (cell.dataset.cellTitle !== undefined) {
+      cell.removeAttribute("title");
+      delete cell.dataset.cellTitle;
+    }
+    return;
+  }
+  if (!cell.title || cell.dataset.cellTitle !== undefined) {
+    const content = value.cloneNode(true) as HTMLElement;
+    content
+      .querySelectorAll('[aria-hidden="true"], [hidden], .sr-only, [role="tooltip"]')
+      .forEach((node) => node.remove());
+    const text = (content.textContent ?? "").replace(/\s+/g, " ").trim();
+    if (text) {
+      if (cell.title !== text) cell.title = text;
+      cell.dataset.cellTitle = "";
+    } else {
+      cell.removeAttribute("title");
+      delete cell.dataset.cellTitle;
+    }
+  }
+}
+
 export type Density = DensityProp;
 
 /**
@@ -1595,15 +1629,36 @@ DataTable.Content = function DataTableContent() {
   }, [fixedSignature]);
 
   // ── truncated cells, MEASURED (gh#1262) ─────────────────────────────────
-  // `ellipsis` hides the overflow, so a truncated cell must keep its text reachable — and only a
-  // TRUNCATED one: a title and a tab stop on every cell of a column would be noise. CSS cannot
-  // know which cells overflow, so each `ellipsis` body cell is measured and, while truncated,
-  // gains `data-truncated`, a `title` from its text when the column did not set one (a rendered
-  // cell has none — antd `ellipsis.showTitle` covers rendered cells too), and `tabindex="0"`
-  // unless it already holds something focusable, so a keyboard user can reach it; focus unfolds
+  // Text recovery is always available on ellipsis cells. Only a genuinely truncated cell
+  // gains `data-truncated` and a keyboard stop, so fitting cells add no keyboard noise.
+  // A cell that already holds something focusable needs no second stop. Focus unfolds
   // the text in table-layout.css (PatternFly `Truncate`). Re-measured after every render and on
   // every resize of the scroll region.
-  const hasEllipsis = !stacked && visibleColumns.some((col) => col.ellipsis);
+  const ellipsisEnabled = visibleColumns.some((col) => col.ellipsis);
+  const hasEllipsis = !stacked && ellipsisEnabled;
+  // Recovery is independent of truncation measurement and also runs in stacked cards.
+  // Observe opaque renderer updates and tooltip aria-describedby changes without replacing
+  // consumer recovery or leaving behind a second, stale title.
+  React.useLayoutEffect(() => {
+    const root = scrollRef.current;
+    if (!root || !ellipsisEnabled) return;
+    const sync = () => {
+      for (const cell of root.querySelectorAll<HTMLTableCellElement>(
+        "tbody td.ui-data-table-ellipsis",
+      ))
+        recoverCellText(cell);
+    };
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ["title", "aria-describedby"],
+    });
+    return () => observer.disconnect();
+  });
   const markTruncated = React.useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -1611,24 +1666,13 @@ DataTable.Content = function DataTableContent() {
       // A cell holding focus (itself or a link inside, gh#1267) is UNFOLDED, so it measures as
       // fitting; re-measuring it would drop its state under the user's focus. Re-measured on focusout.
       if (cell.contains(document.activeElement)) continue;
-      const ownTitle = cell.dataset.truncatedTitle !== undefined;
+      recoverCellText(cell as HTMLTableCellElement);
       const part = truncatedPart(cell);
       if (part) {
         cell.dataset.truncated = "";
-        // The title names the text that is CUT — a truncating `Text` beside a badge or an avatar
-        // titles with its own words, not the badge's — and steps aside when that part already
-        // carries a title of its own.
-        if ((!cell.title || ownTitle) && (part === cell || !part.title)) {
-          cell.title = (part.textContent ?? "").replace(/\s+/g, " ").trim();
-          cell.dataset.truncatedTitle = "";
-        }
         if (!cell.querySelector(TRUNCATION_FOCUSABLE)) cell.tabIndex = 0;
       } else if (cell.dataset.truncated !== undefined) {
         delete cell.dataset.truncated;
-        if (ownTitle) {
-          cell.removeAttribute("title");
-          delete cell.dataset.truncatedTitle;
-        }
         cell.removeAttribute("tabindex");
       }
     }
@@ -2232,6 +2276,7 @@ DataTable.Content = function DataTableContent() {
                         return (
                           <TableCell
                             key={col.key}
+                            ref={col.ellipsis ? recoverCellText : undefined}
                             priority={col.priority}
                             data-align={col.align}
                             title={title}

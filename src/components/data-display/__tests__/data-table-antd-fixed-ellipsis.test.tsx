@@ -126,14 +126,14 @@ describe("DataTable — antd `ellipsis`", () => {
     expect(b.querySelector(".ui-data-table-surface")).toHaveAttribute("data-table-layout", "fixed");
   });
 
-  it("does not invent a title for a rendered cell that is not truncated (jsdom lays out nothing; the truncated case is measured in data-table-ellipsis-1262-browser)", () => {
+  it("keeps full text recovery on a custom renderer before layout measurement (#1406)", () => {
     const columns: ColumnDef<Row>[] = [
       { key: "note", header: "メモ", ellipsis: true, render: (r) => <b>{r.note}</b> },
     ];
     const { container } = render(<DataTable data={data} columns={columns} />);
     const cell = container.querySelector('td[data-column-key="note"]')!;
     expect(cell).toHaveClass("ui-data-table-ellipsis");
-    expect(cell).not.toHaveAttribute("title");
+    expect(cell).toHaveAttribute("title", data[0]!.note);
     expect(screen.getAllByText("another long note")[0].tagName).toBe("B");
   });
 });

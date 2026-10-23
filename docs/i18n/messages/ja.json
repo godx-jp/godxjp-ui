@@ -1,4 +1,21 @@
 {
+  "personaExamples": {
+    "role": "権限",
+    "admin": "管理者",
+    "editor": "編集者",
+    "lastActive": "最終アクセス",
+    "status": "状態",
+    "active": "有効",
+    "inactive": "無効",
+    "sizes": "表示サイズ",
+    "minimal": "名前のみ・双方向のラベル",
+    "dark": "画像とダーク表示",
+    "name": "アレックス・モーガン 研究開発部",
+    "you": "（あなた）",
+    "member": "メンバー",
+    "email": "メールアドレス",
+    "members": "メンバー一覧"
+  },
   "affixTouchExamples": {
     "title": "狭い入力欄とタッチ操作",
     "description": "幅200pxでも、クリアと選択ボタンの領域は文字と重なりません。タッチ領域は44px、デスクトップの間隔は変わりません。",

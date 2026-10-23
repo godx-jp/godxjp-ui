@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.14.0] - 2026-10-23
+
+### Added
+
+- Persona: compact sm/md identity with a fixed avatar, independently titled bidi-safe name and secondary line, and an optional name-line badge; members-table docs (#1405).
+- Persona theme knobs for avatar/label/badge gaps, label typography and scoped role colors (#1405).
+
+### Fixed
+
+- DataTable stacked records use one separator between rows instead of adjacent card outlines.
+
+- DataTable ellipsis now recovers custom-rendered full text before measurement, including stacked cells, and avoids duplicating a renderer-owned title or tooltip (#1406).
+
 ## [33.13.0] - 2026-10-23
 
 ### Added
@@ -31,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NumberInput fine-pointer hit areas centre correctly in RTL. The step-target gate measures
   intersection on both axes for the horizontal 44px coarse targets and pins the intended
   24×15 desktop paint of the 36px control band (#1383).
+
 ## [33.12.8] - 2026-10-23
 
 ### Fixed

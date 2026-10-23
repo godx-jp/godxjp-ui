@@ -27,7 +27,17 @@ describe("stacked table rows (gh#351)", () => {
     expect(rule, `${size} stacked row rule`).toContain("height: auto");
   });
 
-  it.each(BREAKPOINTS)("the %s card border reads the stroke token", (size) => {
+  it.each(BREAKPOINTS)("the %s card separator reads the stroke token", (size) => {
     expect(stackedRowRule(size)).toContain("var(--stroke-hairline)");
+  });
+  it.each(BREAKPOINTS)("%s records have one boundary, without adjacent card outlines", (size) => {
+    const rule = stackedRowRule(size);
+    expect(rule).toContain("border: 0");
+    expect(rule).toContain("border-block-end: var(--stroke-hairline)");
+    expect(tableStyles).toMatch(
+      new RegExp(
+        `\\[data-collapse-below="${size}"\\] \\.ui-table-row:last-child\\s*\\{[^}]*border-block-end-width: 0`,
+      ),
+    );
   });
 });

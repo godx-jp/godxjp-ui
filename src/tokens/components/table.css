@@ -263,7 +263,7 @@
  * column-priority measure to retune — the whole row becomes one block). */
 :root {
   --table-stacked-collection-card-padding-y: var(--space-stack-sm);
-  --table-stacked-collection-card-padding-x: initial; /* default = Card inset minus the row border, resolved at the row */
+  --table-stacked-collection-card-padding-x: initial; /* default = Card inset, resolved at the row */
   --table-stacked-collection-card-gap: var(--space-stack-sm);
   --table-stacked-collection-cell-padding-y: var(--space-stack-xs);
   /* Inline inset of a folded cell inside its card (gh#1102). 0: the card's own

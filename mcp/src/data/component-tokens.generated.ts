@@ -6749,6 +6749,56 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Room around the chart inside its scroll region, so an edge box's focus ring is not clipped."
   },
   {
+    "name": "--persona-avatar-gap",
+    "value": "initial",
+    "description": "Default var(--space-2)."
+  },
+  {
+    "name": "--persona-label-gap",
+    "value": "initial",
+    "description": "Default zero, set at the call site."
+  },
+  {
+    "name": "--persona-trailing-gap",
+    "value": "initial",
+    "description": "Default var(--space-1)."
+  },
+  {
+    "name": "--persona-label-line-height",
+    "value": "1.5",
+    "description": "Identity geometry. Initial spacing/type defaults resolve against the local density."
+  },
+  {
+    "name": "--persona-name-font-size",
+    "value": "initial",
+    "description": "Default var(--font-size-sm)."
+  },
+  {
+    "name": "--persona-name-font-size-sm",
+    "value": "initial",
+    "description": "Default var(--font-size-xs)."
+  },
+  {
+    "name": "--persona-name-font-weight",
+    "value": "initial",
+    "description": "Default var(--font-weight-medium)."
+  },
+  {
+    "name": "--persona-description-font-size",
+    "value": "initial",
+    "description": "Default var(--font-size-xs)."
+  },
+  {
+    "name": "--persona-name-color",
+    "value": "initial",
+    "description": "Role mirror: hsl(var(--foreground))."
+  },
+  {
+    "name": "--persona-description-color",
+    "value": "initial",
+    "description": "Role mirror: hsl(var(--muted-foreground))."
+  },
+  {
     "name": "--resizable-handle-size",
     "value": "var(--control-border-width, var(--stroke-hairline))",
     "description": "Separator layout thickness; focus paint must not reserve extra space."
@@ -8801,7 +8851,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-stacked-collection-card-padding-x",
     "value": "initial",
-    "description": "default = Card inset minus the row border, resolved at the row"
+    "description": "default = Card inset, resolved at the row"
   },
   {
     "name": "--table-stacked-collection-card-gap",

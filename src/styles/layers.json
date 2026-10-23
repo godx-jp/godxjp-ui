@@ -768,6 +768,11 @@
         "form-layout.css"
       ]
     },
+    "Persona": {
+      "layers": [
+        "data-display-layout.css"
+      ]
+    },
     "PieChart": {
       "layers": [
         "layout.css",

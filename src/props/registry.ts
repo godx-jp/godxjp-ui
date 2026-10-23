@@ -2824,6 +2824,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "OnColumnFilterChangeProp",
     ],
   },
+  PersonaProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["SizeProp", "ClassNameProp", "DescriptionProp"],
+  },
   ListRowDensityProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

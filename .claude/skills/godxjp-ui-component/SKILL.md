@@ -186,6 +186,14 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
   not something the primitive hardcodes. Guarded by `pnpm check:control-sizing`
   (error on ad-hoc offsets, warn on literal control-box heights).
 
+### Rendered text recovery (#1405 / #1406)
+
+For ellipsized custom cells, inspect the rendered DOM rather than the React element tree: an opaque
+renderer can own a title or tooltip. Recover the actual clipped label, exclude hidden stacked column
+labels and decorative avatar text, and test both no-recovery and already-recovered output. Truncated
+identity labels use `dir="auto"` independently, preserving their beginning in either page direction;
+align a shrink-wrapped secondary label to the parent flex start to keep the identity keyline.
+
 ## 4. Catalog + docs
 
 - Add a **`mcp/src/data/components.ts`** entry (props/usage/useCases/related/example/rules) — guarded
