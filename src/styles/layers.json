@@ -293,6 +293,21 @@
         "navigation-layout.css"
       ]
     },
+    "CatalogDetail": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "CatalogDetailSection": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "CatalogDetailTag": {
+      "layers": [
+        "layout.css"
+      ]
+    },
     "CenteredShell": {
       "layers": [
         "shell-layout.css"
@@ -576,6 +591,11 @@
         "layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
+      ]
+    },
+    "EditorialPrompt": {
+      "layers": [
+        "layout.css"
       ]
     },
     "EditorialSearch": {
@@ -935,6 +955,11 @@
     },
     "PrefetchLink": {
       "layers": []
+    },
+    "PriceSummary": {
+      "layers": [
+        "layout.css"
+      ]
     },
     "Progress": {
       "layers": [

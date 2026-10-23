@@ -47,6 +47,11 @@ describe("EditorialPageHeader search slot (gh#1438)", () => {
     expect(slot).toMatch(/max-width:\s*var\(--editorial-page-header-search-max-width\)/);
     expect(slot).toMatch(/margin-block-start:\s*var\(--editorial-page-header-search-space-block-start\)/);
     expect(tokens).toMatch(/--editorial-page-header-search-max-width:\s*45rem/);
+    // The search button inside a page header drops the hero's arrow.
+    expect(slot).toMatch(
+      /--editorial-search-button-icon-display:\s*var\(--editorial-page-header-search-button-icon-display\)/,
+    );
+    expect(tokens).toMatch(/--editorial-page-header-search-button-icon-display:\s*none/);
   });
 });
 

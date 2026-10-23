@@ -4484,6 +4484,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {
+    "name": "--editorial-page-header-search-button-icon-display",
+    "value": "none",
+    "description": "A page header's search button is the bare label (the hero's carries an arrow)."
+  },
+  {
     "name": "--editorial-article-max-width",
     "value": "47.5rem",
     "description": "── EditorialArticle (+ Section, Note) — the reading column (gh#1440) ────────────────────"
@@ -6282,6 +6287,481 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--editorial-listing-toolbar-control-background",
     "value": "initial",
     "description": "Default = hsl(var(--card))."
+  },
+  {
+    "name": "--editorial-catalog-detail-track-size",
+    "value": "21.875rem minmax(0, 1fr)",
+    "description": "Tracks: the frame column and the copy; a phone theme sets one track (minmax(0, 1fr))."
+  },
+  {
+    "name": "--editorial-catalog-detail-gap",
+    "value": "4rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-padding-block-start",
+    "value": "2rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-padding-block-end",
+    "value": "2.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-art-min-height",
+    "value": "26.25rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-art-height",
+    "value": "auto",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-art-max-width",
+    "value": "none",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-art-padding",
+    "value": "2.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-art-radius",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-media-width",
+    "value": "15.625rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-media-height",
+    "value": "auto",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-media-max-height",
+    "value": "22.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-media-shadow",
+    "value": "0 10px 12px rgb(48 43 41 / 0.14)",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-caption-font-size",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-caption-line-height",
+    "value": "1.8",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-caption-space-block-start",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-title-font-size",
+    "value": "2.25rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-title-line-height",
+    "value": "1.6",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-title-letter-spacing",
+    "value": "-0.025em",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-title-space-block-start",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-title-space-block-end",
+    "value": "1rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-meta-gap",
+    "value": "0.625rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-meta-space-block-end",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-tag-min-height",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-tag-padding-block",
+    "value": "2px",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-tag-padding-inline",
+    "value": "0.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-tag-radius",
+    "value": "4px",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-tag-font-size",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-tag-line-height",
+    "value": "1.5",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-summary-padding-block",
+    "value": "1.25rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-summary-label-font-size",
+    "value": "0.8125rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-summary-label-line-height",
+    "value": "1.8",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-summary-price-font-size",
+    "value": "2.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-summary-price-line-height",
+    "value": "1.4",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-summary-price-space-block",
+    "value": "0.375rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-summary-price-suffix-font-size",
+    "value": "1rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-actions-gap",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-actions-space-block-start",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-facts-track-size",
+    "value": "1fr 1fr",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-facts-gap",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-facts-space-block-start",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-facts-font-size",
+    "value": "0.875rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-facts-line-height",
+    "value": "1.8",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-fact-padding-block",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-fact-label-font-size",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-fact-label-line-height",
+    "value": "1.8",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-fact-label-space-block-end",
+    "value": "3px",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-section-padding-block",
+    "value": "2.5rem",
+    "description": "── CatalogDetailSection (gh#1438) ───────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-catalog-detail-section-title-font-size",
+    "value": "1.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-section-title-line-height",
+    "value": "1.55",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-section-title-letter-spacing",
+    "value": "-0.025em",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-section-title-space-block-end",
+    "value": "1rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-section-description-font-size",
+    "value": "0.875rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-section-description-line-height",
+    "value": "1.8",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-catalog-detail-section-description-max-width",
+    "value": "50rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-radius",
+    "value": "0.75rem",
+    "description": "── PriceSummary (gh#1438) ───────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-price-summary-space-block-end",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-cell-padding-block",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-cell-padding-inline",
+    "value": "1.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-cell-gap",
+    "value": "0.5625rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-cell-width-basis",
+    "value": "0%",
+    "description": "Flex basis of a figure cell: 0% shares the row; a phone theme sets two per row."
+  },
+  {
+    "name": "--editorial-price-summary-context-size-grow",
+    "value": "1.15",
+    "description": "The context cell: its share of the row, and its basis (100% puts it on its own row)."
+  },
+  {
+    "name": "--editorial-price-summary-context-width-basis",
+    "value": "0%",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-label-font-size",
+    "value": "0.875rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-label-line-height",
+    "value": "1.8",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-value-font-size",
+    "value": "2.25rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-value-line-height",
+    "value": "1.3",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-value-letter-spacing",
+    "value": "-0.04em",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-caption-font-size",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-caption-line-height",
+    "value": "1.8",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-context-font-size",
+    "value": "1.0625rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-context-line-height",
+    "value": "1.8",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-price-summary-context-min-height",
+    "value": "2.4375rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-padding",
+    "value": "1.75rem",
+    "description": "── EditorialPrompt (gh#1438) ────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-prompt-gap",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-radius",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-align-wrap",
+    "value": "nowrap",
+    "description": "nowrap keeps glyph, copy and action on one row; wrap lets the action drop under the copy."
+  },
+  {
+    "name": "--editorial-prompt-icon-display",
+    "value": "grid",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-icon-size",
+    "value": "3.25rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-icon-glyph-size",
+    "value": "1.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-copy-width-basis",
+    "value": "auto",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-copy-min-width",
+    "value": "0rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-title-font-size",
+    "value": "1.3125rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-title-line-height",
+    "value": "1.65",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-title-space-block-end",
+    "value": "0.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-description-font-size",
+    "value": "0.875rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-description-line-height",
+    "value": "1.85",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-description-max-width",
+    "value": "41.875rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-note-font-size",
+    "value": "0.75rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-note-space-block-start",
+    "value": "0.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-action-inset-inline-start",
+    "value": "0rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-action-width-basis",
+    "value": "auto",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-action-radius",
+    "value": "0.5rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-action-padding-inline",
+    "value": "1.125rem",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
+  },
+  {
+    "name": "--editorial-prompt-action-font-weight",
+    "value": "var(--font-weight-regular, 400)",
+    "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {
     "name": "--editorial-banner-kicker-font-size",

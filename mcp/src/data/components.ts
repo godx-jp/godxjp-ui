@@ -1540,6 +1540,92 @@ import { Select } from "@godxjp/ui/data-entry";
 <EditorialListingToolbar count="396 results" note="Prices are reference values." actions={<Select aria-label="Sort" value={sort} onValueChange={setSort} options={sorts} />} />`,
   },
   {
+    name: "CatalogDetail",
+    group: "layout",
+    tagline:
+      "The head of a catalog item's page (gh#1438): a framed picture with the save toggle over its corner and a caption, beside the kicker, the page's h1, a row of CatalogDetailTags, a summary price between hairlines, actions and a two-column facts list. Geometry: `--editorial-catalog-detail-*`.",
+    props: [
+      { name: "variant", type: '"card" | "sealed"', defaultValue: '"card"', description: "Frame for a card or a sealed package." },
+      { name: "media", type: "ReactNode", required: true, description: "The picture." },
+      { name: "favorite", type: "{ pressed; onPressedChange; label; disabled? }", description: "Save toggle over the frame." },
+      { name: "mediaCaption", type: "ReactNode", description: "Line under the frame." },
+      { name: "overline", type: "ReactNode", description: "Kicker (an Eyebrow)." },
+      { name: "title", type: "ReactNode", required: true, description: "The h1." },
+      { name: "meta", type: "ReactNode", description: "CatalogDetailTags." },
+      { name: "summary", type: "{ label?; price; note? }", description: "Summary price block." },
+      { name: "actions", type: "ReactNode", description: "Actions under the summary." },
+      { name: "facts", type: "{ key; label; value }[]", description: "Facts, two columns." },
+    ],
+    usage: ["DO pass the item's one h1 as title; the page has no other h1.", "DO use CatalogCard for the same item in a grid."],
+    related: ["CatalogCard — the item in a grid.", "CatalogDetailSection — the bands under it."],
+    example: `import { CatalogDetail, CatalogDetailTag, Eyebrow } from "@godxjp/ui/layout";
+
+<CatalogDetail media={<img src={src} alt={name} />} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: "Market", price: "¥32,800" }} facts={[{ key: "set", label: "Expansion", value: "151" }]} />`,
+  },
+  {
+    name: "CatalogDetailTag",
+    group: "layout",
+    tagline: "One outlined tag (number, rarity, printed language) in a CatalogDetail meta row (gh#1438).",
+    props: [{ name: "children", type: "ReactNode", required: true, description: "Tag text." }],
+    usage: ["DO keep it to a short code or word."],
+    related: ["CatalogCardTag — the tag of a grid tile."],
+    example: `import { CatalogDetailTag } from "@godxjp/ui/layout";
+
+<CatalogDetailTag>SV8 132/106</CatalogDetailTag>`,
+  },
+  {
+    name: "CatalogDetailSection",
+    group: "layout",
+    tagline:
+      "One band of an item page under its head (gh#1438): a top hairline, an h2, a muted paragraph, then anything else. Geometry: `--editorial-catalog-detail-section-*`.",
+    props: [
+      { name: "title", type: "ReactNode", description: "The h2." },
+      { name: "description", type: "ReactNode", description: "Muted paragraph." },
+      { name: "children", type: "ReactNode", description: "Anything after." },
+      { name: "titleId", type: "string", description: "Id on the h2 (names the section)." },
+    ],
+    usage: ["DO pass titleId so the section is a named region."],
+    related: ["EditorialSection — a full-width band of a sections page."],
+    example: `import { CatalogDetailSection } from "@godxjp/ui/layout";
+
+<CatalogDetailSection titleId="info" title="Card information" description="From the catalogue." />`,
+  },
+  {
+    name: "PriceSummary",
+    group: "layout",
+    tagline:
+      "A joined strip of headline figures (gh#1438): one bordered surface split by hairlines, each cell a label, a figure in the number face and a caption, with an optional wider context cell on the subtle ground. Geometry: `--editorial-price-summary-*`.",
+    props: [
+      { name: "items", type: "{ key; label; value; caption? }[]", required: true, description: "Figure cells." },
+      { name: "context", type: "{ label; value; caption? }", description: "Context cell (conditions compared)." },
+    ],
+    usage: ["DO keep each value one formatted figure; put the source and date in caption."],
+    related: ["Statistic — one KPI in a dashboard."],
+    example: `import { PriceSummary } from "@godxjp/ui/layout";
+
+<PriceSummary items={[{ key: "sell", label: "Asking", value: "¥32,800", caption: "Japan · JPY" }]} context={{ label: "Compared", value: "JP · NM · Raw" }} />`,
+  },
+  {
+    name: "EditorialPrompt",
+    group: "layout",
+    tagline:
+      'A polite inline invitation (gh#1438): a round glyph, a heading, a short paragraph and a note, with one action at the end ("sign in to see more"). Not a live region. Geometry: `--editorial-prompt-*`.',
+    props: [
+      { name: "icon", type: "ReactNode", description: "Glyph in the round badge." },
+      { name: "title", type: "ReactNode", required: true, description: "Heading." },
+      { name: "description", type: "ReactNode", description: "Paragraph." },
+      { name: "note", type: "ReactNode", description: "Small note." },
+      { name: "action", type: "ReactNode", description: "The one action." },
+      { name: "level", type: "2 | 3 | 4", defaultValue: "3", description: "Heading level." },
+    ],
+    usage: ["DO use Alert for a status message; this is an invitation that is there when the page loads."],
+    related: ["Alert — status messages.", "EmptyState — nothing to show."],
+    example: `import { EditorialPrompt } from "@godxjp/ui/layout";
+import { Lock } from "lucide-react";
+
+<EditorialPrompt icon={<Lock />} title="See more when you sign in" description="Per-market prices and history are for members." action={<Button asChild><a href="/login">Sign in</a></Button>} />`,
+  },
+  {
     name: "PageCover",
     tier: "lab",
     importPath: "@godxjp/ui/lab",

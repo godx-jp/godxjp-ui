@@ -2684,3 +2684,82 @@ export type EditorialListingToolbarProp = {
   actions?: ReactNode;
   className?: ClassNameProp;
 };
+
+/**
+ * @see CatalogDetail — the head of a catalog item's page (gh#1438): a framed picture with the save
+ * toggle over its corner and a caption under it, beside the item's kicker, its h1, a row of tags,
+ * a summary price between two hairlines, actions and a two-column facts list.
+ * Geometry: `--editorial-catalog-detail-*`.
+ */
+export type CatalogDetailProp = {
+  /** `"sealed"` frames a product package instead of a card. */
+  variant?: "card" | "sealed";
+  /** The picture — an `<img>` (or a link around one). */
+  media: ReactNode;
+  /** The save toggle over the frame's corner (same shape as `CatalogCard`'s). */
+  favorite?: CatalogCardProp["favorite"];
+  /** A line under the frame (the picture's source, an official link). */
+  mediaCaption?: ReactNode;
+  /** The kicker above the title — usually an `Eyebrow` with the game. */
+  overline?: ReactNode;
+  /** The page's one h1. */
+  title: TitleProp;
+  /** Tags under the title — `CatalogDetailTag`s (number, rarity, printed language). */
+  meta?: ReactNode;
+  /** The summary price block: a label, the figure, a note. */
+  summary?: { label?: ReactNode; price: ReactNode; note?: ReactNode };
+  /** The actions under the summary (add to collection, compare prices). */
+  actions?: ReactNode;
+  /** The facts list (game, expansion, language …), two columns. */
+  facts?: { key: string; label: ReactNode; value: ReactNode }[];
+  className?: ClassNameProp;
+};
+
+/** @see CatalogDetailTag — one outlined tag in a `CatalogDetail` meta row. */
+export type CatalogDetailTagProp = {
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see CatalogDetailSection — one band of an item page under its head (gh#1438): a top hairline,
+ * an h2 and a muted paragraph, then anything else (a list, a grid).
+ */
+export type CatalogDetailSectionProp = {
+  title?: TitleProp;
+  description?: DescriptionProp;
+  children?: ChildrenProp;
+  /** Id put on the h2. */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see PriceSummary — a joined strip of headline figures (gh#1438): one bordered surface, cells
+ * split by hairlines, each a label, a figure in the number face and a caption; an optional context
+ * cell (the conditions compared) on the subtle ground, a little wider.
+ * Geometry: `--editorial-price-summary-*`.
+ */
+export type PriceSummaryProp = {
+  items: { key: string; label: ReactNode; value: ReactNode; caption?: ReactNode }[];
+  context?: { label: ReactNode; value: ReactNode; caption?: ReactNode };
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialPrompt — a polite inline invitation (gh#1438): a round glyph, a heading, a short
+ * paragraph and a note, with one action at the end ("sign in to see more"). Not a live region.
+ * Geometry: `--editorial-prompt-*`.
+ */
+export type EditorialPromptProp = {
+  /** The glyph in the round badge (an icon element). */
+  icon?: ReactNode;
+  title: TitleProp;
+  description?: DescriptionProp;
+  note?: ReactNode;
+  /** The one action — usually a `Button asChild` around a link. */
+  action?: ReactNode;
+  /** Heading level. Default `3`. */
+  level?: 2 | 3 | 4;
+  className?: ClassNameProp;
+};
