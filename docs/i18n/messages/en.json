@@ -2387,5 +2387,20 @@
     "switchUser": "Switch demo user",
     "description": "The signed-in name stays visible. Topbar identity reserves at most 40% of the bar; TopbarItem truncate ellipsises only the name and keeps the full name in its title and accessible text.",
     "policy": "Primary controls keep their minimum sizes. At extreme widths the other clusters follow scroll, clip or menu; identity stays outside. Use TopbarSearch for search. Do not combine identity with labelHideBelow, hideBelow or iconHideFrom. Theme knobs: --topbar-identity-max-inline-size and --topbar-identity-min-text-inline-size."
+  },
+  "docs": {
+    "branchNavigation": {
+      "title": "Branch scope",
+      "intro": "Use a shared branch scope in navigation while keeping record branch selection independent.",
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "guidance": "Viewing scope is saved in the URL. Record forms require one concrete branch and keep separate state; All branches is never a record branch.",
+      "record": "Record branch",
+      "required": "Choose one permitted branch.",
+      "save": "Save",
+      "saved": "Saved",
+      "more": "More",
+      "scope": "Viewing scope"
+    }
   }
 }

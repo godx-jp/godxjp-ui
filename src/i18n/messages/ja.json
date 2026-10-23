@@ -155,19 +155,20 @@
       "placeholder": "年月を選択"
     },
     "branchScope": {
-      "label": "ブランチ範囲",
-      "all": "すべてのブランチ",
-      "allDescription": "現在および今後のすべてのブランチに適用",
-      "selected": "選択したブランチのみ",
-      "selectedDescription": "下で選択したブランチにのみ適用",
-      "listLabel": "ブランチ",
-      "searchPlaceholder": "ブランチを検索",
+      "label": "支店範囲",
+      "all": "すべての支店",
+      "allDescription": "現在および今後のすべての支店に適用",
+      "selected": "選択した支店のみ",
+      "selectedDescription": "下で選択した支店にのみ適用",
+      "listLabel": "支店",
+      "searchPlaceholder": "支店を検索",
       "selectedCount": "{count} 件選択中",
-      "empty": "選択できるブランチがありません",
-      "error": "ブランチを取得できませんでした",
-      "denied": "ブランチを表示する権限がありません",
-      "loading": "ブランチを読み込み中…",
-      "noMatches": "検索に一致するブランチがありません"
+      "empty": "選択できる支店がありません",
+      "error": "支店を取得できませんでした",
+      "denied": "支店を表示する権限がありません",
+      "loading": "支店を読み込み中…",
+      "noMatches": "検索に一致する支店がありません",
+      "choose": "支店を選択"
     },
     "formErrors": {
       "title": "入力内容にエラーがあります"

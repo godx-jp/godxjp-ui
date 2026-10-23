@@ -38,6 +38,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NumberInput fine-pointer hit areas centre correctly in RTL. The step-target gate measures
   intersection on both axes for the horizontal 44px coarse targets and pins the intended
   24×15 desktop paint of the 36px control band (#1383).
+### Added
+
+- BranchScopePicker: `selectionMode="single"`, `allowAll`, and `hideWhenSingle` for all/one-branch navigation and concrete record fields (#1389). Existing multiple-branch editing stays the default.
+- Sidebar and MobileShell More recipes with URL-owned viewing scope and independent, validated record branch state. No new shell component or router dependency.
+
 
 ## [33.12.6] - 2026-10-23
 

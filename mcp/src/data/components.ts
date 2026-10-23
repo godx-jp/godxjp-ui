@@ -1713,6 +1713,7 @@ export function MyPage() {
       },
     ],
     usage: [
+      "Compose a More destination in tabBar with SheetTrigger + Sheet + BranchScopePicker selectionMode=single; see layout/mobile-branch-scope.tsx. MobileShell does not own routes or a built-in More menu.",
       "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · the auth CenteredShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
       "DO let `children` be the only thing that scrolls. Put the primary verb in `actions` and navigation in `tabBar` — both sit outside the scroll region, so neither needs `position: sticky`, a z-index, or bottom padding to clear the other.",
       "DO NOT compose one out of <Card> + `ui-card-inset*` + `overflow-y-auto` (what docs/showcase/case6 did before gh#354). That reproduces the look and neither behaviour that matters on a device: the document still scrolls, and nothing pads out of env(safe-area-inset-*), so the notch covers the app bar and the home indicator covers the primary button.",
@@ -1875,6 +1876,7 @@ export function HandyInbound() {
       },
     ],
     usage: [
+      "For app-local branch viewing scope, put one BranchScopePicker selectionMode=single in action above navigation; see data-entry/branch-scope-navigation.tsx. This differs from platform OrgSwitcher.",
       "DO: Define all nav items as a SidebarSectionProp[] data structure and pass it to sections — never hand-roll nav buttons alongside or instead of the Sidebar.",
       "DO: Add children: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The group auto-opens and highlights when activeId matches any descendant. The SAME field drives NavList (gh#815), so one grouped settings nav is one NavList and one <nav> landmark.",
       "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
@@ -17523,6 +17525,27 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
     tagline: "Canonical scope control: all branches vs an explicit subset.",
     props: [
       {
+        name: "selectionMode",
+        type: '"single" | "multiple"',
+        defaultValue: '"multiple"',
+        description:
+          "Single compact Select for all/one branch; multiple keeps the existing all/subset editor.",
+      },
+      {
+        name: "allowAll",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Allow organization-wide scope. Set false for record fields, then validate exactly one permitted concrete branch on submit. Invalid supplied values are not silently coerced.",
+      },
+      {
+        name: "hideWhenSingle",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Hide after a successful read of one enabled branch, except validation errors. Does not emit a change or normalize URL/default values; the app does that.",
+      },
+      {
         name: "value",
         type: "BranchScopeValueProp",
         description: "Giá trị có kiểm soát: phạm vi đang chọn.",
@@ -17593,7 +17616,7 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
         name: "name",
         type: "string",
         description:
-          "Native form name, forwarded to the MODE radio group — the all / selected choice is what submits under it. The checked branch ids are not native fields; they live in the single `{ mode, branchIds }` value and are yours to serialise.",
+          "Native form name: multiple submits the MODE radio; single submits the Select key (`all` or `branch:<id>`). Serialize the public `{ mode, branchIds }` value yourself for domain records; native keys are not branch ownership.",
       },
       {
         name: "id",
@@ -17603,6 +17626,8 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
       },
     ],
     usage: [
+      "Use selectionMode=single in Sidebar action (above navigation) and a Sheet opened from MobileShell tabBar More. These are compositions, not a new switcher. OrgSwitcher changes organization and stays in platform chrome.",
+      "The app owns URL parsing, validation against authorized branches, popstate/router updates, and onValueChange navigation. Resolve a single authorized branch in the app before hiding the picker. Viewing scope is not record ownership: record forms use separate state, selectionMode=single and allowAll=false, and validate exactly one permitted id on submit. Future groups need an explicit value contract; do not encode them as branch ids.",
       "DO treat scope as ONE form field: the single { mode, branchIds } value goes through FormField like any other control.",
       "DO import it from @godxjp/ui/data-entry — never compose an ad-hoc radio+checkbox scope block per screen.",
       "DO use `error` ONLY for validation (e.g. mode=selected with zero branches checked); a failed branch fetch is `listError`, a 403 is `denied`.",

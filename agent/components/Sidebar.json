@@ -97,6 +97,7 @@
   ],
   "tagline": "Data-driven vertical nav rail with collapsible submenu groups and a collapsed icon-only mode — never build nav manually with raw buttons.",
   "usage": [
+    "For app-local branch viewing scope, put one BranchScopePicker selectionMode=single in action above navigation; see data-entry/branch-scope-navigation.tsx. This differs from platform OrgSwitcher.",
     "DO: Define all nav items as a SidebarSectionProp[] data structure and pass it to sections — never hand-roll nav buttons alongside or instead of the Sidebar.",
     "DO: Add children: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The group auto-opens and highlights when activeId matches any descendant. The SAME field drives NavList (gh#815), so one grouped settings nav is one NavList and one <nav> landmark.",
     "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",

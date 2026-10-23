@@ -2380,5 +2380,20 @@
     "switchUser": "Đổi người dùng mẫu",
     "description": "Tên người đăng nhập luôn hiển thị. Topbar identity dành tối đa 40% thanh; TopbarItem truncate chỉ rút gọn tên, giữ tên đầy đủ trong title và văn bản hỗ trợ tiếp cận.",
     "policy": "Các điều khiển chính giữ kích thước tối thiểu. Khi quá hẹp, các cụm khác dùng scroll, clip hoặc menu; danh tính ở bên ngoài. Dùng TopbarSearch để tìm kiếm. Không kết hợp identity với labelHideBelow, hideBelow hoặc iconHideFrom. Token: --topbar-identity-max-inline-size / --topbar-identity-min-text-inline-size."
+  },
+  "docs": {
+    "branchNavigation": {
+      "title": "Phạm vi chi nhánh",
+      "intro": "Dùng phạm vi chi nhánh chung trong điều hướng và chọn chi nhánh của bản ghi độc lập.",
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "guidance": "Phạm vi xem được lưu trong URL. Biểu mẫu bản ghi dùng trạng thái riêng và phải chọn một chi nhánh cụ thể, không bao giờ là Tất cả.",
+      "record": "Chi nhánh của bản ghi",
+      "required": "Chọn một chi nhánh được phép.",
+      "save": "Lưu",
+      "saved": "Đã lưu",
+      "more": "Thêm",
+      "scope": "Phạm vi xem"
+    }
   }
 }
