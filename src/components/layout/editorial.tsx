@@ -642,6 +642,7 @@ export function EditorialMastheadSelect({
   value,
   options,
   onValueChange,
+  collapse = false,
   id,
   className,
 }: EditorialMastheadSelectProp) {
@@ -657,6 +658,7 @@ export function EditorialMastheadSelect({
         value={value}
         onChange={(event) => onValueChange(event.target.value)}
         data-slot="editorial-masthead-select"
+        data-collapse={collapse ? "" : undefined}
         className={cn("ui-editorial-masthead-select ui-focus-ring", className)}
       >
         {options.map((option) => (

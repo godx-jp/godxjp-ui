@@ -2509,6 +2509,8 @@ export type EditorialMastheadSelectProp = {
   value: string;
   options: { value: string; label: string }[];
   onValueChange: (value: string) => void;
+  /** Let the theme hide it on a phone (`--editorial-masthead-collapsible-display`), e.g. when the menu repeats it. */
+  collapse?: boolean;
   id?: IdProp;
   className?: ClassNameProp;
 };

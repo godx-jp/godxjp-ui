@@ -1597,7 +1597,11 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Submit handler receiving the trimmed query and the scope value.",
       },
-      { field: "scope", local: true, reason: "Optional scope select at the start of the box (search per game)." },
+      {
+        field: "scope",
+        local: true,
+        reason: "Optional scope select at the start of the box (search per game).",
+      },
     ],
   },
   EditorialPillNavProp: {
@@ -1771,6 +1775,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "IdProp",
       "ClassNameProp",
       { field: "options", local: true, reason: "The native options: value and visible label." },
+      { field: "collapse", local: true, reason: "Let the theme hide it on a phone." },
     ],
   },
   EditorialFooterProp: {

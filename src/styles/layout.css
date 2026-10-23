@@ -3366,7 +3366,10 @@
     width: var(--editorial-pill-dot-size);
     height: var(--editorial-pill-dot-size);
     border-radius: var(--editorial-pill-dot-radius);
-    background: var(--editorial-pill-dot-color, var(--editorial-ornament-color, hsl(var(--border))));
+    background: var(
+      --editorial-pill-dot-color,
+      var(--editorial-ornament-color, hsl(var(--border)))
+    );
   }
 
   .ui-editorial-pill-icon {
@@ -4178,6 +4181,10 @@
     font: inherit;
     font-size: var(--editorial-masthead-select-font-size);
     cursor: pointer;
+  }
+
+  .ui-editorial-masthead-select[data-collapse] {
+    display: var(--editorial-masthead-collapsible-display);
   }
 
   /* ── EditorialFooter ──────────────────────────────────────────────────────────────────────── */

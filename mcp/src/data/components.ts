@@ -1251,7 +1251,7 @@ import { Button } from "@godxjp/ui/general";
     name: "EditorialMasthead",
     group: "layout",
     tagline:
-      'A public site\'s header row (gh#1435) for CenteredShell\'s `topbar` slot: the logo, primary navigation (`EditorialMastheadLink`; `aria-current="page"` underlines the current one) and end actions (`EditorialMastheadSelect` for the interface language, `EditorialMastheadAction` 44px icon controls, `variant="outline"` for the account). The bar holding it turns sticky and translucent. `menu` is the phone-only trigger shown when the theme hides `nav`. Geometry: `--editorial-masthead-*`.',
+      'A public site\'s header row (gh#1435) for CenteredShell\'s `topbar` slot: the logo, primary navigation (`EditorialMastheadLink`; `aria-current="page"` underlines the current one) and end actions (`EditorialMastheadSelect` for the interface language or the display currency — `collapse` lets the theme drop it on a phone, `EditorialMastheadAction` 44px icon controls, `variant="outline"` for the account). The bar holding it turns sticky and translucent. `menu` is the phone-only trigger shown when the theme hides `nav`. Geometry: `--editorial-masthead-*`.',
     subParts: ["EditorialMastheadLink", "EditorialMastheadAction", "EditorialMastheadSelect"],
     props: [
       { name: "brand", type: "ReactNode", required: true, description: "The logo link." },

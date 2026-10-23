@@ -420,6 +420,13 @@ describe("EditorialMasthead (gh#1435)", () => {
               ]}
               onValueChange={onLocale}
             />
+            <EditorialMastheadSelect
+              label="表示通貨"
+              value="JPY"
+              options={[{ value: "JPY", label: "¥ JPY" }]}
+              onValueChange={() => {}}
+              collapse
+            />
             <EditorialMastheadAction aria-label="配色を切り替える" collapse>
               ☾
             </EditorialMastheadAction>
@@ -443,6 +450,10 @@ describe("EditorialMasthead (gh#1435)", () => {
     expect(onLocale).toHaveBeenCalledWith("en");
     expect(screen.getByRole("button", { name: "配色を切り替える" })).toHaveAttribute(
       "data-collapse",
+    );
+    expect(screen.getByRole("combobox", { name: "表示通貨" })).toHaveAttribute("data-collapse");
+    expect(rule(".ui-editorial-masthead-select[data-collapse]")).toMatch(
+      /display:\s*var\(--editorial-masthead-collapsible-display\)/,
     );
     expect(screen.getByRole("link", { name: "ログイン" })).toHaveAttribute(
       "data-variant",
@@ -483,9 +494,9 @@ describe("EditorialFooter (gh#1435)", () => {
     );
     expect(screen.getByRole("heading", { level: 2, name: "見つける" })).toBeInTheDocument();
     expect(screen.getByText("© 2026 TCG-M.")).toBeInTheDocument();
-    expect(rule(".ui-centered-shell .ui-centered-shell-footer:has(> .ui-editorial-footer)")).toMatch(
-      /margin-block-start:\s*var\(--editorial-footer-space-block-start\)/,
-    );
+    expect(
+      rule(".ui-centered-shell .ui-centered-shell-footer:has(> .ui-editorial-footer)"),
+    ).toMatch(/margin-block-start:\s*var\(--editorial-footer-space-block-start\)/);
   });
 });
 
