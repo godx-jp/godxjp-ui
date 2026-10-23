@@ -76,6 +76,52 @@ function resolveEvent(event: TimelineGridEventProp): Omit<ResolvedEvent, "lane" 
  */
 const EVENT_MIN_MINUTES = 36;
 
+/**
+ * How a block lays its text out, decided from its DRAWN length so that text is laid out in WHOLE
+ * lines and never cut through the glyphs. A 60-minute block used to stack time over title in 28px
+ * of content, and the title lost the bottom half of every letter, Vietnamese marks included.
+ *
+ * Google Calendar and Outlook use the same three shapes:
+ * - `compact` — too short for one line at the normal inset: one line, no block padding.
+ * - `single`  — room for one line: "Title  16:00" on one line, title first and truncated.
+ * - `stacked` — room for two or more: title first (clamped to the lines left), time below, and the
+ *   description only when a line remains after both.
+ *
+ * The numbers mirror the tokens (rem, so they scale with the root font size together):
+ * `--timeline-grid-hour-height` 2.5rem; `--timeline-grid-event-gap` + 2 × `--timeline-grid-event-space-inset`
+ * = 0.75rem of chrome; one line = the 2xs font × `--line-height-normal`, measured at the LARGEST
+ * font-size axis (16px base → 11.9px × 1.5 → 1.1905rem), so the decision holds on every axis and
+ * only ever leaves spare room, never too little. A theme that SHRINKS the hour height below 2.5rem
+ * gets fewer lines than it may have room for — the body's `overflow: hidden` is the last resort.
+ */
+const HOUR_HEIGHT_REM = 2.5;
+const EVENT_GAP_REM = 0.25;
+const EVENT_INSET_BLOCK_REM = 0.25;
+const EVENT_LINE_REM = 1.1905;
+
+export type TimelineGridEventLayout =
+  | { mode: "compact" | "single" }
+  | { mode: "stacked"; titleLines: number; showDescription: boolean };
+
+/** Layout of one block from its drawn length in minutes (already floored at the display minimum). */
+export function eventTextLayout(
+  drawnMinutes: number,
+  hasDescription: boolean,
+): TimelineGridEventLayout {
+  const bodyRem = (drawnMinutes / 60) * HOUR_HEIGHT_REM - EVENT_GAP_REM;
+  const lines = Math.floor((bodyRem - 2 * EVENT_INSET_BLOCK_REM) / EVENT_LINE_REM);
+  if (lines < 1) return { mode: "compact" };
+  if (lines < 2) return { mode: "single" };
+  const showDescription = hasDescription && lines >= 3;
+  return { mode: "stacked", titleLines: lines - 1 - (showDescription ? 1 : 0), showDescription };
+}
+
+/** Plain text of a `ReactNode` title, for the tooltip and the accessible name; `null` when it has none. */
+function plainText(node: React.ReactNode): string | null {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  return null;
+}
+
 function placeColumn(
   events: readonly Omit<ResolvedEvent, "lane" | "lanes">[],
 ): readonly ResolvedEvent[] {
@@ -297,14 +343,38 @@ function renderEvent(
   const clippedEnd = entry.endMin > axis.endMin;
   const clipped = clippedStart && clippedEnd ? "both" : clippedStart ? "start" : "end";
   const range = `${toClock(entry.startMin)}–${toClock(entry.endMin)}`;
+  const layout = eventTextLayout(
+    Math.max(to - from, EVENT_MIN_MINUTES),
+    event.description !== undefined,
+  );
+  const stacked = layout.mode === "stacked";
+  const titleText = plainText(event.title);
+  const descriptionText = plainText(event.description);
+  // The whole name on hover and for assistive tech, since the block may show only part of it.
+  const fullName =
+    titleText === null
+      ? undefined
+      : [titleText, range, descriptionText]
+          .filter((part) => part !== null && part !== "")
+          .join(", ");
 
-  const body = (
+  const title = <span className="ui-timeline-grid-event-title">{event.title}</span>;
+  const body = stacked ? (
     <>
+      {title}
       <span className="ui-timeline-grid-event-time">{range}</span>
-      <span className="ui-timeline-grid-event-title">{event.title}</span>
-      {event.description === undefined ? null : (
+      {layout.showDescription ? (
         <span className="ui-timeline-grid-event-description">{event.description}</span>
-      )}
+      ) : null}
+    </>
+  ) : (
+    <>
+      {title}
+      {/* One line has room for the start only; the full range stays readable for assistive tech. */}
+      <span className="ui-timeline-grid-event-time">
+        {toClock(entry.startMin)}
+        <span className="sr-only">{`–${toClock(entry.endMin)}`}</span>
+      </span>
     </>
   );
 
@@ -313,6 +383,7 @@ function renderEvent(
       key={event.id}
       data-event-id={event.id}
       data-clipped={clippedStart || clippedEnd ? clipped : undefined}
+      data-layout={layout.mode}
       className="ui-timeline-grid-event"
       style={
         {
@@ -320,6 +391,7 @@ function renderEvent(
           "--timeline-grid-event-span": (to - from) / 60,
           "--timeline-grid-event-lane": entry.lane,
           "--timeline-grid-event-lanes": entry.lanes,
+          ...(stacked ? { "--timeline-grid-event-title-lines": layout.titleLines } : null),
           ...(event.color === undefined || event.color === ""
             ? null
             : { "--timeline-grid-event-color": event.color }),
@@ -330,12 +402,16 @@ function renderEvent(
         <button
           type="button"
           className="ui-timeline-grid-event-body ui-focus-ring"
+          title={fullName}
+          aria-label={fullName}
           onClick={() => onEventSelect(event)}
         >
           {body}
         </button>
       ) : (
-        <span className="ui-timeline-grid-event-body">{body}</span>
+        <span className="ui-timeline-grid-event-body" title={fullName}>
+          {body}
+        </span>
       )}
     </li>
   );

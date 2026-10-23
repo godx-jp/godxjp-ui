@@ -2567,6 +2567,44 @@
     white-space: nowrap;
   }
 
+  /*
+   * Text is laid out in WHOLE lines, never cut by the block's edge (the component picks the shape
+   * from the block's length — see eventTextLayout). One line: title first and truncated, then the
+   * start time, which never shrinks. Too short for the inset: the same line without block padding.
+   */
+  .ui-timeline-grid-event:is([data-layout="single"], [data-layout="compact"])
+    .ui-timeline-grid-event-body {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-1);
+  }
+
+  .ui-timeline-grid-event[data-layout="compact"] .ui-timeline-grid-event-body {
+    align-items: center;
+    padding-block: 0;
+  }
+
+  .ui-timeline-grid-event:is([data-layout="single"], [data-layout="compact"])
+    .ui-timeline-grid-event-title {
+    min-inline-size: 0;
+  }
+
+  .ui-timeline-grid-event:is([data-layout="single"], [data-layout="compact"])
+    .ui-timeline-grid-event-time {
+    flex: none;
+  }
+
+  /* Several lines: the title wraps and is clamped to the lines the block has room for. */
+  .ui-timeline-grid-event[data-layout="stacked"] .ui-timeline-grid-event-title {
+    display: -webkit-box;
+    flex: none;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--timeline-grid-event-title-lines, 1);
+    line-clamp: var(--timeline-grid-event-title-lines, 1);
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
   .ui-timeline-grid-event-description {
     overflow: hidden;
     color: var(--timeline-grid-event-muted-color);

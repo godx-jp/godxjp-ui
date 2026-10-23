@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.7] - 2026-10-23
+
+### Fixed
+
+- **`TimelineGrid` never cuts a block's text through the glyphs (#1395).** The block always stacked
+  time → title → description in a clipped flex column, so a 60-minute block shrank the title to
+  11.3px of a 16.7px line (the bottom of every letter cut, Vietnamese marks included) and a 15/30
+  minute block cut its time line and hid the title entirely. The block now picks its shape from its
+  drawn length (`data-layout`): `compact` (one line, no block padding) and `single` (one line —
+  title first, truncated, then the start time) for short blocks; `stacked` for tall ones — title
+  first, clamped by whole lines (`--timeline-grid-event-title-lines`), time below, the description
+  only when a line is left. Measured after: 0 of 8 text boxes cut at 1440 and 390 px (15/30/60/120
+  min). The full name ("title, 16:00–17:00, description") is the block's tooltip and, when
+  `onEventSelect` makes it a button, its accessible name; one-line blocks keep the end time for
+  screen readers.
+
 ## [33.12.6] - 2026-10-23
 
 ### Fixed
