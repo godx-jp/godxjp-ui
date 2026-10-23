@@ -402,8 +402,8 @@
 }
 
 .ui-chart-bar-hit {
-  width: max(var(--chart-mark-width), var(--touch-target-min));
-  height: max(var(--chart-mark-height), var(--touch-target-min));
+  width: max(var(--chart-mark-width, 0px), var(--touch-target-min));
+  height: max(var(--chart-mark-height, 0px), var(--touch-target-min));
 }
 
 .ui-chart-point-hit {

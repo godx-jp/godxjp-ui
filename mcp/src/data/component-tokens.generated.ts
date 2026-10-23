@@ -2766,32 +2766,32 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dashboard-grid-gap",
     "value": "var(--space-4)",
-    "description": ""
+    "description": "Gap between DashboardGrid tiles, both axes (#1397)."
   },
   {
     "name": "--dashboard-grid-row-height",
     "value": "var(--space-20)",
-    "description": ""
+    "description": "Height of one grid row; a tile's `h` is a multiple of it."
   },
   {
     "name": "--dashboard-grid-handle-size",
     "value": "var(--control-height)",
-    "description": ""
+    "description": "Size of the drag and resize handles in edit mode (≥24px target)."
   },
   {
     "name": "--dashboard-grid-handle-inset",
     "value": "var(--space-1)",
-    "description": ""
+    "description": "Inset of the resize handle from the tile's bottom-end corner."
   },
   {
     "name": "--dashboard-grid-item-radius",
     "value": "var(--card-radius)",
-    "description": ""
+    "description": "Corner radius of a tile; defaults to the Card radius."
   },
   {
     "name": "--dashboard-grid-preview-ring-color",
     "value": "initial",
-    "description": ""
+    "description": "Colour of the drop-preview ring while moving or resizing (role-mirror knob; defaults to the focus ring colour)."
   },
   {
     "name": "--accordion-chevron-size",

@@ -265,7 +265,7 @@ describe("DashboardGrid lab admission (#1397)", () => {
     const component = COMPONENTS.find((entry) => entry.name === "DashboardGrid")!;
     expect(component.tier).toBe("lab");
     expect(component.importPath).toBe("@godxjp/ui/lab");
-    expect(component.usage.join(" ")).toContain(
+    expect(component.usage!.join(" ")).toContain(
       "C7 exception approved by the owner, BI precedents (Tableau/Power BI/Grafana/react-grid-layout)",
     );
     const out = await dispatchTool("get_component", { name: "DashboardGrid", verbose: true });
