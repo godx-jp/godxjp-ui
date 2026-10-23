@@ -304,8 +304,9 @@ describe("built package print coverage", () => {
     const page = await open(390);
     try {
       await page.locator("style").evaluateAll((nodes) => nodes.forEach((n) => n.remove()));
-      await page.addStyleTag({ content: readFileSync("dist/styles.css", "utf8") });
-      await page.addStyleTag({ content: readFileSync("dist/themes/godx-tokens.css", "utf8") });
+      // The suite runs from source (CI does not build): the compiled core plus the godx preset.
+      await page.addStyleTag({ content: css });
+      await page.addStyleTag({ content: readFileSync("src/themes/godx-tokens.css", "utf8") });
       await page.emulateMedia({ media: "print" });
       const snapshot = () =>
         page.evaluate(() => {
@@ -336,11 +337,12 @@ describe("built package print coverage", () => {
       await page.emulateMedia({ media: "screen" });
       expect((await snapshot())["--primary"]).not.toBe(light["--primary"]);
       await page.emulateMedia({ media: "print" });
-      // Inspect every shipped CSS tree, including themes not imported by styles.css.
+      // Inspect every shipped CSS tree (the sources copy-styles publishes), including themes the
+      // core does not import.
       for (const dir of ["styles", "tokens", "theme", "themes"]) {
-        for (const file of readdirSync(`dist/${dir}`, { recursive: true })) {
-          if (String(file).endsWith(".css"))
-            await page.addStyleTag({ content: readFileSync(`dist/${dir}/${file}`, "utf8") });
+        for (const file of readdirSync(`src/${dir}`, { recursive: true })) {
+          if (String(file).endsWith(".css") && !String(file).includes("__tests__"))
+            await page.addStyleTag({ content: readFileSync(`src/${dir}/${file}`, "utf8") });
         }
       }
       const activeDark = await page.evaluate(() => {
