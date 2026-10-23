@@ -108,6 +108,8 @@
   --editorial-page-header-title-letter-spacing: -0.025em;
   --editorial-page-header-title-space-block-start: 0.625rem;
   --editorial-page-header-title-space-block-end: 0.75rem;
+  /* `auto-phrase` (the kit's Japanese heading default: break between phrases) or `normal`. */
+  --editorial-page-header-title-word-break: auto-phrase;
   --editorial-page-header-description-font-size: 0.9375rem;
   --editorial-page-header-description-line-height: inherit;
   --editorial-page-header-description-max-width: 47.5rem;

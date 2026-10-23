@@ -3246,6 +3246,12 @@
     text-wrap: balance;
   }
 
+  /* The kit breaks a Japanese heading between phrases (text-layout.css); a design that sets its
+   * h1 with balanced character breaks says so with this knob. */
+  .ui-editorial-page-header .ui-editorial-page-header-title:lang(ja) {
+    word-break: var(--editorial-page-header-title-word-break);
+  }
+
   .ui-editorial-page-header-description {
     max-width: var(--editorial-page-header-description-max-width);
     margin: 0;
