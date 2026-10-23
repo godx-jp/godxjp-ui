@@ -183,7 +183,14 @@ describe("codemod v32 move table is complete (gh#1223)", () => {
       ["src/lab/index.ts", "@godxjp/ui/lab"],
     ] as const) {
       const names = exported(file);
-      const missing = [...names].filter((n) => moves.get(n) !== mod);
+      // Born in lab after the v32 move (gh#1397): no pre-v32 location exists to move from.
+      const bornInLab = new Set([
+        "DashboardGrid",
+        "DashboardGridProp",
+        "DashboardGridProps",
+        "DashboardGridItemProp",
+      ]);
+      const missing = [...names].filter((n) => !bornInLab.has(n) && moves.get(n) !== mod);
       expect(missing, `${mod} exports with no codemod move`).toEqual([]);
     }
   });
