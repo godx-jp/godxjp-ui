@@ -88,6 +88,9 @@ describe("EditorialArticle (gh#1440)", () => {
     expect(rule(".ui-editorial-article-heading")).toMatch(
       /margin:\s*var\(--editorial-article-heading-space-block-start\) 0/,
     );
+    expect(rule(".ui-editorial-article")).toMatch(
+      /--editorial-text-link-font-size:\s*var\(--editorial-article-link-font-size\)/,
+    );
     expect(rule(".ui-editorial-note")).toMatch(
       /border-inline-start:\s*var\(--editorial-note-rule-width\) solid/,
     );

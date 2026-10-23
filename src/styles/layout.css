@@ -3274,6 +3274,13 @@
    * Block flow on purpose: the design's vertical rhythm is collapsing margins (kicker 20 / h1 20,
    * paragraph 20 / next heading 36, paragraph 20 / note 24), which a flex gap cannot reproduce. */
   .ui-editorial-article {
+    /* A text link in the reading column takes the article's own knobs, so a theme that tunes the
+     * section-head "view all" link at a breakpoint does not resize the article's call to action. */
+    --editorial-text-link-font-size: var(--editorial-article-link-font-size);
+    --editorial-text-link-gap: var(--editorial-article-link-gap);
+    --editorial-text-link-line-height: var(--editorial-article-link-line-height);
+    --editorial-text-link-icon-size: var(--editorial-article-link-icon-size);
+    --editorial-text-link-align: start;
     display: block;
     max-width: var(--editorial-article-max-width);
     margin-inline: auto;

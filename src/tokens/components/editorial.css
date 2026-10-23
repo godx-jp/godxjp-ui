@@ -140,6 +140,11 @@
   --editorial-article-paragraph-font-size: inherit;
   --editorial-article-paragraph-line-height: 1.95;
   --editorial-article-paragraph-space-block-end: 1.25rem;
+  /* EditorialTextLink inside the article (the trailing call to action). */
+  --editorial-article-link-font-size: 0.875rem;
+  --editorial-article-link-gap: 0.75rem;
+  --editorial-article-link-line-height: inherit;
+  --editorial-article-link-icon-size: 1.25rem;
   --editorial-note-font-size: 0.875rem;
   --editorial-note-rule-width: 3px;
   --editorial-note-padding-block: 1rem;
