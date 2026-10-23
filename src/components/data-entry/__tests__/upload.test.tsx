@@ -92,7 +92,10 @@ describe("useUploadDraft", () => {
 describe("Upload", () => {
   it("renders dropzone variant", () => {
     renderWithUi(<Upload variant="dropzone" />);
-    expect(screen.getByRole("button", { name: /tải file lên/i })).toBeInTheDocument();
+    // gh#1412: named by its visible hint.
+    expect(
+      screen.getByRole("button", { name: /kéo thả file vào đây, hoặc bấm để chọn/i }),
+    ).toBeInTheDocument();
   });
 
   it("shows undo banner after avatar remove", async () => {

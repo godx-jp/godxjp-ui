@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.15.0] - 2026-10-23
+
+### Changed
+
+- **Upload `variant="dropzone"` is named by its visible hint (#1412, WCAG 2.5.3 Label in Name).**
+  The drop area was `role="button"` with `aria-label` 「ファイルをアップロード」 / "Upload files" /
+  「Tải file lên」, a string shown nowhere on screen; its accessible name is now the hint paragraph
+  it displays (「ここにドラッグ＆ドロップ、またはクリックして選択」), after a FormField label as before
+  (gh#1288), and a caller's own `aria-label` still replaces it. **Tests that query the dropzone by
+  the old name must query the hint or pass their own `aria-label`.** The unused
+  `dataEntry.upload.dropzoneLabel` message is removed.
+
+### Fixed
+
+- **DataTable: under the fixed table layout, an unmarked body cell wraps inside its column instead
+  of painting over the next one (#1409, gino-cloud).** One `ellipsis` column (or a `width`, or
+  `scroll.x`) switches the whole table to `table-layout: fixed`; every other cell kept the grid's
+  `nowrap` with visible overflow and no title. Measured in Chromium (700px table, vi): 379 / 175 and
+  326 / 175 px → 175 / 175, `white-space: normal`. The `ellipsis` cell keeps its one line, title
+  and tab stop; an auto-layout table keeps `nowrap`.
+- DataTable `preset="action-collection"` docs: the column-priority percentages apply at every
+  width, and `collapseBelow` switches them to the compact tier — the catalog said they applied only
+  below `collapseBelow` (#1408). Docs only; behaviour unchanged (gh#253).
+
 ## [33.14.0] - 2026-10-23
 
 ### Added
