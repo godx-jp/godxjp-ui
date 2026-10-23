@@ -95,6 +95,7 @@
   "storyPath": "data-display/table.tsx",
   "subParts": [
     "TableBody",
+    "TableCaption",
     "TableCell",
     "TableHead",
     "TableHeader",

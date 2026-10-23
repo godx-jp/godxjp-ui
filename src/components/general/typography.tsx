@@ -925,6 +925,7 @@ export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProp>(
       align,
       truncate,
       weight = "medium",
+      family,
       className,
       ...props
     },
@@ -941,6 +942,8 @@ export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProp>(
       "data-align": align,
       "data-weight": weight,
       "data-truncate": truncate ? "" : undefined,
+      // Only the opt-in face is stamped; a default heading keeps its markup byte-for-byte.
+      "data-family": family === "editorial" ? "editorial" : undefined,
       className: cn("ui-heading", className),
       ...props,
     }),

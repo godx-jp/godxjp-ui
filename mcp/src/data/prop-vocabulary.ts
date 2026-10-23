@@ -10,6 +10,14 @@ export interface PropVocabEntry {
 
 export const PROP_VOCABULARY: PropVocabEntry[] = [
   {
+    name: "HeadingFamilyProp",
+    concept: "Opt-in heading face, independent of UI headings.",
+    values: ["display", "editorial"],
+    usedBy: ["Heading"],
+    notes:
+      "display preserves the default markup; editorial reads --font-family-editorial with --font-family-display as its fallback.",
+  },
+  {
     name: "BreadcrumbCurrentItemProp",
     concept: "Which breadcrumb item represents the current page.",
     values: ["last", "none"],

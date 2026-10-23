@@ -34,12 +34,14 @@
 }
 
 /* ── Dark ── lifted blue for contrast */
-.dark {
-  --primary: 221 90% 66%;
-  --primary-foreground: 222 47% 11%;
-  /* Derived — see the light block. */
-  --ring: 221 90% 66%;
-  --text-link: 221 90% 72%;
-  --text-brand: 221 90% 70%;
-  --text-primary: 221 90% 68%;
+@media not print {
+  .dark {
+    --primary: 221 90% 66%;
+    --primary-foreground: 222 47% 11%;
+    /* Derived — see the light block. */
+    --ring: 221 90% 66%;
+    --text-link: 221 90% 72%;
+    --text-brand: 221 90% 70%;
+    --text-primary: 221 90% 68%;
+  }
 }

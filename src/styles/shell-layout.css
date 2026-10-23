@@ -2811,6 +2811,17 @@
      * 32px, and the end cluster overflows the bar by 0px at 390/768/1024/1440. */
     min-inline-size: var(--topbar-item-min-width);
   }
+  /* …unless the cluster ENDS in a control (gh#1422). The one-cell floor above assumes a truncatable
+   * TEXT title closes the cluster; when a control does — the folded search cell after the brand, the
+   * normal order in a plain Topbar — the floor let the cluster shrink and clip that cell (a 48px
+   * trigger cut to 21px at 390), and since the clusters clipped instead of overflowing, the bar's own
+   * `overflow` mode never engaged. A cell cannot be read at half width, so here the floor is the
+   * content and the bar's scroll/menu mode takes over. A text title still truncates. */
+  .ui-topbar-start:has(
+    > :last-child:is(button, a, [role="button"], .ui-button, .ui-topbar-search)
+  ) {
+    min-inline-size: min-content;
+  }
   /* Truncates a long brand/org label. `clip` + the ring margin, NOT `hidden`: this selector hits
    * whatever the slot's last child happens to be, and when that is an interactive control — or a
    * Flex wrapping one — `hidden` shaves the outset focus ring flush with the control's box, top and
@@ -2824,8 +2835,11 @@
    * because (0,1,1) here beats the control's own (0,1,0).
    *
    * Truncation is a TEXT contract, so it now excludes interactive boxes. A control keeps its own
-   * measure and does its own clipping; a string still ellipses. */
-  .ui-topbar-start > :last-child:not(:is(button, a, [role="button"], .ui-button)) {
+   * measure and does its own clipping; a string still ellipses. `.ui-topbar-search` is a control in a
+   * `div`: placed last (brand first, then search — a plain Topbar has no `logo` slot) the rule cut it
+   * to 13px at 390 and its folded trigger painted over the end cluster (gh#1422). */
+  .ui-topbar-start
+    > :last-child:not(:is(button, a, [role="button"], .ui-button, .ui-topbar-search)) {
     max-width: 100%;
     min-width: 0;
     flex: 0 1 auto;
@@ -3803,5 +3817,38 @@
   .app-root[data-sidebar="none"]:not([data-nav-rail]) {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "topbar" "main" "footer";
+  }
+}
+
+/* Paper is a flowing document, independent of the screen navigation/grid variants. */
+@layer components {
+  @media print {
+    html,
+    body,
+    .app-root,
+    .app-root > .app-main {
+      background: hsl(var(--background));
+    }
+    .app-root {
+      display: block;
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+    }
+    .app-root[data-responsive-navigation]
+      > :is(.app-sidebar, .app-topbar, .app-nav-rail, .app-footer),
+    .app-breadcrumb,
+    .app-mobile-nav-drawer {
+      display: none;
+    }
+    .app-root > .app-main {
+      width: auto;
+      max-width: none;
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+      contain: none;
+      background-image: none;
+    }
   }
 }

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 290,
-    dimensionCells: 4060,
+    exports: 291,
+    dimensionCells: 4074,
     covered: 89,
-    untested: 2235,
-    notApplicable: 1736,
+    untested: 2242,
+    notApplicable: 1743,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -344,6 +344,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"Switch","group":"data-entry","frame":"docs/data-entry/switch.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones","variants"]},
   {"name":"Table","group":"data-display","frame":"docs/data-display/table.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"TableBody","group":"data-display","frame":"docs/data-display/table.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"TableCaption","group":"data-display","frame":"docs/data-display/table.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"TableCell","group":"data-display","frame":"docs/data-display/table.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"TableHead","group":"data-display","frame":"docs/data-display/table.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"TableHeader","group":"data-display","frame":"docs/data-display/table.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},

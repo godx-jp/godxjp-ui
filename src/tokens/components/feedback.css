@@ -53,6 +53,9 @@
   --sheet-close-rest-alpha: 0.7;
   --sheet-header-close-space-inline-end: var(--space-8);
   --dialog-width-default: 32rem;
+  /* Corner of the dialog panel. `initial`: square mobile, --radius-lg → --radius desktop at the call site; a brand
+   * whose dialogs are rounder than its cards (cards 8px, dialogs 16px) sets it once here. */
+  --dialog-radius: initial;
   /* Per-instance width, set by DialogContent `width` (gh#1174) — `initial`, so the default above
    * resolves at the call site; the viewport cap (minus --dialog-viewport-inset) always wins. */
   --dialog-width: initial;

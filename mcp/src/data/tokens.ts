@@ -193,6 +193,18 @@ export const TOKENS: TokenEntry[] = [
     role: "Raw typography scale. `--font-size-display` is the BASE KNOB of the display ramp (`3xl`/`4xl`/`5xl` derive from it), so one declaration moves a marketing hero AND the two steps under it — never restate `--font-size-5xl`. It takes any length expression, so a FLUID hero is `--font-size-display: clamp(2.125rem, 4vw, 3.5rem)`; pinned at a single rem it paints the desktop size on a phone (measured: 56px at a 390 viewport where the brand scale said 34px). Pair with `--font-family-display`, and for a CJK product do NOT put a Latin-only face first in that stack — the browser falls through per glyph so it LOOKS fine, while the Latin inside a Japanese headline silently renders in a different face than the headline. Keep the CJK face as the display family and opt into the Latin face per element (eyebrow, price, code).",
   },
   {
+    name: "--font-family-editorial",
+    category: "semantic",
+    tier: "semantic",
+    role: 'The opt-in EDITORIAL face — a magazine/serif family for a public page\'s hero and section headings beside a sans UI. Read by `<Heading family="editorial">` and by the PageContainer `headerScale="display"` title; `initial`, so both fall back to --font-family-display until a theme names a face. Prefer it to re-pointing --font-family-display, which re-faces every heading in the product.',
+  },
+  {
+    name: "--font-family-tabular",
+    category: "semantic",
+    tier: "semantic",
+    role: "The opt-in FIGURES face for tabular numbers — `Text tabular`, `Badge tabular` and numeric TableHead/TableCell. A brand that sets prices in a figure face (e.g. DM Sans) beside a CJK UI face names it here once. `initial` = the declaration inherits, so figures keep the surrounding family until a theme sets it. Cut the figure face to digits/signs/currency with unicode-range if it lacks the UI's letters (a Latin word must not mix two faces).",
+  },
+  {
     name: "--font-sans-base",
     category: "semantic",
     tier: "semantic",
@@ -660,6 +672,12 @@ export const TOKENS: TokenEntry[] = [
   },
   { name: "--table-*", category: "component", tier: "component", role: "Table row/cell sizing." },
   {
+    name: "--table-caption-{color,font-size,space-y}",
+    category: "component",
+    tier: "component",
+    role: "TableCaption — the table's accessible name and visible scope line (`<TableCaption>` as the first child of `<Table>`). It sits above the rows (HTML's own caption side). All three are `initial` with the default at the call site: ink --muted-foreground (HSL components), size --font-size-sm, block inset --space-2; the inline inset follows --table-cell-space-x on desktop and --table-stacked-collection-card-padding-x (fallback --card-space-inset) when stacked, so the caption shares the rows' text axis.",
+  },
+  {
     name: "--table-pagination-padding-{y,x}",
     category: "component",
     tier: "component",
@@ -694,6 +712,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "TranslatableInput / TranslatableTextarea: size of the error mark on a locale tab that carries an error (the mark is a glyph + screen-reader text, never colour alone). Default 12px (--icon-size-xs).",
+  },
+  {
+    name: "--dialog-radius",
+    category: "component",
+    tier: "component",
+    role: "Explicit overrides apply at every viewport width; the unset mobile default remains square. Corner of the Dialog panel. `initial`: square below 640px, --radius-lg → --radius above it, resolved at the call site. A brand whose dialogs are rounder than its cards and controls (cards 8px, dialogs 16px) sets it once instead of moving --radius for every control.",
   },
   {
     name: "--dialog-* / --alert-* / --skeleton-*",

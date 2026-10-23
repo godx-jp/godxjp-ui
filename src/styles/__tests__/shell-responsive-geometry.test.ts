@@ -336,7 +336,7 @@ describe("responsive shell geometry", () => {
     // (a search trigger, the GitHub placement) kept losing its own min-width to this rule, because
     // (0,1,1) here beats the control's own (0,1,0) — measured at 186px against a 16rem floor.
     const startTitleSelector =
-      '.ui-topbar-start > :last-child:not(:is(button, a, [role="button"], .ui-button))';
+      '.ui-topbar-start > :last-child:not(:is(button, a, [role="button"], .ui-button, .ui-topbar-search))';
     const startTitle = declarationsFor(shellStyles, startTitleSelector);
     expect(declarationsFor(shellStyles, ".ui-topbar-start > :last-child")).toBe("");
     expect(startTitle).toMatch(/min-width:\s*0;/);
@@ -605,7 +605,9 @@ describe("responsive shell geometry", () => {
     // contract holds at every width.
     // ONE breakpoint, still — but TWO complementary blocks at it: the wide-only templates and the
     // narrow reset. That split is the gh#474 fix; what must never come back is a SECOND number.
-    const restructuring = mediaBlocksMentioning(shellStyles, ".app-root");
+    const restructuring = mediaBlocksMentioning(shellStyles, ".app-root").filter(
+      (block) => block.condition !== "print",
+    );
     expect([...new Set(restructuring.map((block) => block.condition))].sort()).toEqual([
       "(width <= 56.25rem)",
       "(width > 56.25rem)",

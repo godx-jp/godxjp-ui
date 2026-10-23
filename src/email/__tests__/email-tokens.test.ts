@@ -44,7 +44,7 @@ function readBlock(file: string, selector: RegExp): Record<string, string> {
   const start = css.search(selector);
   expect(start, `${file}: ${selector} not found`).toBeGreaterThanOrEqual(0);
   const open = css.indexOf("{", start);
-  const body = css.slice(open + 1, css.indexOf("\n}", open));
+  const body = css.slice(open + 1, css.indexOf("}", open));
   const decls: Record<string, string> = {};
   for (const m of body.matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/g)) {
     decls[m[1]] = m[2].replace(/\s+/g, " ").trim();
@@ -55,7 +55,7 @@ function readBlock(file: string, selector: RegExp): Record<string, string> {
 const FOUNDATION_LIGHT = readBlock("src/tokens/foundation.css", /^:root\s*\{/m);
 const FOUNDATION_DARK = readBlock(
   "src/tokens/foundation.css",
-  /^\.dark,\s*\n:root\[data-theme="dark"\]\s*\{/m,
+  /^\s*\.dark,\s*\n\s*:root\[data-theme="dark"\]\s*\{/m,
 );
 const EMAIL_CSS = readBlock("src/tokens/components/email.css", /^:root\s*\{/m);
 

@@ -507,6 +507,12 @@ export const VOCABULARY_REGISTRY = {
     description:
       "Heading level 1-4 — the semantic element, and the --heading-h* size it takes unless `size` (TextSizeProp) overrides it",
   },
+  HeadingFamilyProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Heading face display | editorial — editorial reads --font-family-editorial (an opt-in serif for a hero or a public page section), falling back to --font-family-display",
+  },
   TextAlignProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -2032,6 +2038,7 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/general.prop.ts",
     vocabulary: [
       "HeadingLevelProp",
+      "HeadingFamilyProp",
       "TextSizeProp",
       "TextToneProp",
       "TextAlignProp",
