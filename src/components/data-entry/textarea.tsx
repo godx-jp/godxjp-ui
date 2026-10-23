@@ -91,11 +91,17 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
       [ref],
     );
 
-    const [text, setText] = React.useState(() => String(value ?? defaultValue ?? ""));
+    /**
+     * Only the UNCONTROLLED text lives in state; a controlled `value` is read straight from props.
+     * Mirroring `value` into state from an effect left a deferred update behind every keystroke,
+     * and a burst of keystrokes (an IME, a fast typist) piled those up until React threw
+     * "Maximum update depth exceeded" out of the consumer's `setState` and dropped the character.
+     */
+    const [uncontrolledText, setUncontrolledText] = React.useState(() =>
+      String(defaultValue ?? ""),
+    );
+    const text = value !== undefined ? String(value) : uncontrolledText;
     const hasText = text.length > 0;
-    React.useEffect(() => {
-      if (value !== undefined) setText(String(value));
-    }, [value]);
 
     /**
      * The text the CSS mirror replicates. Seeded from the initial value so the very first paint
@@ -136,7 +142,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
     }, [growing, syncMirror]);
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (value === undefined) setText(event.target.value);
+      if (value === undefined) setUncontrolledText(event.target.value);
       if (growing && !composing.current) setMirror(event.target.value);
       onChange?.(event);
       if ((onChange as unknown) !== onValueChange) onValueChange?.(event.target.value);
@@ -164,7 +170,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
         el.dispatchEvent(new Event("input", { bubbles: true }));
         el.focus();
       }
-      setText("");
+      setUncontrolledText("");
       if (growing) setMirror("");
       onClear?.();
     };
@@ -239,8 +245,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
      * Only while empty — once there is a value the placeholder is not painted, and mirroring it
      * would hold the box open at the wrong height.
      */
-    const placeholderText =
-      typeof props.placeholder === "string" ? props.placeholder : undefined;
+    const placeholderText = typeof props.placeholder === "string" ? props.placeholder : undefined;
     const mirrorText = mirror.length > 0 ? mirror : (placeholderText ?? "");
 
     return (
