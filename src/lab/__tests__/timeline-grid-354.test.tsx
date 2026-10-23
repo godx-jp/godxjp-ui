@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
-import { TimelineGrid } from "../timeline-grid";
+import { TimelineGrid, eventTextLayout } from "../timeline-grid";
 import type { TimelineGridEventProp } from "../timeline-grid";
 
 /**
@@ -273,5 +273,122 @@ describe("sàn hiển thị là một nguồn duy nhất (codex review)", () => 
       (el as HTMLElement).style.getPropertyValue("--timeline-grid-event-lane"),
     );
     expect(new Set(lanes).size, "hai khối phải nằm hai làn khác nhau").toBe(2);
+  });
+});
+
+describe("TimelineGrid lays block text out in whole lines, never cut mid-glyph", () => {
+  const LONG = "Kiểm thử /meet (CHAT-3) — họp rà soát tiến độ với đối tác Nhật Bản";
+
+  it.each([
+    [15, "compact"],
+    [30, "compact"],
+    [46, "compact"],
+    [47, "single"],
+    [60, "single"],
+    [75, "single"],
+    [76, "stacked"],
+    [120, "stacked"],
+  ] as const)("a %i-minute block is %s", (minutes, mode) => {
+    expect(eventTextLayout(Math.max(minutes, 36), false).mode).toBe(mode);
+  });
+
+  it("gives a stacked title every line the time does not need, and the description only a spare one", () => {
+    expect(eventTextLayout(90, false)).toEqual({
+      mode: "stacked",
+      titleLines: 1,
+      showDescription: false,
+    });
+    expect(eventTextLayout(120, false)).toEqual({
+      mode: "stacked",
+      titleLines: 2,
+      showDescription: false,
+    });
+    expect(eventTextLayout(120, true)).toEqual({
+      mode: "stacked",
+      titleLines: 1,
+      showDescription: true,
+    });
+    expect(eventTextLayout(240, true)).toMatchObject({ titleLines: 5, showDescription: true });
+  });
+
+  it("puts a one-hour block on ONE line, title first, then the start time", () => {
+    const { container } = renderWithUi(
+      <TimelineGrid
+        label="Tuần"
+        columns={COLUMNS}
+        events={[shift({ id: "meet", start: "16:00", end: "17:00", title: LONG })]}
+        start="08:00"
+        end="19:00"
+        onEventSelect={() => {}}
+      />,
+    );
+
+    const block = container.querySelector('[data-event-id="meet"]')!;
+    expect(block.getAttribute("data-layout")).toBe("single");
+    const body = block.querySelector(".ui-timeline-grid-event-body")!;
+    expect([...body.children].map((child) => child.className)).toEqual([
+      "ui-timeline-grid-event-title",
+      "ui-timeline-grid-event-time",
+    ]);
+    // The end time is not drawn, but a screen reader still hears the whole range.
+    expect(body.querySelector(".ui-timeline-grid-event-time")!.textContent).toBe("16:00–17:00");
+    expect(body.querySelector(".ui-timeline-grid-event-time .sr-only")!.textContent).toBe("–17:00");
+  });
+
+  it("names the block in full — tooltip and accessible name — however much of it is drawn", () => {
+    renderWithUi(
+      <TimelineGrid
+        label="Tuần"
+        columns={COLUMNS}
+        events={[
+          shift({
+            id: "meet",
+            start: "16:00",
+            end: "16:15",
+            title: LONG,
+            description: "Phòng họp 3",
+          }),
+        ]}
+        start="08:00"
+        end="19:00"
+        onEventSelect={() => {}}
+      />,
+    );
+
+    const button = screen.getByRole("button", { name: `${LONG}, 16:00–16:15, Phòng họp 3` });
+    expect(button.getAttribute("title")).toBe(`${LONG}, 16:00–16:15, Phòng họp 3`);
+    expect(button.closest("[data-event-id]")!.getAttribute("data-layout")).toBe("compact");
+  });
+
+  it("stacks a two-hour block title first, clamped to the lines it has, time below", () => {
+    const { container } = renderWithUi(
+      <TimelineGrid
+        label="Tuần"
+        columns={COLUMNS}
+        events={[shift({ id: "long", start: "13:00", end: "15:00", title: LONG })]}
+        start="08:00"
+        end="19:00"
+      />,
+    );
+
+    const block = container.querySelector('[data-event-id="long"]')!;
+    expect(block.getAttribute("data-layout")).toBe("stacked");
+    expect(styleOf(block, "--timeline-grid-event-title-lines")).toBe("2");
+    const body = block.querySelector(".ui-timeline-grid-event-body")!;
+    expect(body.getAttribute("title")).toBe(`${LONG}, 13:00–15:00`);
+    expect([...body.children].map((child) => child.className)).toEqual([
+      "ui-timeline-grid-event-title",
+      "ui-timeline-grid-event-time",
+    ]);
+  });
+
+  it("clamps the stacked title by whole lines in CSS, and keeps a line-height diacritics fit in", () => {
+    const styles = readFileSync(
+      resolve(process.cwd(), "src/styles/data-display-layout.css"),
+      "utf8",
+    );
+    expect(styles).toContain("-webkit-line-clamp: var(--timeline-grid-event-title-lines, 1)");
+    const body = /\.ui-timeline-grid-event-body \{[^}]*\}/.exec(styles)![0];
+    expect(body).toContain("line-height: var(--line-height-normal)");
   });
 });
