@@ -4,7 +4,7 @@
     "components": 170,
     "patterns": 28,
     "rules": 44,
-    "tokens": 2251,
+    "tokens": 2257,
     "vocabulary": 15
   },
   "design": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md",
@@ -61,8 +61,8 @@
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1920,
-      "foundation": 218,
+      "component": 1924,
+      "foundation": 220,
       "semantic": 113
     },
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",

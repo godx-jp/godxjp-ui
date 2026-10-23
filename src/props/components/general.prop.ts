@@ -11,6 +11,7 @@ import type {
   DescriptionProp,
   DisabledProp,
   FontWeightProp,
+  HeadingFamilyProp,
   HeadingLevelProp,
   IconSizeProp,
   IdProp,
@@ -182,6 +183,13 @@ export type HeadingProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"
   truncate?: boolean;
   /** Weight (system canon: 400 · 500 · 700). Default `medium` — set `bold` for an emphasised title. */
   weight?: FontWeightProp;
+  /**
+   * Heading face. `editorial` sets this heading in --font-family-editorial — the opt-in serif a
+   * public or editorial page uses for its hero and section headings while the UI stays sans. Until a
+   * theme names that face it falls back to --font-family-display, so the prop is inert by default.
+   * Omit it (or `display`) for every UI heading.
+   */
+  family?: HeadingFamilyProp;
 };
 
 /*

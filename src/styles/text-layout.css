@@ -335,8 +335,11 @@
     text-decoration-line: underline;
   }
 
+  /* `--font-family-tabular` is the opt-in FIGURES face (a brand that sets prices in a figure face
+   * beside a CJK UI face). Unset (`initial`) the declaration inherits, so nothing moves by default. */
   [data-slot="text"][data-tabular] {
     font-variant-numeric: tabular-nums;
+    font-family: var(--font-family-tabular, inherit);
   }
   [data-slot="text"][data-mono] {
     font-family: var(--font-family-mono, ui-monospace, "SFMono-Regular", monospace);
@@ -348,6 +351,10 @@
     font-weight: var(--font-weight-medium);
     letter-spacing: var(--letter-spacing-tight);
     line-height: var(--line-height-tight);
+  }
+  /* `family="editorial"` — the opt-in editorial face; the display face until a theme names one. */
+  [data-slot="heading"][data-family="editorial"] {
+    font-family: var(--font-family-editorial, var(--font-family-display));
   }
   /* `:not([data-size])` is what makes `size` OUTRANK `level`, and it is written into the selector
    * rather than left to source order on purpose: the antd-parity block further down re-opens

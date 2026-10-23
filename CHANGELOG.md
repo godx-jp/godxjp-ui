@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `TableCaption` — the table's `<caption>`: its accessible name and visible scope line, as the first child of `<Table>`. Knobs `--table-caption-{color,font-size,space-y}` (all `initial`; defaults `--muted-foreground` · `--font-size-sm` · `--space-2`), above the rows; a `stacked-record-collection` keeps it a full-width line when the rows fold (#1418).
+- `--font-family-tabular` — opt-in figures face read by `Text tabular`, `Badge tabular` and numeric `TableHead`/`TableCell`. `initial` = inherit, so nothing changes until a theme names a face (#1419).
+- `Heading family="editorial"` + `--font-family-editorial` — an opt-in editorial (serif) face for a public page's hero and section headings; the `PageContainer headerScale="display"` title reads the same token. Falls back to `--font-family-display`, so it is inert by default (#1420).
+- `--dialog-radius` — the Dialog panel corner as its own knob; default unchanged (`--radius-lg` → `--radius`) (#1421).
+
+### Fixed
+
+- `useMediaQuery` / `useIsMobile` are hydration-safe: built on `useSyncExternalStore` with a `false` server snapshot, so SSR hydration no longer mismatches — `AppShell` published `data-navigation="docked"` from the server and `"drawer"` on a phone's hydration render, an attribute mismatch React does not patch up (#1417).
+- `Topbar start` ending in a control (e.g. the brand, then `TopbarSearch`) no longer clips that cell: the text-truncation rule skips `.ui-topbar-search`, and such a cluster is floored at its content instead of one cell, so a bar that does not fit reaches its `overflow` mode (scroll/menu) rather than cutting the folded search trigger (48px → 21px at 390) (#1422).
+
 ## [33.14.0] - 2026-10-23
 
 ### Added

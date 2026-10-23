@@ -140,7 +140,7 @@
 
   @media (min-width: 640px) {
     [data-slot="dialog-content"] {
-      border-radius: var(--radius-lg, var(--radius));
+      border-radius: var(--dialog-radius, var(--radius-lg, var(--radius)));
     }
   }
 

@@ -1179,6 +1179,9 @@
     );
     font-weight: var(--font-weight-semibold);
     line-height: var(--page-title-line-height-display);
+    /* A display-scale title is a hero: it takes the opt-in editorial face (Heading family="editorial"),
+     * which is the display face until a theme names one. */
+    font-family: var(--font-family-editorial, var(--font-family-display));
     text-wrap: balance;
     overflow-wrap: normal;
   }

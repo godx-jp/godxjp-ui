@@ -195,6 +195,18 @@ export default function Demo() {
                 </Text>
               </Flex>
 
+              {/* An EDITORIAL heading (gh#1420): a public page sets its hero and section headings in
+                  an opt-in face (a theme sets --font-family-editorial, e.g. a serif) while every UI
+                  heading keeps the display face. Inert until the token is set. */}
+              <Flex direction="col" gap="xs">
+                <Heading level={2} family="editorial">
+                  探す。比べる。
+                </Heading>
+                <Text size="2xs" mono tone="muted">
+                  {`<Heading level={2} family="editorial"> — --font-family-editorial, else the display face`}
+                </Text>
+              </Flex>
+
               {/* The same ladder on Text — a stat figure is display-sized but is NOT a heading, so
                   it must be reachable without inventing an <h*> for it. This is exactly why the
                   size axis has to be separate from the semantic one. */}

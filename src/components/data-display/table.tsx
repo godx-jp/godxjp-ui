@@ -382,6 +382,22 @@ export const TableBody = React.forwardRef<
 TableBody.displayName = "TableBody";
 
 /**
+ * The table's `<caption>` — its accessible name AND the visible sentence that says what the rows
+ * are and under which conditions they were collected ("Prices for the Holo variant · shipping not
+ * included"). Place it as the FIRST child of `<Table>` (HTML requires it). Without this part a
+ * consumer had to hand-roll a raw `<caption>` or put the sentence outside the table, where it no
+ * longer names it. It sits above the rows (HTML's own side); colour, size and inset are knobs:
+ * `--table-caption-color`, `--table-caption-font-size`, `--table-caption-space-y`.
+ */
+export const TableCaption = React.forwardRef<
+  HTMLTableCaptionElement,
+  React.HTMLAttributes<HTMLTableCaptionElement>
+>(({ className, ...props }, ref) => (
+  <caption ref={ref} data-slot="table-caption" className={cn(className)} {...props} />
+));
+TableCaption.displayName = "TableCaption";
+
+/**
  * The row's STATE — same wash/rail/`--surface-*` grounding `DataTable`'s own `rowTone` already
  * writes onto `data-tone` (gh#866). Typed here so a hand-composed row can discover it instead of
  * reaching for the raw attribute; the attribute keeps working (`TableRow data-tone="warning"`

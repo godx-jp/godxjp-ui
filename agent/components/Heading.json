@@ -44,6 +44,12 @@
       "description": "Single-line ellipsis.",
       "name": "truncate",
       "type": "boolean"
+    },
+    {
+      "defaultValue": "\"display\"",
+      "description": "Heading face. `editorial` sets this heading in --font-family-editorial — the opt-in serif a public/editorial page uses for its hero and section headings while every UI heading stays in the display face. Until a theme names --font-family-editorial it falls back to --font-family-display, so the prop is inert by default. Prefer it over moving --font-family-display, which re-faces EVERY heading (card titles, empty states, form sections).",
+      "name": "family",
+      "type": "\"display\" | \"editorial\""
     }
   ],
   "rules": [

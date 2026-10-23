@@ -82,6 +82,7 @@ export type {
   TextToneProp,
   FontWeightProp,
   HeadingLevelProp,
+  HeadingFamilyProp,
   TextAlignProp,
   TextWhitespaceProp,
   TextBreakProp,

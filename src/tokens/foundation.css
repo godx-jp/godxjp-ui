@@ -592,6 +592,15 @@
    * --font-family-display, body reads --font-family-body (wired in styles/index.css @layer base). */
   --font-family-display: var(--font-family-sans);
   --font-family-body: var(--font-family-sans);
+  /* EDITORIAL face (opt-in) — a magazine-style serif for a hero, an article or a public page's
+   * section heading, beside a sans UI. Read by `Heading family="editorial"` and by the
+   * PageContainer `headerScale="display"` title. `initial`, default = --font-family-display at the
+   * call site, so nothing changes until a theme names a face. */
+  --font-family-editorial: initial;
+  /* FIGURES face (opt-in) — the family tabular numbers are set in (`Text tabular`, `Badge tabular`,
+   * numeric TableHead/TableCell): a brand that sets prices in a figure face beside a CJK UI face.
+   * `initial` = inherit, so tabular figures keep the surrounding family until a theme names one. */
+  --font-family-tabular: initial;
   /* ── Type scale — GOLDEN-RATIO modular scale (Ant/Tailwind model). ONE base + ONE ratio; every
    * step is base × ratioⁿ, so the whole scale stays in golden proportion. `--font-size-ratio` is
    * φ^¼ (the golden ratio's quarter-step ≈ 1.1227) — a TRUE golden ratio yet dense enough that

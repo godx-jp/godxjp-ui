@@ -4314,6 +4314,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
+    "name": "--dialog-radius",
+    "value": "initial",
+    "description": "Corner of the dialog panel. `initial`, default = --radius-lg → --radius at the call site; a brand whose dialogs are rounder than its cards (cards 8px, dialogs 16px) sets it once here."
+  },
+  {
     "name": "--dialog-width",
     "value": "initial",
     "description": "Per-instance width, set by DialogContent `width` (gh#1174) — `initial`, so the default above resolves at the call site; the viewport cap (minus --dialog-viewport-inset) always wins."
@@ -8946,6 +8951,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-tone-wash-alpha",
     "value": "0.06",
+    "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-caption-color",
+    "value": "initial",
+    "description": "TableCaption — `initial`, defaults resolved at the call site (table-layout.css): ink --muted-foreground, size --font-size-sm, block inset --space-2. It sits above the rows (HTML's own side)."
+  },
+  {
+    "name": "--table-caption-font-size",
+    "value": "initial",
+    "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-caption-space-y",
+    "value": "initial",
     "description": "Table component tokens: row height, cell padding."
   },
   {

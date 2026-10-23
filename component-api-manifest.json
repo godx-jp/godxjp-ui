@@ -7952,6 +7952,14 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "family",
+          "origin": "owned",
+          "required": false,
+          "type": "HeadingFamilyProp | undefined",
+          "values": ["display", "editorial"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "level",
           "origin": "owned",
           "required": false,
@@ -16040,6 +16048,10 @@
       ]
     },
     "TableBody": {
+      "group": "data-display",
+      "props": []
+    },
+    "TableCaption": {
       "group": "data-display",
       "props": []
     },

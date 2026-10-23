@@ -3589,6 +3589,13 @@ import { Trash2 } from "lucide-react";
       },
       { name: "align", type: '"start" | "center" | "end"', description: "Logical text alignment." },
       { name: "truncate", type: "boolean", description: "Single-line ellipsis." },
+      {
+        name: "family",
+        type: '"display" | "editorial"',
+        defaultValue: '"display"',
+        description:
+          "Heading face. `editorial` sets this heading in --font-family-editorial — the opt-in serif a public/editorial page uses for its hero and section headings while every UI heading stays in the display face. Until a theme names --font-family-editorial it falls back to --font-family-display, so the prop is inert by default. Prefer it over moving --font-family-display, which re-faces EVERY heading (card titles, empty states, form sections).",
+      },
     ],
     usage: [
       'DO use `<Heading level>` for section titles instead of a raw `<h2 className="text-lg font-semibold">`. The level drives both the token size and the semantic element.',
@@ -6678,7 +6685,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
   },
   {
     name: "Table",
-    subParts: ["TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"],
+    subParts: ["TableBody", "TableCaption", "TableCell", "TableHead", "TableHeader", "TableRow"],
     group: "data-display",
     tagline:
       "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",

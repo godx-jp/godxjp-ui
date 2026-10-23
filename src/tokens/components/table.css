@@ -333,4 +333,9 @@
    * and the row's own status cell are for. */
   --table-row-tone-rail-width: initial; /* default = var(--stroke-2xl), resolved at the call site (gh#906) */
   --table-row-tone-wash-alpha: 0.06;
+  /* TableCaption — `initial`, defaults resolved at the call site (table-layout.css): ink
+   * --muted-foreground, size --font-size-sm, block inset --space-2. It sits above the rows (HTML's own side). */
+  --table-caption-color: initial;
+  --table-caption-font-size: initial;
+  --table-caption-space-y: initial;
 }

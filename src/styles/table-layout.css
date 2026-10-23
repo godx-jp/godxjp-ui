@@ -280,6 +280,17 @@
     vertical-align: middle;
   }
 
+  /* ── CAPTION — the table's accessible name and its visible "what / under which conditions" line.
+   * Muted, one step under the cells, on the cells' own inline inset so it shares their text axis. */
+  [data-slot="table-caption"] {
+    caption-side: top;
+    padding-block: var(--table-caption-space-y, var(--space-2));
+    padding-inline: var(--table-cell-space-x, var(--space-section-active));
+    color: hsl(var(--table-caption-color, var(--muted-foreground)));
+    font-size: var(--table-caption-font-size, var(--font-size-sm, var(--font-size-base)));
+    text-align: start;
+  }
+
   /* ── COLUMN AXES (gh#410) — `align` / `numeric` / `wrap` on TableHead and TableCell ───────────
    * Every one of these was a `className` before, and the alignment utility the catalog recommended
    * (`text-right`) is a physical direction this package lints against everywhere else.
@@ -290,6 +301,7 @@
   :is([data-slot="table-head"], [data-slot="table-cell"])[data-numeric] {
     font-variant-numeric: tabular-nums;
     text-align: end;
+    font-family: var(--font-family-tabular, inherit);
   }
 
   :is([data-slot="table-head"], [data-slot="table-cell"])[data-align="start"] {
@@ -1416,6 +1428,12 @@
       display: none;
     }
 
+    /* The table is a block now: a `table-caption` box would get an anonymous shrink-to-fit wrapper
+     * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
+    [data-collapse-below="sm"] [data-slot="table-caption"] {
+      display: block;
+    }
+
     [data-collapse-below="sm"] [data-slot="table"] > tbody {
       display: block;
     }
@@ -1480,6 +1498,12 @@
       display: none;
     }
 
+    /* The table is a block now: a `table-caption` box would get an anonymous shrink-to-fit wrapper
+     * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
+    [data-collapse-below="md"] [data-slot="table-caption"] {
+      display: block;
+    }
+
     [data-collapse-below="md"] [data-slot="table"] > tbody {
       display: block;
     }
@@ -1539,6 +1563,12 @@
       display: none;
     }
 
+    /* The table is a block now: a `table-caption` box would get an anonymous shrink-to-fit wrapper
+     * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
+    [data-collapse-below="lg"] [data-slot="table-caption"] {
+      display: block;
+    }
+
     [data-collapse-below="lg"] [data-slot="table"] > tbody {
       display: block;
     }
@@ -1596,6 +1626,12 @@
 
     [data-collapse-below="xl"] [data-slot="table"] > thead {
       display: none;
+    }
+
+    /* The table is a block now: a `table-caption` box would get an anonymous shrink-to-fit wrapper
+     * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
+    [data-collapse-below="xl"] [data-slot="table-caption"] {
+      display: block;
     }
 
     [data-collapse-below="xl"] [data-slot="table"] > tbody {
