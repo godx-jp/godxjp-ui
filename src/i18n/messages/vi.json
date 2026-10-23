@@ -773,6 +773,7 @@
     }
   },
   "chart": {
+    "datumLabel": "{label}, {series}: {value}",
     "empty": "Không có dữ liệu",
     "summaryCartesian": "Biểu đồ gồm {series} chuỗi trên {points} điểm dữ liệu",
     "summaryPie": "Biểu đồ tròn gồm {slices} phần",

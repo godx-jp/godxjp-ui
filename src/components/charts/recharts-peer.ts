@@ -45,6 +45,9 @@ export function assertRechartsPeer(): void {
 }
 
 export const {
+  Dot,
+  Rectangle,
+  Sector,
   Area,
   AreaChart,
   Bar,

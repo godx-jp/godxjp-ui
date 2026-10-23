@@ -772,6 +772,7 @@
     }
   },
   "chart": {
+    "datumLabel": "{label}, {series}: {value}",
     "empty": "データがありません",
     "summaryCartesian": "{series}系列・{points}データ点のグラフ",
     "summaryPie": "{slices}区分の円グラフ",

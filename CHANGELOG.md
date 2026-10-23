@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Charts: `onDatumSelect(datum, { seriesKey, index })` on BarChart, LineChart, AreaChart, PieChart and HeatmapChart for pointer and keyboard dashboard drill-through (#1398). Interactive marks have localized names, roving arrow navigation and the shared brand focus ring; charts without a handler retain their behavior. Added a store-to-table dashboard recipe.
+
 ## [33.14.0] - 2026-10-23
 
 ### Added

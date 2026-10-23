@@ -1,4 +1,17 @@
 {
+  "chartDrillDocs": {
+    "title": "Tổng quan cửa hàng",
+    "chart": "Doanh thu theo cửa hàng",
+    "hint": "Chọn cột để lọc đơn hàng. Dùng phím mũi tên để di chuyển và Enter hoặc Space để chọn.",
+    "store": "Cửa hàng",
+    "sales": "Doanh thu",
+    "east": "Cửa hàng Đông",
+    "central": "Cửa hàng Trung tâm",
+    "west": "Cửa hàng Tây",
+    "filter": "Đơn hàng: {store}",
+    "all": "Tất cả cửa hàng",
+    "reset": "Xóa bộ lọc"
+  },
   "personaExamples": {
     "role": "Vai trò",
     "admin": "Quản trị viên",

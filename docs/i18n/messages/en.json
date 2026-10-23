@@ -1,4 +1,17 @@
 {
+  "chartDrillDocs": {
+    "title": "Store dashboard",
+    "chart": "Sales by store",
+    "hint": "Select a bar to filter orders. Use arrow keys to move and Enter or Space to select.",
+    "store": "Store",
+    "sales": "Sales",
+    "east": "East store",
+    "central": "Central store",
+    "west": "West store",
+    "filter": "Orders: {store}",
+    "all": "All stores",
+    "reset": "Clear filter"
+  },
   "personaExamples": {
     "role": "Role",
     "admin": "Administrator",

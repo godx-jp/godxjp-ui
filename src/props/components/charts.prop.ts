@@ -33,6 +33,12 @@ export type ChartSeriesProp = {
   fillColor?: string;
 };
 
+/** Selection is an action: the dashboard owns filter state. Index refers to the original data array. */
+export type ChartDatumSelect<T = ChartDatum> = (
+  datum: T,
+  context: { seriesKey: string; index: number },
+) => void;
+
 /** Shared base for the cartesian charts (Line / Bar / Area). */
 type ChartCartesianBase = {
   /** Row data. Each row is one category with a value per series. */
@@ -81,6 +87,8 @@ type ChartCartesianBase = {
   numberFormat?: Intl.NumberFormatOptions;
   /** Message shown when `data` is empty. Defaults to a localized "no data". */
   emptyMessage?: EmptyMessageProp;
+  /** Select a finite datum by pointer or Enter/Space. Arrows navigate categories and series. */
+  onDatumSelect?: ChartDatumSelect;
   /**
    * Called with the clicked category's datum and its index — drill-down, zoom-to-bucket. The whole
    * category column is the target, not only the mark, so a zero-height bar is still clickable.
@@ -179,6 +187,8 @@ export type HeatmapDatum = {
  * steps through the `--chart-heat-1..5` ramp; an empty cell is outlined, a zero cell is filled.
  */
 export type HeatmapChartProp = {
+  /** Select a present cell. seriesKey is String(column); index is the original data index. */
+  onDatumSelect?: ChartDatumSelect<HeatmapDatum>;
   /** Row categories, top to bottom (the y axis — weekdays). */
   rows: HeatmapCategory[];
   /** Column categories, start to end (the x axis — hours). */
@@ -227,6 +237,8 @@ export type AreaChartProp = ChartCartesianBase & {
 
 /** @see PieChart */
 export type PieChartProp = {
+  /** Select a slice by pointer or Enter/Space; seriesKey is dataKey. Arrows navigate slices. */
+  onDatumSelect?: ChartDatumSelect;
   /** Row data — one slice per row. */
   data: ChartDatum[];
   /** Key into each datum holding the slice's numeric value. */

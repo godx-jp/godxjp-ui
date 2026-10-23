@@ -3029,6 +3029,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3065,6 +3070,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3138,6 +3148,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3174,6 +3189,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",
@@ -3211,6 +3231,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/charts.prop.ts",
     vocabulary: [
+      {
+        field: "onDatumSelect",
+        local: true,
+        reason: "Pointer and keyboard datum selection action, independent of dashboard state.",
+      },
       "LabelProp",
       "DescriptionProp",
       "SizeProp",

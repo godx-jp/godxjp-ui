@@ -1851,6 +1851,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "series",
           "origin": "owned",
           "required": true,
@@ -2435,6 +2443,14 @@
           "origin": "owned",
           "required": false,
           "type": "((datum: ChartDatum, index: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
@@ -8070,6 +8086,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<HeatmapDatum> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "ref",
           "origin": "owned",
           "required": false,
@@ -9038,6 +9062,14 @@
           "origin": "owned",
           "required": false,
           "type": "((datum: ChartDatum, index: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
@@ -11451,6 +11483,14 @@
           "origin": "owned",
           "required": false,
           "type": "Intl.NumberFormatOptions | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },

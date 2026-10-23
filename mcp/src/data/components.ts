@@ -15983,6 +15983,12 @@ export function NotifyRow() {
       "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot.",
     props: [
       {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
+      {
         name: "data",
         type: "ChartDatum[]",
         required: true,
@@ -16080,6 +16086,7 @@ export function NotifyRow() {
       },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the tree-shaken charts entry: `import { LineChart } from "@godxjp/ui/charts";`. Importing any other subpath never pulls in recharts.',
       'DO import only the chart a screen uses — `import { LineChart } from "@godxjp/ui/charts/line-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO install the `recharts` optional peer dependency in the consuming app — charts are the only part of @godxjp/ui that needs it, so apps without charts never pay for it.",
@@ -16120,6 +16127,12 @@ export function NotifyRow() {
     tagline:
       "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16212,6 +16225,7 @@ export function NotifyRow() {
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { BarChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { BarChart } from "@godxjp/ui/charts/bar-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `horizontal` when category labels are long (they read better on the y-axis).",
@@ -16361,6 +16375,12 @@ import { Text } from "@godxjp/ui/general";
       "DEPENDENCY-FREE rows × columns heatmap — weekday × hour revenue / order counts, cell intensity from the sequential CVD-safe --chart-heat-1..5 ramp. Empty ≠ zero (dashed outline + 'no data' text), optional top-N ring, per-cell tooltip, APG grid keyboard, the table itself is the text alternative. Needs NO recharts. Matrix / punch card / activity heatmap / busy-hours chart.",
     props: [
       {
+        name: "onDatumSelect",
+        type: "(datum: HeatmapDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is String(column key); index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
+      {
         name: "rows",
         type: "{ key: string | number; label: string }[]",
         required: true,
@@ -16437,6 +16457,7 @@ import { Text } from "@godxjp/ui/general";
       },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the isolated entry: `import { HeatmapChart } from "@godxjp/ui/charts/heatmap-chart";` — it never links the optional `recharts` peer.',
       "DO derive axis labels with Intl in the active locale — weekdays via `Intl.DateTimeFormat(locale, { weekday: 'short' })`, hours via `Intl.NumberFormat(locale)` — and pass money through `numberFormat`, never a hand-built '¥' string.",
       "DO leave a slot OUT of `data` (or pass `value: null`) when there is no measurement — a closed hour, a day before the store opened. Pass `0` only for a real zero. The two render differently (dashed outline vs filled) and read differently ('No data' vs '¥0').",
@@ -16484,6 +16505,12 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     tagline:
       "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16583,6 +16610,7 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { AreaChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { AreaChart } from "@godxjp/ui/charts/area-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `stacked` to show how parts accumulate into a total over time.",
@@ -16619,6 +16647,12 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     tagline:
       "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
     props: [
+      {
+        name: "onDatumSelect",
+        type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
+        description:
+          "Opt-in pointer and Enter/Space selection. seriesKey is dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      },
       {
         name: "data",
         type: "ChartDatum[]",
@@ -16691,6 +16725,7 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
+      "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
       'DO import from the charts entry: `import { PieChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
       'DO import only the chart a screen uses — `import { PieChart } from "@godxjp/ui/charts/pie-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO keep slices few (≈2–6) — pies are unreadable past a handful; use BarChart for many categories.",
