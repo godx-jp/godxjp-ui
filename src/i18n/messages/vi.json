@@ -844,5 +844,14 @@
         "error": "thất bại"
       }
     }
+  },
+  "dashboardGrid": {
+    "move": "Di chuyển {label}",
+    "resize": "Đổi kích thước {label}",
+    "hint": "Enter hoặc Space để nắm và thả. Phím mũi tên để di chuyển; Shift và mũi tên để đổi kích thước. Escape để hủy.",
+    "grabbed": "Đã nắm {label}. Cột {x}, hàng {y}, rộng {w}, cao {h}.",
+    "moved": "{label}. Cột {x}, hàng {y}, rộng {w}, cao {h}.",
+    "dropped": "Đã lưu {label}. Cột {x}, hàng {y}, rộng {w}, cao {h}.",
+    "cancelled": "Đã hủy thay đổi {label}."
   }
 }

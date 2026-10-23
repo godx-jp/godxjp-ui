@@ -404,6 +404,15 @@
         "data-display-layout.css"
       ]
     },
+    "DashboardGrid": {
+      "layers": [
+        "control.css",
+        "toggle.css",
+        "card-layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
+      ]
+    },
     "DataState": {
       "layers": [
         "layout.css",

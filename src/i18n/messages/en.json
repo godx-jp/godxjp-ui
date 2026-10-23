@@ -870,5 +870,14 @@
         "error": "failed"
       }
     }
+  },
+  "dashboardGrid": {
+    "move": "Move {label}",
+    "resize": "Resize {label}",
+    "hint": "Enter or Space grabs and drops. Arrow keys move; Shift and arrows resize. Escape cancels.",
+    "grabbed": "Grabbed {label}. Column {x}, row {y}, width {w}, height {h}.",
+    "moved": "{label}. Column {x}, row {y}, width {w}, height {h}.",
+    "dropped": "Saved {label}. Column {x}, row {y}, width {w}, height {h}.",
+    "cancelled": "Cancelled changes to {label}."
   }
 }

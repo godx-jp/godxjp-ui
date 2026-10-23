@@ -259,3 +259,24 @@ describe("ancestor-only breadcrumb API (#1391 / #1393)", () => {
     expect(out).toContain("title");
   });
 });
+
+describe("DashboardGrid lab admission (#1397)", () => {
+  it("round-trips the approved exception and transactional API", async () => {
+    const component = COMPONENTS.find((entry) => entry.name === "DashboardGrid")!;
+    expect(component.tier).toBe("lab");
+    expect(component.importPath).toBe("@godxjp/ui/lab");
+    expect(component.usage.join(" ")).toContain(
+      "C7 exception approved by the owner, BI precedents (Tableau/Power BI/Grafana/react-grid-layout)",
+    );
+    const out = await dispatchTool("get_component", { name: "DashboardGrid", verbose: true });
+    for (const prop of [
+      "layout",
+      "defaultLayout",
+      "onLayoutChange",
+      "columns",
+      "rowHeight",
+      "editable",
+    ])
+      expect(out).toContain(prop);
+  });
+});
