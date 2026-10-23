@@ -113,6 +113,8 @@
   --editorial-search-background: initial;
   --editorial-search-shadow: 0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06);
   --editorial-search-icon-size: 1.25rem;
+  --editorial-search-scope-font-size: 0.875rem;
+  --editorial-search-scope-max-width: 11rem;
   --editorial-search-input-height: 3rem;
   --editorial-search-input-font-size: 0.875rem;
   --editorial-search-button-min-width: 5.625rem;

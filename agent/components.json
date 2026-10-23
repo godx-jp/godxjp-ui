@@ -1078,9 +1078,14 @@
         "type": "string"
       },
       {
-        "description": "Submit handler.",
+        "description": "Submit handler (query, and the scope value when shown).",
         "name": "onSearch",
-        "type": "(query: string) => void"
+        "type": "(query: string, scope?: string) => void"
+      },
+      {
+        "description": "A compact scope select at the start of the box (e.g. which game to search).",
+        "name": "scope",
+        "type": "{ label: string; name: string; value: string; options: { value: string; label: string }[]; onValueChange: (value: string) => void }"
       },
       {
         "description": "Field id.",

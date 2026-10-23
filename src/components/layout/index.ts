@@ -141,6 +141,7 @@ export type {
   EditorialPillNavProps,
   EditorialSearchProp,
   EditorialSearchProps,
+  EditorialSearchScopeProp,
   EditorialSectionHeadProp,
   EditorialSectionHeadProps,
   EditorialSectionProp,

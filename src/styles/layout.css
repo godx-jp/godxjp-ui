@@ -3237,6 +3237,23 @@
     box-shadow: var(--editorial-search-shadow);
   }
 
+  /* The scope select sits first in the box, cut off from the field by a hairline. */
+  .ui-editorial-search-scope {
+    flex: none;
+    max-width: var(--editorial-search-scope-max-width);
+    min-height: var(--editorial-search-input-height);
+    padding-inline: 0 var(--editorial-search-gap);
+    border: 0;
+    border-inline-end: var(--stroke-hairline) solid hsl(var(--border));
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: var(--editorial-search-scope-font-size);
+    font-weight: var(--font-weight-medium);
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+
   .ui-editorial-search-icon {
     flex: none;
     width: var(--editorial-search-icon-size);

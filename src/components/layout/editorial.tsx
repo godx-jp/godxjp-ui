@@ -42,6 +42,7 @@ export type {
   EditorialPillNavProp as EditorialPillNavProps,
   EditorialSearchProp,
   EditorialSearchProp as EditorialSearchProps,
+  EditorialSearchScopeProp,
   EditorialSectionHeadProp,
   EditorialSectionHeadProp as EditorialSectionHeadProps,
   EditorialSectionProp,
@@ -210,11 +211,13 @@ export function EditorialSearch({
   defaultValue,
   action,
   onSearch,
+  scope,
   id,
   className,
 }: EditorialSearchProp) {
   const reactId = React.useId();
   const inputId = id ?? `editorial-search-${reactId}`;
+  const scopeId = `${inputId}-scope`;
   return (
     <form
       role="search"
@@ -226,9 +229,31 @@ export function EditorialSearch({
         if (!onSearch) return;
         event.preventDefault();
         const value = new FormData(event.currentTarget).get(name);
-        onSearch(typeof value === "string" ? value.trim() : "");
+        const query = typeof value === "string" ? value.trim() : "";
+        if (scope) onSearch(query, scope.value);
+        else onSearch(query);
       }}
     >
+      {scope && (
+        <>
+          <label htmlFor={scopeId} className="sr-only">
+            {scope.label}
+          </label>
+          <select
+            id={scopeId}
+            name={scope.name}
+            value={scope.value}
+            onChange={(event) => scope.onValueChange(event.target.value)}
+            className="ui-editorial-search-scope ui-focus-ring"
+          >
+            {scope.options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
       <label htmlFor={inputId} className="sr-only">
         {label}
       </label>

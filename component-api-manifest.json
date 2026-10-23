@@ -7586,7 +7586,7 @@
           "name": "onSearch",
           "origin": "owned",
           "required": false,
-          "type": "((query: string) => void) | undefined",
+          "type": "((query: string, scope?: string) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
@@ -7595,6 +7595,14 @@
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "scope",
+          "origin": "owned",
+          "required": false,
+          "type": "EditorialSearchScopeProp | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },

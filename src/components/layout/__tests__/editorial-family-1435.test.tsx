@@ -529,3 +529,35 @@ describe("Button label knobs (gh#1435)", () => {
     );
   });
 });
+
+describe("EditorialSearch scope (gh#1435)", () => {
+  it("hosts a named scope select inside the box and reports its value on submit", () => {
+    const onSearch = vi.fn();
+    const onScope = vi.fn();
+    render(
+      <EditorialSearch
+        label="カード名"
+        submitLabel="検索"
+        onSearch={onSearch}
+        scope={{
+          label: "ゲーム",
+          name: "game",
+          value: "pokemon",
+          options: [
+            { value: "pokemon", label: "ポケモンカードゲーム" },
+            { value: "onepiece", label: "ONE PIECEカードゲーム" },
+          ],
+          onValueChange: onScope,
+        }}
+      />,
+    );
+    const select = screen.getByRole("combobox", { name: "ゲーム" });
+    expect(screen.getByRole("search")).toContainElement(select);
+    fireEvent.change(select, { target: { value: "onepiece" } });
+    expect(onScope).toHaveBeenCalledWith("onepiece");
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "ルフィ" } });
+    fireEvent.click(screen.getByRole("button", { name: "検索" }));
+    expect(onSearch).toHaveBeenCalledWith("ルフィ", "pokemon");
+    expect(rule(".ui-editorial-search-scope")).toMatch(/border-inline-end:/);
+  });
+});

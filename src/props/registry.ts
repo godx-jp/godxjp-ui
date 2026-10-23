@@ -1565,6 +1565,17 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  EditorialSearchScopeProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "NameProp",
+      "ValueProp",
+      "OnValueChangeProp",
+      { field: "options", local: true, reason: "The native options of the scope select." },
+    ],
+  },
   EditorialSearchProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -1581,7 +1592,12 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Native form action for the no-JavaScript GET submit.",
       },
-      { field: "onSearch", local: true, reason: "Submit handler receiving the trimmed query." },
+      {
+        field: "onSearch",
+        local: true,
+        reason: "Submit handler receiving the trimmed query and the scope value.",
+      },
+      { field: "scope", local: true, reason: "Optional scope select at the start of the box (search per game)." },
     ],
   },
   EditorialPillNavProp: {

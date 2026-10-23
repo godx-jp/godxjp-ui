@@ -2312,9 +2312,24 @@ export type EditorialSearchProp = {
   defaultValue?: string;
   /** Form action for the no-JavaScript submit. */
   action?: string;
-  onSearch?: (query: string) => void;
+  /** Submit handler: the trimmed query, and the scope's value when a `scope` is shown. */
+  onSearch?: (query: string, scope?: string) => void;
+  /**
+   * A compact select at the start of the box that scopes the search (a site searched per game: "which
+   * game"). Named by its own visually hidden label; submitted as `scope.name` without JavaScript.
+   */
+  scope?: EditorialSearchScopeProp;
   id?: IdProp;
   className?: ClassNameProp;
+};
+
+/** The scope select of an {@link EditorialSearchProp}. */
+export type EditorialSearchScopeProp = {
+  label: string;
+  name: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onValueChange: (value: string) => void;
 };
 
 /**
