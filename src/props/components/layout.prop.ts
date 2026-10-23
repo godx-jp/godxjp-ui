@@ -443,7 +443,7 @@ export type ResponsiveGridColumnsProp =
  */
 export type ResponsiveGridFlowProp = "rows" | "columns";
 
-export type ResponsiveGridPresetProp = "pricing-plans" | "catalog" | "trio" | "lead";
+export type ResponsiveGridPresetProp = "pricing-plans" | "catalog" | "trio" | "lead" | "panels";
 
 /**
  * Block-axis alignment of the cells in each grid row — antd `Row align`, spelled with Flex's
@@ -2329,6 +2329,59 @@ export type EditorialPageHeaderProp = {
   search?: ReactNode;
   /** Id put on the h1. */
   titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialArticle — the reading column of a long-form editorial page (gh#1440): the ruled
+ * kicker, the page's one h1, an intro set off by a rule, then `EditorialArticleSection`s, an
+ * `EditorialNote` and a trailing `EditorialTextLink`. Geometry: `--editorial-article-*`.
+ */
+export type EditorialArticleProp = {
+  /** The kicker above the title — usually an `Eyebrow`. */
+  eyebrow?: ReactNode;
+  /** The page's one h1. Line breaks the design sets by hand are `<br />` in the node. */
+  title: TitleProp;
+  /** The lead paragraph under the title. */
+  intro?: ReactNode;
+  children?: ChildrenProp;
+  /** Id put on the h1. */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/** @see EditorialArticleSection — one titled section of an `EditorialArticle` (gh#1440). */
+export type EditorialArticleSectionProp = {
+  /** The section heading (h2). */
+  title: TitleProp;
+  /** Paragraphs of prose, each rendered as a `<p>` at the article's reading leading. */
+  paragraphs?: ReactNode[];
+  /** Anything after the paragraphs (a list, a link). */
+  children?: ChildrenProp;
+  /** Id put on the h2 (the section's accessible name). */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/** @see EditorialNote — a note block set off by an ornament rule (gh#1440): `role="note"`. */
+export type EditorialNoteProp = {
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialPanel — a bordered panel with a tag, a heading and a list (gh#1440); a row of
+ * them is `ResponsiveGrid preset="panels"`. Geometry: `--editorial-panel-*`.
+ */
+export type EditorialPanelProp = {
+  /** A short tag above the heading (NEXT / FUTURE). */
+  tag?: ReactNode;
+  title: TitleProp;
+  /** The panel's list items. */
+  items?: ReactNode[];
+  children?: ChildrenProp;
+  /** Heading level. Default `2`. */
+  level?: 2 | 3;
   className?: ClassNameProp;
 };
 

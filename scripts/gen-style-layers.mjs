@@ -81,6 +81,8 @@ const OWNERS = {
     "EditorialSectionHead",
     "EditorialBreadcrumb",
     "EditorialPageHeader",
+    "EditorialArticle",
+    "EditorialPanel",
     "EditorialSearch",
     "EditorialPillNav",
     "CardShowcase",

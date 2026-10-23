@@ -66,8 +66,14 @@ const RESPONSIVE_GRID_PRESET_COLUMNS: Partial<
  * 1 → 2 → 3 → 4 columns at 360 / 700 / 960, with its own gaps) instead of the container steps.
  * `catalog` — a product/card collection; `trio` — three features or articles; `lead` — a first
  * column a little wider than the rest (a site footer: brand, then link groups).
+ * `panels` — a row of bordered panels (a roadmap: three, then two, then one; gh#1440).
  */
-const TOKEN_PRESETS: ReadonlySet<ResponsiveGridPresetProp> = new Set(["catalog", "trio", "lead"]);
+const TOKEN_PRESETS: ReadonlySet<ResponsiveGridPresetProp> = new Set([
+  "catalog",
+  "trio",
+  "lead",
+  "panels",
+]);
 
 function resolveColumns(columns: ResponsiveGridColumnsProp): {
   base: number;

@@ -109,13 +109,65 @@
   --editorial-page-header-title-space-block-start: 0.625rem;
   --editorial-page-header-title-space-block-end: 0.75rem;
   /* `auto-phrase` (the kit's Japanese heading default: break between phrases) or `normal`. */
-  --editorial-page-header-title-word-break: auto-phrase;
+  --editorial-page-header-title-line-breaking: auto-phrase;
   --editorial-page-header-description-font-size: 0.9375rem;
   --editorial-page-header-description-line-height: inherit;
   --editorial-page-header-description-max-width: 47.5rem;
   /* The search slot under the description (gh#1438). */
   --editorial-page-header-search-max-width: 45rem;
   --editorial-page-header-search-space-block-start: 1.5rem;
+
+  /* ── EditorialArticle (+ Section, Note) — the reading column (gh#1440) ──────────────────── */
+  --editorial-article-max-width: 47.5rem;
+  --editorial-article-padding-block-start: 2rem;
+  --editorial-article-padding-block-end: 4rem;
+  --editorial-article-kicker-line-height: 1.95;
+  --editorial-article-kicker-space-block-end: 1.25rem;
+  --editorial-article-title-font-size: 2.375rem;
+  --editorial-article-title-line-height: 1.55;
+  --editorial-article-title-letter-spacing: -0.025em;
+  --editorial-article-title-space-block: 1.25rem;
+  /* `auto-phrase` (the kit's Japanese heading default) or `normal`. */
+  --editorial-article-title-line-breaking: auto-phrase;
+  --editorial-article-intro-font-size: 1.125rem;
+  --editorial-article-intro-line-height: 1.95;
+  --editorial-article-intro-padding-block-end: 1.75rem;
+  --editorial-article-intro-space-block-end: 1.25rem;
+  --editorial-article-heading-font-size: 1.625rem;
+  --editorial-article-heading-line-height: 1.55;
+  --editorial-article-heading-letter-spacing: -0.025em;
+  --editorial-article-heading-space-block-start: 2.25rem;
+  --editorial-article-heading-space-block-end: 1rem;
+  --editorial-article-paragraph-font-size: inherit;
+  --editorial-article-paragraph-line-height: 1.95;
+  --editorial-article-paragraph-space-block-end: 1.25rem;
+  --editorial-note-font-size: 0.875rem;
+  --editorial-note-rule-width: 3px;
+  --editorial-note-padding-block: 1rem;
+  --editorial-note-padding-inline: 1.5rem;
+  --editorial-note-space-block: 1.5rem;
+  /* Default = hsl(var(--muted)). */
+  --editorial-note-background: initial;
+
+  /* ── EditorialPanel — a bordered panel with a tag, a heading and a list (gh#1440) ───────── */
+  --editorial-panel-padding: 1.75rem;
+  --editorial-panel-radius: 0.75rem;
+  --editorial-panel-border-width: var(--stroke-hairline);
+  /* Default = hsl(var(--card)). */
+  --editorial-panel-background: initial;
+  --editorial-panel-tag-min-height: 1.5rem;
+  --editorial-panel-tag-padding-block: 2px;
+  --editorial-panel-tag-padding-inline: 0.5rem;
+  --editorial-panel-tag-radius: 4px;
+  --editorial-panel-tag-font-size: 0.75rem;
+  --editorial-panel-tag-line-height: 1.5;
+  --editorial-panel-tag-font-weight: var(--font-weight-medium);
+  --editorial-panel-title-font-size: 1.5rem;
+  --editorial-panel-title-line-height: 1.55;
+  --editorial-panel-title-space-block: 0.75rem;
+  --editorial-panel-item-font-size: 0.875rem;
+  --editorial-panel-list-padding-inline-start: 1.125rem;
+  --editorial-panel-list-space-block: 1rem;
 
   /* ── EditorialTextLink ("view all →") ───────────────────────────────────────────────────── */
   --editorial-text-link-font-size: 0.875rem;
@@ -353,6 +405,10 @@
 
   /* ── EditorialCard variant="journal" ────────────────────────────────────────────────────── */
   --editorial-journal-cover-height: 13.25rem;
+  /* `cover` fills the cover box; `none` shows a raster cover at its own (srcset) size, so a fixed
+   * composition is cropped, not scaled, in a narrower box (gh#1440). */
+  --editorial-journal-cover-image-size: cover;
+  --editorial-journal-cover-image-align: center;
   /* Default = hsl(var(--muted)). */
   --editorial-journal-cover-background: initial;
   --editorial-journal-padding-block-start: 1.5rem;
