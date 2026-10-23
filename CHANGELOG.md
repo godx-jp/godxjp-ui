@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`visual-audit` runs on a `playwright-core` + Chrome the app already has (#1390).** New flags
+  `--playwright-module /abs/path/playwright-core` (a package dir or entry file exporting
+  `chromium`) and `--executable-path <chrome>` (passed to `chromium.launch`, over
+  `PLAYWRIGHT_CHROMIUM_EXECUTABLE`). Without the flag the engine is the `playwright` peer, then
+  `playwright-core`, looked up from the package and from the cwd. A bad explicit path is an error,
+  never a fallback, and the "nothing found" bootstrap error lists every place it looked.
+
 ## [33.12.6] - 2026-10-23
 
 ### Fixed
