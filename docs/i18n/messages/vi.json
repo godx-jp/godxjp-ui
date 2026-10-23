@@ -1625,6 +1625,8 @@
     }
   },
   "breadcrumbExamples": {
+    "parentsDescription": "currentItem=\"none\" giữ liên kết cho mọi trang cha, không đánh dấu trang hiện tại. PageContainer dùng breadcrumbCurrentItem=\"none\" khi tên bản ghi nằm trong tiêu đề. Nhãn rút gọn có tên truy cập và title đầy đủ, không lặp mô tả tooltip.",
+    "parentsAria": "Các trang cha",
     "ellipsisTitle": "ellipsis · một đoạn dài trên một dòng",
     "ellipsisDescription": "ellipsis trên một đoạn giữ breadcrumb trên một dòng và cắt nhãn đó bằng \"…\"; toàn văn hiện trong tooltip khi rê chuột và khi liên kết của đoạn nhận tiêu điểm bàn phím. Breadcrumb của antd không có ellipsis theo từng mục — hình dạng lấy theo Typography. breadcrumb của PageContainer nhận cùng trường này.",
     "ellipsisAria": "Breadcrumb có cắt chữ",

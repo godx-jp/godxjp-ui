@@ -5,6 +5,12 @@
   "name": "PageContainer",
   "props": [
     {
+      "default": "last",
+      "description": "last | none, identical to Breadcrumb.currentItem. none keeps every supplied ancestor destination linked and emits no aria-current; the record name belongs in title. breadcrumb items also support ellipsis with the full label in aria-label and title, without a duplicate tooltip description.",
+      "name": "breadcrumbCurrentItem",
+      "type": "BreadcrumbCurrentItemProp"
+    },
+    {
       "description": "Instance footer inset; omitted preserves the theme.",
       "name": "footerPad",
       "type": "PadProp"

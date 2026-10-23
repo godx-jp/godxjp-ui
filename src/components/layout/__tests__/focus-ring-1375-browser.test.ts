@@ -1,10 +1,13 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterAll, beforeAll, expect, it } from "vitest";
 import type { Page } from "playwright";
 import { bootChromium, type ChromiumFixture } from "../../../test/chromium-fixture";
 // @ts-expect-error JavaScript browser probe shared with the static-preview audit.
 import { measureFocus } from "../../../../scripts/focus-ring-audit-1375.mjs";
 
+const artifacts = mkdtempSync(join(tmpdir(), "focus-ring-1375-"));
 let fixture: ChromiumFixture;
 const measurements: unknown[] = [];
 beforeAll(async () => {
@@ -46,7 +49,7 @@ createRoot(document.getElementById('root')).render(<AppProvider defaultLocale="e
 }, 180000);
 afterAll(async () => {
   writeFileSync(
-    `codex-shots/regression-${process.env.FOCUS_PHASE || "after-1378"}.json`,
+    `${artifacts}/regression-${process.env.FOCUS_PHASE || "after-1378"}.json`,
     JSON.stringify(measurements, null, 2),
   );
   await fixture?.close();
@@ -129,7 +132,7 @@ for (const width of [1280, 390])
             expect.soft(result.textOverlap, JSON.stringify(result)).toEqual([]);
             expect.soft(result.filledContrastFailure, JSON.stringify(result)).toBe(false);
             await page.screenshot({
-              path: `codex-shots/${process.env.FOCUS_PHASE || "after-1378"}-${name}-${width}-${dir}-${theme}.png`,
+              path: `${artifacts}/${process.env.FOCUS_PHASE || "after-1378"}-${name}-${width}-${dir}-${theme}.png`,
             });
             const clip = await page.evaluate(() => {
               const r = document.activeElement!.getBoundingClientRect();
@@ -143,7 +146,7 @@ for (const width of [1280, 390])
               };
             });
             await page.screenshot({
-              path: `codex-shots/crop-${process.env.FOCUS_PHASE || "after-1378"}-${name}-${width}-${dir}-${theme}.png`,
+              path: `${artifacts}/crop-${process.env.FOCUS_PHASE || "after-1378"}-${name}-${width}-${dir}-${theme}.png`,
               clip,
             });
             if (name.startsWith("resize-")) {

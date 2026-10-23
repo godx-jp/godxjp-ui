@@ -1625,6 +1625,8 @@
     }
   },
   "breadcrumbExamples": {
+    "parentsDescription": "currentItem=\"none\" はすべての祖先ページをリンクとして表示し、現在ページを示しません。レコード名を見出しに置く PageContainer では breadcrumbCurrentItem=\"none\" を指定します。省略したラベルも完全なアクセシブル名と title を持ち、ツールチップの説明は重複しません。",
+    "parentsAria": "祖先ページ",
     "ellipsisTitle": "ellipsis · 長いセグメントを 1 行に",
     "ellipsisDescription": "セグメントに ellipsis を付けるとパンくずは 1 行のまま、そのラベルを「…」で省略します。全文はホバーと、パンくずのリンクへのキーボードフォーカスでツールチップに出ます。antd の Breadcrumb に項目単位の省略はなく、形は Typography に合わせています。PageContainer の breadcrumb も同じ項目フィールドを受け付けます。",
     "ellipsisAria": "省略付きパンくずリスト",

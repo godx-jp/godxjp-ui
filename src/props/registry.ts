@@ -662,6 +662,11 @@ export const VOCABULARY_REGISTRY = {
     category: "navigation",
     description: "One-line truncation of a breadcrumb segment, with the full label in a tooltip",
   },
+  BreadcrumbCurrentItemProp: {
+    file: "vocabulary/navigation.prop.ts",
+    category: "navigation",
+    description: "Current breadcrumb item: last (default) or none for ancestors only",
+  },
   BreadcrumbProp: {
     file: "vocabulary/navigation.prop.ts",
     category: "navigation",
@@ -860,6 +865,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ExtraProp",
       "FooterProp",
       "BreadcrumbProp",
+      "BreadcrumbCurrentItemProp",
       "DensityProp",
       "PageContainerVariantProp",
       {

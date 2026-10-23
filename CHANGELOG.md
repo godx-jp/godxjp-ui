@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Breadcrumb `currentItem="none"` and PageContainer `breadcrumbCurrentItem="none"` for linked ancestor-only trails; the default remains `"last"` (#1391).
+
+### Fixed
+
+- Truncated breadcrumb labels expose their full accessible name and title without a duplicate tooltip description in both trails. C01 explicitly validates the kit recovery pattern and still reports unrecoverable clipping (#1393).
+
 ## [33.12.6] - 2026-10-23
 
 ### Fixed

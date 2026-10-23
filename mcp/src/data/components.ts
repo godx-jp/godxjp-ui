@@ -690,6 +690,13 @@ export const COMPONENTS: ComponentEntry[] = [
       "Mandatory page shell — EVERY page wraps its content in PageContainer (title/subtitle/extra/footer/breadcrumb).",
     props: [
       {
+        name: "breadcrumbCurrentItem",
+        type: "BreadcrumbCurrentItemProp",
+        default: "last",
+        description:
+          "last | none, identical to Breadcrumb.currentItem. none keeps every supplied ancestor destination linked and emits no aria-current; the record name belongs in title. breadcrumb items also support ellipsis with the full label in aria-label and title, without a duplicate tooltip description.",
+      },
+      {
         name: "footerPad",
         type: "PadProp",
         description: "Instance footer inset; omitted preserves the theme.",
@@ -3015,11 +3022,18 @@ export function TermsPage() {
     tagline: "Standalone breadcrumb nav rendering an ordered trail of page segments.",
     props: [
       {
+        name: "currentItem",
+        type: "BreadcrumbCurrentItemProp",
+        default: "last",
+        description:
+          "last | none. none renders an ancestor-only trail: every item with to stays linked and no default segment has aria-current. Missing paths remain text. menu and itemRender keep owning their segment bodies; custom renderers own their ARIA.",
+      },
+      {
         name: "items",
         type: "BreadcrumbItemProp[]",
         required: true,
         description:
-          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
+          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, with the full label as aria-label and title on the clipped element (no duplicate aria-describedby), showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
       },
       {
         name: "separator",
@@ -3042,7 +3056,7 @@ export function TermsPage() {
     ],
     usage: [
       "DO import from `@godxjp/ui/layout` (not from a navigation or general sub-path) and pass a single `items` prop — an ordered array of `{ label, to? }` objects. No children, no sub-components, no render-prop API.",
-      'DO omit `to` on the last (current-page) segment — the component automatically renders it as a `<span aria-current="page">` instead of a router `<Link>`. Passing `to` on the last item does NOT make it a link; drop it intentionally.',
+      'DO omit `to` on the last (current-page) segment — the component automatically renders it as a `<span aria-current="page">` instead of a router `<Link>`. In the default currentItem="last" mode, passing `to` on the last item does NOT make it a link. For ancestor-only trails use currentItem="none" and supply every ancestor destination.',
       "DO pass the Breadcrumb node as a ReactNode to the `breadcrumb` prop of `AppShell` (or `AppShell`) for shell-level breadcrumbs, or to `PageContainer`'s `breadcrumb` prop (which accepts `BreadcrumbItemProp[]` directly — not a ReactNode). When passing to `PageContainer`, pass the raw array; when passing to `AppShell`, wrap it: `breadcrumb={<Breadcrumb items={…} />}`.",
       'DON\'T hand-roll a breadcrumb strip (divs with chevrons, anchors, separators) — Breadcrumb ships the `<nav aria-label="Breadcrumb">` + `<ol>` + `aria-hidden` chevrons. Any custom trail is a violation of the no-hand-roll rule and will fail `npm run ui:audit`.',
       "DON'T use Breadcrumb for tab-style or step-style navigation (multi-step forms, wizard progress). Those flows belong to `Steps`. Breadcrumb is strictly a spatial location trail, not a process indicator.",

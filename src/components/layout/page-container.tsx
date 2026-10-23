@@ -108,6 +108,7 @@ function PageContainerRoot({
   toolbarPad,
   footerPad,
   breadcrumb,
+  breadcrumbCurrentItem = "last",
   breadcrumbLabel,
   breadcrumbAriaLabel,
   linkComponent: LinkComponent = "a",
@@ -203,6 +204,7 @@ function PageContainerRoot({
               <ol className="ui-breadcrumb-list" data-ellipsis={trailEllipsis(breadcrumb)}>
                 {breadcrumb.map((item, i) => {
                   const isLast = i === breadcrumb.length - 1;
+                  const isCurrent = isLast && breadcrumbCurrentItem === "last";
                   return (
                     // `--space-inline-xs` gap the previous `.ui-inline-xs` gave, and it brings
                     // `.ui-breadcrumb-item svg { 0.75rem }` with it, so the separator glyph no
@@ -220,7 +222,7 @@ function PageContainerRoot({
                           <ChevronRight aria-hidden="true" />
                         </span>
                       ) : null}
-                      {item.to && !isLast ? (
+                      {item.to && !isCurrent ? (
                         <BreadcrumbCrumbText item={item}>
                           <LinkComponent
                             href={item.to}
@@ -233,8 +235,8 @@ function PageContainerRoot({
                       ) : (
                         <BreadcrumbCrumbText item={item}>
                           <span
-                            className={isLast ? "text-foreground" : ""}
-                            aria-current={isLast ? "page" : undefined}
+                            className={isCurrent ? "text-foreground" : ""}
+                            aria-current={isCurrent ? "page" : undefined}
                           >
                             {item.label}
                           </span>

@@ -431,7 +431,7 @@ export const PROBE_RULES = [
     category: "layout",
     standard: `WCAG 2.2 SC 1.4.10 / 1.4.4 / 1.4.12; 1.5px tolerance ${RC}`,
     kind: "probe",
-    fix: "Nothing may be cut off: no horizontal scroll on the document or the app's main region, and no text/icon partly hidden by an overflow:hidden/clip ancestor. Let the container shrink its content (min-width:0 + wrap), or truncate with a recoverable full value (title / aria-label).",
+    fix: "Nothing may be cut off: no horizontal scroll on the document or the app's main region, and no text/icon partly hidden by an overflow:hidden/clip ancestor. Let the container shrink its content (min-width:0 + wrap), or truncate with a recoverable full value (title / aria-label). Kit Breadcrumb ellipsis requires the complete label in both title and aria-label on its clipping element; a tooltip alone or a partial label is insufficient.",
   },
   {
     id: "c02-search-usable",
@@ -1056,11 +1056,21 @@ export function collectProbes(opts) {
       if (it.kind === "text" && truncating) {
         const full = snippet(it.owner.textContent).slice(0, 20);
         const carrier = it.owner.closest("[title], [aria-label], [data-audit-recoverable]");
-        recoverable =
-          !!carrier &&
-          (carrier.hasAttribute("data-audit-recoverable") ||
-            snippet(carrier.getAttribute("title")).includes(full) ||
-            snippet(carrier.getAttribute("aria-label")).includes(full));
+        const crumb = it.owner.closest(".ui-breadcrumb-ellipsis");
+        const crumbText = crumb?.cloneNode(true);
+        crumbText
+          ?.querySelectorAll('[aria-hidden="true"], [hidden]')
+          .forEach((child) => child.remove());
+        const crumbLabel = crumbText?.textContent?.replace(/\s+/g, " ").trim();
+        const kitCrumb = crumb?.closest(".ui-breadcrumb-list > .ui-breadcrumb-item");
+        recoverable = kitCrumb
+          ? !!crumbLabel &&
+            crumb.getAttribute("title")?.replace(/\s+/g, " ").trim() === crumbLabel &&
+            crumb.getAttribute("aria-label")?.replace(/\s+/g, " ").trim() === crumbLabel
+          : !!carrier &&
+            (carrier.hasAttribute("data-audit-recoverable") ||
+              snippet(carrier.getAttribute("title")).includes(full) ||
+              snippet(carrier.getAttribute("aria-label")).includes(full));
       }
       worst = { px, axis: dx >= dy ? "x" : "y", clipper: desc(a), recoverable };
     }

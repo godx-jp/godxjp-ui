@@ -245,3 +245,17 @@ it("documents an optional AppShell sidebar without reserving empty navigation", 
   expect(sidebar?.required).not.toBe(true);
   expect(sidebar?.description).toContain("grid track");
 });
+
+describe("ancestor-only breadcrumb API (#1391 / #1393)", () => {
+  it.each([
+    ["Breadcrumb", "currentItem"],
+    ["PageContainer", "breadcrumbCurrentItem"],
+  ])("%s documents the mode and full-name recovery", async (name, prop) => {
+    const out = await dispatchTool("get_component", { name });
+    expect(out).toContain(prop);
+    expect(out).toContain("BreadcrumbCurrentItemProp");
+    expect(out).toContain("none");
+    expect(out).toContain("aria-label");
+    expect(out).toContain("title");
+  });
+});
