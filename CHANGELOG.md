@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.5] - 2026-10-23
+
+### Fixed
+
+- **Input and Textarea no longer throw "Maximum update depth exceeded" or drop a character under a burst of keystrokes (#1384).** A controlled `value` was mirrored into state from an effect, leaving a deferred update behind every keystroke; an IME (Telex/VNI) or a fast typist delivering 50+ input events without a pause hit React's nested-update limit, the throwing keystroke was lost. The controlled value is now read straight from props.
+
 ## [33.12.4] - 2026-10-17
 
 The first release of everything listed under 33.12.3 below: its main CI was red (the new geometry test read the v33.11.2 stylesheet through a git tag the CI checkout does not have) and the release gate stopped before tagging, so 33.12.3 never reached npm.

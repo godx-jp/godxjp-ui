@@ -125,15 +125,21 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
       };
     }, []);
 
-    const [text, setText] = React.useState(() => String(value ?? defaultValue ?? ""));
+    /**
+     * Only the UNCONTROLLED text lives in state; a controlled `value` is read straight from props,
+     * so the ✕ and the counter follow it in the same render. Mirroring `value` into state from an
+     * effect left a deferred update behind every keystroke, and a burst of keystrokes (an IME, a
+     * fast typist) piled those up until React threw "Maximum update depth exceeded" out of the
+     * consumer's `setState` and dropped the character.
+     */
+    const [uncontrolledText, setUncontrolledText] = React.useState(() =>
+      String(defaultValue ?? ""),
+    );
+    const text = value !== undefined ? String(value) : uncontrolledText;
     const hasText = text.length > 0;
-    // Keep the ✕ and the counter in sync with a controlled value.
-    React.useEffect(() => {
-      if (value !== undefined) setText(String(value));
-    }, [value]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (value === undefined) setText(event.target.value);
+      if (value === undefined) setUncontrolledText(event.target.value);
       onChange?.(event);
       if ((onChange as unknown) !== onValueChange) onValueChange?.(event.target.value);
     };
@@ -151,7 +157,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
         el.dispatchEvent(new Event("input", { bubbles: true }));
         el.focus();
       }
-      setText("");
+      setUncontrolledText("");
       onClear?.();
     };
 
