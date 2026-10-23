@@ -52,3 +52,16 @@ export function buildPageRange(
     ...endPages,
   ];
 }
+
+/**
+ * The rows-per-page choices with the CURRENT page size always among them (gh#1386).
+ *
+ * A size changer whose list leaves out its own value has no item to show: `DataTable.Pagination`
+ * rendered an empty trigger, `Pagination` a menu with no entry for the size in use. Ant Design's
+ * `rc-pagination` size changer adds the current size the same way. Sorted ascending, so 25 lands
+ * between 20 and 50 rather than at the end.
+ */
+export function pageSizeOptionsWith(options: readonly number[], pageSize: number): number[] {
+  if (options.includes(pageSize)) return [...options];
+  return [...options, pageSize].sort((a, b) => a - b);
+}

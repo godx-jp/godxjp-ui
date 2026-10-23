@@ -220,7 +220,9 @@ describe("DataTable — antd `pagination` object surface", () => {
     );
     await user.click(screen.getByRole("combobox"));
     const options = await screen.findAllByRole("option");
-    expect(options.map((o) => o.textContent)).toEqual(["5", "25"]);
+    // The page size in use (the default 10) is listed too, in order — without it the trigger had
+    // no item for its own value and rendered empty (gh#1386).
+    expect(options.map((o) => o.textContent)).toEqual(["5", "10", "25"]);
   });
 
   it("drops the size changer when `showSizeChanger` is false", () => {

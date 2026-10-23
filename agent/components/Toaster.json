@@ -16,6 +16,12 @@
       "type": "boolean"
     },
     {
+      "defaultValue": "true",
+      "description": "Draw every visible toast whole, stacked with a gap. Default `true` (gh#1387): Sonner's collapsed deck (`expand={false}`) keeps earlier toasts as cards peeking behind the front one with their text hidden, which reads as an empty box. Pass `expand={false}` to opt back into the deck.",
+      "name": "expand",
+      "type": "boolean"
+    },
+    {
       "description": "Auto-dismiss time in ms for every toast. Omit it to let the `--toast-duration` token (default 4000ms) decide — read once on mount from the ThemeScope host or `<html>` (gh#1253). A per-call `toast(…, { duration })` still wins.",
       "name": "duration",
       "type": "number"
