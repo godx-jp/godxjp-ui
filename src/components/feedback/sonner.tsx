@@ -114,8 +114,20 @@ const toneVars = Object.fromEntries(
  * all (`[data-rich-colors='true'][data-type='success'] { … }`), so without it the tokens above
  * are declared and never read. A consumer can still pass `richColors={false}` for a deliberately
  * monochrome stack.
+ *
+ * `expand` defaults ON (gh#1387). Sonner's collapsed deck keeps every earlier toast as a card
+ * peeking behind the front one with its content faded to `opacity: 0`, so a second toast arriving
+ * while the first is live drew an empty box behind it (gino-cloud: 338×51 frame, 13px above the
+ * front toast, no text). Expanded, each visible toast is drawn whole. `expand={false}` restores
+ * the deck for a consumer who wants it.
  */
-function Toaster({ style, richColors = true, toastOptions, ...props }: ToasterProps) {
+function Toaster({
+  style,
+  richColors = true,
+  expand = true,
+  toastOptions,
+  ...props
+}: ToasterProps) {
   const theme = useDocumentTheme();
   const { t } = useTranslation();
   /*
@@ -132,6 +144,7 @@ function Toaster({ style, richColors = true, toastOptions, ...props }: ToasterPr
     <Sonner
       theme={theme}
       richColors={richColors}
+      expand={expand}
       className="toaster group"
       // cannot restyle a single icon without re-declaring the set — so the size is a token
       // (`--toast-icon-size`) read by `.ui-toast-icon` in alert-layout.css, not a `size-4` here.

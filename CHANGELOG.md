@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.12.6] - 2026-10-23
+
+### Fixed
+
+- **The rows-per-page select always lists the page size in use (#1386).** `DataTable.Pagination`
+  with `pageSize: 25` and no `pageSizeOptions` fell back to `[10, 20, 50, 100]`, had no item for
+  its own value, and rendered an empty trigger (gino-cloud: 47px, `data-placeholder`, 5 screens ×
+  4 cells). A page size missing from the options is now added in ascending order — the trigger
+  reads `25`, the menu `10 / 20 / 25 / 50 / 100` — as antd's size changer does. `Pagination` gets
+  the same rule for its menu.
+
+### Changed
+
+- **`Toaster` defaults `expand` to `true` (#1387).** Sonner's collapsed deck kept an earlier toast
+  as a card peeking behind the new one with its text faded out, which read as an empty box
+  (gino-cloud: a 338×51 frame 13px above the front toast, `innerText` empty). Every visible toast
+  is now drawn whole. `expand={false}` restores the deck.
+
 ## [33.12.5] - 2026-10-23
 
 ### Fixed

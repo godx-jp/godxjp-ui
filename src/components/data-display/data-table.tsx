@@ -134,6 +134,7 @@ import type {
   TableSummaryProp,
 } from "../../props/vocabulary";
 import { isDevelopment } from "../../lib/dev";
+import { pageSizeOptionsWith } from "../navigation/pagination-utils";
 
 // DataTable supports all three density tiers (compact 28 / default 36 /
 // comfortable 48) so a 表示密度 control can drive the full set, not just a
@@ -2349,7 +2350,10 @@ function NumberedPagination({ pageSizeOptions, className }: NumberedPaginationPr
   if (pagerHidden) return null;
   // antd's `pageSizeOptions` / `showSizeChanger` travel on the pagination config object; the
   // slot's own prop still wins when a call site sets it directly.
-  const options = pageSizeOptions ?? paginationConfig?.pageSizeOptions ?? [10, 20, 50, 100];
+  const options = pageSizeOptionsWith(
+    pageSizeOptions ?? paginationConfig?.pageSizeOptions ?? [10, 20, 50, 100],
+    pageSize,
+  );
   const showSizeChanger = paginationConfig?.showSizeChanger ?? true;
 
   return (

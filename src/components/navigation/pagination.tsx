@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../data-entry/select";
-import { buildPageRange } from "./pagination-utils";
+import { buildPageRange, pageSizeOptionsWith } from "./pagination-utils";
 import type { PaginationProp } from "../../props/components/navigation.prop";
 import { isImeComposing } from "../../lib/ime";
 
@@ -307,7 +307,7 @@ export function Pagination({
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {pageSizeOptions.map((option) => (
+            {pageSizeOptionsWith(pageSizeOptions, pageSize).map((option) => (
               <SelectItem key={option} value={String(option)}>
                 {option}
               </SelectItem>

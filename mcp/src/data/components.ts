@@ -9805,6 +9805,13 @@ import { Button } from "@godxjp/ui/general";
       },
       { name: "richColors", type: "boolean", description: "Enable Sonner rich variant colours." },
       {
+        name: "expand",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Draw every visible toast whole, stacked with a gap. Default `true` (gh#1387): Sonner's collapsed deck (`expand={false}`) keeps earlier toasts as cards peeking behind the front one with their text hidden, which reads as an empty box. Pass `expand={false}` to opt back into the deck.",
+      },
+      {
         name: "duration",
         type: "number",
         description:
@@ -10066,7 +10073,8 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       "PaginationPrevious",
     ],
     group: "navigation",
-    tagline: "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
+    tagline:
+      "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
       {
         name: "ariaLabel",
@@ -10095,7 +10103,8 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       {
         name: "pageSizeOptions",
         type: "number[]",
-        description: "Selectable page sizes shown in the size changer.",
+        description:
+          "Selectable page sizes shown in the size changer (default [10, 20, 50, 100]). The current `pageSize` is always listed: one missing from the options is added in ascending order (antd parity, gh#1386).",
       },
       {
         name: "showSizeChanger",

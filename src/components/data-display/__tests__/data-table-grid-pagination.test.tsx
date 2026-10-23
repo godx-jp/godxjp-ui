@@ -85,6 +85,40 @@ describe("DataTable.Pagination — numbered (client) mode", () => {
   });
 });
 
+describe("DataTable.Pagination — the current page size is always a choice (gh#1386)", () => {
+  // gino-cloud: `pageSize: 25` with no `pageSizeOptions` fell back to 10/20/50/100, so the
+  // rows-per-page trigger had no item for its own value and rendered empty (47px, placeholder).
+  it("shows a page size missing from the default options, inserted in order", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <DataTable
+        columns={columns}
+        data={make(25)}
+        getRowId={(r) => r.id}
+        manualPagination
+        rowCount={100}
+        pagination={{ pageIndex: 0, pageSize: 25 }}
+      >
+        <DataTable.Pagination />
+      </DataTable>,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveTextContent("25");
+    expect(trigger).not.toHaveAttribute("data-placeholder");
+    await user.click(trigger);
+    const options = await screen.findAllByRole("option");
+    expect(options.map((o) => o.textContent)).toEqual(["10", "20", "25", "50", "100"]);
+  });
+
+  it("leaves the options alone when they already hold the page size", async () => {
+    const user = userEvent.setup();
+    NumberedGrid(make(12), [10, 20]);
+    await user.click(screen.getByRole("combobox"));
+    const options = await screen.findAllByRole("option");
+    expect(options.map((o) => o.textContent)).toEqual(["10", "20"]);
+  });
+});
+
 describe("DataTable.Pagination — manual (server) mode", () => {
   it("the next-page control delegates to onPaginationChange", async () => {
     const user = userEvent.setup();

@@ -37,7 +37,7 @@
       "type": "(page: number, pageSize: number) => void"
     },
     {
-      "description": "Selectable page sizes shown in the size changer.",
+      "description": "Selectable page sizes shown in the size changer (default [10, 20, 50, 100]). The current `pageSize` is always listed: one missing from the options is added in ascending order (antd parity, gh#1386).",
       "name": "pageSizeOptions",
       "type": "number[]"
     },

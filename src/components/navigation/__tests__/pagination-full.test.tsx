@@ -74,6 +74,14 @@ describe("Pagination — total + size changer", () => {
     await user.click(await screen.findByRole("option", { name: /20/ }));
     expect(onValueChange).toHaveBeenLastCalledWith(1, 20);
   });
+
+  it("offers the current page size even when the options leave it out (gh#1386)", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<Pagination value={1} total={100} pageSize={25} showSizeChanger />);
+    await user.click(screen.getByRole("combobox"));
+    const options = await screen.findAllByRole("option");
+    expect(options.map((o) => o.textContent)).toEqual(["10", "20", "25", "50", "100"]);
+  });
 });
 
 describe("Pagination — prev/next navigation", () => {
