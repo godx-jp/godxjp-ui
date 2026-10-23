@@ -113,6 +113,9 @@
   --editorial-page-header-description-font-size: 0.9375rem;
   --editorial-page-header-description-line-height: inherit;
   --editorial-page-header-description-max-width: 47.5rem;
+  /* The search slot under the description (gh#1438). */
+  --editorial-page-header-search-max-width: 45rem;
+  --editorial-page-header-search-space-block-start: 1.5rem;
 
   /* ── EditorialTextLink ("view all →") ───────────────────────────────────────────────────── */
   --editorial-text-link-font-size: 0.875rem;

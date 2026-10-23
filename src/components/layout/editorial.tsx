@@ -200,6 +200,7 @@ export function EditorialPageHeader({
   title,
   description,
   actions,
+  search,
   titleId,
   className,
 }: EditorialPageHeaderProp) {
@@ -221,6 +222,7 @@ export function EditorialPageHeader({
           {description != null && (
             <p className="ui-editorial-page-header-description">{description}</p>
           )}
+          {search != null && <div className="ui-editorial-page-header-search">{search}</div>}
         </div>
         {actions != null && <div className="ui-editorial-page-header-actions">{actions}</div>}
       </header>

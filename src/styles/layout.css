@@ -3227,6 +3227,16 @@
     min-width: 0;
   }
 
+  /* A header with a search lets its copy take the row, so the search can reach its own cap. */
+  .ui-editorial-page-header-copy:has(> .ui-editorial-page-header-search) {
+    flex: 1 1 auto;
+  }
+
+  .ui-editorial-page-header-search {
+    max-width: var(--editorial-page-header-search-max-width);
+    margin-block-start: var(--editorial-page-header-search-space-block-start);
+  }
+
   .ui-editorial-page-header-copy > .ui-editorial-eyebrow {
     color: var(
       --editorial-page-header-kicker-color,

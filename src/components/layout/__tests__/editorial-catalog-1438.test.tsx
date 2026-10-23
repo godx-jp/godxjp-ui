@@ -18,7 +18,37 @@ import {
   EditorialFilterPanel,
   EditorialListingToolbar,
 } from "../editorial-catalog";
+import { EditorialPageHeader } from "../editorial";
 import * as layout from "../index";
+
+describe("EditorialPageHeader search slot (gh#1438)", () => {
+  it("renders the search inside the header, after the description", () => {
+    render(
+      <EditorialPageHeader
+        title="Cards"
+        description="Search by name."
+        search={<form role="search" aria-label="Cards" />}
+      />,
+    );
+    const search = screen.getByRole("search", { name: "Cards" });
+    const slot = search.parentElement;
+    expect(slot?.className).toBe("ui-editorial-page-header-search");
+    expect(slot?.previousElementSibling?.textContent).toBe("Search by name.");
+    expect(slot?.closest("header")).toBeTruthy();
+  });
+
+  it("leaves a header without a search unchanged", () => {
+    const { container } = render(<EditorialPageHeader title="Journal" />);
+    expect(container.querySelector(".ui-editorial-page-header-search")).toBeNull();
+  });
+
+  it("caps and spaces the search from tokens", () => {
+    const slot = rule(".ui-editorial-page-header-search");
+    expect(slot).toMatch(/max-width:\s*var\(--editorial-page-header-search-max-width\)/);
+    expect(slot).toMatch(/margin-block-start:\s*var\(--editorial-page-header-search-space-block-start\)/);
+    expect(tokens).toMatch(/--editorial-page-header-search-max-width:\s*45rem/);
+  });
+});
 
 const read = (relativePath: string) =>
   readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8").replace(

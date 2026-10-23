@@ -41,6 +41,11 @@
       "type": "ReactNode"
     },
     {
+      "description": "Search under the description (an EditorialSearch).",
+      "name": "search",
+      "type": "ReactNode"
+    },
+    {
       "description": "Id on the h1.",
       "name": "titleId",
       "type": "string"

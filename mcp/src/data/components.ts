@@ -1076,6 +1076,7 @@ export default function OrdersPage() {
       { name: "eyebrow", type: "ReactNode", description: "Kicker above the title (an Eyebrow)." },
       { name: "description", type: "ReactNode", description: "One lead line under it." },
       { name: "actions", type: "ReactNode", description: "Action at the end of the title row." },
+      { name: "search", type: "ReactNode", description: "Search under the description (an EditorialSearch)." },
       { name: "titleId", type: "string", description: "Id on the h1." },
     ],
     usage: [

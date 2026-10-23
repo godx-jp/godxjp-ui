@@ -1600,6 +1600,7 @@ export const COMPONENT_PROP_REGISTRY = {
       },
       { field: "eyebrow", local: true, reason: "Slot for the kicker above the title." },
       { field: "actions", local: true, reason: "Slot for the trailing action on the title row." },
+      { field: "search", local: true, reason: "Slot for a search under the description (gh#1438)." },
       { field: "titleId", local: true, reason: "Id put on the h1." },
     ],
   },

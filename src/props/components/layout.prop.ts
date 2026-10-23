@@ -2321,6 +2321,12 @@ export type EditorialPageHeaderProp = {
   description?: DescriptionProp;
   /** Trailing action on the title row (a button or a link). */
   actions?: ReactNode;
+  /**
+   * A search under the description, inside the header (a catalog's `EditorialSearch`, gh#1438):
+   * `--editorial-page-header-search-space-block-start` above it, capped at
+   * `--editorial-page-header-search-max-width`.
+   */
+  search?: ReactNode;
   /** Id put on the h1. */
   titleId?: IdProp;
   className?: ClassNameProp;
