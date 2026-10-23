@@ -2516,6 +2516,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "allowAll",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "branches",
           "origin": "owned",
           "required": true,
@@ -2569,6 +2577,14 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "hideWhenSingle",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -2644,6 +2660,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "selectionMode",
+          "origin": "owned",
+          "required": false,
+          "type": "\"single\" | \"multiple\" | undefined",
+          "values": ["single", "multiple"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
@@ -2662,6 +2686,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/components/layout/breadcrumb.tsx"]
+        },
+        {
+          "name": "currentItem",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbCurrentItemProp | undefined",
+          "values": ["none", "last"],
           "declaredIn": ["src/components/layout/breadcrumb.tsx"]
         },
         {
@@ -10413,6 +10445,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "breadcrumbCurrentItem",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbCurrentItemProp | undefined",
+          "values": ["none", "last"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

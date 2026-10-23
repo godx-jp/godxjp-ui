@@ -2,6 +2,17 @@
 
 Every visual dimension has **one canonical owner**. Apps never patch spacing, density, typography, or color ad hoc.
 
+## Stacked records and calendar sizing
+
+`--table-stacked-collection-card-padding-x` defaults to `initial`. At each stacked row it
+resolves to `calc(var(--card-space-inset) - var(--stroke-hairline))`: the row border plus
+padding lands on the CardTitle keyline. Scoped Card density and theme overrides therefore
+remain live. Set the stacked token explicitly to choose an independent row padding.
+
+Calendar columns retain the control-height tier at their natural width. In a narrow container,
+the grid shares the available width between seven dates (the optional week-number label keeps its intrinsic measure),
+keeping each date target at least `--touch-target-min`. `width="full"` retains its embedded sizing.
+
 ## Architecture
 
 ```

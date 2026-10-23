@@ -662,6 +662,11 @@ export const VOCABULARY_REGISTRY = {
     category: "navigation",
     description: "One-line truncation of a breadcrumb segment, with the full label in a tooltip",
   },
+  BreadcrumbCurrentItemProp: {
+    file: "vocabulary/navigation.prop.ts",
+    category: "navigation",
+    description: "Current breadcrumb item: last (default) or none for ancestors only",
+  },
   BreadcrumbProp: {
     file: "vocabulary/navigation.prop.ts",
     category: "navigation",
@@ -860,6 +865,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ExtraProp",
       "FooterProp",
       "BreadcrumbProp",
+      "BreadcrumbCurrentItemProp",
       "DensityProp",
       "PageContainerVariantProp",
       {
@@ -4833,6 +4839,21 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: [
+      {
+        field: "selectionMode",
+        local: true,
+        reason: "Single navigation scope or existing multiple-branch subset editor.",
+      },
+      {
+        field: "allowAll",
+        local: true,
+        reason: "Whether organization-wide branch scope is selectable.",
+      },
+      {
+        field: "hideWhenSingle",
+        local: true,
+        reason: "Hide a settled single-branch navigation scope without changing consumer state.",
+      },
       "ValueProp",
       "DefaultValueProp",
       "OnValueChangeProp",

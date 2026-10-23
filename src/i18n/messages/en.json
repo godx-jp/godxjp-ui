@@ -171,7 +171,8 @@
       "error": "Could not load branches",
       "denied": "You do not have permission to view branches",
       "loading": "Loading branches…",
-      "noMatches": "No branches match your search"
+      "noMatches": "No branches match your search",
+      "choose": "Choose a branch"
     },
     "formErrors": {
       "title": "Please review the following errors"

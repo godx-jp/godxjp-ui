@@ -106,7 +106,7 @@ const HELP = {
     --dry-run   list every change without writing
   What it cannot decide (a component move that changes props, an AppProvider that relied on the
   old vi default) is printed as a "note" for you to finish.`,
-  "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] [--widths WxH,…] [--storage-state FILE] [--text-spacing] [--text-zoom 200] [--screenshots DIR] <baseUrl> [route …]
+  "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] [--widths WxH,…] [--storage-state FILE] [--text-spacing] [--text-zoom 200] [--screenshots DIR] [--playwright-module PATH] [--executable-path CHROME] <baseUrl> [route …]
 
   Runtime audit (Playwright) against an app you are ALREADY running locally, at six widths.
     baseUrl         the running app, e.g. http://localhost:5173
@@ -121,6 +121,11 @@ const HELP = {
                     Each reports the geometry delta against the unmodified render; a delta of
                     zero is an error ("override not applied"), never a pass
     --screenshots   a directory for the base + override render of each evidence mode
+    --playwright-module PATH
+                    a playwright or playwright-core package dir (or its entry file) to use, e.g.
+                    one in the npx cache. Without it: the playwright peer, then playwright-core
+    --executable-path CHROME
+                    the Chromium/Chrome binary to launch (else PLAYWRIGHT_CHROMIUM_EXECUTABLE)
     --strict       exit non-zero on any finding, not only errors
     --format json   machine-readable: findings (viewport, element, threshold + origin), unmapped
                     items (reviewer required), per-width rule status + reviewer checklist
@@ -128,7 +133,8 @@ const HELP = {
   Responsive probes C01–C12 are advisory; thresholds are repo-chosen unless marked WCAG. A clean
   run ends "probes passed; independent acceptance pending" — the checklist still needs a reviewer.
   Map your own components with data-audit-role (search, search-trigger, account-name, editor,
-  task-actions, rail-toggle, content-column, section-label, metadata). Needs the playwright peer.`,
+  task-actions, rail-toggle, content-column, section-label, metadata). Needs the playwright peer
+  or playwright-core (--playwright-module).`,
 };
 
 const USAGE = `usage: godxjp-ui <command> [args]

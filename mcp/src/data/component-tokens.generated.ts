@@ -8800,8 +8800,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-stacked-collection-card-padding-x",
-    "value": "var(--space-inline-md)",
-    "description": "Table component tokens: row height, cell padding."
+    "value": "initial",
+    "description": "default = Card inset minus the row border, resolved at the row"
   },
   {
     "name": "--table-stacked-collection-card-gap",

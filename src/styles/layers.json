@@ -215,7 +215,8 @@
         "alert-layout.css",
         "badge-layout.css",
         "data-entry-layout.css",
-        "form-layout.css"
+        "form-layout.css",
+        "navigation-layout.css"
       ]
     },
     "Breadcrumb": {

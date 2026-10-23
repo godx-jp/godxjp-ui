@@ -690,6 +690,13 @@ export const COMPONENTS: ComponentEntry[] = [
       "Mandatory page shell — EVERY page wraps its content in PageContainer (title/subtitle/extra/footer/breadcrumb).",
     props: [
       {
+        name: "breadcrumbCurrentItem",
+        type: "BreadcrumbCurrentItemProp",
+        defaultValue: '"last"',
+        description:
+          "last | none, identical to Breadcrumb.currentItem. none keeps every supplied ancestor destination linked and emits no aria-current; the record name belongs in title. breadcrumb items also support ellipsis with the full label in aria-label and title, without a duplicate tooltip description.",
+      },
+      {
         name: "footerPad",
         type: "PadProp",
         description: "Instance footer inset; omitted preserves the theme.",
@@ -1706,6 +1713,7 @@ export function MyPage() {
       },
     ],
     usage: [
+      "Compose a More destination in tabBar with SheetTrigger + Sheet + BranchScopePicker selectionMode=single; see layout/mobile-branch-scope.tsx. MobileShell does not own routes or a built-in More menu.",
       "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · the auth CenteredShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
       "DO let `children` be the only thing that scrolls. Put the primary verb in `actions` and navigation in `tabBar` — both sit outside the scroll region, so neither needs `position: sticky`, a z-index, or bottom padding to clear the other.",
       "DO NOT compose one out of <Card> + `ui-card-inset*` + `overflow-y-auto` (what docs/showcase/case6 did before gh#354). That reproduces the look and neither behaviour that matters on a device: the document still scrolls, and nothing pads out of env(safe-area-inset-*), so the notch covers the app bar and the home indicator covers the primary button.",
@@ -1868,6 +1876,7 @@ export function HandyInbound() {
       },
     ],
     usage: [
+      "For app-local branch viewing scope, put one BranchScopePicker selectionMode=single in action above navigation; see data-entry/branch-scope-navigation.tsx. This differs from platform OrgSwitcher.",
       "DO: Define all nav items as a SidebarSectionProp[] data structure and pass it to sections — never hand-roll nav buttons alongside or instead of the Sidebar.",
       "DO: Add children: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The group auto-opens and highlights when activeId matches any descendant. The SAME field drives NavList (gh#815), so one grouped settings nav is one NavList and one <nav> landmark.",
       "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
@@ -3015,11 +3024,18 @@ export function TermsPage() {
     tagline: "Standalone breadcrumb nav rendering an ordered trail of page segments.",
     props: [
       {
+        name: "currentItem",
+        type: "BreadcrumbCurrentItemProp",
+        defaultValue: '"last"',
+        description:
+          "last | none. none renders an ancestor-only trail: every item with to stays linked and no default segment has aria-current. Missing paths remain text. menu and itemRender keep owning their segment bodies; custom renderers own their ARIA.",
+      },
+      {
         name: "items",
         type: "BreadcrumbItemProp[]",
         required: true,
         description:
-          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
+          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, with the full label as aria-label and title on the clipped element (no duplicate aria-describedby), showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
       },
       {
         name: "separator",
@@ -3042,7 +3058,7 @@ export function TermsPage() {
     ],
     usage: [
       "DO import from `@godxjp/ui/layout` (not from a navigation or general sub-path) and pass a single `items` prop — an ordered array of `{ label, to? }` objects. No children, no sub-components, no render-prop API.",
-      'DO omit `to` on the last (current-page) segment — the component automatically renders it as a `<span aria-current="page">` instead of a router `<Link>`. Passing `to` on the last item does NOT make it a link; drop it intentionally.',
+      'DO omit `to` on the last (current-page) segment — the component automatically renders it as a `<span aria-current="page">` instead of a router `<Link>`. In the default currentItem="last" mode, passing `to` on the last item does NOT make it a link. For ancestor-only trails use currentItem="none" and supply every ancestor destination.',
       "DO pass the Breadcrumb node as a ReactNode to the `breadcrumb` prop of `AppShell` (or `AppShell`) for shell-level breadcrumbs, or to `PageContainer`'s `breadcrumb` prop (which accepts `BreadcrumbItemProp[]` directly — not a ReactNode). When passing to `PageContainer`, pass the raw array; when passing to `AppShell`, wrap it: `breadcrumb={<Breadcrumb items={…} />}`.",
       'DON\'T hand-roll a breadcrumb strip (divs with chevrons, anchors, separators) — Breadcrumb ships the `<nav aria-label="Breadcrumb">` + `<ol>` + `aria-hidden` chevrons. Any custom trail is a violation of the no-hand-roll rule and will fail `npm run ui:audit`.',
       "DON'T use Breadcrumb for tab-style or step-style navigation (multi-step forms, wizard progress). Those flows belong to `Steps`. Breadcrumb is strictly a spatial location trail, not a process indicator.",
@@ -4108,7 +4124,7 @@ import { Icon, Text } from "@godxjp/ui/general";
         type: "'default' | 'action-collection' | 'stacked-record-collection'",
         defaultValue: "'default'",
         description:
-          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). In card mode the CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column's `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
+          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). In card mode the row inset defaults to the live --card-space-inset minus its own border, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column's `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
       },
       {
         name: "collapseBelow",
@@ -6669,7 +6685,7 @@ import { ArrowRightLeft, MessageSquare } from "lucide-react";
         type: '"default" | "action-collection" | "stacked-record-collection"',
         defaultValue: '"default"',
         description:
-          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). In card mode the CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column\'s `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
+          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). In card mode the row inset defaults to the live --card-space-inset minus its own border, sharing the CardTitle keyline at every density and in RTL (override --table-stacked-collection-card-padding-x independently). The CARD owns the inline inset: a folded cell has no inline padding of its own (--table-stacked-collection-cell-padding-x, default 0), and an EMPTY cell (content null) prints no label and drops out of the card (gh#1102). Every folded cell reads from the START: a column\'s `align`/`numeric` end or centre alignment belongs to the table, not the card, so a count sits under its label like every other field (gh#1310). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
       },
       {
         name: "collapseBelow",
@@ -17510,6 +17526,27 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
     tagline: "Canonical scope control: all branches vs an explicit subset.",
     props: [
       {
+        name: "selectionMode",
+        type: '"single" | "multiple"',
+        defaultValue: '"multiple"',
+        description:
+          "Single compact Select for all/one branch; multiple keeps the existing all/subset editor.",
+      },
+      {
+        name: "allowAll",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Allow organization-wide scope. Set false for record fields, then validate exactly one permitted concrete branch on submit. Invalid supplied values are not silently coerced.",
+      },
+      {
+        name: "hideWhenSingle",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Hide after a successful read of one enabled branch, except validation errors. Does not emit a change or normalize URL/default values; the app does that.",
+      },
+      {
         name: "value",
         type: "BranchScopeValueProp",
         description: "Giá trị có kiểm soát: phạm vi đang chọn.",
@@ -17580,7 +17617,7 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
         name: "name",
         type: "string",
         description:
-          "Native form name, forwarded to the MODE radio group — the all / selected choice is what submits under it. The checked branch ids are not native fields; they live in the single `{ mode, branchIds }` value and are yours to serialise.",
+          "Native form name: multiple submits the MODE radio; single submits the Select key (`all` or `branch:<id>`). Serialize the public `{ mode, branchIds }` value yourself for domain records; native keys are not branch ownership.",
       },
       {
         name: "id",
@@ -17590,6 +17627,8 @@ const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, r
       },
     ],
     usage: [
+      "Use selectionMode=single in Sidebar action (above navigation) and a Sheet opened from MobileShell tabBar More. These are compositions, not a new switcher. OrgSwitcher changes organization and stays in platform chrome.",
+      "The app owns URL parsing, validation against authorized branches, popstate/router updates, and onValueChange navigation. Resolve a single authorized branch in the app before hiding the picker. Viewing scope is not record ownership: record forms use separate state, selectionMode=single and allowAll=false, and validate exactly one permitted id on submit. Future groups need an explicit value contract; do not encode them as branch ids.",
       "DO treat scope as ONE form field: the single { mode, branchIds } value goes through FormField like any other control.",
       "DO import it from @godxjp/ui/data-entry — never compose an ad-hoc radio+checkbox scope block per screen.",
       "DO use `error` ONLY for validation (e.g. mode=selected with zero branches checked); a failed branch fetch is `listError`, a 403 is `denied`.",
