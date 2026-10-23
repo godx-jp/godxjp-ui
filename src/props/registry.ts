@@ -125,7 +125,8 @@ export const VOCABULARY_REGISTRY = {
   WidthProp: {
     file: "vocabulary/shared.prop.ts",
     category: "shared",
-    description: "Explicit layout length (number→px | CSS string) — NOT the SizeProp tier",
+    description:
+      'Explicit layout length (number→px | CSS length string: 20rem, 50%, calc()/min()/var()) — NOT the SizeProp tier; "md" is a type error',
   },
   ControlWidthProp: {
     file: "vocabulary/shared.prop.ts",

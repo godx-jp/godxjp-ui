@@ -1020,7 +1020,7 @@
       {
         "description": "A FIXED column: number = px, string = any CSS length. Comes with flex: none — a width a sibling can still squeeze is a suggestion, and stacked rows would start at different x offsets. Leaves data-width-raw on the DOM so the measurement stays countable, like gapRaw/padRaw.",
         "name": "width",
-        "type": "number | string"
+        "type": "WidthProp"
       },
       {
         "description": "CENTRE this box and CAP it at a page measure (--page-measure-narrow 42rem / -medium 48rem / -wide 72rem): margin-inline:auto + inline-size:100% + max-inline-size. THE public answer to \"full-bleed outside, measured column inside\" — a marketing <section> paints edge to edge and its inner Flex measure=\"wide\" holds the content on the page measure. Deliberately NOT on PageContainer: that owns page padding and a header/toolbar/footer scaffold, so a full-bleed page cannot consume it, and the refusal left the centred column owned by nobody — three showcases each hand-wrote the same four declarations (gh#839). It adds NO gutter: the page inset is pad={{ inline: 6 }}, and one band with two padding owners drifts. A MAX, so nothing binds below the cap at 390px. An explicit `width` wins. Do not give a READING column \"wide\" — prose stays narrow/medium, which bracket Bringhurst's 45-75 characters. Omitted emits no attribute at all.",
@@ -5960,12 +5960,12 @@
       {
         "description": "Label column width in horizontal layout (number→px). e.g. 120 or '8rem'.",
         "name": "labelWidth",
-        "type": "number | string"
+        "type": "WidthProp"
       },
       {
-        "description": "Cap the control width (number→px). Omit to fill the column. Caps the control only — the helper and error still span the field column.",
+        "description": "Cap the control width: number→px, or a CSS length ('20rem', '50%', 'calc(…)'). Omit to fill the column. Caps the control only — the helper and error still span the field column. A size word ('md', 'lg') is a type error, not a width (gh#1431).",
         "name": "controlWidth",
-        "type": "number | string"
+        "type": "WidthProp"
       },
       {
         "defaultValue": "\"end\"",
@@ -6096,12 +6096,12 @@
       {
         "description": "Override the Form's label width for this field.",
         "name": "labelWidth",
-        "type": "number | string"
+        "type": "WidthProp"
       },
       {
         "description": "Override the Form's control width for this field. Caps the control only — the helper and error still span the field column.",
         "name": "controlWidth",
-        "type": "number | string"
+        "type": "WidthProp"
       },
       {
         "description": "Span N columns when inside a `columns` Form grid.",
@@ -8349,7 +8349,7 @@
       {
         "description": "On SheetContent (side left/right): desired panel width (number→px). Default w-3/4 sm:max-w-md.",
         "name": "width",
-        "type": "number | string"
+        "type": "WidthProp"
       },
       {
         "description": "On SheetContent (same name as on DialogContent): fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading after a drawer navigation) to send focus there instead (gh#1134).",
