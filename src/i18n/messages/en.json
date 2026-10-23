@@ -74,7 +74,6 @@
       "presetEmpty": "Empty"
     },
     "upload": {
-      "dropzoneLabel": "Upload files",
       "dropzoneHint": "Drag and drop files here, or click to browse",
       "dropzoneMeta": "Selected files appear here.",
       "buttonLabel": "Choose file",

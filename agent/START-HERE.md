@@ -3,7 +3,7 @@
 You are about to write code against a design system you did not author. This file is the whole
 contract. Read it before you write JSX.
 
-**This catalog describes `@godxjp/ui` 33.14.0.** If the project you are editing has a different
+**This catalog describes `@godxjp/ui` 33.16.0.** If the project you are editing has a different
 version in its `package.json`, read the pinned catalog for THAT version instead
 (`…/v<their-version>/agent/…`). A catalog newer than the installed package describes props that do
 not exist yet; older, and it hides props that do. Neither failure announces itself.
@@ -57,7 +57,7 @@ screen anatomy, the visual target the rules below do not give you. Then fetch in
    names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
    `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field
    first; it exists because that is the mistake.
-2. `components/<Name>.json` — one file per component (1 KB–37 KB, median 6 KB), carrying its props,
+2. `components/<Name>.json` — one file per component (1 KB–38 KB, median 6 KB), carrying its props,
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 44 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.

@@ -73,7 +73,6 @@
       "presetEmpty": "Trống"
     },
     "upload": {
-      "dropzoneLabel": "Tải file lên",
       "dropzoneHint": "Kéo thả file vào đây, hoặc bấm để chọn",
       "dropzoneMeta": "Tệp đã chọn sẽ hiển thị tại đây.",
       "buttonLabel": "Chọn file",

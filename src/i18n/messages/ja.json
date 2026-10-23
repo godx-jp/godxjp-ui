@@ -73,7 +73,6 @@
       "presetEmpty": "空"
     },
     "upload": {
-      "dropzoneLabel": "ファイルをアップロード",
       "dropzoneHint": "ここにドラッグ＆ドロップ、またはクリックして選択",
       "dropzoneMeta": "選択したファイルはここに表示されます。",
       "buttonLabel": "ファイルを選択",
