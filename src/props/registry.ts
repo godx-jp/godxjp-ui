@@ -1824,6 +1824,36 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "variant", local: true, reason: "text (labels) or icon (framed, icon-only)." },
     ],
   },
+  EditorialFilterPanelProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "ClassNameProp",
+      { field: "aria-label", local: true, reason: "Accessible name of the filter group." },
+      { field: "action", local: true, reason: "Trailing control after the fields (a reset button)." },
+    ],
+  },
+  EditorialFilterFieldProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "ChildrenProp",
+      "ClassNameProp",
+      { field: "htmlFor", local: true, reason: "Id of the control the visible label names." },
+    ],
+  },
+  EditorialListingToolbarProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      { field: "count", local: true, reason: "The result count, a polite live region." },
+      { field: "note", local: true, reason: "A short note under the count." },
+      { field: "actions", local: true, reason: "Trailing order / view controls." },
+    ],
+  },
   PageCoverVariantProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   PageCoverHeightProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   PageCoverProp: {

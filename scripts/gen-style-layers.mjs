@@ -88,6 +88,10 @@ const OWNERS = {
     "EditorialMasthead",
     "EditorialFooter",
     "EditorialFilterBar",
+    // Catalog bodies (gh#1438).
+    "EditorialFilterPanel",
+    "EditorialFilterField",
+    "EditorialListingToolbar",
     "Separator",
     "AspectRatio",
     "Breadcrumb",

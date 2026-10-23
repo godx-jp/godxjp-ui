@@ -1,0 +1,34 @@
+{
+  "example": "import { EditorialFilterField, EditorialFilterPanel } from \"@godxjp/ui/layout\";\nimport { Select } from \"@godxjp/ui/data-entry\";\n\n<EditorialFilterPanel aria-label=\"Filters\" action={<Button variant=\"outline\" onClick={reset}>Reset</Button>}>\n  <EditorialFilterField label=\"Expansion\" htmlFor=\"f-set\"><Select id=\"f-set\" value={set} onValueChange={setSet} options={sets} /></EditorialFilterField>\n</EditorialFilterPanel>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialFilterPanel",
+  "props": [
+    {
+      "description": "Group name.",
+      "name": "aria-label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "The fields.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Trailing control (reset).",
+      "name": "action",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "Toolbar — application filter strip.",
+    "EditorialListingToolbar — the row under it."
+  ],
+  "tagline": "A catalog's filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role=\"group\"`. The selects inside read the panel's control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`.",
+  "usage": [
+    "DO put one control per EditorialFilterField and pass the control's id as htmlFor.",
+    "DO use Toolbar for an application list's search + filters strip; this panel is the editorial catalog's."
+  ]
+}

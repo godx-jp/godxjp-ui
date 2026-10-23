@@ -1,0 +1,31 @@
+{
+  "example": "import { EditorialListingToolbar } from \"@godxjp/ui/layout\";\n\n<EditorialListingToolbar count=\"396 results\" note=\"Prices are reference values.\" actions={<Select aria-label=\"Sort\" value={sort} onValueChange={setSort} options={sorts} />} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialListingToolbar",
+  "props": [
+    {
+      "description": "Result count, announced politely.",
+      "name": "count",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Short note under the count.",
+      "name": "note",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Trailing sort / view controls.",
+      "name": "actions",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "Toolbar — application list toolbar.",
+    "EditorialFilterPanel — the filters above."
+  ],
+  "tagline": "The row between a catalog's filters and its results (gh#1438): the result count (a polite live region) and a short note at the start, the sort / view controls at the end. Geometry: `--editorial-listing-toolbar-*`.",
+  "usage": [
+    "DO keep the count text short; a phone theme may hide it (--editorial-listing-toolbar-count-display)."
+  ]
+}

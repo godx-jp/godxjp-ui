@@ -2545,3 +2545,44 @@ export type EditorialFilterBarProp = {
   extra?: ReactNode;
   className?: ClassNameProp;
 };
+
+/**
+ * @see EditorialFilterPanel — a catalog's filter panel (gh#1438): one bordered surface of labelled
+ * fields (`EditorialFilterField`, each holding one control such as a `Select`) that wrap, bottom
+ * aligned, with a trailing `action` (a reset button). The controls inside read the panel's control
+ * scale (`--editorial-filter-panel-control-*`).
+ */
+export type EditorialFilterPanelProp = {
+  /** Accessible name of the group. */
+  "aria-label": string;
+  children: ChildrenProp;
+  /** Trailing control after the fields — usually a reset `Button`. */
+  action?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialFilterField — one labelled field of an `EditorialFilterPanel`: a visible label over
+ * one control. `htmlFor` is the control's id (a `Select`'s `id`), which names it.
+ */
+export type EditorialFilterFieldProp = {
+  label: LabelProp;
+  htmlFor: string;
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialListingToolbar — the row between a catalog's filters and its results (gh#1438): the
+ * result count (a polite live region) and a short note at the start, the order / view controls at
+ * the end. The selects inside read the toolbar's control scale.
+ */
+export type EditorialListingToolbarProp = {
+  /** The result count ("396 results"); announced politely when it changes. */
+  count?: ReactNode;
+  /** A short note under the count. */
+  note?: ReactNode;
+  /** Trailing controls — the sort `Select`, a view toggle. */
+  actions?: ReactNode;
+  className?: ClassNameProp;
+};

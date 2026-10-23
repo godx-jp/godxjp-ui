@@ -1382,6 +1382,60 @@ import { Grid2x2, List } from "lucide-react";
 <EditorialToggleGroup aria-label="View" variant="icon" value={view} onValueChange={setView} items={[{ value: "grid", label: "Grid view", icon: <Grid2x2 /> }, { value: "list", label: "List view", icon: <List /> }]} />`,
   },
   {
+    name: "EditorialFilterPanel",
+    group: "layout",
+    tagline:
+      'A catalog\'s filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role="group"`. The selects inside read the panel\'s control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`.',
+    props: [
+      { name: "aria-label", type: "string", required: true, description: "Group name." },
+      { name: "children", type: "ReactNode", required: true, description: "The fields." },
+      { name: "action", type: "ReactNode", description: "Trailing control (reset)." },
+    ],
+    usage: [
+      "DO put one control per EditorialFilterField and pass the control's id as htmlFor.",
+      "DO use Toolbar for an application list's search + filters strip; this panel is the editorial catalog's.",
+    ],
+    related: ["Toolbar — application filter strip.", "EditorialListingToolbar — the row under it."],
+    example: `import { EditorialFilterField, EditorialFilterPanel } from "@godxjp/ui/layout";
+import { Select } from "@godxjp/ui/data-entry";
+
+<EditorialFilterPanel aria-label="Filters" action={<Button variant="outline" onClick={reset}>Reset</Button>}>
+  <EditorialFilterField label="Expansion" htmlFor="f-set"><Select id="f-set" value={set} onValueChange={setSet} options={sets} /></EditorialFilterField>
+</EditorialFilterPanel>`,
+  },
+  {
+    name: "EditorialFilterField",
+    group: "layout",
+    tagline:
+      "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control.",
+    props: [
+      { name: "label", type: "ReactNode", required: true, description: "Visible label." },
+      { name: "htmlFor", type: "string", required: true, description: "The control's id." },
+      { name: "children", type: "ReactNode", required: true, description: "The control." },
+    ],
+    usage: ["DO pass the same id to the control (Select id) and to htmlFor."],
+    related: ["FormField — a form's field with help and errors."],
+    example: `import { EditorialFilterField } from "@godxjp/ui/layout";
+
+<EditorialFilterField label="Rarity" htmlFor="f-rarity"><Select id="f-rarity" value={r} onValueChange={setR} options={rarities} /></EditorialFilterField>`,
+  },
+  {
+    name: "EditorialListingToolbar",
+    group: "layout",
+    tagline:
+      "The row between a catalog's filters and its results (gh#1438): the result count (a polite live region) and a short note at the start, the sort / view controls at the end. Geometry: `--editorial-listing-toolbar-*`.",
+    props: [
+      { name: "count", type: "ReactNode", description: "Result count, announced politely." },
+      { name: "note", type: "ReactNode", description: "Short note under the count." },
+      { name: "actions", type: "ReactNode", description: "Trailing sort / view controls." },
+    ],
+    usage: ["DO keep the count text short; a phone theme may hide it (--editorial-listing-toolbar-count-display)."],
+    related: ["Toolbar — application list toolbar.", "EditorialFilterPanel — the filters above."],
+    example: `import { EditorialListingToolbar } from "@godxjp/ui/layout";
+
+<EditorialListingToolbar count="396 results" note="Prices are reference values." actions={<Select aria-label="Sort" value={sort} onValueChange={setSort} options={sorts} />} />`,
+  },
+  {
     name: "PageCover",
     tier: "lab",
     importPath: "@godxjp/ui/lab",

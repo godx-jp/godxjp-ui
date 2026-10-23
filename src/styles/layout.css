@@ -4312,6 +4312,99 @@
     white-space: nowrap;
   }
 
+  /* ── EditorialFilterPanel / EditorialFilterField (gh#1438) ────────────────────────────────── */
+  .ui-editorial-filter-panel {
+    --control-font-size: var(--editorial-filter-panel-control-font-size);
+    --control-padding-x: var(--editorial-filter-panel-control-padding-x);
+    --control-surface-background: var(
+      --editorial-filter-panel-control-background,
+      hsl(var(--card))
+    );
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--editorial-filter-panel-gap);
+    margin-block-end: var(--editorial-filter-panel-space-block-end);
+    padding: var(--editorial-filter-panel-padding);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--editorial-filter-panel-radius);
+    background: hsl(var(--card));
+  }
+
+  .ui-editorial-filter-field {
+    display: flex;
+    flex: 1 1 var(--editorial-filter-field-width-basis);
+    flex-direction: column;
+    gap: var(--editorial-filter-field-gap);
+    min-width: var(--editorial-filter-field-min-width);
+  }
+
+  .ui-editorial-filter-field-label {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-filter-field-label-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-filter-field-label-line-height);
+  }
+
+  .ui-editorial-filter-panel-action {
+    --button-padding-inline: var(--editorial-filter-panel-action-padding-inline);
+    display: flex;
+    flex-grow: var(--editorial-filter-panel-action-size-grow);
+  }
+
+  .ui-editorial-filter-panel-action > * {
+    flex: 1;
+  }
+
+  /* ── EditorialListingToolbar (gh#1438) ────────────────────────────────────────────────────── */
+  .ui-editorial-listing-toolbar {
+    --control-font-size: var(--editorial-listing-toolbar-control-font-size);
+    --control-padding-x: var(--editorial-listing-toolbar-control-padding-x);
+    --control-surface-background: var(
+      --editorial-listing-toolbar-control-background,
+      hsl(var(--card))
+    );
+    display: flex;
+    align-items: var(--editorial-listing-toolbar-align);
+    justify-content: space-between;
+    gap: var(--editorial-listing-toolbar-gap);
+    margin-block: var(--editorial-listing-toolbar-space-block);
+  }
+
+  .ui-editorial-listing-toolbar-summary {
+    min-width: 0;
+  }
+
+  .ui-editorial-listing-toolbar-count {
+    display: var(--editorial-listing-toolbar-count-display);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-listing-toolbar-count-font-size);
+    line-height: var(--editorial-listing-toolbar-count-line-height);
+    white-space: nowrap;
+  }
+
+  .ui-editorial-listing-toolbar-note {
+    max-width: var(--editorial-listing-toolbar-note-max-width);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-listing-toolbar-note-font-size);
+    line-height: var(--editorial-listing-toolbar-note-line-height);
+  }
+
+  .ui-editorial-listing-toolbar-actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--editorial-listing-toolbar-actions-gap);
+    margin-inline-start: auto;
+  }
+
+  .ui-editorial-listing-toolbar-actions .ui-control-trigger {
+    min-width: var(--editorial-listing-toolbar-control-min-width);
+    max-width: var(--editorial-listing-toolbar-control-max-width);
+  }
+
   /* The banner's kicker reads the banner's paragraph scale (v4 sets every <p> of the banner). */
   .ui-editorial-banner-copy {
     --editorial-eyebrow-font-size: var(--editorial-banner-kicker-font-size);

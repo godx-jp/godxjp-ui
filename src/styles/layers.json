@@ -497,12 +497,27 @@
         "layout.css"
       ]
     },
+    "EditorialFilterField": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialFilterPanel": {
+      "layers": [
+        "layout.css"
+      ]
+    },
     "EditorialFooter": {
       "layers": [
         "layout.css"
       ]
     },
     "EditorialHero": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialListingToolbar": {
       "layers": [
         "layout.css"
       ]

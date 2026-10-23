@@ -110,6 +110,19 @@ export type {
 export { Affix } from "./affix";
 export type { AffixProp, AffixProps, AffixTargetProp } from "./affix";
 export {
+  EditorialFilterField,
+  EditorialFilterPanel,
+  EditorialListingToolbar,
+} from "./editorial-catalog";
+export type {
+  EditorialFilterFieldProp,
+  EditorialFilterFieldProps,
+  EditorialFilterPanelProp,
+  EditorialFilterPanelProps,
+  EditorialListingToolbarProp,
+  EditorialListingToolbarProps,
+} from "./editorial-catalog";
+export {
   CardShowcase,
   CatalogCard,
   CatalogCardTag,
