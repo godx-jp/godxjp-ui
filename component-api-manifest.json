@@ -9418,8 +9418,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
+          "type": "\"inherit\" | TextSizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl", "inherit", "2xs", "2xl", "3xl", "4xl", "5xl"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -16861,8 +16861,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
+          "type": "\"inherit\" | TextSizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl", "inherit", "2xs", "2xl", "3xl", "4xl", "5xl"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {

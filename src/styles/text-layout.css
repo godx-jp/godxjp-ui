@@ -5,6 +5,14 @@
     margin: 0;
   }
 
+  /* `size="inherit"` (gh#1434): an inline run takes its parent's type step — the emphasis inside a
+   * Heading keeps the heading's size, leading and tracking at every breakpoint. */
+  [data-slot="text"][data-size="inherit"] {
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+  }
+
   /* Size — steps of the golden-ratio scale (sm = base). */
   [data-slot="text"][data-size="2xs"] {
     font-size: var(

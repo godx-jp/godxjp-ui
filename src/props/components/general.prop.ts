@@ -80,8 +80,12 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> &
      * so in a table cell it cannot wrap and cannot share the cell's line height.
      */
     link?: boolean;
-    /** Size from the type scale — never an arbitrary px. Default `sm` (base). */
-    size?: TextSizeProp;
+    /**
+     * Size from the type scale — never an arbitrary px. Default `sm` (base). `"inherit"` (gh#1434)
+     * takes the parent's size, leading and tracking: an emphasised run INSIDE a `Heading` (a hero's
+     * second line in the brand tone) keeps the heading's step at every breakpoint.
+     */
+    size?: TextSizeProp | "inherit";
     /** Semantic colour intent. Default `default` (foreground). */
     tone?: TextToneProp;
     /** Weight (system 2-weight: 400/500). Default `regular`. */
