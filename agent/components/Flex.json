@@ -95,7 +95,7 @@
     {
       "description": "A FIXED column: number = px, string = any CSS length. Comes with flex: none — a width a sibling can still squeeze is a suggestion, and stacked rows would start at different x offsets. Leaves data-width-raw on the DOM so the measurement stays countable, like gapRaw/padRaw.",
       "name": "width",
-      "type": "number | string"
+      "type": "WidthProp"
     },
     {
       "description": "CENTRE this box and CAP it at a page measure (--page-measure-narrow 42rem / -medium 48rem / -wide 72rem): margin-inline:auto + inline-size:100% + max-inline-size. THE public answer to \"full-bleed outside, measured column inside\" — a marketing <section> paints edge to edge and its inner Flex measure=\"wide\" holds the content on the page measure. Deliberately NOT on PageContainer: that owns page padding and a header/toolbar/footer scaffold, so a full-bleed page cannot consume it, and the refusal left the centred column owned by nobody — three showcases each hand-wrote the same four declarations (gh#839). It adds NO gutter: the page inset is pad={{ inline: 6 }}, and one band with two padding owners drifts. A MAX, so nothing binds below the cap at 390px. An explicit `width` wins. Do not give a READING column \"wide\" — prose stays narrow/medium, which bracket Bringhurst's 45-75 characters. Omitted emits no attribute at all.",

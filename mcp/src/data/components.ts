@@ -1098,7 +1098,7 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "width",
-        type: "number | string",
+        type: "WidthProp",
         description:
           "A FIXED column: number = px, string = any CSS length. Comes with flex: none — a width a sibling can still squeeze is a suggestion, and stacked rows would start at different x offsets. Leaves data-width-raw on the DOM so the measurement stays countable, like gapRaw/padRaw.",
       },
@@ -7047,14 +7047,14 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
       },
       {
         name: "labelWidth",
-        type: "number | string",
+        type: "WidthProp",
         description: "Label column width in horizontal layout (number→px). e.g. 120 or '8rem'.",
       },
       {
         name: "controlWidth",
-        type: "number | string",
+        type: "WidthProp",
         description:
-          "Cap the control width (number→px). Omit to fill the column. Caps the control only — the helper and error still span the field column.",
+          "Cap the control width: number→px, or a CSS length ('20rem', '50%', 'calc(…)'). Omit to fill the column. Caps the control only — the helper and error still span the field column. A size word ('md', 'lg') is a type error, not a width (gh#1431).",
       },
       {
         name: "labelAlign",
@@ -7189,12 +7189,12 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
       },
       {
         name: "labelWidth",
-        type: "number | string",
+        type: "WidthProp",
         description: "Override the Form's label width for this field.",
       },
       {
         name: "controlWidth",
-        type: "number | string",
+        type: "WidthProp",
         description:
           "Override the Form's control width for this field. Caps the control only — the helper and error still span the field column.",
       },
@@ -9736,7 +9736,7 @@ function CreateDialog() {
       },
       {
         name: "width",
-        type: "number | string",
+        type: "WidthProp",
         description:
           "On SheetContent (side left/right): desired panel width (number→px). Default w-3/4 sm:max-w-md.",
       },

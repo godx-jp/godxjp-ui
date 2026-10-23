@@ -149,14 +149,14 @@ describe("select-width-hint (gh#998)", () => {
 
   it("controlWidth once on the enclosing Form clears it", () => {
     expect(
-      rules(`<Form controlWidth="md"><FormField id="s" label="L">${select}</FormField></Form>`),
+      rules(`<Form controlWidth="20rem"><FormField id="s" label="L">${select}</FormField></Form>`),
     ).toEqual([]);
   });
 
   it("controlWidth once on the enclosing FormRoot clears it (gh#1039)", () => {
     expect(
       rules(
-        `<FormRoot form={form} controlWidth="md"><FormField id="s" label="L">${select}</FormField></FormRoot>`,
+        `<FormRoot form={form} controlWidth="20rem"><FormField id="s" label="L">${select}</FormField></FormRoot>`,
       ),
     ).toEqual([]);
   });
@@ -164,7 +164,7 @@ describe("select-width-hint (gh#998)", () => {
   it("a width on a Form that has already CLOSED does not count", () => {
     expect(
       rules(
-        `<><Form controlWidth="md">${field("a")}</Form><Form><FormField id="s" label="L">${select}</FormField></Form></>`,
+        `<><Form controlWidth="20rem">${field("a")}</Form><Form><FormField id="s" label="L">${select}</FormField></Form></>`,
       ),
     ).toEqual(["select-width-hint:warn"]);
   });

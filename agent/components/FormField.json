@@ -61,12 +61,12 @@
     {
       "description": "Override the Form's label width for this field.",
       "name": "labelWidth",
-      "type": "number | string"
+      "type": "WidthProp"
     },
     {
       "description": "Override the Form's control width for this field. Caps the control only — the helper and error still span the field column.",
       "name": "controlWidth",
-      "type": "number | string"
+      "type": "WidthProp"
     },
     {
       "description": "Span N columns when inside a `columns` Form grid.",

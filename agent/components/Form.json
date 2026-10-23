@@ -13,12 +13,12 @@
     {
       "description": "Label column width in horizontal layout (number→px). e.g. 120 or '8rem'.",
       "name": "labelWidth",
-      "type": "number | string"
+      "type": "WidthProp"
     },
     {
-      "description": "Cap the control width (number→px). Omit to fill the column. Caps the control only — the helper and error still span the field column.",
+      "description": "Cap the control width: number→px, or a CSS length ('20rem', '50%', 'calc(…)'). Omit to fill the column. Caps the control only — the helper and error still span the field column. A size word ('md', 'lg') is a type error, not a width (gh#1431).",
       "name": "controlWidth",
-      "type": "number | string"
+      "type": "WidthProp"
     },
     {
       "defaultValue": "\"end\"",

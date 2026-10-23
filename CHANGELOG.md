@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.19.0] - 2026-10-24
+
+### Changed
+
+- **`WidthProp` is a CSS length, and a size word is a type error (gh#1431).** It was
+  `number | string`, so `<Form controlWidth="md">`, `labelWidth="md"` and `controlWidth="lg"`
+  compiled and were written into CSS as `--form-control-width: md` — invalid, so the cap fell away
+  and the control filled its column (gino-cloud: a Select 1566px wide at a 1920px viewport;
+  Chromium, 9rem label column: `"md"` 1760px, the same as no `controlWidth`, against 320px for
+  `"20rem"`). `WidthProp` now accepts a number (px), a number with a CSS unit (`"20rem"`, `"50%"`,
+  `"40ch"`, `"90vw"`, `"50cqi"`…), `"auto"` / `"max-content"` / `"min-content"` / `"fit-content"`,
+  and `calc()` / `min()` / `max()` / `clamp()` / `var()` / `fit-content()`. It covers Form, FormRoot
+  and FormField `labelWidth` / `controlWidth`, `Flex width`, `SheetContent width` and
+  `DialogContent width`; runtime is unchanged. **Migration:** replace a size word with the length
+  you meant (`controlWidth="md"` → e.g. `"20rem"`); a value typed `string` needs the `WidthProp`
+  type (or a literal). There is no width scale behind `sm`/`md`/`lg` — a component that has one
+  names it with its own union (`CenteredShell width`, `ControlWidthProp`).
+
 ## [33.18.0] - 2026-10-24
 
 ### Added
