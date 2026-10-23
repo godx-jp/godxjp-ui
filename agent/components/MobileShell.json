@@ -57,6 +57,7 @@
   "storyPath": "layout/mobile-shell.tsx",
   "tagline": "Handheld app shell (gh#354) — status band · app bar · the ONE scroll region · sticky action bar · bottom tab bar, with device safe-area insets and a document that never scrolls.",
   "usage": [
+    "Compose a More destination in tabBar with SheetTrigger + Sheet + BranchScopePicker selectionMode=single; see layout/mobile-branch-scope.tsx. MobileShell does not own routes or a built-in More menu.",
     "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · the auth CenteredShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
     "DO let `children` be the only thing that scrolls. Put the primary verb in `actions` and navigation in `tabBar` — both sit outside the scroll region, so neither needs `position: sticky`, a z-index, or bottom padding to clear the other.",
     "DO NOT compose one out of <Card> + `ui-card-inset*` + `overflow-y-auto` (what docs/showcase/case6 did before gh#354). That reproduces the look and neither behaviour that matters on a device: the document still scrolls, and nothing pads out of env(safe-area-inset-*), so the notch covers the app bar and the home indicator covers the primary button.",

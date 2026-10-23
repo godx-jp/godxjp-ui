@@ -4833,6 +4833,21 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: [
+      {
+        field: "selectionMode",
+        local: true,
+        reason: "Single navigation scope or existing multiple-branch subset editor.",
+      },
+      {
+        field: "allowAll",
+        local: true,
+        reason: "Whether organization-wide branch scope is selectable.",
+      },
+      {
+        field: "hideWhenSingle",
+        local: true,
+        reason: "Hide a settled single-branch navigation scope without changing consumer state.",
+      },
       "ValueProp",
       "DefaultValueProp",
       "OnValueChangeProp",

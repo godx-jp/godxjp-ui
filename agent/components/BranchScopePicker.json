@@ -6,6 +6,24 @@
   "name": "BranchScopePicker",
   "props": [
     {
+      "defaultValue": "\"multiple\"",
+      "description": "Single compact Select for all/one branch; multiple keeps the existing all/subset editor.",
+      "name": "selectionMode",
+      "type": "\"single\" | \"multiple\""
+    },
+    {
+      "defaultValue": "true",
+      "description": "Allow organization-wide scope. Set false for record fields, then validate exactly one permitted concrete branch on submit. Invalid supplied values are not silently coerced.",
+      "name": "allowAll",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Hide after a successful read of one enabled branch, except validation errors. Does not emit a change or normalize URL/default values; the app does that.",
+      "name": "hideWhenSingle",
+      "type": "boolean"
+    },
+    {
       "description": "Giá trị có kiểm soát: phạm vi đang chọn.",
       "name": "value",
       "type": "BranchScopeValueProp"
@@ -70,7 +88,7 @@
       "type": "ReactNode"
     },
     {
-      "description": "Native form name, forwarded to the MODE radio group — the all / selected choice is what submits under it. The checked branch ids are not native fields; they live in the single `{ mode, branchIds }` value and are yours to serialise.",
+      "description": "Native form name: multiple submits the MODE radio; single submits the Select key (`all` or `branch:<id>`). Serialize the public `{ mode, branchIds }` value yourself for domain records; native keys are not branch ownership.",
       "name": "name",
       "type": "string"
     },
@@ -91,6 +109,8 @@
   "storyPath": "data-entry/branch-scope-picker.tsx",
   "tagline": "Canonical scope control: all branches vs an explicit subset.",
   "usage": [
+    "Use selectionMode=single in Sidebar action (above navigation) and a Sheet opened from MobileShell tabBar More. These are compositions, not a new switcher. OrgSwitcher changes organization and stays in platform chrome.",
+    "The app owns URL parsing, validation against authorized branches, popstate/router updates, and onValueChange navigation. Resolve a single authorized branch in the app before hiding the picker. Viewing scope is not record ownership: record forms use separate state, selectionMode=single and allowAll=false, and validate exactly one permitted id on submit. Future groups need an explicit value contract; do not encode them as branch ids.",
     "DO treat scope as ONE form field: the single { mode, branchIds } value goes through FormField like any other control.",
     "DO import it from @godxjp/ui/data-entry — never compose an ad-hoc radio+checkbox scope block per screen.",
     "DO use `error` ONLY for validation (e.g. mode=selected with zero branches checked); a failed branch fetch is `listError`, a 403 is `denied`.",

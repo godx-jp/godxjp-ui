@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- BranchScopePicker: `selectionMode="single"`, `allowAll`, and `hideWhenSingle` for all/one-branch navigation and concrete record fields (#1389). Existing multiple-branch editing stays the default.
+- Sidebar and MobileShell More recipes with URL-owned viewing scope and independent, validated record branch state. No new shell component or router dependency.
+
+
 ## [33.12.6] - 2026-10-23
 
 ### Fixed

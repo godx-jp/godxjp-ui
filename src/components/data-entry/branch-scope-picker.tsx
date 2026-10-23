@@ -10,6 +10,7 @@ import { SkeletonRows } from "../feedback/skeleton";
 import { Text } from "../general/typography";
 import { CheckboxGroup } from "./checkbox-group";
 import { RadioGroup } from "./radio";
+import { Select } from "./select";
 import { SearchInput } from "./search-input";
 import type {
   BranchScopeValueProp,
@@ -35,11 +36,14 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
     {
       branches,
       value: controlledValue,
-      defaultValue = DEFAULT_VALUE,
+      defaultValue,
       onValueChange,
       disabled = false,
       readOnly = false,
       searchable = true,
+      selectionMode = "multiple",
+      allowAll = true,
+      hideWhenSingle = false,
       error,
       loading = false,
       empty,
@@ -60,7 +64,9 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
     const rootId = id ?? `branch-scope-${reactId}`;
     const errorId = `${rootId}-error`;
 
-    const [uncontrolled, setUncontrolled] = React.useState<BranchScopeValueProp>(defaultValue);
+    const [uncontrolled, setUncontrolled] = React.useState<BranchScopeValueProp>(
+      defaultValue ?? (allowAll ? DEFAULT_VALUE : { mode: "selected", branchIds: [] }),
+    );
     const value = controlledValue ?? uncontrolled;
     const branchIds = React.useMemo(() => value.branchIds ?? [], [value.branchIds]);
 
@@ -149,15 +155,81 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
       );
     }
 
+    // Never conceal pending/failed reads or field validation. Visibility does not mutate state:
+    // the consumer resolves a one-branch URL (and record defaults) before rendering.
+    if (hideWhenSingle && branches.length === 1 && !branches[0].disabled && !invalid) return null;
+
+    if (selectionMode === "single") {
+      // Prefix branch ids so a real id such as "all" cannot collide with the scope option.
+      const selected =
+        value.mode === "selected" &&
+        branchIds.length === 1 &&
+        branches.some((branch) => branch.id === branchIds[0])
+          ? `branch:${branchIds[0]}`
+          : value.mode === "all" && allowAll
+            ? "all"
+            : "";
+      return surface(
+        <>
+          <Select
+            value={selected}
+            onValueChange={(next: string) => {
+              if (next === "all" && allowAll) commit({ mode: "all" });
+              else if (next.startsWith("branch:"))
+                commit({ mode: "selected", branchIds: [next.slice(7)] });
+            }}
+            options={[
+              ...(allowAll
+                ? [
+                    {
+                      value: "all",
+                      label:
+                        typeof resolvedAllLabel === "string"
+                          ? resolvedAllLabel
+                          : t("dataEntry.branchScope.all"),
+                    },
+                  ]
+                : []),
+              ...branches.map((branch) => ({
+                value: `branch:${branch.id}`,
+                label: branch.name,
+                disabled: branch.disabled,
+              })),
+            ]}
+            optionRender={(option) => (option.value === "all" ? resolvedAllLabel : option.label)}
+            labelRender={(option) => (option.value === "all" ? resolvedAllLabel : option.label)}
+            showSearch={searchable}
+            searchPlaceholder={t("dataEntry.branchScope.searchPlaceholder")}
+            placeholder={t("dataEntry.branchScope.choose")}
+            notFoundContent={notFoundContent ?? t("dataEntry.branchScope.noMatches")}
+            disabled={disabled}
+            readOnly={readOnly}
+            name={name}
+            {...fieldA11y}
+            aria-label={fieldA11y["aria-label"] ?? t("dataEntry.branchScope.listLabel")}
+            aria-invalid={invalid ? true : fieldA11y["aria-invalid"]}
+            aria-errormessage={
+              invalid ? mergeAriaIds(errorId, fieldA11y["aria-errormessage"]) : undefined
+            }
+          />
+          {invalid && (
+            <p id={errorId} role="alert" className="text-error-strong text-xs">
+              {error}
+            </p>
+          )}
+        </>,
+      );
+    }
+
     // Locked view: the current scope as a static, non-interactive summary.
     if (readOnly) {
       const selectedBranches = branches.filter((branch) => branchIds.includes(branch.id));
       return surface(
         <>
           <Text size="sm" weight="medium">
-            {value.mode === "all" ? resolvedAllLabel : resolvedSelectedLabel}
+            {value.mode === "all" && allowAll ? resolvedAllLabel : resolvedSelectedLabel}
           </Text>
-          {value.mode === "selected" && (
+          {(value.mode === "selected" || !allowAll) && (
             <div className="ui-branch-scope-picker-badges">
               {selectedBranches.map((branch) => (
                 <Badge key={branch.id} variant="outline">
@@ -173,18 +245,24 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
     return surface(
       <>
         <RadioGroup
-          value={value.mode}
+          value={allowAll ? value.mode : "selected"}
           onValueChange={(mode) => {
             // Mode flips preserve branchIds: switching back to `all` must not destroy the subset.
             commit({ ...value, mode: mode as BranchScopeValueProp["mode"] });
           }}
           options={[
-            {
-              value: "all",
-              label: resolvedAllLabel,
-              description:
-                allLabel === undefined ? t("dataEntry.branchScope.allDescription") : undefined,
-            },
+            ...(allowAll
+              ? [
+                  {
+                    value: "all",
+                    label: resolvedAllLabel,
+                    description:
+                      allLabel === undefined
+                        ? t("dataEntry.branchScope.allDescription")
+                        : undefined,
+                  },
+                ]
+              : []),
             {
               value: "selected",
               label: resolvedSelectedLabel,
@@ -203,7 +281,7 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
           }
         />
 
-        {value.mode === "selected" && (
+        {(value.mode === "selected" || !allowAll) && (
           <div className="ui-branch-scope-picker-subset">
             {searchable && branches.length > 0 && (
               <SearchInput

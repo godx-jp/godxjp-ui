@@ -167,7 +167,8 @@
       "error": "Không tải được danh sách chi nhánh",
       "denied": "Bạn không có quyền xem chi nhánh",
       "loading": "Đang tải chi nhánh…",
-      "noMatches": "Không có chi nhánh khớp với tìm kiếm"
+      "noMatches": "Không có chi nhánh khớp với tìm kiếm",
+      "choose": "Chọn chi nhánh"
     },
     "formErrors": {
       "title": "Dữ liệu nhập có lỗi, vui lòng kiểm tra"

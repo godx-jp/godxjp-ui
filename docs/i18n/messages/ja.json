@@ -2378,5 +2378,20 @@
     "switchUser": "デモユーザーを切り替え",
     "description": "ログイン中の名前を常に表示します。Topbar identity はバーの最大40%を確保し、TopbarItem truncate は名前だけを省略します。名前全体は title とアクセシブルなテキストに残ります。",
     "policy": "主要操作の最小サイズを維持します。極端に狭い幅では、他のスロットに scroll・clip・menu が適用され、identity は外に残ります。検索には TopbarSearch を使い、identity に labelHideBelow・hideBelow・iconHideFrom を併用しないでください。テーマ設定: --topbar-identity-max-inline-size / --topbar-identity-min-text-inline-size。"
+  },
+  "docs": {
+    "branchNavigation": {
+      "title": "支店の表示範囲",
+      "intro": "ナビゲーションで支店の表示範囲を切り替え、レコードの所属支店は別に選択するレシピです。",
+      "tokyo": "東京本社",
+      "osaka": "大阪支店",
+      "guidance": "表示範囲は URL に保存します。レコードの支店は独立した値で、必ず具体的な 1 件を指定します。「すべて」は保存できません。",
+      "record": "レコードの支店",
+      "required": "利用可能な支店を 1 件選択してください。",
+      "save": "保存",
+      "saved": "保存しました",
+      "more": "その他",
+      "scope": "表示範囲"
+    }
   }
 }
