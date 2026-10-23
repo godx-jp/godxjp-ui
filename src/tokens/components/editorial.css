@@ -118,6 +118,8 @@
   --editorial-article-max-width: 47.5rem;
   --editorial-article-padding-block-start: 2rem;
   --editorial-article-padding-block-end: 4rem;
+  /* Default = the Eyebrow's own size. */
+  --editorial-article-kicker-font-size: var(--editorial-eyebrow-font-size);
   --editorial-article-kicker-line-height: 1.95;
   --editorial-article-kicker-space-block-end: 1.25rem;
   --editorial-article-title-font-size: 2.375rem;

@@ -3282,6 +3282,7 @@
   }
 
   .ui-editorial-article > .ui-editorial-eyebrow {
+    font-size: var(--editorial-article-kicker-font-size);
     margin-block-end: var(--editorial-article-kicker-space-block-end);
     line-height: var(--editorial-article-kicker-line-height);
   }

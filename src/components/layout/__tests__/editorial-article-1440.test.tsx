@@ -79,6 +79,9 @@ describe("EditorialArticle (gh#1440)", () => {
     expect(rule(".ui-editorial-article > .ui-editorial-eyebrow")).toMatch(
       /margin-block-end:\s*var\(--editorial-article-kicker-space-block-end\)/,
     );
+    expect(rule(".ui-editorial-article > .ui-editorial-eyebrow")).toMatch(
+      /font-size:\s*var\(--editorial-article-kicker-font-size\)/,
+    );
     expect(rule(".ui-editorial-article .ui-editorial-article-title:lang(ja)")).toMatch(
       /word-break:\s*var\(--editorial-article-title-line-breaking\)/,
     );
