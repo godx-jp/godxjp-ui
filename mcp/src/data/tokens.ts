@@ -11,6 +11,12 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--table-stacked-collection-card-padding-x",
+    category: "component",
+    tier: "component",
+    role: "Stacked Table/DataTable row inset. Declared initial; resolves at the row to calc(var(--card-space-inset) - var(--stroke-hairline)), aligning the bordered row content with CardTitle across density and RTL. Scoped Card inset changes remain live; an explicit stacked token overrides row padding independently (#1394).",
+  },
+  {
     name: "--wa-*",
     category: "primitive",
     tier: "primitive",

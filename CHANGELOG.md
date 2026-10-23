@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Stacked DataTable/Table rows share the Card heading keyline at every density and in RTL
+  (#1394). The default inset resolves the live `--card-space-inset` minus the row border;
+  `--table-stacked-collection-card-padding-x` remains an independent override.
+- Calendar columns shrink inside narrow containers without reducing date targets below 24px;
+  desktop columns and embedded full-width calendars retain their sizing (#1383).
+- NumberInput fine-pointer hit areas centre correctly in RTL. The step-target gate measures
+  intersection on both axes for the horizontal 44px coarse targets and pins the intended
+  24×15 desktop paint of the 36px control band (#1383).
+
 ## [33.12.6] - 2026-10-23
 
 ### Fixed

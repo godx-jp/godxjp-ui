@@ -85,7 +85,6 @@ for (const width of [1280, 390])
           expect(geometry.right).toBeLessThanOrEqual(geometry.end + 1);
           expect(geometry.top).toBeGreaterThanOrEqual(geometry.topEdge - 1);
           expect(geometry.bottom).toBeLessThanOrEqual(geometry.bottomEdge + 1);
-          await page.screenshot({ path: `codex-shots/reveal-${kind}-${width}-${dir}.png` });
         } finally {
           await page.close();
         }
