@@ -274,7 +274,11 @@ pnpm release --ui <patch|minor|major> --mcp <…|skip>   # publish lib + MCP in 
 node node_modules/@godxjp/ui/scripts/visual-audit.mjs http://localhost:5173 /invoices /settings
 node node_modules/@godxjp/ui/scripts/visual-audit.mjs http://localhost:5173 --format json  # machine-readable
 node node_modules/@godxjp/ui/scripts/visual-audit.mjs --strict http://localhost:5173       # CI gate
+# reuse a playwright-core + Chrome you already have, instead of installing the peer:
+node node_modules/@godxjp/ui/scripts/visual-audit.mjs --playwright-module /abs/path/playwright-core --executable-path /path/to/chrome http://localhost:5173
 ```
+
+The engine is resolved in this order: `--playwright-module` (a package directory or entry file exporting `chromium`; a bad path is an error, never a silent fallback) → the `playwright` peer → `playwright-core`. `--executable-path` is passed to `chromium.launch` and wins over `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. When nothing resolves, the bootstrap error lists every place it looked.
 
 **Tested peer range** (pin one of these): `playwright >=1.55 <2` (tested 1.61.1)
 

@@ -5,6 +5,7 @@
  */
 import { existsSync, mkdirSync, realpathSync } from "node:fs";
 import path from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import {
   VISUAL_RULES,
@@ -1848,20 +1849,74 @@ async function runProbes(page, url, viewport) {
 }
 /* c8 ignore stop */
 
-/** Optional-peer loader — throws a tagged bootstrap error instead of a raw stack. */
-async function loadDeps() {
-  try {
-    const { chromium } = await import("playwright");
-    return { chromium };
-  } catch (cause) {
-    const err = new Error("visual-audit needs the optional peer `playwright`");
-    err.bootstrap = true;
-    err.hint =
-      "pnpm add -D playwright && pnpm exec playwright install chromium " +
-      "(or set PLAYWRIGHT_CHROMIUM_EXECUTABLE to a system Chromium).";
-    err.cause = cause;
-    throw err;
+/**
+ * Optional-peer loader — throws a tagged bootstrap error instead of a raw stack (gh#1390).
+ *
+ * Resolution order: an explicit `--playwright-module` path (a directory or an entry file that
+ * exports `chromium`) → the `playwright` peer → `playwright-core`. The two package names are
+ * looked up from this script AND from the consumer's cwd: under pnpm's strict layout a
+ * consumer-root `playwright-core` is not reachable from the installed script. An explicit path that
+ * fails is an error, never a silent fall-through to another engine.
+ */
+export async function loadDeps({ playwrightModule, bases } = {}) {
+  const tried = [];
+  // `require`, not `import()`: the path comes from require.resolve (playwright and playwright-core
+  // are CJS), and a computed import() makes vite's test transform prepend a helper above the shebang.
+  const load = (resolved, label) => {
+    const mod = createRequire(import.meta.url)(resolved);
+    const chromium = mod.chromium ?? mod.default?.chromium;
+    if (!chromium?.launch) throw new Error(`${label} does not export chromium`);
+    return chromium;
+  };
+  if (playwrightModule) {
+    const abs = path.resolve(playwrightModule);
+    const label = `${abs} (--playwright-module)`;
+    try {
+      const resolved = createRequire(path.join(process.cwd(), "noop.js")).resolve(abs);
+      return { chromium: load(resolved, label), source: abs };
+    } catch (cause) {
+      const err = new Error(
+        `visual-audit could not load --playwright-module: tried ${label}: ${cause.message}`,
+      );
+      err.bootstrap = true;
+      err.hint = "pass the playwright or playwright-core package directory (or its index.js).";
+      err.cause = cause;
+      throw err;
+    }
   }
+  const from = bases ?? [import.meta.url, path.join(process.cwd(), "package.json")];
+  for (const name of ["playwright", "playwright-core"]) {
+    for (const base of from) {
+      const where = base.startsWith("file:") ? fileURLToPath(base) : base;
+      const label = `${name} (from ${path.dirname(where)})`;
+      let resolved;
+      try {
+        resolved = createRequire(base).resolve(name);
+      } catch {
+        tried.push(label);
+        continue;
+      }
+      try {
+        return { chromium: load(resolved, label), source: resolved };
+      } catch (cause) {
+        tried.push(`${label}: ${cause.message}`);
+      }
+    }
+  }
+  const err = new Error(
+    `visual-audit needs the optional peer \`playwright\` (or \`playwright-core\`); tried: ${tried.join("; ")}`,
+  );
+  err.bootstrap = true;
+  err.hint =
+    "pnpm add -D playwright && pnpm exec playwright install chromium, or point at an existing " +
+    "install: --playwright-module /abs/path/playwright-core --executable-path /path/to/chrome " +
+    "(or set PLAYWRIGHT_CHROMIUM_EXECUTABLE).";
+  throw err;
+}
+
+/** Options for `chromium.launch` — `--executable-path` wins over PLAYWRIGHT_CHROMIUM_EXECUTABLE. */
+export function launchOptions({ executablePath, env = process.env } = {}) {
+  return { executablePath: executablePath || env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined };
 }
 
 /**
@@ -1873,7 +1928,7 @@ async function audit(
   targets,
   { chromium },
   viewports = DEFAULT_VIEWPORTS,
-  { storageState, modes = [], zoom = 200, screenshots } = {},
+  { storageState, modes = [], zoom = 200, screenshots, executablePath } = {},
 ) {
   const findings = [];
   const errors = [];
@@ -1885,15 +1940,13 @@ async function audit(
   let context;
   try {
     try {
-      browser = await chromium.launch({
-        executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined,
-      });
+      browser = await chromium.launch(launchOptions({ executablePath }));
     } catch (cause) {
       const err = new Error(`could not launch Chromium: ${cause.message}`);
       err.bootstrap = true;
       err.hint =
         "install a browser: pnpm exec playwright install chromium " +
-        "(or set PLAYWRIGHT_CHROMIUM_EXECUTABLE to a system Chromium).";
+        "(or pass --executable-path / set PLAYWRIGHT_CHROMIUM_EXECUTABLE to a system Chromium).";
       throw err;
     }
     context = await browser.newContext({ viewport: viewports[0], storageState });
@@ -2207,11 +2260,39 @@ async function main() {
     }
   }
 
-  const VALUED = ["--format", "--widths", "--storage-state", "--text-zoom", "--screenshots"];
+  // `--playwright-module <path>` / `--executable-path <chrome>` (gh#1390): reuse a playwright-core +
+  // Chrome the app already has instead of installing the `playwright` peer.
+  const pmIdx = args.indexOf("--playwright-module");
+  const playwrightModule = pmIdx === -1 ? undefined : args[pmIdx + 1];
+  const epIdx = args.indexOf("--executable-path");
+  const executablePath = epIdx === -1 ? undefined : args[epIdx + 1];
+  for (const [flag, idx, value] of [
+    ["--playwright-module", pmIdx, playwrightModule],
+    ["--executable-path", epIdx, executablePath],
+  ]) {
+    if (idx !== -1 && (!value || value.startsWith("--") || !existsSync(value))) {
+      finish(buildBootstrapError(`${flag}: "${value ?? ""}" does not exist`), {
+        asJson,
+        strict,
+        pages: 0,
+      });
+      return;
+    }
+  }
+
+  const VALUED = [
+    "--format",
+    "--widths",
+    "--storage-state",
+    "--text-zoom",
+    "--screenshots",
+    "--playwright-module",
+    "--executable-path",
+  ];
   const urls = args.filter((a, i) => !a.startsWith("--") && !VALUED.includes(args[i - 1]));
   if (urls.length === 0) {
     const msg =
-      "no baseUrl given — usage: visual-audit.mjs [--format json] [--strict] [--widths 390x844,1280x900] [--storage-state state.json] [--text-spacing] [--text-zoom 200] [--screenshots DIR] <baseUrl> [route …] " +
+      "no baseUrl given — usage: visual-audit.mjs [--format json] [--strict] [--widths 390x844,1280x900] [--storage-state state.json] [--text-spacing] [--text-zoom 200] [--screenshots DIR] [--playwright-module PATH] [--executable-path CHROME] <baseUrl> [route …] " +
       "(baseUrl is the running app; extra args are routes appended to it)";
     finish(buildBootstrapError(msg), { asJson, strict, pages: 0 });
     return;
@@ -2225,7 +2306,7 @@ async function main() {
 
   let deps;
   try {
-    deps = await loadDeps();
+    deps = await loadDeps({ playwrightModule });
   } catch (e) {
     finish(buildBootstrapError(e.message, e.hint), { asJson, strict, pages: targets.length });
     return;
@@ -2237,6 +2318,7 @@ async function main() {
       modes,
       zoom,
       screenshots: screenshots && path.resolve(screenshots),
+      executablePath,
     });
     finish(result, { asJson, strict, pages: targets.length });
   } catch (e) {
