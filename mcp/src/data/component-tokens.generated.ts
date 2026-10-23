@@ -7624,6 +7624,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--topbar-item-current-color",
+    "value": "initial",
+    "description": "The current page among the bar's navigation links (`aria-current=\"page\"`, gh#1428): ink plus an inset block-end indicator. Colours default at the call site (the freeze rule), so a scoped override of --foreground / --primary still reaches them. default = var(--foreground)"
+  },
+  {
+    "name": "--topbar-item-current-indicator-color",
+    "value": "initial",
+    "description": "default = var(--primary)"
+  },
+  {
+    "name": "--topbar-item-current-indicator-size",
+    "value": "var(--stroke-md)",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
     "name": "--topbar-item-badge-offset-block",
     "value": "initial",
     "description": "How far a one-digit pill's top edge (block) and end edge (inline) sit OUTSIDE the glyph's. Fractions of the pill, not a flat length (gh#1341 — Material 3 badges / Apple HIG): half a pill inline centres it on the glyph's corner, three quarters block leaves a quarter of it on the glyph, so at most a quarter of the glyph is covered; a longer count stays inside the cell and grows back across the glyph, still covering at most a quarter of it. They used to be a flat 4px, which left a 16px pill covering 56% of a 16px bell. Declared `initial` with the default resolved at the call site, so a scoped --topbar-item-badge-size still moves them (the freeze rule). The ring is the surface colour drawn round the pill so it reads cut out of the glyph; role-mirror knob, default = hsl(var(--card)) (the bar) at the call site, and the nav rail sets it to its own surface. default = calc(var(--topbar-item-badge-size) * 3 / 4)"
@@ -8502,6 +8517,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--centered-shell-landing-background",
     "value": "initial",
     "description": "Role-mirror knob — MUST stay `initial`, with the role default at the CALL SITE (`var(--centered-shell-landing-background, var(--background))`), so a scoped `[data-tenant]` / `.dark` override of `--background` still reaches it (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Documented default = hsl(var(--background)) — a public page is the plain page canvas, not the app's `--muted` chrome."
+  },
+  {
+    "name": "--centered-shell-footer-inverse-background",
+    "value": "initial",
+    "description": "`CenteredShell footerTone=\"inverse\"` (gh#1429) — the footer as a brand band. Role-mirror knobs (HSL channels), `initial` with the default at the call site: background = the page's ink (--foreground), every text role inside = the page's canvas (--background)."
+  },
+  {
+    "name": "--centered-shell-footer-inverse-foreground",
+    "value": "initial",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--centered-shell-footer-inverse-muted-foreground",
+    "value": "initial",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--centered-shell-footer-inverse-border",
+    "value": "initial",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--centered-shell-footer-inverse-link-color",
+    "value": "initial",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-bar-height",

@@ -3838,6 +3838,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "footerTone",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"inverse\" | undefined",
+          "values": ["default", "inverse"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "measure",
           "origin": "owned",
           "required": false,
@@ -18583,6 +18591,14 @@
         },
         {
           "name": "hideBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "BreakpointProp | undefined",
+          "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "hideFrom",
           "origin": "owned",
           "required": false,
           "type": "BreakpointProp | undefined",

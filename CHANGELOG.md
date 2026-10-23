@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `TopbarItem hideFrom` — the inverse of `hideBelow`: a phone-only cell (e.g. the trigger of a navigation `Sheet` whose links are inline from that step up) without a wrapper that collapses the slot. Same steps and `data-hide-from` attribute as `Flex hideFrom` (#1428).
+- `TopbarItem` current page: a navigation cell with `aria-current="page"` reads as current — ink colour plus an inset block-end indicator, never colour alone. Knobs `--topbar-item-current-color` / `--topbar-item-current-indicator-color` (`initial`; defaults `--foreground` / `--primary`) and `--topbar-item-current-indicator-size` (`--stroke-md`) (#1428).
+- `CenteredShell footerTone="inverse"` — the footer as a brand band: it paints `--centered-shell-footer-inverse-background` and re-points `--foreground`, `--muted-foreground`, `--border`, `--text-link` and the focus ring inside it to `--centered-shell-footer-inverse-*`, so kit children keep reading their normal roles. Defaults are the page's own ink (band) and canvas (text); `"default"` emits nothing (#1429).
+
 ## [33.17.0] - 2026-10-24
 
 ### Fixed

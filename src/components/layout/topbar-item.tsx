@@ -25,6 +25,7 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
     className,
     type,
     hideBelow,
+    hideFrom,
     icon,
     iconHideFrom,
     labelHideBelow,
@@ -122,6 +123,7 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
       data-truncate={truncate ? "true" : undefined}
       title={truncate && typeof label === "string" ? label : undefined}
       data-hide-below={hideBelow}
+      data-hide-from={hideFrom}
       className={cn("ui-topbar-item ui-focus-ring", className)}
       // A bare `<button>` inside a form defaults to `type="submit"`; under `asChild` the child owns
       // its own element and must not be handed a `type` it may not accept (an `<a>`, a `<div>`).

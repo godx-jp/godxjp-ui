@@ -955,6 +955,36 @@
     color: hsl(var(--muted-foreground));
   }
 
+  /* `footerTone="inverse"` (gh#1429): the footer is a brand band. The page's ink and canvas are
+   * captured on the SHELL (a custom property resolves where it is declared), because the footer
+   * re-points --foreground itself and could not read the page's value any more. Every knob is a
+   * role mirror defaulted at the call site, so a scoped [data-tenant] / dark override still reaches
+   * the band. */
+  .ui-centered-shell {
+    --centered-shell-page-ink: var(--foreground);
+    --centered-shell-page-canvas: var(--background);
+  }
+
+  .ui-centered-shell-footer[data-tone="inverse"] {
+    --foreground: var(
+      --centered-shell-footer-inverse-foreground,
+      var(--centered-shell-page-canvas)
+    );
+    --muted-foreground: var(
+      --centered-shell-footer-inverse-muted-foreground,
+      var(--centered-shell-page-canvas)
+    );
+    --border: var(--centered-shell-footer-inverse-border, var(--centered-shell-page-canvas));
+    --text-link: var(--centered-shell-footer-inverse-link-color, var(--centered-shell-page-canvas));
+    --ring: var(--centered-shell-footer-inverse-link-color, var(--centered-shell-page-canvas));
+    --focus-ring-color: var(--ring);
+    background: hsl(
+      var(--centered-shell-footer-inverse-background, var(--centered-shell-page-ink))
+    );
+    color: hsl(var(--foreground));
+    border-top-color: transparent;
+  }
+
   /* Same condition, word for word, as the `.app-topbar` block above and as `.ui-page-container` in
    * styles/layout.css: the inset is a fact about where the page's content edge is, so all three
    * sides must step on the same line or the row drifts apart again — which is precisely how the
@@ -3233,6 +3263,15 @@
   .ui-topbar-item[data-state="open"] {
     background: hsl(var(--topbar-item-active-background));
     color: hsl(var(--topbar-item-hover-color, var(--accent-foreground)));
+  }
+
+  /* The CURRENT page among the bar's navigation links (gh#1428): ink colour plus an inset
+   * block-end indicator, so the state never rests on colour alone. Inset (a box-shadow, not a
+   * border) keeps the cell's box identical to its neighbours'. */
+  .ui-topbar-item[aria-current="page"] {
+    color: hsl(var(--topbar-item-current-color, var(--foreground)));
+    box-shadow: inset 0 calc(-1 * var(--topbar-item-current-indicator-size))
+      hsl(var(--topbar-item-current-indicator-color, var(--primary)));
   }
 
   .ui-topbar-item:disabled,

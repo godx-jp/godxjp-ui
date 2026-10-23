@@ -963,6 +963,15 @@ export type CenteredShellPageProp = {
   /** Footer slot (contentinfo) pinned to the bottom (legal links, locale switch, support). Omit → none. */
   footer?: ReactNode;
   /**
+   * `"inverse"` paints the footer as a brand band (a public site's dark footer, gh#1429): its
+   * surface is `--centered-shell-footer-inverse-background` and the text roles INSIDE it
+   * (`--foreground`, `--muted-foreground`, `--border`, `--text-link`, the focus ring) are re-pointed
+   * to `--centered-shell-footer-inverse-*`, so kit children keep reading their normal roles.
+   * Defaults derive from the page's own ink and canvas (ink band, canvas text), so a theme that sets
+   * nothing still gets a legible band. `"default"` (the default) emits no attribute.
+   */
+  footerTone?: "default" | "inverse";
+  /**
    * Max-width of the centred content column: `sm` ~32rem, `md` (default) ~46rem, `lg` ~64rem — all
    * wider than AuthShell's 24rem auth card. A service retunes each tier via `--centered-shell-width-*`.
    */
@@ -1703,6 +1712,14 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
    */
   /** Hide below a shared responsive breakpoint, without changing cell height. */
   hideBelow?: BreakpointProp;
+  /**
+   * The inverse of `hideBelow`: drop the cell FROM a breakpoint step upwards (gh#1428) — a
+   * phone-only cell, e.g. the trigger of a navigation `Sheet` whose links sit inline in the bar
+   * from that step up. Same steps and `data-hide-from` attribute as `Flex hideFrom`; the cell stays
+   * a direct child of the slot, so the bar's stretch chain is untouched (a wrapper would collapse
+   * it, gh#883).
+   */
+  hideFrom?: BreakpointProp;
   /**
    * The cell's leading glyph, placed in a slot the CELL sizes (`--topbar-icon-size`).
    *

@@ -42,6 +42,7 @@ function PageLayout({
   width = "md",
   align = "start",
   preset = "default",
+  footerTone = "default",
   className,
 }: CenteredShellPageProp) {
   const { t } = useTranslation();
@@ -70,6 +71,8 @@ function PageLayout({
         <footer
           className="ui-centered-shell-footer"
           aria-label={t("layout.centeredShell.footerLabel")}
+          // Emitted only for the inverse band, so a default footer keeps its exact box (gh#1429).
+          data-tone={footerTone === "inverse" ? "inverse" : undefined}
         >
           {footer}
         </footer>
