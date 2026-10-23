@@ -290,6 +290,18 @@
     opacity: 1;
   }
 
+  /* gino VD-298 — one 「閉じる」 per modal, not two. React Aria's `Modal` renders a visually hidden
+   * `DismissButton` beside the dialog whenever the overlay is dismissable (the default Dialog and
+   * every Sheet), for screen-reader users who cannot press Escape. When the visible ✕ is there it
+   * is the same action under the same name, so a screen reader met 「閉じる」 twice. With the ✕
+   * present, the hidden twin leaves the accessibility tree; with `showCloseButton={false}` it
+   * stays, so that user still has a way out. Escape and backdrop clicks are untouched — they do
+   * not go through that button. `.ui-overlay-modal` is the `Modal` element (dialog.tsx,
+   * sheet.tsx), whose only children are that button's wrapper and the dialog section. */
+  .ui-overlay-modal:has(> section > :is(.ui-dialog-close, .ui-sheet-close)) > :not(section) {
+    display: none;
+  }
+
   [data-slot="dialog-title"] {
     font-size: var(
       --font-size-lg,

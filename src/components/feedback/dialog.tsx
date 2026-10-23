@@ -339,7 +339,7 @@ function DialogShell({
     >
       {/* `display: contents` — thẻ `Modal` là chỗ RAC treo khoá cuộn / bẫy tiêu điểm, không phải
           một hộp bố cục. Bỏ nó đi thì `useInteractOutside` mất mốc để so. */}
-      <Modal className="contents">{dialog}</Modal>
+      <Modal className="ui-overlay-modal contents">{dialog}</Modal>
     </ModalOverlay>
   );
 }

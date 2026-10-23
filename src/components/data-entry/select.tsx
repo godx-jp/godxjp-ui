@@ -1338,7 +1338,11 @@ function DataSelect(props: PlainDataSelectProp) {
             {prefix}
           </span>
         )}
-        <SelectValue placeholder={placeholder}>
+        {/* The catalogue default is the one the `showSearch` branch shows (search-select.tsx), so
+            an unselected field reads 「選択…」 either way instead of an empty trigger (gino
+            VD-418). Display only: `placeholderName` above stays the caller's string, because a
+            generic 「選択…」 says nothing about the field and must not become its name (gh#643). */}
+        <SelectValue placeholder={placeholder ?? t("dataEntry.searchSelect.placeholder")}>
           {labelRender ? (
             <DataSelectLabel labelRender={labelRender} options={options} />
           ) : undefined}
