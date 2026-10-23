@@ -778,6 +778,12 @@
     "tier": "lab"
   },
   {
+    "group": "layout",
+    "name": "DashboardGrid",
+    "tagline": "BI widget layout editor with deterministic push-down collisions and vertical compaction. Static CSS grid in view mode; temporary pointer/touch/keyboard previews commit once on drop.",
+    "tier": "lab"
+  },
+  {
     "group": "data-entry",
     "name": "SortableList",
     "tagline": "Reorder a flat list or a grid of tiles (gh#1173). Each item has a grip: drag it with a pointer (touch included — the grip sets touch-action: none), or focus it and press Space/Enter to lift, the arrows (Home / End) to move, Space/Enter to drop, Esc to cancel. Every step is spoken in a polite live region (\"2 of 3\"). The order is the value.",

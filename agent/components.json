@@ -14387,6 +14387,82 @@
     ]
   },
   {
+    "docPath": "docs/lab/dashboard-grid.tsx",
+    "example": "import { DashboardGrid } from \"@godxjp/ui/lab\";\n\n<DashboardGrid items={[{ id: \"revenue\", label: \"Revenue\", content: \"Revenue\" }]} defaultLayout={[{ id: \"revenue\", x: 0, y: 0, w: 2, h: 3 }]} columns={{ base: 1, lg: 4 }} editable />",
+    "group": "layout",
+    "importPath": "@godxjp/ui/lab",
+    "name": "DashboardGrid",
+    "props": [
+      {
+        "description": "Stable ids, visible header labels (also accessible region names) and widget body content. Wrap padded bodies in CardContent, tables in CardContent flush; DashboardGrid owns the Card and header. DOM reading order remains items order.",
+        "name": "items",
+        "required": true,
+        "type": "{ id: string; label: string; content: ReactNode }[]"
+      },
+      {
+        "description": "Controlled layout: {id,x,y,w,h}, integer cells, zero-based x from inline-start.",
+        "name": "layout",
+        "type": "DashboardGridItemProp[]"
+      },
+      {
+        "description": "Uncontrolled initial layout.",
+        "name": "defaultLayout",
+        "type": "DashboardGridItemProp[]"
+      },
+      {
+        "description": "One callback per changed drop; Escape restores without saving.",
+        "name": "onLayoutChange",
+        "type": "(layout: DashboardGridItemProp[]) => void"
+      },
+      {
+        "description": "Default 12. Responsive viewport breakpoints; a single column stacks at natural content heights. Narrow projection never overwrites saved layout.",
+        "name": "columns",
+        "type": "number | { base: number; sm?: number; md?: number; lg?: number; xl?: number }"
+      },
+      {
+        "description": "Positive pixel row track size. Omitted uses --dashboard-grid-row-height.",
+        "name": "rowHeight",
+        "type": "number"
+      },
+      {
+        "description": "Default false. Inset header grip and bottom-end resize corner (on hover/focus); header space is reserved in view mode to prevent content shift. Enter/Space grab/drop, arrows move, Shift+arrows resize, Escape cancels.",
+        "name": "editable",
+        "type": "boolean"
+      },
+      {
+        "description": "Root class.",
+        "name": "className",
+        "type": "string"
+      },
+      {
+        "description": "Root id.",
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "related": [
+      "ResponsiveGrid — static flow layout.",
+      "SortableList — ordering without cell geometry."
+    ],
+    "rules": [
+      44,
+      45
+    ],
+    "storyPath": "lab/dashboard-grid.tsx",
+    "tagline": "BI widget layout editor with deterministic push-down collisions and vertical compaction. Static CSS grid in view mode; temporary pointer/touch/keyboard previews commit once on drop.",
+    "tier": "lab",
+    "usage": [
+      "C7 exception approved by the owner, BI precedents (Tableau/Power BI/Grafana/react-grid-layout). Approved 2026-10-23. Lab §2.1: same gates as core; promotion only once ≥2 repos import it.",
+      "Use stable unique ids and order items by reading priority. Persist only onLayoutChange.",
+      "Coordinates are normalized and compacted. View mode exposes content semantics, not an ARIA data grid.",
+      "RTL mirrors x and horizontal keyboard/pointer deltas. Touch-action none is confined to handles.",
+      "Theme --dashboard-grid-gap, row-height, handle-size, handle-inset, item-radius and preview-ring-color."
+    ],
+    "useCases": [
+      "BI dashboards with rearrangeable and resizable widgets."
+    ]
+  },
+  {
     "docPath": "docs/data-entry/sortable-list.tsx",
     "example": "import { SortableList } from \"@godxjp/ui/lab\";\n\n<SortableList\n  aria-label=\"Widgets\"\n  items={[{ value: \"cal\", label: \"Calendar\" }, { value: \"mail\", label: \"Mail\" }]}\n  value={order}\n  onValueChange={setOrder}\n/>",
     "group": "data-entry",

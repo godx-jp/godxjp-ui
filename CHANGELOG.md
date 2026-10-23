@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Lab `DashboardGrid` (#1397): responsive static grid and transactional pointer/touch/keyboard editing, deterministic push-down collisions and vertical compaction, RTL, ja/en/vi announcements. Inset header grips and hover/focus resize corners keep view/edit content fixed; single-column tiles use natural heights. The BI example combines compact metrics, a BarChart and DataTable. Owner-approved C7 exception (2026-10-23); promotion requires ≥2 importing repos.
+- Dashboard grid gap, row-height, handle-size/inset, item-radius and role-mirror preview-ring-color tokens.
+
 ## [33.14.0] - 2026-10-23
 
 ### Added

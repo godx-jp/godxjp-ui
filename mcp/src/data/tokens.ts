@@ -11,6 +11,43 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--dashboard-grid-gap",
+    category: "component",
+    tier: "component",
+    role: "Gap between tracks; var(--space-4).",
+  },
+  {
+    name: "--dashboard-grid-row-height",
+    category: "component",
+    tier: "component",
+    role: "Row track size; var(--space-20), overridden per instance by rowHeight.",
+  },
+  {
+    name: "--dashboard-grid-handle-size",
+    category: "component",
+    tier: "component",
+    role: "Move and resize handle size; var(--control-height), 24px floor.",
+  },
+  {
+    name: "--dashboard-grid-handle-inset",
+    category: "component",
+    tier: "component",
+    role: "Edit handle edge inset; var(--space-1).",
+  },
+  {
+    name: "--dashboard-grid-item-radius",
+    category: "component",
+    tier: "component",
+    role: "Tile radius; var(--card-radius).",
+  },
+  {
+    name: "--dashboard-grid-preview-ring-color",
+    category: "component",
+    tier: "component",
+    role: "Role-mirror preview outline; initial, resolves --ring at the call site.",
+  },
+
+  {
     name: "--persona-avatar-gap",
     category: "component",
     tier: "component",

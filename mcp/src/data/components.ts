@@ -16891,6 +16891,83 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     rules: [],
   },
   {
+    name: "DashboardGrid",
+    tier: "lab",
+    importPath: "@godxjp/ui/lab",
+    group: "layout",
+    tagline:
+      "BI widget layout editor with deterministic push-down collisions and vertical compaction. Static CSS grid in view mode; temporary pointer/touch/keyboard previews commit once on drop.",
+    props: [
+      {
+        name: "items",
+        type: "{ id: string; label: string; content: ReactNode }[]",
+        description:
+          "Stable ids, visible header labels (also accessible region names) and widget body content. Wrap padded bodies in CardContent, tables in CardContent flush; DashboardGrid owns the Card and header. DOM reading order remains items order.",
+        required: true,
+      },
+      {
+        name: "layout",
+        type: "DashboardGridItemProp[]",
+        description:
+          "Controlled layout: {id,x,y,w,h}, integer cells, zero-based x from inline-start.",
+      },
+      {
+        name: "defaultLayout",
+        type: "DashboardGridItemProp[]",
+        description: "Uncontrolled initial layout.",
+      },
+      {
+        name: "onLayoutChange",
+        type: "(layout: DashboardGridItemProp[]) => void",
+        description: "One callback per changed drop; Escape restores without saving.",
+      },
+      {
+        name: "columns",
+        type: "number | { base: number; sm?: number; md?: number; lg?: number; xl?: number }",
+        description:
+          "Default 12. Responsive viewport breakpoints; a single column stacks at natural content heights. Narrow projection never overwrites saved layout.",
+      },
+      {
+        name: "rowHeight",
+        type: "number",
+        description: "Positive pixel row track size. Omitted uses --dashboard-grid-row-height.",
+      },
+      {
+        name: "editable",
+        type: "boolean",
+        description:
+          "Default false. Inset header grip and bottom-end resize corner (on hover/focus); header space is reserved in view mode to prevent content shift. Enter/Space grab/drop, arrows move, Shift+arrows resize, Escape cancels.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Root id.",
+      },
+    ],
+    usage: [
+      "C7 exception approved by the owner, BI precedents (Tableau/Power BI/Grafana/react-grid-layout). Approved 2026-10-23. Lab §2.1: same gates as core; promotion only once ≥2 repos import it.",
+      "Use stable unique ids and order items by reading priority. Persist only onLayoutChange.",
+      "Coordinates are normalized and compacted. View mode exposes content semantics, not an ARIA data grid.",
+      "RTL mirrors x and horizontal keyboard/pointer deltas. Touch-action none is confined to handles.",
+      "Theme --dashboard-grid-gap, row-height, handle-size, handle-inset, item-radius and preview-ring-color.",
+    ],
+    useCases: ["BI dashboards with rearrangeable and resizable widgets."],
+    related: [
+      "ResponsiveGrid — static flow layout.",
+      "SortableList — ordering without cell geometry.",
+    ],
+    example:
+      'import { DashboardGrid } from "@godxjp/ui/lab";\n\n<DashboardGrid items={[{ id: "revenue", label: "Revenue", content: "Revenue" }]} defaultLayout={[{ id: "revenue", x: 0, y: 0, w: 2, h: 3 }]} columns={{ base: 1, lg: 4 }} editable />',
+    docPath: "docs/lab/dashboard-grid.tsx",
+    storyPath: "lab/dashboard-grid.tsx",
+    rules: [44, 45],
+  },
+  {
     name: "SortableList",
     tier: "lab",
     importPath: "@godxjp/ui/lab",

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 289,
-    dimensionCells: 4046,
+    exports: 290,
+    dimensionCells: 4060,
     covered: 89,
-    untested: 2228,
-    notApplicable: 1729,
+    untested: 2235,
+    notApplicable: 1736,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -179,6 +179,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"CommandSeparator","group":"data-entry","frame":"docs/data-entry/command.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"CompactBarTrend","group":"charts","frame":"docs/charts/compact-bar-trend.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"CredentialReveal","group":"data-display","frame":"docs/data-display/credential-reveal.tsx","covered":["sizes","tones"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","states","variants"]},
+  {"name":"DashboardGrid","group":"lab","frame":"docs/lab/dashboard-grid.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"DataState","group":"query","frame":"docs/query/data-state.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"DataTable","group":"data-display","frame":"docs/data-display/data-table/index.tsx","covered":["density"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["shapes","sizes","tones","variants"]},
   {"name":"DatePicker","group":"data-entry","frame":"docs/data-entry/date-picker.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states","variants"],"notApplicable":["density","shapes","tones"]},

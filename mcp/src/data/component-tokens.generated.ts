@@ -2764,6 +2764,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The `{ type: \"divider\" }` rule between two runs."
   },
   {
+    "name": "--dashboard-grid-gap",
+    "value": "var(--space-4)",
+    "description": ""
+  },
+  {
+    "name": "--dashboard-grid-row-height",
+    "value": "var(--space-20)",
+    "description": ""
+  },
+  {
+    "name": "--dashboard-grid-handle-size",
+    "value": "var(--control-height)",
+    "description": ""
+  },
+  {
+    "name": "--dashboard-grid-handle-inset",
+    "value": "var(--space-1)",
+    "description": ""
+  },
+  {
+    "name": "--dashboard-grid-item-radius",
+    "value": "var(--card-radius)",
+    "description": ""
+  },
+  {
+    "name": "--dashboard-grid-preview-ring-color",
+    "value": "initial",
+    "description": ""
+  },
+  {
     "name": "--accordion-chevron-size",
     "value": "var(--icon-size-md)",
     "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because neither selector contains the word \"icon\"."

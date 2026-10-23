@@ -1,0 +1,8 @@
+:root {
+  --dashboard-grid-gap: var(--space-4);
+  --dashboard-grid-row-height: var(--space-20);
+  --dashboard-grid-handle-size: var(--control-height);
+  --dashboard-grid-handle-inset: var(--space-1);
+  --dashboard-grid-item-radius: var(--card-radius);
+  --dashboard-grid-preview-ring-color: initial;
+}

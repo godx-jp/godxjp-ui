@@ -2419,5 +2419,23 @@
       "more": "More",
       "scope": "Viewing scope"
     }
+  },
+  "dashboardGridDocs": {
+    "title": "Business overview",
+    "period": "October 2026 · compared with September",
+    "revenue": "Revenue",
+    "orders": "Orders",
+    "revenueDelta": "+8.2% compared with September",
+    "ordersDelta": "+42 compared with September",
+    "edit": "Edit layout",
+    "done": "Finish editing",
+    "hint": "Grab a handle with Enter or Space. Arrows move, Shift + arrows resize, Escape cancels. Drop saves once.",
+    "trend": "Weekly revenue",
+    "channels": "Orders by channel",
+    "channel": "Channel",
+    "direct": "Direct",
+    "organic": "Organic search",
+    "referral": "Referral",
+    "email": "Email"
   }
 }
