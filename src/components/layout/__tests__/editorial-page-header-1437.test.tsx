@@ -124,9 +124,9 @@ describe("EditorialPageHeader (gh#1437)", () => {
     expect(title).toMatch(/margin:\s*var\(--editorial-page-header-title-space-block-start\) 0/);
     expect(title).toMatch(/font-size:\s*var\(--editorial-page-header-title-font-size\)/);
     expect(rule(".ui-editorial-page-header .ui-editorial-page-header-title:lang(ja)")).toMatch(
-      /word-break:\s*var\(--editorial-page-header-title-word-break\)/,
+      /word-break:\s*var\(--editorial-page-header-title-line-breaking\)/,
     );
-    expect(tokens).toMatch(/--editorial-page-header-title-word-break:\s*auto-phrase;/);
+    expect(tokens).toMatch(/--editorial-page-header-title-line-breaking:\s*auto-phrase;/);
     const lead = rule(".ui-editorial-page-header-description");
     expect(lead).toMatch(/max-width:\s*var\(--editorial-page-header-description-max-width\)/);
     const kicker = rule(".ui-editorial-page-header-copy > .ui-editorial-eyebrow");
