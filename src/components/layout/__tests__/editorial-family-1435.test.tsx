@@ -318,6 +318,10 @@ describe("CatalogCard (gh#1435)", () => {
     expect(screen.getByText("SAR")).toHaveClass("ui-catalog-card-tag");
     expect(rule(".ui-catalog-card-favorite")).toMatch(/position:\s*absolute/);
     expect(tokens).toMatch(/--editorial-catalog-card-media-padding-block-start:\s*3rem;/);
+    expect(rule(".ui-catalog-card-price-label")).toMatch(
+      /-webkit-line-clamp:\s*var\(--editorial-catalog-card-price-label-line-clamp\)/,
+    );
+    expect(tokens).toMatch(/--editorial-catalog-card-price-label-line-clamp:\s*none;/);
   });
 });
 

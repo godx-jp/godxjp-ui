@@ -3786,6 +3786,12 @@
   }
 
   .ui-catalog-card-price-label {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    /* A long market label stays on its line(s) instead of growing the tile; the text stays in the
+     * accessibility tree. `none` (default) never clamps. */
+    -webkit-line-clamp: var(--editorial-catalog-card-price-label-line-clamp);
     min-height: var(--editorial-catalog-card-price-label-min-height);
     margin: var(--editorial-catalog-card-price-label-space-block-start) 0 0;
     color: hsl(var(--muted-foreground));

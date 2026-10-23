@@ -280,6 +280,8 @@
   --editorial-catalog-card-price-label-font-size: 0.75rem;
   --editorial-catalog-card-price-label-space-block-start: 1rem;
   --editorial-catalog-card-price-label-min-height: 0rem;
+  /* `none` or a line count — clamp a long price caption (a market label in a long language). */
+  --editorial-catalog-card-price-label-line-clamp: none;
   --editorial-catalog-card-price-font-size: 1.75rem;
   --editorial-catalog-card-price-line-height: 1.3;
   /* `flex` (price and change on one line) or `block` (stacked). */
