@@ -10,6 +10,14 @@ export interface PropVocabEntry {
 
 export const PROP_VOCABULARY: PropVocabEntry[] = [
   {
+    name: "BreadcrumbCurrentItemProp",
+    concept: "Which breadcrumb item represents the current page.",
+    values: ["last", "none"],
+    usedBy: ["Breadcrumb", "PageContainer"],
+    notes:
+      "Defaults to last. none retains ancestor links without aria-current; supply to for each ancestor.",
+  },
+  {
     name: "ValueProp<T = string>",
     concept: "Abstract controlled value.",
     values: ["generic"],

@@ -52,6 +52,9 @@ export type BreadcrumbItemProp = {
 /** `BreadcrumbItemProp.ellipsis` — on, or on with an explicit tooltip (gh#1046). */
 export type BreadcrumbItemEllipsisProp = boolean | { tooltip?: React.ReactNode };
 
+/** Which item represents the current page; none is an ancestor-only trail. */
+export type BreadcrumbCurrentItemProp = "last" | "none";
+
 /** Ordered breadcrumb trail above page title. */
 export type BreadcrumbProp = BreadcrumbItemProp[];
 

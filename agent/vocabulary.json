@@ -1,5 +1,18 @@
 [
   {
+    "concept": "Which breadcrumb item represents the current page.",
+    "name": "BreadcrumbCurrentItemProp",
+    "notes": "Defaults to last. none retains ancestor links without aria-current; supply to for each ancestor.",
+    "usedBy": [
+      "Breadcrumb",
+      "PageContainer"
+    ],
+    "values": [
+      "last",
+      "none"
+    ]
+  },
+  {
     "concept": "Abstract controlled value.",
     "name": "ValueProp<T = string>",
     "usedBy": [

@@ -179,8 +179,8 @@ export default function Demo() {
         breadcrumb={[
           { label: "ホーム", to: "/" },
           { label: "不具合", to: "/issues" },
-          { label: "#1042" },
         ]}
+        breadcrumbCurrentItem="none"
         breadcrumbLabel="不具合詳細のパンくず"
         extra={{
           start: (

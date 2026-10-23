@@ -3,6 +3,7 @@ import type * as React from "react";
 import type { ComponentType, ReactNode, SVGProps } from "react";
 import type {
   BreadcrumbProp,
+  BreadcrumbCurrentItemProp,
   TitleProp,
   SubtitleProp,
   StatusProp,
@@ -121,6 +122,8 @@ export type PageContainerProp = {
   toolbar?: ReactNode;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;
+  /** Last item is current by default; none keeps an ancestor-only trail linked. */
+  breadcrumbCurrentItem?: BreadcrumbCurrentItemProp;
   /**
    * Override the breadcrumb `<nav>` landmark's accessible name. Defaults to a localized
    * "Breadcrumb".

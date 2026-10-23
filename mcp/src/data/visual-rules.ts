@@ -101,7 +101,7 @@ export const VISUAL_RULES: VisualRule[] = [
     category: "layout",
     standard: "WCAG 2.2 SC 1.4.10 / 1.4.4 / 1.4.12; 1.5px tolerance repo-chosen threshold",
     kind: "probe",
-    fix: "Nothing may be cut off: no horizontal scroll on the document or the app's main region, and no text/icon partly hidden by an overflow:hidden/clip ancestor. Let the container shrink its content (min-width:0 + wrap), or truncate with a recoverable full value (title / aria-label).",
+    fix: "Nothing may be cut off: no horizontal scroll on the document or the app's main region, and no text/icon partly hidden by an overflow:hidden/clip ancestor. Let the container shrink its content (min-width:0 + wrap), or truncate with a recoverable full value (title / aria-label). Kit Breadcrumb ellipsis requires the complete label in both title and aria-label on its clipping element; a tooltip alone or a partial label is insufficient.",
   },
   {
     id: "c02-search-usable",

@@ -189,6 +189,15 @@ export default function Demo() {
             <CardDescription>{t("breadcrumbExamples.ellipsisDescription")}</CardDescription>
           </CardHeader>
           <CardContent>
+            <CardDescription>{t("breadcrumbExamples.parentsDescription")}</CardDescription>
+            <Breadcrumb
+              currentItem="none"
+              ariaLabel={t("breadcrumbExamples.parentsAria")}
+              items={[
+                { label: t("breadcrumbExamples.home"), to: "/" },
+                { label: suite, to: "/suites/412", ellipsis: true },
+              ]}
+            />
             <div id="breadcrumb-ellipsis">
               <Breadcrumb
                 ariaLabel={t("breadcrumbExamples.ellipsisAria")}

@@ -2665,6 +2665,14 @@
           "declaredIn": ["src/components/layout/breadcrumb.tsx"]
         },
         {
+          "name": "currentItem",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbCurrentItemProp | undefined",
+          "values": ["none", "last"],
+          "declaredIn": ["src/components/layout/breadcrumb.tsx"]
+        },
+        {
           "name": "itemRender",
           "origin": "owned",
           "required": false,
@@ -10413,6 +10421,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "breadcrumbCurrentItem",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbCurrentItemProp | undefined",
+          "values": ["none", "last"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
