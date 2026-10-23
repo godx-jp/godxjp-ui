@@ -1083,8 +1083,16 @@ export default function OrdersPage() {
       { name: "name", type: "string", defaultValue: '"q"', description: "Query parameter." },
       { name: "defaultValue", type: "string", description: "Initial query." },
       { name: "action", type: "string", description: "Form action for the no-JS submit." },
-      { name: "onSearch", type: "(query: string, scope?: string) => void", description: "Submit handler (query, and the scope value when shown)." },
-      { name: "scope", type: "{ label: string; name: string; value: string; options: { value: string; label: string }[]; onValueChange: (value: string) => void }", description: "A compact scope select at the start of the box (e.g. which game to search)." },
+      {
+        name: "onSearch",
+        type: "(query: string, scope?: string) => void",
+        description: "Submit handler (query, and the scope value when shown).",
+      },
+      {
+        name: "scope",
+        type: "{ label: string; name: string; value: string; options: { value: string; label: string }[]; onValueChange: (value: string) => void }",
+        description: "A compact scope select at the start of the box (e.g. which game to search).",
+      },
       { name: "id", type: "string", description: "Field id." },
     ],
     usage: ["DO use it for a site search that submits; use SearchInput for a live filter."],
@@ -1332,6 +1340,46 @@ import { Moon } from "lucide-react";
     example: `import { EditorialFilterBar } from "@godxjp/ui/layout";
 
 <EditorialFilterBar aria-label="Selection" value={tab} onValueChange={setTab} options={[{ value: "all", label: "Selected cards" }, { value: "down", label: "Price drops" }]} extra="vs. 30 days ago" />`,
+  },
+  {
+    name: "EditorialToggleGroup",
+    group: "layout",
+    tagline:
+      'One-of-N toggles of the editorial account family (gh#1439): a named `role="group"` of `aria-pressed` buttons. `variant="text"` is a filter row (pressed = filled, bordered); `variant="icon"` a framed icon-only switch such as grid / list view, each button named by its label. Geometry: `--editorial-toggle-group-*`.',
+    props: [
+      { name: "aria-label", type: "string", required: true, description: "Group name." },
+      {
+        name: "items",
+        type: "{ value: string; label: string; icon?: ReactNode }[]",
+        required: true,
+        description: "The toggles; label is the text and the accessible name.",
+      },
+      { name: "value", type: "string", required: true, description: "Pressed toggle." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        required: true,
+        description: "Change handler.",
+      },
+      {
+        name: "variant",
+        type: '"text" | "icon"',
+        default: '"text"',
+        description: "Labels, or framed icon-only buttons.",
+      },
+    ],
+    usage: [
+      "DO use it above a collection to filter it or switch its view; the collection is yours.",
+      "DO pass a lucide icon per item for the icon variant — the label stays the button's name.",
+    ],
+    related: [
+      "Segmented — a track with a lifted slab.",
+      "EditorialFilterBar — underlined toggles.",
+    ],
+    example: `import { EditorialToggleGroup } from "@godxjp/ui/layout";
+import { Grid2x2, List } from "lucide-react";
+
+<EditorialToggleGroup aria-label="View" variant="icon" value={view} onValueChange={setView} items={[{ value: "grid", label: "Grid view", icon: <Grid2x2 /> }, { value: "list", label: "List view", icon: <List /> }]} />`,
   },
   {
     name: "PageCover",

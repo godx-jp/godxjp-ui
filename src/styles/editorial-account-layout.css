@@ -1,0 +1,61 @@
+/* EDITORIAL ACCOUNT FAMILY (gh#1439) — rules of components/layout/editorial-account.tsx. Every
+ * length and colour reads a token from tokens/components/editorial-account.css; no breakpoint. */
+
+@layer components {
+  /* ── EditorialToggleGroup ─────────────────────────────────────────────────────────────────── */
+  .ui-editorial-toggle-group {
+    display: flex;
+    align-items: center;
+    justify-content: var(--editorial-toggle-group-align-inline);
+    gap: var(--editorial-toggle-group-gap);
+  }
+
+  .ui-editorial-toggle-group-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--editorial-toggle-group-gap);
+    min-height: var(--editorial-toggle-group-option-min-height);
+    padding: var(--editorial-toggle-group-option-padding-block)
+      var(--editorial-toggle-group-option-padding-inline);
+    border: var(--stroke-hairline) solid transparent;
+    border-radius: var(--editorial-toggle-group-option-radius);
+    background: transparent;
+    color: hsl(var(--muted-foreground));
+    font: inherit;
+    font-size: var(--editorial-toggle-group-option-font-size);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .ui-editorial-toggle-group-option[aria-pressed="true"] {
+    background: var(--editorial-toggle-group-pressed-background, hsl(var(--muted)));
+    color: var(--editorial-toggle-group-pressed-color, hsl(var(--primary)));
+  }
+
+  .ui-editorial-toggle-group[data-variant="text"]
+    .ui-editorial-toggle-group-option[aria-pressed="true"] {
+    border-color: hsl(var(--border));
+  }
+
+  .ui-editorial-toggle-group-icon {
+    display: inline-flex;
+  }
+
+  .ui-editorial-toggle-group-icon > svg {
+    width: var(--editorial-toggle-group-icon-size);
+    height: var(--editorial-toggle-group-icon-size);
+  }
+
+  .ui-editorial-toggle-group[data-variant="icon"] {
+    gap: 0;
+    padding: var(--editorial-toggle-group-frame-padding);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--editorial-toggle-group-frame-radius);
+  }
+
+  .ui-editorial-toggle-group[data-variant="icon"] .ui-editorial-toggle-group-option {
+    width: var(--editorial-toggle-group-icon-option-size);
+    padding: var(--editorial-toggle-group-icon-option-padding);
+  }
+}

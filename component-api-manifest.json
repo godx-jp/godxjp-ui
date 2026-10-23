@@ -7786,6 +7786,59 @@
         }
       ]
     },
+    "EditorialToggleGroup": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "EditorialToggleGroupItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": true,
+          "type": "(value: string) => void",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"text\" | \"icon\" | undefined",
+          "values": ["text", "icon"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
     "EmojiPicker": {
       "group": "lab",
       "props": [

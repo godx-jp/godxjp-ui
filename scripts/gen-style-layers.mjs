@@ -67,6 +67,8 @@ const OWNERS = {
     "ErrorSurface",
   ],
   "motion.css": ["Reveal", "Activity", "Marquee"],
+  // The editorial account family (gh#1439).
+  "editorial-account-layout.css": ["EditorialToggleGroup"],
   "layout.css": [
     "Flex",
     "PageContainer",

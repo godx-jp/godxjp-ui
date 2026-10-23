@@ -1803,6 +1803,27 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "extra", local: true, reason: "Trailing note of the bar." },
     ],
   },
+  EditorialToggleGroupItemProp: {
+    group: "layout",
+    file: "components/editorial-account.prop.ts",
+    vocabulary: [
+      { field: "value", local: true, reason: "The item's value." },
+      { field: "label", local: true, reason: "Visible text and accessible name." },
+      { field: "icon", local: true, reason: "Decorative glyph." },
+    ],
+  },
+  EditorialToggleGroupProp: {
+    group: "layout",
+    file: "components/editorial-account.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "OnValueChangeProp",
+      "ClassNameProp",
+      { field: "aria-label", local: true, reason: "Accessible name of the toggle group." },
+      { field: "items", local: true, reason: "The toggles: value, label and icon." },
+      { field: "variant", local: true, reason: "text (labels) or icon (framed, icon-only)." },
+    ],
+  },
   PageCoverVariantProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   PageCoverHeightProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   PageCoverProp: {

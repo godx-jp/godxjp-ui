@@ -4024,6 +4024,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
+    "name": "--editorial-toggle-group-gap",
+    "value": "0.5rem",
+    "description": "── EditorialToggleGroup ─────────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-toggle-group-align-inline",
+    "value": "flex-start",
+    "description": "Main-axis distribution of the text variant (a phone may spread the filters: space-between)."
+  },
+  {
+    "name": "--editorial-toggle-group-option-min-height",
+    "value": "var(--touch-target-min, 2.75rem)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toggle-group-option-padding-block",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toggle-group-option-padding-inline",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toggle-group-option-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toggle-group-option-radius",
+    "value": "6px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toggle-group-pressed-background",
+    "value": "initial",
+    "description": "Pressed fill. Default = hsl(var(--muted))."
+  },
+  {
+    "name": "--editorial-toggle-group-pressed-color",
+    "value": "initial",
+    "description": "Pressed text. Default = hsl(var(--primary))."
+  },
+  {
+    "name": "--editorial-toggle-group-frame-padding",
+    "value": "2px",
+    "description": "Icon variant: the framed group and its square buttons."
+  },
+  {
+    "name": "--editorial-toggle-group-frame-radius",
+    "value": "6px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toggle-group-icon-option-size",
+    "value": "var(--touch-target-min, 2.75rem)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toggle-group-icon-option-padding",
+    "value": "0.625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toggle-group-icon-size",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
     "name": "--editorial-ornament-color",
     "value": "initial",
     "description": "The decorative ornament (kicker rule, showcase orbits and stars). Default = hsl(var(--border))."

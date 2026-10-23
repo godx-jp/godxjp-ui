@@ -1,0 +1,27 @@
+/* Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a
+ * collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435):
+ * every geometry value a design states lives here, a theme re-declares it under its OWN width
+ * queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the
+ * documented default resolved at the call site).
+ */
+:root {
+  /* ── EditorialToggleGroup ───────────────────────────────────────────────────────────────── */
+  --editorial-toggle-group-gap: 0.5rem;
+  /* Main-axis distribution of the text variant (a phone may spread the filters: space-between). */
+  --editorial-toggle-group-align-inline: flex-start;
+  --editorial-toggle-group-option-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-toggle-group-option-padding-block: 0.5rem;
+  --editorial-toggle-group-option-padding-inline: 1rem;
+  --editorial-toggle-group-option-font-size: 0.875rem;
+  --editorial-toggle-group-option-radius: 6px;
+  /* Pressed fill. Default = hsl(var(--muted)). */
+  --editorial-toggle-group-pressed-background: initial;
+  /* Pressed text. Default = hsl(var(--primary)). */
+  --editorial-toggle-group-pressed-color: initial;
+  /* Icon variant: the framed group and its square buttons. */
+  --editorial-toggle-group-frame-padding: 2px;
+  --editorial-toggle-group-frame-radius: 6px;
+  --editorial-toggle-group-icon-option-size: var(--touch-target-min, 2.75rem);
+  --editorial-toggle-group-icon-option-padding: 0.625rem;
+  --editorial-toggle-group-icon-size: 1.25rem;
+}

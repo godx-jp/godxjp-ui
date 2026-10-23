@@ -101,6 +101,12 @@ export type {
 } from "./service-role-panel";
 
 export { useAppShellNavigationMode } from "./app-shell";
+export { EditorialToggleGroup } from "./editorial-account";
+export type {
+  EditorialToggleGroupItemProp,
+  EditorialToggleGroupProp,
+  EditorialToggleGroupProps,
+} from "./editorial-account";
 export { Affix } from "./affix";
 export type { AffixProp, AffixProps, AffixTargetProp } from "./affix";
 export {

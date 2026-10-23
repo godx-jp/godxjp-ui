@@ -7,6 +7,7 @@
     "shell-layout.css",
     "motion.css",
     "layout.css",
+    "editorial-account-layout.css",
     "control.css",
     "toggle.css",
     "logo-layout.css",
@@ -529,6 +530,11 @@
     "EditorialSectionHead": {
       "layers": [
         "layout.css"
+      ]
+    },
+    "EditorialToggleGroup": {
+      "layers": [
+        "editorial-account-layout.css"
       ]
     },
     "EmojiPicker": {

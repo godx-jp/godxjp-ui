@@ -117,6 +117,11 @@
   },
   {
     "group": "layout",
+    "name": "EditorialToggleGroup",
+    "tagline": "One-of-N toggles of the editorial account family (gh#1439): a named `role=\"group\"` of `aria-pressed` buttons. `variant=\"text\"` is a filter row (pressed = filled, bordered); `variant=\"icon\"` a framed icon-only switch such as grid / list view, each button named by its label. Geometry: `--editorial-toggle-group-*`."
+  },
+  {
+    "group": "layout",
     "name": "PageCover",
     "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
     "tier": "lab"

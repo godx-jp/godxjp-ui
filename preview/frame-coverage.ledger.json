@@ -516,13 +516,14 @@
   "baseline": {
     "recordedAt": "2026-10-09",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 310,
-    "dimensionCells": 4340,
+    "exports": 311,
+    "dimensionCells": 4354,
     "covered": 89,
-    "untested": 2385,
-    "notApplicable": 1868,
+    "untested": 2394,
+    "notApplicable": 1873,
     "knownMissingFrames": [
-      "layout/editorial"
+      "layout/editorial",
+      "layout/editorial-account"
     ],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -4427,6 +4428,33 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "EditorialToggleGroup": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 5,
+        "untested": 9
+      },
+      "dimensions": {
+        "variants": "untested",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
