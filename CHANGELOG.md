@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Stacked record collections now default to zero inter-record gap, preserving a single separator and the themeable gap token (#1414).
+- Explicitly keep Pagination free of outer inline padding so Card, CardFooter and page containers own its keyline; internal item spacing is unchanged (#1415).
+
 ## [33.14.0] - 2026-10-23
 
 ### Added

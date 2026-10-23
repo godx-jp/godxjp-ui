@@ -498,7 +498,7 @@
   {
     "group": "navigation",
     "name": "Pagination",
-    "tagline": "Offset/page-based pagination bar. Sits below a table card. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout."
+    "tagline": "Offset/page-based pagination bar. Its container owns the inset: no outer inline padding, including inside CardContent, CardFooter or PageContainer footer. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout."
   },
   {
     "group": "navigation",
