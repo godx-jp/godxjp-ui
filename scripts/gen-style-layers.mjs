@@ -68,7 +68,22 @@ const OWNERS = {
   ],
   "motion.css": ["Reveal", "Activity", "Marquee"],
   // The editorial account family (gh#1439).
-  "editorial-account-layout.css": ["EditorialToggleGroup"],
+  "editorial-account-layout.css": [
+    "EditorialTextButton",
+    "EditorialToggleGroup",
+    "EditorialMetaBar",
+    "EditorialEmptyPanel",
+    "EditorialStats",
+    "EditorialToolbar",
+    "HoldingGrid",
+    "HoldingCard",
+    "HoldingCardAction",
+    "SettingsLayout",
+    "SettingsPanel",
+    "ThemePicker",
+    "EditorialAuth",
+    "EditorialAuthCard",
+  ],
   "layout.css": [
     "Flex",
     "PageContainer",

@@ -1485,6 +1485,288 @@ import { Grid2x2, List } from "lucide-react";
 <EditorialToggleGroup aria-label="View" variant="icon" value={view} onValueChange={setView} items={[{ value: "grid", label: "Grid view", icon: <Grid2x2 /> }, { value: "list", label: "List view", icon: <List /> }]} />`,
   },
   {
+    name: "EditorialTextButton",
+    group: "layout",
+    tagline:
+      'An underlined text action in the primary tone (gh#1439): "Reset display preferences", "Your collection →". A `<button>` by default; `asChild` turns a router link into it; `icon` trails the label. Geometry: `--editorial-text-button-*`.',
+    props: [
+      { name: "children", type: "ReactNode", description: "Label." },
+      { name: "icon", type: "ReactNode", description: "Trailing glyph." },
+      { name: "asChild", type: "boolean", description: "Render the child link as the action." },
+      { name: "onClick", type: "() => void", description: "Activation handler." },
+      { name: "disabled", type: "boolean", description: "Native disabled." },
+    ],
+    usage: ["DO use it for a quiet secondary action next to copy; a primary action is a Button."],
+    related: [
+      "EditorialTextLink — the bold arrow link of a section head.",
+      "Button — actions with weight.",
+    ],
+    example: `import { EditorialTextButton } from "@godxjp/ui/layout";
+
+<EditorialTextButton onClick={reset}>Reset display preferences</EditorialTextButton>`,
+  },
+  {
+    name: "EditorialMetaBar",
+    group: "layout",
+    tagline:
+      'A hairline-ruled strip under a page header (gh#1439): a glyph and a line at the start ("Your private collection"), a badge at the end. Stacks on a phone when the theme sets `--editorial-meta-bar-align-flow: column`.',
+    props: [
+      { name: "icon", type: "ReactNode", description: "Leading glyph (primary tone)." },
+      { name: "start", type: "ReactNode", required: true, description: "Start line." },
+      { name: "end", type: "ReactNode", description: "End slot, e.g. a Badge." },
+    ],
+    usage: ["DO keep it to one fact and one chip."],
+    related: ["EditorialPageHeader — the header above it."],
+    example: `import { Badge } from "@godxjp/ui/data-display";
+import { EditorialMetaBar } from "@godxjp/ui/layout";
+import { Lock } from "lucide-react";
+
+<EditorialMetaBar icon={<Lock />} start="Your private collection" end={<Badge variant="outline">Saved to your account</Badge>} />`,
+  },
+  {
+    name: "EditorialEmptyPanel",
+    group: "layout",
+    tagline:
+      'A centred panel for a signed-out or an empty state (gh#1439). `variant="guest"` draws a decorative three-card stack above kicker, title, copy and centred actions; `variant="empty"` is dashed with a round icon medallion. Geometry: `--editorial-empty-panel-*`.',
+    props: [
+      {
+        name: "variant",
+        type: '"guest" | "empty"',
+        default: '"guest"',
+        description: "Illustrated guest panel or dashed empty panel.",
+      },
+      { name: "eyebrow", type: "ReactNode", description: "Kicker (an Eyebrow)." },
+      { name: "title", type: "ReactNode", required: true, description: "Title." },
+      { name: "level", type: "2 | 3", default: "2", description: "Heading level." },
+      { name: "description", type: "ReactNode", description: "Copy." },
+      { name: "actions", type: "ReactNode", description: "Buttons." },
+      { name: "icon", type: "ReactNode", description: 'Medallion glyph (variant="empty").' },
+    ],
+    usage: [
+      'DO use variant="guest" where a page needs an account, variant="empty" for a collection with nothing in it.',
+    ],
+    related: ["EmptyState — the application empty state."],
+    example: `import { Button } from "@godxjp/ui/general";
+import { EditorialEmptyPanel, Eyebrow } from "@godxjp/ui/layout";
+
+<EditorialEmptyPanel eyebrow={<Eyebrow>A PLACE FOR YOUR COLLECTION</Eyebrow>} title="Keep what you love, together." description="Record your cards and products." actions={<Button>Sign in</Button>} />`,
+  },
+  {
+    name: "EditorialStats",
+    group: "layout",
+    tagline:
+      "A strip of figure tiles on unequal tracks (gh#1439, default `1.4fr 1fr 1fr`): label, large tabular figure with a small unit, optional note. The first tile is the lead (quiet ground; a theme can span it across a phone row with its figure beside the label). Geometry: `--editorial-stats-*`.",
+    props: [
+      {
+        name: "items",
+        type: "{ label: ReactNode; value: ReactNode; unit?: ReactNode; note?: ReactNode }[]",
+        required: true,
+        description: "The tiles.",
+      },
+      { name: "aria-label", type: "string", description: "Name of the list." },
+    ],
+    usage: ["DO format the figures with Intl before passing them."],
+    related: ["StatCard — an application KPI tile."],
+    example: `import { EditorialStats } from "@godxjp/ui/layout";
+
+<EditorialStats aria-label="Collection totals" items={[{ label: "Items in your collection", value: "12", unit: "items", note: "A collection of things you love." }, { label: "Single cards", value: "9", unit: "items" }, { label: "Sealed products", value: "3", unit: "items" }]} />`,
+  },
+  {
+    name: "EditorialToolbar",
+    group: "layout",
+    tagline:
+      "A wrapping bar over a hairline (gh#1439): a start cluster (an EditorialToggleGroup filter) and an end cluster (view switch, primary action). A theme stacks it on a phone with `--editorial-toolbar-display: block`.",
+    props: [
+      { name: "start", type: "ReactNode", description: "Start cluster." },
+      { name: "end", type: "ReactNode", description: "End cluster." },
+    ],
+    usage: ["DO keep search and counts in their own row below it."],
+    related: [
+      "Toolbar — the application filter strip.",
+      "EditorialToggleGroup — the toggles it holds.",
+    ],
+    example: `import { Button } from "@godxjp/ui/general";
+import { EditorialToggleGroup, EditorialToolbar } from "@godxjp/ui/layout";
+
+<EditorialToolbar start={<EditorialToggleGroup aria-label="Type" value={type} onValueChange={setType} items={[{ value: "all", label: "All items" }, { value: "card", label: "Cards" }]} />} end={<Button>Add an item</Button>} />`,
+  },
+  {
+    name: "HoldingGrid",
+    group: "layout",
+    tagline:
+      'The track of HoldingCards (gh#1439): `view="grid"` lays tiles on `--editorial-holding-grid-track-size` (default four columns); `view="list"` turns the same cards into wide rows (`140px 1fr`, body on `1.5fr 1fr 140px`). A list (`ul`) of the cards.',
+    props: [
+      { name: "view", type: '"grid" | "list"', default: '"grid"', description: "Tiles or rows." },
+      { name: "aria-label", type: "string", description: "Name of the list." },
+      { name: "children", type: "ReactNode", description: "HoldingCards." },
+    ],
+    usage: [
+      'DO switch the view with an EditorialToggleGroup variant="icon"; never swap to a data table.',
+    ],
+    related: ["HoldingCard — its items.", "CatalogCard — a catalogue tile."],
+    example: `import { HoldingCard, HoldingGrid } from "@godxjp/ui/layout";
+
+<HoldingGrid view="grid" aria-label="Your collection"><HoldingCard media={<a href="/cards/1/"><img src="/card.png" alt="" /></a>} title={<a href="/cards/1/">Pikachu</a>} /></HoldingGrid>`,
+  },
+  {
+    name: "HoldingCard",
+    group: "layout",
+    tagline:
+      "One owned item (gh#1439): a picture ground (the consumer's link around an image), overline, title, meta, outlined tags (the last set apart), the purchase line, a date and HoldingCardActions. Its geometry follows the enclosing HoldingGrid view. Geometry: `--editorial-holding-card-*`.",
+    props: [
+      {
+        name: "media",
+        type: "ReactNode",
+        required: true,
+        description: "Link around the image (the picture ground).",
+      },
+      { name: "overline", type: "ReactNode", description: "Line above the title." },
+      { name: "title", type: "ReactNode", required: true, description: "Title (a link)." },
+      { name: "level", type: "2 | 3", default: "2", description: "Heading level." },
+      { name: "meta", type: "ReactNode", description: "Meta line." },
+      { name: "tags", type: "ReactNode[]", description: "Outlined tags." },
+      {
+        name: "purchase",
+        type: "{ label: ReactNode; value: ReactNode }",
+        description: "Purchase line.",
+      },
+      { name: "date", type: "ReactNode", description: "Date line." },
+      { name: "actions", type: "ReactNode", description: "HoldingCardAction elements." },
+    ],
+    usage: ["DO keep the owner's purchase price apart from reference prices."],
+    related: ["HoldingGrid — the track.", "HoldingCardAction — its actions."],
+    example: `import { HoldingCard, HoldingCardAction } from "@godxjp/ui/layout";
+import { Trash2 } from "lucide-react";
+
+<HoldingCard media={<a href="/cards/1/"><img src="/card.png" alt="" /></a>} overline="Single card" title={<a href="/cards/1/">Pikachu</a>} meta="025/165" tags={["NM", "× 2"]} purchase={{ label: "Purchase / item", value: "¥1,200" }} actions={<HoldingCardAction icon={<Trash2 />} onClick={remove}>Remove</HoldingCardAction>} />`,
+  },
+  {
+    name: "HoldingCardAction",
+    group: "layout",
+    tagline:
+      "A quiet glyph + label action of a HoldingCard (gh#1439): edit, remove. A `<button>` by default; `asChild` turns a router link into it.",
+    props: [
+      { name: "icon", type: "ReactNode", description: "Leading glyph." },
+      { name: "children", type: "ReactNode", description: "Label." },
+      { name: "asChild", type: "boolean", description: "Render the child link as the action." },
+      { name: "onClick", type: "() => void", description: "Activation handler." },
+      { name: "disabled", type: "boolean", description: "Native disabled." },
+      {
+        name: "aria-label",
+        type: "string",
+        description: "Accessible name when the label is not enough.",
+      },
+    ],
+    usage: ['DO name a destructive action with the item ("Remove Pikachu") through aria-label.'],
+    related: ["HoldingCard — its card."],
+    example: `import { HoldingCardAction } from "@godxjp/ui/layout";
+import { Pencil } from "lucide-react";
+
+<HoldingCardAction icon={<Pencil />} asChild><a href="/collection/1/edit/">Edit</a></HoldingCardAction>`,
+  },
+  {
+    name: "SettingsLayout",
+    group: "layout",
+    tagline:
+      "A settings page (gh#1439): a sticky rail (`aside`, default 260px, `--editorial-settings-layout-aside-inset` from the top) beside the panels, gap 64px. A theme hides the rail on narrow screens with `--editorial-settings-layout-aside-display: none` and one track.",
+    props: [
+      { name: "aside", type: "ReactNode", description: "Sticky rail." },
+      { name: "children", type: "ReactNode", description: "SettingsPanels." },
+    ],
+    usage: ["DO put a short note and one link in the rail, never controls."],
+    related: ["SettingsPanel — the panels."],
+    example: `import { SettingsLayout, SettingsPanel } from "@godxjp/ui/layout";
+
+<SettingsLayout aside={<p>Preferences are saved in this browser.</p>}><SettingsPanel number="01" title="Language" /></SettingsLayout>`,
+  },
+  {
+    name: "SettingsPanel",
+    group: "layout",
+    tagline:
+      "One bordered settings section (gh#1439): a number in the figure face beside the title and its description, then the fields (a Form). Geometry: `--editorial-settings-panel-*`.",
+    props: [
+      { name: "number", type: "ReactNode", description: "Section number." },
+      { name: "title", type: "ReactNode", required: true, description: "Title." },
+      { name: "level", type: "2 | 3", default: "2", description: "Heading level." },
+      { name: "description", type: "ReactNode", description: "Copy." },
+      { name: "children", type: "ReactNode", description: "Fields." },
+      { name: "titleId", type: "string", description: "id of the title (names the section)." },
+    ],
+    usage: ["DO put the fields in a Form (columns={2} for paired fields)."],
+    related: ["SettingsLayout — the page.", "EditorialPanel — a reading-page panel."],
+    example: `import { SettingsPanel } from "@godxjp/ui/layout";
+
+<SettingsPanel number="02" title="Appearance" description="Card artwork keeps its colours." />`,
+  },
+  {
+    name: "ThemePicker",
+    group: "layout",
+    tagline:
+      "An illustrated radio group for the colour theme (gh#1439): each choice is a painted preview of the interface — light, dark, or the system split — over its glyph and label. Native radios in a fieldset (arrow keys move), the checked preview ringed in the primary tone. Geometry: `--editorial-theme-picker-*`.",
+    props: [
+      {
+        name: "legend",
+        type: "string",
+        required: true,
+        description: "Name of the group (visually hidden).",
+      },
+      {
+        name: "options",
+        type: '{ value: string; label: string; icon?: ReactNode; preview: "light" | "dark" | "system" }[]',
+        required: true,
+        description: "The choices.",
+      },
+      { name: "value", type: "string", description: "Controlled value." },
+      { name: "defaultValue", type: "string", description: "Uncontrolled initial value." },
+      { name: "onValueChange", type: "(value: string) => void", description: "Change handler." },
+      { name: "name", type: "string", description: "Name of the radio inputs." },
+    ],
+    usage: ["DO apply the theme at once; no Save button."],
+    related: ['AppSettingPicker kind="theme" — a compact select.', "Radio — plain radios."],
+    example: `import { ThemePicker } from "@godxjp/ui/layout";
+import { Moon, Sun } from "lucide-react";
+
+<ThemePicker legend="Choose a theme" value={theme} onValueChange={setTheme} options={[{ value: "light", label: "Light", icon: <Sun />, preview: "light" }, { value: "dark", label: "Dark", icon: <Moon />, preview: "dark" }]} />`,
+  },
+  {
+    name: "EditorialAuth",
+    group: "layout",
+    tagline:
+      "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`.",
+    props: [
+      { name: "eyebrow", type: "ReactNode", description: "Kicker." },
+      { name: "title", type: "ReactNode", required: true, description: "Display title (h1)." },
+      { name: "description", type: "ReactNode", description: "Copy." },
+      { name: "art", type: "ReactNode", description: "Picture on the front card." },
+      { name: "benefits", type: "ReactNode[]", description: "Benefit lines." },
+      { name: "children", type: "ReactNode", description: "EditorialAuthCard." },
+    ],
+    usage: ["DO keep the form in an EditorialAuthCard with Form + FormField."],
+    related: ["EditorialAuthCard — the card.", "AuthShell — the application sign-in shell."],
+    example: `import { EditorialAuth, EditorialAuthCard, Eyebrow } from "@godxjp/ui/layout";
+
+<EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title="Make room for what you love." benefits={["A collection of your own"]}><EditorialAuthCard title="Welcome back." /></EditorialAuth>`,
+  },
+  {
+    name: "EditorialAuthCard",
+    group: "layout",
+    tagline:
+      'The form card of EditorialAuth (gh#1439): badge, title, copy, the form (`children`) and a ruled footer line ("New to the site? Create an account").',
+    props: [
+      { name: "badge", type: "ReactNode", description: "Badge slot." },
+      { name: "title", type: "ReactNode", required: true, description: "Title." },
+      { name: "level", type: "2 | 3", default: "2", description: "Heading level." },
+      { name: "description", type: "ReactNode", description: "Copy." },
+      { name: "children", type: "ReactNode", description: "The form." },
+      { name: "footer", type: "ReactNode", description: "Ruled footer line." },
+    ],
+    usage: ["DO keep one form per card."],
+    related: ["EditorialAuth — the page."],
+    example: `import { EditorialAuthCard } from "@godxjp/ui/layout";
+
+<EditorialAuthCard title="Welcome back." description="Sign in to see your collection." footer="New here?" />`,
+  },
+  {
     name: "PageCover",
     tier: "lab",
     importPath: "@godxjp/ui/lab",

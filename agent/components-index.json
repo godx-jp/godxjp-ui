@@ -142,6 +142,71 @@
   },
   {
     "group": "layout",
+    "name": "EditorialTextButton",
+    "tagline": "An underlined text action in the primary tone (gh#1439): \"Reset display preferences\", \"Your collection →\". A `<button>` by default; `asChild` turns a router link into it; `icon` trails the label. Geometry: `--editorial-text-button-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialMetaBar",
+    "tagline": "A hairline-ruled strip under a page header (gh#1439): a glyph and a line at the start (\"Your private collection\"), a badge at the end. Stacks on a phone when the theme sets `--editorial-meta-bar-align-flow: column`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialEmptyPanel",
+    "tagline": "A centred panel for a signed-out or an empty state (gh#1439). `variant=\"guest\"` draws a decorative three-card stack above kicker, title, copy and centred actions; `variant=\"empty\"` is dashed with a round icon medallion. Geometry: `--editorial-empty-panel-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialStats",
+    "tagline": "A strip of figure tiles on unequal tracks (gh#1439, default `1.4fr 1fr 1fr`): label, large tabular figure with a small unit, optional note. The first tile is the lead (quiet ground; a theme can span it across a phone row with its figure beside the label). Geometry: `--editorial-stats-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialToolbar",
+    "tagline": "A wrapping bar over a hairline (gh#1439): a start cluster (an EditorialToggleGroup filter) and an end cluster (view switch, primary action). A theme stacks it on a phone with `--editorial-toolbar-display: block`."
+  },
+  {
+    "group": "layout",
+    "name": "HoldingGrid",
+    "tagline": "The track of HoldingCards (gh#1439): `view=\"grid\"` lays tiles on `--editorial-holding-grid-track-size` (default four columns); `view=\"list\"` turns the same cards into wide rows (`140px 1fr`, body on `1.5fr 1fr 140px`). A list (`ul`) of the cards."
+  },
+  {
+    "group": "layout",
+    "name": "HoldingCard",
+    "tagline": "One owned item (gh#1439): a picture ground (the consumer's link around an image), overline, title, meta, outlined tags (the last set apart), the purchase line, a date and HoldingCardActions. Its geometry follows the enclosing HoldingGrid view. Geometry: `--editorial-holding-card-*`."
+  },
+  {
+    "group": "layout",
+    "name": "HoldingCardAction",
+    "tagline": "A quiet glyph + label action of a HoldingCard (gh#1439): edit, remove. A `<button>` by default; `asChild` turns a router link into it."
+  },
+  {
+    "group": "layout",
+    "name": "SettingsLayout",
+    "tagline": "A settings page (gh#1439): a sticky rail (`aside`, default 260px, `--editorial-settings-layout-aside-inset` from the top) beside the panels, gap 64px. A theme hides the rail on narrow screens with `--editorial-settings-layout-aside-display: none` and one track."
+  },
+  {
+    "group": "layout",
+    "name": "SettingsPanel",
+    "tagline": "One bordered settings section (gh#1439): a number in the figure face beside the title and its description, then the fields (a Form). Geometry: `--editorial-settings-panel-*`."
+  },
+  {
+    "group": "layout",
+    "name": "ThemePicker",
+    "tagline": "An illustrated radio group for the colour theme (gh#1439): each choice is a painted preview of the interface — light, dark, or the system split — over its glyph and label. Native radios in a fieldset (arrow keys move), the checked preview ringed in the primary tone. Geometry: `--editorial-theme-picker-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialAuth",
+    "tagline": "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialAuthCard",
+    "tagline": "The form card of EditorialAuth (gh#1439): badge, title, copy, the form (`children`) and a ruled footer line (\"New to the site? Create an account\")."
+  },
+  {
+    "group": "layout",
     "name": "PageCover",
     "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
     "tier": "lab"

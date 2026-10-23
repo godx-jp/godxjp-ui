@@ -493,6 +493,16 @@
         "navigation-layout.css"
       ]
     },
+    "EditorialAuth": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
+    "EditorialAuthCard": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
     "EditorialBanner": {
       "layers": [
         "layout.css",
@@ -512,6 +522,11 @@
         "layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
+      ]
+    },
+    "EditorialEmptyPanel": {
+      "layers": [
+        "editorial-account-layout.css"
       ]
     },
     "EditorialFilterBar": {
@@ -540,6 +555,11 @@
         "layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
+      ]
+    },
+    "EditorialMetaBar": {
+      "layers": [
+        "editorial-account-layout.css"
       ]
     },
     "EditorialPageHeader": {
@@ -584,7 +604,22 @@
         "navigation-layout.css"
       ]
     },
+    "EditorialStats": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
+    "EditorialTextButton": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
     "EditorialToggleGroup": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
+    "EditorialToolbar": {
       "layers": [
         "editorial-account-layout.css"
       ]
@@ -705,6 +740,21 @@
         "layout.css",
         "dialog-layout.css",
         "chart-layout.css"
+      ]
+    },
+    "HoldingCard": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
+    "HoldingCardAction": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
+    "HoldingGrid": {
+      "layers": [
+        "editorial-account-layout.css"
       ]
     },
     "Icon": {
@@ -1074,6 +1124,16 @@
         "form-layout.css"
       ]
     },
+    "SettingsLayout": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
+    "SettingsPanel": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
     "Sheet": {
       "layers": [
         "dialog-layout.css"
@@ -1159,6 +1219,11 @@
     "Textarea": {
       "layers": [
         "control.css"
+      ]
+    },
+    "ThemePicker": {
+      "layers": [
+        "editorial-account-layout.css"
       ]
     },
     "ThemeScope": {

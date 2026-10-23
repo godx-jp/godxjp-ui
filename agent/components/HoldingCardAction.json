@@ -1,0 +1,45 @@
+{
+  "example": "import { HoldingCardAction } from \"@godxjp/ui/layout\";\nimport { Pencil } from \"lucide-react\";\n\n<HoldingCardAction icon={<Pencil />} asChild><a href=\"/collection/1/edit/\">Edit</a></HoldingCardAction>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "HoldingCardAction",
+  "props": [
+    {
+      "description": "Leading glyph.",
+      "name": "icon",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Label.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Render the child link as the action.",
+      "name": "asChild",
+      "type": "boolean"
+    },
+    {
+      "description": "Activation handler.",
+      "name": "onClick",
+      "type": "() => void"
+    },
+    {
+      "description": "Native disabled.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Accessible name when the label is not enough.",
+      "name": "aria-label",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "HoldingCard — its card."
+  ],
+  "tagline": "A quiet glyph + label action of a HoldingCard (gh#1439): edit, remove. A `<button>` by default; `asChild` turns a router link into it.",
+  "usage": [
+    "DO name a destructive action with the item (\"Remove Pikachu\") through aria-label."
+  ]
+}
