@@ -37,6 +37,7 @@ const RAMP = Array.from({ length: HEAT_STEPS }, (_, index) => index + 1);
  *   its own box with the row header pinned, so the page never scrolls sideways.
  */
 export function HeatmapChart({
+  onDatumSelect,
   rows,
   columns,
   data,
@@ -127,6 +128,17 @@ export function HeatmapChart({
       cell.focus();
       reveal(cell);
     }
+  };
+
+  const selectCell = (r: number, c: number) => {
+    const index = data.findIndex(
+      (datum) =>
+        String(datum.row) === String(rows[r]?.key) &&
+        String(datum.column) === String(columns[c]?.key) &&
+        typeof datum.value === "number" &&
+        Number.isFinite(datum.value),
+    );
+    if (index >= 0) onDatumSelect?.(data[index]!, { seriesKey: String(columns[c]!.key), index });
   };
 
   const onGridKeyDown = (event: React.KeyboardEvent<HTMLTableElement>) => {
@@ -246,6 +258,27 @@ export function HeatmapChart({
                           }}
                           tabIndex={r === activeRow && c === activeColumn ? 0 : -1}
                           className="ui-chart-heatmap-cell ui-focus-ring"
+                          data-interactive={onDatumSelect && !empty ? "" : undefined}
+                          aria-label={
+                            onDatumSelect
+                              ? t("chart.heatmapCell", {
+                                  row: row.label,
+                                  column: column.label,
+                                  value: text.value,
+                                })
+                              : undefined
+                          }
+                          onKeyDown={
+                            onDatumSelect
+                              ? (event) => {
+                                  if (event.key !== "Enter" && event.key !== " ") return;
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  if (!event.repeat && !empty) selectCell(r, c);
+                                }
+                              : undefined
+                          }
+                          onClick={onDatumSelect && !empty ? () => selectCell(r, c) : undefined}
                           data-step={empty ? undefined : model.steps.get(key)}
                           data-empty={empty ? "" : undefined}
                           data-emphasized={model.ranks.has(key) ? "" : undefined}

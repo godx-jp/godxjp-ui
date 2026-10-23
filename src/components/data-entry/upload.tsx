@@ -182,6 +182,7 @@ export function Upload({
   const fieldName = React.useContext(FieldNameContext);
   const triggerId = React.useId();
   const selectionId = React.useId();
+  const dropzoneHintId = React.useId();
   const triggerRef = React.useRef<HTMLElement | null>(null);
   const ownAriaLabel = fieldA11y["aria-label"];
   const callerAriaLabel =
@@ -632,6 +633,24 @@ export function Upload({
   };
 
   if (variant === "dropzone") {
+    /*
+     * gh#1412 — WCAG 2.5.3 Label in Name: the drop area is named by the text it SHOWS. It used to
+     * carry `aria-label` 「ファイルをアップロード」, a string that appears nowhere on screen, so a
+     * voice-control user saying the visible hint could not reach it. The hint paragraph is the
+     * name now (after the FormField label, unless the hint already says it — gh#1288); a caller's
+     * own `aria-label` still wins.
+     */
+    const hintText = t("dataEntry.upload.dropzoneHint");
+    const named = triggerA11y(hintText);
+    const dropzoneA11y =
+      callerAriaLabel !== undefined
+        ? { ...named, "aria-label": callerAriaLabel }
+        : {
+            ...named,
+            "aria-labelledby": named["aria-labelledby"]
+              ? `${fieldLabelledBy} ${dropzoneHintId}`
+              : dropzoneHintId,
+          };
     return (
       <div {...pasteProps} className={cn("ui-stack-sm", className)}>
         {hiddenInput}
@@ -646,8 +665,7 @@ export function Upload({
           role={openFileDialogOnClick ? "button" : "group"}
           tabIndex={disabled ? -1 : 0}
           aria-disabled={disabled}
-          {...triggerA11y(t("dataEntry.upload.dropzoneLabel"))}
-          aria-label={callerAriaLabel ?? t("dataEntry.upload.dropzoneLabel")}
+          {...dropzoneA11y}
           onClick={openPicker}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
@@ -676,7 +694,9 @@ export function Upload({
           className="ui-upload-dropzone"
         >
           <UploadIcon className="ui-upload-dropzone-icon" aria-hidden="true" />
-          <p className="ui-upload-dropzone-hint">{t("dataEntry.upload.dropzoneHint")}</p>
+          <p id={dropzoneHintId} className="ui-upload-dropzone-hint">
+            {t("dataEntry.upload.dropzoneHint")}
+          </p>
           <p className="ui-upload-dropzone-meta">{t("dataEntry.upload.dropzoneMeta")}</p>
         </div>
         {list}

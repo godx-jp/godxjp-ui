@@ -1851,6 +1851,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "series",
           "origin": "owned",
           "required": true,
@@ -2435,6 +2443,14 @@
           "origin": "owned",
           "required": false,
           "type": "((datum: ChartDatum, index: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
@@ -4757,6 +4773,67 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
+    "DashboardGrid": {
+      "group": "lab",
+      "props": [
+        {
+          "name": "columns",
+          "origin": "owned",
+          "required": false,
+          "type": "number | ({ base: number; } & Partial<Record<BreakpointProp, number>>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "defaultLayout",
+          "origin": "owned",
+          "required": false,
+          "type": "DashboardGridItemProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "editable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "{ id: string; label: string; content: React.ReactNode; }[]",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "layout",
+          "origin": "owned",
+          "required": false,
+          "type": "DashboardGridItemProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "onLayoutChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((layout: DashboardGridItemProp[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
+        },
+        {
+          "name": "rowHeight",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/dashboard-grid.prop.ts"]
         }
       ]
     },
@@ -8078,6 +8155,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<HeatmapDatum> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "ref",
           "origin": "owned",
           "required": false,
@@ -9046,6 +9131,14 @@
           "origin": "owned",
           "required": false,
           "type": "((datum: ChartDatum, index: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
@@ -11459,6 +11552,14 @@
           "origin": "owned",
           "required": false,
           "type": "Intl.NumberFormatOptions | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "onDatumSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartDatumSelect<ChartDatum> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },

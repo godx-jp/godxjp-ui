@@ -5,6 +5,11 @@
   "name": "LineChart",
   "props": [
     {
+      "description": "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      "name": "onDatumSelect",
+      "type": "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void"
+    },
+    {
       "description": "Row data: one category per row with a numeric value per series.",
       "name": "data",
       "required": true,
@@ -103,6 +108,7 @@
   "rules": [],
   "tagline": "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot.",
   "usage": [
+    "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
     "DO import from the tree-shaken charts entry: `import { LineChart } from \"@godxjp/ui/charts\";`. Importing any other subpath never pulls in recharts.",
     "DO import only the chart a screen uses — `import { LineChart } from \"@godxjp/ui/charts/line-chart\";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.",
     "DO install the `recharts` optional peer dependency in the consuming app — charts are the only part of @godxjp/ui that needs it, so apps without charts never pay for it.",

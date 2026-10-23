@@ -1,6 +1,8 @@
 import * as React from "react";
 
 import {
+  Dot,
+  Rectangle,
   Area,
   AreaChart as RAreaChart,
   Bar,
@@ -16,13 +18,18 @@ import {
   assertRechartsPeer,
 } from "./recharts-peer";
 
-import type { ChartDatum, ChartSeriesProp } from "../../props/components/charts.prop";
+import type {
+  ChartDatum,
+  ChartSeriesProp,
+  ChartDatumSelect,
+} from "../../props/components/charts.prop";
 import { cn } from "../../lib/utils";
 import { EmptyState } from "../data-display/empty-state";
 import { useTranslation } from "../../i18n/use-translation";
 import { ChartFrame, chartColor, chartHeight, useChartNumberFormat } from "./chart-frame";
 import { buildCartesianSummary } from "./chart-summary";
 import { useCategoryAxisMetrics } from "./chart-category-axis";
+import { useChartDatumSelection } from "./chart-datum-selection";
 import { listFormat } from "../../lib/intl-cache";
 
 /**
@@ -47,6 +54,7 @@ type CartesianChartProps = {
   valueTicks?: number[];
   numberFormat?: Intl.NumberFormatOptions;
   emptyMessage?: string;
+  onDatumSelect?: ChartDatumSelect;
   onCategoryClick?: (datum: ChartDatum, index: number) => void;
   className?: string;
   id?: string;
@@ -77,6 +85,7 @@ export function CartesianChart({
   numberFormat,
   emptyMessage,
   onCategoryClick,
+  onDatumSelect,
   className,
   id,
   curved = false,
@@ -88,6 +97,86 @@ export function CartesianChart({
   const { t, locale } = useTranslation();
   const fmt = useChartNumberFormat(numberFormat);
   const list = React.useMemo(() => listFormat(locale, { style: "narrow", type: "unit" }), [locale]);
+
+  const points = series.flatMap((s, seriesIndex) =>
+    data.flatMap((datum, index) =>
+      typeof datum[s.dataKey] === "number" && Number.isFinite(datum[s.dataKey])
+        ? [{ index, series: seriesIndex }]
+        : [],
+    ),
+  );
+  const markProps = useChartDatumSelection(points);
+  const mark = (seriesIndex: number, shape: "bar" | "dot", raw: unknown) => {
+    const s = series[seriesIndex]!;
+    const props = raw as {
+      index: number;
+      x?: number;
+      y?: number;
+      width?: number;
+      height?: number;
+      cx?: number;
+      cy?: number;
+      fill?: string;
+    };
+    const { x = 0, y = 0, width = 0, height = 0 } = props;
+    const index = props.index;
+    const datum = data[index];
+    if (!datum || typeof datum[s.dataKey] !== "number" || !Number.isFinite(datum[s.dataKey]))
+      return <g />;
+    const action = markProps(
+      index,
+      seriesIndex,
+      t("chart.datumLabel", {
+        label: String(datum[categoryKey] ?? ""),
+        series: s.label ?? s.dataKey,
+        value: fmt.format(Number(datum[s.dataKey])),
+      }),
+      () => onDatumSelect?.(datum, { seriesKey: s.dataKey, index }),
+    );
+    return shape === "bar" ? (
+      <g {...action}>
+        <rect
+          x={Math.min(x, x + width)}
+          y={Math.min(y, y + height)}
+          width={Math.abs(width)}
+          height={Math.abs(height)}
+          className="ui-chart-bar-hit"
+          fill="transparent"
+          style={
+            {
+              "--chart-mark-width": `${Math.abs(width)}px`,
+              "--chart-mark-height": `${Math.abs(height)}px`,
+            } as React.CSSProperties
+          }
+        />
+        <Rectangle
+          x={props.x}
+          y={props.y}
+          width={props.width}
+          height={props.height}
+          fill={props.fill}
+          radius={2}
+        />
+      </g>
+    ) : (
+      <g {...action}>
+        <circle cx={props.cx} cy={props.cy} className="ui-chart-point-hit" fill="transparent" />
+        <Dot cx={props.cx} cy={props.cy} fill={chartColor(seriesIndex, s.color)} />
+      </g>
+    );
+  };
+
+  // Stable render props avoid tearing down recharts' series registration on a filter update.
+  const markRef = React.useRef(mark);
+  markRef.current = mark;
+  const shapes = React.useMemo(
+    () =>
+      Array.from({ length: series.length }, (_, i) => ({
+        bar: (raw: unknown) => markRef.current(i, "bar", raw),
+        dot: (raw: unknown) => markRef.current(i, "dot", raw),
+      })),
+    [series.length],
+  );
 
   const hasData = data.length > 0 && series.length > 0;
   const summary = buildCartesianSummary(data, series, categoryKey, fmt, list, (c) =>
@@ -228,7 +317,11 @@ export function CartesianChart({
   const chart = () => {
     if (kind === "line") {
       return (
-        <RLineChart data={data} onClick={onChartClick}>
+        <RLineChart
+          accessibilityLayer={onDatumSelect ? false : undefined}
+          data={data}
+          onClick={onChartClick}
+        >
           {axes(true)}
           {series.map((s, i) => (
             <Line
@@ -237,7 +330,9 @@ export function CartesianChart({
               dataKey={s.dataKey}
               name={s.label ?? s.dataKey}
               stroke={chartColor(i, s.color)}
-              dot={showDots}
+              dot={onDatumSelect ? shapes[i]!.dot : showDots}
+              activeDot={onDatumSelect ? false : undefined}
+              isAnimationActive={onDatumSelect ? false : undefined}
             />
           ))}
         </RLineChart>
@@ -245,7 +340,11 @@ export function CartesianChart({
     }
     if (kind === "area") {
       return (
-        <RAreaChart data={data} onClick={onChartClick}>
+        <RAreaChart
+          accessibilityLayer={onDatumSelect ? false : undefined}
+          data={data}
+          onClick={onChartClick}
+        >
           {axes(true)}
           {series.map((s, i) => (
             <Area
@@ -256,14 +355,20 @@ export function CartesianChart({
               stackId={stacked ? "stack" : undefined}
               stroke={chartColor(i, s.color)}
               fill={s.fillColor ?? chartColor(i, s.color)}
-              dot={showDots}
+              dot={onDatumSelect ? shapes[i]!.dot : showDots}
+              activeDot={onDatumSelect ? false : undefined}
+              isAnimationActive={onDatumSelect ? false : undefined}
             />
           ))}
         </RAreaChart>
       );
     }
     return (
-      <RBarChart data={data} layout={horizontal ? "vertical" : "horizontal"}>
+      <RBarChart
+        accessibilityLayer={onDatumSelect ? false : undefined}
+        data={data}
+        layout={horizontal ? "vertical" : "horizontal"}
+      >
         {axes(!horizontal)}
         {series.map((s, i) => (
           <Bar
@@ -273,6 +378,8 @@ export function CartesianChart({
             stackId={stacked ? "stack" : undefined}
             fill={chartColor(i, s.color)}
             radius={2}
+            shape={onDatumSelect ? shapes[i]!.bar : undefined}
+            isAnimationActive={onDatumSelect ? false : undefined}
             onClick={onBarClick}
             // A full-height hit column behind the mark, so a 1px bar is as easy to hit as a tall
             // one. recharts drops zero-height entries before drawing backgrounds, so each series
@@ -287,6 +394,7 @@ export function CartesianChart({
 
   return (
     <ChartFrame
+      interactive={!!onDatumSelect}
       label={label}
       showCaption={showCaption}
       description={description}

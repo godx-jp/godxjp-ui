@@ -908,6 +908,18 @@
     table-layout: fixed;
   }
 
+  /* gh#1409 — under the fixed layout a column's width no longer comes from its content, so the
+   * grid's `nowrap` default stops protecting anything: one `ellipsis` column (or a `width`, or
+   * `scroll.x`) switched the whole table, and every OTHER body cell then painted its text across
+   * the next column with no title — measured in Chromium, a 379px Vietnamese label in a 175px
+   * cell. A cell the consumer did not mark `ellipsis` wraps instead, as antd's cells do under the
+   * same layout: nothing is cut, so nothing needs a title. The `ellipsis` cell keeps its one line. */
+  .ui-data-table-surface[data-table-layout="fixed"]
+    [data-slot="table-cell"]:not(.ui-data-table-ellipsis) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
   /* ── antd `scroll` ────────────────────────────────────────────────────
    * Both lengths are CONSUMER data, published as custom properties by the component; the geometry
    * that reads them lives here. */

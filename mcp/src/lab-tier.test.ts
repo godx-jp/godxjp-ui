@@ -11,11 +11,12 @@ const LAB = COMPONENTS.filter((c) => c.tier === "lab");
 const CORE = COMPONENTS.filter((c) => c.tier !== "lab");
 
 describe("the lab tier (#1223)", () => {
-  it("is exactly the fifteen B1 components, each importing from @godxjp/ui/lab", () => {
+  it("is exactly the B1 components plus DashboardGrid (#1397, owner-approved C7 exception), each importing from @godxjp/ui/lab", () => {
     expect(LAB.map((c) => c.name).sort()).toEqual(
       [
         "Anchor",
         "Carousel",
+        "DashboardGrid",
         "DraggablePanel",
         "EmojiPicker",
         "FloatButton",

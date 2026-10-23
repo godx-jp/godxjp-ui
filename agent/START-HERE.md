@@ -3,7 +3,7 @@
 You are about to write code against a design system you did not author. This file is the whole
 contract. Read it before you write JSX.
 
-**This catalog describes `@godxjp/ui` 33.14.0.** If the project you are editing has a different
+**This catalog describes `@godxjp/ui` 33.16.0.** If the project you are editing has a different
 version in its `package.json`, read the pinned catalog for THAT version instead
 (`…/v<their-version>/agent/…`). A catalog newer than the installed package describes props that do
 not exist yet; older, and it hides props that do. Neither failure announces itself.
@@ -52,19 +52,19 @@ screen anatomy, the visual target the rules below do not give you. Then fetch in
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
    filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
    copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".
-1. `components-index.json` — 53 KB, all 170 components as name + group +
+1. `components-index.json` — 54 KB, all 171 components as name + group +
    tagline. Read this when you already know the SHAPE you need. Each entry may carry `absorbed`:
    names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
    `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field
    first; it exists because that is the mistake.
-2. `components/<Name>.json` — one file per component (1 KB–37 KB, median 6 KB), carrying its props,
+2. `components/<Name>.json` — one file per component (1 KB–38 KB, median 6 KB), carrying its props,
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 44 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 2257 design tokens, each tagged with its `tier`. **If you were handed a
+4. `tokens.json` — 2263 design tokens, each tagged with its `tier`. **If you were handed a
    brand, read the 220 `foundation` entries first** — `--primary`, `--background`,
    `--radius`, `--font-size-base` are the handful everything else derives from. The
-   1924 `component` entries are per-part knobs; reach for one only when a role is
+   1930 `component` entries are per-part knobs; reach for one only when a role is
    right everywhere except one component.
 5. `anti-ai-tells.json` — 35 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
@@ -150,7 +150,7 @@ has stopped following the brand.
 |---|---|---|---|
 | `foundation` | 220 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** The default `--primary` is a neutral placeholder: set it (`:root { --primary: <H> <S>% <L>%; }`, HSL components, no `hsl()` wrapper) or import a theme preset such as `@godxjp/ui/themes/godx.css` |
 | `semantic` | 113 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
-| `component` | 1924 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
+| `component` | 1930 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
 
 A token whose `value` is `initial` is not empty and not broken: `initial` is the guaranteed-invalid
 value, so the real default is computed where the element paints it. Set it and yours wins.

@@ -1,4 +1,17 @@
 {
+  "chartDrillDocs": {
+    "title": "Tổng quan cửa hàng",
+    "chart": "Doanh thu theo cửa hàng",
+    "hint": "Chọn cột để lọc đơn hàng. Dùng phím mũi tên để di chuyển và Enter hoặc Space để chọn.",
+    "store": "Cửa hàng",
+    "sales": "Doanh thu",
+    "east": "Cửa hàng Đông",
+    "central": "Cửa hàng Trung tâm",
+    "west": "Cửa hàng Tây",
+    "filter": "Đơn hàng: {store}",
+    "all": "Tất cả cửa hàng",
+    "reset": "Xóa bộ lọc"
+  },
   "personaExamples": {
     "role": "Vai trò",
     "admin": "Quản trị viên",
@@ -2412,5 +2425,23 @@
       "more": "Thêm",
       "scope": "Phạm vi xem"
     }
+  },
+  "dashboardGridDocs": {
+    "title": "Tổng quan kinh doanh",
+    "period": "Tháng 10 năm 2026 · so với tháng 9",
+    "revenue": "Doanh thu",
+    "orders": "Đơn hàng",
+    "revenueDelta": "+8,2% so với tháng 9",
+    "ordersDelta": "+42 so với tháng 9",
+    "edit": "Sửa bố cục",
+    "done": "Kết thúc chỉnh sửa",
+    "hint": "Enter hoặc Space để nắm. Mũi tên để di chuyển, Shift + mũi tên để đổi kích thước, Escape để hủy. Thả để lưu một lần.",
+    "trend": "Doanh thu theo tuần",
+    "channels": "Đơn hàng theo kênh",
+    "channel": "Kênh",
+    "direct": "Trực tiếp",
+    "organic": "Tìm kiếm tự nhiên",
+    "referral": "Giới thiệu",
+    "email": "Email"
   }
 }

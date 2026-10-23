@@ -86,6 +86,7 @@ const OWNERS = {
     "LegalDocumentShell",
   ],
   "control.css": [
+    "DashboardGrid",
     "Button",
     "Input",
     "NumberInput",

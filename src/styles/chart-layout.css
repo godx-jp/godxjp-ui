@@ -388,3 +388,34 @@
     calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
   );
 }
+
+/* Selection is opt-in; the shared focus rule supplies the brand 2px + 2px ring. */
+.ui-chart-datum,
+.ui-chart-heatmap-cell[data-interactive] {
+  cursor: pointer;
+}
+
+.ui-chart-datum:hover,
+.ui-chart-heatmap-cell[data-interactive]:hover {
+  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
+  outline-offset: var(--focus-ring-offset);
+}
+
+.ui-chart-bar-hit {
+  width: max(var(--chart-mark-width, 0px), var(--touch-target-min));
+  height: max(var(--chart-mark-height, 0px), var(--touch-target-min));
+}
+
+.ui-chart-point-hit {
+  r: calc(var(--touch-target-min) / 2);
+}
+
+/* Keep the outside focus ring visible at first/last points on the plot edge. */
+.ui-chart-canvas:has(.ui-chart-datum) .recharts-surface {
+  overflow: visible;
+}
+
+/* SVG text anchors are physical plot coordinates; bidi must not reverse numeric tick anchoring. */
+.ui-chart-canvas:has(.ui-chart-datum) .recharts-text {
+  direction: ltr;
+}

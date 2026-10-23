@@ -17,7 +17,8 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Pagination } from "@godxjp/ui/navigation";
 
 /**
- * Pagination — fully controlled offset/page bar. Sits BELOW a table card.
+ * Pagination — fully controlled offset/page bar. The container owns the inline inset:
+ * use CardContent/CardFooter, PageContainer footer, or the page grid; Pagination adds none.
  * Pass total as raw item count (not page count). onValueChange receives (page, pageSize).
  * Composed only from real @godxjp/ui components.
  */

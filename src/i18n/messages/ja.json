@@ -73,7 +73,6 @@
       "presetEmpty": "空"
     },
     "upload": {
-      "dropzoneLabel": "ファイルをアップロード",
       "dropzoneHint": "ここにドラッグ＆ドロップ、またはクリックして選択",
       "dropzoneMeta": "選択したファイルはここに表示されます。",
       "buttonLabel": "ファイルを選択",
@@ -772,6 +771,7 @@
     }
   },
   "chart": {
+    "datumLabel": "{label}, {series}: {value}",
     "empty": "データがありません",
     "summaryCartesian": "{series}系列・{points}データ点のグラフ",
     "summaryPie": "{slices}区分の円グラフ",
@@ -842,5 +842,14 @@
         "error": "失敗"
       }
     }
+  },
+  "dashboardGrid": {
+    "move": "{label}を移動",
+    "resize": "{label}のサイズ変更",
+    "hint": "Enter またはスペースでつかむ・確定。矢印キーで移動、Shift と矢印でサイズ変更。Escape で取り消します。",
+    "grabbed": "{label}をつかみました。列{x}、行{y}、幅{w}、高さ{h}。",
+    "moved": "{label}。列{x}、行{y}、幅{w}、高さ{h}。",
+    "dropped": "{label}を保存しました。列{x}、行{y}、幅{w}、高さ{h}。",
+    "cancelled": "{label}の変更を取り消しました。"
   }
 }

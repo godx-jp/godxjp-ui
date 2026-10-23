@@ -200,7 +200,8 @@ describe("Upload at 390px in vi (gh#1271 C)", { timeout: 60_000 }, () => {
     await page.close();
   });
 
-  it("the reported 「Tải file lên」 is the dropzone's NAME; its hint and meta each fit one line", async () => {
+  // gh#1412: the name is now the visible hint (WCAG 2.5.3), no longer an off-screen 「Tải file lên」.
+  it("the dropzone is named by its visible hint; its hint and meta each fit one line", async () => {
     const page = await open("upload-dropzone", 390, "vi");
     const g = await page.evaluate(() => {
       const zone = document.querySelector<HTMLElement>(".ui-upload-dropzone")!;
@@ -208,6 +209,7 @@ describe("Upload at 390px in vi (gh#1271 C)", { timeout: 60_000 }, () => {
         Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight));
       return {
         name: zone.getAttribute("aria-label"),
+        labelledBy: document.getElementById(zone.getAttribute("aria-labelledby")!)?.textContent,
         role: zone.getAttribute("role"),
         hint: lines(zone.querySelector<HTMLElement>(".ui-upload-dropzone-hint")!),
         meta: lines(zone.querySelector<HTMLElement>(".ui-upload-dropzone-meta")!),
@@ -215,7 +217,8 @@ describe("Upload at 390px in vi (gh#1271 C)", { timeout: 60_000 }, () => {
         clientWidth: document.documentElement.clientWidth,
       };
     });
-    expect(g.name).toBe("Tải file lên");
+    expect(g.name).toBeNull();
+    expect(g.labelledBy).toBe("Kéo thả file vào đây, hoặc bấm để chọn");
     expect(g.role).toBe("button");
     expect(g.hint).toBe(1);
     expect(g.meta).toBe(1);

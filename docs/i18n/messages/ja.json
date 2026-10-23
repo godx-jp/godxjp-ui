@@ -1,4 +1,17 @@
 {
+  "chartDrillDocs": {
+    "title": "店舗ダッシュボード",
+    "chart": "店舗別売上",
+    "hint": "棒を選ぶと注文を絞り込みます。矢印キーで移動し、Enter または Space で選択します。",
+    "store": "店舗",
+    "sales": "売上",
+    "east": "東店",
+    "central": "中央店",
+    "west": "西店",
+    "filter": "注文: {store}",
+    "all": "全店舗",
+    "reset": "絞り込みを解除"
+  },
   "personaExamples": {
     "role": "権限",
     "admin": "管理者",
@@ -2412,5 +2425,23 @@
       "more": "その他",
       "scope": "表示範囲"
     }
+  },
+  "dashboardGridDocs": {
+    "title": "事業概況",
+    "period": "2026年10月 · 9月との比較",
+    "revenue": "売上高",
+    "orders": "受注数",
+    "revenueDelta": "9月比 +8.2%",
+    "ordersDelta": "9月比 +42件",
+    "edit": "配置を編集",
+    "done": "編集を終了",
+    "hint": "Enter またはスペースでつかみます。矢印で移動、Shift + 矢印でサイズ変更、Escape で取消。確定時に一度保存します。",
+    "trend": "週別売上",
+    "channels": "チャネル別注文",
+    "channel": "チャネル",
+    "direct": "直接流入",
+    "organic": "自然検索",
+    "referral": "紹介",
+    "email": "メール"
   }
 }

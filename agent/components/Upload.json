@@ -6,7 +6,7 @@
   "props": [
     {
       "defaultValue": "\"dropzone\"",
-      "description": "Controls the visual rendering mode. dropzone = large dashed drop area + file list; button = compact outline button + file list; picture-card = grid of 96×96 image thumbnails; picture = single image preview with change/remove actions; avatar = circular single-image picker; avatar-crop = avatar with an in-dialog crop step before the item is staged.",
+      "description": "Controls the visual rendering mode. dropzone = large dashed drop area + file list, named by its VISIBLE hint (「ここにドラッグ＆ドロップ、またはクリックして選択」 — WCAG 2.5.3 label-in-name, gh#1412; a FormField label leads it, a caller aria-label replaces it); button = compact outline button + file list; picture-card = grid of 96×96 image thumbnails; picture = single image preview with change/remove actions; avatar = circular single-image picker; avatar-crop = avatar with an in-dialog crop step before the item is staged.",
       "name": "variant",
       "type": "\"dropzone\" | \"button\" | \"picture-card\" | \"picture\" | \"avatar\" | \"avatar-crop\""
     },

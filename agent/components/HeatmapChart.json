@@ -5,6 +5,11 @@
   "name": "HeatmapChart",
   "props": [
     {
+      "description": "Opt-in pointer and Enter/Space selection. seriesKey is String(column key); index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
+      "name": "onDatumSelect",
+      "type": "(datum: HeatmapDatum, context: { seriesKey: string; index: number }) => void"
+    },
+    {
       "description": "Row categories, top to bottom (the y axis — weekdays). `label` is already translated.",
       "name": "rows",
       "required": true,
@@ -81,6 +86,7 @@
   "storyPath": "charts/heatmap-chart.tsx",
   "tagline": "DEPENDENCY-FREE rows × columns heatmap — weekday × hour revenue / order counts, cell intensity from the sequential CVD-safe --chart-heat-1..5 ramp. Empty ≠ zero (dashed outline + 'no data' text), optional top-N ring, per-cell tooltip, APG grid keyboard, the table itself is the text alternative. Needs NO recharts. Matrix / punch card / activity heatmap / busy-hours chart.",
   "usage": [
+    "DO use onDatumSelect for accessible drill-through; keep filter state in the screen. Marks have localized names, roving focus and the brand ring. Line/area display points while interactive. RTL mirrors horizontal arrow navigation.",
     "DO import from the isolated entry: `import { HeatmapChart } from \"@godxjp/ui/charts/heatmap-chart\";` — it never links the optional `recharts` peer.",
     "DO derive axis labels with Intl in the active locale — weekdays via `Intl.DateTimeFormat(locale, { weekday: 'short' })`, hours via `Intl.NumberFormat(locale)` — and pass money through `numberFormat`, never a hand-built '¥' string.",
     "DO leave a slot OUT of `data` (or pass `value: null`) when there is no measurement — a closed hour, a day before the store opened. Pass `0` only for a real zero. The two render differently (dashed outline vs filled) and read differently ('No data' vs '¥0').",
