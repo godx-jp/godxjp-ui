@@ -4158,21 +4158,24 @@
     padding-block: var(--button-space-block);
   }
 
-  /* An icon-only child needs less inline room than a label, or the glyph floats in a wide box. */
-  .ui-button--default-size:has(> svg),
-  .ui-button--md:has(> svg) {
+  /* An icon-only child needs less inline room than a label, or the glyph floats in a wide box.
+   * `:not([data-label])` (gh#1436): a LABELLED button with a leading / trailing glyph ("Start →")
+   * keeps the label padding — `:has(> svg)` alone cannot tell the two apart (text nodes are not
+   * selectable), so Button marks the labelled ones. */
+  .ui-button--default-size:has(> svg):not([data-label]),
+  .ui-button--md:has(> svg):not([data-label]) {
     padding-inline: var(--button-icon-space-inline-md);
   }
 
-  .ui-button--sm:has(> svg) {
+  .ui-button--sm:has(> svg):not([data-label]) {
     padding-inline: var(--button-icon-space-inline-sm);
   }
 
-  .ui-button--lg:has(> svg) {
+  .ui-button--lg:has(> svg):not([data-label]) {
     padding-inline: var(--button-icon-space-inline-lg);
   }
 
-  .ui-button--xs:has(> svg) {
+  .ui-button--xs:has(> svg):not([data-label]) {
     padding-inline: var(--button-icon-space-inline-xs);
   }
 

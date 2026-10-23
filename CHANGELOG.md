@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ResponsiveGrid preset="catalog" | "trio" | "lead"` — tracks and gap from `--responsive-grid-{preset}-track-size` / `-gap`, so a theme sets exact column counts at its own breakpoints (#1435).
 - Button knobs `--button-font-weight`, `--button-font-size` (default size) and `--button-padding-inline` (default size), so a brand with semibold 14px buttons sets them without moving every medium-weight label (#1435).
 - ui-audit: a lucide glyph inside `EditorialMastheadAction` is sized by the component, not reported (#1435).
+- Fixed: a labelled `Button` with a leading / trailing glyph ("Start →") took the icon-only inline padding (`:has(> svg)` matched it too); Button now marks labelled buttons `data-label` and the icon padding skips them (#1436).
 - `EditorialSearch scope` — a compact select at the start of the inset search box that scopes the search (a site searched per game); `onSearch(query, scope)` (#1435).
 
 ## [33.17.0] - 2026-10-24
