@@ -989,6 +989,95 @@
     ]
   },
   {
+    "example": "import { EditorialBreadcrumb, EditorialSection } from \"@godxjp/ui/layout\";\n\n<EditorialSection>\n  <EditorialBreadcrumb items={[{ label: \"Home\", to: \"/\" }, { label: \"Journal\", to: \"/journal/\" }, { label: \"Price guide\" }]} />\n</EditorialSection>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialBreadcrumb",
+    "props": [
+      {
+        "description": "Trail, root first; the last item is the current page.",
+        "name": "items",
+        "required": true,
+        "type": "BreadcrumbItemProp[]"
+      },
+      {
+        "description": "Router link for ancestors.",
+        "name": "linkComponent",
+        "type": "ElementType"
+      },
+      {
+        "description": "Name of the nav landmark.",
+        "name": "ariaLabel",
+        "type": "string"
+      }
+    ],
+    "related": [
+      "EditorialPageHeader, Breadcrumb."
+    ],
+    "tagline": "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page.",
+    "usage": [
+      "DO put it first in an EditorialSection of a `flow=\"sections\"` page.",
+      "DON'T nest it in a PageContainer — that page shell has its own trail."
+    ]
+  },
+  {
+    "example": "import { EditorialPageHeader, EditorialSection, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialSection>\n  <EditorialPageHeader\n    breadcrumb={[{ label: \"Home\", to: \"/\" }, { label: \"Journal\" }]}\n    eyebrow={<Eyebrow>THE TCG-M JOURNAL</Eyebrow>}\n    title=\"A little knowledge. More enjoyment.\"\n    description=\"A few helpful perspectives for finding, comparing and collecting.\"\n  />\n</EditorialSection>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialPageHeader",
+    "props": [
+      {
+        "description": "The page's h1.",
+        "name": "title",
+        "required": true,
+        "type": "ReactNode"
+      },
+      {
+        "description": "Trail above the header.",
+        "name": "breadcrumb",
+        "type": "BreadcrumbItemProp[]"
+      },
+      {
+        "description": "Router link for the trail.",
+        "name": "linkComponent",
+        "type": "ElementType"
+      },
+      {
+        "description": "Name of the trail's nav.",
+        "name": "breadcrumbLabel",
+        "type": "string"
+      },
+      {
+        "description": "Kicker above the title (an Eyebrow).",
+        "name": "eyebrow",
+        "type": "ReactNode"
+      },
+      {
+        "description": "One lead line under it.",
+        "name": "description",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Action at the end of the title row.",
+        "name": "actions",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Id on the h1.",
+        "name": "titleId",
+        "type": "string"
+      }
+    ],
+    "related": [
+      "EditorialBreadcrumb, Eyebrow, EditorialSection."
+    ],
+    "tagline": "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone).",
+    "usage": [
+      "DO put it in an EditorialSection on a `flow=\"sections\"` page, so it shares the landing column.",
+      "DON'T also give the page a PageContainer title — the header owns the page's one h1."
+    ]
+  },
+  {
     "example": "import { EditorialSectionHead, EditorialTextLink, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialSectionHead\n  eyebrow={<Eyebrow>THE TCG-M JOURNAL</Eyebrow>}\n  title=\"A little knowledge. More enjoyment.\"\n  titleId=\"journal\"\n  action={<EditorialTextLink asChild><a href=\"/journal/\">View all</a></EditorialTextLink>}\n/>",
     "group": "layout",
     "importPath": "@godxjp/ui/layout",
@@ -1548,6 +1637,104 @@
     "usage": [
       "DO use it above a collection to filter it or switch its view; the collection is yours.",
       "DO pass a lucide icon per item for the icon variant — the label stays the button's name."
+    ]
+  },
+  {
+    "example": "import { EditorialFilterField, EditorialFilterPanel } from \"@godxjp/ui/layout\";\nimport { Select } from \"@godxjp/ui/data-entry\";\n\n<EditorialFilterPanel aria-label=\"Filters\" action={<Button variant=\"outline\" onClick={reset}>Reset</Button>}>\n  <EditorialFilterField label=\"Expansion\" htmlFor=\"f-set\"><Select id=\"f-set\" value={set} onValueChange={setSet} options={sets} /></EditorialFilterField>\n</EditorialFilterPanel>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialFilterPanel",
+    "props": [
+      {
+        "description": "Group name.",
+        "name": "aria-label",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "description": "The fields.",
+        "name": "children",
+        "required": true,
+        "type": "ReactNode"
+      },
+      {
+        "description": "Trailing control (reset).",
+        "name": "action",
+        "type": "ReactNode"
+      }
+    ],
+    "related": [
+      "Toolbar — application filter strip.",
+      "EditorialListingToolbar — the row under it."
+    ],
+    "tagline": "A catalog's filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role=\"group\"`. The selects inside read the panel's control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`.",
+    "usage": [
+      "DO put one control per EditorialFilterField and pass the control's id as htmlFor.",
+      "DO use Toolbar for an application list's search + filters strip; this panel is the editorial catalog's."
+    ]
+  },
+  {
+    "example": "import { EditorialFilterField } from \"@godxjp/ui/layout\";\n\n<EditorialFilterField label=\"Rarity\" htmlFor=\"f-rarity\"><Select id=\"f-rarity\" value={r} onValueChange={setR} options={rarities} /></EditorialFilterField>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialFilterField",
+    "props": [
+      {
+        "description": "Visible label.",
+        "name": "label",
+        "required": true,
+        "type": "ReactNode"
+      },
+      {
+        "description": "The control's id.",
+        "name": "htmlFor",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "description": "The control.",
+        "name": "children",
+        "required": true,
+        "type": "ReactNode"
+      }
+    ],
+    "related": [
+      "FormField — a form's field with help and errors."
+    ],
+    "tagline": "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control.",
+    "usage": [
+      "DO pass the same id to the control (Select id) and to htmlFor."
+    ]
+  },
+  {
+    "example": "import { EditorialListingToolbar } from \"@godxjp/ui/layout\";\n\n<EditorialListingToolbar count=\"396 results\" note=\"Prices are reference values.\" actions={<Select aria-label=\"Sort\" value={sort} onValueChange={setSort} options={sorts} />} />",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialListingToolbar",
+    "props": [
+      {
+        "description": "Result count, announced politely.",
+        "name": "count",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Short note under the count.",
+        "name": "note",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Trailing sort / view controls.",
+        "name": "actions",
+        "type": "ReactNode"
+      }
+    ],
+    "related": [
+      "Toolbar — application list toolbar.",
+      "EditorialFilterPanel — the filters above."
+    ],
+    "tagline": "The row between a catalog's filters and its results (gh#1438): the result count (a polite live region) and a short note at the start, the sort / view controls at the end. Geometry: `--editorial-listing-toolbar-*`.",
+    "usage": [
+      "DO keep the count text short; a phone theme may hide it (--editorial-listing-toolbar-count-display)."
     ]
   },
   {

@@ -67,6 +67,16 @@
   },
   {
     "group": "layout",
+    "name": "EditorialBreadcrumb",
+    "tagline": "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialPageHeader",
+    "tagline": "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone)."
+  },
+  {
+    "group": "layout",
     "name": "EditorialSectionHead",
     "tagline": "A section's head (gh#1435): kicker, an editorial h2, one line of description and a trailing action on the title's row — usually an `EditorialTextLink` \"view all →\" (an inline-flex link with a trailing arrow, `asChild` for a router link). Geometry: `--editorial-section-head-*`, `--editorial-text-link-*`."
   },
@@ -119,6 +129,21 @@
     "group": "layout",
     "name": "EditorialToggleGroup",
     "tagline": "One-of-N toggles of the editorial account family (gh#1439): a named `role=\"group\"` of `aria-pressed` buttons. `variant=\"text\"` is a filter row (pressed = filled, bordered); `variant=\"icon\"` a framed icon-only switch such as grid / list view, each button named by its label. Geometry: `--editorial-toggle-group-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialFilterPanel",
+    "tagline": "A catalog's filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role=\"group\"`. The selects inside read the panel's control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialFilterField",
+    "tagline": "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialListingToolbar",
+    "tagline": "The row between a catalog's filters and its results (gh#1438): the result count (a polite live region) and a short note at the start, the sort / view controls at the end. Geometry: `--editorial-listing-toolbar-*`."
   },
   {
     "group": "layout",

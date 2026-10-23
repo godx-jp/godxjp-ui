@@ -79,6 +79,8 @@ const OWNERS = {
     "EditorialHero",
     "Eyebrow",
     "EditorialSectionHead",
+    "EditorialBreadcrumb",
+    "EditorialPageHeader",
     "EditorialSearch",
     "EditorialPillNav",
     "CardShowcase",

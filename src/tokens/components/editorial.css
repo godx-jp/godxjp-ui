@@ -88,6 +88,32 @@
   --editorial-section-head-action-space-block-start: 0rem;
   --editorial-section-head-action-max-width: none;
 
+  /* ── EditorialBreadcrumb (gh#1437) ──────────────────────────────────────────────────────── */
+  --editorial-breadcrumb-padding-block-start: 1.5rem;
+  --editorial-breadcrumb-gap: 0.5rem;
+  --editorial-breadcrumb-line-height: 1.7;
+
+  /* ── EditorialPageHeader (gh#1437) ──────────────────────────────────────────────────────── */
+  --editorial-page-header-padding-block-start: 1.75rem;
+  --editorial-page-header-padding-block-end: 2rem;
+  /* `flex` (the action at the end of the title row) or `block` (stacked under the copy). */
+  --editorial-page-header-row-display: flex;
+  --editorial-page-header-row-gap: 1.5rem;
+  --editorial-page-header-actions-space-block-start: 0rem;
+  /* The kicker inside the header. Defaults = the Eyebrow's own size and the kicker colour. */
+  --editorial-page-header-kicker-font-size: var(--editorial-eyebrow-font-size);
+  --editorial-page-header-kicker-color: initial;
+  --editorial-page-header-title-font-size: 2.25rem;
+  --editorial-page-header-title-line-height: 1.55;
+  --editorial-page-header-title-letter-spacing: -0.025em;
+  --editorial-page-header-title-space-block-start: 0.625rem;
+  --editorial-page-header-title-space-block-end: 0.75rem;
+  /* `auto-phrase` (the kit's Japanese heading default: break between phrases) or `normal`. */
+  --editorial-page-header-title-word-break: auto-phrase;
+  --editorial-page-header-description-font-size: 0.9375rem;
+  --editorial-page-header-description-line-height: inherit;
+  --editorial-page-header-description-max-width: 47.5rem;
+
   /* ── EditorialTextLink ("view all →") ───────────────────────────────────────────────────── */
   --editorial-text-link-font-size: 0.875rem;
   --editorial-text-link-line-height: inherit;
