@@ -5,6 +5,7 @@ import katex from "katex";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import { outline } from "../codec";
 import { CODE_TOKENS } from "../highlight";
 import { Markdown } from "../markdown";
 import { KATEX_OPTIONS } from "../math";
@@ -77,6 +78,13 @@ describe("math (renderer v6)", () => {
       expect(render(prose), prose).not.toContain("katex");
     }
     expect(render("$$5 and $$")).toContain("katex");
+  });
+
+  it("a heading with a formula keeps the anchor outline() reports", () => {
+    const markdown = "## Energy $E=mc^2$\n\n## Cost $5";
+    const ids = [...render(markdown).matchAll(/<h2 id="([^"]*)"/g)].map((m) => m[1]);
+    expect(ids).toEqual(["energy-emc2", "cost-5"]);
+    expect(outline(markdown).map((entry) => entry.id)).toEqual(ids);
   });
 
   it("is still narrowed by allowedElements: a feed without math shows the formula's text", () => {

@@ -37,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `@godxjp/block-editor` needs no new node). Because `$` is now special in prose, a literal `$x$`
   pair in text is serialized `\$x$`; a lone `$` (a price) is never escaped, and `normalize` stays
   idempotent over the whole corpus.
+- **`outline()` slugs a heading's formula from its TeX source**, as `<Markdown>` does, so
+  `## Energy $E=mc^2$` is `energy-emc2` in both.
 
 ### Fixed
 
