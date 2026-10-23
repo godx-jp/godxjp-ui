@@ -1,0 +1,57 @@
+{
+  "example": "import { EditorialPageHeader, EditorialSection, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialSection>\n  <EditorialPageHeader\n    breadcrumb={[{ label: \"Home\", to: \"/\" }, { label: \"Journal\" }]}\n    eyebrow={<Eyebrow>THE TCG-M JOURNAL</Eyebrow>}\n    title=\"A little knowledge. More enjoyment.\"\n    description=\"A few helpful perspectives for finding, comparing and collecting.\"\n  />\n</EditorialSection>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialPageHeader",
+  "props": [
+    {
+      "description": "The page's h1.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Trail above the header.",
+      "name": "breadcrumb",
+      "type": "BreadcrumbItemProp[]"
+    },
+    {
+      "description": "Router link for the trail.",
+      "name": "linkComponent",
+      "type": "ElementType"
+    },
+    {
+      "description": "Name of the trail's nav.",
+      "name": "breadcrumbLabel",
+      "type": "string"
+    },
+    {
+      "description": "Kicker above the title (an Eyebrow).",
+      "name": "eyebrow",
+      "type": "ReactNode"
+    },
+    {
+      "description": "One lead line under it.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Action at the end of the title row.",
+      "name": "actions",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Id on the h1.",
+      "name": "titleId",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "EditorialBreadcrumb, Eyebrow, EditorialSection."
+  ],
+  "tagline": "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone).",
+  "usage": [
+    "DO put it in an EditorialSection on a `flow=\"sections\"` page, so it shares the landing column.",
+    "DON'T also give the page a PageContainer title — the header owns the page's one h1."
+  ]
+}

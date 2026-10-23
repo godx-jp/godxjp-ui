@@ -67,6 +67,16 @@
   },
   {
     "group": "layout",
+    "name": "EditorialBreadcrumb",
+    "tagline": "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialPageHeader",
+    "tagline": "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone)."
+  },
+  {
+    "group": "layout",
     "name": "EditorialSectionHead",
     "tagline": "A section's head (gh#1435): kicker, an editorial h2, one line of description and a trailing action on the title's row — usually an `EditorialTextLink` \"view all →\" (an inline-flex link with a trailing arrow, `asChild` for a router link). Geometry: `--editorial-section-head-*`, `--editorial-text-link-*`."
   },

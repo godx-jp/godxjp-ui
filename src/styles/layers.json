@@ -269,7 +269,9 @@
     },
     "CardShowcase": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "Carousel": {
@@ -286,7 +288,9 @@
     },
     "CatalogCard": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "CenteredShell": {
@@ -484,52 +488,86 @@
     },
     "EditorialBanner": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
+      ]
+    },
+    "EditorialBreadcrumb": {
+      "layers": [
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialCard": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialFilterBar": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialFooter": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialHero": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialMasthead": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
+      ]
+    },
+    "EditorialPageHeader": {
+      "layers": [
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialPillNav": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialSearch": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialSection": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialSectionHead": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "EditorialToggleGroup": {
@@ -561,7 +599,9 @@
     },
     "Eyebrow": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css",
+        "navigation-layout.css"
       ]
     },
     "FeatureList": {

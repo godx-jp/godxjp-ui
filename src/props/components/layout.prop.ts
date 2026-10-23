@@ -2288,6 +2288,45 @@ export type EditorialSectionHeadProp = {
 };
 
 /**
+ * @see EditorialBreadcrumb — the trail at the top of an editorial page (gh#1437): `Breadcrumb`
+ * (same `<nav>`/`<ol>`, `aria-current`, router `linkComponent`) with the editorial rhythm —
+ * `--editorial-breadcrumb-*` (top inset, gap, line height). Put it in an `EditorialSection`.
+ */
+export type EditorialBreadcrumbProp = {
+  /** Ordered trail, root first; the last item is the current page. */
+  items: BreadcrumbProp;
+  /** Router link component for the ancestors (TanStack / react-router `Link`). Default `<a>`. */
+  linkComponent?: React.ElementType;
+  /** Accessible name of the `<nav>` landmark. Defaults to the localized "Breadcrumb". */
+  ariaLabel?: string;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialPageHeader — the intro of an editorial listing page (gh#1437): an optional
+ * `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line and an optional
+ * action at the end of the title row. Geometry: `--editorial-page-header-*`.
+ */
+export type EditorialPageHeaderProp = {
+  /** The trail above the header (rendered as an `EditorialBreadcrumb`). */
+  breadcrumb?: BreadcrumbProp;
+  /** Router link component for the trail. */
+  linkComponent?: React.ElementType;
+  /** Accessible name of the trail's `<nav>`. */
+  breadcrumbLabel?: string;
+  /** The kicker above the title — usually an `Eyebrow`. */
+  eyebrow?: ReactNode;
+  /** The page's one h1. */
+  title: TitleProp;
+  description?: DescriptionProp;
+  /** Trailing action on the title row (a button or a link). */
+  actions?: ReactNode;
+  /** Id put on the h1. */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
  * @see EditorialTextLink — an inline call to action with a trailing arrow ("view all →"). Wrap a
  * router link with `asChild`.
  */

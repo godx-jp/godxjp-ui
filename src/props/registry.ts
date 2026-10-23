@@ -1553,6 +1553,56 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  EditorialBreadcrumbProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      {
+        field: "items",
+        local: true,
+        reason: "Ordered trail (BreadcrumbProp), as Breadcrumb.items.",
+      },
+      {
+        field: "linkComponent",
+        local: true,
+        reason: "Router link for the ancestors, as Breadcrumb.linkComponent.",
+      },
+      {
+        field: "ariaLabel",
+        local: true,
+        reason: "Name of the nav landmark, as Breadcrumb.ariaLabel.",
+      },
+    ],
+  },
+  EditorialPageHeaderProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "DescriptionProp",
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "breadcrumb",
+        local: true,
+        reason: "Trail above the header (BreadcrumbProp), as PageContainer.breadcrumb.",
+      },
+      {
+        field: "linkComponent",
+        local: true,
+        reason: "Router link for the trail, as PageContainer.linkComponent.",
+      },
+      {
+        field: "breadcrumbLabel",
+        local: true,
+        reason: "Name of the trail's nav landmark, as PageContainer.breadcrumbLabel.",
+      },
+      { field: "eyebrow", local: true, reason: "Slot for the kicker above the title." },
+      { field: "actions", local: true, reason: "Slot for the trailing action on the title row." },
+      { field: "titleId", local: true, reason: "Id put on the h1." },
+    ],
+  },
   EditorialTextLinkProp: {
     group: "layout",
     file: "components/layout.prop.ts",
