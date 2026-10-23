@@ -1444,6 +1444,7 @@
      * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
     [data-collapse-below="sm"] [data-slot="table-caption"] {
       display: block;
+      padding-inline: var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
     }
 
     [data-collapse-below="sm"] [data-slot="table"] > tbody {
@@ -1514,6 +1515,7 @@
      * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
     [data-collapse-below="md"] [data-slot="table-caption"] {
       display: block;
+      padding-inline: var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
     }
 
     [data-collapse-below="md"] [data-slot="table"] > tbody {
@@ -1579,6 +1581,7 @@
      * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
     [data-collapse-below="lg"] [data-slot="table-caption"] {
       display: block;
+      padding-inline: var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
     }
 
     [data-collapse-below="lg"] [data-slot="table"] > tbody {
@@ -1644,6 +1647,7 @@
      * and wrap one word per line (gh#1418). Stacked, the caption is the record list's heading line. */
     [data-collapse-below="xl"] [data-slot="table-caption"] {
       display: block;
+      padding-inline: var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
     }
 
     [data-collapse-below="xl"] [data-slot="table"] > tbody {

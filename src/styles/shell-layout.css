@@ -3819,3 +3819,36 @@
     grid-template-areas: "topbar" "main" "footer";
   }
 }
+
+/* Paper is a flowing document, independent of the screen navigation/grid variants. */
+@layer components {
+  @media print {
+    html,
+    body,
+    .app-root,
+    .app-root > .app-main {
+      background: hsl(var(--background));
+    }
+    .app-root {
+      display: block;
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+    }
+    .app-root[data-responsive-navigation]
+      > :is(.app-sidebar, .app-topbar, .app-nav-rail, .app-footer),
+    .app-breadcrumb,
+    .app-mobile-nav-drawer {
+      display: none;
+    }
+    .app-root > .app-main {
+      width: auto;
+      max-width: none;
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+      contain: none;
+      background-image: none;
+    }
+  }
+}

@@ -358,3 +358,11 @@
     font-family: var(--font-family-mono);
   }
 }
+
+@layer base {
+  @media print {
+    :root {
+      color-scheme: light;
+    }
+  }
+}

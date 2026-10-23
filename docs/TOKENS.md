@@ -583,3 +583,36 @@ service override. `allowClear` still replaces the suffix; DatePicker and TimePic
 clear and open actions. NumberInput lays out its two steppers horizontally on coarse pointers.
 SearchInput retains its glyph centre while sharing this target token. Fine-pointer geometry is
 unchanged. Override the token on the field or in the service theme; no new prop is required.
+
+## Editorial, figures, captions and dialog corners
+
+`--font-family-editorial` and `--font-family-tabular` are `initial` knobs: unset,
+`Heading family="editorial"` and a display-scale PageContainer title use the display face,
+while `Text tabular`, `Badge tabular` and numeric table cells inherit their surrounding face.
+`Text mono` still takes priority over the figures face. UI headings stay unchanged.
+
+`TableCaption` is the first child of `Table` and supplies its accessible name. Its
+`--table-caption-color`, `--table-caption-font-size` and `--table-caption-space-y` knobs
+are `initial`, falling back to muted ink, the small type step and `--space-2`.
+The inline inset follows the cells on desktop and
+`--table-stacked-collection-card-padding-x` (fallback `--card-space-inset`) when stacked;
+logical padding and start alignment follow RTL.
+
+`--dialog-radius` is `initial`; from 640px the panel falls back to
+`--radius-lg`, then `--radius`. Below 640px it falls back to the existing square panel;
+an explicit override applies at every width. Dialog uses symmetric logical insets to stay
+centred in both LTR and RTL.
+Set the knob on the theme scope containing the Dialog portal (normally `:root`).
+
+## Printing
+
+Paper uses the existing light token declarations: every shipped dark override (including
+brand themes and component tokens) is enclosed in `@media not print`.
+Consumer-authored themes must likewise put all dark overrides inside `@media not print`,
+leaving their light declarations outside it so paper always uses the light palette.
+
+In print, AppShell hides sidebar, topbar, navigation rail, breadcrumb and footer.
+Its main area uses the full paper width with natural height, visible overflow and no
+paint containment, so content beyond the screen viewport can print. Card requests
+`break-inside: avoid`; a card taller than a sheet can still fragment. Applications may
+adjust this in their own print stylesheet through the public `data-slot="card"` hook.

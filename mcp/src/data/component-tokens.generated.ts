@@ -4346,7 +4346,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dialog-radius",
     "value": "initial",
-    "description": "Corner of the dialog panel. `initial`, default = --radius-lg → --radius at the call site; a brand whose dialogs are rounder than its cards (cards 8px, dialogs 16px) sets it once here."
+    "description": "Corner of the dialog panel. `initial`: square mobile, --radius-lg → --radius desktop at the call site; a brand whose dialogs are rounder than its cards (cards 8px, dialogs 16px) sets it once here."
   },
   {
     "name": "--dialog-width",

@@ -1292,7 +1292,7 @@ import { StatCard } from "@godxjp/ui/data-display";
     name: "AppShell",
     group: "layout",
     tagline:
-      "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width).",
+      "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. In print, navigation, topbar, breadcrumb and footer are hidden; main content flows across the paper width on the light --background. Put every consumer-authored dark theme override inside @media not print, with light declarations outside it, matching the package themes. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width).",
     props: [
       {
         name: "sidebar",
@@ -4409,7 +4409,7 @@ export default function InvoiceList({
     ],
     group: "data-display",
     tagline:
-      "Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab TOOL strip inside the card (composer or editor tools) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. List FILTERS (search, filter selects, filter chips) are NOT a CardBar: CardBar's main slot scrolls sideways, and a filter strip never does — they go in a FilterBar ABOVE the card, which wraps (cardinal rule #51, pattern `list-filters`).",
+      "Surface container that requests break-inside: avoid in print, with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab TOOL strip inside the card (composer or editor tools) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. List FILTERS (search, filter selects, filter chips) are NOT a CardBar: CardBar's main slot scrolls sideways, and a filter strip never does — they go in a FilterBar ABOVE the card, which wraps (cardinal rule #51, pattern `list-filters`).",
     props: [
       {
         name: "accent",

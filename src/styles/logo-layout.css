@@ -356,21 +356,27 @@
   display: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) [data-slot="logo-artwork"][data-scheme="light"] {
+@media not print {
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) [data-slot="logo-artwork"][data-scheme="light"] {
+      display: none;
+    }
+    :root:not([data-theme="light"]) [data-slot="logo-artwork"][data-scheme="dark"] {
+      display: block;
+    }
+  }
+}
+
+@media not print {
+  .dark [data-slot="logo-artwork"][data-scheme="light"],
+  :root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="light"] {
     display: none;
   }
-  :root:not([data-theme="light"]) [data-slot="logo-artwork"][data-scheme="dark"] {
+}
+
+@media not print {
+  .dark [data-slot="logo-artwork"][data-scheme="dark"],
+  :root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="dark"] {
     display: block;
   }
-}
-
-.dark [data-slot="logo-artwork"][data-scheme="light"],
-:root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="light"] {
-  display: none;
-}
-
-.dark [data-slot="logo-artwork"][data-scheme="dark"],
-:root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="dark"] {
-  display: block;
 }

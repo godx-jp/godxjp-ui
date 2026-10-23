@@ -276,9 +276,11 @@
 
 /* The other half of the ink flip above — see --logo-identity-foreground. The dark fill is the
    LIGHT green #5CD6BE in the GoDX preset, so the glyph goes back to the near-black spine (9.99:1). */
-.dark,
-:root[data-theme="dark"] {
-  --logo-identity-foreground: 48 9% 9%;
-  /* The kit's dark text colour — #F7FAF8, 16.87:1 on the dark canvas. */
-  --logo-godx-ink-color: 140 23.1% 97.5%;
+@media not print {
+  .dark,
+  :root[data-theme="dark"] {
+    --logo-identity-foreground: 48 9% 9%;
+    /* The kit's dark text colour — #F7FAF8, 16.87:1 on the dark canvas. */
+    --logo-godx-ink-color: 140 23.1% 97.5%;
+  }
 }

@@ -675,7 +675,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--table-caption-{color,font-size,space-y}",
     category: "component",
     tier: "component",
-    role: "TableCaption — the table's accessible name and visible scope line (`<TableCaption>` as the first child of `<Table>`). It sits above the rows (HTML's own caption side). All three are `initial` with the default at the call site: ink --muted-foreground (HSL components), size --font-size-sm, block inset --space-2; the inline inset follows --table-cell-space-x so the caption shares the cells' text axis.",
+    role: "TableCaption — the table's accessible name and visible scope line (`<TableCaption>` as the first child of `<Table>`). It sits above the rows (HTML's own caption side). All three are `initial` with the default at the call site: ink --muted-foreground (HSL components), size --font-size-sm, block inset --space-2; the inline inset follows --table-cell-space-x on desktop and --table-stacked-collection-card-padding-x (fallback --card-space-inset) when stacked, so the caption shares the rows' text axis.",
   },
   {
     name: "--table-pagination-padding-{y,x}",
@@ -717,7 +717,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--dialog-radius",
     category: "component",
     tier: "component",
-    role: "Corner of the Dialog panel (from 640px up; below it the panel is edge-to-edge). `initial`, default --radius-lg → --radius at the call site. A brand whose dialogs are rounder than its cards and controls (cards 8px, dialogs 16px) sets it once instead of moving --radius for every control.",
+    role: "Explicit overrides apply at every viewport width; the unset mobile default remains square. Corner of the Dialog panel. `initial`: square below 640px, --radius-lg → --radius above it, resolved at the call site. A brand whose dialogs are rounder than its cards and controls (cards 8px, dialogs 16px) sets it once instead of moving --radius for every control.",
   },
   {
     name: "--dialog-* / --alert-* / --skeleton-*",

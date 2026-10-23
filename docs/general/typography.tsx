@@ -200,7 +200,7 @@ export default function Demo() {
                   heading keeps the display face. Inert until the token is set. */}
               <Flex direction="col" gap="xs">
                 <Heading level={2} family="editorial">
-                  探す。比べる。
+                  {t("textExamples.editorialHeading")}
                 </Heading>
                 <Text size="2xs" mono tone="muted">
                   {`<Heading level={2} family="editorial"> — --font-family-editorial, else the display face`}

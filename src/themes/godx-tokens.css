@@ -29,15 +29,17 @@
   --shadow-color: 18 43 38;
 }
 
-.dark,
-:root[data-theme="dark"] {
-  /* #5CD6BE — OKLCH 0.801 0.115 178. 9.99:1 with its dark label. */
-  --primary: 168 60% 60%;
-  --primary-foreground: 48 9% 9%;
-  --brand: 168 60% 60%;
-  --brand-foreground: 48 9% 9%;
-  /* hsl(168 40% 4%): near-black, same hue. A lighter tint would read as glow on a dark canvas. */
-  --shadow-color: 6 14 13;
+@media not print {
+  .dark,
+  :root[data-theme="dark"] {
+    /* #5CD6BE — OKLCH 0.801 0.115 178. 9.99:1 with its dark label. */
+    --primary: 168 60% 60%;
+    --primary-foreground: 48 9% 9%;
+    --brand: 168 60% 60%;
+    --brand-foreground: 48 9% 9%;
+    /* hsl(168 40% 4%): near-black, same hue. A lighter tint would read as glow on a dark canvas. */
+    --shadow-color: 6 14 13;
+  }
 }
 
 /* Engines without relative colour (Chrome/Edge 111–118) get the derived tier as literals: the
@@ -55,14 +57,16 @@
     --text-primary: 168 100% 9.5%;
   }
 
-  .dark,
-  :root[data-theme="dark"] {
-    --primary-hover: 168 60% 65.8%;
-    --primary-active: 168 60% 71.6%;
-    --primary-border: 168 28% 16.2%;
-    --control-outline: 168 59.4% 34.9%;
-    --text-link: 168 60% 60%;
-    --text-brand: 168 60% 60%;
-    --text-primary: 168 60% 65.8%;
+  @media not print {
+    .dark,
+    :root[data-theme="dark"] {
+      --primary-hover: 168 60% 65.8%;
+      --primary-active: 168 60% 71.6%;
+      --primary-border: 168 28% 16.2%;
+      --control-outline: 168 59.4% 34.9%;
+      --text-link: 168 60% 60%;
+      --text-brand: 168 60% 60%;
+      --text-primary: 168 60% 65.8%;
+    }
   }
 }

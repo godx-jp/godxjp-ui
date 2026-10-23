@@ -989,3 +989,11 @@
     border-block: var(--stroke-hairline) solid hsl(var(--border));
   }
 }
+
+@layer components {
+  @media print {
+    [data-slot="card"] {
+      break-inside: avoid;
+    }
+  }
+}

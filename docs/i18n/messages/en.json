@@ -54,7 +54,8 @@
     "ellipsisLongTitle": "Q3 integration test · payment module · invoice re-issue scenarios and acceptance criteria review",
     "ellipsisShortTitle": "Login smoke test",
     "ellipsisLongHeader": "Latest run name (release candidate 2026-09)",
-    "migrateFromAntdTitle": "Migrating from antd Typography"
+    "migrateFromAntdTitle": "Migrating from antd Typography",
+    "editorialHeading": "Find. Compare."
   },
   "themeShowcase": {
     "page": {

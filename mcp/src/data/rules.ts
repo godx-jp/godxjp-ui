@@ -109,7 +109,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 21,
     title: "Every component honours every theme axis",
-    body: "`.dark` / light theme, `data-density` (compact / default / comfortable) and `data-font-size` (sm / base / lg) are axes the component must follow. Read from tokens, never hardcode values.",
+    body: "`.dark` / light theme, `data-density` (compact / default / comfortable) and `data-font-size` (sm / base / lg) are axes the component must follow. Read from tokens, never hardcode values. Enclose every consumer-authored dark override in @media not print and leave light declarations outside it, matching the shipped themes so paper uses the light palette.",
   },
   {
     number: 23,

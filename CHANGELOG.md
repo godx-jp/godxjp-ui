@@ -6,7 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.17.0] - 2026-10-24
+
+### Fixed
+
+- Complete light-paper printing across shipped brand, logo and service-theme dark overrides; remove the recessed AppShell background band in print.
+- Parse generator CSS blocks with balanced braces while ignoring comments and quoted strings, preserving generated output.
+
 ### Added
+
+- Print presentation: existing light token values apply on paper even in dark mode, AppShell chrome is hidden and main content flows at full width; Cards avoid page breaks when possible (#1416).
 
 - `TableCaption` — the table's `<caption>`: its accessible name and visible scope line, as the first child of `<Table>`. Knobs `--table-caption-{color,font-size,space-y}` (all `initial`; defaults `--muted-foreground` · `--font-size-sm` · `--space-2`), above the rows; a `stacked-record-collection` keeps it a full-width line when the rows fold (#1418).
 - `--font-family-tabular` — opt-in figures face read by `Text tabular`, `Badge tabular` and numeric `TableHead`/`TableCell`. `initial` = inherit, so nothing changes until a theme names a face (#1419).
@@ -14,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--dialog-radius` — the Dialog panel corner as its own knob; default unchanged (`--radius-lg` → `--radius`) (#1421).
 
 ### Fixed
+
+- Dialog centres within the viewport in RTL as well as LTR; symmetric logical insets replace the direction-dependent anchor.
+- `--dialog-radius` now honours an explicit override on phones as well as desktop; the square mobile default is unchanged.
+- Stacked `TableCaption` follows the record inset token, preserving its text keyline when a service changes the stacked-card padding. Published `HeadingFamilyProp` in the MCP vocabulary and translated the editorial-heading example for en/ja/vi.
 
 - `useMediaQuery` / `useIsMobile` are hydration-safe: built on `useSyncExternalStore` with a `false` server snapshot, so SSR hydration no longer mismatches — `AppShell` published `data-navigation="docked"` from the server and `"drawer"` on a phone's hydration render, an attribute mismatch React does not patch up (#1417).
 - `Topbar start` ending in a control (e.g. the brand, then `TopbarSearch`) no longer clips that cell: the text-truncation rule skips `.ui-topbar-search`, and such a cluster is floored at its content instead of one cell, so a bar that does not fit reaches its `overflow` mode (scroll/menu) rather than cutting the folded search trigger (48px → 21px at 390) (#1422).

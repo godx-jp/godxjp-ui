@@ -605,7 +605,9 @@ describe("responsive shell geometry", () => {
     // contract holds at every width.
     // ONE breakpoint, still — but TWO complementary blocks at it: the wide-only templates and the
     // narrow reset. That split is the gh#474 fix; what must never come back is a SECOND number.
-    const restructuring = mediaBlocksMentioning(shellStyles, ".app-root");
+    const restructuring = mediaBlocksMentioning(shellStyles, ".app-root").filter(
+      (block) => block.condition !== "print",
+    );
     expect([...new Set(restructuring.map((block) => block.condition))].sort()).toEqual([
       "(width <= 56.25rem)",
       "(width > 56.25rem)",
