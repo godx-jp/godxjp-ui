@@ -189,10 +189,36 @@ export function EditorialStats({ items, className, ...rest }: EditorialStatsProp
   );
 }
 
-/** A wrapping bar over a hairline: filters at the start, view switch and action at the end. */
-export function EditorialToolbar({ start, end, className }: EditorialToolbarProp) {
+/**
+ * The row above a collection: a summary (count + note) and / or a start cluster, an end cluster
+ * (order, view switch, primary action), optionally over a hairline. With a `summary` it is a
+ * listing row that keeps one line; without one it is a bar whose clusters may stack.
+ */
+export function EditorialToolbar({
+  summary,
+  start,
+  end,
+  divider = false,
+  className,
+}: EditorialToolbarProp) {
+  const hasSummary = summary != null && (summary.count != null || summary.note != null);
   return (
-    <div data-slot="editorial-toolbar" className={cn("ui-editorial-toolbar", className)}>
+    <div
+      data-slot="editorial-toolbar"
+      data-summary={hasSummary ? "" : undefined}
+      data-divider={divider ? "" : undefined}
+      className={cn("ui-editorial-toolbar", className)}
+    >
+      {hasSummary && (
+        <div className="ui-editorial-toolbar-summary">
+          {summary.count != null && (
+            <p aria-live="polite" className="ui-editorial-toolbar-count">
+              {summary.count}
+            </p>
+          )}
+          {summary.note != null && <p className="ui-editorial-toolbar-note">{summary.note}</p>}
+        </div>
+      )}
       {start != null && <div className="ui-editorial-toolbar-start">{start}</div>}
       {end != null && <div className="ui-editorial-toolbar-end">{end}</div>}
     </div>

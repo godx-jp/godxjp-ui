@@ -152,11 +152,6 @@
   },
   {
     "group": "layout",
-    "name": "EditorialListingToolbar",
-    "tagline": "The row between a catalog's filters and its results (gh#1438): the result count (a polite live region) and a short note at the start, the sort / view controls at the end. Geometry: `--editorial-listing-toolbar-*`."
-  },
-  {
-    "group": "layout",
     "name": "CatalogDetail",
     "tagline": "The head of a catalog item's page (gh#1438): a framed picture with the save toggle over its corner and a caption, beside the kicker, the page's h1, a row of CatalogDetailTags, a summary price between hairlines, actions and a two-column facts list. Geometry: `--editorial-catalog-detail-*`."
   },
@@ -203,7 +198,7 @@
   {
     "group": "layout",
     "name": "EditorialToolbar",
-    "tagline": "A wrapping bar over a hairline (gh#1439): a start cluster (an EditorialToggleGroup filter) and an end cluster (view switch, primary action). A theme stacks it on a phone with `--editorial-toolbar-display: block`."
+    "tagline": "The row above a collection (gh#1438, gh#1439): an optional `summary` (result count as a polite live region + a short note), a start cluster (an EditorialToggleGroup filter) and an end cluster (order Select, view switch, primary action), optionally over a hairline (`divider`). With a summary it is a listing row that keeps one line; without one a theme stacks it on a phone with `--editorial-toolbar-display: block`. Geometry: `--editorial-toolbar-*`."
   },
   {
     "group": "layout",

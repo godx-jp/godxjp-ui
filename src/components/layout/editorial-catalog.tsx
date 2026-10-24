@@ -8,7 +8,6 @@ import type {
   CatalogDetailTagProp,
   EditorialFilterFieldProp,
   EditorialFilterPanelProp,
-  EditorialListingToolbarProp,
   EditorialPromptProp,
   PriceSummaryProp,
 } from "../../props/components/layout.prop";
@@ -30,12 +29,11 @@ export type {
   EditorialFilterFieldProp as EditorialFilterFieldProps,
   EditorialFilterPanelProp,
   EditorialFilterPanelProp as EditorialFilterPanelProps,
-  EditorialListingToolbarProp,
-  EditorialListingToolbarProp as EditorialListingToolbarProps,
 } from "../../props/components/layout.prop";
 
 /*
- * The catalog bodies of the editorial family (gh#1438): a listing's filter panel and toolbar. As in
+ * The catalog bodies of the editorial family (gh#1438): a listing's filter panel (its toolbar is
+ * `EditorialToolbar summary`, editorial-account.tsx). As in
  * editorial.tsx, every length is an --editorial-* token (tokens/components/editorial.css) and no rule
  * names a breakpoint.
  */
@@ -75,39 +73,6 @@ export function EditorialFilterField({
         {label}
       </label>
       {children}
-    </div>
-  );
-}
-
-/** The row above a catalog's results: count and note at the start, order / view at the end. */
-export function EditorialListingToolbar({
-  count,
-  note,
-  actions,
-  start,
-  end,
-  divider = false,
-  className,
-}: EditorialListingToolbarProp) {
-  const trailing = end ?? actions;
-  return (
-    <div
-      data-slot="editorial-listing-toolbar"
-      data-divider={divider ? "" : undefined}
-      className={cn("ui-editorial-listing-toolbar", className)}
-    >
-      {(count != null || note != null || start != null) && (
-        <div className="ui-editorial-listing-toolbar-summary">
-          {count != null && (
-            <p aria-live="polite" className="ui-editorial-listing-toolbar-count">
-              {count}
-            </p>
-          )}
-          {note != null && <p className="ui-editorial-listing-toolbar-note">{note}</p>}
-          {start}
-        </div>
-      )}
-      {trailing != null && <div className="ui-editorial-listing-toolbar-actions">{trailing}</div>}
     </div>
   );
 }
@@ -225,7 +190,9 @@ export function PriceSummary({ items, context, className }: PriceSummaryProp) {
         <div key={item.key} className="ui-price-summary-cell">
           <span className="ui-price-summary-label">{item.label}</span>
           <strong className="ui-price-summary-value">{item.value}</strong>
-          {item.caption != null && <small className="ui-price-summary-caption">{item.caption}</small>}
+          {item.caption != null && (
+            <small className="ui-price-summary-caption">{item.caption}</small>
+          )}
         </div>
       ))}
       {context && (

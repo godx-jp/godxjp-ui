@@ -160,11 +160,28 @@
   --editorial-stats-lead-value-space-block-start: var(--editorial-stats-value-space-block-start);
   --editorial-stats-lead-note-space-block-start: var(--editorial-stats-note-space-block-start);
 
-  /* ── EditorialToolbar ───────────────────────────────────────────────────────────────────── */
-  /* flex = one wrapping row; block = start over end (a phone). */
+  /* ── EditorialToolbar (gh#1438, gh#1439) ────────────────────────────────────────────────── */
+  /* flex = one wrapping row; block = start over end (a phone). A summary row is always flex. */
   --editorial-toolbar-display: flex;
   --editorial-toolbar-gap: 1rem;
-  --editorial-toolbar-padding-block-end: 1.25rem;
+  --editorial-toolbar-align: center;
+  /* divider: the space above the hairline under the row. */
+  --editorial-toolbar-divider-padding-block-end: 1.25rem;
+  /* A listing row (summary): its outer space and the gap of its end controls. */
+  --editorial-toolbar-summary-space-block: 1.25rem;
+  --editorial-toolbar-summary-end-gap: 0.75rem;
+  --editorial-toolbar-count-display: block;
+  --editorial-toolbar-count-font-size: 0.75rem;
+  --editorial-toolbar-count-line-height: 1.8;
+  --editorial-toolbar-note-font-size: 0.75rem;
+  --editorial-toolbar-note-line-height: 1.7;
+  --editorial-toolbar-note-max-width: 37.5rem;
+  /* The control scale of the selects in the end cluster. Background default = hsl(var(--card)). */
+  --editorial-toolbar-control-min-width: 9.375rem;
+  --editorial-toolbar-control-max-width: none;
+  --editorial-toolbar-control-font-size: 0.875rem;
+  --editorial-toolbar-control-padding-x: 0.875rem;
+  --editorial-toolbar-control-background: initial;
   --editorial-toolbar-end-gap: 0.5rem;
   --editorial-toolbar-end-align-inline: flex-start;
   --editorial-toolbar-end-space-block-start: 0;

@@ -589,11 +589,6 @@
         "navigation-layout.css"
       ]
     },
-    "EditorialListingToolbar": {
-      "layers": [
-        "layout.css"
-      ]
-    },
     "EditorialMasthead": {
       "layers": [
         "layout.css",

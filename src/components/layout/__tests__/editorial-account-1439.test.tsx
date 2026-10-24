@@ -146,9 +146,68 @@ describe("EditorialMetaBar / EditorialToolbar / EditorialTextButton (gh#1439)", 
 
   it("toolbar: start and end clusters; a theme stacks it through --editorial-toolbar-display", () => {
     const { container } = render(<EditorialToolbar start="filters" end="actions" />);
+    const root = container.firstElementChild as HTMLElement;
     expect(container.querySelector(".ui-editorial-toolbar-start")?.textContent).toBe("filters");
     expect(container.querySelector(".ui-editorial-toolbar-end")?.textContent).toBe("actions");
+    expect(container.querySelector(".ui-editorial-toolbar-summary")).toBeNull();
+    expect(root.hasAttribute("data-summary")).toBe(false);
+    expect(root.hasAttribute("data-divider")).toBe(false);
     expect(rule(".ui-editorial-toolbar")).toContain("display: var(--editorial-toolbar-display)");
+    expect(rule(".ui-editorial-toolbar")).toContain("align-items: var(--editorial-toolbar-align)");
+  });
+
+  it("toolbar divider: a hairline under the row, its space from a token", () => {
+    const { container } = render(<EditorialToolbar divider start="filters" />);
+    expect((container.firstElementChild as HTMLElement).hasAttribute("data-divider")).toBe(true);
+    const divided = rule(".ui-editorial-toolbar[data-divider]");
+    expect(divided).toMatch(/border-block-end:/);
+    expect(divided).toContain(
+      "padding-block-end: var(--editorial-toolbar-divider-padding-block-end)",
+    );
+    expect(tokens).toMatch(/--editorial-toolbar-divider-padding-block-end:\s*1\.25rem/);
+  });
+
+  it("toolbar summary (gh#1438): count announced politely, note, end last; a one-line listing row", () => {
+    render(
+      <EditorialToolbar
+        summary={{ count: "396 results", note: "Reference prices." }}
+        end={<button type="button">Sort</button>}
+      />,
+    );
+    const count = screen.getByText("396 results");
+    expect(count.getAttribute("aria-live")).toBe("polite");
+    expect(screen.getByText("Reference prices.")).toBeTruthy();
+    const root = count.closest("[data-slot=editorial-toolbar]") as HTMLElement;
+    expect(root.hasAttribute("data-summary")).toBe(true);
+    expect(root.lastElementChild?.textContent).toBe("Sort");
+    const row = rule(".ui-editorial-toolbar[data-summary]");
+    expect(row).toContain("display: flex");
+    expect(row).toContain("flex-wrap: nowrap");
+    expect(row).toContain("margin-block: var(--editorial-toolbar-summary-space-block)");
+    expect(rule(".ui-editorial-toolbar[data-summary] > .ui-editorial-toolbar-end")).toContain(
+      "gap: var(--editorial-toolbar-summary-end-gap)",
+    );
+  });
+
+  it("toolbar summary: an empty summary renders no summary cell", () => {
+    const { container } = render(<EditorialToolbar summary={{}} end={<span>x</span>} />);
+    expect(container.querySelector(".ui-editorial-toolbar-summary")).toBeNull();
+    expect((container.firstElementChild as HTMLElement).hasAttribute("data-summary")).toBe(false);
+  });
+
+  it("toolbar: the end selects and the count read tokens; a theme can hide the count", () => {
+    expect(rule(".ui-editorial-toolbar-count")).toContain(
+      "display: var(--editorial-toolbar-count-display)",
+    );
+    expect(rule(".ui-editorial-toolbar-end .ui-control-trigger")).toContain(
+      "min-width: var(--editorial-toolbar-control-min-width)",
+    );
+    expect(rule(".ui-editorial-toolbar-end")).toContain(
+      "--control-font-size: var(--editorial-toolbar-control-font-size)",
+    );
+    expect(tokens).toMatch(/--editorial-toolbar-control-min-width:\s*9\.375rem/);
+    expect(layout.EditorialToolbar).toBe(EditorialToolbar);
+    expect("EditorialListingToolbar" in layout).toBe(false);
   });
 
   it("text button: a real button by default, the consumer's link with asChild, glyph trailing", () => {

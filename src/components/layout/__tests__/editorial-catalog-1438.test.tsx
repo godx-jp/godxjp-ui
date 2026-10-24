@@ -13,11 +13,7 @@ import { fileURLToPath } from "node:url";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import {
-  EditorialFilterField,
-  EditorialFilterPanel,
-  EditorialListingToolbar,
-} from "../editorial-catalog";
+import { EditorialFilterField, EditorialFilterPanel } from "../editorial-catalog";
 import { EditorialPageHeader } from "../editorial";
 import * as layout from "../index";
 
@@ -45,7 +41,9 @@ describe("EditorialPageHeader search slot (gh#1438)", () => {
   it("caps and spaces the search from tokens", () => {
     const slot = rule(".ui-editorial-page-header-search");
     expect(slot).toMatch(/max-width:\s*var\(--editorial-page-header-search-max-width\)/);
-    expect(slot).toMatch(/margin-block-start:\s*var\(--editorial-page-header-search-space-block-start\)/);
+    expect(slot).toMatch(
+      /margin-block-start:\s*var\(--editorial-page-header-search-space-block-start\)/,
+    );
     expect(tokens).toMatch(/--editorial-page-header-search-max-width:\s*45rem/);
     // The search button inside a page header drops the hero's arrow.
     expect(slot).toMatch(
@@ -74,7 +72,8 @@ describe("EditorialFilterPanel / EditorialFilterField (gh#1438)", () => {
   it("is exported from the layout entry", () => {
     expect(layout.EditorialFilterPanel).toBe(EditorialFilterPanel);
     expect(layout.EditorialFilterField).toBe(EditorialFilterField);
-    expect(layout.EditorialListingToolbar).toBe(EditorialListingToolbar);
+    // The listing toolbar is EditorialToolbar summary (editorial-account-1439.test.tsx).
+    expect("EditorialListingToolbar" in layout).toBe(false);
   });
 
   it("renders a named group whose visible labels name their controls, with the action last", () => {
@@ -107,15 +106,27 @@ describe("EditorialFilterPanel / EditorialFilterField (gh#1438)", () => {
     expect(panel).toMatch(/border-radius:\s*var\(--editorial-filter-panel-radius\)/);
     expect(panel).toMatch(/background:\s*hsl\(var\(--card\)\)/);
     // The selects inside read the panel's scale, not the app default.
-    expect(panel).toMatch(/--control-font-size:\s*var\(--editorial-filter-panel-control-font-size\)/);
-    expect(panel).toMatch(/--control-padding-x:\s*var\(--editorial-filter-panel-control-padding-x\)/);
-    expect(panel).toMatch(/--control-surface-background:\s*var\(\s*--editorial-filter-panel-control-background/);
+    expect(panel).toMatch(
+      /--control-font-size:\s*var\(--editorial-filter-panel-control-font-size\)/,
+    );
+    expect(panel).toMatch(
+      /--control-padding-x:\s*var\(--editorial-filter-panel-control-padding-x\)/,
+    );
+    expect(panel).toMatch(
+      /--control-surface-background:\s*var\(\s*--editorial-filter-panel-control-background/,
+    );
     const field = rule(".ui-editorial-filter-field");
     expect(field).toMatch(/flex:\s*1 1 var\(--editorial-filter-field-width-basis\)/);
     expect(field).toMatch(/min-width:\s*var\(--editorial-filter-field-min-width\)/);
-    expect(rule(".ui-editorial-filter-field-label")).toMatch(/font-weight:\s*var\(--editorial-filter-field-label-font-weight\)/);
-    expect(tokens).toMatch(/--editorial-filter-field-label-font-weight:\s*var\(--font-weight-semibold\)/);
-    expect(rule(".ui-editorial-filter-panel-action")).toMatch(/flex-grow:\s*var\(--editorial-filter-panel-action-size-grow\)/);
+    expect(rule(".ui-editorial-filter-field-label")).toMatch(
+      /font-weight:\s*var\(--editorial-filter-field-label-font-weight\)/,
+    );
+    expect(tokens).toMatch(
+      /--editorial-filter-field-label-font-weight:\s*var\(--font-weight-semibold\)/,
+    );
+    expect(rule(".ui-editorial-filter-panel-action")).toMatch(
+      /flex-grow:\s*var\(--editorial-filter-panel-action-size-grow\)/,
+    );
   });
 
   it('variant="bare" keeps the field row and drops the frame, with its own label scale', () => {
@@ -131,7 +142,9 @@ describe("EditorialFilterPanel / EditorialFilterField (gh#1438)", () => {
     expect(bare).toMatch(/border:\s*0/);
     expect(bare).toMatch(/padding:\s*0/);
     expect(bare).toMatch(/background:\s*transparent/);
-    expect(bare).toMatch(/--editorial-filter-field-label-font-size:\s*var\(--editorial-filter-panel-bare-label-font-size\)/);
+    expect(bare).toMatch(
+      /--editorial-filter-field-label-font-size:\s*var\(--editorial-filter-panel-bare-label-font-size\)/,
+    );
     expect(tokens).toMatch(/--editorial-filter-panel-bare-label-font-size:\s*0\.8125rem/);
   });
 
@@ -140,52 +153,5 @@ describe("EditorialFilterPanel / EditorialFilterField (gh#1438)", () => {
     expect(tokens).toMatch(/--editorial-filter-panel-gap:\s*1rem/);
     expect(tokens).toMatch(/--editorial-filter-field-min-width:\s*9\.0625rem/);
     expect(tokens).toMatch(/--editorial-filter-panel-control-font-size:\s*0\.875rem/);
-  });
-});
-
-describe("EditorialListingToolbar (gh#1438)", () => {
-  it("announces the count politely and puts the actions at the end", () => {
-    render(
-      <EditorialListingToolbar
-        count="396 results"
-        note="Reference prices."
-        actions={<button type="button">Sort</button>}
-      />,
-    );
-    const count = screen.getByText("396 results");
-    expect(count.getAttribute("aria-live")).toBe("polite");
-    expect(screen.getByText("Reference prices.")).toBeTruthy();
-    const root = count.closest("[data-slot=editorial-listing-toolbar]");
-    expect(root?.lastElementChild?.textContent).toBe("Sort");
-  });
-
-  it("renders nothing for the summary when neither count nor note is given", () => {
-    const { container } = render(<EditorialListingToolbar actions={<span>x</span>} />);
-    expect(container.querySelector(".ui-editorial-listing-toolbar-summary")).toBeNull();
-  });
-
-  it("takes free start / end slots (end in place of actions) and an optional hairline", () => {
-    const { container } = render(
-      <EditorialListingToolbar divider start={<span>lead</span>} end={<span>tail</span>} actions={<span>old</span>} />,
-    );
-    const root = container.firstElementChild as HTMLElement;
-    expect(root.hasAttribute("data-divider")).toBe(true);
-    expect(root.querySelector(".ui-editorial-listing-toolbar-summary")?.textContent).toBe("lead");
-    expect(root.lastElementChild?.textContent).toBe("tail");
-    expect(rule(".ui-editorial-listing-toolbar[data-divider]")).toMatch(/border-block-end:/);
-  });
-
-  it("spaces the row and sizes its selects from tokens; the count can be hidden by a theme", () => {
-    const bar = rule(".ui-editorial-listing-toolbar");
-    expect(bar).toMatch(/justify-content:\s*space-between/);
-    expect(bar).toMatch(/margin-block:\s*var\(--editorial-listing-toolbar-space-block\)/);
-    expect(bar).toMatch(/align-items:\s*var\(--editorial-listing-toolbar-align\)/);
-    expect(rule(".ui-editorial-listing-toolbar-count")).toMatch(
-      /display:\s*var\(--editorial-listing-toolbar-count-display\)/,
-    );
-    expect(rule(".ui-editorial-listing-toolbar-actions .ui-control-trigger")).toMatch(
-      /min-width:\s*var\(--editorial-listing-toolbar-control-min-width\)/,
-    );
-    expect(tokens).toMatch(/--editorial-listing-toolbar-control-min-width:\s*9\.375rem/);
   });
 });

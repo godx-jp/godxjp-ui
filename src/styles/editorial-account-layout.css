@@ -345,23 +345,72 @@
     margin-block-start: var(--editorial-stats-lead-note-space-block-start);
   }
 
-  /* ── EditorialToolbar ─────────────────────────────────────────────────────────────────────── */
+  /* ── EditorialToolbar (gh#1438, gh#1439) ──────────────────────────────────────────────────── */
+  /* A bar of two clusters that wraps; a theme stacks them with --editorial-toolbar-display: block. */
   .ui-editorial-toolbar {
     display: var(--editorial-toolbar-display);
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
+    align-items: var(--editorial-toolbar-align);
     gap: var(--editorial-toolbar-gap);
-    padding-block-end: var(--editorial-toolbar-padding-block-end);
+  }
+
+  .ui-editorial-toolbar[data-divider] {
+    padding-block-end: var(--editorial-toolbar-divider-padding-block-end);
     border-block-end: var(--stroke-hairline) solid hsl(var(--border));
   }
 
+  /* With a summary it is a listing row: one line whose summary shrinks, never stacked. */
+  .ui-editorial-toolbar[data-summary] {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-block: var(--editorial-toolbar-summary-space-block);
+  }
+
+  .ui-editorial-toolbar-summary {
+    min-width: 0;
+  }
+
+  .ui-editorial-toolbar-count {
+    display: var(--editorial-toolbar-count-display);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-toolbar-count-font-size);
+    line-height: var(--editorial-toolbar-count-line-height);
+    white-space: nowrap;
+  }
+
+  .ui-editorial-toolbar-note {
+    max-width: var(--editorial-toolbar-note-max-width);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-toolbar-note-font-size);
+    line-height: var(--editorial-toolbar-note-line-height);
+  }
+
+  /* The selects in the end cluster read the toolbar's control scale. */
   .ui-editorial-toolbar-end {
+    --control-font-size: var(--editorial-toolbar-control-font-size);
+    --control-padding-x: var(--editorial-toolbar-control-padding-x);
+    --control-surface-background: var(--editorial-toolbar-control-background, hsl(var(--card)));
     display: flex;
     align-items: center;
     justify-content: var(--editorial-toolbar-end-align-inline);
     gap: var(--editorial-toolbar-end-gap);
     margin-block-start: var(--editorial-toolbar-end-space-block-start);
+  }
+
+  .ui-editorial-toolbar[data-summary] > .ui-editorial-toolbar-end {
+    flex: none;
+    justify-content: flex-start;
+    gap: var(--editorial-toolbar-summary-end-gap);
+    margin-block-start: 0;
+    margin-inline-start: auto;
+  }
+
+  .ui-editorial-toolbar-end .ui-control-trigger {
+    min-width: var(--editorial-toolbar-control-min-width);
+    max-width: var(--editorial-toolbar-control-max-width);
   }
 
   /* The end cluster's buttons may read a size of their own (a phone toolbar). */

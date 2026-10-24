@@ -1647,7 +1647,11 @@ export const COMPONENT_PROP_REGISTRY = {
       },
       { field: "eyebrow", local: true, reason: "Slot for the kicker above the title." },
       { field: "actions", local: true, reason: "Slot for the trailing action on the title row." },
-      { field: "search", local: true, reason: "Slot for a search under the description (gh#1438)." },
+      {
+        field: "search",
+        local: true,
+        reason: "Slot for a search under the description (gh#1438).",
+      },
       { field: "titleId", local: true, reason: "Id put on the h1." },
       {
         field: "eyebrowTone",
@@ -1913,8 +1917,16 @@ export const COMPONENT_PROP_REGISTRY = {
       "ChildrenProp",
       "ClassNameProp",
       { field: "aria-label", local: true, reason: "Accessible name of the filter group." },
-      { field: "action", local: true, reason: "Trailing control after the fields (a reset button)." },
-      { field: "variant", local: true, reason: "Framed panel, or a bare field row inside a framed module." },
+      {
+        field: "action",
+        local: true,
+        reason: "Trailing control after the fields (a reset button).",
+      },
+      {
+        field: "variant",
+        local: true,
+        reason: "Framed panel, or a bare field row inside a framed module.",
+      },
     ],
   },
   EditorialFilterFieldProp: {
@@ -1927,19 +1939,6 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "htmlFor", local: true, reason: "Id of the control the visible label names." },
     ],
   },
-  EditorialListingToolbarProp: {
-    group: "layout",
-    file: "components/layout.prop.ts",
-    vocabulary: [
-      "ClassNameProp",
-      { field: "count", local: true, reason: "The result count, a polite live region." },
-      { field: "note", local: true, reason: "A short note under the count." },
-      { field: "actions", local: true, reason: "Trailing order / view controls." },
-      { field: "start", local: true, reason: "Free start slot after count and note." },
-      { field: "end", local: true, reason: "Free end slot (in place of actions)." },
-      { field: "divider", local: true, reason: "Hairline under the row." },
-    ],
-  },
   CatalogDetailProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -1948,7 +1947,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       { field: "variant", local: true, reason: "Card or sealed-product frame." },
       { field: "media", local: true, reason: "Slot for the picture." },
-      { field: "favorite", local: true, reason: "Save toggle over the frame (CatalogCard's shape)." },
+      {
+        field: "favorite",
+        local: true,
+        reason: "Save toggle over the frame (CatalogCard's shape).",
+      },
       { field: "mediaCaption", local: true, reason: "Line under the frame." },
       { field: "overline", local: true, reason: "Slot for the kicker above the title." },
       { field: "meta", local: true, reason: "Slot for the tags under the title." },
@@ -2071,8 +2074,14 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/editorial-account.prop.ts",
     vocabulary: [
       "ClassNameProp",
+      {
+        field: "summary",
+        local: true,
+        reason: "Listing summary: count (a polite live region) and note.",
+      },
       { field: "start", local: true, reason: "Start cluster." },
       { field: "end", local: true, reason: "End cluster." },
+      { field: "divider", local: true, reason: "Hairline under the row." },
     ],
   },
   HoldingViewProp: {

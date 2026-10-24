@@ -162,7 +162,6 @@ export {
   CatalogDetailTag,
   EditorialFilterField,
   EditorialFilterPanel,
-  EditorialListingToolbar,
   EditorialPrompt,
   PriceSummary,
 } from "./editorial-catalog";
@@ -180,8 +179,6 @@ export type {
   EditorialFilterFieldProps,
   EditorialFilterPanelProp,
   EditorialFilterPanelProps,
-  EditorialListingToolbarProp,
-  EditorialListingToolbarProps,
 } from "./editorial-catalog";
 export {
   CardShowcase,

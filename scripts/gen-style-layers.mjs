@@ -112,7 +112,6 @@ const OWNERS = {
     // Catalog bodies (gh#1438).
     "EditorialFilterPanel",
     "EditorialFilterField",
-    "EditorialListingToolbar",
     "CatalogDetail",
     "CatalogDetailTag",
     "CatalogDetailSection",

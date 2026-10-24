@@ -557,26 +557,6 @@
   --editorial-filter-panel-bare-label-font-weight: var(--font-weight-medium);
   --editorial-filter-panel-bare-label-color: initial;
 
-  /* ── EditorialListingToolbar (gh#1438) ──────────────────────────────────────────────────── */
-  --editorial-listing-toolbar-gap: 1rem;
-  --editorial-listing-toolbar-space-block: 1.25rem;
-  --editorial-listing-toolbar-align: center;
-  --editorial-listing-toolbar-count-display: block;
-  --editorial-listing-toolbar-count-font-size: 0.75rem;
-  --editorial-listing-toolbar-count-line-height: 1.8;
-  --editorial-listing-toolbar-note-font-size: 0.75rem;
-  --editorial-listing-toolbar-note-line-height: 1.7;
-  --editorial-listing-toolbar-note-max-width: 37.5rem;
-  --editorial-listing-toolbar-actions-gap: 0.75rem;
-  --editorial-listing-toolbar-control-min-width: 9.375rem;
-  --editorial-listing-toolbar-control-max-width: none;
-  --editorial-listing-toolbar-control-font-size: 0.875rem;
-  --editorial-listing-toolbar-control-padding-x: 0.875rem;
-  /* Default = hsl(var(--card)). */
-  --editorial-listing-toolbar-control-background: initial;
-  /* divider: the space above the hairline under the row. */
-  --editorial-listing-toolbar-divider-padding-block-end: 1rem;
-
   /* Outline buttons in the catalog bodies (filter reset, item actions) read in the action colour on
    * no fill. Defaults = hsl(var(--primary)) / transparent (gh#1438). */
   --editorial-catalog-outline-color: initial;

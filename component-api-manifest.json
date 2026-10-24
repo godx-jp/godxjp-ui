@@ -7904,67 +7904,6 @@
         }
       ]
     },
-    "EditorialListingToolbar": {
-      "group": "layout",
-      "props": [
-        {
-          "name": "actions",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "count",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "divider",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "end",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "note",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "start",
-          "origin": "owned",
-          "required": false,
-          "type": "React.ReactNode",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        }
-      ]
-    },
     "EditorialMasthead": {
       "group": "layout",
       "props": [
@@ -8850,6 +8789,14 @@
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
+          "name": "divider",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
           "name": "end",
           "origin": "owned",
           "required": false,
@@ -8862,6 +8809,14 @@
           "origin": "owned",
           "required": false,
           "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "summary",
+          "origin": "owned",
+          "required": false,
+          "type": "{ count?: ReactNode; note?: ReactNode; } | undefined",
           "values": [],
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         }

@@ -1793,7 +1793,7 @@
     ],
     "related": [
       "Toolbar — application filter strip.",
-      "EditorialListingToolbar — the row under it."
+      "EditorialToolbar summary — the row under it."
     ],
     "tagline": "A catalog's filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role=\"group\"`. The selects inside read the panel's control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`.",
     "usage": [
@@ -1832,53 +1832,6 @@
     "tagline": "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control.",
     "usage": [
       "DO pass the same id to the control (Select id) and to htmlFor."
-    ]
-  },
-  {
-    "example": "import { EditorialListingToolbar } from \"@godxjp/ui/layout\";\n\n<EditorialListingToolbar count=\"396 results\" note=\"Prices are reference values.\" actions={<Select aria-label=\"Sort\" value={sort} onValueChange={setSort} options={sorts} />} />",
-    "group": "layout",
-    "importPath": "@godxjp/ui/layout",
-    "name": "EditorialListingToolbar",
-    "props": [
-      {
-        "description": "Result count, announced politely.",
-        "name": "count",
-        "type": "ReactNode"
-      },
-      {
-        "description": "Short note under the count.",
-        "name": "note",
-        "type": "ReactNode"
-      },
-      {
-        "description": "Trailing sort / view controls.",
-        "name": "actions",
-        "type": "ReactNode"
-      },
-      {
-        "description": "Free start slot (after count and note).",
-        "name": "start",
-        "type": "ReactNode"
-      },
-      {
-        "description": "Free end slot (in place of actions).",
-        "name": "end",
-        "type": "ReactNode"
-      },
-      {
-        "defaultValue": "false",
-        "description": "Hairline under the row.",
-        "name": "divider",
-        "type": "boolean"
-      }
-    ],
-    "related": [
-      "Toolbar — application list toolbar.",
-      "EditorialFilterPanel — the filters above."
-    ],
-    "tagline": "The row between a catalog's filters and its results (gh#1438): the result count (a polite live region) and a short note at the start, the sort / view controls at the end. Geometry: `--editorial-listing-toolbar-*`.",
-    "usage": [
-      "DO keep the count text short; a phone theme may hide it (--editorial-listing-toolbar-count-display)."
     ]
   },
   {
@@ -2244,11 +2197,16 @@
     ]
   },
   {
-    "example": "import { Button } from \"@godxjp/ui/general\";\nimport { EditorialToggleGroup, EditorialToolbar } from \"@godxjp/ui/layout\";\n\n<EditorialToolbar start={<EditorialToggleGroup aria-label=\"Type\" value={type} onValueChange={setType} items={[{ value: \"all\", label: \"All items\" }, { value: \"card\", label: \"Cards\" }]} />} end={<Button>Add an item</Button>} />",
+    "example": "import { Select } from \"@godxjp/ui/data-entry\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { EditorialToggleGroup, EditorialToolbar } from \"@godxjp/ui/layout\";\n\n<EditorialToolbar divider start={<EditorialToggleGroup aria-label=\"Type\" value={type} onValueChange={setType} items={[{ value: \"all\", label: \"All items\" }, { value: \"card\", label: \"Cards\" }]} />} end={<Button>Add an item</Button>} />\n<EditorialToolbar summary={{ count: \"396 results\", note: \"Prices are reference values.\" }} end={<Select aria-label=\"Sort\" value={sort} onValueChange={setSort} options={sorts} />} />",
     "group": "layout",
     "importPath": "@godxjp/ui/layout",
     "name": "EditorialToolbar",
     "props": [
+      {
+        "description": "Listing summary: result count (announced politely) and a note under it.",
+        "name": "summary",
+        "type": "{ count?: ReactNode; note?: ReactNode }"
+      },
       {
         "description": "Start cluster.",
         "name": "start",
@@ -2258,15 +2216,23 @@
         "description": "End cluster.",
         "name": "end",
         "type": "ReactNode"
+      },
+      {
+        "defaultValue": "false",
+        "description": "Hairline under the row.",
+        "name": "divider",
+        "type": "boolean"
       }
     ],
     "related": [
       "Toolbar — the application filter strip.",
-      "EditorialToggleGroup — the toggles it holds."
+      "EditorialToggleGroup — the toggles it holds.",
+      "EditorialFilterPanel — the filters above a listing."
     ],
-    "tagline": "A wrapping bar over a hairline (gh#1439): a start cluster (an EditorialToggleGroup filter) and an end cluster (view switch, primary action). A theme stacks it on a phone with `--editorial-toolbar-display: block`.",
+    "tagline": "The row above a collection (gh#1438, gh#1439): an optional `summary` (result count as a polite live region + a short note), a start cluster (an EditorialToggleGroup filter) and an end cluster (order Select, view switch, primary action), optionally over a hairline (`divider`). With a summary it is a listing row that keeps one line; without one a theme stacks it on a phone with `--editorial-toolbar-display: block`. Geometry: `--editorial-toolbar-*`.",
     "usage": [
-      "DO keep search and counts in their own row below it."
+      "DO keep the count text short; a phone theme may hide it (--editorial-toolbar-count-display).",
+      "DO keep search in its own row below it."
     ]
   },
   {

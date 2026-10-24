@@ -79,12 +79,23 @@ export type EditorialStatsProp = {
 };
 
 /**
- * @see EditorialToolbar — a wrapping bar over a hairline: a start cluster (filters) and an end
- * cluster (view switch, primary action).
+ * @see EditorialToolbar — the row above a collection (gh#1438, gh#1439): an optional `summary`
+ * (result count as a polite live region + a short note), a `start` cluster (filters) and an `end`
+ * cluster (order `Select`, view switch, primary action), optionally over a hairline (`divider`).
+ * With a `summary` it is a listing row: one line whose summary shrinks, the
+ * `--editorial-toolbar-summary-*` spacing, never stacked. Without one it is a wrapping bar whose
+ * clusters stack when a theme sets `--editorial-toolbar-display: block`. Selects in `end` read the
+ * toolbar's control scale (`--editorial-toolbar-control-*`).
  */
 export type EditorialToolbarProp = {
+  /** The listing summary: `count` ("396 results", announced politely) and a `note` under it. */
+  summary?: { count?: ReactNode; note?: ReactNode };
+  /** Start cluster — filters. */
   start?: ReactNode;
+  /** End cluster — the order `Select`, a view switch, the primary action. */
   end?: ReactNode;
+  /** A hairline under the row (`--editorial-toolbar-divider-padding-block-end` above it). */
+  divider?: boolean;
   className?: ClassNameProp;
 };
 

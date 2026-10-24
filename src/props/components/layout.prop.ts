@@ -2676,27 +2676,6 @@ export type EditorialFilterFieldProp = {
 };
 
 /**
- * @see EditorialListingToolbar — the row between a catalog's filters and its results (gh#1438): the
- * result count (a polite live region) and a short note at the start, the order / view controls at
- * the end. The selects inside read the toolbar's control scale.
- */
-export type EditorialListingToolbarProp = {
-  /** The result count ("396 results"); announced politely when it changes. */
-  count?: ReactNode;
-  /** A short note under the count. */
-  note?: ReactNode;
-  /** Trailing controls — the sort `Select`, a view toggle. */
-  actions?: ReactNode;
-  /** Free start slot (after count and note) — anything a toolbar leads with. */
-  start?: ReactNode;
-  /** Free end slot; takes the place of `actions` when both are given. */
-  end?: ReactNode;
-  /** A hairline under the row (`--editorial-listing-toolbar-divider-padding-block-end` above it). */
-  divider?: boolean;
-  className?: ClassNameProp;
-};
-
-/**
  * @see CatalogDetail — the head of a catalog item's page (gh#1438): a framed picture with the save
  * toggle over its corner and a caption under it, beside the item's kicker, its h1, a row of tags,
  * a summary price between two hairlines, actions and a two-column facts list.
