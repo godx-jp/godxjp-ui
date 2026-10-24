@@ -5088,6 +5088,19 @@
   .ui-dashboard-grid-item[data-held] .ui-dashboard-grid-move {
     cursor: grabbing;
   }
+  /* Paper has no scroll: a tile prints at its content height, never its screen row span (gh#1446). */
+  @media print {
+    .ui-dashboard-grid-items {
+      grid-auto-rows: auto;
+    }
+    .ui-dashboard-grid-content {
+      overflow: visible;
+    }
+    .ui-dashboard-grid-move,
+    .ui-dashboard-grid-resize {
+      display: none;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     .ui-dashboard-grid-item,
     .ui-dashboard-grid-move,

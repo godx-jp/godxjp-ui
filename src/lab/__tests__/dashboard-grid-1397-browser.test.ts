@@ -180,6 +180,10 @@ it("touch drag commits once, touch cancellation restores, and reduced motion sta
 it("responsive projection restores saved desktop geometry without a callback", async () => {
   const page = await open("ltr", true);
   await page.setViewportSize({ width: 1280, height: 700 });
+  // The column count follows a media query listener: wait for its re-render, as the steps below do.
+  await page.waitForFunction(
+    () => document.querySelector('[data-dashboard-id="b"]')?.getAttribute("data-x") === "1",
+  );
   expect(await page.locator('[data-dashboard-id="b"]').getAttribute("data-x")).toBe("1");
   await page.setViewportSize({ width: 390, height: 700 });
   await page.waitForFunction(
@@ -223,4 +227,23 @@ it("keeps content fixed across edit mode, insets both controls, and stacks at na
   await mobile.waitForSelector(".ui-dashboard-grid-items[data-stacked]");
   expect((await mobile.locator('[data-dashboard-id="a"]').boundingBox())!.height).toBeLessThan(160);
   await mobile.close();
+});
+
+it("prints every tile at its content height with no handles (gh#1446)", async () => {
+  const page = await open();
+  await page.locator('[data-dashboard-id="a"] .ui-dashboard-grid-content').evaluate((el) => {
+    const tall = document.createElement("div");
+    tall.style.blockSize = "600px";
+    el.append(tall);
+  });
+  const clipped = () =>
+    page
+      .locator('[data-dashboard-id="a"] .ui-dashboard-grid-content')
+      .evaluate((el) => el.scrollHeight - el.clientHeight);
+  expect(await clipped()).toBeGreaterThan(0);
+  await page.emulateMedia({ media: "print" });
+  expect(await clipped()).toBe(0);
+  expect(await page.locator(".ui-dashboard-grid-move").first().isVisible()).toBe(false);
+  expect(await page.locator(".ui-dashboard-grid-resize").first().isVisible()).toBe(false);
+  await page.close();
 });
