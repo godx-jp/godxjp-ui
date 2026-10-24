@@ -1,6 +1,10 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
+import { useLayoutEffect } from "@react-aria/utils";
 import { ArrowRight, Bookmark, Search } from "lucide-react";
 
+import { isImeComposing } from "../../lib/ime";
+import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import { Slot } from "../../lib/slot";
 import { Breadcrumb } from "./breadcrumb";
 import { EditorialSearchInline } from "./editorial-account";
@@ -59,6 +63,9 @@ export type {
   EditorialPillNavProp as EditorialPillNavProps,
   EditorialSearchProp,
   EditorialSearchProp as EditorialSearchProps,
+  EditorialSearchSuggestionFooterProp,
+  EditorialSearchSuggestionGroupProp,
+  EditorialSearchSuggestionProp,
   EditorialSectionHeadProp,
   EditorialSectionHeadProp as EditorialSectionHeadProps,
   EditorialSectionProp,
@@ -383,7 +390,12 @@ export function EditorialSearch(props: EditorialSearchProp) {
   return <EditorialSearchInset {...props} />;
 }
 
-/** The inset site search: glyph, field and submit button in one box, under a hidden label. */
+/**
+ * The inset site search: glyph, field and submit button in one box, under a hidden label. Given
+ * `suggestions` / `suggestionsFooter` the field is an ARIA combobox over a grouped listbox of links
+ * (gh#1447, WAI-ARIA APG "combobox with listbox popup"): focus stays in the field, arrows move the
+ * active row, Enter follows its link, Escape closes. An IME candidate is never a query.
+ */
 function EditorialSearchInset({
   label,
   placeholder,
@@ -393,19 +405,139 @@ function EditorialSearchInset({
   action,
   onSearch,
   scope,
+  suggestions,
+  suggestionsFooter,
+  suggestionsLabel,
+  onQueryChange,
+  linkComponent: LinkComponent = "a",
   id,
   className,
 }: EditorialSearchProp) {
   const reactId = React.useId();
   const inputId = id ?? `editorial-search-${reactId}`;
+  const listboxId = `${inputId}-suggestions`;
+  const combobox = suggestions !== undefined || suggestionsFooter !== undefined;
+  const composing = React.useRef(false);
+  const [focused, setFocused] = React.useState(false);
+  const [dismissed, setDismissed] = React.useState(false);
+  const [hasQuery, setHasQuery] = React.useState(Boolean(defaultValue?.trim()));
+  const [active, setActive] = React.useState(-1);
+
+  const groups = (suggestions ?? []).filter((group) => group.items.length > 0);
+  const rowKeys = [
+    ...groups.flatMap((group) => group.items.map((item) => `${group.id}:${item.id}`)),
+    ...(suggestionsFooter ? ["footer"] : []),
+  ];
+  const rowsKey = rowKeys.join("|");
+  const open = combobox && focused && !dismissed && hasQuery && rowKeys.length > 0;
+  const formRef = React.useRef<HTMLFormElement>(null);
+  const portalContainer = useOverlayPortalContainer();
+  const anchor = usePopupAnchor(formRef, open);
+  const optionId = React.useCallback(
+    (index: number) => `${listboxId}-option-${index}`,
+    [listboxId],
+  );
+
+  // New rows: nothing is active until the user moves into them.
+  React.useEffect(() => setActive(-1), [rowsKey]);
+  React.useEffect(() => {
+    if (open && active >= 0) {
+      document.getElementById(optionId(active))?.scrollIntoView?.({ block: "nearest" });
+    }
+  }, [open, active, optionId]);
+
+  const report = (value: string) => {
+    setHasQuery(value.trim() !== "");
+    setDismissed(false);
+    onQueryChange?.(value);
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isImeComposing(event)) return;
+    if (!open) {
+      if (event.key === "ArrowDown" && hasQuery && rowKeys.length > 0) {
+        event.preventDefault();
+        setDismissed(false);
+      }
+      return;
+    }
+    const count = rowKeys.length;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActive((index) => (index + 1) % count);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActive((index) => (index <= 0 ? count - 1 : index - 1));
+    } else if (event.key === "Escape") {
+      // The first Escape closes the popup; the next one is the browser's (it clears the field).
+      event.preventDefault();
+      setDismissed(true);
+      setActive(-1);
+    } else if (event.key === "Enter" && active >= 0) {
+      event.preventDefault();
+      document.getElementById(optionId(active))?.click();
+    }
+  };
+
+  let rowIndex = -1;
+  const option = (key: string, href: string, rowClass: string, children: React.ReactNode) => {
+    rowIndex += 1;
+    const index = rowIndex;
+    return (
+      <LinkComponent
+        key={key}
+        id={optionId(index)}
+        href={href}
+        role="option"
+        aria-selected={index === active}
+        tabIndex={-1}
+        className={rowClass}
+        onClick={() => {
+          setDismissed(true);
+          setActive(-1);
+        }}
+      >
+        {children}
+      </LinkComponent>
+    );
+  };
+
+  const comboboxProps: React.InputHTMLAttributes<HTMLInputElement> = combobox
+    ? {
+        role: "combobox",
+        "aria-autocomplete": "list",
+        "aria-expanded": open,
+        "aria-controls": listboxId,
+        "aria-activedescendant": open && active >= 0 ? optionId(active) : undefined,
+        onChange: (event) => {
+          if (!composing.current) report(event.currentTarget.value);
+        },
+        onCompositionStart: () => {
+          composing.current = true;
+        },
+        onCompositionEnd: (event) => {
+          composing.current = false;
+          report(event.currentTarget.value);
+        },
+        onFocus: () => setFocused(true),
+        onBlur: () => {
+          setFocused(false);
+          setActive(-1);
+        },
+        onKeyDown,
+      }
+    : {};
+
   return (
     <form
+      ref={formRef}
       role="search"
       aria-label={label}
       action={action}
       data-slot="editorial-search"
       className={cn("ui-editorial-search", className)}
       onSubmit={(event) => {
+        setDismissed(true);
         if (!onSearch) return;
         event.preventDefault();
         const value = new FormData(event.currentTarget).get(name);
@@ -429,13 +561,124 @@ function EditorialSearchInset({
         defaultValue={defaultValue}
         autoComplete="off"
         className="ui-editorial-search-input"
+        {...comboboxProps}
       />
       <button type="submit" className="ui-editorial-search-button ui-focus-ring">
         {submitLabel}
         <ArrowRight aria-hidden className="ui-editorial-search-button-icon" />
       </button>
+      {/* Portalled (the overlay container): a hero or a toolbar that clips its overflow must not
+          cut the popup off. Placed under the box from its measured rect while open. */}
+      {combobox &&
+        anchor.mounted &&
+        createPortal(
+          <div
+            data-slot="editorial-search-popup"
+            className="ui-editorial-search-popup"
+            hidden={!open}
+            style={anchor.style}
+            // A press on a row must not blur the field first (the popup would close under the click).
+            onMouseDown={(event) => event.preventDefault()}
+          >
+            <div role="listbox" id={listboxId} aria-label={suggestionsLabel ?? label}>
+              {groups.map((group) => (
+                <div
+                  key={group.id}
+                  role="group"
+                  aria-labelledby={`${listboxId}-group-${group.id}`}
+                  className="ui-editorial-search-group"
+                >
+                  <div
+                    role="presentation"
+                    id={`${listboxId}-group-${group.id}`}
+                    className="ui-editorial-search-group-label"
+                  >
+                    {group.label}
+                  </div>
+                  {group.items.map((item) =>
+                    option(
+                      `${group.id}:${item.id}`,
+                      item.href,
+                      "ui-editorial-search-suggestion",
+                      <>
+                        {item.media != null && (
+                          <span aria-hidden className="ui-editorial-search-suggestion-media">
+                            {item.media}
+                          </span>
+                        )}
+                        <span className="ui-editorial-search-suggestion-text">
+                          <span className="ui-editorial-search-suggestion-label">{item.label}</span>
+                          {item.description != null && (
+                            <span className="ui-editorial-search-suggestion-description">
+                              {item.description}
+                            </span>
+                          )}
+                        </span>
+                        {item.meta != null && (
+                          <span className="ui-editorial-search-suggestion-meta">{item.meta}</span>
+                        )}
+                      </>,
+                    ),
+                  )}
+                </div>
+              ))}
+              {suggestionsFooter &&
+                option(
+                  "footer",
+                  suggestionsFooter.href,
+                  "ui-editorial-search-suggestions-footer",
+                  <>
+                    <span className="ui-editorial-search-suggestion-label">
+                      {suggestionsFooter.label}
+                    </span>
+                    <ArrowRight
+                      aria-hidden
+                      className="ui-editorial-search-suggestions-footer-icon"
+                    />
+                  </>,
+                )}
+            </div>
+          </div>,
+          portalContainer ?? document.body,
+        )}
     </form>
   );
+}
+
+/**
+ * Where the suggestions popup goes: under the box, as wide as it, with the room left below it in the
+ * viewport (`--editorial-search-popup-room`, which caps the popup's max height). Re-measured on
+ * scroll (any scroller), resize and a change of the box's own size while open. `mounted` turns true
+ * after the first client render, so the server renders no portal.
+ */
+function usePopupAnchor(formRef: React.RefObject<HTMLFormElement | null>, open: boolean) {
+  const [mounted, setMounted] = React.useState(false);
+  const [style, setStyle] = React.useState<React.CSSProperties>();
+  React.useEffect(() => setMounted(true), []);
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    if (!open || !form) return;
+    const update = () => {
+      const rect = form.getBoundingClientRect();
+      setStyle({
+        top: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+        ["--editorial-search-popup-room" as string]: `${Math.max(0, window.innerHeight - rect.bottom)}px`,
+      });
+    };
+    update();
+    window.addEventListener("scroll", update, true);
+    window.addEventListener("resize", update);
+    const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(update);
+    observer?.observe(form);
+    return () => {
+      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", update);
+      observer?.disconnect();
+    };
+  }, [formRef, open]);
+  return { mounted, style };
 }
 
 /** A horizontal band of section links, scrolling sideways when it overflows. */

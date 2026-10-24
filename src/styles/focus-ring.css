@@ -520,7 +520,8 @@
    * is marked above, while Select's already-marked open trigger owns its search field.
    * Suppress the native inner outline so one field never paints two competing marks. */
   .ui-command-input:focus-visible,
-  .ui-search-select-search-input:focus-visible {
+  .ui-search-select-search-input:focus-visible,
+  .ui-editorial-search-input:focus-visible {
     --focus-field-shadow: none;
     --focus-ring-weight: 0px;
     outline: none;

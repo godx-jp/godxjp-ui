@@ -1701,6 +1701,48 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "variant", local: true, reason: "inset (site search) or inline (collection row)." },
       { field: "count", local: true, reason: "Live count at the end of the inline row." },
       { field: "debounce", local: true, reason: "Settle delay in ms, as SearchInput.debounce." },
+      { field: "suggestions", local: true, reason: "Grouped suggestion rows under the box (gh#1447)." },
+      { field: "suggestionsFooter", local: true, reason: "Last popup row linking to all results." },
+      { field: "suggestionsLabel", local: true, reason: "Accessible name of the suggestions listbox." },
+      {
+        field: "onQueryChange",
+        local: true,
+        reason: "Field text after each edit, outside IME composition.",
+      },
+      {
+        field: "linkComponent",
+        local: true,
+        reason: "Router link element for suggestion rows, as PageContainer.linkComponent.",
+      },
+    ],
+  },
+  EditorialSearchSuggestionGroupProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      { field: "id", local: true, reason: "Stable key of the group." },
+      { field: "label", local: true, reason: "Visible group heading naming the role=group." },
+      { field: "items", local: true, reason: "The group's suggestion rows." },
+    ],
+  },
+  EditorialSearchSuggestionProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      { field: "id", local: true, reason: "Stable key of the row within its group." },
+      { field: "href", local: true, reason: "Link target the row navigates to." },
+      { field: "label", local: true, reason: "Row text naming the option." },
+      { field: "description", local: true, reason: "Second line of detail." },
+      { field: "media", local: true, reason: "Decorative leading thumbnail, logo or chip." },
+      { field: "meta", local: true, reason: "Trailing value such as a price." },
+    ],
+  },
+  EditorialSearchSuggestionFooterProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      { field: "href", local: true, reason: "Link to the full results." },
+      { field: "label", local: true, reason: "Footer row text." },
     ],
   },
   EditorialPillNavProp: {

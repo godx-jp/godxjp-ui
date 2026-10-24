@@ -8423,10 +8423,26 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "name",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "onQueryChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((query: string) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
@@ -8459,6 +8475,30 @@
           "origin": "owned",
           "required": false,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "suggestions",
+          "origin": "owned",
+          "required": false,
+          "type": "EditorialSearchSuggestionGroupProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "suggestionsFooter",
+          "origin": "owned",
+          "required": false,
+          "type": "EditorialSearchSuggestionFooterProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "suggestionsLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
