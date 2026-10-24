@@ -1991,7 +1991,7 @@ import { Moon, Sun } from "lucide-react";
       { name: "children", type: "ReactNode", description: "EditorialAuthCard." },
     ],
     usage: ["DO keep the form in an EditorialAuthCard with Form + FormField."],
-    related: ["EditorialAuthCard — the card.", "AuthShell — the application sign-in shell."],
+    related: ["EditorialAuthCard — the card.", 'CenteredShell variant="auth" — the application sign-in shell.'],
     example: `import { EditorialAuth, EditorialAuthCard, Eyebrow } from "@godxjp/ui/layout";
 
 <EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title="Make room for what you love." benefits={["A collection of your own"]}><EditorialAuthCard title="Welcome back." /></EditorialAuth>`,

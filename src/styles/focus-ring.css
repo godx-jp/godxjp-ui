@@ -150,6 +150,8 @@
    * own stylesheet intends (gh#1271). */
   .ui-command-input-wrapper:has(.ui-command-input:focus-visible),
   .ui-editorial-search:has(.ui-editorial-search-input:focus-visible),
+  /* The account theme picker (gh#1439): a visually hidden radio before its preview card. */
+  .ui-theme-picker-input:focus-visible + .ui-theme-picker-preview,
   .ui-editorial-search:has(.ui-control-trigger[data-focus-visible]),
   .ui-editorial-search:has(.ui-control-trigger[data-open-modality="keyboard"]),
   .ui-attachments:has(.ui-attachments-input:focus-visible),
