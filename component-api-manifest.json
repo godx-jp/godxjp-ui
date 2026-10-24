@@ -12674,6 +12674,14 @@
           "type": "ControlVariantProp | undefined",
           "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlWidthProp | undefined",
+          "values": ["auto", "full", "bounded"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },

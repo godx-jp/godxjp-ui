@@ -8681,6 +8681,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         description: "Trailing decorative affix inside the field (e.g. `%`). aria-hidden.",
       },
       {
+        name: "width",
+        type: '"full" | "auto" | "bounded"',
+        default: '"full"',
+        description:
+          "How the field takes its inline space, as `Select` and the pickers mean it (gh#1448). `full` fills the line; `auto` is sized to the widest value the bounds allow (formatted `min` / `max`, 6 characters when unbounded) plus the steppers — a quantity stepper outside a FormField, e.g. in a `ListRow` trailing slot; `bounded` holds `--control-bounded-width`. Inside a FormField, `controlWidth` still sizes it.",
+      },
+      {
         name: "name",
         type: "string",
         description: "Form field name — submits its value natively.",
