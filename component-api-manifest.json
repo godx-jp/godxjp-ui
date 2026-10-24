@@ -6856,6 +6856,14 @@
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
+          "name": "href",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
           "name": "id",
           "origin": "owned",
           "required": false,
