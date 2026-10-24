@@ -198,6 +198,10 @@ export const LegalDocumentShell = React.forwardRef<HTMLDivElement, LegalDocument
     };
 
     const contentsName = contentsLabel ?? t("layout.legalDocumentShell.contents");
+    // No sections → no contents list (an "On this page" caption over nothing); no contents and no
+    // documentNavigation → no rail at all, and `data-rail="none"` drops its grid track.
+    const hasContents = sections.length > 0;
+    const hasRail = hasContents || documentNavigation !== undefined;
 
     return (
       <div
@@ -206,7 +210,11 @@ export const LegalDocumentShell = React.forwardRef<HTMLDivElement, LegalDocument
         data-slot="legal-document-shell"
         className={cn("ui-legal-document-scope", className)}
       >
-        <article className="ui-legal-document" aria-labelledby={titleId}>
+        <article
+          className="ui-legal-document"
+          aria-labelledby={titleId}
+          data-rail={hasRail ? undefined : "none"}
+        >
           <header className="ui-legal-document-header">
             <Heading level={1} id={titleId}>
               {title}
@@ -247,31 +255,35 @@ export const LegalDocumentShell = React.forwardRef<HTMLDivElement, LegalDocument
             )}
           </header>
 
-          <div className="ui-legal-document-rail">
-            {documentNavigation !== undefined && (
-              <div data-slot="legal-document-navigation">{documentNavigation}</div>
-            )}
-            <nav className="ui-legal-document-toc" aria-labelledby={contentsId}>
-              <p id={contentsId} className="ui-legal-document-toc-title">
-                {contentsName}
-              </p>
-              <ol className="ui-legal-document-toc-list">
-                {sections.map((section) => (
-                  <li key={section.id}>
-                    <a
-                      href={`#${section.id}`}
-                      className="ui-legal-document-toc-link"
-                      data-active={section.id === active ? "" : undefined}
-                      aria-current={section.id === active ? "location" : undefined}
-                      onClick={(event) => handleContentsClick(event, section.id)}
-                    >
-                      {section.title}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          </div>
+          {hasRail && (
+            <div className="ui-legal-document-rail">
+              {documentNavigation !== undefined && (
+                <div data-slot="legal-document-navigation">{documentNavigation}</div>
+              )}
+              {hasContents && (
+                <nav className="ui-legal-document-toc" aria-labelledby={contentsId}>
+                  <p id={contentsId} className="ui-legal-document-toc-title">
+                    {contentsName}
+                  </p>
+                  <ol className="ui-legal-document-toc-list">
+                    {sections.map((section) => (
+                      <li key={section.id}>
+                        <a
+                          href={`#${section.id}`}
+                          className="ui-legal-document-toc-link"
+                          data-active={section.id === active ? "" : undefined}
+                          aria-current={section.id === active ? "location" : undefined}
+                          onClick={(event) => handleContentsClick(event, section.id)}
+                        >
+                          {section.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              )}
+            </div>
+          )}
 
           <div className="ui-legal-document-content">
             {sections.map((section) => (
