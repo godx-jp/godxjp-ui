@@ -419,6 +419,15 @@ export type NumberInputProp = FieldA11yProps & {
   prefix?: React.ReactNode;
   /** Trailing affix inside the field (e.g. `%`). */
   suffix?: React.ReactNode;
+  /**
+   * How the field takes its inline space, as `Select` and the pickers mean it (gh#1448).
+   * `full` (default) fills the line; `auto` is sized to the widest value the bounds allow (the
+   * formatted `min` / `max`, 6 characters when unbounded) plus the steppers — a quantity stepper in
+   * a `ListRow` trailing slot, outside any `FormField` `controlWidth`; `bounded` holds
+   * `--control-bounded-width`. Measured in a consumer deck builder: a 0–99 stepper took 215px at
+   * 1440px and, at 390px, pushed every row's trailing cluster onto its own line.
+   */
+  width?: ControlWidthProp;
   /** Form field name — the visible input submits its value natively. */
   name?: NameProp;
   id?: IdProp;

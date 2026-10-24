@@ -1,0 +1,32 @@
+{
+  "example": "import { EditorialStats } from \"@godxjp/ui/layout\";\n\n<EditorialStats aria-label=\"Collection totals\" items={[{ label: \"Items in your collection\", value: \"12\", unit: \"items\", note: \"A collection of things you love.\" }, { label: \"Single cards\", value: \"9\", unit: \"items\" }, { label: \"Sealed products\", value: \"3\", unit: \"items\" }]} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialStats",
+  "props": [
+    {
+      "description": "The tiles.",
+      "name": "items",
+      "required": true,
+      "type": "{ label: ReactNode; value: ReactNode; unit?: ReactNode; note?: ReactNode }[]"
+    },
+    {
+      "description": "Name of the list.",
+      "name": "aria-label",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "StatCard — an application KPI tile."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "A strip of figure tiles on unequal tracks (gh#1439, default `1.4fr 1fr 1fr`): label, large tabular figure with a small unit, optional note. The first tile is the lead (quiet ground; a theme can span it across a phone row with its figure beside the label). Geometry: `--editorial-stats-*`.",
+  "usage": [
+    "DO format the figures with Intl before passing them."
+  ]
+}

@@ -32,6 +32,11 @@
    * The utility consumes a concrete value, so this remains a root alias; scoped services
    * override --button-radius directly. Pill and sharp shapes keep their own tokens. */
   --button-radius: var(--radius);
+  /* Label weight and the default-size label size (gh#1435): a brand whose buttons are semibold
+   * 14px sets them here, without moving every medium-weight label in the kit. */
+  --button-font-weight: var(--font-weight-medium);
+  --button-font-size: var(--font-size-base);
+  --button-padding-inline: var(--control-padding-x);
   /* THE BUTTON'S OWN SURFACE — one knob per painted variant (gh#880, standard §1).
    *
    * Every variant painted a bare role (`hsl(var(--primary))`, `hsl(var(--background))`,
@@ -58,6 +63,13 @@
   --button-outline-background: initial; /* default = hsl(var(--background)) at the call site */
   --button-outline-background-alpha: initial; /* default = 100% at the call site */
   --button-outline-border-color: initial; /* default = hsl(var(--input)) at the call site */
+  /* The outline variant's label ink (gh#1439): a brand whose secondary button reads in its action
+   * colour. `initial`, default = hsl(var(--foreground)) at the call site. */
+  --button-outline-foreground: initial;
+  /* Label↔glyph gap and glyph size of a button (gh#1439): a brand whose buttons carry a 20px arrow
+   * 10px from the label. `initial`, defaults = var(--control-gap) / var(--control-icon-size). */
+  --button-gap: initial;
+  --button-icon-size: initial; /* scale-exempt: unset mirror reads the scoped --control-icon-size at its call site */
   --button-secondary-background: initial; /* default = hsl(var(--secondary)) at the call site */
   --button-secondary-background-alpha: initial; /* default = 100% at the call site */
   /* THE ONE BUTTON KNOB THAT IS INK, NOT A FILL (gh#884) — the `link` variant's text colour. The

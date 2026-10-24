@@ -32,8 +32,11 @@ describe("stacked table rows (gh#351)", () => {
   });
   it.each(BREAKPOINTS)("%s records have one boundary, without adjacent card outlines", (size) => {
     const rule = stackedRowRule(size);
-    expect(rule).toContain("border: 0");
-    expect(rule).toContain("border-block-end: var(--stroke-hairline)");
+    expect(rule).toContain("border-inline: 0");
+    expect(rule).toContain("border-block-start: 0");
+    expect(rule).toContain(
+      "border-block-end-width: var(--table-row-border-width, var(--stroke-hairline))",
+    );
     expect(tableStyles).toMatch(
       new RegExp(
         `\\[data-collapse-below="${size}"\\] \\.ui-table-row:last-child\\s*\\{[^}]*border-block-end-width: 0`,

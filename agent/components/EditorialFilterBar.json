@@ -1,0 +1,51 @@
+{
+  "example": "import { EditorialFilterBar } from \"@godxjp/ui/layout\";\n\n<EditorialFilterBar aria-label=\"Selection\" value={tab} onValueChange={setTab} options={[{ value: \"all\", label: \"Selected cards\" }, { value: \"down\", label: \"Price drops\" }]} extra=\"vs. 30 days ago\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialFilterBar",
+  "props": [
+    {
+      "description": "Group name.",
+      "name": "aria-label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "The toggles.",
+      "name": "options",
+      "required": true,
+      "type": "{ value: string; label: ReactNode }[]"
+    },
+    {
+      "description": "Pressed toggle.",
+      "name": "value",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Change handler.",
+      "name": "onValueChange",
+      "required": true,
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Trailing note.",
+      "name": "extra",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "Tabs — panels.",
+    "Segmented — a compact single choice."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "A row of underlined filter toggles above a collection (gh#1435): a named `role=\"group\"` of `aria-pressed` buttons (one pressed at a time) and a trailing note, over a hairline. The collection below is the consumer's. Geometry: `--editorial-filter-bar-*`.",
+  "usage": [
+    "DO use Tabs when each option owns a panel; this bar only filters one collection."
+  ]
+}

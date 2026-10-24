@@ -590,6 +590,9 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
       },
       [ref],
     );
+    // How the popup was opened (gh#1445): a pointer press on the trigger, or anything else (keys).
+    // Read at render while open, so the open-state ring can stay off for a mouse user.
+    const openedWithPointer = React.useRef(false);
     const wasOpen = React.useRef(false);
     React.useEffect(() => {
       // …AND THE SAME REPAIR ONE TICK LATER. react-aria restores focus from its focus scope on a
@@ -642,6 +645,7 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
           // click) restores to it. Flipping react-aria's `preventFocusOnPress` instead is WRONG:
           // it stops the popup opening at all (measured: 34 red tests).
           onPointerDown={(event: React.PointerEvent<HTMLButtonElement>) => {
+            openedWithPointer.current = true;
             event.currentTarget.focus();
           }}
           {...(events as object)}
@@ -672,6 +676,12 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
               data-status={status}
               data-width={width}
               data-state={isOpen ? "open" : "closed"}
+              data-open-modality={
+                isOpen ? (openedWithPointer.current ? "pointer" : "keyboard") : undefined
+              }
+              onKeyDownCapture={() => {
+                openedWithPointer.current = false;
+              }}
               data-placeholder={hasValue ? undefined : ""}
               data-value={dataValue}
             />
@@ -1021,6 +1031,22 @@ function groupDataOptions(options: SearchSelectOptionProp[]) {
 }
 
 /**
+ * gh#1444 — `option.icon` leads the label on the plain listbox too (row and trigger), as the
+ * SearchSelect panel already does; an option without one renders its label alone.
+ */
+function withOptionIcon(option: SearchSelectOptionProp, label: React.ReactNode) {
+  if (!option.icon) return label;
+  return (
+    <span className="ui-select-option-body">
+      <span className="ui-select-option-icon" aria-hidden="true">
+        {option.icon}
+      </span>
+      <span className="ui-select-option-label">{label}</span>
+    </span>
+  );
+}
+
+/**
  * antd `labelRender` on the plain listbox. It reads the picked key out of react-aria's state
  * rather than off a prop, so an UNCONTROLLED Select renders a custom label too — the branch a
  * `value`-only implementation silently skips.
@@ -1252,7 +1278,7 @@ function DataSelect(props: PlainDataSelectProp) {
           ? optionRender(option, { index })
           : renderOption
             ? renderOption(option)
-            : option.label}
+            : withOptionIcon(option, option.label)}
       </SelectItem>
     );
   };
@@ -1345,6 +1371,12 @@ function DataSelect(props: PlainDataSelectProp) {
         <SelectValue placeholder={placeholder ?? t("dataEntry.searchSelect.placeholder")}>
           {labelRender ? (
             <DataSelectLabel labelRender={labelRender} options={options} />
+          ) : options.some((option) => option.icon) ? (
+            // gh#1444 — the selected option's icon leads the trigger too, as in the search panel.
+            <DataSelectLabel
+              labelRender={({ label, option }) => (option ? withOptionIcon(option, label) : label)}
+              options={options}
+            />
           ) : undefined}
         </SelectValue>
         {suffixIcon === undefined || suffixIcon === null || showClear || loading ? null : (

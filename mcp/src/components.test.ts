@@ -280,3 +280,10 @@ describe("DashboardGrid lab admission (#1397)", () => {
       expect(out).toContain(prop);
   });
 });
+
+it("AppShell shares MobileShell destination vocabulary", () => {
+  const shell = COMPONENTS.find((c) => c.name === "AppShell")!;
+  expect(shell.props.find((p) => p.name === "mobileTabBar")?.type).toBe("ReactNode");
+  expect(shell.props.find((p) => p.name === "mobileTabBarLabel")?.type).toBe("string");
+  expect(shell.props.find((p) => p.name === "mobileTabBar")?.description).toContain("MobileShell");
+});

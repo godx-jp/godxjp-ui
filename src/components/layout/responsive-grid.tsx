@@ -54,12 +54,26 @@ type ResponsiveGridStyle = CSSProperties & {
  * Column geometry behind each named preset. `pricing-plans`: 3 columns from the `sm` container
  * step up, 1 column only below it.
  */
-const RESPONSIVE_GRID_PRESET_COLUMNS: Record<
-  ResponsiveGridPresetProp,
-  { base: number; sm: number; md: number; lg: number }
+const RESPONSIVE_GRID_PRESET_COLUMNS: Partial<
+  Record<ResponsiveGridPresetProp, { base: number; sm: number; md: number; lg: number }>
 > = {
   "pricing-plans": { base: 1, sm: 3, md: 3, lg: 3 },
 };
+
+/**
+ * TOKEN-DRIVEN presets (gh#1435): the tracks and the gap are `--responsive-grid-{preset}-track-size`
+ * / `-gap`, so a theme sets them at ITS OWN breakpoints (an editorial design whose catalog steps
+ * 1 → 2 → 3 → 4 columns at 360 / 700 / 960, with its own gaps) instead of the container steps.
+ * `catalog` — a product/card collection; `trio` — three features or articles; `lead` — a first
+ * column a little wider than the rest (a site footer: brand, then link groups).
+ * `panels` — a row of bordered panels (a roadmap: three, then two, then one; gh#1440).
+ */
+const TOKEN_PRESETS: ReadonlySet<ResponsiveGridPresetProp> = new Set([
+  "catalog",
+  "trio",
+  "lead",
+  "panels",
+]);
 
 function resolveColumns(columns: ResponsiveGridColumnsProp): {
   base: number;
@@ -110,7 +124,8 @@ export function ResponsiveGrid({
   className,
   children,
 }: ResponsiveGridProps) {
-  const resolved = preset ? RESPONSIVE_GRID_PRESET_COLUMNS[preset] : resolveColumns(columns);
+  const tokenPreset = preset !== undefined && TOKEN_PRESETS.has(preset) ? preset : undefined;
+  const resolved = (preset && RESPONSIVE_GRID_PRESET_COLUMNS[preset]) ?? resolveColumns(columns);
   // The scope wrapper establishes the grid's OWN query container (container-type: inline-size) so
   // the column count responds to the width AVAILABLE TO THE GRID, never the viewport and never an
   // undeclared ancestor `container-type`. It therefore stays correct inside a narrow card or a
@@ -119,6 +134,7 @@ export function ResponsiveGrid({
       <div
         className={cn("ui-responsive-grid", className)}
         data-gap={gap}
+        data-preset={tokenPreset}
         data-flow={flow === "columns" ? "columns" : undefined}
         data-align={align}
         data-dense={dense && flow !== "columns" ? "" : undefined}

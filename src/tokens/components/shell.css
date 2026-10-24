@@ -4,6 +4,16 @@
 
 :root {
   --responsive-grid-column-width: 20rem;
+  /* Token-driven ResponsiveGrid presets (gh#1435). The defaults fill the row with as many tracks
+   * as fit; a theme re-declares them at its own breakpoints for exact column counts. */
+  --responsive-grid-catalog-track-size: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  --responsive-grid-catalog-gap: var(--space-6);
+  --responsive-grid-trio-track-size: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  --responsive-grid-trio-gap: var(--space-6);
+  --responsive-grid-lead-track-size: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  --responsive-grid-lead-gap: var(--space-10);
+  --responsive-grid-panels-track-size: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  --responsive-grid-panels-gap: var(--space-6);
   --sidebar-section-label-font-size: var(
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
@@ -445,6 +455,12 @@
   --topbar-item-hover-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   --topbar-item-hover-color: initial; /* default = var(--accent-foreground), resolved at the call site */
   --topbar-item-active-background: var(--secondary);
+  /* The current page among the bar's navigation links (`aria-current="page"`, gh#1428): ink plus
+   * an inset block-end indicator. Colours default at the call site (the freeze rule), so a scoped
+   * override of --foreground / --primary still reaches them. */
+  --topbar-item-current-color: initial; /* default = var(--foreground) */
+  --topbar-item-current-indicator-color: initial; /* default = var(--primary) */
+  --topbar-item-current-indicator-size: var(--stroke-md);
   /* COUNT PILL overlaid on the cell's glyph (gh#398) — the unread affordance the bell needs. The
    * offsets are what a call site used to hand-write as `relative` + `absolute -end-0.5 -top-0.5`,
    * i.e. a position the cell owns and no theme could retune; they are measured from the GLYPH box
@@ -1000,6 +1016,14 @@
    * "Role-mirror knobs MUST be `initial`"). Documented default = hsl(var(--background)) — a public
    * page is the plain page canvas, not the app's `--muted` chrome. */
   --centered-shell-landing-background: initial;
+  /* `CenteredShell footerTone="inverse"` (gh#1429) — the footer as a brand band. Role-mirror knobs
+   * (HSL channels), `initial` with the default at the call site: background = the page's ink
+   * (--foreground), every text role inside = the page's canvas (--background). */
+  --centered-shell-footer-inverse-background: initial;
+  --centered-shell-footer-inverse-foreground: initial;
+  --centered-shell-footer-inverse-muted-foreground: initial;
+  --centered-shell-footer-inverse-border: initial;
+  --centered-shell-footer-inverse-link-color: initial;
 }
 
 /* Rule #24 companion (gh#291): on coarse pointers --control-height grows to 2.75rem
@@ -1062,6 +1086,10 @@
   --mobile-shell-header-bar-height: var(--band-height-3xl);
   /* 4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar;
    * there is no 64px band step, so it derives from the 3.5rem one (tier 2a). */
+  --mobile-shell-tab-bar-active-color: initial; /* Local brand ink role. */
+  --mobile-shell-tab-bar-active-background: initial; /* Local accent role. */
+  --mobile-shell-tab-bar-background: initial; /* Local card role at the reader. */
+  --mobile-shell-tab-bar-border: none;
   --mobile-shell-tab-bar-height: calc(var(--band-height-3xl) + var(--space-2));
   --mobile-shell-main-padding-block: var(--space-4);
   --mobile-shell-actions-padding-block: var(--space-3);

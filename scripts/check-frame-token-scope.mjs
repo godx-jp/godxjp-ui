@@ -285,11 +285,18 @@ function frameRoutes() {
       if (e.isDirectory()) return walk(full);
       return e.name.endsWith(".tsx") && !e.name.startsWith("_") ? [full] : [];
     });
-  return walk(path.join(REPO_ROOT, "docs"))
+  const routes = walk(path.join(REPO_ROOT, "docs"))
     .map((f) => path.relative(path.join(REPO_ROOT, "docs"), f).replace(/\.tsx$/, ""))
     .filter((rel) => !rel.startsWith("showcase/"))
     .map((rel) => rel.replace(/\//g, "-").toLowerCase())
     .sort();
+  const index = process.argv.indexOf("--only");
+  if (index < 0) return routes;
+  if (UPDATE) throw new Error("--only cannot update a baseline");
+  const slug = process.argv[index + 1];
+  if (!slug || !routes.includes(slug)) throw new Error(`Unknown --only slug: ${slug}`);
+  console.log(`PARTIAL, not a release gate: ${slug}`);
+  return [slug];
 }
 
 /**

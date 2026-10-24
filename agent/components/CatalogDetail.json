@@ -1,0 +1,76 @@
+{
+  "example": "import { CatalogDetail, CatalogDetailTag, Eyebrow } from \"@godxjp/ui/layout\";\n\n<CatalogDetail media={<img src={src} alt={name} />} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: \"Market\", price: \"¥32,800\" }} facts={[{ key: \"set\", label: \"Expansion\", value: \"151\" }]} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "CatalogDetail",
+  "props": [
+    {
+      "defaultValue": "\"card\"",
+      "description": "Frame for a card or a sealed package.",
+      "name": "variant",
+      "type": "\"card\" | \"sealed\""
+    },
+    {
+      "description": "The picture.",
+      "name": "media",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Save toggle over the frame.",
+      "name": "favorite",
+      "type": "{ pressed; onPressedChange; label; disabled? }"
+    },
+    {
+      "description": "Line under the frame.",
+      "name": "mediaCaption",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Kicker (an Eyebrow).",
+      "name": "overline",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The h1.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "CatalogDetailTags.",
+      "name": "meta",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Summary price block.",
+      "name": "summary",
+      "type": "{ label?; price; note? }"
+    },
+    {
+      "description": "Actions under the summary.",
+      "name": "actions",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Facts, two columns.",
+      "name": "facts",
+      "type": "{ key; label; value }[]"
+    }
+  ],
+  "related": [
+    "CatalogCard — the item in a grid.",
+    "CatalogDetailSection — the bands under it."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "The head of a catalog item's page (gh#1438): a framed picture with the save toggle over its corner and a caption, beside the kicker, the page's h1, a row of CatalogDetailTags, a summary price between hairlines, actions and a two-column facts list. Geometry: `--editorial-catalog-detail-*`.",
+  "usage": [
+    "DO pass the item's one h1 as title; the page has no other h1.",
+    "DO use CatalogCard for the same item in a grid."
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "example": "import { EditorialPillNav, EditorialPillNavItem } from \"@godxjp/ui/layout\";\n\n<EditorialPillNav aria-label=\"Browse by game\" label=\"YOUR GAME\">\n  <EditorialPillNavItem asChild icon=\"dot\"><a href=\"/cards/?game=pokemon\">Pokémon</a></EditorialPillNavItem>\n</EditorialPillNav>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialPillNav",
+  "props": [
+    {
+      "description": "Landmark name.",
+      "name": "aria-label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "EditorialPillNavItem elements.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Visible lead text (aria-hidden; the landmark is named).",
+      "name": "label",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "EditorialSection."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "subParts": [
+    "EditorialPillNavItem"
+  ],
+  "tagline": "A horizontal band of section links (gh#1435) — a site's \"browse by game\" row: an optional lead label, then `EditorialPillNavItem`s (an icon or a small `\"dot\"` marker; `aria-current=\"page\"` on the link marks the current one). Scrolls sideways when it overflows. Geometry: `--editorial-pill-*`.",
+  "usage": [
+    "DO put it in `EditorialSection as=\"div\" tone=\"surface\" divider=\"end\"` for a band under the header."
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "example": "import { EditorialAuth, EditorialAuthCard, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title=\"Make room for what you love.\" benefits={[\"A collection of your own\"]}><EditorialAuthCard title=\"Welcome back.\" /></EditorialAuth>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialAuth",
+  "props": [
+    {
+      "description": "Kicker.",
+      "name": "eyebrow",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Display title (h1).",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Copy.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Picture on the front card.",
+      "name": "art",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Benefit lines.",
+      "name": "benefits",
+      "type": "ReactNode[]"
+    },
+    {
+      "description": "EditorialAuthCard.",
+      "name": "children",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "EditorialAuthCard — the card.",
+    "CenteredShell — use variant=\"auth\" for the application sign-in shell."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`.",
+  "usage": [
+    "DO keep the form in an EditorialAuthCard with Form + FormField."
+  ]
+}

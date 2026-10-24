@@ -300,7 +300,7 @@
 
   /* The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme
    * remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical. */
-  --table-font-size: var(--font-size-sm, var(--font-size-base));
+  --table-font-size: initial; /* Local default; compact collections retain their compact tier. */
   /* MANDATORY companion to --table-font-size — the gh#260 trap, again. `text-sm` also set
    * line-height from Tailwind's `--text-sm--line-height`, and styles/base.css remaps `--text-sm`
    * but NOT that companion. Without this the table would silently inherit ambient page leading

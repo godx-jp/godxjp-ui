@@ -1,0 +1,52 @@
+{
+  "example": "import { EditorialHero, EditorialSection, EditorialSearch, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialSection tone=\"hero\" divider=\"end\">\n  <EditorialHero\n    eyebrow={<Eyebrow>FOR EVERY CARD, EVERY COLLECTOR.</Eyebrow>}\n    title=\"Discover. Compare.\"\n    description=\"Your next favourite card.\"\n    search={<EditorialSearch label=\"Card name or number\" submitLabel=\"Search\" onSearch={go} />}\n  />\n</EditorialSection>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialHero",
+  "props": [
+    {
+      "description": "The h1. Emphasise a second line with `<Text tone=\"brand\" size=\"inherit\">`.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Kicker above the title (an Eyebrow).",
+      "name": "eyebrow",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Lead paragraph.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The search (an EditorialSearch).",
+      "name": "search",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Suggested-query links under the search (plain links; the slot styles them).",
+      "name": "footer",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Media column (a CardShowcase preset=\"fan\").",
+      "name": "media",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "EditorialSearch, CardShowcase, Eyebrow."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "The opening of an editorial page (gh#1435): a copy column — kicker, the page's one h1, a lead, a search and a line of suggested queries — beside a media column. Put it in `EditorialSection tone=\"hero\" divider=\"end\"`. Geometry: `--editorial-hero-*` (tracks, min-height, h1 size/leading/tracking and every gap).",
+  "usage": [
+    "DO keep it the page's only h1."
+  ]
+}

@@ -1,0 +1,765 @@
+/* Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on
+ * `CenteredShell preset="public-landing" flow="sections"`: full-width sections, a hero with a
+ * product showcase, the ruled kicker, a section head, the inset site search, a pill navigation
+ * band, catalog / editorial cards and the brand banner.
+ *
+ * Every geometry value a design states lives here, so a theme retunes it once — including at its
+ * OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes
+ * here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with
+ * the documented default resolved at the call site, so a scoped [data-tenant] / dark override
+ * still reaches them.
+ */
+:root {
+  /* Fixed editorial type uses the nearest body step plus its exact measured correction.
+   * The fallback repeats the foundation formula because derived type knobs default to initial. */
+  /* ── Shared accents ─────────────────────────────────────────────────────────────────────── */
+  /* The decorative ornament (kicker rule, showcase orbits and stars). Default = hsl(var(--border)). */
+  --editorial-ornament-color: initial;
+  /* Small accent text (kickers, card overlines). Default = hsl(var(--muted-foreground)). */
+  --editorial-kicker-color: initial;
+  /* The face of kickers and figures. Default = var(--font-family-tabular, inherit). */
+  --editorial-kicker-font-family: initial;
+
+  /* ── EditorialSection ───────────────────────────────────────────────────────────────────── */
+  --editorial-section-max-width: var(--centered-shell-landing-max-width, 80rem);
+  --editorial-section-inset-inline: var(--centered-shell-landing-inset-inline, 3rem);
+  --editorial-section-padding-block: calc(var(--space-20) - var(--space-2));
+  --editorial-section-border-width: var(--stroke-hairline);
+  /* Default = hsl(var(--border)). */
+  --editorial-section-border-color: initial;
+  /* Default = hsl(var(--card)). */
+  --editorial-section-surface-background: initial;
+  /* Default = hsl(var(--muted)). */
+  --editorial-section-subtle-background: initial;
+  /* Default = a 110° wash from the page canvas (35%) into hsl(var(--muted)). */
+  --editorial-section-hero-background: initial;
+
+  /* ── EditorialHero ──────────────────────────────────────────────────────────────────────── */
+  --editorial-hero-track-size: minmax(0, 1.12fr) minmax(0, 1fr);
+  --editorial-hero-gap: var(--space-6);
+  --editorial-hero-min-height: 34.125rem;
+  --editorial-hero-padding-block-start: var(--space-12);
+  --editorial-hero-padding-block-end: var(--space-12);
+  --editorial-hero-copy-padding-block: var(--space-3);
+  /* `start` or `center` — the copy column's text and kicker alignment. */
+  --editorial-hero-copy-align: start;
+  --editorial-hero-kicker-letter-spacing: 0.13em;
+  --editorial-hero-title-font-size: 2.75rem; /* scale-exempt: fixed measured 44px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-hero-title-line-height: 1.65;
+  --editorial-hero-title-letter-spacing: -0.04em;
+  --editorial-hero-title-font-weight: var(--font-weight-semibold);
+  --editorial-hero-title-space-block-start: var(--space-6);
+  --editorial-hero-title-space-block-end: var(--space-5);
+  --editorial-hero-description-font-size: calc(var(--font-size-base) + 0.0625rem);
+  --editorial-hero-description-line-height: 1.9;
+  --editorial-hero-description-max-width: 30rem;
+  --editorial-hero-search-space-block-start: calc(var(--space-6) + 0.25rem);
+  --editorial-hero-search-max-width: none;
+  --editorial-hero-footer-space-block-start: var(--space-3);
+  --editorial-hero-media-space-block-start: 0rem;
+  --editorial-hero-media-max-width: none;
+  /* `0` or `auto` — centres the lead, search and media when the copy is centred. */
+  --editorial-hero-copy-space-inline: 0;
+  --editorial-hero-footer-gap: calc(var(--space-3) + 0.125rem);
+  --editorial-hero-footer-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-hero-footer-link-min-height: 1.875rem;
+  --editorial-hero-footer-link-offset: 4px;
+
+  /* ── Eyebrow (the kicker) ───────────────────────────────────────────────────────────────── */
+  --editorial-eyebrow-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-eyebrow-line-height: 1.5;
+  --editorial-eyebrow-letter-spacing: 0.13em;
+  --editorial-eyebrow-font-weight: var(--font-weight-semibold);
+  --editorial-eyebrow-gap: var(--space-3);
+  --editorial-eyebrow-rule-width: var(--space-6);
+  --editorial-eyebrow-rule-height: var(--stroke-hairline);
+  /* `start` or `center`. */
+  --editorial-eyebrow-align: start;
+
+  /* ── EditorialSectionHead ───────────────────────────────────────────────────────────────── */
+  --editorial-section-head-gap: var(--space-6);
+  --editorial-section-head-space-block-end: calc(var(--space-6) + 0.25rem);
+  /* `end` (the link on the title's baseline row) or `start`. */
+  --editorial-section-head-align: end;
+  --editorial-section-head-title-font-size: 2rem; /* scale-exempt: fixed measured 32px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-section-head-title-line-height: 1.55;
+  --editorial-section-head-title-letter-spacing: -0.025em;
+  --editorial-section-head-title-space-block-start: var(--space-3);
+  --editorial-section-head-description-font-size: var(--font-size-base);
+  --editorial-section-head-description-space-block-start: calc(var(--space-2) + 0.125rem);
+  --editorial-section-head-action-space-block-start: 0rem;
+  --editorial-section-head-action-max-width: none;
+  /* scale="module": the smaller head of a module inside a page (gh#1438). */
+  --editorial-section-head-module-align: center;
+  --editorial-section-head-module-space-block-end: var(--space-6);
+  --editorial-section-head-module-kicker-line-height: 1.8;
+  --editorial-section-head-module-kicker-letter-spacing: 0.14em;
+  --editorial-section-head-module-title-font-size: 1.875rem; /* scale-exempt: fixed measured 30px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-section-head-module-title-line-height: 1.65;
+  --editorial-section-head-module-title-space-block-start: var(--space-3);
+  --editorial-section-head-module-description-font-size: calc(var(--font-size-base) + 0.0625rem);
+  --editorial-section-head-module-description-space-block-start: var(--space-3);
+
+  /* ── EditorialBreadcrumb (gh#1437) ──────────────────────────────────────────────────────── */
+  --editorial-breadcrumb-padding-block-start: var(--space-6);
+  --editorial-breadcrumb-gap: var(--space-2);
+  --editorial-breadcrumb-line-height: 1.7;
+
+  /* ── EditorialPageHeader (gh#1437) ──────────────────────────────────────────────────────── */
+  --editorial-page-header-padding-block-start: calc(var(--space-6) + 0.25rem);
+  --editorial-page-header-padding-block-end: var(--space-8);
+  /* `flex` (the action at the end of the title row) or `block` (stacked under the copy). */
+  --editorial-page-header-row-display: flex;
+  --editorial-page-header-row-gap: var(--space-6);
+  --editorial-page-header-actions-space-block-start: 0rem;
+  /* The kicker inside the header. Defaults = the Eyebrow's own size and the kicker colour. */
+  --editorial-page-header-kicker-font-size: var(--editorial-eyebrow-font-size);
+  --editorial-page-header-kicker-color: initial;
+  --editorial-page-header-title-font-size: 2.25rem; /* scale-exempt: fixed measured 36px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-page-header-title-line-height: 1.55;
+  --editorial-page-header-title-letter-spacing: -0.025em;
+  --editorial-page-header-title-space-block-start: calc(var(--space-2) + 0.125rem);
+  --editorial-page-header-title-space-block-end: var(--space-3);
+  /* `auto-phrase` (the kit's Japanese heading default: break between phrases) or `normal`. */
+  --editorial-page-header-title-line-breaking: auto-phrase;
+  --editorial-page-header-description-font-size: calc(var(--font-size-base) + 0.0625rem);
+  --editorial-page-header-description-line-height: inherit;
+  --editorial-page-header-description-max-width: 47.5rem;
+  /* The search slot under the description (gh#1438). */
+  --editorial-page-header-search-max-width: 45rem;
+  --editorial-page-header-search-space-block-start: var(--space-6);
+  /* A page header's search button is the bare label (the hero's carries an arrow). */
+  --editorial-page-header-search-button-icon-display: none;
+
+  /* ── EditorialArticle (+ Section, Note) — the reading column (gh#1440) ──────────────────── */
+  --editorial-article-max-width: 47.5rem;
+  --editorial-article-padding-block-start: var(--space-8);
+  --editorial-article-padding-block-end: calc(var(--space-8) * 2);
+  /* Default = the Eyebrow's own size. */
+  --editorial-article-kicker-font-size: var(--editorial-eyebrow-font-size);
+  --editorial-article-kicker-line-height: 1.95;
+  --editorial-article-kicker-space-block-end: var(--space-5);
+  --editorial-article-title-font-size: 2.375rem; /* scale-exempt: fixed measured 38px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-article-title-line-height: 1.55;
+  --editorial-article-title-letter-spacing: -0.025em;
+  --editorial-article-title-space-block: var(--space-5);
+  /* `auto-phrase` (the kit's Japanese heading default) or `normal`. */
+  --editorial-article-title-line-breaking: auto-phrase;
+  --editorial-article-intro-font-size: calc(var(--font-size-base) + 0.25rem);
+  --editorial-article-intro-line-height: 1.95;
+  --editorial-article-intro-padding-block-end: calc(var(--space-6) + 0.25rem);
+  --editorial-article-intro-space-block-end: var(--space-5);
+  --editorial-article-heading-font-size: calc(
+    var(
+        --font-size-2xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio) * var(--font-size-ratio)
+        )
+      ) +
+      0.2348459041721389rem
+  );
+  --editorial-article-heading-line-height: 1.55;
+  --editorial-article-heading-letter-spacing: -0.025em;
+  --editorial-article-heading-space-block-start: calc(var(--space-8) + 0.25rem);
+  --editorial-article-heading-space-block-end: var(--space-4);
+  --editorial-article-paragraph-font-size: inherit;
+  --editorial-article-paragraph-line-height: 1.95;
+  --editorial-article-paragraph-space-block-end: var(--space-5);
+  /* EditorialTextLink inside the article (the trailing call to action). */
+  --editorial-article-link-font-size: var(--font-size-base);
+  --editorial-article-link-gap: var(--space-3);
+  --editorial-article-link-line-height: inherit;
+  --editorial-article-link-icon-size: var(--icon-size-lg);
+  --editorial-note-font-size: var(--font-size-base);
+  --editorial-note-rule-width: var(--stroke-lg);
+  --editorial-note-padding-block: var(--space-4);
+  --editorial-note-padding-inline: var(--space-6);
+  --editorial-note-space-block: var(--space-6);
+  /* Default = hsl(var(--muted)). */
+  --editorial-note-background: initial;
+
+  /* ── EditorialPanel — a bordered panel with a tag, a heading and a list (gh#1440) ───────── */
+  --editorial-panel-padding: calc(var(--space-6) + 0.25rem);
+  --editorial-panel-radius: calc(var(--radius) * 2);
+  --editorial-panel-border-width: var(--stroke-hairline);
+  /* Default = hsl(var(--card)). */
+  --editorial-panel-background: initial;
+  --editorial-panel-tag-min-height: 1.5rem;
+  --editorial-panel-tag-padding-block: calc(var(--space-1) - 2px);
+  --editorial-panel-tag-padding-inline: var(--space-2);
+  --editorial-panel-tag-radius: calc(var(--radius) - 2px);
+  --editorial-panel-tag-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-panel-tag-line-height: 1.5;
+  --editorial-panel-tag-font-weight: var(--font-weight-medium);
+  --editorial-panel-title-font-size: calc(
+    var(
+        --font-size-2xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio) * var(--font-size-ratio)
+        )
+      ) +
+      0.1098459041721389rem
+  );
+  --editorial-panel-title-line-height: 1.55;
+  --editorial-panel-title-space-block: var(--space-3);
+  --editorial-panel-item-font-size: var(--font-size-base);
+  --editorial-panel-list-padding-inline-start: calc(var(--space-4) + 0.125rem);
+  --editorial-panel-list-space-block: var(--space-4);
+
+  /* ── EditorialTextLink ("view all →") ───────────────────────────────────────────────────── */
+  --editorial-text-link-font-size: var(--font-size-base);
+  --editorial-text-link-line-height: inherit;
+  --editorial-text-link-font-weight: var(--font-weight-semibold);
+  --editorial-text-link-gap: var(--space-3);
+  --editorial-text-link-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-text-link-icon-size: var(--icon-size-lg);
+  /* `start` or `end` (a link squeezed into a narrow column reads right-aligned). */
+  --editorial-text-link-align: start;
+  --editorial-text-link-underline-offset: 5px;
+
+  /* ── EditorialSearch (the inset site search) ────────────────────────────────────────────── */
+  --editorial-search-min-height: 4rem;
+  --editorial-search-padding-block: calc(var(--space-1) + 0.125rem);
+  --editorial-search-padding-inline-start: var(--space-4);
+  --editorial-search-padding-inline-end: calc(var(--space-1) + 0.125rem);
+  --editorial-search-gap: calc(var(--space-2) + 0.125rem);
+  --editorial-search-radius: var(--radius);
+  --editorial-search-border-width: var(--stroke-hairline);
+  /* Default = hsl(var(--input)) — the control edge. */
+  --editorial-search-border-color: initial;
+  /* Default = hsl(var(--card)). */
+  --editorial-search-background: initial;
+  --editorial-search-shadow: 0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06);
+  --editorial-search-icon-size: var(--icon-size-lg);
+  /* The scope reads as part of the field: the input's weight by default. */
+  --editorial-search-scope-font-weight: inherit;
+  --editorial-search-scope-max-width: 11rem;
+  --editorial-search-input-height: 3rem;
+  --editorial-search-input-font-size: var(--font-size-base);
+  --editorial-search-button-min-width: 5.625rem;
+  --editorial-search-button-height: var(--band-height-2xl);
+  --editorial-search-button-padding-inline: var(--space-6);
+  --editorial-search-button-font-size: var(--font-size-base);
+  --editorial-search-button-gap: calc(var(--space-2) + 0.125rem);
+  --editorial-search-button-radius: calc(var(--radius) / 2);
+  /* `inline-flex` or `none` — the arrow after the button label. */
+  --editorial-search-button-icon-display: inline-flex;
+  --editorial-search-button-line-height: 1.65;
+  --editorial-search-input-padding-inline: calc(var(--space-1) - 0.125rem);
+  /* Default = hsl(var(--muted-foreground)). */
+  --editorial-search-placeholder-color: initial;
+  /* Suggestions popup (gh#1447). */
+  --editorial-search-popup-offset: 0.5rem;
+  --editorial-search-popup-max-height: min(32rem, 70vh);
+  --editorial-search-popup-padding-block: calc(var(--space-1) + 0.125rem);
+  --editorial-search-popup-radius: var(--radius);
+  --editorial-search-popup-shadow: 0 12px 32px rgb(var(--shadow-color, 0 0 0) / 0.12);
+  /* Default = hsl(var(--border)). */
+  --editorial-search-popup-border-color: initial;
+  /* Default = hsl(var(--popover)). */
+  --editorial-search-popup-background: initial;
+  --editorial-search-group-label-padding-block: calc(var(--space-1) + 0.125rem);
+  --editorial-search-group-label-font-size: calc(var(--font-size-base) - 0.1875rem);
+  --editorial-search-group-label-font-weight: var(--font-weight-semibold);
+  --editorial-search-group-label-letter-spacing: 0.08em;
+  --editorial-search-suggestion-gap: var(--space-3);
+  --editorial-search-suggestion-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-search-suggestion-padding-block: calc(var(--space-1) + 0.125rem);
+  --editorial-search-suggestion-padding-inline: var(--space-4);
+  --editorial-search-suggestion-font-size: var(--font-size-base);
+  --editorial-search-suggestion-description-font-size: calc(var(--font-size-base) - 0.125rem);
+  /* A card's 63:88 portrait at 2.25rem wide; a logo or code chip fits the same box. */
+  --editorial-search-suggestion-media-width: 2.25rem;
+  --editorial-search-suggestion-media-height: 3.125rem;
+  --editorial-search-suggestion-media-radius: calc(var(--radius) / 2);
+  /* Default = hsl(var(--muted)). */
+  --editorial-search-suggestion-media-background: initial;
+  /* Default = hsl(var(--accent)). */
+  --editorial-search-suggestion-active-background: initial;
+
+  /* ── EditorialPillNav (a horizontal band of section links) ──────────────────────────────── */
+  --editorial-pill-nav-min-height: 4rem;
+  --editorial-pill-nav-gap: calc(var(--space-2) + 0.125rem);
+  --editorial-pill-nav-label-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-pill-nav-label-space-inline-end: calc(var(--space-2) + 0.125rem);
+  /* `inline` or `none`. */
+  --editorial-pill-nav-label-display: inline;
+  --editorial-pill-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-pill-padding-block: var(--space-2);
+  --editorial-pill-padding-inline: calc(var(--space-4) - 0.0625rem);
+  --editorial-pill-gap: var(--space-2);
+  --editorial-pill-radius: calc(var(--radius) / 2);
+  --editorial-pill-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-pill-icon-size: var(--icon-size-lg);
+  --editorial-pill-dot-size: 0.4375rem;
+  --editorial-pill-dot-radius: calc(var(--radius) - 4px);
+  /* Default = the ornament colour. */
+  --editorial-pill-dot-color: initial;
+
+  /* ── CardShowcase preset="fan" ──────────────────────────────────────────────────────────── */
+  --editorial-showcase-height: 27.5rem;
+  --editorial-showcase-card-width: 10.875rem;
+  --editorial-showcase-card-radius: calc(var(--radius) + 1px);
+  --editorial-showcase-card-shadow: 0 16px 14px rgb(41 28 21 / 0.15);
+  --editorial-showcase-card-hover-translate: -6px;
+  --editorial-showcase-start-inset-block-start: 4.5rem;
+  --editorial-showcase-start-inset-inline-start: 0rem;
+  --editorial-showcase-start-offset-angle: -14deg;
+  --editorial-showcase-end-inset-block-start: 3.875rem;
+  --editorial-showcase-end-inset-inline-end: 0rem;
+  --editorial-showcase-end-offset-angle: 13deg;
+  --editorial-showcase-center-width: 12.8125rem;
+  --editorial-showcase-center-inset-block-start: 1.625rem;
+  /* The centre card's start edge, from the middle of the stage. */
+  --editorial-showcase-center-offset-inline: -6.375rem;
+  --editorial-showcase-center-offset-angle: -2deg;
+  --editorial-showcase-orbit-size-1: 23.125rem;
+  --editorial-showcase-orbit-size-2: 27.5rem;
+  --editorial-showcase-orbit-size-3: 31.875rem;
+  --editorial-showcase-orbit-inset-block-start: 46%;
+  --editorial-showcase-orbit-alpha: 0.24;
+  --editorial-showcase-glow-alpha: 0.12;
+  --editorial-showcase-glow-height: 3.75rem;
+  --editorial-showcase-glow-inset-block-end: 1.625rem;
+  --editorial-showcase-star-font-size: 2.5rem; /* scale-exempt: fixed measured 40px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-showcase-star-inset-block-start: 0.375rem;
+  --editorial-showcase-star-inset-inline-start: 0.75rem;
+  --editorial-showcase-star-small-font-size: 1.75rem; /* scale-exempt: fixed measured 28px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-showcase-star-small-inset-block-end: 4.6875rem;
+  --editorial-showcase-star-small-inset-inline-end: -0.5rem;
+  --editorial-showcase-label-font-size: calc(var(--font-size-base) - 0.1875rem);
+  --editorial-showcase-label-letter-spacing: 0.12em;
+  --editorial-showcase-label-inset-block-start: -0.75rem;
+  --editorial-showcase-label-inset-inline-end: 0.5rem;
+  /* `block` or `none`. */
+  --editorial-showcase-label-display: block;
+  --editorial-showcase-caption-inset-inline-end: 1.375rem;
+  --editorial-showcase-caption-inset-block-end: 1.0625rem;
+  --editorial-showcase-caption-padding-block: calc(var(--space-3) + 0.125rem);
+  --editorial-showcase-caption-padding-inline: calc(var(--space-4) + 0.125rem);
+  --editorial-showcase-caption-gap: calc(var(--space-3) + 0.0625rem);
+  --editorial-showcase-caption-min-width: 16.25rem;
+  --editorial-showcase-caption-radius: var(--radius);
+  --editorial-showcase-caption-shadow: 0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06);
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-showcase-caption-icon-size: calc(var(--icon-size-xl) + 0.25rem);
+  /* `block` or `none`. */
+  --editorial-showcase-caption-icon-display: block;
+  /* `start` or `center`. */
+  --editorial-showcase-caption-align: start;
+  --editorial-showcase-caption-overline-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-showcase-caption-title-font-size: var(--font-size-base);
+
+  /* ── CardShowcase preset="binder" ───────────────────────────────────────────────────────── */
+  --editorial-binder-offset-angle: 8deg;
+  --editorial-binder-gap: calc(var(--space-2) + 0.0625rem);
+  --editorial-binder-padding: calc(var(--space-4) + 0.125rem);
+  --editorial-binder-radius: calc(var(--radius) * 2);
+  --editorial-binder-max-width: none;
+  /* Default = the banner's own ground, one step lighter. */
+  --editorial-binder-background: initial;
+  --editorial-binder-border-color: initial;
+  --editorial-binder-shadow: -9px 9px 0 rgb(0 0 0 / 0.3);
+  --editorial-binder-pocket-height: 7.5rem;
+  --editorial-binder-pocket-padding: var(--space-2);
+  --editorial-binder-pocket-radius: calc(var(--radius) - 1px);
+
+  /* ── EditorialBanner ────────────────────────────────────────────────────────────────────── */
+  --editorial-banner-track-size: minmax(0, 1.3fr) minmax(0, 0.8fr);
+  --editorial-banner-gap: var(--space-10);
+  --editorial-banner-padding-block: var(--space-12);
+  --editorial-banner-padding-inline: calc(var(--space-12) + var(--space-2));
+  --editorial-banner-radius: calc(var(--radius) * 2);
+  /* Colour knobs — finished colours. Defaults derive from the page ink (ground) and canvas (text). */
+  --editorial-banner-background: initial;
+  --editorial-banner-foreground: initial;
+  --editorial-banner-muted-foreground: initial;
+  --editorial-banner-kicker-color: initial;
+  --editorial-banner-action-background: initial;
+  --editorial-banner-action-foreground: initial;
+  --editorial-banner-action-hover-background: initial;
+  --editorial-banner-title-font-size: 2rem; /* scale-exempt: fixed measured 32px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-banner-title-space-block: calc(var(--space-3) + 0.125rem);
+  --editorial-banner-description-font-size: var(--font-size-base);
+  --editorial-banner-description-line-height: 1.9;
+  --editorial-banner-description-max-width: 32.5rem;
+  --editorial-banner-action-space-block-start: var(--space-6);
+  /* `auto` or `100%` — the call to action stretches on a phone. */
+  --editorial-banner-action-width: auto;
+  /* `start` or `center` — where the media sits when the banner stacks. */
+  --editorial-banner-media-align: start;
+
+  /* ── CatalogCard ────────────────────────────────────────────────────────────────────────── */
+  --editorial-catalog-card-radius: var(--radius);
+  --editorial-catalog-card-hover-shadow: 0 10px 28px rgb(var(--shadow-color, 0 0 0) / 0.1);
+  --editorial-catalog-card-hover-translate: -3px;
+  --editorial-catalog-card-media-aspect-size: 1 / 1.05;
+  --editorial-catalog-card-media-padding-block-start: var(--space-12);
+  --editorial-catalog-card-media-padding-inline: calc(var(--space-10) - 0.125rem);
+  --editorial-catalog-card-media-padding-block-end: calc(var(--space-5) + 0.125rem);
+  --editorial-catalog-card-media-shadow: 0 7px 7px rgb(40 25 20 / 0.12);
+  --editorial-catalog-card-media-radius: calc(var(--radius) - 1px);
+  --editorial-catalog-card-sealed-aspect-size: 1.3;
+  --editorial-catalog-card-sealed-padding: var(--space-6);
+  --editorial-catalog-card-favorite-size: var(--touch-target-min, 2.75rem);
+  --editorial-catalog-card-favorite-inset: 0.5rem;
+  --editorial-catalog-card-favorite-icon-size: var(--icon-size-lg);
+  --editorial-catalog-card-favorite-border-width: var(--stroke-hairline);
+  /* Default = hsl(var(--card)). */
+  --editorial-catalog-card-favorite-background: initial;
+  --editorial-catalog-card-body-padding-block-start: calc(var(--space-4) + 0.125rem);
+  --editorial-catalog-card-body-padding-inline: var(--space-5);
+  --editorial-catalog-card-overline-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-catalog-card-overline-line-height: 1.6;
+  --editorial-catalog-card-overline-min-height: 0rem;
+  --editorial-catalog-card-title-font-size: calc(var(--font-size-base) + 0.1875rem);
+  --editorial-catalog-card-title-line-height: 1.65;
+  --editorial-catalog-card-title-space-block-start: calc(var(--space-1) + 0.0625rem);
+  --editorial-catalog-card-title-space-block-end: calc(var(--space-1) + 0.125rem);
+  --editorial-catalog-card-title-min-height: 3.5rem;
+  --editorial-catalog-card-meta-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-catalog-card-meta-line-height: 1.65;
+  --editorial-catalog-card-meta-gap: calc(var(--space-2) - 0.0625rem);
+  --editorial-catalog-card-meta-min-height: 0rem;
+  --editorial-catalog-card-tag-font-size: inherit;
+  --editorial-catalog-card-tag-padding-inline: calc(var(--space-1) + 0.0625rem);
+  --editorial-catalog-card-tag-radius: calc(var(--radius) - 3px);
+  --editorial-catalog-card-tag-line-height: 1.5;
+  --editorial-catalog-card-price-label-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-catalog-card-price-label-space-block-start: var(--space-4);
+  --editorial-catalog-card-price-label-min-height: 0rem;
+  /* `none` or a line count — clamp a long price caption (a market label in a long language). */
+  --editorial-catalog-card-price-label-line-clamp: none;
+  --editorial-catalog-card-price-font-size: 1.75rem; /* scale-exempt: fixed measured 28px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-catalog-card-price-line-height: 1.3;
+  /* `flex` (price and change on one line) or `block` (stacked). */
+  --editorial-catalog-card-price-line-display: flex;
+  --editorial-catalog-card-price-line-gap: var(--space-2);
+  --editorial-catalog-card-price-suffix-font-size: var(--font-size-base);
+  --editorial-catalog-card-price-suffix-space-inline-start: calc(var(--space-1) - 1px);
+  --editorial-catalog-card-change-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-catalog-card-change-space-block-start: 0rem;
+  --editorial-catalog-card-change-line-height: 1.5;
+  /* `inline` or `block` (the change under the price). */
+  --editorial-catalog-card-change-display: inline;
+  --editorial-catalog-card-footer-space-block-start: calc(var(--space-3) + 0.125rem);
+  --editorial-catalog-card-footer-padding-block: var(--space-3);
+  --editorial-catalog-card-footer-gap: var(--space-2);
+  --editorial-catalog-card-footer-link-gap: calc(var(--space-1) - 1px);
+  --editorial-catalog-card-footer-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-catalog-card-footer-link-min-height: 2rem;
+  --editorial-catalog-card-footer-icon-size: var(--icon-size-sm);
+
+  /* ── EditorialCard variant="spotlight" (a feature row with a tilted picture) ────────────── */
+  --editorial-spotlight-track-size: minmax(0, 1fr) 7.1875rem;
+  --editorial-spotlight-min-height: 10.5rem;
+  --editorial-spotlight-padding-block: var(--space-6);
+  --editorial-spotlight-padding-inline: var(--space-6);
+  --editorial-spotlight-overline-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-spotlight-overline-letter-spacing: 0.06em;
+  --editorial-spotlight-title-font-size: calc(
+    var(
+        --font-size-xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio)
+        )
+      ) +
+      0.07427599017737485rem
+  );
+  --editorial-spotlight-title-space-block: var(--space-2);
+  --editorial-spotlight-title-line-height: 1.65;
+  --editorial-spotlight-description-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-spotlight-description-icon-size: var(--icon-size-lg);
+  --editorial-spotlight-media-width: 6.5625rem;
+  --editorial-spotlight-media-height: 9.1875rem;
+  --editorial-spotlight-media-inset-inline-start: 0.75rem;
+  --editorial-spotlight-media-inset-block-start: 2rem;
+  --editorial-spotlight-media-offset-angle: 12deg;
+  --editorial-spotlight-media-shadow: 0 6px 6px rgb(40 25 20 / 0.12);
+  --editorial-spotlight-hover-shadow: 0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06);
+
+  /* ── EditorialCard variant="journal" ────────────────────────────────────────────────────── */
+  --editorial-journal-cover-height: 13.25rem;
+  /* `cover` fills the cover box; `none` shows a raster cover at its own (srcset) size, so a fixed
+   * composition is cropped, not scaled, in a narrower box (gh#1440). */
+  --editorial-journal-cover-image-size: cover;
+  --editorial-journal-cover-image-align: center;
+  /* Default = hsl(var(--muted)). */
+  --editorial-journal-cover-background: initial;
+  --editorial-journal-padding-block-start: var(--space-6);
+  --editorial-journal-padding-inline: var(--space-6);
+  --editorial-journal-padding-block-end: calc(var(--space-4) + 0.125rem);
+  --editorial-journal-category-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-journal-category-line-height: 1.6;
+  --editorial-journal-category-letter-spacing: 0.02em;
+  --editorial-journal-title-font-size: calc(
+    var(
+        --font-size-xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio)
+        )
+      ) +
+      0.01177599017737485rem
+  );
+  --editorial-journal-title-line-height: 1.65;
+  --editorial-journal-title-letter-spacing: -0.02em;
+  --editorial-journal-title-space-block-start: calc(var(--space-2) + 0.125rem);
+  --editorial-journal-title-space-block-end: var(--space-3);
+  --editorial-journal-title-min-height: 4.125rem;
+  --editorial-journal-description-font-size: var(--font-size-base);
+  --editorial-journal-description-line-height: 1.8;
+  --editorial-journal-description-space-block-end: var(--space-5);
+  --editorial-journal-footer-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-journal-footer-padding-block-start: var(--space-3);
+  --editorial-journal-footer-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-journal-footer-gap: var(--space-4);
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-journal-arrow-size: 2rem; /* scale-exempt: 32px circular action target around the separate 16px arrow glyph */
+  --editorial-journal-arrow-icon-size: var(--icon-size-md);
+  --editorial-journal-focus-offset: -4px;
+  --editorial-journal-hover-shadow: 0 12px 28px rgb(var(--shadow-color, 0 0 0) / 0.08);
+
+  /* ── EditorialMasthead ──────────────────────────────────────────────────────────────────── */
+  --editorial-masthead-height: 5.5rem;
+  --editorial-masthead-gap: var(--space-8);
+  /* Default = hsl(var(--background) / 0.97). */
+  --editorial-masthead-background: initial;
+  --editorial-masthead-backdrop-blur-size: 12px;
+  --editorial-masthead-brand-padding-block: var(--space-2);
+  --editorial-masthead-logo-width: 11.5rem;
+  /* `flex` or `none` (a phone opens the navigation from `menu`). */
+  --editorial-masthead-nav-display: flex;
+  --editorial-masthead-nav-gap: calc(var(--space-6) + 0.25rem);
+  --editorial-masthead-nav-space-inline-start: var(--space-3);
+  --editorial-masthead-link-font-size: var(--font-size-base);
+  --editorial-masthead-indicator-size: 2px;
+  --editorial-masthead-actions-gap: var(--space-2);
+  /* `none` or `inline-flex` — the phone-only menu trigger. */
+  --editorial-masthead-menu-display: none;
+  --editorial-masthead-action-size: var(--touch-target-min, 2.75rem);
+  --editorial-masthead-action-radius: calc(var(--radius) / 2);
+  --editorial-masthead-outline-border-width: var(--stroke-hairline);
+  /* Default = hsl(var(--card)). */
+  --editorial-masthead-outline-background: initial;
+  --editorial-masthead-icon-size: var(--icon-size-lg);
+  /* `inline-flex` or `none` — an action marked `collapse`. */
+  --editorial-masthead-collapsible-display: inline-flex;
+  /* Pickers (kit Select) in the masthead actions. */
+  --editorial-masthead-picker-padding-inline: var(--space-1);
+  --editorial-masthead-picker-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-masthead-picker-gap: var(--space-1);
+  /* `none` or a length: a design that caps the picker's width per breakpoint (it then ellipsises). */
+  --editorial-masthead-picker-max-width: none;
+
+  /* ── EditorialFooter ────────────────────────────────────────────────────────────────────── */
+  --editorial-footer-space-block-start: var(--space-12);
+  --editorial-footer-padding-block-start: var(--space-12);
+  --editorial-footer-padding-block-end: var(--space-5);
+  --editorial-footer-track-size: minmax(0, 1.1fr) repeat(3, minmax(0, 1fr));
+  --editorial-footer-gap: var(--space-10);
+  --editorial-footer-top-padding-block-end: calc(var(--space-8) + 0.25rem);
+  /* `auto` or `1 / -1` (the brand spans the row). */
+  --editorial-footer-brand-span-width: auto;
+  --editorial-footer-logo-width: 11.5rem;
+  --editorial-footer-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-footer-tagline-line-height: 1.9;
+  --editorial-footer-tagline-max-width: 16.25rem;
+  --editorial-footer-tagline-space-block-start: calc(var(--space-4) + 0.125rem);
+  /* `block` or `none` — the last link group. */
+  --editorial-footer-last-group-display: block;
+  /* Default = currentColor. */
+  --editorial-footer-heading-color: initial;
+  --editorial-footer-heading-letter-spacing: 0.03em;
+  --editorial-footer-heading-line-height: 1.65;
+  --editorial-footer-heading-space-block-end: calc(var(--space-3) + 0.125rem);
+  --editorial-footer-link-min-height: 2rem;
+  /* `flex` or `block` (stacked on a phone). */
+  --editorial-footer-bottom-display: flex;
+  --editorial-footer-bottom-gap: var(--space-6);
+  --editorial-footer-bottom-padding-block-start: var(--space-5);
+  /* Default = hsl(var(--muted-foreground)). */
+  --editorial-footer-legal-color: initial;
+  --editorial-footer-legal-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-footer-legal-line-height: 1.8;
+  --editorial-footer-note-max-width: 44.375rem;
+  --editorial-footer-note-space-block-start: 0rem;
+
+  /* ── EditorialFilterBar ─────────────────────────────────────────────────────────────────── */
+  --editorial-filter-bar-gap: var(--space-4);
+  --editorial-filter-bar-space-block-end: var(--space-6);
+  --editorial-filter-bar-padding-block-end: var(--space-4);
+  --editorial-filter-bar-option-gap: var(--space-6);
+  --editorial-filter-bar-option-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-filter-bar-option-padding-block: 1px;
+  --editorial-filter-bar-option-padding-inline: calc(var(--space-1) + 2px);
+  --editorial-filter-bar-option-font-size: var(--font-size-base);
+  --editorial-filter-bar-indicator-size: 2px;
+  --editorial-filter-bar-extra-font-size: calc(var(--font-size-base) - 0.125rem);
+
+  /* ── EditorialFilterPanel / EditorialFilterField (gh#1438) ──────────────────────────────── */
+  --editorial-filter-panel-padding: var(--space-5);
+  --editorial-filter-panel-gap: var(--space-4);
+  --editorial-filter-panel-radius: var(--radius);
+  --editorial-filter-panel-space-block-end: var(--space-5);
+  /* The selects inside the panel: their font size, inline padding and ground. */
+  --editorial-filter-panel-control-font-size: var(--font-size-base);
+  --editorial-filter-panel-control-padding-x: calc(var(--space-3) + 0.125rem);
+  /* Default = hsl(var(--card)). */
+  --editorial-filter-panel-control-background: initial;
+  /* The trailing action: its flex-grow (1 stretches it across a phone row) and inline padding. */
+  --editorial-filter-panel-action-size-grow: 0;
+  --editorial-filter-panel-action-padding-inline: var(--space-4);
+  --editorial-filter-field-gap: var(--space-2);
+  --editorial-filter-field-min-width: 9.0625rem;
+  /* Flex basis of a field: 0% shares the row; calc(50% - gap) puts two on a phone row. */
+  --editorial-filter-field-width-basis: 0%;
+  --editorial-filter-field-label-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-filter-field-label-line-height: 1.8;
+  --editorial-filter-field-label-font-weight: var(--font-weight-semibold);
+  /* Default = hsl(var(--muted-foreground)). */
+  --editorial-filter-field-label-color: initial;
+  /* variant="bare" labels. Colour default = hsl(var(--foreground)). */
+  --editorial-filter-panel-bare-label-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-filter-panel-bare-label-font-weight: var(--font-weight-medium);
+  --editorial-filter-panel-bare-label-color: initial;
+
+  /* Outline buttons in the catalog bodies (filter reset, item actions) read in the action colour on
+   * no fill. Defaults = hsl(var(--primary)) / transparent (gh#1438). */
+  --editorial-catalog-outline-color: initial;
+  --editorial-catalog-outline-background: initial;
+
+  /* ── CatalogDetail / CatalogDetailTag (gh#1438) ─────────────────────────────────────────── */
+  /* Tracks: the frame column and the copy; a phone theme sets one track (minmax(0, 1fr)). */
+  --editorial-catalog-detail-track-size: 21.875rem minmax(0, 1fr);
+  --editorial-catalog-detail-gap: calc(var(--space-8) * 2);
+  --editorial-catalog-detail-padding-block-start: var(--space-8);
+  --editorial-catalog-detail-padding-block-end: var(--space-10);
+  --editorial-catalog-detail-art-min-height: 26.25rem;
+  --editorial-catalog-detail-art-height: auto;
+  --editorial-catalog-detail-art-max-width: none;
+  --editorial-catalog-detail-art-padding: var(--space-10);
+  --editorial-catalog-detail-art-radius: calc(var(--radius) * 2);
+  --editorial-catalog-detail-media-width: 15.625rem;
+  --editorial-catalog-detail-media-height: 22.5rem;
+  --editorial-catalog-detail-media-max-height: 22.5rem;
+  --editorial-catalog-detail-media-shadow: 0 10px 12px rgb(48 43 41 / 0.14);
+  --editorial-catalog-detail-caption-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-catalog-detail-caption-line-height: 1.8;
+  --editorial-catalog-detail-caption-space-block-start: var(--space-3);
+  --editorial-catalog-detail-title-font-size: 2.25rem; /* scale-exempt: fixed measured 36px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-catalog-detail-title-line-height: 1.6;
+  --editorial-catalog-detail-title-letter-spacing: -0.025em;
+  --editorial-catalog-detail-title-space-block-start: var(--space-3);
+  --editorial-catalog-detail-title-space-block-end: var(--space-4);
+  --editorial-catalog-detail-meta-gap: calc(var(--space-2) + 0.125rem);
+  --editorial-catalog-detail-meta-space-block-end: var(--space-6);
+  --editorial-catalog-detail-tag-min-height: 1.5rem;
+  --editorial-catalog-detail-tag-padding-block: calc(var(--space-1) - 2px);
+  --editorial-catalog-detail-tag-padding-inline: var(--space-2);
+  --editorial-catalog-detail-tag-radius: calc(var(--radius) - 2px);
+  --editorial-catalog-detail-tag-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-catalog-detail-tag-line-height: 1.5;
+  --editorial-catalog-detail-summary-padding-block: var(--space-5);
+  --editorial-catalog-detail-summary-label-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-catalog-detail-summary-label-line-height: 1.8;
+  --editorial-catalog-detail-summary-price-font-size: 2.5rem; /* scale-exempt: fixed measured 40px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-catalog-detail-summary-price-line-height: 1.4;
+  --editorial-catalog-detail-summary-price-space-block: calc(var(--space-1) + 0.125rem);
+  --editorial-catalog-detail-summary-price-suffix-font-size: calc(var(--font-size-base) + 0.125rem);
+  --editorial-catalog-detail-actions-gap: var(--space-3);
+  --editorial-catalog-detail-actions-space-block-start: var(--space-6);
+  /* auto keeps the lead action its own width; 100% gives it a row (a phone theme). */
+  --editorial-catalog-detail-actions-lead-width-basis: auto;
+  --editorial-catalog-detail-facts-track-size: 1fr 1fr;
+  --editorial-catalog-detail-facts-gap: var(--space-6);
+  --editorial-catalog-detail-facts-space-block-start: var(--space-6);
+  --editorial-catalog-detail-facts-font-size: var(--font-size-base);
+  --editorial-catalog-detail-facts-line-height: 1.8;
+  --editorial-catalog-detail-fact-padding-block: var(--space-3);
+  --editorial-catalog-detail-fact-label-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-catalog-detail-fact-label-line-height: 1.8;
+  --editorial-catalog-detail-fact-label-space-block-end: calc(var(--space-1) - 1px);
+
+  /* ── CatalogDetailSection (gh#1438) ─────────────────────────────────────────────────────── */
+  --editorial-catalog-detail-section-padding-block: var(--space-10);
+  /* variant="module" (the price module): no hairline, this rhythm above and below. */
+  --editorial-catalog-detail-module-padding-block: calc(var(--space-8) * 2);
+  /* The module's own button glyph gap / size (a page-wide --button-gap / --button-icon-size does not
+   * reach it). `initial` = the control defaults (--control-gap / --control-icon-size). */
+  --editorial-catalog-detail-module-button-gap: initial;
+  --editorial-catalog-detail-module-button-icon-size: initial; /* scale-exempt: unset mirror falls through --button-icon-size to the scoped control icon step */
+  --editorial-catalog-detail-section-title-font-size: 1.75rem; /* scale-exempt: fixed measured 28px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-catalog-detail-section-title-line-height: 1.55;
+  --editorial-catalog-detail-section-title-letter-spacing: -0.025em;
+  --editorial-catalog-detail-section-title-space-block-end: var(--space-4);
+  --editorial-catalog-detail-section-description-font-size: var(--font-size-base);
+  --editorial-catalog-detail-section-description-line-height: 1.8;
+  --editorial-catalog-detail-section-description-max-width: 50rem;
+
+  /* ── PriceSummary (gh#1438) ─────────────────────────────────────────────────────────────── */
+  --editorial-price-summary-radius: calc(var(--radius) * 2);
+  --editorial-price-summary-space-block-end: var(--space-6);
+  --editorial-price-summary-cell-padding-block: var(--space-6);
+  --editorial-price-summary-cell-padding-inline: calc(var(--space-6) + 0.25rem);
+  --editorial-price-summary-cell-gap: calc(var(--space-2) + 0.0625rem);
+  /* Flex basis of a figure cell: 0% shares the row; a phone theme sets two per row. */
+  --editorial-price-summary-cell-width-basis: 0%;
+  /* The context cell: its share of the row, and its basis (100% puts it on its own row). */
+  --editorial-price-summary-context-size-grow: 1.15;
+  --editorial-price-summary-context-width-basis: 0%;
+  --editorial-price-summary-label-font-size: var(--font-size-base);
+  --editorial-price-summary-label-line-height: 1.8;
+  --editorial-price-summary-value-font-size: 2.25rem; /* scale-exempt: fixed measured 36px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-price-summary-value-line-height: 1.3;
+  --editorial-price-summary-value-letter-spacing: -0.04em;
+  --editorial-price-summary-caption-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-price-summary-caption-line-height: 1.8;
+  --editorial-price-summary-context-font-size: calc(var(--font-size-base) + 0.1875rem);
+  --editorial-price-summary-context-line-height: 1.8;
+  --editorial-price-summary-context-min-height: 2.4375rem;
+
+  /* ── EditorialPrompt (gh#1438) ──────────────────────────────────────────────────────────── */
+  --editorial-prompt-padding: calc(var(--space-6) + 0.25rem);
+  --editorial-prompt-gap: var(--space-6);
+  --editorial-prompt-radius: calc(var(--radius) * 2);
+  /* nowrap keeps glyph, copy and action on one row; wrap lets the action drop under the copy. */
+  --editorial-prompt-align-wrap: nowrap;
+  --editorial-prompt-icon-display: grid;
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-prompt-icon-size: calc(var(--icon-size-4xl) + 0.25rem);
+  --editorial-prompt-icon-glyph-size: var(--icon-size-xl);
+  --editorial-prompt-copy-width-basis: auto;
+  /* 0 keeps the action beside the copy; 1 lets the copy take the row (a wrapped prompt). */
+  --editorial-prompt-copy-size-grow: 0;
+  --editorial-prompt-copy-min-width: 0rem;
+  --editorial-prompt-title-font-size: calc(
+    var(
+        --font-size-xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio)
+        )
+      ) +
+      0.07427599017737485rem
+  );
+  --editorial-prompt-title-line-height: 1.65;
+  --editorial-prompt-title-space-block-end: var(--space-2);
+  --editorial-prompt-description-font-size: var(--font-size-base);
+  --editorial-prompt-description-line-height: 1.85;
+  --editorial-prompt-description-max-width: 41.875rem;
+  --editorial-prompt-note-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-prompt-note-space-block-start: var(--space-2);
+  --editorial-prompt-action-inset-inline-start: 0rem;
+  --editorial-prompt-action-width-basis: auto;
+  --editorial-prompt-action-radius: calc(var(--radius) + 0.125rem);
+  --editorial-prompt-action-padding-inline: calc(var(--space-4) + 0.125rem);
+  --editorial-prompt-action-font-weight: var(--font-weight-regular, 400);
+
+  /* EditorialBanner kicker scale. */
+  --editorial-banner-kicker-font-size: var(--font-size-base);
+  --editorial-banner-kicker-line-height: 1.9;
+}

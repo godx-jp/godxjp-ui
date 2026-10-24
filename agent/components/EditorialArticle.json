@@ -1,0 +1,53 @@
+{
+  "example": "import { EditorialArticle, EditorialArticleSection, EditorialNote, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialArticle eyebrow={<Eyebrow>PRICE GUIDE</Eyebrow>} title=\"A fair comparison starts with the details.\" intro=\"A matching card name is only the beginning.\">\n  <EditorialArticleSection title=\"Check it is the same card\" paragraphs={[\"Confirm the game, card number and set.\"]} />\n  <EditorialNote>An original guide, not a price forecast.</EditorialNote>\n</EditorialArticle>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialArticle",
+  "props": [
+    {
+      "description": "The page's h1.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Kicker above it (an Eyebrow).",
+      "name": "eyebrow",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Lead paragraph under it.",
+      "name": "intro",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Sections, note, link.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Id on the h1.",
+      "name": "titleId",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "EditorialBreadcrumb, EditorialTextLink, LegalDocumentShell."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "subParts": [
+    "EditorialArticleSection",
+    "EditorialNote"
+  ],
+  "tagline": "The reading column of a long-form editorial page (gh#1440): the ruled kicker, the page's one h1, an intro set off by a rule, then `EditorialArticleSection`s (an h2 and paragraphs at the reading leading), an `EditorialNote` and a trailing `EditorialTextLink`. Block flow with collapsing margins, so the design's rhythm holds. Geometry: `--editorial-article-*`, `--editorial-note-*`.",
+  "usage": [
+    "DO put it in an EditorialSection after an EditorialBreadcrumb on a `flow=\"sections\"` page.",
+    "DO pass each prose paragraph in `EditorialArticleSection paragraphs`, not raw `<p>`.",
+    "DON'T use it for a versioned legal/admin document — that is LegalDocumentShell."
+  ]
+}

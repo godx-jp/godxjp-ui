@@ -54,6 +54,12 @@ export default function Demo() {
       subtitle="Text + Heading · token-driven type, never an arbitrary px className"
     >
       <Flex direction="col" gap="lg">
+        <Text as="p" size="lg">
+          <Text size="inherit">{t("editorialExamples.inheritText")}</Text>{" "}
+          <Link size="inherit" href="#text-sizes">
+            {t("editorialExamples.inheritLink")}
+          </Link>
+        </Text>
         <Card>
           <CardHeader>
             <CardTitle level={2}>Heading levels</CardTitle>
@@ -131,7 +137,9 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Text sizes</CardTitle>
+            <CardTitle level={2} id="text-sizes">
+              Text sizes
+            </CardTitle>
             <CardDescription>
               size is a type-scale step (2xs / xs / sm / md / lg / xl) — sm is the base. No px.
             </CardDescription>

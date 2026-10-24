@@ -1,0 +1,54 @@
+{
+  "example": "import { ThemePicker } from \"@godxjp/ui/layout\";\nimport { Moon, Sun } from \"lucide-react\";\n\n<ThemePicker legend=\"Choose a theme\" value={theme} onValueChange={setTheme} options={[{ value: \"light\", label: \"Light\", icon: <Sun />, preview: \"light\" }, { value: \"dark\", label: \"Dark\", icon: <Moon />, preview: \"dark\" }]} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "ThemePicker",
+  "props": [
+    {
+      "description": "Name of the group (visually hidden).",
+      "name": "legend",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "The choices.",
+      "name": "options",
+      "required": true,
+      "type": "{ value: string; label: string; icon?: ReactNode; preview: \"light\" | \"dark\" | \"system\" }[]"
+    },
+    {
+      "description": "Controlled value.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial value.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Change handler.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Name of the radio inputs.",
+      "name": "name",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "AppSettingPicker kind=\"theme\" — a compact select.",
+    "Radio — plain radios."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "An illustrated radio group for the colour theme (gh#1439): each choice is a painted preview of the interface — light, dark, or the system split — over its glyph and label. Native radios in a fieldset (arrow keys move), the checked preview ringed in the primary tone. Geometry: `--editorial-theme-picker-*`.",
+  "usage": [
+    "DO apply the theme at once; no Save button."
+  ]
+}

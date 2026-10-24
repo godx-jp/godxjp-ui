@@ -1,0 +1,112 @@
+{
+  "example": "import { EditorialSearch } from \"@godxjp/ui/layout\";\n\n<EditorialSearch label=\"Card name or number\" placeholder=\"Search a card\" submitLabel=\"Search\" action=\"/cards/\" onSearch={(q) => navigate(q)} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialSearch",
+  "props": [
+    {
+      "description": "Accessible label (visually hidden).",
+      "name": "label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Site search box, or a collection's own row (visible label, live count, no button). Default: \"inset\".",
+      "name": "variant",
+      "type": "\"inset\" | \"inline\""
+    },
+    {
+      "description": "Button text (inset; required there).",
+      "name": "submitLabel",
+      "type": "ReactNode"
+    },
+    {
+      "description": "inline: live count at the end of the row.",
+      "name": "count",
+      "type": "ReactNode"
+    },
+    {
+      "description": "inline: settle delay (ms). Default: 300.",
+      "name": "debounce",
+      "type": "number"
+    },
+    {
+      "description": "Placeholder.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"q\"",
+      "description": "Query parameter.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Initial query.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Form action for the no-JS submit.",
+      "name": "action",
+      "type": "string"
+    },
+    {
+      "description": "Submit handler.",
+      "name": "onSearch",
+      "type": "(query: string) => void"
+    },
+    {
+      "description": "A scope control at the start of the box — the kit Select (borderless, width auto) with its own aria-label and name.",
+      "name": "scope",
+      "type": "ReactNode"
+    },
+    {
+      "description": "inset (gh#1447): grouped rows { id, label, items: [{ id, href, label, description?, media?, meta? }] } under the focused box; the field becomes an ARIA combobox.",
+      "name": "suggestions",
+      "type": "EditorialSearchSuggestionGroupProp[]"
+    },
+    {
+      "description": "inset: the popup's last row — all results.",
+      "name": "suggestionsFooter",
+      "type": "{ href: string; label: ReactNode }"
+    },
+    {
+      "description": "inset: accessible name of the listbox (default: label).",
+      "name": "suggestionsLabel",
+      "type": "string"
+    },
+    {
+      "description": "inset: field text after each edit; never mid-IME-composition, once on compositionend.",
+      "name": "onQueryChange",
+      "type": "(query: string) => void"
+    },
+    {
+      "description": "inset: the element suggestion rows render as (a router Link). Default \"a\".",
+      "name": "linkComponent",
+      "type": "ElementType"
+    },
+    {
+      "description": "Field id.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "SearchInput — a debounced filter field.",
+    "EditorialHero — the `search` slot."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "The inset site search (gh#1435): ONE bordered box holding a search glyph, the field and the submit button, under a visually hidden label that also names the `role=\"search\"` landmark. `onSearch` gets the trimmed query; without JavaScript the form GETs `action`. Geometry: `--editorial-search-*`.",
+  "usage": [
+    "DO use it for a site search that submits; use SearchInput for a live filter.",
+    "DO use variant=\"inline\" for a collection's own search row (visible label, live count) — gh#1439.",
+    "DO fetch suggestions yourself (debounce, abort, cache) from onQueryChange and pass the rows in; the kit neither debounces nor fetches (gh#1447).",
+    "DON'T put buttons or other controls in a suggestion row — each row is one link (role=option)."
+  ]
+}

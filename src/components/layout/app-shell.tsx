@@ -5,6 +5,8 @@ import { Menu } from "lucide-react";
 import { useMediaQuery } from "../../lib/hooks";
 import { useTranslation } from "../../i18n/use-translation";
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from "../feedback/sheet";
+import { ShellTabBar } from "./mobile-shell";
+import { useToastStickyBarClearance } from "../../lib/toast-clearance";
 import { NavSurfaceProvider } from "./nav-surface";
 import { TopbarItem } from "./topbar-item";
 import type { AppShellProp } from "../../props/components/layout.prop";
@@ -38,6 +40,8 @@ export function AppShell({
   navRailPosition = "start",
   navRailEnd,
   navRailLabel,
+  mobileTabBar,
+  mobileTabBarLabel,
   mobileNav,
   mobileNavLabel,
   mobileNavTriggerLabel,
@@ -47,6 +51,28 @@ export function AppShell({
 }: AppShellProp) {
   const { t } = useTranslation();
   const navigationMode = useAppShellNavigationMode();
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const tabBarRef = React.useRef<HTMLElement>(null);
+  const showTabBar =
+    responsiveNavigation === "drawer" &&
+    navigationMode === "drawer" &&
+    mobileTabBar != null &&
+    mobileTabBar !== false;
+  useToastStickyBarClearance(showTabBar ? [tabBarRef] : [], showTabBar);
+  React.useEffect(() => {
+    const root = rootRef.current;
+    const bar = tabBarRef.current;
+    if (!root || !bar || !showTabBar || typeof ResizeObserver === "undefined") return;
+    const publish = () =>
+      root.style.setProperty("--app-shell-mobile-tab-bar-block-size", `${bar.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(bar, { box: "border-box" });
+    return () => {
+      observer.disconnect();
+      root.style.removeProperty("--app-shell-mobile-tab-bar-block-size");
+    };
+  }, [showTabBar]);
   const hasSidebar = sidebar !== undefined && sidebar !== null && sidebar !== false;
 
   // The docked sidebar is hidden at the DXS 900px breakpoint, so AppShell OWNS an accessible mobile drawer: a
@@ -354,9 +380,18 @@ export function AppShell({
       </header>
     );
 
+  const footerRegion =
+    footer !== undefined ? (
+      <footer className="app-footer" aria-label={t("layout.appShell.footerLabel")}>
+        {footer}
+      </footer>
+    ) : null;
+
   return (
     <div
+      ref={rootRef}
       className="app-root"
+      data-mobile-tab-bar={showTabBar ? "" : undefined}
       data-collapsed={hasSidebar && sidebarCollapsed ? "true" : undefined}
       data-sidebar={hasSidebar ? undefined : "none"}
       data-responsive-navigation={responsiveNavigation}
@@ -394,11 +429,13 @@ export function AppShell({
       >
         {breadcrumb !== undefined && <div className="app-breadcrumb">{breadcrumb}</div>}
         {children}
+        {showTabBar && footerRegion}
       </main>
-      {footer !== undefined && (
-        <footer className="app-footer" aria-label={t("layout.appShell.footerLabel")}>
-          {footer}
-        </footer>
+      {!showTabBar && footerRegion}
+      {showTabBar && (
+        <ShellTabBar ref={tabBarRef} className="app-mobile-tab-bar" aria-label={mobileTabBarLabel}>
+          {mobileTabBar}
+        </ShellTabBar>
       )}
     </div>
   );

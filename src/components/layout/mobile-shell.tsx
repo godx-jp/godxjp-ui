@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { forwardRef, useRef, type ComponentPropsWithoutRef } from "react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { useToastStickyBarClearance } from "../../lib/toast-clearance";
@@ -9,6 +9,21 @@ export type {
   MobileShellProp,
   MobileShellProp as MobileShellProps,
 } from "../../props/components/layout.prop";
+
+/** Shared internal navigation surface; both shells use the same tiling and current-page styles. */
+export const ShellTabBar = forwardRef<HTMLElement, ComponentPropsWithoutRef<"nav">>(
+  function ShellTabBar({ className, "aria-label": label, ...props }, ref) {
+    const { t } = useTranslation();
+    return (
+      <nav
+        {...props}
+        ref={ref}
+        className={cn("ui-mobile-shell-tabbar", className)}
+        aria-label={label ?? t("layout.sidebar.ariaLabel")}
+      />
+    );
+  },
+);
 
 /**
  * MobileShell — the HANDHELD app shell: a status band, an app bar, ONE scroll region,
@@ -92,15 +107,7 @@ export function MobileShell({
           {actions}
         </footer>
       )}
-      {tabBar !== undefined && (
-        <nav
-          ref={tabBarRef}
-          className="ui-mobile-shell-tabbar"
-          aria-label={t("layout.sidebar.ariaLabel")}
-        >
-          {tabBar}
-        </nav>
-      )}
+      {tabBar !== undefined && <ShellTabBar ref={tabBarRef}>{tabBar}</ShellTabBar>}
     </div>
   );
 }

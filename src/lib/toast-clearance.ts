@@ -40,7 +40,7 @@ export function useToastStickyBarClearance(
     };
     publish();
     const observer = new ResizeObserver(publish);
-    for (const el of elements) observer.observe(el);
+    for (const el of elements) observer.observe(el, { box: "border-box" });
     return () => {
       observer.disconnect();
       html.style.removeProperty(TOAST_STICKY_BAR_PROPERTY);

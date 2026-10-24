@@ -1,0 +1,27 @@
+{
+  "example": "import { CatalogDetailTag } from \"@godxjp/ui/layout\";\n\n<CatalogDetailTag>SV8 132/106</CatalogDetailTag>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "CatalogDetailTag",
+  "props": [
+    {
+      "description": "Tag text.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "CatalogCardTag — the tag of a grid tile."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "One outlined tag (number, rarity, printed language) in a CatalogDetail meta row (gh#1438).",
+  "usage": [
+    "DO keep it to a short code or word."
+  ]
+}

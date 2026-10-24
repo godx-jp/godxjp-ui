@@ -1,0 +1,21 @@
+/* The editorial family delegates responsive art direction to documented component tokens.
+ * These overrides belong only to the three reference-library example screens. */
+.editorial-example {
+  --editorial-hero-track-size: minmax(0, 1fr);
+  --editorial-hero-min-height: auto;
+  --editorial-stats-track-size: minmax(0, 1fr);
+}
+
+@media (max-width: 767px) {
+  .editorial-example {
+    --editorial-section-inset-inline: var(--space-6);
+    --editorial-catalog-detail-track-size: minmax(0, 1fr);
+    --editorial-catalog-detail-gap: var(--space-6);
+    --editorial-catalog-detail-art-padding: var(--space-4);
+    --editorial-catalog-detail-media-width: 100%;
+    --editorial-catalog-detail-media-height: auto;
+    --editorial-settings-layout-track-size: minmax(0, 1fr);
+    --editorial-settings-layout-aside-display: none;
+    --editorial-prompt-align-wrap: wrap;
+  }
+}

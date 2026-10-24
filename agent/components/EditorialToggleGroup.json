@@ -1,0 +1,52 @@
+{
+  "example": "import { EditorialToggleGroup } from \"@godxjp/ui/layout\";\nimport { Grid2x2, List } from \"lucide-react\";\n\n<EditorialToggleGroup aria-label=\"View\" variant=\"icon\" value={view} onValueChange={setView} items={[{ value: \"grid\", label: \"Grid view\", icon: <Grid2x2 /> }, { value: \"list\", label: \"List view\", icon: <List /> }]} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialToggleGroup",
+  "props": [
+    {
+      "description": "Group name.",
+      "name": "aria-label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "The toggles; label is the text and the accessible name.",
+      "name": "items",
+      "required": true,
+      "type": "{ value: string; label: string; icon?: ReactNode }[]"
+    },
+    {
+      "description": "Pressed toggle.",
+      "name": "value",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Change handler.",
+      "name": "onValueChange",
+      "required": true,
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Labels, or framed icon-only buttons. Default: \"text\".",
+      "name": "variant",
+      "type": "\"text\" | \"icon\""
+    }
+  ],
+  "related": [
+    "Segmented — a track with a lifted slab.",
+    "EditorialFilterBar — underlined toggles."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "One-of-N toggles of the editorial account family (gh#1439): a named `role=\"group\"` of `aria-pressed` buttons. `variant=\"text\"` is a filter row (pressed = filled, bordered); `variant=\"icon\"` a framed icon-only switch such as grid / list view, each button named by its label. Geometry: `--editorial-toggle-group-*`.",
+  "usage": [
+    "DO use it above a collection to filter it or switch its view; the collection is yours.",
+    "DO pass a lucide icon per item for the icon variant — the label stays the button's name."
+  ]
+}

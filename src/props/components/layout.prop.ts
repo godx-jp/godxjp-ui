@@ -38,6 +38,9 @@ import type {
   ToneProp,
   WidthProp,
   SizeProp,
+  LabelProp,
+  NameProp,
+  PlaceholderProp,
 } from "../vocabulary";
 import type { EmptyStateToneProp } from "./data-display.prop";
 import type { SearchInputProp } from "./data-entry.prop";
@@ -440,7 +443,7 @@ export type ResponsiveGridColumnsProp =
  */
 export type ResponsiveGridFlowProp = "rows" | "columns";
 
-export type ResponsiveGridPresetProp = "pricing-plans";
+export type ResponsiveGridPresetProp = "pricing-plans" | "catalog" | "trio" | "lead" | "panels";
 
 /**
  * Block-axis alignment of the cells in each grid row — antd `Row align`, spelled with Flex's
@@ -503,6 +506,10 @@ export type PageInsetProp = React.HTMLAttributes<HTMLDivElement> & {
 
 /** @see AppShell */
 export type AppShellProp = {
+  /** Phone destinations, using MobileShell tabBar children (3–5 links or Buttons with aria-current="page"). Only rendered in drawer navigation mode. Main/footer reserve the measured safe-area-inclusive height. */
+  mobileTabBar?: MobileShellProp["tabBar"];
+  /** Navigation landmark name; defaults to the localized primary-navigation label. */
+  mobileTabBarLabel?: string;
   /** Omit or pass null/false for a shell without the sidebar landmark or grid track. */
   sidebar?: ReactNode;
   children: ReactNode;
@@ -962,6 +969,22 @@ export type CenteredShellPageProp = {
   topbar?: ReactNode;
   /** Footer slot (contentinfo) pinned to the bottom (legal links, locale switch, support). Omit → none. */
   footer?: ReactNode;
+  /**
+   * `"inverse"` paints the footer as a brand band (a public site's dark footer, gh#1429): its
+   * surface is `--centered-shell-footer-inverse-background` and the text roles INSIDE it
+   * (`--foreground`, `--muted-foreground`, `--border`, `--text-link`, the focus ring) are re-pointed
+   * to `--centered-shell-footer-inverse-*`, so kit children keep reading their normal roles.
+   * Defaults derive from the page's own ink and canvas (ink band, canvas text), so a theme that sets
+   * nothing still gets a legible band. `"default"` (the default) emits no attribute.
+   */
+  footerTone?: "default" | "inverse";
+  /**
+   * `"sections"` makes the page a stack of full-width `EditorialSection` bands (gh#1435): the
+   * column drops its max-width and gap and `main` its padding, because each band draws its own
+   * ground edge to edge and centres its own content in the landing column. `"column"` (the
+   * default) emits no attribute and keeps the shell's exact box.
+   */
+  flow?: "column" | "sections";
   /**
    * Max-width of the centred content column: `sm` ~32rem, `md` (default) ~46rem, `lg` ~64rem — all
    * wider than AuthShell's 24rem auth card. A service retunes each tier via `--centered-shell-width-*`.
@@ -1704,6 +1727,14 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
   /** Hide below a shared responsive breakpoint, without changing cell height. */
   hideBelow?: BreakpointProp;
   /**
+   * The inverse of `hideBelow`: drop the cell FROM a breakpoint step upwards (gh#1428) — a
+   * phone-only cell, e.g. the trigger of a navigation `Sheet` whose links sit inline in the bar
+   * from that step up. Same steps and `data-hide-from` attribute as `Flex hideFrom`; the cell stays
+   * a direct child of the slot, so the bar's stretch chain is untouched (a wrapper would collapse
+   * it, gh#883).
+   */
+  hideFrom?: BreakpointProp;
+  /**
    * The cell's leading glyph, placed in a slot the CELL sizes (`--topbar-icon-size`).
    *
    * Passing the glyph as a child works too — but only while it stays a DIRECT child, because
@@ -2176,5 +2207,604 @@ export type AffixProp = {
    */
   onChange?: (affixed: boolean) => void;
   id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Editorial family (gh#1435) — the public, magazine-like pages of a site built on
+ * `CenteredShell preset="public-landing" flow="sections"`. Geometry lives in
+ * tokens/components/editorial.css (`--editorial-*`), so a theme retunes it at its own breakpoints.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+/** Ground of an {@link EditorialSectionProp}. */
+export type EditorialSectionToneProp = "default" | "surface" | "subtle" | "hero";
+
+/** Hairlines an {@link EditorialSectionProp} draws on its block edges. */
+export type EditorialSectionDividerProp = "none" | "end" | "both";
+
+/**
+ * @see EditorialSection — one full-width band of a `flow="sections"` page: its ground and block
+ * hairlines run edge to edge while the content sits in the landing column (max width + gutter of
+ * the shell). `spacing="section"` gives the band the section rhythm (`--editorial-section-padding-block`).
+ */
+export type EditorialSectionProp = {
+  children: ChildrenProp;
+  tone?: EditorialSectionToneProp;
+  divider?: EditorialSectionDividerProp;
+  /** `"section"` pads the band by the section rhythm; `"none"` (default) leaves the content flush. */
+  spacing?: "none" | "section";
+  /** Landmark element. Default `section`; `div` for a purely visual band, `nav` for a navigation band. */
+  as?: "section" | "div" | "nav";
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialHero — the opening of an editorial page: the copy column (kicker, the page's one
+ * h1, a lead paragraph, a search and a line of suggestions) beside a media column (a
+ * `CardShowcase`). Put it in `EditorialSection tone="hero"`.
+ */
+export type EditorialHeroProp = {
+  /** The kicker above the title — usually an `Eyebrow`. */
+  eyebrow?: ReactNode;
+  /** The h1. An emphasised second line is a `Text size="inherit"` run inside it. */
+  title: TitleProp;
+  description?: DescriptionProp;
+  /** The search under the lead — usually an `EditorialSearch`. */
+  search?: ReactNode;
+  /** A line under the search (suggested queries). */
+  footer?: ReactNode;
+  /** The media column — usually a `CardShowcase preset="fan"`. */
+  media?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/** @see Eyebrow — the small uppercase kicker above an editorial heading. */
+export type EyebrowProp = {
+  children: ChildrenProp;
+  /** `"ruled"` (default) leads with a short ornament rule; `"plain"` is the bare kicker. */
+  variant?: EyebrowVariantProp;
+  as?: "p" | "span" | "div";
+  className?: ClassNameProp;
+};
+
+/** Shape of an {@link EyebrowProp}. */
+export type EyebrowVariantProp = "ruled" | "plain";
+
+/**
+ * @see EditorialSectionHead — a section's head: kicker, an editorial h2, one line of description,
+ * and a trailing action (an `EditorialTextLink` "view all") on the title's row.
+ */
+export type EditorialSectionHeadProp = {
+  eyebrow?: ReactNode;
+  title: TitleProp;
+  description?: DescriptionProp;
+  action?: ReactNode;
+  /** Heading level of the title. Default `2`. */
+  level?: 2 | 3;
+  /**
+   * `"section"` (default) is a page section's head; `"module"` is the smaller head of a module
+   * inside a page (an item page's price module, gh#1438): `--editorial-section-head-module-*`.
+   */
+  scale?: "section" | "module";
+  /** Id put on the title, for a section's `aria-labelledby`. */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialBreadcrumb — the trail at the top of an editorial page (gh#1437): `Breadcrumb`
+ * (same `<nav>`/`<ol>`, `aria-current`, router `linkComponent`) with the editorial rhythm —
+ * `--editorial-breadcrumb-*` (top inset, gap, line height). Put it in an `EditorialSection`.
+ */
+export type EditorialBreadcrumbProp = {
+  /** Ordered trail, root first; the last item is the current page. */
+  items: BreadcrumbProp;
+  /** Router link component for the ancestors (TanStack / react-router `Link`). Default `<a>`. */
+  linkComponent?: React.ElementType;
+  /** Accessible name of the `<nav>` landmark. Defaults to the localized "Breadcrumb". */
+  ariaLabel?: string;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialPageHeader — the intro of an editorial listing page (gh#1437): an optional
+ * `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line and an optional
+ * action at the end of the title row. Geometry: `--editorial-page-header-*`.
+ */
+export type EditorialPageHeaderProp = {
+  /** The trail above the header (rendered as an `EditorialBreadcrumb`). */
+  breadcrumb?: BreadcrumbProp;
+  /** Router link component for the trail. */
+  linkComponent?: React.ElementType;
+  /** Accessible name of the trail's `<nav>`. */
+  breadcrumbLabel?: string;
+  /** The kicker above the title — usually an `Eyebrow`. */
+  eyebrow?: ReactNode;
+  /** The page's one h1. */
+  title: TitleProp;
+  description?: DescriptionProp;
+  /** Trailing action on the title row (a button or a link). */
+  actions?: ReactNode;
+  /**
+   * A search under the description, inside the header (a catalog's `EditorialSearch`, gh#1438):
+   * `--editorial-page-header-search-space-block-start` above it, capped at
+   * `--editorial-page-header-search-max-width`.
+   */
+  search?: ReactNode;
+  /** Id put on the h1. */
+  titleId?: IdProp;
+  /**
+   * Kicker colour and size: `"page"` (default) takes the page-header kicker knobs
+   * (`--editorial-page-header-kicker-*`); `"accent"` keeps the plain Eyebrow (the editorial kicker
+   * colour and `--editorial-eyebrow-font-size`) — the signed-in pages of gh#1439.
+   */
+  eyebrowTone?: "page" | "accent";
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialArticle — the reading column of a long-form editorial page (gh#1440): the ruled
+ * kicker, the page's one h1, an intro set off by a rule, then `EditorialArticleSection`s, an
+ * `EditorialNote` and a trailing `EditorialTextLink`. Geometry: `--editorial-article-*`.
+ */
+export type EditorialArticleProp = {
+  /** The kicker above the title — usually an `Eyebrow`. */
+  eyebrow?: ReactNode;
+  /** The page's one h1. Line breaks the design sets by hand are `<br />` in the node. */
+  title: TitleProp;
+  /** The lead paragraph under the title. */
+  intro?: ReactNode;
+  children?: ChildrenProp;
+  /** Id put on the h1. */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/** @see EditorialArticleSection — one titled section of an `EditorialArticle` (gh#1440). */
+export type EditorialArticleSectionProp = {
+  /** The section heading (h2). */
+  title: TitleProp;
+  /** Paragraphs of prose, each rendered as a `<p>` at the article's reading leading. */
+  paragraphs?: ReactNode[];
+  /** Anything after the paragraphs (a list, a link). */
+  children?: ChildrenProp;
+  /** Id put on the h2 (the section's accessible name). */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/** @see EditorialNote — a note block set off by an ornament rule (gh#1440): `role="note"`. */
+export type EditorialNoteProp = {
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialPanel — a bordered panel with a tag, a heading and a list (gh#1440); a row of
+ * them is `ResponsiveGrid preset="panels"`. Geometry: `--editorial-panel-*`.
+ */
+export type EditorialPanelProp = {
+  /** A short tag above the heading (NEXT / FUTURE). */
+  tag?: ReactNode;
+  title: TitleProp;
+  /** The panel's list items. */
+  items?: ReactNode[];
+  children?: ChildrenProp;
+  /** Heading level. Default `2`. */
+  level?: 2 | 3;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialTextLink — an inline call to action with a trailing arrow ("view all →"). Wrap a
+ * router link with `asChild`.
+ */
+export type EditorialTextLinkProp = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "color"> & {
+  children: ChildrenProp;
+  asChild?: boolean;
+};
+
+/**
+ * @see EditorialSearch — the inset site search: one bordered box holding a search glyph, the field
+ * and the submit button, under a visually hidden label (`role="search"`). Submitting calls
+ * `onSearch` with the trimmed query; without JavaScript the form GETs `action` with `name`.
+ */
+export type EditorialSearchProp = {
+  /**
+   * `inset` (default): the site search — glyph, field and submit button in one shadowed box under a
+   * hidden label. `inline` (gh#1439): a collection's own search row — a VISIBLE label, a framed
+   * field and a live `count`; the query is reported after typing settles (`debounce`) or on Enter,
+   * with no submit button.
+   */
+  variant?: "inset" | "inline";
+  /** The field's label (visually hidden for `inset`, shown for `inline`). It also names the landmark. */
+  label: string;
+  placeholder?: PlaceholderProp;
+  /** Visible text of the submit button (`inset`; required there). */
+  submitLabel?: LabelProp;
+  /** `inline`: a live count at the end of the row ("12 entries"), announced politely. */
+  count?: ReactNode;
+  /** `inline`: delay in ms before a typed query is reported. Default 300. */
+  debounce?: number;
+  /** Query parameter name. Default `q`. */
+  name?: NameProp;
+  defaultValue?: string;
+  /** Form action for the no-JavaScript submit. */
+  action?: string;
+  onSearch?: (query: string) => void;
+  /**
+   * A scope control at the start of the box (a site searched per game: "which game") — pass the
+   * kit's `Select` (variant="borderless", width="auto", with its own aria-label and `name`). The box
+   * gives it the field height and a hairline before the field; the popup is the Select's own.
+   */
+  scope?: ReactNode;
+  /**
+   * `inset` (gh#1447): matches to list under the box while the field has focus, grouped by kind
+   * (cards, products, sets). The box is then an ARIA combobox: arrows move through the rows, Enter
+   * follows the active row's link, Escape closes. The consumer fetches; the kit only shows rows.
+   */
+  suggestions?: EditorialSearchSuggestionGroupProp[];
+  /** `inset`: the last row of the popup — the full results ("「ピカ」をすべて見る"). */
+  suggestionsFooter?: EditorialSearchSuggestionFooterProp;
+  /** `inset`: accessible name of the suggestions listbox. Default: `label`. */
+  suggestionsLabel?: string;
+  /**
+   * `inset`: the field's text after every edit — never between `compositionstart` and
+   * `compositionend` (an IME candidate is not a query); once more on `compositionend`.
+   */
+  onQueryChange?: (query: string) => void;
+  /** `inset`: the element rows render as — a router `Link` (receives `href`). Default `"a"`. */
+  linkComponent?: React.ElementType;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/** @see EditorialSearch — one group of suggestions under a heading (gh#1447). */
+export type EditorialSearchSuggestionGroupProp = {
+  id: string;
+  /** The group heading ("カード"). */
+  label: string;
+  items: EditorialSearchSuggestionProp[];
+};
+
+/** @see EditorialSearch — one suggestion row: a link with optional media, detail and trailing meta. */
+export type EditorialSearchSuggestionProp = {
+  id: string;
+  href: string;
+  label: ReactNode;
+  /** A second line (set, number). */
+  description?: ReactNode;
+  /** The leading thumbnail, logo or code chip, sized by `--editorial-search-suggestion-media-*`. */
+  media?: ReactNode;
+  /** Trailing value (a price). */
+  meta?: ReactNode;
+};
+
+/** @see EditorialSearch — the popup's last row. */
+export type EditorialSearchSuggestionFooterProp = {
+  href: string;
+  label: ReactNode;
+};
+
+/**
+ * @see EditorialPillNav — a horizontal band of section links (a site's "browse by game" row): an
+ * optional lead label, then `EditorialPillNavItem`s; it scrolls sideways when it overflows.
+ */
+export type EditorialPillNavProp = {
+  /** Accessible name of the navigation landmark. */
+  "aria-label": string;
+  /** Visible lead text before the pills (hidden from the accessibility tree; the landmark is named). */
+  label?: LabelProp;
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialPillNavItem — one pill. `aria-current` on the link (`"page"`, or `"true"` for the
+ * current filter of a set) shows it selected.
+ */
+export type EditorialPillNavItemProp = Omit<
+  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  "color"
+> & {
+  children: ChildrenProp;
+  asChild?: boolean;
+  /** A leading glyph (an icon element), or `"dot"` for the small square marker. */
+  icon?: ReactNode | "dot";
+};
+
+/**
+ * @see CardShowcase — a staged composition of product pictures. `preset="fan"`: three cards fanned
+ * over ornament orbits and stars, a corner label and a caption card (items: start, centre, end).
+ * `preset="binder"`: a tilted binder page of pockets (up to six items). Decorations are aria-hidden;
+ * each item keeps its own name.
+ */
+export type CardShowcaseProp = {
+  preset: CardShowcasePresetProp;
+  /** The pictures, in reading order — usually links wrapping an `<img>`. */
+  items: ReactNode[];
+  /** `fan`: the corner label ("ONE PLACE. MANY WORLDS."). */
+  label?: LabelProp;
+  /** `fan`: the caption card — a glyph, a small overline and a title. */
+  caption?: { icon?: ReactNode; overline?: ReactNode; title: ReactNode };
+  className?: ClassNameProp;
+};
+
+/** Composition of a {@link CardShowcaseProp}. */
+export type CardShowcasePresetProp = "fan" | "binder";
+
+/**
+ * @see EditorialBanner — a rounded brand panel inside the column: kicker, title, description and a
+ * call to action beside a media slot (a `CardShowcase preset="binder"`), in the inverse palette.
+ */
+export type EditorialBannerProp = {
+  eyebrow?: ReactNode;
+  title: TitleProp;
+  description?: DescriptionProp;
+  action?: ReactNode;
+  media?: ReactNode;
+  /** Heading level of the title. Default `2`. */
+  level?: 2 | 3;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see CatalogCard — a catalog tile: the framed picture with an overlaid favourite toggle, then an
+ * overline, the title (a heading wrapping the item link), metadata, a price line and a footer.
+ * `variant="sealed"` frames a wider, unshadowed product picture.
+ */
+export type CatalogCardProp = {
+  variant?: CatalogCardVariantProp;
+  /** The picture — usually a link (tabIndex -1, aria-hidden) wrapping an `<img>`. */
+  media: ReactNode;
+  /** The overlaid favourite toggle. Omit for none. */
+  favorite?: {
+    pressed: boolean;
+    onPressedChange: (pressed: boolean) => void;
+    label: string;
+    /** While the saved state is unknown (loading) or a change is in flight. */
+    disabled?: boolean;
+  };
+  overline?: ReactNode;
+  /** The title — the item link. Rendered inside a heading (see `level`). */
+  title: TitleProp;
+  level?: 2 | 3 | 4;
+  /** Metadata row — text and `CatalogCardTag`s. */
+  meta?: ReactNode;
+  priceLabel?: ReactNode;
+  price?: ReactNode;
+  change?: ReactNode;
+  footer?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/** Picture frame of a {@link CatalogCardProp}. */
+export type CatalogCardVariantProp = "card" | "sealed";
+
+/** @see CatalogCardTag — a small outlined tag in a `CatalogCard` metadata row (a rarity code). */
+export type CatalogCardTagProp = { children: ChildrenProp; className?: ClassNameProp };
+
+/**
+ * @see EditorialCard — a whole-card link. `variant="journal"`: an edge-to-edge cover, category,
+ * title, two lines of description and a footer with a circled arrow; the link is named by the title.
+ * `variant="spotlight"`: a kicker, title and line beside a tilted picture.
+ * Pass the link element (a router `<Link>` or `<a href>`) as `link`; the card content goes inside it.
+ */
+export type EditorialCardProp = {
+  variant: EditorialCardVariantProp;
+  link: React.ReactElement;
+  /** `journal`: the cover; `spotlight`: the picture. */
+  media?: ReactNode;
+  /** `journal`: the category; `spotlight`: the kicker. */
+  overline?: ReactNode;
+  title: TitleProp;
+  description?: DescriptionProp;
+  /** `journal`: the footer's call to action ("Read the story"). */
+  action?: ReactNode;
+  level?: 2 | 3 | 4;
+  /** Id of the title (journal names its link by it). Generated when omitted. */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/** Shape of an {@link EditorialCardProp}. */
+export type EditorialCardVariantProp = "journal" | "spotlight";
+
+/**
+ * @see EditorialMasthead — a public site's header row, for `CenteredShell`'s `topbar` slot: the
+ * logo, the primary navigation (`EditorialMastheadLink`s; `aria-current="page"` underlines the
+ * current one), and the actions at the end (`EditorialMastheadAction`, kit `Select` pickers).
+ * The bar that holds it turns sticky and translucent. `menu` is the phone-only trigger that opens
+ * the same navigation (shown when the theme hides `nav`). Pickers in `actions` (language, currency)
+ * are the kit's `Select variant="borderless" width="auto"`; the masthead sizes their trigger.
+ */
+export type EditorialMastheadProp = {
+  /** The logo link (its accessible name is the home link's). */
+  brand: ReactNode;
+  /** Primary navigation links. */
+  nav?: ReactNode;
+  /** Accessible name of the navigation landmark. */
+  navLabel?: string;
+  actions?: ReactNode;
+  /** The phone-only menu trigger. */
+  menu?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/** @see EditorialMastheadLink — one primary navigation link of an `EditorialMasthead`. */
+export type EditorialMastheadLinkProp = Omit<
+  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  "color"
+> & {
+  children: ChildrenProp;
+  asChild?: boolean;
+};
+
+/**
+ * @see EditorialMastheadAction — a 44px icon control at the end of an `EditorialMasthead` (theme
+ * toggle, account). `variant="outline"` frames it; `collapse` lets the theme hide it on a phone
+ * (`--editorial-masthead-collapsible-display`). Give it an `aria-label`.
+ */
+export type EditorialMastheadActionProp = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "color"
+> & {
+  children: ChildrenProp;
+  asChild?: boolean;
+  variant?: "ghost" | "outline";
+  collapse?: boolean;
+};
+
+/**
+ * @see EditorialFooter — a public site's footer content, for `CenteredShell footerTone="inverse"`:
+ * the logo and a tagline, link groups (each a heading + links), and a bottom row (rights, notes).
+ * The footer that holds it takes the editorial spacing (`--editorial-footer-*`).
+ */
+export type EditorialFooterProp = {
+  brand: ReactNode;
+  tagline?: ReactNode;
+  groups: { title: ReactNode; links: ReactNode[] }[];
+  /** Heading level of the group titles. Default `2`. */
+  level?: 2 | 3;
+  legal?: ReactNode;
+  note?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialFilterBar — a row of underlined filter toggles (one pressed at a time) with a
+ * trailing note, above a collection ("Selected · Price drops · Price rises … vs. 30 days ago").
+ * The buttons are a named `role="group"` of `aria-pressed` toggles; the collection below is the
+ * consumer's.
+ */
+export type EditorialFilterBarProp = {
+  "aria-label": string;
+  options: { value: string; label: ReactNode }[];
+  value: string;
+  onValueChange: (value: string) => void;
+  extra?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialFilterPanel — a catalog's filter panel (gh#1438): one bordered surface of labelled
+ * fields (`EditorialFilterField`, each holding one control such as a `Select`) that wrap, bottom
+ * aligned, with a trailing `action` (a reset button). The controls inside read the panel's control
+ * scale (`--editorial-filter-panel-control-*`).
+ */
+export type EditorialFilterPanelProp = {
+  /**
+   * `"panel"` (default): the bordered surface. `"bare"`: the same field row with no frame, ground,
+   * padding or bottom margin, and its labels at `--editorial-filter-panel-bare-label-*` (a filter row
+   * inside a module that is already framed, e.g. an item page's price comparison).
+   */
+  variant?: "panel" | "bare";
+  /** Accessible name of the group. */
+  "aria-label": string;
+  children: ChildrenProp;
+  /** Trailing control after the fields — usually a reset `Button`. */
+  action?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialFilterField — one labelled field of an `EditorialFilterPanel`: a visible label over
+ * one control. `htmlFor` is the control's id (a `Select`'s `id`), which names it.
+ */
+export type EditorialFilterFieldProp = {
+  label: LabelProp;
+  htmlFor: string;
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see CatalogDetail — the head of a catalog item's page (gh#1438): a framed picture with the save
+ * toggle over its corner and a caption under it, beside the item's kicker, its h1, a row of tags,
+ * a summary price between two hairlines, actions and a two-column facts list.
+ * Geometry: `--editorial-catalog-detail-*`.
+ */
+export type CatalogDetailProp = {
+  /** `"sealed"` frames a product package instead of a card. */
+  variant?: "card" | "sealed";
+  /** The picture — an `<img>` (or a link around one). */
+  media: ReactNode;
+  /** The save toggle over the frame's corner (same shape as `CatalogCard`'s). */
+  favorite?: CatalogCardProp["favorite"];
+  /** A line under the frame (the picture's source, an official link). */
+  mediaCaption?: ReactNode;
+  /** The kicker above the title — usually an `Eyebrow` with the game. */
+  overline?: ReactNode;
+  /** The page's one h1. */
+  title: TitleProp;
+  /** Tags under the title — `CatalogDetailTag`s (number, rarity, printed language). */
+  meta?: ReactNode;
+  /** The summary price block: a label, the figure, a note. */
+  summary?: { label?: ReactNode; price: ReactNode; note?: ReactNode };
+  /** The actions under the summary (add to collection, compare prices). */
+  actions?: ReactNode;
+  /** The facts list (game, expansion, language …), two columns. */
+  facts?: { key: string; label: ReactNode; value: ReactNode }[];
+  className?: ClassNameProp;
+};
+
+/** @see CatalogDetailTag — one outlined tag in a `CatalogDetail` meta row. */
+export type CatalogDetailTagProp = {
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see CatalogDetailSection — one band of an item page under its head (gh#1438): a top hairline,
+ * an h2 and a muted paragraph, then anything else (a list, a grid).
+ */
+export type CatalogDetailSectionProp = {
+  /**
+   * `"band"` (default): a top hairline and the band rhythm. `"module"`: a module of the page (the
+   * price module) — no hairline, `--editorial-catalog-detail-module-padding-block`.
+   */
+  variant?: "band" | "module";
+  title?: TitleProp;
+  description?: DescriptionProp;
+  children?: ChildrenProp;
+  /** Id on the section (an in-page link target, e.g. `#price-section`). */
+  id?: IdProp;
+  /** Id put on the h2. */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see PriceSummary — a joined strip of headline figures (gh#1438): one bordered surface, cells
+ * split by hairlines, each a label, a figure in the number face and a caption; an optional context
+ * cell (the conditions compared) on the subtle ground, a little wider.
+ * Geometry: `--editorial-price-summary-*`.
+ */
+export type PriceSummaryProp = {
+  items: { key: string; label: ReactNode; value: ReactNode; caption?: ReactNode }[];
+  context?: { label: ReactNode; value: ReactNode; caption?: ReactNode };
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialPrompt — a polite inline invitation (gh#1438): a round glyph, a heading, a short
+ * paragraph and a note, with one action at the end ("sign in to see more"). Not a live region.
+ * Geometry: `--editorial-prompt-*`.
+ */
+export type EditorialPromptProp = {
+  /** The glyph in the round badge (an icon element). */
+  icon?: ReactNode;
+  title: TitleProp;
+  description?: DescriptionProp;
+  note?: ReactNode;
+  /** The one action — usually a `Button asChild` around a link. */
+  action?: ReactNode;
+  /** Heading level. Default `3`. */
+  level?: 2 | 3 | 4;
   className?: ClassNameProp;
 };

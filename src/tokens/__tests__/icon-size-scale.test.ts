@@ -50,9 +50,47 @@ const SCALE: ReadonlyArray<readonly [string, string, number]> = [
  * on half pixels and was snapped, while an 18px letter medallion is a whole pixel that simply
  * falls between two steps, and snapping it would be a visible 2px change bought for nothing.
  */
-const DECLARED_OFF_SCALE = new Set(["--topbar-chip-icon-size", "--thought-chain-icon-size"]);
+const DECLARED_OFF_SCALE = new Set([
+  "--topbar-chip-icon-size",
+  "--thought-chain-icon-size",
+  "--editorial-showcase-caption-icon-size",
+  "--editorial-journal-arrow-size",
+  "--editorial-prompt-icon-size",
+  "--editorial-text-button-icon-size",
+  "--editorial-search-inline-icon-size",
+  "--editorial-meta-bar-icon-size",
+  "--editorial-empty-panel-icon-size",
+  "--editorial-empty-panel-icon-glyph-size",
+  "--editorial-theme-picker-icon-size",
+  "--editorial-auth-benefit-icon-size",
+]);
 
 const FROZEN: Record<string, [string, string, string]> = {
+  "--button-icon-size": ["1rem", "0.92rem", "1.08rem"],
+  "--editorial-article-link-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--editorial-text-link-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--editorial-search-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--editorial-pill-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--editorial-showcase-caption-icon-size": ["1.75rem", "1.75rem", "1.75rem"],
+  "--editorial-catalog-card-favorite-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--editorial-catalog-card-footer-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
+  "--editorial-spotlight-description-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--editorial-journal-arrow-size": ["2rem", "2rem", "2rem"],
+  "--editorial-journal-arrow-icon-size": ["1rem", "1rem", "1rem"],
+  "--editorial-masthead-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--editorial-catalog-detail-module-button-icon-size": ["1rem", "0.92rem", "1.08rem"],
+  "--editorial-prompt-icon-size": ["3.25rem", "3.25rem", "3.25rem"],
+  "--editorial-prompt-icon-glyph-size": ["1.5rem", "1.5rem", "1.5rem"],
+  "--editorial-text-button-icon-size": ["1.125rem", "1.125rem", "1.125rem"],
+  "--editorial-search-inline-icon-size": ["1.125rem", "1.125rem", "1.125rem"],
+  "--editorial-toggle-group-icon-option-size": ["1.5rem", "1.5rem", "1.5rem"],
+  "--editorial-toggle-group-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
+  "--editorial-meta-bar-icon-size": ["1.125rem", "1.125rem", "1.125rem"],
+  "--editorial-empty-panel-icon-size": ["4rem", "4rem", "4rem"],
+  "--editorial-empty-panel-icon-glyph-size": ["1.75rem", "1.75rem", "1.75rem"],
+  "--editorial-holding-card-action-icon-size": ["1rem", "1rem", "1rem"],
+  "--editorial-theme-picker-icon-size": ["1.125rem", "1.125rem", "1.125rem"],
+  "--editorial-auth-benefit-icon-size": ["1.125rem", "1.125rem", "1.125rem"],
   "--alert-dismiss-icon-size": ["1rem", "1rem", "1rem"],
   "--calendar-chevron-size": ["1rem", "1rem", "1rem"],
   "--otp-separator-icon-size": ["1rem", "1rem", "1rem"],
@@ -273,13 +311,34 @@ describe("icon size scale — tier 1 (gh#326)", () => {
   });
 });
 
+const MIRROR_DEFAULTS = new Map([
+  ["--button-icon-size", "--control-icon-size"],
+  ["--editorial-catalog-detail-module-button-icon-size", "--control-icon-size"],
+]);
+function renderedIcon(token: string, env: Map<string, string>): string {
+  const own = resolveToken(token, env);
+  if (own !== "initial") return own;
+  const fallback = MIRROR_DEFAULTS.get(token);
+  if (!fallback) throw new Error(`${token}: unset icon knob has no proven call-site fallback`);
+  return resolveToken(fallback, env);
+}
+
 describe("icon size migration moved nothing (gh#326)", () => {
+  it("unset icon mirrors retain their scoped control-step fallback", () => {
+    const control = readFileSync("src/styles/control.css", "utf8");
+    const layout = readFileSync("src/styles/layout.css", "utf8");
+    expect(control).toContain("var(--button-icon-size, var(--control-icon-size))");
+    expect(layout).toContain(
+      "--button-icon-size: var(--editorial-catalog-detail-module-button-icon-size)",
+    );
+    for (const token of MIRROR_DEFAULTS.keys()) expect(root.get(token)).toBe("initial");
+  });
   it.each(Object.entries(FROZEN))(
     "%s resolves unchanged at default / compact / comfortable density",
     (token, [atDefault, atCompact, atComfortable]) => {
-      expect(resolveToken(token, root)).toBe(atDefault);
-      expect(resolveToken(token, compact)).toBe(atCompact);
-      expect(resolveToken(token, comfortable)).toBe(atComfortable);
+      expect(renderedIcon(token, root)).toBe(atDefault);
+      expect(renderedIcon(token, compact)).toBe(atCompact);
+      expect(renderedIcon(token, comfortable)).toBe(atComfortable);
     },
   );
 

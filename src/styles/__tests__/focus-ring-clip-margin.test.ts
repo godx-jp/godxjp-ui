@@ -108,6 +108,12 @@ const RADIUS_CROP_EXEMPT: ReadonlyArray<
   [file: string, selector: string, radiusAnchor: string, why: string]
 > = [
   [
+    "editorial-account-layout.css",
+    ".ui-theme-picker-preview",
+    ".ui-theme-picker-preview",
+    "crops the illustration to its radius; the ring is the preview's own outline, which its overflow never clips",
+  ],
+  [
     "card-layout.css",
     '[data-slot="card"]',
     '[data-slot="card"]',

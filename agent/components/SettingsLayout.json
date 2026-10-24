@@ -1,0 +1,31 @@
+{
+  "example": "import { SettingsLayout, SettingsPanel } from \"@godxjp/ui/layout\";\n\n<SettingsLayout aside={<p>Preferences are saved in this browser.</p>}><SettingsPanel number=\"01\" title=\"Language\" /></SettingsLayout>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "SettingsLayout",
+  "props": [
+    {
+      "description": "Sticky rail.",
+      "name": "aside",
+      "type": "ReactNode"
+    },
+    {
+      "description": "SettingsPanels.",
+      "name": "children",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "SettingsPanel — the panels."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "A settings page (gh#1439): a sticky rail (`aside`, default 260px, `--editorial-settings-layout-aside-inset` from the top) beside the panels, gap 64px. A theme hides the rail on narrow screens with `--editorial-settings-layout-aside-display: none` and one track.",
+  "usage": [
+    "DO put a short note and one link in the rail, never controls."
+  ]
+}

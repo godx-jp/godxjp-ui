@@ -1,0 +1,419 @@
+/* Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a
+ * collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435):
+ * every geometry value a design states lives here, a theme re-declares it under its OWN width
+ * queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the
+ * documented default resolved at the call site).
+ */
+:root {
+  /* Fixed editorial type uses the nearest body step plus its exact measured correction.
+   * The fallback repeats the foundation formula because derived type knobs default to initial. */
+  /* ── Shared ─────────────────────────────────────────────────────────────────────────────── */
+  /* Face of figures (stats, purchase price, panel numbers, tags). Default = the editorial kicker
+   * face, then var(--font-family-tabular, inherit). */
+  --editorial-account-figure-font-family: initial;
+  /* Panel / card surface. Default = hsl(var(--card)). */
+  --editorial-account-surface-background: initial;
+  /* Quiet ground (lead stat, picture ground, medallion). Default = hsl(var(--muted)). */
+  --editorial-account-subtle-background: initial;
+  /* The family's kickers. `initial` = the Eyebrow's own size and tracking. */
+  --editorial-account-eyebrow-font-size: initial;
+  --editorial-account-eyebrow-letter-spacing: initial;
+
+  /* ── EditorialTextButton ────────────────────────────────────────────────────────────────── */
+  --editorial-text-button-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-text-button-gap: var(--space-2);
+  --editorial-text-button-padding-block: calc(var(--space-1) + 2px);
+  --editorial-text-button-font-size: inherit;
+  --editorial-text-button-underline-offset: 4px;
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-text-button-icon-size: calc(var(--icon-size-md) + 0.125rem);
+
+  /* ── EditorialSearch variant="inline" ──────────────────────────────────────────────────────────────── */
+  --editorial-search-inline-gap: var(--space-3);
+  --editorial-search-inline-space-block: var(--space-6);
+  --editorial-search-inline-label-display: block;
+  --editorial-search-inline-label-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-search-inline-field-max-width: 25rem;
+  --editorial-search-inline-height: 3rem;
+  --editorial-search-inline-padding-inline-start: calc(var(--space-10) + 0.125rem);
+  --editorial-search-inline-padding-inline-end: calc(var(--space-3) + 0.125rem);
+  --editorial-search-inline-radius: var(--radius);
+  --editorial-search-inline-font-size: var(--font-size-base);
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-search-inline-icon-size: calc(var(--icon-size-md) + 0.125rem);
+  --editorial-search-inline-icon-inset-inline-start: 0.875rem;
+  --editorial-search-inline-count-font-size: calc(var(--font-size-base) - 0.0625rem);
+
+  /* ── EditorialFootnote ──────────────────────────────────────────────────────────────────── */
+  --editorial-footnote-gap: var(--space-5);
+  --editorial-footnote-padding-block: var(--space-6);
+  --editorial-footnote-space-block-start: var(--space-3);
+  --editorial-footnote-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-footnote-line-height: 1.8;
+  --editorial-footnote-body-max-width: 47.5rem;
+  /* row = note and action on one line; column = stacked (a phone). */
+  --editorial-footnote-align-flow: row;
+  --editorial-footnote-align-block: flex-start;
+  /* align="center" (a one-line note beside its action): centred, no band padding. */
+  --editorial-footnote-center-align-block: center;
+  --editorial-footnote-center-align-flow: row;
+  --editorial-footnote-center-gap: var(--space-5);
+  --editorial-footnote-center-space-block-start: var(--space-8);
+  --editorial-footnote-center-font-size: calc(var(--font-size-base) - 0.0625rem);
+
+  /* ── EditorialToggleGroup ───────────────────────────────────────────────────────────────── */
+  --editorial-toggle-group-gap: var(--space-2);
+  /* Main-axis distribution of the text variant (a phone may spread the filters: space-between). */
+  --editorial-toggle-group-align-inline: flex-start;
+  --editorial-toggle-group-option-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-toggle-group-option-padding-block: var(--space-2);
+  --editorial-toggle-group-option-padding-inline: var(--space-4);
+  --editorial-toggle-group-option-font-size: var(--font-size-base);
+  --editorial-toggle-group-option-radius: var(--radius);
+  /* Pressed fill. Default = hsl(var(--muted)). */
+  --editorial-toggle-group-pressed-background: initial;
+  /* Pressed text. Default = hsl(var(--primary)). */
+  --editorial-toggle-group-pressed-color: initial;
+  /* Icon variant: the framed group and its square buttons. */
+  --editorial-toggle-group-frame-padding: calc(var(--space-1) - 2px);
+  --editorial-toggle-group-frame-radius: var(--radius);
+  --editorial-toggle-group-icon-option-size: var(--touch-target-min, 2.75rem);
+  --editorial-toggle-group-icon-option-padding: calc(var(--space-2) + 0.125rem);
+  --editorial-toggle-group-icon-size: var(--icon-size-lg);
+
+  /* ── EditorialMetaBar ───────────────────────────────────────────────────────────────────── */
+  /* row = start and end on one line; column = stacked (a phone). */
+  --editorial-meta-bar-align-flow: row;
+  --editorial-meta-bar-align-block: center;
+  --editorial-meta-bar-gap: var(--space-4);
+  --editorial-meta-bar-padding-block: calc(var(--space-4) + 0.125rem);
+  --editorial-meta-bar-font-size: var(--font-size-base);
+  --editorial-meta-bar-icon-gap: var(--space-2);
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-meta-bar-icon-size: calc(var(--icon-size-md) + 0.125rem);
+  --editorial-meta-bar-end-min-height: 1.5rem;
+
+  /* ── EditorialEmptyPanel ────────────────────────────────────────────────────────────────── */
+  --editorial-empty-panel-padding-block-start: calc(var(--space-12) + var(--space-2));
+  --editorial-empty-panel-padding-block-end: calc(var(--space-8) * 2);
+  --editorial-empty-panel-padding-inline: var(--space-6);
+  --editorial-empty-panel-radius: calc(var(--radius) * 2);
+  --editorial-empty-panel-title-font-size: 1.75rem; /* scale-exempt: fixed measured 28px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-empty-panel-title-line-height: 1.55;
+  --editorial-empty-panel-title-space-block: var(--space-4);
+  --editorial-empty-panel-description-max-width: 38.75rem;
+  --editorial-empty-panel-description-font-size: calc(var(--font-size-base) + 0.125rem);
+  --editorial-empty-panel-description-line-height: 1.85;
+  --editorial-empty-panel-actions-gap: var(--space-3);
+  --editorial-empty-panel-actions-space-block-start: calc(var(--space-6) + 0.25rem);
+  /* row = centred buttons; column = stacked full-width (a phone). */
+  --editorial-empty-panel-actions-align-flow: row;
+  --editorial-empty-panel-actions-align-block: center;
+  /* The decorative card stack of variant="guest". */
+  --editorial-empty-panel-art-width: 13.125rem;
+  --editorial-empty-panel-art-height: 8.75rem;
+  --editorial-empty-panel-art-space-block-end: var(--space-8);
+  --editorial-empty-panel-art-scale-size: 1;
+  --editorial-empty-panel-art-card-width: 4.875rem;
+  --editorial-empty-panel-art-card-height: 6.875rem;
+  --editorial-empty-panel-art-card-radius: var(--radius);
+  --editorial-empty-panel-art-card-rotate-offset: 13deg;
+  --editorial-empty-panel-art-card-translate: 2rem;
+  --editorial-empty-panel-art-card-inset-inline-start: 4.0625rem;
+  --editorial-empty-panel-art-card-inset-block-start: 0.75rem;
+  --editorial-empty-panel-art-window-inset: 12px 10px 36px;
+  --editorial-empty-panel-art-rule-inset-inline: 11px;
+  --editorial-empty-panel-art-rule-inset-block-end: 22px;
+  --editorial-empty-panel-art-rule-height: 2px;
+  --editorial-empty-panel-art-rule-offset: 7px;
+  --editorial-empty-panel-art-shadow: 0 8px 20px rgb(48 43 41 / 0.08);
+  /* Accent of the second card and the front card's rule. Default = var(--editorial-kicker-color). */
+  --editorial-empty-panel-art-accent-color: initial;
+  /* variant="empty": the medallion and the dashed frame. */
+  --editorial-empty-panel-empty-padding-block: var(--space-12);
+  --editorial-empty-panel-empty-padding-inline: var(--space-6);
+  --editorial-empty-panel-empty-title-font-size: calc(
+    var(
+        --font-size-2xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio) * var(--font-size-ratio)
+        )
+      ) +
+      0.1098459041721389rem
+  );
+  --editorial-empty-panel-empty-description-font-size: var(--font-size-base);
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-empty-panel-icon-size: 4rem; /* scale-exempt: 64px empty-state illustration, larger than the 48px icon-scale ceiling */
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-empty-panel-icon-glyph-size: 1.75rem;
+  --editorial-empty-panel-empty-actions-max-width: none;
+
+  /* ── EditorialStats ─────────────────────────────────────────────────────────────────────── */
+  --editorial-stats-track-size: 1.4fr 1fr 1fr;
+  --editorial-stats-gap: var(--space-5);
+  --editorial-stats-space-block-start: var(--space-4);
+  --editorial-stats-space-block-end: var(--space-8);
+  --editorial-stats-item-padding: var(--space-6);
+  --editorial-stats-item-radius: calc(var(--radius) * 2);
+  --editorial-stats-label-font-size: var(--font-size-base);
+  --editorial-stats-value-font-size: 2.375rem; /* scale-exempt: fixed measured 38px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-stats-value-line-height: 1.3;
+  --editorial-stats-value-space-block-start: var(--space-3);
+  --editorial-stats-unit-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-stats-unit-space-inline-start: var(--space-2);
+  --editorial-stats-unit-line-height: 1.5;
+  --editorial-stats-note-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-stats-note-space-block-start: var(--space-2);
+  /* The lead (first) tile: its span, and where its figure sits (a phone puts it beside the label:
+   * track 1fr auto, figure column 2, rows 1 / span 2). */
+  --editorial-stats-lead-span-offset: auto;
+  --editorial-stats-lead-track-size: minmax(0, 1fr);
+  --editorial-stats-lead-gap: 0;
+  --editorial-stats-lead-align-block: normal;
+  --editorial-stats-lead-value-column-offset: auto;
+  --editorial-stats-lead-value-row-offset: auto;
+  --editorial-stats-lead-value-space-block-start: var(--editorial-stats-value-space-block-start);
+  --editorial-stats-lead-note-space-block-start: var(--editorial-stats-note-space-block-start);
+
+  /* ── EditorialToolbar (gh#1438, gh#1439) ────────────────────────────────────────────────── */
+  /* flex = one wrapping row; block = start over end (a phone). A summary row is always flex. */
+  --editorial-toolbar-display: flex;
+  --editorial-toolbar-gap: var(--space-4);
+  --editorial-toolbar-align: center;
+  /* divider: the space above the hairline under the row. */
+  --editorial-toolbar-divider-padding-block-end: var(--space-5);
+  /* A listing row (summary): its outer space and the gap of its end controls. */
+  --editorial-toolbar-summary-space-block: var(--space-5);
+  --editorial-toolbar-summary-end-gap: var(--space-3);
+  --editorial-toolbar-count-display: block;
+  --editorial-toolbar-count-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-toolbar-count-line-height: 1.8;
+  --editorial-toolbar-note-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-toolbar-note-line-height: 1.7;
+  --editorial-toolbar-note-max-width: 37.5rem;
+  /* The control scale of the selects in the end cluster. Background default = hsl(var(--card)). */
+  --editorial-toolbar-control-min-width: 9.375rem;
+  --editorial-toolbar-control-max-width: none;
+  --editorial-toolbar-control-font-size: var(--font-size-base);
+  --editorial-toolbar-control-padding-x: calc(var(--space-3) + 0.125rem);
+  --editorial-toolbar-control-background: initial;
+  --editorial-toolbar-end-gap: var(--space-2);
+  --editorial-toolbar-end-align-inline: flex-start;
+  --editorial-toolbar-end-space-block-start: 0;
+  /* The end cluster's button label size. `initial` = the Button's own. */
+  --editorial-toolbar-action-font-size: initial;
+
+  /* ── HoldingGrid / HoldingCard ──────────────────────────────────────────────────────────── */
+  --editorial-holding-grid-track-size: repeat(4, minmax(0, 1fr));
+  --editorial-holding-grid-gap: var(--space-5);
+  --editorial-holding-grid-min-height: 13.75rem;
+  --editorial-holding-grid-list-gap: var(--space-3);
+  --editorial-holding-card-radius: calc(var(--radius) + 4px);
+  --editorial-holding-card-media-height: 14.75rem;
+  --editorial-holding-card-media-padding: var(--space-6);
+  --editorial-holding-card-media-shadow: drop-shadow(0 6px 7px rgb(35 25 29 / 0.13));
+  --editorial-holding-card-body-padding: var(--space-5);
+  --editorial-holding-card-overline-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-holding-card-overline-line-height: inherit;
+  --editorial-holding-card-overline-gap: var(--space-2);
+  --editorial-holding-card-overline-space-block-end: var(--space-2);
+  --editorial-holding-card-title-font-size: calc(var(--font-size-base) + 0.125rem);
+  --editorial-holding-card-title-line-height: 1.65;
+  --editorial-holding-card-title-min-height: 3.25rem;
+  --editorial-holding-card-title-space-block-end: var(--space-2);
+  --editorial-holding-card-title-space-block-start: 0;
+  --editorial-holding-card-meta-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-holding-card-meta-line-height: 1.7;
+  --editorial-holding-card-tags-gap: calc(var(--space-1) + 0.125rem);
+  --editorial-holding-card-tags-space-block: var(--space-3);
+  --editorial-holding-card-tag-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-holding-card-tag-padding-block: calc(var(--space-1) - 1px);
+  --editorial-holding-card-tag-padding-inline: var(--space-2);
+  --editorial-holding-card-tag-radius: calc(var(--radius) - 2px);
+  --editorial-holding-card-tag-line-height: 1.5;
+  --editorial-holding-card-purchase-align-flow: row;
+  --editorial-holding-card-purchase-align-block: center;
+  --editorial-holding-card-purchase-gap: calc(var(--space-2) + 0.125rem);
+  --editorial-holding-card-purchase-padding-block-start: calc(var(--space-3) + 0.125rem);
+  --editorial-holding-card-purchase-space-block-start: var(--space-4);
+  --editorial-holding-card-purchase-label-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-holding-card-purchase-value-font-size: calc(var(--font-size-base) + 0.125rem);
+  --editorial-holding-card-date-font-size: calc(var(--font-size-base) - 0.125rem);
+  --editorial-holding-card-date-line-height: inherit;
+  --editorial-holding-card-date-space-block: var(--space-2);
+  --editorial-holding-card-actions-gap: var(--space-2);
+  --editorial-holding-card-actions-align-inline: space-between;
+  --editorial-holding-card-actions-space-block-start: var(--space-3);
+  --editorial-holding-card-action-min-height: var(--touch-target-min, 2.75rem);
+  --editorial-holding-card-action-gap: calc(var(--space-2) - 1px);
+  --editorial-holding-card-action-padding-block: calc(var(--space-1) + 2px);
+  --editorial-holding-card-action-padding-inline: calc(var(--space-1) + 2px);
+  --editorial-holding-card-action-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-holding-card-action-icon-size: var(--icon-size-md);
+  /* List view: the card's two tracks, and the body's own grid (block = stacked, a phone). */
+  --editorial-holding-card-list-track-size: 140px 1fr;
+  --editorial-holding-card-list-media-min-height: 10.625rem;
+  --editorial-holding-card-list-media-padding: var(--space-5);
+  --editorial-holding-card-list-image-max-height: 10rem;
+  --editorial-holding-card-list-body-display: grid;
+  --editorial-holding-card-list-body-track-size: 1.5fr 1fr 140px;
+  --editorial-holding-card-list-body-gap: var(--space-2) var(--space-6);
+  --editorial-holding-card-list-body-padding-block: var(--editorial-holding-card-body-padding);
+  --editorial-holding-card-list-body-padding-inline: var(--editorial-holding-card-body-padding);
+  --editorial-holding-card-list-title-space-block: 0;
+  --editorial-holding-card-list-tags-space-block: 0;
+  --editorial-holding-card-list-tags-column-offset: 2;
+  --editorial-holding-card-list-tags-row-offset: 1 / span 2;
+  --editorial-holding-card-list-purchase-column-offset: 2;
+  --editorial-holding-card-list-purchase-row-offset: 3;
+  --editorial-holding-card-list-purchase-space-block: 0;
+  --editorial-holding-card-list-purchase-align-inline: space-between;
+  --editorial-holding-card-list-date-column-offset: 2;
+  --editorial-holding-card-list-actions-column-offset: 3;
+  --editorial-holding-card-list-actions-row-offset: 1 / span 4;
+  --editorial-holding-card-list-actions-align-flow: column;
+  --editorial-holding-card-list-actions-align-inline: space-between;
+  --editorial-holding-card-list-actions-gap: 0;
+
+  /* ── SettingsLayout / SettingsPanel ─────────────────────────────────────────────────────── */
+  --editorial-settings-layout-track-size: 260px minmax(0, 1fr);
+  --editorial-settings-layout-gap: calc(var(--space-8) * 2);
+  --editorial-settings-layout-aside-display: block;
+  --editorial-settings-layout-aside-inset: 7.5rem;
+  --editorial-settings-layout-aside-font-size: var(--font-size-base);
+  --editorial-settings-layout-aside-line-height: 1.9;
+  --editorial-settings-panel-padding-block: calc(var(--space-6) + 0.25rem);
+  --editorial-settings-panel-padding-inline: var(--space-8);
+  --editorial-settings-panel-space-block-end: var(--space-6);
+  --editorial-settings-panel-radius: calc(var(--radius) * 2);
+  --editorial-settings-panel-head-gap: var(--space-4);
+  /* Label↔control gap of a field in a panel. `initial` = the form's --field-label-gap. */
+  --editorial-settings-panel-field-label-gap: initial;
+  --editorial-settings-panel-head-space-block-end: calc(var(--space-6) + 0.25rem);
+  --editorial-settings-panel-number-font-size: calc(var(--font-size-base) + 0.0625rem);
+  /* The number column: the title starts at the same x whatever the figures' face. */
+  --editorial-settings-panel-number-min-width: 1.25rem;
+  --editorial-settings-panel-number-line-height: 1.8;
+  --editorial-settings-panel-number-padding-block-start: calc(var(--space-1) - 2px);
+  --editorial-settings-panel-title-font-size: calc(
+    var(
+        --font-size-xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio)
+        )
+      ) +
+      0.01177599017737485rem
+  );
+  --editorial-settings-panel-title-line-height: 1.55;
+  --editorial-settings-panel-title-space-block-end: var(--space-2);
+  --editorial-settings-panel-description-font-size: var(--font-size-base);
+  --editorial-settings-panel-description-line-height: 1.8;
+
+  /* ── ThemePicker ────────────────────────────────────────────────────────────────────────── */
+  --editorial-theme-picker-track-size: repeat(3, minmax(0, 1fr));
+  --editorial-theme-picker-gap: var(--space-4);
+  --editorial-theme-picker-preview-height: 7.25rem;
+  --editorial-theme-picker-preview-padding-block: calc(var(--space-4) + 1px);
+  --editorial-theme-picker-preview-padding-inline: calc(var(--space-4) + 1px);
+  --editorial-theme-picker-preview-border-width: var(--stroke-md);
+  --editorial-theme-picker-preview-radius: calc(var(--radius) + 2px);
+  --editorial-theme-picker-bar-height: calc(
+    var(--stroke-xl) * 2 + var(--stroke-hairline)
+  ); /* scale-exempt: 9px decorative theme-preview bar, not an interactive control or row band */
+  --editorial-theme-picker-bar-space-block-end: calc(var(--space-2) + 2px);
+  --editorial-theme-picker-bar-first-height: 11px;
+  --editorial-theme-picker-bar-last-height: 34px;
+  --editorial-theme-picker-bar-space-block-start: calc(var(--space-1) - 2px);
+  --editorial-theme-picker-bar-inset-inline-start: 25%;
+  --editorial-theme-picker-bar-width: 66%;
+  --editorial-theme-picker-bar-first-width: 30%;
+  --editorial-theme-picker-bar-radius: calc(var(--radius) - 3px);
+  --editorial-theme-picker-rail-width: 20%;
+  --editorial-theme-picker-label-gap: var(--space-2);
+  --editorial-theme-picker-label-font-size: var(--font-size-base);
+  --editorial-theme-picker-label-min-height: 2rem;
+  --editorial-theme-picker-label-space-block-start: var(--space-3);
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-theme-picker-icon-size: calc(var(--icon-size-md) + 0.125rem);
+  /* The painted previews: a light page, a dark page, and the system split of the two. They draw
+   * the interface itself, so they keep their own colours whatever the active theme. */
+  --editorial-theme-picker-light-background: #fbf9f5;
+  --editorial-theme-picker-light-rail-background: #f3eee5;
+  --editorial-theme-picker-light-line-color: #e6dfd5;
+  --editorial-theme-picker-light-accent-color: #692d3e;
+  --editorial-theme-picker-dark-background: #23191d;
+  --editorial-theme-picker-dark-rail-background: #302229;
+  --editorial-theme-picker-dark-line-color: #5c444d;
+  --editorial-theme-picker-dark-accent-color: #dda8b9;
+  --editorial-theme-picker-system-border-color: #8a7d70;
+
+  /* ── EditorialAuth / EditorialAuthCard ──────────────────────────────────────────────────── */
+  /* grid = story beside the card; flex = stacked column (a phone). */
+  --editorial-auth-display: grid;
+  --editorial-auth-track-size: 1fr 460px;
+  --editorial-auth-gap: calc(var(--space-24) + 0.25rem);
+  --editorial-auth-padding-block-start: calc(var(--space-8) * 2);
+  --editorial-auth-padding-block-end: var(--space-20);
+  --editorial-auth-story-padding-block-start: var(--space-6);
+  --editorial-auth-title-font-size: 2.5rem; /* scale-exempt: fixed measured 40px editorial type; the ratio-derived body and fluid display steps do not match */
+  --editorial-auth-title-line-height: 1.7;
+  --editorial-auth-title-letter-spacing: -0.03em;
+  --editorial-auth-title-font-weight: 500;
+  --editorial-auth-title-space-block: var(--space-5);
+  --editorial-auth-description-max-width: 30.625rem;
+  --editorial-auth-description-font-size: calc(var(--font-size-base) + 0.125rem);
+  --editorial-auth-description-line-height: 1.9;
+  --editorial-auth-description-space-block-end: 0;
+  --editorial-auth-art-display: block;
+  --editorial-auth-art-height: 14.375rem;
+  --editorial-auth-art-max-width: 21.875rem;
+  --editorial-auth-art-space-block-start: var(--space-10);
+  --editorial-auth-art-space-block-end: var(--space-8);
+  --editorial-auth-art-scale-size: 1;
+  --editorial-auth-art-card-width: 8.25rem;
+  --editorial-auth-art-card-height: 11.5625rem;
+  --editorial-auth-art-card-radius: calc(var(--radius) + 2px);
+  --editorial-auth-art-image-size: 5.3125rem;
+  --editorial-auth-art-back-inset-inline-start: 3rem;
+  --editorial-auth-art-back-inset-block-start: 15px;
+  --editorial-auth-art-front-inset-inline-start: 8.25rem;
+  --editorial-auth-art-front-inset-block-start: 26px;
+  --editorial-auth-art-back-rotate-offset: -12deg;
+  --editorial-auth-art-front-rotate-offset: 9deg;
+  --editorial-auth-art-frame-inset: 12px;
+  --editorial-auth-art-frame-radius: calc(var(--radius) - 3px);
+  --editorial-auth-art-shadow: 0 15px 25px rgb(35 25 29 / 0.08);
+  --editorial-auth-benefits-display: flex;
+  --editorial-auth-benefits-gap: calc(var(--space-3) + 0.125rem);
+  --editorial-auth-benefits-font-size: var(--font-size-base);
+  --editorial-auth-benefit-gap: calc(var(--space-2) + 0.125rem);
+  /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
+  --editorial-auth-benefit-icon-size: calc(var(--icon-size-md) + 0.125rem);
+  --editorial-auth-card-padding: var(--space-8);
+  /* The card's chip. `initial` = the Badge's own size. */
+  --editorial-auth-card-badge-font-size: initial;
+  --editorial-auth-card-radius: 14px; /* scale-exempt: measured 14px radius preserves the consumer editorial design; no matching scale step */
+  --editorial-auth-card-shadow: 0 6px 28px rgb(48 43 41 / 0.04);
+  --editorial-auth-card-title-font-size: calc(
+    var(
+        --font-size-2xl,
+        calc(
+          var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+            var(--font-size-ratio) * var(--font-size-ratio)
+        )
+      ) +
+      0.2348459041721389rem
+  );
+  --editorial-auth-card-title-line-height: 1.55;
+  --editorial-auth-card-title-space-block-start: calc(var(--space-5) + 0.125rem);
+  --editorial-auth-card-title-space-block-end: calc(var(--space-2) + 0.125rem);
+  --editorial-auth-card-description-font-size: var(--font-size-base);
+  --editorial-auth-card-description-line-height: 1.8;
+  --editorial-auth-card-body-space-block-start: calc(var(--space-6) + 0.25rem);
+  --editorial-auth-card-footer-font-size: calc(var(--font-size-base) - 0.0625rem);
+  --editorial-auth-card-footer-line-height: 1.9;
+  --editorial-auth-card-footer-padding-block-start: var(--space-5);
+  --editorial-auth-card-footer-space-block-start: var(--space-6);
+}

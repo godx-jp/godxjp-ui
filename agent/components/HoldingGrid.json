@@ -1,0 +1,37 @@
+{
+  "example": "import { HoldingCard, HoldingGrid } from \"@godxjp/ui/layout\";\n\n<HoldingGrid view=\"grid\" aria-label=\"Your collection\"><HoldingCard media={<a href=\"/cards/1/\"><img src=\"/card.png\" alt=\"\" /></a>} title={<a href=\"/cards/1/\">Pikachu</a>} /></HoldingGrid>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "HoldingGrid",
+  "props": [
+    {
+      "description": "Tiles or rows. Default: \"grid\".",
+      "name": "view",
+      "type": "\"grid\" | \"list\""
+    },
+    {
+      "description": "Name of the list.",
+      "name": "aria-label",
+      "type": "string"
+    },
+    {
+      "description": "HoldingCards.",
+      "name": "children",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "HoldingCard — its items.",
+    "CatalogCard — a catalogue tile."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "The track of HoldingCards (gh#1439): `view=\"grid\"` lays tiles on `--editorial-holding-grid-track-size` (default four columns); `view=\"list\"` turns the same cards into wide rows (`140px 1fr`, body on `1.5fr 1fr 140px`). A list (`ul`) of the cards.",
+  "usage": [
+    "DO switch the view with an EditorialToggleGroup variant=\"icon\"; never swap to a data table."
+  ]
+}

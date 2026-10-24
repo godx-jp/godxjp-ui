@@ -1,0 +1,52 @@
+{
+  "example": "import { CatalogDetailSection } from \"@godxjp/ui/layout\";\n\n<CatalogDetailSection titleId=\"info\" title=\"Card information\" description=\"From the catalogue.\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "CatalogDetailSection",
+  "props": [
+    {
+      "defaultValue": "\"band\"",
+      "description": "Hairlined band, or a page module (no hairline, module rhythm).",
+      "name": "variant",
+      "type": "\"band\" | \"module\""
+    },
+    {
+      "description": "Id on the section (in-page link target).",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "The h2.",
+      "name": "title",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Muted paragraph.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Anything after.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Id on the h2 (names the section).",
+      "name": "titleId",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "EditorialSection — a full-width band of a sections page."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "tagline": "One band of an item page under its head (gh#1438): a top hairline, an h2, a muted paragraph, then anything else. Geometry: `--editorial-catalog-detail-section-*`.",
+  "usage": [
+    "DO pass titleId so the section is a named region."
+  ]
+}

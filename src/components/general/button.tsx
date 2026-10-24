@@ -77,6 +77,13 @@ const buttonVariants = cva("ui-button", {
 
 export type { ButtonProp, ButtonProp as ButtonProps } from "../../props/components/general.prop";
 
+/** Whether children carry visible text of their own (a direct, non-blank string or number). */
+function hasDirectText(children: React.ReactNode): boolean {
+  return React.Children.toArray(children).some(
+    (child) => (typeof child === "string" && child.trim() !== "") || typeof child === "number",
+  );
+}
+
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
   (
     {
@@ -139,6 +146,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
     const ariaLabel = props["aria-label"];
     const foldedAriaLabel =
       showCount && ariaLabel != null ? { "aria-label": `${ariaLabel}, ${spokenCount}` } : null;
+    // A labelled button keeps its label padding even beside a glyph (gh#1436). Under `asChild` the
+    // child element's own text is the label. Emitted only when there is text, so an icon-only
+    // button's markup is unchanged.
+    const labelled = asChild
+      ? React.isValidElement<{ children?: React.ReactNode }>(children) &&
+        hasDirectText(children.props.children)
+      : hasDirectText(loadingText ?? children);
     const countNode = showCount ? (
       <>
         <span data-slot="button-count" className="ui-button-count" aria-hidden="true">
@@ -158,6 +172,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         data-wrap={wrap ? "" : undefined}
         data-align={align === "center" ? undefined : align}
         data-loading={isLoading ? "" : undefined}
+        data-label={labelled ? "" : undefined}
         aria-busy={isLoading || undefined}
         disabled={isLoading || disabled}
         type={asChild ? undefined : (type ?? "button")}
