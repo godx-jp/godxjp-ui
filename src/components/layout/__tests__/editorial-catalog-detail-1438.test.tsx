@@ -163,4 +163,44 @@ describe("EditorialPrompt (gh#1438)", () => {
     expect(action).toMatch(/--button-radius:\s*var\(--editorial-prompt-action-radius\)/);
     expect(action).toMatch(/--button-font-weight:\s*var\(--editorial-prompt-action-font-weight\)/);
   });
+
+  it("keeps the action beside the copy unless a theme lets the copy grow", () => {
+    expect(rule(".ui-editorial-prompt-copy")).toMatch(
+      /flex:\s*var\(--editorial-prompt-copy-size-grow\) 1 var\(--editorial-prompt-copy-width-basis\)/,
+    );
+    expect(tokens).toMatch(/--editorial-prompt-copy-size-grow:\s*0/);
+  });
+});
+
+describe("Button outline ink knob (gh#1438)", () => {
+  const controlCss = read("../../../styles/control.css");
+  it("reads --button-outline-foreground, defaulting to --foreground", () => {
+    const outline = [...controlCss.matchAll(/\.ui-button--outline\s*\{([^}]*)\}/g)].map((m) => m[1]).join("\n");
+    expect(outline).toMatch(/color:\s*var\(--button-outline-foreground, hsl\(var\(--foreground\)\)\)/);
+  });
+
+  it("is set to the action colour on no fill inside the catalog's filter action and item actions", () => {
+    for (const selector of [".ui-editorial-filter-panel-action", ".ui-catalog-detail-actions"]) {
+      const body = rule(selector);
+      expect(body).toMatch(/--button-outline-foreground:\s*var\(--editorial-catalog-outline-color, hsl\(var\(--primary\)\)\)/);
+      expect(body).toMatch(/--button-outline-background:\s*var\(--editorial-catalog-outline-background, transparent\)/);
+    }
+  });
+});
+
+describe("EditorialSectionHead scale (gh#1438)", () => {
+  it('stamps data-scale only for "module"', async () => {
+    const { EditorialSectionHead } = await import("../editorial");
+    const { container, rerender } = render(<EditorialSectionHead title="Compare" scale="module" />);
+    expect(container.firstElementChild?.getAttribute("data-scale")).toBe("module");
+    rerender(<EditorialSectionHead title="Compare" />);
+    expect(container.firstElementChild?.hasAttribute("data-scale")).toBe(false);
+  });
+
+  it("re-points the head's knobs to the module scale", () => {
+    const body = rule('.ui-editorial-section-head[data-scale="module"]');
+    expect(body).toMatch(/--editorial-section-head-title-font-size:\s*var\(--editorial-section-head-module-title-font-size\)/);
+    expect(body).toMatch(/--editorial-eyebrow-letter-spacing:\s*var\(--editorial-section-head-module-kicker-letter-spacing\)/);
+    expect(tokens).toMatch(/--editorial-section-head-module-title-font-size:\s*1\.875rem/);
+  });
 });

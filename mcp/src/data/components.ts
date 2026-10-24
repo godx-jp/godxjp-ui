@@ -1153,6 +1153,7 @@ export default function OrdersPage() {
       { name: "description", type: "ReactNode", description: "One line under it." },
       { name: "action", type: "ReactNode", description: "Trailing call to action." },
       { name: "level", type: "2 | 3", defaultValue: "2", description: "Heading level." },
+      { name: "scale", type: '"section" | "module"', defaultValue: '"section"', description: "A module's smaller head (gh#1438)." },
       {
         name: "titleId",
         type: "string",

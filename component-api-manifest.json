@@ -8370,6 +8370,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "scale",
+          "origin": "owned",
+          "required": false,
+          "type": "\"section\" | \"module\" | undefined",
+          "values": ["section", "module"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "title",
           "origin": "owned",
           "required": true,

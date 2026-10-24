@@ -1546,6 +1546,7 @@ export const COMPONENT_PROP_REGISTRY = {
         reason: "Slot for the trailing call to action on the title row.",
       },
       { field: "level", local: true, reason: "Heading level of the title (2 or 3)." },
+      { field: "scale", local: true, reason: "Page-section head or a module's smaller head." },
       {
         field: "titleId",
         local: true,

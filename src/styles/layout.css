@@ -3177,6 +3177,27 @@
     margin-block-end: var(--editorial-section-head-space-block-end);
   }
 
+  /* scale="module" re-points the head's own knobs (and its kicker's) to the module scale. */
+  .ui-editorial-section-head[data-scale="module"] {
+    --editorial-section-head-align: var(--editorial-section-head-module-align);
+    --editorial-section-head-space-block-end: var(--editorial-section-head-module-space-block-end);
+    --editorial-eyebrow-line-height: var(--editorial-section-head-module-kicker-line-height);
+    --editorial-eyebrow-letter-spacing: var(--editorial-section-head-module-kicker-letter-spacing);
+    --editorial-section-head-title-font-size: var(--editorial-section-head-module-title-font-size);
+    --editorial-section-head-title-line-height: var(
+      --editorial-section-head-module-title-line-height
+    );
+    --editorial-section-head-title-space-block-start: var(
+      --editorial-section-head-module-title-space-block-start
+    );
+    --editorial-section-head-description-font-size: var(
+      --editorial-section-head-module-description-font-size
+    );
+    --editorial-section-head-description-space-block-start: var(
+      --editorial-section-head-module-description-space-block-start
+    );
+  }
+
   .ui-editorial-section-head-copy {
     min-width: 0;
   }
@@ -4541,6 +4562,8 @@
 
   .ui-editorial-filter-panel-action {
     --button-padding-inline: var(--editorial-filter-panel-action-padding-inline);
+    --button-outline-foreground: var(--editorial-catalog-outline-color, hsl(var(--primary)));
+    --button-outline-background: var(--editorial-catalog-outline-background, transparent);
     display: flex;
     flex-grow: var(--editorial-filter-panel-action-size-grow);
   }
@@ -4717,6 +4740,8 @@
   }
 
   .ui-catalog-detail-actions {
+    --button-outline-foreground: var(--editorial-catalog-outline-color, hsl(var(--primary)));
+    --button-outline-background: var(--editorial-catalog-outline-background, transparent);
     display: flex;
     flex-wrap: wrap;
     gap: var(--editorial-catalog-detail-actions-gap);
@@ -4869,7 +4894,7 @@
   }
 
   .ui-editorial-prompt-copy {
-    flex: 1 1 var(--editorial-prompt-copy-width-basis);
+    flex: var(--editorial-prompt-copy-size-grow) 1 var(--editorial-prompt-copy-width-basis);
     min-width: var(--editorial-prompt-copy-min-width);
   }
 

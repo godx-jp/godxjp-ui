@@ -2282,6 +2282,11 @@ export type EditorialSectionHeadProp = {
   action?: ReactNode;
   /** Heading level of the title. Default `2`. */
   level?: 2 | 3;
+  /**
+   * `"section"` (default) is a page section's head; `"module"` is the smaller head of a module
+   * inside a page (an item page's price module, gh#1438): `--editorial-section-head-module-*`.
+   */
+  scale?: "section" | "module";
   /** Id put on the title, for a section's `aria-labelledby`. */
   titleId?: IdProp;
   className?: ClassNameProp;

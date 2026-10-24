@@ -167,12 +167,17 @@ export function EditorialSectionHead({
   description,
   action,
   level = 2,
+  scale = "section",
   titleId,
   className,
 }: EditorialSectionHeadProp) {
   const Heading = level === 3 ? "h3" : "h2";
   return (
-    <div data-slot="editorial-section-head" className={cn("ui-editorial-section-head", className)}>
+    <div
+      data-slot="editorial-section-head"
+      data-scale={scale === "module" ? "module" : undefined}
+      className={cn("ui-editorial-section-head", className)}
+    >
       <div className="ui-editorial-section-head-copy">
         {eyebrow}
         <Heading id={titleId} className="ui-editorial-section-head-title">

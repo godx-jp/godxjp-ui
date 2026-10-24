@@ -87,6 +87,16 @@
   --editorial-section-head-description-space-block-start: 0.625rem;
   --editorial-section-head-action-space-block-start: 0rem;
   --editorial-section-head-action-max-width: none;
+  /* scale="module": the smaller head of a module inside a page (gh#1438). */
+  --editorial-section-head-module-align: center;
+  --editorial-section-head-module-space-block-end: 1.5rem;
+  --editorial-section-head-module-kicker-line-height: 1.8;
+  --editorial-section-head-module-kicker-letter-spacing: 0.14em;
+  --editorial-section-head-module-title-font-size: 1.875rem;
+  --editorial-section-head-module-title-line-height: 1.65;
+  --editorial-section-head-module-title-space-block-start: 0.75rem;
+  --editorial-section-head-module-description-font-size: 0.9375rem;
+  --editorial-section-head-module-description-space-block-start: 0.75rem;
 
   /* ── EditorialBreadcrumb (gh#1437) ──────────────────────────────────────────────────────── */
   --editorial-breadcrumb-padding-block-start: 1.5rem;
@@ -551,6 +561,11 @@
   /* Default = hsl(var(--card)). */
   --editorial-listing-toolbar-control-background: initial;
 
+  /* Outline buttons in the catalog bodies (filter reset, item actions) read in the action colour on
+   * no fill. Defaults = hsl(var(--primary)) / transparent (gh#1438). */
+  --editorial-catalog-outline-color: initial;
+  --editorial-catalog-outline-background: initial;
+
   /* ── CatalogDetail / CatalogDetailTag (gh#1438) ─────────────────────────────────────────── */
   /* Tracks: the frame column and the copy; a phone theme sets one track (minmax(0, 1fr)). */
   --editorial-catalog-detail-track-size: 21.875rem minmax(0, 1fr);
@@ -563,7 +578,7 @@
   --editorial-catalog-detail-art-padding: 2.5rem;
   --editorial-catalog-detail-art-radius: 0.75rem;
   --editorial-catalog-detail-media-width: 15.625rem;
-  --editorial-catalog-detail-media-height: auto;
+  --editorial-catalog-detail-media-height: 22.5rem;
   --editorial-catalog-detail-media-max-height: 22.5rem;
   --editorial-catalog-detail-media-shadow: 0 10px 12px rgb(48 43 41 / 0.14);
   --editorial-catalog-detail-caption-font-size: 0.75rem;
@@ -643,6 +658,8 @@
   --editorial-prompt-icon-size: 3.25rem;
   --editorial-prompt-icon-glyph-size: 1.5rem;
   --editorial-prompt-copy-width-basis: auto;
+  /* 0 keeps the action beside the copy; 1 lets the copy take the row (a wrapped prompt). */
+  --editorial-prompt-copy-size-grow: 0;
   --editorial-prompt-copy-min-width: 0rem;
   --editorial-prompt-title-font-size: 1.3125rem;
   --editorial-prompt-title-line-height: 1.65;
