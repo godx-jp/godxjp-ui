@@ -404,6 +404,8 @@ export type TabItemProp = {
    * lands somewhere different. The slot is what lets the tab state drive the pill.
    */
   count?: number;
+  /** neutral stays muted even when selected; accent preserves the existing selection emphasis. */
+  countTone?: "neutral" | "accent";
   /** Cap for `count` — beyond it the pill shows `{overflowCount}+` (e.g. `99+`). Default `99`. */
   overflowCount?: number;
   /** Render the pill when `count` is 0. Default `true`, matching Button and Toggle. */

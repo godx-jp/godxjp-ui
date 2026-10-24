@@ -1,6 +1,7 @@
 // Descriptions — for detail-page metadata. Replaces hand-rolled <dl><dt><dd> layouts.
 import * as React from "react";
 
+import type { WidthProp } from "../../props/vocabulary/shared.prop";
 import { cn } from "../../lib/utils";
 import type { BreakpointProp } from "../../props/vocabulary/interaction.prop";
 import type { DescriptionsLayoutProp } from "../../props/vocabulary/interaction.prop";
@@ -16,12 +17,14 @@ type DescriptionsLayoutContextValue = {
   layout: DescriptionsLayoutProp;
   labelAlign: "start" | "end";
   bordered: boolean;
+  contentLabels: boolean;
 };
 
 const DescriptionsLayoutContext = React.createContext<DescriptionsLayoutContextValue>({
   layout: "vertical",
   labelAlign: "start",
   bordered: false,
+  contentLabels: false,
 });
 
 /** Mobile-first ladder, in the order the stylesheet's media queries repoint the custom property. */
@@ -59,6 +62,9 @@ export interface DescriptionsProps {
    * it there would read as a mistake, exactly like `Form`'s own contract.
    */
   labelAlign?: "start" | "end";
+  /** Horizontal label width. Omitted/auto keeps the theme width; content shares the longest
+   * label track per visual column. CSS lengths (numbers are px) override the theme per list. */
+  labelWidth?: WidthProp | "content";
   /**
    * Draw the grid as a bordered table (antd `bordered`): an outer frame, a rule between every
    * cell, and a shaded label cell. Colour and rhythm come from the `--descriptions-*` tokens.
@@ -84,6 +90,7 @@ export function Descriptions({
   columns = 2,
   layout = "vertical",
   labelAlign = "start",
+  labelWidth,
   bordered = false,
   items,
   className,
@@ -98,9 +105,32 @@ export function Descriptions({
         ? { sm: Math.min(columns, 2), lg: columns }
         : columns
       : undefined;
+  const intrinsicWidth =
+    labelWidth === "content" ||
+    labelWidth === "max-content" ||
+    labelWidth === "min-content" ||
+    labelWidth === "fit-content";
+  const contentLabels = layout === "horizontal" && intrinsicWidth;
+  const labelStyle =
+    layout === "horizontal" && labelWidth !== undefined && labelWidth !== "auto" && !intrinsicWidth
+      ? {
+          "--descriptions-label-width":
+            typeof labelWidth === "number" ? `${labelWidth}px` : labelWidth,
+        }
+      : {};
+  const contentColumns =
+    contentLabels && !responsiveColumns
+      ? typeof columns === "number"
+        ? columns === 3
+          ? { sm: 2, lg: 3 }
+          : columns === 2
+            ? { sm: 2 }
+            : {}
+        : columns
+      : responsiveColumns;
   const context = React.useMemo(
-    () => ({ layout, labelAlign, bordered }),
-    [layout, labelAlign, bordered],
+    () => ({ layout, labelAlign, bordered, contentLabels }),
+    [layout, labelAlign, bordered, contentLabels],
   );
   return (
     <DescriptionsLayoutContext.Provider value={context}>
@@ -109,16 +139,20 @@ export function Descriptions({
         data-slot="descriptions"
         // assertable / themeable whichever responsive `grid-cols-*` utilities happen to paint it.
         data-columns={typeof columns === "number" ? columns : undefined}
-        data-columns-responsive={responsiveColumns ? "" : undefined}
+        data-columns-responsive={responsiveColumns || contentLabels ? "" : undefined}
+        data-label-width={contentLabels ? "content" : undefined}
         data-bordered={bordered ? "" : undefined}
         style={
-          responsiveColumns
-            ? responsiveVars("--descriptions-column-count", 1, responsiveColumns)
-            : undefined
+          {
+            ...(contentColumns
+              ? responsiveVars("--descriptions-column-count", 1, contentColumns)
+              : {}),
+            ...labelStyle,
+          } as React.CSSProperties
         }
         className={cn(
           "grid gap-x-[var(--descriptions-column-gap)] gap-y-[var(--descriptions-row-gap)]",
-          legacyColumns,
+          !contentLabels && legacyColumns,
           className,
         )}
       >
@@ -160,12 +194,15 @@ const LEGACY_SPAN_CLASS: Record<number, string> = {
 };
 
 function DescriptionsItem({ label, mono, span, className, children }: DescriptionsItemProps) {
-  const { layout, labelAlign } = React.useContext(DescriptionsLayoutContext);
-  const legacySpan = typeof span === "number" ? LEGACY_SPAN_CLASS[span] : undefined;
+  const { layout, labelAlign, contentLabels } = React.useContext(DescriptionsLayoutContext);
+  const legacySpan =
+    !contentLabels && typeof span === "number" ? LEGACY_SPAN_CLASS[span] : undefined;
   const responsiveSpan =
     span !== undefined && span !== "filled" && legacySpan === undefined
       ? typeof span === "number"
-        ? { sm: span }
+        ? span === 3
+          ? { sm: 2, lg: 3 }
+          : { sm: span }
         : span
       : undefined;
   // The EFFECTIVE label alignment, after the vertical guard below. Reflected only when it is the

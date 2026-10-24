@@ -1,3 +1,4 @@
+import { useTranslation } from "@godxjp/ui/i18n";
 import {
   Badge,
   Card,
@@ -31,12 +32,31 @@ import { Download, ExternalLink, FileText } from "lucide-react";
 const ID = "01JBQ9X7M4K2R8VT3NZ6YHF0PA";
 
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer
       title="Descriptions"
       subtitle="label/value grid — every shape a detail page asks for"
     >
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("metadataApiDocs.title")}</CardTitle>
+            <CardDescription>{t("metadataApiDocs.hint")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Descriptions
+              columns={1}
+              layout="horizontal"
+              labelWidth="content"
+              items={[
+                { label: t("metadataApiDocs.status"), value: t("metadataApiDocs.change") },
+                { label: t("metadataApiDocs.owner"), value: t("metadataApiDocs.person") },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>1 · columns × bordered × layout — the three axes</CardTitle>

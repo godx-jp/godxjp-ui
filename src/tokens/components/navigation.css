@@ -250,6 +250,8 @@
   --tabs-count-gap: var(--space-1);
   --tabs-count-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   --tabs-count-radius: var(--radius-pill);
+  --tabs-count-neutral-background: initial; /* default = hsl(var(--muted)) at the call site */
+  --tabs-count-neutral-color: initial; /* default = hsl(var(--muted-foreground)) at the call site */
   --tabs-count-background: initial; /* default = hsl(var(--muted)) at the call site */
   /* …and on a CARD tab, whose own resting fill is already `--muted`, the pill would land on its
    * own colour (measured 1.00:1 — invisible; the gh#602 failure on a third control). It takes the

@@ -83,6 +83,7 @@ import type {
   ChildrenProp,
   PendingProp,
   ToneProp,
+  WidthProp,
   AvatarShapeProp,
   HeadingLevelProp,
   HandlerProp,
@@ -272,6 +273,8 @@ export type DescriptionsProp = {
   layout?: DescriptionsLayoutProp;
   /** Label text alignment inside the label column. Applies only to `layout="horizontal"`. */
   labelAlign?: "start" | "end";
+  /** Horizontal labels: auto keeps the theme width; content shares an intrinsic track across rows. */
+  labelWidth?: WidthProp | "content";
   /** Draw the grid as a bordered table with shaded label cells (antd `bordered`). */
   bordered?: boolean;
   /** Declarative items (antd `items`) — the alternative to composing `Descriptions.Item`. */

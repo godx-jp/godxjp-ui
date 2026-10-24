@@ -23,6 +23,12 @@
       "type": "\"vertical\" | \"horizontal\""
     },
     {
+      "defaultValue": "\"auto\"",
+      "description": "Horizontal labels only. Omitted/auto retains --descriptions-label-width (8rem), even with columns=1. content (also max-content, min-content or fit-content) uses a shared intrinsic grid track: longest label per visual column, capped by --descriptions-label-max-width (40%) so long labels wrap without clipping at 320px. Use columns=1 for one aligned label column across the entire list. WidthProp lengths and expressions override the width per list; numbers are px. Vertical layout ignores this prop. No consumer CSS override required.",
+      "name": "labelWidth",
+      "type": "WidthProp | \"content\""
+    },
+    {
       "defaultValue": "\"start\"",
       "description": "Applies only in layout=\"horizontal\" — a vertical label sits above its value and end-aligning it there would read as a mistake, the same contract `Form` keeps.",
       "name": "labelAlign",

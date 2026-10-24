@@ -3327,6 +3327,39 @@
 @layer godxjp-ui-responsive {
   /* One step per breakpoint, each falling back through the narrower ones — so `{ lg: 4 }` alone
    * means "1 up to lg, 4 from lg", the mobile-first reading antd's object form has. */
+  /* Intrinsic label tracks belong to the LIST, not individual rows. Subgrid retains
+   * semantic dt/dd wrappers, row chrome and shared alignment. Each visual column shares its
+   * longest label; fit-content caps unbroken labels, leaving room for the value at 320px. */
+  [data-slot="descriptions"][data-label-width="content"] {
+    grid-template-columns: repeat(
+      var(--descriptions-column-count, 1),
+      fit-content(var(--descriptions-label-max-width)) minmax(0, 1fr)
+    );
+    column-gap: var(--descriptions-label-gap);
+  }
+  [data-slot="descriptions"][data-label-width="content"][data-bordered] {
+    column-gap: 0;
+  }
+  [data-slot="descriptions"][data-label-width="content"] > [data-slot="descriptions-item"] {
+    grid-column: span calc(2 * var(--descriptions-item-span, 1));
+    grid-template-columns: subgrid;
+  }
+  [data-slot="descriptions"][data-label-width="content"]
+    > [data-slot="descriptions-item"][data-span="filled"] {
+    grid-column: 1 / -1;
+  }
+  [data-slot="descriptions"][data-label-width="content"]
+    > [data-slot="descriptions-item"]
+    > [data-slot="descriptions-value"] {
+    grid-column: 2 / -1;
+  }
+  [data-slot="descriptions"][data-label-width="content"]
+    > [data-slot="descriptions-item"]
+    > [data-slot="descriptions-label"] {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
   @media (min-width: 640px) {
     [data-slot="descriptions"][data-columns-responsive] {
       --descriptions-column-count: var(

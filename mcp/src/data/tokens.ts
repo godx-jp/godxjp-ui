@@ -11,6 +11,25 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--descriptions-label-max-width",
+    category: "component",
+    tier: "component",
+    role: "Intrinsic label track cap (40%); labelWidth=content shares longest labels per visual column and wraps long labels within this limit.",
+  },
+  {
+    name: "--tabs-count-neutral-background",
+    category: "component",
+    tier: "component",
+    role: "Neutral count fill in every selection state. Role mirror initial; default hsl(var(--muted)) at call site.",
+  },
+  {
+    name: "--tabs-count-neutral-color",
+    category: "component",
+    tier: "component",
+    role: "Neutral count text in every selection state. Role mirror initial; default hsl(var(--muted-foreground)) at call site.",
+  },
+
+  {
     name: "--dashboard-grid-gap",
     category: "component",
     tier: "component",

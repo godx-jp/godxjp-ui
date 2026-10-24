@@ -175,8 +175,16 @@ function TabCount({
   overflowCount,
   showZero,
   countLabel,
-}: Pick<TabItemProp, "count" | "overflowCount" | "showZero" | "countLabel">) {
-  const { pill } = useCounterPill({ count, overflowCount, showZero, countLabel, slot: "tabs" });
+  countTone,
+}: Pick<TabItemProp, "count" | "overflowCount" | "showZero" | "countLabel" | "countTone">) {
+  const { pill } = useCounterPill({
+    count,
+    overflowCount,
+    showZero,
+    countLabel,
+    countTone,
+    slot: "tabs",
+  });
   return pill;
 }
 
@@ -718,6 +726,7 @@ export function Tabs({
               overflowCount={item.overflowCount}
               showZero={item.showZero}
               countLabel={item.countLabel}
+              countTone={item.countTone}
             />
             {removable ? (
               // A POINTER SHORTCUT, not a control — and that is measured, not stylistic. antd's own
@@ -1107,6 +1116,7 @@ function TabsRouteStrip({
               overflowCount={item.overflowCount}
               showZero={item.showZero}
               countLabel={item.countLabel}
+              countTone={item.countTone}
             />
           </Link>
         );
@@ -1260,7 +1270,7 @@ type TabsTriggerProps = Omit<React.ComponentPropsWithoutRef<"button">, "value"> 
   value: string;
   /** RAC `isDisabled`; ALSO written to the button so `disabled:` utilities keep matching. */
   disabled?: boolean;
-} & Pick<TabItemProp, "count" | "overflowCount" | "showZero" | "countLabel">;
+} & Pick<TabItemProp, "count" | "overflowCount" | "showZero" | "countLabel" | "countTone">;
 
 export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
   (
@@ -1272,6 +1282,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
       overflowCount,
       showZero,
       countLabel,
+      countTone,
       children,
       onKeyDown,
       onClick,
@@ -1385,6 +1396,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
           overflowCount={overflowCount}
           showZero={showZero}
           countLabel={countLabel}
+          countTone={countTone}
         />
       </AriaTab>
     );

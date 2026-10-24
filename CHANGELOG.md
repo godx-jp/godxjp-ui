@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.20.0] - 2026-10-24
+
+### Added
+
+- Descriptions `labelWidth`: opt-in `content` shares intrinsic label tracks across rows; CSS lengths reuse `WidthProp` (numbers are px). Default/`auto` retains the theme width, including single-column lists. `--descriptions-label-max-width` caps intrinsic labels for wrapping on narrow screens (#1441).
+- Tabs items and compound `TabsTrigger` `countTone="neutral" | "accent"`: neutral remains muted when selected; the default accent behavior is unchanged. New role-mirror `--tabs-count-neutral-background` / `--tabs-count-neutral-color` tokens complement the existing resting/active accent knobs (#1442).
+
 ## [33.19.0] - 2026-10-24
 
 ### Changed

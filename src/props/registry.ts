@@ -2805,7 +2805,15 @@ export const COMPONENT_PROP_REGISTRY = {
   DescriptionsProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["ClassNameProp"],
+    vocabulary: [
+      "ClassNameProp",
+      {
+        field: "labelWidth",
+        local: true,
+        reason:
+          "WidthProp CSS lengths plus content for shared intrinsic label tracks; auto preserves the theme width (gh#1441).",
+      },
+    ],
   },
   DescriptionsItemProp: {
     group: "data-display",
@@ -3747,6 +3755,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "ChildrenProp",
       "DisabledProp",
       "IconProp",
+      {
+        field: "countTone",
+        local: true,
+        reason:
+          "Counter intent: neutral (shared ToneProp term, as Badge) or accent (existing selected emphasis). Per-item and compound trigger parity, gh#1442.",
+      },
       {
         field: "count",
         local: true,
