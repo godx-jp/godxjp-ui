@@ -46,6 +46,12 @@
   "related": [
     "EditorialSection, EditorialTextLink."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "subParts": [
     "EditorialTextLink"
   ],

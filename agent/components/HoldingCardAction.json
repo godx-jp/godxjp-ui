@@ -38,6 +38,12 @@
   "related": [
     "HoldingCard — its card."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A quiet glyph + label action of a HoldingCard (gh#1439): edit, remove. A `<button>` by default; `asChild` turns a router link into it.",
   "usage": [
     "DO name a destructive action with the item (\"Remove Pikachu\") through aria-label."

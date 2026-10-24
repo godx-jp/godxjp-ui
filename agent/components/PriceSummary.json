@@ -19,6 +19,12 @@
   "related": [
     "Statistic — one KPI in a dashboard."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A joined strip of headline figures (gh#1438): one bordered surface split by hairlines, each cell a label, a figure in the number face and a caption, with an optional wider context cell on the subtle ground. Geometry: `--editorial-price-summary-*`.",
   "usage": [
     "DO keep each value one formatted figure; put the source and date in caption."

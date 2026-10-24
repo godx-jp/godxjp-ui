@@ -32,6 +32,12 @@
     "Toolbar — application filter strip.",
     "EditorialToolbar summary — the row under it."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A catalog's filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role=\"group\"`. The selects inside read the panel's control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`.",
   "usage": [
     "DO put one control per EditorialFilterField and pass the control's id as htmlFor.",

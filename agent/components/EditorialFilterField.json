@@ -26,6 +26,12 @@
   "related": [
     "FormField — a form's field with help and errors."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control.",
   "usage": [
     "DO pass the same id to the control (Select id) and to htmlFor."

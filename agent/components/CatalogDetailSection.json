@@ -39,6 +39,12 @@
   "related": [
     "EditorialSection — a full-width band of a sections page."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "One band of an item page under its head (gh#1438): a top hairline, an h2, a muted paragraph, then anything else. Geometry: `--editorial-catalog-detail-section-*`.",
   "usage": [
     "DO pass titleId so the section is a named region."

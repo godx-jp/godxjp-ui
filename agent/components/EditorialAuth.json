@@ -38,7 +38,13 @@
   ],
   "related": [
     "EditorialAuthCard — the card.",
-    "AuthShell — the application sign-in shell."
+    "CenteredShell — use variant=\"auth\" for the application sign-in shell."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`.",
   "usage": [

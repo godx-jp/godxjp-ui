@@ -40,6 +40,12 @@
   "related": [
     "CardShowcase."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A rounded brand panel inside the column (gh#1435): kicker, title, description and a call to action beside a media slot, in the inverse palette. The kit Button in `action` is re-pointed to the inverse roles. Colours and geometry: `--editorial-banner-*`.",
   "usage": [
     "DO put it in an EditorialSection with spacing=\"section\"."

@@ -903,6 +903,12 @@
       "CenteredShell — `flow=\"sections\"`.",
       "EditorialHero, EditorialSectionHead — what goes inside."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "One full-width band of an editorial page (gh#1435): put it straight inside `CenteredShell preset=\"public-landing\" flow=\"sections\"`. Its ground (`tone`) and block hairlines (`divider`) run edge to edge while its content sits in the landing column (max width + gutter). `spacing=\"section\"` pads it by the section rhythm. Geometry: `--editorial-section-*`.",
     "usage": [
       "DO stack bands directly in a `flow=\"sections\"` shell — the shell drops its column cap, gap and main padding for them.",
@@ -950,6 +956,12 @@
     "related": [
       "EditorialSearch, CardShowcase, Eyebrow."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "The opening of an editorial page (gh#1435): a copy column — kicker, the page's one h1, a lead, a search and a line of suggested queries — beside a media column. Put it in `EditorialSection tone=\"hero\" divider=\"end\"`. Geometry: `--editorial-hero-*` (tracks, min-height, h1 size/leading/tracking and every gap).",
     "usage": [
       "DO keep it the page's only h1."
@@ -983,6 +995,12 @@
     "related": [
       "EditorialSectionHead."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "The small uppercase kicker above an editorial heading (gh#1435), led by a short ornament rule (`variant=\"ruled\"`, default) or bare (`\"plain\"`). Face, size, tracking, colour and rule: `--editorial-eyebrow-*`, `--editorial-kicker-*`, `--editorial-ornament-color`.",
     "usage": [
       "DO use it in the eyebrow slot of EditorialHero / EditorialSectionHead / EditorialBanner."
@@ -1013,6 +1031,12 @@
     ],
     "related": [
       "EditorialPageHeader, Breadcrumb."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page.",
     "usage": [
@@ -1055,6 +1079,12 @@
     ],
     "related": [
       "EditorialBreadcrumb, EditorialTextLink, LegalDocumentShell."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "subParts": [
       "EditorialArticleSection",
@@ -1103,6 +1133,12 @@
     ],
     "related": [
       "ResponsiveGrid — `preset=\"panels\"`."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "A bordered panel with a short tag, a heading and a list (gh#1440) — a roadmap group. Lay a row of them out with `ResponsiveGrid preset=\"panels\"` (tracks and gap are `--responsive-grid-panels-*`, re-declared at the theme's own steps). Geometry: `--editorial-panel-*`.",
     "usage": [
@@ -1162,14 +1198,19 @@
         "type": "string"
       },
       {
-        "default": "\"page\"",
-        "description": "Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439).",
+        "description": "Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439). Default: \"page\".",
         "name": "eyebrowTone",
         "type": "\"page\" | \"accent\""
       }
     ],
     "related": [
       "EditorialBreadcrumb, Eyebrow, EditorialSection."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone).",
     "usage": [
@@ -1225,6 +1266,12 @@
     "related": [
       "EditorialSection, EditorialTextLink."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "subParts": [
       "EditorialTextLink"
     ],
@@ -1246,8 +1293,7 @@
         "type": "string"
       },
       {
-        "default": "\"inset\"",
-        "description": "Site search box, or a collection's own row (visible label, live count, no button).",
+        "description": "Site search box, or a collection's own row (visible label, live count, no button). Default: \"inset\".",
         "name": "variant",
         "type": "\"inset\" | \"inline\""
       },
@@ -1262,8 +1308,7 @@
         "type": "ReactNode"
       },
       {
-        "default": "300",
-        "description": "inline: settle delay (ms).",
+        "description": "inline: settle delay (ms). Default: 300.",
         "name": "debounce",
         "type": "number"
       },
@@ -1308,6 +1353,12 @@
       "SearchInput — a debounced filter field.",
       "EditorialHero — the `search` slot."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "The inset site search (gh#1435): ONE bordered box holding a search glyph, the field and the submit button, under a visually hidden label that also names the `role=\"search\"` landmark. `onSearch` gets the trimmed query; without JavaScript the form GETs `action`. Geometry: `--editorial-search-*`.",
     "usage": [
       "DO use it for a site search that submits; use SearchInput for a live filter.",
@@ -1340,6 +1391,12 @@
     ],
     "related": [
       "EditorialSection."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "subParts": [
       "EditorialPillNavItem"
@@ -1381,6 +1438,12 @@
     "related": [
       "EditorialHero — the `media` slot.",
       "EditorialBanner — the `media` slot (binder)."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "A staged composition of product pictures (gh#1435). `preset=\"fan\"`: three cards fanned (start, centre, end) over ornament orbits, stars and a glow, with a corner `label` and a `caption` card. `preset=\"binder\"`: a tilted binder page of up to six pockets. Decorations are aria-hidden; each item keeps its own accessible name. Geometry: `--editorial-showcase-*`, `--editorial-binder-*`.",
     "usage": [
@@ -1428,6 +1491,12 @@
     ],
     "related": [
       "CardShowcase."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "A rounded brand panel inside the column (gh#1435): kicker, title, description and a call to action beside a media slot, in the inverse palette. The kit Button in `action` is re-pointed to the inverse roles. Colours and geometry: `--editorial-banner-*`.",
     "usage": [
@@ -1503,6 +1572,12 @@
     "related": [
       "ResponsiveGrid — `preset=\"catalog\"`."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "subParts": [
       "CatalogCardTag"
     ],
@@ -1570,6 +1645,12 @@
     "related": [
       "ResponsiveGrid — `preset=\"trio\"`."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "A whole-card link (gh#1435). `variant=\"journal\"`: an edge-to-edge cover, category, title, two lines of description and a footer with a circled arrow; the link is named by its title (aria-labelledby). `variant=\"spotlight\"`: kicker, title and a line beside a tilted picture. Pass the link element (router Link or `<a href>`) as `link`; the card content is rendered into it. Geometry: `--editorial-journal-*`, `--editorial-spotlight-*`.",
     "usage": [
       "DO lay journal cards out with `ResponsiveGrid preset=\"trio\"`."
@@ -1611,6 +1692,12 @@
     "related": [
       "CenteredShell — `topbar`.",
       "Sheet + NavList — the phone menu."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "subParts": [
       "EditorialMastheadLink",
@@ -1664,6 +1751,12 @@
     "related": [
       "CenteredShell — `footer`, `footerTone=\"inverse\"`."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "A public site's footer content (gh#1435) for `CenteredShell footerTone=\"inverse\"`: logo and tagline, link groups (a heading + links each), and a bottom row with the rights line and a note. The footer holding it takes the editorial spacing. Geometry and colours: `--editorial-footer-*`.",
     "usage": [
       "DO pass plain links in each group; the footer styles them."
@@ -1709,6 +1802,12 @@
       "Tabs — panels.",
       "Segmented — a compact single choice."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "A row of underlined filter toggles above a collection (gh#1435): a named `role=\"group\"` of `aria-pressed` buttons (one pressed at a time) and a trailing note, over a hairline. The collection below is the consumer's. Geometry: `--editorial-filter-bar-*`.",
     "usage": [
       "DO use Tabs when each option owns a panel; this bar only filters one collection."
@@ -1745,8 +1844,7 @@
         "type": "(value: string) => void"
       },
       {
-        "default": "\"text\"",
-        "description": "Labels, or framed icon-only buttons.",
+        "description": "Labels, or framed icon-only buttons. Default: \"text\".",
         "name": "variant",
         "type": "\"text\" | \"icon\""
       }
@@ -1754,6 +1852,12 @@
     "related": [
       "Segmented — a track with a lifted slab.",
       "EditorialFilterBar — underlined toggles."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "One-of-N toggles of the editorial account family (gh#1439): a named `role=\"group\"` of `aria-pressed` buttons. `variant=\"text\"` is a filter row (pressed = filled, bordered); `variant=\"icon\"` a framed icon-only switch such as grid / list view, each button named by its label. Geometry: `--editorial-toggle-group-*`.",
     "usage": [
@@ -1795,6 +1899,12 @@
       "Toolbar — application filter strip.",
       "EditorialToolbar summary — the row under it."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "A catalog's filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role=\"group\"`. The selects inside read the panel's control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`.",
     "usage": [
       "DO put one control per EditorialFilterField and pass the control's id as htmlFor.",
@@ -1828,6 +1938,12 @@
     ],
     "related": [
       "FormField — a form's field with help and errors."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control.",
     "usage": [
@@ -1898,6 +2014,12 @@
       "CatalogCard — the item in a grid.",
       "CatalogDetailSection — the bands under it."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "The head of a catalog item's page (gh#1438): a framed picture with the save toggle over its corner and a caption, beside the kicker, the page's h1, a row of CatalogDetailTags, a summary price between hairlines, actions and a two-column facts list. Geometry: `--editorial-catalog-detail-*`.",
     "usage": [
       "DO pass the item's one h1 as title; the page has no other h1.",
@@ -1919,6 +2041,12 @@
     ],
     "related": [
       "CatalogCardTag — the tag of a grid tile."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "One outlined tag (number, rarity, printed language) in a CatalogDetail meta row (gh#1438).",
     "usage": [
@@ -1966,6 +2094,12 @@
     "related": [
       "EditorialSection — a full-width band of a sections page."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "One band of an item page under its head (gh#1438): a top hairline, an h2, a muted paragraph, then anything else. Geometry: `--editorial-catalog-detail-section-*`.",
     "usage": [
       "DO pass titleId so the section is a named region."
@@ -1991,6 +2125,12 @@
     ],
     "related": [
       "Statistic — one KPI in a dashboard."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "A joined strip of headline figures (gh#1438): one bordered surface split by hairlines, each cell a label, a figure in the number face and a caption, with an optional wider context cell on the subtle ground. Geometry: `--editorial-price-summary-*`.",
     "usage": [
@@ -2040,6 +2180,12 @@
       "Alert — status messages.",
       "EmptyState — nothing to show."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "A polite inline invitation (gh#1438): a round glyph, a heading, a short paragraph and a note, with one action at the end (\"sign in to see more\"). Not a live region. Geometry: `--editorial-prompt-*`.",
     "usage": [
       "DO use Alert for a status message; this is an invitation that is there when the page loads."
@@ -2081,6 +2227,12 @@
       "EditorialTextLink — the bold arrow link of a section head.",
       "Button — actions with weight."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "An underlined text action in the primary tone (gh#1439): \"Reset display preferences\", \"Your collection →\". A `<button>` by default; `asChild` turns a router link into it; `icon` trails the label. Geometry: `--editorial-text-button-*`.",
     "usage": [
       "DO use it for a quiet secondary action next to copy; a primary action is a Button."
@@ -2112,6 +2264,12 @@
     "related": [
       "EditorialPageHeader — the header above it."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "A hairline-ruled strip under a page header (gh#1439): a glyph and a line at the start (\"Your private collection\"), a badge at the end. Stacks on a phone when the theme sets `--editorial-meta-bar-align-flow: column`.",
     "usage": [
       "DO keep it to one fact and one chip."
@@ -2124,8 +2282,7 @@
     "name": "EditorialEmptyPanel",
     "props": [
       {
-        "default": "\"guest\"",
-        "description": "Illustrated guest panel or dashed empty panel.",
+        "description": "Illustrated guest panel or dashed empty panel. Default: \"guest\".",
         "name": "variant",
         "type": "\"guest\" | \"empty\""
       },
@@ -2141,8 +2298,7 @@
         "type": "ReactNode"
       },
       {
-        "default": "2",
-        "description": "Heading level.",
+        "description": "Heading level. Default: 2.",
         "name": "level",
         "type": "2 | 3"
       },
@@ -2164,6 +2320,12 @@
     ],
     "related": [
       "EmptyState — the application empty state."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "A centred panel for a signed-out or an empty state (gh#1439). `variant=\"guest\"` draws a decorative three-card stack above kicker, title, copy and centred actions; `variant=\"empty\"` is dashed with a round icon medallion. Geometry: `--editorial-empty-panel-*`.",
     "usage": [
@@ -2190,6 +2352,12 @@
     ],
     "related": [
       "StatCard — an application KPI tile."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "A strip of figure tiles on unequal tracks (gh#1439, default `1.4fr 1fr 1fr`): label, large tabular figure with a small unit, optional note. The first tile is the lead (quiet ground; a theme can span it across a phone row with its figure beside the label). Geometry: `--editorial-stats-*`.",
     "usage": [
@@ -2229,6 +2397,12 @@
       "EditorialToggleGroup — the toggles it holds.",
       "EditorialFilterPanel — the filters above a listing."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "The row above a collection (gh#1438, gh#1439): an optional `summary` (result count as a polite live region + a short note), a start cluster (an EditorialToggleGroup filter) and an end cluster (order Select, view switch, primary action), optionally over a hairline (`divider`). With a summary it is a listing row that keeps one line; without one a theme stacks it on a phone with `--editorial-toolbar-display: block`. Geometry: `--editorial-toolbar-*`.",
     "usage": [
       "DO keep the count text short; a phone theme may hide it (--editorial-toolbar-count-display).",
@@ -2242,8 +2416,7 @@
     "name": "HoldingGrid",
     "props": [
       {
-        "default": "\"grid\"",
-        "description": "Tiles or rows.",
+        "description": "Tiles or rows. Default: \"grid\".",
         "name": "view",
         "type": "\"grid\" | \"list\""
       },
@@ -2261,6 +2434,12 @@
     "related": [
       "HoldingCard — its items.",
       "CatalogCard — a catalogue tile."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "The track of HoldingCards (gh#1439): `view=\"grid\"` lays tiles on `--editorial-holding-grid-track-size` (default four columns); `view=\"list\"` turns the same cards into wide rows (`140px 1fr`, body on `1.5fr 1fr 140px`). A list (`ul`) of the cards.",
     "usage": [
@@ -2291,8 +2470,7 @@
         "type": "ReactNode"
       },
       {
-        "default": "2",
-        "description": "Heading level.",
+        "description": "Heading level. Default: 2.",
         "name": "level",
         "type": "2 | 3"
       },
@@ -2325,6 +2503,12 @@
     "related": [
       "HoldingGrid — the track.",
       "HoldingCardAction — its actions."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "One owned item (gh#1439): a picture ground (the consumer's link around an image), overline, title, meta, outlined tags (the last set apart), the purchase line, a date and HoldingCardActions. Its geometry follows the enclosing HoldingGrid view. Geometry: `--editorial-holding-card-*`.",
     "usage": [
@@ -2371,6 +2555,12 @@
     "related": [
       "HoldingCard — its card."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "A quiet glyph + label action of a HoldingCard (gh#1439): edit, remove. A `<button>` by default; `asChild` turns a router link into it.",
     "usage": [
       "DO name a destructive action with the item (\"Remove Pikachu\") through aria-label."
@@ -2396,6 +2586,12 @@
     "related": [
       "SettingsPanel — the panels."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "A settings page (gh#1439): a sticky rail (`aside`, default 260px, `--editorial-settings-layout-aside-inset` from the top) beside the panels, gap 64px. A theme hides the rail on narrow screens with `--editorial-settings-layout-aside-display: none` and one track.",
     "usage": [
       "DO put a short note and one link in the rail, never controls."
@@ -2419,8 +2615,7 @@
         "type": "ReactNode"
       },
       {
-        "default": "2",
-        "description": "Heading level.",
+        "description": "Heading level. Default: 2.",
         "name": "level",
         "type": "2 | 3"
       },
@@ -2443,6 +2638,12 @@
     "related": [
       "SettingsLayout — the page.",
       "EditorialPanel — a reading-page panel."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "One bordered settings section (gh#1439): a number in the figure face beside the title and its description, then the fields (a Form). Geometry: `--editorial-settings-panel-*`.",
     "usage": [
@@ -2492,6 +2693,12 @@
       "AppSettingPicker kind=\"theme\" — a compact select.",
       "Radio — plain radios."
     ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
+    ],
     "tagline": "An illustrated radio group for the colour theme (gh#1439): each choice is a painted preview of the interface — light, dark, or the system split — over its glyph and label. Native radios in a fieldset (arrow keys move), the checked preview ringed in the primary tone. Geometry: `--editorial-theme-picker-*`.",
     "usage": [
       "DO apply the theme at once; no Save button."
@@ -2537,7 +2744,13 @@
     ],
     "related": [
       "EditorialAuthCard — the card.",
-      "AuthShell — the application sign-in shell."
+      "CenteredShell — use variant=\"auth\" for the application sign-in shell."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`.",
     "usage": [
@@ -2562,8 +2775,7 @@
         "type": "ReactNode"
       },
       {
-        "default": "2",
-        "description": "Heading level.",
+        "description": "Heading level. Default: 2.",
         "name": "level",
         "type": "2 | 3"
       },
@@ -2585,6 +2797,12 @@
     ],
     "related": [
       "EditorialAuth — the page."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "The form card of EditorialAuth (gh#1439): badge, title, copy, the form (`children`) and a ruled footer line (\"New to the site? Create an account\").",
     "usage": [
@@ -2608,14 +2826,19 @@
         "type": "ReactNode"
       },
       {
-        "default": "\"start\"",
-        "description": "Cross-axis alignment.",
+        "description": "Cross-axis alignment. Default: \"start\".",
         "name": "align",
         "type": "\"start\" | \"center\""
       }
     ],
     "related": [
       "EditorialNote — a ruled aside in a reading column."
+    ],
+    "rules": [
+      2,
+      6,
+      44,
+      45
     ],
     "tagline": "A quiet closing line under a collection or a settings form (gh#1439): a muted note at the start and an optional action (an EditorialTextButton) at the end. Geometry: `--editorial-footnote-*`.",
     "usage": [
@@ -8254,8 +8477,7 @@
         "type": "React.ReactNode"
       },
       {
-        "default": "\"full\"",
-        "description": "How the field takes its inline space, as `Select` and the pickers mean it (gh#1448). `full` fills the line; `auto` is sized to the widest value the bounds allow (formatted `min` / `max`, 6 characters when unbounded) plus the steppers — a quantity stepper outside a FormField, e.g. in a `ListRow` trailing slot; `bounded` holds `--control-bounded-width`. Inside a FormField, `controlWidth` still sizes it.",
+        "description": "How the field takes its inline space, as `Select` and the pickers mean it (gh#1448). `full` fills the line; `auto` is sized to the widest value the bounds allow (formatted `min` / `max`, 6 characters when unbounded) plus the steppers — a quantity stepper outside a FormField, e.g. in a `ListRow` trailing slot; `bounded` holds `--control-bounded-width`. Inside a FormField, `controlWidth` still sizes it. Default: \"full\".",
         "name": "width",
         "type": "\"full\" | \"auto\" | \"bounded\""
       },
@@ -15207,7 +15429,6 @@
       "TimezonePicker",
       "DateFormatPicker",
       "TimeFormatPicker",
-      "ThemePicker",
       "DensityPicker",
       "AppSettingToggle"
     ],

@@ -35,6 +35,12 @@
   "related": [
     "ResponsiveGrid — `preset=\"panels\"`."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A bordered panel with a short tag, a heading and a list (gh#1440) — a roadmap group. Lay a row of them out with `ResponsiveGrid preset=\"panels\"` (tracks and gap are `--responsive-grid-panels-*`, re-declared at the theme's own steps). Geometry: `--editorial-panel-*`.",
   "usage": [
     "DO lay a row of panels out with `ResponsiveGrid preset=\"panels\"`."

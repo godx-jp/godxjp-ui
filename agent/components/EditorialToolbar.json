@@ -31,6 +31,12 @@
     "EditorialToggleGroup — the toggles it holds.",
     "EditorialFilterPanel — the filters above a listing."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "The row above a collection (gh#1438, gh#1439): an optional `summary` (result count as a polite live region + a short note), a start cluster (an EditorialToggleGroup filter) and an end cluster (order Select, view switch, primary action), optionally over a hairline (`divider`). With a summary it is a listing row that keeps one line; without one a theme stacks it on a phone with `--editorial-toolbar-display: block`. Geometry: `--editorial-toolbar-*`.",
   "usage": [
     "DO keep the count text short; a phone theme may hide it (--editorial-toolbar-count-display).",

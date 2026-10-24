@@ -16,8 +16,7 @@
       "type": "ReactNode"
     },
     {
-      "default": "2",
-      "description": "Heading level.",
+      "description": "Heading level. Default: 2.",
       "name": "level",
       "type": "2 | 3"
     },
@@ -40,6 +39,12 @@
   "related": [
     "SettingsLayout — the page.",
     "EditorialPanel — a reading-page panel."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "One bordered settings section (gh#1439): a number in the figure face beside the title and its description, then the fields (a Form). Geometry: `--editorial-settings-panel-*`.",
   "usage": [

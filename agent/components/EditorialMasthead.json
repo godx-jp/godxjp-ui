@@ -35,6 +35,12 @@
     "CenteredShell — `topbar`.",
     "Sheet + NavList — the phone menu."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "subParts": [
     "EditorialMastheadLink",
     "EditorialMastheadAction"

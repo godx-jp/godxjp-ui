@@ -62,6 +62,12 @@
     "CatalogCard — the item in a grid.",
     "CatalogDetailSection — the bands under it."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "The head of a catalog item's page (gh#1438): a framed picture with the save toggle over its corner and a caption, beside the kicker, the page's h1, a row of CatalogDetailTags, a summary price between hairlines, actions and a two-column facts list. Geometry: `--editorial-catalog-detail-*`.",
   "usage": [
     "DO pass the item's one h1 as title; the page has no other h1.",

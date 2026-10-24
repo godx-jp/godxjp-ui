@@ -24,6 +24,12 @@
   "related": [
     "EditorialPageHeader — the header above it."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A hairline-ruled strip under a page header (gh#1439): a glyph and a line at the start (\"Your private collection\"), a badge at the end. Stacks on a phone when the theme sets `--editorial-meta-bar-align-flow: column`.",
   "usage": [
     "DO keep it to one fact and one chip."

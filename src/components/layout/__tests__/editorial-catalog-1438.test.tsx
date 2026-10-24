@@ -1,3 +1,4 @@
+import { environment, resolveToken } from "../../../tokens/__tests__/css-token-resolve";
 /**
  * gh#1438 — the editorial catalog bodies: a listing's filter panel (labelled fields that wrap,
  * bottom aligned, with a trailing reset) and its toolbar (result count + note, order / view).
@@ -145,13 +146,25 @@ describe("EditorialFilterPanel / EditorialFilterField (gh#1438)", () => {
     expect(bare).toMatch(
       /--editorial-filter-field-label-font-size:\s*var\(--editorial-filter-panel-bare-label-font-size\)/,
     );
-    expect(tokens).toMatch(/--editorial-filter-panel-bare-label-font-size:\s*0\.8125rem/);
+    expect(resolveToken("--editorial-filter-panel-bare-label-font-size", tokenEnvironment)).toBe(
+      "13px",
+    );
   });
 
   it("ships the v4 defaults as tokens", () => {
-    expect(tokens).toMatch(/--editorial-filter-panel-padding:\s*1\.25rem/);
-    expect(tokens).toMatch(/--editorial-filter-panel-gap:\s*1rem/);
+    expect(resolveToken("--editorial-filter-panel-padding", tokenEnvironment)).toBe("20px");
+    expect(resolveToken("--editorial-filter-panel-gap", tokenEnvironment)).toBe("16px");
     expect(tokens).toMatch(/--editorial-filter-field-min-width:\s*9\.0625rem/);
-    expect(tokens).toMatch(/--editorial-filter-panel-control-font-size:\s*0\.875rem/);
+    expect(resolveToken("--editorial-filter-panel-control-font-size", tokenEnvironment)).toBe(
+      "14px",
+    );
   });
 });
+
+// Resolve the token graph at the 16px root used by the measured editorial design.
+const tokenEnvironment = new Map(
+  [...environment({ selectors: [":root"] })].map(([name, value]) => [
+    name,
+    value.replace(/([\d.]+)rem\b/g, (_, n: string) => `${Number(n) * 16}px`),
+  ]),
+);

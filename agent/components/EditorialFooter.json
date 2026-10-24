@@ -41,6 +41,12 @@
   "related": [
     "CenteredShell — `footer`, `footerTone=\"inverse\"`."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A public site's footer content (gh#1435) for `CenteredShell footerTone=\"inverse\"`: logo and tagline, link groups (a heading + links each), and a bottom row with the rights line and a note. The footer holding it takes the editorial spacing. Geometry and colours: `--editorial-footer-*`.",
   "usage": [
     "DO pass plain links in each group; the footer styles them."

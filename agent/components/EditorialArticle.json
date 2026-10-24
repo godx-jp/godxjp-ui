@@ -34,6 +34,12 @@
   "related": [
     "EditorialBreadcrumb, EditorialTextLink, LegalDocumentShell."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "subParts": [
     "EditorialArticleSection",
     "EditorialNote"

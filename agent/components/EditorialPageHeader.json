@@ -51,14 +51,19 @@
       "type": "string"
     },
     {
-      "default": "\"page\"",
-      "description": "Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439).",
+      "description": "Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439). Default: \"page\".",
       "name": "eyebrowTone",
       "type": "\"page\" | \"accent\""
     }
   ],
   "related": [
     "EditorialBreadcrumb, Eyebrow, EditorialSection."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone).",
   "usage": [

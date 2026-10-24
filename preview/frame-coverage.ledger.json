@@ -519,13 +519,9 @@
     "exports": 337,
     "dimensionCells": 4718,
     "covered": 89,
-    "untested": 2583,
+    "untested": 2581,
     "notApplicable": 2048,
-    "knownMissingFrames": [
-      "layout/editorial",
-      "layout/editorial-account",
-      "layout/editorial-catalog"
-    ],
+    "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
   },
@@ -2246,8 +2242,9 @@
     "CardShowcase": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -2498,8 +2495,9 @@
     "CatalogCard": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -2525,8 +2523,9 @@
     "CatalogCardTag": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -2552,8 +2551,9 @@
     "CatalogDetail": {
       "group": "layout",
       "owner": "layout/editorial-catalog",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-catalog.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -2579,8 +2579,9 @@
     "CatalogDetailSection": {
       "group": "layout",
       "owner": "layout/editorial-catalog",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-catalog.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -2606,8 +2607,9 @@
     "CatalogDetailTag": {
       "group": "layout",
       "owner": "layout/editorial-catalog",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-catalog.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4118,8 +4120,9 @@
     "EditorialArticle": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4145,8 +4148,9 @@
     "EditorialArticleSection": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4172,8 +4176,9 @@
     "EditorialAuth": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4199,8 +4204,9 @@
     "EditorialAuthCard": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4226,8 +4232,9 @@
     "EditorialBanner": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4253,8 +4260,9 @@
     "EditorialBreadcrumb": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4280,8 +4288,9 @@
     "EditorialCard": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -4307,8 +4316,9 @@
     "EditorialEmptyPanel": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -4334,8 +4344,9 @@
     "EditorialFilterBar": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -4361,8 +4372,9 @@
     "EditorialFilterField": {
       "group": "layout",
       "owner": "layout/editorial-catalog",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-catalog.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4388,8 +4400,9 @@
     "EditorialFilterPanel": {
       "group": "layout",
       "owner": "layout/editorial-catalog",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-catalog.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -4415,8 +4428,9 @@
     "EditorialFooter": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4442,8 +4456,9 @@
     "EditorialFootnote": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4469,8 +4484,9 @@
     "EditorialHero": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4496,8 +4512,9 @@
     "EditorialMasthead": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4523,8 +4540,9 @@
     "EditorialMastheadAction": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -4550,8 +4568,9 @@
     "EditorialMastheadLink": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4577,8 +4596,9 @@
     "EditorialMetaBar": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4604,8 +4624,9 @@
     "EditorialNote": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4631,8 +4652,9 @@
     "EditorialPageHeader": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4658,8 +4680,9 @@
     "EditorialPanel": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4685,8 +4708,9 @@
     "EditorialPillNav": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4712,8 +4736,9 @@
     "EditorialPillNavItem": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4739,8 +4764,9 @@
     "EditorialPrompt": {
       "group": "layout",
       "owner": "layout/editorial-catalog",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-catalog.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4766,8 +4792,9 @@
     "EditorialSearch": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 5,
@@ -4793,8 +4820,9 @@
     "EditorialSection": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -4820,8 +4848,9 @@
     "EditorialSectionHead": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4847,8 +4876,9 @@
     "EditorialStats": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4874,8 +4904,9 @@
     "EditorialTextButton": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -4901,8 +4932,9 @@
     "EditorialTextLink": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -4928,8 +4960,9 @@
     "EditorialToggleGroup": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 5,
@@ -4955,8 +4988,9 @@
     "EditorialToolbar": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -5067,8 +5101,9 @@
     "Eyebrow": {
       "group": "layout",
       "owner": "layout/editorial",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -5430,8 +5465,9 @@
     "HoldingCard": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -5457,8 +5493,9 @@
     "HoldingCardAction": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,
@@ -5484,8 +5521,9 @@
     "HoldingGrid": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -5882,12 +5920,12 @@
       "baseline": {
         "covered": 1,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "untested",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -6830,8 +6868,9 @@
     "PriceSummary": {
       "group": "layout",
       "owner": "layout/editorial-catalog",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-catalog.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -7838,8 +7877,9 @@
     "SettingsLayout": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -7865,8 +7905,9 @@
     "SettingsPanel": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
@@ -9076,12 +9117,12 @@
       "baseline": {
         "covered": 2,
         "notApplicable": 4,
-        "untested": 9
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "covered:prop-evidence:tone",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -9154,8 +9195,9 @@
     "ThemePicker": {
       "group": "layout",
       "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/layout/editorial-account.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,

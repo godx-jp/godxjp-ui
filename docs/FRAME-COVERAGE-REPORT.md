@@ -138,7 +138,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Breadcrumb | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | FloatButton | ✓ | ✓ | · | N/A | · | · | · | · | · | · |
 | Button | ✓ | ✓ | · | N/A | · | · | · | · | · | · |
-| Text | ✓ | · | · | N/A | · | · | · | · | · | · |
+| Text | ✓ | ✓ | · | N/A | · | · | · | · | · | · |
 | Heading | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | Link | **✗** | · | · | N/A | · | · | · | · | · | · |
 | Logo | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |

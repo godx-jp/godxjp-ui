@@ -5,8 +5,7 @@
   "name": "EditorialEmptyPanel",
   "props": [
     {
-      "default": "\"guest\"",
-      "description": "Illustrated guest panel or dashed empty panel.",
+      "description": "Illustrated guest panel or dashed empty panel. Default: \"guest\".",
       "name": "variant",
       "type": "\"guest\" | \"empty\""
     },
@@ -22,8 +21,7 @@
       "type": "ReactNode"
     },
     {
-      "default": "2",
-      "description": "Heading level.",
+      "description": "Heading level. Default: 2.",
       "name": "level",
       "type": "2 | 3"
     },
@@ -45,6 +43,12 @@
   ],
   "related": [
     "EmptyState — the application empty state."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "A centred panel for a signed-out or an empty state (gh#1439). `variant=\"guest\"` draws a decorative three-card stack above kicker, title, copy and centred actions; `variant=\"empty\"` is dashed with a round icon medallion. Geometry: `--editorial-empty-panel-*`.",
   "usage": [

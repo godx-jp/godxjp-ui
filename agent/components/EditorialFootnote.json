@@ -15,14 +15,19 @@
       "type": "ReactNode"
     },
     {
-      "default": "\"start\"",
-      "description": "Cross-axis alignment.",
+      "description": "Cross-axis alignment. Default: \"start\".",
       "name": "align",
       "type": "\"start\" | \"center\""
     }
   ],
   "related": [
     "EditorialNote — a ruled aside in a reading column."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "A quiet closing line under a collection or a settings form (gh#1439): a muted note at the start and an optional action (an EditorialTextButton) at the end. Geometry: `--editorial-footnote-*`.",
   "usage": [

@@ -1,3 +1,4 @@
+import { environment, resolveToken } from "../../../tokens/__tests__/css-token-resolve";
 /**
  * gh#1439 — the editorial account family: the signed-in pages of an editorial site (a collection,
  * display settings, sign-in). Before: none of these shapes could be built without a className or
@@ -114,8 +115,10 @@ describe("EditorialToggleGroup (gh#1439)", () => {
     expect(tokens).toContain(
       "--editorial-toggle-group-option-min-height: var(--touch-target-min, 2.75rem);",
     );
-    expect(tokens).toContain("--editorial-toggle-group-option-padding-inline: 1rem;");
-    expect(tokens).toContain("--editorial-toggle-group-frame-padding: 2px;");
+    expect(resolveToken("--editorial-toggle-group-option-padding-inline", tokenEnvironment)).toBe(
+      "16px",
+    );
+    expect(resolveToken("--editorial-toggle-group-frame-padding", tokenEnvironment)).toBe("2px");
     expect(rule(".ui-editorial-toggle-group-option")).toContain(
       "min-height: var(--editorial-toggle-group-option-min-height)",
     );
@@ -164,7 +167,9 @@ describe("EditorialMetaBar / EditorialToolbar / EditorialTextButton (gh#1439)", 
     expect(divided).toContain(
       "padding-block-end: var(--editorial-toolbar-divider-padding-block-end)",
     );
-    expect(tokens).toMatch(/--editorial-toolbar-divider-padding-block-end:\s*1\.25rem/);
+    expect(resolveToken("--editorial-toolbar-divider-padding-block-end", tokenEnvironment)).toBe(
+      "20px",
+    );
   });
 
   it("toolbar summary (gh#1438): count announced politely, note, end last; a one-line listing row", () => {
@@ -477,7 +482,7 @@ describe('EditorialSearch variant="inline" / EditorialFootnote (gh#1439)', () =>
       "Saved automatically.",
     );
     expect(screen.getByRole("button", { name: "Reset" })).toBeTruthy();
-    expect(tokens).toContain("--editorial-footnote-font-size: 0.8125rem;");
+    expect(resolveToken("--editorial-footnote-font-size", tokenEnvironment)).toBe("13px");
   });
 
   it("Button outline reads --button-outline-foreground (role mirror, default --foreground)", () => {
@@ -517,3 +522,11 @@ describe("Badge knobs (gh#1439)", () => {
     );
   });
 });
+
+// Resolve the token graph at the 16px root used by the measured editorial design.
+const tokenEnvironment = new Map(
+  [...environment({ selectors: [":root"] })].map(([name, value]) => [
+    name,
+    value.replace(/([\d.]+)rem\b/g, (_, n: string) => `${Number(n) * 16}px`),
+  ]),
+);

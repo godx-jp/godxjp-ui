@@ -11,8 +11,7 @@
       "type": "string"
     },
     {
-      "default": "\"inset\"",
-      "description": "Site search box, or a collection's own row (visible label, live count, no button).",
+      "description": "Site search box, or a collection's own row (visible label, live count, no button). Default: \"inset\".",
       "name": "variant",
       "type": "\"inset\" | \"inline\""
     },
@@ -27,8 +26,7 @@
       "type": "ReactNode"
     },
     {
-      "default": "300",
-      "description": "inline: settle delay (ms).",
+      "description": "inline: settle delay (ms). Default: 300.",
       "name": "debounce",
       "type": "number"
     },
@@ -72,6 +70,12 @@
   "related": [
     "SearchInput — a debounced filter field.",
     "EditorialHero — the `search` slot."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "The inset site search (gh#1435): ONE bordered box holding a search glyph, the field and the submit button, under a visually hidden label that also names the `role=\"search\"` landmark. `onSearch` gets the trimmed query; without JavaScript the form GETs `action`. Geometry: `--editorial-search-*`.",
   "usage": [

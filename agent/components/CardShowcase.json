@@ -31,6 +31,12 @@
     "EditorialHero — the `media` slot.",
     "EditorialBanner — the `media` slot (binder)."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A staged composition of product pictures (gh#1435). `preset=\"fan\"`: three cards fanned (start, centre, end) over ornament orbits, stars and a glow, with a corner `label` and a `caption` card. `preset=\"binder\"`: a tilted binder page of up to six pockets. Decorations are aria-hidden; each item keeps its own accessible name. Geometry: `--editorial-showcase-*`, `--editorial-binder-*`.",
   "usage": [
     "DO give each linked picture an accessible name; the stage itself is decoration."

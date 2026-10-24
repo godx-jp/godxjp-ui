@@ -3190,9 +3190,8 @@
     --editorial-section-head-title-space-block-start: var(
       --editorial-section-head-module-title-space-block-start
     );
-    --editorial-section-head-description-font-size: var(
-      --editorial-section-head-module-description-font-size
-    );
+    /* prettier-ignore */
+    --editorial-section-head-description-font-size: var(--editorial-section-head-module-description-font-size);
     --editorial-section-head-description-space-block-start: var(
       --editorial-section-head-module-description-space-block-start
     );
@@ -3424,7 +3423,7 @@
     align-items: center;
     gap: var(--editorial-text-link-gap);
     min-height: var(--editorial-text-link-min-height);
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     font-size: var(--editorial-text-link-font-size);
     font-weight: var(--editorial-text-link-font-weight);
     line-height: var(--editorial-text-link-line-height);
@@ -3537,7 +3536,7 @@
   }
 
   .ui-editorial-search-button:hover {
-    background: hsl(var(--primary-hover, var(--primary)));
+    background: hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)));
   }
 
   .ui-editorial-search-button-icon {
@@ -3588,7 +3587,7 @@
   .ui-editorial-pill[aria-current]:not([aria-current="false"]) {
     border-color: hsl(var(--primary) / 0.25);
     background: hsl(var(--accent));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-editorial-pill-dot {
@@ -3623,7 +3622,7 @@
   .ui-card-showcase-orbit {
     position: absolute;
     top: var(--editorial-showcase-orbit-inset-block-start);
-    left: 50%;
+    inset-inline-start: 50%;
     width: var(--editorial-showcase-orbit-size-1);
     height: var(--editorial-showcase-orbit-size-1);
     border: var(--stroke-hairline) solid
@@ -3635,6 +3634,10 @@
       );
     border-radius: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  .ui-card-showcase-orbit:dir(rtl) {
+    transform: translate(50%, -50%);
   }
 
   .ui-card-showcase-orbit[data-orbit="2"] {
@@ -3650,9 +3653,9 @@
   .ui-card-showcase-glow {
     position: absolute;
     z-index: -1;
-    right: 5%;
+    inset-inline-end: 5%;
     bottom: var(--editorial-showcase-glow-inset-block-end);
-    left: 10%;
+    inset-inline-start: 10%;
     height: var(--editorial-showcase-glow-height);
     border-radius: 50%;
     background: var(--editorial-ornament-color, hsl(var(--border)));
@@ -3664,7 +3667,7 @@
     display: var(--editorial-showcase-label-display);
     position: absolute;
     top: var(--editorial-showcase-label-inset-block-start);
-    right: var(--editorial-showcase-label-inset-inline-end);
+    inset-inline-end: var(--editorial-showcase-label-inset-inline-end);
     color: var(--editorial-kicker-color, hsl(var(--muted-foreground)));
     font-family: var(--editorial-kicker-font-family, var(--font-family-tabular, inherit));
     font-size: var(--editorial-showcase-label-font-size);
@@ -3674,7 +3677,7 @@
   .ui-card-showcase-star {
     position: absolute;
     top: var(--editorial-showcase-star-inset-block-start);
-    left: var(--editorial-showcase-star-inset-inline-start);
+    inset-inline-start: var(--editorial-showcase-star-inset-inline-start);
     color: var(--editorial-ornament-color, hsl(var(--border)));
     font-family: serif;
     font-size: var(--editorial-showcase-star-font-size);
@@ -3682,9 +3685,9 @@
 
   .ui-card-showcase-star[data-size="small"] {
     top: auto;
-    right: var(--editorial-showcase-star-small-inset-inline-end);
+    inset-inline-end: var(--editorial-showcase-star-small-inset-inline-end);
     bottom: var(--editorial-showcase-star-small-inset-block-end);
-    left: auto;
+    inset-inline-start: auto;
     font-size: var(--editorial-showcase-star-small-font-size);
   }
 
@@ -3709,20 +3712,20 @@
   }
 
   .ui-card-showcase-card[data-position="start"] {
-    left: var(--editorial-showcase-start-inset-inline-start);
+    inset-inline-start: var(--editorial-showcase-start-inset-inline-start);
     transform: rotate(var(--editorial-showcase-start-offset-angle));
   }
 
   .ui-card-showcase-card[data-position="end"] {
     top: var(--editorial-showcase-end-inset-block-start);
-    right: var(--editorial-showcase-end-inset-inline-end);
+    inset-inline-end: var(--editorial-showcase-end-inset-inline-end);
     transform: rotate(var(--editorial-showcase-end-offset-angle));
   }
 
   .ui-card-showcase-card[data-position="center"] {
     z-index: 2;
     top: var(--editorial-showcase-center-inset-block-start);
-    left: calc(50% + var(--editorial-showcase-center-offset-inline));
+    inset-inline-start: calc(50% + var(--editorial-showcase-center-offset-inline));
     width: var(--editorial-showcase-center-width);
     transform: rotate(var(--editorial-showcase-center-offset-angle));
   }
@@ -3735,7 +3738,7 @@
     display: flex;
     position: absolute;
     z-index: 4;
-    right: var(--editorial-showcase-caption-inset-inline-end);
+    inset-inline-end: var(--editorial-showcase-caption-inset-inline-end);
     bottom: var(--editorial-showcase-caption-inset-block-end);
     align-items: center;
     justify-content: var(--editorial-showcase-caption-align);
@@ -3886,7 +3889,7 @@
     position: absolute;
     z-index: 2;
     top: var(--editorial-catalog-card-favorite-inset);
-    right: var(--editorial-catalog-card-favorite-inset);
+    inset-inline-end: var(--editorial-catalog-card-favorite-inset);
     align-items: center;
     justify-content: center;
     width: var(--editorial-catalog-card-favorite-size);
@@ -3905,7 +3908,7 @@
 
   .ui-catalog-card-favorite[aria-pressed="true"] {
     background: hsl(var(--accent));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-catalog-card-favorite-icon {
@@ -3989,7 +3992,7 @@
   }
 
   .ui-catalog-card-title a:hover {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-catalog-card-meta {
@@ -4037,7 +4040,7 @@
   }
 
   .ui-catalog-card-price {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     font-family: var(--editorial-kicker-font-family, var(--font-family-tabular, inherit));
     font-size: var(--editorial-catalog-card-price-font-size);
     font-variant-numeric: tabular-nums;
@@ -4077,7 +4080,7 @@
     align-items: center;
     gap: var(--editorial-catalog-card-footer-link-gap);
     min-height: var(--editorial-catalog-card-footer-link-min-height);
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     text-decoration: none;
   }
 
@@ -4151,7 +4154,7 @@
   .ui-editorial-card[data-variant="spotlight"] .ui-editorial-card-media img {
     position: absolute;
     top: var(--editorial-spotlight-media-inset-block-start);
-    left: var(--editorial-spotlight-media-inset-inline-start);
+    inset-inline-start: var(--editorial-spotlight-media-inset-inline-start);
     width: var(--editorial-spotlight-media-width);
     height: var(--editorial-spotlight-media-height);
     object-fit: contain;
@@ -4260,7 +4263,7 @@
     margin-block-start: auto;
     padding-block-start: var(--editorial-journal-footer-padding-block-start);
     border-block-start: var(--stroke-hairline) solid hsl(var(--border));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     font-size: var(--editorial-journal-footer-font-size);
     font-weight: var(--font-weight-semibold);
   }
@@ -4344,7 +4347,7 @@
 
   .ui-editorial-masthead-link:hover,
   .ui-editorial-masthead-link[aria-current="page"] {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-editorial-masthead-link[aria-current="page"]::after {
@@ -4518,7 +4521,7 @@
 
   .ui-editorial-filter-bar-option[aria-pressed="true"] {
     border-block-end-color: hsl(var(--primary));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-editorial-filter-bar-extra {
@@ -4696,7 +4699,7 @@
 
   .ui-catalog-detail-summary-price {
     margin: var(--editorial-catalog-detail-summary-price-space-block) 0;
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     font-family: var(--editorial-kicker-font-family, var(--font-family-tabular, inherit));
     font-size: var(--editorial-catalog-detail-summary-price-font-size);
     font-variant-numeric: tabular-nums;
@@ -4749,7 +4752,7 @@
   }
 
   .ui-catalog-detail-fact dd a {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     text-decoration: underline;
     text-underline-offset: 4px;
   }
@@ -4825,7 +4828,7 @@
   }
 
   .ui-price-summary-value {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     font-family: var(--editorial-kicker-font-family, var(--font-family-tabular, inherit));
     font-size: var(--editorial-price-summary-value-font-size);
     font-variant-numeric: tabular-nums;
@@ -4869,7 +4872,7 @@
     height: var(--editorial-prompt-icon-size);
     border-radius: 50%;
     background: hsl(var(--card));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-editorial-prompt-icon svg {

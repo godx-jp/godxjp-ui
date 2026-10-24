@@ -54,6 +54,12 @@
     "CenteredShell — `flow=\"sections\"`.",
     "EditorialHero, EditorialSectionHead — what goes inside."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "One full-width band of an editorial page (gh#1435): put it straight inside `CenteredShell preset=\"public-landing\" flow=\"sections\"`. Its ground (`tone`) and block hairlines (`divider`) run edge to edge while its content sits in the landing column (max width + gutter). `spacing=\"section\"` pads it by the section rhythm. Geometry: `--editorial-section-*`.",
   "usage": [
     "DO stack bands directly in a `flow=\"sections\"` shell — the shell drops its column cap, gap and main padding for them.",

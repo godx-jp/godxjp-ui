@@ -29,8 +29,7 @@
       "type": "(value: string) => void"
     },
     {
-      "default": "\"text\"",
-      "description": "Labels, or framed icon-only buttons.",
+      "description": "Labels, or framed icon-only buttons. Default: \"text\".",
       "name": "variant",
       "type": "\"text\" | \"icon\""
     }
@@ -38,6 +37,12 @@
   "related": [
     "Segmented — a track with a lifted slab.",
     "EditorialFilterBar — underlined toggles."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "One-of-N toggles of the editorial account family (gh#1439): a named `role=\"group\"` of `aria-pressed` buttons. `variant=\"text\"` is a filter row (pressed = filled, bordered); `variant=\"icon\"` a framed icon-only switch such as grid / list view, each button named by its label. Geometry: `--editorial-toggle-group-*`.",
   "usage": [

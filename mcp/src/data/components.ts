@@ -916,6 +916,7 @@ export default function OrdersPage() {
     rules: [23],
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialSection",
     group: "layout",
     tagline:
@@ -976,6 +977,7 @@ export default function OrdersPage() {
 </CenteredShell>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialHero",
     group: "layout",
     tagline:
@@ -1015,6 +1017,7 @@ export default function OrdersPage() {
 </EditorialSection>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "Eyebrow",
     group: "layout",
     tagline:
@@ -1038,6 +1041,7 @@ export default function OrdersPage() {
 <Eyebrow>THE CURATED SELECTION</Eyebrow>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialBreadcrumb",
     group: "layout",
     tagline:
@@ -1064,6 +1068,7 @@ export default function OrdersPage() {
 </EditorialSection>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialArticle",
     group: "layout",
     tagline:
@@ -1090,6 +1095,7 @@ export default function OrdersPage() {
 </EditorialArticle>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialPanel",
     group: "layout",
     tagline:
@@ -1110,6 +1116,7 @@ export default function OrdersPage() {
 </ResponsiveGrid>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialPageHeader",
     group: "layout",
     tagline:
@@ -1131,8 +1138,8 @@ export default function OrdersPage() {
       {
         name: "eyebrowTone",
         type: '"page" | "accent"',
-        default: '"page"',
-        description: "Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439).",
+        description:
+          'Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439). Default: "page".',
       },
     ],
     usage: [
@@ -1152,6 +1159,7 @@ export default function OrdersPage() {
 </EditorialSection>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialSectionHead",
     group: "layout",
     tagline:
@@ -1187,6 +1195,7 @@ export default function OrdersPage() {
 />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialSearch",
     group: "layout",
     tagline:
@@ -1201,9 +1210,8 @@ export default function OrdersPage() {
       {
         name: "variant",
         type: '"inset" | "inline"',
-        default: '"inset"',
         description:
-          "Site search box, or a collection's own row (visible label, live count, no button).",
+          'Site search box, or a collection\'s own row (visible label, live count, no button). Default: "inset".',
       },
       {
         name: "submitLabel",
@@ -1218,8 +1226,7 @@ export default function OrdersPage() {
       {
         name: "debounce",
         type: "number",
-        default: "300",
-        description: "inline: settle delay (ms).",
+        description: "inline: settle delay (ms). Default: 300.",
       },
       { name: "placeholder", type: "string", description: "Placeholder." },
       { name: "name", type: "string", defaultValue: '"q"', description: "Query parameter." },
@@ -1244,6 +1251,7 @@ export default function OrdersPage() {
 <EditorialSearch label="Card name or number" placeholder="Search a card" submitLabel="Search" action="/cards/" onSearch={(q) => navigate(q)} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialPillNav",
     group: "layout",
     tagline:
@@ -1274,6 +1282,7 @@ export default function OrdersPage() {
 </EditorialPillNav>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "CardShowcase",
     group: "layout",
     tagline:
@@ -1300,6 +1309,7 @@ export default function OrdersPage() {
 <CardShowcase preset="fan" label="ONE PLACE. MANY WORLDS." caption={{ overline: "A whole world in your hands.", title: "Find your next favourite." }} items={cards.map((c) => <a key={c.id} href={c.href} aria-label={c.name}><img src={c.image} alt={c.name} /></a>)} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialBanner",
     group: "layout",
     tagline:
@@ -1324,6 +1334,7 @@ import { Button } from "@godxjp/ui/general";
 <EditorialBanner eyebrow={<Eyebrow>YOUR COLLECTION HAS A STORY.</Eyebrow>} title="A home for the cards that matter." action={<Button asChild><a href="/collection/">Start your collection</a></Button>} media={<CardShowcase preset="binder" items={pockets} />} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "CatalogCard",
     group: "layout",
     tagline:
@@ -1367,6 +1378,7 @@ import { Button } from "@godxjp/ui/general";
 <CatalogCard media={<a href={href} tabIndex={-1} aria-hidden><img src={img} alt="" /></a>} favorite={{ pressed: saved, onPressedChange: setSaved, label: saveLabel }} overline="Pokémon" title={<a href={href}>{name}</a>} meta={<><span>132/106</span><CatalogCardTag>SAR</CatalogCardTag></>} price="¥12,800" change="↓ −4.2%" />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialCard",
     group: "layout",
     tagline:
@@ -1398,6 +1410,7 @@ import { Button } from "@godxjp/ui/general";
 <EditorialCard variant="journal" link={<a href="/journal/price-guide/" />} media={<img src={cover} alt="" />} overline="Price guide" title="Why the same card has different prices." description="Condition, language and edition all move the price." action="Read the story" />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialMasthead",
     group: "layout",
     tagline:
@@ -1427,6 +1440,7 @@ import { Moon } from "lucide-react";
 />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialFooter",
     group: "layout",
     tagline:
@@ -1456,6 +1470,7 @@ import { Moon } from "lucide-react";
 <EditorialFooter brand={<a href="/" aria-label="Home"><img src="/logo.svg" alt="" /></a>} tagline="Discover. Compare." groups={[{ title: "DISCOVER", links: [<a key="c" href="/cards/">Cards</a>] }]} legal="© 2026 TCG-M." />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialFilterBar",
     group: "layout",
     tagline:
@@ -1484,6 +1499,7 @@ import { Moon } from "lucide-react";
 <EditorialFilterBar aria-label="Selection" value={tab} onValueChange={setTab} options={[{ value: "all", label: "Selected cards" }, { value: "down", label: "Price drops" }]} extra="vs. 30 days ago" />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialToggleGroup",
     group: "layout",
     tagline:
@@ -1506,8 +1522,7 @@ import { Moon } from "lucide-react";
       {
         name: "variant",
         type: '"text" | "icon"',
-        default: '"text"',
-        description: "Labels, or framed icon-only buttons.",
+        description: 'Labels, or framed icon-only buttons. Default: "text".',
       },
     ],
     usage: [
@@ -1524,6 +1539,7 @@ import { Grid2x2, List } from "lucide-react";
 <EditorialToggleGroup aria-label="View" variant="icon" value={view} onValueChange={setView} items={[{ value: "grid", label: "Grid view", icon: <Grid2x2 /> }, { value: "list", label: "List view", icon: <List /> }]} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialFilterPanel",
     group: "layout",
     tagline:
@@ -1555,6 +1571,7 @@ import { Select } from "@godxjp/ui/data-entry";
 </EditorialFilterPanel>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialFilterField",
     group: "layout",
     tagline:
@@ -1571,6 +1588,7 @@ import { Select } from "@godxjp/ui/data-entry";
 <EditorialFilterField label="Rarity" htmlFor="f-rarity"><Select id="f-rarity" value={r} onValueChange={setR} options={rarities} /></EditorialFilterField>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "CatalogDetail",
     group: "layout",
     tagline:
@@ -1606,6 +1624,7 @@ import { Select } from "@godxjp/ui/data-entry";
 <CatalogDetail media={<img src={src} alt={name} />} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: "Market", price: "¥32,800" }} facts={[{ key: "set", label: "Expansion", value: "151" }]} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "CatalogDetailTag",
     group: "layout",
     tagline:
@@ -1618,6 +1637,7 @@ import { Select } from "@godxjp/ui/data-entry";
 <CatalogDetailTag>SV8 132/106</CatalogDetailTag>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "CatalogDetailSection",
     group: "layout",
     tagline:
@@ -1642,6 +1662,7 @@ import { Select } from "@godxjp/ui/data-entry";
 <CatalogDetailSection titleId="info" title="Card information" description="From the catalogue." />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "PriceSummary",
     group: "layout",
     tagline:
@@ -1666,6 +1687,7 @@ import { Select } from "@godxjp/ui/data-entry";
 <PriceSummary items={[{ key: "sell", label: "Asking", value: "¥32,800", caption: "Japan · JPY" }]} context={{ label: "Compared", value: "JP · NM · Raw" }} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialPrompt",
     group: "layout",
     tagline:
@@ -1688,6 +1710,7 @@ import { Lock } from "lucide-react";
 <EditorialPrompt icon={<Lock />} title="See more when you sign in" description="Per-market prices and history are for members." action={<Button asChild><a href="/login">Sign in</a></Button>} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialTextButton",
     group: "layout",
     tagline:
@@ -1709,6 +1732,7 @@ import { Lock } from "lucide-react";
 <EditorialTextButton onClick={reset}>Reset display preferences</EditorialTextButton>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialMetaBar",
     group: "layout",
     tagline:
@@ -1727,6 +1751,7 @@ import { Lock } from "lucide-react";
 <EditorialMetaBar icon={<Lock />} start="Your private collection" end={<Badge variant="outline">Saved to your account</Badge>} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialEmptyPanel",
     group: "layout",
     tagline:
@@ -1735,12 +1760,11 @@ import { Lock } from "lucide-react";
       {
         name: "variant",
         type: '"guest" | "empty"',
-        default: '"guest"',
-        description: "Illustrated guest panel or dashed empty panel.",
+        description: 'Illustrated guest panel or dashed empty panel. Default: "guest".',
       },
       { name: "eyebrow", type: "ReactNode", description: "Kicker (an Eyebrow)." },
       { name: "title", type: "ReactNode", required: true, description: "Title." },
-      { name: "level", type: "2 | 3", default: "2", description: "Heading level." },
+      { name: "level", type: "2 | 3", description: "Heading level. Default: 2." },
       { name: "description", type: "ReactNode", description: "Copy." },
       { name: "actions", type: "ReactNode", description: "Buttons." },
       { name: "icon", type: "ReactNode", description: 'Medallion glyph (variant="empty").' },
@@ -1755,6 +1779,7 @@ import { EditorialEmptyPanel, Eyebrow } from "@godxjp/ui/layout";
 <EditorialEmptyPanel eyebrow={<Eyebrow>A PLACE FOR YOUR COLLECTION</Eyebrow>} title="Keep what you love, together." description="Record your cards and products." actions={<Button>Sign in</Button>} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialStats",
     group: "layout",
     tagline:
@@ -1775,6 +1800,7 @@ import { EditorialEmptyPanel, Eyebrow } from "@godxjp/ui/layout";
 <EditorialStats aria-label="Collection totals" items={[{ label: "Items in your collection", value: "12", unit: "items", note: "A collection of things you love." }, { label: "Single cards", value: "9", unit: "items" }, { label: "Sealed products", value: "3", unit: "items" }]} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialToolbar",
     group: "layout",
     tagline:
@@ -1811,12 +1837,13 @@ import { EditorialToggleGroup, EditorialToolbar } from "@godxjp/ui/layout";
 <EditorialToolbar summary={{ count: "396 results", note: "Prices are reference values." }} end={<Select aria-label="Sort" value={sort} onValueChange={setSort} options={sorts} />} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "HoldingGrid",
     group: "layout",
     tagline:
       'The track of HoldingCards (gh#1439): `view="grid"` lays tiles on `--editorial-holding-grid-track-size` (default four columns); `view="list"` turns the same cards into wide rows (`140px 1fr`, body on `1.5fr 1fr 140px`). A list (`ul`) of the cards.',
     props: [
-      { name: "view", type: '"grid" | "list"', default: '"grid"', description: "Tiles or rows." },
+      { name: "view", type: '"grid" | "list"', description: 'Tiles or rows. Default: "grid".' },
       { name: "aria-label", type: "string", description: "Name of the list." },
       { name: "children", type: "ReactNode", description: "HoldingCards." },
     ],
@@ -1829,6 +1856,7 @@ import { EditorialToggleGroup, EditorialToolbar } from "@godxjp/ui/layout";
 <HoldingGrid view="grid" aria-label="Your collection"><HoldingCard media={<a href="/cards/1/"><img src="/card.png" alt="" /></a>} title={<a href="/cards/1/">Pikachu</a>} /></HoldingGrid>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "HoldingCard",
     group: "layout",
     tagline:
@@ -1842,7 +1870,7 @@ import { EditorialToggleGroup, EditorialToolbar } from "@godxjp/ui/layout";
       },
       { name: "overline", type: "ReactNode", description: "Line above the title." },
       { name: "title", type: "ReactNode", required: true, description: "Title (a link)." },
-      { name: "level", type: "2 | 3", default: "2", description: "Heading level." },
+      { name: "level", type: "2 | 3", description: "Heading level. Default: 2." },
       { name: "meta", type: "ReactNode", description: "Meta line." },
       { name: "tags", type: "ReactNode[]", description: "Outlined tags." },
       {
@@ -1861,6 +1889,7 @@ import { Trash2 } from "lucide-react";
 <HoldingCard media={<a href="/cards/1/"><img src="/card.png" alt="" /></a>} overline="Single card" title={<a href="/cards/1/">Pikachu</a>} meta="025/165" tags={["NM", "× 2"]} purchase={{ label: "Purchase / item", value: "¥1,200" }} actions={<HoldingCardAction icon={<Trash2 />} onClick={remove}>Remove</HoldingCardAction>} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "HoldingCardAction",
     group: "layout",
     tagline:
@@ -1885,6 +1914,7 @@ import { Pencil } from "lucide-react";
 <HoldingCardAction icon={<Pencil />} asChild><a href="/collection/1/edit/">Edit</a></HoldingCardAction>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "SettingsLayout",
     group: "layout",
     tagline:
@@ -1900,6 +1930,7 @@ import { Pencil } from "lucide-react";
 <SettingsLayout aside={<p>Preferences are saved in this browser.</p>}><SettingsPanel number="01" title="Language" /></SettingsLayout>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "SettingsPanel",
     group: "layout",
     tagline:
@@ -1907,7 +1938,7 @@ import { Pencil } from "lucide-react";
     props: [
       { name: "number", type: "ReactNode", description: "Section number." },
       { name: "title", type: "ReactNode", required: true, description: "Title." },
-      { name: "level", type: "2 | 3", default: "2", description: "Heading level." },
+      { name: "level", type: "2 | 3", description: "Heading level. Default: 2." },
       { name: "description", type: "ReactNode", description: "Copy." },
       { name: "children", type: "ReactNode", description: "Fields." },
       { name: "titleId", type: "string", description: "id of the title (names the section)." },
@@ -1919,6 +1950,7 @@ import { Pencil } from "lucide-react";
 <SettingsPanel number="02" title="Appearance" description="Card artwork keeps its colours." />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "ThemePicker",
     group: "layout",
     tagline:
@@ -1949,6 +1981,7 @@ import { Moon, Sun } from "lucide-react";
 <ThemePicker legend="Choose a theme" value={theme} onValueChange={setTheme} options={[{ value: "light", label: "Light", icon: <Sun />, preview: "light" }, { value: "dark", label: "Dark", icon: <Moon />, preview: "dark" }]} />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialAuth",
     group: "layout",
     tagline:
@@ -1962,12 +1995,16 @@ import { Moon, Sun } from "lucide-react";
       { name: "children", type: "ReactNode", description: "EditorialAuthCard." },
     ],
     usage: ["DO keep the form in an EditorialAuthCard with Form + FormField."],
-    related: ["EditorialAuthCard — the card.", "AuthShell — the application sign-in shell."],
+    related: [
+      "EditorialAuthCard — the card.",
+      'CenteredShell — use variant="auth" for the application sign-in shell.',
+    ],
     example: `import { EditorialAuth, EditorialAuthCard, Eyebrow } from "@godxjp/ui/layout";
 
 <EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title="Make room for what you love." benefits={["A collection of your own"]}><EditorialAuthCard title="Welcome back." /></EditorialAuth>`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialAuthCard",
     group: "layout",
     tagline:
@@ -1975,7 +2012,7 @@ import { Moon, Sun } from "lucide-react";
     props: [
       { name: "badge", type: "ReactNode", description: "Badge slot." },
       { name: "title", type: "ReactNode", required: true, description: "Title." },
-      { name: "level", type: "2 | 3", default: "2", description: "Heading level." },
+      { name: "level", type: "2 | 3", description: "Heading level. Default: 2." },
       { name: "description", type: "ReactNode", description: "Copy." },
       { name: "children", type: "ReactNode", description: "The form." },
       { name: "footer", type: "ReactNode", description: "Ruled footer line." },
@@ -1987,6 +2024,7 @@ import { Moon, Sun } from "lucide-react";
 <EditorialAuthCard title="Welcome back." description="Sign in to see your collection." footer="New here?" />`,
   },
   {
+    rules: [2, 6, 44, 45],
     name: "EditorialFootnote",
     group: "layout",
     tagline:
@@ -1997,8 +2035,7 @@ import { Moon, Sun } from "lucide-react";
       {
         name: "align",
         type: '"start" | "center"',
-        default: '"start"',
-        description: "Cross-axis alignment.",
+        description: 'Cross-axis alignment. Default: "start".',
       },
     ],
     usage: ["DO keep it to one or two sentences."],
@@ -8682,9 +8719,8 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "width",
         type: '"full" | "auto" | "bounded"',
-        default: '"full"',
         description:
-          "How the field takes its inline space, as `Select` and the pickers mean it (gh#1448). `full` fills the line; `auto` is sized to the widest value the bounds allow (formatted `min` / `max`, 6 characters when unbounded) plus the steppers — a quantity stepper outside a FormField, e.g. in a `ListRow` trailing slot; `bounded` holds `--control-bounded-width`. Inside a FormField, `controlWidth` still sizes it.",
+          'How the field takes its inline space, as `Select` and the pickers mean it (gh#1448). `full` fills the line; `auto` is sized to the widest value the bounds allow (formatted `min` / `max`, 6 characters when unbounded) plus the steppers — a quantity stepper outside a FormField, e.g. in a `ListRow` trailing slot; `bounded` holds `--control-bounded-width`. Inside a FormField, `controlWidth` still sizes it. Default: "full".',
       },
       {
         name: "name",
@@ -16926,7 +16962,6 @@ export default function PasswordBlock() {
       "TimezonePicker",
       "DateFormatPicker",
       "TimeFormatPicker",
-      "ThemePicker",
       "DensityPicker",
       "AppSettingToggle",
     ],

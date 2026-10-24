@@ -34,7 +34,7 @@
     padding: var(--editorial-text-button-padding-block) 0;
     border: 0;
     background: transparent;
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     font: inherit;
     font-size: var(--editorial-text-button-font-size);
     text-decoration: underline;
@@ -79,7 +79,7 @@
 
   .ui-editorial-toggle-group-option[aria-pressed="true"] {
     background: var(--editorial-toggle-group-pressed-background, hsl(var(--muted)));
-    color: var(--editorial-toggle-group-pressed-color, hsl(var(--primary)));
+    color: var(--editorial-toggle-group-pressed-color, hsl(var(--text-brand, var(--primary))));
   }
 
   .ui-editorial-toggle-group[data-variant="text"]
@@ -128,7 +128,7 @@
 
   .ui-editorial-meta-bar-icon {
     display: inline-flex;
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-editorial-meta-bar-icon > svg {
@@ -267,7 +267,7 @@
     margin: auto;
     border-radius: 50%;
     background: var(--editorial-account-subtle-background, hsl(var(--muted)));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-editorial-empty-panel-icon > svg {
@@ -496,7 +496,7 @@
   }
 
   .ui-holding-card-title a:hover {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-holding-card-meta {
@@ -590,7 +590,7 @@
   }
 
   .ui-holding-card-action:hover {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-holding-card-action:disabled {
@@ -887,11 +887,6 @@
     box-shadow: 0 0 0 var(--stroke-hairline) hsl(var(--primary));
   }
 
-  .ui-theme-picker-input:focus-visible + .ui-theme-picker-preview {
-    outline: var(--focus-ring-width, 3px) solid hsl(var(--primary));
-    outline-offset: var(--focus-ring-offset, 3px);
-  }
-
   .ui-theme-picker-label {
     display: flex;
     align-items: center;
@@ -1009,7 +1004,7 @@
   .ui-editorial-auth-benefit-icon {
     width: var(--editorial-auth-benefit-icon-size);
     height: var(--editorial-auth-benefit-icon-size);
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-editorial-auth-card {

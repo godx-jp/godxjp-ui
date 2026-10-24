@@ -41,6 +41,12 @@
     "AppSettingPicker kind=\"theme\" — a compact select.",
     "Radio — plain radios."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "An illustrated radio group for the colour theme (gh#1439): each choice is a painted preview of the interface — light, dark, or the system split — over its glyph and label. Native radios in a fieldset (arrow keys move), the checked preview ringed in the primary tone. Geometry: `--editorial-theme-picker-*`.",
   "usage": [
     "DO apply the theme at once; no Save button."

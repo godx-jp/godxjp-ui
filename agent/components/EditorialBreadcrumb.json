@@ -24,6 +24,12 @@
   "related": [
     "EditorialPageHeader, Breadcrumb."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page.",
   "usage": [
     "DO put it first in an EditorialSection of a `flow=\"sections\"` page.",

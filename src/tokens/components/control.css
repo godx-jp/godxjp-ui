@@ -69,7 +69,7 @@
   /* Label↔glyph gap and glyph size of a button (gh#1439): a brand whose buttons carry a 20px arrow
    * 10px from the label. `initial`, defaults = var(--control-gap) / var(--control-icon-size). */
   --button-gap: initial;
-  --button-icon-size: initial;
+  --button-icon-size: initial; /* scale-exempt: unset mirror reads the scoped --control-icon-size at its call site */
   --button-secondary-background: initial; /* default = hsl(var(--secondary)) at the call site */
   --button-secondary-background-alpha: initial; /* default = 100% at the call site */
   /* THE ONE BUTTON KNOB THAT IS INK, NOT A FILL (gh#884) — the `link` variant's text colour. The

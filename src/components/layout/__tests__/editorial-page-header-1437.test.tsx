@@ -1,3 +1,4 @@
+import { environment, resolveToken } from "../../../tokens/__tests__/css-token-resolve";
 /**
  * gh#1437 — EditorialPageHeader + EditorialBreadcrumb: the intro of an editorial listing / reader
  * page (trail, ruled kicker, the page's one h1, a lead and an action on the title row), every
@@ -62,8 +63,10 @@ describe("EditorialBreadcrumb (gh#1437)", () => {
   });
 
   it("reads its inset, gap and leading from tokens (column gap only: the coarse row pitch stays)", () => {
-    expect(tokens).toMatch(/--editorial-breadcrumb-padding-block-start:\s*1\.5rem;/);
-    expect(tokens).toMatch(/--editorial-breadcrumb-gap:\s*0\.5rem;/);
+    expect(resolveToken("--editorial-breadcrumb-padding-block-start", tokenEnvironment)).toBe(
+      "24px",
+    );
+    expect(resolveToken("--editorial-breadcrumb-gap", tokenEnvironment)).toBe("8px");
     expect(tokens).toMatch(/--editorial-breadcrumb-line-height:\s*1\.7;/);
     const box = rule(".ui-editorial-breadcrumb");
     expect(box).toMatch(/padding-block-start:\s*var\(--editorial-breadcrumb-padding-block-start\)/);
@@ -113,8 +116,12 @@ describe("EditorialPageHeader (gh#1437)", () => {
   });
 
   it("every length is a token; the kicker inside takes the header's own size and colour knobs", () => {
-    expect(tokens).toMatch(/--editorial-page-header-padding-block-start:\s*1\.75rem;/);
-    expect(tokens).toMatch(/--editorial-page-header-padding-block-end:\s*2rem;/);
+    expect(resolveToken("--editorial-page-header-padding-block-start", tokenEnvironment)).toBe(
+      "28px",
+    );
+    expect(resolveToken("--editorial-page-header-padding-block-end", tokenEnvironment)).toBe(
+      "32px",
+    );
     expect(tokens).toMatch(/--editorial-page-header-title-font-size:\s*2\.25rem;/);
     expect(tokens).toMatch(/--editorial-page-header-description-max-width:\s*47\.5rem;/);
     const row = rule(".ui-editorial-page-header-row");
@@ -134,3 +141,11 @@ describe("EditorialPageHeader (gh#1437)", () => {
     expect(kicker).toMatch(/color:\s*var\(\s*--editorial-page-header-kicker-color,/);
   });
 });
+
+// Resolve the token graph at the 16px root used by the measured editorial design.
+const tokenEnvironment = new Map(
+  [...environment({ selectors: [":root"] })].map(([name, value]) => [
+    name,
+    value.replace(/([\d.]+)rem\b/g, (_, n: string) => `${Number(n) * 16}px`),
+  ]),
+);

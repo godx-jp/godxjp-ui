@@ -34,6 +34,12 @@
     "EditorialTextLink — the bold arrow link of a section head.",
     "Button — actions with weight."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "An underlined text action in the primary tone (gh#1439): \"Reset display preferences\", \"Your collection →\". A `<button>` by default; `asChild` turns a router link into it; `icon` trails the label. Geometry: `--editorial-text-button-*`.",
   "usage": [
     "DO use it for a quiet secondary action next to copy; a primary action is a Button."

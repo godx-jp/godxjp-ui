@@ -39,6 +39,12 @@
   "related": [
     "EditorialSearch, CardShowcase, Eyebrow."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "The opening of an editorial page (gh#1435): a copy column — kicker, the page's one h1, a lead, a search and a line of suggested queries — beside a media column. Put it in `EditorialSection tone=\"hero\" divider=\"end\"`. Geometry: `--editorial-hero-*` (tracks, min-height, h1 size/leading/tracking and every gap).",
   "usage": [
     "DO keep it the page's only h1."

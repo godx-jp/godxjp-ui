@@ -67,6 +67,12 @@
   "related": [
     "ResponsiveGrid — `preset=\"catalog\"`."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "subParts": [
     "CatalogCardTag"
   ],

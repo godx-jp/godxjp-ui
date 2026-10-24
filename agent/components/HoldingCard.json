@@ -22,8 +22,7 @@
       "type": "ReactNode"
     },
     {
-      "default": "2",
-      "description": "Heading level.",
+      "description": "Heading level. Default: 2.",
       "name": "level",
       "type": "2 | 3"
     },
@@ -56,6 +55,12 @@
   "related": [
     "HoldingGrid — the track.",
     "HoldingCardAction — its actions."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "One owned item (gh#1439): a picture ground (the consumer's link around an image), overline, title, meta, outlined tags (the last set apart), the purchase line, a date and HoldingCardActions. Its geometry follows the enclosing HoldingGrid view. Geometry: `--editorial-holding-card-*`.",
   "usage": [

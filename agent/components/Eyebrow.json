@@ -26,6 +26,12 @@
   "related": [
     "EditorialSectionHead."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "The small uppercase kicker above an editorial heading (gh#1435), led by a short ornament rule (`variant=\"ruled\"`, default) or bare (`\"plain\"`). Face, size, tracking, colour and rule: `--editorial-eyebrow-*`, `--editorial-kicker-*`, `--editorial-ornament-color`.",
   "usage": [
     "DO use it in the eyebrow slot of EditorialHero / EditorialSectionHead / EditorialBanner."

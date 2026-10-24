@@ -562,4 +562,11 @@
     outline-style: none;
     box-shadow: none;
   }
+
+  .ui-theme-picker-input:focus-visible + .ui-theme-picker-preview {
+    outline-width: var(--focus-ring-width, var(--stroke-lg));
+    outline-style: solid;
+    outline-color: hsl(var(--primary));
+    outline-offset: var(--focus-ring-offset, var(--stroke-lg));
+  }
 }

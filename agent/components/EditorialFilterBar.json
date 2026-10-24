@@ -38,6 +38,12 @@
     "Tabs — panels.",
     "Segmented — a compact single choice."
   ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
   "tagline": "A row of underlined filter toggles above a collection (gh#1435): a named `role=\"group\"` of `aria-pressed` buttons (one pressed at a time) and a trailing note, over a hairline. The collection below is the consumer's. Geometry: `--editorial-filter-bar-*`.",
   "usage": [
     "DO use Tabs when each option owns a panel; this bar only filters one collection."

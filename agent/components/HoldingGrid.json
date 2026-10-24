@@ -5,8 +5,7 @@
   "name": "HoldingGrid",
   "props": [
     {
-      "default": "\"grid\"",
-      "description": "Tiles or rows.",
+      "description": "Tiles or rows. Default: \"grid\".",
       "name": "view",
       "type": "\"grid\" | \"list\""
     },
@@ -24,6 +23,12 @@
   "related": [
     "HoldingCard — its items.",
     "CatalogCard — a catalogue tile."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
   ],
   "tagline": "The track of HoldingCards (gh#1439): `view=\"grid\"` lays tiles on `--editorial-holding-grid-track-size` (default four columns); `view=\"list\"` turns the same cards into wide rows (`140px 1fr`, body on `1.5fr 1fr 140px`). A list (`ul`) of the cards.",
   "usage": [

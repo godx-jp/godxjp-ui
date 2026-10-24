@@ -1,3 +1,4 @@
+import { environment, resolveToken } from "../../../tokens/__tests__/css-token-resolve";
 /**
  * gh#1435 — the editorial family: full-width sections in `CenteredShell flow="sections"`, the hero,
  * the ruled kicker, the section head, the inset site search, the pill navigation band, the card
@@ -143,8 +144,8 @@ describe("EditorialHero + Eyebrow + EditorialSearch (gh#1435)", () => {
     const { container } = render(<EditorialSearch label="検索語" submitLabel="検索" />);
     expect(container.querySelector("label")).toHaveClass("sr-only");
     expect(tokens).toMatch(/--editorial-search-min-height:\s*4rem;/);
-    expect(tokens).toMatch(/--editorial-search-padding-inline-start:\s*1rem;/);
-    expect(tokens).toMatch(/--editorial-search-padding-block:\s*0\.375rem;/);
+    expect(resolveToken("--editorial-search-padding-inline-start", tokenEnvironment)).toBe("16px");
+    expect(resolveToken("--editorial-search-padding-block", tokenEnvironment)).toBe("6px");
     expect(rule(".ui-editorial-search")).toMatch(
       /min-height:\s*var\(--editorial-search-min-height\)/,
     );
@@ -317,7 +318,9 @@ describe("CatalogCard (gh#1435)", () => {
     expect(heading.querySelector("a")).toHaveAttribute("href", "/cards/1/");
     expect(screen.getByText("SAR")).toHaveClass("ui-catalog-card-tag");
     expect(rule(".ui-catalog-card-favorite")).toMatch(/position:\s*absolute/);
-    expect(tokens).toMatch(/--editorial-catalog-card-media-padding-block-start:\s*3rem;/);
+    expect(
+      resolveToken("--editorial-catalog-card-media-padding-block-start", tokenEnvironment),
+    ).toBe("48px");
     expect(rule(".ui-catalog-card-price-label")).toMatch(
       /-webkit-line-clamp:\s*var\(--editorial-catalog-card-price-label-line-clamp\)/,
     );
@@ -580,3 +583,11 @@ describe("EditorialSearch scope (gh#1435)", () => {
     expect(rule(".ui-editorial-search-scope")).toMatch(/border-inline-end:/);
   });
 });
+
+// Resolve the token graph at the 16px root used by the measured editorial design.
+const tokenEnvironment = new Map(
+  [...environment({ selectors: [":root"] })].map(([name, value]) => [
+    name,
+    value.replace(/([\d.]+)rem\b/g, (_, n: string) => `${Number(n) * 16}px`),
+  ]),
+);
