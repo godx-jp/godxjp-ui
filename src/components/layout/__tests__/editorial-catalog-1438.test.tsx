@@ -113,8 +113,26 @@ describe("EditorialFilterPanel / EditorialFilterField (gh#1438)", () => {
     const field = rule(".ui-editorial-filter-field");
     expect(field).toMatch(/flex:\s*1 1 var\(--editorial-filter-field-width-basis\)/);
     expect(field).toMatch(/min-width:\s*var\(--editorial-filter-field-min-width\)/);
-    expect(rule(".ui-editorial-filter-field-label")).toMatch(/font-weight:\s*var\(--font-weight-semibold\)/);
+    expect(rule(".ui-editorial-filter-field-label")).toMatch(/font-weight:\s*var\(--editorial-filter-field-label-font-weight\)/);
+    expect(tokens).toMatch(/--editorial-filter-field-label-font-weight:\s*var\(--font-weight-semibold\)/);
     expect(rule(".ui-editorial-filter-panel-action")).toMatch(/flex-grow:\s*var\(--editorial-filter-panel-action-size-grow\)/);
+  });
+
+  it('variant="bare" keeps the field row and drops the frame, with its own label scale', () => {
+    const { container } = render(
+      <EditorialFilterPanel aria-label="Compare" variant="bare">
+        <EditorialFilterField label="Currency" htmlFor="c">
+          <select id="c" />
+        </EditorialFilterField>
+      </EditorialFilterPanel>,
+    );
+    expect(container.firstElementChild?.getAttribute("data-variant")).toBe("bare");
+    const bare = rule('.ui-editorial-filter-panel[data-variant="bare"]');
+    expect(bare).toMatch(/border:\s*0/);
+    expect(bare).toMatch(/padding:\s*0/);
+    expect(bare).toMatch(/background:\s*transparent/);
+    expect(bare).toMatch(/--editorial-filter-field-label-font-size:\s*var\(--editorial-filter-panel-bare-label-font-size\)/);
+    expect(tokens).toMatch(/--editorial-filter-panel-bare-label-font-size:\s*0\.8125rem/);
   });
 
   it("ships the v4 defaults as tokens", () => {

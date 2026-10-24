@@ -1495,6 +1495,7 @@ import { Grid2x2, List } from "lucide-react";
       { name: "aria-label", type: "string", required: true, description: "Group name." },
       { name: "children", type: "ReactNode", required: true, description: "The fields." },
       { name: "action", type: "ReactNode", description: "Trailing control (reset)." },
+      { name: "variant", type: '"panel" | "bare"', defaultValue: '"panel"', description: "Framed panel, or a bare field row (inside a framed module)." },
     ],
     usage: [
       "DO put one control per EditorialFilterField and pass the control's id as htmlFor.",

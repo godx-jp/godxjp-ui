@@ -2656,6 +2656,12 @@ export type EditorialFilterBarProp = {
  * scale (`--editorial-filter-panel-control-*`).
  */
 export type EditorialFilterPanelProp = {
+  /**
+   * `"panel"` (default): the bordered surface. `"bare"`: the same field row with no frame, ground,
+   * padding or bottom margin, and its labels at `--editorial-filter-panel-bare-label-*` (a filter row
+   * inside a module that is already framed, e.g. an item page's price comparison).
+   */
+  variant?: "panel" | "bare";
   /** Accessible name of the group. */
   "aria-label": string;
   children: ChildrenProp;

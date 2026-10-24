@@ -4554,10 +4554,25 @@
   }
 
   .ui-editorial-filter-field-label {
-    color: hsl(var(--muted-foreground));
+    color: var(--editorial-filter-field-label-color, hsl(var(--muted-foreground)));
     font-size: var(--editorial-filter-field-label-font-size);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--editorial-filter-field-label-font-weight);
     line-height: var(--editorial-filter-field-label-line-height);
+  }
+
+  /* variant="bare": the field row without the panel's frame, inside a module already framed. */
+  .ui-editorial-filter-panel[data-variant="bare"] {
+    --editorial-filter-field-label-color: var(
+      --editorial-filter-panel-bare-label-color,
+      hsl(var(--foreground))
+    );
+    --editorial-filter-field-label-font-size: var(--editorial-filter-panel-bare-label-font-size);
+    --editorial-filter-field-label-font-weight: var(--editorial-filter-panel-bare-label-font-weight);
+    margin-block-end: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
   }
 
   .ui-editorial-filter-panel-action {

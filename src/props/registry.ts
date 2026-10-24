@@ -1930,6 +1930,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       { field: "aria-label", local: true, reason: "Accessible name of the filter group." },
       { field: "action", local: true, reason: "Trailing control after the fields (a reset button)." },
+      { field: "variant", local: true, reason: "Framed panel, or a bare field row inside a framed module." },
     ],
   },
   EditorialFilterFieldProp: {

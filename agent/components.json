@@ -1761,6 +1761,12 @@
         "description": "Trailing control (reset).",
         "name": "action",
         "type": "ReactNode"
+      },
+      {
+        "defaultValue": "\"panel\"",
+        "description": "Framed panel, or a bare field row (inside a framed module).",
+        "name": "variant",
+        "type": "\"panel\" | \"bare\""
       }
     ],
     "related": [

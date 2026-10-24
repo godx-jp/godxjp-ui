@@ -7543,6 +7543,14 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"panel\" | \"bare\" | undefined",
+          "values": ["panel", "bare"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
     },

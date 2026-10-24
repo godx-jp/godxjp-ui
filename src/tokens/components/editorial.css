@@ -542,6 +542,13 @@
   --editorial-filter-field-width-basis: 0%;
   --editorial-filter-field-label-font-size: 0.75rem;
   --editorial-filter-field-label-line-height: 1.8;
+  --editorial-filter-field-label-font-weight: var(--font-weight-semibold);
+  /* Default = hsl(var(--muted-foreground)). */
+  --editorial-filter-field-label-color: initial;
+  /* variant="bare" labels. Colour default = hsl(var(--foreground)). */
+  --editorial-filter-panel-bare-label-font-size: 0.8125rem;
+  --editorial-filter-panel-bare-label-font-weight: var(--font-weight-medium);
+  --editorial-filter-panel-bare-label-color: initial;
 
   /* ── EditorialListingToolbar (gh#1438) ──────────────────────────────────────────────────── */
   --editorial-listing-toolbar-gap: 1rem;

@@ -85,7 +85,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | EditorialFooter | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | EditorialFilterBar | **✗** | N/A | N/A | · | · | · | · | · | · | · |
 | EditorialToggleGroup | **✗** | · | N/A | · | · | · | · | · | · | · |
-| EditorialFilterPanel | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
+| EditorialFilterPanel | **✗** | · | N/A | N/A | · | · | · | · | · | · |
 | EditorialFilterField | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | EditorialListingToolbar | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | CatalogDetail | **✗** | · | N/A | N/A | · | · | · | · | · | · |

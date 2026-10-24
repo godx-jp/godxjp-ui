@@ -42,6 +42,7 @@ export type {
 
 /** A catalog's filter panel: labelled fields that wrap, bottom aligned, and a trailing action. */
 export function EditorialFilterPanel({
+  variant = "panel",
   children,
   action,
   className,
@@ -52,6 +53,7 @@ export function EditorialFilterPanel({
       role="group"
       aria-label={rest["aria-label"]}
       data-slot="editorial-filter-panel"
+      data-variant={variant === "bare" ? "bare" : undefined}
       className={cn("ui-editorial-filter-panel", className)}
     >
       {children}
