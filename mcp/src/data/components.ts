@@ -1263,8 +1263,7 @@ export default function OrdersPage() {
       {
         name: "linkComponent",
         type: "ElementType",
-        default: '"a"',
-        description: "inset: the element suggestion rows render as (a router Link).",
+        description: 'inset: the element suggestion rows render as (a router Link). Default "a".',
       },
       { name: "id", type: "string", description: "Field id." },
     ],

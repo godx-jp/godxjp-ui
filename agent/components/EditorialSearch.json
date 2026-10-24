@@ -82,8 +82,7 @@
       "type": "(query: string) => void"
     },
     {
-      "default": "\"a\"",
-      "description": "inset: the element suggestion rows render as (a router Link).",
+      "description": "inset: the element suggestion rows render as (a router Link). Default \"a\".",
       "name": "linkComponent",
       "type": "ElementType"
     },
