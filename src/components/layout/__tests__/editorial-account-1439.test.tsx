@@ -499,7 +499,9 @@ describe('EditorialSearch variant="inline" / EditorialFootnote (gh#1439)', () =>
 describe("FormField helper knobs (gh#1439)", () => {
   it("the helper / error line reads --form-field-note-* and the stack gap --form-field-control-gap, defaults unchanged", () => {
     const formCss = read("../../../styles/form-layout.css");
-    expect(formCss).toContain("font-size: var(--form-field-note-font-size, var(--text-xs));");
+    expect(formCss).toMatch(
+      /font-size: var\(\s*--form-field-note-font-size,\s*var\(--font-size-xs, calc\(var\(--font-size-base\) \/ var\(--font-size-ratio\)\)\)\s*\)/,
+    );
     expect(formCss).toContain("line-height: var(--form-field-note-line-height, calc(1 / 0.75));");
     expect(formCss).toContain("gap: var(--form-field-control-gap, var(--space-stack-xs));");
     const formTokens = read("../../../tokens/components/form.css");

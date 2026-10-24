@@ -26,7 +26,10 @@
     word-break: auto-phrase;
     /* Helper and error type (gh#1439): it was a `text-xs` utility, which no theme could reach;
      * the defaults are that utility's exact size and leading. */
-    font-size: var(--form-field-note-font-size, var(--text-xs));
+    font-size: var(
+      --form-field-note-font-size,
+      var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))
+    );
     line-height: var(--form-field-note-line-height, calc(1 / 0.75));
   }
 
