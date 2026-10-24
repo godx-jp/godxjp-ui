@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `AppShell` brand link that IS the boxed mark (`logo={<Logo asChild glyph="P"><a/></Logo>}`, no wordmark): `.app-topbar-logo > a { display: flex }` out-ranked `.ui-logo`'s `inline-grid` centring, so the glyph's ink sat against the box's start edge (Chromium, 4x pixel scan: dx −5.25 / −6.5 / −7.75 / −11.25px at xs / sm / md / lg). The rule now skips `.ui-logo`; ink centre is within 1px of the box centre on both axes at every size. Standalone `Logo` was already centred (≤0.4px); the optical-offset tokens are unchanged.
+- `LegalDocumentShell` with `sections={[]}` and no `documentNavigation` no longer reserves the contents rail: no contents `<nav>`, no rail element, no rail grid track (`data-rail="none"`). At 1280px the title starts at the content edge (x=32, was 312 behind a 240px track + 40px gap); at 390px the empty "On this page" caption is gone. With no sections but a `documentNavigation`, the rail holds only the navigation. Measure, metadata and h1 size are unchanged.
+
 ### Changed
 
 - `Image` is lazy by default (#1454): `loading` defaults to `"lazy"` — `"eager"` when the picture is marked `fetchPriority="high"` (a page's LCP image) — and `decoding` to `"async"`. Explicit `loading` / `decoding` still win. Pass `fetchPriority="high"` (or `loading="eager"`) on an above-the-fold hero picture.

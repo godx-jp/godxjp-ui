@@ -2199,6 +2199,16 @@
       grid-column: 2;
       grid-row: 3;
     }
+
+    /* No sections and no documentNavigation: no rail, so no rail track or column gap either. */
+    .ui-legal-document[data-rail="none"] {
+      grid-template-columns: minmax(0, var(--legal-document-measure-max-width));
+    }
+
+    .ui-legal-document[data-rail="none"]
+      > :is(.ui-legal-document-header, .ui-legal-document-content, .ui-legal-document-footer) {
+      grid-column: 1;
+    }
   }
 }
 
