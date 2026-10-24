@@ -2444,5 +2444,19 @@
     "organic": "Tìm kiếm tự nhiên",
     "referral": "Giới thiệu",
     "email": "Email"
+  },
+  "metadataApiDocs": {
+    "title": "Chi tiết hoạt động",
+    "hint": "labelWidth=\"content\" căn theo nhãn dài nhất. Mặc định giữ chiều rộng của giao diện. Có thể dùng độ dài CSS; số được tính bằng px. Nhãn dài tự xuống dòng trong giới hạn.",
+    "status": "Trạng thái",
+    "owner": "Người phụ trách",
+    "change": "Chưa xử lý → Đang xử lý",
+    "person": "Mika Tanaka",
+    "counts": "Nhấn mạnh số lượng",
+    "countsHint": "accent theo lựa chọn. neutral giữ màu dịu cho tổng số tham khảo. Cả items và TabsTrigger đều hỗ trợ countTone.",
+    "action": "Cần xử lý",
+    "invited": "Đã mời",
+    "unit": "thành viên",
+    "panel": "Chi tiết thành viên"
   }
 }

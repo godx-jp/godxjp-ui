@@ -5740,6 +5740,14 @@
           "declaredIn": ["src/components/data-display/descriptions.tsx"]
         },
         {
+          "name": "labelWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | \"content\" | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/descriptions.tsx"]
+        },
+        {
           "name": "layout",
           "origin": "owned",
           "required": false,
@@ -16597,6 +16605,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "countTone",
+          "origin": "owned",
+          "required": false,
+          "type": "\"neutral\" | \"accent\" | undefined",
+          "values": ["neutral", "accent"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {

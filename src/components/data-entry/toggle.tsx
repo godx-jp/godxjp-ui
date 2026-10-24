@@ -112,7 +112,8 @@ function useCounterPill({
   countLabel,
   ariaLabel,
   slot = "toggle",
-}: ToggleCountFields & { ariaLabel?: string; slot?: string }) {
+  countTone,
+}: ToggleCountFields & { ariaLabel?: string; slot?: string; countTone?: "neutral" | "accent" }) {
   const { locale } = useTranslation();
   const visible = count != null && (count !== 0 || showZero);
   const formatted = React.useMemo(() => {
@@ -129,7 +130,12 @@ function useCounterPill({
   return {
     pill: (
       <>
-        <span data-slot={`${slot}-count`} className={`ui-${slot}-count`} aria-hidden="true">
+        <span
+          data-slot={`${slot}-count`}
+          data-count-tone={countTone}
+          className={`ui-${slot}-count`}
+          aria-hidden="true"
+        >
           {formatted}
         </span>
         <span className="sr-only">{`, ${spoken}`}</span>

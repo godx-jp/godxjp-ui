@@ -1,3 +1,4 @@
+import { useTranslation } from "@godxjp/ui/i18n";
 import { useState } from "react";
 
 import { CircleX } from "lucide-react";
@@ -133,6 +134,7 @@ const savedViewItems = [
 ];
 
 export default function Demo() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("pending");
   const [reopened, setReopened] = useState(0);
   const [editableTabs, setEditableTabs] = useState([
@@ -154,6 +156,37 @@ export default function Demo() {
       subtitle="items API (default / line / card variant) + manual compound composition"
     >
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("metadataApiDocs.counts")}</CardTitle>
+            <CardDescription>{t("metadataApiDocs.countsHint")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs
+              aria-label={t("metadataApiDocs.counts")}
+              variant="line"
+              items={[
+                {
+                  value: "action",
+                  label: t("metadataApiDocs.action"),
+                  count: 12,
+                  countTone: "accent",
+                  countLabel: t("metadataApiDocs.unit"),
+                  content: t("metadataApiDocs.panel"),
+                },
+                {
+                  value: "invited",
+                  label: t("metadataApiDocs.invited"),
+                  count: 2,
+                  countTone: "neutral",
+                  countLabel: t("metadataApiDocs.unit"),
+                  content: t("metadataApiDocs.panel"),
+                },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
         {/* items API — default variant (pill) */}
         <Card>
           <CardHeader>
