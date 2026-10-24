@@ -1057,10 +1057,12 @@ type DropdownMenuLabelProps = React.PropsWithChildren<DropdownMenuLabelPropsOwn>
  * `Header` không đi qua `useRenderProps`, nên `props.children` trong `render` CHÍNH là children của
  * consumer — không có `Provider` chen vào như ở `MenuItem`. `Slot` vì thế nhận thẳng gói props.
  *
- * NHƯNG PHẢI RENDER RA `<div>`, KHÔNG PHẢI `<header>`. `<header>` mang vai trò ngầm `banner`, và
+ * `<header>` TRẦN thì không được: nó mang vai trò ngầm `banner`, và
  * `banner` không nằm trong danh sách con hợp lệ của `role="menu"` (axe: aria-required-children,
  * ARIA 1.2 — menu chỉ nhận menuitem / menuitemcheckbox / menuitemradio / group / separator). Radix
- * dựng `<div>`, vai trò `generic`, nên nó không bao giờ vấp lỗi này.
+ * dựng `<div>`, vai trò `generic`, nên nó không bao giờ vấp lỗi này. Còn `<div>` thì RAC cảnh báo
+ * "Expected <header>, got <div>" (gh#1452). Nên: `<header role="presentation">` — đúng thẻ RAC chờ,
+ * không có landmark.
  *
  * `Header` vẫn được dùng chứ không thay bằng `<div>` trần: bộ dựng collection của RAC chỉ nhận các
  * nút nó biết, một phần tử lạ đặt thẳng trong `Menu` sẽ bị nó bỏ. Nên giữ nút, đổi thẻ.
@@ -1082,9 +1084,12 @@ export function DropdownMenuLabel({ children, className, inset, asChild }: Dropd
               />
             )
           : (props) => (
-              <div
-                {...(props as React.HTMLAttributes<HTMLDivElement> &
-                  React.RefAttributes<HTMLDivElement>)}
+              // RAC's `Header` element (it warns in dev when `render` returns another one, gh#1452),
+              // with the landmark dropped: `role="presentation"` is allowed on `header` and keeps
+              // the menu owning no `banner`.
+              <header
+                role="presentation"
+                {...(props as React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>)}
               />
             )
       }

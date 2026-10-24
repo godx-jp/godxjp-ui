@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `DropdownMenuItem asChild` with a link no longer makes react-aria warn "Expected <div>, got <a>" (#1452): the item hands `MenuItem` the borrowed child's `href` — or its own new `href` prop, for router links that take `to` — so react-aria renders its link item (an `<a>`, closes on select) instead of an action `<div>`. The click is still the child's own.
+- `DropdownMenuItem asChild` with a link no longer makes react-aria warn "Expected <div>, got <a>" (#1452): the item hands `MenuItem` the borrowed child's `href` — or its own new `href` prop, for router links that take `to` — so react-aria renders its link item (an `<a>`, closes on select) instead of an action `<div>`. The click is still the child's own. `DropdownMenuLabel` renders the `<header>` react-aria's `Header` expects (it warned "Expected <header>, got <div>") with `role="presentation"`, so the menu still owns no `banner` landmark.
 - AppShell: with mobileTabBar visible, app footer now flows at the end of scrolling content; desktop retains its footer track. Footer inline insets follow the page spacing tokens, including compact phone gutters and RTL.
 - Collapsed table records honor `--table-row-border-width`; compact collections honor `--table-font-size` while retaining compact defaults when unset. Persona typography resolves when optional foundation aliases are unavailable (#1383).
 - `DashboardGrid` (lab) prints every tile at its content height: in print the grid rows are `auto`, tile content no longer scrolls, and the move / resize handles are hidden, so a table taller than its tile keeps all its rows on paper (#1446).
