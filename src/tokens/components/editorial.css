@@ -618,6 +618,10 @@
   --editorial-catalog-detail-section-padding-block: 2.5rem;
   /* variant="module" (the price module): no hairline, this rhythm above and below. */
   --editorial-catalog-detail-module-padding-block: 4rem;
+  /* The module's own button glyph gap / size (a page-wide --button-gap / --button-icon-size does not
+   * reach it). `initial` = the control defaults (--control-gap / --control-icon-size). */
+  --editorial-catalog-detail-module-button-gap: initial;
+  --editorial-catalog-detail-module-button-icon-size: initial;
   --editorial-catalog-detail-section-title-font-size: 1.75rem;
   --editorial-catalog-detail-section-title-line-height: 1.55;
   --editorial-catalog-detail-section-title-letter-spacing: -0.025em;

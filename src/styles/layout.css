@@ -4762,6 +4762,10 @@
 
   /* variant="module": a module of the page (the price module) — no hairline, its own rhythm. */
   .ui-catalog-detail-section[data-variant="module"] {
+    /* The module's buttons have their own glyph gap / size (v4 .price-button), not a site-wide
+     * --button-gap / --button-icon-size; unset knobs fall back to the control defaults. */
+    --button-gap: var(--editorial-catalog-detail-module-button-gap);
+    --button-icon-size: var(--editorial-catalog-detail-module-button-icon-size);
     padding-block: var(--editorial-catalog-detail-module-padding-block);
     border-block-start: 0;
   }

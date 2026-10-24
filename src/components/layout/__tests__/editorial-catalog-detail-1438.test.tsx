@@ -79,7 +79,10 @@ describe("CatalogDetail / CatalogDetailTag (gh#1438)", () => {
     expect(pressed).toBe(true);
     expect(screen.getByText("¥32,800").className).toBe("ui-catalog-detail-summary-price");
     expect(screen.getByText("SAR").className).toBe("ui-catalog-detail-tag");
-    expect(screen.getAllByRole("term").map((n) => n.textContent)).toEqual(["Expansion", "Language"]);
+    expect(screen.getAllByRole("term").map((n) => n.textContent)).toEqual([
+      "Expansion",
+      "Language",
+    ]);
   });
 
   it("lays out two token-driven tracks and a framed picture", () => {
@@ -101,7 +104,11 @@ describe("CatalogDetail / CatalogDetailTag (gh#1438)", () => {
 describe("CatalogDetailSection (gh#1438)", () => {
   it("is a region named by its h2, under a top hairline", () => {
     render(
-      <CatalogDetailSection titleId="info" title="Card information" description="From the catalogue." />,
+      <CatalogDetailSection
+        titleId="info"
+        title="Card information"
+        description="From the catalogue."
+      />,
     );
     expect(screen.getByRole("region", { name: "Card information" })).toBeTruthy();
     expect(rule(".ui-catalog-detail-section")).toMatch(/border-block-start:/);
@@ -115,6 +122,16 @@ describe("CatalogDetailSection (gh#1438)", () => {
     const body = rule('.ui-catalog-detail-section[data-variant="module"]');
     expect(body).toMatch(/padding-block:\s*var\(--editorial-catalog-detail-module-padding-block\)/);
     expect(body).toMatch(/border-block-start:\s*0/);
+  });
+
+  it("gives the module's buttons their own glyph gap / size, not a page-wide --button-* knob", () => {
+    const body = rule('.ui-catalog-detail-section[data-variant="module"]');
+    expect(body).toMatch(/--button-gap:\s*var\(--editorial-catalog-detail-module-button-gap\)/);
+    expect(body).toMatch(
+      /--button-icon-size:\s*var\(--editorial-catalog-detail-module-button-icon-size\)/,
+    );
+    expect(tokens).toMatch(/--editorial-catalog-detail-module-button-gap:\s*initial/);
+    expect(tokens).toMatch(/--editorial-catalog-detail-module-button-icon-size:\s*initial/);
   });
 
   it("lets a theme give the lead action a row of its own", () => {
@@ -192,15 +209,23 @@ describe("EditorialPrompt (gh#1438)", () => {
 describe("Button outline ink knob (gh#1438)", () => {
   const controlCss = read("../../../styles/control.css");
   it("reads --button-outline-foreground, defaulting to --foreground", () => {
-    const outline = [...controlCss.matchAll(/\.ui-button--outline\s*\{([^}]*)\}/g)].map((m) => m[1]).join("\n");
-    expect(outline).toMatch(/color:\s*var\(--button-outline-foreground, hsl\(var\(--foreground\)\)\)/);
+    const outline = [...controlCss.matchAll(/\.ui-button--outline\s*\{([^}]*)\}/g)]
+      .map((m) => m[1])
+      .join("\n");
+    expect(outline).toMatch(
+      /color:\s*var\(--button-outline-foreground, hsl\(var\(--foreground\)\)\)/,
+    );
   });
 
   it("is set to the action colour on no fill inside the catalog's filter action and item actions", () => {
     for (const selector of [".ui-editorial-filter-panel-action", ".ui-catalog-detail-actions"]) {
       const body = rule(selector);
-      expect(body).toMatch(/--button-outline-foreground:\s*var\(--editorial-catalog-outline-color, hsl\(var\(--primary\)\)\)/);
-      expect(body).toMatch(/--button-outline-background:\s*var\(--editorial-catalog-outline-background, transparent\)/);
+      expect(body).toMatch(
+        /--button-outline-foreground:\s*var\(--editorial-catalog-outline-color, hsl\(var\(--primary\)\)\)/,
+      );
+      expect(body).toMatch(
+        /--button-outline-background:\s*var\(--editorial-catalog-outline-background, transparent\)/,
+      );
     }
   });
 });
@@ -216,8 +241,12 @@ describe("EditorialSectionHead scale (gh#1438)", () => {
 
   it("re-points the head's knobs to the module scale", () => {
     const body = rule('.ui-editorial-section-head[data-scale="module"]');
-    expect(body).toMatch(/--editorial-section-head-title-font-size:\s*var\(--editorial-section-head-module-title-font-size\)/);
-    expect(body).toMatch(/--editorial-eyebrow-letter-spacing:\s*var\(--editorial-section-head-module-kicker-letter-spacing\)/);
+    expect(body).toMatch(
+      /--editorial-section-head-title-font-size:\s*var\(--editorial-section-head-module-title-font-size\)/,
+    );
+    expect(body).toMatch(
+      /--editorial-eyebrow-letter-spacing:\s*var\(--editorial-section-head-module-kicker-letter-spacing\)/,
+    );
     expect(tokens).toMatch(/--editorial-section-head-module-title-font-size:\s*1\.875rem/);
   });
 });
