@@ -151,6 +151,45 @@
     translate: 0 var(--logo-glyph-optical-offset, var(--logo-glyph-x-descender-optical-offset));
   }
 
+  /* TRIM THE LINE BOX TO THE INK BAND, WHERE THE BROWSER CAN (godxjp-ui#1466 follow-up).
+   *
+   * The four offsets above are measured against an UNTRIMMED `line-height: 1` line box, and that
+   * box is not where the paint lands at a fractional font-size on Linux Chromium: the fitted `xs`
+   * glyph (11.107px) painted 1.75–2.25px ABOVE the box centre for every class and every face tried
+   * (Liberation Sans, DejaVu Sans, WenQuanYi Zen Hei), while 12px and 13px were within 0.25px —
+   * a font-size rounding effect no em-constant can absorb. Measured in the official
+   * mcr.microsoft.com/playwright:v1.62.1-noble image, the same Chromium CI runs.
+   *
+   * `text-box` trims the line box to the font's OWN cap-height / x-height and baseline / descent,
+   * so `place-items: center` centres the band the class names, whatever the metrics or the size:
+   * cap→baseline and x→baseline are trimmed to exactly their band; the descender classes keep the
+   * font's descent (`text`) as the bottom edge. With it the class offsets are not needed and only
+   * the escape hatch still moves the glyph. Worst |dy| over P G GX A 8 神 あ g y p go gX Gy x o ae ×
+   * xs/sm/md/lg: Linux 2.25px → 1.00px, macOS 0.87px → 0.75px. Where `text-box` is unsupported the
+   * rules above (the measured offsets on an untrimmed box) still apply. An unclassified glyph (an
+   * inline `<svg>`) has no `data-ink` and is not trimmed. */
+  @supports (text-box: trim-both cap alphabetic) {
+    .ui-logo-glyph[data-ink] {
+      translate: 0 var(--logo-glyph-optical-offset, 0em);
+    }
+
+    .ui-logo-glyph[data-ink="cap-baseline"] {
+      text-box: trim-both cap alphabetic;
+    }
+
+    .ui-logo-glyph[data-ink="cap-descender"] {
+      text-box: trim-both cap text;
+    }
+
+    .ui-logo-glyph[data-ink="x-baseline"] {
+      text-box: trim-both ex alphabetic;
+    }
+
+    .ui-logo-glyph[data-ink="x-descender"] {
+      text-box: trim-both ex text;
+    }
+  }
+
   .ui-logo[data-size="xs"] {
     width: var(--logo-size-xs);
     height: var(--logo-size-xs);
