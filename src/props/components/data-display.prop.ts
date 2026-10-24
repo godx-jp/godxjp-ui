@@ -1425,6 +1425,8 @@ export type ImagePreviewGroupConfigProp = Omit<ImagePreviewConfigProp, "src" | "
 /**
  * @see Image — a picture that opens large in a full-viewport preview (antd `Image`): zoom, rotate,
  * flip, and — inside an `ImagePreviewGroup` — prev/next across every picture of the group.
+ * Lazy by default (gh#1454): `loading` defaults to `"lazy"` (`"eager"` with `fetchPriority="high"`,
+ * the page's LCP picture) and `decoding` to `"async"`; explicit values win.
  */
 export type ImageProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt" | "placeholder"> & {
   /** Image URL. */
