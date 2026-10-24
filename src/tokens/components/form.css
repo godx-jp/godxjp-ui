@@ -30,6 +30,13 @@
    * --control-label-font-size already read, so both sides are 0.875rem and nothing moves. */
   --form-label-font-size: var(--control-label-font-size, var(--text-sm)); /* 14px */
 
+  /* gh#1439 — the helper / error line under a control and its distance from the control. A brand
+   * whose helper reads 12px/1.7 ten pixels under the field sets these; `initial` keeps the old
+   * `text-xs` size, its 1.333 leading and the 4px stack gap at the call site. */
+  --form-field-note-font-size: initial;
+  --form-field-note-line-height: initial;
+  --form-field-control-gap: initial;
+
   /* Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's
    * CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN
    * direct children (no Card framing). Modern block spacing is 24px. */

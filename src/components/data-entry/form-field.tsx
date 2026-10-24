@@ -92,7 +92,7 @@ export function FormField({
    * edited and the other was not.
    */
   const helperNode = helper ? (
-    <p id={helperId} className="ui-form-field-note text-muted-foreground text-xs">
+    <p id={helperId} className="ui-form-field-note text-muted-foreground">
       {helper}
     </p>
   ) : null;
@@ -339,7 +339,7 @@ export function FormField({
             /isolate/layout-auth-recovery-examples-mfa-challenge?theme=dark, fg #be373e on #21201c
             (gh#610). The text tier is 5.52:1 there and 7.21:1 on the light card. */}
         {error ? (
-          <p id={errorId} role="alert" className="ui-form-field-note text-error-strong text-xs">
+          <p id={errorId} role="alert" className="ui-form-field-note text-error-strong">
             {error}
           </p>
         ) : null}

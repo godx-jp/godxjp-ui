@@ -24,6 +24,10 @@
    * elsewhere, and an unknown value is simply dropped, leaving today's breaking. */
   .ui-form-field-note {
     word-break: auto-phrase;
+    /* Helper and error type (gh#1439): it was a `text-xs` utility, which no theme could reach;
+     * the defaults are that utility's exact size and leading. */
+    font-size: var(--form-field-note-font-size, var(--text-xs));
+    line-height: var(--form-field-note-line-height, calc(1 / 0.75));
   }
 
   /* Dấu bắt buộc nằm trong dòng chữ của nhãn nên không còn nhận `gap` của flex; khoảng cách
@@ -137,7 +141,8 @@
     display: grid;
     /* Single column capped to the field width. */
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-stack-xs); /* 4px between control and helper/error */
+    /* 4px between control and helper/error by default (gh#1439: a knob). */
+    gap: var(--form-field-control-gap, var(--space-stack-xs));
     min-width: 0;
     /* Reserve the control-row height and centre the content so a SHORT control (switch, slider,
      * rating, a bare checkbox/radio — anything thinner than an input) lines up with the label in a

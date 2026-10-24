@@ -8589,6 +8589,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Type in the label column. Inherits the body size by default, so nothing moves unless a service opts in. It is a knob because the label column already is one: --form-label-width lets a service align forms to its grid, and a service whose grid was drawn around a smaller label had no way to say so — leaving it to hand-write font-size per label, which is exactly what the width token exists to prevent. CHAINED to the Label primitive's own knob (gh#824), where it used to read var(--text-sm) directly. FormField passes `text-[length:var(--form-label-font-size)]` on its Label, and a utility outranks `.ui-label { font-size: var(--control-label-font-size) }` in `@layer components` — so this was not an override of the broad knob, it was a SHADOW of it: a service that set --control-label-font-size moved its 4 standalone labels and none of its 21 FormField ones (measured at 1280px, 37px on :root -> 37px vs 14px). Reading the broad knob as the default makes this one an override again, which is what \"a per-instance escape\" meant. FREE: base.css declares --text-sm AS var(--font-size-sm), the step --control-label-font-size already read, so both sides are 0.875rem and nothing moves. 14px"
   },
   {
+    "name": "--form-field-note-font-size",
+    "value": "initial",
+    "description": "gh#1439 — the helper / error line under a control and its distance from the control. A brand whose helper reads 12px/1.7 ten pixels under the field sets these; `initial` keeps the old `text-xs` size, its 1.333 leading and the 4px stack gap at the call site."
+  },
+  {
+    "name": "--form-field-note-line-height",
+    "value": "initial",
+    "description": "Form layout tokens: horizontal-layout label column geometry."
+  },
+  {
+    "name": "--form-field-control-gap",
+    "value": "initial",
+    "description": "Form layout tokens: horizontal-layout label column geometry."
+  },
+  {
     "name": "--form-block-gap",
     "value": "var(--space-6)",
     "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN direct children (no Card framing). Modern block spacing is 24px. 24px"

@@ -431,3 +431,15 @@ describe("EditorialInlineSearch / EditorialFootnote (gh#1439)", () => {
     );
   });
 });
+
+describe("FormField helper knobs (gh#1439)", () => {
+  it("the helper / error line reads --form-field-note-* and the stack gap --form-field-control-gap, defaults unchanged", () => {
+    const formCss = read("../../../styles/form-layout.css");
+    expect(formCss).toContain("font-size: var(--form-field-note-font-size, var(--text-xs));");
+    expect(formCss).toContain("line-height: var(--form-field-note-line-height, calc(1 / 0.75));");
+    expect(formCss).toContain("gap: var(--form-field-control-gap, var(--space-stack-xs));");
+    const formTokens = read("../../../tokens/components/form.css");
+    expect(formTokens).toContain("--form-field-note-line-height: initial;");
+    expect(formTokens).toContain("--form-field-control-gap: initial;");
+  });
+});
