@@ -3177,6 +3177,27 @@
     margin-block-end: var(--editorial-section-head-space-block-end);
   }
 
+  /* scale="module" re-points the head's own knobs (and its kicker's) to the module scale. */
+  .ui-editorial-section-head[data-scale="module"] {
+    --editorial-section-head-align: var(--editorial-section-head-module-align);
+    --editorial-section-head-space-block-end: var(--editorial-section-head-module-space-block-end);
+    --editorial-eyebrow-line-height: var(--editorial-section-head-module-kicker-line-height);
+    --editorial-eyebrow-letter-spacing: var(--editorial-section-head-module-kicker-letter-spacing);
+    --editorial-section-head-title-font-size: var(--editorial-section-head-module-title-font-size);
+    --editorial-section-head-title-line-height: var(
+      --editorial-section-head-module-title-line-height
+    );
+    --editorial-section-head-title-space-block-start: var(
+      --editorial-section-head-module-title-space-block-start
+    );
+    --editorial-section-head-description-font-size: var(
+      --editorial-section-head-module-description-font-size
+    );
+    --editorial-section-head-description-space-block-start: var(
+      --editorial-section-head-module-description-space-block-start
+    );
+  }
+
   .ui-editorial-section-head-copy {
     min-width: 0;
   }
@@ -3230,6 +3251,17 @@
 
   .ui-editorial-page-header-copy {
     min-width: 0;
+  }
+
+  /* A header with a search lets its copy take the row, so the search can reach its own cap. */
+  .ui-editorial-page-header-copy:has(> .ui-editorial-page-header-search) {
+    flex: 1 1 auto;
+  }
+
+  .ui-editorial-page-header-search {
+    --editorial-search-button-icon-display: var(--editorial-page-header-search-button-icon-display);
+    max-width: var(--editorial-page-header-search-max-width);
+    margin-block-start: var(--editorial-page-header-search-space-block-start);
   }
 
   .ui-editorial-page-header-copy > .ui-editorial-eyebrow {
@@ -4493,6 +4525,444 @@
     color: hsl(var(--muted-foreground));
     font-size: var(--editorial-filter-bar-extra-font-size);
     white-space: nowrap;
+  }
+
+  /* ── EditorialFilterPanel / EditorialFilterField (gh#1438) ────────────────────────────────── */
+  .ui-editorial-filter-panel {
+    --control-font-size: var(--editorial-filter-panel-control-font-size);
+    --control-padding-x: var(--editorial-filter-panel-control-padding-x);
+    --control-surface-background: var(
+      --editorial-filter-panel-control-background,
+      hsl(var(--card))
+    );
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--editorial-filter-panel-gap);
+    margin-block-end: var(--editorial-filter-panel-space-block-end);
+    padding: var(--editorial-filter-panel-padding);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--editorial-filter-panel-radius);
+    background: hsl(var(--card));
+  }
+
+  .ui-editorial-filter-field {
+    display: flex;
+    flex: 1 1 var(--editorial-filter-field-width-basis);
+    flex-direction: column;
+    gap: var(--editorial-filter-field-gap);
+    min-width: var(--editorial-filter-field-min-width);
+  }
+
+  .ui-editorial-filter-field-label {
+    color: var(--editorial-filter-field-label-color, hsl(var(--muted-foreground)));
+    font-size: var(--editorial-filter-field-label-font-size);
+    font-weight: var(--editorial-filter-field-label-font-weight);
+    line-height: var(--editorial-filter-field-label-line-height);
+  }
+
+  /* variant="bare": the field row without the panel's frame, inside a module already framed. */
+  .ui-editorial-filter-panel[data-variant="bare"] {
+    --editorial-filter-field-label-color: var(
+      --editorial-filter-panel-bare-label-color,
+      hsl(var(--foreground))
+    );
+    --editorial-filter-field-label-font-size: var(--editorial-filter-panel-bare-label-font-size);
+    --editorial-filter-field-label-font-weight: var(--editorial-filter-panel-bare-label-font-weight);
+    margin-block-end: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .ui-editorial-filter-panel-action {
+    --button-padding-inline: var(--editorial-filter-panel-action-padding-inline);
+    --button-outline-foreground: var(--editorial-catalog-outline-color, hsl(var(--primary)));
+    --button-outline-background: var(--editorial-catalog-outline-background, transparent);
+    display: flex;
+    flex-grow: var(--editorial-filter-panel-action-size-grow);
+  }
+
+  .ui-editorial-filter-panel-action > * {
+    flex: 1;
+  }
+
+  /* ── EditorialListingToolbar (gh#1438) ────────────────────────────────────────────────────── */
+  .ui-editorial-listing-toolbar {
+    --control-font-size: var(--editorial-listing-toolbar-control-font-size);
+    --control-padding-x: var(--editorial-listing-toolbar-control-padding-x);
+    --control-surface-background: var(
+      --editorial-listing-toolbar-control-background,
+      hsl(var(--card))
+    );
+    display: flex;
+    align-items: var(--editorial-listing-toolbar-align);
+    justify-content: space-between;
+    gap: var(--editorial-listing-toolbar-gap);
+    margin-block: var(--editorial-listing-toolbar-space-block);
+  }
+
+  .ui-editorial-listing-toolbar-summary {
+    min-width: 0;
+  }
+
+  .ui-editorial-listing-toolbar[data-divider] {
+    padding-block-end: var(--editorial-listing-toolbar-divider-padding-block-end);
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+  }
+
+  .ui-editorial-listing-toolbar-count {
+    display: var(--editorial-listing-toolbar-count-display);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-listing-toolbar-count-font-size);
+    line-height: var(--editorial-listing-toolbar-count-line-height);
+    white-space: nowrap;
+  }
+
+  .ui-editorial-listing-toolbar-note {
+    max-width: var(--editorial-listing-toolbar-note-max-width);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-listing-toolbar-note-font-size);
+    line-height: var(--editorial-listing-toolbar-note-line-height);
+  }
+
+  .ui-editorial-listing-toolbar-actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--editorial-listing-toolbar-actions-gap);
+    margin-inline-start: auto;
+  }
+
+  .ui-editorial-listing-toolbar-actions .ui-control-trigger {
+    min-width: var(--editorial-listing-toolbar-control-min-width);
+    max-width: var(--editorial-listing-toolbar-control-max-width);
+  }
+
+  /* ── CatalogDetail (gh#1438) ──────────────────────────────────────────────────────────────── */
+  .ui-catalog-detail {
+    display: grid;
+    grid-template-columns: var(--editorial-catalog-detail-track-size);
+    align-items: start;
+    gap: var(--editorial-catalog-detail-gap);
+    padding-block: var(--editorial-catalog-detail-padding-block-start)
+      var(--editorial-catalog-detail-padding-block-end);
+  }
+
+  .ui-catalog-detail-visual,
+  .ui-catalog-detail-main {
+    min-width: 0;
+  }
+
+  .ui-catalog-detail-art {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    max-width: var(--editorial-catalog-detail-art-max-width);
+    height: var(--editorial-catalog-detail-art-height);
+    min-height: var(--editorial-catalog-detail-art-min-height);
+    margin-inline: auto;
+    padding: var(--editorial-catalog-detail-art-padding);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--editorial-catalog-detail-art-radius);
+    background: hsl(var(--muted));
+  }
+
+  .ui-catalog-detail-art img {
+    display: block;
+    width: var(--editorial-catalog-detail-media-width);
+    max-width: 100%;
+    height: var(--editorial-catalog-detail-media-height);
+    max-height: var(--editorial-catalog-detail-media-max-height);
+    object-fit: contain;
+    filter: drop-shadow(var(--editorial-catalog-detail-media-shadow));
+  }
+
+  .ui-catalog-detail[data-variant="sealed"] .ui-catalog-detail-art img {
+    filter: none;
+  }
+
+  .ui-catalog-detail-caption {
+    margin: var(--editorial-catalog-detail-caption-space-block-start) 0 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-catalog-detail-caption-font-size);
+    line-height: var(--editorial-catalog-detail-caption-line-height);
+    text-align: center;
+  }
+
+  .ui-catalog-detail-caption a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .ui-catalog-detail-title {
+    margin: var(--editorial-catalog-detail-title-space-block-start) 0
+      var(--editorial-catalog-detail-title-space-block-end);
+    font-family: var(--font-family-editorial, var(--font-family-display));
+    font-size: var(--editorial-catalog-detail-title-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-catalog-detail-title-line-height);
+    letter-spacing: var(--editorial-catalog-detail-title-letter-spacing);
+  }
+
+  .ui-catalog-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--editorial-catalog-detail-meta-gap);
+    margin-block-end: var(--editorial-catalog-detail-meta-space-block-end);
+  }
+
+  .ui-catalog-detail-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--editorial-catalog-detail-tag-min-height);
+    padding: var(--editorial-catalog-detail-tag-padding-block)
+      var(--editorial-catalog-detail-tag-padding-inline);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--editorial-catalog-detail-tag-radius);
+    color: hsl(var(--muted-foreground));
+    font-family: var(--editorial-kicker-font-family, var(--font-family-tabular, inherit));
+    font-size: var(--editorial-catalog-detail-tag-font-size);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--editorial-catalog-detail-tag-line-height);
+  }
+
+  .ui-catalog-detail-summary {
+    padding-block: var(--editorial-catalog-detail-summary-padding-block);
+    border-block: var(--stroke-hairline) solid hsl(var(--border));
+  }
+
+  .ui-catalog-detail-summary-label,
+  .ui-catalog-detail-summary-note {
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-catalog-detail-summary-label-font-size);
+    line-height: var(--editorial-catalog-detail-summary-label-line-height);
+  }
+
+  .ui-catalog-detail-summary-price {
+    margin: var(--editorial-catalog-detail-summary-price-space-block) 0;
+    color: hsl(var(--primary));
+    font-family: var(--editorial-kicker-font-family, var(--font-family-tabular, inherit));
+    font-size: var(--editorial-catalog-detail-summary-price-font-size);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-catalog-detail-summary-price-line-height);
+  }
+
+  .ui-catalog-detail-summary-price small {
+    font-size: var(--editorial-catalog-detail-summary-price-suffix-font-size);
+  }
+
+  .ui-catalog-detail-actions {
+    --button-outline-foreground: var(--editorial-catalog-outline-color, hsl(var(--primary)));
+    --button-outline-background: var(--editorial-catalog-outline-background, transparent);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--editorial-catalog-detail-actions-gap);
+    margin-block-start: var(--editorial-catalog-detail-actions-space-block-start);
+  }
+
+  /* The lead action can take a row of its own on a phone (v4: the primary button full width). */
+  .ui-catalog-detail-actions > :first-child {
+    flex-basis: var(--editorial-catalog-detail-actions-lead-width-basis);
+  }
+
+  .ui-catalog-detail-facts {
+    display: grid;
+    grid-template-columns: var(--editorial-catalog-detail-facts-track-size);
+    column-gap: var(--editorial-catalog-detail-facts-gap);
+    margin: var(--editorial-catalog-detail-facts-space-block-start) 0 0;
+    font-size: var(--editorial-catalog-detail-facts-font-size);
+    line-height: var(--editorial-catalog-detail-facts-line-height);
+  }
+
+  .ui-catalog-detail-fact {
+    min-width: 0;
+    padding-block: var(--editorial-catalog-detail-fact-padding-block);
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+  }
+
+  .ui-catalog-detail-fact dt {
+    margin-block-end: var(--editorial-catalog-detail-fact-label-space-block-end);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-catalog-detail-fact-label-font-size);
+    line-height: var(--editorial-catalog-detail-fact-label-line-height);
+  }
+
+  .ui-catalog-detail-fact dd {
+    margin: 0;
+  }
+
+  .ui-catalog-detail-fact dd a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* ── CatalogDetailSection (gh#1438) ───────────────────────────────────────────────────────── */
+  .ui-catalog-detail-section {
+    padding-block: var(--editorial-catalog-detail-section-padding-block);
+    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
+  }
+
+  /* variant="module": a module of the page (the price module) — no hairline, its own rhythm. */
+  .ui-catalog-detail-section[data-variant="module"] {
+    padding-block: var(--editorial-catalog-detail-module-padding-block);
+    border-block-start: 0;
+  }
+
+  .ui-catalog-detail-section-title {
+    margin: 0 0 var(--editorial-catalog-detail-section-title-space-block-end);
+    font-family: var(--font-family-editorial, var(--font-family-display));
+    font-size: var(--editorial-catalog-detail-section-title-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-catalog-detail-section-title-line-height);
+    letter-spacing: var(--editorial-catalog-detail-section-title-letter-spacing);
+  }
+
+  .ui-catalog-detail-section-description {
+    max-width: var(--editorial-catalog-detail-section-description-max-width);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-catalog-detail-section-description-font-size);
+    line-height: var(--editorial-catalog-detail-section-description-line-height);
+  }
+
+  /* ── PriceSummary (gh#1438) ───────────────────────────────────────────────────────────────── */
+  /* The hairlines between cells are the strip's own ground showing through a hairline gap, so
+   * they follow the cells however a theme wraps them. */
+  .ui-price-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--stroke-hairline);
+    margin-block-end: var(--editorial-price-summary-space-block-end);
+    overflow: hidden;
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--editorial-price-summary-radius);
+    background: hsl(var(--border));
+  }
+
+  .ui-price-summary-cell {
+    display: flex;
+    flex: 1 1 var(--editorial-price-summary-cell-width-basis);
+    flex-direction: column;
+    gap: var(--editorial-price-summary-cell-gap);
+    min-width: 0;
+    padding: var(--editorial-price-summary-cell-padding-block)
+      var(--editorial-price-summary-cell-padding-inline);
+    background: hsl(var(--card));
+  }
+
+  .ui-price-summary-cell[data-context] {
+    flex: var(--editorial-price-summary-context-size-grow) 1
+      var(--editorial-price-summary-context-width-basis);
+    background: hsl(var(--muted));
+  }
+
+  .ui-price-summary-label {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-price-summary-label-font-size);
+    line-height: var(--editorial-price-summary-label-line-height);
+  }
+
+  .ui-price-summary-value {
+    color: hsl(var(--primary));
+    font-family: var(--editorial-kicker-font-family, var(--font-family-tabular, inherit));
+    font-size: var(--editorial-price-summary-value-font-size);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-price-summary-value-line-height);
+    letter-spacing: var(--editorial-price-summary-value-letter-spacing);
+  }
+
+  .ui-price-summary-caption {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-price-summary-caption-font-size);
+    line-height: var(--editorial-price-summary-caption-line-height);
+  }
+
+  .ui-price-summary-context {
+    display: flex;
+    align-items: center;
+    min-height: var(--editorial-price-summary-context-min-height);
+    font-size: var(--editorial-price-summary-context-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-price-summary-context-line-height);
+  }
+
+  /* ── EditorialPrompt (gh#1438) ────────────────────────────────────────────────────────────── */
+  .ui-editorial-prompt {
+    display: flex;
+    flex-wrap: var(--editorial-prompt-align-wrap);
+    align-items: center;
+    gap: var(--editorial-prompt-gap);
+    padding: var(--editorial-prompt-padding);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--editorial-prompt-radius);
+    background: hsl(var(--muted));
+  }
+
+  .ui-editorial-prompt-icon {
+    display: var(--editorial-prompt-icon-display);
+    flex: none;
+    place-items: center;
+    width: var(--editorial-prompt-icon-size);
+    height: var(--editorial-prompt-icon-size);
+    border-radius: 50%;
+    background: hsl(var(--card));
+    color: hsl(var(--primary));
+  }
+
+  .ui-editorial-prompt-icon svg {
+    width: var(--editorial-prompt-icon-glyph-size);
+    height: var(--editorial-prompt-icon-glyph-size);
+  }
+
+  .ui-editorial-prompt-copy {
+    flex: var(--editorial-prompt-copy-size-grow) 1 var(--editorial-prompt-copy-width-basis);
+    min-width: var(--editorial-prompt-copy-min-width);
+  }
+
+  .ui-editorial-prompt-title {
+    margin: 0 0 var(--editorial-prompt-title-space-block-end);
+    font-family: var(--font-family-editorial, var(--font-family-display));
+    font-size: var(--editorial-prompt-title-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-prompt-title-line-height);
+  }
+
+  .ui-editorial-prompt-description,
+  .ui-editorial-prompt-note {
+    max-width: var(--editorial-prompt-description-max-width);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-prompt-description-font-size);
+    line-height: var(--editorial-prompt-description-line-height);
+  }
+
+  .ui-editorial-prompt-note {
+    margin-block-start: var(--editorial-prompt-note-space-block-start);
+    font-size: var(--editorial-prompt-note-font-size);
+  }
+
+  .ui-editorial-prompt-action {
+    --button-radius: var(--editorial-prompt-action-radius);
+    --button-padding-inline: var(--editorial-prompt-action-padding-inline);
+    --button-font-weight: var(--editorial-prompt-action-font-weight);
+    display: flex;
+    flex: 0 1 var(--editorial-prompt-action-width-basis);
+    margin-inline-start: var(--editorial-prompt-action-inset-inline-start);
+  }
+
+  .ui-editorial-prompt-action > * {
+    flex: 1;
   }
 
   /* The banner's kicker reads the banner's paragraph scale (v4 sets every <p> of the banner). */

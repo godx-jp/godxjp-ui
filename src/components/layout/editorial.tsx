@@ -164,12 +164,17 @@ export function EditorialSectionHead({
   description,
   action,
   level = 2,
+  scale = "section",
   titleId,
   className,
 }: EditorialSectionHeadProp) {
   const Heading = level === 3 ? "h3" : "h2";
   return (
-    <div data-slot="editorial-section-head" className={cn("ui-editorial-section-head", className)}>
+    <div
+      data-slot="editorial-section-head"
+      data-scale={scale === "module" ? "module" : undefined}
+      className={cn("ui-editorial-section-head", className)}
+    >
       <div className="ui-editorial-section-head-copy">
         {eyebrow}
         <Heading id={titleId} className="ui-editorial-section-head-title">
@@ -207,6 +212,7 @@ export function EditorialPageHeader({
   title,
   description,
   actions,
+  search,
   titleId,
   className,
 }: EditorialPageHeaderProp) {
@@ -228,6 +234,7 @@ export function EditorialPageHeader({
           {description != null && (
             <p className="ui-editorial-page-header-description">{description}</p>
           )}
+          {search != null && <div className="ui-editorial-page-header-search">{search}</div>}
         </div>
         {actions != null && <div className="ui-editorial-page-header-actions">{actions}</div>}
       </header>

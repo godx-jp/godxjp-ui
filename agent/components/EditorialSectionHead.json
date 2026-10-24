@@ -32,6 +32,12 @@
       "type": "2 | 3"
     },
     {
+      "defaultValue": "\"section\"",
+      "description": "A module's smaller head (gh#1438).",
+      "name": "scale",
+      "type": "\"section\" | \"module\""
+    },
+    {
       "description": "Id on the title, for the section's aria-labelledby.",
       "name": "titleId",
       "type": "string"

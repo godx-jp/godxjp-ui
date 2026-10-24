@@ -1,0 +1,33 @@
+{
+  "example": "import { EditorialFilterField } from \"@godxjp/ui/layout\";\n\n<EditorialFilterField label=\"Rarity\" htmlFor=\"f-rarity\"><Select id=\"f-rarity\" value={r} onValueChange={setR} options={rarities} /></EditorialFilterField>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialFilterField",
+  "props": [
+    {
+      "description": "Visible label.",
+      "name": "label",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "The control's id.",
+      "name": "htmlFor",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "The control.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "FormField — a form's field with help and errors."
+  ],
+  "tagline": "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control.",
+  "usage": [
+    "DO pass the same id to the control (Select id) and to htmlFor."
+  ]
+}

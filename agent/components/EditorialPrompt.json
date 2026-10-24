@@ -1,0 +1,48 @@
+{
+  "example": "import { EditorialPrompt } from \"@godxjp/ui/layout\";\nimport { Lock } from \"lucide-react\";\n\n<EditorialPrompt icon={<Lock />} title=\"See more when you sign in\" description=\"Per-market prices and history are for members.\" action={<Button asChild><a href=\"/login\">Sign in</a></Button>} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialPrompt",
+  "props": [
+    {
+      "description": "Glyph in the round badge.",
+      "name": "icon",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Heading.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Paragraph.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Small note.",
+      "name": "note",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The one action.",
+      "name": "action",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "3",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3 | 4"
+    }
+  ],
+  "related": [
+    "Alert — status messages.",
+    "EmptyState — nothing to show."
+  ],
+  "tagline": "A polite inline invitation (gh#1438): a round glyph, a heading, a short paragraph and a note, with one action at the end (\"sign in to see more\"). Not a live region. Geometry: `--editorial-prompt-*`.",
+  "usage": [
+    "DO use Alert for a status message; this is an invitation that is there when the page loads."
+  ]
+}

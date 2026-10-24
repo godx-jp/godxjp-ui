@@ -2282,6 +2282,11 @@ export type EditorialSectionHeadProp = {
   action?: ReactNode;
   /** Heading level of the title. Default `2`. */
   level?: 2 | 3;
+  /**
+   * `"section"` (default) is a page section's head; `"module"` is the smaller head of a module
+   * inside a page (an item page's price module, gh#1438): `--editorial-section-head-module-*`.
+   */
+  scale?: "section" | "module";
   /** Id put on the title, for a section's `aria-labelledby`. */
   titleId?: IdProp;
   className?: ClassNameProp;
@@ -2321,6 +2326,12 @@ export type EditorialPageHeaderProp = {
   description?: DescriptionProp;
   /** Trailing action on the title row (a button or a link). */
   actions?: ReactNode;
+  /**
+   * A search under the description, inside the header (a catalog's `EditorialSearch`, gh#1438):
+   * `--editorial-page-header-search-space-block-start` above it, capped at
+   * `--editorial-page-header-search-max-width`.
+   */
+  search?: ReactNode;
   /** Id put on the h1. */
   titleId?: IdProp;
   className?: ClassNameProp;
@@ -2612,5 +2623,144 @@ export type EditorialFilterBarProp = {
   value: string;
   onValueChange: (value: string) => void;
   extra?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialFilterPanel — a catalog's filter panel (gh#1438): one bordered surface of labelled
+ * fields (`EditorialFilterField`, each holding one control such as a `Select`) that wrap, bottom
+ * aligned, with a trailing `action` (a reset button). The controls inside read the panel's control
+ * scale (`--editorial-filter-panel-control-*`).
+ */
+export type EditorialFilterPanelProp = {
+  /**
+   * `"panel"` (default): the bordered surface. `"bare"`: the same field row with no frame, ground,
+   * padding or bottom margin, and its labels at `--editorial-filter-panel-bare-label-*` (a filter row
+   * inside a module that is already framed, e.g. an item page's price comparison).
+   */
+  variant?: "panel" | "bare";
+  /** Accessible name of the group. */
+  "aria-label": string;
+  children: ChildrenProp;
+  /** Trailing control after the fields — usually a reset `Button`. */
+  action?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialFilterField — one labelled field of an `EditorialFilterPanel`: a visible label over
+ * one control. `htmlFor` is the control's id (a `Select`'s `id`), which names it.
+ */
+export type EditorialFilterFieldProp = {
+  label: LabelProp;
+  htmlFor: string;
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialListingToolbar — the row between a catalog's filters and its results (gh#1438): the
+ * result count (a polite live region) and a short note at the start, the order / view controls at
+ * the end. The selects inside read the toolbar's control scale.
+ */
+export type EditorialListingToolbarProp = {
+  /** The result count ("396 results"); announced politely when it changes. */
+  count?: ReactNode;
+  /** A short note under the count. */
+  note?: ReactNode;
+  /** Trailing controls — the sort `Select`, a view toggle. */
+  actions?: ReactNode;
+  /** Free start slot (after count and note) — anything a toolbar leads with. */
+  start?: ReactNode;
+  /** Free end slot; takes the place of `actions` when both are given. */
+  end?: ReactNode;
+  /** A hairline under the row (`--editorial-listing-toolbar-divider-padding-block-end` above it). */
+  divider?: boolean;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see CatalogDetail — the head of a catalog item's page (gh#1438): a framed picture with the save
+ * toggle over its corner and a caption under it, beside the item's kicker, its h1, a row of tags,
+ * a summary price between two hairlines, actions and a two-column facts list.
+ * Geometry: `--editorial-catalog-detail-*`.
+ */
+export type CatalogDetailProp = {
+  /** `"sealed"` frames a product package instead of a card. */
+  variant?: "card" | "sealed";
+  /** The picture — an `<img>` (or a link around one). */
+  media: ReactNode;
+  /** The save toggle over the frame's corner (same shape as `CatalogCard`'s). */
+  favorite?: CatalogCardProp["favorite"];
+  /** A line under the frame (the picture's source, an official link). */
+  mediaCaption?: ReactNode;
+  /** The kicker above the title — usually an `Eyebrow` with the game. */
+  overline?: ReactNode;
+  /** The page's one h1. */
+  title: TitleProp;
+  /** Tags under the title — `CatalogDetailTag`s (number, rarity, printed language). */
+  meta?: ReactNode;
+  /** The summary price block: a label, the figure, a note. */
+  summary?: { label?: ReactNode; price: ReactNode; note?: ReactNode };
+  /** The actions under the summary (add to collection, compare prices). */
+  actions?: ReactNode;
+  /** The facts list (game, expansion, language …), two columns. */
+  facts?: { key: string; label: ReactNode; value: ReactNode }[];
+  className?: ClassNameProp;
+};
+
+/** @see CatalogDetailTag — one outlined tag in a `CatalogDetail` meta row. */
+export type CatalogDetailTagProp = {
+  children: ChildrenProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see CatalogDetailSection — one band of an item page under its head (gh#1438): a top hairline,
+ * an h2 and a muted paragraph, then anything else (a list, a grid).
+ */
+export type CatalogDetailSectionProp = {
+  /**
+   * `"band"` (default): a top hairline and the band rhythm. `"module"`: a module of the page (the
+   * price module) — no hairline, `--editorial-catalog-detail-module-padding-block`.
+   */
+  variant?: "band" | "module";
+  title?: TitleProp;
+  description?: DescriptionProp;
+  children?: ChildrenProp;
+  /** Id on the section (an in-page link target, e.g. `#price-section`). */
+  id?: IdProp;
+  /** Id put on the h2. */
+  titleId?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see PriceSummary — a joined strip of headline figures (gh#1438): one bordered surface, cells
+ * split by hairlines, each a label, a figure in the number face and a caption; an optional context
+ * cell (the conditions compared) on the subtle ground, a little wider.
+ * Geometry: `--editorial-price-summary-*`.
+ */
+export type PriceSummaryProp = {
+  items: { key: string; label: ReactNode; value: ReactNode; caption?: ReactNode }[];
+  context?: { label: ReactNode; value: ReactNode; caption?: ReactNode };
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialPrompt — a polite inline invitation (gh#1438): a round glyph, a heading, a short
+ * paragraph and a note, with one action at the end ("sign in to see more"). Not a live region.
+ * Geometry: `--editorial-prompt-*`.
+ */
+export type EditorialPromptProp = {
+  /** The glyph in the round badge (an icon element). */
+  icon?: ReactNode;
+  title: TitleProp;
+  description?: DescriptionProp;
+  note?: ReactNode;
+  /** The one action — usually a `Button asChild` around a link. */
+  action?: ReactNode;
+  /** Heading level. Default `3`. */
+  level?: 2 | 3 | 4;
   className?: ClassNameProp;
 };

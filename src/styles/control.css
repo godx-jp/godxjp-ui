@@ -266,7 +266,9 @@
       --button-outline-background,
       hsl(var(--background) / var(--button-outline-background-alpha, 100%))
     );
-    color: hsl(var(--foreground));
+    /* The outline label's ink has its own knob (gh#1438): a brand whose secondary buttons read in
+     * the action colour sets it without re-pointing --foreground. */
+    color: var(--button-outline-foreground, hsl(var(--foreground)));
 
     /* Qua TOKEN, không qua utility: một service đặt `--shadow-sm: none` phải tắt được
      * bóng ở mọi biến thể nút, không riêng `default`. Trước đây dòng này là
@@ -2589,6 +2591,26 @@
     flex: 1 1 0%;
     align-items: center;
     gap: var(--search-select-option-space-gap);
+  }
+
+  /* gh#1444 — the plain listbox's icon + label (row and trigger), on the search panel's gap. */
+  .ui-select-option-body {
+    display: inline-flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--search-select-option-space-gap);
+  }
+
+  .ui-select-option-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+  }
+
+  .ui-select-option-label {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* The multi-value row inside the trigger. Non-interactive by design (the trigger is a <button>

@@ -1122,6 +1122,7 @@ export default function OrdersPage() {
       { name: "eyebrow", type: "ReactNode", description: "Kicker above the title (an Eyebrow)." },
       { name: "description", type: "ReactNode", description: "One lead line under it." },
       { name: "actions", type: "ReactNode", description: "Action at the end of the title row." },
+      { name: "search", type: "ReactNode", description: "Search under the description (an EditorialSearch)." },
       { name: "titleId", type: "string", description: "Id on the h1." },
     ],
     usage: [
@@ -1152,6 +1153,7 @@ export default function OrdersPage() {
       { name: "description", type: "ReactNode", description: "One line under it." },
       { name: "action", type: "ReactNode", description: "Trailing call to action." },
       { name: "level", type: "2 | 3", defaultValue: "2", description: "Heading level." },
+      { name: "scale", type: '"section" | "module"', defaultValue: '"section"', description: "A module's smaller head (gh#1438)." },
       {
         name: "titleId",
         type: "string",
@@ -1440,6 +1442,192 @@ import { Moon } from "lucide-react";
     example: `import { EditorialFilterBar } from "@godxjp/ui/layout";
 
 <EditorialFilterBar aria-label="Selection" value={tab} onValueChange={setTab} options={[{ value: "all", label: "Selected cards" }, { value: "down", label: "Price drops" }]} extra="vs. 30 days ago" />`,
+  },
+  {
+    name: "EditorialToggleGroup",
+    group: "layout",
+    tagline:
+      'One-of-N toggles of the editorial account family (gh#1439): a named `role="group"` of `aria-pressed` buttons. `variant="text"` is a filter row (pressed = filled, bordered); `variant="icon"` a framed icon-only switch such as grid / list view, each button named by its label. Geometry: `--editorial-toggle-group-*`.',
+    props: [
+      { name: "aria-label", type: "string", required: true, description: "Group name." },
+      {
+        name: "items",
+        type: "{ value: string; label: string; icon?: ReactNode }[]",
+        required: true,
+        description: "The toggles; label is the text and the accessible name.",
+      },
+      { name: "value", type: "string", required: true, description: "Pressed toggle." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        required: true,
+        description: "Change handler.",
+      },
+      {
+        name: "variant",
+        type: '"text" | "icon"',
+        default: '"text"',
+        description: "Labels, or framed icon-only buttons.",
+      },
+    ],
+    usage: [
+      "DO use it above a collection to filter it or switch its view; the collection is yours.",
+      "DO pass a lucide icon per item for the icon variant — the label stays the button's name.",
+    ],
+    related: [
+      "Segmented — a track with a lifted slab.",
+      "EditorialFilterBar — underlined toggles.",
+    ],
+    example: `import { EditorialToggleGroup } from "@godxjp/ui/layout";
+import { Grid2x2, List } from "lucide-react";
+
+<EditorialToggleGroup aria-label="View" variant="icon" value={view} onValueChange={setView} items={[{ value: "grid", label: "Grid view", icon: <Grid2x2 /> }, { value: "list", label: "List view", icon: <List /> }]} />`,
+  },
+  {
+    name: "EditorialFilterPanel",
+    group: "layout",
+    tagline:
+      'A catalog\'s filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role="group"`. The selects inside read the panel\'s control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`.',
+    props: [
+      { name: "aria-label", type: "string", required: true, description: "Group name." },
+      { name: "children", type: "ReactNode", required: true, description: "The fields." },
+      { name: "action", type: "ReactNode", description: "Trailing control (reset)." },
+      { name: "variant", type: '"panel" | "bare"', defaultValue: '"panel"', description: "Framed panel, or a bare field row (inside a framed module)." },
+    ],
+    usage: [
+      "DO put one control per EditorialFilterField and pass the control's id as htmlFor.",
+      "DO use Toolbar for an application list's search + filters strip; this panel is the editorial catalog's.",
+    ],
+    related: ["Toolbar — application filter strip.", "EditorialListingToolbar — the row under it."],
+    example: `import { EditorialFilterField, EditorialFilterPanel } from "@godxjp/ui/layout";
+import { Select } from "@godxjp/ui/data-entry";
+
+<EditorialFilterPanel aria-label="Filters" action={<Button variant="outline" onClick={reset}>Reset</Button>}>
+  <EditorialFilterField label="Expansion" htmlFor="f-set"><Select id="f-set" value={set} onValueChange={setSet} options={sets} /></EditorialFilterField>
+</EditorialFilterPanel>`,
+  },
+  {
+    name: "EditorialFilterField",
+    group: "layout",
+    tagline:
+      "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control.",
+    props: [
+      { name: "label", type: "ReactNode", required: true, description: "Visible label." },
+      { name: "htmlFor", type: "string", required: true, description: "The control's id." },
+      { name: "children", type: "ReactNode", required: true, description: "The control." },
+    ],
+    usage: ["DO pass the same id to the control (Select id) and to htmlFor."],
+    related: ["FormField — a form's field with help and errors."],
+    example: `import { EditorialFilterField } from "@godxjp/ui/layout";
+
+<EditorialFilterField label="Rarity" htmlFor="f-rarity"><Select id="f-rarity" value={r} onValueChange={setR} options={rarities} /></EditorialFilterField>`,
+  },
+  {
+    name: "EditorialListingToolbar",
+    group: "layout",
+    tagline:
+      "The row between a catalog's filters and its results (gh#1438): the result count (a polite live region) and a short note at the start, the sort / view controls at the end. Geometry: `--editorial-listing-toolbar-*`.",
+    props: [
+      { name: "count", type: "ReactNode", description: "Result count, announced politely." },
+      { name: "note", type: "ReactNode", description: "Short note under the count." },
+      { name: "actions", type: "ReactNode", description: "Trailing sort / view controls." },
+      { name: "start", type: "ReactNode", description: "Free start slot (after count and note)." },
+      { name: "end", type: "ReactNode", description: "Free end slot (in place of actions)." },
+      { name: "divider", type: "boolean", defaultValue: "false", description: "Hairline under the row." },
+    ],
+    usage: ["DO keep the count text short; a phone theme may hide it (--editorial-listing-toolbar-count-display)."],
+    related: ["Toolbar — application list toolbar.", "EditorialFilterPanel — the filters above."],
+    example: `import { EditorialListingToolbar } from "@godxjp/ui/layout";
+
+<EditorialListingToolbar count="396 results" note="Prices are reference values." actions={<Select aria-label="Sort" value={sort} onValueChange={setSort} options={sorts} />} />`,
+  },
+  {
+    name: "CatalogDetail",
+    group: "layout",
+    tagline:
+      "The head of a catalog item's page (gh#1438): a framed picture with the save toggle over its corner and a caption, beside the kicker, the page's h1, a row of CatalogDetailTags, a summary price between hairlines, actions and a two-column facts list. Geometry: `--editorial-catalog-detail-*`.",
+    props: [
+      { name: "variant", type: '"card" | "sealed"', defaultValue: '"card"', description: "Frame for a card or a sealed package." },
+      { name: "media", type: "ReactNode", required: true, description: "The picture." },
+      { name: "favorite", type: "{ pressed; onPressedChange; label; disabled? }", description: "Save toggle over the frame." },
+      { name: "mediaCaption", type: "ReactNode", description: "Line under the frame." },
+      { name: "overline", type: "ReactNode", description: "Kicker (an Eyebrow)." },
+      { name: "title", type: "ReactNode", required: true, description: "The h1." },
+      { name: "meta", type: "ReactNode", description: "CatalogDetailTags." },
+      { name: "summary", type: "{ label?; price; note? }", description: "Summary price block." },
+      { name: "actions", type: "ReactNode", description: "Actions under the summary." },
+      { name: "facts", type: "{ key; label; value }[]", description: "Facts, two columns." },
+    ],
+    usage: ["DO pass the item's one h1 as title; the page has no other h1.", "DO use CatalogCard for the same item in a grid."],
+    related: ["CatalogCard — the item in a grid.", "CatalogDetailSection — the bands under it."],
+    example: `import { CatalogDetail, CatalogDetailTag, Eyebrow } from "@godxjp/ui/layout";
+
+<CatalogDetail media={<img src={src} alt={name} />} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: "Market", price: "¥32,800" }} facts={[{ key: "set", label: "Expansion", value: "151" }]} />`,
+  },
+  {
+    name: "CatalogDetailTag",
+    group: "layout",
+    tagline: "One outlined tag (number, rarity, printed language) in a CatalogDetail meta row (gh#1438).",
+    props: [{ name: "children", type: "ReactNode", required: true, description: "Tag text." }],
+    usage: ["DO keep it to a short code or word."],
+    related: ["CatalogCardTag — the tag of a grid tile."],
+    example: `import { CatalogDetailTag } from "@godxjp/ui/layout";
+
+<CatalogDetailTag>SV8 132/106</CatalogDetailTag>`,
+  },
+  {
+    name: "CatalogDetailSection",
+    group: "layout",
+    tagline:
+      "One band of an item page under its head (gh#1438): a top hairline, an h2, a muted paragraph, then anything else. Geometry: `--editorial-catalog-detail-section-*`.",
+    props: [
+      { name: "variant", type: '"band" | "module"', defaultValue: '"band"', description: "Hairlined band, or a page module (no hairline, module rhythm)." },
+      { name: "id", type: "string", description: "Id on the section (in-page link target)." },
+      { name: "title", type: "ReactNode", description: "The h2." },
+      { name: "description", type: "ReactNode", description: "Muted paragraph." },
+      { name: "children", type: "ReactNode", description: "Anything after." },
+      { name: "titleId", type: "string", description: "Id on the h2 (names the section)." },
+    ],
+    usage: ["DO pass titleId so the section is a named region."],
+    related: ["EditorialSection — a full-width band of a sections page."],
+    example: `import { CatalogDetailSection } from "@godxjp/ui/layout";
+
+<CatalogDetailSection titleId="info" title="Card information" description="From the catalogue." />`,
+  },
+  {
+    name: "PriceSummary",
+    group: "layout",
+    tagline:
+      "A joined strip of headline figures (gh#1438): one bordered surface split by hairlines, each cell a label, a figure in the number face and a caption, with an optional wider context cell on the subtle ground. Geometry: `--editorial-price-summary-*`.",
+    props: [
+      { name: "items", type: "{ key; label; value; caption? }[]", required: true, description: "Figure cells." },
+      { name: "context", type: "{ label; value; caption? }", description: "Context cell (conditions compared)." },
+    ],
+    usage: ["DO keep each value one formatted figure; put the source and date in caption."],
+    related: ["Statistic — one KPI in a dashboard."],
+    example: `import { PriceSummary } from "@godxjp/ui/layout";
+
+<PriceSummary items={[{ key: "sell", label: "Asking", value: "¥32,800", caption: "Japan · JPY" }]} context={{ label: "Compared", value: "JP · NM · Raw" }} />`,
+  },
+  {
+    name: "EditorialPrompt",
+    group: "layout",
+    tagline:
+      'A polite inline invitation (gh#1438): a round glyph, a heading, a short paragraph and a note, with one action at the end ("sign in to see more"). Not a live region. Geometry: `--editorial-prompt-*`.',
+    props: [
+      { name: "icon", type: "ReactNode", description: "Glyph in the round badge." },
+      { name: "title", type: "ReactNode", required: true, description: "Heading." },
+      { name: "description", type: "ReactNode", description: "Paragraph." },
+      { name: "note", type: "ReactNode", description: "Small note." },
+      { name: "action", type: "ReactNode", description: "The one action." },
+      { name: "level", type: "2 | 3 | 4", defaultValue: "3", description: "Heading level." },
+    ],
+    usage: ["DO use Alert for a status message; this is an invitation that is there when the page loads."],
+    related: ["Alert — status messages.", "EmptyState — nothing to show."],
+    example: `import { EditorialPrompt } from "@godxjp/ui/layout";
+import { Lock } from "lucide-react";
+
+<EditorialPrompt icon={<Lock />} title="See more when you sign in" description="Per-market prices and history are for members." action={<Button asChild><a href="/login">Sign in</a></Button>} />`,
   },
   {
     name: "PageCover",

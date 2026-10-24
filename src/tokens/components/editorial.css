@@ -87,6 +87,16 @@
   --editorial-section-head-description-space-block-start: 0.625rem;
   --editorial-section-head-action-space-block-start: 0rem;
   --editorial-section-head-action-max-width: none;
+  /* scale="module": the smaller head of a module inside a page (gh#1438). */
+  --editorial-section-head-module-align: center;
+  --editorial-section-head-module-space-block-end: 1.5rem;
+  --editorial-section-head-module-kicker-line-height: 1.8;
+  --editorial-section-head-module-kicker-letter-spacing: 0.14em;
+  --editorial-section-head-module-title-font-size: 1.875rem;
+  --editorial-section-head-module-title-line-height: 1.65;
+  --editorial-section-head-module-title-space-block-start: 0.75rem;
+  --editorial-section-head-module-description-font-size: 0.9375rem;
+  --editorial-section-head-module-description-space-block-start: 0.75rem;
 
   /* ── EditorialBreadcrumb (gh#1437) ──────────────────────────────────────────────────────── */
   --editorial-breadcrumb-padding-block-start: 1.5rem;
@@ -113,6 +123,11 @@
   --editorial-page-header-description-font-size: 0.9375rem;
   --editorial-page-header-description-line-height: inherit;
   --editorial-page-header-description-max-width: 47.5rem;
+  /* The search slot under the description (gh#1438). */
+  --editorial-page-header-search-max-width: 45rem;
+  --editorial-page-header-search-space-block-start: 1.5rem;
+  /* A page header's search button is the bare label (the hero's carries an arrow). */
+  --editorial-page-header-search-button-icon-display: none;
 
   /* ── EditorialArticle (+ Section, Note) — the reading column (gh#1440) ──────────────────── */
   --editorial-article-max-width: 47.5rem;
@@ -514,6 +529,171 @@
   --editorial-filter-bar-option-font-size: 0.875rem;
   --editorial-filter-bar-indicator-size: 2px;
   --editorial-filter-bar-extra-font-size: 0.75rem;
+
+  /* ── EditorialFilterPanel / EditorialFilterField (gh#1438) ──────────────────────────────── */
+  --editorial-filter-panel-padding: 1.25rem;
+  --editorial-filter-panel-gap: 1rem;
+  --editorial-filter-panel-radius: var(--radius);
+  --editorial-filter-panel-space-block-end: 1.25rem;
+  /* The selects inside the panel: their font size, inline padding and ground. */
+  --editorial-filter-panel-control-font-size: 0.875rem;
+  --editorial-filter-panel-control-padding-x: 0.875rem;
+  /* Default = hsl(var(--card)). */
+  --editorial-filter-panel-control-background: initial;
+  /* The trailing action: its flex-grow (1 stretches it across a phone row) and inline padding. */
+  --editorial-filter-panel-action-size-grow: 0;
+  --editorial-filter-panel-action-padding-inline: 1rem;
+  --editorial-filter-field-gap: 0.5rem;
+  --editorial-filter-field-min-width: 9.0625rem;
+  /* Flex basis of a field: 0% shares the row; calc(50% - gap) puts two on a phone row. */
+  --editorial-filter-field-width-basis: 0%;
+  --editorial-filter-field-label-font-size: 0.75rem;
+  --editorial-filter-field-label-line-height: 1.8;
+  --editorial-filter-field-label-font-weight: var(--font-weight-semibold);
+  /* Default = hsl(var(--muted-foreground)). */
+  --editorial-filter-field-label-color: initial;
+  /* variant="bare" labels. Colour default = hsl(var(--foreground)). */
+  --editorial-filter-panel-bare-label-font-size: 0.8125rem;
+  --editorial-filter-panel-bare-label-font-weight: var(--font-weight-medium);
+  --editorial-filter-panel-bare-label-color: initial;
+
+  /* ── EditorialListingToolbar (gh#1438) ──────────────────────────────────────────────────── */
+  --editorial-listing-toolbar-gap: 1rem;
+  --editorial-listing-toolbar-space-block: 1.25rem;
+  --editorial-listing-toolbar-align: center;
+  --editorial-listing-toolbar-count-display: block;
+  --editorial-listing-toolbar-count-font-size: 0.75rem;
+  --editorial-listing-toolbar-count-line-height: 1.8;
+  --editorial-listing-toolbar-note-font-size: 0.75rem;
+  --editorial-listing-toolbar-note-line-height: 1.7;
+  --editorial-listing-toolbar-note-max-width: 37.5rem;
+  --editorial-listing-toolbar-actions-gap: 0.75rem;
+  --editorial-listing-toolbar-control-min-width: 9.375rem;
+  --editorial-listing-toolbar-control-max-width: none;
+  --editorial-listing-toolbar-control-font-size: 0.875rem;
+  --editorial-listing-toolbar-control-padding-x: 0.875rem;
+  /* Default = hsl(var(--card)). */
+  --editorial-listing-toolbar-control-background: initial;
+  /* divider: the space above the hairline under the row. */
+  --editorial-listing-toolbar-divider-padding-block-end: 1rem;
+
+  /* Outline buttons in the catalog bodies (filter reset, item actions) read in the action colour on
+   * no fill. Defaults = hsl(var(--primary)) / transparent (gh#1438). */
+  --editorial-catalog-outline-color: initial;
+  --editorial-catalog-outline-background: initial;
+
+  /* ── CatalogDetail / CatalogDetailTag (gh#1438) ─────────────────────────────────────────── */
+  /* Tracks: the frame column and the copy; a phone theme sets one track (minmax(0, 1fr)). */
+  --editorial-catalog-detail-track-size: 21.875rem minmax(0, 1fr);
+  --editorial-catalog-detail-gap: 4rem;
+  --editorial-catalog-detail-padding-block-start: 2rem;
+  --editorial-catalog-detail-padding-block-end: 2.5rem;
+  --editorial-catalog-detail-art-min-height: 26.25rem;
+  --editorial-catalog-detail-art-height: auto;
+  --editorial-catalog-detail-art-max-width: none;
+  --editorial-catalog-detail-art-padding: 2.5rem;
+  --editorial-catalog-detail-art-radius: 0.75rem;
+  --editorial-catalog-detail-media-width: 15.625rem;
+  --editorial-catalog-detail-media-height: 22.5rem;
+  --editorial-catalog-detail-media-max-height: 22.5rem;
+  --editorial-catalog-detail-media-shadow: 0 10px 12px rgb(48 43 41 / 0.14);
+  --editorial-catalog-detail-caption-font-size: 0.75rem;
+  --editorial-catalog-detail-caption-line-height: 1.8;
+  --editorial-catalog-detail-caption-space-block-start: 0.75rem;
+  --editorial-catalog-detail-title-font-size: 2.25rem;
+  --editorial-catalog-detail-title-line-height: 1.6;
+  --editorial-catalog-detail-title-letter-spacing: -0.025em;
+  --editorial-catalog-detail-title-space-block-start: 0.75rem;
+  --editorial-catalog-detail-title-space-block-end: 1rem;
+  --editorial-catalog-detail-meta-gap: 0.625rem;
+  --editorial-catalog-detail-meta-space-block-end: 1.5rem;
+  --editorial-catalog-detail-tag-min-height: 1.5rem;
+  --editorial-catalog-detail-tag-padding-block: 2px;
+  --editorial-catalog-detail-tag-padding-inline: 0.5rem;
+  --editorial-catalog-detail-tag-radius: 4px;
+  --editorial-catalog-detail-tag-font-size: 0.75rem;
+  --editorial-catalog-detail-tag-line-height: 1.5;
+  --editorial-catalog-detail-summary-padding-block: 1.25rem;
+  --editorial-catalog-detail-summary-label-font-size: 0.8125rem;
+  --editorial-catalog-detail-summary-label-line-height: 1.8;
+  --editorial-catalog-detail-summary-price-font-size: 2.5rem;
+  --editorial-catalog-detail-summary-price-line-height: 1.4;
+  --editorial-catalog-detail-summary-price-space-block: 0.375rem;
+  --editorial-catalog-detail-summary-price-suffix-font-size: 1rem;
+  --editorial-catalog-detail-actions-gap: 0.75rem;
+  --editorial-catalog-detail-actions-space-block-start: 1.5rem;
+  /* auto keeps the lead action its own width; 100% gives it a row (a phone theme). */
+  --editorial-catalog-detail-actions-lead-width-basis: auto;
+  --editorial-catalog-detail-facts-track-size: 1fr 1fr;
+  --editorial-catalog-detail-facts-gap: 1.5rem;
+  --editorial-catalog-detail-facts-space-block-start: 1.5rem;
+  --editorial-catalog-detail-facts-font-size: 0.875rem;
+  --editorial-catalog-detail-facts-line-height: 1.8;
+  --editorial-catalog-detail-fact-padding-block: 0.75rem;
+  --editorial-catalog-detail-fact-label-font-size: 0.75rem;
+  --editorial-catalog-detail-fact-label-line-height: 1.8;
+  --editorial-catalog-detail-fact-label-space-block-end: 3px;
+
+  /* ── CatalogDetailSection (gh#1438) ─────────────────────────────────────────────────────── */
+  --editorial-catalog-detail-section-padding-block: 2.5rem;
+  /* variant="module" (the price module): no hairline, this rhythm above and below. */
+  --editorial-catalog-detail-module-padding-block: 4rem;
+  --editorial-catalog-detail-section-title-font-size: 1.75rem;
+  --editorial-catalog-detail-section-title-line-height: 1.55;
+  --editorial-catalog-detail-section-title-letter-spacing: -0.025em;
+  --editorial-catalog-detail-section-title-space-block-end: 1rem;
+  --editorial-catalog-detail-section-description-font-size: 0.875rem;
+  --editorial-catalog-detail-section-description-line-height: 1.8;
+  --editorial-catalog-detail-section-description-max-width: 50rem;
+
+  /* ── PriceSummary (gh#1438) ─────────────────────────────────────────────────────────────── */
+  --editorial-price-summary-radius: 0.75rem;
+  --editorial-price-summary-space-block-end: 1.5rem;
+  --editorial-price-summary-cell-padding-block: 1.5rem;
+  --editorial-price-summary-cell-padding-inline: 1.75rem;
+  --editorial-price-summary-cell-gap: 0.5625rem;
+  /* Flex basis of a figure cell: 0% shares the row; a phone theme sets two per row. */
+  --editorial-price-summary-cell-width-basis: 0%;
+  /* The context cell: its share of the row, and its basis (100% puts it on its own row). */
+  --editorial-price-summary-context-size-grow: 1.15;
+  --editorial-price-summary-context-width-basis: 0%;
+  --editorial-price-summary-label-font-size: 0.875rem;
+  --editorial-price-summary-label-line-height: 1.8;
+  --editorial-price-summary-value-font-size: 2.25rem;
+  --editorial-price-summary-value-line-height: 1.3;
+  --editorial-price-summary-value-letter-spacing: -0.04em;
+  --editorial-price-summary-caption-font-size: 0.75rem;
+  --editorial-price-summary-caption-line-height: 1.8;
+  --editorial-price-summary-context-font-size: 1.0625rem;
+  --editorial-price-summary-context-line-height: 1.8;
+  --editorial-price-summary-context-min-height: 2.4375rem;
+
+  /* ── EditorialPrompt (gh#1438) ──────────────────────────────────────────────────────────── */
+  --editorial-prompt-padding: 1.75rem;
+  --editorial-prompt-gap: 1.5rem;
+  --editorial-prompt-radius: 0.75rem;
+  /* nowrap keeps glyph, copy and action on one row; wrap lets the action drop under the copy. */
+  --editorial-prompt-align-wrap: nowrap;
+  --editorial-prompt-icon-display: grid;
+  --editorial-prompt-icon-size: 3.25rem;
+  --editorial-prompt-icon-glyph-size: 1.5rem;
+  --editorial-prompt-copy-width-basis: auto;
+  /* 0 keeps the action beside the copy; 1 lets the copy take the row (a wrapped prompt). */
+  --editorial-prompt-copy-size-grow: 0;
+  --editorial-prompt-copy-min-width: 0rem;
+  --editorial-prompt-title-font-size: 1.3125rem;
+  --editorial-prompt-title-line-height: 1.65;
+  --editorial-prompt-title-space-block-end: 0.5rem;
+  --editorial-prompt-description-font-size: 0.875rem;
+  --editorial-prompt-description-line-height: 1.85;
+  --editorial-prompt-description-max-width: 41.875rem;
+  --editorial-prompt-note-font-size: 0.75rem;
+  --editorial-prompt-note-space-block-start: 0.5rem;
+  --editorial-prompt-action-inset-inline-start: 0rem;
+  --editorial-prompt-action-width-basis: auto;
+  --editorial-prompt-action-radius: 0.5rem;
+  --editorial-prompt-action-padding-inline: 1.125rem;
+  --editorial-prompt-action-font-weight: var(--font-weight-regular, 400);
 
   /* EditorialBanner kicker scale. */
   --editorial-banner-kicker-font-size: 0.875rem;

@@ -3945,6 +3945,181 @@
         }
       ]
     },
+    "CatalogDetail": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "facts",
+          "origin": "owned",
+          "required": false,
+          "type": "{ key: string; label: ReactNode; value: ReactNode; }[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "favorite",
+          "origin": "owned",
+          "required": false,
+          "type": "{ pressed: boolean; onPressedChange: (pressed: boolean) => void; label: string; disabled?: boolean; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "media",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "mediaCaption",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "meta",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "overline",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "summary",
+          "origin": "owned",
+          "required": false,
+          "type": "{ label?: ReactNode; price: ReactNode; note?: ReactNode; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"card\" | \"sealed\" | undefined",
+          "values": ["card", "sealed"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "CatalogDetailSection": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "titleId",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"band\" | \"module\" | undefined",
+          "values": ["band", "module"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "CatalogDetailTag": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
     "CenteredShell": {
       "group": "layout",
       "props": [
@@ -7297,6 +7472,88 @@
         }
       ]
     },
+    "EditorialFilterField": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "htmlFor",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "EditorialFilterPanel": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "action",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"panel\" | \"bare\" | undefined",
+          "values": ["panel", "bare"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
     "EditorialFooter": {
       "group": "layout",
       "props": [
@@ -7413,6 +7670,67 @@
           "name": "title",
           "origin": "owned",
           "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "EditorialListingToolbar": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "count",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "divider",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "end",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "note",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "start",
+          "origin": "owned",
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
@@ -7625,6 +7943,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "search",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "title",
           "origin": "owned",
           "required": true,
@@ -7758,6 +8084,67 @@
           "name": "icon",
           "origin": "owned",
           "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "EditorialPrompt": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "action",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "level",
+          "origin": "owned",
+          "required": false,
+          "type": "2 | 3 | 4 | undefined",
+          "values": [2, 3, 4],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "note",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
@@ -7970,6 +8357,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "scale",
+          "origin": "owned",
+          "required": false,
+          "type": "\"section\" | \"module\" | undefined",
+          "values": ["section", "module"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "title",
           "origin": "owned",
           "required": true,
@@ -8008,6 +8403,59 @@
             "node_modules/@types/react/index.d.ts",
             "src/props/components/layout.prop.ts"
           ]
+        }
+      ]
+    },
+    "EditorialToggleGroup": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "EditorialToggleGroupItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": true,
+          "type": "(value: string) => void",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"text\" | \"icon\" | undefined",
+          "values": ["text", "icon"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         }
       ]
     },
@@ -13107,6 +13555,35 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/query.prop.ts"]
+        }
+      ]
+    },
+    "PriceSummary": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "context",
+          "origin": "owned",
+          "required": false,
+          "type": "{ label: ReactNode; value: ReactNode; caption?: ReactNode; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "{ key: string; label: ReactNode; value: ReactNode; caption?: ReactNode; }[]",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
     },

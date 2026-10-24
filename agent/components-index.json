@@ -137,6 +137,51 @@
   },
   {
     "group": "layout",
+    "name": "EditorialToggleGroup",
+    "tagline": "One-of-N toggles of the editorial account family (gh#1439): a named `role=\"group\"` of `aria-pressed` buttons. `variant=\"text\"` is a filter row (pressed = filled, bordered); `variant=\"icon\"` a framed icon-only switch such as grid / list view, each button named by its label. Geometry: `--editorial-toggle-group-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialFilterPanel",
+    "tagline": "A catalog's filter panel (gh#1438): one bordered surface of `EditorialFilterField`s that wrap, bottom aligned, and a trailing `action` (a reset button), as a named `role=\"group\"`. The selects inside read the panel's control scale. Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialFilterField",
+    "tagline": "One field of an EditorialFilterPanel (gh#1438): a visible label (600, muted) over one control; `htmlFor` names the control."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialListingToolbar",
+    "tagline": "The row between a catalog's filters and its results (gh#1438): the result count (a polite live region) and a short note at the start, the sort / view controls at the end. Geometry: `--editorial-listing-toolbar-*`."
+  },
+  {
+    "group": "layout",
+    "name": "CatalogDetail",
+    "tagline": "The head of a catalog item's page (gh#1438): a framed picture with the save toggle over its corner and a caption, beside the kicker, the page's h1, a row of CatalogDetailTags, a summary price between hairlines, actions and a two-column facts list. Geometry: `--editorial-catalog-detail-*`."
+  },
+  {
+    "group": "layout",
+    "name": "CatalogDetailTag",
+    "tagline": "One outlined tag (number, rarity, printed language) in a CatalogDetail meta row (gh#1438)."
+  },
+  {
+    "group": "layout",
+    "name": "CatalogDetailSection",
+    "tagline": "One band of an item page under its head (gh#1438): a top hairline, an h2, a muted paragraph, then anything else. Geometry: `--editorial-catalog-detail-section-*`."
+  },
+  {
+    "group": "layout",
+    "name": "PriceSummary",
+    "tagline": "A joined strip of headline figures (gh#1438): one bordered surface split by hairlines, each cell a label, a figure in the number face and a caption, with an optional wider context cell on the subtle ground. Geometry: `--editorial-price-summary-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialPrompt",
+    "tagline": "A polite inline invitation (gh#1438): a round glyph, a heading, a short paragraph and a note, with one action at the end (\"sign in to see more\"). Not a live region. Geometry: `--editorial-prompt-*`."
+  },
+  {
+    "group": "layout",
     "name": "PageCover",
     "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
     "tier": "lab"

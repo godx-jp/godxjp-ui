@@ -7,6 +7,7 @@
     "shell-layout.css",
     "motion.css",
     "layout.css",
+    "editorial-account-layout.css",
     "control.css",
     "toggle.css",
     "logo-layout.css",
@@ -292,6 +293,21 @@
         "navigation-layout.css"
       ]
     },
+    "CatalogDetail": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "CatalogDetailSection": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "CatalogDetailTag": {
+      "layers": [
+        "layout.css"
+      ]
+    },
     "CenteredShell": {
       "layers": [
         "shell-layout.css"
@@ -520,6 +536,16 @@
         "navigation-layout.css"
       ]
     },
+    "EditorialFilterField": {
+      "layers": [
+        "layout.css"
+      ]
+    },
+    "EditorialFilterPanel": {
+      "layers": [
+        "layout.css"
+      ]
+    },
     "EditorialFooter": {
       "layers": [
         "layout.css",
@@ -532,6 +558,11 @@
         "layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
+      ]
+    },
+    "EditorialListingToolbar": {
+      "layers": [
+        "layout.css"
       ]
     },
     "EditorialMasthead": {
@@ -562,6 +593,11 @@
         "navigation-layout.css"
       ]
     },
+    "EditorialPrompt": {
+      "layers": [
+        "layout.css"
+      ]
+    },
     "EditorialSearch": {
       "layers": [
         "layout.css",
@@ -581,6 +617,11 @@
         "layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
+      ]
+    },
+    "EditorialToggleGroup": {
+      "layers": [
+        "editorial-account-layout.css"
       ]
     },
     "EmojiPicker": {
@@ -914,6 +955,11 @@
     },
     "PrefetchLink": {
       "layers": []
+    },
+    "PriceSummary": {
+      "layers": [
+        "layout.css"
+      ]
     },
     "Progress": {
       "layers": [
