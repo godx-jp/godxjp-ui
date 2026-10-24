@@ -70,6 +70,8 @@ if (!dryRun && !published(`@godxjp/ui@${version}`)) {
 
 console.log(`· building ${SATELLITES.join(", ")}`);
 execFileSync("pnpm", ["build:packages"], { cwd: ROOT, stdio: "inherit" });
+// Every declared `types` file must be in the tarball (33.22.1 shipped ./codec without its .d.ts).
+execFileSync("node", ["scripts/check-packed-export-types.mjs"], { cwd: ROOT, stdio: "inherit" });
 
 for (const dir of SATELLITES) {
   const { name } = manifest(dir);

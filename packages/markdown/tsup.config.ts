@@ -13,7 +13,13 @@ export default defineConfig([
     entry: ["src/index.ts", "src/lazy.tsx"],
     format: ["esm"],
     target: "es2022",
-    dts: true,
+    // ALL THREE declaration files come from THIS config's one DTS pass, codec's included. The two
+    // configs build in parallel, and this one's DTS pass (two entries, the slower) starts by
+    // removing the `.d.ts` already in `dist/`; with its own `dts: true` the codec config had
+    // written `codec/index.d.ts` first, so 33.22.1 shipped `./codec` without types (TS7016).
+    dts: {
+      entry: { index: "src/index.ts", lazy: "src/lazy.tsx", "codec/index": "src/codec/index.ts" },
+    },
     sourcemap: false,
     clean: true,
     splitting: true,
@@ -24,7 +30,7 @@ export default defineConfig([
     entry: { "codec/index": "src/codec/index.ts" },
     format: ["esm"],
     target: "es2022",
-    dts: true,
+    dts: false, // emitted by the config above — see there.
     sourcemap: false,
     clean: false,
   },
