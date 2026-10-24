@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { bootChromium, type ChromiumFixture } from "../../../test/chromium-fixture";
@@ -12,7 +14,19 @@ import { bootChromium, type ChromiumFixture } from "../../../test/chromium-fixtu
  *
  * Measured from pixels, never from layout boxes: a 4x screenshot is decoded onto a canvas and
  * every pixel that differs from the box's fill is ink. Ink-box centre vs fill-box centre, ≤1px.
+ *
+ * THE FACE IS PINNED to the package's own Noto Sans JP 700 (src/styles/fonts), because the
+ * vertical optical offsets (gh#370) are calibrated against named faces and the machine's fallback
+ * is not one of them. Measured: the CI runner has none of `--font-sans-base`'s families, so `P`
+ * fell back to Liberation Sans Bold, whose hinted ascent at the xs size (11.1px) is 9px against the
+ * 10.05px its own tables give — the baseline rises ~1px at xs only, and the ink read dy −1.37 to
+ * −2.0px there (every other tier ≤0.5). With the shipped face the same Linux Chromium reads
+ * |dx|, |dy| ≤ 0.63px at every tier. That is a property of the runner's fallback font, not of the
+ * centring under test, so the face is fixed rather than the bound widened.
  */
+const BRAND_FACE = readFileSync("src/styles/fonts/noto-sans-jp-jis-level1-700.woff2").toString(
+  "base64",
+);
 const ENTRY = `
 import * as React from "react";
 import { createRoot } from "react-dom/client";
@@ -60,7 +74,16 @@ type Measure = { size: string; dx: number; dy: number; ink: number };
 
 async function measure(search: string): Promise<Measure[]> {
   const page = await fixture.open(search, { width: 800, height: 200 }, SCALE);
-  await page.evaluate(() => document.fonts.ready);
+  await page.addStyleTag({
+    content: `@font-face { font-family: "Noto Sans JP"; font-weight: 700; src: url(data:font/woff2;base64,${BRAND_FACE}) format("woff2"); }
+      :root { --font-sans-base: "Noto Sans JP", sans-serif; }`,
+  });
+  const loaded = await page.evaluate(async () => {
+    await document.fonts.load('700 14px "Noto Sans JP"', "P");
+    await document.fonts.ready;
+    return document.fonts.check('700 14px "Noto Sans JP"', "P");
+  });
+  expect(loaded, "the pinned brand face did not load").toBe(true);
   const boxes = await page.$$eval(".ui-logo", (els) =>
     els.map((el) => {
       const r = el.getBoundingClientRect();
