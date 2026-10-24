@@ -1038,6 +1038,109 @@ export default function OrdersPage() {
 <Eyebrow>THE CURATED SELECTION</Eyebrow>`,
   },
   {
+    name: "EditorialBreadcrumb",
+    group: "layout",
+    tagline:
+      "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page.",
+    props: [
+      {
+        name: "items",
+        type: "BreadcrumbItemProp[]",
+        required: true,
+        description: "Trail, root first; the last item is the current page.",
+      },
+      { name: "linkComponent", type: "ElementType", description: "Router link for ancestors." },
+      { name: "ariaLabel", type: "string", description: "Name of the nav landmark." },
+    ],
+    usage: [
+      'DO put it first in an EditorialSection of a `flow="sections"` page.',
+      "DON'T nest it in a PageContainer — that page shell has its own trail.",
+    ],
+    related: ["EditorialPageHeader, Breadcrumb."],
+    example: `import { EditorialBreadcrumb, EditorialSection } from "@godxjp/ui/layout";
+
+<EditorialSection>
+  <EditorialBreadcrumb items={[{ label: "Home", to: "/" }, { label: "Journal", to: "/journal/" }, { label: "Price guide" }]} />
+</EditorialSection>`,
+  },
+  {
+    name: "EditorialArticle",
+    group: "layout",
+    tagline:
+      "The reading column of a long-form editorial page (gh#1440): the ruled kicker, the page's one h1, an intro set off by a rule, then `EditorialArticleSection`s (an h2 and paragraphs at the reading leading), an `EditorialNote` and a trailing `EditorialTextLink`. Block flow with collapsing margins, so the design's rhythm holds. Geometry: `--editorial-article-*`, `--editorial-note-*`.",
+    subParts: ["EditorialArticleSection", "EditorialNote"],
+    props: [
+      { name: "title", type: "ReactNode", required: true, description: "The page's h1." },
+      { name: "eyebrow", type: "ReactNode", description: "Kicker above it (an Eyebrow)." },
+      { name: "intro", type: "ReactNode", description: "Lead paragraph under it." },
+      { name: "children", type: "ReactNode", description: "Sections, note, link." },
+      { name: "titleId", type: "string", description: "Id on the h1." },
+    ],
+    usage: [
+      'DO put it in an EditorialSection after an EditorialBreadcrumb on a `flow="sections"` page.',
+      "DO pass each prose paragraph in `EditorialArticleSection paragraphs`, not raw `<p>`.",
+      "DON'T use it for a versioned legal/admin document — that is LegalDocumentShell.",
+    ],
+    related: ["EditorialBreadcrumb, EditorialTextLink, LegalDocumentShell."],
+    example: `import { EditorialArticle, EditorialArticleSection, EditorialNote, Eyebrow } from "@godxjp/ui/layout";
+
+<EditorialArticle eyebrow={<Eyebrow>PRICE GUIDE</Eyebrow>} title="A fair comparison starts with the details." intro="A matching card name is only the beginning.">
+  <EditorialArticleSection title="Check it is the same card" paragraphs={["Confirm the game, card number and set."]} />
+  <EditorialNote>An original guide, not a price forecast.</EditorialNote>
+</EditorialArticle>`,
+  },
+  {
+    name: "EditorialPanel",
+    group: "layout",
+    tagline:
+      'A bordered panel with a short tag, a heading and a list (gh#1440) — a roadmap group. Lay a row of them out with `ResponsiveGrid preset="panels"` (tracks and gap are `--responsive-grid-panels-*`, re-declared at the theme\'s own steps). Geometry: `--editorial-panel-*`.',
+    props: [
+      { name: "title", type: "ReactNode", required: true, description: "The heading." },
+      { name: "tag", type: "ReactNode", description: "Short tag above it." },
+      { name: "items", type: "ReactNode[]", description: "List items." },
+      { name: "children", type: "ReactNode", description: "Anything after the list." },
+      { name: "level", type: "2 | 3", defaultValue: "2", description: "Heading level." },
+    ],
+    usage: ['DO lay a row of panels out with `ResponsiveGrid preset="panels"`.'],
+    related: ['ResponsiveGrid — `preset="panels"`.'],
+    example: `import { EditorialPanel, ResponsiveGrid } from "@godxjp/ui/layout";
+
+<ResponsiveGrid preset="panels">
+  <EditorialPanel tag="NEXT" title="More ways to discover." items={["Products and their contents"]} />
+</ResponsiveGrid>`,
+  },
+  {
+    name: "EditorialPageHeader",
+    group: "layout",
+    tagline:
+      "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone).",
+    props: [
+      { name: "title", type: "ReactNode", required: true, description: "The page's h1." },
+      { name: "breadcrumb", type: "BreadcrumbItemProp[]", description: "Trail above the header." },
+      { name: "linkComponent", type: "ElementType", description: "Router link for the trail." },
+      { name: "breadcrumbLabel", type: "string", description: "Name of the trail's nav." },
+      { name: "eyebrow", type: "ReactNode", description: "Kicker above the title (an Eyebrow)." },
+      { name: "description", type: "ReactNode", description: "One lead line under it." },
+      { name: "actions", type: "ReactNode", description: "Action at the end of the title row." },
+      { name: "titleId", type: "string", description: "Id on the h1." },
+    ],
+    usage: [
+      'DO put it in an EditorialSection on a `flow="sections"` page, so it shares the landing column.',
+      "DON'T also give the page a PageContainer title — the header owns the page's one h1.",
+    ],
+    related: ["EditorialBreadcrumb, Eyebrow, EditorialSection."],
+    example: `import { EditorialPageHeader, EditorialSection, Eyebrow } from "@godxjp/ui/layout";
+
+<EditorialSection>
+  <EditorialPageHeader
+    breadcrumb={[{ label: "Home", to: "/" }, { label: "Journal" }]}
+    eyebrow={<Eyebrow>THE TCG-M JOURNAL</Eyebrow>}
+    title="A little knowledge. More enjoyment."
+    description="A few helpful perspectives for finding, comparing and collecting."
+  />
+</EditorialSection>`,
+  },
+  {
     name: "EditorialSectionHead",
     group: "layout",
     tagline:

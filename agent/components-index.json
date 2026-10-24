@@ -67,6 +67,26 @@
   },
   {
     "group": "layout",
+    "name": "EditorialBreadcrumb",
+    "tagline": "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialArticle",
+    "tagline": "The reading column of a long-form editorial page (gh#1440): the ruled kicker, the page's one h1, an intro set off by a rule, then `EditorialArticleSection`s (an h2 and paragraphs at the reading leading), an `EditorialNote` and a trailing `EditorialTextLink`. Block flow with collapsing margins, so the design's rhythm holds. Geometry: `--editorial-article-*`, `--editorial-note-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialPanel",
+    "tagline": "A bordered panel with a short tag, a heading and a list (gh#1440) — a roadmap group. Lay a row of them out with `ResponsiveGrid preset=\"panels\"` (tracks and gap are `--responsive-grid-panels-*`, re-declared at the theme's own steps). Geometry: `--editorial-panel-*`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialPageHeader",
+    "tagline": "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone)."
+  },
+  {
+    "group": "layout",
     "name": "EditorialSectionHead",
     "tagline": "A section's head (gh#1435): kicker, an editorial h2, one line of description and a trailing action on the title's row — usually an `EditorialTextLink` \"view all →\" (an inline-flex link with a trailing arrow, `asChild` for a router link). Geometry: `--editorial-section-head-*`, `--editorial-text-link-*`."
   },

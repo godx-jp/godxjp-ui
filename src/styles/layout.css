@@ -3023,6 +3023,11 @@
     gap: var(--responsive-grid-lead-gap);
   }
 
+  .ui-responsive-grid[data-preset="panels"] {
+    grid-template-columns: var(--responsive-grid-panels-track-size);
+    gap: var(--responsive-grid-panels-gap);
+  }
+
   /* ── EditorialSection ─────────────────────────────────────────────────────────────────────── */
   .ui-editorial-section {
     display: block;
@@ -3195,6 +3200,190 @@
     flex: none;
     max-width: var(--editorial-section-head-action-max-width);
     margin-block-start: var(--editorial-section-head-action-space-block-start);
+  }
+
+  /* ── EditorialBreadcrumb (gh#1437) ────────────────────────────────────────────────────────── */
+  .ui-editorial-breadcrumb {
+    padding-block-start: var(--editorial-breadcrumb-padding-block-start);
+    line-height: var(--editorial-breadcrumb-line-height);
+  }
+
+  /* Column gap only: the coarse-pointer row pitch of a wrapped trail (navigation-layout.css)
+   * stays the Breadcrumb's own. */
+  .ui-editorial-breadcrumb .ui-breadcrumb-list {
+    column-gap: var(--editorial-breadcrumb-gap);
+  }
+
+  .ui-editorial-breadcrumb .ui-breadcrumb-item {
+    gap: var(--editorial-breadcrumb-gap);
+  }
+
+  /* ── EditorialPageHeader (gh#1437) ────────────────────────────────────────────────────────── */
+  .ui-editorial-page-header-row {
+    display: var(--editorial-page-header-row-display);
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--editorial-page-header-row-gap);
+    padding-block: var(--editorial-page-header-padding-block-start)
+      var(--editorial-page-header-padding-block-end);
+  }
+
+  .ui-editorial-page-header-copy {
+    min-width: 0;
+  }
+
+  .ui-editorial-page-header-copy > .ui-editorial-eyebrow {
+    color: var(
+      --editorial-page-header-kicker-color,
+      var(--editorial-kicker-color, hsl(var(--muted-foreground)))
+    );
+    font-size: var(--editorial-page-header-kicker-font-size);
+  }
+
+  .ui-editorial-page-header-title {
+    margin: var(--editorial-page-header-title-space-block-start) 0
+      var(--editorial-page-header-title-space-block-end);
+    font-family: var(--font-family-editorial, var(--font-family-display));
+    font-size: var(--editorial-page-header-title-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-page-header-title-line-height);
+    letter-spacing: var(--editorial-page-header-title-letter-spacing);
+    text-wrap: balance;
+  }
+
+  /* The kit breaks a Japanese heading between phrases (text-layout.css); a design that sets its
+   * h1 with balanced character breaks says so with this knob. */
+  .ui-editorial-page-header .ui-editorial-page-header-title:lang(ja) {
+    word-break: var(--editorial-page-header-title-line-breaking);
+  }
+
+  .ui-editorial-page-header-description {
+    max-width: var(--editorial-page-header-description-max-width);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-page-header-description-font-size);
+    line-height: var(--editorial-page-header-description-line-height);
+  }
+
+  .ui-editorial-page-header-actions {
+    flex: none;
+    margin-block-start: var(--editorial-page-header-actions-space-block-start);
+  }
+
+  /* ── EditorialArticle (+ Section, Note) — gh#1440 ─────────────────────────────────────────────
+   * Block flow on purpose: the design's vertical rhythm is collapsing margins (kicker 20 / h1 20,
+   * paragraph 20 / next heading 36, paragraph 20 / note 24), which a flex gap cannot reproduce. */
+  .ui-editorial-article {
+    /* A text link in the reading column takes the article's own knobs, so a theme that tunes the
+     * section-head "view all" link at a breakpoint does not resize the article's call to action. */
+    --editorial-text-link-font-size: var(--editorial-article-link-font-size);
+    --editorial-text-link-gap: var(--editorial-article-link-gap);
+    --editorial-text-link-line-height: var(--editorial-article-link-line-height);
+    --editorial-text-link-icon-size: var(--editorial-article-link-icon-size);
+    --editorial-text-link-align: start;
+    display: block;
+    max-width: var(--editorial-article-max-width);
+    margin-inline: auto;
+    padding-block: var(--editorial-article-padding-block-start)
+      var(--editorial-article-padding-block-end);
+  }
+
+  .ui-editorial-article > .ui-editorial-eyebrow {
+    font-size: var(--editorial-article-kicker-font-size);
+    margin-block-end: var(--editorial-article-kicker-space-block-end);
+    line-height: var(--editorial-article-kicker-line-height);
+  }
+
+  .ui-editorial-article-title {
+    margin: var(--editorial-article-title-space-block) 0;
+    font-family: var(--font-family-editorial, var(--font-family-display));
+    font-size: var(--editorial-article-title-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-article-title-line-height);
+    letter-spacing: var(--editorial-article-title-letter-spacing);
+  }
+
+  .ui-editorial-article .ui-editorial-article-title:lang(ja) {
+    word-break: var(--editorial-article-title-line-breaking);
+  }
+
+  .ui-editorial-article-intro {
+    margin: 0 0 var(--editorial-article-intro-space-block-end);
+    padding-block-end: var(--editorial-article-intro-padding-block-end);
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-article-intro-font-size);
+    line-height: var(--editorial-article-intro-line-height);
+  }
+
+  .ui-editorial-article-section {
+    display: block;
+  }
+
+  .ui-editorial-article-heading {
+    margin: var(--editorial-article-heading-space-block-start) 0
+      var(--editorial-article-heading-space-block-end);
+    font-family: var(--font-family-editorial, var(--font-family-display));
+    font-size: var(--editorial-article-heading-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-article-heading-line-height);
+    letter-spacing: var(--editorial-article-heading-letter-spacing);
+  }
+
+  .ui-editorial-article-paragraph {
+    margin: 0 0 var(--editorial-article-paragraph-space-block-end);
+    font-size: var(--editorial-article-paragraph-font-size);
+    line-height: var(--editorial-article-paragraph-line-height);
+  }
+
+  .ui-editorial-note {
+    margin-block: var(--editorial-note-space-block);
+    padding: var(--editorial-note-padding-block) var(--editorial-note-padding-inline);
+    border-inline-start: var(--editorial-note-rule-width) solid
+      var(--editorial-ornament-color, hsl(var(--border)));
+    background: var(--editorial-note-background, hsl(var(--muted)));
+    font-size: var(--editorial-note-font-size);
+  }
+
+  /* ── EditorialPanel — gh#1440 ─────────────────────────────────────────────────────────────── */
+  .ui-editorial-panel {
+    display: block;
+    min-width: 0;
+    padding: var(--editorial-panel-padding);
+    border: var(--editorial-panel-border-width) solid hsl(var(--border));
+    border-radius: var(--editorial-panel-radius);
+    background: var(--editorial-panel-background, hsl(var(--card)));
+  }
+
+  .ui-editorial-panel-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--editorial-panel-tag-min-height);
+    padding: var(--editorial-panel-tag-padding-block) var(--editorial-panel-tag-padding-inline);
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--editorial-panel-tag-radius);
+    color: var(--editorial-kicker-color, hsl(var(--muted-foreground)));
+    font-size: var(--editorial-panel-tag-font-size);
+    font-weight: var(--editorial-panel-tag-font-weight);
+    line-height: var(--editorial-panel-tag-line-height);
+  }
+
+  .ui-editorial-panel-title {
+    margin-block: var(--editorial-panel-title-space-block);
+    font-family: var(--font-family-editorial, var(--font-family-display));
+    font-size: var(--editorial-panel-title-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-panel-title-line-height);
+    letter-spacing: var(--editorial-article-heading-letter-spacing);
+  }
+
+  .ui-editorial-panel-list {
+    margin-block: var(--editorial-panel-list-space-block);
+    margin-inline: 0;
+    padding-inline-start: var(--editorial-panel-list-padding-inline-start);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-panel-item-font-size);
+    list-style: disc;
   }
 
   /* ── EditorialTextLink ────────────────────────────────────────────────────────────────────── */
@@ -3985,7 +4174,8 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: var(--editorial-journal-cover-image-size);
+    object-position: var(--editorial-journal-cover-image-align);
   }
 
   .ui-editorial-card[data-variant="journal"] .ui-editorial-card-copy {

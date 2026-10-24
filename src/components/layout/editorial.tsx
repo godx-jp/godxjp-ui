@@ -2,12 +2,18 @@ import * as React from "react";
 import { ArrowRight, Bookmark, Search } from "lucide-react";
 
 import { Slot } from "../../lib/slot";
+import { Breadcrumb } from "./breadcrumb";
 import { cn } from "../../lib/utils";
 import type {
   CardShowcaseProp,
+  EditorialArticleProp,
+  EditorialArticleSectionProp,
+  EditorialNoteProp,
+  EditorialPanelProp,
   CatalogCardProp,
   CatalogCardTagProp,
   EditorialBannerProp,
+  EditorialBreadcrumbProp,
   EditorialCardProp,
   EditorialFilterBarProp,
   EditorialFooterProp,
@@ -15,6 +21,7 @@ import type {
   EditorialMastheadLinkProp,
   EditorialMastheadProp,
   EditorialHeroProp,
+  EditorialPageHeaderProp,
   EditorialPillNavItemProp,
   EditorialPillNavProp,
   EditorialSearchProp,
@@ -25,6 +32,16 @@ import type {
 } from "../../props/components/layout.prop";
 
 export type {
+  EditorialArticleProp,
+  EditorialArticleProp as EditorialArticleProps,
+  EditorialArticleSectionProp,
+  EditorialNoteProp,
+  EditorialPanelProp,
+  EditorialPanelProp as EditorialPanelProps,
+  EditorialBreadcrumbProp,
+  EditorialBreadcrumbProp as EditorialBreadcrumbProps,
+  EditorialPageHeaderProp,
+  EditorialPageHeaderProp as EditorialPageHeaderProps,
   CardShowcaseProp,
   CardShowcaseProp as CardShowcaseProps,
   CatalogCardProp,
@@ -164,6 +181,140 @@ export function EditorialSectionHead({
       </div>
       {action != null && <div className="ui-editorial-section-head-action">{action}</div>}
     </div>
+  );
+}
+
+/** The trail at the top of an editorial page: `Breadcrumb` with the editorial rhythm (gh#1437). */
+export function EditorialBreadcrumb({
+  items,
+  linkComponent,
+  ariaLabel,
+  className,
+}: EditorialBreadcrumbProp) {
+  return (
+    <div data-slot="editorial-breadcrumb" className={cn("ui-editorial-breadcrumb", className)}>
+      <Breadcrumb items={items} linkComponent={linkComponent} ariaLabel={ariaLabel} />
+    </div>
+  );
+}
+
+/** The intro of an editorial listing page: trail, kicker, the page's h1, a lead and an action. */
+export function EditorialPageHeader({
+  breadcrumb,
+  linkComponent,
+  breadcrumbLabel,
+  eyebrow,
+  title,
+  description,
+  actions,
+  titleId,
+  className,
+}: EditorialPageHeaderProp) {
+  return (
+    <div data-slot="editorial-page-header" className={cn("ui-editorial-page-header", className)}>
+      {breadcrumb && breadcrumb.length > 0 && (
+        <EditorialBreadcrumb
+          items={breadcrumb}
+          linkComponent={linkComponent}
+          ariaLabel={breadcrumbLabel}
+        />
+      )}
+      <header className="ui-editorial-page-header-row">
+        <div className="ui-editorial-page-header-copy">
+          {eyebrow}
+          <h1 id={titleId} className="ui-editorial-page-header-title">
+            {title}
+          </h1>
+          {description != null && (
+            <p className="ui-editorial-page-header-description">{description}</p>
+          )}
+        </div>
+        {actions != null && <div className="ui-editorial-page-header-actions">{actions}</div>}
+      </header>
+    </div>
+  );
+}
+
+/** The reading column of a long-form editorial page: kicker, the page's h1, intro, sections. */
+export function EditorialArticle({
+  eyebrow,
+  title,
+  intro,
+  children,
+  titleId,
+  className,
+}: EditorialArticleProp) {
+  return (
+    <article data-slot="editorial-article" className={cn("ui-editorial-article", className)}>
+      {eyebrow}
+      <h1 id={titleId} className="ui-editorial-article-title">
+        {title}
+      </h1>
+      {intro != null && <p className="ui-editorial-article-intro">{intro}</p>}
+      {children}
+    </article>
+  );
+}
+
+/** One titled section of an `EditorialArticle`: an h2, paragraphs of prose, then anything else. */
+export function EditorialArticleSection({
+  title,
+  paragraphs,
+  children,
+  titleId,
+  className,
+}: EditorialArticleSectionProp) {
+  return (
+    <section
+      data-slot="editorial-article-section"
+      aria-labelledby={titleId}
+      className={cn("ui-editorial-article-section", className)}
+    >
+      <h2 id={titleId} className="ui-editorial-article-heading">
+        {title}
+      </h2>
+      {paragraphs?.map((paragraph, index) => (
+        <p key={index} className="ui-editorial-article-paragraph">
+          {paragraph}
+        </p>
+      ))}
+      {children}
+    </section>
+  );
+}
+
+/** A note block in an editorial article, set off by an ornament rule on its start edge. */
+export function EditorialNote({ children, className }: EditorialNoteProp) {
+  return (
+    <div role="note" data-slot="editorial-note" className={cn("ui-editorial-note", className)}>
+      {children}
+    </div>
+  );
+}
+
+/** A bordered panel: a tag, a heading and a list (a roadmap group). */
+export function EditorialPanel({
+  tag,
+  title,
+  items,
+  children,
+  level = 2,
+  className,
+}: EditorialPanelProp) {
+  const Heading = level === 3 ? "h3" : "h2";
+  return (
+    <article data-slot="editorial-panel" className={cn("ui-editorial-panel", className)}>
+      {tag != null && <span className="ui-editorial-panel-tag">{tag}</span>}
+      <Heading className="ui-editorial-panel-title">{title}</Heading>
+      {items && items.length > 0 && (
+        <ul className="ui-editorial-panel-list">
+          {items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      )}
+      {children}
+    </article>
   );
 }
 

@@ -989,6 +989,184 @@
     ]
   },
   {
+    "example": "import { EditorialBreadcrumb, EditorialSection } from \"@godxjp/ui/layout\";\n\n<EditorialSection>\n  <EditorialBreadcrumb items={[{ label: \"Home\", to: \"/\" }, { label: \"Journal\", to: \"/journal/\" }, { label: \"Price guide\" }]} />\n</EditorialSection>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialBreadcrumb",
+    "props": [
+      {
+        "description": "Trail, root first; the last item is the current page.",
+        "name": "items",
+        "required": true,
+        "type": "BreadcrumbItemProp[]"
+      },
+      {
+        "description": "Router link for ancestors.",
+        "name": "linkComponent",
+        "type": "ElementType"
+      },
+      {
+        "description": "Name of the nav landmark.",
+        "name": "ariaLabel",
+        "type": "string"
+      }
+    ],
+    "related": [
+      "EditorialPageHeader, Breadcrumb."
+    ],
+    "tagline": "The trail at the top of an editorial page (gh#1437): `Breadcrumb` (same `<nav>`/`<ol>`, `aria-current` on the last item, router `linkComponent`) with the editorial rhythm — top inset, gap and line height from `--editorial-breadcrumb-*`. Use it alone above a reader page; `EditorialPageHeader` renders it for a listing page.",
+    "usage": [
+      "DO put it first in an EditorialSection of a `flow=\"sections\"` page.",
+      "DON'T nest it in a PageContainer — that page shell has its own trail."
+    ]
+  },
+  {
+    "example": "import { EditorialArticle, EditorialArticleSection, EditorialNote, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialArticle eyebrow={<Eyebrow>PRICE GUIDE</Eyebrow>} title=\"A fair comparison starts with the details.\" intro=\"A matching card name is only the beginning.\">\n  <EditorialArticleSection title=\"Check it is the same card\" paragraphs={[\"Confirm the game, card number and set.\"]} />\n  <EditorialNote>An original guide, not a price forecast.</EditorialNote>\n</EditorialArticle>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialArticle",
+    "props": [
+      {
+        "description": "The page's h1.",
+        "name": "title",
+        "required": true,
+        "type": "ReactNode"
+      },
+      {
+        "description": "Kicker above it (an Eyebrow).",
+        "name": "eyebrow",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Lead paragraph under it.",
+        "name": "intro",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Sections, note, link.",
+        "name": "children",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Id on the h1.",
+        "name": "titleId",
+        "type": "string"
+      }
+    ],
+    "related": [
+      "EditorialBreadcrumb, EditorialTextLink, LegalDocumentShell."
+    ],
+    "subParts": [
+      "EditorialArticleSection",
+      "EditorialNote"
+    ],
+    "tagline": "The reading column of a long-form editorial page (gh#1440): the ruled kicker, the page's one h1, an intro set off by a rule, then `EditorialArticleSection`s (an h2 and paragraphs at the reading leading), an `EditorialNote` and a trailing `EditorialTextLink`. Block flow with collapsing margins, so the design's rhythm holds. Geometry: `--editorial-article-*`, `--editorial-note-*`.",
+    "usage": [
+      "DO put it in an EditorialSection after an EditorialBreadcrumb on a `flow=\"sections\"` page.",
+      "DO pass each prose paragraph in `EditorialArticleSection paragraphs`, not raw `<p>`.",
+      "DON'T use it for a versioned legal/admin document — that is LegalDocumentShell."
+    ]
+  },
+  {
+    "example": "import { EditorialPanel, ResponsiveGrid } from \"@godxjp/ui/layout\";\n\n<ResponsiveGrid preset=\"panels\">\n  <EditorialPanel tag=\"NEXT\" title=\"More ways to discover.\" items={[\"Products and their contents\"]} />\n</ResponsiveGrid>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialPanel",
+    "props": [
+      {
+        "description": "The heading.",
+        "name": "title",
+        "required": true,
+        "type": "ReactNode"
+      },
+      {
+        "description": "Short tag above it.",
+        "name": "tag",
+        "type": "ReactNode"
+      },
+      {
+        "description": "List items.",
+        "name": "items",
+        "type": "ReactNode[]"
+      },
+      {
+        "description": "Anything after the list.",
+        "name": "children",
+        "type": "ReactNode"
+      },
+      {
+        "defaultValue": "2",
+        "description": "Heading level.",
+        "name": "level",
+        "type": "2 | 3"
+      }
+    ],
+    "related": [
+      "ResponsiveGrid — `preset=\"panels\"`."
+    ],
+    "tagline": "A bordered panel with a short tag, a heading and a list (gh#1440) — a roadmap group. Lay a row of them out with `ResponsiveGrid preset=\"panels\"` (tracks and gap are `--responsive-grid-panels-*`, re-declared at the theme's own steps). Geometry: `--editorial-panel-*`.",
+    "usage": [
+      "DO lay a row of panels out with `ResponsiveGrid preset=\"panels\"`."
+    ]
+  },
+  {
+    "example": "import { EditorialPageHeader, EditorialSection, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialSection>\n  <EditorialPageHeader\n    breadcrumb={[{ label: \"Home\", to: \"/\" }, { label: \"Journal\" }]}\n    eyebrow={<Eyebrow>THE TCG-M JOURNAL</Eyebrow>}\n    title=\"A little knowledge. More enjoyment.\"\n    description=\"A few helpful perspectives for finding, comparing and collecting.\"\n  />\n</EditorialSection>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialPageHeader",
+    "props": [
+      {
+        "description": "The page's h1.",
+        "name": "title",
+        "required": true,
+        "type": "ReactNode"
+      },
+      {
+        "description": "Trail above the header.",
+        "name": "breadcrumb",
+        "type": "BreadcrumbItemProp[]"
+      },
+      {
+        "description": "Router link for the trail.",
+        "name": "linkComponent",
+        "type": "ElementType"
+      },
+      {
+        "description": "Name of the trail's nav.",
+        "name": "breadcrumbLabel",
+        "type": "string"
+      },
+      {
+        "description": "Kicker above the title (an Eyebrow).",
+        "name": "eyebrow",
+        "type": "ReactNode"
+      },
+      {
+        "description": "One lead line under it.",
+        "name": "description",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Action at the end of the title row.",
+        "name": "actions",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Id on the h1.",
+        "name": "titleId",
+        "type": "string"
+      }
+    ],
+    "related": [
+      "EditorialBreadcrumb, Eyebrow, EditorialSection."
+    ],
+    "tagline": "The intro of an editorial listing page (gh#1437): an optional `EditorialBreadcrumb`, then the ruled kicker, the page's one h1, one lead line, and an action at the end of the title row. Geometry: `--editorial-page-header-*` (block padding, title size/leading/margins, lead size/measure, kicker size/colour, row display — `block` stacks the action under the copy on a phone).",
+    "usage": [
+      "DO put it in an EditorialSection on a `flow=\"sections\"` page, so it shares the landing column.",
+      "DON'T also give the page a PageContainer title — the header owns the page's one h1."
+    ]
+  },
+  {
     "example": "import { EditorialSectionHead, EditorialTextLink, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialSectionHead\n  eyebrow={<Eyebrow>THE TCG-M JOURNAL</Eyebrow>}\n  title=\"A little knowledge. More enjoyment.\"\n  titleId=\"journal\"\n  action={<EditorialTextLink asChild><a href=\"/journal/\">View all</a></EditorialTextLink>}\n/>",
     "group": "layout",
     "importPath": "@godxjp/ui/layout",

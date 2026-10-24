@@ -1,0 +1,42 @@
+{
+  "example": "import { EditorialPanel, ResponsiveGrid } from \"@godxjp/ui/layout\";\n\n<ResponsiveGrid preset=\"panels\">\n  <EditorialPanel tag=\"NEXT\" title=\"More ways to discover.\" items={[\"Products and their contents\"]} />\n</ResponsiveGrid>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialPanel",
+  "props": [
+    {
+      "description": "The heading.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Short tag above it.",
+      "name": "tag",
+      "type": "ReactNode"
+    },
+    {
+      "description": "List items.",
+      "name": "items",
+      "type": "ReactNode[]"
+    },
+    {
+      "description": "Anything after the list.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "2",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3"
+    }
+  ],
+  "related": [
+    "ResponsiveGrid — `preset=\"panels\"`."
+  ],
+  "tagline": "A bordered panel with a short tag, a heading and a list (gh#1440) — a roadmap group. Lay a row of them out with `ResponsiveGrid preset=\"panels\"` (tracks and gap are `--responsive-grid-panels-*`, re-declared at the theme's own steps). Geometry: `--editorial-panel-*`.",
+  "usage": [
+    "DO lay a row of panels out with `ResponsiveGrid preset=\"panels\"`."
+  ]
+}
