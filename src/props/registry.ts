@@ -1703,6 +1703,9 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Optional scope select at the start of the box (search per game).",
       },
+      { field: "variant", local: true, reason: "inset (site search) or inline (collection row)." },
+      { field: "count", local: true, reason: "Live count at the end of the inline row." },
+      { field: "debounce", local: true, reason: "Settle delay in ms, as SearchInput.debounce." },
     ],
   },
   EditorialPillNavProp: {
@@ -1935,20 +1938,6 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "onClick", local: true, reason: "Activation handler." },
       { field: "disabled", local: true, reason: "Native disabled." },
       { field: "children", local: true, reason: "Label." },
-    ],
-  },
-  EditorialInlineSearchProp: {
-    group: "layout",
-    file: "components/editorial-account.prop.ts",
-    vocabulary: [
-      "IdProp",
-      "PlaceholderProp",
-      "DefaultValueProp",
-      "ClassNameProp",
-      { field: "label", local: true, reason: "Visible label and name of the search region." },
-      { field: "onSearch", local: true, reason: "Settled query handler, as SearchInput.onSearch." },
-      { field: "debounce", local: true, reason: "Settle delay in ms, as SearchInput.debounce." },
-      { field: "count", local: true, reason: "Live count at the end of the row." },
     ],
   },
   EditorialFootnoteProp: {

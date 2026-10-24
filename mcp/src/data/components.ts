@@ -1187,7 +1187,29 @@ export default function OrdersPage() {
         required: true,
         description: "Accessible label (visually hidden).",
       },
-      { name: "submitLabel", type: "ReactNode", required: true, description: "Button text." },
+      {
+        name: "variant",
+        type: '"inset" | "inline"',
+        default: '"inset"',
+        description:
+          "Site search box, or a collection's own row (visible label, live count, no button).",
+      },
+      {
+        name: "submitLabel",
+        type: "ReactNode",
+        description: "Button text (inset; required there).",
+      },
+      {
+        name: "count",
+        type: "ReactNode",
+        description: "inline: live count at the end of the row.",
+      },
+      {
+        name: "debounce",
+        type: "number",
+        default: "300",
+        description: "inline: settle delay (ms).",
+      },
       { name: "placeholder", type: "string", description: "Placeholder." },
       { name: "name", type: "string", defaultValue: '"q"', description: "Query parameter." },
       { name: "defaultValue", type: "string", description: "Initial query." },
@@ -1204,7 +1226,10 @@ export default function OrdersPage() {
       },
       { name: "id", type: "string", description: "Field id." },
     ],
-    usage: ["DO use it for a site search that submits; use SearchInput for a live filter."],
+    usage: [
+      "DO use it for a site search that submits; use SearchInput for a live filter.",
+      'DO use variant="inline" for a collection\'s own search row (visible label, live count) — gh#1439.',
+    ],
     related: ["SearchInput — a debounced filter field.", "EditorialHero — the `search` slot."],
     example: `import { EditorialSearch } from "@godxjp/ui/layout";
 
@@ -1771,39 +1796,6 @@ import { Moon, Sun } from "lucide-react";
     example: `import { EditorialAuthCard } from "@godxjp/ui/layout";
 
 <EditorialAuthCard title="Welcome back." description="Sign in to see your collection." footer="New here?" />`,
-  },
-  {
-    name: "EditorialInlineSearch",
-    group: "layout",
-    tagline:
-      'A collection\'s own search row (gh#1439): a visible label, a framed field with a search glyph (max 400px) and a live count at the end. The query is reported after typing settles (`debounce`, default 300ms) or at once on Enter. A named `role="search"` region. Geometry: `--editorial-inline-search-*`; a theme hides the label on narrow screens with `--editorial-inline-search-label-display: none`.',
-    props: [
-      {
-        name: "label",
-        type: "string",
-        required: true,
-        description: "Visible label and region name.",
-      },
-      { name: "id", type: "string", description: "id of the input." },
-      { name: "placeholder", type: "string", description: "Placeholder." },
-      { name: "defaultValue", type: "string", description: "Initial query." },
-      {
-        name: "onSearch",
-        type: "(query: string) => void",
-        required: true,
-        description: "Settled, trimmed query.",
-      },
-      { name: "debounce", type: "number", default: "300", description: "Settle delay (ms)." },
-      { name: "count", type: "ReactNode", description: "Live count at the end." },
-    ],
-    usage: ["DO keep the query in the URL; the row only reports it."],
-    related: [
-      "SearchInput — the application search field.",
-      "EditorialSearch — the inset site search.",
-    ],
-    example: `import { EditorialInlineSearch } from "@godxjp/ui/layout";
-
-<EditorialInlineSearch label="Search your collection" placeholder="Name or card number" onSearch={setQuery} count="12 entries" />`,
   },
   {
     name: "EditorialFootnote",

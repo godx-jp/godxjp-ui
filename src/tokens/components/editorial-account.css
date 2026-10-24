@@ -25,20 +25,20 @@
   --editorial-text-button-underline-offset: 4px;
   --editorial-text-button-icon-size: 1.125rem;
 
-  /* ── EditorialInlineSearch ──────────────────────────────────────────────────────────────── */
-  --editorial-inline-search-gap: 0.75rem;
-  --editorial-inline-search-space-block: 1.5rem;
-  --editorial-inline-search-label-display: block;
-  --editorial-inline-search-label-font-size: 0.8125rem;
-  --editorial-inline-search-field-max-width: 25rem;
-  --editorial-inline-search-height: 3rem;
-  --editorial-inline-search-padding-inline-start: 2.625rem;
-  --editorial-inline-search-padding-inline-end: 0.875rem;
-  --editorial-inline-search-radius: var(--radius);
-  --editorial-inline-search-font-size: 0.875rem;
-  --editorial-inline-search-icon-size: 1.125rem;
-  --editorial-inline-search-icon-inset-inline-start: 0.875rem;
-  --editorial-inline-search-count-font-size: 0.8125rem;
+  /* ── EditorialSearch variant="inline" ──────────────────────────────────────────────────────────────── */
+  --editorial-search-inline-gap: 0.75rem;
+  --editorial-search-inline-space-block: 1.5rem;
+  --editorial-search-inline-label-display: block;
+  --editorial-search-inline-label-font-size: 0.8125rem;
+  --editorial-search-inline-field-max-width: 25rem;
+  --editorial-search-inline-height: 3rem;
+  --editorial-search-inline-padding-inline-start: 2.625rem;
+  --editorial-search-inline-padding-inline-end: 0.875rem;
+  --editorial-search-inline-radius: var(--radius);
+  --editorial-search-inline-font-size: 0.875rem;
+  --editorial-search-inline-icon-size: 1.125rem;
+  --editorial-search-inline-icon-inset-inline-start: 0.875rem;
+  --editorial-search-inline-count-font-size: 0.8125rem;
 
   /* ── EditorialFootnote ──────────────────────────────────────────────────────────────────── */
   --editorial-footnote-gap: 1.25rem;

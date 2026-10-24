@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-10-09",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 332,
-    "dimensionCells": 4648,
+    "exports": 331,
+    "dimensionCells": 4634,
     "covered": 89,
-    "untested": 2546,
-    "notApplicable": 2015,
+    "untested": 2539,
+    "notApplicable": 2008,
     "knownMissingFrames": [
       "layout/editorial",
       "layout/editorial-account"
@@ -4357,33 +4357,6 @@
         "reducedMotion": "untested"
       }
     },
-    "EditorialInlineSearch": {
-      "group": "layout",
-      "owner": "layout/editorial-account",
-      "frames": [],
-      "hasFrame": false,
-      "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
-      },
-      "dimensions": {
-        "variants": "not-applicable:api-manifest",
-        "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
-        "shapes": "not-applicable:api-manifest",
-        "density": "not-applicable:api-manifest",
-        "ownership": "untested",
-        "states": "not-applicable:api-manifest",
-        "async": "untested",
-        "responsive": "untested",
-        "rtl": "untested",
-        "contentStress": "untested",
-        "keyboard": "untested",
-        "accessibleName": "untested",
-        "reducedMotion": "untested"
-      }
-    },
     "EditorialMasthead": {
       "group": "layout",
       "owner": "layout/editorial",
@@ -4661,11 +4634,11 @@
       "hasFrame": false,
       "baseline": {
         "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
+        "notApplicable": 5,
+        "untested": 9
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",

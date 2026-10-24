@@ -207,11 +207,6 @@
   },
   {
     "group": "layout",
-    "name": "EditorialInlineSearch",
-    "tagline": "A collection's own search row (gh#1439): a visible label, a framed field with a search glyph (max 400px) and a live count at the end. The query is reported after typing settles (`debounce`, default 300ms) or at once on Enter. A named `role=\"search\"` region. Geometry: `--editorial-inline-search-*`; a theme hides the label on narrow screens with `--editorial-inline-search-label-display: none`."
-  },
-  {
-    "group": "layout",
     "name": "EditorialFootnote",
     "tagline": "A quiet closing line under a collection or a settings form (gh#1439): a muted note at the start and an optional action (an EditorialTextButton) at the end. Geometry: `--editorial-footnote-*`."
   },

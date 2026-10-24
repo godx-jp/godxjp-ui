@@ -7,7 +7,6 @@ import type {
   EditorialAuthProp,
   EditorialEmptyPanelProp,
   EditorialFootnoteProp,
-  EditorialInlineSearchProp,
   EditorialMetaBarProp,
   EditorialStatsItemProp,
   EditorialStatsProp,
@@ -33,8 +32,6 @@ export type {
   EditorialEmptyPanelProp as EditorialEmptyPanelProps,
   EditorialFootnoteProp,
   EditorialFootnoteProp as EditorialFootnoteProps,
-  EditorialInlineSearchProp,
-  EditorialInlineSearchProp as EditorialInlineSearchProps,
   EditorialMetaBarProp,
   EditorialMetaBarProp as EditorialMetaBarProps,
   EditorialStatsItemProp,
@@ -499,8 +496,11 @@ export function EditorialTextButton({
   );
 }
 
-/** A collection's own search row: visible label, framed field with a glyph, a live count at the end. */
-export function EditorialInlineSearch({
+/**
+ * `EditorialSearch variant="inline"` (gh#1439) — internal: a collection's own search row, visible
+ * label, framed field with a glyph and a live count. Rendered by EditorialSearch; not exported.
+ */
+export function EditorialSearchInline({
   label,
   id,
   placeholder,
@@ -509,7 +509,16 @@ export function EditorialInlineSearch({
   debounce = 300,
   count,
   className,
-}: EditorialInlineSearchProp) {
+}: {
+  label: string;
+  id?: string;
+  placeholder?: string;
+  defaultValue?: string;
+  onSearch?: (query: string) => void;
+  debounce?: number;
+  count?: React.ReactNode;
+  className?: string;
+}) {
   const reactId = React.useId();
   const inputId = id ?? `editorial-inline-search-${reactId}`;
   const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -519,7 +528,7 @@ export function EditorialInlineSearch({
       const query = value.trim();
       if (query === last.current) return;
       last.current = query;
-      onSearch(query);
+      onSearch?.(query);
     },
     [onSearch],
   );
@@ -528,21 +537,22 @@ export function EditorialInlineSearch({
     <div
       role="search"
       aria-label={label}
-      data-slot="editorial-inline-search"
-      className={cn("ui-editorial-inline-search", className)}
+      data-slot="editorial-search"
+      data-variant="inline"
+      className={cn("ui-editorial-search-inline", className)}
     >
-      <label htmlFor={inputId} className="ui-editorial-inline-search-label">
+      <label htmlFor={inputId} className="ui-editorial-search-inline-label">
         {label}
       </label>
-      <div className="ui-editorial-inline-search-field">
-        <Search aria-hidden className="ui-editorial-inline-search-icon" />
+      <div className="ui-editorial-search-inline-field">
+        <Search aria-hidden className="ui-editorial-search-inline-icon" />
         <input
           id={inputId}
           type="search"
           placeholder={placeholder}
           defaultValue={defaultValue}
           autoComplete="off"
-          className="ui-editorial-inline-search-input ui-focus-ring"
+          className="ui-editorial-search-inline-input ui-focus-ring"
           onChange={(event) => {
             const value = event.currentTarget.value;
             clearTimeout(timer.current);
@@ -556,7 +566,7 @@ export function EditorialInlineSearch({
         />
       </div>
       {count != null && (
-        <span role="status" aria-live="polite" className="ui-editorial-inline-search-count">
+        <span role="status" aria-live="polite" className="ui-editorial-search-inline-count">
           {count}
         </span>
       )}

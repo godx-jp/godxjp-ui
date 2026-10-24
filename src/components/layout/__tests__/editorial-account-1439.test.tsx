@@ -16,7 +16,6 @@ import {
   EditorialAuthCard,
   EditorialEmptyPanel,
   EditorialFootnote,
-  EditorialInlineSearch,
   EditorialMetaBar,
   EditorialStats,
   EditorialTextButton,
@@ -29,7 +28,7 @@ import {
   SettingsPanel,
   ThemePicker,
 } from "../editorial-account";
-import { EditorialPageHeader } from "../editorial";
+import { EditorialPageHeader, EditorialSearch } from "../editorial";
 import * as layout from "../index";
 
 const read = (relativePath: string) =>
@@ -377,12 +376,13 @@ describe("EditorialPageHeader eyebrowTone (gh#1439)", () => {
   });
 });
 
-describe("EditorialInlineSearch / EditorialFootnote (gh#1439)", () => {
+describe('EditorialSearch variant="inline" / EditorialFootnote (gh#1439)', () => {
   it("a named search region with a visible label; the query settles after typing, at once on Enter", () => {
     vi.useFakeTimers();
     const onSearch = vi.fn();
     render(
-      <EditorialInlineSearch
+      <EditorialSearch
+        variant="inline"
         label="Search your collection"
         onSearch={onSearch}
         count="3 entries"
@@ -405,7 +405,7 @@ describe("EditorialInlineSearch / EditorialFootnote (gh#1439)", () => {
     expect(onSearch).toHaveBeenCalledTimes(2);
     expect(screen.getByRole("status").textContent).toBe("3 entries");
     vi.useRealTimers();
-    expect(tokens).toContain("--editorial-inline-search-field-max-width: 25rem;");
+    expect(tokens).toContain("--editorial-search-inline-field-max-width: 25rem;");
   });
 
   it("footnote: a note and a trailing action, 13px from a token", () => {

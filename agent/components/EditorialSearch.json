@@ -11,10 +11,26 @@
       "type": "string"
     },
     {
-      "description": "Button text.",
+      "default": "\"inset\"",
+      "description": "Site search box, or a collection's own row (visible label, live count, no button).",
+      "name": "variant",
+      "type": "\"inset\" | \"inline\""
+    },
+    {
+      "description": "Button text (inset; required there).",
       "name": "submitLabel",
-      "required": true,
       "type": "ReactNode"
+    },
+    {
+      "description": "inline: live count at the end of the row.",
+      "name": "count",
+      "type": "ReactNode"
+    },
+    {
+      "default": "300",
+      "description": "inline: settle delay (ms).",
+      "name": "debounce",
+      "type": "number"
     },
     {
       "description": "Placeholder.",
@@ -59,6 +75,7 @@
   ],
   "tagline": "The inset site search (gh#1435): ONE bordered box holding a search glyph, the field and the submit button, under a visually hidden label that also names the `role=\"search\"` landmark. `onSearch` gets the trimmed query; without JavaScript the form GETs `action`. Geometry: `--editorial-search-*`.",
   "usage": [
-    "DO use it for a site search that submits; use SearchInput for a live filter."
+    "DO use it for a site search that submits; use SearchInput for a live filter.",
+    "DO use variant=\"inline\" for a collection's own search row (visible label, live count) — gh#1439."
   ]
 }

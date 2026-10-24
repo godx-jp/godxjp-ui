@@ -270,6 +270,7 @@
     "CardShowcase": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -289,6 +290,7 @@
     "CatalogCard": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -489,6 +491,7 @@
     "EditorialArticle": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -506,6 +509,7 @@
     "EditorialBanner": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -513,6 +517,7 @@
     "EditorialBreadcrumb": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -520,6 +525,7 @@
     "EditorialCard": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -532,6 +538,7 @@
     "EditorialFilterBar": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -539,6 +546,7 @@
     "EditorialFooter": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -551,18 +559,15 @@
     "EditorialHero": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
-      ]
-    },
-    "EditorialInlineSearch": {
-      "layers": [
-        "editorial-account-layout.css"
       ]
     },
     "EditorialMasthead": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -575,6 +580,7 @@
     "EditorialPageHeader": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -582,6 +588,7 @@
     "EditorialPanel": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -589,6 +596,7 @@
     "EditorialPillNav": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -596,6 +604,7 @@
     "EditorialSearch": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -603,6 +612,7 @@
     "EditorialSection": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -610,6 +620,7 @@
     "EditorialSectionHead": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
@@ -659,6 +670,7 @@
     "Eyebrow": {
       "layers": [
         "layout.css",
+        "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
       ]
