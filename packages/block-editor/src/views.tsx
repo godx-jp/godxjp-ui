@@ -7,7 +7,7 @@ import {
   type NodeViewProps,
 } from "@tiptap/react";
 import { ChevronDown, LoaderCircle, TriangleAlert } from "lucide-react";
-import { parse } from "@godxjp/markdown/codec";
+import { parse, readDirective } from "@godxjp/markdown/codec";
 import { Input, Select, Textarea } from "@godxjp/ui/data-entry";
 import {
   DropdownMenu,
@@ -18,8 +18,8 @@ import {
 } from "@godxjp/ui/navigation";
 import { Button, Text } from "@godxjp/ui/general";
 
-import { Embed, Frontmatter, RawBlock } from "./extensions";
-import { useLabel } from "./labels";
+import { Directive, Embed, Frontmatter, RawBlock } from "./extensions";
+import { DirectivesContext, useLabel } from "./labels";
 
 /**
  * Markdown the document does not model, shown as its source and editable as source. On "Done" the
@@ -90,6 +90,89 @@ function RawBlockView({ node, editor, getPos, updateAttributes, selected }: Node
 
 export function rawBlockNode(): Node {
   return RawBlock.extend({ addNodeView: () => ReactNodeViewRenderer(RawBlockView) }) as Node;
+}
+
+/**
+ * A directive block (`:::poll[…]{…}`): the host's preview for its name, or its source when the
+ * host has none (or declines this one). "Edit source" edits the directive's Markdown; on "Done" it
+ * is parsed again — still one directive, it stays this block with the new source; anything else
+ * (blocks, raw Markdown, nothing) takes its place, as for a raw block.
+ */
+function DirectiveView({ node, editor, getPos, updateAttributes, selected }: NodeViewProps) {
+  const tr = useLabel();
+  const previews = React.useContext(DirectivesContext);
+  const name = node.attrs.name as string;
+  const source = node.attrs.source as string;
+  const [editing, setEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState(source);
+  // Own keys only: a body's `:::constructor` must not reach `Object.prototype.constructor`.
+  const render = previews && Object.hasOwn(previews, name) ? previews[name] : undefined;
+  const block = React.useMemo(() => (render ? readDirective(source) : null), [render, source]);
+  const preview = render && block ? render(block) : undefined;
+  const commit = () => {
+    setEditing(false);
+    const doc = parse(draft);
+    const pos = getPos();
+    const [only] = doc.content;
+    if (doc.content.length === 1 && only!.type === "directive") {
+      updateAttributes(only!.attrs!);
+      return;
+    }
+    if (typeof pos !== "number") return;
+    editor
+      .chain()
+      .focus()
+      .insertContentAt({ from: pos, to: pos + node.nodeSize }, doc.content)
+      .run();
+  };
+  return (
+    <NodeViewWrapper
+      className="ui-block-editor-raw-block"
+      data-directive={name}
+      data-selected={selected ? "" : undefined}
+    >
+      <div className="ui-block-editor-raw-block-head" contentEditable={false}>
+        <Text size="xs" tone="muted">
+          {tr("directive", { name })}
+        </Text>
+        {editor.isEditable ? (
+          <Button
+            size="xs"
+            variant="ghost"
+            onClick={() => (editing ? commit() : (setDraft(source), setEditing(true)))}
+          >
+            {editing ? tr("done") : tr("editSource")}
+          </Button>
+        ) : null}
+      </div>
+      {editing ? (
+        <Textarea
+          aria-label={tr("directive", { name })}
+          value={draft}
+          rows={Math.min(12, Math.max(3, draft.split("\n").length))}
+          onValueChange={setDraft}
+          onKeyDown={(event) => {
+            // The textarea is inside the editor's DOM: keep its keys out of ProseMirror.
+            event.stopPropagation();
+            if (event.key === "Escape") commit();
+          }}
+          autoFocus
+        />
+      ) : preview !== undefined ? (
+        <div data-directive-preview="" contentEditable={false}>
+          {preview}
+        </div>
+      ) : (
+        <pre className="ui-block-editor-raw-block-source" contentEditable={false}>
+          {source}
+        </pre>
+      )}
+    </NodeViewWrapper>
+  );
+}
+
+export function directiveNode(): Node {
+  return Directive.extend({ addNodeView: () => ReactNodeViewRenderer(DirectiveView) }) as Node;
 }
 
 /**

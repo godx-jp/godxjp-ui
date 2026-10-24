@@ -142,7 +142,7 @@ describe("codec (gh#1156)", () => {
       // A column holding a column row: the outer row is real, the inner one is kept raw.
       nested:
         "::::::columns\n:::::column\n::::columns\n:::column\nA\n:::\n\n:::column\nB\n:::\n::::\n:::::\n\n:::::column\nC\n:::::\n::::::",
-      unknown: ":::aside[x]{a=1}\nbody\n:::",
+      toggleWithAttributes: ":::toggle[x]{a=1}\nbody\n:::",
     };
     for (const [name, markdown] of Object.entries(cases)) {
       const doc = parse(markdown);

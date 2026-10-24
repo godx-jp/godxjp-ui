@@ -33,22 +33,47 @@ import { BlockEditor } from "@godxjp/block-editor";
   paste is read as Markdown.
 - **Uploads**: paste / drop / pick a file → an inline placeholder with progress; failure offers
   Retry / Remove; deleting the placeholder aborts the host's `signal`.
-- **Lossless**: anything the editor does not model (raw HTML, footnotes, an unknown directive) is a
-  raw block showing its source, editable as source.
+- **Directive blocks**: a container directive the kit does not model (`:::poll[…]{…}`,
+  `::::form`) is ONE atomic block — dragged, deleted and inserted whole — showing the host's preview
+  for its name (`directives`), or its source; "Edit source" edits its Markdown. A host `/` row
+  inserts one with `api.insertMarkdown(skeleton)`.
+- **Lossless**: anything else the editor does not model (raw HTML, footnotes, a malformed toggle or
+  column row) is a raw block showing its source, editable as source.
 - **IME-safe** (menus read the committed document), **ja / en / vi**, a named `textbox` with the
   WAI-ARIA popup wiring on the `/` and `[[` lists, the kit's Prose as the editing surface.
 
 ## Contract
 
-| prop                                                                     |                                                         |
-| ------------------------------------------------------------------------ | ------------------------------------------------------- |
-| `value` / `defaultValue` / `onValueChange`                               | Markdown in, canonical Markdown out                     |
-| `upload(file, { signal })`                                               | `→ { url, name? }` — the same shape as `MarkdownEditor` |
-| `pickMedia()`                                                            | `→ { url, name? } \| null` — the host's library         |
-| `suggestWikilinks(query)`                                                | `→ { target, label?, heading?, description? }[]`        |
-| `renderEmbed(target)`                                                    | a block embed `![[target]]`                             |
-| `resolveUrl(url)`                                                        | display URL for a stored one (`asset:<id>`)             |
-| `actions`, `labels`, `disabled`, `readOnly`, `autoFocus`, `aria-*`, `id` |                                                         |
+| prop                                                                     |                                                          |
+| ------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `value` / `defaultValue` / `onValueChange`                               | Markdown in, canonical Markdown out                      |
+| `upload(file, { signal })`                                               | `→ { url, name? }` — the same shape as `MarkdownEditor`  |
+| `pickMedia()`                                                            | `→ { url, name? } \| null` — the host's library          |
+| `suggestWikilinks(query)`                                                | `→ { target, label?, heading?, description? }[]`         |
+| `renderEmbed(target)`                                                    | a block embed `![[target]]`                              |
+| `resolveUrl(url)`                                                        | display URL for a stored one (`asset:<id>`)              |
+| `directives`                                                             | `{ [name]: (block) => ReactNode \| undefined }` previews |
+| `actions`, `labels`, `disabled`, `readOnly`, `autoFocus`, `aria-*`, `id` |                                                          |
+
+```tsx
+// A poll is a block: the host previews it and inserts its skeleton from the `/` menu.
+<BlockEditor
+  value={body}
+  onValueChange={setBody}
+  directives={{
+    // block: { name, label, attributes, source, body } — the codec's canonical Markdown
+    poll: (block) => <PollPreview question={block.label} options={block.body} />,
+  }}
+  actions={[
+    {
+      key: "poll",
+      label: "Poll",
+      icon: <ListChecks />,
+      run: (api) => api.insertMarkdown(":::poll[Question]{id=poll-1}\n- Option A\n- Option B\n:::"),
+    },
+  ]}
+/>
+```
 
 The grammar it reads and writes is specified in `@godxjp/markdown`'s README ("Grammar v1 and the
 codec"). The editor's schema is tested to round-trip every fixture exactly:

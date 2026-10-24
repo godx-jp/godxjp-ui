@@ -3,7 +3,8 @@ import { toMarkdown } from "mdast-util-to-markdown";
 import type { Blockquote, Nodes, Paragraph, PhrasingContent, Root, RootContent } from "mdast";
 import type { ContainerDirective } from "mdast-util-directive";
 
-import type { Doc, DocNode, Mark } from "./model";
+import { MODELLED_DIRECTIVES, type Doc, type DocNode, type Mark } from "./model";
+import { directiveParts, type DirectiveBlock } from "./directive";
 import { readCallout, readColumns, readToggle } from "./readers";
 import { fromMarkdownExtensions, micromarkExtensions } from "./syntax";
 import { toMarkdownOptions } from "./options";
@@ -197,7 +198,20 @@ function directiveBlock(node: ContainerDirective, depth: { columns: boolean }): 
       })),
     };
   }
-  return raw(node, false);
+  // A malformed toggle / column row stays raw. Any other container directive — `:::poll`,
+  // `::::form` — is ONE block the host gives meaning to, kept as its canonical source (the same
+  // text a raw block keeps, so the serialized body is unchanged: still kit-md@2).
+  if (MODELLED_DIRECTIVES.includes(node.name)) return raw(node, false);
+  return { type: "directive", attrs: { name: node.name, source: directiveParts(node).source } };
+}
+
+/**
+ * The parts of a directive block's `source` (a `directive` node's attribute), or `null` when the
+ * text is not exactly one container directive. Pure — a host's editor preview calls it.
+ */
+export function readDirective(source: string): DirectiveBlock | null {
+  const [only, ...rest] = parseMdast(source.replace(/\r\n?/g, "\n")).children;
+  return only?.type === "containerDirective" && rest.length === 0 ? directiveParts(only) : null;
 }
 
 function nonEmpty(content: DocNode[]): DocNode[] {

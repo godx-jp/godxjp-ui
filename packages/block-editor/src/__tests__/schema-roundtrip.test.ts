@@ -43,6 +43,9 @@ const CASES = [
   "[![img](https://example.com/a.png)](https://example.com/)",
   "![[B#見出し]]\n\n![[img.png|300]]",
   "**a\\\nb**",
+  // Directive blocks: one atomic `directive` node each, inside containers too.
+  ":::poll[When?]{id=t closes=2026-11-10T09:00 anonymous}\n- a\n- b {#k}\n:::",
+  "> [!NOTE]\n> :::poll{type=ack id=b}\n> I agree.\n> :::\n\n- item\n\n  :::aside[x]\n  y\n  :::",
   // YAML front matter, the page's properties (gh#1163).
   "---\ntitle: 見積\ntags: [spec]\n---\n\n# 本文",
   "",

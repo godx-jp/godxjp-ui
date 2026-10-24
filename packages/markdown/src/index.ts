@@ -1,5 +1,6 @@
 export { Markdown, MARKDOWN_FORMAT, RENDERER_VERSION } from "./markdown";
-export type { MarkdownProps } from "./markdown";
+export type { DirectiveRenderer, DirectiveRenderProps, MarkdownProps } from "./markdown";
+export type { DirectiveBlock } from "./codec/directive";
 export { markdownSchema, extendSchema, safeUrl } from "./schema";
 export type { SchemaExtension } from "./schema";
 export { rehypeHeadingIds } from "./headings";

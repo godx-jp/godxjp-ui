@@ -205,4 +205,18 @@ export const MARKDOWN_FIXTURES: MarkdownFixture[] = [
     markdown: "```unknown\nlet a = 1\n```",
     html: '<pre><code class="language-unknown">let a = 1\n</code></pre>',
   },
+  // Directive blocks: a container directive the kit does not model renders its content (the
+  // label as a paragraph) until a host registers a renderer for its name (`<Markdown directives>`).
+  {
+    name: "an unregistered :::poll renders its label and body",
+    markdown:
+      ":::poll[Which date works?]{id=launch-date type=single closes=2026-11-10}\n- 11月15日\n- 11月22日 {#d22}\n:::",
+    html: '<div class="ui-prose-directive"><p>Which date works?</p><ul>\n<li>11月15日</li>\n<li>11月22日 {#d22}</li>\n</ul></div>',
+  },
+  {
+    name: "an unregistered ::::form holding :::poll blocks nests",
+    markdown:
+      "::::form[Survey]{id=f}\n:::poll[A?]{id=a}\n- x\n- y\n:::\n\n:::poll{type=ack id=b}\nI agree.\n:::\n::::",
+    html: '<div class="ui-prose-directive"><p>Survey</p><div class="ui-prose-directive"><p>A?</p><ul>\n<li>x</li>\n<li>y</li>\n</ul></div><div class="ui-prose-directive"><p>I agree.</p></div></div>',
+  },
 ];

@@ -20,6 +20,10 @@ import xml from "highlight.js/lib/languages/xml";
 import yaml from "highlight.js/lib/languages/yaml";
 import { visit } from "unist-util-visit";
 
+import { CODE_TOKENS, type CodeToken } from "./code-tokens";
+
+export { CODE_TOKENS };
+
 /**
  * SYNTAX COLOUR (renderer v6). A fence with a known language is tokenised at parse time by
  * highlight.js (through lowlight: synchronous, no DOM, so the same HTML comes out of a browser, a
@@ -50,23 +54,6 @@ const lowlight = createLowlight({
   xml,
   yaml,
 });
-
-/** The kit's token names (`data-code-token`, Shiki's createCssVariablesTheme vocabulary). */
-export const CODE_TOKENS = [
-  "comment",
-  "keyword",
-  "string",
-  "string-expression",
-  "function",
-  "constant",
-  "parameter",
-  "punctuation",
-  "link",
-  "inserted",
-  "deleted",
-  "changed",
-] as const;
-type CodeToken = (typeof CODE_TOKENS)[number];
 
 /**
  * highlight.js scope → kit token, by the scope's first segment (`title.function.invoke` reads

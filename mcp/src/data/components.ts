@@ -7238,6 +7238,12 @@ import { Flex } from "@godxjp/ui/layout";
         description:
           "Fenced code in a known language is tokenised at parse time as `<span data-code-token>` with the kit's twelve names, which Prose colours (renderer v6). `false` leaves plain text for a host `pre` with its own highlighter.",
       },
+      {
+        name: "directives",
+        type: "Record<string, (block: DirectiveRenderProps) => ReactNode | undefined>",
+        description:
+          "Host renderers for container directives the kit does not model, by name (`{ poll: (b) => <PollCard … /> }`). Each gets `{ name, label, attributes, source, body, children }` — label / source / body as written, `children` the rendered body without the label (a `::::form`'s `:::poll` cards). Return `undefined` to render the block as an unknown directive (its content in `div.ui-prose-directive`), which is also what an unregistered name renders. `toggle` / `columns` / `column` cannot be overridden.",
+      },
     ],
     usage: [
       'DO let the document language do Japanese line breaking: under `:lang(ja)` (AppProvider sets `<html lang>`) every prose paragraph and list item breaks between PHRASES — `word-break: auto-phrase` + `line-break: strict`, the `Text break="phrase"` behaviour (gh#1310) — so 「新しく参加」 is not cut 「新し｜く参加」. Latin and Vietnamese wrap unchanged; a phrase longer than the line still breaks inside itself. A browser without `auto-phrase` keeps its own CJK breaking.',
@@ -7245,6 +7251,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
       "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
       'DO `import "@godxjp/markdown/katex.css"` once in the app: `$…$`, `$$…$$` and ```math are drawn by KaTeX at parse time (trust: false, renderer v6) and need its stylesheet and fonts. A single `$` follows Pandoc\'s rule, so `$5 and $10` stays text.',
+      "DO import `Markdown` from `@godxjp/markdown/lazy` in a client-rendered app: KaTeX (+ its stylesheet, no global katex.css import needed) and highlight.js load only when a body has math or a fence with a language, then the body re-renders. The default entry stays eager because a server or Worker render is synchronous; a server or a hydrating client using `/lazy` awaits `preloadMarkdownRuntime(body)` first.",
       "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate.",
     ],
     related: [
@@ -7404,7 +7411,13 @@ import { FormField } from "@godxjp/ui/data-entry";
         name: "actions",
         type: "BlockEditorAction[]",
         description:
-          "Extra `/` rows ({ key, label, icon, keywords?, run(api) }) — `api.insertMarkdown` inserts through the codec.",
+          "Extra `/` rows ({ key, label, icon, keywords?, run(api) }) — `api.insertMarkdown` inserts through the codec, so a directive skeleton (`:::poll[Q]{id=x}\\n- A\\n- B\\n:::`) lands as a directive block.",
+      },
+      {
+        name: "directives",
+        type: "Record<string, (block: DirectiveBlock) => ReactNode | undefined>",
+        description:
+          "Editor previews for directive blocks, by name. A container directive the kit does not model (`:::poll[…]{…}`) is one atomic block — dragged, deleted and inserted whole, its source edited behind Edit source; the preview gets `{ name, label, attributes, source, body }` (canonical). No renderer, or `undefined`: the block shows its source.",
       },
       {
         name: "labels",

@@ -336,6 +336,42 @@ export const Frontmatter = Node.create({
 });
 
 /**
+ * A container directive the kit does not model (`:::poll[…]{…}`, `::::form`): ONE block — dragged,
+ * deleted and inserted whole — kept as its source. The component gives it a node view that shows
+ * the host's preview for its name (`directives`) and edits the source.
+ */
+export const Directive = Node.create({
+  name: "directive",
+  group: "block",
+  atom: true,
+  draggable: true,
+  addAttributes() {
+    return { name: { default: "" }, source: { default: "" } };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "pre[data-directive]",
+        getAttrs: (element) => ({
+          name: element.getAttribute("data-directive") ?? "",
+          source: element.textContent ?? "",
+        }),
+      },
+    ];
+  },
+  renderHTML({ node, HTMLAttributes }) {
+    return [
+      "pre",
+      mergeAttributes(HTMLAttributes, {
+        "data-directive": node.attrs.name,
+        class: "ui-block-editor-raw-block",
+      }),
+      node.attrs.source as string,
+    ];
+  },
+});
+
+/**
  * Markdown the document does not model (raw HTML, a footnote definition, a malformed directive),
  * kept as its source so nothing is lost. The component gives it an editable node view.
  */
@@ -370,6 +406,7 @@ export function schemaExtensions(options: {
   /** Node views the component owns (React); omitted, the nodes render as plain HTML. */
   embed?: Node;
   rawBlock?: Node;
+  directive?: Node;
   /** Resolves a stored image URL (`asset:<id>`) to one the browser can load; the doc keeps the original. */
   resolveUrl?: (url: string) => string | undefined;
   callout?: Node;
@@ -428,6 +465,7 @@ export function schemaExtensions(options: {
     RawInline,
     options.embed ?? Embed,
     options.rawBlock ?? RawBlock,
+    options.directive ?? Directive,
     options.frontmatter ?? Frontmatter,
     Placeholder.configure({
       includeChildren: true,
