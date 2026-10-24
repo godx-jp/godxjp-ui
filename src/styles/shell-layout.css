@@ -1075,8 +1075,11 @@
     scrollbar-width: none;
   }
 
+  /* `:not(.ui-logo)`: a brand link that IS the boxed mark (`<Logo asChild>` with no wordmark)
+   * keeps the mark's own `inline-grid` centring. As `flex` it lost inline centring — the glyph sat
+   * against the box's start edge, 7.75px off-centre at `md`. */
   .app-topbar-logo,
-  .app-topbar-logo > a {
+  .app-topbar-logo > a:not(.ui-logo) {
     display: flex;
     align-items: center;
   }

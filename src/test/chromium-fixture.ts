@@ -13,7 +13,11 @@ import { compileRealCss } from "../components/data-entry/__tests__/compile-real-
  * measured here — the same harness `overlay-reduced-motion-1213-browser.test.ts` uses inline.
  */
 export type ChromiumFixture = {
-  open: (search: string, viewport?: { width: number; height: number }) => Promise<Page>;
+  open: (
+    search: string,
+    viewport?: { width: number; height: number },
+    deviceScaleFactor?: number,
+  ) => Promise<Page>;
   close: () => Promise<void>;
 };
 
@@ -47,8 +51,8 @@ export async function bootChromium(entry: string, cssRevision?: string): Promise
   });
   const browser: Browser = await chromium.launch({ headless: true });
   return {
-    async open(search, viewport = { width: 1280, height: 800 }) {
-      const page = await browser.newPage({ viewport });
+    async open(search, viewport = { width: 1280, height: 800 }, deviceScaleFactor) {
+      const page = await browser.newPage({ viewport, deviceScaleFactor });
       await page.goto(`about:blank${search}`);
       await page.setContent(
         `<!doctype html><html lang="en"><head><style>${css}</style></head><body><div id="root"></div><script>${js}</script></body></html>`,
