@@ -2432,6 +2432,11 @@
       "saved": "Saved",
       "more": "More",
       "scope": "Viewing scope"
+    },
+    "appShellPhone": {
+      "home": "Home",
+      "work": "Work",
+      "people": "People"
     }
   },
   "dashboardGridDocs": {

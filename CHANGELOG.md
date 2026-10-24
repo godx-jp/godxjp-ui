@@ -29,6 +29,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Editorial account family (#1439), in its own layer `styles/editorial-account-layout.css` with `--editorial-*` tokens in `tokens/components/editorial-account.css`: `EditorialToggleGroup variant="text" | "icon"` — a named group of `aria-pressed` buttons (a filter row, or a framed icon-only grid / list switch named by each item's label). Also `EditorialTextButton`, `EditorialMetaBar`, `EditorialEmptyPanel variant="guest" | "empty"`, `EditorialStats`, `EditorialToolbar` (the ONE editorial toolbar, shared with the catalog #1438: `summary={{ count, note }}` — count as a polite live region — plus `start` / `end` clusters and an optional `divider` hairline; with a summary it is a one-line listing row, without one a bar that a theme stacks with `--editorial-toolbar-display: block`; geometry `--editorial-toolbar-*`), `EditorialSearch variant="inline"` (a collection's own search row: visible label, live count, no submit), `EditorialFootnote`, `HoldingGrid` / `HoldingCard` / `HoldingCardAction` (`view="grid" | "list"` — the list view is the same card on `140px 1fr` tracks), `SettingsLayout` / `SettingsPanel`, `ThemePicker` (illustrated light / dark / system radios) and `EditorialAuth` / `EditorialAuthCard`; `EditorialPageHeader eyebrowTone="accent"`; Button knob `--button-outline-foreground`.
 - `--editorial-catalog-card-price-label-line-clamp` (default `none`): clamp a long CatalogCard price caption instead of growing the tile (#1435).
 - `EditorialSearch scope` — a slot at the start of the inset search box for the kit `Select` that scopes the search (a site searched per game); the box gives it the field height and a hairline (#1435). Masthead pickers are the kit `Select variant="borderless" width="auto"`, sized by `--editorial-masthead-picker-*` — the kit keeps ONE select implementation.
+- AppShell `mobileTabBar` / `mobileTabBarLabel`: shared MobileShell destination surface in drawer mode, measured content/toast clearance, safe-area support and desktop/print hiding (#1433). Shared `--mobile-shell-tab-bar-background`, `--mobile-shell-tab-bar-border`, `--mobile-shell-tab-bar-active-color` and `--mobile-shell-tab-bar-active-background` knobs (quiet defaults).
+
+### Changed
+
+- MobileShell destination bands use a quiet separator by default; opt into a line through `--mobile-shell-tab-bar-border`. Both shells share full-band touch targets and scoped current-page paint.
+
+### Fixed
+
+- AppShell: with mobileTabBar visible, app footer now flows at the end of scrolling content; desktop retains its footer track. Footer inline insets follow the page spacing tokens, including compact phone gutters and RTL.
+- Collapsed table records honor `--table-row-border-width`; compact collections honor `--table-font-size` while retaining compact defaults when unset. Persona typography resolves when optional foundation aliases are unavailable (#1383).
+- Token reachability gates accept `--only <exact-slug>` for explicit partial verification, rejecting unknown slugs and baseline updates.
+
 ## [33.20.0] - 2026-10-24
 
 ### Added

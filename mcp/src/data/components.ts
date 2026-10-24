@@ -2387,6 +2387,18 @@ import { StatCard } from "@godxjp/ui/data-display";
       "Root application shell — composes sidebar, topbar rail, main content area, and optional footer. In print, navigation, topbar, breadcrumb and footer are hidden; main content flows across the paper width on the light --background. Put every consumer-authored dark theme override inside @media not print, with light declarations outside it, matching the package themes. Keyboard focus in clipped chrome stays inset; the main scroll region shows an inset brand ring by default (--region-focus-ring-width).",
     props: [
       {
+        name: "mobileTabBar",
+        type: "ReactNode",
+        description:
+          "Phone-only destinations in drawer mode (<=900px). Reuses MobileShell tabBar: equal-width children, safe-area insets, aria-current=page. Reserve the measured band outside the scrolling main; the app footer flows at the end of main, leaving only this bottom navigation persistent; publishes --app-shell-mobile-tab-bar-block-size on the shell and --toast-sticky-bar-height on html. Omit/null/false for none; responsiveNavigation=none disables it. Use 3–5 Button asChild links; native Tab/Shift+Tab and Enter. Hidden on desktop and in print. External dock: reserve --app-shell-viewport-inset; bar stays inside the remaining shell viewport.",
+      },
+      {
+        name: "mobileTabBarLabel",
+        type: "string",
+        description:
+          "Navigation landmark name; defaults to the shared localized primary-navigation label (ja/en/vi).",
+      },
+      {
         name: "sidebar",
         type: "ReactNode",
         description:
@@ -2481,7 +2493,8 @@ import { StatCard } from "@godxjp/ui/data-display";
       {
         name: "footer",
         type: "ReactNode",
-        description: "App-level footer outside the main content area.",
+        description:
+          "App-level footer with page keyline insets (--space-page-x, --space-page-compact-x on phones). Outside main on desktop; when mobileTabBar is visible, flows at the end of the scrolling main instead of reserving persistent chrome.",
       },
       {
         name: "breadcrumb",

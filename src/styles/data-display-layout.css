@@ -35,19 +35,25 @@
   }
 
   .ui-persona [data-slot="persona-name"] {
-    font-size: var(--persona-name-font-size, var(--font-size-sm));
+    font-size: var(--persona-name-font-size, var(--font-size-sm, var(--font-size-base)));
     font-weight: var(--persona-name-font-weight, var(--font-weight-medium));
     color: var(--persona-name-color, hsl(var(--foreground)));
   }
 
   .ui-persona[data-size="sm"] [data-slot="persona-name"] {
-    font-size: var(--persona-name-font-size-sm, var(--font-size-xs));
+    font-size: var(
+      --persona-name-font-size-sm,
+      var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))
+    );
   }
 
   .ui-persona [data-slot="persona-description"] {
     align-self: flex-start;
     max-inline-size: 100%;
-    font-size: var(--persona-description-font-size, var(--font-size-xs));
+    font-size: var(
+      --persona-description-font-size,
+      var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))
+    );
     color: var(--persona-description-color, hsl(var(--muted-foreground)));
   }
 

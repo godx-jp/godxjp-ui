@@ -506,6 +506,10 @@ export type PageInsetProp = React.HTMLAttributes<HTMLDivElement> & {
 
 /** @see AppShell */
 export type AppShellProp = {
+  /** Phone destinations, using MobileShell tabBar children (3–5 links or Buttons with aria-current="page"). Only rendered in drawer navigation mode. Main/footer reserve the measured safe-area-inclusive height. */
+  mobileTabBar?: MobileShellProp["tabBar"];
+  /** Navigation landmark name; defaults to the localized primary-navigation label. */
+  mobileTabBarLabel?: string;
   /** Omit or pass null/false for a shell without the sidebar landmark or grid track. */
   sidebar?: ReactNode;
   children: ReactNode;

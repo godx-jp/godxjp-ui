@@ -3,7 +3,7 @@
 @layer components {
   /* The table's base type. */
   [data-slot="table"] {
-    font-size: var(--table-font-size);
+    font-size: var(--table-font-size, var(--font-size-sm, var(--font-size-base)));
     line-height: var(--table-line-height);
   }
 
@@ -1233,7 +1233,7 @@
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
-      font-size: var(--table-action-collection-font-size-compact);
+      font-size: var(--table-font-size, var(--table-action-collection-font-size-compact));
       /* The legibility floor — or, when the measured actions content (gh#1067) is wider than
        * the token, the width the fit measured for the other columns to keep the room they had
        * (gh#1207); the wrapper scrolls instead of the columns shrinking. */
@@ -1285,7 +1285,7 @@
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
-      font-size: var(--table-action-collection-font-size-compact);
+      font-size: var(--table-font-size, var(--table-action-collection-font-size-compact));
       /* The legibility floor — or, when the measured actions content (gh#1067) is wider than
        * the token, the width the fit measured for the other columns to keep the room they had
        * (gh#1207); the wrapper scrolls instead of the columns shrinking. */
@@ -1337,7 +1337,7 @@
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
-      font-size: var(--table-action-collection-font-size-compact);
+      font-size: var(--table-font-size, var(--table-action-collection-font-size-compact));
       /* The legibility floor — or, when the measured actions content (gh#1067) is wider than
        * the token, the width the fit measured for the other columns to keep the room they had
        * (gh#1207); the wrapper scrolls instead of the columns shrinking. */
@@ -1389,7 +1389,7 @@
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
-      font-size: var(--table-action-collection-font-size-compact);
+      font-size: var(--table-font-size, var(--table-action-collection-font-size-compact));
       /* The legibility floor — or, when the measured actions content (gh#1067) is wider than
        * the token, the width the fit measured for the other columns to keep the room they had
        * (gh#1207); the wrapper scrolls instead of the columns shrinking. */
@@ -1458,8 +1458,11 @@
       height: auto;
       /* One boundary per record: a full card outline plus the next card
        * outline painted two hairlines between stacked records. */
-      border: 0;
-      border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+      border-inline: 0;
+      border-block-start: 0;
+      border-block-end-width: var(--table-row-border-width, var(--stroke-hairline));
+      border-block-end-style: solid;
+      border-block-end-color: hsl(var(--border));
       border-radius: 0;
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
@@ -1529,8 +1532,11 @@
       height: auto;
       /* One boundary per record: a full card outline plus the next card
        * outline painted two hairlines between stacked records. */
-      border: 0;
-      border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+      border-inline: 0;
+      border-block-start: 0;
+      border-block-end-width: var(--table-row-border-width, var(--stroke-hairline));
+      border-block-end-style: solid;
+      border-block-end-color: hsl(var(--border));
       border-radius: 0;
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
@@ -1595,8 +1601,11 @@
       height: auto;
       /* One boundary per record: a full card outline plus the next card
        * outline painted two hairlines between stacked records. */
-      border: 0;
-      border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+      border-inline: 0;
+      border-block-start: 0;
+      border-block-end-width: var(--table-row-border-width, var(--stroke-hairline));
+      border-block-end-style: solid;
+      border-block-end-color: hsl(var(--border));
       border-radius: 0;
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x, var(--card-space-inset));
@@ -1661,8 +1670,11 @@
       height: auto;
       /* One boundary per record: a full card outline plus the next card
        * outline painted two hairlines between stacked records. */
-      border: 0;
-      border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+      border-inline: 0;
+      border-block-start: 0;
+      border-block-end-width: var(--table-row-border-width, var(--stroke-hairline));
+      border-block-end-style: solid;
+      border-block-end-color: hsl(var(--border));
       border-radius: 0;
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x, var(--card-space-inset));

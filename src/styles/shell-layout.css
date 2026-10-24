@@ -453,8 +453,16 @@
 
   .app-footer {
     grid-area: footer;
+    padding-inline: var(--space-page-x);
+    flex-shrink: 0;
     border-top: var(--stroke-hairline) solid hsl(var(--border));
     background: hsl(var(--background));
+  }
+
+  @media (max-width: 720px) {
+    .app-footer {
+      padding-inline: var(--space-page-compact-x);
+    }
   }
 
   /* The page fills the main column; `.ui-page-container` itself is never capped (gh#672), so a
@@ -3770,6 +3778,10 @@
   }
 
   .ui-mobile-shell-tabbar {
+    --control-height: var(--mobile-shell-control-height);
+    --control-height-sm: calc(var(--control-height) - calc(0.25rem * var(--scaling)));
+    --control-height-lg: calc(var(--control-height) + calc(0.25rem * var(--scaling)));
+    --control-height-xs: calc(var(--control-height) - calc(0.5rem * var(--scaling)));
     display: flex;
     min-block-size: calc(
       var(--mobile-shell-tab-bar-height) + var(--mobile-shell-safe-inset-block-end)
@@ -3778,15 +3790,23 @@
     flex: 0 0 auto;
     padding-block-end: var(--mobile-shell-safe-inset-block-end);
     padding-inline: var(--mobile-shell-safe-inset-inline);
-    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
-    background: hsl(var(--card) / var(--card-alpha, 100%));
+    border-block-start: var(--mobile-shell-tab-bar-border);
+    background: var(--mobile-shell-tab-bar-background, hsl(var(--card) / var(--card-alpha, 100%)));
   }
 
   /* A phone tab bar tiles: equal-width targets, no seam, no page gutter. The region owns that so a
    * consumer never reaches for a grid with a hand-written column count. */
   .ui-mobile-shell-tabbar > * {
+    block-size: auto;
+    min-block-size: var(--mobile-shell-control-height);
     min-inline-size: 0;
     flex: 1 1 0;
+  }
+
+  .ui-mobile-shell-tabbar > [aria-current="page"] {
+    color: var(--mobile-shell-tab-bar-active-color, hsl(var(--text-brand, var(--primary))));
+    background: var(--mobile-shell-tab-bar-active-background, hsl(var(--accent)));
+    font-weight: var(--font-weight-medium);
   }
 
   /* The LAST band owns the home-indicator inset, so its own background runs to the physical edge
@@ -3876,6 +3896,7 @@
     }
     .app-root[data-responsive-navigation]
       > :is(.app-sidebar, .app-topbar, .app-nav-rail, .app-footer),
+    .app-root > .app-main > .app-footer,
     .app-breadcrumb,
     .app-mobile-nav-drawer {
       display: none;
@@ -3889,5 +3910,52 @@
       contain: none;
       background-image: none;
     }
+  }
+}
+
+@layer components {
+  .app-root[data-mobile-tab-bar] {
+    position: relative;
+    /* Reserve the entire band outside the scroll region, including safe area and wrapped labels. */
+    padding-block-end: var(
+      --app-shell-mobile-tab-bar-block-size,
+      calc(var(--mobile-shell-tab-bar-height) + var(--mobile-shell-safe-inset-block-end))
+    );
+  }
+  /* PageContainer must contribute its full content height to main's scroll extent. */
+  .app-root[data-mobile-tab-bar] > .app-main > .ui-page-container {
+    flex-shrink: 0;
+  }
+  .app-mobile-tab-bar {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+  }
+  @media (width > 56.25rem) {
+    .app-root[data-mobile-tab-bar] {
+      padding-block-end: 0;
+    }
+    .app-mobile-tab-bar {
+      display: none;
+    }
+  }
+}
+
+@layer components {
+  @media print {
+    .app-root[data-mobile-tab-bar] {
+      padding-block-end: 0;
+    }
+    .ui-mobile-shell-tabbar {
+      display: none;
+    }
+  }
+}
+
+/* Shell-owned band geometry follows utilities, as the other responsive shell tracks do. */
+@layer godxjp-ui-responsive {
+  .ui-mobile-shell-tabbar > * {
+    block-size: auto;
+    align-self: stretch;
   }
 }

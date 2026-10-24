@@ -616,3 +616,29 @@ Its main area uses the full paper width with natural height, visible overflow an
 paint containment, so content beyond the screen viewport can print. Card requests
 `break-inside: avoid`; a card taller than a sheet can still fragment. Applications may
 adjust this in their own print stylesheet through the public `data-slot="card"` hook.
+
+### Shared phone destination bar
+
+`AppShell mobileTabBar` accepts the same children as `MobileShell tabBar`: three to five
+`Button asChild` links (or action Buttons), with `aria-current="page"` on the current destination.
+Use native Tab/Shift+Tab and Enter navigation; this is a navigation landmark, not an ARIA tablist.
+`mobileTabBarLabel` overrides its localized landmark name. Keep longer navigation in the drawer.
+AppShell renders the band only with `responsiveNavigation="drawer"` at or below 900px; it is
+absent above that boundary and hidden in print.
+
+Both shells share `--mobile-shell-tab-bar-height` (minimum content band height),
+`--mobile-shell-tab-bar-background` (local card role), and `--mobile-shell-tab-bar-border`
+(default `none`, a complete block-start border when opted in). Current-page ink and fill use
+`--mobile-shell-tab-bar-active-color` and `--mobile-shell-tab-bar-active-background`, defaulting
+to the local brand ink and accent roles. Color knobs are `initial` and resolve at the reader.
+The existing `--mobile-shell-safe-inset-block-end` and `--mobile-shell-safe-inset-inline` keep
+children clear of device edges; the bar background covers the home-indicator inset.
+
+AppShell reserves the measured border-box band outside its main scroll region and footer;
+longer labels and changed safe insets therefore cannot cover the final record. The read-only
+`--app-shell-mobile-tab-bar-block-size` is published on that shell, including safe insets and
+borders. Read it with `var(--app-shell-mobile-tab-bar-block-size, 0px)` when composing clearance.
+The shared toast mechanism publishes the measured height as `--toast-sticky-bar-height` on html,
+and clears it when the bar unmounts or the viewport becomes desktop. To keep an external bottom
+dock below the shell, set the existing `--app-shell-viewport-inset` to the dock's reserved size;
+the destination band stays inside the remaining viewport. No fixed overlay is added over main.

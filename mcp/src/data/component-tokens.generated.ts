@@ -13039,9 +13039,29 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--mobile-shell-tab-bar-active-color",
+    "value": "initial",
+    "description": "4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar; there is no 64px band step, so it derives from the 3.5rem one (tier 2a). Local brand ink role."
+  },
+  {
+    "name": "--mobile-shell-tab-bar-active-background",
+    "value": "initial",
+    "description": "Local accent role."
+  },
+  {
+    "name": "--mobile-shell-tab-bar-background",
+    "value": "initial",
+    "description": "Local card role at the reader."
+  },
+  {
+    "name": "--mobile-shell-tab-bar-border",
+    "value": "none",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
     "name": "--mobile-shell-tab-bar-height",
     "value": "calc(var(--band-height-3xl) + var(--space-2))",
-    "description": "4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar; there is no 64px band step, so it derives from the 3.5rem one (tier 2a)."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-main-padding-block",
@@ -13420,8 +13440,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-font-size",
-    "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical."
+    "value": "initial",
+    "description": "The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical. Local default; compact collections retain their compact tier."
   },
   {
     "name": "--table-line-height",

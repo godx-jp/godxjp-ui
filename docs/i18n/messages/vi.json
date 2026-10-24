@@ -2425,6 +2425,11 @@
       "saved": "Đã lưu",
       "more": "Thêm",
       "scope": "Phạm vi xem"
+    },
+    "appShellPhone": {
+      "home": "Trang chủ",
+      "work": "Công việc",
+      "people": "Thành viên"
     }
   },
   "dashboardGridDocs": {
