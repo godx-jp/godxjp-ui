@@ -1565,17 +1565,6 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
-  EditorialSearchScopeProp: {
-    group: "layout",
-    file: "components/layout.prop.ts",
-    vocabulary: [
-      "LabelProp",
-      "NameProp",
-      "ValueProp",
-      "OnValueChangeProp",
-      { field: "options", local: true, reason: "The native options of the scope select." },
-    ],
-  },
   EditorialSearchProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -1762,19 +1751,6 @@ export const COMPONENT_PROP_REGISTRY = {
       "ChildrenProp",
       { field: "asChild", local: true, reason: "Render the consumer element (a router Link)." },
       { field: "variant", local: true, reason: "Bare or framed 44px control." },
-      { field: "collapse", local: true, reason: "Let the theme hide it on a phone." },
-    ],
-  },
-  EditorialMastheadSelectProp: {
-    group: "layout",
-    file: "components/layout.prop.ts",
-    vocabulary: [
-      "LabelProp",
-      "ValueProp",
-      "OnValueChangeProp",
-      "IdProp",
-      "ClassNameProp",
-      { field: "options", local: true, reason: "The native options: value and visible label." },
       { field: "collapse", local: true, reason: "Let the theme hide it on a phone." },
     ],
   },

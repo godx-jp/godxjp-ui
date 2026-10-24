@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ui-audit: a lucide glyph inside `EditorialMastheadAction` is sized by the component, not reported (#1435).
 - Fixed: a labelled `Button` with a leading / trailing glyph ("Start →") took the icon-only inline padding (`:has(> svg)` matched it too); Button now marks labelled buttons `data-label` and the icon padding skips them (#1436).
 - `--editorial-catalog-card-price-label-line-clamp` (default `none`): clamp a long CatalogCard price caption instead of growing the tile (#1435).
-- `EditorialSearch scope` — a compact select at the start of the inset search box that scopes the search (a site searched per game); `onSearch(query, scope)` (#1435).
+- `EditorialSearch scope` — a slot at the start of the inset search box for the kit `Select` that scopes the search (a site searched per game); the box gives it the field height and a hairline (#1435). Masthead pickers are the kit `Select variant="borderless" width="auto"`, sized by `--editorial-masthead-picker-*` — the kit keeps ONE select implementation.
 
 ## [33.17.0] - 2026-10-24
 

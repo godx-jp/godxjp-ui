@@ -38,14 +38,14 @@
       "type": "string"
     },
     {
-      "description": "Submit handler (query, and the scope value when shown).",
+      "description": "Submit handler.",
       "name": "onSearch",
-      "type": "(query: string, scope?: string) => void"
+      "type": "(query: string) => void"
     },
     {
-      "description": "A compact scope select at the start of the box (e.g. which game to search).",
+      "description": "A scope control at the start of the box — the kit Select (borderless, width auto) with its own aria-label and name.",
       "name": "scope",
-      "type": "{ label: string; name: string; value: string; options: { value: string; label: string }[]; onValueChange: (value: string) => void }"
+      "type": "ReactNode"
     },
     {
       "description": "Field id.",

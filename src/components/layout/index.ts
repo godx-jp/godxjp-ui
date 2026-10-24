@@ -115,7 +115,6 @@ export {
   EditorialMasthead,
   EditorialMastheadAction,
   EditorialMastheadLink,
-  EditorialMastheadSelect,
   EditorialPillNav,
   EditorialPillNavItem,
   EditorialSearch,
@@ -141,7 +140,6 @@ export type {
   EditorialPillNavProps,
   EditorialSearchProp,
   EditorialSearchProps,
-  EditorialSearchScopeProp,
   EditorialSectionHeadProp,
   EditorialSectionHeadProps,
   EditorialSectionProp,
@@ -154,5 +152,4 @@ export type {
   EditorialMastheadActionProp,
   EditorialMastheadLinkProp,
   EditorialMastheadProp,
-  EditorialMastheadSelectProp,
 } from "./editorial";

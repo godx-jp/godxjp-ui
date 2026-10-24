@@ -2312,24 +2312,15 @@ export type EditorialSearchProp = {
   defaultValue?: string;
   /** Form action for the no-JavaScript submit. */
   action?: string;
-  /** Submit handler: the trimmed query, and the scope's value when a `scope` is shown. */
-  onSearch?: (query: string, scope?: string) => void;
+  onSearch?: (query: string) => void;
   /**
-   * A compact select at the start of the box that scopes the search (a site searched per game: "which
-   * game"). Named by its own visually hidden label; submitted as `scope.name` without JavaScript.
+   * A scope control at the start of the box (a site searched per game: "which game") — pass the
+   * kit's `Select` (variant="borderless", width="auto", with its own aria-label and `name`). The box
+   * gives it the field height and a hairline before the field; the popup is the Select's own.
    */
-  scope?: EditorialSearchScopeProp;
+  scope?: ReactNode;
   id?: IdProp;
   className?: ClassNameProp;
-};
-
-/** The scope select of an {@link EditorialSearchProp}. */
-export type EditorialSearchScopeProp = {
-  label: string;
-  name: string;
-  value: string;
-  options: { value: string; label: string }[];
-  onValueChange: (value: string) => void;
 };
 
 /**
@@ -2459,9 +2450,10 @@ export type EditorialCardVariantProp = "journal" | "spotlight";
 /**
  * @see EditorialMasthead — a public site's header row, for `CenteredShell`'s `topbar` slot: the
  * logo, the primary navigation (`EditorialMastheadLink`s; `aria-current="page"` underlines the
- * current one), and the actions at the end (`EditorialMastheadSelect`, `EditorialMastheadAction`).
+ * current one), and the actions at the end (`EditorialMastheadAction`, kit `Select` pickers).
  * The bar that holds it turns sticky and translucent. `menu` is the phone-only trigger that opens
- * the same navigation (shown when the theme hides `nav`).
+ * the same navigation (shown when the theme hides `nav`). Pickers in `actions` (language, currency)
+ * are the kit's `Select variant="borderless" width="auto"`; the masthead sizes their trigger.
  */
 export type EditorialMastheadProp = {
   /** The logo link (its accessible name is the home link's). */
@@ -2498,21 +2490,6 @@ export type EditorialMastheadActionProp = Omit<
   asChild?: boolean;
   variant?: "ghost" | "outline";
   collapse?: boolean;
-};
-
-/**
- * @see EditorialMastheadSelect — a compact native select in an `EditorialMasthead` (the interface
- * language), named by a visually hidden label.
- */
-export type EditorialMastheadSelectProp = {
-  label: string;
-  value: string;
-  options: { value: string; label: string }[];
-  onValueChange: (value: string) => void;
-  /** Let the theme hide it on a phone (`--editorial-masthead-collapsible-display`), e.g. when the menu repeats it. */
-  collapse?: boolean;
-  id?: IdProp;
-  className?: ClassNameProp;
 };
 
 /**

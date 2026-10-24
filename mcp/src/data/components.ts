@@ -1083,8 +1083,13 @@ export default function OrdersPage() {
       { name: "name", type: "string", defaultValue: '"q"', description: "Query parameter." },
       { name: "defaultValue", type: "string", description: "Initial query." },
       { name: "action", type: "string", description: "Form action for the no-JS submit." },
-      { name: "onSearch", type: "(query: string, scope?: string) => void", description: "Submit handler (query, and the scope value when shown)." },
-      { name: "scope", type: "{ label: string; name: string; value: string; options: { value: string; label: string }[]; onValueChange: (value: string) => void }", description: "A compact scope select at the start of the box (e.g. which game to search)." },
+      { name: "onSearch", type: "(query: string) => void", description: "Submit handler." },
+      {
+        name: "scope",
+        type: "ReactNode",
+        description:
+          "A scope control at the start of the box — the kit Select (borderless, width auto) with its own aria-label and name.",
+      },
       { name: "id", type: "string", description: "Field id." },
     ],
     usage: ["DO use it for a site search that submits; use SearchInput for a live filter."],
@@ -1251,8 +1256,8 @@ import { Button } from "@godxjp/ui/general";
     name: "EditorialMasthead",
     group: "layout",
     tagline:
-      'A public site\'s header row (gh#1435) for CenteredShell\'s `topbar` slot: the logo, primary navigation (`EditorialMastheadLink`; `aria-current="page"` underlines the current one) and end actions (`EditorialMastheadSelect` for the interface language or the display currency — `collapse` lets the theme drop it on a phone, `EditorialMastheadAction` 44px icon controls, `variant="outline"` for the account). The bar holding it turns sticky and translucent. `menu` is the phone-only trigger shown when the theme hides `nav`. Geometry: `--editorial-masthead-*`.',
-    subParts: ["EditorialMastheadLink", "EditorialMastheadAction", "EditorialMastheadSelect"],
+      'A public site\'s header row (gh#1435) for CenteredShell\'s `topbar` slot: the logo, primary navigation (`EditorialMastheadLink`; `aria-current="page"` underlines the current one) and end actions (the kit `Select variant="borderless" width="auto"` for the interface language or the display currency — the masthead sizes its trigger, `EditorialMastheadAction` 44px icon controls, `variant="outline"` for the account). The bar holding it turns sticky and translucent. `menu` is the phone-only trigger shown when the theme hides `nav`. Geometry: `--editorial-masthead-*`.',
+    subParts: ["EditorialMastheadLink", "EditorialMastheadAction"],
     props: [
       { name: "brand", type: "ReactNode", required: true, description: "The logo link." },
       { name: "nav", type: "ReactNode", description: "Primary navigation links." },

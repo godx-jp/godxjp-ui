@@ -3237,21 +3237,25 @@
     box-shadow: var(--editorial-search-shadow);
   }
 
-  /* The scope select sits first in the box, cut off from the field by a hairline. */
+  /* The scope control (the kit's Select) sits first in the box, cut off from the field by a hairline;
+   * its trigger takes the field height and the scope type size. */
   .ui-editorial-search-scope {
+    --control-height: var(--editorial-search-input-height);
+    --control-font-size: var(--editorial-search-scope-font-size);
+    display: flex;
     flex: none;
+    align-items: center;
     max-width: var(--editorial-search-scope-max-width);
-    min-height: var(--editorial-search-input-height);
-    padding-inline: 0 var(--editorial-search-gap);
-    border: 0;
+    padding-inline-end: var(--editorial-search-gap);
     border-inline-end: var(--stroke-hairline) solid hsl(var(--border));
-    background: transparent;
-    color: inherit;
-    font: inherit;
+  }
+
+  .ui-editorial-search-scope [data-slot="select-trigger"] {
+    max-width: 100%;
+    min-height: var(--editorial-search-input-height);
+    padding-inline-start: 0;
     font-size: var(--editorial-search-scope-font-size);
     font-weight: var(--font-weight-medium);
-    text-overflow: ellipsis;
-    cursor: pointer;
   }
 
   .ui-editorial-search-icon {
@@ -4175,22 +4179,12 @@
     height: var(--editorial-masthead-icon-size);
   }
 
-  .ui-editorial-masthead-select {
-    width: var(--editorial-masthead-select-width);
-    max-width: var(--editorial-masthead-select-max-width);
+  /* Pickers in the actions (the kit's Select, borderless): v4's inline "日本語 ⌄" trigger. */
+  .ui-editorial-masthead-actions [data-slot="select-trigger"] {
     min-height: var(--editorial-masthead-action-size);
-    padding: var(--editorial-masthead-select-padding-block)
-      var(--editorial-masthead-select-padding-inline);
-    border: 0;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    font-size: var(--editorial-masthead-select-font-size);
-    cursor: pointer;
-  }
-
-  .ui-editorial-masthead-select[data-collapse] {
-    display: var(--editorial-masthead-collapsible-display);
+    padding-inline: var(--editorial-masthead-picker-padding-inline);
+    font-size: var(--editorial-masthead-picker-font-size);
+    gap: var(--editorial-masthead-picker-gap);
   }
 
   /* ── EditorialFooter ──────────────────────────────────────────────────────────────────────── */

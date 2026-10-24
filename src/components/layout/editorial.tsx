@@ -14,7 +14,6 @@ import type {
   EditorialMastheadActionProp,
   EditorialMastheadLinkProp,
   EditorialMastheadProp,
-  EditorialMastheadSelectProp,
   EditorialHeroProp,
   EditorialPillNavItemProp,
   EditorialPillNavProp,
@@ -42,7 +41,6 @@ export type {
   EditorialPillNavProp as EditorialPillNavProps,
   EditorialSearchProp,
   EditorialSearchProp as EditorialSearchProps,
-  EditorialSearchScopeProp,
   EditorialSectionHeadProp,
   EditorialSectionHeadProp as EditorialSectionHeadProps,
   EditorialSectionProp,
@@ -55,7 +53,6 @@ export type {
   EditorialMastheadActionProp,
   EditorialMastheadLinkProp,
   EditorialMastheadProp,
-  EditorialMastheadSelectProp,
 } from "../../props/components/layout.prop";
 
 /*
@@ -217,7 +214,6 @@ export function EditorialSearch({
 }: EditorialSearchProp) {
   const reactId = React.useId();
   const inputId = id ?? `editorial-search-${reactId}`;
-  const scopeId = `${inputId}-scope`;
   return (
     <form
       role="search"
@@ -229,30 +225,13 @@ export function EditorialSearch({
         if (!onSearch) return;
         event.preventDefault();
         const value = new FormData(event.currentTarget).get(name);
-        const query = typeof value === "string" ? value.trim() : "";
-        if (scope) onSearch(query, scope.value);
-        else onSearch(query);
+        onSearch(typeof value === "string" ? value.trim() : "");
       }}
     >
-      {scope && (
-        <>
-          <label htmlFor={scopeId} className="sr-only">
-            {scope.label}
-          </label>
-          <select
-            id={scopeId}
-            name={scope.name}
-            value={scope.value}
-            onChange={(event) => scope.onValueChange(event.target.value)}
-            className="ui-editorial-search-scope ui-focus-ring"
-          >
-            {scope.options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </>
+      {scope != null && (
+        <span data-slot="editorial-search-scope" className="ui-editorial-search-scope">
+          {scope}
+        </span>
       )}
       <label htmlFor={inputId} className="sr-only">
         {label}
@@ -635,41 +614,6 @@ export const EditorialMastheadAction = React.forwardRef<
     </button>
   );
 });
-
-/** A compact native select in an `EditorialMasthead`, named by a visually hidden label. */
-export function EditorialMastheadSelect({
-  label,
-  value,
-  options,
-  onValueChange,
-  collapse = false,
-  id,
-  className,
-}: EditorialMastheadSelectProp) {
-  const reactId = React.useId();
-  const selectId = id ?? `editorial-masthead-select-${reactId}`;
-  return (
-    <>
-      <label htmlFor={selectId} className="sr-only">
-        {label}
-      </label>
-      <select
-        id={selectId}
-        value={value}
-        onChange={(event) => onValueChange(event.target.value)}
-        data-slot="editorial-masthead-select"
-        data-collapse={collapse ? "" : undefined}
-        className={cn("ui-editorial-masthead-select ui-focus-ring", className)}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </>
-  );
-}
 
 /** A public site's footer content: brand and tagline, link groups, and a bottom row. */
 export function EditorialFooter({

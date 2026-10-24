@@ -28,7 +28,6 @@ import {
   EditorialMasthead,
   EditorialMastheadAction,
   EditorialMastheadLink,
-  EditorialMastheadSelect,
   EditorialPillNav,
   EditorialPillNavItem,
   EditorialSearch,
@@ -38,6 +37,7 @@ import {
   Eyebrow,
 } from "../editorial";
 import { ResponsiveGrid } from "../responsive-grid";
+import { Select } from "../../data-entry/select";
 
 const read = (relativePath: string) =>
   readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8").replace(
@@ -415,21 +415,16 @@ describe("EditorialMasthead (gh#1435)", () => {
         }
         actions={
           <>
-            <EditorialMastheadSelect
-              label="表示言語"
+            <Select
+              aria-label="表示言語"
+              variant="borderless"
+              width="auto"
               value="ja"
               options={[
                 { value: "ja", label: "日本語" },
                 { value: "en", label: "EN" },
               ]}
               onValueChange={onLocale}
-            />
-            <EditorialMastheadSelect
-              label="表示通貨"
-              value="JPY"
-              options={[{ value: "JPY", label: "¥ JPY" }]}
-              onValueChange={() => {}}
-              collapse
             />
             <EditorialMastheadAction aria-label="配色を切り替える" collapse>
               ☾
@@ -448,16 +443,16 @@ describe("EditorialMasthead (gh#1435)", () => {
     expect(screen.getByRole("link", { name: "BOX・パック" })).toHaveClass(
       "ui-editorial-masthead-link",
     );
-    fireEvent.change(screen.getByRole("combobox", { name: "表示言語" }), {
-      target: { value: "en" },
-    });
-    expect(onLocale).toHaveBeenCalledWith("en");
+    // Pickers are the kit's Select (its own listbox popup), never a native <select>.
+    const picker = screen.getByRole("combobox", { name: "表示言語" });
+    expect(picker).toHaveAttribute("data-slot", "select-trigger");
+    // (react-aria keeps a hidden, untabbable <select> for form submission only.)
+    expect(document.querySelector('.ui-editorial-masthead select:not([tabindex="-1"])')).toBeNull();
+    expect(rule('.ui-editorial-masthead-actions [data-slot="select-trigger"]')).toMatch(
+      /min-height:\s*var\(--editorial-masthead-action-size\)/,
+    );
     expect(screen.getByRole("button", { name: "配色を切り替える" })).toHaveAttribute(
       "data-collapse",
-    );
-    expect(screen.getByRole("combobox", { name: "表示通貨" })).toHaveAttribute("data-collapse");
-    expect(rule(".ui-editorial-masthead-select[data-collapse]")).toMatch(
-      /display:\s*var\(--editorial-masthead-collapsible-display\)/,
     );
     expect(screen.getByRole("link", { name: "ログイン" })).toHaveAttribute(
       "data-variant",
@@ -546,33 +541,42 @@ describe("Button label knobs (gh#1435)", () => {
 });
 
 describe("EditorialSearch scope (gh#1435)", () => {
-  it("hosts a named scope select inside the box and reports its value on submit", () => {
+  it("hosts the kit Select as its scope inside the box, before the field", () => {
     const onSearch = vi.fn();
-    const onScope = vi.fn();
     render(
       <EditorialSearch
         label="カード名"
         submitLabel="検索"
         onSearch={onSearch}
-        scope={{
-          label: "ゲーム",
-          name: "game",
-          value: "pokemon",
-          options: [
-            { value: "pokemon", label: "ポケモンカードゲーム" },
-            { value: "onepiece", label: "ONE PIECEカードゲーム" },
-          ],
-          onValueChange: onScope,
-        }}
+        scope={
+          <Select
+            aria-label="ゲーム"
+            name="game"
+            variant="borderless"
+            width="auto"
+            value="pokemon"
+            options={[
+              { value: "pokemon", label: "ポケモンカードゲーム" },
+              { value: "onepiece", label: "ONE PIECEカードゲーム" },
+            ]}
+            onValueChange={() => {}}
+          />
+        }
       />,
     );
-    const select = screen.getByRole("combobox", { name: "ゲーム" });
-    expect(screen.getByRole("search")).toContainElement(select);
-    fireEvent.change(select, { target: { value: "onepiece" } });
-    expect(onScope).toHaveBeenCalledWith("onepiece");
+    const search = screen.getByRole("search");
+    const trigger = screen.getByRole("combobox", { name: "ゲーム" });
+    expect(search).toContainElement(trigger);
+    expect(trigger).toHaveAttribute("data-slot", "select-trigger");
+    expect(search.querySelector('select:not([tabindex="-1"])')).toBeNull();
+    // The trigger comes before the field in the box.
+    expect(
+      trigger.compareDocumentPosition(screen.getByRole("searchbox")) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     fireEvent.change(screen.getByRole("searchbox"), { target: { value: "ルフィ" } });
     fireEvent.click(screen.getByRole("button", { name: "検索" }));
-    expect(onSearch).toHaveBeenCalledWith("ルフィ", "pokemon");
+    expect(onSearch).toHaveBeenCalledWith("ルフィ");
     expect(rule(".ui-editorial-search-scope")).toMatch(/border-inline-end:/);
   });
 });

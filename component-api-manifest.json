@@ -7409,67 +7409,6 @@
         }
       ]
     },
-    "EditorialMastheadSelect": {
-      "group": "layout",
-      "props": [
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "collapse",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "label",
-          "origin": "owned",
-          "required": true,
-          "type": "string",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "owned",
-          "required": true,
-          "type": "(value: string) => void",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "options",
-          "origin": "owned",
-          "required": true,
-          "type": "{ value: string; label: string; }[]",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "owned",
-          "required": true,
-          "type": "string",
-          "values": [],
-          "declaredIn": ["src/props/components/layout.prop.ts"]
-        }
-      ]
-    },
     "EditorialPillNav": {
       "group": "layout",
       "props": [
@@ -7594,7 +7533,7 @@
           "name": "onSearch",
           "origin": "owned",
           "required": false,
-          "type": "((query: string, scope?: string) => void) | undefined",
+          "type": "((query: string) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
@@ -7610,7 +7549,7 @@
           "name": "scope",
           "origin": "owned",
           "required": false,
-          "type": "EditorialSearchScopeProp | undefined",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
