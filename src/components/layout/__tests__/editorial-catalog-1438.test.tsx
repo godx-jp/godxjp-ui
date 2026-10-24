@@ -164,6 +164,17 @@ describe("EditorialListingToolbar (gh#1438)", () => {
     expect(container.querySelector(".ui-editorial-listing-toolbar-summary")).toBeNull();
   });
 
+  it("takes free start / end slots (end in place of actions) and an optional hairline", () => {
+    const { container } = render(
+      <EditorialListingToolbar divider start={<span>lead</span>} end={<span>tail</span>} actions={<span>old</span>} />,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.hasAttribute("data-divider")).toBe(true);
+    expect(root.querySelector(".ui-editorial-listing-toolbar-summary")?.textContent).toBe("lead");
+    expect(root.lastElementChild?.textContent).toBe("tail");
+    expect(rule(".ui-editorial-listing-toolbar[data-divider]")).toMatch(/border-block-end:/);
+  });
+
   it("spaces the row and sizes its selects from tokens; the count can be hidden by a theme", () => {
     const bar = rule(".ui-editorial-listing-toolbar");
     expect(bar).toMatch(/justify-content:\s*space-between/);

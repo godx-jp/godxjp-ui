@@ -2693,6 +2693,12 @@ export type EditorialListingToolbarProp = {
   note?: ReactNode;
   /** Trailing controls — the sort `Select`, a view toggle. */
   actions?: ReactNode;
+  /** Free start slot (after count and note) — anything a toolbar leads with. */
+  start?: ReactNode;
+  /** Free end slot; takes the place of `actions` when both are given. */
+  end?: ReactNode;
+  /** A hairline under the row (`--editorial-listing-toolbar-divider-padding-block-end` above it). */
+  divider?: boolean;
   className?: ClassNameProp;
 };
 

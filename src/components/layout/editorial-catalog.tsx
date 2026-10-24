@@ -84,14 +84,19 @@ export function EditorialListingToolbar({
   count,
   note,
   actions,
+  start,
+  end,
+  divider = false,
   className,
 }: EditorialListingToolbarProp) {
+  const trailing = end ?? actions;
   return (
     <div
       data-slot="editorial-listing-toolbar"
+      data-divider={divider ? "" : undefined}
       className={cn("ui-editorial-listing-toolbar", className)}
     >
-      {(count != null || note != null) && (
+      {(count != null || note != null || start != null) && (
         <div className="ui-editorial-listing-toolbar-summary">
           {count != null && (
             <p aria-live="polite" className="ui-editorial-listing-toolbar-count">
@@ -99,9 +104,10 @@ export function EditorialListingToolbar({
             </p>
           )}
           {note != null && <p className="ui-editorial-listing-toolbar-note">{note}</p>}
+          {start}
         </div>
       )}
-      {actions != null && <div className="ui-editorial-listing-toolbar-actions">{actions}</div>}
+      {trailing != null && <div className="ui-editorial-listing-toolbar-actions">{trailing}</div>}
     </div>
   );
 }

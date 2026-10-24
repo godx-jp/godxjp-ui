@@ -4606,6 +4606,11 @@
     min-width: 0;
   }
 
+  .ui-editorial-listing-toolbar[data-divider] {
+    padding-block-end: var(--editorial-listing-toolbar-divider-padding-block-end);
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+  }
+
   .ui-editorial-listing-toolbar-count {
     display: var(--editorial-listing-toolbar-count-display);
     margin: 0;

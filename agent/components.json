@@ -1832,6 +1832,22 @@
         "description": "Trailing sort / view controls.",
         "name": "actions",
         "type": "ReactNode"
+      },
+      {
+        "description": "Free start slot (after count and note).",
+        "name": "start",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Free end slot (in place of actions).",
+        "name": "end",
+        "type": "ReactNode"
+      },
+      {
+        "defaultValue": "false",
+        "description": "Hairline under the row.",
+        "name": "divider",
+        "type": "boolean"
       }
     ],
     "related": [

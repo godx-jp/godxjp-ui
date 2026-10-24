@@ -1951,6 +1951,9 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "count", local: true, reason: "The result count, a polite live region." },
       { field: "note", local: true, reason: "A short note under the count." },
       { field: "actions", local: true, reason: "Trailing order / view controls." },
+      { field: "start", local: true, reason: "Free start slot after count and note." },
+      { field: "end", local: true, reason: "Free end slot (in place of actions)." },
+      { field: "divider", local: true, reason: "Hairline under the row." },
     ],
   },
   CatalogDetailProp: {

@@ -6364,6 +6364,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Default = hsl(var(--card))."
   },
   {
+    "name": "--editorial-listing-toolbar-divider-padding-block-end",
+    "value": "1rem",
+    "description": "divider: the space above the hairline under the row."
+  },
+  {
     "name": "--editorial-catalog-outline-color",
     "value": "initial",
     "description": "Outline buttons in the catalog bodies (filter reset, item actions) read in the action colour on no fill. Defaults = hsl(var(--primary)) / transparent (gh#1438)."

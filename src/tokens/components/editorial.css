@@ -567,6 +567,8 @@
   --editorial-listing-toolbar-control-padding-x: 0.875rem;
   /* Default = hsl(var(--card)). */
   --editorial-listing-toolbar-control-background: initial;
+  /* divider: the space above the hairline under the row. */
+  --editorial-listing-toolbar-divider-padding-block-end: 1rem;
 
   /* Outline buttons in the catalog bodies (filter reset, item actions) read in the action colour on
    * no fill. Defaults = hsl(var(--primary)) / transparent (gh#1438). */
