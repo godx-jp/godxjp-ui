@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.21.0] - 2026-10-24
+
 ### Added
 
 - `NumberInput width="full" | "auto" | "bounded"` — the `Select` / picker width axis. `auto` sizes the field to the widest value its bounds allow (formatted `min` / `max`, 6 characters unbounded) plus the stepper column, so a quantity stepper outside a FormField (a `ListRow` trailing slot) no longer fills the line; `bounded` holds `--control-bounded-width`. Default `full` is unchanged (#1448).
