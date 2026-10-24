@@ -433,7 +433,10 @@ function EditorialSearchInset({
   const formRef = React.useRef<HTMLFormElement>(null);
   const portalContainer = useOverlayPortalContainer();
   const anchor = usePopupAnchor(formRef, open);
-  const optionId = React.useCallback((index: number) => `${listboxId}-option-${index}`, [listboxId]);
+  const optionId = React.useCallback(
+    (index: number) => `${listboxId}-option-${index}`,
+    [listboxId],
+  );
 
   // New rows: nothing is active until the user moves into them.
   React.useEffect(() => setActive(-1), [rowsKey]);
@@ -569,70 +572,73 @@ function EditorialSearchInset({
       {combobox &&
         anchor.mounted &&
         createPortal(
-        <div
-          data-slot="editorial-search-popup"
-          className="ui-editorial-search-popup"
-          hidden={!open}
-          style={anchor.style}
-          // A press on a row must not blur the field first (the popup would close under the click).
-          onMouseDown={(event) => event.preventDefault()}
-        >
-          <div role="listbox" id={listboxId} aria-label={suggestionsLabel ?? label}>
-            {groups.map((group) => (
-              <div
-                key={group.id}
-                role="group"
-                aria-labelledby={`${listboxId}-group-${group.id}`}
-                className="ui-editorial-search-group"
-              >
+          <div
+            data-slot="editorial-search-popup"
+            className="ui-editorial-search-popup"
+            hidden={!open}
+            style={anchor.style}
+            // A press on a row must not blur the field first (the popup would close under the click).
+            onMouseDown={(event) => event.preventDefault()}
+          >
+            <div role="listbox" id={listboxId} aria-label={suggestionsLabel ?? label}>
+              {groups.map((group) => (
                 <div
-                  role="presentation"
-                  id={`${listboxId}-group-${group.id}`}
-                  className="ui-editorial-search-group-label"
+                  key={group.id}
+                  role="group"
+                  aria-labelledby={`${listboxId}-group-${group.id}`}
+                  className="ui-editorial-search-group"
                 >
-                  {group.label}
-                </div>
-                {group.items.map((item) =>
-                  option(
-                    `${group.id}:${item.id}`,
-                    item.href,
-                    "ui-editorial-search-suggestion",
-                    <>
-                      {item.media != null && (
-                        <span aria-hidden className="ui-editorial-search-suggestion-media">
-                          {item.media}
-                        </span>
-                      )}
-                      <span className="ui-editorial-search-suggestion-text">
-                        <span className="ui-editorial-search-suggestion-label">{item.label}</span>
-                        {item.description != null && (
-                          <span className="ui-editorial-search-suggestion-description">
-                            {item.description}
+                  <div
+                    role="presentation"
+                    id={`${listboxId}-group-${group.id}`}
+                    className="ui-editorial-search-group-label"
+                  >
+                    {group.label}
+                  </div>
+                  {group.items.map((item) =>
+                    option(
+                      `${group.id}:${item.id}`,
+                      item.href,
+                      "ui-editorial-search-suggestion",
+                      <>
+                        {item.media != null && (
+                          <span aria-hidden className="ui-editorial-search-suggestion-media">
+                            {item.media}
                           </span>
                         )}
-                      </span>
-                      {item.meta != null && (
-                        <span className="ui-editorial-search-suggestion-meta">{item.meta}</span>
-                      )}
-                    </>,
-                  ),
+                        <span className="ui-editorial-search-suggestion-text">
+                          <span className="ui-editorial-search-suggestion-label">{item.label}</span>
+                          {item.description != null && (
+                            <span className="ui-editorial-search-suggestion-description">
+                              {item.description}
+                            </span>
+                          )}
+                        </span>
+                        {item.meta != null && (
+                          <span className="ui-editorial-search-suggestion-meta">{item.meta}</span>
+                        )}
+                      </>,
+                    ),
+                  )}
+                </div>
+              ))}
+              {suggestionsFooter &&
+                option(
+                  "footer",
+                  suggestionsFooter.href,
+                  "ui-editorial-search-suggestions-footer",
+                  <>
+                    <span className="ui-editorial-search-suggestion-label">
+                      {suggestionsFooter.label}
+                    </span>
+                    <ArrowRight
+                      aria-hidden
+                      className="ui-editorial-search-suggestions-footer-icon"
+                    />
+                  </>,
                 )}
-              </div>
-            ))}
-            {suggestionsFooter &&
-              option(
-                "footer",
-                suggestionsFooter.href,
-                "ui-editorial-search-suggestions-footer",
-                <>
-                  <span className="ui-editorial-search-suggestion-label">
-                    {suggestionsFooter.label}
-                  </span>
-                  <ArrowRight aria-hidden className="ui-editorial-search-suggestions-footer-icon" />
-                </>,
-              )}
-          </div>
-        </div>,
+            </div>
+          </div>,
           portalContainer ?? document.body,
         )}
     </form>

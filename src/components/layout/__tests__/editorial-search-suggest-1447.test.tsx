@@ -6,6 +6,9 @@
  * under its search box (cards, products, sets) had to hand-roll the combobox roles, the keyboard
  * model and the IME guard outside the kit.
  */
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
 import * as React from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -18,18 +21,33 @@ const groups: EditorialSearchSuggestionGroupProp[] = [
     id: "cards",
     label: "カード",
     items: [
-      { id: "1", href: "/cards/1", label: "ピカチュウ", description: "SV1S · 025", meta: "¥120", media: "SV1S" },
+      {
+        id: "1",
+        href: "/cards/1",
+        label: "ピカチュウ",
+        description: "SV1S · 025",
+        meta: "¥120",
+        media: "SV1S",
+      },
       { id: "2", href: "/cards/2", label: "ピカチュウex", description: "SV8 · 132" },
     ],
   },
   { id: "products", label: "BOX・パック", items: [] },
   { id: "sets", label: "収録弾", items: [{ id: "9", href: "/sets/9", label: "超電ブレイカー" }] },
 ];
+// Through a variable: Vite rewrites a literal `new URL("…", import.meta.url)` into a served asset URL.
+const read = (relativePath: string) =>
+  readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+const focusRingCss = read("../../../styles/focus-ring.css");
 const footer = { href: "/search?q=ピカ", label: "「ピカ」をすべて見る" };
 
 /** A router link: navigates on click without a page load, and forwards the kit's props. */
 function routerLink(navigate: (href: string) => void) {
-  return function RouterLink({ href, onClick, ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  return function RouterLink({
+    href,
+    onClick,
+    ...rest
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
     return (
       <a
         {...rest}
@@ -89,10 +107,19 @@ describe("EditorialSearch suggestions (gh#1447)", () => {
     const listbox = screen.getByRole("listbox", { name: "候補" });
     expect(input.getAttribute("aria-controls")).toBe(listbox.id);
     // Empty groups are left out; each group is named by its heading.
-    expect(within(listbox).getAllByRole("group").map((g) => g.getAttribute("aria-labelledby"))).toHaveLength(2);
+    expect(
+      within(listbox)
+        .getAllByRole("group")
+        .map((g) => g.getAttribute("aria-labelledby")),
+    ).toHaveLength(2);
     expect(within(listbox).getByRole("group", { name: "カード" })).toBeTruthy();
     const options = within(listbox).getAllByRole("option");
-    expect(options.map((o) => o.getAttribute("href"))).toEqual(["/cards/1", "/cards/2", "/sets/9", footer.href]);
+    expect(options.map((o) => o.getAttribute("href"))).toEqual([
+      "/cards/1",
+      "/cards/2",
+      "/sets/9",
+      footer.href,
+    ]);
     expect(options[0].getAttribute("tabindex")).toBe("-1");
   });
 
@@ -106,6 +133,14 @@ describe("EditorialSearch suggestions (gh#1447)", () => {
     // Placed from the box's rect, with the room left below it.
     expect(popup.style.top).not.toBe("");
     expect(popup.style.getPropertyValue("--editorial-search-popup-room")).toMatch(/px$/);
+  });
+
+  it("leaves the focus mark to the bar: the field paints no outline of its own", () => {
+    // Measured before: the browser's own outline drawn inside the bar's ring on a focused field.
+    const block = focusRingCss.slice(focusRingCss.indexOf(".ui-command-input:focus-visible,"));
+    const rule = block.slice(0, block.indexOf("}"));
+    expect(rule).toContain(".ui-editorial-search-input:focus-visible");
+    expect(rule).toMatch(/outline:\s*none/);
   });
 
   it("stays closed for an empty query and closes when the field loses focus", () => {
@@ -196,6 +231,8 @@ describe("EditorialSearch suggestions (gh#1447)", () => {
     expect(first.textContent).toContain("ピカチュウ");
     expect(first.textContent).toContain("SV1S · 025");
     expect(first.textContent).toContain("¥120");
-    expect(first.querySelector(".ui-editorial-search-suggestion-media")?.getAttribute("aria-hidden")).toBe("true");
+    expect(
+      first.querySelector(".ui-editorial-search-suggestion-media")?.getAttribute("aria-hidden"),
+    ).toBe("true");
   });
 });
