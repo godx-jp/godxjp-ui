@@ -2444,5 +2444,19 @@
     "organic": "自然検索",
     "referral": "紹介",
     "email": "メール"
+  },
+  "metadataApiDocs": {
+    "title": "変更の詳細",
+    "hint": "labelWidth=\"content\" は最も長いラベルに幅を揃えます。既定はテーマの幅を維持します。CSS長さも指定でき、数値はpxです。長いラベルは上限内で折り返します。",
+    "status": "状態",
+    "owner": "担当者",
+    "change": "未対応 → 処理中",
+    "person": "田中 美香",
+    "counts": "件数の強調",
+    "countsHint": "accent は選択に従い、neutral は参考情報の件数を落ち着いた色で表示します。items と TabsTrigger の両方で countTone を使えます。",
+    "action": "要対応",
+    "invited": "招待中",
+    "unit": "メンバー",
+    "panel": "メンバーの詳細"
   }
 }

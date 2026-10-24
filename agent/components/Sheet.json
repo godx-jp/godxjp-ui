@@ -23,7 +23,7 @@
     {
       "description": "On SheetContent (side left/right): desired panel width (number→px). Default w-3/4 sm:max-w-md.",
       "name": "width",
-      "type": "number | string"
+      "type": "WidthProp"
     },
     {
       "description": "On SheetContent (same name as on DialogContent): fires on every close before focus returns to the trigger. Call event.preventDefault() and focus your own target (e.g. the new page's heading after a drawer navigation) to send focus there instead (gh#1134).",

@@ -6098,6 +6098,14 @@
           "declaredIn": ["src/components/data-display/descriptions.tsx"]
         },
         {
+          "name": "labelWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | \"content\" | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/descriptions.tsx"]
+        },
+        {
           "name": "layout",
           "origin": "owned",
           "required": false,
@@ -14929,8 +14937,8 @@
           "name": "shape",
           "origin": "owned",
           "required": false,
-          "type": "\"inline\" | \"auto\" | undefined",
-          "values": ["inline", "auto"],
+          "type": "\"auto\" | \"inline\" | undefined",
+          "values": ["auto", "inline"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -17156,7 +17164,7 @@
           "origin": "owned",
           "required": false,
           "type": "SheetResponsiveProp | undefined",
-          "values": ["bottom", "auto", "side"],
+          "values": ["auto", "bottom", "side"],
           "declaredIn": ["src/components/feedback/sheet.tsx"]
         },
         {
@@ -18600,7 +18608,7 @@
           "name": "width",
           "origin": "owned",
           "required": false,
-          "type": "string | number | undefined",
+          "type": "number | `${number}em` | `${number}px` | `${number}rem` | `${number}%` | `${number}ch` | `${number}ex` | `${number}lh` | `${number}rlh` | `${number}vw` | `${number}vh` | `${number}vi` | `${number}vb` | `${number}vmin` | `${number}vmax` | `${number}svw` | `${number}svh` | `${number}lvw` | `${number}lvh` | `${number}dvw` | `${number}dvh` | `${number}cqw` | `${number}cqh` | `${number}cqi` | `${number}cqb` | `${number}cqmin` | `${number}cqmax` | `${number}cm` | `${number}mm` | `${number}in` | `${number}pt` | `${number}pc` | \"auto\" | \"max-content\" | \"min-content\" | \"fit-content\" | `calc(${string})` | `min(${string})` | `max(${string})` | `clamp(${string})` | `var(${string})` | `fit-content(${string})` | undefined",
           "values": [],
           "declaredIn": [
             "node_modules/@types/react/index.d.ts",
@@ -18986,6 +18994,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "countTone",
+          "origin": "owned",
+          "required": false,
+          "type": "\"neutral\" | \"accent\" | undefined",
+          "values": ["neutral", "accent"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
@@ -20289,8 +20305,8 @@
           "name": "dir",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "\"ltr\" | \"rtl\" | \"auto\" | undefined",
-          "values": ["ltr", "rtl", "auto"],
+          "type": "\"auto\" | \"ltr\" | \"rtl\" | undefined",
+          "values": ["auto", "ltr", "rtl"],
           "declaredIn": ["node_modules/sonner/dist/index.d.mts"]
         }
       ]

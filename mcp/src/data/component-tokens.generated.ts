@@ -3886,7 +3886,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--descriptions-label-width",
     "value": "8rem",
-    "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). A rem value gives a fixed aligned column; set `max-content` to size each label to its text. (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
+    "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). A rem value gives a fixed aligned column; use labelWidth=\"content\" for shared intrinsic sizing. (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
+  },
+  {
+    "name": "--descriptions-label-max-width",
+    "value": "40%",
+    "description": "Cap intrinsic labels so long labels wrap and values retain space on narrow screens."
   },
   {
     "name": "--descriptions-row-gap",
@@ -10587,6 +10592,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--tabs-count-radius",
     "value": "var(--radius-pill)",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-count-neutral-background",
+    "value": "initial",
+    "description": "default = hsl(var(--muted)) at the call site"
+  },
+  {
+    "name": "--tabs-count-neutral-color",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground)) at the call site"
   },
   {
     "name": "--tabs-count-background",

@@ -81,11 +81,65 @@ export type AsChildProp = boolean;
  */
 export type FlushProp = boolean;
 
+/** A CSS length or percentage unit (CSS Values and Units 4 §5–6), as written after a number. */
+type CssLengthUnit =
+  | "px"
+  | "rem"
+  | "em"
+  | "%"
+  | "ch"
+  | "ex"
+  | "lh"
+  | "rlh"
+  | "vw"
+  | "vh"
+  | "vi"
+  | "vb"
+  | "vmin"
+  | "vmax"
+  | "svw"
+  | "svh"
+  | "lvw"
+  | "lvh"
+  | "dvw"
+  | "dvh"
+  | "cqw"
+  | "cqh"
+  | "cqi"
+  | "cqb"
+  | "cqmin"
+  | "cqmax"
+  | "cm"
+  | "mm"
+  | "in"
+  | "pt"
+  | "pc";
+
 /**
  * An explicit layout dimension (NOT the `SizeProp` control-height tier). A `number` is treated as
- * px; a `string` is any CSS length (`"32rem"`, `"90vw"`, `"50%"`).
+ * px; a `string` must be a CSS length the browser can use as written: a number with a unit
+ * (`"32rem"`, `"90vw"`, `"50%"`), an intrinsic keyword (`"auto"`, `"max-content"`,
+ * `"min-content"`, `"fit-content"`) or a math / custom-property expression (`calc()`, `min()`,
+ * `max()`, `clamp()`, `var()`, `fit-content()`).
+ *
+ * A size-tier word (`"sm"`, `"md"`, `"lg"`) is a type error, not a width: the value is written into
+ * CSS as-is, so `controlWidth="md"` was `--form-control-width: md` — invalid at computed-value time,
+ * which drops the cap and lets the control fill its column (gh#1431). A component that offers a
+ * width SCALE names it with its own union (`CenteredShellWidthProp`, `ControlWidthProp`).
  */
-export type WidthProp = number | string;
+export type WidthProp =
+  | number
+  | `${number}${CssLengthUnit}`
+  | "auto"
+  | "max-content"
+  | "min-content"
+  | "fit-content"
+  | `calc(${string})`
+  | `min(${string})`
+  | `max(${string})`
+  | `clamp(${string})`
+  | `var(${string})`
+  | `fit-content(${string})`;
 /**
  * How a control sizes on the inline axis: fill its column, hug its label, or sit at a bounded
  * width the theme owns.

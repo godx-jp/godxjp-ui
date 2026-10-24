@@ -2190,7 +2190,7 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "width",
-        type: "number | string",
+        type: "WidthProp",
         description:
           "A FIXED column: number = px, string = any CSS length. Comes with flex: none — a width a sibling can still squeeze is a suggestion, and stacked rows would start at different x offsets. Leaves data-width-raw on the DOM so the measurement stays countable, like gapRaw/padRaw.",
       },
@@ -6745,6 +6745,13 @@ import { Flex } from "@godxjp/ui/layout";
           "Label placement within each item — `vertical` stacks the label over the value (default); `horizontal` puts the label BESIDE the value in a token-aligned column (mirrors `<Form layout>`). Tune the horizontal label-column width via `--descriptions-label-width`.",
       },
       {
+        name: "labelWidth",
+        type: 'WidthProp | "content"',
+        defaultValue: '"auto"',
+        description:
+          "Horizontal labels only. Omitted/auto retains --descriptions-label-width (8rem), even with columns=1. content (also max-content, min-content or fit-content) uses a shared intrinsic grid track: longest label per visual column, capped by --descriptions-label-max-width (40%) so long labels wrap without clipping at 320px. Use columns=1 for one aligned label column across the entire list. WidthProp lengths and expressions override the width per list; numbers are px. Vertical layout ignores this prop. No consumer CSS override required.",
+      },
+      {
         name: "labelAlign",
         type: '"start" | "end"',
         defaultValue: '"start"',
@@ -7137,7 +7144,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "calloutTitles",
         type: "Partial<Record<'note' | 'tip' | 'important' | 'warning' | 'caution', string>>",
         description:
-          "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@1, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
+          "Visible titles for GitHub-alert callouts (`> [!WARNING]`) that carry none of their own. English by default (the package has no i18n); pass localized strings. Grammar v1 (gh#1156): callouts, `:::toggle[summary]`, `::::columns`/`:::column{width=N}`, CJK-friendly emphasis — the same syntax the pure codec at `@godxjp/markdown/codec` (CODEC_ID kit-md@2, parse/serialize/normalize, DOM-free) and @godxjp/block-editor use.",
       },
       {
         name: "mermaid",
@@ -7146,12 +7153,20 @@ import { Flex } from "@godxjp/ui/layout";
         description:
           "`false` keeps ```mermaid fences as code. Diagrams need the optional peer `mermaid`.",
       },
+      {
+        name: "highlight",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Fenced code in a known language is tokenised at parse time as `<span data-code-token>` with the kit's twelve names, which Prose colours (renderer v6). `false` leaves plain text for a host `pre` with its own highlighter.",
+      },
     ],
     usage: [
       'DO let the document language do Japanese line breaking: under `:lang(ja)` (AppProvider sets `<html lang>`) every prose paragraph and list item breaks between PHRASES — `word-break: auto-phrase` + `line-break: strict`, the `Text break="phrase"` behaviour (gh#1310) — so 「新しく参加」 is not cut 「新し｜く参加」. Latin and Vietnamese wrap unchanged; a phrase longer than the line still breaks inside itself. A browser without `auto-phrase` keeps its own CJK breaking.',
       "Table of contents: outline(markdown) from @godxjp/markdown/codec returns { depth, text, id }[] with exactly the ids <Markdown> writes — feed it to the kit Anchor. YAML front matter is kept verbatim and never rendered; frontmatterOf(markdown) returns it (gh#1163).",
       "DO `<Prose><Markdown>{body}</Markdown></Prose>` for every rendered body (wiki page, issue, mail).",
       "DO record `MARKDOWN_FORMAT` and `RENDERER_VERSION` on stored versions.",
+      'DO `import "@godxjp/markdown/katex.css"` once in the app: `$…$`, `$$…$$` and ```math are drawn by KaTeX at parse time (trust: false, renderer v6) and need its stylesheet and fonts. A single `$` follows Pandoc\'s rule, so `$5 and $10` stays text.',
       "DON'T assemble react-markdown + rehype-sanitize per app, add rehype-raw, or render Mermaid yourself — `checkMermaidSvg` is the gate.",
     ],
     related: [
@@ -7264,7 +7279,7 @@ import { FormField } from "@godxjp/ui/data-entry";
         name: "onValueChange",
         type: "(markdown: string) => void",
         description:
-          "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@1).",
+          "Canonical Markdown after each edit — `serialize(editor.getJSON())`, identical to `normalize(body)` from `@godxjp/markdown/codec` (CODEC_ID kit-md@2).",
       },
       {
         name: "upload",
@@ -8137,14 +8152,14 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
       },
       {
         name: "labelWidth",
-        type: "number | string",
+        type: "WidthProp",
         description: "Label column width in horizontal layout (number→px). e.g. 120 or '8rem'.",
       },
       {
         name: "controlWidth",
-        type: "number | string",
+        type: "WidthProp",
         description:
-          "Cap the control width (number→px). Omit to fill the column. Caps the control only — the helper and error still span the field column.",
+          "Cap the control width: number→px, or a CSS length ('20rem', '50%', 'calc(…)'). Omit to fill the column. Caps the control only — the helper and error still span the field column. A size word ('md', 'lg') is a type error, not a width (gh#1431).",
       },
       {
         name: "labelAlign",
@@ -8279,12 +8294,12 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
       },
       {
         name: "labelWidth",
-        type: "number | string",
+        type: "WidthProp",
         description: "Override the Form's label width for this field.",
       },
       {
         name: "controlWidth",
-        type: "number | string",
+        type: "WidthProp",
         description:
           "Override the Form's control width for this field. Caps the control only — the helper and error still span the field column.",
       },
@@ -10833,7 +10848,7 @@ function CreateDialog() {
       },
       {
         name: "width",
-        type: "number | string",
+        type: "WidthProp",
         description:
           "On SheetContent (side left/right): desired panel width (number→px). Default w-3/4 sm:max-w-md.",
       },
@@ -11062,9 +11077,9 @@ toast.error("保存に失敗しました"); // also carries a close button`,
     props: [
       {
         name: "items",
-        type: "{ value: string; label: React.ReactNode; content?: React.ReactNode; href?: string; disabled?: boolean; icon?: React.ReactNode; closable?: boolean; closeIcon?: React.ReactNode; forceRender?: boolean; count?: number; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
+        type: '{ value: string; label: React.ReactNode; content?: React.ReactNode; href?: string; disabled?: boolean; icon?: React.ReactNode; closable?: boolean; closeIcon?: React.ReactNode; forceRender?: boolean; count?: number; countTone?: "neutral" | "accent"; overflowCount?: number; showZero?: boolean; countLabel?: string }[]',
         description:
-          'Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled. `icon` is a leading glyph in the trigger (Ant Design `Tab.icon`). `closable` / `closeIcon` only apply under `variant="editable-card"`; `closable: false` opts one tab out of removal (Ant Design `getRemovable`). `forceRender` (Ant Design `Tab.forceRender`) mounts THAT panel up front and keeps it mounted while another tab is selected, without switching the whole strip over with `destroyOnHidden={false}` — antd\'s per-item `destroyOnHidden` is deliberately not offered, because on this component "kept mounted" is one state and it would be a second spelling of `forceRender`. `count` (+ `overflowCount`, default 99; `showZero`, default true; `countLabel`) draws the counter pill beside the label — 「未対応 12」 — in the SAME vocabulary Button and Toggle publish and through the same helper, formatted with `Intl.NumberFormat` in the active locale. Pass `countLabel` to say what the number is: the pill is `aria-hidden` and an `sr-only` clause carries the digits, so the tab announces "未対応, 12 件の課題" and never the concatenated "未対応12". Prefer this over antd\'s answer, which is to put a Badge inside `label` — with the number inside the label the package owns neither its size nor its tone as the tab moves between selected / unselected / disabled, so every consumer aligns it differently. `href` makes the strip a ROUTE strip (gh#1364) — see `linkComponent`.',
+          'Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled. `icon` is a leading glyph in the trigger (Ant Design `Tab.icon`). `closable` / `closeIcon` only apply under `variant="editable-card"`; `closable: false` opts one tab out of removal (Ant Design `getRemovable`). `forceRender` (Ant Design `Tab.forceRender`) mounts THAT panel up front and keeps it mounted while another tab is selected, without switching the whole strip over with `destroyOnHidden={false}` — antd\'s per-item `destroyOnHidden` is deliberately not offered, because on this component "kept mounted" is one state and it would be a second spelling of `forceRender`. `countTone="neutral"` keeps passive counts muted in both selected and resting states; omitted/"accent" preserves the existing muted resting and accent selected appearance. The compound TabsTrigger accepts the same countTone. Neutral uses --tabs-count-neutral-background/color; accent uses the existing --tabs-count-background/color and --tabs-count-active-background/color knobs (all role mirrors). `count` (+ `overflowCount`, default 99; `showZero`, default true; `countLabel`) draws the counter pill beside the label — 「未対応 12」 — in the SAME vocabulary Button and Toggle publish and through the same helper, formatted with `Intl.NumberFormat` in the active locale. Pass `countLabel` to say what the number is: the pill is `aria-hidden` and an `sr-only` clause carries the digits, so the tab announces "未対応, 12 件の課題" and never the concatenated "未対応12". Prefer this over antd\'s answer, which is to put a Badge inside `label` — with the number inside the label the package owns neither its size nor its tone as the tab moves between selected / unselected / disabled, so every consumer aligns it differently. `href` makes the strip a ROUTE strip (gh#1364) — see `linkComponent`.',
       },
       { name: "value", type: "string", description: "Controlled active tab key." },
       {

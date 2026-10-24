@@ -1,0 +1,11 @@
+/*
+ * KaTeX's stylesheet and fonts, at the version this package renders with (renderer v6).
+ * `import "@godxjp/markdown/katex.css";` once in the app — math draws unstyled without it.
+ */
+@import "katex/dist/katex.min.css";
+
+/* A display formula wider than the column scrolls, as a wide table does, instead of widening the page. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}

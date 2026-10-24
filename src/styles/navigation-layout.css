@@ -687,6 +687,13 @@
     color: var(--tabs-count-active-color, hsl(var(--primary-foreground)));
   }
 
+  /* Explicit passive counters stay quiet on selected and resting tabs, including card faces.
+   * Specificity also beats the resting card counter's contrasting page-surface rule. */
+  [data-slot="tabs"] [data-slot="tabs-trigger"] .ui-tabs-count[data-count-tone="neutral"] {
+    background: var(--tabs-count-neutral-background, hsl(var(--muted)));
+    color: var(--tabs-count-neutral-color, hsl(var(--muted-foreground)));
+  }
+
   @media (forced-colors: active) {
     [data-slot="tabs-trigger"][data-state="active"] .ui-tabs-count {
       outline: var(--tabs-count-forced-outline-width, var(--stroke-hairline)) solid currentColor;

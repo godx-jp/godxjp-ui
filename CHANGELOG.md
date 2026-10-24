@@ -29,6 +29,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Editorial account family (#1439), in its own layer `styles/editorial-account-layout.css` with `--editorial-*` tokens in `tokens/components/editorial-account.css`: `EditorialToggleGroup variant="text" | "icon"` — a named group of `aria-pressed` buttons (a filter row, or a framed icon-only grid / list switch named by each item's label). Also `EditorialTextButton`, `EditorialMetaBar`, `EditorialEmptyPanel variant="guest" | "empty"`, `EditorialStats`, `EditorialToolbar` (the ONE editorial toolbar, shared with the catalog #1438: `summary={{ count, note }}` — count as a polite live region — plus `start` / `end` clusters and an optional `divider` hairline; with a summary it is a one-line listing row, without one a bar that a theme stacks with `--editorial-toolbar-display: block`; geometry `--editorial-toolbar-*`), `EditorialSearch variant="inline"` (a collection's own search row: visible label, live count, no submit), `EditorialFootnote`, `HoldingGrid` / `HoldingCard` / `HoldingCardAction` (`view="grid" | "list"` — the list view is the same card on `140px 1fr` tracks), `SettingsLayout` / `SettingsPanel`, `ThemePicker` (illustrated light / dark / system radios) and `EditorialAuth` / `EditorialAuthCard`; `EditorialPageHeader eyebrowTone="accent"`; Button knob `--button-outline-foreground`.
 - `--editorial-catalog-card-price-label-line-clamp` (default `none`): clamp a long CatalogCard price caption instead of growing the tile (#1435).
 - `EditorialSearch scope` — a slot at the start of the inset search box for the kit `Select` that scopes the search (a site searched per game); the box gives it the field height and a hairline (#1435). Masthead pickers are the kit `Select variant="borderless" width="auto"`, sized by `--editorial-masthead-picker-*` — the kit keeps ONE select implementation.
+## [33.20.0] - 2026-10-24
+
+### Added
+
+- Descriptions `labelWidth`: opt-in `content` shares intrinsic label tracks across rows; CSS lengths reuse `WidthProp` (numbers are px). Default/`auto` retains the theme width, including single-column lists. `--descriptions-label-max-width` caps intrinsic labels for wrapping on narrow screens (#1441).
+- Tabs items and compound `TabsTrigger` `countTone="neutral" | "accent"`: neutral remains muted when selected; the default accent behavior is unchanged. New role-mirror `--tabs-count-neutral-background` / `--tabs-count-neutral-color` tokens complement the existing resting/active accent knobs (#1442).
+
+## [33.19.0] - 2026-10-24
+
+### Changed
+
+- **`WidthProp` is a CSS length, and a size word is a type error (gh#1431).** It was
+  `number | string`, so `<Form controlWidth="md">`, `labelWidth="md"` and `controlWidth="lg"`
+  compiled and were written into CSS as `--form-control-width: md` — invalid, so the cap fell away
+  and the control filled its column (gino-cloud: a Select 1566px wide at a 1920px viewport;
+  Chromium, 9rem label column: `"md"` 1760px, the same as no `controlWidth`, against 320px for
+  `"20rem"`). `WidthProp` now accepts a number (px), a number with a CSS unit (`"20rem"`, `"50%"`,
+  `"40ch"`, `"90vw"`, `"50cqi"`…), `"auto"` / `"max-content"` / `"min-content"` / `"fit-content"`,
+  and `calc()` / `min()` / `max()` / `clamp()` / `var()` / `fit-content()`. It covers Form, FormRoot
+  and FormField `labelWidth` / `controlWidth`, `Flex width`, `SheetContent width` and
+  `DialogContent width`; runtime is unchanged. **Migration:** replace a size word with the length
+  you meant (`controlWidth="md"` → e.g. `"20rem"`); a value typed `string` needs the `WidthProp`
+  type (or a literal). There is no width scale behind `sm`/`md`/`lg` — a component that has one
+  names it with its own union (`CenteredShell width`, `ControlWidthProp`).
+
+## [33.18.0] - 2026-10-24
+
+### Added
+
+- **`@godxjp/markdown` draws math with KaTeX (renderer v6).** `$…$` and `$$…$$` inline, a `$$`
+  block and a ` ```math ` fence render at parse time (the same HTML in a browser, on a server
+  and in a Worker) as HTML plus MathML; before, they were literal text and Markdown ate escapes such
+  as `\,`. KaTeX runs with `trust: false`, `strict: "error"` and `maxSize: 10`, BEFORE the
+  sanitiser, and `markdownSchema` allows exactly KaTeX's vocabulary (MathML, its class names,
+  geometry-only inline styles, `svg` paths): `\href`, `\url`, `\includegraphics`, `\htmlClass`,
+  `\htmlId`, `\htmlStyle` and `\htmlData` render as their own source. A single `$` follows Pandoc's
+  rule, so `$5 and $10` and `$5-$10` stay prose. **Load the stylesheet once:**
+  `import "@godxjp/markdown/katex.css"` (new export; it `@import`s the matching
+  `katex/dist/katex.min.css` and lets a wide display formula scroll).
+- **`@godxjp/markdown` colours fenced code (renderer v6).** A fence in one of 18 curated languages
+  (bash, shell, css, diff, dockerfile, go, ini, java, javascript, json, markdown, php, python, rust,
+  sql, typescript, xml/html, yaml, with their aliases) is tokenised by highlight.js through lowlight
+  into `<span data-code-token>` with the twelve names `Prose` / `CodeBlock` already colour — before,
+  a fence had no token spans and drew in one colour. ` ```mermaid `, ` ```math ` and
+  unknown languages stay plain; a host `pre` receives the tokenised code; `highlight={false}` turns
+  it off.
+- New fixtures in `MARKDOWN_FIXTURES` for math, dollar prices, KaTeX hostile commands, the size cap,
+  highlighted and unknown-language fences.
+
+### Changed
+
+- **`RENDERER_VERSION` 6** (math, code tokens; the existing `ts` fence fixture now carries tokens).
+- **`CODEC_ID` `kit-md@2`.** The codec reads the same math grammar (kept verbatim as raw nodes, so
+  `@godxjp/block-editor` needs no new node). Because `$` is now special in prose, a literal `$x$`
+  pair in text is serialized `\$x$`; a lone `$` (a price) is never escaped, and `normalize` stays
+  idempotent over the whole corpus.
+- **`outline()` slugs a heading's formula from its TeX source**, as `<Markdown>` does, so
+  `## Energy $E=mc^2$` is `energy-emc2` in both.
+
+### Fixed
+
+- **Mermaid `journey` diagrams draw instead of falling back to code.** Journey wrapped its labels in
+  `<switch><foreignObject>`, which the SVG gate refuses (`element switch`); it is now initialised
+  with `journey.textPlacement: "tspan"`. The gate is unchanged.
+- **Mermaid reads the theme per diagram.** The theme was fixed by `data-theme` on the first diagram
+  of the page; a diagram drawn after switching to dark is now dark (already drawn diagrams are not
+  redrawn).
 
 ## [33.17.0] - 2026-10-24
 

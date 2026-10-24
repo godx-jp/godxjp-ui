@@ -2451,5 +2451,19 @@
     "organic": "Organic search",
     "referral": "Referral",
     "email": "Email"
+  },
+  "metadataApiDocs": {
+    "title": "Activity details",
+    "hint": "Content labels share the longest label width. The default stays at the theme width; labelWidth accepts CSS lengths (numbers are px). Long labels wrap within the intrinsic width cap.",
+    "status": "Status",
+    "owner": "Assigned to",
+    "change": "Open → In progress",
+    "person": "Mika Tanaka",
+    "counts": "Count emphasis",
+    "countsHint": "Accent follows selection. Neutral stays muted for passive totals. Both items and compound triggers accept countTone.",
+    "action": "Needs action",
+    "invited": "Invited",
+    "unit": "members",
+    "panel": "Membership details"
   }
 }
