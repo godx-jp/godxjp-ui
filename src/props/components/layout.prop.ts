@@ -2439,8 +2439,52 @@ export type EditorialSearchProp = {
    * gives it the field height and a hairline before the field; the popup is the Select's own.
    */
   scope?: ReactNode;
+  /**
+   * `inset` (gh#1447): matches to list under the box while the field has focus, grouped by kind
+   * (cards, products, sets). The box is then an ARIA combobox: arrows move through the rows, Enter
+   * follows the active row's link, Escape closes. The consumer fetches; the kit only shows rows.
+   */
+  suggestions?: EditorialSearchSuggestionGroupProp[];
+  /** `inset`: the last row of the popup — the full results ("「ピカ」をすべて見る"). */
+  suggestionsFooter?: EditorialSearchSuggestionFooterProp;
+  /** `inset`: accessible name of the suggestions listbox. Default: `label`. */
+  suggestionsLabel?: string;
+  /**
+   * `inset`: the field's text after every edit — never between `compositionstart` and
+   * `compositionend` (an IME candidate is not a query); once more on `compositionend`.
+   */
+  onQueryChange?: (query: string) => void;
+  /** `inset`: the element rows render as — a router `Link` (receives `href`). Default `"a"`. */
+  linkComponent?: React.ElementType;
   id?: IdProp;
   className?: ClassNameProp;
+};
+
+/** @see EditorialSearch — one group of suggestions under a heading (gh#1447). */
+export type EditorialSearchSuggestionGroupProp = {
+  id: string;
+  /** The group heading ("カード"). */
+  label: string;
+  items: EditorialSearchSuggestionProp[];
+};
+
+/** @see EditorialSearch — one suggestion row: a link with optional media, detail and trailing meta. */
+export type EditorialSearchSuggestionProp = {
+  id: string;
+  href: string;
+  label: ReactNode;
+  /** A second line (set, number). */
+  description?: ReactNode;
+  /** The leading thumbnail, logo or code chip, sized by `--editorial-search-suggestion-media-*`. */
+  media?: ReactNode;
+  /** Trailing value (a price). */
+  meta?: ReactNode;
+};
+
+/** @see EditorialSearch — the popup's last row. */
+export type EditorialSearchSuggestionFooterProp = {
+  href: string;
+  label: ReactNode;
 };
 
 /**

@@ -3445,6 +3445,7 @@
 
   /* ── EditorialSearch ──────────────────────────────────────────────────────────────────────── */
   .ui-editorial-search {
+    position: relative;
     display: flex;
     align-items: center;
     gap: var(--editorial-search-gap);
@@ -3542,6 +3543,123 @@
 
   .ui-editorial-search-button-icon {
     display: var(--editorial-search-button-icon-display);
+    flex: none;
+    width: var(--editorial-search-icon-size);
+    height: var(--editorial-search-icon-size);
+  }
+
+  /* Suggestions (gh#1447): a popup under the box, as wide as it. Rows are links; the active one
+   * (aria-activedescendant — focus stays in the field) and the hovered one share the highlight. */
+  .ui-editorial-search-popup {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + var(--editorial-search-popup-offset));
+    /* The layer of the kit's other popups (Select, Popover). */
+    z-index: var(--overlay-z-index);
+    max-height: var(--editorial-search-popup-max-height);
+    overflow-y: auto;
+    padding-block: var(--editorial-search-popup-padding-block);
+    border: var(--stroke-hairline) solid
+      var(--editorial-search-popup-border-color, hsl(var(--border)));
+    border-radius: var(--editorial-search-popup-radius);
+    background: var(--editorial-search-popup-background, hsl(var(--popover)));
+    color: hsl(var(--popover-foreground));
+    box-shadow: var(--editorial-search-popup-shadow);
+    text-align: start;
+  }
+
+  .ui-editorial-search-popup[hidden] {
+    display: none;
+  }
+
+  .ui-editorial-search-group + .ui-editorial-search-group,
+  .ui-editorial-search-group + .ui-editorial-search-suggestions-footer {
+    margin-block-start: var(--editorial-search-popup-padding-block);
+    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
+    padding-block-start: var(--editorial-search-popup-padding-block);
+  }
+
+  .ui-editorial-search-group-label {
+    padding: var(--editorial-search-group-label-padding-block)
+      var(--editorial-search-suggestion-padding-inline);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-search-group-label-font-size);
+    font-weight: var(--editorial-search-group-label-font-weight);
+    letter-spacing: var(--editorial-search-group-label-letter-spacing);
+  }
+
+  .ui-editorial-search-suggestion,
+  .ui-editorial-search-suggestions-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--editorial-search-suggestion-gap);
+    min-height: var(--editorial-search-suggestion-min-height);
+    padding: var(--editorial-search-suggestion-padding-block)
+      var(--editorial-search-suggestion-padding-inline);
+    color: inherit;
+    font-size: var(--editorial-search-suggestion-font-size);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .ui-editorial-search-suggestion:hover,
+  .ui-editorial-search-suggestion[aria-selected="true"],
+  .ui-editorial-search-suggestions-footer:hover,
+  .ui-editorial-search-suggestions-footer[aria-selected="true"] {
+    background: var(--editorial-search-suggestion-active-background, hsl(var(--accent)));
+  }
+
+  .ui-editorial-search-suggestion-media {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--editorial-search-suggestion-media-width);
+    height: var(--editorial-search-suggestion-media-height);
+    overflow: hidden;
+    border-radius: var(--editorial-search-suggestion-media-radius);
+    background: var(--editorial-search-suggestion-media-background, hsl(var(--muted)));
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-search-group-label-font-size);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .ui-editorial-search-suggestion-media > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ui-editorial-search-suggestion-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .ui-editorial-search-suggestion-label,
+  .ui-editorial-search-suggestion-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-editorial-search-suggestion-description {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-search-suggestion-description-font-size);
+  }
+
+  .ui-editorial-search-suggestion-meta {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .ui-editorial-search-suggestions-footer {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .ui-editorial-search-suggestions-footer-icon {
     flex: none;
     width: var(--editorial-search-icon-size);
     height: var(--editorial-search-icon-size);

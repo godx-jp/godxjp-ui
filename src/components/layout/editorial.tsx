@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ArrowRight, Bookmark, Search } from "lucide-react";
 
+import { isImeComposing } from "../../lib/ime";
 import { Slot } from "../../lib/slot";
 import { Breadcrumb } from "./breadcrumb";
 import { EditorialSearchInline } from "./editorial-account";
@@ -59,6 +60,9 @@ export type {
   EditorialPillNavProp as EditorialPillNavProps,
   EditorialSearchProp,
   EditorialSearchProp as EditorialSearchProps,
+  EditorialSearchSuggestionFooterProp,
+  EditorialSearchSuggestionGroupProp,
+  EditorialSearchSuggestionProp,
   EditorialSectionHeadProp,
   EditorialSectionHeadProp as EditorialSectionHeadProps,
   EditorialSectionProp,
@@ -383,7 +387,12 @@ export function EditorialSearch(props: EditorialSearchProp) {
   return <EditorialSearchInset {...props} />;
 }
 
-/** The inset site search: glyph, field and submit button in one box, under a hidden label. */
+/**
+ * The inset site search: glyph, field and submit button in one box, under a hidden label. Given
+ * `suggestions` / `suggestionsFooter` the field is an ARIA combobox over a grouped listbox of links
+ * (gh#1447, WAI-ARIA APG "combobox with listbox popup"): focus stays in the field, arrows move the
+ * active row, Enter follows its link, Escape closes. An IME candidate is never a query.
+ */
 function EditorialSearchInset({
   label,
   placeholder,
@@ -393,11 +402,123 @@ function EditorialSearchInset({
   action,
   onSearch,
   scope,
+  suggestions,
+  suggestionsFooter,
+  suggestionsLabel,
+  onQueryChange,
+  linkComponent: LinkComponent = "a",
   id,
   className,
 }: EditorialSearchProp) {
   const reactId = React.useId();
   const inputId = id ?? `editorial-search-${reactId}`;
+  const listboxId = `${inputId}-suggestions`;
+  const combobox = suggestions !== undefined || suggestionsFooter !== undefined;
+  const composing = React.useRef(false);
+  const [focused, setFocused] = React.useState(false);
+  const [dismissed, setDismissed] = React.useState(false);
+  const [hasQuery, setHasQuery] = React.useState(Boolean(defaultValue?.trim()));
+  const [active, setActive] = React.useState(-1);
+
+  const groups = (suggestions ?? []).filter((group) => group.items.length > 0);
+  const rowKeys = [
+    ...groups.flatMap((group) => group.items.map((item) => `${group.id}:${item.id}`)),
+    ...(suggestionsFooter ? ["footer"] : []),
+  ];
+  const rowsKey = rowKeys.join("|");
+  const open = combobox && focused && !dismissed && hasQuery && rowKeys.length > 0;
+  const optionId = React.useCallback((index: number) => `${listboxId}-option-${index}`, [listboxId]);
+
+  // New rows: nothing is active until the user moves into them.
+  React.useEffect(() => setActive(-1), [rowsKey]);
+  React.useEffect(() => {
+    if (open && active >= 0) {
+      document.getElementById(optionId(active))?.scrollIntoView?.({ block: "nearest" });
+    }
+  }, [open, active, optionId]);
+
+  const report = (value: string) => {
+    setHasQuery(value.trim() !== "");
+    setDismissed(false);
+    onQueryChange?.(value);
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isImeComposing(event)) return;
+    if (!open) {
+      if (event.key === "ArrowDown" && hasQuery && rowKeys.length > 0) {
+        event.preventDefault();
+        setDismissed(false);
+      }
+      return;
+    }
+    const count = rowKeys.length;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActive((index) => (index + 1) % count);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActive((index) => (index <= 0 ? count - 1 : index - 1));
+    } else if (event.key === "Escape") {
+      // The first Escape closes the popup; the next one is the browser's (it clears the field).
+      event.preventDefault();
+      setDismissed(true);
+      setActive(-1);
+    } else if (event.key === "Enter" && active >= 0) {
+      event.preventDefault();
+      document.getElementById(optionId(active))?.click();
+    }
+  };
+
+  let rowIndex = -1;
+  const option = (key: string, href: string, rowClass: string, children: React.ReactNode) => {
+    rowIndex += 1;
+    const index = rowIndex;
+    return (
+      <LinkComponent
+        key={key}
+        id={optionId(index)}
+        href={href}
+        role="option"
+        aria-selected={index === active}
+        tabIndex={-1}
+        className={rowClass}
+        onClick={() => {
+          setDismissed(true);
+          setActive(-1);
+        }}
+      >
+        {children}
+      </LinkComponent>
+    );
+  };
+
+  const comboboxProps: React.InputHTMLAttributes<HTMLInputElement> = combobox
+    ? {
+        role: "combobox",
+        "aria-autocomplete": "list",
+        "aria-expanded": open,
+        "aria-controls": listboxId,
+        "aria-activedescendant": open && active >= 0 ? optionId(active) : undefined,
+        onChange: (event) => {
+          if (!composing.current) report(event.currentTarget.value);
+        },
+        onCompositionStart: () => {
+          composing.current = true;
+        },
+        onCompositionEnd: (event) => {
+          composing.current = false;
+          report(event.currentTarget.value);
+        },
+        onFocus: () => setFocused(true),
+        onBlur: () => {
+          setFocused(false);
+          setActive(-1);
+        },
+        onKeyDown,
+      }
+    : {};
+
   return (
     <form
       role="search"
@@ -406,6 +527,7 @@ function EditorialSearchInset({
       data-slot="editorial-search"
       className={cn("ui-editorial-search", className)}
       onSubmit={(event) => {
+        setDismissed(true);
         if (!onSearch) return;
         event.preventDefault();
         const value = new FormData(event.currentTarget).get(name);
@@ -429,11 +551,77 @@ function EditorialSearchInset({
         defaultValue={defaultValue}
         autoComplete="off"
         className="ui-editorial-search-input"
+        {...comboboxProps}
       />
       <button type="submit" className="ui-editorial-search-button ui-focus-ring">
         {submitLabel}
         <ArrowRight aria-hidden className="ui-editorial-search-button-icon" />
       </button>
+      {combobox && (
+        <div
+          data-slot="editorial-search-popup"
+          className="ui-editorial-search-popup"
+          hidden={!open}
+          // A press on a row must not blur the field first (the popup would close under the click).
+          onMouseDown={(event) => event.preventDefault()}
+        >
+          <div role="listbox" id={listboxId} aria-label={suggestionsLabel ?? label}>
+            {groups.map((group) => (
+              <div
+                key={group.id}
+                role="group"
+                aria-labelledby={`${listboxId}-group-${group.id}`}
+                className="ui-editorial-search-group"
+              >
+                <div
+                  role="presentation"
+                  id={`${listboxId}-group-${group.id}`}
+                  className="ui-editorial-search-group-label"
+                >
+                  {group.label}
+                </div>
+                {group.items.map((item) =>
+                  option(
+                    `${group.id}:${item.id}`,
+                    item.href,
+                    "ui-editorial-search-suggestion",
+                    <>
+                      {item.media != null && (
+                        <span aria-hidden className="ui-editorial-search-suggestion-media">
+                          {item.media}
+                        </span>
+                      )}
+                      <span className="ui-editorial-search-suggestion-text">
+                        <span className="ui-editorial-search-suggestion-label">{item.label}</span>
+                        {item.description != null && (
+                          <span className="ui-editorial-search-suggestion-description">
+                            {item.description}
+                          </span>
+                        )}
+                      </span>
+                      {item.meta != null && (
+                        <span className="ui-editorial-search-suggestion-meta">{item.meta}</span>
+                      )}
+                    </>,
+                  ),
+                )}
+              </div>
+            ))}
+            {suggestionsFooter &&
+              option(
+                "footer",
+                suggestionsFooter.href,
+                "ui-editorial-search-suggestions-footer",
+                <>
+                  <span className="ui-editorial-search-suggestion-label">
+                    {suggestionsFooter.label}
+                  </span>
+                  <ArrowRight aria-hidden className="ui-editorial-search-suggestions-footer-icon" />
+                </>,
+              )}
+          </div>
+        </div>
+      )}
     </form>
   );
 }
