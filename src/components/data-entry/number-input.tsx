@@ -22,6 +22,9 @@ function decimalsOf(n: number): number {
   return dot === -1 ? 0 : s.length - dot - 1;
 }
 
+/** `width="auto"` without bounds: room for six characters (antd InputNumber rests at 90px). */
+const AUTO_CHARS_UNBOUNDED = 6;
+
 /** Clamp `n` into [min, max] (either bound optional). */
 function clamp(n: number, min?: number, max?: number): number {
   let out = n;
@@ -77,6 +80,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
       placeholder,
       prefix,
       suffix,
+      width = "full",
       name,
       id,
       className,
@@ -294,6 +298,19 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
       stepBy(event.deltaY < 0 ? 1 : -1);
     };
 
+    // `width="auto"`: room for the widest value the bounds allow, as it is shown at rest.
+    const autoChars =
+      width !== "auto"
+        ? null
+        : min == null && max == null
+          ? AUTO_CHARS_UNBOUNDED
+          : Math.max(
+              ...[min, max]
+                .filter((bound): bound is number => bound != null && Number.isFinite(bound))
+                .map((bound) => formatAtRest(bound).length),
+              1,
+            );
+
     return (
       <div
         data-slot="number-input"
@@ -301,7 +318,13 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
         data-status={status}
         data-variant={variant}
         data-controls={controls ? undefined : "off"}
+        data-width={width === "full" ? undefined : width}
         className={cn("ui-number-input", className)}
+        style={
+          autoChars == null
+            ? undefined
+            : ({ "--number-input-chars": autoChars } as React.CSSProperties)
+        }
       >
         {prefix != null ? (
           <span

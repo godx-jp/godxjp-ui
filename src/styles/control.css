@@ -2330,6 +2330,21 @@
   .ui-number-input[data-size="lg"] {
     --control-height: var(--control-height-lg);
   }
+  /* `width="auto"` (gh#1448): the characters the bounds need (`--number-input-chars`, written by
+   * the component), the field's start padding, the stepper column it reserves at the end
+   * (`.ui-number-input-field` below) and the border. `ch` is read in the field's own type size. */
+  .ui-number-input[data-width="auto"] {
+    font-size: var(--control-font-size);
+    inline-size: calc(
+      var(--number-input-chars, 6) * 1ch + var(--control-padding-x) + var(--control-height) +
+        var(--space-2) + 2px
+    );
+    max-inline-size: 100%;
+  }
+  .ui-number-input[data-width="bounded"] {
+    inline-size: var(--control-bounded-width);
+    max-inline-size: 100%;
+  }
   /* Reserve room on the trailing edge for the stacked steppers (logical inline-end). */
   .ui-number-input-field {
     inline-size: 100%;

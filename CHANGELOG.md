@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `NumberInput width="full" | "auto" | "bounded"` — the `Select` / picker width axis. `auto` sizes the field to the widest value its bounds allow (formatted `min` / `max`, 6 characters unbounded) plus the stepper column, so a quantity stepper outside a FormField (a `ListRow` trailing slot) no longer fills the line; `bounded` holds `--control-bounded-width`. Default `full` is unchanged (#1448).
 - Editorial catalog bodies (#1438): `EditorialFilterPanel` + `EditorialFilterField` (a catalog's bordered filter panel of labelled selects that wrap, bottom aligned, with a trailing reset; the selects inside read the panel's control scale). Geometry: `--editorial-filter-panel-*`, `--editorial-filter-field-*`. A listing's toolbar is `EditorialToolbar summary` (below).
 - `CatalogDetailSection variant="module"` gives its buttons their own glyph gap / size (`--editorial-catalog-detail-module-button-gap` / `-icon-size`, `initial` = control defaults), so a page-wide `--button-gap` / `--button-icon-size` (an account theme's 10px / 20px) does not widen the price module's refresh button and wrap its heading row on a phone (#1438).
 - `Select` (plain, no `showSearch`) renders `option.icon` before the label in each row and, for the selected option, in the trigger, as the search panel does; `renderOption` / `labelRender` still win (#1444).
