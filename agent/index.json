@@ -16,7 +16,7 @@
     },
     {
       "file": "components-index.json",
-      "note": "68 KB — name + group + tagline for all 210. FETCH THIS FIRST, then fetch only the components you chose.",
+      "note": "46 KB — name + group + tagline for all 210. FETCH THIS FIRST, then fetch only the components you chose.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json"
     },
     {

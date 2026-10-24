@@ -363,11 +363,15 @@ for (const entry of data["patterns.json"]) {
 /* `absorbed` rides in the INDEX, not just the full entry, because it is search bait: the index is
  * the only file an agent reads whole, and "Combobox" is what it will look for. A name that resolves
  * to nothing anywhere is the one that gets hand-rolled. */
+/* The index carries each tagline's FIRST SENTENCE: enough to decide which component, and the
+ * full tagline is one fetch away in `components/<Name>.json`. Whole taglines put 210 entries at
+ * 69 KB, past the size an agent reads whole. */
+const firstSentence = (text) => text.match(/^([\s\S]+?[.。])(?=\s|$)/)?.[1] ?? text;
 files["components-index.json"] = stable(
   data["components.json"].map(({ name, group, tagline, absorbed, tier }) => ({
     name,
     group,
-    tagline,
+    tagline: firstSentence(tagline),
     ...(absorbed ? { absorbed } : {}),
     // `tier: "lab"` = the opt-in `@godxjp/ui/lab` subpath (v32 #1223) — not default context.
     ...(tier ? { tier } : {}),

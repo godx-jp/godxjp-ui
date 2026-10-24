@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AppShell: with mobileTabBar visible, app footer now flows at the end of scrolling content; desktop retains its footer track. Footer inline insets follow the page spacing tokens, including compact phone gutters and RTL.
 - Collapsed table records honor `--table-row-border-width`; compact collections honor `--table-font-size` while retaining compact defaults when unset. Persona typography resolves when optional foundation aliases are unavailable (#1383).
 - `DashboardGrid` (lab) prints every tile at its content height: in print the grid rows are `auto`, tile content no longer scrolls, and the move / resize handles are hidden, so a table taller than its tile keeps all its rows on paper (#1446).
+- `agent/components-index.json` carries each tagline's first sentence (the full tagline stays in `agent/components/<Name>.json`), so the 210-entry index stays under the size an agent reads whole: 69 KB → 47 KB.
 - Token reachability gates accept `--only <exact-slug>` for explicit partial verification, rejecting unknown slugs and baseline updates.
 
 ## [33.20.0] - 2026-10-24
