@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- AppShell `mobileTabBar` / `mobileTabBarLabel`: shared MobileShell destination surface in drawer mode, measured content/toast clearance, safe-area support and desktop/print hiding (#1433). Shared `--mobile-shell-tab-bar-background`, `--mobile-shell-tab-bar-border`, `--mobile-shell-tab-bar-active-color` and `--mobile-shell-tab-bar-active-background` knobs (quiet defaults).
+
+### Changed
+
+- MobileShell destination bands use a quiet separator by default; opt into a line through `--mobile-shell-tab-bar-border`. Both shells share full-band touch targets and scoped current-page paint.
+
+### Fixed
+
+- AppShell: with mobileTabBar visible, app footer now flows at the end of scrolling content; desktop retains its footer track. Footer inline insets follow the page spacing tokens, including compact phone gutters and RTL.
+- Collapsed table records honor `--table-row-border-width`; compact collections honor `--table-font-size` while retaining compact defaults when unset. Persona typography resolves when optional foundation aliases are unavailable (#1383).
+- Token reachability gates accept `--only <exact-slug>` for explicit partial verification, rejecting unknown slugs and baseline updates.
+
 ## [33.20.0] - 2026-10-24
 
 ### Added

@@ -11,6 +11,36 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--mobile-shell-tab-bar-active-color",
+    category: "component",
+    tier: "component",
+    role: "Shared current-page destination ink; initial, local text-brand/primary role fallback.",
+  },
+  {
+    name: "--mobile-shell-tab-bar-active-background",
+    category: "component",
+    tier: "component",
+    role: "Shared current-page destination fill; initial, local accent role fallback. Current page also uses medium weight and aria-current.",
+  },
+  {
+    name: "--mobile-shell-tab-bar-height",
+    category: "component",
+    tier: "component",
+    role: "Minimum destination band height shared by MobileShell and AppShell mobileTabBar; safe-area is added. Default band-height-3xl + space-2.",
+  },
+  {
+    name: "--mobile-shell-tab-bar-background",
+    category: "component",
+    tier: "component",
+    role: "Shared tab bar fill; initial role mirror, local card/alpha fallback. Honors scoped dark/tenant roles.",
+  },
+  {
+    name: "--mobile-shell-tab-bar-border",
+    category: "component",
+    tier: "component",
+    role: "Shared tab bar block-start separator; quiet default none. Set a complete CSS border to opt in.",
+  },
+  {
     name: "--descriptions-label-max-width",
     category: "component",
     tier: "component",

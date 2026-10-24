@@ -1,3 +1,4 @@
+import { useTranslation } from "@godxjp/ui/i18n";
 import { useState } from "react";
 import {
   AppShell,
@@ -89,6 +90,7 @@ const ENTITIES = [
 ] as const;
 
 export default function Demo() {
+  const { t } = useTranslation();
   const [activeId, setActiveId] = useState("dashboard");
   // Seeded collapsed at rest so the icon rail + collapsed reflow (data-collapsed)
   // is visible in a static screenshot; the topbar toggle expands the full sidebar.
@@ -201,6 +203,22 @@ export default function Demo() {
   return (
     <AppShell
       sidebar={sidebar}
+      mobileTabBar={[
+        { id: "dashboard", icon: LayoutDashboard, label: t("docs.appShellPhone.home") },
+        { id: "invoices", icon: Receipt, label: t("docs.appShellPhone.work") },
+        { id: "users", icon: Users, label: t("docs.appShellPhone.people") },
+      ].map(({ id, icon: Icon, label }) => (
+        <Button key={id} asChild variant="ghost" className="flex-col rounded-none">
+          <a
+            href={`#${id}`}
+            onClick={() => setActiveId(id)}
+            aria-current={activeId === id ? "page" : undefined}
+          >
+            <Icon aria-hidden="true" />
+            <Text size="2xs">{label}</Text>
+          </a>
+        </Button>
+      ))}
       // barless では 4 スロットすべてが undefined ＝ <header class="app-topbar"> は描画されず、
       // .app-root に data-topbar="none" が付いてバーの行が 0 になる（900px 以下だけ、
       // ハンバーガーのためにヘッダーが戻る）。
@@ -226,6 +244,8 @@ export default function Demo() {
       breadcrumb={
         <Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "ダッシュボード" }]} />
       }
+      // With mobileTabBar visible, the footer flows at the end of main; only tabs persist.
+      // Its inline padding follows the page keyline tokens in both directions.
       // Shell-level footer slot (app-footer landmark) · distinct from the
       // Sidebar footer (the user identity block) shown on the left rail.
       footer={

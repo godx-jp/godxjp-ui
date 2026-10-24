@@ -227,3 +227,7 @@ time. (Standing user instruction: log the whole process into the skill on every 
 
 > The investigation is part of the deliverable, not overhead. A fix that doesn't update the skill
 > means the same class of bug returns.
+
+## Shell footer regression lesson (#1433 follow-up)
+
+When adding persistent phone navigation, capture both scroll-start and scroll-end: check the combined persistent bands, not only overlap with the new bar. App-level metadata must flow after the page content when phone tabs are present; preserve desktop and print behavior. Check that the page contributes its full height to the shell scroll region (a shrinking flex page can leave its footer before overflowing content). Measure footer text against the page keyline in both directions, and await `document.fonts.ready` before screenshots so a late font swap cannot invalidate the text bounds.

@@ -261,7 +261,9 @@ describe("Table action-collection compact tier — the layer contract (gh#412)",
     const tableTsx = read("../table.tsx");
     expect(tableTsx).toContain("caption-bottom");
     expect(tableTsx).not.toMatch(/"w-full caption-bottom text-sm"/);
-    expect(tableCss).toContain("font-size: var(--table-font-size)");
+    expect(tableCss).toContain(
+      "font-size: var(--table-font-size, var(--font-size-sm, var(--font-size-base)))",
+    );
     expect(tableCss).toContain("line-height: var(--table-line-height)");
 
     const responsiveAt = tableCss.indexOf("@layer godxjp-ui-responsive {");
@@ -272,7 +274,7 @@ describe("Table action-collection compact tier — the layer contract (gh#412)",
     // Every compact re-point — type AND measures — is inside the last layer…
     expect(responsiveLayer.match(/@container ui-table-collection \(width </g)).toHaveLength(4);
     expect(
-      responsiveLayer.match(/font-size: var\(\s*--table-action-collection-font-size-compact\)/g),
+      responsiveLayer.match(/font-size: var\(\s*--table-font-size, var\(--table-action-collection-font-size-compact\)\)/g),
     ).toHaveLength(4);
     // …and none of it is left behind in `@layer components` (prose comments aside).
     const beforeRules = beforeResponsive.replace(/\/\*[\s\S]*?\*\//g, "");

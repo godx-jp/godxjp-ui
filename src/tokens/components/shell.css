@@ -1062,6 +1062,10 @@
   --mobile-shell-header-bar-height: var(--band-height-3xl);
   /* 4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar;
    * there is no 64px band step, so it derives from the 3.5rem one (tier 2a). */
+  --mobile-shell-tab-bar-active-color: initial; /* Local brand ink role. */
+  --mobile-shell-tab-bar-active-background: initial; /* Local accent role. */
+  --mobile-shell-tab-bar-background: initial; /* Local card role at the reader. */
+  --mobile-shell-tab-bar-border: none;
   --mobile-shell-tab-bar-height: calc(var(--band-height-3xl) + var(--space-2));
   --mobile-shell-main-padding-block: var(--space-4);
   --mobile-shell-actions-padding-block: var(--space-3);

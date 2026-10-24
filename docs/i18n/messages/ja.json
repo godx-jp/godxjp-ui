@@ -2425,6 +2425,11 @@
       "saved": "保存しました",
       "more": "その他",
       "scope": "表示範囲"
+    },
+    "appShellPhone": {
+      "home": "ホーム",
+      "work": "業務",
+      "people": "メンバー"
     }
   },
   "dashboardGridDocs": {
