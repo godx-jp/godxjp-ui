@@ -565,9 +565,18 @@ export function EditorialInlineSearch({
 }
 
 /** A quiet closing line: a note at the start, an optional action at the end. */
-export function EditorialFootnote({ children, action, className }: EditorialFootnoteProp) {
+export function EditorialFootnote({
+  children,
+  action,
+  align = "start",
+  className,
+}: EditorialFootnoteProp) {
   return (
-    <div data-slot="editorial-footnote" className={cn("ui-editorial-footnote", className)}>
+    <div
+      data-slot="editorial-footnote"
+      data-align={align === "start" ? undefined : align}
+      className={cn("ui-editorial-footnote", className)}
+    >
       {children != null && <div className="ui-editorial-footnote-body">{children}</div>}
       {action != null && <div className="ui-editorial-footnote-action">{action}</div>}
     </div>

@@ -7561,6 +7561,14 @@
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | undefined",
+          "values": ["center", "start"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": false,

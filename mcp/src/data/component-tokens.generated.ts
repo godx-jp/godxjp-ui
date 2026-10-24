@@ -4189,6 +4189,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
+    "name": "--editorial-footnote-center-align-block",
+    "value": "center",
+    "description": "align=\"center\" (a one-line note beside its action): centred, no band padding."
+  },
+  {
+    "name": "--editorial-footnote-center-space-block-start",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
     "name": "--editorial-toggle-group-gap",
     "value": "0.5rem",
     "description": "── EditorialToggleGroup ─────────────────────────────────────────────────────────────────"
@@ -5047,6 +5057,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--editorial-settings-panel-number-font-size",
     "value": "0.9375rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-number-min-width",
+    "value": "1.25rem",
+    "description": "The number column: the title starts at the same x whatever the figures' face."
   },
   {
     "name": "--editorial-settings-panel-number-line-height",

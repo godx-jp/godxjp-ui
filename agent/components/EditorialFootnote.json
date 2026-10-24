@@ -13,6 +13,12 @@
       "description": "Trailing action.",
       "name": "action",
       "type": "ReactNode"
+    },
+    {
+      "default": "\"start\"",
+      "description": "Cross-axis alignment.",
+      "name": "align",
+      "type": "\"start\" | \"center\""
     }
   ],
   "related": [

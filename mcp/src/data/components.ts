@@ -1813,6 +1813,12 @@ import { Moon, Sun } from "lucide-react";
     props: [
       { name: "children", type: "ReactNode", description: "The note." },
       { name: "action", type: "ReactNode", description: "Trailing action." },
+      {
+        name: "align",
+        type: '"start" | "center"',
+        default: '"start"',
+        description: "Cross-axis alignment.",
+      },
     ],
     usage: ["DO keep it to one or two sentences."],
     related: ["EditorialNote — a ruled aside in a reading column."],

@@ -47,6 +47,9 @@
   /* row = note and action on one line; column = stacked (a phone). */
   --editorial-footnote-align-flow: row;
   --editorial-footnote-align-block: flex-start;
+  /* align="center" (a one-line note beside its action): centred, no band padding. */
+  --editorial-footnote-center-align-block: center;
+  --editorial-footnote-center-space-block-start: 2rem;
 
   /* ── EditorialToggleGroup ───────────────────────────────────────────────────────────────── */
   --editorial-toggle-group-gap: 0.5rem;
@@ -246,6 +249,8 @@
   --editorial-settings-panel-head-gap: 1rem;
   --editorial-settings-panel-head-space-block-end: 1.75rem;
   --editorial-settings-panel-number-font-size: 0.9375rem;
+  /* The number column: the title starts at the same x whatever the figures' face. */
+  --editorial-settings-panel-number-min-width: 1.25rem;
   --editorial-settings-panel-number-line-height: 1.8;
   --editorial-settings-panel-number-padding-block-start: 2px;
   --editorial-settings-panel-title-font-size: 1.25rem;

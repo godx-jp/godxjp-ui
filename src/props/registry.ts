@@ -1958,6 +1958,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       { field: "children", local: true, reason: "The note." },
       { field: "action", local: true, reason: "Trailing action." },
+      { field: "align", local: true, reason: "start or center cross-axis alignment." },
     ],
   },
   EditorialMetaBarProp: {

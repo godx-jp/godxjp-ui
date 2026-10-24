@@ -267,5 +267,7 @@ export type EditorialInlineSearchProp = {
 export type EditorialFootnoteProp = {
   children?: ReactNode;
   action?: ReactNode;
+  /** Cross-axis alignment of note and action: `start` (default, a multi-line note) or `center`. */
+  align?: "start" | "center";
   className?: ClassNameProp;
 };
