@@ -1,0 +1,53 @@
+{
+  "example": "import { Button } from \"@godxjp/ui/general\";\nimport { EditorialEmptyPanel, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialEmptyPanel eyebrow={<Eyebrow>A PLACE FOR YOUR COLLECTION</Eyebrow>} title=\"Keep what you love, together.\" description=\"Record your cards and products.\" actions={<Button>Sign in</Button>} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialEmptyPanel",
+  "props": [
+    {
+      "default": "\"guest\"",
+      "description": "Illustrated guest panel or dashed empty panel.",
+      "name": "variant",
+      "type": "\"guest\" | \"empty\""
+    },
+    {
+      "description": "Kicker (an Eyebrow).",
+      "name": "eyebrow",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Title.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "default": "2",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3"
+    },
+    {
+      "description": "Copy.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Buttons.",
+      "name": "actions",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Medallion glyph (variant=\"empty\").",
+      "name": "icon",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "EmptyState — the application empty state."
+  ],
+  "tagline": "A centred panel for a signed-out or an empty state (gh#1439). `variant=\"guest\"` draws a decorative three-card stack above kicker, title, copy and centred actions; `variant=\"empty\"` is dashed with a round icon medallion. Geometry: `--editorial-empty-panel-*`.",
+  "usage": [
+    "DO use variant=\"guest\" where a page needs an account, variant=\"empty\" for a collection with nothing in it."
+  ]
+}

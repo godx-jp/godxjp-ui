@@ -28,6 +28,8 @@
     vertical-align: middle;
     gap: var(--badge-space-gap);
     padding: var(--badge-space-y) var(--badge-space-x);
+    /* gh#1439 — a floor for the chip's height (a brand chip drawn 24px tall); `auto` by default. */
+    min-block-size: var(--badge-min-height, auto);
     /* A knob, not a literal (gh#404): the chip had a spacing knob and no corner knob at all, so a
      * context that reshapes it — a Badge nested in a bordered Button — could only write the radius
      * as a constant nobody could reach back past. Default is byte-identical. */

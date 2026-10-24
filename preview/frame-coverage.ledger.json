@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-10-09",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 324,
-    "dimensionCells": 4536,
+    "exports": 338,
+    "dimensionCells": 4732,
     "covered": 89,
-    "untested": 2487,
-    "notApplicable": 1962,
+    "untested": 2590,
+    "notApplicable": 2055,
     "knownMissingFrames": [
       "layout/editorial",
       "layout/editorial-account",
@@ -4169,6 +4169,60 @@
         "reducedMotion": "untested"
       }
     },
+    "EditorialAuth": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "EditorialAuthCard": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
     "EditorialBanner": {
       "group": "layout",
       "owner": "layout/editorial",
@@ -4226,6 +4280,33 @@
     "EditorialCard": {
       "group": "layout",
       "owner": "layout/editorial",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "untested",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "EditorialEmptyPanel": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
       "frames": [],
       "hasFrame": false,
       "baseline": {
@@ -4334,6 +4415,33 @@
     "EditorialFooter": {
       "group": "layout",
       "owner": "layout/editorial",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "EditorialFootnote": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
       "frames": [],
       "hasFrame": false,
       "baseline": {
@@ -4469,6 +4577,33 @@
     "EditorialMastheadLink": {
       "group": "layout",
       "owner": "layout/editorial",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "EditorialMetaBar": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
       "frames": [],
       "hasFrame": false,
       "baseline": {
@@ -4662,11 +4797,11 @@
       "hasFrame": false,
       "baseline": {
         "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
+        "notApplicable": 5,
+        "untested": 9
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -4736,6 +4871,60 @@
         "reducedMotion": "untested"
       }
     },
+    "EditorialStats": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "EditorialTextButton": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
     "EditorialTextLink": {
       "group": "layout",
       "owner": "layout/editorial",
@@ -4780,6 +4969,33 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "EditorialToolbar": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -5225,6 +5441,87 @@
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "HoldingCard": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "HoldingCardAction": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "HoldingGrid": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -7565,6 +7862,60 @@
         "reducedMotion": "untested"
       }
     },
+    "SettingsLayout": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "SettingsPanel": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
     "Sheet": {
       "group": "feedback",
       "owner": "feedback/sheet",
@@ -8817,6 +9168,33 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "ThemePicker": {
+      "group": "layout",
+      "owner": "layout/editorial-account",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",

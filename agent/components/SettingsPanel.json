@@ -1,0 +1,48 @@
+{
+  "example": "import { SettingsPanel } from \"@godxjp/ui/layout\";\n\n<SettingsPanel number=\"02\" title=\"Appearance\" description=\"Card artwork keeps its colours.\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "SettingsPanel",
+  "props": [
+    {
+      "description": "Section number.",
+      "name": "number",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Title.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "default": "2",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3"
+    },
+    {
+      "description": "Copy.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Fields.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "id of the title (names the section).",
+      "name": "titleId",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "SettingsLayout — the page.",
+    "EditorialPanel — a reading-page panel."
+  ],
+  "tagline": "One bordered settings section (gh#1439): a number in the figure face beside the title and its description, then the fields (a Form). Geometry: `--editorial-settings-panel-*`.",
+  "usage": [
+    "DO put the fields in a Form (columns={2} for paired fields)."
+  ]
+}

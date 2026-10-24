@@ -7236,6 +7236,128 @@
         }
       ]
     },
+    "EditorialAuth": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "art",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "benefits",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "eyebrow",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
+    "EditorialAuthCard": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "badge",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "footer",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "level",
+          "origin": "owned",
+          "required": false,
+          "type": "2 | 3 | undefined",
+          "values": [2, 3],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
     "EditorialBanner": {
       "group": "layout",
       "props": [
@@ -7416,6 +7538,75 @@
           "type": "EditorialCardVariantProp",
           "values": ["journal", "spotlight"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "EditorialEmptyPanel": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "eyebrow",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "level",
+          "origin": "owned",
+          "required": false,
+          "type": "2 | 3 | undefined",
+          "values": [2, 3],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"empty\" | \"guest\" | undefined",
+          "values": ["empty", "guest"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         }
       ]
     },
@@ -7612,6 +7803,43 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "EditorialFootnote": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "action",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | undefined",
+          "values": ["center", "start"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         }
       ]
     },
@@ -7862,6 +8090,43 @@
         }
       ]
     },
+    "EditorialMetaBar": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "end",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "start",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
     "EditorialNote": {
       "group": "layout",
       "props": [
@@ -7932,6 +8197,14 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "eyebrowTone",
+          "origin": "owned",
+          "required": false,
+          "type": "\"page\" | \"accent\" | undefined",
+          "values": ["page", "accent"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -8171,6 +8444,22 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "count",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "debounce",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
@@ -8229,9 +8518,17 @@
         {
           "name": "submitLabel",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"inline\" | \"inset\" | undefined",
+          "values": ["inline", "inset"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -8382,6 +8679,88 @@
         }
       ]
     },
+    "EditorialStats": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "EditorialStatsItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
+    "EditorialTextButton": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "onClick",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
     "EditorialTextLink": {
       "group": "layout",
       "props": [
@@ -8455,6 +8834,35 @@
           "required": false,
           "type": "\"text\" | \"icon\" | undefined",
           "values": ["text", "icon"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
+    "EditorialToolbar": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "end",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "start",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         }
       ]
@@ -9925,6 +10333,189 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
+        }
+      ]
+    },
+    "HoldingCard": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "date",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "level",
+          "origin": "owned",
+          "required": false,
+          "type": "2 | 3 | undefined",
+          "values": [2, 3],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "media",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "meta",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "overline",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "purchase",
+          "origin": "owned",
+          "required": false,
+          "type": "{ label: ReactNode; value: ReactNode; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "tags",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
+    "HoldingCardAction": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "onClick",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
+    "HoldingGrid": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "view",
+          "origin": "owned",
+          "required": false,
+          "type": "HoldingViewProp | undefined",
+          "values": ["grid", "list"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         }
       ]
     },
@@ -16418,6 +17009,96 @@
         }
       ]
     },
+    "SettingsLayout": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "aside",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
+    "SettingsPanel": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "level",
+          "origin": "owned",
+          "required": false,
+          "type": "2 | 3 | undefined",
+          "values": [2, 3],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "number",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "titleId",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        }
+      ]
+    },
     "Sheet": {
       "group": "feedback",
       "props": [
@@ -18922,6 +19603,67 @@
           "type": "\"inline\" | \"split\" | undefined",
           "values": ["inline", "split"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
+    "ThemePicker": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "legend",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "name",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "options",
+          "origin": "owned",
+          "required": true,
+          "type": "ThemePickerOptionProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         }
       ]
     },

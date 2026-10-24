@@ -259,6 +259,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Companion to --badge-font-size (gh#260). The cva's old `text-xs` utility also set line-height via Tailwind's default `--text-xs--line-height: calc(1 / 0.75)` (the theme remaps --text-xs but never that companion). Same unitless ratio here keeps the default badge pixel-identical now that badge-layout.css owns the type metrics."
   },
   {
+    "name": "--badge-min-height",
+    "value": "initial",
+    "description": "gh#1439 — the chip's minimum height and the outline / dashed ink. `initial`: no floor, and hsl(var(--foreground)) at the call site."
+  },
+  {
+    "name": "--badge-outline-foreground",
+    "value": "initial",
+    "description": "Badge component tokens."
+  },
+  {
     "name": "--badge-icon-size",
     "value": "var(--icon-size-xs)",
     "description": "Leading/trailing glyph inside the pill. It was a bare `0.75rem` in badge-layout.css with no token at all, so a service could only resize it with `!important` or a forked stylesheet — the two routes the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing moves. Matches --badge-font-size's step by design: the glyph reads as a character in the label's run, so the two retune together. Deliberately NOT --scaling-multiplied — the literal it replaces did not track density."
@@ -1106,7 +1116,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--button-outline-foreground",
     "value": "initial",
-    "description": "default = hsl(var(--foreground)) at the call site (gh#1438)"
+    "description": "The outline variant's label ink (gh#1439): a brand whose secondary button reads in its action colour. `initial`, default = hsl(var(--foreground)) at the call site."
+  },
+  {
+    "name": "--button-gap",
+    "value": "initial",
+    "description": "Label↔glyph gap and glyph size of a button (gh#1439): a brand whose buttons carry a 20px arrow 10px from the label. `initial`, defaults = var(--control-gap) / var(--control-icon-size)."
+  },
+  {
+    "name": "--button-icon-size",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--button-secondary-background",
@@ -4029,6 +4049,191 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
+    "name": "--editorial-account-figure-font-family",
+    "value": "initial",
+    "description": "Face of figures (stats, purchase price, panel numbers, tags). Default = the editorial kicker face, then var(--font-family-tabular, inherit)."
+  },
+  {
+    "name": "--editorial-account-surface-background",
+    "value": "initial",
+    "description": "Panel / card surface. Default = hsl(var(--card))."
+  },
+  {
+    "name": "--editorial-account-subtle-background",
+    "value": "initial",
+    "description": "Quiet ground (lead stat, picture ground, medallion). Default = hsl(var(--muted))."
+  },
+  {
+    "name": "--editorial-account-eyebrow-font-size",
+    "value": "initial",
+    "description": "The family's kickers. `initial` = the Eyebrow's own size and tracking."
+  },
+  {
+    "name": "--editorial-account-eyebrow-letter-spacing",
+    "value": "initial",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-text-button-min-height",
+    "value": "var(--touch-target-min, 2.75rem)",
+    "description": "── EditorialTextButton ──────────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-text-button-gap",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-text-button-padding-block",
+    "value": "6px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-text-button-font-size",
+    "value": "inherit",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-text-button-underline-offset",
+    "value": "4px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-text-button-icon-size",
+    "value": "1.125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-gap",
+    "value": "0.75rem",
+    "description": "── EditorialSearch variant=\"inline\" ────────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-search-inline-space-block",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-label-display",
+    "value": "block",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-label-font-size",
+    "value": "0.8125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-field-max-width",
+    "value": "25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-height",
+    "value": "3rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-padding-inline-start",
+    "value": "2.625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-padding-inline-end",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-radius",
+    "value": "var(--radius)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-icon-size",
+    "value": "1.125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-icon-inset-inline-start",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-search-inline-count-font-size",
+    "value": "0.8125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-gap",
+    "value": "1.25rem",
+    "description": "── EditorialFootnote ────────────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-footnote-padding-block",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-space-block-start",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-font-size",
+    "value": "0.8125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-line-height",
+    "value": "1.8",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-body-max-width",
+    "value": "47.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-align-flow",
+    "value": "row",
+    "description": "row = note and action on one line; column = stacked (a phone)."
+  },
+  {
+    "name": "--editorial-footnote-align-block",
+    "value": "flex-start",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-center-align-block",
+    "value": "center",
+    "description": "align=\"center\" (a one-line note beside its action): centred, no band padding."
+  },
+  {
+    "name": "--editorial-footnote-center-align-flow",
+    "value": "row",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-center-gap",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-center-space-block-start",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-center-font-size",
+    "value": "0.8125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
     "name": "--editorial-toggle-group-gap",
     "value": "0.5rem",
     "description": "── EditorialToggleGroup ─────────────────────────────────────────────────────────────────"
@@ -4096,6 +4301,1271 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-toggle-group-icon-size",
     "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-meta-bar-align-flow",
+    "value": "row",
+    "description": "row = start and end on one line; column = stacked (a phone)."
+  },
+  {
+    "name": "--editorial-meta-bar-align-block",
+    "value": "center",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-meta-bar-gap",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-meta-bar-padding-block",
+    "value": "1.125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-meta-bar-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-meta-bar-icon-gap",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-meta-bar-icon-size",
+    "value": "1.125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-meta-bar-end-min-height",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-padding-block-start",
+    "value": "3.5rem",
+    "description": "── EditorialEmptyPanel ──────────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-empty-panel-padding-block-end",
+    "value": "4rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-padding-inline",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-radius",
+    "value": "12px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-title-font-size",
+    "value": "1.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-title-line-height",
+    "value": "1.55",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-title-space-block",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-description-max-width",
+    "value": "38.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-description-font-size",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-description-line-height",
+    "value": "1.85",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-actions-gap",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-actions-space-block-start",
+    "value": "1.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-actions-align-flow",
+    "value": "row",
+    "description": "row = centred buttons; column = stacked full-width (a phone)."
+  },
+  {
+    "name": "--editorial-empty-panel-actions-align-block",
+    "value": "center",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-width",
+    "value": "13.125rem",
+    "description": "The decorative card stack of variant=\"guest\"."
+  },
+  {
+    "name": "--editorial-empty-panel-art-height",
+    "value": "8.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-space-block-end",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-scale-size",
+    "value": "1",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-card-width",
+    "value": "4.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-card-height",
+    "value": "6.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-card-radius",
+    "value": "6px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-card-rotate-offset",
+    "value": "13deg",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-card-translate",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-card-inset-inline-start",
+    "value": "4.0625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-card-inset-block-start",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-window-inset",
+    "value": "12px 10px 36px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-rule-inset-inline",
+    "value": "11px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-rule-inset-block-end",
+    "value": "22px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-rule-height",
+    "value": "2px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-rule-offset",
+    "value": "7px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-shadow",
+    "value": "0 8px 20px rgb(48 43 41 / 0.08)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-art-accent-color",
+    "value": "initial",
+    "description": "Accent of the second card and the front card's rule. Default = var(--editorial-kicker-color)."
+  },
+  {
+    "name": "--editorial-empty-panel-empty-padding-block",
+    "value": "3rem",
+    "description": "variant=\"empty\": the medallion and the dashed frame."
+  },
+  {
+    "name": "--editorial-empty-panel-empty-padding-inline",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-empty-title-font-size",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-empty-description-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-icon-size",
+    "value": "4rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-icon-glyph-size",
+    "value": "1.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-empty-panel-empty-actions-max-width",
+    "value": "none",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-track-size",
+    "value": "1.4fr 1fr 1fr",
+    "description": "── EditorialStats ───────────────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-stats-gap",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-space-block-start",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-space-block-end",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-item-padding",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-item-radius",
+    "value": "12px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-label-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-value-font-size",
+    "value": "2.375rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-value-line-height",
+    "value": "1.3",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-value-space-block-start",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-unit-font-size",
+    "value": "0.8125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-unit-space-inline-start",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-unit-line-height",
+    "value": "1.5",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-note-font-size",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-note-space-block-start",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-lead-span-offset",
+    "value": "auto",
+    "description": "The lead (first) tile: its span, and where its figure sits (a phone puts it beside the label: track 1fr auto, figure column 2, rows 1 / span 2)."
+  },
+  {
+    "name": "--editorial-stats-lead-track-size",
+    "value": "minmax(0, 1fr)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-lead-gap",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-lead-align-block",
+    "value": "normal",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-lead-value-column-offset",
+    "value": "auto",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-lead-value-row-offset",
+    "value": "auto",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-lead-value-space-block-start",
+    "value": "var(--editorial-stats-value-space-block-start)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-stats-lead-note-space-block-start",
+    "value": "var(--editorial-stats-note-space-block-start)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toolbar-display",
+    "value": "flex",
+    "description": "flex = one wrapping row; block = start over end (a phone)."
+  },
+  {
+    "name": "--editorial-toolbar-gap",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toolbar-padding-block-end",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toolbar-end-gap",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toolbar-end-align-inline",
+    "value": "flex-start",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toolbar-end-space-block-start",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toolbar-action-font-size",
+    "value": "initial",
+    "description": "The end cluster's button label size. `initial` = the Button's own."
+  },
+  {
+    "name": "--editorial-holding-grid-track-size",
+    "value": "repeat(4, minmax(0, 1fr))",
+    "description": "── HoldingGrid / HoldingCard ────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-holding-grid-gap",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-grid-min-height",
+    "value": "13.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-grid-list-gap",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-radius",
+    "value": "10px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-media-height",
+    "value": "14.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-media-padding",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-media-shadow",
+    "value": "drop-shadow(0 6px 7px rgb(35 25 29 / 0.13))",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-body-padding",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-overline-font-size",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-overline-line-height",
+    "value": "inherit",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-overline-gap",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-overline-space-block-end",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-title-font-size",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-title-line-height",
+    "value": "1.65",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-title-min-height",
+    "value": "3.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-title-space-block-end",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-title-space-block-start",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-meta-font-size",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-meta-line-height",
+    "value": "1.7",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-tags-gap",
+    "value": "0.375rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-tags-space-block",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-tag-font-size",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-tag-padding-block",
+    "value": "3px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-tag-padding-inline",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-tag-radius",
+    "value": "4px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-tag-line-height",
+    "value": "1.5",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-purchase-align-flow",
+    "value": "row",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-purchase-align-block",
+    "value": "center",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-purchase-gap",
+    "value": "0.625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-purchase-padding-block-start",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-purchase-space-block-start",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-purchase-label-font-size",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-purchase-value-font-size",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-date-font-size",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-date-line-height",
+    "value": "inherit",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-date-space-block",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-actions-gap",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-actions-align-inline",
+    "value": "space-between",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-actions-space-block-start",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-action-min-height",
+    "value": "var(--touch-target-min, 2.75rem)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-action-gap",
+    "value": "7px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-action-padding-block",
+    "value": "6px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-action-padding-inline",
+    "value": "6px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-action-font-size",
+    "value": "0.8125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-action-icon-size",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-track-size",
+    "value": "140px 1fr",
+    "description": "List view: the card's two tracks, and the body's own grid (block = stacked, a phone)."
+  },
+  {
+    "name": "--editorial-holding-card-list-media-min-height",
+    "value": "10.625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-media-padding",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-image-max-height",
+    "value": "10rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-body-display",
+    "value": "grid",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-body-track-size",
+    "value": "1.5fr 1fr 140px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-body-gap",
+    "value": "0.5rem 1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-body-padding-block",
+    "value": "var(--editorial-holding-card-body-padding)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-body-padding-inline",
+    "value": "var(--editorial-holding-card-body-padding)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-title-space-block",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-tags-space-block",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-tags-column-offset",
+    "value": "2",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-tags-row-offset",
+    "value": "1 / span 2",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-purchase-column-offset",
+    "value": "2",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-purchase-row-offset",
+    "value": "3",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-purchase-space-block",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-purchase-align-inline",
+    "value": "space-between",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-date-column-offset",
+    "value": "2",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-actions-column-offset",
+    "value": "3",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-actions-row-offset",
+    "value": "1 / span 4",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-actions-align-flow",
+    "value": "column",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-actions-align-inline",
+    "value": "space-between",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-holding-card-list-actions-gap",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-layout-track-size",
+    "value": "260px minmax(0, 1fr)",
+    "description": "── SettingsLayout / SettingsPanel ───────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-settings-layout-gap",
+    "value": "4rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-layout-aside-display",
+    "value": "block",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-layout-aside-inset",
+    "value": "7.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-layout-aside-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-layout-aside-line-height",
+    "value": "1.9",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-padding-block",
+    "value": "1.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-padding-inline",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-space-block-end",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-radius",
+    "value": "12px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-head-gap",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-field-label-gap",
+    "value": "initial",
+    "description": "Label↔control gap of a field in a panel. `initial` = the form's --field-label-gap."
+  },
+  {
+    "name": "--editorial-settings-panel-head-space-block-end",
+    "value": "1.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-number-font-size",
+    "value": "0.9375rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-number-min-width",
+    "value": "1.25rem",
+    "description": "The number column: the title starts at the same x whatever the figures' face."
+  },
+  {
+    "name": "--editorial-settings-panel-number-line-height",
+    "value": "1.8",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-number-padding-block-start",
+    "value": "2px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-title-font-size",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-title-line-height",
+    "value": "1.55",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-title-space-block-end",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-description-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-settings-panel-description-line-height",
+    "value": "1.8",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-track-size",
+    "value": "repeat(3, minmax(0, 1fr))",
+    "description": "── ThemePicker ──────────────────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-theme-picker-gap",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-preview-height",
+    "value": "7.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-preview-padding-block",
+    "value": "17px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-preview-padding-inline",
+    "value": "17px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-preview-border-width",
+    "value": "2px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-preview-radius",
+    "value": "8px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-height",
+    "value": "9px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-space-block-end",
+    "value": "10px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-first-height",
+    "value": "11px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-last-height",
+    "value": "34px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-space-block-start",
+    "value": "2px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-inset-inline-start",
+    "value": "25%",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-width",
+    "value": "66%",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-first-width",
+    "value": "30%",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-bar-radius",
+    "value": "3px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-rail-width",
+    "value": "20%",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-label-gap",
+    "value": "0.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-label-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-label-min-height",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-label-space-block-start",
+    "value": "0.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-icon-size",
+    "value": "1.125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-light-background",
+    "value": "#fbf9f5",
+    "description": "The painted previews: a light page, a dark page, and the system split of the two. They draw the interface itself, so they keep their own colours whatever the active theme."
+  },
+  {
+    "name": "--editorial-theme-picker-light-rail-background",
+    "value": "#f3eee5",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-light-line-color",
+    "value": "#e6dfd5",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-light-accent-color",
+    "value": "#692d3e",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-dark-background",
+    "value": "#23191d",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-dark-rail-background",
+    "value": "#302229",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-dark-line-color",
+    "value": "#5c444d",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-dark-accent-color",
+    "value": "#dda8b9",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-theme-picker-system-border-color",
+    "value": "#8a7d70",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-display",
+    "value": "grid",
+    "description": "grid = story beside the card; flex = stacked column (a phone)."
+  },
+  {
+    "name": "--editorial-auth-track-size",
+    "value": "1fr 460px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-gap",
+    "value": "6.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-padding-block-start",
+    "value": "4rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-padding-block-end",
+    "value": "5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-story-padding-block-start",
+    "value": "1.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-font-size",
+    "value": "2.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-line-height",
+    "value": "1.7",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-letter-spacing",
+    "value": "-0.03em",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-font-weight",
+    "value": "500",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-space-block",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-description-max-width",
+    "value": "30.625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-description-font-size",
+    "value": "1rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-description-line-height",
+    "value": "1.9",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-description-space-block-end",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-display",
+    "value": "block",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-height",
+    "value": "14.375rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-max-width",
+    "value": "21.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-space-block-start",
+    "value": "2.5rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-space-block-end",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-scale-size",
+    "value": "1",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-card-width",
+    "value": "8.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-card-height",
+    "value": "11.5625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-card-radius",
+    "value": "8px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-image-size",
+    "value": "5.3125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-back-inset-inline-start",
+    "value": "3rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-back-inset-block-start",
+    "value": "15px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-front-inset-inline-start",
+    "value": "8.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-front-inset-block-start",
+    "value": "26px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-back-rotate-offset",
+    "value": "-12deg",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-front-rotate-offset",
+    "value": "9deg",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-frame-inset",
+    "value": "12px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-frame-radius",
+    "value": "3px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-shadow",
+    "value": "0 15px 25px rgb(35 25 29 / 0.08)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-benefits-display",
+    "value": "flex",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-benefits-gap",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-benefits-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-benefit-gap",
+    "value": "0.625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-benefit-icon-size",
+    "value": "1.125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-padding",
+    "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-badge-font-size",
+    "value": "initial",
+    "description": "The card's chip. `initial` = the Badge's own size."
+  },
+  {
+    "name": "--editorial-auth-card-radius",
+    "value": "14px",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-shadow",
+    "value": "0 6px 28px rgb(48 43 41 / 0.04)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-title-font-size",
+    "value": "1.625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-title-line-height",
+    "value": "1.55",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-title-space-block-start",
+    "value": "1.375rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-title-space-block-end",
+    "value": "0.625rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-description-font-size",
+    "value": "0.875rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-description-line-height",
+    "value": "1.8",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-body-space-block-start",
+    "value": "1.75rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-footer-font-size",
+    "value": "0.8125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-footer-line-height",
+    "value": "1.9",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-footer-padding-block-start",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-footer-space-block-start",
+    "value": "1.5rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
@@ -7917,6 +9387,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--form-label-font-size",
     "value": "var(--control-label-font-size, var(--text-sm))",
     "description": "Type in the label column. Inherits the body size by default, so nothing moves unless a service opts in. It is a knob because the label column already is one: --form-label-width lets a service align forms to its grid, and a service whose grid was drawn around a smaller label had no way to say so — leaving it to hand-write font-size per label, which is exactly what the width token exists to prevent. CHAINED to the Label primitive's own knob (gh#824), where it used to read var(--text-sm) directly. FormField passes `text-[length:var(--form-label-font-size)]` on its Label, and a utility outranks `.ui-label { font-size: var(--control-label-font-size) }` in `@layer components` — so this was not an override of the broad knob, it was a SHADOW of it: a service that set --control-label-font-size moved its 4 standalone labels and none of its 21 FormField ones (measured at 1280px, 37px on :root -> 37px vs 14px). Reading the broad knob as the default makes this one an override again, which is what \"a per-instance escape\" meant. FREE: base.css declares --text-sm AS var(--font-size-sm), the step --control-label-font-size already read, so both sides are 0.875rem and nothing moves. 14px"
+  },
+  {
+    "name": "--form-field-note-font-size",
+    "value": "initial",
+    "description": "gh#1439 — the helper / error line under a control and its distance from the control. A brand whose helper reads 12px/1.7 ten pixels under the field sets these; `initial` keeps the old `text-xs` size, its 1.333 leading and the 4px stack gap at the call site."
+  },
+  {
+    "name": "--form-field-note-line-height",
+    "value": "initial",
+    "description": "Form layout tokens: horizontal-layout label column geometry."
+  },
+  {
+    "name": "--form-field-control-gap",
+    "value": "initial",
+    "description": "Form layout tokens: horizontal-layout label column geometry."
   },
   {
     "name": "--form-block-gap",

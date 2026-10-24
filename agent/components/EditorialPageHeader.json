@@ -49,6 +49,12 @@
       "description": "Id on the h1.",
       "name": "titleId",
       "type": "string"
+    },
+    {
+      "default": "\"page\"",
+      "description": "Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439).",
+      "name": "eyebrowTone",
+      "type": "\"page\" | \"accent\""
     }
   ],
   "related": [

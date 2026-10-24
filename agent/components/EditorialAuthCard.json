@@ -1,0 +1,47 @@
+{
+  "example": "import { EditorialAuthCard } from \"@godxjp/ui/layout\";\n\n<EditorialAuthCard title=\"Welcome back.\" description=\"Sign in to see your collection.\" footer=\"New here?\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialAuthCard",
+  "props": [
+    {
+      "description": "Badge slot.",
+      "name": "badge",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Title.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "default": "2",
+      "description": "Heading level.",
+      "name": "level",
+      "type": "2 | 3"
+    },
+    {
+      "description": "Copy.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The form.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Ruled footer line.",
+      "name": "footer",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "EditorialAuth — the page."
+  ],
+  "tagline": "The form card of EditorialAuth (gh#1439): badge, title, copy, the form (`children`) and a ruled footer line (\"New to the site? Create an account\").",
+  "usage": [
+    "DO keep one form per card."
+  ]
+}

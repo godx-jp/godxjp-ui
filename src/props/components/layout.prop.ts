@@ -2334,6 +2334,12 @@ export type EditorialPageHeaderProp = {
   search?: ReactNode;
   /** Id put on the h1. */
   titleId?: IdProp;
+  /**
+   * Kicker colour and size: `"page"` (default) takes the page-header kicker knobs
+   * (`--editorial-page-header-kicker-*`); `"accent"` keeps the plain Eyebrow (the editorial kicker
+   * colour and `--editorial-eyebrow-font-size`) — the signed-in pages of gh#1439.
+   */
+  eyebrowTone?: "page" | "accent";
   className?: ClassNameProp;
 };
 
@@ -2405,11 +2411,22 @@ export type EditorialTextLinkProp = Omit<React.AnchorHTMLAttributes<HTMLAnchorEl
  * `onSearch` with the trimmed query; without JavaScript the form GETs `action` with `name`.
  */
 export type EditorialSearchProp = {
-  /** The field's accessible label (visually hidden). It also names the search landmark. */
+  /**
+   * `inset` (default): the site search — glyph, field and submit button in one shadowed box under a
+   * hidden label. `inline` (gh#1439): a collection's own search row — a VISIBLE label, a framed
+   * field and a live `count`; the query is reported after typing settles (`debounce`) or on Enter,
+   * with no submit button.
+   */
+  variant?: "inset" | "inline";
+  /** The field's label (visually hidden for `inset`, shown for `inline`). It also names the landmark. */
   label: string;
   placeholder?: PlaceholderProp;
-  /** Visible text of the submit button. */
-  submitLabel: LabelProp;
+  /** Visible text of the submit button (`inset`; required there). */
+  submitLabel?: LabelProp;
+  /** `inline`: a live count at the end of the row ("12 entries"), announced politely. */
+  count?: ReactNode;
+  /** `inline`: delay in ms before a typed query is reported. Default 300. */
+  debounce?: number;
   /** Query parameter name. Default `q`. */
   name?: NameProp;
   defaultValue?: string;

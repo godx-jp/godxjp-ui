@@ -3,6 +3,7 @@ import { ArrowRight, Bookmark, Search } from "lucide-react";
 
 import { Slot } from "../../lib/slot";
 import { Breadcrumb } from "./breadcrumb";
+import { EditorialSearchInline } from "./editorial-account";
 import { cn } from "../../lib/utils";
 import type {
   CardShowcaseProp,
@@ -214,10 +215,15 @@ export function EditorialPageHeader({
   actions,
   search,
   titleId,
+  eyebrowTone = "page",
   className,
 }: EditorialPageHeaderProp) {
   return (
-    <div data-slot="editorial-page-header" className={cn("ui-editorial-page-header", className)}>
+    <div
+      data-slot="editorial-page-header"
+      data-eyebrow-tone={eyebrowTone === "page" ? undefined : eyebrowTone}
+      className={cn("ui-editorial-page-header", className)}
+    >
       {breadcrumb && breadcrumb.length > 0 && (
         <EditorialBreadcrumb
           items={breadcrumb}
@@ -357,8 +363,28 @@ export function EditorialTextLink({
   );
 }
 
+/** The site search: `inset` (glyph, field and submit in one box) or `inline` (gh#1439). */
+export function EditorialSearch(props: EditorialSearchProp) {
+  if (props.variant === "inline") {
+    const { label, id, placeholder, defaultValue, onSearch, debounce, count, className } = props;
+    return (
+      <EditorialSearchInline
+        label={label}
+        id={id}
+        placeholder={placeholder}
+        defaultValue={defaultValue}
+        onSearch={onSearch ? (query: string) => onSearch(query) : undefined}
+        debounce={debounce}
+        count={count}
+        className={className}
+      />
+    );
+  }
+  return <EditorialSearchInset {...props} />;
+}
+
 /** The inset site search: glyph, field and submit button in one box, under a hidden label. */
-export function EditorialSearch({
+function EditorialSearchInset({
   label,
   placeholder,
   submitLabel,
