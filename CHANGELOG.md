@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Image` is lazy by default (#1454): `loading` defaults to `"lazy"` — `"eager"` when the picture is marked `fetchPriority="high"` (a page's LCP image) — and `decoding` to `"async"`. Explicit `loading` / `decoding` still win. Pass `fetchPriority="high"` (or `loading="eager"`) on an above-the-fold hero picture.
+
 ## [33.21.0] - 2026-10-24
 
 ### Added

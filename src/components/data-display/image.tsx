@@ -566,6 +566,9 @@ type ImageStatus = "loading" | "loaded" | "error";
 /**
  * Image — a picture that opens large (antd `Image`). Inside an `ImagePreviewGroup` it pages with
  * the group's other pictures; on its own it previews just itself.
+ *
+ * Lazy by default (gh#1454): `loading="lazy"` and `decoding="async"` unless given. A picture marked
+ * `fetchPriority="high"` (the page's LCP image) defaults to `loading="eager"`.
  */
 const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
   {
@@ -582,6 +585,9 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
     className,
     onLoad,
     onError,
+    fetchPriority,
+    loading = fetchPriority === "high" ? "eager" : "lazy",
+    decoding = "async",
     ...imgProps
   },
   ref,
@@ -661,6 +667,9 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
     <>
       <img
         {...imgProps}
+        loading={loading}
+        decoding={decoding}
+        fetchPriority={fetchPriority}
         width={width}
         height={height}
         ref={setImgRef}
