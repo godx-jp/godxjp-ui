@@ -121,8 +121,10 @@
     height: var(--editorial-meta-bar-icon-size);
   }
 
+  /* The end chip (a Badge) stretches to the bar's chip height. */
   .ui-editorial-meta-bar-end {
     display: inline-flex;
+    min-block-size: var(--editorial-meta-bar-end-min-height);
   }
 
   /* ── EditorialEmptyPanel ──────────────────────────────────────────────────────────────────── */

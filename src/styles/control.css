@@ -162,7 +162,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    gap: var(--control-gap);
+    gap: var(--button-gap, var(--control-gap));
     white-space: nowrap;
     font-weight: var(--button-font-weight);
     transition-property: color, background-color, border-color, box-shadow;
@@ -197,8 +197,8 @@
   }
 
   .ui-button svg {
-    width: var(--control-icon-size);
-    height: var(--control-icon-size);
+    width: var(--button-icon-size, var(--control-icon-size));
+    height: var(--button-icon-size, var(--control-icon-size));
     flex-shrink: 0;
   }
 

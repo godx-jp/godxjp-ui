@@ -77,6 +77,7 @@
   --editorial-meta-bar-font-size: 0.875rem;
   --editorial-meta-bar-icon-gap: 0.5rem;
   --editorial-meta-bar-icon-size: 1.125rem;
+  --editorial-meta-bar-end-min-height: 1.5rem;
 
   /* ── EditorialEmptyPanel ────────────────────────────────────────────────────────────────── */
   --editorial-empty-panel-padding-block-start: 3.5rem;

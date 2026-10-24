@@ -1109,6 +1109,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The outline variant's label ink (gh#1439): a brand whose secondary button reads in its action colour. `initial`, default = hsl(var(--foreground)) at the call site."
   },
   {
+    "name": "--button-gap",
+    "value": "initial",
+    "description": "Label↔glyph gap and glyph size of a button (gh#1439): a brand whose buttons carry a 20px arrow 10px from the label. `initial`, defaults = var(--control-gap) / var(--control-icon-size)."
+  },
+  {
+    "name": "--button-icon-size",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--button-secondary-background",
     "value": "initial",
     "description": "default = hsl(var(--secondary)) at the call site"
@@ -4281,6 +4291,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-meta-bar-icon-size",
     "value": "1.125rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-meta-bar-end-min-height",
+    "value": "1.5rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
