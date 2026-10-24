@@ -1239,11 +1239,40 @@ export default function OrdersPage() {
         description:
           "A scope control at the start of the box — the kit Select (borderless, width auto) with its own aria-label and name.",
       },
+      {
+        name: "suggestions",
+        type: "EditorialSearchSuggestionGroupProp[]",
+        description:
+          "inset (gh#1447): grouped rows { id, label, items: [{ id, href, label, description?, media?, meta? }] } under the focused box; the field becomes an ARIA combobox.",
+      },
+      {
+        name: "suggestionsFooter",
+        type: "{ href: string; label: ReactNode }",
+        description: "inset: the popup's last row — all results.",
+      },
+      {
+        name: "suggestionsLabel",
+        type: "string",
+        description: "inset: accessible name of the listbox (default: label).",
+      },
+      {
+        name: "onQueryChange",
+        type: "(query: string) => void",
+        description: "inset: field text after each edit; never mid-IME-composition, once on compositionend.",
+      },
+      {
+        name: "linkComponent",
+        type: "ElementType",
+        default: '"a"',
+        description: "inset: the element suggestion rows render as (a router Link).",
+      },
       { name: "id", type: "string", description: "Field id." },
     ],
     usage: [
       "DO use it for a site search that submits; use SearchInput for a live filter.",
       'DO use variant="inline" for a collection\'s own search row (visible label, live count) — gh#1439.',
+      "DO fetch suggestions yourself (debounce, abort, cache) from onQueryChange and pass the rows in; the kit neither debounces nor fetches (gh#1447).",
+      "DON'T put buttons or other controls in a suggestion row — each row is one link (role=option).",
     ],
     related: ["SearchInput — a debounced filter field.", "EditorialHero — the `search` slot."],
     example: `import { EditorialSearch } from "@godxjp/ui/layout";
