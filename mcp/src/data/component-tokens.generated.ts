@@ -9924,6 +9924,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
+    "name": "--logo-glyph-descender-trimmed-optical-offset",
+    "value": "-0.1em",
+    "description": "Where `text-box` is supported the line box is TRIMMED to the band's top and the baseline (styles/logo-layout.css), so the four constants above are not applied. A descender still hangs below that baseline, and the font's `text` descent is not where it ends — Noto Sans JP's is deeper than its `g`, which left g / y / p 1.12–1.37px HIGH at `sm`. So the descender classes trim to the baseline like the others and move up by half a descender instead: measured with `alphabetic` and no offset, g / y / p / gX sat 0.07–0.12em low across xs–lg (Chromium, macOS, Noto Sans JP 700)."
+  },
+  {
     "name": "--logo-glyph-optical-offset",
     "value": "initial",
     "description": "The escape hatch, for a mark none of the four bands fits — a face with unusual metrics, or a glyph the classifier cannot see (an inline `<svg>`, which is left unclassified on purpose). Set once and it PINS every band to that value. Declared `initial` (guaranteed-invalid) so it is inert by default and the per-band default at the CALL SITE wins — the same pattern as --logo-godx-size (docs/TOKENS.md). Documented default: --logo-glyph-optical-offset = the --logo-glyph-*-optical-offset for the band the glyph was classified into, or 0 when it was not classified."

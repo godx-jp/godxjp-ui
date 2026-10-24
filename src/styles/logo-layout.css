@@ -162,8 +162,9 @@
    *
    * `text-box` trims the line box to the font's OWN cap-height / x-height and baseline / descent,
    * so `place-items: center` centres the band the class names, whatever the metrics or the size:
-   * cap→baseline and x→baseline are trimmed to exactly their band; the descender classes keep the
-   * font's descent (`text`) as the bottom edge. With it the class offsets are not needed and only
+   * cap→baseline and x→baseline are trimmed to exactly their band; the descender classes trim to
+   * the baseline as well and rise by --logo-glyph-descender-trimmed-optical-offset (the font's
+   * `text` descent sits below the descender ink and left g/y/p 1.1–1.4px high at `sm`). With it the class offsets are not needed and only
    * the escape hatch still moves the glyph. Worst |dy| over P G GX A 8 神 あ g y p go gX Gy x o ae ×
    * xs/sm/md/lg: Linux 2.25px → 1.00px, macOS 0.87px → 0.75px. Where `text-box` is unsupported the
    * rules above (the measured offsets on an untrimmed box) still apply. An unclassified glyph (an
@@ -178,7 +179,7 @@
     }
 
     .ui-logo-glyph[data-ink="cap-descender"] {
-      text-box: trim-both cap text;
+      text-box: trim-both cap alphabetic;
     }
 
     .ui-logo-glyph[data-ink="x-baseline"] {
@@ -186,7 +187,14 @@
     }
 
     .ui-logo-glyph[data-ink="x-descender"] {
-      text-box: trim-both ex text;
+      text-box: trim-both ex alphabetic;
+    }
+
+    /* The font's `text` descent is not where a descender ends, so the descender classes trim to
+     * the baseline too and rise by half a descender (tokens/components/logo.css). */
+    .ui-logo-glyph:is([data-ink="cap-descender"], [data-ink="x-descender"]) {
+      translate: 0
+        var(--logo-glyph-optical-offset, var(--logo-glyph-descender-trimmed-optical-offset));
     }
   }
 
