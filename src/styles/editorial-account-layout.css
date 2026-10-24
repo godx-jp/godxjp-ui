@@ -671,6 +671,11 @@
     background: var(--editorial-account-surface-background, hsl(var(--card)));
   }
 
+  /* A field's label↔control gap inside a panel; `initial` = the form's own. */
+  .ui-settings-panel .ui-form-field {
+    gap: var(--editorial-settings-panel-field-label-gap, var(--field-label-gap));
+  }
+
   .ui-settings-panel-head {
     display: flex;
     align-items: flex-start;

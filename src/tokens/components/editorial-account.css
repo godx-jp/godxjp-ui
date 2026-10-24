@@ -255,6 +255,8 @@
   --editorial-settings-panel-space-block-end: 1.5rem;
   --editorial-settings-panel-radius: 12px;
   --editorial-settings-panel-head-gap: 1rem;
+  /* Label↔control gap of a field in a panel. `initial` = the form's --field-label-gap. */
+  --editorial-settings-panel-field-label-gap: initial;
   --editorial-settings-panel-head-space-block-end: 1.75rem;
   --editorial-settings-panel-number-font-size: 0.9375rem;
   /* The number column: the title starts at the same x whatever the figures' face. */
