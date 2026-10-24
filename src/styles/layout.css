@@ -3368,6 +3368,40 @@
     line-height: var(--editorial-article-paragraph-line-height);
   }
 
+  /* A RENDERED BODY in the reading column (gh#1451): CMS / Markdown HTML inside a `Prose` that is
+   * the article's direct child reads exactly like `EditorialArticleSection` — the same heading and
+   * paragraph tokens, the editorial face — instead of Prose's own typography. */
+  .ui-editorial-article > .ui-prose {
+    font-size: var(--editorial-article-paragraph-font-size);
+    line-height: var(--editorial-article-paragraph-line-height);
+  }
+
+  .ui-editorial-article > .ui-prose > * {
+    margin-block: 0 var(--editorial-article-paragraph-space-block-end);
+  }
+
+  .ui-editorial-article > .ui-prose > h2 {
+    margin-block: var(--editorial-article-heading-space-block-start)
+      var(--editorial-article-heading-space-block-end);
+    font-family: var(--font-family-editorial, var(--font-family-display));
+    font-size: var(--editorial-article-heading-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--editorial-article-heading-line-height);
+    letter-spacing: var(--editorial-article-heading-letter-spacing);
+    text-wrap: wrap;
+  }
+
+  .ui-editorial-article > .ui-prose > :is(h3, h4) {
+    margin-block: var(--editorial-article-heading-space-block-end);
+    font-family: var(--font-family-editorial, var(--font-family-display));
+  }
+
+  /* The article's own Japanese line breaking, not Prose's phrase breaking (gh#1310). */
+  .ui-editorial-article > .ui-prose :is(p, li):lang(ja) {
+    word-break: inherit;
+    line-break: inherit;
+  }
+
   .ui-editorial-note {
     margin-block: var(--editorial-note-space-block);
     padding: var(--editorial-note-padding-block) var(--editorial-note-padding-inline);
