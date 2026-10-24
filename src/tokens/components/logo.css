@@ -107,6 +107,15 @@
   --logo-glyph-x-baseline-optical-offset: -0.11em;
   --logo-glyph-x-descender-optical-offset: -0.21em;
 
+  /* Where `text-box` is supported the line box is TRIMMED to the band's top and the baseline
+   * (styles/logo-layout.css), so the four constants above are not applied. A descender still hangs
+   * below that baseline, and the font's `text` descent is not where it ends — Noto Sans JP's is
+   * deeper than its `g`, which left g / y / p 1.12–1.37px HIGH at `sm`. So the descender classes
+   * trim to the baseline like the others and move up by half a descender instead: measured with
+   * `alphabetic` and no offset, g / y / p / gX sat 0.07–0.12em low across xs–lg (Chromium, macOS,
+   * Noto Sans JP 700). */
+  --logo-glyph-descender-trimmed-optical-offset: -0.1em;
+
   /* The escape hatch, for a mark none of the four bands fits — a face with unusual metrics, or a
    * glyph the classifier cannot see (an inline `<svg>`, which is left unclassified on purpose).
    * Set once and it PINS every band to that value.

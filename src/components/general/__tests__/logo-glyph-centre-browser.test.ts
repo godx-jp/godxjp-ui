@@ -150,11 +150,16 @@ function expectCentred(rows: Measure[], label: string) {
 }
 
 describe("Logo glyph ink centre (Chromium)", { timeout: 60_000 }, () => {
-  it.each(["P", "G", "GX", "g", "神"])("standalone %s: centred at every size", async (glyph) => {
-    const rows = await measure(`?glyph=${encodeURIComponent(glyph)}`);
-    expect(rows.map((r) => r.size)).toEqual([...SIZES]);
-    expectCentred(rows, glyph);
-  });
+  // One per ink class, and every descender: the descender classes trimmed to the font's `text`
+  // descent read g / y / p 1.12–1.37px high at `sm` with this face; they now trim to the baseline.
+  it.each(["P", "G", "GX", "神", "x", "g", "y", "p", "gX"])(
+    "standalone %s: centred at every size",
+    async (glyph) => {
+      const rows = await measure(`?glyph=${encodeURIComponent(glyph)}`);
+      expect(rows.map((r) => r.size)).toEqual([...SIZES]);
+      expectCentred(rows, glyph);
+    },
+  );
 
   it.each(SIZES)("AppShell brand link <Logo asChild glyph=P size=%s>: centred", async (size) => {
     const rows = await measure(`?glyph=P&shell=${size}`);
