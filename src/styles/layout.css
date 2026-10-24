@@ -3426,25 +3426,36 @@
     box-shadow: var(--editorial-search-shadow);
   }
 
-  /* The scope control (the kit's Select) sits first in the box, cut off from the field by a hairline;
-   * its trigger takes the field height and the scope type size. */
+  /* The scope control (the kit's Select) is PART of the bar, not a box inside it: flat, no edge, no
+   * radius, the bar's full inner height, the field's inline inset and type, and a hairline before
+   * the field. The bar owns the focus ring (focus-ring.css), so the trigger shows none of its own. */
   .ui-editorial-search-scope {
-    --control-height: var(--editorial-search-input-height);
-    --control-font-size: var(--editorial-search-scope-font-size);
+    /* The trigger's corners come from these (utility classes on the trigger read them). */
+    --control-radius: 0px;
+    --control-trigger-radius-start: 0px;
+    --control-trigger-radius-end: 0px;
     display: flex;
     flex: none;
-    align-items: center;
+    align-self: stretch;
+    align-items: stretch;
     max-width: var(--editorial-search-scope-max-width);
-    padding-inline-end: var(--editorial-search-gap);
+    margin-block: calc(-1 * var(--editorial-search-padding-block));
+    margin-inline-start: calc(-1 * var(--editorial-search-padding-inline-start));
     border-inline-end: var(--stroke-hairline) solid hsl(var(--border));
   }
 
-  .ui-editorial-search-scope [data-slot="select-trigger"] {
+  .ui-editorial-search-scope .ui-control-trigger {
+    --control-height: auto;
+    height: auto;
+    min-height: 100%;
     max-width: 100%;
-    min-height: var(--editorial-search-input-height);
-    padding-inline-start: 0;
-    font-size: var(--editorial-search-scope-font-size);
-    font-weight: var(--font-weight-medium);
+    padding-inline: var(--editorial-search-padding-inline-start);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    font-size: var(--editorial-search-input-font-size);
+    font-weight: var(--editorial-search-scope-font-weight);
   }
 
   .ui-editorial-search-icon {
@@ -3470,12 +3481,6 @@
   .ui-editorial-search-input::placeholder {
     color: var(--editorial-search-placeholder-color, hsl(var(--muted-foreground)));
     opacity: 1;
-  }
-
-  .ui-editorial-search-input:focus-visible {
-    outline: var(--focus-ring-weight, var(--stroke-lg)) solid
-      hsl(var(--focus-ring-color, var(--ring)));
-    outline-offset: 0;
   }
 
   .ui-editorial-search-button {
@@ -4151,12 +4156,6 @@
     height: 100%;
     color: hsl(var(--foreground));
     text-decoration: none;
-  }
-
-  .ui-editorial-card-link:focus-visible {
-    outline: var(--focus-ring-weight, var(--stroke-lg)) solid
-      hsl(var(--focus-ring-color, var(--ring)));
-    outline-offset: var(--editorial-journal-focus-offset);
   }
 
   .ui-editorial-card[data-variant="journal"] .ui-editorial-card-media {

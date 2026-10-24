@@ -659,7 +659,7 @@ export function EditorialCard({
     >
       {intoElement(
         link,
-        "ui-editorial-card-link",
+        "ui-editorial-card-link ui-focus-ring",
         <>
           {media != null && <div className="ui-editorial-card-media">{media}</div>}
           <div className="ui-editorial-card-copy">

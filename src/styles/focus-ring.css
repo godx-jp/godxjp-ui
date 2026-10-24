@@ -95,7 +95,6 @@
     .ui-input,
     .ui-control,
     .ui-control-multiline,
-    .ui-control-trigger,
     .ui-tag-input,
     .ui-button,
     .ui-toggle,
@@ -150,6 +149,9 @@
    * never seen. `:has(:focus-visible)` moves it to that box — keyboard only, as react-day-picker's
    * own stylesheet intends (gh#1271). */
   .ui-command-input-wrapper:has(.ui-command-input:focus-visible),
+  .ui-editorial-search:has(.ui-editorial-search-input:focus-visible),
+  .ui-editorial-search:has(.ui-control-trigger[data-focus-visible]),
+  .ui-editorial-search:has(.ui-control-trigger[data-open-modality="keyboard"]),
   .ui-attachments:has(.ui-attachments-input:focus-visible),
   .ui-calendar-dropdown-root:has(.ui-calendar-dropdown:focus-visible),
   .ui-checkbox[data-focus-visible],
@@ -157,6 +159,14 @@
   .ui-switch[data-focus-visible],
   .ui-slider-thumb[data-focus-visible],
   .ui-focus-ring[data-focus-visible],
+  /* SELECT-FAMILY TRIGGERS (gh#1445). A react-aria trigger (`[data-rac]`) rings on react-aria's own
+   * `data-focus-visible`, which is keyboard-only. `:focus-visible` is not: when a mouse pick closes
+   * the popup, focus is RETURNED to the trigger programmatically and Chromium then matches
+   * `:focus-visible` — measured, a thick ring after every mouse selection. Triggers not built on
+   * react-aria keep `:focus-visible`. The OPEN ring stays (gh#101). `data-open-modality` records how
+   * the popup was opened, for a composite that owns the ring itself (an inset search bar). */
+  .ui-control-trigger:not([data-rac]):focus-visible,
+  .ui-control-trigger[data-rac][data-focus-visible],
   .ui-control-trigger[data-state="open"],
   .ui-tag-input:focus-within,
   .ui-control-composite-field:focus-within,
@@ -234,7 +244,6 @@
       .ui-input,
       .ui-control,
       .ui-control-multiline,
-      .ui-control-trigger,
       .ui-tag-input,
       .ui-button,
       .ui-toggle,
@@ -279,6 +288,8 @@
   :root:not([data-focus-outline="off"]) .ui-switch[data-focus-visible],
   :root:not([data-focus-outline="off"]) .ui-slider-thumb[data-focus-visible],
   :root:not([data-focus-outline="off"]) .ui-focus-ring[data-focus-visible],
+  :root:not([data-focus-outline="off"]) .ui-control-trigger:not([data-rac]):focus-visible,
+  :root:not([data-focus-outline="off"]) .ui-control-trigger[data-rac][data-focus-visible],
   :root:not([data-focus-outline="off"]) .ui-control-trigger[data-state="open"],
   :root:not([data-focus-outline="off"]) .ui-tag-input:focus-within,
   :root:not([data-focus-outline="off"]) .ui-control-composite-field:focus-within,
@@ -340,13 +351,9 @@
    * off-switch solid blue; and a Button's border is never recoloured on focus, whatever its
    * variant. Both take the outline above instead. */
   :root:not([data-focus-outline="off"])
-    :is(
-      .ui-input,
-      .ui-control,
-      .ui-control-multiline,
-      .ui-control-trigger,
-      .ui-tag-input
-    ):focus-visible,
+    :is(.ui-input, .ui-control, .ui-control-multiline, .ui-tag-input):focus-visible,
+  :root:not([data-focus-outline="off"]) .ui-control-trigger:not([data-rac]):focus-visible,
+  :root:not([data-focus-outline="off"]) .ui-control-trigger[data-rac][data-focus-visible],
   :root:not([data-focus-outline="off"]) .ui-control-trigger[data-state="open"],
   :root:not([data-focus-outline="off"]) .ui-tag-input:focus-within,
   :root:not([data-focus-outline="off"]) .ui-control-composite-field:focus-within,
@@ -541,5 +548,18 @@
     --focus-outline-color: var(--destructive);
     --focus-ring-glow-color: var(--control-outline-error);
     --focus-ring-glow-alpha: var(--control-outline-error-alpha);
+  }
+}
+
+@layer components {
+  /* EditorialSearch scope (gh#1445): the bar above owns the ring, so the Select trigger inside it never
+   * paints its own (outline, halo) — open, focused or returned to after a pick. Written to outrank the
+   * `:root:not([data-focus-outline="off"]) …` ring rules above. */
+  :root:not([data-focus-outline="off"])
+    .ui-editorial-search
+    .ui-editorial-search-scope
+    .ui-control-trigger.ui-control-trigger {
+    outline-style: none;
+    box-shadow: none;
   }
 }

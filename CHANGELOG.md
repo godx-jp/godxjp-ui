@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Button knobs `--button-font-weight`, `--button-font-size` (default size) and `--button-padding-inline` (default size), so a brand with semibold 14px buttons sets them without moving every medium-weight label (#1435).
 - ui-audit: a lucide glyph inside `EditorialMastheadAction` is sized by the component, not reported (#1435).
 - Fixed: a labelled `Button` with a leading / trailing glyph ("Start →") took the icon-only inline padding (`:has(> svg)` matched it too); Button now marks labelled buttons `data-label` and the icon padding skips them (#1436).
+- Fixed: a `Select` trigger kept the keyboard focus ring after a MOUSE pick (focus returned programmatically matched `:focus-visible`); react-aria triggers now ring on `data-focus-visible`, and `SelectTrigger` reports `data-open-modality` while open. `EditorialSearch`'s bar owns the ring for its field and scope (keyboard only); the scope trigger is flat, full-height and draws no ring (#1445).
 - `--editorial-catalog-card-price-label-line-clamp` (default `none`): clamp a long CatalogCard price caption instead of growing the tile (#1435).
 - `EditorialSearch scope` — a slot at the start of the inset search box for the kit `Select` that scopes the search (a site searched per game); the box gives it the field height and a hairline (#1435). Masthead pickers are the kit `Select variant="borderless" width="auto"`, sized by `--editorial-masthead-picker-*` — the kit keeps ONE select implementation.
 
