@@ -3445,7 +3445,6 @@
 
   /* ── EditorialSearch ──────────────────────────────────────────────────────────────────────── */
   .ui-editorial-search {
-    position: relative;
     display: flex;
     align-items: center;
     gap: var(--editorial-search-gap);
@@ -3548,15 +3547,20 @@
     height: var(--editorial-search-icon-size);
   }
 
-  /* Suggestions (gh#1447): a popup under the box, as wide as it. Rows are links; the active one
+  /* Suggestions (gh#1447): a popup under the box, as wide as it — portalled, so a section that clips
+   * its overflow (a hero) does not cut it; the component sets top / left / width from the box and
+   * `--editorial-search-popup-room` (the viewport left below it). Rows are links; the active one
    * (aria-activedescendant — focus stays in the field) and the hovered one share the highlight. */
   .ui-editorial-search-popup {
-    position: absolute;
-    inset-inline: 0;
-    top: calc(100% + var(--editorial-search-popup-offset));
+    position: fixed;
     /* The layer of the kit's other popups (Select, Popover). */
     z-index: var(--overlay-z-index);
-    max-height: var(--editorial-search-popup-max-height);
+    box-sizing: border-box;
+    margin-block-start: var(--editorial-search-popup-offset);
+    max-height: min(
+      var(--editorial-search-popup-max-height),
+      calc(var(--editorial-search-popup-room, 100vh) - 2 * var(--editorial-search-popup-offset))
+    );
     overflow-y: auto;
     padding-block: var(--editorial-search-popup-padding-block);
     border: var(--stroke-hairline) solid

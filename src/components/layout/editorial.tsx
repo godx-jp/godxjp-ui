@@ -1,7 +1,10 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
+import { useLayoutEffect } from "@react-aria/utils";
 import { ArrowRight, Bookmark, Search } from "lucide-react";
 
 import { isImeComposing } from "../../lib/ime";
+import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import { Slot } from "../../lib/slot";
 import { Breadcrumb } from "./breadcrumb";
 import { EditorialSearchInline } from "./editorial-account";
@@ -427,6 +430,9 @@ function EditorialSearchInset({
   ];
   const rowsKey = rowKeys.join("|");
   const open = combobox && focused && !dismissed && hasQuery && rowKeys.length > 0;
+  const formRef = React.useRef<HTMLFormElement>(null);
+  const portalContainer = useOverlayPortalContainer();
+  const anchor = usePopupAnchor(formRef, open);
   const optionId = React.useCallback((index: number) => `${listboxId}-option-${index}`, [listboxId]);
 
   // New rows: nothing is active until the user moves into them.
@@ -521,6 +527,7 @@ function EditorialSearchInset({
 
   return (
     <form
+      ref={formRef}
       role="search"
       aria-label={label}
       action={action}
@@ -557,11 +564,16 @@ function EditorialSearchInset({
         {submitLabel}
         <ArrowRight aria-hidden className="ui-editorial-search-button-icon" />
       </button>
-      {combobox && (
+      {/* Portalled (the overlay container): a hero or a toolbar that clips its overflow must not
+          cut the popup off. Placed under the box from its measured rect while open. */}
+      {combobox &&
+        anchor.mounted &&
+        createPortal(
         <div
           data-slot="editorial-search-popup"
           className="ui-editorial-search-popup"
           hidden={!open}
+          style={anchor.style}
           // A press on a row must not blur the field first (the popup would close under the click).
           onMouseDown={(event) => event.preventDefault()}
         >
@@ -620,10 +632,47 @@ function EditorialSearchInset({
                 </>,
               )}
           </div>
-        </div>
-      )}
+        </div>,
+          portalContainer ?? document.body,
+        )}
     </form>
   );
+}
+
+/**
+ * Where the suggestions popup goes: under the box, as wide as it, with the room left below it in the
+ * viewport (`--editorial-search-popup-room`, which caps the popup's max height). Re-measured on
+ * scroll (any scroller), resize and a change of the box's own size while open. `mounted` turns true
+ * after the first client render, so the server renders no portal.
+ */
+function usePopupAnchor(formRef: React.RefObject<HTMLFormElement | null>, open: boolean) {
+  const [mounted, setMounted] = React.useState(false);
+  const [style, setStyle] = React.useState<React.CSSProperties>();
+  React.useEffect(() => setMounted(true), []);
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    if (!open || !form) return;
+    const update = () => {
+      const rect = form.getBoundingClientRect();
+      setStyle({
+        top: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+        ["--editorial-search-popup-room" as string]: `${Math.max(0, window.innerHeight - rect.bottom)}px`,
+      });
+    };
+    update();
+    window.addEventListener("scroll", update, true);
+    window.addEventListener("resize", update);
+    const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(update);
+    observer?.observe(form);
+    return () => {
+      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", update);
+      observer?.disconnect();
+    };
+  }, [formRef, open]);
+  return { mounted, style };
 }
 
 /** A horizontal band of section links, scrolling sideways when it overflows. */

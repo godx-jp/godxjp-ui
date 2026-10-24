@@ -96,6 +96,18 @@ describe("EditorialSearch suggestions (gh#1447)", () => {
     expect(options[0].getAttribute("tabindex")).toBe("-1");
   });
 
+  it("portals the popup out of the box, so a section clipping its overflow cannot cut it off", () => {
+    const { input } = renderSearch();
+    type(input, "ピカ");
+    const listbox = screen.getByRole("listbox", { name: "候補" });
+    const popup = listbox.closest<HTMLElement>(".ui-editorial-search-popup")!;
+    expect(input.closest("form")!.contains(listbox)).toBe(false);
+    expect(popup.parentElement).toBe(document.body);
+    // Placed from the box's rect, with the room left below it.
+    expect(popup.style.top).not.toBe("");
+    expect(popup.style.getPropertyValue("--editorial-search-popup-room")).toMatch(/px$/);
+  });
+
   it("stays closed for an empty query and closes when the field loses focus", () => {
     const { input } = renderSearch();
     type(input, "   ");
