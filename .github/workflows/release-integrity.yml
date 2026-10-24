@@ -90,6 +90,13 @@ jobs:
             console.log(`✓ packed artifacts in lockstep — @godxjp/ui@${u.version} ↔ @godxjp/ui-mcp@${m.version}`);
           '
 
+      # 4b) Every `types` target in every package's `exports` is in the tarball npm would publish —
+      #     the kit and each satellite. 33.22.1 shipped @godxjp/markdown's `./codec` without
+      #     `dist/codec/index.d.ts` (TS7016 for every consumer of the subpath) and no gate read the
+      #     packed file list. Builds first: a check over an absent dist/ fails closed.
+      - name: Packed declaration files for every package export
+        run: pnpm build && pnpm build:packages && pnpm check:packed-export-types
+
       # 5) Step 4 only ever packs the PRE-bump manifests, so it cannot see the transition where the
       #    bug lived (issue #230): `npm version` + immediate `npm publish` shipping a UI tarball that
       #    still declared the previous godxUiMcp, with MCP failures found after the bytes were

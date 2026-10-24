@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.22.2] - 2026-10-25
+
+### Fixed
+
+- `@godxjp/markdown/codec` has its types again. 33.22.1 published `dist/codec/index.js` without `dist/codec/index.d.ts`, so `import … from "@godxjp/markdown/codec"` failed typecheck with TS7016 (33.21.0 shipped it). The package's two tsup configs build in parallel, and the renderer config's declaration pass (two entries since `./lazy`, the slower) removed the codec config's `.d.ts` after it was written. The renderer config now emits all three declaration entries (`index`, `lazy`, `codec/index`) in its single declaration pass, and the codec config emits none.
+
+### Added
+
+- `pnpm check:packed-export-types` (in `CI · release contract`, and run by `publish-satellites` before it publishes): for the kit and every satellite package (`markdown`, `editor`, `block-editor`, `chat`), every `types` target in `exports`, plus the top-level `types`, must be in the file list `npm pack --dry-run` reports. Fails closed on a missing `dist/`. With the old markdown build it reports `@godxjp/markdown: declares types "./dist/codec/index.d.ts" but the tarball has no such file`.
+
 ## [33.22.1] - 2026-10-25
 
 ### Fixed

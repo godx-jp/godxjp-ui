@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "33.22.1",
-  "godxUiMcp": "33.22.1",
+  "version": "33.22.2",
+  "godxUiMcp": "33.22.2",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -406,6 +406,7 @@
     "check:no-tailwind-class-assertions": "node scripts/check-no-tailwind-class-assertions.mjs",
     "check:number-input-step-target": "node scripts/check-number-input-step-target.mjs",
     "check:packed-public-contract": "node scripts/check-packed-public-contract.mjs",
+    "check:packed-export-types": "node scripts/check-packed-export-types.mjs",
     "check:pr-closes-keyword": "node scripts/check-pr-closes-keyword.mjs",
     "check:prop-vocabulary": "node scripts/check-prop-vocabulary.mjs",
     "check:radix-surface": "node scripts/check-radix-surface.mjs",
