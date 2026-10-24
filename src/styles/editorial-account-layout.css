@@ -10,6 +10,21 @@
     font-size: var(--editorial-eyebrow-font-size);
   }
 
+  /* The kickers of the account family (and of an accent page header) read their own size and
+   * tracking knobs, defaulting to the Eyebrow's. */
+  .ui-editorial-page-header[data-eyebrow-tone="accent"]
+    .ui-editorial-page-header-copy
+    > .ui-editorial-eyebrow,
+  .ui-editorial-empty-panel > .ui-editorial-eyebrow,
+  .ui-settings-layout-aside > .ui-editorial-eyebrow,
+  .ui-editorial-auth-story > .ui-editorial-eyebrow {
+    font-size: var(--editorial-account-eyebrow-font-size, var(--editorial-eyebrow-font-size));
+    letter-spacing: var(
+      --editorial-account-eyebrow-letter-spacing,
+      var(--editorial-eyebrow-letter-spacing)
+    );
+  }
+
   /* ── EditorialTextButton ──────────────────────────────────────────────────────────────────── */
   .ui-editorial-text-button {
     display: inline-flex;
@@ -347,6 +362,11 @@
     justify-content: var(--editorial-toolbar-end-align-inline);
     gap: var(--editorial-toolbar-end-gap);
     margin-block-start: var(--editorial-toolbar-end-space-block-start);
+  }
+
+  /* The end cluster's buttons may read a size of their own (a phone toolbar). */
+  .ui-editorial-toolbar-end > .ui-button {
+    font-size: var(--editorial-toolbar-action-font-size, var(--button-font-size));
   }
 
   /* ── HoldingGrid / HoldingCard ────────────────────────────────────────────────────────────── */
@@ -947,8 +967,13 @@
     box-shadow: var(--editorial-auth-card-shadow);
   }
 
+  /* A block: the chip (inline-flex) sits in a line box, as a chip at the top of running copy does. */
   .ui-editorial-auth-card-badge {
-    display: flex;
+    display: block;
+  }
+
+  .ui-editorial-auth-card-badge > [data-slot="badge"] {
+    font-size: var(--editorial-auth-card-badge-font-size, var(--badge-font-size));
   }
 
   .ui-editorial-auth-card-title {
@@ -1051,9 +1076,12 @@
   }
 
   .ui-editorial-footnote[data-align="center"] {
+    flex-direction: var(--editorial-footnote-center-align-flow);
     align-items: var(--editorial-footnote-center-align-block);
+    gap: var(--editorial-footnote-center-gap);
     margin-block-start: var(--editorial-footnote-center-space-block-start);
     padding-block: 0;
+    font-size: var(--editorial-footnote-center-font-size);
   }
 
   .ui-editorial-footnote-body {

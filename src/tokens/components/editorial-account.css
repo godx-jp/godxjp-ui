@@ -13,6 +13,9 @@
   --editorial-account-surface-background: initial;
   /* Quiet ground (lead stat, picture ground, medallion). Default = hsl(var(--muted)). */
   --editorial-account-subtle-background: initial;
+  /* The family's kickers. `initial` = the Eyebrow's own size and tracking. */
+  --editorial-account-eyebrow-font-size: initial;
+  --editorial-account-eyebrow-letter-spacing: initial;
 
   /* ── EditorialTextButton ────────────────────────────────────────────────────────────────── */
   --editorial-text-button-min-height: var(--touch-target-min, 2.75rem);
@@ -49,7 +52,10 @@
   --editorial-footnote-align-block: flex-start;
   /* align="center" (a one-line note beside its action): centred, no band padding. */
   --editorial-footnote-center-align-block: center;
+  --editorial-footnote-center-align-flow: row;
+  --editorial-footnote-center-gap: 1.25rem;
   --editorial-footnote-center-space-block-start: 2rem;
+  --editorial-footnote-center-font-size: 0.8125rem;
 
   /* ── EditorialToggleGroup ───────────────────────────────────────────────────────────────── */
   --editorial-toggle-group-gap: 0.5rem;
@@ -162,6 +168,8 @@
   --editorial-toolbar-end-gap: 0.5rem;
   --editorial-toolbar-end-align-inline: flex-start;
   --editorial-toolbar-end-space-block-start: 0;
+  /* The end cluster's button label size. `initial` = the Button's own. */
+  --editorial-toolbar-action-font-size: initial;
 
   /* ── HoldingGrid / HoldingCard ──────────────────────────────────────────────────────────── */
   --editorial-holding-grid-track-size: repeat(4, minmax(0, 1fr));
@@ -336,6 +344,8 @@
   --editorial-auth-benefit-gap: 0.625rem;
   --editorial-auth-benefit-icon-size: 1.125rem;
   --editorial-auth-card-padding: 2rem;
+  /* The card's chip. `initial` = the Badge's own size. */
+  --editorial-auth-card-badge-font-size: initial;
   --editorial-auth-card-radius: 14px;
   --editorial-auth-card-shadow: 0 6px 28px rgb(48 43 41 / 0.04);
   --editorial-auth-card-title-font-size: 1.625rem;

@@ -4064,6 +4064,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Quiet ground (lead stat, picture ground, medallion). Default = hsl(var(--muted))."
   },
   {
+    "name": "--editorial-account-eyebrow-font-size",
+    "value": "initial",
+    "description": "The family's kickers. `initial` = the Eyebrow's own size and tracking."
+  },
+  {
+    "name": "--editorial-account-eyebrow-letter-spacing",
+    "value": "initial",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
     "name": "--editorial-text-button-min-height",
     "value": "var(--touch-target-min, 2.75rem)",
     "description": "── EditorialTextButton ──────────────────────────────────────────────────────────────────"
@@ -4204,8 +4214,23 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "align=\"center\" (a one-line note beside its action): centred, no band padding."
   },
   {
+    "name": "--editorial-footnote-center-align-flow",
+    "value": "row",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-center-gap",
+    "value": "1.25rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
     "name": "--editorial-footnote-center-space-block-start",
     "value": "2rem",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-footnote-center-font-size",
+    "value": "0.8125rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
@@ -4657,6 +4682,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--editorial-toolbar-end-space-block-start",
     "value": "0",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-toolbar-action-font-size",
+    "value": "initial",
+    "description": "The end cluster's button label size. `initial` = the Button's own."
   },
   {
     "name": "--editorial-holding-grid-track-size",
@@ -5462,6 +5492,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--editorial-auth-card-padding",
     "value": "2rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-badge-font-size",
+    "value": "initial",
+    "description": "The card's chip. `initial` = the Badge's own size."
   },
   {
     "name": "--editorial-auth-card-radius",
