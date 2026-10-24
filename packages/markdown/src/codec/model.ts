@@ -10,6 +10,7 @@
  * and the kit's own:
  *   callout{kind,title} · details · detailsSummary · detailsContent · columns · column{width} ·
  *   embed{target} (block `![[x]]`) · wikilink{target,heading,label} · embedInline{target} ·
+ *   directive{name,source} (a container directive the kit does not model: `:::poll[…]{…}`) ·
  *   rawBlock{source} · rawInline{source} · frontmatter{source} (YAML, first block only)
  * Marks: bold · italic · strike · code · link{href,title}.
  */
@@ -34,3 +35,6 @@ export type CalloutKind = (typeof CALLOUT_KINDS)[number];
 /** Columns per `:::columns` block (grammar v1). */
 export const COLUMNS_MIN = 2;
 export const COLUMNS_MAX = 4;
+
+/** Directive names the kit draws itself (grammar v1). A host cannot register a renderer for them. */
+export const MODELLED_DIRECTIVES: readonly string[] = ["toggle", "columns", "column"];

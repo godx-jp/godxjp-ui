@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/markdown",
-  "version": "33.21.0",
+  "version": "33.22.0",
   "description": "The one Markdown renderer for GoDX apps: GFM + heading anchors, KaTeX math, highlighted code, one sanitiser schema, a shared fixture corpus, and Mermaid drawn only after its SVG passes a fail-closed gate.",
   "type": "module",
   "main": "./dist/index.js",
@@ -11,6 +11,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./lazy": {
+      "types": "./dist/lazy.d.ts",
+      "import": "./dist/lazy.js"
+    },
     "./codec": {
       "types": "./dist/codec/index.d.ts",
       "import": "./dist/codec/index.js"
@@ -19,7 +23,8 @@
     "./package.json": "./package.json"
   },
   "sideEffects": [
-    "*.css"
+    "*.css",
+    "./dist/katex-styles-*.js"
   ],
   "files": [
     "dist",

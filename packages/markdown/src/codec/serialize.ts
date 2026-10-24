@@ -214,6 +214,7 @@ function block(node: DocNode): RootContent[] {
     case "embed":
       return [{ type: "html", value: `![[${String(attrs.target)}]]` }];
     case "rawBlock":
+    case "directive":
       return [{ type: "html", value: String(attrs.source) }];
     case "frontmatter":
       return [{ type: "yaml", value: String(attrs.source) } as RootContent];

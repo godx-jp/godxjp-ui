@@ -1,8 +1,8 @@
 import { defaultSchema } from "rehype-sanitize";
 import type { Options as SanitizeSchema } from "rehype-sanitize";
 
-import { CODE_TOKENS } from "./highlight";
-import { katexSchema } from "./math";
+import { CODE_TOKENS } from "./code-tokens";
+import { katexSchema } from "./katex-schema";
 
 /**
  * THE ONE SANITISER SCHEMA (gh#1108). godx-task and godx-content each carried their own copy of

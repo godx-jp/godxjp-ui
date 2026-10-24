@@ -1,12 +1,13 @@
 import { parse } from "./parse";
 import { serialize } from "./serialize";
 
-export { parse } from "./parse";
+export { parse, readDirective } from "./parse";
+export type { DirectiveBlock } from "./directive";
 export { outline, frontmatterOf } from "./outline";
 export type { OutlineEntry } from "./outline";
 export { serialize } from "./serialize";
 export type { Doc, DocNode, Mark, CalloutKind } from "./model";
-export { CALLOUT_KINDS, COLUMNS_MAX, COLUMNS_MIN } from "./model";
+export { CALLOUT_KINDS, COLUMNS_MAX, COLUMNS_MIN, MODELLED_DIRECTIVES } from "./model";
 
 /**
  * Identifies the serializer's output. Bumped whenever `serialize` would write a stored body

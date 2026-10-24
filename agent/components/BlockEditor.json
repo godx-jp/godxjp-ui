@@ -57,9 +57,14 @@
       "type": "\"framed\" | \"plain\""
     },
     {
-      "description": "Extra `/` rows ({ key, label, icon, keywords?, run(api) }) — `api.insertMarkdown` inserts through the codec.",
+      "description": "Extra `/` rows ({ key, label, icon, keywords?, run(api) }) — `api.insertMarkdown` inserts through the codec, so a directive skeleton (`:::poll[Q]{id=x}\\n- A\\n- B\\n:::`) lands as a directive block.",
       "name": "actions",
       "type": "BlockEditorAction[]"
+    },
+    {
+      "description": "Editor previews for directive blocks, by name. A container directive the kit does not model (`:::poll[…]{…}`) is one atomic block — dragged, deleted and inserted whole, its source edited behind Edit source; the preview gets `{ name, label, attributes, source, body }` (canonical). No renderer, or `undefined`: the block shows its source.",
+      "name": "directives",
+      "type": "Record<string, (block: DirectiveBlock) => ReactNode | undefined>"
     },
     {
       "description": "Override any string (defaults: kit ja / en / vi).",

@@ -18,7 +18,12 @@ import {
 } from "./commands";
 import { Callout, Columns, schemaExtensions } from "./extensions";
 import { BlockHandle } from "./handle";
-import { LabelsContext, type LabelFn } from "./labels";
+import {
+  DirectivesContext,
+  LabelsContext,
+  type BlockEditorDirectiveRenderer,
+  type LabelFn,
+} from "./labels";
 import {
   BLOCK_EDITOR_MESSAGES,
   ensureBlockEditorMessages,
@@ -30,6 +35,7 @@ import { EditDrawer, type EditTarget } from "./edit-drawer";
 import {
   calloutNode,
   columnsNode,
+  directiveNode,
   embedNode,
   frontmatterNode,
   rawBlockNode,
@@ -84,8 +90,20 @@ export type BlockEditorProps = {
   renderEmbed?: (target: string) => React.ReactNode;
   /** Resolves a stored image URL (`asset:<id>`) for display. The body keeps the original. */
   resolveUrl?: (url: string) => string | undefined;
-  /** Extra `/` rows after the built-in blocks — the extension point for host block types. */
+  /**
+   * Extra `/` rows after the built-in blocks — the extension point for host block types. A row
+   * that inserts a directive skeleton (`api.insertMarkdown(":::poll[…]{…}\n- A\n- B\n:::")`)
+   * inserts a directive BLOCK.
+   */
   actions?: readonly BlockEditorAction[];
+  /**
+   * Previews for directive blocks, by name: `{ poll: (block) => <PollPreview … /> }`. A container
+   * directive the kit does not model (`:::poll[…]{…}`) is one block — dragged, deleted, inserted
+   * whole, its source edited behind "Edit source"; the renderer receives its parts
+   * (`DirectiveBlock`: name, label, attributes, canonical source, body). Without one — or when it
+   * returns `undefined` — the block shows its source.
+   */
+  directives?: Readonly<Record<string, BlockEditorDirectiveRenderer>>;
   /** Override any string the editor renders (defaults: the kit's ja / en / vi catalogue). */
   labels?: Partial<BlockEditorLabels>;
   /**
@@ -198,6 +216,7 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
       renderEmbed,
       resolveUrl,
       actions = [],
+      directives,
       labels,
       appearance = "framed",
       disabled = false,
@@ -535,6 +554,7 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
           },
           embed: embedNode(renderEmbed),
           rawBlock: rawBlockNode(),
+          directive: directiveNode(),
           frontmatter: frontmatterNode(),
           callout: calloutNode(Callout),
           columns: columnsNode(Columns),
@@ -719,7 +739,10 @@ export const BlockEditor = React.forwardRef<BlockEditorHandle, BlockEditorProps>
               />
             </>
           ) : null}
-          <EditorContent editor={editor} />
+          {/* Node views render through portals inside EditorContent: the directive previews reach them here. */}
+          <DirectivesContext.Provider value={directives}>
+            <EditorContent editor={editor} />
+          </DirectivesContext.Provider>
           <SuggestionMenu
             open={slash.menu != null}
             rect={slash.menu?.rect ?? null}

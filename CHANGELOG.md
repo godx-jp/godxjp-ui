@@ -6,14 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+## [33.22.0] - 2026-10-24
 
-- `AppShell` brand link that IS the boxed mark (`logo={<Logo asChild glyph="P"><a/></Logo>}`, no wordmark): `.app-topbar-logo > a { display: flex }` out-ranked `.ui-logo`'s `inline-grid` centring, so the glyph's ink sat against the box's start edge (Chromium, 4x pixel scan: dx −5.25 / −6.5 / −7.75 / −11.25px at xs / sm / md / lg). The rule now skips `.ui-logo`; ink centre is within 1px of the box centre on both axes at every size. Standalone `Logo` was already centred (≤0.4px); the optical-offset tokens are unchanged.
-- `LegalDocumentShell` with `sections={[]}` and no `documentNavigation` no longer reserves the contents rail: no contents `<nav>`, no rail element, no rail grid track (`data-rail="none"`). At 1280px the title starts at the content edge (x=32, was 312 behind a 240px track + 40px gap); at 390px the empty "On this page" caption is gone. With no sections but a `documentNavigation`, the rail holds only the navigation. Measure, metadata and h1 size are unchanged.
+### Added
+
+- `@godxjp/markdown` directive blocks: `<Markdown directives={{ poll: (block) => … }}>` draws a container directive the kit does not model (`:::poll[…]{…}`, `::::form`) with a host renderer registered by name. It receives `{ name, label, attributes, source, body, children }` — label, source and body as written (free of a containing callout's `> `), `children` the rendered body without the label, so a `::::form` renders its `:::poll` cards. Returning `undefined`, or no renderer, renders the block as before (`div.ui-prose-directive`); `toggle` / `columns` / `column` cannot be registered. Two fixtures added to `MARKDOWN_FIXTURES` (an unregistered `:::poll` and a `::::form` of polls).
+- `@godxjp/markdown/codec`: such a directive is a `directive{name, source}` node (was a `rawBlock`), its canonical source byte-stable under `normalize`; `readDirective(source)` returns its `DirectiveBlock` parts; `MODELLED_DIRECTIVES`. The serialized Markdown is unchanged, so `CODEC_ID` stays `kit-md@2`. A malformed toggle or column row is still a raw block.
+- `@godxjp/block-editor`: a directive is one atomic `directive` block — dragged, deleted and moved whole from the handle, its source edited behind "Edit source" (re-parsed on Done: still one directive, it stays the block; anything else replaces it). `directives={{ poll: (block) => <Preview/> }}` previews it by name (otherwise its source shows); a host `/` row inserts one with `api.insertMarkdown(skeleton)`. New label `directive` (ja / en / vi).
+- `@godxjp/markdown/lazy`: the same `Markdown` with KaTeX (+ `katex.css`) and highlight.js each in its own chunk, imported the first time a rendered body has math or a fence with a language; until then math shows its TeX as code and fences are plain. `preloadMarkdownRuntime(body?)` loads them up front, for a server render or a hydration that must match the eager HTML. Measured with Vite on a host importing only `Markdown`: entry 560 KB JS (173 KB gzip) + 23.5 KB CSS → 220 KB JS (70 KB gzip), no CSS; KaTeX 262 KB (78 KB gzip) + its CSS and highlight.js 81 KB (26 KB gzip) load on demand. The default entry stays eager (a server or Worker render is synchronous); its output and `RENDERER_VERSION` (6) are unchanged.
 
 ### Changed
 
 - `Image` is lazy by default (#1454): `loading` defaults to `"lazy"` — `"eager"` when the picture is marked `fetchPriority="high"` (a page's LCP image) — and `decoding` to `"async"`. Explicit `loading` / `decoding` still win. Pass `fetchPriority="high"` (or `loading="eager"`) on an above-the-fold hero picture.
+
+### Fixed
+
+- `AppShell` brand link that IS the boxed mark (`logo={<Logo asChild glyph="P"><a/></Logo>}`, no wordmark): `.app-topbar-logo > a { display: flex }` out-ranked `.ui-logo`'s `inline-grid` centring, so the glyph's ink sat against the box's start edge (Chromium, 4x pixel scan: dx −5.25 / −6.5 / −7.75 / −11.25px at xs / sm / md / lg). The rule now skips `.ui-logo`; ink centre is within 1px of the box centre on both axes at every size. Standalone `Logo` was already centred (≤0.4px); the optical-offset tokens are unchanged.
+- `LegalDocumentShell` with `sections={[]}` and no `documentNavigation` no longer reserves the contents rail: no contents `<nav>`, no rail element, no rail grid track (`data-rail="none"`). At 1280px the title starts at the content edge (x=32, was 312 behind a 240px track + 40px gap); at 390px the empty "On this page" caption is gone. With no sections but a `documentNavigation`, the rail holds only the navigation. Measure, metadata and h1 size are unchanged.
 
 ## [33.21.0] - 2026-10-24
 

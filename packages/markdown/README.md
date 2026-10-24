@@ -82,6 +82,34 @@ focusable only while it overflows, so a wide table scrolls instead of widening t
 | `highlight={false}`                    | Leave fenced code as plain text — a host `pre` that runs its own highlighter. A host `pre` otherwise receives the tokenised `<code>`.                                                 |
 | `allowedElements` / `unwrapDisallowed` | Narrow a body (an activity feed: `strong`, `em`, `del`, `code`). Only removes.                                                                                                        |
 | `shortCellLength`                      | A table cell holding one short token (no whitespace, ≤ 24 characters by default) gets `data-short`; `Prose` keeps it on one line. `false` turns it off.                               |
+| `directives`                           | Host renderers for container directives the kit does not model, by name — see "Directive blocks".                                                                                     |
+
+### Directive blocks
+
+A container directive the kit does not model — `:::poll[…]{…}`, a `::::form` holding polls — renders
+its content in a `div.ui-prose-directive` (the label as a paragraph). A host gives it meaning by
+registering a renderer for its name:
+
+```tsx
+<Markdown
+  directives={{
+    // { name, label, attributes, source, body, children }: label / source / body as written
+    // (free of a containing callout's `> `), children = the rendered body without the label.
+    poll: (block) => {
+      const poll = parsePoll(block.source); // the host's own grammar and validation
+      return poll ? <PollCard poll={poll} /> : undefined; // undefined: render it as before
+    },
+    form: (block) => <SurveyForm title={block.label}>{block.children}</SurveyForm>,
+  }}
+>
+  {page.body}
+</Markdown>
+```
+
+The kit validates nothing inside a directive; `toggle`, `columns` and `column` are its own and
+cannot be registered. The block's parts come from the same reader as the codec's
+(`readDirective(source)` in `@godxjp/markdown/codec` returns `{ name, label, attributes, source,
+body }`), so the editor and the page agree on what a block says.
 
 Images: wrap the body in `<Prose imagePreview>` and every body image opens the kit preview, paging
 through the others — no `img` override needed. Images in table cells keep min(natural width, 20rem),
@@ -131,8 +159,13 @@ set of parsers, so a body means the same thing in the editor, on a server and on
   special, a literal `$x$` in text is written `\$x$`; a lone `$` (a price) is never escaped.
 - **`asset:` images** — `![alt](asset:id)` round-trips as written (the renderer resolves it through
   `resolveUrl`).
-- **Raw blocks** — anything the document does not model (raw HTML, footnote definitions, link
-  reference definitions, an unknown or malformed directive, a fence with a meta string) is kept as
+- **Directive blocks** — any other container directive (`:::poll[label]{id=x anonymous}` … `:::`,
+  nesting by fence length) is one `directive{name, source}` node holding its canonical source, so
+  `normalize` is idempotent on it and the editor keeps it as one block. Attribute values with a
+  character outside `[\w.-]` are written quoted (`closes="2026-11-10T09:00"`); `{#x}` / `{.x}` are
+  written `id=x` / `class=x`.
+- **Raw blocks** — anything else the document does not model (raw HTML, footnote definitions, link
+  reference definitions, a malformed toggle or column row, a fence with a meta string) is kept as
   Markdown that parses back to the same thing. Mermaid is an ordinary ` ```mermaid ` fence.
 
 ### Codec
@@ -153,6 +186,29 @@ Pure: no React, no DOM, no editor — it runs on a server and in a Cloudflare Wo
 `*em*`; `**strong**`; ` ``` ` fences (an indented code block becomes fenced); `---` rules;
 `- [ ]` / `- [x]` todos; GFM tables with padded cells and an alignment row; a callout's body after a
 `>` blank line; one blank line between blocks; LF; a trailing newline; an empty document is `""`.
+
+## Loading KaTeX and highlight.js on demand (`@godxjp/markdown/lazy`)
+
+KaTeX with its stylesheet and fonts, and highlight.js, are most of this package's weight. The
+default entry bundles them so the first render is final everywhere. A client-rendered app imports
+the same component from `/lazy` instead:
+
+```tsx
+import { Markdown } from "@godxjp/markdown/lazy"; // and drop the global katex.css import
+```
+
+Each engine is then a separate chunk, fetched the first time a rendered body needs it (math, or a
+fence with a language) — KaTeX's chunk brings `katex.css` with it — and the body re-renders once it
+arrives. Until then math shows its TeX source as code and fences are plain, the same as
+`highlight={false}`. Measured with Vite on a host that imports only `Markdown`: the entry goes
+from 560 KB JS (173 KB gzip) + 23.5 KB CSS to 220 KB JS (70 KB gzip) and no CSS; KaTeX is a
+262 KB (78 KB gzip) chunk + the CSS, highlight.js an 81 KB (26 KB gzip) chunk.
+
+**Why the default stays eager.** A server render or a Worker is synchronous and cannot wait for an
+`import()`, and the output must not depend on what happened to be loaded. With `/lazy`, a server
+(or a client hydrating server HTML) awaits `preloadMarkdownRuntime(body)` before rendering, so its
+HTML matches the eager entry's byte for byte; `RENDERER_VERSION` describes that finished output
+from both entries.
 
 ## Stored versions
 
