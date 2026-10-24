@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.22.1] - 2026-10-25
+
+### Fixed
+
+- `Button loading` keeps focus. Loading set native `disabled`, and a disabled element cannot hold focus: the button just pressed lost it to `<body>`, and a `Dialog`'s focus scope does not take it back (Radix re-traps on removal, not on disable). After a failed save the keyboard user was outside the dialog — Escape did nothing, Tab started from the page. Loading is now `aria-disabled="true"` + `aria-busy="true"` with activation swallowed (click, Enter, Space, and the form submission of a `type="submit"`); the look (opacity, no pointer events) is unchanged. The `disabled` prop still sets native `disabled`. Measured in a consumer's real-browser journey: focus after a 422 inside an edit dialog was `<body>` for the whole 15 s poll (17/17 samples).
+
 ## [33.22.0] - 2026-10-24
 
 ### Added

@@ -1258,7 +1258,8 @@ export default function OrdersPage() {
       {
         name: "onQueryChange",
         type: "(query: string) => void",
-        description: "inset: field text after each edit; never mid-IME-composition, once on compositionend.",
+        description:
+          "inset: field text after each edit; never mid-IME-composition, once on compositionend.",
       },
       {
         name: "linkComponent",
@@ -4441,7 +4442,7 @@ import { MessageCircle, Share2 } from "lucide-react";
         type: "boolean",
         defaultValue: "false",
         description:
-          'In-flight state — shows a leading `Loader2` spinner (replaces a leading icon if present), sets `aria-busy="true"`, and blocks activation (non-interactive, pointer-events disabled) while keeping the label visible so the width doesn\'t jump. Prefer this over a hand-rolled `<Loader2 className="animate-spin">` inside the button. Ignored when `asChild` (Slot requires a single child).',
+          'In-flight state — shows a leading `Loader2` spinner (replaces a leading icon if present), sets `aria-busy="true"` and `aria-disabled="true"`, and blocks activation (click, Enter/Space and a `type="submit"` form submission are swallowed; pointer-events disabled) while keeping the label visible so the width doesn\'t jump. It never sets native `disabled`, so the button keeps focus while the request runs — a disabled element drops focus to <body>, which strands a keyboard user outside a dialog after a failed save. Prefer this over a hand-rolled `<Loader2 className="animate-spin">` inside the button. Ignored when `asChild` (Slot requires a single child).',
       },
       {
         name: "loadingText",
