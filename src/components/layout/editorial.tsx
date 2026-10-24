@@ -211,10 +211,15 @@ export function EditorialPageHeader({
   description,
   actions,
   titleId,
+  eyebrowTone = "page",
   className,
 }: EditorialPageHeaderProp) {
   return (
-    <div data-slot="editorial-page-header" className={cn("ui-editorial-page-header", className)}>
+    <div
+      data-slot="editorial-page-header"
+      data-eyebrow-tone={eyebrowTone === "page" ? undefined : eyebrowTone}
+      className={cn("ui-editorial-page-header", className)}
+    >
       {breadcrumb && breadcrumb.length > 0 && (
         <EditorialBreadcrumb
           items={breadcrumb}

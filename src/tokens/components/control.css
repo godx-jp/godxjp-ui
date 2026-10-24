@@ -63,6 +63,9 @@
   --button-outline-background: initial; /* default = hsl(var(--background)) at the call site */
   --button-outline-background-alpha: initial; /* default = 100% at the call site */
   --button-outline-border-color: initial; /* default = hsl(var(--input)) at the call site */
+  /* The outline variant's label ink (gh#1439): a brand whose secondary button reads in its action
+   * colour. `initial`, default = hsl(var(--foreground)) at the call site. */
+  --button-outline-foreground: initial;
   --button-secondary-background: initial; /* default = hsl(var(--secondary)) at the call site */
   --button-secondary-background-alpha: initial; /* default = 100% at the call site */
   /* THE ONE BUTTON KNOB THAT IS INK, NOT A FILL (gh#884) — the `link` variant's text colour. The

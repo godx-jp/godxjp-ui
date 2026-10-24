@@ -1,11 +1,13 @@
 import * as React from "react";
-import { Check } from "lucide-react";
+import { Check, Search } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import type {
   EditorialAuthCardProp,
   EditorialAuthProp,
   EditorialEmptyPanelProp,
+  EditorialFootnoteProp,
+  EditorialInlineSearchProp,
   EditorialMetaBarProp,
   EditorialStatsItemProp,
   EditorialStatsProp,
@@ -29,6 +31,10 @@ export type {
   EditorialAuthProp as EditorialAuthProps,
   EditorialEmptyPanelProp,
   EditorialEmptyPanelProp as EditorialEmptyPanelProps,
+  EditorialFootnoteProp,
+  EditorialFootnoteProp as EditorialFootnoteProps,
+  EditorialInlineSearchProp,
+  EditorialInlineSearchProp as EditorialInlineSearchProps,
   EditorialMetaBarProp,
   EditorialMetaBarProp as EditorialMetaBarProps,
   EditorialStatsItemProp,
@@ -490,5 +496,80 @@ export function EditorialTextButton({
       {children}
       {glyph}
     </button>
+  );
+}
+
+/** A collection's own search row: visible label, framed field with a glyph, a live count at the end. */
+export function EditorialInlineSearch({
+  label,
+  id,
+  placeholder,
+  defaultValue,
+  onSearch,
+  debounce = 300,
+  count,
+  className,
+}: EditorialInlineSearchProp) {
+  const reactId = React.useId();
+  const inputId = id ?? `editorial-inline-search-${reactId}`;
+  const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const last = React.useRef((defaultValue ?? "").trim());
+  const report = React.useCallback(
+    (value: string) => {
+      const query = value.trim();
+      if (query === last.current) return;
+      last.current = query;
+      onSearch(query);
+    },
+    [onSearch],
+  );
+  React.useEffect(() => () => clearTimeout(timer.current), []);
+  return (
+    <div
+      role="search"
+      aria-label={label}
+      data-slot="editorial-inline-search"
+      className={cn("ui-editorial-inline-search", className)}
+    >
+      <label htmlFor={inputId} className="ui-editorial-inline-search-label">
+        {label}
+      </label>
+      <div className="ui-editorial-inline-search-field">
+        <Search aria-hidden className="ui-editorial-inline-search-icon" />
+        <input
+          id={inputId}
+          type="search"
+          placeholder={placeholder}
+          defaultValue={defaultValue}
+          autoComplete="off"
+          className="ui-editorial-inline-search-input ui-focus-ring"
+          onChange={(event) => {
+            const value = event.currentTarget.value;
+            clearTimeout(timer.current);
+            timer.current = setTimeout(() => report(value), debounce);
+          }}
+          onKeyDown={(event) => {
+            if (event.key !== "Enter") return;
+            clearTimeout(timer.current);
+            report(event.currentTarget.value);
+          }}
+        />
+      </div>
+      {count != null && (
+        <span role="status" aria-live="polite" className="ui-editorial-inline-search-count">
+          {count}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/** A quiet closing line: a note at the start, an optional action at the end. */
+export function EditorialFootnote({ children, action, className }: EditorialFootnoteProp) {
+  return (
+    <div data-slot="editorial-footnote" className={cn("ui-editorial-footnote", className)}>
+      {children != null && <div className="ui-editorial-footnote-body">{children}</div>}
+      {action != null && <div className="ui-editorial-footnote-action">{action}</div>}
+    </div>
   );
 }

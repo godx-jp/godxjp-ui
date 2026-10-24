@@ -543,11 +543,21 @@
         "navigation-layout.css"
       ]
     },
+    "EditorialFootnote": {
+      "layers": [
+        "editorial-account-layout.css"
+      ]
+    },
     "EditorialHero": {
       "layers": [
         "layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
+      ]
+    },
+    "EditorialInlineSearch": {
+      "layers": [
+        "editorial-account-layout.css"
       ]
     },
     "EditorialMasthead": {

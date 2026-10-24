@@ -266,7 +266,7 @@
       --button-outline-background,
       hsl(var(--background) / var(--button-outline-background-alpha, 100%))
     );
-    color: hsl(var(--foreground));
+    color: var(--button-outline-foreground, hsl(var(--foreground)));
 
     /* Qua TOKEN, không qua utility: một service đặt `--shadow-sm: none` phải tắt được
      * bóng ở mọi biến thể nút, không riêng `default`. Trước đây dòng này là

@@ -1647,6 +1647,11 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "eyebrow", local: true, reason: "Slot for the kicker above the title." },
       { field: "actions", local: true, reason: "Slot for the trailing action on the title row." },
       { field: "titleId", local: true, reason: "Id put on the h1." },
+      {
+        field: "eyebrowTone",
+        local: true,
+        reason: "page (page-header kicker knobs) or accent (the plain Eyebrow).",
+      },
     ],
   },
   EditorialTextLinkProp: {
@@ -1930,6 +1935,29 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "onClick", local: true, reason: "Activation handler." },
       { field: "disabled", local: true, reason: "Native disabled." },
       { field: "children", local: true, reason: "Label." },
+    ],
+  },
+  EditorialInlineSearchProp: {
+    group: "layout",
+    file: "components/editorial-account.prop.ts",
+    vocabulary: [
+      "IdProp",
+      "PlaceholderProp",
+      "DefaultValueProp",
+      "ClassNameProp",
+      { field: "label", local: true, reason: "Visible label and name of the search region." },
+      { field: "onSearch", local: true, reason: "Settled query handler, as SearchInput.onSearch." },
+      { field: "debounce", local: true, reason: "Settle delay in ms, as SearchInput.debounce." },
+      { field: "count", local: true, reason: "Live count at the end of the row." },
+    ],
+  },
+  EditorialFootnoteProp: {
+    group: "layout",
+    file: "components/editorial-account.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      { field: "children", local: true, reason: "The note." },
+      { field: "action", local: true, reason: "Trailing action." },
     ],
   },
   EditorialMetaBarProp: {

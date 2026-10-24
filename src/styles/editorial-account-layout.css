@@ -2,6 +2,14 @@
  * length and colour reads a token from tokens/components/editorial-account.css; no breakpoint. */
 
 @layer components {
+  /* ── EditorialPageHeader eyebrowTone="accent" — the plain Eyebrow on the signed-in pages ─────── */
+  .ui-editorial-page-header[data-eyebrow-tone="accent"]
+    .ui-editorial-page-header-copy
+    > .ui-editorial-eyebrow {
+    color: var(--editorial-kicker-color, hsl(var(--muted-foreground)));
+    font-size: var(--editorial-eyebrow-font-size);
+  }
+
   /* ── EditorialTextButton ──────────────────────────────────────────────────────────────────── */
   .ui-editorial-text-button {
     display: inline-flex;
@@ -967,5 +975,90 @@
     font-size: var(--editorial-auth-card-footer-font-size);
     line-height: var(--editorial-auth-card-footer-line-height);
     text-align: center;
+  }
+
+  /* ── EditorialInlineSearch ────────────────────────────────────────────────────────────────── */
+  .ui-editorial-inline-search {
+    display: flex;
+    align-items: center;
+    gap: var(--editorial-inline-search-gap);
+    margin: var(--editorial-inline-search-space-block) 0;
+  }
+
+  .ui-editorial-inline-search-label {
+    display: var(--editorial-inline-search-label-display);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-inline-search-label-font-size);
+  }
+
+  .ui-editorial-inline-search-field {
+    position: relative;
+    flex: 1;
+    max-width: var(--editorial-inline-search-field-max-width);
+  }
+
+  .ui-editorial-inline-search-icon {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: var(--editorial-inline-search-icon-inset-inline-start);
+    width: var(--editorial-inline-search-icon-size);
+    height: var(--editorial-inline-search-icon-size);
+    color: hsl(var(--muted-foreground));
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .ui-editorial-inline-search-input {
+    width: 100%;
+    height: var(--editorial-inline-search-height);
+    padding-inline: var(--editorial-inline-search-padding-inline-start)
+      var(--editorial-inline-search-padding-inline-end);
+    border: var(--stroke-hairline) solid hsl(var(--input));
+    border-radius: var(--editorial-inline-search-radius);
+    background: var(--editorial-account-surface-background, hsl(var(--card)));
+    color: hsl(var(--foreground));
+    font: inherit;
+    font-size: var(--editorial-inline-search-font-size);
+  }
+
+  .ui-editorial-inline-search-input::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-editorial-inline-search-count {
+    margin-inline-start: auto;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-inline-search-count-font-size);
+    white-space: nowrap;
+  }
+
+  /* ── EditorialFootnote ────────────────────────────────────────────────────────────────────── */
+  .ui-editorial-footnote {
+    display: flex;
+    flex-direction: var(--editorial-footnote-align-flow);
+    justify-content: space-between;
+    align-items: var(--editorial-footnote-align-block);
+    gap: var(--editorial-footnote-gap);
+    margin-block-start: var(--editorial-footnote-space-block-start);
+    padding-block: var(--editorial-footnote-padding-block);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-footnote-font-size);
+    line-height: var(--editorial-footnote-line-height);
+  }
+
+  .ui-editorial-footnote-body {
+    max-width: var(--editorial-footnote-body-max-width);
+  }
+
+  .ui-editorial-footnote-body > p {
+    margin: 0;
+  }
+
+  .ui-editorial-footnote-action {
+    flex-shrink: 0;
+  }
+
+  .ui-editorial-footnote .ui-editorial-text-button {
+    font-size: inherit;
   }
 }

@@ -237,3 +237,35 @@ export type EditorialTextButtonProp = {
   disabled?: boolean;
   className?: ClassNameProp;
 };
+
+/**
+ * @see EditorialInlineSearch — a collection's own search row: a visible label, a framed field with a
+ * search glyph (the query is reported after typing settles, or at once on Enter) and a live count at
+ * the end. Geometry: `--editorial-inline-search-*`.
+ */
+export type EditorialInlineSearchProp = {
+  /** Visible label (and the field's name). A theme may hide it on narrow screens. */
+  label: string;
+  /** id of the input. */
+  id?: string;
+  placeholder?: string;
+  defaultValue?: string;
+  /** Called with the trimmed query after typing settles (`debounce` ms) or on Enter. */
+  onSearch: (query: string) => void;
+  /** Delay before a typed query is reported. Default 300. */
+  debounce?: number;
+  /** A live count at the end ("12 entries"); announced politely. */
+  count?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see EditorialFootnote — a quiet closing line under a collection or a settings form: a note at the
+ * start and an optional action (an EditorialTextButton) at the end. Geometry:
+ * `--editorial-footnote-*`.
+ */
+export type EditorialFootnoteProp = {
+  children?: ReactNode;
+  action?: ReactNode;
+  className?: ClassNameProp;
+};

@@ -2323,6 +2323,12 @@ export type EditorialPageHeaderProp = {
   actions?: ReactNode;
   /** Id put on the h1. */
   titleId?: IdProp;
+  /**
+   * Kicker colour and size: `"page"` (default) takes the page-header kicker knobs
+   * (`--editorial-page-header-kicker-*`); `"accent"` keeps the plain Eyebrow (the editorial kicker
+   * colour and `--editorial-eyebrow-font-size`) — the signed-in pages of gh#1439.
+   */
+  eyebrowTone?: "page" | "accent";
   className?: ClassNameProp;
 };
 

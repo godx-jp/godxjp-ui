@@ -1,0 +1,54 @@
+{
+  "example": "import { EditorialInlineSearch } from \"@godxjp/ui/layout\";\n\n<EditorialInlineSearch label=\"Search your collection\" placeholder=\"Name or card number\" onSearch={setQuery} count=\"12 entries\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialInlineSearch",
+  "props": [
+    {
+      "description": "Visible label and region name.",
+      "name": "label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "id of the input.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Placeholder.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "description": "Initial query.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Settled, trimmed query.",
+      "name": "onSearch",
+      "required": true,
+      "type": "(query: string) => void"
+    },
+    {
+      "default": "300",
+      "description": "Settle delay (ms).",
+      "name": "debounce",
+      "type": "number"
+    },
+    {
+      "description": "Live count at the end.",
+      "name": "count",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "SearchInput — the application search field.",
+    "EditorialSearch — the inset site search."
+  ],
+  "tagline": "A collection's own search row (gh#1439): a visible label, a framed field with a search glyph (max 400px) and a live count at the end. The query is reported after typing settles (`debounce`, default 300ms) or at once on Enter. A named `role=\"search\"` region. Geometry: `--editorial-inline-search-*`; a theme hides the label on narrow screens with `--editorial-inline-search-label-display: none`.",
+  "usage": [
+    "DO keep the query in the URL; the row only reports it."
+  ]
+}

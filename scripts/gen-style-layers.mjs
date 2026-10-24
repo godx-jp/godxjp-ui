@@ -83,6 +83,8 @@ const OWNERS = {
     "ThemePicker",
     "EditorialAuth",
     "EditorialAuthCard",
+    "EditorialInlineSearch",
+    "EditorialFootnote",
   ],
   "layout.css": [
     "Flex",

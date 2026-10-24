@@ -1123,6 +1123,12 @@ export default function OrdersPage() {
       { name: "description", type: "ReactNode", description: "One lead line under it." },
       { name: "actions", type: "ReactNode", description: "Action at the end of the title row." },
       { name: "titleId", type: "string", description: "Id on the h1." },
+      {
+        name: "eyebrowTone",
+        type: '"page" | "accent"',
+        default: '"page"',
+        description: "Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439).",
+      },
     ],
     usage: [
       'DO put it in an EditorialSection on a `flow="sections"` page, so it shares the landing column.',
@@ -1765,6 +1771,54 @@ import { Moon, Sun } from "lucide-react";
     example: `import { EditorialAuthCard } from "@godxjp/ui/layout";
 
 <EditorialAuthCard title="Welcome back." description="Sign in to see your collection." footer="New here?" />`,
+  },
+  {
+    name: "EditorialInlineSearch",
+    group: "layout",
+    tagline:
+      'A collection\'s own search row (gh#1439): a visible label, a framed field with a search glyph (max 400px) and a live count at the end. The query is reported after typing settles (`debounce`, default 300ms) or at once on Enter. A named `role="search"` region. Geometry: `--editorial-inline-search-*`; a theme hides the label on narrow screens with `--editorial-inline-search-label-display: none`.',
+    props: [
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Visible label and region name.",
+      },
+      { name: "id", type: "string", description: "id of the input." },
+      { name: "placeholder", type: "string", description: "Placeholder." },
+      { name: "defaultValue", type: "string", description: "Initial query." },
+      {
+        name: "onSearch",
+        type: "(query: string) => void",
+        required: true,
+        description: "Settled, trimmed query.",
+      },
+      { name: "debounce", type: "number", default: "300", description: "Settle delay (ms)." },
+      { name: "count", type: "ReactNode", description: "Live count at the end." },
+    ],
+    usage: ["DO keep the query in the URL; the row only reports it."],
+    related: [
+      "SearchInput — the application search field.",
+      "EditorialSearch — the inset site search.",
+    ],
+    example: `import { EditorialInlineSearch } from "@godxjp/ui/layout";
+
+<EditorialInlineSearch label="Search your collection" placeholder="Name or card number" onSearch={setQuery} count="12 entries" />`,
+  },
+  {
+    name: "EditorialFootnote",
+    group: "layout",
+    tagline:
+      "A quiet closing line under a collection or a settings form (gh#1439): a muted note at the start and an optional action (an EditorialTextButton) at the end. Geometry: `--editorial-footnote-*`.",
+    props: [
+      { name: "children", type: "ReactNode", description: "The note." },
+      { name: "action", type: "ReactNode", description: "Trailing action." },
+    ],
+    usage: ["DO keep it to one or two sentences."],
+    related: ["EditorialNote — a ruled aside in a reading column."],
+    example: `import { EditorialFootnote, EditorialTextButton } from "@godxjp/ui/layout";
+
+<EditorialFootnote action={<EditorialTextButton onClick={reset}>Reset display preferences</EditorialTextButton>}>Changes are saved automatically.</EditorialFootnote>`,
   },
   {
     name: "PageCover",

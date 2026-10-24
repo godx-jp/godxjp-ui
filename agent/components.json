@@ -1155,6 +1155,12 @@
         "description": "Id on the h1.",
         "name": "titleId",
         "type": "string"
+      },
+      {
+        "default": "\"page\"",
+        "description": "Kicker from the page-header knobs, or the plain accent Eyebrow (gh#1439).",
+        "name": "eyebrowTone",
+        "type": "\"page\" | \"accent\""
       }
     ],
     "related": [
@@ -2259,6 +2265,85 @@
     "tagline": "The form card of EditorialAuth (gh#1439): badge, title, copy, the form (`children`) and a ruled footer line (\"New to the site? Create an account\").",
     "usage": [
       "DO keep one form per card."
+    ]
+  },
+  {
+    "example": "import { EditorialInlineSearch } from \"@godxjp/ui/layout\";\n\n<EditorialInlineSearch label=\"Search your collection\" placeholder=\"Name or card number\" onSearch={setQuery} count=\"12 entries\" />",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialInlineSearch",
+    "props": [
+      {
+        "description": "Visible label and region name.",
+        "name": "label",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "description": "id of the input.",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "description": "Placeholder.",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "description": "Initial query.",
+        "name": "defaultValue",
+        "type": "string"
+      },
+      {
+        "description": "Settled, trimmed query.",
+        "name": "onSearch",
+        "required": true,
+        "type": "(query: string) => void"
+      },
+      {
+        "default": "300",
+        "description": "Settle delay (ms).",
+        "name": "debounce",
+        "type": "number"
+      },
+      {
+        "description": "Live count at the end.",
+        "name": "count",
+        "type": "ReactNode"
+      }
+    ],
+    "related": [
+      "SearchInput — the application search field.",
+      "EditorialSearch — the inset site search."
+    ],
+    "tagline": "A collection's own search row (gh#1439): a visible label, a framed field with a search glyph (max 400px) and a live count at the end. The query is reported after typing settles (`debounce`, default 300ms) or at once on Enter. A named `role=\"search\"` region. Geometry: `--editorial-inline-search-*`; a theme hides the label on narrow screens with `--editorial-inline-search-label-display: none`.",
+    "usage": [
+      "DO keep the query in the URL; the row only reports it."
+    ]
+  },
+  {
+    "example": "import { EditorialFootnote, EditorialTextButton } from \"@godxjp/ui/layout\";\n\n<EditorialFootnote action={<EditorialTextButton onClick={reset}>Reset display preferences</EditorialTextButton>}>Changes are saved automatically.</EditorialFootnote>",
+    "group": "layout",
+    "importPath": "@godxjp/ui/layout",
+    "name": "EditorialFootnote",
+    "props": [
+      {
+        "description": "The note.",
+        "name": "children",
+        "type": "ReactNode"
+      },
+      {
+        "description": "Trailing action.",
+        "name": "action",
+        "type": "ReactNode"
+      }
+    ],
+    "related": [
+      "EditorialNote — a ruled aside in a reading column."
+    ],
+    "tagline": "A quiet closing line under a collection or a settings form (gh#1439): a muted note at the start and an optional action (an EditorialTextButton) at the end. Geometry: `--editorial-footnote-*`.",
+    "usage": [
+      "DO keep it to one or two sentences."
     ]
   },
   {

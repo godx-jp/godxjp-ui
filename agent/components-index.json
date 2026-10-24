@@ -207,6 +207,16 @@
   },
   {
     "group": "layout",
+    "name": "EditorialInlineSearch",
+    "tagline": "A collection's own search row (gh#1439): a visible label, a framed field with a search glyph (max 400px) and a live count at the end. The query is reported after typing settles (`debounce`, default 300ms) or at once on Enter. A named `role=\"search\"` region. Geometry: `--editorial-inline-search-*`; a theme hides the label on narrow screens with `--editorial-inline-search-label-display: none`."
+  },
+  {
+    "group": "layout",
+    "name": "EditorialFootnote",
+    "tagline": "A quiet closing line under a collection or a settings form (gh#1439): a muted note at the start and an optional action (an EditorialTextButton) at the end. Geometry: `--editorial-footnote-*`."
+  },
+  {
+    "group": "layout",
     "name": "PageCover",
     "tagline": "A page's cover image (gh#1160): Notion's banner across the top, or note.com's eyecatch (~1.91:1, rounded) in the reading column. Put it in PageContainer `cover`. The focal point is positionY (object-position); while `repositioning` the image IS a vertical WAI-ARIA slider — drag or arrows / PageUp / PageDown / Home / End, Enter / Escape to finish.",
     "tier": "lab"

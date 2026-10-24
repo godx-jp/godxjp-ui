@@ -8,12 +8,15 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { fireEvent, render, screen } from "@testing-library/react";
+import { act } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
   EditorialAuth,
   EditorialAuthCard,
   EditorialEmptyPanel,
+  EditorialFootnote,
+  EditorialInlineSearch,
   EditorialMetaBar,
   EditorialStats,
   EditorialTextButton,
@@ -26,6 +29,7 @@ import {
   SettingsPanel,
   ThemePicker,
 } from "../editorial-account";
+import { EditorialPageHeader } from "../editorial";
 import * as layout from "../index";
 
 const read = (relativePath: string) =>
@@ -359,5 +363,71 @@ describe("EditorialAuth (gh#1439)", () => {
       "New here?",
     );
     expect(tokens).toContain("--editorial-auth-track-size: 1fr 460px;");
+  });
+});
+
+describe("EditorialPageHeader eyebrowTone (gh#1439)", () => {
+  it('"accent" marks the header so its kicker keeps the plain Eyebrow; the default emits nothing', () => {
+    const { container, rerender } = render(<EditorialPageHeader title="Settings" />);
+    expect(container.firstElementChild).not.toHaveAttribute("data-eyebrow-tone");
+    rerender(<EditorialPageHeader title="Settings" eyebrowTone="accent" />);
+    expect(container.firstElementChild).toHaveAttribute("data-eyebrow-tone", "accent");
+    expect(css).toContain('.ui-editorial-page-header[data-eyebrow-tone="accent"]');
+    expect(css).toContain("font-size: var(--editorial-eyebrow-font-size)");
+  });
+});
+
+describe("EditorialInlineSearch / EditorialFootnote (gh#1439)", () => {
+  it("a named search region with a visible label; the query settles after typing, at once on Enter", () => {
+    vi.useFakeTimers();
+    const onSearch = vi.fn();
+    render(
+      <EditorialInlineSearch
+        label="Search your collection"
+        onSearch={onSearch}
+        count="3 entries"
+      />,
+    );
+    expect(screen.getByRole("search", { name: "Search your collection" })).toBeTruthy();
+    const input = screen.getByRole("searchbox", { name: "Search your collection" });
+    fireEvent.change(input, { target: { value: " pika " } });
+    expect(onSearch).not.toHaveBeenCalled();
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+    expect(onSearch).toHaveBeenCalledWith("pika");
+    fireEvent.change(input, { target: { value: "mew" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onSearch).toHaveBeenLastCalledWith("mew");
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+    expect(onSearch).toHaveBeenCalledTimes(2);
+    expect(screen.getByRole("status").textContent).toBe("3 entries");
+    vi.useRealTimers();
+    expect(tokens).toContain("--editorial-inline-search-field-max-width: 25rem;");
+  });
+
+  it("footnote: a note and a trailing action, 13px from a token", () => {
+    const { container } = render(
+      <EditorialFootnote action={<button type="button">Reset</button>}>
+        Saved automatically.
+      </EditorialFootnote>,
+    );
+    expect(container.querySelector(".ui-editorial-footnote-body")?.textContent).toBe(
+      "Saved automatically.",
+    );
+    expect(screen.getByRole("button", { name: "Reset" })).toBeTruthy();
+    expect(tokens).toContain("--editorial-footnote-font-size: 0.8125rem;");
+  });
+
+  it("Button outline reads --button-outline-foreground (role mirror, default --foreground)", () => {
+    const controlCss = read("../../../styles/control.css");
+    expect(controlCss).toContain(
+      "color: var(--button-outline-foreground, hsl(var(--foreground)));",
+    );
+    expect(read("../../../tokens/components/control.css")).toContain(
+      "--button-outline-foreground: initial;",
+    );
   });
 });

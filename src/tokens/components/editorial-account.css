@@ -22,6 +22,32 @@
   --editorial-text-button-underline-offset: 4px;
   --editorial-text-button-icon-size: 1.125rem;
 
+  /* ── EditorialInlineSearch ──────────────────────────────────────────────────────────────── */
+  --editorial-inline-search-gap: 0.75rem;
+  --editorial-inline-search-space-block: 1.5rem;
+  --editorial-inline-search-label-display: block;
+  --editorial-inline-search-label-font-size: 0.8125rem;
+  --editorial-inline-search-field-max-width: 25rem;
+  --editorial-inline-search-height: 3rem;
+  --editorial-inline-search-padding-inline-start: 2.625rem;
+  --editorial-inline-search-padding-inline-end: 0.875rem;
+  --editorial-inline-search-radius: var(--radius);
+  --editorial-inline-search-font-size: 0.875rem;
+  --editorial-inline-search-icon-size: 1.125rem;
+  --editorial-inline-search-icon-inset-inline-start: 0.875rem;
+  --editorial-inline-search-count-font-size: 0.8125rem;
+
+  /* ── EditorialFootnote ──────────────────────────────────────────────────────────────────── */
+  --editorial-footnote-gap: 1.25rem;
+  --editorial-footnote-padding-block: 1.5rem;
+  --editorial-footnote-space-block-start: 0.75rem;
+  --editorial-footnote-font-size: 0.8125rem;
+  --editorial-footnote-line-height: 1.8;
+  --editorial-footnote-body-max-width: 47.5rem;
+  /* row = note and action on one line; column = stacked (a phone). */
+  --editorial-footnote-align-flow: row;
+  --editorial-footnote-align-block: flex-start;
+
   /* ── EditorialToggleGroup ───────────────────────────────────────────────────────────────── */
   --editorial-toggle-group-gap: 0.5rem;
   /* Main-axis distribution of the text variant (a phone may spread the filters: space-between). */

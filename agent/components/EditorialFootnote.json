@@ -1,0 +1,25 @@
+{
+  "example": "import { EditorialFootnote, EditorialTextButton } from \"@godxjp/ui/layout\";\n\n<EditorialFootnote action={<EditorialTextButton onClick={reset}>Reset display preferences</EditorialTextButton>}>Changes are saved automatically.</EditorialFootnote>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "EditorialFootnote",
+  "props": [
+    {
+      "description": "The note.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Trailing action.",
+      "name": "action",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "EditorialNote — a ruled aside in a reading column."
+  ],
+  "tagline": "A quiet closing line under a collection or a settings form (gh#1439): a muted note at the start and an optional action (an EditorialTextButton) at the end. Geometry: `--editorial-footnote-*`.",
+  "usage": [
+    "DO keep it to one or two sentences."
+  ]
+}
