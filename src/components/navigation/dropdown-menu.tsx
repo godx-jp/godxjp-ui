@@ -154,6 +154,12 @@ function borrowedTag(children: React.ReactNode, asChild?: boolean): BorrowedTag 
   return asChild ? (React.Children.only(children) as BorrowedTag) : null;
 }
 
+/** The borrowed child's own `href` (`<a>`, Inertia/Next `<Link href>`), when it has a string one. */
+function borrowedHref(tag: BorrowedTag | null): string | undefined {
+  const href = (tag?.props as { href?: unknown } | undefined)?.href;
+  return typeof href === "string" ? href : undefined;
+}
+
 /** Gói prop dựng nên một mục menu: DOM props của RAC cộng bộ `data-*` dịch từ Radix. */
 type ItemTagProps = ItemDomProps & Record<`data-${string}`, string | boolean | undefined>;
 
@@ -943,6 +949,14 @@ interface DropdownMenuItemPropsOwn {
   /** Mượn thẻ của con thay vì dựng `<div>` riêng — chỗ để nhét một `<Link>` vào một mục menu. */
   asChild?: boolean;
   /**
+   * The item is a link to this URL. With `asChild` it is read from the borrowed child's own `href`
+   * when there is one; pass it here when the child is a router link that takes something else
+   * (TanStack/React Router `<Link to>`), so react-aria renders its LINK item — an `<a>` — instead of
+   * an action `<div>` (and stops warning "Expected <div>, got <a>"). Without a react-aria
+   * `RouterProvider` the click stays the child's own: navigation is whatever the child does.
+   */
+  href?: string;
+  /**
    * `id` và mọi `data-*` ĐI XUỐNG phần tử gốc của item (gh#631).
    *
    * Trigger của chính cụm này đã nhận cách xử lý ấy ở 20.0.0, với đúng lý do CHANGELOG ghi:
@@ -969,6 +983,7 @@ export function DropdownMenuItem({
   textValue,
   description,
   asChild,
+  href,
   ...forwarded
 }: DropdownMenuItemProps) {
   const tag = borrowedTag(children, asChild);
@@ -977,6 +992,9 @@ export function DropdownMenuItem({
   return (
     <MenuItem
       isDisabled={disabled}
+      // RAC renders `href ? <a> : <div>` and warns when `render` returns another element, so a
+      // borrowed link has to say it is one.
+      href={href ?? borrowedHref(tag)}
       // Wrapping the label in slots below means the collection no longer sees a bare string, so
       // typeahead would go dead on a described row; a string label is handed over explicitly.
       textValue={textValue ?? (typeof label === "string" ? label : undefined)}
