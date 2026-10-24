@@ -127,23 +127,70 @@ describe("Button", () => {
   });
 
   describe("loading", () => {
-    it("sets aria-busy, data-loading, and disables the button while loading", () => {
+    it("sets aria-busy, data-loading and aria-disabled while loading, never native disabled", () => {
       renderWithUi(<Button loading>Save</Button>);
       const btn = screen.getByRole("button", { name: "Save" });
       expect(btn).toHaveAttribute("aria-busy", "true");
       expect(btn).toHaveAttribute("data-loading", "");
+      expect(btn).toHaveAttribute("aria-disabled", "true");
+      // Native `disabled` would drop the pressed button's focus to <body> (395-E04).
+      expect(btn).not.toHaveAttribute("disabled");
+    });
+
+    it("keeps focus on the pressed button when it starts loading", () => {
+      const { rerender } = renderWithUi(<Button>Save</Button>, { loopGuard: false });
+      const btn = screen.getByRole("button", { name: "Save" });
+      btn.focus();
+      expect(btn).toHaveFocus();
+      rerender(<Button loading>Save</Button>);
+      expect(btn).toHaveFocus();
+      expect(btn).toHaveAttribute("aria-disabled", "true");
+    });
+
+    it("does not submit its form while loading, by click or by Enter", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn((event: { preventDefault(): void }) => event.preventDefault());
+      renderWithUi(
+        <form onSubmit={onSubmit}>
+          <input aria-label="Name" />
+          <Button type="submit" loading>
+            Save
+          </Button>
+        </form>,
+      );
+      const btn = screen.getByRole("button", { name: "Save" });
+      btn.focus();
+      await user.keyboard("{Enter}");
+      await user.keyboard(" ");
+      await user.type(screen.getByRole("textbox", { name: "Name" }), "x{Enter}");
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("keeps native disabled when the disabled prop is set", () => {
+      renderWithUi(
+        <Button loading disabled>
+          Save
+        </Button>,
+      );
+      const btn = screen.getByRole("button", { name: "Save" });
       expect(btn).toBeDisabled();
+      expect(btn).not.toHaveAttribute("aria-disabled");
     });
 
     it("does not fire onClick while loading", async () => {
-      const user = userEvent.setup();
+      // Skip user-event's pointer-events guard so the click really reaches the handler wrapper.
+      const user = userEvent.setup({ pointerEventsCheck: 0 });
       const onClick = vi.fn();
       renderWithUi(
         <Button loading onClick={onClick}>
           Save
         </Button>,
       );
-      await user.click(screen.getByRole("button", { name: "Save" }));
+      const btn = screen.getByRole("button", { name: "Save" });
+      await user.click(btn);
+      btn.focus();
+      await user.keyboard("{Enter}");
+      await user.keyboard(" ");
       expect(onClick).not.toHaveBeenCalled();
     });
 

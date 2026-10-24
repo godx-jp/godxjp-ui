@@ -105,6 +105,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
       disabled,
       type,
       children,
+      onClick,
       ...props
     },
     ref,
@@ -114,7 +115,20 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
     // While loading the control is non-interactive (blocks activation + pointer events) and
     // announces `aria-busy`. The spinner is rendered as a LEADING sibling so the label stays in
     // place (no abrupt width jump); a `loadingText` swaps the label for an i18n-friendly message.
+    //
+    // LOADING NEVER SETS NATIVE `disabled`. A disabled element cannot hold focus: the button the
+    // person just pressed is the focused element, so `disabled` drops focus to <body> and no
+    // dialog focus scope takes it back (Radix re-traps on removal, not on disable). After a failed
+    // save the keyboard user is left outside the dialog they were in. So loading is
+    // `aria-disabled` + `aria-busy`, and activation is swallowed here — `preventDefault()` also
+    // stops a `type="submit"` from submitting its form, by click or by Enter. The `disabled` prop
+    // keeps its native meaning.
     const isLoading = !asChild && loading;
+    const handleClick = isLoading
+      ? (event: React.MouseEvent<HTMLButtonElement>) => {
+          event.preventDefault();
+        }
+      : onClick;
     const content = isLoading ? (
       <>
         <Loader2 className="animate-spin" aria-hidden="true" />
@@ -174,7 +188,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         data-loading={isLoading ? "" : undefined}
         data-label={labelled ? "" : undefined}
         aria-busy={isLoading || undefined}
-        disabled={isLoading || disabled}
+        aria-disabled={(isLoading && !disabled) || undefined}
+        disabled={disabled}
+        onClick={handleClick}
         type={asChild ? undefined : (type ?? "button")}
         className={cn(
           fullWidth && "w-full",

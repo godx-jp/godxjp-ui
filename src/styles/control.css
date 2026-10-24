@@ -180,7 +180,8 @@
     pointer-events: none;
   }
 
-  .ui-button:disabled {
+  .ui-button:disabled,
+  .ui-button[data-loading] {
     opacity: var(--disabled-opacity);
   }
 
