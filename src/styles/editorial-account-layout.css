@@ -567,6 +567,8 @@
 
   .ui-holding-card-actions {
     display: flex;
+    /* gh#1449: more actions than fit one line wrap to the next, never squeeze their labels. */
+    flex-wrap: wrap;
     justify-content: var(--editorial-holding-card-actions-align-inline);
     gap: var(--editorial-holding-card-actions-gap);
     margin-block-start: var(--editorial-holding-card-actions-space-block-start);
@@ -574,6 +576,7 @@
 
   .ui-holding-card-action {
     display: flex;
+    white-space: nowrap;
     align-items: center;
     justify-content: center;
     gap: var(--editorial-holding-card-action-gap);
