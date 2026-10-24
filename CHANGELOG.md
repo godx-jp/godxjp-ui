@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `prune-css --precompiled` (#1455): the layer-pruned stylesheet for apps without Tailwind. The build now also writes `styles.css` cut along the layer manifest to `dist/styles/precompiled/` (`base` — tokens, preflight, the components' utilities — plus one slice per `*-layout.css` layer and vendor sheet, each through the same Tailwind pass), and the flag makes prune-css import those slices (`@godxjp/ui/styles/precompiled/*`) instead of the Tailwind sources, with Tailwind's `properties` layer named first as in `styles.css`. Proven in Chromium: the slices picked for a component set style it exactly like `styles.css`.
+
 ### Changed
 
 - `Image` is lazy by default (#1454): `loading` defaults to `"lazy"` — `"eager"` when the picture is marked `fetchPriority="high"` (a page's LCP image) — and `decoding` to `"async"`. Explicit `loading` / `decoding` still win. Pass `fetchPriority="high"` (or `loading="eager"`) on an above-the-fold hero picture.
