@@ -451,6 +451,13 @@ describe("EditorialMasthead (gh#1435)", () => {
     expect(rule('.ui-editorial-masthead-actions [data-slot="select-trigger"]')).toMatch(
       /min-height:\s*var\(--editorial-masthead-action-size\)/,
     );
+    // Measured on a consumer: the trigger kept the control tier's 48px beside 44px actions, and
+    // a design's picker width cap per breakpoint had no knob.
+    const pickerRule = rule('.ui-editorial-masthead-actions [data-slot="select-trigger"]');
+    expect(pickerRule).toMatch(/(^|[\s;{])height:\s*var\(--editorial-masthead-action-size\)/);
+    expect(pickerRule).toMatch(/--control-height:\s*var\(--editorial-masthead-action-size\)/);
+    expect(pickerRule).toMatch(/max-width:\s*var\(--editorial-masthead-picker-max-width\)/);
+    expect(tokens).toMatch(/--editorial-masthead-picker-max-width:\s*none;/);
     expect(screen.getByRole("button", { name: "配色を切り替える" })).toHaveAttribute(
       "data-collapse",
     );

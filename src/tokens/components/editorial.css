@@ -512,6 +512,8 @@
   --editorial-masthead-picker-padding-inline: 0.25rem;
   --editorial-masthead-picker-font-size: 0.8125rem;
   --editorial-masthead-picker-gap: 0.25rem;
+  /* `none` or a length: a design that caps the picker's width per breakpoint (it then ellipsises). */
+  --editorial-masthead-picker-max-width: none;
 
   /* ── EditorialFooter ────────────────────────────────────────────────────────────────────── */
   --editorial-footer-space-block-start: 3rem;
