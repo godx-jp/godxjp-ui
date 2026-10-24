@@ -443,3 +443,18 @@ describe("FormField helper knobs (gh#1439)", () => {
     expect(formTokens).toContain("--form-field-control-gap: initial;");
   });
 });
+
+describe("Badge knobs (gh#1439)", () => {
+  it("outline / dashed ink reads --badge-outline-foreground; the chip floor --badge-min-height", () => {
+    const badgeSrc = read("../../data-display/badge.tsx");
+    expect(badgeSrc).toContain(
+      'outline: "text-[color:var(--badge-outline-foreground,hsl(var(--foreground)))]"',
+    );
+    expect(read("../../../styles/badge-layout.css")).toContain(
+      "min-block-size: var(--badge-min-height, auto);",
+    );
+    expect(read("../../../tokens/components/badge.css")).toContain(
+      "--badge-outline-foreground: initial;",
+    );
+  });
+});

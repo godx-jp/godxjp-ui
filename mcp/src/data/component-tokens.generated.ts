@@ -259,6 +259,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Companion to --badge-font-size (gh#260). The cva's old `text-xs` utility also set line-height via Tailwind's default `--text-xs--line-height: calc(1 / 0.75)` (the theme remaps --text-xs but never that companion). Same unitless ratio here keeps the default badge pixel-identical now that badge-layout.css owns the type metrics."
   },
   {
+    "name": "--badge-min-height",
+    "value": "initial",
+    "description": "gh#1439 — the chip's minimum height and the outline / dashed ink. `initial`: no floor, and hsl(var(--foreground)) at the call site."
+  },
+  {
+    "name": "--badge-outline-foreground",
+    "value": "initial",
+    "description": "Badge component tokens."
+  },
+  {
     "name": "--badge-icon-size",
     "value": "var(--icon-size-xs)",
     "description": "Leading/trailing glyph inside the pill. It was a bare `0.75rem` in badge-layout.css with no token at all, so a service could only resize it with `!important` or a forked stylesheet — the two routes the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing moves. Matches --badge-font-size's step by design: the glyph reads as a character in the label's run, so the two retune together. Deliberately NOT --scaling-multiplied — the literal it replaces did not track density."

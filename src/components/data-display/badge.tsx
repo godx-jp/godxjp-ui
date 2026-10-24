@@ -78,8 +78,10 @@ const badgeVariants = cva(
       variant: {
         default: "border-transparent bg-primary text-primary-foreground",
         secondary: "border-transparent bg-secondary text-secondary-foreground",
-        outline: "text-foreground",
-        dashed: "border-dashed text-foreground",
+        // gh#1439 — the outline / dashed ink is a role-mirror knob (default --foreground), so a
+        // brand whose plain chip reads muted sets it once instead of wrapping every label.
+        outline: "text-[color:var(--badge-outline-foreground,hsl(var(--foreground)))]",
+        dashed: "border-dashed text-[color:var(--badge-outline-foreground,hsl(var(--foreground)))]",
         /* `color` mode. Deliberately empty and deliberately NOT in the public
          * `BadgeVariant` union: every fill, border and text utility has to stay
          * off the element so badge-layout.css's `[data-tinted]` rule is
