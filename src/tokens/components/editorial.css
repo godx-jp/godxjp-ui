@@ -606,6 +606,8 @@
   --editorial-catalog-detail-summary-price-suffix-font-size: 1rem;
   --editorial-catalog-detail-actions-gap: 0.75rem;
   --editorial-catalog-detail-actions-space-block-start: 1.5rem;
+  /* auto keeps the lead action its own width; 100% gives it a row (a phone theme). */
+  --editorial-catalog-detail-actions-lead-width-basis: auto;
   --editorial-catalog-detail-facts-track-size: 1fr 1fr;
   --editorial-catalog-detail-facts-gap: 1.5rem;
   --editorial-catalog-detail-facts-space-block-start: 1.5rem;
@@ -618,6 +620,8 @@
 
   /* ── CatalogDetailSection (gh#1438) ─────────────────────────────────────────────────────── */
   --editorial-catalog-detail-section-padding-block: 2.5rem;
+  /* variant="module" (the price module): no hairline, this rhythm above and below. */
+  --editorial-catalog-detail-module-padding-block: 4rem;
   --editorial-catalog-detail-section-title-font-size: 1.75rem;
   --editorial-catalog-detail-section-title-line-height: 1.55;
   --editorial-catalog-detail-section-title-letter-spacing: -0.025em;

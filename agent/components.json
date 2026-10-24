@@ -1935,6 +1935,17 @@
     "name": "CatalogDetailSection",
     "props": [
       {
+        "defaultValue": "\"band\"",
+        "description": "Hairlined band, or a page module (no hairline, module rhythm).",
+        "name": "variant",
+        "type": "\"band\" | \"module\""
+      },
+      {
+        "description": "Id on the section (in-page link target).",
+        "name": "id",
+        "type": "string"
+      },
+      {
         "description": "The h2.",
         "name": "title",
         "type": "ReactNode"

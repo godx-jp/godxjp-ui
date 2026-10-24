@@ -180,16 +180,20 @@ export function CatalogDetailTag({ children, className }: CatalogDetailTagProp) 
 
 /** One band of an item page under its head: hairline, h2, muted paragraph, then the rest. */
 export function CatalogDetailSection({
+  variant = "band",
   title,
   description,
   children,
+  id,
   titleId,
   className,
 }: CatalogDetailSectionProp) {
   return (
     <section
+      id={id}
       aria-labelledby={title != null ? titleId : undefined}
       data-slot="catalog-detail-section"
+      data-variant={variant === "module" ? "module" : undefined}
       className={cn("ui-catalog-detail-section", className)}
     >
       {title != null && (

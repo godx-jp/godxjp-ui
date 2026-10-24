@@ -6539,6 +6539,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {
+    "name": "--editorial-catalog-detail-actions-lead-width-basis",
+    "value": "auto",
+    "description": "auto keeps the lead action its own width; 100% gives it a row (a phone theme)."
+  },
+  {
     "name": "--editorial-catalog-detail-facts-track-size",
     "value": "1fr 1fr",
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
@@ -6587,6 +6592,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--editorial-catalog-detail-section-padding-block",
     "value": "2.5rem",
     "description": "── CatalogDetailSection (gh#1438) ───────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--editorial-catalog-detail-module-padding-block",
+    "value": "4rem",
+    "description": "variant=\"module\" (the price module): no hairline, this rhythm above and below."
   },
   {
     "name": "--editorial-catalog-detail-section-title-font-size",

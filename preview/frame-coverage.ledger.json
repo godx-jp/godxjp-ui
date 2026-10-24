@@ -519,8 +519,8 @@
     "exports": 325,
     "dimensionCells": 4550,
     "covered": 89,
-    "untested": 2493,
-    "notApplicable": 1970,
+    "untested": 2494,
+    "notApplicable": 1969,
     "knownMissingFrames": [
       "layout/editorial",
       "layout/editorial-account",
@@ -2583,11 +2583,11 @@
       "hasFrame": false,
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",

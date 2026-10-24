@@ -4066,6 +4066,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "title",
           "origin": "owned",
           "required": false,
@@ -4079,6 +4087,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"band\" | \"module\" | undefined",
+          "values": ["band", "module"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]

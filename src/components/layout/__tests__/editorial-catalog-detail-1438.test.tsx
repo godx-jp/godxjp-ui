@@ -106,6 +106,23 @@ describe("CatalogDetailSection (gh#1438)", () => {
     expect(screen.getByRole("region", { name: "Card information" })).toBeTruthy();
     expect(rule(".ui-catalog-detail-section")).toMatch(/border-block-start:/);
   });
+
+  it('variant="module" carries the id, drops the hairline and reads the module rhythm', () => {
+    const { container } = render(<CatalogDetailSection variant="module" id="price-section" />);
+    const section = container.querySelector("section");
+    expect(section?.id).toBe("price-section");
+    expect(section?.getAttribute("data-variant")).toBe("module");
+    const body = rule('.ui-catalog-detail-section[data-variant="module"]');
+    expect(body).toMatch(/padding-block:\s*var\(--editorial-catalog-detail-module-padding-block\)/);
+    expect(body).toMatch(/border-block-start:\s*0/);
+  });
+
+  it("lets a theme give the lead action a row of its own", () => {
+    expect(rule(".ui-catalog-detail-actions > :first-child")).toMatch(
+      /flex-basis:\s*var\(--editorial-catalog-detail-actions-lead-width-basis\)/,
+    );
+    expect(tokens).toMatch(/--editorial-catalog-detail-actions-lead-width-basis:\s*auto/);
+  });
 });
 
 describe("PriceSummary (gh#1438)", () => {

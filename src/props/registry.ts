@@ -1982,6 +1982,8 @@ export const COMPONENT_PROP_REGISTRY = {
       "DescriptionProp",
       "ChildrenProp",
       "ClassNameProp",
+      "IdProp",
+      { field: "variant", local: true, reason: "A hairlined band or a page module." },
       { field: "titleId", local: true, reason: "Id put on the h2." },
     ],
   },

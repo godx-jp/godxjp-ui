@@ -90,7 +90,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | EditorialListingToolbar | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | CatalogDetail | **✗** | · | N/A | N/A | · | · | · | · | · | · |
 | CatalogDetailTag | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
-| CatalogDetailSection | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
+| CatalogDetailSection | **✗** | · | N/A | N/A | · | · | · | · | · | · |
 | PriceSummary | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | EditorialPrompt | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | PageCover | ✓ | · | N/A | N/A | · | · | · | · | · | · |

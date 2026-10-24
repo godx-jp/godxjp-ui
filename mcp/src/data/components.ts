@@ -1580,6 +1580,8 @@ import { Select } from "@godxjp/ui/data-entry";
     tagline:
       "One band of an item page under its head (gh#1438): a top hairline, an h2, a muted paragraph, then anything else. Geometry: `--editorial-catalog-detail-section-*`.",
     props: [
+      { name: "variant", type: '"band" | "module"', defaultValue: '"band"', description: "Hairlined band, or a page module (no hairline, module rhythm)." },
+      { name: "id", type: "string", description: "Id on the section (in-page link target)." },
       { name: "title", type: "ReactNode", description: "The h2." },
       { name: "description", type: "ReactNode", description: "Muted paragraph." },
       { name: "children", type: "ReactNode", description: "Anything after." },

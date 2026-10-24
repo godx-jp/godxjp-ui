@@ -2731,9 +2731,16 @@ export type CatalogDetailTagProp = {
  * an h2 and a muted paragraph, then anything else (a list, a grid).
  */
 export type CatalogDetailSectionProp = {
+  /**
+   * `"band"` (default): a top hairline and the band rhythm. `"module"`: a module of the page (the
+   * price module) — no hairline, `--editorial-catalog-detail-module-padding-block`.
+   */
+  variant?: "band" | "module";
   title?: TitleProp;
   description?: DescriptionProp;
   children?: ChildrenProp;
+  /** Id on the section (an in-page link target, e.g. `#price-section`). */
+  id?: IdProp;
   /** Id put on the h2. */
   titleId?: IdProp;
   className?: ClassNameProp;

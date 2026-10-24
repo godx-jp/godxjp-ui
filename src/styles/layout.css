@@ -4748,6 +4748,11 @@
     margin-block-start: var(--editorial-catalog-detail-actions-space-block-start);
   }
 
+  /* The lead action can take a row of its own on a phone (v4: the primary button full width). */
+  .ui-catalog-detail-actions > :first-child {
+    flex-basis: var(--editorial-catalog-detail-actions-lead-width-basis);
+  }
+
   .ui-catalog-detail-facts {
     display: grid;
     grid-template-columns: var(--editorial-catalog-detail-facts-track-size);
@@ -4784,6 +4789,12 @@
   .ui-catalog-detail-section {
     padding-block: var(--editorial-catalog-detail-section-padding-block);
     border-block-start: var(--stroke-hairline) solid hsl(var(--border));
+  }
+
+  /* variant="module": a module of the page (the price module) — no hairline, its own rhythm. */
+  .ui-catalog-detail-section[data-variant="module"] {
+    padding-block: var(--editorial-catalog-detail-module-padding-block);
+    border-block-start: 0;
   }
 
   .ui-catalog-detail-section-title {
