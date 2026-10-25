@@ -2931,22 +2931,9 @@
       calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
     );
     padding-inline: var(--menu-item-space-inline);
-    height: var(--menu-item-height);
-    display: flex;
-    align-items: center;
-    gap: var(--menu-item-space-gap);
-    font-size: var(--menu-item-font-size);
-  }
-
-  /* Row geometry for Select's own listbox. */
-  .ui-select-item,
-  .ui-select-label {
-    border-radius: var(
-      --menu-item-radius,
-      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
-    );
-    padding-inline: var(--menu-item-space-inline);
-    height: var(--menu-item-height);
+    height: auto;
+    min-height: var(--menu-item-height);
+    padding-block: max(0px, calc((var(--menu-item-height) - 1lh) / 2));
     display: flex;
     align-items: center;
     gap: var(--menu-item-space-gap);
