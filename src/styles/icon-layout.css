@@ -19,6 +19,9 @@
  */
 @layer components {
   svg.ui-icon[data-slot="icon"] {
+    /* Standalone glyphs also participate in Text/Link's inline formatting context. */
+    display: inline-block;
+    vertical-align: middle;
     inline-size: var(--icon-glyph-size);
     block-size: var(--icon-glyph-size);
     /* A glyph never absorbs a flex row's shrink — that is how an icon ends up 11px wide beside a
