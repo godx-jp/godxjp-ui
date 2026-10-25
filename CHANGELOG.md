@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `@godxjp/block-editor` directive previews can change their own block (#1479): the `directives` renderer receives a second argument `{ update(source), remove(), editable }`. `update` goes through the same path as "Edit source" → Done (still one directive → the same block with the new source, one undo step; anything else replaces it), `remove` deletes the block, and both do nothing in a read-only / disabled editor (`editable: false`). A host's picker or config form (a data block: a card, a list of events) writes its result back without the source textarea. New type `BlockEditorDirectiveControls`.
+
 ## [33.22.2] - 2026-10-25
 
 ### Fixed

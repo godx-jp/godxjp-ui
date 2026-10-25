@@ -19,7 +19,7 @@ import {
 import { Button, Text } from "@godxjp/ui/general";
 
 import { Directive, Embed, Frontmatter, RawBlock } from "./extensions";
-import { DirectivesContext, useLabel } from "./labels";
+import { DirectivesContext, useLabel, type BlockEditorDirectiveControls } from "./labels";
 
 /**
  * Markdown the document does not model, shown as its source and editable as source. On "Done" the
@@ -108,10 +108,8 @@ function DirectiveView({ node, editor, getPos, updateAttributes, selected }: Nod
   // Own keys only: a body's `:::constructor` must not reach `Object.prototype.constructor`.
   const render = previews && Object.hasOwn(previews, name) ? previews[name] : undefined;
   const block = React.useMemo(() => (render ? readDirective(source) : null), [render, source]);
-  const preview = render && block ? render(block) : undefined;
-  const commit = () => {
-    setEditing(false);
-    const doc = parse(draft);
+  const replace = (markdown: string) => {
+    const doc = parse(markdown);
     const pos = getPos();
     const [only] = doc.content;
     if (doc.content.length === 1 && only!.type === "directive") {
@@ -124,6 +122,26 @@ function DirectiveView({ node, editor, getPos, updateAttributes, selected }: Nod
       .focus()
       .insertContentAt({ from: pos, to: pos + node.nodeSize }, doc.content)
       .run();
+  };
+  const controls: BlockEditorDirectiveControls = {
+    update: (markdown) => {
+      if (editor.isEditable) replace(markdown);
+    },
+    remove: () => {
+      const pos = getPos();
+      if (!editor.isEditable || typeof pos !== "number") return;
+      editor
+        .chain()
+        .focus()
+        .deleteRange({ from: pos, to: pos + node.nodeSize })
+        .run();
+    },
+    editable: editor.isEditable,
+  };
+  const preview = render && block ? render(block, controls) : undefined;
+  const commit = () => {
+    setEditing(false);
+    replace(draft);
   };
   return (
     <NodeViewWrapper
