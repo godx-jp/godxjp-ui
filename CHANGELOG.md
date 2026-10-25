@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Icon stays in the text line inside links and prose instead of inheriting the SVG reset's block display. Flex-based control sizing remains unchanged.
+
 - Image recovers failed requests that complete before hydration, so fallback and disabled preview match the actual image state.
 
 - Long unbroken breadcrumb labels, page subtitles and editorial titles wrap inside narrow screens without discarding content. Explicit breadcrumb ellipsis remains unchanged.
