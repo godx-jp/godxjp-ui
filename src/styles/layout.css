@@ -1401,6 +1401,7 @@
   }
 
   .ui-page-subtitle {
+    overflow-wrap: anywhere;
     font-size: var(--page-subtitle-font-size);
     color: hsl(var(--muted-foreground));
     margin-top: var(--space-1);
@@ -1502,6 +1503,8 @@
   }
 
   .ui-breadcrumb-item {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
     display: inline-flex;
     align-items: center;
     gap: var(--space-inline-xs);
@@ -3282,6 +3285,7 @@
   }
 
   .ui-editorial-page-header-title {
+    overflow-wrap: anywhere;
     margin: var(--editorial-page-header-title-space-block-start) 0
       var(--editorial-page-header-title-space-block-end);
     font-family: var(--font-family-editorial, var(--font-family-display));
@@ -3336,6 +3340,7 @@
   }
 
   .ui-editorial-article-title {
+    overflow-wrap: anywhere;
     margin: var(--editorial-article-title-space-block) 0;
     font-family: var(--font-family-editorial, var(--font-family-display));
     font-size: var(--editorial-article-title-font-size);
