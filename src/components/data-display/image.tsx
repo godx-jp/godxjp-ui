@@ -620,7 +620,7 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
     (node: HTMLImageElement | null) => {
       imgRef.current = node;
       // A cached picture has already loaded before React attaches `onLoad`.
-      if (node?.complete && node.naturalWidth > 0) setStatus("loaded");
+      if (node?.complete) setStatus(node.naturalWidth > 0 ? "loaded" : "error");
       if (typeof ref === "function") ref(node);
       else if (ref) ref.current = node;
     },
