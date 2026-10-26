@@ -1081,6 +1081,12 @@ export const TOKENS: TokenEntry[] = [
     role: "AppShell docked navigation TRACK widths. `--app-shell-sidebar-width` (default 16rem) is the sidebar expanded; `--app-shell-sidebar-collapsed-width` (default 4rem) is the SAME track at `<AppShell sidebarCollapsed>`; `--app-shell-nav-rail-width` (default 4rem) is a SECOND, separate track that exists only when the `navRail` slot is filled. These were hard-coded `grid-template-columns` literals; a service on a different design grid (e.g. a 255px sidebar) now sets ONE token in its theme instead of forking `.app-root`. Below the 900px shell breakpoint every track collapses to a single full-width column and both navigation columns move into AppShell's drawer. NOTE for anyone reading 19.x code or themes: the collapsed-sidebar token shipped as `--app-shell-rail-width` through 19.x and was renamed in 20.0.0 with NO alias, because it collided with the real rail added in the same release — two tokens, both 4rem, both spelled 'rail', meaning different things.",
   },
   {
+    name: "--app-shell-rail-gap",
+    category: "component",
+    tier: "component",
+    role: "AppShell top bar — the gap between the brand and the custom bar inside `.app-topbar-rail` (default --space-3; it was a literal before gh#1481). Tighten it with `--app-shell-bar-gap` and `--app-shell-bar-inset-compact` for a 320px / 200%-text bar.",
+  },
+  {
     name: "--app-shell-bar-{inset,inset-compact,gap}",
     category: "component",
     tier: "component",
