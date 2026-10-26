@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.23.0] - 2026-10-27
+
 ### Changed
 
 - Consumer guidance no longer states layout and count heuristics as absolute rules, and no longer contradicts itself (gh#1496). `CONSUMER-RULES.md` rule 5: fields live in a `<Form>`; `layout="horizontal"` is the desktop default and `layout="vertical"` is valid for long labels, narrow containers or one question per row (GOV.UK, W3C WAI); "three or more fields is a page, not a Dialog" stays, labelled as a GoDX house rule rather than a WCAG requirement (the MCP form block, the `formfield-needs-form` fix text and the consumer rule card say the same). `DESIGN.md` Dashboard: KPI tiles belong on monitoring pages, around four is a default not a limit, a `delta` only where a real baseline exists, and a to-do count links to its filtered list instead. `godxjp-ui-navigation`: the phone bottom bar holds 3–5 destinations and never an action slot (Create sits above the bar or in the top bar), matching the skill's own principles §1.6 and rule 11; the 2-level / ~7-item numbers are review signals validated by a tree test or walkthrough, not pass/fail limits (principles rule 9 aligned).
