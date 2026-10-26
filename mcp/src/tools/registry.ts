@@ -1232,10 +1232,10 @@ function listUtilities(kind?: UtilityKind): string {
  */
 export const FORM_RULES =
   `**FORM RULES** — enforced by ui-audit (\`formfield-needs-form\`, \`dialog-form-too-big\`, \`select-width-hint\`):\n` +
-  `- Wrap fields in \`<Form layout="horizontal" labelWidth controlWidth>\` — never a group of FormFields without it, never a hand-rolled \`<Flex>\` row of fields.\n` +
+  `- Wrap fields in a \`<Form>\` — never a group of FormFields without one, never a hand-rolled \`<Flex>\` row of fields. \`layout="horizontal" labelWidth controlWidth\` is the desktop default; \`layout="vertical"\` is valid for long labels, a narrow container or one short question per row.\n` +
   `- Size each control for its content (GOV.UK text-input width): \`controlWidth\` per field or once on the Form — a port ~7rem, a short enum ~10rem.\n` +
   `- Fields that belong on one row: \`<Flex attached>\` or \`<Form columns>\`.\n` +
-  `- Three or more fields is a page (own route), not a Dialog.\n` +
+  `- GoDX house rule: three or more fields is a page (own route), not a Dialog — a product decision for task focus and recovery, not a WCAG requirement.\n` +
   `- A case these do not cover: open an issue on godx-jp/godxjp-ui, use the nearest valid composition with \`// TODO(godxjp-ui#<n>)\` — never hand-roll.\n`;
 
 function getComponent(name: string, verbose = false): string {

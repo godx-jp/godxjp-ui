@@ -42,12 +42,16 @@ comparisons, domain vocabulary) in its own repository; they do not belong in thi
 ## 2. Hard rules
 
 **Count and form**
-- Phone: **bottom bar with 3–5 items** (the middle one may be a ＋ quick-log button); everything else
-  goes under "More". Never put setup on the bottom bar. Desktop: **an always-visible sidebar**, not
+- Phone: **bottom bar with 3–5 destinations**; every slot navigates, never an action slot (see
+  principles §1.6 and rule 11). The #1 create action sits above the bar (a FAB) or in the top bar.
+  Everything else goes under "More". Never put setup on the bottom bar. Desktop: **an always-visible sidebar**, not
   only a ☰ button. Choose by window width, not by device. (@godxjp/ui's `MobileShell` has a bottom
   bar — use it; don't rely on a drawer alone.)
-- Sidebar at most **2 levels**, groups with short headings; each role sees **≤ ~7 primary items**.
-  Anything deeper → list → detail inside the page.
+- Keep the sidebar shallow (aim for **2 levels**, groups with short headings) and each role's primary
+  list short (**~7 items**). These numbers are **review signals, not pass/fail limits**: when a role
+  exceeds them, validate the tree with the role's real tasks (tree test or walkthrough) and split by
+  work area rather than hiding items in a catch-all group. Record data deeper than the menu →
+  list → detail inside the page.
 
 **Grouping and labels**
 - Group by **task / work area**. Never group by data table, org chart or developer vocabulary
@@ -59,8 +63,8 @@ comparisons, domain vocabulary) in its own repository; they do not belong in thi
 - **Each destination appears once** in the menu. Two items leading to the same kind of record = a
   defect.
 - Action buttons (Log/Create) are **not menu items**: one prominent primary button (top of the menu,
-  or the ＋ in the middle of the bottom bar) for the #1 task; child objects are created right inside
-  their parent's page.
+  or a create button above the bottom bar — never inside a bar slot) for the #1 task; child objects
+  are created right inside their parent's page.
 
 **Per role**
 - Each role has its **own fixed landing page**: frontline staff → "Today" (due, overdue, my tasks);
@@ -99,14 +103,15 @@ An example only, for apps that run recurring checks across many sites:
   stay **permanently linked** to their source record.
 - Staff land on "Today" plus a separate place for "Overdue/Missed"; managers land on a rate table plus
   exceptions.
-- Phone bottom bar: 4–5 task items (e.g. Today · Inspections · ＋Log · Nonconformities · More).
+- Phone bottom bar: 4–5 destinations (e.g. Today · Inspections · Nonconformities · More), with
+  ＋ Log as a button above the bar.
 - Vocabulary: avoid "Reports"/"レポート" as the label for *records* (in English "Reports" means
   analytics; in Japanese "レポート" often means an individual record).
 
 ## 4. Self-check gate (before asking for approval / before merging)
 
-- [ ] A task table per role and a text menu tree per role exist; each role ≤ ~7 primary items; phone
-      3–5 items.
+- [ ] A task table per role and a text menu tree per role exist; a role past ~7 primary items or 2
+      levels has a tree test or walkthrough behind it; phone 3–5 destinations, no action slot.
 - [ ] Walkthrough of 8–10 tasks per role: no step answered "no"; no pair of competing labels.
 - [ ] No duplicate destinations; no grouping by data table; label = H1 = `<title>`, consistent across
       every locale.

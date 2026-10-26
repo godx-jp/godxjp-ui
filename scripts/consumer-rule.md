@@ -109,7 +109,7 @@ godx-mailer dính bốn lỗi form trong một ngày, cả bốn đều là kit 
 
 | Sai                                                         | Đúng                                                                                            | rule                   |
 | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------- |
-| ≥2 `FormField` không có `Form`, hoặc xếp hàng bằng `<Flex>` | `<Form layout="horizontal" labelWidth controlWidth>`; hàng = `<Flex attached>` / `Form columns` | `formfield-needs-form` |
+| ≥2 `FormField` không có `Form`, hoặc xếp hàng bằng `<Flex>` | `<Form>` (`layout="horizontal" labelWidth controlWidth` là mặc định desktop; `layout="vertical"` hợp lệ khi nhãn dài/khung hẹp); hàng = `<Flex attached>` / `Form columns` | `formfield-needs-form` |
 | ≥3 `FormField` trong `DialogBody`                           | page riêng (route riêng)                                                                        | `dialog-form-too-big`  |
 | `Select` hai lựa chọn kéo full width                        | `controlWidth` trên field hoặc một lần trên `Form`                                              | `select-width-hint`    |
 
