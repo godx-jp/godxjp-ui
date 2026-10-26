@@ -2501,5 +2501,15 @@
     "saved": "Saved references",
     "inheritText": "Read at the surrounding text size.",
     "inheritLink": "Explore the type scale"
+  },
+  "pageErrorBoundaryDocs": {
+    "section": "Operations",
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "documents": "Documents",
+    "body": "The monthly reports list appears here.",
+    "title": "Reports",
+    "break": "Break this page",
+    "help": "Help"
   }
 }

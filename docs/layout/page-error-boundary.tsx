@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Logo, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import {
   AppShell,
   Flex,
@@ -12,33 +13,49 @@ import { AppSettingPicker } from "@godxjp/ui/navigation";
 import { BarChart3, CircleHelp, FileText, LayoutDashboard } from "lucide-react";
 
 /**
- * PageErrorBoundary — AppShell wraps every page in one by default (gh#1494). Press 「表示を壊す」:
- * the page throws while rendering, its area becomes an application ErrorSurface, and the sidebar
- * and topbar stay, so the user can go elsewhere. Choosing another sidebar row (a navigation) draws
- * that page normally — the boundary resets when the URL changes.
+ * PageErrorBoundary — AppShell wraps every page in one by default (gh#1494). Press "Break this
+ * page": the page throws while rendering, its area becomes an application ErrorSurface, and the
+ * sidebar and topbar stay, so the user can go elsewhere. Choosing a sidebar row (a navigation)
+ * draws that page normally — the boundary resets when the URL changes.
  *
  * The page header also shows the `help` slot: the Help control sits at the header row's inline
  * end, after the actions, on every page.
  */
-const sections: SidebarSectionProp[] = [
-  {
-    label: "業務",
-    items: [
-      { id: "dashboard", label: "ダッシュボード", icon: LayoutDashboard, href: "#dashboard" },
-      { id: "reports", label: "レポート", icon: BarChart3, href: "#reports" },
-      { id: "documents", label: "ドキュメント", icon: FileText, href: "#documents" },
-    ],
-  },
-];
-
 function ReportPage({ broken }: { broken: boolean }) {
+  const { t } = useTranslation();
   if (broken) throw new Error("demo: the report row renderer received null");
-  return <Text>月次レポートの一覧がここに表示されます。</Text>;
+  return <Text>{t("pageErrorBoundaryDocs.body")}</Text>;
 }
 
 export default function Demo() {
+  const { t } = useTranslation();
   const [broken, setBroken] = useState(false);
   const [activeId, setActiveId] = useState("reports");
+  const sections: SidebarSectionProp[] = [
+    {
+      label: t("pageErrorBoundaryDocs.section"),
+      items: [
+        {
+          id: "dashboard",
+          label: t("pageErrorBoundaryDocs.dashboard"),
+          icon: LayoutDashboard,
+          href: "#dashboard",
+        },
+        {
+          id: "reports",
+          label: t("pageErrorBoundaryDocs.reports"),
+          icon: BarChart3,
+          href: "#reports",
+        },
+        {
+          id: "documents",
+          label: t("pageErrorBoundaryDocs.documents"),
+          icon: FileText,
+          href: "#documents",
+        },
+      ],
+    },
+  ];
   return (
     <AppShell
       sidebar={
@@ -63,16 +80,16 @@ export default function Demo() {
       }
     >
       <PageContainer
-        title="レポート"
+        title={t("pageErrorBoundaryDocs.title")}
         extra={
           <Button variant="destructive" onClick={() => setBroken(true)}>
-            表示を壊す
+            {t("pageErrorBoundaryDocs.break")}
           </Button>
         }
         help={
           <Button variant="ghost">
             <CircleHelp aria-hidden="true" />
-            ヘルプ
+            {t("pageErrorBoundaryDocs.help")}
           </Button>
         }
       >
