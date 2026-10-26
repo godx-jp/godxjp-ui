@@ -6,6 +6,13 @@
     width: 100%;
     max-width: 100vw;
     min-width: 0;
+    /* NOTHING THE CHROME CLIPS MAY WIDEN THE PAGE (gh#1481). The bar clips with an
+     * `overflow-clip-margin` so a focus ring at its edge stays visible, and that margin is painted
+     * — and counted as scrollable overflow of the document — past the shell's edge: a cell clipped
+     * at the bar's inline end gave a 320px viewport a 328px scrollWidth. The shell is the whole
+     * viewport width, so anything past its inline edge is off-screen anyway; `clip` (not `hidden`)
+     * creates no scroll container, so sticky descendants and the block axis are unaffected. */
+    overflow-x: clip;
     grid-template-areas:
       "sidebar topbar"
       "sidebar main"
@@ -1064,7 +1071,7 @@
     flex: 1;
     align-items: center;
     align-self: stretch;
-    gap: var(--space-3);
+    gap: var(--app-shell-rail-gap);
   }
 
   /* Brand links must not add an inline baseline/descender gap below the lockup. */
@@ -1141,6 +1148,17 @@
     align-items: center;
     align-self: stretch;
     gap: var(--space-3);
+  }
+
+  /* A FOLDING BAR KEEPS ITS ONE CELL, THE BRAND YIELDS (gh#1481). `min-width: 0` above lets the slot
+   * shrink to nothing, which is right for a scrolling bar (it scrolls) but not for a folding one:
+   * folded, `Topbar overflow="menu"` is ONE "more" cell, and at 320px with 200% text the slot got
+   * 32px for that 72px cell — the header clipped the cell while the brand beside it kept its whole
+   * 96px. Floored at one cell, the rail's free space goes negative and the deficit goes to the
+   * brand, the item that may shrink (`min-inline-size: 0`) and crops from its inline-end, keeping
+   * the mark. */
+  .app-topbar-custom:has(> .ui-topbar[data-overflow="menu"]) {
+    min-inline-size: var(--topbar-item-min-width);
   }
 
   .app-topbar-left,
@@ -2543,6 +2561,13 @@
     border-inline-start: var(--stroke-hairline) solid hsl(var(--border));
   }
 
+  /* A group INSIDE a group (gh#1493) — the third clickable level. Its guide line drops from the
+   * sub-row's dot marker (row inset + half the 4px dot), the same way the level-2 line drops from the
+   * level-1 icon, so each level reads as hanging off the row that opened it. */
+  .sb-nav-sub .sb-nav-sub {
+    margin-inline-start: calc(var(--sidebar-nav-item-padding-x) + 2px);
+  }
+
   .sb-nav-item--sub {
     height: 1.75rem;
     font-size: var(--sidebar-nav-sub-font-size);
@@ -2640,6 +2665,14 @@
     font-size: var(--sidebar-flyout-title-font-size);
     font-weight: var(--font-weight-medium);
     white-space: nowrap;
+  }
+
+  /* A group of leaves inside a collapsed-rail flyout (gh#1493) — its heading is the same muted
+   * title the flyout opens with, so the third level reads as a section of the menu. */
+  .sb-flyout-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-nav-gap);
   }
 
   /* Footer user — circular avatar with live dot + overflow menu, design `.sb-user`. */

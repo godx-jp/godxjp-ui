@@ -2494,5 +2494,15 @@
     "saved": "Đã lưu",
     "inheritText": "Đọc với cỡ chữ xung quanh.",
     "inheritLink": "Khám phá thang chữ"
+  },
+  "pageErrorBoundaryDocs": {
+    "section": "Nghiệp vụ",
+    "dashboard": "Bảng điều khiển",
+    "reports": "Báo cáo",
+    "documents": "Tài liệu",
+    "body": "Danh sách báo cáo tháng hiển thị ở đây.",
+    "title": "Báo cáo",
+    "break": "Làm hỏng trang này",
+    "help": "Trợ giúp"
   }
 }

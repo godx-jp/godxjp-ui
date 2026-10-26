@@ -181,6 +181,10 @@
   --app-shell-bar-inset: var(--space-page-x);
   --app-shell-bar-inset-compact: var(--space-page-compact-x);
   --app-shell-bar-gap: var(--space-3);
+  /* The gap between the brand and the custom bar inside `.app-topbar-rail` (gh#1481). It was a
+   * literal `--space-3`, so a theme that tightens the bar for a 320px / 200%-text viewport could
+   * reach every other gap in the row but this one. */
+  --app-shell-rail-gap: var(--space-3);
   /* HOW MUCH OF THE BAR THE BRAND MAY KEEP (gh#728). A wide bar is not the problem, so the cap is
    * `none` there; below the `sm` step the brand keeps at most a square of the row it sits in, and
    * everything past that is cropped from the inline-end — which is the half a lockup can lose,

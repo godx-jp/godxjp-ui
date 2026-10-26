@@ -160,7 +160,7 @@ Each section is a Heading (plus one muted line if it adds a fact) over its conte
 
 ### Dashboard
 
-The only archetype with KPI tiles: at most four `StatCard`s, each with a comparison `delta` (use `inverse` when up is bad). Below, panels in `ResponsiveGrid`, each a Card with a title and one "view all" link: a work queue, a short table, a chart. Every number answers "compared to what".
+KPI tiles belong on pages whose job is monitoring — dashboards, report heads (a short count strip above a list or report is fine too). Keep the set small; around four `StatCard`s is a good default, not a limit. Give a tile a comparison `delta` when a meaningful baseline exists (previous period, target, plan), with `inverse` when up is bad; a count of work to do (pending, overdue, unread) instead links to the list already filtered to those items — never invent a comparison. Every tile states its label, unit, period and scope. Below, panels in `ResponsiveGrid`, each a Card with a title and one "view all" link: a work queue, a short table, a chart.
 
 ### Approval queue
 

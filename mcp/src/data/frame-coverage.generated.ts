@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 337,
-    dimensionCells: 4718,
+    exports: 338,
+    dimensionCells: 4732,
     covered: 89,
-    untested: 2581,
-    notApplicable: 2048,
+    untested: 2588,
+    notApplicable: 2055,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -298,6 +298,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"OrgSwitcher","group":"layout","frame":"docs/layout/org-switcher.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"PageContainer","group":"layout","frame":"docs/layout/page-container.tsx","covered":["density","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones"]},
   {"name":"PageCover","group":"lab","frame":"docs/layout/page-cover.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","variants"],"notApplicable":["density","ownership","shapes","sizes","states","tones"]},
+  {"name":"PageErrorBoundary","group":"layout","frame":"docs/layout/page-error-boundary.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Pagination","group":"navigation","frame":"docs/navigation/pagination.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states"],"notApplicable":["density","shapes","tones","variants"]},
   {"name":"PaginationContent","group":"navigation","frame":"docs/navigation/pagination.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"PaginationEllipsis","group":"navigation","frame":"docs/navigation/pagination.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},

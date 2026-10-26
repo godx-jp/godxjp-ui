@@ -2494,5 +2494,15 @@
     "saved": "保存済み",
     "inheritText": "周囲の文字サイズで読みます。",
     "inheritLink": "文字サイズ一覧へ"
+  },
+  "pageErrorBoundaryDocs": {
+    "section": "業務",
+    "dashboard": "ダッシュボード",
+    "reports": "レポート",
+    "documents": "ドキュメント",
+    "body": "月次レポートの一覧がここに表示されます。",
+    "title": "レポート",
+    "break": "表示を壊す",
+    "help": "ヘルプ"
   }
 }

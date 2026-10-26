@@ -375,6 +375,11 @@
       "position": "Vị trí ảnh bìa",
       "hint": "Kéo ảnh hoặc dùng phím mũi tên để chỉnh vị trí",
       "valueText": "{value}% tính từ trên"
+    },
+    "pageErrorBoundary": {
+      "title": "Không thể hiển thị trang này",
+      "description": "Đã xảy ra lỗi khi hiển thị trang này. Các phần khác của ứng dụng vẫn hoạt động: hãy tải lại trang, hoặc chuyển sang trang khác từ menu.",
+      "reload": "Tải lại trang"
     }
   },
   "dataDisplay": {

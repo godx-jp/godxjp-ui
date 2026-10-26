@@ -331,6 +331,11 @@
   },
   {
     "group": "layout",
+    "name": "PageErrorBoundary",
+    "tagline": "Page-level React error boundary (gh#1494): a page that throws while rendering is replaced by an application ErrorSurface and the shell around it stays."
+  },
+  {
+    "group": "layout",
     "name": "LegalDocumentShell",
     "tagline": "Long-form legal/policy document surface (terms, privacy, DPA, cookie policy, SLA) — semantic article/nav/section landmarks, real anchors, a sticky table-of-contents rail, scroll-spy aria-current, hash deep links with a token-driven scroll offset and focus handoff.",
     "tier": "lab"

@@ -9,6 +9,7 @@ import type {
 } from "./layout.prop";
 import type {
   ActionsProp,
+  AllowClearProp,
   ChildrenProp,
   ClassNameProp,
   DisabledProp,
@@ -22,6 +23,7 @@ import type {
   DefaultOpenProp,
   PendingProp,
   PlaceholderProp,
+  RequiredProp,
   StickyProp,
   TextAlignProp,
 } from "../vocabulary";
@@ -65,6 +67,17 @@ export type FilterBarFilterProp = {
   onSelectedChange?: (selected: string) => void;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
+  /**
+   * A SCOPE filter that is never empty — the branch, the month (gh#1495). The filter renders no
+   * ✕ and its control is `aria-required`; the bar's clear-all is still the consumer's `onClear`,
+   * which should leave a required filter at its value. Implies `allowClear={false}`.
+   */
+  required?: RequiredProp;
+  /**
+   * The per-filter ✕. Default `true`: a filter is optional by nature, "no filter" is its resting
+   * state. `false` hides it without marking the filter required (gh#1495).
+   */
+  allowClear?: AllowClearProp;
 };
 
 /**

@@ -292,6 +292,21 @@
     visibility: hidden;
   }
 
+  /* A TOAST NEVER TAKES A MODAL'S CLICKS (gh#1477). Since the expanded stack became the default
+   * (gh#1387) a toast is drawn whole at the viewport's bottom edge — over a modal Dialog's or a
+   * Sheet's footer — and the toaster sits above every overlay, so it intercepted the pointer: after
+   * a failed save the user could not press Cancel until the error toast timed out (a consumer's
+   * journey: `<li data-sonner-toast> intercepts pointer events`, 60s, both retries).
+   *
+   * While a MODAL overlay is open (`.ui-overlay-modal` is the `Modal` box both Dialog and Sheet
+   * render; a `modal={false}` Dialog renders none), the toaster stops taking pointer events: the
+   * toast stays on screen and is still announced, and the click lands on the control underneath.
+   * That is the modal's own contract — everything outside it is inert — applied to the one surface
+   * that is drawn above it. `pointer-events` inherits, so the toasts and their buttons follow. */
+  :root:has(.ui-overlay-modal) [data-sonner-toaster] {
+    pointer-events: none;
+  }
+
   .ui-skeleton-block {
     border-radius: var(--skeleton-radius, var(--radius));
     background: var(--skeleton-background, hsl(var(--muted)));

@@ -174,8 +174,10 @@ export function Toolbar({
                 disabled={disabled || filter.disabled}
                 /* A filter is optional by nature — "no filter" is its resting state — so the bar
                  * asks for the ✕ explicitly now that `Select` follows antd and ships none by
-                 * default (#691). */
-                allowClear
+                 * default (#691). A REQUIRED scope filter (branch, month) has no empty state to
+                 * return to, so it gets no ✕ (gh#1495); `allowClear={false}` hides it alone. */
+                allowClear={filter.required ? false : (filter.allowClear ?? true)}
+                aria-required={filter.required || undefined}
                 /* THE ✕ IS NAMED AFTER THE FILTER IT CLEARS. The clear affix's default name is the generic 「選択をクリア」 — measured on
                  * /isolate/navigation-filter-bar after giving two filters a value: two buttons,
                  * one name, and nothing in either that says WHICH filter it empties. A consumer

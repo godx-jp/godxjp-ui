@@ -215,7 +215,7 @@ The Atlassian Design System's public navigation page and the Salesforce Lightnin
 | Breadcrumb as history, or a breadcrumb plus a back link | Breadcrumbs show hierarchy [P] NN/g; "Never use the back link… together with the Breadcrumbs" [P] GOV.UK |
 | Losing list position or filters on Back | "the page often resets to the top of the list" [P] NN/g saving scroll position |
 | Main navigation in the page header, or repeated in the page body | "Avoid placing the main navigation in the page header"; avoid "replicating the app nav content in the app body" [P] Shopify |
-| More than 2 levels of sidebar or cascading menus | [P] HIG sidebars; Carbon; Fluent; NN/g menu design |
+| More than 2 levels of sidebar or cascading menus, with no tree test or walkthrough behind them | [P] HIG sidebars; Carbon; Fluent; NN/g menu design |
 | Dead ends on object pages | Give paths onward from every object instance [Pr] OOUX (A List Apart) |
 
 ---
@@ -232,7 +232,7 @@ The Atlassian Design System's public navigation page and the Salesforce Lightnin
 | 6 | Labels are short nouns in the users' words, 1–2 words, never coined terms. | https://shopify.dev/docs/apps/design/navigation ; https://www.nngroup.com/articles/top-10-ia-mistakes/ |
 | 7 | Every navigation item has a visible text label. Icons only support the label. Never truncate. | https://m3.material.io/components/navigation-bar/guidelines |
 | 8 | Order by frequency of use measured from users (top-tasks vote or field study). Positions stay fixed. | https://www.nngroup.com/articles/progressive-disclosure/ ; https://www.w3.org/WAI/WCAG22/Understanding/consistent-navigation.html |
-| 9 | Sidebar: at most 2 levels, with short group headings. Deeper data goes into list → detail inside the page. | https://developer.apple.com/design/human-interface-guidelines/sidebars |
+| 9 | Sidebar: aim for 2 levels, with short group headings — a review signal, not a pass/fail limit. A third level is for a work area that needs it, validated by a tree test or walkthrough; record data goes into list → detail inside the page. | https://developer.apple.com/design/human-interface-guidelines/sidebars |
 | 10 | Settings, admin and configuration live apart from daily work (utility area or admin section), behind a second level at most. | https://www.nngroup.com/articles/utility-navigation/ ; https://www.nngroup.com/articles/progressive-disclosure/ |
 | 11 | Navigation slots navigate; they never perform actions. Put Create in a FAB or top bar for the main object, and in context for children. | https://developer.apple.com/design/human-interface-guidelines/tab-bars |
 | 12 | Each role gets its own fixed start page, named after the work area, with task-oriented sections. | https://www.sap.com/design-system/fiori-design-web/v1-148/foundations/integration-and-services/sap-fiori-launchpad/sap-fiori-launchpad-spaces |

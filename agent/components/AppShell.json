@@ -26,6 +26,12 @@
       "type": "ReactNode"
     },
     {
+      "defaultValue": "true",
+      "description": "Page-level error boundary around `children` (gh#1494). A page that throws while rendering is replaced by an application ErrorSurface inside <main> (localized title + one Reload action); the sidebar, topbar and breadcrumb stay, so the user can navigate away. It resets when the URL changes, so the next visit — or Back — draws the page again. Pass PageErrorBoundary's props as an object to configure it, or `false` when the app already wraps pages in its own boundary.",
+      "name": "errorBoundary",
+      "type": "boolean | { fallback?; resetKey?; onError? }"
+    },
+    {
       "description": "Full topbar override; else a rail is built from topbarLeft/topbarRight/logo. Omit ALL FOUR bar slots (topbar, topbarLeft, topbarRight, logo) and there is NO `<header class=\"app-topbar\">` in the DOM at all: the shell publishes `data-topbar=\"none\"` on its root and the bar's grid row collapses to zero, for a shell whose PAGE owns the top row. The one exception is the AppShell-owned drawer trigger — at or below 900px the header comes back carrying the hamburger alone, so navigation is never unreachable.",
       "name": "topbar",
       "type": "ReactNode"

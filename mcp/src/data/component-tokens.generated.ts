@@ -11884,6 +11884,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--app-shell-rail-gap",
+    "value": "var(--space-3)",
+    "description": "The gap between the brand and the custom bar inside `.app-topbar-rail` (gh#1481). It was a literal `--space-3`, so a theme that tightens the bar for a 320px / 200%-text viewport could reach every other gap in the row but this one."
+  },
+  {
     "name": "--app-shell-brand-max-inline-size",
     "value": "none",
     "description": "HOW MUCH OF THE BAR THE BRAND MAY KEEP (gh#728). A wide bar is not the problem, so the cap is `none` there; below the `sm` step the brand keeps at most a square of the row it sits in, and everything past that is cropped from the inline-end — which is the half a lockup can lose, because a lockup leads with its mark in both directions. A theme that wants the wordmark to survive on a phone raises the compact cap; a theme with a very wide lockup lowers the other. Choosing WHAT the narrow bar shows, rather than how much of it, is `AppShell logoCompact`: `viewBox` is an attribute and no stylesheet can set one."

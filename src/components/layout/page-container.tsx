@@ -103,6 +103,7 @@ function PageContainerRoot({
   subtitle,
   status,
   extra,
+  help,
   toolbar,
   footer,
   toolbarPad,
@@ -138,8 +139,9 @@ function PageContainerRoot({
   // Read off the PageCover element below; only an eyecatch cover sits inside the header.
   const hasEyecatch =
     isValidElement<{ variant?: string }>(cover) && cover.props.variant === "eyecatch";
+  const hasHelp = help != null && help !== false;
   const hasHeader =
-    hasHeading || hasBreadcrumb || hasEyecatch || extraStart != null || extraEnd != null;
+    hasHeading || hasBreadcrumb || hasEyecatch || extraStart != null || extraEnd != null || hasHelp;
   // With no header there is nothing to scroll past, so an onScroll footer simply shows.
   const reveal = stickyFooter && footer != null && footerReveal === "onScroll" && hasHeader;
   const { headerRef, revealed } = useFooterReveal(reveal);
@@ -294,10 +296,17 @@ function PageContainerRoot({
               > .ui-flex[data-direction="row"]` is the tested overflow fix that keeps an action
               group from running over the `<h1>`, and it matches DIRECT children only, so a wrapper
               would silently disarm it. Unused ⇒ nothing is rendered at all. */}
-            {(extraStart != null || extraEnd != null) && (
+            {(extraStart != null || extraEnd != null || hasHelp) && (
               <div className="ui-page-header-extra">
                 {extraStart}
                 {extraEnd}
+                {/* gh#1494 — Help is the LAST item of the action box and pushed to its inline end
+                  (layout.css), so it sits at the header's edge on every page and every width. */}
+                {hasHelp ? (
+                  <div className="ui-page-header-help" data-slot="page-header-help">
+                    {help}
+                  </div>
+                ) : null}
               </div>
             )}
           </div>

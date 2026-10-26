@@ -732,6 +732,12 @@ export const COMPONENTS: ComponentEntry[] = [
           'Action buttons / controls rendered at the END of the title row. A bare node is the whole slot and stays the shape every page already passes — it lands in `start`. `{ start, end }` splits it in two so a page can put something AFTER the actions: the record-screen convention is identity → actions → PAGER LAST, and with one slot the pager had to live in a second header band inside the body, so an app carried two header shapes (gh#734). Both sub-slots are direct children of the one header-extra box in source order, so DOM order IS reading order and the accessibility tree follows; unused, nothing renders at all. The union is `TabsExtraProp`\'s on purpose — `Tabs.extra` already accepts exactly this for exactly this reason, and the names are logical (`start`/`end`, never left/right), so they swap sides under dir="rtl".',
       },
       {
+        name: "help",
+        type: "ReactNode",
+        description:
+          "The page's Help control (gh#1494) — a ghost Button opening a help Sheet, or a link to the manual. ONE fixed place on every page: the last item at the header row's inline end, after the `extra` actions, and still flush with that end when the actions wrap or are absent (measured 1440/768/390, 0/1/5 actions). A page passing only `help` still renders a header. Do not put Help in `extra`, in the body, or in a second header band.",
+      },
+      {
         name: "toolbar",
         type: "ReactNode",
         description:
@@ -2477,6 +2483,13 @@ import { StatCard } from "@godxjp/ui/data-display";
         description: "Main page content rendered in <main>.",
       },
       {
+        name: "errorBoundary",
+        type: "boolean | { fallback?; resetKey?; onError? }",
+        defaultValue: "true",
+        description:
+          "Page-level error boundary around `children` (gh#1494). A page that throws while rendering is replaced by an application ErrorSurface inside <main> (localized title + one Reload action); the sidebar, topbar and breadcrumb stay, so the user can navigate away. It resets when the URL changes, so the next visit — or Back — draws the page again. Pass PageErrorBoundary's props as an object to configure it, or `false` when the app already wraps pages in its own boundary.",
+      },
+      {
         name: "topbar",
         type: "ReactNode",
         description:
@@ -3213,7 +3226,7 @@ export default function Shell() {
         type: '"scroll" | "clip" | "menu"',
         defaultValue: '"scroll"',
         description:
-          "What a bar that does not fit does with the cells that do not fit (gh#728). scroll (default) lets the BAR scroll on the inline axis while the start and end clusters keep their cells whole — every cell stays in the DOM and in the accessibility tree, Tab reaches each one in order, and the browser scrolls a focused cell into view; the scrollbar is suppressed (a horizontal bar inside a 48px chrome row would eat the height that caused the deficit), so the pointer affordance is drag/wheel. clip is the pre-gh#728 behaviour: a cell past the cluster's edge is simply not painted — still focusable, still announced, invisible and unreachable by pointer. Independent of TopbarItem hideBelow, which REMOVES a cell at a step; this is only about what happens once there is no budget left.",
+          'What a bar that does not fit does with the cells that do not fit (gh#728). scroll (default) lets the BAR scroll on the inline axis while the start and end clusters keep their cells whole — every cell stays in the DOM and in the accessibility tree, Tab reaches each one in order, and the browser scrolls a focused cell into view; the scrollbar is suppressed (a horizontal bar inside a 48px chrome row would eat the height that caused the deficit), so the pointer affordance is drag/wheel. clip is the pre-gh#728 behaviour: a cell past the cluster\'s edge is simply not painted — still focusable, still announced, invisible and unreachable by pointer. Independent of TopbarItem hideBelow, which REMOVES a cell at a step; this is only about what happens once there is no budget left. menu (gh#914) folds every cluster into ONE "more" cell when the bar does not fit; folding MOVES the controls (into the open menu, or a hidden holder while it is closed) and never unmounts them, so a CommandPalette in `start` keeps its ⌘K shortcut and a control keeps its state across folds (gh#1478).',
       },
       {
         name: "children",
@@ -4051,6 +4064,62 @@ export function MaintenancePage() {
   );
 }`,
     storyPath: "layout/error-surface/index.tsx",
+    rules: [23, 24],
+  },
+  {
+    name: "PageErrorBoundary",
+    group: "layout",
+    tagline:
+      "Page-level React error boundary (gh#1494): a page that throws while rendering is replaced by an application ErrorSurface and the shell around it stays. AppShell wraps its children in one by default; use this directly only around a page outside AppShell.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "The page.",
+      },
+      {
+        name: "fallback",
+        type: "ReactNode | ({ error, reset }) => ReactNode",
+        description:
+          "What replaces the page that threw. Default: <ErrorSurface mode=\"application\" status={500} titleLevel={1}> with the kit's localized title/description and ONE 'Reload page' action. The function form gets the error and a `reset()` that draws the page again without a reload.",
+      },
+      {
+        name: "resetKey",
+        type: "unknown",
+        description:
+          "Draw the page again when this value changes (Object.is). The boundary ALREADY resets when the URL changes — it records the URL it failed on and resets on the next render under a different one, so it needs no router integration; pass a key only for a change the URL does not show.",
+      },
+      {
+        name: "onError",
+        type: "(error: unknown, info: React.ErrorInfo) => void",
+        description:
+          "Report the error (an error tracker). Replaces the development-time console.error.",
+      },
+    ],
+    usage: [
+      "DO rely on AppShell's built-in boundary: every page inside AppShell is already covered. Configure it with AppShell `errorBoundary={{ onError: report }}`.",
+      "DO wrap a page that renders OUTSIDE AppShell (a CenteredShell page, an embedded view) in <PageErrorBoundary> yourself.",
+      "DO NOT wrap every Card in a boundary: it is PAGE-level. An in-page query failure is DataState / Alert.QueryError, not a render error.",
+      "DO NOT key the boundary on the URL yourself to make it reset — it already resets on navigation.",
+    ],
+    useCases: [
+      "A list page whose row renderer hits an unexpected null: the page area shows the ErrorSurface, the sidebar still works, and navigating to another page draws that page normally.",
+      "Error reporting: <AppShell errorBoundary={{ onError: (error) => Sentry.captureException(error) }} …>.",
+    ],
+    related: [
+      "AppShell — wraps its children in a PageErrorBoundary by default (`errorBoundary`).",
+      "ErrorSurface — the default fallback; use it directly for an HTTP 400/403/404/500/503 page the server reports.",
+    ],
+    example: `import { AppShell, PageErrorBoundary } from "@godxjp/ui/layout";
+
+// Inside AppShell nothing is needed: a throwing page keeps the shell.
+<AppShell sidebar={sidebar} topbar={topbar} errorBoundary={{ onError: report }}>
+  {page}
+</AppShell>;
+
+// Outside AppShell, wrap the page yourself.
+<PageErrorBoundary onError={report}>{page}</PageErrorBoundary>;`,
+    storyPath: "layout/page-error-boundary.tsx",
     rules: [23, 24],
   },
   {
@@ -11110,7 +11179,7 @@ import { Button } from "@godxjp/ui/general";
         type: "boolean",
         defaultValue: "true",
         description:
-          "Draw every visible toast whole, stacked with a gap. Default `true` (gh#1387): Sonner's collapsed deck (`expand={false}`) keeps earlier toasts as cards peeking behind the front one with their text hidden, which reads as an empty box. Pass `expand={false}` to opt back into the deck.",
+          "Draw every visible toast whole, stacked with a gap. Default `true` (gh#1387): Sonner's collapsed deck (`expand={false}`) keeps earlier toasts as cards peeking behind the front one with their text hidden, which reads as an empty box. Pass `expand={false}` to opt back into the deck. While a MODAL Dialog or Sheet is open the toaster takes no pointer events (gh#1477): a toast drawn over the modal's footer stays visible and announced, and the click reaches the footer action — do not work around an overlap with `expand={false}`.",
       },
       {
         name: "duration",
@@ -11774,7 +11843,7 @@ import { Button } from "@godxjp/ui/general";
         name: "filters",
         type: "FilterBarFilterProp[]",
         description:
-          "Typed model — labelled domain-neutral Select filters rendered after the search slot in array order. Each: { value (stable identity), label (rendered as the control's REAL <label htmlFor> — WCAG 2.5.3), options, selected/defaultSelected/onSelectedChange, placeholder, disabled }. Width is token-owned (--filter-bar-filter-width).",
+          "Typed model — labelled domain-neutral Select filters rendered after the search slot in array order. Each: { value (stable identity), label (rendered as the control's REAL <label htmlFor> — WCAG 2.5.3), options, selected/defaultSelected/onSelectedChange, placeholder, disabled, required, allowClear }. Width is token-owned (--filter-bar-filter-width). A filter shows a ✕ by default (no filter is its resting state); a SCOPE filter that is never empty (branch, month) passes `required` — no ✕ and `aria-required` on the control — and `allowClear: false` hides the ✕ alone (gh#1495). Never rebuild a filter by hand on the bar's internal class to drop the ✕.",
       },
       {
         name: "chips",
