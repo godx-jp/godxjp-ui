@@ -1,6 +1,7 @@
 import { revealKeyboardFocus } from "../../lib/focus-reveal";
 import { MoreHorizontal } from "lucide-react";
 import * as React from "react";
+import { createPortal } from "react-dom";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { padStyle } from "../../lib/variants";
@@ -33,8 +34,58 @@ export function Topbar({
   const controlsRef = React.useRef<HTMLDivElement | null>(null);
   const hasIdentity = identity != null && children == null;
   const foldable = overflow === "menu" && children == null;
-  const collapsed = useCollapsesToMenu(hasIdentity ? controlsRef : barRef, foldable);
-  const clusters = (
+  const hosts = useFoldHosts(foldable);
+  const present = { start: start != null, center: center != null, end: end != null };
+  const holderRef = React.useRef<HTMLDivElement | null>(null);
+  const overflowRef = React.useRef<HTMLDivElement | null>(null);
+  /*
+   * FOLDING NEVER UNMOUNTS A CONTROL (gh#1478). The clusters used to be rendered in the bar OR
+   * inside the "more" PopoverContent — two tree positions, so every fold remounted them, and the
+   * content only exists while the popover is open, so a folded bar had NO controls mounted at all:
+   * a CommandPalette in `start` lost its ⌘K listener until someone opened the menu. Under
+   * `overflow="menu"` each cluster now renders through a portal into a cluster element that is
+   * created once and never re-created; folding MOVES that element — into the bar, into the open
+   * menu, or into a `hidden` holder while the menu is closed — and React never remounts what is
+   * inside it. The element keeps the cluster's own class, so the bar's layout rules still see
+   * `.ui-topbar > .ui-topbar-start`.
+   */
+  const placeClusters = React.useCallback(
+    (isCollapsed: boolean) => {
+      if (!hosts) return;
+      const target = !isCollapsed
+        ? hasIdentity
+          ? controlsRef.current
+          : barRef.current
+        : (overflowRef.current ?? holderRef.current);
+      if (!target) return;
+      for (const key of CLUSTER_ORDER) {
+        const node = hosts[key];
+        if (!present[key]) node.remove();
+        else if (node.parentNode !== target || node !== target.lastElementChild) {
+          target.appendChild(node);
+        }
+      }
+    },
+    // `present` is derived from the three slots on every render; its booleans are what matter.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [hosts, hasIdentity, present.start, present.center, present.end],
+  );
+  const collapsed = useCollapsesToMenu(
+    hasIdentity ? controlsRef : barRef,
+    foldable,
+    hosts ? placeClusters : undefined,
+  );
+  const overflowNode = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      overflowRef.current = node;
+      placeClusters(true);
+    },
+    [placeClusters],
+  );
+  const clusters = hosts ? (
+    // Kept mounted in ONE place, whatever the bar is showing; `placeClusters` moves the elements.
+    <TopbarClusterHolder ref={holderRef} visible={collapsed} />
+  ) : (
     <>
       {start != null ? (
         <div data-slot="topbar-start" className="ui-topbar-start">
@@ -52,6 +103,18 @@ export function Topbar({
         </div>
       ) : null}
     </>
+  );
+  const portals = hosts ? (
+    <>
+      {start != null ? createPortal(start, hosts.start) : null}
+      {center != null ? createPortal(center, hosts.center) : null}
+      {end != null ? createPortal(end, hosts.end) : null}
+    </>
+  ) : null;
+  const overflowMenu = (
+    <TopbarOverflowMenu contentRef={hosts ? overflowNode : undefined}>
+      {hosts ? null : clusters}
+    </TopbarOverflowMenu>
   );
 
   return (
@@ -89,27 +152,84 @@ export function Topbar({
               data-overflow={overflow}
               className="ui-topbar ui-topbar-controls"
             >
-              {collapsed ? <TopbarOverflowMenu>{clusters}</TopbarOverflowMenu> : clusters}
+              {collapsed ? overflowMenu : null}
+              {collapsed && !hosts ? null : clusters}
             </div>
             <div data-slot="topbar-identity" className="ui-topbar-identity">
               {identity}
             </div>
           </>
-        ) : collapsed ? (
-          <TopbarOverflowMenu>{clusters}</TopbarOverflowMenu>
         ) : (
-          clusters
+          <>
+            {collapsed ? overflowMenu : null}
+            {collapsed && !hosts ? null : clusters}
+          </>
         ))}
+      {portals}
     </div>
   );
 }
+
+const CLUSTER_ORDER = ["start", "center", "end"] as const;
+type ClusterKey = (typeof CLUSTER_ORDER)[number];
+
+const subscribeNothing = () => () => {};
+
+/**
+ * One element per cluster, created once on the client and kept for the bar's lifetime (gh#1478).
+ * `null` on the server and during hydration — the first client render must match the server's
+ * inline clusters — and whenever the bar does not fold.
+ */
+function useFoldHosts(enabled: boolean): Record<ClusterKey, HTMLDivElement> | null {
+  const isClient = React.useSyncExternalStore(
+    subscribeNothing,
+    () => true,
+    () => false,
+  );
+  const [hosts] = React.useState(() => {
+    if (typeof document === "undefined") return null;
+    const make = (key: ClusterKey) => {
+      const node = document.createElement("div");
+      node.dataset.slot = `topbar-${key}`;
+      node.className = `ui-topbar-${key}`;
+      return node;
+    };
+    return { start: make("start"), center: make("center"), end: make("end") };
+  });
+  React.useEffect(
+    () => () => {
+      if (hosts) for (const key of CLUSTER_ORDER) hosts[key].remove();
+    },
+    [hosts],
+  );
+  return enabled && isClient ? hosts : null;
+}
+
+/**
+ * Where the folded clusters wait while the "more" menu is closed: in the bar, `hidden`, so they
+ * stay mounted (a shortcut listener keeps listening) but take no space, no focus and no part in
+ * the accessibility tree. Rendered (empty) while the bar is expanded too, so it is never itself
+ * re-created.
+ */
+const TopbarClusterHolder = React.forwardRef<HTMLDivElement, { visible: boolean }>(
+  function TopbarClusterHolder({ visible }, ref) {
+    return visible ? <div ref={ref} hidden data-slot="topbar-fold-holder" /> : null;
+  },
+);
 
 /**
  * The single "more" cell a collapsed bar shows (gh#914). The clusters move INTO the popover rather
  * than being copied there, so every control exists exactly once: one id, one mounted menu, one
  * place in the tab order.
  */
-function TopbarOverflowMenu({ children }: { children: React.ReactNode }) {
+function TopbarOverflowMenu({
+  children,
+  contentRef,
+}: {
+  children: React.ReactNode;
+  /** Receives the open menu's cluster box, so folded clusters can be MOVED into it (gh#1478). */
+  contentRef?: React.Ref<HTMLDivElement>;
+}) {
   const { t } = useTranslation();
   return (
     <Popover>
@@ -119,7 +239,7 @@ function TopbarOverflowMenu({ children }: { children: React.ReactNode }) {
         </TopbarItem>
       </PopoverTrigger>
       <PopoverContent align="end" width="auto">
-        <div data-slot="topbar-overflow" className="ui-topbar-overflow">
+        <div ref={contentRef} data-slot="topbar-overflow" className="ui-topbar-overflow">
           {children}
         </div>
       </PopoverContent>
@@ -138,6 +258,8 @@ function TopbarOverflowMenu({ children }: { children: React.ReactNode }) {
 function useCollapsesToMenu(
   ref: React.RefObject<HTMLDivElement | null>,
   enabled: boolean,
+  /** Puts the cluster elements where the current state shows them, BEFORE the bar is measured. */
+  place?: (collapsed: boolean) => void,
 ): boolean {
   const [collapsed, setCollapsed] = React.useState(false);
   const needed = React.useRef(0);
@@ -145,6 +267,7 @@ function useCollapsesToMenu(
   React.useLayoutEffect(() => {
     const bar = ref.current;
     if (!enabled || !bar) return undefined;
+    place?.(collapsed);
     const update = () => {
       if (!collapsed) {
         if (bar.clientWidth > 0 && bar.scrollWidth - bar.clientWidth > 1) {
@@ -170,7 +293,7 @@ function useCollapsesToMenu(
         }
       }
     return () => observer.disconnect();
-  }, [ref, enabled, collapsed]);
+  }, [ref, enabled, collapsed, place]);
 
   return enabled && collapsed;
 }
