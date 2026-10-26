@@ -10637,7 +10637,7 @@
       },
       {
         "defaultValue": "true",
-        "description": "Draw every visible toast whole, stacked with a gap. Default `true` (gh#1387): Sonner's collapsed deck (`expand={false}`) keeps earlier toasts as cards peeking behind the front one with their text hidden, which reads as an empty box. Pass `expand={false}` to opt back into the deck.",
+        "description": "Draw every visible toast whole, stacked with a gap. Default `true` (gh#1387): Sonner's collapsed deck (`expand={false}`) keeps earlier toasts as cards peeking behind the front one with their text hidden, which reads as an empty box. Pass `expand={false}` to opt back into the deck. While a MODAL Dialog or Sheet is open the toaster takes no pointer events (gh#1477): a toast drawn over the modal's footer stays visible and announced, and the click reaches the footer action — do not work around an overlap with `expand={false}`.",
         "name": "expand",
         "type": "boolean"
       },
