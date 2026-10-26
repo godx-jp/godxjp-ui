@@ -46,6 +46,11 @@
       "type": "ReactNode | { start?: ReactNode; end?: ReactNode }"
     },
     {
+      "description": "The page's Help control (gh#1494) — a ghost Button opening a help Sheet, or a link to the manual. ONE fixed place on every page: the last item at the header row's inline end, after the `extra` actions, and still flush with that end when the actions wrap or are absent (measured 1440/768/390, 0/1/5 actions). A page passing only `help` still renders a header. Do not put Help in `extra`, in the body, or in a second header band.",
+      "name": "help",
+      "type": "ReactNode"
+    },
+    {
       "description": "FIXED chrome band between the page header and the body — a filter strip, a status bar, a \"channel workflow\" rail. It is a SIBLING of the body, not content inside it: with `fill` the body is the scroll viewport, so the band is `flex: none` OUTSIDE the scroller and never scrolls away or gets slid under. Shares the page gutters and the `measure` cap with the header and the body (the three bands line up on both edges), goes full-bleed under variant=\"flush\" (wrap padded strips in PageContainer.Inset), and renders NOTHING when omitted — no wrapper, no gap. Its BOX sits FLUSH against the header above and the body below (chrome is attached, not a third page section floating between two voids, so the band cancels the container gap from itself), and by default its inset gives the band's CONTENT that gap back: a plain filter strip (a Segmented, a row of filters) sits one band gap from the header and from the body (gh#1323 — it used to touch both, 0px). A theme that paints or rules the band sets a tighter inset with `--page-toolbar-pad-block`.",
       "name": "toolbar",
       "type": "ReactNode"

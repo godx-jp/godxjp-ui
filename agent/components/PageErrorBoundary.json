@@ -1,0 +1,48 @@
+{
+  "example": "import { AppShell, PageErrorBoundary } from \"@godxjp/ui/layout\";\n\n// Inside AppShell nothing is needed: a throwing page keeps the shell.\n<AppShell sidebar={sidebar} topbar={topbar} errorBoundary={{ onError: report }}>\n  {page}\n</AppShell>;\n\n// Outside AppShell, wrap the page yourself.\n<PageErrorBoundary onError={report}>{page}</PageErrorBoundary>;",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "PageErrorBoundary",
+  "props": [
+    {
+      "description": "The page.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "What replaces the page that threw. Default: <ErrorSurface mode=\"application\" status={500} titleLevel={1}> with the kit's localized title/description and ONE 'Reload page' action. The function form gets the error and a `reset()` that draws the page again without a reload.",
+      "name": "fallback",
+      "type": "ReactNode | ({ error, reset }) => ReactNode"
+    },
+    {
+      "description": "Draw the page again when this value changes (Object.is). The boundary ALREADY resets when the URL changes — it records the URL it failed on and resets on the next render under a different one, so it needs no router integration; pass a key only for a change the URL does not show.",
+      "name": "resetKey",
+      "type": "unknown"
+    },
+    {
+      "description": "Report the error (an error tracker). Replaces the development-time console.error.",
+      "name": "onError",
+      "type": "(error: unknown, info: React.ErrorInfo) => void"
+    }
+  ],
+  "related": [
+    "AppShell — wraps its children in a PageErrorBoundary by default (`errorBoundary`).",
+    "ErrorSurface — the default fallback; use it directly for an HTTP 400/403/404/500/503 page the server reports."
+  ],
+  "rules": [
+    23,
+    24
+  ],
+  "storyPath": "layout/page-error-boundary.tsx",
+  "tagline": "Page-level React error boundary (gh#1494): a page that throws while rendering is replaced by an application ErrorSurface and the shell around it stays. AppShell wraps its children in one by default; use this directly only around a page outside AppShell.",
+  "usage": [
+    "DO rely on AppShell's built-in boundary: every page inside AppShell is already covered. Configure it with AppShell `errorBoundary={{ onError: report }}`.",
+    "DO wrap a page that renders OUTSIDE AppShell (a CenteredShell page, an embedded view) in <PageErrorBoundary> yourself.",
+    "DO NOT wrap every Card in a boundary: it is PAGE-level. An in-page query failure is DataState / Alert.QueryError, not a render error.",
+    "DO NOT key the boundary on the URL yourself to make it reset — it already resets on navigation."
+  ],
+  "useCases": [
+    "A list page whose row renderer hits an unexpected null: the page area shows the ErrorSurface, the sidebar still works, and navigating to another page draws that page normally.",
+    "Error reporting: <AppShell errorBoundary={{ onError: (error) => Sentry.captureException(error) }} …>."
+  ]
+}

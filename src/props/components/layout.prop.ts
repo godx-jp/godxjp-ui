@@ -117,6 +117,13 @@ export type PageContainerProp = {
   /** @see PageContainerExtraProp */
   extra?: PageContainerExtraProp;
   /**
+   * The page's Help control (gh#1494) — a `Button` that opens a help Sheet, or a link to the
+   * manual. It has ONE fixed place on every page: the inline end of the header row, after the
+   * `extra` actions, and still the last item at the inline end when those actions wrap. A page
+   * passing only `help` still gets a header. Pass one control; it is not a second action cluster.
+   */
+  help?: ReactNode;
+  /**
    * FIXED chrome band between the page header and the scrolling body — a filter strip, a status
    * bar, a "channel workflow" rail. It is a first-class page-chrome slot precisely because the
    * only alternative was hand-laying `position: sticky` at the call site (which the design system
@@ -504,6 +511,35 @@ export type PageInsetProp = React.HTMLAttributes<HTMLDivElement> & {
   className?: ClassNameProp;
 };
 
+/** @see PageErrorBoundary — the render-prop form of `fallback`. */
+export type PageErrorBoundaryFallbackProp = (failure: {
+  /** What the page threw. */
+  error: unknown;
+  /** Draws the page again (e.g. a "Try again" button that re-renders without a reload). */
+  reset: () => void;
+}) => ReactNode;
+
+/**
+ * @see PageErrorBoundary — a page-level error boundary (gh#1494). A page that throws while
+ * rendering is replaced by an `ErrorSurface`; the shell around it stays.
+ */
+export type PageErrorBoundaryProp = {
+  children?: ChildrenProp;
+  /**
+   * What to draw instead of the page. Default: an `application` `ErrorSurface` (status 500,
+   * localized title and description, one "Reload page" action). A function receives
+   * `{ error, reset }`.
+   */
+  fallback?: ReactNode | PageErrorBoundaryFallbackProp;
+  /**
+   * Draw the page again whenever this value changes (compared with `Object.is`). The boundary
+   * already resets when the URL changes; pass a key for a change the URL does not show.
+   */
+  resetKey?: unknown;
+  /** Report the error (Sentry, a log endpoint). Replaces the development-time `console.error`. */
+  onError?: (error: unknown, info: React.ErrorInfo) => void;
+};
+
 /** @see AppShell */
 export type AppShellProp = {
   /** Phone destinations, using MobileShell tabBar children (3–5 links or Buttons with aria-current="page"). Only rendered in drawer navigation mode. Main/footer reserve the measured safe-area-inclusive height. */
@@ -513,6 +549,14 @@ export type AppShellProp = {
   /** Omit or pass null/false for a shell without the sidebar landmark or grid track. */
   sidebar?: ReactNode;
   children: ReactNode;
+  /**
+   * The page-level error boundary around `children` (gh#1494). Default `true`: a page that throws
+   * while rendering is replaced by an `ErrorSurface` inside `<main>`, and the sidebar, topbar and
+   * breadcrumb stay, so the user can navigate away; the boundary resets when the URL changes.
+   * Pass props to configure it (`{ fallback, resetKey, onError }`), or `false` when the app
+   * already wraps its pages in its own boundary.
+   */
+  errorBoundary?: boolean | Omit<PageErrorBoundaryProp, "children">;
   topbar?: ReactNode;
   topbarLeft?: ReactNode;
   topbarRight?: ReactNode;

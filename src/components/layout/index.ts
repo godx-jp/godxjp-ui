@@ -58,6 +58,12 @@ export type {
 } from "./centered-shell";
 export type { CenteredShellWidthProp, CenteredShellAlignProp } from "../../props/vocabulary";
 export { ErrorSurface } from "./error-surface";
+export { PageErrorBoundary } from "./page-error-boundary";
+export type {
+  PageErrorBoundaryFallbackProp,
+  PageErrorBoundaryProp,
+  PageErrorBoundaryProps,
+} from "./page-error-boundary";
 export type {
   ErrorSurfaceMaintenanceProp,
   ErrorSurfaceProp,

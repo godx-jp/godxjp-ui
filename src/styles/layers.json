@@ -115,7 +115,11 @@
     "AppShell": {
       "layers": [
         "shell-layout.css",
-        "dialog-layout.css"
+        "layout.css",
+        "control.css",
+        "text-layout.css",
+        "dialog-layout.css",
+        "data-display-layout.css"
       ]
     },
     "AreaChart": {
@@ -968,6 +972,16 @@
     "PageCover": {
       "layers": [
         "layout.css"
+      ]
+    },
+    "PageErrorBoundary": {
+      "layers": [
+        "shell-layout.css",
+        "layout.css",
+        "control.css",
+        "text-layout.css",
+        "dialog-layout.css",
+        "data-display-layout.css"
       ]
     },
     "Pagination": {

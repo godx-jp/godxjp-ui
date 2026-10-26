@@ -1125,6 +1125,14 @@
     max-inline-size: 100%;
   }
 
+  /* The Help slot (gh#1494) — always the last item of the action box, pushed to its inline end,
+   * so it lands at the header's edge whether the actions fit one row, wrap, or are absent. */
+  .ui-page-header-help {
+    display: flex;
+    flex: none;
+    margin-inline-start: auto;
+  }
+
   /* The band sits on the title's baseline row at the token-owned gap and WRAPS under the title
    * when the viewport (390px) or a long JA/VI title leaves no room — never clips, never overlaps. */
   .ui-page-header-title-row {

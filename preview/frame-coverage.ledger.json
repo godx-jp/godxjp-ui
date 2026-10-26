@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-10-09",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 337,
-    "dimensionCells": 4718,
+    "exports": 338,
+    "dimensionCells": 4732,
     "covered": 89,
-    "untested": 2581,
-    "notApplicable": 2048,
+    "untested": 2588,
+    "notApplicable": 2055,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -6288,6 +6288,34 @@
       },
       "dimensions": {
         "variants": "untested",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "PageErrorBoundary": {
+      "group": "layout",
+      "owner": "layout/page-error-boundary",
+      "frames": [
+        "docs/layout/page-error-boundary.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",

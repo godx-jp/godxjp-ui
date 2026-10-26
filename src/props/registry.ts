@@ -930,6 +930,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "DensityProp",
       "PageContainerVariantProp",
       {
+        field: "help",
+        local: true,
+        reason:
+          "The page's ONE Help control (gh#1494), at a fixed place: the last item at the header row's inline end, after the `extra` actions. A single node, not an ActionsProp list.",
+      },
+      {
         field: "toolbar",
         local: true,
         reason:
@@ -1248,6 +1254,12 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [
       "ChildrenProp",
+      {
+        field: "errorBoundary",
+        local: true,
+        reason:
+          "Page-level error boundary around `children` (gh#1494): `true` (default) keeps the shell when a page throws, an object configures PageErrorBoundary, `false` opts out.",
+      },
       "BreakpointProp",
       {
         field: "logoCompact",
@@ -1702,9 +1714,17 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "variant", local: true, reason: "inset (site search) or inline (collection row)." },
       { field: "count", local: true, reason: "Live count at the end of the inline row." },
       { field: "debounce", local: true, reason: "Settle delay in ms, as SearchInput.debounce." },
-      { field: "suggestions", local: true, reason: "Grouped suggestion rows under the box (gh#1447)." },
+      {
+        field: "suggestions",
+        local: true,
+        reason: "Grouped suggestion rows under the box (gh#1447).",
+      },
       { field: "suggestionsFooter", local: true, reason: "Last popup row linking to all results." },
-      { field: "suggestionsLabel", local: true, reason: "Accessible name of the suggestions listbox." },
+      {
+        field: "suggestionsLabel",
+        local: true,
+        reason: "Accessible name of the suggestions listbox.",
+      },
       {
         field: "onQueryChange",
         local: true,
@@ -2298,6 +2318,42 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason:
           "Slot for the host's cover controls (change / reposition / remove), laid out off the focal area — a ReactNode slot, not the ActionsProp item list.",
+      },
+    ],
+  },
+  PageErrorBoundaryFallbackProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      {
+        field: "fallback",
+        local: true,
+        reason:
+          "Render-prop form of PageErrorBoundary `fallback`: `({ error, reset }) => node` (gh#1494).",
+      },
+    ],
+  },
+  PageErrorBoundaryProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      {
+        field: "fallback",
+        local: true,
+        reason:
+          "What replaces the page that threw — a node, or `({ error, reset }) => node`. Default: an application ErrorSurface with the kit's localized copy (gh#1494).",
+      },
+      {
+        field: "resetKey",
+        local: true,
+        reason:
+          "React error-boundary reset key (react-error-boundary's resetKeys, one value): a change draws the page again. The URL change already resets.",
+      },
+      {
+        field: "onError",
+        local: true,
+        reason: "componentDidCatch reporter `(error, info)` for an error tracker.",
       },
     ],
   },

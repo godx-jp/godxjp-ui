@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `PageErrorBoundary` (`@godxjp/ui/layout`), and `AppShell` wraps its `children` in one by default (`errorBoundary`, gh#1494). A page that threw while rendering took the whole shell down — sidebar and topbar gone — and Back stayed blank. Now the page area becomes an application `ErrorSurface` (localized title, one "Reload page" action, `h1`), the shell stays, and the boundary resets when the URL changes, with no router integration. `fallback` (node or `({ error, reset }) => node`), `resetKey` and `onError` configure it; `errorBoundary={false}` opts out for an app that has its own.
+- `PageContainer` `help` (gh#1494): the page's Help control at ONE fixed place — the last item at the header row's inline end, after `extra`, flush with that end whether the actions fit, wrap or are absent. Measured in Chromium at 1440/768/390 × 0/1/5 actions: Help's inline end equals the header row's (±1px) in all 9.
+
 ### Fixed
 
 - `Sidebar` draws a third clickable level under a section (gh#1493). A child item's own `children` were dropped, so a work area → sub-area → page tree (人事 → 労務 → 算定基礎届) could not be reached and had to be flattened. A child with children is now a collapsible group one level down (its guide line drops from the sub-row's dot), it opens when one of its descendants is active, and the leaf carries `aria-current="page"`; the collapsed-rail flyout lists the grandchildren under a labelled `group`. `NavList` renders nested items through the same group.

@@ -1590,6 +1590,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "errorBoundary",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | Omit<PageErrorBoundaryProp, \"children\"> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "footer",
           "origin": "owned",
           "required": false,
@@ -12992,6 +13000,14 @@
           "required": false,
           "type": "PageContainerHeaderScaleProp | undefined",
           "values": ["document", "chrome", "display"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "help",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

@@ -9,6 +9,7 @@ import { ShellTabBar } from "./mobile-shell";
 import { useToastStickyBarClearance } from "../../lib/toast-clearance";
 import { NavSurfaceProvider } from "./nav-surface";
 import { TopbarItem } from "./topbar-item";
+import { PageErrorBoundary } from "./page-error-boundary";
 import type { AppShellProp } from "../../props/components/layout.prop";
 
 export type {
@@ -33,6 +34,7 @@ export function AppShell({
   breadcrumb,
   footer,
   children,
+  errorBoundary = true,
   sidebarCollapsed = false,
   responsiveNavigation = "drawer",
   topbarSpan = "content",
@@ -428,7 +430,13 @@ export function AppShell({
         tabIndex={0}
       >
         {breadcrumb !== undefined && <div className="app-breadcrumb">{breadcrumb}</div>}
-        {children}
+        {errorBoundary === false ? (
+          children
+        ) : (
+          <PageErrorBoundary {...(errorBoundary === true ? {} : errorBoundary)}>
+            {children}
+          </PageErrorBoundary>
+        )}
         {showTabBar && footerRegion}
       </main>
       {!showTabBar && footerRegion}
