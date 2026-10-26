@@ -4429,7 +4429,7 @@ export const COMPONENT_PROP_REGISTRY = {
   FilterBarFilterProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["LabelProp", "PlaceholderProp", "DisabledProp"],
+    vocabulary: ["LabelProp", "PlaceholderProp", "DisabledProp", "RequiredProp", "AllowClearProp"],
   },
   FilterBarChipProp: {
     group: "navigation",

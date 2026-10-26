@@ -25,6 +25,7 @@ import {
 import { Command, CommandGroup } from "./command";
 import { Input } from "./input";
 import { isImeComposing } from "../../lib/ime";
+import { FieldNameContext } from "../../lib/field-a11y";
 import { Select } from "./select";
 
 export type { RecordPickerProp, RecordPickerProp as RecordPickerProps };
@@ -102,148 +103,78 @@ export function selectLoadOptionsFor(loadOptions: RecordPickerProp["loadOptions"
   };
 }
 
-export const RecordPicker = React.forwardRef<HTMLButtonElement | HTMLInputElement, RecordPickerProp>(
-  function RecordPicker(
-    {
-      mode = "single",
-      shape = "auto",
-      value,
-      defaultValue,
-      onValueChange,
-      options,
-      loadOptions,
-      count,
-      threshold = 10,
-      filters,
-      selectedOptions,
-      emptyOption,
-      placeholder,
-      dialogTitle,
-      notFoundContent,
-      loadMoreLabel,
-      disabled = false,
-      size,
-      className,
-      "data-field": fieldName,
-      ...props
+export const RecordPicker = React.forwardRef<
+  HTMLButtonElement | HTMLInputElement,
+  RecordPickerProp
+>(function RecordPicker(
+  {
+    mode = "single",
+    shape = "auto",
+    value,
+    defaultValue,
+    onValueChange,
+    options,
+    loadOptions,
+    count,
+    threshold = 10,
+    filters,
+    selectedOptions,
+    emptyOption,
+    placeholder,
+    dialogTitle,
+    notFoundContent,
+    loadMoreLabel,
+    disabled = false,
+    size,
+    className,
+    "data-field": fieldName,
+    ...props
+  },
+  ref,
+) {
+  const { t } = useTranslation();
+  const isMultiple = mode === "multiple";
+
+  const controlled = value !== undefined;
+  const [internal, setInternal] = React.useState<string[]>(() =>
+    toArray(defaultValue ?? (isMultiple ? [] : null)),
+  );
+  const selected = controlled ? toArray(value) : internal;
+
+  const commit = React.useCallback(
+    (next: string[]) => {
+      if (!controlled) setInternal(next);
+      // The callback keeps the SHAPE the caller passed in: an array for `multiple`, a single
+      // value (or null) otherwise. A picker that returns `["a"]` where the field holds a string
+      // is a bug the consumer has to unwrap at every call site.
+      onValueChange?.(isMultiple ? next : (next[0] ?? null));
     },
-    ref,
-  ) {
-    const { t } = useTranslation();
-    const isMultiple = mode === "multiple";
+    [controlled, isMultiple, onValueChange],
+  );
 
-    const controlled = value !== undefined;
-    const [internal, setInternal] = React.useState<string[]>(() =>
-      toArray(defaultValue ?? (isMultiple ? [] : null)),
-    );
-    const selected = controlled ? toArray(value) : internal;
+  /*
+   * Select nhận `{ query, page }`, RecordPicker nhận `{ query, filters, cursor }` — nhánh
+   * dropdown KHÔNG vẽ filter nào (đó là thứ chỉ Dialog có), nên `filters` ở đây là rỗng, và
+   * nói thế bằng một adapter tường minh thay vì ép kiểu. `page` của Select là số trang, map
+   * sang `cursor` dạng chuỗi để consumer nào phân trang bằng số vẫn dùng được.
+   */
+  const selectLoadOptions = React.useMemo(() => selectLoadOptionsFor(loadOptions), [loadOptions]);
 
-    const commit = React.useCallback(
-      (next: string[]) => {
-        if (!controlled) setInternal(next);
-        // The callback keeps the SHAPE the caller passed in: an array for `multiple`, a single
-        // value (or null) otherwise. A picker that returns `["a"]` where the field holds a string
-        // is a bug the consumer has to unwrap at every call site.
-        onValueChange?.(isMultiple ? next : (next[0] ?? null));
-      },
-      [controlled, isMultiple, onValueChange],
-    );
+  const staticOptions = React.useMemo(
+    () => (options ? normalizeSelectOptions(options as SelectOptionGroupProp[]) : []),
+    [options],
+  );
 
-    /*
-     * Select nhận `{ query, page }`, RecordPicker nhận `{ query, filters, cursor }` — nhánh
-     * dropdown KHÔNG vẽ filter nào (đó là thứ chỉ Dialog có), nên `filters` ở đây là rỗng, và
-     * nói thế bằng một adapter tường minh thay vì ép kiểu. `page` của Select là số trang, map
-     * sang `cursor` dạng chuỗi để consumer nào phân trang bằng số vẫn dùng được.
-     */
-    const selectLoadOptions = React.useMemo(() => selectLoadOptionsFor(loadOptions), [loadOptions]);
-
-    const staticOptions = React.useMemo(
-      () => (options ? normalizeSelectOptions(options as SelectOptionGroupProp[]) : []),
-      [options],
-    );
-
-    /*
-     * `shape="inline"` KHÔNG hỏi `threshold` (gh#944). Đó là cả điểm của nó: ngưỡng trả lời
-     * "tập lớn hay nhỏ", còn câu hỏi thật là "người này đã biết mình tìm gì chưa". Consumer đo
-     * được dự án khách vài trăm tới vài nghìn bản ghi, nên nhánh "chỉ Dialog" là nhánh người
-     * dùng gặp thường xuyên nhất — và ở đó họ mất hẳn khả năng gõ một mã mình đã thuộc.
-     */
-    if (shape === "inline") {
-      return (
-        <InlinePicker
-          ref={ref as React.Ref<HTMLInputElement>}
-          isMultiple={isMultiple}
-          selected={selected}
-          commit={commit}
-          staticOptions={staticOptions}
-          loadOptions={loadOptions}
-          filters={filters}
-          selectedOptions={selectedOptions}
-          emptyOption={emptyOption}
-          placeholder={placeholder}
-          dialogTitle={dialogTitle}
-          notFoundContent={notFoundContent}
-          loadMoreLabel={loadMoreLabel}
-          disabled={disabled}
-          size={size}
-          className={className}
-          data-field={fieldName}
-          {...props}
-        />
-      );
-    }
-
-    // THE SHAPE DECISION. `count` wins when given, because only the server knows how big the set
-    // is; `options.length` is the honest answer when the whole set is already in memory.
-    const total = count ?? (options ? staticOptions.length : undefined);
-    const asDialog = total === undefined ? Boolean(loadOptions) : total > threshold;
-
-    if (!asDialog) {
-      // Under the threshold this IS a Select — not a lookalike. Everything it already does about
-      // search, groups, disabled rows, `maxTagCount` and the trigger stays exactly as it is.
-      //
-      // The rest of `props` is deliberately NOT forwarded here. They are `<button>` attributes,
-      // typed for the dialog branch where the trigger really is one; Select renders its own
-      // trigger and takes a narrower set (its `aria-invalid` is boolean, the DOM one also admits
-      // "grammar"/"spelling"). Spreading them would either not type or land on the wrong element.
-      return (
-        <Select
-          // `Select` exposes no ref, so the forwarded one lands on the dialog trigger branch only.
-          // Casting one in here would advertise a handle that never arrives.
-          mode={isMultiple ? "multiple" : undefined}
-          // gh#942 (1) — `loadOptions` PHẢI đi qua đây. Trước đó nhánh này chỉ đọc `options`, nên
-          // một picker lấy dữ liệu từ server mà `count` nhỏ hiện dropdown RỖNG, và consumer phải
-          // tự nhét trang đầu vào `options` để vòng. Select đã hỗ trợ sẵn `loadOptions`.
-          loadOptions={selectLoadOptions}
-          // gh#942 (2) — những prop NHẬN DẠNG mà FormField truyền xuống. Cả khối `...props` không
-          // chuyển qua được (kiểu `aria-invalid` của DOM rộng hơn của Select: nó còn nhận
-          // "grammar"/"spelling"), nhưng ba cái này mới là thứ consumer mất: trigger nhận id tự
-          // sinh thay cho id của FormField, và không có `data-field` nên lỗi 422 không bám được.
-          id={props.id}
-          data-field={fieldName}
-          aria-describedby={props["aria-describedby"]}
-          // `SelectProp` is discriminated on `labelInValue`; this picker returns plain values, so
-          // the branch is named explicitly rather than left for inference to pick.
-          labelInValue={false}
-          showSearch
-          options={withEmptyOption(options, emptyOption)}
-          value={(isMultiple ? selected : (selected[0] ?? undefined)) as never}
-          onValueChange={((next: string | string[]) => commit(toArray(next))) as never}
-          placeholder={placeholder ?? t("dataEntry.recordPicker.placeholder")}
-          notFoundContent={notFoundContent}
-          disabled={disabled}
-          size={size}
-          className={className}
-        />
-      );
-    }
-
+  /*
+   * `shape="inline"` KHÔNG hỏi `threshold` (gh#944). Đó là cả điểm của nó: ngưỡng trả lời
+   * "tập lớn hay nhỏ", còn câu hỏi thật là "người này đã biết mình tìm gì chưa". Consumer đo
+   * được dự án khách vài trăm tới vài nghìn bản ghi, nên nhánh "chỉ Dialog" là nhánh người
+   * dùng gặp thường xuyên nhất — và ở đó họ mất hẳn khả năng gõ một mã mình đã thuộc.
+   */
+  if (shape === "inline") {
     return (
-      <DialogPicker
-        ref={ref as React.Ref<HTMLButtonElement>}
-        // Truyền LẠI tường minh: nó đã bị destructure khỏi `props` ở trên để nhánh Select dùng,
-        // nên nhánh này sẽ âm thầm mất nó — đúng lỗi gh#942 điểm 2, chỉ đổi bên.
-        data-field={fieldName}
+      <InlinePicker
+        ref={ref as React.Ref<HTMLInputElement>}
         isMultiple={isMultiple}
         selected={selected}
         commit={commit}
@@ -259,11 +190,82 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement | HTMLInputElemen
         disabled={disabled}
         size={size}
         className={className}
+        data-field={fieldName}
         {...props}
       />
     );
-  },
-);
+  }
+
+  // THE SHAPE DECISION. `count` wins when given, because only the server knows how big the set
+  // is; `options.length` is the honest answer when the whole set is already in memory.
+  const total = count ?? (options ? staticOptions.length : undefined);
+  const asDialog = total === undefined ? Boolean(loadOptions) : total > threshold;
+
+  if (!asDialog) {
+    // Under the threshold this IS a Select — not a lookalike. Everything it already does about
+    // search, groups, disabled rows, `maxTagCount` and the trigger stays exactly as it is.
+    //
+    // The rest of `props` is deliberately NOT forwarded here. They are `<button>` attributes,
+    // typed for the dialog branch where the trigger really is one; Select renders its own
+    // trigger and takes a narrower set (its `aria-invalid` is boolean, the DOM one also admits
+    // "grammar"/"spelling"). Spreading them would either not type or land on the wrong element.
+    return (
+      <Select
+        // `Select` exposes no ref, so the forwarded one lands on the dialog trigger branch only.
+        // Casting one in here would advertise a handle that never arrives.
+        mode={isMultiple ? "multiple" : undefined}
+        // gh#942 (1) — `loadOptions` PHẢI đi qua đây. Trước đó nhánh này chỉ đọc `options`, nên
+        // một picker lấy dữ liệu từ server mà `count` nhỏ hiện dropdown RỖNG, và consumer phải
+        // tự nhét trang đầu vào `options` để vòng. Select đã hỗ trợ sẵn `loadOptions`.
+        loadOptions={selectLoadOptions}
+        // gh#942 (2) — những prop NHẬN DẠNG mà FormField truyền xuống. Cả khối `...props` không
+        // chuyển qua được (kiểu `aria-invalid` của DOM rộng hơn của Select: nó còn nhận
+        // "grammar"/"spelling"), nhưng ba cái này mới là thứ consumer mất: trigger nhận id tự
+        // sinh thay cho id của FormField, và không có `data-field` nên lỗi 422 không bám được.
+        id={props.id}
+        data-field={fieldName}
+        aria-describedby={props["aria-describedby"]}
+        // `SelectProp` is discriminated on `labelInValue`; this picker returns plain values, so
+        // the branch is named explicitly rather than left for inference to pick.
+        labelInValue={false}
+        showSearch
+        options={withEmptyOption(options, emptyOption)}
+        value={(isMultiple ? selected : (selected[0] ?? undefined)) as never}
+        onValueChange={((next: string | string[]) => commit(toArray(next))) as never}
+        placeholder={placeholder ?? t("dataEntry.recordPicker.placeholder")}
+        notFoundContent={notFoundContent}
+        disabled={disabled}
+        size={size}
+        className={className}
+      />
+    );
+  }
+
+  return (
+    <DialogPicker
+      ref={ref as React.Ref<HTMLButtonElement>}
+      // Truyền LẠI tường minh: nó đã bị destructure khỏi `props` ở trên để nhánh Select dùng,
+      // nên nhánh này sẽ âm thầm mất nó — đúng lỗi gh#942 điểm 2, chỉ đổi bên.
+      data-field={fieldName}
+      isMultiple={isMultiple}
+      selected={selected}
+      commit={commit}
+      staticOptions={staticOptions}
+      loadOptions={loadOptions}
+      filters={filters}
+      selectedOptions={selectedOptions}
+      emptyOption={emptyOption}
+      placeholder={placeholder}
+      dialogTitle={dialogTitle}
+      notFoundContent={notFoundContent}
+      loadMoreLabel={loadMoreLabel}
+      disabled={disabled}
+      size={size}
+      className={className}
+      {...props}
+    />
+  );
+});
 
 /** Số gợi ý tối đa hiện dưới ô gõ. Đây là một ô, không phải trình duyệt danh sách. */
 const INLINE_SUGGESTION_LIMIT = 8;
@@ -321,6 +323,14 @@ type InlinePickerProps = {
   id?: string;
   "data-field"?: string;
   "aria-describedby"?: string;
+  /* gh#1495 / gh#1494 — the rest of the field contract FormField clones on (and a caller may pass
+   * outside one). The branch used to keep only `aria-describedby`, so `aria-required`,
+   * `aria-invalid`, `aria-errormessage` and a caller's `aria-label` never reached the input. */
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-errormessage"?: string;
+  "aria-invalid"?: React.AriaAttributes["aria-invalid"];
+  "aria-required"?: React.AriaAttributes["aria-required"];
 };
 
 const InlinePicker = React.forwardRef<HTMLInputElement, InlinePickerProps>(function InlinePicker(
@@ -343,11 +353,43 @@ const InlinePicker = React.forwardRef<HTMLInputElement, InlinePickerProps>(funct
     id,
     "data-field": fieldName,
     "aria-describedby": describedBy,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    "aria-errormessage": ariaErrorMessage,
+    "aria-invalid": ariaInvalid,
+    "aria-required": ariaRequired,
   },
   ref,
 ) {
   const { t } = useTranslation();
   const [query, setQuery] = React.useState("");
+  /*
+   * A NAME OUTSIDE A FORMFIELD (gh#1495, WCAG 4.1.2). Inside FormField the input is named by the
+   * field's label; a caller may also pass `aria-label`/`aria-labelledby` or point a native
+   * `<label for>` at `id`. With none of those the search box had no accessible name at all. The
+   * fallback is the caller's placeholder (the one string written to say what the box is for),
+   * else the localized "Search" — and only while nothing better exists, so a native label is
+   * never overridden.
+   */
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const [hasNativeLabel, setHasNativeLabel] = React.useState(false);
+  // A `<label for>` names the input through its `id`, so the association is re-read when it moves.
+  React.useLayoutEffect(() => {
+    setHasNativeLabel((inputRef.current?.labels?.length ?? 0) > 0);
+  }, [id]);
+  const enclosingField = React.useContext(FieldNameContext);
+  const fallbackName =
+    ariaLabel === undefined && ariaLabelledBy === undefined && !enclosingField && !hasNativeLabel
+      ? (placeholder ?? t("dataEntry.recordPicker.search"))
+      : undefined;
+  const setInputRef = React.useCallback(
+    (node: HTMLInputElement | null) => {
+      inputRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
   const [rows, setRows] = React.useState<SearchSelectOptionProp[]>(staticOptions);
   const [openSuggest, setOpenSuggest] = React.useState(false);
   const [dialogQuery, setDialogQuery] = React.useState<string | null>(null);
@@ -390,7 +432,7 @@ const InlinePicker = React.forwardRef<HTMLInputElement, InlinePickerProps>(funct
       <Flex direction="col" gap={1} className={cn("ui-record-picker-inline", className)}>
         <Flex direction="row" gap="xs" align="center">
           <Input
-            ref={ref}
+            ref={setInputRef}
             type="search"
             value={query}
             disabled={disabled}
@@ -412,6 +454,11 @@ const InlinePicker = React.forwardRef<HTMLInputElement, InlinePickerProps>(funct
             id={id}
             data-field={fieldName}
             aria-describedby={describedBy}
+            aria-label={ariaLabel ?? fallbackName}
+            aria-labelledby={ariaLabelledBy}
+            aria-errormessage={ariaErrorMessage}
+            aria-invalid={ariaInvalid}
+            aria-required={ariaRequired}
           />
           {/* Luôn hiện, kể cả khi ô rỗng: nút này là lối vào cho người CHƯA biết mình tìm gì —
               ẩn nó đi khi chưa gõ là giấu nó khỏi đúng người cần nó nhất. */}

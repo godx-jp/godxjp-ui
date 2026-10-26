@@ -244,7 +244,15 @@
    * Scoped to a component that IS the cell's content or one wrapper deep, never inside a wrapping
    * container (`Flex wrap`, the action-collection cell) or a column stack (`Flex direction="col"`, a
    * status Badge over a date line in gino-cloud): there a negative margin would let the lines
-   * overlap. */
+   * overlap.
+   *
+   * THE WRAPPER HAS TO BE ONE WE KNOW IS A SINGLE LINE (gh#1495). The second arm used to match any
+   * wrapper that did not SAY it was a column, so a consumer's plain `<div class="flex flex-col">`
+   * stacking a shift chip over a "+" button got both pulled up by the cell padding: the "+" was
+   * painted over the chip and a click on the shift opened bulk-assign instead. A stylesheet cannot
+   * read a utility class's direction, so the arm now names the wrappers that are one line by
+   * construction — an inline `span`/`a` (a Tooltip trigger, a link around an avatar) and a kit
+   * `Flex` row that does not wrap — and leaves every other block wrapper alone. */
   [data-slot="table-cell"]
     > :is(
       [data-slot="button"],
@@ -256,7 +264,7 @@
       [data-slot="swatch"]
     ),
   [data-slot="table-cell"]
-    > :not(
+    > :is(span, a, [data-direction="row"]):not(
       [data-wrap],
       [data-direction="col"],
       [data-direction="responsive"],

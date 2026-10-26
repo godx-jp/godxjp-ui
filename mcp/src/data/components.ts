@@ -11843,7 +11843,7 @@ import { Button } from "@godxjp/ui/general";
         name: "filters",
         type: "FilterBarFilterProp[]",
         description:
-          "Typed model — labelled domain-neutral Select filters rendered after the search slot in array order. Each: { value (stable identity), label (rendered as the control's REAL <label htmlFor> — WCAG 2.5.3), options, selected/defaultSelected/onSelectedChange, placeholder, disabled }. Width is token-owned (--filter-bar-filter-width).",
+          "Typed model — labelled domain-neutral Select filters rendered after the search slot in array order. Each: { value (stable identity), label (rendered as the control's REAL <label htmlFor> — WCAG 2.5.3), options, selected/defaultSelected/onSelectedChange, placeholder, disabled, required, allowClear }. Width is token-owned (--filter-bar-filter-width). A filter shows a ✕ by default (no filter is its resting state); a SCOPE filter that is never empty (branch, month) passes `required` — no ✕ and `aria-required` on the control — and `allowClear: false` hides the ✕ alone (gh#1495). Never rebuild a filter by hand on the bar's internal class to drop the ✕.",
       },
       {
         name: "chips",

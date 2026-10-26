@@ -12,6 +12,7 @@ import {
   SelectStateContext,
   SelectValue as AriaSelectValue,
   Separator as AriaSeparator,
+  Text as AriaText,
 } from "react-aria-components";
 import { ChevronDown, Loader2, X } from "lucide-react";
 import type {
@@ -1047,6 +1048,35 @@ function withOptionIcon(option: SearchSelectOptionProp, label: React.ReactNode) 
 }
 
 /**
+ * gh#1495 — the plain listbox ROW shows `option.sublabel` too, as the SearchSelect panel always
+ * has: an item code beside its name (「通勤手当」 · `A012`) is how people who know the codes find
+ * theirs. It follows the label on the same line, in the panel's muted sublabel style, so the row
+ * keeps the one-line menu height. The trigger shows the label alone (see `SelectValue` below); the
+ * option is named by its label and described by its sublabel.
+ */
+function optionRow(option: SearchSelectOptionProp) {
+  if (!option.sublabel) return withOptionIcon(option, option.label);
+  return (
+    <span className="ui-select-option-body">
+      {option.icon ? (
+        <span className="ui-select-option-icon" aria-hidden="true">
+          {option.icon}
+        </span>
+      ) : null}
+      {/* react-aria's option slots: the label NAMES the option and the sublabel DESCRIBES it
+          (`aria-labelledby` / `aria-describedby`), so the name stays 「通勤手当」 and the code is
+          read after it instead of being run into the name. */}
+      <AriaText slot="label" className="ui-select-option-label">
+        {option.label}
+      </AriaText>
+      <AriaText slot="description" className="ui-search-select-option-sublabel">
+        {option.sublabel}
+      </AriaText>
+    </span>
+  );
+}
+
+/**
  * antd `labelRender` on the plain listbox. It reads the picked key out of react-aria's state
  * rather than off a prop, so an UNCONTROLLED Select renders a custom label too — the branch a
  * `value`-only implementation silently skips.
@@ -1278,7 +1308,7 @@ function DataSelect(props: PlainDataSelectProp) {
           ? optionRender(option, { index })
           : renderOption
             ? renderOption(option)
-            : withOptionIcon(option, option.label)}
+            : optionRow(option)}
       </SelectItem>
     );
   };
@@ -1371,8 +1401,9 @@ function DataSelect(props: PlainDataSelectProp) {
         <SelectValue placeholder={placeholder ?? t("dataEntry.searchSelect.placeholder")}>
           {labelRender ? (
             <DataSelectLabel labelRender={labelRender} options={options} />
-          ) : options.some((option) => option.icon) ? (
+          ) : options.some((option) => option.icon || option.sublabel) ? (
             // gh#1444 — the selected option's icon leads the trigger too, as in the search panel.
+            // gh#1495 — and a sublabel stays in the row: the trigger names the pick by its label.
             <DataSelectLabel
               labelRender={({ label, option }) => (option ? withOptionIcon(option, label) : label)}
               options={options}
