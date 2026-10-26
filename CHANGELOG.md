@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `Sidebar` draws a third clickable level under a section (gh#1493). A child item's own `children` were dropped, so a work area → sub-area → page tree (人事 → 労務 → 算定基礎届) could not be reached and had to be flattened. A child with children is now a collapsible group one level down (its guide line drops from the sub-row's dot), it opens when one of its descendants is active, and the leaf carries `aria-current="page"`; the collapsed-rail flyout lists the grandchildren under a labelled `group`. `NavList` renders nested items through the same group.
+- A `Sidebar` label cut by the rail's ellipsis carries its full text as `title` (and `data-truncated`) while it is cut, and loses both when the rail widens enough for it to fit (gh#1493). Measured in Chromium at a 240px rail: `定時決定（算定基礎届）の提出と標準報酬月額の確認` scrollWidth > clientWidth → `title` set; `賞与` → none.
+
 - Icon stays in the text line inside links and prose instead of inheriting the SVG reset's block display. Flex-based control sizing remains unchanged.
 
 - Image recovers failed requests that complete before hydration, so fallback and disabled preview match the actual image state.

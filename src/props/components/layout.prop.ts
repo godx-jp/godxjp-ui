@@ -1216,6 +1216,9 @@ export type SidebarItemProp = {
    * Nested rows — renders a collapsible submenu group (the parent reads active when any child is).
    * Honoured by BOTH `Sidebar` and `NavList` (gh#815): `NavList` used to map `items` straight to a
    * row, so a nested group type-checked, rendered as one flat row and lost its children silently.
+   * A child may carry `children` of its own (gh#1493): the group nests one level further, so a
+   * section can hold work area → sub-area → page (three clickable levels), and the collapsed-rail
+   * flyout lists the grandchildren under a labelled group.
    */
   children?: SidebarItemProp[];
 };

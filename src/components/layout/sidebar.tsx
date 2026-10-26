@@ -104,6 +104,44 @@ function SidebarTrailingIcon({
 }
 
 /**
+ * A CUT LABEL STAYS READABLE (gh#1493). `.sb-label` ends in an ellipsis inside a fixed-width rail,
+ * and a long label (定時決定（算定基礎届）… 232px of text in a 178px slot) was cut with nothing to
+ * recover it by pointer. The row's accessible name already carries the whole text — the ellipsis
+ * is paint, not content — so what was missing is the SIGHTED route: the label is measured, and only
+ * while it is actually cut (`scrollWidth > clientWidth`) it gets `data-truncated` and a `title` with
+ * the full text. Re-measured on resize (rail width, font load, a drawer opening) so a label that
+ * fits again loses the title instead of keeping a stale one.
+ */
+function SidebarLabel({ children }: { children: React.ReactNode }) {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  React.useLayoutEffect(() => {
+    const label = ref.current;
+    if (!label) return;
+    const sync = () => {
+      const cut = label.scrollWidth - label.clientWidth > 1;
+      if (cut) {
+        const text = (label.textContent ?? "").replace(/\s+/g, " ").trim();
+        if (label.title !== text) label.title = text;
+        label.dataset.truncated = "";
+      } else if (label.dataset.truncated !== undefined) {
+        label.removeAttribute("title");
+        delete label.dataset.truncated;
+      }
+    };
+    sync();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(sync);
+    observer.observe(label);
+    return () => observer.disconnect();
+  });
+  return (
+    <span ref={ref} className="sb-label">
+      {children}
+    </span>
+  );
+}
+
+/**
  * Every row shape renders this: the leaf button, the `href` anchor, the `linkComponent` router
  * link, the `asChild` element and the group trigger.
  */
@@ -121,7 +159,7 @@ function SidebarRowContent({
   return (
     <>
       {!sub ? <SidebarIcon icon={item.icon} /> : null}
-      <span className="sb-label">{item.label}</span>
+      <SidebarLabel>{item.label}</SidebarLabel>
       {showBadge ? (
         // absent-when-off), so a rail that never sets `badgeTone` renders the exact same node it
         // always did and no consumer selector has to out-specify a marker meaning "unchanged".
@@ -267,17 +305,32 @@ function NavLeafsInGroup({
   linkComponent?: SidebarLinkComponentProp;
   renderItem?: RenderItem;
 }) {
-  return children.map((child) => (
-    <NavLeaf
-      key={child.id}
-      item={child}
-      activeId={activeId}
-      onSelect={onSelect}
-      sub
-      linkComponent={linkComponent}
-      renderItem={renderItem}
-    />
-  ));
+  // A child that has children of its own is a GROUP one level down (gh#1493): a work area under a
+  // section heading (人事 → 労務 → 算定基礎届) is three clickable levels, and dropping the third
+  // forced consumers to flatten a task tree the navigation skill tells them to build.
+  return children.map((child) =>
+    child.children && child.children.length > 0 ? (
+      <NavGroup
+        key={child.id}
+        item={child}
+        activeId={activeId}
+        onSelect={onSelect}
+        sub
+        linkComponent={linkComponent}
+        renderItem={renderItem}
+      />
+    ) : (
+      <NavLeaf
+        key={child.id}
+        item={child}
+        activeId={activeId}
+        onSelect={onSelect}
+        sub
+        linkComponent={linkComponent}
+        renderItem={renderItem}
+      />
+    ),
+  );
 }
 
 /**
@@ -285,7 +338,14 @@ function NavLeafsInGroup({
  * only within `src/components/layout`) so `NavList` renders nested items through the SAME group as
  * the rail instead of dropping `item.children` on the floor (gh#815).
  */
-export function NavGroup({ item, activeId, onSelect, linkComponent, renderItem }: RowProps) {
+export function NavGroup({
+  item,
+  activeId,
+  onSelect,
+  sub = false,
+  linkComponent,
+  renderItem,
+}: RowProps) {
   const active = isItemActive(item, activeId);
   const children = item.children ?? [];
 
@@ -302,10 +362,10 @@ export function NavGroup({ item, activeId, onSelect, linkComponent, renderItem }
     <Collapsible open={open} onOpenChange={setOpen} className="sb-nav-group">
       {/* The group's CHILDREN take the router link. */}
       <CollapsibleTrigger
-        className="sb-nav-item sb-nav-group-trigger"
+        className={cn("sb-nav-item sb-nav-group-trigger", sub && "sb-nav-item--sub")}
         data-active={active ? "true" : undefined}
       >
-        <SidebarRowContent item={item} />
+        <SidebarRowContent item={item} sub={sub} />
         <ChevronDown className="sb-chevron" aria-hidden="true" />
       </CollapsibleTrigger>
       <CollapsibleContent>
@@ -378,6 +438,56 @@ function CollapsedRow({ item, activeId, onSelect, linkComponent: LinkComponent }
       </LinkComponent>
     ) : null;
 
+  // A flyout entry with children of its own (gh#1493) is a labelled GROUP of its leaves, one level
+  // in: the collapsed rail reaches the third level too, instead of listing an unclickable group row.
+  const renderFlyoutEntries = (entries: SidebarItemProp[]): React.ReactNode =>
+    entries.map((child) => {
+      if (child.children && child.children.length > 0) {
+        return (
+          <div key={child.id} role="group" aria-label={child.label} className="sb-flyout-group">
+            <div className="sb-flyout-title" aria-hidden="true">
+              {child.label}
+            </div>
+            {renderFlyoutEntries(child.children)}
+          </div>
+        );
+      }
+      const childActive = child.id === activeId;
+      const select = (event: React.MouseEvent<HTMLElement>) => {
+        setMenuOpen(false);
+        if (child.disabled) {
+          event.preventDefault();
+          return;
+        }
+        onSelect?.(child.id);
+      };
+      const flyoutState = {
+        role: "menuitem" as const,
+        className: "sb-nav-item",
+        "data-active": childActive ? ("true" as const) : undefined,
+        "aria-current": childActive ? ("page" as const) : undefined,
+        "aria-disabled": child.disabled || undefined,
+      };
+      // Flyout entries are LEAVES, so the router link applies here as well — the collapsed rail
+      return LinkComponent && child.href ? (
+        <LinkComponent
+          key={child.id}
+          {...flyoutState}
+          href={child.disabled ? undefined : child.href}
+          onClick={select}
+        >
+          <SidebarRowContent item={child} sub />
+        </LinkComponent>
+      ) : (
+        // A collapsed-rail flyout entry is a `menuitem`-styled nav row owning `.sb-nav-item`
+        // composition, not a <Button> — same contract as the leaf row above.
+        // ui-audit-disable-next-line no-raw-button
+        <button key={child.id} type="button" {...flyoutState} onClick={select}>
+          <SidebarRowContent item={child} sub />
+        </button>
+      );
+    });
+
   if (!hasChildren) {
     return (
       <Tooltip>
@@ -403,42 +513,7 @@ function CollapsedRow({ item, activeId, onSelect, linkComponent: LinkComponent }
         className="sb-flyout-pop"
       >
         <div className="sb-flyout-title">{item.label}</div>
-        {children.map((child) => {
-          const childActive = child.id === activeId;
-          const select = (event: React.MouseEvent<HTMLElement>) => {
-            setMenuOpen(false);
-            if (child.disabled) {
-              event.preventDefault();
-              return;
-            }
-            onSelect?.(child.id);
-          };
-          const flyoutState = {
-            role: "menuitem" as const,
-            className: "sb-nav-item",
-            "data-active": childActive ? ("true" as const) : undefined,
-            "aria-current": childActive ? ("page" as const) : undefined,
-            "aria-disabled": child.disabled || undefined,
-          };
-          // Flyout entries are LEAVES, so the router link applies here as well — the collapsed rail
-          return LinkComponent && child.href ? (
-            <LinkComponent
-              key={child.id}
-              {...flyoutState}
-              href={child.disabled ? undefined : child.href}
-              onClick={select}
-            >
-              <SidebarRowContent item={child} sub />
-            </LinkComponent>
-          ) : (
-            // A collapsed-rail flyout entry is a `menuitem`-styled nav row owning `.sb-nav-item`
-            // composition, not a <Button> — same contract as the leaf row above.
-            // ui-audit-disable-next-line no-raw-button
-            <button key={child.id} type="button" {...flyoutState} onClick={select}>
-              <SidebarRowContent item={child} sub />
-            </button>
-          );
-        })}
+        {renderFlyoutEntries(children)}
       </PopoverContent>
     </Popover>
   );

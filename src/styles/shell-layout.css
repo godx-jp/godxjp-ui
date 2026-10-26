@@ -2543,6 +2543,13 @@
     border-inline-start: var(--stroke-hairline) solid hsl(var(--border));
   }
 
+  /* A group INSIDE a group (gh#1493) — the third clickable level. Its guide line drops from the
+   * sub-row's dot marker (row inset + half the 4px dot), the same way the level-2 line drops from the
+   * level-1 icon, so each level reads as hanging off the row that opened it. */
+  .sb-nav-sub .sb-nav-sub {
+    margin-inline-start: calc(var(--sidebar-nav-item-padding-x) + 2px);
+  }
+
   .sb-nav-item--sub {
     height: 1.75rem;
     font-size: var(--sidebar-nav-sub-font-size);
@@ -2640,6 +2647,14 @@
     font-size: var(--sidebar-flyout-title-font-size);
     font-weight: var(--font-weight-medium);
     white-space: nowrap;
+  }
+
+  /* A group of leaves inside a collapsed-rail flyout (gh#1493) — its heading is the same muted
+   * title the flyout opens with, so the third level reads as a section of the menu. */
+  .sb-flyout-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-nav-gap);
   }
 
   /* Footer user — circular avatar with live dot + overflow menu, design `.sb-user`. */
