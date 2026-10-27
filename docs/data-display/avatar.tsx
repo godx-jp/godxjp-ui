@@ -1,4 +1,5 @@
 import {
+  AgentBadge,
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -353,6 +354,115 @@ export default function Demo() {
               title="佐藤 玲"
               description="presenceLabel でプロダクト側の言い回しに差し替え（表示はされない）"
             />
+          </CardContent>
+        </Card>
+
+        {/* kind="agent" — tell an AI agent apart from a person on the mark itself */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("avatarDocs.agentTitle")}</CardTitle>
+            <CardDescription>{t("avatarDocs.agentDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" wrap align="center" gap="md">
+                <Avatar size="xs" kind="agent">
+                  <AvatarFallback>H</AvatarFallback>
+                </Avatar>
+                <Avatar size="sm" kind="agent">
+                  <AvatarFallback>R</AvatarFallback>
+                </Avatar>
+                <Avatar kind="agent" presence="online">
+                  <AvatarFallback>M</AvatarFallback>
+                </Avatar>
+                <Avatar size="lg" kind="agent">
+                  <AvatarImage src={portraitIndigo} alt="Haruka" />
+                  <AvatarFallback>H</AvatarFallback>
+                </Avatar>
+                <Avatar className="size-12" kind="agent">
+                  <AvatarFallback>AI</AvatarFallback>
+                </Avatar>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* A list that prints names: Avatar kind="agent" AND AgentBadge beside the name. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("avatarDocs.agentListTitle")}</CardTitle>
+            <CardDescription>{t("avatarDocs.agentListDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <ListRow
+              leading={
+                <Avatar>
+                  <AvatarImage src={portraitSlate} alt="" />
+                  <AvatarFallback>F</AvatarFallback>
+                </Avatar>
+              }
+              title="Fujiwara Satoshi"
+              description="info@example.com"
+            />
+            <ListRow
+              leading={
+                <Avatar kind="agent">
+                  <AvatarImage src={portraitIndigo} alt="" />
+                  <AvatarFallback>H</AvatarFallback>
+                </Avatar>
+              }
+              title={
+                <Flex direction="row" align="center" gap="xs">
+                  <Text>Haruka</Text>
+                  <AgentBadge />
+                </Flex>
+              }
+              description="haruka@agent.example.com"
+            />
+            <ListRow
+              leading={
+                <Avatar kind="agent">
+                  <AvatarFallback>R</AvatarFallback>
+                </Avatar>
+              }
+              title={
+                <Flex direction="row" align="center" gap="xs">
+                  <Text>Ren</Text>
+                  <AgentBadge />
+                </Flex>
+              }
+              description="ren@agent.example.com"
+            />
+          </CardContent>
+        </Card>
+
+        {/* A place with only the mark (an assignee cell): the Avatar alone. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("avatarDocs.agentDenseTitle")}</CardTitle>
+            <CardDescription>{t("avatarDocs.agentDenseDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="md">
+              <Flex direction="row" align="center" gap="xs">
+                <Avatar size="xs">
+                  <AvatarFallback>F</AvatarFallback>
+                </Avatar>
+                <Text size="sm">Fujiwara</Text>
+              </Flex>
+              <Flex direction="row" align="center" gap="xs">
+                <Avatar size="xs" kind="agent">
+                  <AvatarFallback>H</AvatarFallback>
+                </Avatar>
+                <Text size="sm">Haruka</Text>
+              </Flex>
+              <Flex direction="row" align="center" gap="xs">
+                <Avatar size="xs" kind="agent">
+                  <AvatarFallback>R</AvatarFallback>
+                </Avatar>
+                <Text size="sm">Ren</Text>
+              </Flex>
+            </Flex>
           </CardContent>
         </Card>
 

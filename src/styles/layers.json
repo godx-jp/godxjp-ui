@@ -64,6 +64,12 @@
         "layout.css"
       ]
     },
+    "AgentBadge": {
+      "layers": [
+        "dialog-layout.css",
+        "badge-layout.css"
+      ]
+    },
     "Alert": {
       "layers": [
         "layout.css",

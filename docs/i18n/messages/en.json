@@ -1816,6 +1816,12 @@
   "avatarDocs": {
     "fitTitle": "Logos: fit=\"contain\"",
     "fitDescription": "cover (the default) crops to fill — right for a face. contain shows a wide or transparent logo whole.",
+    "agentTitle": "AI agents: kind=\"agent\"",
+    "agentDescription": "Where an agent could be mistaken for a person — a member list, an assignee, a comment author — its mark carries an \"AI\" tag. The tag sits on the top corner, so it composes with the presence dot at the bottom. Screen readers hear \"AI agent\", so colour is never the only signal.",
+    "agentListTitle": "A list that shows names: the mark AND the label",
+    "agentListDescription": "Where the name is printed — a member list, a people picker, a comment author — use Avatar kind=\"agent\" and put <AgentBadge /> right after the name.",
+    "agentDenseTitle": "Only a mark, or a dense cell: the Avatar alone",
+    "agentDenseDescription": "An assignee icon column or a 24px table cell has no room for a label; the Avatar's own AI tag is the marker there.",
     "logo": "Acme logo"
   },
   "sidebarDocs": {

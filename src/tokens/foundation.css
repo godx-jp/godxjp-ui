@@ -141,6 +141,12 @@
   --info-foreground: 60 33% 99%;
   --attention: 25 99% 46%; /* 朱 #eb6101 */
   --attention-foreground: 48 8% 13%; /* 4.68:1 on the fill — near-white was 3.32:1 (gh#643) */
+  /* AGENT role — marks an AI agent (Avatar kind="agent", AgentBadge) so it is never mistaken for a
+   * person. Violet, chosen apart from every status hue so "AI" never reads as a state. FILL #7c3aed
+   * under white ink measures 5.70:1; TEXT --text-agent #6d28d9 on white measures 7.10:1 (AA). */
+  --agent: 262 83% 58%; /* #7c3aed */
+  --agent-foreground: 0 0% 100%;
+  --text-agent: 263 70% 50%; /* #6d28d9 — AA violet text on white */
 
   /* IDENTITY role — the PRODUCT MARK colour (Logo `tone="success"`, its wordmark, the email brand
    * capsule). Neutral ink by default since v32 (gh#1220); the GoDX preset (`themes/godx.css`) sets
@@ -1116,6 +1122,11 @@
     --info-foreground: 48 9% 9%;
     --attention: 25 95% 56%;
     --attention-foreground: 48 9% 9%;
+    /* AGENT (dark) — the fill keeps its white ink (5.70:1); the TEXT tier reads light on the dark
+     * spine (#c4b5fd on #1a1916 ≈ 10:1). */
+    --agent: 262 83% 58%;
+    --agent-foreground: 0 0% 100%;
+    --text-agent: 252 95% 85%; /* #c4b5fd */
 
     /* IDENTITY (dark) — neutral, the polarity of the dark --primary; the GoDX preset lifts its
      * violet here. The on-fill glyph flips dark, exactly like --success-foreground does. */

@@ -25,6 +25,7 @@ import {
   toneSuccessClass,
   toneWarningClass,
 } from "../../lib/control-styles";
+import type { AgentBadgeProp } from "../../props/components/data-display.prop";
 import type { ShapeProp, ToneProp } from "../../props/vocabulary";
 
 export type BadgeVariant = "default" | "secondary" | "outline" | "dashed";
@@ -355,3 +356,33 @@ export function Badge({
  * general-purpose primitive.
  */
 export const StatusBadge = Badge;
+
+/** @see AgentBadgeProp */
+export type AgentBadgeProps = AgentBadgeProp;
+
+/**
+ * The "AI agent" label beside a NAME — the text-row half of telling an AI agent apart from a
+ * person; `<Avatar kind="agent">` is the mark half. A list that shows names uses both; a place with
+ * only a mark (an assignee icon column, a dense cell) uses the Avatar alone. Violet outline on a
+ * transparent ground (`--badge-agent-*`, reading the `--agent` role), pill, never wraps. The label
+ * is real text, so it is announced as written and never colour-only.
+ */
+export function AgentBadge({
+  as: Element = "span",
+  className,
+  children,
+  ...props
+}: AgentBadgeProps) {
+  const { t } = useTranslation();
+  return (
+    <Element
+      data-slot="badge"
+      data-agent=""
+      data-shape="pill"
+      className={cn(badgeVariants({ variant: "tinted", shape: "pill" }), className)}
+      {...props}
+    >
+      <span data-slot="badge-label">{children ?? t("dataDisplay.avatar.agent")}</span>
+    </Element>
+  );
+}

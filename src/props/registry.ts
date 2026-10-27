@@ -3683,6 +3683,25 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: [],
   },
+  AvatarKindProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
+  AgentBadgeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "as",
+        local: true,
+        reason:
+          "Closed tag seam (div | span), the same one Badge carries, so the label stays valid HTML beside a name inside a link or a <button>.",
+      },
+      "ChildrenProp",
+      "ClassNameProp",
+    ],
+  },
   AvatarImageFitProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

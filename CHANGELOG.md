@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.24.0] - 2026-10-27
+
+### Added
+
+- Telling an AI agent apart from a person, everywhere one could be mistaken for the other. Two halves of one rule: **a list that prints names uses both; a place with only a mark (an assignee icon column, a dense cell) uses the Avatar alone.**
+  - `Avatar` `kind` (`"person" | "agent"`, default `"person"`). `kind="agent"` draws a white-on-violet "AI" pill at the top/inline-end corner, spilling `--space-1` past the mark behind a `--background` ring (presence keeps the bottom corner, so the two compose), legible at every size xs..lg (measured 19×14px at 11.1px type on all four steps), and folds a localized visually hidden "AI agent" (`dataDisplay.avatar.agent`: ja "AIエージェント", vi "Tác tử AI") into the avatar's accessible text; the visible "AI" is `aria-hidden`, so a screen reader hears the label once. Omitted or `"person"` emits no attribute and no node — every existing avatar is byte-identical. Same two values as `OrgChart` node `variant`. Tokens `--avatar-agent-{font-size,font-weight,padding-inline,inset,ring-width,background,foreground,ring-color}`.
+  - `AgentBadge` (`@godxjp/ui/data-display`): the "AI agent" label beside a name — violet outline on a transparent ground, pill, never wraps, a `span` by default, localized default text (`children` overrides). Tokens `--badge-agent-{border,foreground}`.
+  - Semantic role `--agent` / `--agent-foreground` / `--text-agent`, light and dark: violet `#7c3aed` fill under white ink 5.70:1; text `#6d28d9` on white 7.10:1, `#c4b5fd` on the dark spine. Never colour-only: the tag and the label are text, and under forced colors both turn CanvasText.
+
 ## [33.23.0] - 2026-10-27
 
 ### Changed

@@ -383,6 +383,7 @@
   },
   "dataDisplay": {
     "avatar": {
+      "agent": "AIエージェント",
       "presence": {
         "online": "オンライン",
         "away": "離席中",

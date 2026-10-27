@@ -592,6 +592,38 @@
         }
       ]
     },
+    "AgentBadge": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "as",
+          "origin": "owned",
+          "required": false,
+          "type": "\"div\" | \"span\" | undefined",
+          "values": ["div", "span"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        }
+      ]
+    },
     "Alert": {
       "group": "feedback",
       "props": [
@@ -2184,6 +2216,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-display/avatar.tsx"]
+        },
+        {
+          "name": "kind",
+          "origin": "owned",
+          "required": false,
+          "type": "AvatarKindProp | undefined",
+          "values": ["person", "agent"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
           "name": "presence",

@@ -444,6 +444,11 @@
   },
   {
     "group": "data-display",
+    "name": "AgentBadge",
+    "tagline": "The \"AI agent\" label beside a NAME — violet outline on a transparent ground, pill, never wraps."
+  },
+  {
+    "group": "data-display",
     "name": "Legend",
     "tagline": "The KEY for a colour-coded surface: which tone means what, spelled out in words once — a square swatch per tone with its label."
   },

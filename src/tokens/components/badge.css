@@ -20,6 +20,10 @@
    * hsl(var(--foreground)) at the call site. */
   --badge-min-height: initial;
   --badge-outline-foreground: initial;
+  /* AgentBadge — the violet outline and ink of the "AI agent" label. Role-mirrors, `initial`:
+   * hsl(var(--agent)) border and hsl(var(--text-agent)) ink at the call site. */
+  --badge-agent-border: initial;
+  --badge-agent-foreground: initial;
   /* Leading/trailing glyph inside the pill. It was a bare `0.75rem` in badge-layout.css with no
    * token at all, so a service could only resize it with `!important` or a forked stylesheet —
    * the two routes the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing

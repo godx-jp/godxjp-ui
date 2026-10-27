@@ -6201,6 +6201,60 @@ import { Button } from "@godxjp/ui/general";
     rules: [35],
   },
   {
+    name: "AgentBadge",
+    group: "data-display",
+    tagline:
+      'The "AI agent" label beside a NAME — violet outline on a transparent ground, pill, never wraps. The text-row half of telling an AI agent apart from a person; `Avatar kind="agent"` is the mark half. A list that shows names uses BOTH; a place with only a mark (assignee icon column, dense cell) uses the Avatar alone.',
+    props: [
+      {
+        name: "as",
+        type: '"div" | "span"',
+        defaultValue: '"span"',
+        description:
+          "Render element. `span` (default) because the label sits in a name's text line, often inside a link or a <button>.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        description:
+          'Overrides the localized default label (`dataDisplay.avatar.agent`: ja "AIエージェント", en "AI agent", vi "Tác tử AI"). Omit it — the default follows the locale.',
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra classes on the label root.",
+      },
+    ],
+    usage: [
+      'DO put it right after the agent\'s name, in the same text line: `<Flex align="center" gap="xs"><Text>{name}</Text><AgentBadge /></Flex>`, and pair it with `<Avatar kind="agent">` on the same row.',
+      "DO leave `children` empty so the label follows the locale; it is real text, so it is announced as written and never colour-only (WCAG 1.4.1).",
+      'DON\'T hand-roll it as `<Badge variant="outline" className="text-violet-600">AI</Badge>` — the colour reads the `--agent` role through `--badge-agent-border` / `--badge-agent-foreground`, which a theme retunes once.',
+      "DON'T add it where there is no name (an icon-only column, a 24px cell) — there the Avatar's own AI tag is the marker.",
+    ],
+    useCases: [
+      "A member list, a people picker, an assignee dropdown option — any row that prints a principal's name.",
+      "A comment, an activity entry or a chat message authored by an AI agent.",
+    ],
+    related: [
+      'Avatar — `kind="agent"` puts the "AI" tag on the mark itself; use it everywhere an agent\'s mark appears, and add AgentBadge where its name is printed.',
+      "Badge — the general chip; AgentBadge is a fixed-meaning label built on the same chip geometry.",
+    ],
+    example: `import { AgentBadge, Avatar, AvatarFallback, AvatarImage } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
+import { Flex } from "@godxjp/ui/layout";
+
+<Flex align="center" gap="sm">
+  <Avatar kind="agent">
+    <AvatarImage src={agent.avatarUrl} alt="" />
+    <AvatarFallback>ハ</AvatarFallback>
+  </Avatar>
+  <Text>ハルカ</Text>
+  <AgentBadge />
+</Flex>`,
+    storyPath: "data-display/avatar.tsx",
+    rules: [35],
+  },
+  {
     name: "Legend",
     group: "data-display",
     tagline:
@@ -16006,6 +16060,13 @@ import { fetchInvoice } from "@/api/invoices";
           'Override the localized presence text (t("dataDisplay.avatar.presence.online") …) when the product has a more precise phrasing ("In a meeting until 15:00"). Visually hidden either way — a presence dot never carries visible text; that is Badge status.',
       },
       {
+        name: "kind",
+        type: '"person" | "agent"',
+        defaultValue: '"person"',
+        description:
+          'Who the mark stands for. `person` (inert default) emits no attribute and no node. `agent` marks an AI AGENT wherever a person could be mistaken for one — a member list, an assignee picker, a comment author: a white-on-violet "AI" pill at the TOP/inline-end corner, spilling slightly past the mark behind a --background ring (presence owns the bottom corner, so the two compose), legible at every size xs..lg, plus a localized sr-only "AI agent" (t("dataDisplay.avatar.agent")), so the difference is never the colour alone (WCAG 1.4.1). Same two values as OrgChart `variant`. Retune with --avatar-agent-* (colour from the --agent role). Where the NAME is printed too, add `<AgentBadge />` beside it; where only the mark appears (icon column, dense cell), the Avatar alone.',
+      },
+      {
         name: "children",
         type: "ReactNode",
         description: "Compose AvatarImage and AvatarFallback.",
@@ -16014,6 +16075,7 @@ import { fetchInvoice } from "@/api/invoices";
     ],
     usage: [
       "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+      'DO mark an AI agent with `kind="agent"` everywhere its mark appears. A list that shows NAMES uses BOTH `<Avatar kind="agent">` and `<AgentBadge />` beside the name; a place with only the mark (an assignee icon column, a dense 24px cell) uses the Avatar alone — its AI tag is the marker there.',
       'DO pass `fit="contain"` on AvatarImage for a logo or app icon that is wide, transparent or off-centre — the default `cover` crops to fill, right for a face (gh#1176). A full-bleed square icon (the GoDX service icon set) keeps the default.',
       'DO use `presence` for who is reachable RIGHT NOW — a chat member list, a DM row, a message-stream author, the topbar account mark. It is the only supported way to put a status dot on an avatar: the dot\'s inset is a function of the mark\'s own --avatar-* radius/size and of the root\'s clip, neither of which a page can read, which is why the hand-rolled `<span className="relative"><Avatar/><span className="absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full bg-green-500 ring-2 ring-background"/></span>` wrapper can never be got right from outside (and fails the DS audit on the raw palette).',
       "DON'T announce a presence CHANGE from the avatar — it carries no aria-live on purpose. A roster of 40 marks resyncing over a socket would flood a screen reader; announce the change in the consumer's own live region if the product wants it.",

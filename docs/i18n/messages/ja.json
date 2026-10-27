@@ -1809,6 +1809,12 @@
   "avatarDocs": {
     "fitTitle": "ロゴ：fit=\"contain\"",
     "fitDescription": "cover（既定）は枠いっぱいに切り抜きます（顔写真向け）。contain は横長・透過のロゴを切らずに全体表示します。",
+    "agentTitle": "AI エージェント · kind=\"agent\"",
+    "agentDescription": "人と見間違えうる場所（メンバー一覧、担当者、コメントの投稿者）で、AI エージェントのマークに「AI」タグを付けます。タグは上端の角に付くので、下端の presence ドットと同時に使えます。読み上げは「AIエージェント」で、色だけに頼りません。",
+    "agentListTitle": "名前を出す一覧：マークとラベルの両方",
+    "agentListDescription": "名前を表示する所（メンバー一覧、担当者の選択、コメントの投稿者）では、Avatar kind=\"agent\" に加えて名前の直後に <AgentBadge /> を置きます。",
+    "agentDenseTitle": "マークだけの所・密な表：Avatar のみ",
+    "agentDenseDescription": "担当者アイコン列や 24px の表セルにはラベルの余地がありません。そこでは Avatar の「AI」タグが目印です。",
     "logo": "Acme ロゴ"
   },
   "sidebarDocs": {

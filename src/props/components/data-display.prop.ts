@@ -330,9 +330,26 @@ export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
    * a presence dot never carries visible text; that is `Badge status`.
    */
   presenceLabel?: LabelProp;
+  /**
+   * Who the mark stands for. `person` (default) is inert — no attribute, no node. `agent` marks an
+   * AI agent: a small "AI" tag at the block-start/inline-end corner (the corner `presence` does not
+   * use) plus a localized visually hidden "AI agent" folded into the avatar's accessible text, so the
+   * difference is never carried by the tag's colour alone (WCAG 1.4.1). Same vocabulary as
+   * `OrgChartNode.variant`.
+   */
+  kind?: AvatarKindProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };
+
+/**
+ * Who an Avatar stands for — a person or an AI agent. Deliberately the same two values as
+ * `OrgChartNodeVariantProp`, so an app that already knows a principal's kind passes it unchanged
+ * to both. Retune the agent tag with `--avatar-agent-*`.
+ *
+ * @see Avatar
+ */
+export type AvatarKindProp = "person" | "agent";
 
 /**
  * Avatar presence status — a person's realtime reachability.
@@ -380,6 +397,18 @@ export type AvatarAppearanceProp = "default" | "tinted";
 export type AvatarImageFitProp = "cover" | "contain";
 
 /** @see Badge */
+/**
+ * @see AgentBadge — the "AI agent" label beside a name (violet outline, pill, never wraps). The
+ * text-row half of telling an agent apart from a person; `Avatar kind="agent"` is the mark half.
+ */
+export type AgentBadgeProp = Omit<React.HTMLAttributes<HTMLElement>, "children"> & {
+  /** Render element — `span` (default; the label sits in a name's text line) or `div`. */
+  as?: "div" | "span";
+  /** Overrides the localized default label (`dataDisplay.avatar.agent`). */
+  children?: ChildrenProp;
+  className?: ClassNameProp;
+};
+
 export type BadgeProp = {
   /**
    * Render element — `div` (default) or `span` when the chip sits in a phrasing context where a

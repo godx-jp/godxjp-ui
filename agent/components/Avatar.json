@@ -33,6 +33,12 @@
       "type": "string"
     },
     {
+      "defaultValue": "\"person\"",
+      "description": "Who the mark stands for. `person` (inert default) emits no attribute and no node. `agent` marks an AI AGENT wherever a person could be mistaken for one — a member list, an assignee picker, a comment author: a white-on-violet \"AI\" pill at the TOP/inline-end corner, spilling slightly past the mark behind a --background ring (presence owns the bottom corner, so the two compose), legible at every size xs..lg, plus a localized sr-only \"AI agent\" (t(\"dataDisplay.avatar.agent\")), so the difference is never the colour alone (WCAG 1.4.1). Same two values as OrgChart `variant`. Retune with --avatar-agent-* (colour from the --agent role). Where the NAME is printed too, add `<AgentBadge />` beside it; where only the mark appears (icon column, dense cell), the Avatar alone.",
+      "name": "kind",
+      "type": "\"person\" | \"agent\""
+    },
+    {
       "description": "Compose AvatarImage and AvatarFallback.",
       "name": "children",
       "type": "ReactNode"
@@ -59,6 +65,7 @@
   "tagline": "Avatar mark with image and fallback slots for users, teams, and entities.",
   "usage": [
     "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+    "DO mark an AI agent with `kind=\"agent\"` everywhere its mark appears. A list that shows NAMES uses BOTH `<Avatar kind=\"agent\">` and `<AgentBadge />` beside the name; a place with only the mark (an assignee icon column, a dense 24px cell) uses the Avatar alone — its AI tag is the marker there.",
     "DO pass `fit=\"contain\"` on AvatarImage for a logo or app icon that is wide, transparent or off-centre — the default `cover` crops to fill, right for a face (gh#1176). A full-bleed square icon (the GoDX service icon set) keeps the default.",
     "DO use `presence` for who is reachable RIGHT NOW — a chat member list, a DM row, a message-stream author, the topbar account mark. It is the only supported way to put a status dot on an avatar: the dot's inset is a function of the mark's own --avatar-* radius/size and of the root's clip, neither of which a page can read, which is why the hand-rolled `<span className=\"relative\"><Avatar/><span className=\"absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full bg-green-500 ring-2 ring-background\"/></span>` wrapper can never be got right from outside (and fails the DS audit on the raw palette).",
     "DON'T announce a presence CHANGE from the avatar — it carries no aria-live on purpose. A roster of 40 marks resyncing over a socket would flood a screen reader; announce the change in the consumer's own live region if the product wants it.",
