@@ -2054,6 +2054,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*), so only what is genuinely its own lives here (#319)."
   },
   {
+    "name": "--select-content-max-width",
+    "value": "32rem",
+    "description": "The listbox hugs its longest row up to this, then wraps rows; the same cap as the search panel so both Select modes size alike. The inset keeps it off the viewport edges."
+  },
+  {
+    "name": "--select-content-viewport-inset",
+    "value": "var(--space-6)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--select-content-inline-size",
     "value": "auto",
     "description": "Seat for a NUMERIC `popupMatchSelectWidth` on the plain listbox. `auto` is the inert default."

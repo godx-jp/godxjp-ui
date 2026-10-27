@@ -9520,7 +9520,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "popupMatchSelectWidth",
         type: "boolean | number",
         description:
-          "antd `popupMatchSelectWidth`. true (default) pins the popup to the trigger width, false lets it hug its rows, a number pins it to that many pixels.",
+          "antd `popupMatchSelectWidth`. true (default): the trigger width is the floor and the popup grows to its longest row, up to --select-content-max-width (32rem) and the viewport less --select-content-viewport-inset, then wraps rows. false lets it hug its rows below the trigger width; a number pins it to that many pixels. The width never depends on where the popup is placed, so it cannot change while open.",
       },
       {
         name: "fieldNames",
