@@ -1699,6 +1699,10 @@
     }
   },
   "badgeDocs": {
+    "agent": {
+      "title": "AgentBadge · beside an AI agent's name",
+      "description": "The fixed-meaning \"AI agent\" label. Pair it with Avatar kind=\"agent\" wherever the name is printed; see the Avatar page."
+    },
     "longLabels": {
       "title": "Long labels",
       "description": "A chip never wraps: a label wider than its container ends in an ellipsis (gh#1101), and when it was cut the full text opens in a tooltip on hover and on keyboard focus of the link or row around the chip (gh#1105). No extra props in a table cell or a Card.",
