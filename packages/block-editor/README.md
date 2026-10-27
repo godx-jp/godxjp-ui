@@ -44,16 +44,16 @@ import { BlockEditor } from "@godxjp/block-editor";
 
 ## Contract
 
-| prop                                                                     |                                                          |
-| ------------------------------------------------------------------------ | -------------------------------------------------------- |
-| `value` / `defaultValue` / `onValueChange`                               | Markdown in, canonical Markdown out                      |
-| `upload(file, { signal })`                                               | `→ { url, name? }` — the same shape as `MarkdownEditor`  |
-| `pickMedia()`                                                            | `→ { url, name? } \| null` — the host's library          |
-| `suggestWikilinks(query)`                                                | `→ { target, label?, heading?, description? }[]`         |
-| `renderEmbed(target)`                                                    | a block embed `![[target]]`                              |
-| `resolveUrl(url)`                                                        | display URL for a stored one (`asset:<id>`)              |
-| `directives`                                                             | `{ [name]: (block) => ReactNode \| undefined }` previews |
-| `actions`, `labels`, `disabled`, `readOnly`, `autoFocus`, `aria-*`, `id` |                                                          |
+| prop                                                                     |                                                                    |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `value` / `defaultValue` / `onValueChange`                               | Markdown in, canonical Markdown out                                |
+| `upload(file, { signal })`                                               | `→ { url, name? }` — the same shape as `MarkdownEditor`            |
+| `pickMedia()`                                                            | `→ { url, name? } \| null` — the host's library                    |
+| `suggestWikilinks(query)`                                                | `→ { target, label?, heading?, description? }[]`                   |
+| `renderEmbed(target)`                                                    | a block embed `![[target]]`                                        |
+| `resolveUrl(url)`                                                        | display URL for a stored one (`asset:<id>`)                        |
+| `directives`                                                             | `{ [name]: (block, controls) => ReactNode \| undefined }` previews |
+| `actions`, `labels`, `disabled`, `readOnly`, `autoFocus`, `aria-*`, `id` |                                                                    |
 
 ```tsx
 // A poll is a block: the host previews it and inserts its skeleton from the `/` menu.
@@ -73,6 +73,19 @@ import { BlockEditor } from "@godxjp/block-editor";
     },
   ]}
 />
+```
+
+A preview can change its own block (gh#1479): `controls.update(markdown)` replaces the block's
+source exactly like "Edit source" → Done (still one directive: the same block, one undo step;
+anything else takes its place), `controls.remove()` deletes it, and `controls.editable` is false in a
+read-only or disabled editor. A host's picker or config form writes its result back this way:
+
+```tsx
+directives={{
+  card: (block, { update, editable }) => (
+    <CardPreview id={block.attributes.card} onPick={editable ? (id) => update(`:::card{card=${id}}\n:::`) : undefined} />
+  ),
+}}
 ```
 
 The grammar it reads and writes is specified in `@godxjp/markdown`'s README ("Grammar v1 and the

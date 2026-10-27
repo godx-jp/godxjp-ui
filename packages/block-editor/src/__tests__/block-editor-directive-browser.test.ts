@@ -34,10 +34,20 @@ import { BlockEditor } from "./packages/block-editor/src";
 
 window.__value = null;
 const directives = {
-  poll: (block) =>
+  poll: (block, controls) =>
     block.attributes.id
-      ? React.createElement("p", { "data-testid": "poll-preview" },
-          block.label + " / " + block.body.split("\\n").length + " options")
+      ? React.createElement("div", null,
+          React.createElement("p", { "data-testid": "poll-preview" },
+            block.label + " / " + block.body.split("\\n").length + " options"),
+          controls.editable
+            ? React.createElement("button", { type: "button", onClick: () => controls.update(":::poll[" + block.label + "]{id=" + block.attributes.id + " type=multi}\\n- X\\n:::") }, "host-update")
+            : null,
+          controls.editable
+            ? React.createElement("button", { type: "button", onClick: () => controls.update("plain text") }, "host-replace")
+            : null,
+          controls.editable
+            ? React.createElement("button", { type: "button", onClick: () => controls.remove() }, "host-remove")
+            : null)
       : undefined,
 };
 const actions = [{
@@ -185,6 +195,35 @@ describe("BlockEditor directive blocks (Chromium)", { timeout: 40_000 }, () => {
     await expectValue(page, "intro\n\n- plain\n- list\n\nafter\n");
     expect(errors).toEqual([]);
     await page.close();
+  });
+
+  it("lets the host preview update or remove its own block (gh#1479)", async () => {
+    const { page, errors } = await open(BODY);
+    await page.getByRole("button", { name: "host-update" }).click();
+    await expectValue(
+      page,
+      normalize(`intro\n\n:::poll[日程は？]{id=date type=multi}\n- X\n:::\n\nafter`),
+    );
+    // Still the same directive block, with the host's new source.
+    expect(await block(page).count()).toBe(1);
+    expect(await page.getByTestId("poll-preview").textContent()).toBe("日程は？ / 1 options");
+    // One undo step (from the editor) restores the previous source.
+    await page.getByText("after", { exact: true }).click();
+    await page.keyboard.press(process.platform === "darwin" ? "Meta+z" : "Control+z");
+    await expect
+      .poll(() => page.getByTestId("poll-preview").textContent())
+      .toBe("日程は？ / 2 options");
+    // Source that is not one directive replaces the block with what it parses to.
+    await page.getByRole("button", { name: "host-replace" }).click();
+    await expectValue(page, "intro\n\nplain text\n\nafter\n");
+    expect(await block(page).count()).toBe(0);
+    expect(errors).toEqual([]);
+    await page.close();
+    const second = await open(BODY);
+    await second.page.getByRole("button", { name: "host-remove" }).click();
+    await expectValue(second.page, "intro\n\nafter\n");
+    expect(second.errors).toEqual([]);
+    await second.page.close();
   });
 
   it("inserts a directive skeleton from a host / row as a directive block", async () => {
