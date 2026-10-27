@@ -321,12 +321,11 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
     };
   }, [measure, targetElement]);
 
-  // While pinned against an ELEMENT the line moves whenever the PAGE scrolls, and a scroll on an
-  // element does not bubble — so it is caught in the capture phase on `window`, the one listener
-  // that sees every scroll on the page. Off entirely when the scroll box is the viewport (where
-  // the line is a constant) and off entirely while unpinned.
+  // A viewport pin line is constant, but a paint/transform containing block still moves during
+  // window scroll. Both target kinds therefore remeasure while pinned. Capture sees inner-scroll
+  // events too; one animation frame coalesces scroll/resize, and unpinning removes the listeners.
   React.useEffect(() => {
-    if (!affixed || !targetElement || typeof window === "undefined") return undefined;
+    if (!affixed || typeof window === "undefined") return undefined;
     let frame: number | null = null;
     const onScroll = () => {
       if (frame !== null) return;
