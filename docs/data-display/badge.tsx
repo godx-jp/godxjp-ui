@@ -1,4 +1,5 @@
 import {
+  AgentBadge,
   Badge,
   Card,
   CardContent,
@@ -326,6 +327,19 @@ export default function Demo() {
             <Flex direction="row" wrap align="center" gap="sm">
               <Badge status="active" icon={Star} />
               <Badge status="active" icon={null} />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("badgeDocs.agent.title")}</CardTitle>
+            <CardDescription>{t("badgeDocs.agent.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="sm">
+              <Text>Haruka</Text>
+              <AgentBadge />
             </Flex>
           </CardContent>
         </Card>
