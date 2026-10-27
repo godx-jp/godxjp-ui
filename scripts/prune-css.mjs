@@ -40,14 +40,18 @@ const args = process.argv.slice(2);
 if (args.includes("--help") || args.includes("-h") || args.length === 0) {
   console.log(`prune-css — emit a stylesheet with only the @godxjp/ui CSS layers your app uses
 
-usage: node node_modules/@godxjp/ui/scripts/prune-css.mjs <src dir/glob …> [--out <file>] [--fonts]
+usage: node node_modules/@godxjp/ui/scripts/prune-css.mjs <src dir/glob …> [--out <file>] [--fonts] [--precompiled]
 
   <src dir/glob …>  where your app's source lives (directories are walked; globs expand)
   --out <file>      where to write the css (default: godx-ui.css in the current directory)
   --fonts           include the bundled M PLUS 2 / Noto Sans JP @font-face declarations
                     (default mirrors @godxjp/ui/styles/core: none — bring your own fonts)
+  --precompiled     import the precompiled slices (plain CSS, dist/styles/precompiled/) instead
+                    of the Tailwind sources: for apps that use @godxjp/ui/styles.css and have
+                    no Tailwind compiler (gh#1455)
 
-Then import the emitted file INSTEAD of "@godxjp/ui/styles" and re-run this command whenever
+Then import the emitted file INSTEAD of "@godxjp/ui/styles" (or "@godxjp/ui/styles.css" with
+--precompiled) and re-run this command whenever
 the set of components you use changes, and after every @godxjp/ui upgrade.`);
   process.exit(0);
 }
@@ -59,6 +63,7 @@ if (outFlag !== -1 && (!OUT || OUT.startsWith("--"))) {
   process.exit(2);
 }
 const FONTS = args.includes("--fonts");
+const PRECOMPILED = args.includes("--precompiled");
 const positionals = args.filter(
   (a, i) => !a.startsWith("--") && (outFlag === -1 || i !== outFlag + 1),
 );
@@ -186,7 +191,26 @@ for (const name of used) {
 
 const keptLayers = manifest.order.filter((f) => layers.has(f));
 const keptVendors = manifest.vendor.filter((f) => vendors.has(f));
-const asImport = (f) => `@import "@godxjp/ui/styles/${f.replace(/\.css$/, "")}";`;
+// --precompiled (gh#1455): the same slice, from the plain-CSS cut of styles.css that
+// build-precompiled-css.mjs writes per manifest file. The fonts sheet has no Tailwind in it, so it
+// is imported from its usual place either way.
+const asImport = (f) =>
+  PRECOMPILED && f !== manifest.fonts
+    ? `@import "@godxjp/ui/styles/precompiled/${f.replace(/\.css$/, "")}";`
+    : `@import "@godxjp/ui/styles/${f.replace(/\.css$/, "")}";`;
+if (PRECOMPILED) {
+  const missing = [...keptVendors, manifest.base, ...keptLayers].filter(
+    (f) => !existsSync(join(PKG_ROOT, "dist/styles/precompiled", f)),
+  );
+  if (missing.length) {
+    console.error(
+      `prune-css: --precompiled, but the installed @godxjp/ui ships no precompiled slice for ` +
+        `${missing.join(", ")} (dist/styles/precompiled/). Upgrade the package; inside the repo ` +
+        "itself, run `pnpm build` first.",
+    );
+    process.exit(2);
+  }
+}
 
 const lines = [
   "/*",
@@ -194,17 +218,21 @@ const lines = [
   ` *`,
   ` * @godxjp/ui version: ${pkg.version}`,
   ` * components detected: ${[...used].sort().join(", ")}`,
-  ` * layers: ${keptLayers.length} of ${manifest.order.length} (+base${FONTS ? "+fonts" : ", no bundled fonts — like styles/core"})`,
+  ` * layers: ${keptLayers.length} of ${manifest.order.length} (+base${FONTS ? "+fonts" : ", no bundled fonts — like styles/core"})${PRECOMPILED ? ", precompiled (no Tailwind needed)" : ""}`,
   ` *`,
   ` * Re-run when the components your app uses change, and after every @godxjp/ui upgrade:`,
-  ` *   node node_modules/@godxjp/ui/scripts/prune-css.mjs <src …> --out <this file>${FONTS ? " --fonts" : ""}`,
+  ` *   node node_modules/@godxjp/ui/scripts/prune-css.mjs <src …> --out <this file>${FONTS ? " --fonts" : ""}${PRECOMPILED ? " --precompiled" : ""}`,
   ` *`,
   ` * Hand-editing this file is the cherry-picking the README forbids: layers share rules and`,
   ` * a missing one fails silently. Change your imports, then re-run the tool.`,
   " */",
   // Layer order must be declared before the first @import — same statement, same reasoning,
-  // as styles/index.css (vendor between base and components; see the comment there).
-  "@layer theme, base, vendor, components, utilities;",
+  // as styles/index.css (vendor between base and components; see the comment there). Precompiled
+  // CSS also carries Tailwind's `properties` layer (the @property fallbacks), which the compiler
+  // puts FIRST in styles.css; named here, it keeps that place instead of landing after utilities.
+  PRECOMPILED
+    ? "@layer properties, theme, base, vendor, components, utilities;"
+    : "@layer theme, base, vendor, components, utilities;",
   ...keptVendors.map(asImport),
   asImport(manifest.base),
   ...(FONTS ? [asImport(manifest.fonts)] : []),

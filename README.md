@@ -226,6 +226,17 @@ only when a used component renders them. **Re-run it whenever the set of compone
 changes and after every upgrade** — the emitted header says so, and the tool refuses to run against
 a manifest from a different package version.
 
+No Tailwind (you import `@godxjp/ui/styles.css`)? Add `--precompiled` (gh#1455):
+
+```bash
+npx godxjp-ui prune-css src --out src/godx-ui.css --precompiled
+```
+
+The emitted file imports `@godxjp/ui/styles/precompiled/*` instead: the same precompiled CSS as
+`styles.css`, cut per manifest file at build time (`base` = tokens, preflight and the utilities
+the components use; one slice per layer and vendor sheet). Your bundler only has to inline plain
+`@import`s. Import it INSTEAD of `@godxjp/ui/styles.css`.
+
 ## Golden ratio (φ ≈ 1.618)
 
 One token `--phi-unit` drives page/section/card spacing; micro control gaps use the 4px grid. Density (`compact` | `default` | `comfortable`) retunes `--phi-unit` with control + table heights together.
