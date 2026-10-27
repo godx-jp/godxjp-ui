@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `Affix`: viewport-targeted pins now remeasure containing-block compensation on captured window scroll and resize, so a paint/transform ancestor cannot move a pinned rail off-screen (gh#1504). Existing requestAnimationFrame coalescing and unpin/unmount cleanup apply to both viewport and element targets.
+
 - `Select` (plain listbox): the open popup no longer narrows itself frame by frame near the inline-end edge of the page (gh#1502). Its width was `auto`, so as an absolutely positioned box it shrank to fit the space left of its placement; react-aria's scroll lock puts `scrollbar-gutter: stable` on `<html>`, which narrows that space by the scrollbar while placement still clamps to the viewport, and the two disagreed by a few pixels on every re-placement. Measured with classic scrollbars at 1512px: 404px → 312px in ~300ms, 3px a frame, labels re-wrapping as it went (31 widths in one opening); now one width for the whole opening. The popup is sized intrinsically: the trigger width is still the floor, it grows to its longest row up to the new `--select-content-max-width` (32rem, the search panel's cap) and the viewport less `--select-content-viewport-inset` (`--space-6`), and wraps rows past that. A numeric `popupMatchSelectWidth` is unchanged and uncapped.
 
 ## [33.24.0] - 2026-10-27
