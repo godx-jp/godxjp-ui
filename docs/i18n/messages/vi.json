@@ -1809,6 +1809,12 @@
   "avatarDocs": {
     "fitTitle": "Logo: fit=\"contain\"",
     "fitDescription": "cover (mặc định) cắt cho đầy khung — hợp với ảnh khuôn mặt. contain hiện trọn logo rộng hoặc trong suốt.",
+    "agentTitle": "Tác tử AI: kind=\"agent\"",
+    "agentDescription": "Ở nơi tác tử có thể bị nhầm là người — danh sách thành viên, người phụ trách, tác giả bình luận — dấu của nó mang nhãn \"AI\". Nhãn nằm ở góc trên nên dùng cùng chấm presence ở góc dưới được. Trình đọc màn hình đọc \"Tác tử AI\", nên màu không bao giờ là tín hiệu duy nhất.",
+    "agentListTitle": "Danh sách có tên: dùng cả dấu và nhãn",
+    "agentListDescription": "Ở nơi in tên — danh sách thành viên, bộ chọn người, tác giả bình luận — dùng Avatar kind=\"agent\" và đặt <AgentBadge /> ngay sau tên.",
+    "agentDenseTitle": "Chỉ có icon hoặc ô dày: chỉ Avatar",
+    "agentDenseDescription": "Cột icon người phụ trách hay ô bảng 24px không có chỗ cho nhãn; ở đó nhãn \"AI\" trên Avatar là dấu nhận biết.",
     "logo": "Logo Acme"
   },
   "sidebarDocs": {

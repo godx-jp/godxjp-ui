@@ -269,6 +269,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Badge component tokens."
   },
   {
+    "name": "--badge-agent-border",
+    "value": "initial",
+    "description": "AgentBadge — the violet outline and ink of the \"AI agent\" label. Role-mirrors, `initial`: hsl(var(--agent)) border and hsl(var(--text-agent)) ink at the call site."
+  },
+  {
+    "name": "--badge-agent-foreground",
+    "value": "initial",
+    "description": "Badge component tokens."
+  },
+  {
     "name": "--badge-icon-size",
     "value": "var(--icon-size-xs)",
     "description": "Leading/trailing glyph inside the pill. It was a bare `0.75rem` in badge-layout.css with no token at all, so a service could only resize it with `!important` or a forked stylesheet — the two routes the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing moves. Matches --badge-font-size's step by design: the glyph reads as a character in the label's run, so the two retune together. Deliberately NOT --scaling-multiplied — the literal it replaces did not track density."
@@ -3290,6 +3300,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-presence-offline-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--avatar-agent-font-size",
+    "value": "initial",
+    "description": "Avatar `kind=\"agent\"` — the \"AI\" tag pinned to the block-start/inline-end corner (presence owns block-end). The tag's text is aria-hidden; a localized sr-only \"AI agent\" carries the meaning, so the colour is never the only signal (WCAG 1.4.1). --avatar-agent-background / -foreground / -ring-color are ROLE-MIRROR knobs, `initial` here so the --agent / --agent-foreground / --background defaults resolve at the call site under a scoped [data-tenant] / .dark theme. Defaults = 2xs bold label · pill · violet --agent fill, white ink · a 2px --background separator ring · spilling --space-1 past the corner. default = var(--font-size-2xs) at the call site"
+  },
+  {
+    "name": "--avatar-agent-font-weight",
+    "value": "initial",
+    "description": "default = var(--font-weight-bold) at the call site"
+  },
+  {
+    "name": "--avatar-agent-padding-inline",
+    "value": "initial",
+    "description": "default = var(--space-1) at the call site"
+  },
+  {
+    "name": "--avatar-agent-inset",
+    "value": "initial",
+    "description": "default = calc(var(--space-1) * -1) at the call site: the tag spills slightly past the mark"
+  },
+  {
+    "name": "--avatar-agent-ring-width",
+    "value": "initial",
+    "description": "default = var(--stroke-md) at the call site"
+  },
+  {
+    "name": "--avatar-agent-background",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--avatar-agent-foreground",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--avatar-agent-ring-color",
     "value": "initial",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },

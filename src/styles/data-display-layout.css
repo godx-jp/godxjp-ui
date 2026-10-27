@@ -173,6 +173,18 @@
     border-radius: inherit;
   }
 
+  /* Same bargain for `kind="agent"`: only an agent mark stops clipping, so the AI tag can straddle
+   * the corner, and the clip moves onto the image/fallback. */
+  .ui-avatar[data-kind="agent"] {
+    overflow: visible;
+  }
+
+  .ui-avatar[data-kind="agent"] > .ui-avatar-image,
+  .ui-avatar[data-kind="agent"] > .ui-avatar-fallback {
+    overflow: hidden;
+    border-radius: inherit;
+  }
+
   /* NEVER COLOUR-ALONE (WCAG 1.4.1). */
   [data-slot="avatar-presence"] {
     position: absolute;
@@ -257,6 +269,42 @@
 
     [data-slot="avatar-presence"][data-presence="busy"]::before {
       background: Canvas;
+    }
+  }
+
+  /* AGENT — the "AI" tag at the block-start/inline-end corner (presence owns block-end, so the two
+   * compose). The text is the signal, the fill only emphasis; the sr-only label carries the meaning. */
+  [data-slot="avatar-agent"] {
+    position: absolute;
+    inset-block-start: var(--avatar-agent-inset, calc(var(--space-1) * -1));
+    inset-inline-end: var(--avatar-agent-inset, calc(var(--space-1) * -1));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--avatar-agent-padding-inline, var(--space-1));
+    border-radius: var(--radius-pill);
+    font-size: var(
+      --avatar-agent-font-size,
+      var(
+        --font-size-2xs,
+        calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+      )
+    );
+    font-weight: var(--avatar-agent-font-weight, var(--font-weight-bold));
+    line-height: var(--line-height-tight);
+    white-space: nowrap;
+    color: hsl(var(--avatar-agent-foreground, var(--agent-foreground)));
+    background-color: hsl(var(--avatar-agent-background, var(--agent)));
+    box-shadow: 0 0 0 var(--avatar-agent-ring-width, var(--stroke-md))
+      hsl(var(--avatar-agent-ring-color, var(--background)));
+    pointer-events: none;
+  }
+
+  @media (forced-colors: active) {
+    [data-slot="avatar-agent"] {
+      color: Canvas;
+      background-color: CanvasText;
+      outline: var(--avatar-agent-ring-width, var(--stroke-md)) solid Canvas;
     }
   }
 

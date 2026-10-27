@@ -1,7 +1,7 @@
 export { Persona } from "./persona";
 export type { PersonaProp, PersonaProps } from "./persona";
-export { Badge, StatusBadge } from "./badge";
-export type { BadgeProps, BadgeTone } from "./badge";
+export { AgentBadge, Badge, StatusBadge } from "./badge";
+export type { AgentBadgeProps, BadgeProps, BadgeTone } from "./badge";
 export { Legend } from "./legend";
 export type { LegendItemProp, LegendProp, LegendProps } from "./legend";
 export { Swatch } from "./swatch";

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 338,
-    dimensionCells: 4732,
+    exports: 339,
+    dimensionCells: 4746,
     covered: 89,
-    untested: 2588,
-    notApplicable: 2055,
+    untested: 2595,
+    notApplicable: 2062,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -103,6 +103,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"ActionsItem","group":"general","frame":"docs/general/actions.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"Activity","group":"general","frame":"docs/general/activity.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes","tones","variants"],"notApplicable":["density","ownership","shapes","states"]},
   {"name":"Affix","group":"layout","frame":"docs/layout/affix.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"AgentBadge","group":"data-display","frame":"docs/data-display/badge.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Alert","group":"feedback","frame":"docs/feedback/alert.tsx","covered":["tones","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states"]},
   {"name":"AlertActions","group":"feedback","frame":"docs/feedback/alert.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"AlertContent","group":"feedback","frame":"docs/feedback/alert.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},

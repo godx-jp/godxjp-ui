@@ -271,6 +271,21 @@
   --avatar-presence-away-color: initial;
   --avatar-presence-busy-color: initial;
   --avatar-presence-offline-color: initial;
+  /* Avatar `kind="agent"` — the "AI" tag pinned to the block-start/inline-end corner (presence owns
+     block-end). The tag's text is aria-hidden; a localized sr-only "AI agent" carries the meaning, so
+     the colour is never the only signal (WCAG 1.4.1). --avatar-agent-background / -foreground /
+     -ring-color are ROLE-MIRROR knobs, `initial` here so the --agent / --agent-foreground /
+     --background defaults resolve at the call site under a scoped [data-tenant] / .dark theme.
+     Defaults = 2xs bold label · pill · violet --agent fill, white ink · a 2px --background separator
+     ring · spilling --space-1 past the corner. */
+  --avatar-agent-font-size: initial; /* default = var(--font-size-2xs) at the call site */
+  --avatar-agent-font-weight: initial; /* default = var(--font-weight-bold) at the call site */
+  --avatar-agent-padding-inline: initial; /* default = var(--space-1) at the call site */
+  --avatar-agent-inset: initial; /* default = calc(var(--space-1) * -1) at the call site: the tag spills slightly past the mark */
+  --avatar-agent-ring-width: initial; /* default = var(--stroke-md) at the call site */
+  --avatar-agent-background: initial;
+  --avatar-agent-foreground: initial;
+  --avatar-agent-ring-color: initial;
 
   /* Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme.
      Track reads --secondary, the default (`primary`) fill reads the brand mark; a service re-tones

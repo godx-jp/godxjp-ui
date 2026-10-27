@@ -1,0 +1,43 @@
+{
+  "example": "import { AgentBadge, Avatar, AvatarFallback, AvatarImage } from \"@godxjp/ui/data-display\";\nimport { Text } from \"@godxjp/ui/general\";\nimport { Flex } from \"@godxjp/ui/layout\";\n\n<Flex align=\"center\" gap=\"sm\">\n  <Avatar kind=\"agent\">\n    <AvatarImage src={agent.avatarUrl} alt=\"\" />\n    <AvatarFallback>ハ</AvatarFallback>\n  </Avatar>\n  <Text>ハルカ</Text>\n  <AgentBadge />\n</Flex>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "AgentBadge",
+  "props": [
+    {
+      "defaultValue": "\"span\"",
+      "description": "Render element. `span` (default) because the label sits in a name's text line, often inside a link or a <button>.",
+      "name": "as",
+      "type": "\"div\" | \"span\""
+    },
+    {
+      "description": "Overrides the localized default label (`dataDisplay.avatar.agent`: ja \"AIエージェント\", en \"AI agent\", vi \"Tác tử AI\"). Omit it — the default follows the locale.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Extra classes on the label root.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Avatar — `kind=\"agent\"` puts the \"AI\" tag on the mark itself; use it everywhere an agent's mark appears, and add AgentBadge where its name is printed.",
+    "Badge — the general chip; AgentBadge is a fixed-meaning label built on the same chip geometry."
+  ],
+  "rules": [
+    35
+  ],
+  "storyPath": "data-display/avatar.tsx",
+  "tagline": "The \"AI agent\" label beside a NAME — violet outline on a transparent ground, pill, never wraps. The text-row half of telling an AI agent apart from a person; `Avatar kind=\"agent\"` is the mark half. A list that shows names uses BOTH; a place with only a mark (assignee icon column, dense cell) uses the Avatar alone.",
+  "usage": [
+    "DO put it right after the agent's name, in the same text line: `<Flex align=\"center\" gap=\"xs\"><Text>{name}</Text><AgentBadge /></Flex>`, and pair it with `<Avatar kind=\"agent\">` on the same row.",
+    "DO leave `children` empty so the label follows the locale; it is real text, so it is announced as written and never colour-only (WCAG 1.4.1).",
+    "DON'T hand-roll it as `<Badge variant=\"outline\" className=\"text-violet-600\">AI</Badge>` — the colour reads the `--agent` role through `--badge-agent-border` / `--badge-agent-foreground`, which a theme retunes once.",
+    "DON'T add it where there is no name (an icon-only column, a 24px cell) — there the Avatar's own AI tag is the marker."
+  ],
+  "useCases": [
+    "A member list, a people picker, an assignee dropdown option — any row that prints a principal's name.",
+    "A comment, an activity entry or a chat message authored by an AI agent."
+  ]
+}

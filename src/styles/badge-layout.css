@@ -127,4 +127,20 @@
     width: var(--badge-remove-icon-size);
     height: var(--badge-remove-icon-size);
   }
+
+  /* AgentBadge — the "AI agent" label beside a name: violet outline, transparent ground, never
+   * wraps. Reads the --agent role through --badge-agent-* role-mirror knobs. */
+  [data-slot="badge"][data-agent] {
+    border-color: hsl(var(--badge-agent-border, var(--agent)));
+    background-color: transparent;
+    color: hsl(var(--badge-agent-foreground, var(--text-agent)));
+    white-space: nowrap;
+  }
+
+  @media (forced-colors: active) {
+    [data-slot="badge"][data-agent] {
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+  }
 }

@@ -384,6 +384,7 @@
   },
   "dataDisplay": {
     "avatar": {
+      "agent": "Tác tử AI",
       "presence": {
         "online": "Trực tuyến",
         "away": "Vắng mặt",

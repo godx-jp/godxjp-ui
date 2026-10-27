@@ -391,6 +391,7 @@
   },
   "dataDisplay": {
     "avatar": {
+      "agent": "AI agent",
       "presence": {
         "online": "Online",
         "away": "Away",

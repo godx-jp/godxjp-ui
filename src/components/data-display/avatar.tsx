@@ -29,7 +29,7 @@ export const Avatar = React.forwardRef<
   HTMLSpanElement,
   React.ComponentPropsWithoutRef<"span"> & { asChild?: boolean } & Pick<
       AvatarProp,
-      "shape" | "appearance" | "presence" | "presenceLabel" | "size"
+      "shape" | "appearance" | "presence" | "presenceLabel" | "size" | "kind"
     >
 >(
   (
@@ -40,6 +40,7 @@ export const Avatar = React.forwardRef<
       appearance = "default",
       presence,
       presenceLabel,
+      kind = "person",
       asChild = false,
       children,
       ...props
@@ -79,6 +80,9 @@ export const Avatar = React.forwardRef<
           // Only a marked-up presence lifts the root's `overflow:
           // hidden` so the corner dot can straddle the mark's edge — the clip then moves onto the
           data-presence={presence}
+          // INERT DEFAULT: a person emits nothing. `agent` lifts the clip the same way presence does,
+          // so the AI tag can straddle the mark's corner.
+          data-kind={kind === "agent" ? "agent" : undefined}
           className={cn("ui-avatar", className)}
           {...props}
         >
@@ -89,6 +93,15 @@ export const Avatar = React.forwardRef<
               <span className="sr-only">
                 {presenceLabel ?? t(`dataDisplay.avatar.presence.${presence}`)}
               </span>
+            </span>
+          ) : null}
+          {/* The AI tag, owned by Avatar for the same reason as the presence dot: its inset depends on
+           * the mark's own radius/size tokens. The visible "AI" is aria-hidden and the sr-only string
+           * carries the full localized label, so a screen reader hears "AI agent" once, not "AI AI agent". */}
+          {kind === "agent" ? (
+            <span data-slot="avatar-agent">
+              <span aria-hidden="true">AI</span>
+              <span className="sr-only">{t("dataDisplay.avatar.agent")}</span>
             </span>
           ) : null}
         </Comp>

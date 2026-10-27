@@ -497,6 +497,30 @@ export const TOKENS: TokenEntry[] = [
   { name: "--info", category: "semantic", tier: "semantic", role: "Information status role." },
   { name: "--attention", category: "semantic", tier: "semantic", role: "Attention status role." },
   {
+    name: "--agent",
+    category: "semantic",
+    tier: "semantic",
+    role: 'AI AGENT role — violet, apart from every status hue so "AI" never reads as a state. Painted by Avatar `kind="agent"` (fill) and AgentBadge (outline). Pairs: --agent-foreground (white, 5.70:1 on the fill) and --text-agent (AA violet text: #6d28d9 on white 7.10:1; #c4b5fd on the dark spine).',
+  },
+  {
+    name: "--agent-foreground",
+    category: "semantic",
+    tier: "semantic",
+    role: "Ink on an --agent fill (the Avatar AI tag).",
+  },
+  {
+    name: "--text-agent",
+    category: "semantic",
+    tier: "semantic",
+    role: "AA violet TEXT for the agent role (AgentBadge label) — light on the dark theme.",
+  },
+  {
+    name: "--badge-agent-{border,foreground}",
+    category: "component",
+    tier: "component",
+    role: 'AgentBadge — the violet outline and ink of the "AI agent" label. Role-mirror knobs declared `initial`; defaults hsl(var(--agent)) border and hsl(var(--text-agent)) ink at the call site, so a scoped theme reaches them.',
+  },
+  {
     name: "--surface-{success,warning,info,destructive}",
     category: "semantic",
     tier: "semantic",
@@ -953,6 +977,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: 'Avatar `presence` — the realtime reachability dot on the mark. Every constant is a knob because the workaround it replaces baked four of them plus a raw palette colour into consumer page CSS (`-end-0.5 -bottom-0.5 size-2.5 ring-2 bg-green-500`). --avatar-presence-size is a PROPORTION of the mark (default 30%, floored by --avatar-presence-min-size = --space-2), NOT a px step, so one value tracks every avatar the system paints — the --control-height box and its xs/sm/lg steps, --avatar-square-size, --org-switcher-avatar-size, --upload-avatar-size, a call site\'s own `size-12`, the 36px ListRow density="compact" mark — instead of freezing a diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs declared `initial`, with the role default at the CALL SITE (`var(--knob, var(--role))`), so a scoped [data-tenant]/.dark override of --background / --success / --warning / --destructive / --muted-foreground reaches them — bound at :root the ring would freeze light-mode-white on a dark avatar. --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the ACCESSIBLE encoding, not decoration: they draw the per-state silhouette (filled / half-filled / barred / hollow) that keeps presence off colour-alone (WCAG 1.4.1) in greyscale, for a deuteranope and under forced colors. Defaults = 30% diameter (floor 0.5rem) · flush with the corner (inset 0) · a 2px --background separator ring · a 1.5px state stroke · a 56%-wide 1.5px dnd bar.',
+  },
+  {
+    name: "--avatar-agent-{font-size,font-weight,padding-inline,inset,ring-width,background,foreground,ring-color}",
+    category: "component",
+    tier: "component",
+    role: 'Avatar `kind="agent"` — the "AI" tag that tells an AI agent apart from a person on the mark itself, pinned to the block-start/inline-end corner so it composes with the presence dot (block-end). The visible "AI" is aria-hidden; a localized sr-only "AI agent" carries the meaning, so colour is never the only signal (WCAG 1.4.1), and under forced colors the tag becomes CanvasText on a Canvas outline. --avatar-agent-background / -foreground / -ring-color are ROLE-MIRROR knobs declared `initial`, with --agent / --agent-foreground / --background resolved at the CALL SITE so a scoped [data-tenant]/.dark theme reaches them. Defaults = 2xs bold label · --space-1 inline padding · pill · violet --agent fill, white ink · a 2px --background separator ring · spilling --space-1 past the corner.',
   },
   {
     name: "--separator-{rule-size,rule-color,label-gap,label-inset,label-font-size,label-line-height,label-font-weight,label-color,tone-<tone>-rule-color,tone-<tone>-label-color}",
