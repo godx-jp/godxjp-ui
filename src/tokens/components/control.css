@@ -539,6 +539,10 @@
   /* SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*),
    * so only what is genuinely its own lives here (#319). */
   --select-content-max-height: 24rem;
+  /* The listbox hugs its longest row up to this, then wraps rows; the same cap as the search
+   * panel so both Select modes size alike. The inset keeps it off the viewport edges. */
+  --select-content-max-width: 32rem;
+  --select-content-viewport-inset: var(--space-6);
   /* Seat for a NUMERIC `popupMatchSelectWidth` on the plain listbox. `auto` is the inert default. */
   --select-content-inline-size: auto;
   /* THE LISTBOX SURFACE — and it is deliberately NOT the trigger's (gh#880,

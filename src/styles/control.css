@@ -2875,6 +2875,18 @@
       var(--menu-content-min-width),
       var(--trigger-width, var(--menu-content-min-width))
     );
+    /* An intrinsic width, never one derived from where the popup sits. With `width: auto` an
+     * absolutely positioned box shrinks to fit (containing block − left), so every placement
+     * react-aria writes changes the width it measures next. While the popup is open react-aria
+     * locks scrolling with `scrollbar-gutter: stable` on <html>: the containing block narrows by
+     * the scrollbar while placement still clamps to the viewport, the two disagree by a few
+     * pixels, and near the inline-end edge the popup re-placed itself every frame, wrapping
+     * labels until it ran out of room (404px → 312px in ~300ms, 3px a frame). */
+    inline-size: max-content;
+    max-inline-size: min(
+      var(--select-content-max-width),
+      calc(100vw - var(--select-content-viewport-inset))
+    );
     overflow: hidden;
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     border: var(--stroke-hairline) solid hsl(var(--border));
@@ -2899,6 +2911,7 @@
   .ui-select-content[data-popup-match="fixed"] {
     min-width: var(--select-content-inline-size);
     width: var(--select-content-inline-size);
+    max-inline-size: none;
   }
 
   /* The listbox is the scroll container: capped by the token, and allowed to shrink below it when
