@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Precompiled `styles.css` (and the `styles/precompiled/` slices) no longer ship utilities scanned from the repo's own tests and docs: the build turns Tailwind's automatic source detection off and scans the built JavaScript only. 870 KB → 834 KB raw, with no class the components use lost. `check:dist-tokens-resolve` accepts react-aria's `--trigger-*` and Sheet's inline `--sheet-width` as runtime-supplied and skips the third-party vendor slices.
 - Charts announce missing/non-finite observations as localized no data, keep absent trend marks distinct from zero, and format summary counts independently of value/currency options (gh#1482).
 - Pagination exposes `onPageIntent(page)` for pointer enter, focus and touch start on enabled page/previous/next controls in full and compact modes (gh#1472).
 - Image leaves SSR pictures uncovered until hydration, while retaining the pre-hydration load/error checks; placeholder children can shrink into their frame (gh#1472).

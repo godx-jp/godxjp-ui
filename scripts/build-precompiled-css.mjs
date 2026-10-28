@@ -80,9 +80,33 @@ async function compile(inputs, outDir) {
   return written;
 }
 
+// Tailwind's automatic source detection starts at the Vite root, the repo root: it scanned src/
+// tests and docs and shipped their utilities (a gate fixture's `--thing-trigger-width`, ~35 KB of
+// dead rules). The compile reads a private copy of base.css that turns detection off and names the
+// built JavaScript instead: exactly the code a consumer runs. The shipped base.css is untouched.
+const stylesRoot = dirname(entry);
+const privateBase = join(stylesRoot, `.precompiled-base-${process.pid}.css`);
+const privateEntry = join(stylesRoot, `.precompiled-index-${process.pid}.css`);
+const distGlob = `${join(root, "dist").replaceAll("\\", "/")}/**/*.js`;
+writeFileSync(
+  privateBase,
+  readFileSync(join(stylesRoot, "base.css"), "utf8").replace(
+    '@import "tailwindcss";',
+    `@import "tailwindcss" source(none);\n@source "${distGlob}";`,
+  ),
+);
+writeFileSync(
+  privateEntry,
+  readFileSync(entry, "utf8").replace('@import "./base.css";', `@import "./${privateBase.split("/").pop()}";`),
+);
+process.on("exit", () => {
+  rmSync(privateBase, { force: true });
+  rmSync(privateEntry, { force: true });
+});
+
 // ── the whole sheet ──────────────────────────────────────────────────────────
 mkdirSync(dirname(outFile), { recursive: true });
-const { styles } = await compile({ styles: entry }, dirname(outFile));
+const { styles } = await compile({ styles: privateEntry }, dirname(outFile));
 if (styles !== outFile) renameSync(styles, outFile);
 const bytes = readFileSync(outFile).length;
 console.log(
@@ -107,7 +131,8 @@ try {
       file === manifest.base
         ? "@layer theme, base, vendor, components, utilities;\n"
         : '@import "tailwindcss/utilities" source(none);\n';
-    writeFileSync(tmpEntry, `${head}@import "./${file}";\n`);
+    const source = file === manifest.base ? privateBase.split("/").pop() : file;
+    writeFileSync(tmpEntry, `${head}@import "./${source}";\n`);
     entries[name] = tmpEntry;
   }
   rmSync(slicesDir, { recursive: true, force: true });

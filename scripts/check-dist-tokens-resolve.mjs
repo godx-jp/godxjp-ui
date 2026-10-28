@@ -15,7 +15,18 @@ const dist = join(root, "dist");
  * `*-content-available-height` measurements) by writing them onto the content element; Tailwind's
  * utilities own the `--tw-*` shadow/ring plumbing.
  */
-const RUNTIME_SUPPLIED = [/^--radix-/, /^--tw-/];
+const RUNTIME_SUPPLIED = [
+  /^--radix-/,
+  /^--tw-/,
+  // react-aria-components writes these onto a positioned overlay (Popover / Menu) at runtime.
+  /^--trigger-(width|anchor-point)$/,
+  // Sheet writes its resolved width inline on the dialog.
+  /^--sheet-width$/,
+];
+
+/** Precompiled copies of third-party sheets (sonner, react-day-picker): their custom properties are
+ * set by that library's runtime, and the guard never scans the originals they are compiled from. */
+const THIRD_PARTY_SLICE = /[\\/]precompiled[\\/]vendor-[^\\/]+\.css$/;
 
 /**
  * At-rules whose body is a declaration list rather than a list of rules. A custom property sitting
@@ -211,6 +222,7 @@ for (const file of [...tokenFiles, ...styleFiles]) {
 // dangling references were themselves TOKENS (`--space-stack-*` reaching for a rung the foundation
 // ramp skips, `--space-8` → `--space-10`), so a styles-only scan would have missed the original.
 for (const file of [...styleFiles, ...tokenFiles]) {
+  if (THIRD_PARTY_SLICE.test(file)) continue;
   const rel = relative(root, file);
   const code = blankNonCode(readFileSync(file, "utf8"));
   const lineAt = lineCounter(code);
