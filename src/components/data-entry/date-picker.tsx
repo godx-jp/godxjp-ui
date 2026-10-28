@@ -210,7 +210,7 @@ export function DatePicker(props: DatePickerProp) {
     defaultValue,
   );
   const value = isControlled ? valueProp : internalValue;
-  const working = hasPending ? pending : value;
+  const working = open && hasPending ? pending : value;
   const rangeValue = range ? (working as DateRange | undefined) : undefined;
   const selectedDate = range
     ? rangeValue?.from
@@ -247,6 +247,19 @@ export function DatePicker(props: DatePickerProp) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [range, value, committedFrom, committedTo, format, locale, showTime]);
+
+  React.useEffect(() => {
+    if (!open) {
+      setHasPending(false);
+      setPending(undefined);
+      if (range) {
+        setFromText(display(committedFrom));
+        setToText(display(committedTo));
+      }
+    }
+    // Discard only on close; value/format updates have their own text reconciliation above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   // ── ONE panel-view anchor, for both panels ───────────────────────────────────────────────────
   // The panel follows the value at rest — a `<DatePicker picker="month" value={2020-01} />` opens
@@ -330,7 +343,15 @@ export function DatePicker(props: DatePickerProp) {
       if (needConfirm) {
         setPending(next);
         setHasPending(true);
-      } else emit(next);
+      } else if (open && next && !(next.from && next.to)) {
+        // The calendar needs its first endpoint even when the consumer only accepts complete ranges.
+        setPending(next);
+        setHasPending(true);
+      } else {
+        setPending(undefined);
+        setHasPending(false);
+        emit(next);
+      }
       return;
     }
     let date = input as Date | Date[] | undefined;

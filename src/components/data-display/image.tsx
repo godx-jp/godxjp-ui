@@ -641,7 +641,11 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
   const [visible, setVisible] = useMergedState(config.visible, false, config.onVisibleChange);
 
   const shownSrc = isError && fallback ? fallback : src;
-  const showPlaceholder = placeholder != null && placeholder !== false && status === "loading";
+  // SSR must expose the picture immediately; attach loading chrome only after hydration.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const showPlaceholder =
+    mounted && placeholder != null && placeholder !== false && status === "loading";
 
   // `fit="intrinsic"` (the former Thumbnail, #1223): the frame is the `size` height at the
   // picture's OWN width, so `width`/`height` are the file's pixels — `<img>` attributes that let

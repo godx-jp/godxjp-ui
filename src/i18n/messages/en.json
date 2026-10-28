@@ -811,6 +811,7 @@
     "trendCurrent": "current",
     "heatmapSummary": "Heatmap, {rows} × {columns}",
     "heatmapHighest": "Highest: {value} at {row}, {column}",
+    "noData": "No data",
     "heatmapNoData": "No data",
     "heatmapTop": "Top {rank}",
     "heatmapLegend": "Color scale",

@@ -96,6 +96,7 @@ export function CartesianChart({
   assertRechartsPeer();
   const { t, locale } = useTranslation();
   const fmt = useChartNumberFormat(numberFormat);
+  const counts = useChartNumberFormat();
   const list = React.useMemo(() => listFormat(locale, { style: "narrow", type: "unit" }), [locale]);
 
   const points = series.flatMap((s, seriesIndex) =>
@@ -180,7 +181,10 @@ export function CartesianChart({
 
   const hasData = data.length > 0 && series.length > 0;
   const summary = buildCartesianSummary(data, series, categoryKey, fmt, list, (c) =>
-    t("chart.summaryCartesian", { series: fmt.format(c.series), points: fmt.format(c.points) }),
+    t("chart.summaryCartesian", {
+      series: counts.format(c.series),
+      points: counts.format(c.points),
+    }),
   );
 
   const resolvedHeight = chartHeight(size, height);

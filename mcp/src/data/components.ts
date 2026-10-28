@@ -10595,7 +10595,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
         name: "range",
         type: "boolean",
         description:
-          'CARDINALITY: two endpoints in one control (antd `DatePicker.RangePicker`). value/defaultValue and the callback become `DateRange`; the pair submits as `${name}_from` / `${name}_to`. Composes with `picker`, so a month range is `<DatePicker range picker="month" />`. Never place two DatePickers side by side to fake this.',
+          'With no confirmation, holds the first endpoint internally while open, emits a complete range or clear, and discards half-ranges on close. CARDINALITY: two endpoints in one control (antd `DatePicker.RangePicker`). value/defaultValue and the callback become `DateRange`; the pair submits as `${name}_from` / `${name}_to`. Composes with `picker`, so a month range is `<DatePicker range picker="month" />`. Never place two DatePickers side by side to fake this.',
       },
       {
         name: "multiple",
@@ -11500,6 +11500,12 @@ toast.error("保存に失敗しました"); // also carries a close button`,
     tagline:
       "Offset/page-based pagination bar. Its container owns the inset: no outer inline padding, including inside CardContent, CardFooter or PageContainer footer. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
+      {
+        name: "onPageIntent",
+        type: "(page: number) => void",
+        description:
+          "Pointer enter, focus or touch start on enabled page/previous/next controls, including simple and responsive forms. May repeat: preload/cache the target without changing value. Disabled or out-of-range targets do not emit.",
+      },
       {
         name: "ariaLabel",
         type: "string",
@@ -20391,7 +20397,8 @@ const messages: ChatMessageProp[] = [
       {
         name: "placeholder",
         type: "ReactNode | boolean",
-        description: "Painted over the frame until the picture loads; `true` = a muted block.",
+        description:
+          "After hydration, painted over the frame while the picture loads; SSR leaves pictures uncovered. `true` = a muted block. Child content can shrink to fit the frame.",
       },
       {
         name: "width / height",

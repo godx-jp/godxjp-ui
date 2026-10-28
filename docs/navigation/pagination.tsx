@@ -20,6 +20,9 @@ import { Pagination } from "@godxjp/ui/navigation";
  * Pagination — fully controlled offset/page bar. The container owns the inline inset:
  * use CardContent/CardFooter, PageContainer footer, or the page grid; Pagination adds none.
  * Pass total as raw item count (not page count). onValueChange receives (page, pageSize).
+ * onPageIntent(page) reports pointerenter/focus/touchstart on enabled page, previous and next
+ * targets in full, simple and responsive modes. Use it to warm a router/data cache; it may repeat
+ * and does not change value. Example: onPageIntent={(page) => preloadPage(page)}.
  * Composed only from real @godxjp/ui components.
  */
 const yen = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" });
