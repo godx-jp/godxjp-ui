@@ -4,6 +4,33 @@ Read this once; the audit enforces it. What the audit cannot see (how a screen i
 should look like) is in the package's `DESIGN.md`. Everything else in `docs/` is for contributors.
 
 1. Load styles with `import "@godxjp/ui/styles.css"` (precompiled, no Tailwind needed) or `@import "@godxjp/ui/styles"` (Tailwind v4). Neither ships font files: fonts are opt-in since v32 (`pnpm add @fontsource/noto-sans-jp @fontsource/m-plus-2`, then `@import "@godxjp/ui/styles/fonts.css"` after the styles import; the GoDX preset does this for you). Never cherry-pick `*-layout.css`.
+
+   **Supported opt-out for Tailwind v4 (#1475):** replace `@import "@godxjp/ui/styles"` with
+   `@import "@godxjp/ui/styles/application"` in apps that render no editorial, catalog or holding
+   components. It retains foundation, shell, controls, tables, forms, navigation, charts and vendor
+   styles. `styles` and `styles/core` retain every family for compatibility. If editorial components
+   are added later, return to `styles`, or import `styles/editorial` after `styles/application`.
+   `styles/editorial` is additive: it requires the application entry. All entries bring no bundled fonts.
+
+   For a smaller, content-aware build, run the package-owned pruner instead of guessing layers:
+
+   ```sh
+   npx @godxjp/ui prune-css "src/**/*.tsx" --exclude-family editorial --out src/godx-ui.css
+   ```
+
+   Import the generated file instead of `@godxjp/ui/styles`; keep your Tailwind `@source` declarations.
+   The optional `--exclude-family editorial` fails if a detected component needs that family. Named
+   imports are required for a useful slice; namespace/dynamic imports conservatively retain all layers.
+   Both the family entries and the pruner use the generated `styles/layers.json` dependency map.
+   Re-run after component imports change and after upgrading the package. Never edit generated imports.
+
+   **Without Tailwind (#1455):** use the same command with `--precompiled`. The generated file
+   resolves package-owned plain CSS slices through public exports; bundle its CSS imports with your
+   existing CSS bundler (Vite, webpack or esbuild). It requires no Tailwind compiler. A browser alone
+   cannot resolve npm package specifiers. Fonts stay opt-in (`--fonts`). The packed-contract gate
+   installs the tarball outside the repository and builds both modes; reproduce its measured byte
+   counts with `pnpm build && node scripts/check-packed-css-pruning.mjs`.
+
 2. **Mount `<AppProvider defaultLocale="…">` once, at the root.** Without it the kit's OWN strings (dialog close/cancel/delete, counters, picker labels) fall to the resting locale (`<html lang>` when it names a registered locale, else `en`) and pickers to UTC (gh#1005). A development build now warns once when a kit component renders outside it; `syncI18nLocale(locale, fallback)` is the escape for an app that truly cannot mount the provider. Every page is `<PageContainer title extra footer>` (a `subtitle` only when it adds a fact the title does not); its sections are spaced by the page. Group items inside a section with `<Flex direction="col" gap>` or `<ResponsiveGrid>`.
 3. No Tailwind layout on your own elements: no `flex`, `grid`, `gap-*`, `p-*`, `m-*`, `space-*`. Rows are `<Flex>` (default row), stacks are `<Flex direction="col">`, grids are `<ResponsiveGrid>`. A list's filters are ONE `<FilterBar>` that wraps at every width — never a sideways-scrolling strip of filters or filter chips; past 2–4 filters the rest go behind one "More filters" `Sheet` (cardinal rule #51, pattern `list-filters`, audit rules `filter-bar-no-overflow`, `filter-strip-no-scroll` and `hand-rolled-filter-bar`). Filters are packed at the start: never a hand-built `<Flex justify="between">` of FormFields above a table. Many conditions or an explicit 検索 button → `SearchForm` (pattern `search-form`); field × operator rows saved as views → pattern `condition-builder`.
 4. No hand-rolled surfaces: no `rounded-* border bg-*` divs. A box is `Card`, a pill is `Badge`, a person is `Avatar`, a row is `ListRow`, a label/value pair is `Descriptions`, an empty area is `EmptyState`, a read-only sample of a colour the USER chose is `Swatch`. A LIST of those rows is `<Flex as="ul" marker="none" direction="col" gap="none">` with `<ListRow as="li">` children — `marker="none"` keeps the `<ul>`, the `<li>` semantics and the gap token while dropping the bullet and the indent. Never a raw `<ul>`/`<ol>` (it carries no gap token), never `<div role="list">` + `<div role="listitem">`, and never a wrapper around each row: the divider is `:not(:last-child)` among siblings, so a row alone in its own wrapper is always the last one and EVERY divider disappears silently. A bulleted prose list is the same `<Flex as="ul">` without `marker`.

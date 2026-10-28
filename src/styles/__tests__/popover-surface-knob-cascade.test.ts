@@ -64,8 +64,9 @@ const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 function declarationsFor(css: string, selector: string): string {
   const blocks: string[] = [];
   const rule = /([^{}]*)\{([^{}]*)\}/g;
+  const code = strip(css);
   let match: RegExpExecArray | null;
-  while ((match = rule.exec(strip(css))) !== null) {
+  while ((match = rule.exec(code)) !== null) {
     if (match[1].split(",").some((part) => part.trim() === selector)) blocks.push(match[2]);
   }
   return blocks.join("\n");

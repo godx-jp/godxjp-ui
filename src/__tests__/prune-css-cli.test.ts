@@ -235,3 +235,36 @@ describe("prune-css CLI (gh#971)", () => {
     });
   });
 });
+
+describe("prune-css family contract (#1475)", () => {
+  it("lets a Tailwind app omit editorial through the shared manifest", () => {
+    const result = prune(
+      { "src/app.tsx": 'import { PageContainer, Button } from "@godxjp/ui";' },
+      { args: ["src", "--exclude-family", "editorial"] },
+    );
+    expect(result.status).toBe(0);
+    expect(result.css).toContain('/layout"');
+    expect(result.css).not.toContain("/editorial-");
+  });
+  it("refuses to exclude a family a component actually needs", () => {
+    const result = prune(
+      { "src/app.tsx": 'import { EditorialSection } from "@godxjp/ui/layout";' },
+      { args: ["src", "--exclude-family", "editorial"] },
+    );
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain("detected components require it");
+    expect(result.css).toBeNull();
+  });
+  it("rejects unknown or missing families instead of silently excluding nothing", () => {
+    for (const args of [
+      ["src", "--exclude-family", "unknown"],
+      ["src", "--exclude-family", "__proto__"],
+      ["src", "--exclude-family", "toString"],
+      ["src", "--exclude-family"],
+    ]) {
+      const result = prune({ "src/app.tsx": APP }, { args });
+      expect(result.status).toBe(2);
+      expect(result.stderr).toContain("unknown --exclude-family");
+    }
+  });
+});

@@ -44,6 +44,7 @@ usage: node node_modules/@godxjp/ui/scripts/prune-css.mjs <src dir/glob …> [--
 
   <src dir/glob …>  where your app's source lives (directories are walked; globs expand)
   --out <file>      where to write the css (default: godx-ui.css in the current directory)
+  --exclude-family <name>  fail if detected components require the omitted family (e.g. editorial)
   --fonts           include the bundled M PLUS 2 / Noto Sans JP @font-face declarations
                     (default mirrors @godxjp/ui/styles/core: none — bring your own fonts)
   --precompiled     import the precompiled slices (plain CSS, dist/styles/precompiled/) instead
@@ -56,6 +57,8 @@ the set of components you use changes, and after every @godxjp/ui upgrade.`);
   process.exit(0);
 }
 
+const excludeFlag = args.indexOf("--exclude-family");
+const excludedFamily = excludeFlag === -1 ? undefined : args[excludeFlag + 1];
 const outFlag = args.indexOf("--out");
 const OUT = outFlag !== -1 ? args[outFlag + 1] : "godx-ui.css";
 if (outFlag !== -1 && (!OUT || OUT.startsWith("--"))) {
@@ -65,7 +68,10 @@ if (outFlag !== -1 && (!OUT || OUT.startsWith("--"))) {
 const FONTS = args.includes("--fonts");
 const PRECOMPILED = args.includes("--precompiled");
 const positionals = args.filter(
-  (a, i) => !a.startsWith("--") && (outFlag === -1 || i !== outFlag + 1),
+  (a, i) =>
+    !a.startsWith("--") &&
+    (outFlag === -1 || i !== outFlag + 1) &&
+    (excludeFlag === -1 || i !== excludeFlag + 1),
 );
 
 // ── the package's own graph, version-locked ──────────────────────────────────
@@ -86,6 +92,13 @@ if (manifest.version !== pkg.version) {
       `installed @godxjp/ui is ${pkg.version}. A slice computed from another release's dependency ` +
       "graph can silently miss a layer, which is the exact failure this tool exists to prevent. " +
       "Reinstall @godxjp/ui (or rebuild dist/ if this is a linked checkout) and re-run.",
+  );
+  process.exit(2);
+}
+
+if (excludeFlag !== -1 && !Object.hasOwn(manifest.families ?? {}, excludedFamily ?? "")) {
+  console.error(
+    `prune-css: unknown --exclude-family ${excludedFamily ?? "(missing)"}; choose ${Object.keys(manifest.families ?? {}).join(", ")}`,
   );
   process.exit(2);
 }
@@ -187,6 +200,13 @@ for (const name of used) {
   const entry = manifest.components[name];
   for (const l of entry.layers) layers.add(l);
   for (const v of entry.vendor ?? []) vendors.add(v);
+}
+
+if (excludedFamily && manifest.families[excludedFamily].some((file) => layers.has(file))) {
+  console.error(
+    `prune-css: cannot exclude ${excludedFamily}: detected components require it. Remove their imports or keep the family.`,
+  );
+  process.exit(2);
 }
 
 const keptLayers = manifest.order.filter((f) => layers.has(f));

@@ -326,7 +326,7 @@ function renderedIcon(token: string, env: Map<string, string>): string {
 describe("icon size migration moved nothing (gh#326)", () => {
   it("unset icon mirrors retain their scoped control-step fallback", () => {
     const control = readFileSync("src/styles/control.css", "utf8");
-    const layout = readFileSync("src/styles/layout.css", "utf8");
+    const layout = readFileSync("src/styles/editorial-layout.css", "utf8");
     expect(control).toContain("var(--button-icon-size, var(--control-icon-size))");
     expect(layout).toContain(
       "--button-icon-size: var(--editorial-catalog-detail-module-button-icon-size)",

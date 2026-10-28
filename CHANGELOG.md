@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add `styles/application` and additive `styles/editorial` entries; separate editorial layouts from shared page/grid CSS and use one generated family map for entries and `prune-css --exclude-family editorial` (#1475).
+- Verify `prune-css` and `prune-css --precompiled` against an independently installed npm tarball, including CSS compiler resolution and measured raw/gzip savings (#1455).
+
+
 ### Fixed
 
 - `Affix`: viewport-targeted pins now remeasure containing-block compensation on captured window scroll and resize, so a paint/transform ancestor cannot move a pinned rail off-screen (gh#1504). Existing requestAnimationFrame coalescing and unpin/unmount cleanup apply to both viewport and element targets.

@@ -10,14 +10,10 @@
  * no network bytes: they live in `styles/core-with-fallbacks`, a third entry, precisely so this
  * number keeps meaning what it says.
  *
- * These FOUR are the ONLY supported subsets: fonts on (`styles`), off (here), local-only
- * fallbacks (`styles/core-with-fallbacks`), or one merged JIS X 0208 level 1 file per weight
- * (`styles/core-with-jis-level1`, three requests instead of ~8 per navigation — gh#535).
- * Cherry-picking `*-layout.css` files is not
- * supported — layers share rules (a Select's rows, a menu's surface, a form's rhythm) and a
- * consumer who omits one gets naked menus and unsized rows with no error. A real case: Bug Shot
- * loaded 11 of 18 layers and shipped an unstyled DropdownMenu. Load everything; a layer is a few
- * KB and tree-shaking CSS by layer buys nothing measurable.
+ * Supported smaller builds: `styles/application` omits editorial/catalog/holding layouts;
+ * `styles/editorial` adds them back after the application entry. For content-aware pruning,
+ * use the package-owned `prune-css` tool (add --precompiled without Tailwind). Never guess
+ * individual layer imports: the generated dependency manifest owns their closure and order.
  */
 /* LAYER ORDER, declared before the first @import because that is the only place a bare `@layer`
  * statement is allowed to set it.
@@ -56,6 +52,7 @@
 @import "./shell-layout.css";
 @import "./motion.css";
 @import "./layout.css";
+@import "./editorial-layout.css";
 @import "./editorial-account-layout.css";
 @import "./control.css";
 @import "./toggle.css";

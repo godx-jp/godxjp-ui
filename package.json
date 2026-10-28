@@ -81,6 +81,8 @@
       "import": "./dist/lab/index.js"
     },
     "./styles": "./dist/styles/index.css",
+    "./styles/application": "./dist/styles/application.css",
+    "./styles/editorial": "./dist/styles/editorial.css",
     "./styles/core": "./dist/styles/core.css",
     "./styles/core-with-fallbacks": "./dist/styles/core-with-fallbacks.css",
     "./styles/core-with-jis-level1": "./dist/styles/core-with-jis-level1.css",
