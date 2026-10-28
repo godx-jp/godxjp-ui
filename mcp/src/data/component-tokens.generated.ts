@@ -9404,6 +9404,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
+    "name": "--flex-felt-control-border-alpha",
+    "value": "0.65",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-track-alpha",
+    "value": "0.8",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
     "name": "--flex-felt-grain-size",
     "value": "3px",
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."

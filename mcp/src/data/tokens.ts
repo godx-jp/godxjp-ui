@@ -11,6 +11,18 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--flex-felt-control-border-alpha",
+    category: "component",
+    tier: "component",
+    role: "Material control border contrast alpha, default0.65.",
+  },
+  {
+    name: "--flex-felt-track-alpha",
+    category: "component",
+    tier: "component",
+    role: "Material slider track contrast alpha, default0.8.",
+  },
+  {
     name: "--flex-felt-background",
     category: "component",
     tier: "component",

@@ -5168,6 +5168,25 @@
 @layer components {
   .ui-flex[data-surface="felt"] {
     --background: var(--flex-felt-background, var(--primary));
+    --button-outline-foreground: hsl(var(--foreground));
+    --button-outline-background: transparent;
+    --button-outline-border-color: hsl(
+      var(--flex-etched-border-color, var(--foreground)) / var(--flex-felt-control-border-alpha)
+    );
+    --button-link-foreground: hsl(var(--foreground));
+    --control-surface-background: hsl(var(--background));
+    --control-surface-border-color: hsl(
+      var(--flex-etched-border-color, var(--foreground)) / var(--flex-felt-control-border-alpha)
+    );
+    --secondary: var(--background);
+    --secondary-foreground: var(--foreground);
+    --accent: var(--foreground);
+    --accent-foreground: var(--background);
+    --slider-track-background: hsl(
+      var(--flex-etched-border-color, var(--foreground)) / var(--flex-felt-track-alpha)
+    );
+    --slider-range-background: hsl(var(--foreground));
+
     --foreground: var(--flex-felt-foreground, var(--primary-foreground));
     --muted-foreground: var(--flex-felt-muted-foreground, var(--primary-foreground));
     --ring: var(--flex-felt-focus-color, var(--primary-foreground));
@@ -5198,5 +5217,17 @@
     border-radius: var(--flex-etched-radius);
     background: transparent;
     box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .ui-flex[data-surface="felt"] .ui-button--default {
+    --primary-foreground: var(--background);
+    --primary-hover: var(--foreground);
+    --button-default-background: hsl(var(--foreground));
+  }
+  .ui-flex[data-surface="felt"] .ui-slider-thumb {
+    background: hsl(var(--foreground));
+    border-color: hsl(var(--flex-etched-border-color, var(--foreground)));
   }
 }
