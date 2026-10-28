@@ -4,7 +4,7 @@ import { RadarChart } from "../radar-chart";
 const data = Array.from({ length: 6 }, (_, i) => ({ axis: `Axis ${i + 1}`, value: (i % 3) + 1 }));
 describe("RadarChart shared-scale and data-truth contract", () => {
   it("names the figure and exposes exact values outside the decorative SVG", () => {
-    const { container, getByRole, getByText } = renderWithUi(
+    const { container, getByRole } = renderWithUi(
       <RadarChart
         data={data}
         categoryKey="axis"
@@ -15,7 +15,7 @@ describe("RadarChart shared-scale and data-truth contract", () => {
       />,
     );
     expect(getByRole("figure", { name: "Plan" })).toBeTruthy();
-    expect(getByText("Axis 6: 3")).toBeTruthy();
+    expect(container.querySelector("ul")).toHaveTextContent("Axis 6: 3");
     expect(container.querySelectorAll('[data-slot="radar-area"]')).toHaveLength(1);
   });
   it("does not turn an unanswered axis into zero or plot an out-of-domain value", () => {
