@@ -95,8 +95,8 @@ describe("DatePicker range picker=month", () => {
     fireEvent.click(screen.getAllByRole("textbox")[0]);
     const cells = screen.getByRole("grid").querySelectorAll("button");
     const year = new Date().getFullYear();
-    fireEvent.click(cells[2]); // March — starts the range
-    expect(onValueChange).toHaveBeenLastCalledWith({ from: new Date(year, 2, 1), to: undefined });
+    fireEvent.click(cells[2]); // March — starts the range, held inside the open picker (gh#1476)
+    expect(onValueChange).not.toHaveBeenCalled();
     fireEvent.click(cells[8]); // September — completes it
     expect(onValueChange).toHaveBeenLastCalledWith({
       from: new Date(year, 2, 1),
@@ -139,9 +139,11 @@ describe("DatePicker range picker=month", () => {
     fireEvent.click(screen.getAllByRole("textbox")[0]);
     const cells = screen.getByRole("grid").querySelectorAll("button");
     fireEvent.click(cells[10]); // November — must START a new range, not extend
+    expect(onValueChange).not.toHaveBeenCalled(); // the new start is held (gh#1476)
+    fireEvent.click(cells[11]); // December — completes the NEW range
     expect(onValueChange).toHaveBeenLastCalledWith({
       from: new Date(2026, 10, 1),
-      to: undefined,
+      to: new Date(2026, 11, 1),
     });
   });
 

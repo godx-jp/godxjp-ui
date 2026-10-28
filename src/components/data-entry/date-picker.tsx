@@ -325,7 +325,7 @@ export function DatePicker(props: DatePickerProp) {
       (next.to ? allowed(next.to) : allowEmpty[1]),
     );
 
-  const choose = (input: Date | Date[] | DateRange | undefined) => {
+  const choose = (input: Date | Date[] | DateRange | undefined, typed = false) => {
     if (range) {
       let next = input as DateRange | undefined;
       if (anyDisabled && next)
@@ -343,8 +343,10 @@ export function DatePicker(props: DatePickerProp) {
       if (needConfirm) {
         setPending(next);
         setHasPending(true);
-      } else if (open && next && !(next.from && next.to)) {
-        // The calendar needs its first endpoint even when the consumer only accepts complete ranges.
+      } else if (open && !typed && next && !(next.from && next.to)) {
+        // A grid pick needs its first endpoint held even when the consumer only accepts complete
+        // ranges (gh#1476). A TYPED edge is an explicit commit (Enter / blur), so it still emits:
+        // an open-ended range entered from the keyboard is not discarded on close.
         setPending(next);
         setHasPending(true);
       } else {
@@ -414,7 +416,7 @@ export function DatePicker(props: DatePickerProp) {
     if (!trimmed && !allowEmpty[edge === "from" ? 0 : 1]) return;
     const base = working as DateRange | undefined;
     const next = { from: base?.from, to: base?.to, [edge]: parsed && periodDate(parsed) };
-    choose(next.from || next.to ? next : undefined);
+    choose(next.from || next.to ? next : undefined, true);
   };
 
   /**
@@ -710,7 +712,7 @@ export function DatePicker(props: DatePickerProp) {
       <Calendar
         mode="multiple"
         selected={Array.isArray(working) ? (working as Date[]) : []}
-        onSelect={choose}
+        onSelect={(days) => choose(days)}
         disabled={(day) => !allowed(day)}
         {...calendarShared}
       />
