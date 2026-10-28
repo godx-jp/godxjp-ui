@@ -6,7 +6,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.25.0] - 2026-10-28
+
+- Add controlled 49-option searchable area-picker regression coverage for typing, pointer/keyboard selection, clearing and reopening (#1483; not reproducible on this branch).
+- Fix searchable Select popup minimum and numeric widths exceeding the viewport with classic scrollbars (#1497).
+- Scroll capped PopoverContent and contain focus rings at scroll boundaries (#1456).
+- Diagnose non-menu DropdownMenuContent children in development and consumer audits; guide arbitrary content to Popover + ListRow (#1457).
+- Audit direct sonner imports and document the existing public toast export so consumers share the kit Toaster store, without changing dependency installation (#1458).
+
+### Changed
+
+- **Behaviour change:** `DatePicker range` (no `showTime`) holds an open half-range internally and emits only completed picks or clear; dismissing discards the draft even when the controlled consumer ignores partial values (gh#1476). Before, the first click emitted `{ from, to: undefined }`; a consumer that wants an open-ended range keeps it by choosing both ends or typing the end date.
+- Add `styles/application` and additive `styles/editorial` entries; separate editorial layouts from shared page/grid CSS and use one generated family map for entries and `prune-css --exclude-family editorial` (#1475).
+- Verify `prune-css` and `prune-css --precompiled` against an independently installed npm tarball, including CSS compiler resolution and measured raw/gzip savings (#1455).
+
+
 ### Fixed
+
+- Precompiled `styles.css` (and the `styles/precompiled/` slices) no longer ship utilities scanned from the repo's own tests and docs: the build turns Tailwind's automatic source detection off and scans the built JavaScript only. 870 KB → 834 KB raw, with no class the components use lost. `check:dist-tokens-resolve` accepts react-aria's `--trigger-*` and Sheet's inline `--sheet-width` as runtime-supplied and skips the third-party vendor slices.
+- Charts announce missing/non-finite observations as localized no data, keep absent trend marks distinct from zero, and format summary counts independently of value/currency options (gh#1482).
+- Pagination exposes `onPageIntent(page)` for pointer enter, focus and touch start on enabled page/previous/next controls in full and compact modes (gh#1472).
+- Image leaves SSR pictures uncovered until hydration, while retaining the pre-hydration load/error checks; placeholder children can shrink into their frame (gh#1472).
+- Editorial shadow knobs resolve scoped `--shadow-color` at their use sites; catalog module button aliases carry explicit defaults. Calendar day radius, outline button foreground, and button icon size remain reachable through their utility classes without changing default rendering (gh#1383).
+- `EditorialCard` spotlight now sizes a kit `Image` media wrapper to its slot, preserving placeholders and fallback images instead of a zero-size containing box (gh#1474).
+- `CatalogDetail` adds `image={{ src, alt, width, height, fallback, priority }}` alongside custom `media`: source-keyed kit `Image`, frame `data-status`, reduced-motion-aware loading skeleton and error fallback. `Image onStatusChange` exposes its existing cached/load/error lifecycle (gh#1460).
+- Native browser chrome now follows the light/dark theme selectors via CSS `color-scheme`; printing remains light (gh#1490).
+- Documented a fixed, non-modal, localized consent composition with `Card`, wrapping actions, safe-area padding and measured Toaster clearance; no new framework component because the Framework-Component Test fails C3 (gh#1463).
+
+- `Affix`: viewport-targeted pins now remeasure containing-block compensation on captured window scroll and resize, so a paint/transform ancestor cannot move a pinned rail off-screen (gh#1504). Existing requestAnimationFrame coalescing and unpin/unmount cleanup apply to both viewport and element targets.
 
 - `Select` (plain listbox): the open popup no longer narrows itself frame by frame near the inline-end edge of the page (gh#1502). Its width was `auto`, so as an absolutely positioned box it shrank to fit the space left of its placement; react-aria's scroll lock puts `scrollbar-gutter: stable` on `<html>`, which narrows that space by the scrollbar while placement still clamps to the viewport, and the two disagreed by a few pixels on every re-placement. Measured with classic scrollbars at 1512px: 404px → 312px in ~300ms, 3px a frame, labels re-wrapping as it went (31 widths in one opening); now one width for the whole opening. The popup is sized intrinsically: the trigger width is still the floor, it grows to its longest row up to the new `--select-content-max-width` (32rem, the search panel's cap) and the viewport less `--select-content-viewport-inset` (`--space-6`), and wraps rows past that. A numeric `popupMatchSelectWidth` is unchanged and uncapped.
 
@@ -41,12 +68,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The DataTable cell rule that pulls an inline component up by the cell padding (gh#1273) matched a component inside ANY wrapper that did not declare a column, so a consumer's plain `<div class="flex flex-col">` stacking a shift chip over a "+" button had the "+" painted 13px over the chip, and a click on the shift opened the wrong action (gh#1495). The one-wrapper arm now applies only inside a wrapper that is one line by construction — an inline `span`/`a` or a kit `Flex` row that does not wrap. gh#1273's row heights are unchanged (its browser test passes as before).
 - `Sidebar` draws a third clickable level under a section (gh#1493). A child item's own `children` were dropped, so a work area → sub-area → page tree (人事 → 労務 → 算定基礎届) could not be reached and had to be flattened. A child with children is now a collapsible group one level down (its guide line drops from the sub-row's dot), it opens when one of its descendants is active, and the leaf carries `aria-current="page"`; the collapsed-rail flyout lists the grandchildren under a labelled `group`. `NavList` renders nested items through the same group.
 - A `Sidebar` label cut by the rail's ellipsis carries its full text as `title` (and `data-truncated`) while it is cut, and loses both when the rail widens enough for it to fit (gh#1493). Measured in Chromium at a 240px rail: `定時決定（算定基礎届）の提出と標準報酬月額の確認` scrollWidth > clientWidth → `title` set; `賞与` → none.
+- Select option rows grow to contain wrapped labels while preserving the single-line menu height, preventing long Japanese names from overlapping adjacent rows (gh#1491).
 
 - Icon stays in the text line inside links and prose instead of inheriting the SVG reset's block display. Flex-based control sizing remains unchanged.
 
 - Image recovers failed requests that complete before hydration, so fallback and disabled preview match the actual image state.
 
 - Long unbroken breadcrumb labels, page subtitles and editorial titles wrap inside narrow screens without discarding content. Explicit breadcrumb ellipsis remains unchanged.
+### Added
+
+- `@godxjp/block-editor` directive previews can change their own block (#1479): the `directives` renderer receives a second argument `{ update(source), remove(), editable }`. `update` goes through the same path as "Edit source" → Done (still one directive → the same block with the new source, one undo step; anything else replaces it), `remove` deletes the block, and both do nothing in a read-only / disabled editor (`editable: false`). A host's picker or config form (a data block: a card, a list of events) writes its result back without the source textarea. New type `BlockEditorDirectiveControls`.
 
 ## [33.22.2] - 2026-10-25
 
@@ -74,6 +105,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@godxjp/markdown/codec`: such a directive is a `directive{name, source}` node (was a `rawBlock`), its canonical source byte-stable under `normalize`; `readDirective(source)` returns its `DirectiveBlock` parts; `MODELLED_DIRECTIVES`. The serialized Markdown is unchanged, so `CODEC_ID` stays `kit-md@2`. A malformed toggle or column row is still a raw block.
 - `@godxjp/block-editor`: a directive is one atomic `directive` block — dragged, deleted and moved whole from the handle, its source edited behind "Edit source" (re-parsed on Done: still one directive, it stays the block; anything else replaces it). `directives={{ poll: (block) => <Preview/> }}` previews it by name (otherwise its source shows); a host `/` row inserts one with `api.insertMarkdown(skeleton)`. New label `directive` (ja / en / vi).
 - `@godxjp/markdown/lazy`: the same `Markdown` with KaTeX (+ `katex.css`) and highlight.js each in its own chunk, imported the first time a rendered body has math or a fence with a language; until then math shows its TeX as code and fences are plain. `preloadMarkdownRuntime(body?)` loads them up front, for a server render or a hydration that must match the eager HTML. Measured with Vite on a host importing only `Markdown`: entry 560 KB JS (173 KB gzip) + 23.5 KB CSS → 220 KB JS (70 KB gzip), no CSS; KaTeX 262 KB (78 KB gzip) + its CSS and highlight.js 81 KB (26 KB gzip) load on demand. The default entry stays eager (a server or Worker render is synchronous); its output and `RENDERER_VERSION` (6) are unchanged.
+### Added
+
+- `prune-css --precompiled` (#1455): the layer-pruned stylesheet for apps without Tailwind. The build now also writes `styles.css` cut along the layer manifest to `dist/styles/precompiled/` (`base` — tokens, preflight, the components' utilities — plus one slice per `*-layout.css` layer and vendor sheet, each through the same Tailwind pass), and the flag makes prune-css import those slices (`@godxjp/ui/styles/precompiled/*`) instead of the Tailwind sources, with Tailwind's `properties` layer named first as in `styles.css`. Proven in Chromium: the slices picked for a component set style it exactly like `styles.css`.
 
 ### Changed
 
@@ -88,6 +122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `EditorialArticle` styles a `Prose` that is its direct child (#1451): CMS / Markdown HTML in the reading column takes the article's heading and paragraph tokens and the editorial face, so it reads exactly like `EditorialArticleSection` instead of Prose's own typography. CSS only.
 - `EditorialMasthead` pickers (#1435): the trigger takes the action row's height (`--editorial-masthead-action-size`) instead of the control tier's, and `--editorial-masthead-picker-max-width` (`none`) lets a design cap its width per breakpoint.
 - `EditorialSearch` suggestions (#1447): `suggestions` (groups of link rows with optional media, description and meta), `suggestionsFooter`, `suggestionsLabel`, `onQueryChange` and `linkComponent` on the inset variant. With them the field is an ARIA combobox over a grouped listbox (APG): arrows move the active row (wrapping), Enter follows its link, Escape closes, a press on a row keeps focus in the field. `onQueryChange` is never called mid-IME-composition, and Enter / arrows belong to the IME while it composes. The consumer fetches; the kit only shows rows. Geometry: `--editorial-search-popup-*`, `--editorial-search-group-label-*`, `--editorial-search-suggestion-*` (colour knobs `initial`).
 - `NumberInput width="full" | "auto" | "bounded"` — the `Select` / picker width axis. `auto` sizes the field to the widest value its bounds allow (formatted `min` / `max`, 6 characters unbounded) plus the stepper column, so a quantity stepper outside a FormField (a `ListRow` trailing slot) no longer fills the line; `bounded` holds `--control-bounded-width`. Default `full` is unchanged (#1448).
@@ -118,6 +153,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `DropdownMenuItem asChild` with a link no longer makes react-aria warn "Expected <div>, got <a>" (#1452): the item hands `MenuItem` the borrowed child's `href` — or its own new `href` prop, for router links that take `to` — so react-aria renders its link item (an `<a>`, closes on select) instead of an action `<div>`. The click is still the child's own. `DropdownMenuLabel` renders the `<header>` react-aria's `Header` expects (it warned "Expected <header>, got <div>") with `role="presentation"`, so the menu still owns no `banner` landmark.
 - AppShell: with mobileTabBar visible, app footer now flows at the end of scrolling content; desktop retains its footer track. Footer inline insets follow the page spacing tokens, including compact phone gutters and RTL.
 - Collapsed table records honor `--table-row-border-width`; compact collections honor `--table-font-size` while retaining compact defaults when unset. Persona typography resolves when optional foundation aliases are unavailable (#1383).
 - `DashboardGrid` (lab) prints every tile at its content height: in print the grid rows are `auto`, tile content no longer scrolls, and the move / resize handles are hidden, so a table taller than its tile keeps all its rows on paper (#1446).

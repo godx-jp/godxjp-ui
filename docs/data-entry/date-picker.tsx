@@ -12,6 +12,8 @@ import type { DateRange } from "react-day-picker";
  * year), `range` turns it into a two-endpoint field, `multiple` into a set. Always give it a
  * `name` for form submission; it emits ISO-8601 at the picker's own precision. Use
  * `minDate`/`maxDate` to constrain what is selectable. Never hand-roll a date input + calendar,
+ * In range mode the panel keeps the first endpoint as a draft. onValueChange receives the
+ * complete range (or clear); closing before the second endpoint discards the draft.
  * and never compose two DatePickers side-by-side to fake a range — that is `range`.
  * Composed only from real @godxjp/ui components.
  */

@@ -161,6 +161,16 @@ const contracts = [
  */
 const styleContracts = [
   {
+    subpath: "./styles/application",
+    target: "./dist/styles/application.css",
+    expect: { faces: 0, fontsource: false, editorial: false },
+  },
+  {
+    subpath: "./styles/editorial",
+    target: "./dist/styles/editorial.css",
+    expect: { faces: 0, fontsource: false, editorial: true },
+  },
+  {
     subpath: "./styles",
     target: "./dist/styles/index.css",
     // v32 (#1221): fonts are OPT-IN. The zero-config entry carries no faces; `./styles/fonts.css`
@@ -249,6 +259,14 @@ function checkPackedStyleEntries(tarball, manifest, packedFiles) {
     }
 
     const css = flattenPackedCss(tarball, path);
+    if (contract.expect.editorial !== undefined) {
+      const hasEditorial = /\.ui-(?:editorial-(?:section|hero)|catalog-card|holding-grid)[\s:{[]/.test(css);
+      if (hasEditorial !== contract.expect.editorial) {
+        errors.push(
+          `${contract.subpath}: editorial layout presence must be ${contract.expect.editorial}`,
+        );
+      }
+    }
     const faces = css.match(/@font-face\s*\{[^}]*\}/g) ?? [];
     if (faces.length !== contract.expect.faces) {
       errors.push(
@@ -1021,6 +1039,18 @@ try {
   buildMissingRechartsPeerConsumer(tarball, manifest);
   buildErrorSurfaceConsumer(tarball, manifest);
   const independentCore = buildIndependentCoreConsumer(tarball, manifest);
+  execFileSync(
+    process.execPath,
+    [
+      "scripts/check-packed-css-pruning.mjs",
+      "--consumer",
+      join(packDirectory, "independent-core-consumer"),
+    ],
+    {
+      cwd: root,
+      stdio: "inherit",
+    },
+  );
   const independentMissingRechartsDiagnostic = buildIndependentMissingRechartsPeerConsumer(
     tarball,
     manifest,

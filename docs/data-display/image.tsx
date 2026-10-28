@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 import {
   Card,
@@ -35,6 +36,8 @@ import shotPortrait from "../assets/shot-portrait.svg";
  * not ported.
  */
 export default function Demo() {
+  const { t } = useTranslation();
+  const [imageStatus, setImageStatus] = React.useState<"loading" | "loaded" | "error">("loading");
   const [current, setCurrent] = React.useState(0);
   const [visible, setVisible] = React.useState(false);
 
@@ -114,7 +117,13 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex gap="md" wrap align="start">
-              <Image src={coverTerrain} width={240} alt="Cover image" placeholder />
+              <Image
+                src={coverTerrain}
+                width={240}
+                alt="Cover image"
+                placeholder
+                onStatusChange={setImageStatus}
+              />
               <Image
                 src="/missing-screenshot.png"
                 fallback={portraitIris}
@@ -122,6 +131,12 @@ export default function Demo() {
                 alt="A picture that failed to load"
               />
             </Flex>
+            <Text as="p" size="sm" tone="muted">
+              {t(`imageLifecycleDocs.${imageStatus}`)}
+            </Text>
+            <Text as="p" size="sm" tone="muted">
+              {t("imageLifecycleDocs.hint")}
+            </Text>
           </CardContent>
         </Card>
 

@@ -18,7 +18,7 @@ npm i @godxjp/ui
 
 <!-- agent-catalog-counts:start -->
 
-The catalog — 212 components, 3200 tokens, 44 cardinal rules — is published in two forms from one
+The catalog — 212 components, 3203 tokens, 44 cardinal rules — is published in two forms from one
 source. **Entry point for either: [`AGENTS.md`](AGENTS.md).**
 <!-- agent-catalog-counts:end -->
 
@@ -56,9 +56,9 @@ static files straight from this public repo — no hosting, no deploy step:
 | [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 47 KB | all 212 as name + group + tagline — **fetch this first** |
 | [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1 KB–38 KB | one file per component, each with its `importPath` — **this is the route to take** |
 | [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.4 MB | all 212 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
-| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 1.4 MB | all 3200 design tokens, their values and why they exist |
+| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 1.4 MB | all 3203 design tokens, their values and why they exist |
 | [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json) | 7 KB | the controlled prop vocabulary |
-| [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json) | 23 KB | the 44 cardinal rules |
+| [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json) | 24 KB | the 44 cardinal rules |
 <!-- prettier-ignore-end -->
 <!-- agent-catalog-files:end -->
 
@@ -225,6 +225,17 @@ that file INSTEAD of `@godxjp/ui/styles`. The sonner / react-day-picker vendor s
 only when a used component renders them. **Re-run it whenever the set of components you use
 changes and after every upgrade** — the emitted header says so, and the tool refuses to run against
 a manifest from a different package version.
+
+No Tailwind (you import `@godxjp/ui/styles.css`)? Add `--precompiled` (gh#1455):
+
+```bash
+npx godxjp-ui prune-css src --out src/godx-ui.css --precompiled
+```
+
+The emitted file imports the precompiled slices instead (`@import "@godxjp/ui/styles/precompiled/base";` and one per kept layer): the same precompiled CSS as
+`styles.css`, cut per manifest file at build time (`base` = tokens, preflight and the utilities
+the components use; one slice per layer and vendor sheet). Your bundler only has to inline plain
+`@import`s. Import it INSTEAD of `@godxjp/ui/styles.css`.
 
 ## Golden ratio (φ ≈ 1.618)
 

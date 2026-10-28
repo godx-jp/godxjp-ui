@@ -65,6 +65,7 @@
   ],
   "tagline": "A whole-card link (gh#1435). `variant=\"journal\"`: an edge-to-edge cover, category, title, two lines of description and a footer with a circled arrow; the link is named by its title (aria-labelledby). `variant=\"spotlight\"`: kicker, title and a line beside a tilted picture. Pass the link element (router Link or `<a href>`) as `link`; the card content is rendered into it. Geometry: `--editorial-journal-*`, `--editorial-spotlight-*`.",
   "usage": [
-    "DO lay journal cards out with `ResponsiveGrid preset=\"trio\"`."
+    "DO lay journal cards out with `ResponsiveGrid preset=\"trio\"`.",
+    "DO use kit Image with preview={false} for media inside the whole-card link. Spotlight sizes the Image frame to fill its slot, including placeholder and fallback (gh#1474)."
   ]
 }

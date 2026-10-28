@@ -1,7 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { buildCartesianSummary, buildPieSummary } from "../chart-summary";
 import type { ChartDatum, ChartSeriesProp } from "../../../props/components/charts.prop";
+
+import { syncI18nLocale } from "../../../i18n/translate";
+beforeEach(() => syncI18nLocale("en", "en"));
 
 const fmt = new Intl.NumberFormat("en-US");
 const list = new Intl.ListFormat("en-US", { style: "long", type: "conjunction" });
@@ -29,7 +32,7 @@ describe("buildCartesianSummary", () => {
     expect(out.rows[0]).toBe("Feb — revenue: 5");
   });
 
-  it("coerces non-finite, non-number, null and missing values to 0", () => {
+  it("reads non-finite, null and missing values as no data", () => {
     const data: ChartDatum[] = [
       { month: "A", v: Number.NaN },
       { month: "B", v: null },
@@ -39,9 +42,9 @@ describe("buildCartesianSummary", () => {
     ];
     const series: ChartSeriesProp[] = [{ dataKey: "v", label: "V" }];
     const out = buildCartesianSummary(data, series, "month", fmt, list, () => "x");
-    expect(out.rows[0]).toBe("A — V: 0");
-    expect(out.rows[1]).toBe("B — V: 0");
-    expect(out.rows[2]).toBe("C — V: 0");
+    expect(out.rows[0]).toBe("A — V: No data");
+    expect(out.rows[1]).toBe("B — V: No data");
+    expect(out.rows[2]).toBe("C — V: No data");
     expect(out.rows[3]).toBe(" — V: 3");
   });
 
@@ -60,9 +63,9 @@ describe("buildPieSummary", () => {
     expect(out.img).toBe("1 slices");
   });
 
-  it("coerces null/missing value to 0 and missing name to empty string", () => {
+  it("reads null as no data and missing name as empty string", () => {
     const data: ChartDatum[] = [{ count: null }];
     const out = buildPieSummary(data, "count", "name", fmt, () => "");
-    expect(out.rows[0]).toBe(": 0");
+    expect(out.rows[0]).toBe(": No data");
   });
 });

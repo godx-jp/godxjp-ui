@@ -786,6 +786,7 @@
     "trendCurrent": "hiện tại",
     "heatmapSummary": "Bản đồ nhiệt {rows} × {columns}",
     "heatmapHighest": "Cao nhất: {value} tại {row}, {column}",
+    "noData": "Không có dữ liệu",
     "heatmapNoData": "Không có dữ liệu",
     "heatmapTop": "Hạng {rank}",
     "heatmapLegend": "Thang màu",

@@ -7,7 +7,7 @@ export type {
   BlockEditorUploadResult,
   WikilinkSuggestion,
 } from "./block-editor";
-export type { BlockEditorDirectiveRenderer } from "./labels";
+export type { BlockEditorDirectiveControls, BlockEditorDirectiveRenderer } from "./labels";
 export { BLOCK_EDITOR_MESSAGES } from "./messages";
 export type { BlockEditorLabels } from "./messages";
 export { schemaExtensions } from "./extensions";

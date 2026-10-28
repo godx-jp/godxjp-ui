@@ -231,7 +231,7 @@
   --editorial-search-border-color: initial;
   /* Default = hsl(var(--card)). */
   --editorial-search-background: initial;
-  --editorial-search-shadow: 0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06);
+  --editorial-search-shadow: initial;
   --editorial-search-icon-size: var(--icon-size-lg);
   /* The scope reads as part of the field: the input's weight by default. */
   --editorial-search-scope-font-weight: inherit;
@@ -255,7 +255,7 @@
   --editorial-search-popup-max-height: min(32rem, 70vh);
   --editorial-search-popup-padding-block: calc(var(--space-1) + 0.125rem);
   --editorial-search-popup-radius: var(--radius);
-  --editorial-search-popup-shadow: 0 12px 32px rgb(var(--shadow-color, 0 0 0) / 0.12);
+  --editorial-search-popup-shadow: initial;
   /* Default = hsl(var(--border)). */
   --editorial-search-popup-border-color: initial;
   /* Default = hsl(var(--popover)). */
@@ -342,7 +342,7 @@
   --editorial-showcase-caption-gap: calc(var(--space-3) + 0.0625rem);
   --editorial-showcase-caption-min-width: 16.25rem;
   --editorial-showcase-caption-radius: var(--radius);
-  --editorial-showcase-caption-shadow: 0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06);
+  --editorial-showcase-caption-shadow: initial;
   /* scale-exempt: measured editorial geometry; retain the existing size between icon steps */
   --editorial-showcase-caption-icon-size: calc(var(--icon-size-xl) + 0.25rem);
   /* `block` or `none`. */
@@ -393,7 +393,7 @@
 
   /* ── CatalogCard ────────────────────────────────────────────────────────────────────────── */
   --editorial-catalog-card-radius: var(--radius);
-  --editorial-catalog-card-hover-shadow: 0 10px 28px rgb(var(--shadow-color, 0 0 0) / 0.1);
+  --editorial-catalog-card-hover-shadow: initial;
   --editorial-catalog-card-hover-translate: -3px;
   --editorial-catalog-card-media-aspect-size: 1 / 1.05;
   --editorial-catalog-card-media-padding-block-start: var(--space-12);
@@ -479,7 +479,7 @@
   --editorial-spotlight-media-inset-block-start: 2rem;
   --editorial-spotlight-media-offset-angle: 12deg;
   --editorial-spotlight-media-shadow: 0 6px 6px rgb(40 25 20 / 0.12);
-  --editorial-spotlight-hover-shadow: 0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06);
+  --editorial-spotlight-hover-shadow: initial;
 
   /* ── EditorialCard variant="journal" ────────────────────────────────────────────────────── */
   --editorial-journal-cover-height: 13.25rem;
@@ -521,7 +521,7 @@
   --editorial-journal-arrow-size: 2rem; /* scale-exempt: 32px circular action target around the separate 16px arrow glyph */
   --editorial-journal-arrow-icon-size: var(--icon-size-md);
   --editorial-journal-focus-offset: -4px;
-  --editorial-journal-hover-shadow: 0 12px 28px rgb(var(--shadow-color, 0 0 0) / 0.08);
+  --editorial-journal-hover-shadow: initial;
 
   /* ── EditorialMasthead ──────────────────────────────────────────────────────────────────── */
   --editorial-masthead-height: 5.5rem;
@@ -642,6 +642,9 @@
   --editorial-catalog-detail-art-height: auto;
   --editorial-catalog-detail-art-max-width: none;
   --editorial-catalog-detail-art-padding: var(--space-10);
+  --editorial-catalog-detail-loading-background: initial;
+  --editorial-catalog-detail-loading-duration: var(--duration-loop);
+  --editorial-catalog-detail-loading-alpha: 0.5;
   --editorial-catalog-detail-art-radius: calc(var(--radius) * 2);
   --editorial-catalog-detail-media-width: 15.625rem;
   --editorial-catalog-detail-media-height: 22.5rem;

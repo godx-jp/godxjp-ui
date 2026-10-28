@@ -48,6 +48,7 @@ export function PieChart({
   assertRechartsPeer();
   const { t } = useTranslation();
   const fmt = useChartNumberFormat(numberFormat);
+  const counts = useChartNumberFormat();
   const points = data.flatMap((datum, index) =>
     typeof datum[dataKey] === "number" &&
     Number.isFinite(datum[dataKey]) &&
@@ -81,7 +82,7 @@ export function PieChart({
   const stableShape = React.useCallback((raw: unknown) => shapeRef.current(raw), []);
   const hasData = data.length > 0;
   const summary = buildPieSummary(data, dataKey, nameKey, fmt, (c) =>
-    t("chart.summaryPie", { slices: fmt.format(c.slices) }),
+    t("chart.summaryPie", { slices: counts.format(c.slices) }),
   );
   const resolvedHeight = chartHeight(size, height);
 

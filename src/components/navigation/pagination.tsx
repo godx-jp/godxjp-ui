@@ -153,6 +153,7 @@ export function Pagination({
   disabled,
   className,
   onValueChange,
+  onPageIntent,
 }: PaginationProp) {
   const { t } = useTranslation();
   const jumperId = React.useId();
@@ -171,6 +172,13 @@ export function Pagination({
     if (disabled) return;
     const nextPage = Math.min(Math.max(1, page), Math.max(1, Math.ceil(total / size)));
     onValueChange?.(nextPage, size);
+  };
+
+  const intent = (page: number) => {
+    const notify = () => {
+      if (!disabled && page >= 1 && page <= totalPages) onPageIntent?.(page);
+    };
+    return { onPointerEnter: notify, onFocus: notify, onTouchStart: notify };
   };
 
   /** Ant Design's quick jumper: a free-typed page number, clamped into `[1, pageCount]` on commit. */
@@ -255,6 +263,7 @@ export function Pagination({
           size="sm"
           disabled={Boolean(disabled) || safeCurrent <= 1}
           aria-label={t("navigation.pagination.prev")}
+          {...intent(safeCurrent - 1)}
           onClick={() => go(safeCurrent - 1)}
         >
           {}
@@ -269,6 +278,7 @@ export function Pagination({
           size="sm"
           disabled={Boolean(disabled) || safeCurrent >= totalPages}
           aria-label={t("navigation.pagination.next")}
+          {...intent(safeCurrent + 1)}
           onClick={() => go(safeCurrent + 1)}
         >
           <ChevronRight aria-hidden="true" />
@@ -320,6 +330,7 @@ export function Pagination({
         <PaginationItem>
           <PaginationPrevious
             aria-label={t("navigation.pagination.prev")}
+            {...intent(safeCurrent - 1)}
             onClick={() => go(safeCurrent - 1)}
             disabled={Boolean(disabled) || safeCurrent <= 1}
           >
@@ -336,6 +347,7 @@ export function Pagination({
             <PaginationItem key={page}>
               <PaginationLink
                 isActive={page === safeCurrent}
+                {...intent(page)}
                 aria-label={t("navigation.pagination.page", { page })}
                 onClick={() => {
                   if (!disabled) go(page);
@@ -351,6 +363,7 @@ export function Pagination({
         <PaginationItem>
           <PaginationNext
             aria-label={t("navigation.pagination.next")}
+            {...intent(safeCurrent + 1)}
             onClick={() => go(safeCurrent + 1)}
             disabled={Boolean(disabled) || safeCurrent >= totalPages}
           >

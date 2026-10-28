@@ -84,7 +84,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 14,
     title: "Every third-party library is a deliberate, declared choice",
-    body: "The runtime stack is what `package.json` declares: react-aria-components / react-aria / react-stately, cmdk, sonner, lucide-react, @tanstack/react-table, react-day-picker, class-variance-authority + clsx + tailwind-merge. A new dependency needs an ADR saying why it is the canonical choice and why an existing one cannot do it.",
+    body: "The runtime stack is what `package.json` declares: react-aria-components / react-aria / react-stately, cmdk, sonner, lucide-react, @tanstack/react-table, react-day-picker, class-variance-authority + clsx + tailwind-merge. Consumers must import toast from @godxjp/ui (or @godxjp/ui/feedback), never directly from sonner: two installed versions own separate toast stores and silently miss the kit Toaster. The audit rule no-direct-sonner-import enforces this. A new dependency needs an ADR saying why it is the canonical choice and why an existing one cannot do it.",
   },
   {
     number: 15,
@@ -189,7 +189,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 40,
     title: "Pages are mobile-first",
-    body: 'Author and verify every page at 320–390px FIRST. Page sections are spaced by `PageContainer` itself (`--page-body-gap` between its direct children). Inside a section spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction="col"`, control rows = the default `direction="row"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout (the static audit rejects them). Styles are loaded whole: `@godxjp/ui/styles` or `styles/core`, never a hand-picked set of layers. They differ ONLY in the 729 bundled CJK `@font-face` declarations, and that difference is most of the CSS: 367 KB vs 86 KB gzip for a 15-component app (gh#971) — pick `styles/core` whenever the app loads fonts another way.',
+    body: 'Author and verify every page at 320–390px FIRST. Page sections are spaced by `PageContainer` itself (`--page-body-gap` between its direct children). Inside a section spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction="col"`, control rows = the default `direction="row"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout (the static audit rejects them). Load `@godxjp/ui/styles` (Tailwind v4) or `styles.css` (precompiled) for all families, or `styles/application` to omit editorial/catalog/holding layouts; `styles/editorial` adds that family after the application entry. Existing `styles/core` still carries all families. Fonts are opt-in. For a content-aware subset run `npx @godxjp/ui prune-css src --out <your stylesheet>` and import its generated file instead; add `--precompiled` without Tailwind, or `--exclude-family editorial` to reject accidental use of the omitted family. Both paths use the package-owned layer dependency graph. Re-run after upgrades/import changes; never hand-pick layout files.',
   },
   {
     number: 41,

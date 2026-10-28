@@ -2,14 +2,9 @@
  * FOUNDATION — Tailwind entry, design tokens, density, theme mapping, base
  * element styles. This is the minimum every consumer needs.
  *
- * Two supported entries, and only two:
- *
- *     @import "@godxjp/ui/styles";        // every component layer + the bundled fonts
- *     @import "@godxjp/ui/styles/core";   // every component layer, no fonts
- *
- * The per-layer files are the package's internal structure, not a menu: layers share
- * rules, and a page that loads a subset renders naked menus and unsized rows. `core` is
- * the subset.
+ * Full entry: `@godxjp/ui/styles` (or `styles/core`), with fonts opt-in.
+ * Family opt-out: `styles/application`, with optional additive `styles/editorial`.
+ * Content-aware subset: run the package-owned prune-css tool; never guess layer imports.
  *
  * The layout files declare `@layer components` and use `@apply`, so base.css
  * (which pulls in Tailwind) MUST be imported before them, in the same
@@ -277,6 +272,18 @@
 }
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  /* Match foundation.css's dark selectors and paper exception. */
+  @media not print {
+    .dark,
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+    }
+  }
+
   * {
     border-color: hsl(var(--border));
   }

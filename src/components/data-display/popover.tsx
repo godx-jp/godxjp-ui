@@ -538,6 +538,17 @@ function ClickContent({
 }: PopoverContentProps) {
   const root = usePopoverRoot("PopoverContent");
   const contentRef = React.useRef<HTMLDivElement | null>(null);
+  const [viewportInlineSize, setViewportInlineSize] = React.useState<number>();
+  React.useLayoutEffect(() => {
+    if (!root.open) return;
+    const doc = root.triggerRef.current?.ownerDocument ?? document;
+    const update = () => setViewportInlineSize(doc.documentElement.clientWidth);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(doc.documentElement);
+    return () => observer.disconnect();
+  }, [root.open, root.triggerRef]);
+
   const openAutoFocusRef = React.useRef(onOpenAutoFocus);
   openAutoFocusRef.current = onOpenAutoFocus;
 
@@ -724,6 +735,9 @@ function ClickContent({
               {
                 ...racStyle,
                 "--radix-popover-trigger-width": "var(--trigger-width)",
+                ...(viewportInlineSize == null
+                  ? null
+                  : { "--popover-viewport-inline-size": `${viewportInlineSize}px` }),
                 "--radix-popover-content-transform-origin": "var(--trigger-anchor-point)",
                 ...(availableHeight == null
                   ? null

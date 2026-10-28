@@ -5,6 +5,11 @@
   "name": "Pagination",
   "props": [
     {
+      "description": "Pointer enter, focus or touch start on enabled page/previous/next controls, including simple and responsive forms. May repeat: preload/cache the target without changing value. Disabled or out-of-range targets do not emit.",
+      "name": "onPageIntent",
+      "type": "(page: number) => void"
+    },
+    {
       "description": "Tên khả truy cập của landmark phân trang. Bắt buộc khi một trang có nhiều bộ phân trang.",
       "name": "ariaLabel",
       "type": "string"

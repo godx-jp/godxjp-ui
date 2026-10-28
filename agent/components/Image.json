@@ -9,6 +9,11 @@
   "name": "Image",
   "props": [
     {
+      "description": "Reports resolved status, including cached images; error remains final while showing fallback.",
+      "name": "onStatusChange",
+      "type": "(status: \"loading\" | \"loaded\" | \"error\") => void"
+    },
+    {
       "description": "Image URL.",
       "name": "src",
       "type": "string"
@@ -29,7 +34,7 @@
       "type": "string"
     },
     {
-      "description": "Painted over the frame until the picture loads; `true` = a muted block.",
+      "description": "After hydration, painted over the frame while the picture loads; SSR leaves pictures uncovered. `true` = a muted block. Child content can shrink to fit the frame.",
       "name": "placeholder",
       "type": "ReactNode | boolean"
     },

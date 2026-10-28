@@ -4045,9 +4045,17 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "image",
+          "origin": "owned",
+          "required": false,
+          "type": "(Pick<ImageProp, \"height\" | \"width\" | \"alt\" | \"src\" | \"fallback\"> & { priority?: boolean; }) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "media",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
@@ -6853,6 +6861,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "href",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
@@ -10701,6 +10717,14 @@
           ]
         },
         {
+          "name": "onStatusChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((status: \"loading\" | \"loaded\" | \"error\") => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "placeholder",
           "origin": "owned",
           "required": false,
@@ -13282,6 +13306,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onPageIntent",
+          "origin": "owned",
+          "required": false,
+          "type": "((page: number) => void) | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {

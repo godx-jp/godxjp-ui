@@ -33,7 +33,7 @@ export default function Demo() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon" aria-label="請求書をコピー">
-                    <Copy className="size-4" />
+                    <Copy />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top">請求書をコピー</TooltipContent>
@@ -47,7 +47,7 @@ export default function Demo() {
                     aria-label="削除"
                     className="text-destructive hover:text-destructive"
                   >
-                    <Trash2 className="size-4" />
+                    <Trash2 />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top">削除 (元に戻せません)</TooltipContent>
@@ -135,7 +135,7 @@ export default function Demo() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon" aria-label="編集">
-                      <Pencil className="size-4" />
+                      <Pencil />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">編集</TooltipContent>
@@ -143,7 +143,7 @@ export default function Demo() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon" aria-label="複製">
-                      <Copy className="size-4" />
+                      <Copy />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">複製</TooltipContent>
@@ -156,7 +156,7 @@ export default function Demo() {
                       aria-label="削除"
                       className="text-destructive hover:text-destructive"
                     >
-                      <Trash2 className="size-4" />
+                      <Trash2 />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">削除 (元に戻せません)</TooltipContent>

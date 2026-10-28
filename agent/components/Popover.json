@@ -113,6 +113,7 @@
   ],
   "tagline": "React Aria floating panel anchored to a trigger — always compose with PopoverTrigger + PopoverContent; never use a raw div overlay.",
   "usage": [
+    "DO: PopoverContent scrolls automatically when its available height caps content. Focus rings remain contained at scroll edges, including flush panels.",
     "HOVER CARD: `<Popover openOn=\"hover\"><PopoverTrigger asChild><a href=…>@yamada</a></PopoverTrigger><PopoverContent>…</PopoverContent></Popover>` for RICH preview content (an avatar + bio, an entity summary). For a short plain-text hint use Tooltip. DON'T put essential information only in a hover card — touch never opens it; make the same content reachable from the trigger's destination. There is no `HoverCard` component.",
     "DO compose: <Popover> → <PopoverTrigger asChild> → <Button/> and <PopoverContent>. All four parts are required for any popover to function; omitting PopoverTrigger or PopoverContent produces nothing.",
     "DO set `<PopoverContent width=\"auto\">` when the child brings its own measure — a Calendar, a chart, a fixed-width preview. The panel's own 18rem clips them, and a `w-*` utility on className is a per-call-site constant no service theme can retune, which is exactly what `flush` exists to avoid on the padding axis. `width=\"trigger\"` matches the anchor, the shape every select-like control wants.",

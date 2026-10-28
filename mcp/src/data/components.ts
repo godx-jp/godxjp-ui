@@ -1438,7 +1438,10 @@ import { Button } from "@godxjp/ui/general";
       { name: "level", type: "2 | 3 | 4", defaultValue: "3", description: "Heading level." },
       { name: "titleId", type: "string", description: "Title id (generated when omitted)." },
     ],
-    usage: ['DO lay journal cards out with `ResponsiveGrid preset="trio"`.'],
+    usage: [
+      'DO lay journal cards out with `ResponsiveGrid preset="trio"`.',
+      "DO use kit Image with preview={false} for media inside the whole-card link. Spotlight sizes the Image frame to fill its slot, including placeholder and fallback (gh#1474).",
+    ],
     related: ['ResponsiveGrid — `preset="trio"`.'],
     example: `import { EditorialCard } from "@godxjp/ui/layout";
 
@@ -1635,7 +1638,17 @@ import { Select } from "@godxjp/ui/data-entry";
         defaultValue: '"card"',
         description: "Frame for a card or a sealed package.",
       },
-      { name: "media", type: "ReactNode", required: true, description: "The picture." },
+      {
+        name: "media",
+        type: "ReactNode",
+        description: "Custom picture; used when image is omitted.",
+      },
+      {
+        name: "image",
+        type: "{ src: string; alt: string; width?: number | string; height?: number | string; fallback?: string; priority?: boolean }",
+        description:
+          "Kit Image keyed per src. Art frame exposes data-status loading|loaded|error and aria-busy; token-driven skeleton respects reduced motion. priority requests eager/high priority. Takes precedence over media.",
+      },
       {
         name: "favorite",
         type: "{ pressed; onPressedChange; label; disabled? }",
@@ -1656,7 +1669,7 @@ import { Select } from "@godxjp/ui/data-entry";
     related: ["CatalogCard — the item in a grid.", "CatalogDetailSection — the bands under it."],
     example: `import { CatalogDetail, CatalogDetailTag, Eyebrow } from "@godxjp/ui/layout";
 
-<CatalogDetail media={<img src={src} alt={name} />} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: "Market", price: "¥32,800" }} facts={[{ key: "set", label: "Expansion", value: "151" }]} />`,
+<CatalogDetail image={{ src: "/reference.svg", alt: "Reference", priority: true }} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: "Market", price: "¥32,800" }} facts={[{ key: "set", label: "Expansion", value: "151" }]} />`,
   },
   {
     rules: [2, 6, 44, 45],
@@ -9641,6 +9654,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "DO: Searchable popup widths, including numeric popupMatchSelectWidth, are capped by --search-select-panel-max-width and --search-select-panel-viewport-inset, using the viewport width excluding classic scrollbars.",
       "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       'FREE-TEXT TAGS WITH NO LIST (keywords, email recipients, labels typed from scratch): `<Select mode="tags" open={false} value={tags} onValueChange={setTags} />` — the inline chip field. Use plain `mode="tags"` (popup) only when there is a list of existing tags to pick from. There is no `TagInput` component.',
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
@@ -10595,7 +10609,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
         name: "range",
         type: "boolean",
         description:
-          'CARDINALITY: two endpoints in one control (antd `DatePicker.RangePicker`). value/defaultValue and the callback become `DateRange`; the pair submits as `${name}_from` / `${name}_to`. Composes with `picker`, so a month range is `<DatePicker range picker="month" />`. Never place two DatePickers side by side to fake this.',
+          'With no confirmation, holds the first endpoint internally while open, emits a complete range or clear, and discards half-ranges on close. CARDINALITY: two endpoints in one control (antd `DatePicker.RangePicker`). value/defaultValue and the callback become `DateRange`; the pair submits as `${name}_from` / `${name}_to`. Composes with `picker`, so a month range is `<DatePicker range picker="month" />`. Never place two DatePickers side by side to fake this.',
       },
       {
         name: "multiple",
@@ -11251,7 +11265,7 @@ import { Button } from "@godxjp/ui/general";
     usage: [
       "DO: Mount exactly ONE `<Toaster richColors />` at the app root (e.g. inside your layout or AppShell children). Multiple mounts create duplicate toast stacks — there is no provider context, only DOM portals.",
       'DO: Import `toast` from `"@godxjp/ui/feedback"` to fire toasts anywhere: `toast.success(…)`, `toast.error(…)`, `toast.warning(…)`, `toast.info(…)`, `toast.loading(…)`, `toast.promise(…)`. It is Sonner\'s own API with one house default: `toast.error` and `toast.warning` carry a close button (opt out per call with `{ closeButton: false }`), success/info stay auto-dismiss only (gh#1253).',
-      'DON\'T: Import `toast` from `"sonner"` directly — it works, but it skips the close-button default on error/warning. Also note `toast.promise` settling into an error does not gain the button; pass `closeButton` there yourself if the failure must stay dismissible.',
+      'DON\'T: Import `toast` from `"sonner"` directly — a consumer-installed version can own a different toast store from the kit Toaster, silently hiding toasts. Use `import { toast } from "@godxjp/ui"` (also available from `@godxjp/ui/feedback`); this also preserves close-button defaults. Also note `toast.promise` settling into an error does not gain the button; pass `closeButton` there yourself if the failure must stay dismissible.',
       "DO: Tune how long toasts stay with the `--toast-duration` token in the theme (default 4000ms) rather than a `duration` prop on every mount. Never truncate a toast's body — it wraps.",
       "DO: Let the wrapper handle theming — it uses `useDocumentTheme()` to sync with the document `dark` class and `prefers-color-scheme` automatically. Never pass a hardcoded `theme` prop unless you are deliberately overriding.",
       "DON'T: Use `Toaster` for persistent errors or blocking confirmations. Toasts auto-dismiss; they are not a substitute for `Alert` (inline persistent warnings) or `Dialog` (decisions requiring user input).",
@@ -11501,6 +11515,12 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       "Offset/page-based pagination bar. Its container owns the inset: no outer inline padding, including inside CardContent, CardFooter or PageContainer footer. Keyboard focus uses the shared inset ring in clipping surfaces; scrollports reveal partially clipped keyboard targets without changing their layout.",
     props: [
       {
+        name: "onPageIntent",
+        type: "(page: number) => void",
+        description:
+          "Pointer enter, focus or touch start on enabled page/previous/next controls, including simple and responsive forms. May repeat: preload/cache the target without changing value. Disabled or out-of-range targets do not emit.",
+      },
+      {
         name: "ariaLabel",
         type: "string",
         description:
@@ -11705,6 +11725,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       },
     ],
     usage: [
+      "DO: Use only menu collection nodes inside DropdownMenuContent. Arbitrary headers, notification lists and links belong in Popover + ListRow; development diagnostics and the dropdown-menu-non-menu-children audit rule name this fix.",
       "DO compose the full sub-part tree: DropdownMenu (root) → DropdownMenuTrigger (with asChild to delegate to your Button/icon) → DropdownMenuContent → DropdownMenuItem / DropdownMenuSeparator / DropdownMenuLabel / DropdownMenuGroup. Omitting any level (e.g. rendering DropdownMenuContent without DropdownMenu as ancestor) breaks Radix context and the menu will not open.",
       "DO use DropdownMenuTrigger with asChild and pass a godx-ui Button or icon Button as the child — never render a raw <button> or <div> as the trigger, and never omit asChild when the child is already a button-like element (double-button nesting breaks a11y).",
       "DO use variant='destructive' on DropdownMenuItem for irreversible actions (delete, revoke, void) — this applies the semantic destructive colour token automatically without any className override.",
@@ -15126,6 +15147,7 @@ function CustomRadioGroup() {
       },
     ],
     usage: [
+      "DO: PopoverContent scrolls automatically when its available height caps content. Focus rings remain contained at scroll edges, including flush panels.",
       "HOVER CARD: `<Popover openOn=\"hover\"><PopoverTrigger asChild><a href=…>@yamada</a></PopoverTrigger><PopoverContent>…</PopoverContent></Popover>` for RICH preview content (an avatar + bio, an entity summary). For a short plain-text hint use Tooltip. DON'T put essential information only in a hover card — touch never opens it; make the same content reachable from the trigger's destination. There is no `HoverCard` component.",
       "DO compose: <Popover> → <PopoverTrigger asChild> → <Button/> and <PopoverContent>. All four parts are required for any popover to function; omitting PopoverTrigger or PopoverContent produces nothing.",
       'DO set `<PopoverContent width="auto">` when the child brings its own measure — a Calendar, a chart, a fixed-width preview. The panel\'s own 18rem clips them, and a `w-*` utility on className is a per-call-site constant no service theme can retune, which is exactly what `flush` exists to avoid on the padding axis. `width="trigger"` matches the anchor, the shape every select-like control wants.',
@@ -20370,6 +20392,12 @@ const messages: ChatMessageProp[] = [
       'antd `Image` + `Image.PreviewGroup`: a picture that opens in a full-viewport preview (zoom in/out by button, wheel or double-click; rotate; flip; reset; drag to pan). Inside an `ImagePreviewGroup` every Image at any depth joins one gallery in document order — prev/next buttons, ←/→, a "2 / 3" counter. Esc closes; focus is trapped and returned to the picture.',
     subParts: ["ImagePreviewGroup"],
     props: [
+      {
+        name: "onStatusChange",
+        type: '(status: "loading" | "loaded" | "error") => void',
+        description:
+          "Reports resolved status, including cached images; error remains final while showing fallback.",
+      },
       { name: "src", type: "string", description: "Image URL." },
       {
         name: "alt",
@@ -20391,7 +20419,8 @@ const messages: ChatMessageProp[] = [
       {
         name: "placeholder",
         type: "ReactNode | boolean",
-        description: "Painted over the frame until the picture loads; `true` = a muted block.",
+        description:
+          "After hydration, painted over the frame while the picture loads; SSR leaves pictures uncovered. `true` = a muted block. Child content can shrink to fit the frame.",
       },
       {
         name: "width / height",

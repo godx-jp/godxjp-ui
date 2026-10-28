@@ -266,6 +266,9 @@ export type PaginationProp = {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   onValueChange?: (page: number, pageSize: number) => void;
+  /** Pointer enter, focus or touch start on an enabled page/previous/next target. May repeat;
+   * preload/cache the target without changing the controlled value. Also applies in simple mode. */
+  onPageIntent?: (page: number) => void;
 };
 
 /** @see Pagination — control tier (Ant Design `size`: `small` → `sm`, `middle` → `md`). */

@@ -23,6 +23,7 @@ import {
 import { Check, ChevronRight } from "lucide-react";
 import { ariaKeyShortcuts, parseShortcut, shouldHandleShortcut } from "../../lib/shortcut";
 import { cn } from "../../lib/utils";
+import { isDevelopment } from "../../lib/dev";
 import { Slot } from "../../lib/slot";
 import type {
   DropdownMenuPlacementProp,
@@ -122,7 +123,7 @@ class MenuCollectionBoundary extends React.Component<
         "application is unaffected. A menu's children must be collection nodes (DropdownMenuItem, " +
         "DropdownMenuCheckboxItem, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, " +
         "DropdownMenuGroup, DropdownMenuSub) or components returning one — an icon or a text label " +
-        "belongs INSIDE an item, not beside it. Underlying error:",
+        "belongs INSIDE an item, not beside it. Use Popover + ListRow for arbitrary panel content. Underlying error:",
       error,
     );
   }
@@ -152,6 +153,12 @@ type BorrowedTag = React.ReactElement<{ children?: React.ReactNode }>;
  */
 function borrowedTag(children: React.ReactNode, asChild?: boolean): BorrowedTag | null {
   return asChild ? (React.Children.only(children) as BorrowedTag) : null;
+}
+
+/** The borrowed child's own `href` (`<a>`, Inertia/Next `<Link href>`), when it has a string one. */
+function borrowedHref(tag: BorrowedTag | null): string | undefined {
+  const href = (tag?.props as { href?: unknown } | undefined)?.href;
+  return typeof href === "string" ? href : undefined;
 }
 
 /** Gói prop dựng nên một mục menu: DOM props của RAC cộng bộ `data-*` dịch từ Radix. */
@@ -814,6 +821,22 @@ interface DropdownMenuContentPropsOwn {
 
 type DropdownMenuContentProps = React.PropsWithChildren<DropdownMenuContentPropsOwn>;
 
+/** Inspect only known collection structure. Opaque components may legitimately return an item. */
+function hasNonMenuChildren(children: React.ReactNode): boolean {
+  return React.Children.toArray(children).some((child) => {
+    if (!React.isValidElement<{ children?: React.ReactNode }>(child)) return true;
+    if (typeof child.type === "string") return true;
+    if (
+      child.type === React.Fragment ||
+      child.type === DropdownMenuGroup ||
+      child.type === DropdownMenuRadioGroup
+    ) {
+      return hasNonMenuChildren(child.props.children);
+    }
+    return false;
+  });
+}
+
 /**
  * Một phần tử của Radix (`Content`) tách thành HAI ở RAC: `Popover` là hộp được định vị, `Menu` là
  * phần tử mang `role="menu"`. `data-slot` và lớp `ui-dropdown-menu-content` ở lại trên HỘP, cùng
@@ -843,6 +866,13 @@ export function DropdownMenuContent({
   sticky,
   forceMount,
 }: DropdownMenuContentProps) {
+  React.useEffect(() => {
+    if (isDevelopment() && hasNonMenuChildren(children)) {
+      console.error(
+        "[@godxjp/ui] DropdownMenuContent accepts menu collection children only. Use DropdownMenuItem for actions; use Popover + ListRow for notifications, headers, lists and links.",
+      );
+    }
+  }, [children]);
   void hideWhenDetached;
   void sticky;
   void forceMount;
@@ -943,6 +973,14 @@ interface DropdownMenuItemPropsOwn {
   /** Mượn thẻ của con thay vì dựng `<div>` riêng — chỗ để nhét một `<Link>` vào một mục menu. */
   asChild?: boolean;
   /**
+   * The item is a link to this URL. With `asChild` it is read from the borrowed child's own `href`
+   * when there is one; pass it here when the child is a router link that takes something else
+   * (TanStack/React Router `<Link to>`), so react-aria renders its LINK item — an `<a>` — instead of
+   * an action `<div>` (and stops warning "Expected <div>, got <a>"). Without a react-aria
+   * `RouterProvider` the click stays the child's own: navigation is whatever the child does.
+   */
+  href?: string;
+  /**
    * `id` và mọi `data-*` ĐI XUỐNG phần tử gốc của item (gh#631).
    *
    * Trigger của chính cụm này đã nhận cách xử lý ấy ở 20.0.0, với đúng lý do CHANGELOG ghi:
@@ -969,6 +1007,7 @@ export function DropdownMenuItem({
   textValue,
   description,
   asChild,
+  href,
   ...forwarded
 }: DropdownMenuItemProps) {
   const tag = borrowedTag(children, asChild);
@@ -977,6 +1016,9 @@ export function DropdownMenuItem({
   return (
     <MenuItem
       isDisabled={disabled}
+      // RAC renders `href ? <a> : <div>` and warns when `render` returns another element, so a
+      // borrowed link has to say it is one.
+      href={href ?? borrowedHref(tag)}
       // Wrapping the label in slots below means the collection no longer sees a bare string, so
       // typeahead would go dead on a described row; a string label is handed over explicitly.
       textValue={textValue ?? (typeof label === "string" ? label : undefined)}
@@ -1039,10 +1081,12 @@ type DropdownMenuLabelProps = React.PropsWithChildren<DropdownMenuLabelPropsOwn>
  * `Header` không đi qua `useRenderProps`, nên `props.children` trong `render` CHÍNH là children của
  * consumer — không có `Provider` chen vào như ở `MenuItem`. `Slot` vì thế nhận thẳng gói props.
  *
- * NHƯNG PHẢI RENDER RA `<div>`, KHÔNG PHẢI `<header>`. `<header>` mang vai trò ngầm `banner`, và
+ * `<header>` TRẦN thì không được: nó mang vai trò ngầm `banner`, và
  * `banner` không nằm trong danh sách con hợp lệ của `role="menu"` (axe: aria-required-children,
  * ARIA 1.2 — menu chỉ nhận menuitem / menuitemcheckbox / menuitemradio / group / separator). Radix
- * dựng `<div>`, vai trò `generic`, nên nó không bao giờ vấp lỗi này.
+ * dựng `<div>`, vai trò `generic`, nên nó không bao giờ vấp lỗi này. Còn `<div>` thì RAC cảnh báo
+ * "Expected <header>, got <div>" (gh#1452). Nên: `<header role="presentation">` — đúng thẻ RAC chờ,
+ * không có landmark.
  *
  * `Header` vẫn được dùng chứ không thay bằng `<div>` trần: bộ dựng collection của RAC chỉ nhận các
  * nút nó biết, một phần tử lạ đặt thẳng trong `Menu` sẽ bị nó bỏ. Nên giữ nút, đổi thẻ.
@@ -1064,9 +1108,12 @@ export function DropdownMenuLabel({ children, className, inset, asChild }: Dropd
               />
             )
           : (props) => (
-              <div
-                {...(props as React.HTMLAttributes<HTMLDivElement> &
-                  React.RefAttributes<HTMLDivElement>)}
+              // RAC's `Header` element (it warns in dev when `render` returns another one, gh#1452),
+              // with the landmark dropped: `role="presentation"` is allowed on `header` and keeps
+              // the menu owning no `banner`.
+              <header
+                role="presentation"
+                {...(props as React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>)}
               />
             )
       }

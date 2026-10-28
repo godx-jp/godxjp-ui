@@ -89,6 +89,7 @@
   ],
   "tagline": "Dropdown menu (react-aria). Compose DropdownMenu/DropdownMenuTrigger/DropdownMenuContent/DropdownMenuItem/DropdownMenuSeparator. `trigger` picks the gestures — click (default), hover, or contextMenu, which is what replaced the deleted ContextMenu component.",
   "usage": [
+    "DO: Use only menu collection nodes inside DropdownMenuContent. Arbitrary headers, notification lists and links belong in Popover + ListRow; development diagnostics and the dropdown-menu-non-menu-children audit rule name this fix.",
     "DO compose the full sub-part tree: DropdownMenu (root) → DropdownMenuTrigger (with asChild to delegate to your Button/icon) → DropdownMenuContent → DropdownMenuItem / DropdownMenuSeparator / DropdownMenuLabel / DropdownMenuGroup. Omitting any level (e.g. rendering DropdownMenuContent without DropdownMenu as ancestor) breaks Radix context and the menu will not open.",
     "DO use DropdownMenuTrigger with asChild and pass a godx-ui Button or icon Button as the child — never render a raw <button> or <div> as the trigger, and never omit asChild when the child is already a button-like element (double-button nesting breaks a11y).",
     "DO use variant='destructive' on DropdownMenuItem for irreversible actions (delete, revoke, void) — this applies the semantic destructive colour token automatically without any className override.",

@@ -7,6 +7,7 @@
     "shell-layout.css",
     "motion.css",
     "layout.css",
+    "editorial-layout.css",
     "editorial-account-layout.css",
     "control.css",
     "toggle.css",
@@ -29,6 +30,12 @@
     "vendor-sonner.css",
     "vendor-day-picker.css"
   ],
+  "families": {
+    "editorial": [
+      "editorial-layout.css",
+      "editorial-account-layout.css"
+    ]
+  },
   "components": {
     "Accordion": {
       "layers": [
@@ -280,6 +287,7 @@
     "CardShowcase": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -300,6 +308,7 @@
     "CatalogCard": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -307,17 +316,20 @@
     },
     "CatalogDetail": {
       "layers": [
-        "layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "CatalogDetailSection": {
       "layers": [
-        "layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "CatalogDetailTag": {
       "layers": [
-        "layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "CenteredShell": {
@@ -516,6 +528,7 @@
     "EditorialArticle": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -534,6 +547,7 @@
     "EditorialBanner": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -542,6 +556,7 @@
     "EditorialBreadcrumb": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -550,6 +565,7 @@
     "EditorialCard": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -563,6 +579,7 @@
     "EditorialFilterBar": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -570,17 +587,20 @@
     },
     "EditorialFilterField": {
       "layers": [
-        "layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialFilterPanel": {
       "layers": [
-        "layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialFooter": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -594,6 +614,7 @@
     "EditorialHero": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -602,6 +623,7 @@
     "EditorialMasthead": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -615,6 +637,7 @@
     "EditorialPageHeader": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -623,6 +646,7 @@
     "EditorialPanel": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -631,6 +655,7 @@
     "EditorialPillNav": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -638,12 +663,14 @@
     },
     "EditorialPrompt": {
       "layers": [
-        "layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialSearch": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -652,6 +679,7 @@
     "EditorialSection": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -660,6 +688,7 @@
     "EditorialSectionHead": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -710,6 +739,7 @@
     "Eyebrow": {
       "layers": [
         "layout.css",
+        "editorial-layout.css",
         "editorial-account-layout.css",
         "dialog-layout.css",
         "navigation-layout.css"
@@ -1045,7 +1075,8 @@
     },
     "PriceSummary": {
       "layers": [
-        "layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "Progress": {

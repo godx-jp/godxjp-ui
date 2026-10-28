@@ -203,6 +203,14 @@
     flex-shrink: 0;
   }
 
+  /* The xs variants own a smaller fallback than the generic control step. Keep the component
+   * declaration and its winning utility on the same chain, including the button override. */
+  .ui-button--xs svg,
+  .ui-button--icon-xs svg {
+    width: var(--button-icon-size, var(--button-xs-icon-size));
+    height: var(--button-icon-size, var(--button-xs-icon-size));
+  }
+
   /* The four resting fills read a knob whose default is the SAME role, resolved here so a scoped
    * theme's role still arrives (gh#880 · docs/TOKEN-RESOLUTION.md §3). Before this, retinting a
    * button meant retinting `--primary` — which is also the link ink, the focus mark and a chart
@@ -2517,7 +2525,8 @@
     padding-inline-end: var(--control-trigger-space-inline-end);
   }
 
-  /* SEARCH-SELECT — Popover + Command combobox. */
+  /* A minimum must obey the same cap as the maximum (gh#1497). The viewport measure
+   * excludes classic scrollbars; Popover publishes it independently of placement. */
   .ui-search-select-panel {
     --popover-surface-inline-size: max-content;
     --popover-space-inset: 0;
@@ -2526,22 +2535,30 @@
     max-block-size: var(--radix-popover-content-available-height);
     max-inline-size: min(
       var(--search-select-panel-max-width),
-      calc(100vw - var(--search-select-panel-viewport-inset))
+      calc(var(--popover-viewport-inline-size, 100vw) - var(--search-select-panel-viewport-inset))
     );
-    min-inline-size: var(--radix-popover-trigger-width);
+    min-inline-size: min(
+      var(--radix-popover-trigger-width),
+      var(--search-select-panel-max-width),
+      calc(var(--popover-viewport-inline-size, 100vw) - var(--search-select-panel-viewport-inset))
+    );
   }
 
-  /* antd `popupMatchSelectWidth`. Absent = `true` = the rule above (the trigger width is the
-   * floor). `content` drops that floor so a panel of short rows stops being padded out to a wide
-   * trigger; `fixed` pins BOTH edges, which is the only way a number can mean one width rather
-   * than a minimum. */
   .ui-search-select-panel[data-popup-match="content"] {
     min-inline-size: auto;
   }
 
   .ui-search-select-panel[data-popup-match="fixed"] {
-    min-inline-size: var(--search-select-panel-inline-size);
-    inline-size: var(--search-select-panel-inline-size);
+    min-inline-size: min(
+      var(--search-select-panel-inline-size, var(--radix-popover-trigger-width)),
+      var(--search-select-panel-max-width),
+      calc(var(--popover-viewport-inline-size, 100vw) - var(--search-select-panel-viewport-inset))
+    );
+    inline-size: min(
+      var(--search-select-panel-inline-size, var(--radix-popover-trigger-width)),
+      var(--search-select-panel-max-width),
+      calc(var(--popover-viewport-inline-size, 100vw) - var(--search-select-panel-viewport-inset))
+    );
   }
 
   /* antd `menuItemSelectedIcon` — parked at the row's inline end so it never displaces the label. */
@@ -2944,22 +2961,9 @@
       calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
     );
     padding-inline: var(--menu-item-space-inline);
-    height: var(--menu-item-height);
-    display: flex;
-    align-items: center;
-    gap: var(--menu-item-space-gap);
-    font-size: var(--menu-item-font-size);
-  }
-
-  /* Row geometry for Select's own listbox. */
-  .ui-select-item,
-  .ui-select-label {
-    border-radius: var(
-      --menu-item-radius,
-      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
-    );
-    padding-inline: var(--menu-item-space-inline);
-    height: var(--menu-item-height);
+    height: auto;
+    min-height: var(--menu-item-height);
+    padding-block: max(0px, calc((var(--menu-item-height) - 1lh) / 2));
     display: flex;
     align-items: center;
     gap: var(--menu-item-space-gap);

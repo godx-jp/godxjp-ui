@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "33.24.0",
-  "godxUiMcp": "33.24.0",
+  "version": "33.25.0",
+  "godxUiMcp": "33.25.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -81,6 +81,8 @@
       "import": "./dist/lab/index.js"
     },
     "./styles": "./dist/styles/index.css",
+    "./styles/application": "./dist/styles/application.css",
+    "./styles/editorial": "./dist/styles/editorial.css",
     "./styles/core": "./dist/styles/core.css",
     "./styles/core-with-fallbacks": "./dist/styles/core-with-fallbacks.css",
     "./styles/core-with-jis-level1": "./dist/styles/core-with-jis-level1.css",

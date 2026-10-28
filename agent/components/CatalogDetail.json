@@ -1,5 +1,5 @@
 {
-  "example": "import { CatalogDetail, CatalogDetailTag, Eyebrow } from \"@godxjp/ui/layout\";\n\n<CatalogDetail media={<img src={src} alt={name} />} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: \"Market\", price: \"¥32,800\" }} facts={[{ key: \"set\", label: \"Expansion\", value: \"151\" }]} />",
+  "example": "import { CatalogDetail, CatalogDetailTag, Eyebrow } from \"@godxjp/ui/layout\";\n\n<CatalogDetail image={{ src: \"/reference.svg\", alt: \"Reference\", priority: true }} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: \"Market\", price: \"¥32,800\" }} facts={[{ key: \"set\", label: \"Expansion\", value: \"151\" }]} />",
   "group": "layout",
   "importPath": "@godxjp/ui/layout",
   "name": "CatalogDetail",
@@ -11,10 +11,14 @@
       "type": "\"card\" | \"sealed\""
     },
     {
-      "description": "The picture.",
+      "description": "Custom picture; used when image is omitted.",
       "name": "media",
-      "required": true,
       "type": "ReactNode"
+    },
+    {
+      "description": "Kit Image keyed per src. Art frame exposes data-status loading|loaded|error and aria-busy; token-driven skeleton respects reduced motion. priority requests eager/high priority. Takes precedence over media.",
+      "name": "image",
+      "type": "{ src: string; alt: string; width?: number | string; height?: number | string; fallback?: string; priority?: boolean }"
     },
     {
       "description": "Save toggle over the frame.",

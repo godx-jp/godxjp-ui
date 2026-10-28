@@ -34,10 +34,20 @@ import { BlockEditor } from "./packages/block-editor/src";
 
 window.__value = null;
 const directives = {
-  poll: (block) =>
+  poll: (block, controls) =>
     block.attributes.id
-      ? React.createElement("p", { "data-testid": "poll-preview" },
-          block.label + " / " + block.body.split("\\n").length + " options")
+      ? React.createElement("div", null,
+          React.createElement("p", { "data-testid": "poll-preview" },
+            block.label + " / " + block.body.split("\\n").length + " options"),
+          controls.editable
+            ? React.createElement("button", { type: "button", onClick: () => controls.update(":::poll[" + block.label + "]{id=" + block.attributes.id + " type=multi}\\n- X\\n:::") }, "host-update")
+            : null,
+          controls.editable
+            ? React.createElement("button", { type: "button", onClick: () => controls.update("plain text") }, "host-replace")
+            : null,
+          controls.editable
+            ? React.createElement("button", { type: "button", onClick: () => controls.remove() }, "host-remove")
+            : null)
       : undefined,
 };
 const actions = [{
@@ -49,12 +59,15 @@ const actions = [{
 }];
 
 function App() {
+  const [value, setValue] = React.useState(window.__initial || "");
+  const [tick, setTick] = React.useState(0);
+  window.__echo = () => { setValue(window.__value ?? value); setTick(t => t+1); };
   return (
     <AppProvider defaultLocale="ja" persist={false}>
       <div style={{ padding: 16, paddingInlineStart: 64, maxWidth: 720 }}>
         <BlockEditor
           aria-label="本文"
-          defaultValue={window.__initial || ""}
+          value={value}
           onValueChange={(v) => { window.__value = v; }}
           directives={directives}
           actions={actions}
@@ -187,6 +200,35 @@ describe("BlockEditor directive blocks (Chromium)", { timeout: 40_000 }, () => {
     await page.close();
   });
 
+  it("lets the host preview update or remove its own block (gh#1479)", async () => {
+    const { page, errors } = await open(BODY);
+    await page.getByRole("button", { name: "host-update" }).click();
+    await expectValue(
+      page,
+      normalize(`intro\n\n:::poll[日程は？]{id=date type=multi}\n- X\n:::\n\nafter`),
+    );
+    // Still the same directive block, with the host's new source.
+    expect(await block(page).count()).toBe(1);
+    expect(await page.getByTestId("poll-preview").textContent()).toBe("日程は？ / 1 options");
+    // One undo step (from the editor) restores the previous source.
+    await page.getByText("after", { exact: true }).click();
+    await page.keyboard.press(process.platform === "darwin" ? "Meta+z" : "Control+z");
+    await expect
+      .poll(() => page.getByTestId("poll-preview").textContent())
+      .toBe("日程は？ / 2 options");
+    // Source that is not one directive replaces the block with what it parses to.
+    await page.getByRole("button", { name: "host-replace" }).click();
+    await expectValue(page, "intro\n\nplain text\n\nafter\n");
+    expect(await block(page).count()).toBe(0);
+    expect(errors).toEqual([]);
+    await page.close();
+    const second = await open(BODY);
+    await second.page.getByRole("button", { name: "host-remove" }).click();
+    await expectValue(second.page, "intro\n\nafter\n");
+    expect(second.errors).toEqual([]);
+    await second.page.close();
+  });
+
   it("inserts a directive skeleton from a host / row as a directive block", async () => {
     const { page } = await open("");
     await page.locator(".ui-block-editor-content").click();
@@ -199,4 +241,43 @@ describe("BlockEditor directive blocks (Chromium)", { timeout: 40_000 }, () => {
     expect(await page.getByTestId("poll-preview").textContent()).toBe("質問 / 2 options");
     await page.close();
   });
+  it.each(["/", "／"])(
+    "keeps commands through controlled value echoes and host rerenders: %s (gh#1484)",
+    async (slash) => {
+      const { page, errors } = await open("Existing prose");
+      const box = page.locator(".ui-block-editor-content");
+      await box.click();
+      await page.keyboard.press("ControlOrMeta+End");
+      await page.keyboard.press("Enter");
+      await page.keyboard.type(slash);
+      const list = page.getByRole("listbox");
+      await list.waitFor();
+      expect(await list.getByRole("option").count()).toBeGreaterThan(5);
+      for (let i = 0; i < 3; i++) {
+        await page.evaluate(() => (window as unknown as { __echo: () => void }).__echo());
+        await page.waitForTimeout(750);
+        expect(await list.getByRole("option").count()).toBeGreaterThan(5);
+      }
+      await list.getByRole("option").filter({ hasText: "投票" }).click();
+      expect(await page.getByTestId("poll-preview").count()).toBe(1);
+      // Save/reopen the emitted Markdown in a fresh editor, then exercise keyboard insertion.
+      const saved = await value(page);
+      const reopened = await open(saved!);
+      await reopened.page.locator(".ui-block-editor-content").click();
+      await reopened.page.keyboard.press("ControlOrMeta+End");
+      await reopened.page.keyboard.press("Enter");
+      await reopened.page.keyboard.type(slash);
+      await reopened.page.getByRole("listbox").waitFor();
+      await reopened.page.keyboard.press("Backspace");
+      await reopened.page.keyboard.type(slash + "poll");
+      await reopened.page.getByRole("option").filter({ hasText: "投票" }).waitFor();
+      await reopened.page.evaluate(() => (window as unknown as { __echo: () => void }).__echo());
+      await reopened.page.keyboard.press("Enter");
+      expect(await reopened.page.getByTestId("poll-preview").count()).toBe(2);
+      expect(reopened.errors).toEqual([]);
+      await reopened.page.close();
+      expect(errors).toEqual([]);
+      await page.close();
+    },
+  );
 });
