@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.25.1] - 2026-10-28
+
+### Fixed
+
+- `Affix`: a pinned box taller than the visible scrollport is held to the room between its pin line and the far edge of that scrollport, and scrolls on its own (`overflow-y: auto`, `overscroll-behavior: contain`). Before, everything past the viewport edge was unreachable: a long "On this page" outline lost every heading below the fold (gh#1510). A pinned box that fits is untouched (`overflow` stays `visible`), and the placeholder still holds the full in-flow height.
+
 ## [33.25.0] - 2026-10-28
 
 - Add controlled 49-option searchable area-picker regression coverage for typing, pointer/keyboard selection, clearing and reopening (#1483; not reproducible on this branch).

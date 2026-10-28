@@ -2996,6 +2996,15 @@
     inline-size: var(--affix-content-inline-size, auto);
   }
 
+  /* Pinned and taller than the room left between the pin line and the far edge of the visible
+   * scrollport (gh#1510): past that edge a fixed box is unreachable, so it scrolls on its own.
+   * The component writes the room and the attribute only when the box does not fit. */
+  .ui-affix-content[data-affixed][data-clamped] {
+    max-block-size: var(--affix-content-max-block-size, none);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
   /* `--affix-target-inset` is `0px` against the viewport and the live block-start (or block-end)
    * edge of the scroll ELEMENT otherwise — the only part of the position JavaScript can know. */
   .ui-affix-content[data-affixed][data-edge="block-start"] {
