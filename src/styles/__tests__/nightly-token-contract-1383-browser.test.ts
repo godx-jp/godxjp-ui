@@ -59,7 +59,7 @@ it("all six editorial shadows resolve their color inside the scoped theme", asyn
           return getComputedStyle(probe).boxShadow;
         });
       },
-      [...readFileSync("src/styles/layout.css", "utf8").matchAll(/box-shadow:\s*([^;]+);/g)].map(
+      [...readFileSync("src/styles/editorial-layout.css", "utf8").matchAll(/box-shadow:\s*([^;]+);/g)].map(
         (match) => match[1]!,
       ),
     );

@@ -12,7 +12,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await browser?.close();
 });
-it("spotlight gives kit Image a containing box, including its loading placeholder", async () => {
+it("spotlight gives kit Image a containing box (server markup, before any placeholder)", async () => {
   const page = await browser.newPage();
   try {
     for (const dir of ["ltr", "rtl"]) {
@@ -49,9 +49,9 @@ it("spotlight gives kit Image a containing box, including its loading placeholde
       expect(media!.width).toBeGreaterThan(0);
       expect(box!.width).toBeCloseTo(media!.width, 0);
       expect(box!.height).toBeCloseTo(media!.height, 0);
-      const placeholder = await page.locator('[data-slot="image-placeholder"]').boundingBox();
-      expect(placeholder!.width).toBeGreaterThan(0);
-      expect(placeholder!.height).toBeGreaterThan(0);
+      // Server markup carries no placeholder: it mounts after hydration, so it never covers an
+      // already-painted SSR picture (gh#1472). The box above is what the slot must provide.
+      expect(await page.locator('[data-slot="image-placeholder"]').count()).toBe(0);
     }
   } finally {
     await page.close();
