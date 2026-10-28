@@ -17503,6 +17503,7 @@ export function NotifyRow() {
     tagline:
       "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram.",
     props: [
+      {name:"showValues",type:"boolean",description:"Show locale-formatted exact values at the end of each bar."},
       {
         name: "animated",
         type: "boolean",

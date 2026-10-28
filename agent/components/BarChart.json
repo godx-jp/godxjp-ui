@@ -5,6 +5,11 @@
   "name": "BarChart",
   "props": [
     {
+      "description": "Show locale-formatted exact values at the end of each bar.",
+      "name": "showValues",
+      "type": "boolean"
+    },
+    {
       "description": "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
       "name": "animated",
       "type": "boolean"

@@ -39,6 +39,7 @@ import { listFormat } from "../../lib/intl-cache";
 type CartesianKind = "line" | "bar" | "area";
 
 type CartesianChartProps = {
+  showValues?: boolean;
   animated?: boolean;
   kind: CartesianKind;
   data: ChartDatum[];
@@ -70,6 +71,7 @@ type CartesianChartProps = {
 };
 
 export function CartesianChart({
+  showValues,
   animated,
   kind,
   data,

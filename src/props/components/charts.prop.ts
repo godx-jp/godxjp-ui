@@ -113,6 +113,8 @@ export type LineChartProp = ChartCartesianBase & {
 
 /** @see BarChart */
 export type BarChartProp = ChartCartesianBase & {
+  /** Paint exact values at the end of each bar. */
+  showValues?: boolean;
   /** Stack series into one bar instead of grouping side by side. */
   stacked?: boolean;
   /** Lay bars out horizontally (category on the y-axis). */
