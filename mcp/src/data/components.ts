@@ -1438,7 +1438,10 @@ import { Button } from "@godxjp/ui/general";
       { name: "level", type: "2 | 3 | 4", defaultValue: "3", description: "Heading level." },
       { name: "titleId", type: "string", description: "Title id (generated when omitted)." },
     ],
-    usage: ['DO lay journal cards out with `ResponsiveGrid preset="trio"`.'],
+    usage: [
+      'DO lay journal cards out with `ResponsiveGrid preset="trio"`.',
+      "DO use kit Image with preview={false} for media inside the whole-card link. Spotlight sizes the Image frame to fill its slot, including placeholder and fallback (gh#1474).",
+    ],
     related: ['ResponsiveGrid — `preset="trio"`.'],
     example: `import { EditorialCard } from "@godxjp/ui/layout";
 
@@ -1635,7 +1638,17 @@ import { Select } from "@godxjp/ui/data-entry";
         defaultValue: '"card"',
         description: "Frame for a card or a sealed package.",
       },
-      { name: "media", type: "ReactNode", required: true, description: "The picture." },
+      {
+        name: "media",
+        type: "ReactNode",
+        description: "Custom picture; used when image is omitted.",
+      },
+      {
+        name: "image",
+        type: "{ src: string; alt: string; width?: number | string; height?: number | string; fallback?: string; priority?: boolean }",
+        description:
+          "Kit Image keyed per src. Art frame exposes data-status loading|loaded|error and aria-busy; token-driven skeleton respects reduced motion. priority requests eager/high priority. Takes precedence over media.",
+      },
       {
         name: "favorite",
         type: "{ pressed; onPressedChange; label; disabled? }",
@@ -1656,7 +1669,7 @@ import { Select } from "@godxjp/ui/data-entry";
     related: ["CatalogCard — the item in a grid.", "CatalogDetailSection — the bands under it."],
     example: `import { CatalogDetail, CatalogDetailTag, Eyebrow } from "@godxjp/ui/layout";
 
-<CatalogDetail media={<img src={src} alt={name} />} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: "Market", price: "¥32,800" }} facts={[{ key: "set", label: "Expansion", value: "151" }]} />`,
+<CatalogDetail image={{ src: "/reference.svg", alt: "Reference", priority: true }} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: "Market", price: "¥32,800" }} facts={[{ key: "set", label: "Expansion", value: "151" }]} />`,
   },
   {
     rules: [2, 6, 44, 45],
@@ -20370,6 +20383,12 @@ const messages: ChatMessageProp[] = [
       'antd `Image` + `Image.PreviewGroup`: a picture that opens in a full-viewport preview (zoom in/out by button, wheel or double-click; rotate; flip; reset; drag to pan). Inside an `ImagePreviewGroup` every Image at any depth joins one gallery in document order — prev/next buttons, ←/→, a "2 / 3" counter. Esc closes; focus is trapped and returned to the picture.',
     subParts: ["ImagePreviewGroup"],
     props: [
+      {
+        name: "onStatusChange",
+        type: '(status: "loading" | "loaded" | "error") => void',
+        description:
+          "Reports resolved status, including cached images; error remains final while showing fallback.",
+      },
       { name: "src", type: "string", description: "Image URL." },
       {
         name: "alt",

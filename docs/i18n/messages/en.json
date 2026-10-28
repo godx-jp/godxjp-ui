@@ -1,4 +1,23 @@
 {
+  "imageLifecycleDocs": {
+    "loading": "Image status: loading",
+    "loaded": "Image status: loaded",
+    "error": "Image status: error",
+    "hint": "onStatusChange reports loading, loaded or error, including requests completed before mount. Error remains final while a fallback loads."
+  },
+  "noticeBarDocs": {
+    "page": "Privacy preferences",
+    "body": "Read this page while choosing whether to allow optional analytics.",
+    "reopen": "Review preferences",
+    "title": "Optional analytics",
+    "description": "Allow anonymous usage measurement to help improve this service.",
+    "privacy": "Privacy policy",
+    "policy": "Optional analytics run only after you accept. You can decline and continue using the service.",
+    "decline": "Decline",
+    "accept": "Accept",
+    "accepted": "Analytics allowed.",
+    "declined": "Analytics declined."
+  },
   "chartDrillDocs": {
     "title": "Store dashboard",
     "chart": "Sales by store",

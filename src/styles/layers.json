@@ -307,17 +307,20 @@
     },
     "CatalogDetail": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "data-display-layout.css"
       ]
     },
     "CatalogDetailSection": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "data-display-layout.css"
       ]
     },
     "CatalogDetailTag": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "data-display-layout.css"
       ]
     },
     "CenteredShell": {
@@ -570,12 +573,14 @@
     },
     "EditorialFilterField": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialFilterPanel": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialFooter": {
@@ -638,7 +643,8 @@
     },
     "EditorialPrompt": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialSearch": {
@@ -1045,7 +1051,8 @@
     },
     "PriceSummary": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "data-display-layout.css"
       ]
     },
     "Progress": {

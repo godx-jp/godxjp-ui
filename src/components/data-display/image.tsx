@@ -576,6 +576,7 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
     alt,
     fallback,
     placeholder,
+    onStatusChange,
     preview = true,
     width,
     height,
@@ -605,6 +606,11 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
     status: "loading",
   });
   const status: ImageStatus = load.src === src ? load.status : "loading";
+  const statusChangeRef = React.useRef(onStatusChange);
+  statusChangeRef.current = onStatusChange;
+  React.useEffect(() => {
+    statusChangeRef.current?.(status);
+  }, [src, status]);
   // "error" is final for this `src` (gh#1082): the `load` that follows is the FALLBACK's, and
   // taking it as "loaded" put the broken `src` back — an endless error/load request loop.
   const setStatus = React.useCallback(

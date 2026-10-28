@@ -4045,9 +4045,17 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "image",
+          "origin": "owned",
+          "required": false,
+          "type": "(Pick<ImageProp, \"height\" | \"width\" | \"alt\" | \"src\" | \"fallback\"> & { priority?: boolean; }) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "media",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
@@ -10707,6 +10715,14 @@
             "node_modules/@types/react/index.d.ts",
             "src/props/components/data-display.prop.ts"
           ]
+        },
+        {
+          "name": "onStatusChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((status: \"loading\" | \"loaded\" | \"error\") => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
           "name": "placeholder",

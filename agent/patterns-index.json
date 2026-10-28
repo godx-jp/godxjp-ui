@@ -1,5 +1,20 @@
 [
   {
+    "aliases": [
+      "consent-bar",
+      "cookie-consent"
+    ],
+    "name": "notice-bar",
+    "tagline": "Fixed non-modal consent region: opaque Card, wrapping actions, safe-area padding, measured Toaster clearance; application owns consent policy. Recipe: docs/feedback/notice-bar.tsx, isolate feedback-notice-bar.",
+    "tags": [
+      "feedback",
+      "consent",
+      "cookie",
+      "notice",
+      "fixed"
+    ]
+  },
+  {
     "name": "common-fixes",
     "tagline": "Fix the most common @godxjp/ui consumer mistakes & visual bugs (StatCard double-border, grey Badge, crushed/empty table headers, washed-out sidebar footer, Inertia layout crash, SSR hydration). Before → after.",
     "tags": [

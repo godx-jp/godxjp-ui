@@ -2,9 +2,9 @@
   "counts": {
     "anti-ai-tells": 35,
     "components": 212,
-    "patterns": 28,
+    "patterns": 29,
     "rules": 44,
-    "tokens": 3200,
+    "tokens": 3203,
     "vocabulary": 16
   },
   "design": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md",
@@ -61,7 +61,7 @@
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 2864,
+      "component": 2867,
       "foundation": 223,
       "semantic": 113
     },

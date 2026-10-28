@@ -2006,6 +2006,7 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
+      { field: "image", local: true, reason: "Kit-owned source-keyed media configuration." },
       "TitleProp",
       "ClassNameProp",
       { field: "variant", local: true, reason: "Card or sealed-product frame." },
@@ -6623,6 +6624,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display.prop.ts",
     vocabulary: [
+      {
+        field: "onStatusChange",
+        local: true,
+        reason: "Resolved image loading state, including cached images and fallback.",
+      },
       "ClassNameProp",
       "PlaceholderProp",
       { field: "src", local: true, reason: "The native img src attribute." },

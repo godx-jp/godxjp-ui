@@ -11,6 +11,24 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--editorial-catalog-detail-loading-background",
+    category: "component",
+    tier: "component",
+    role: "Loading placeholder fill; initial with local accent fallback.",
+  },
+  {
+    name: "--editorial-catalog-detail-loading-duration",
+    category: "component",
+    tier: "component",
+    role: "Loading pulse period; duration-loop.",
+  },
+  {
+    name: "--editorial-catalog-detail-loading-alpha",
+    category: "component",
+    tier: "component",
+    role: "Loading pulse minimum opacity; 0.5. Reduced motion disables pulse.",
+  },
+  {
     name: "--mobile-shell-tab-bar-active-color",
     category: "component",
     tier: "component",

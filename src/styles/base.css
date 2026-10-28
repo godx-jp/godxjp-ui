@@ -277,6 +277,18 @@
 }
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  /* Match foundation.css's dark selectors and paper exception. */
+  @media not print {
+    .dark,
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+    }
+  }
+
   * {
     border-color: hsl(var(--border));
   }

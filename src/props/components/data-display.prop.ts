@@ -1469,6 +1469,8 @@ export type ImageProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt" | 
   fallback?: string;
   /** Painted over the frame until the picture loads. `true` = the plain muted block. */
   placeholder?: React.ReactNode | boolean;
+  /** Resolved source status, including cached-before-mount images. Error stays final for fallback. */
+  onStatusChange?: (status: "loading" | "loaded" | "error") => void;
   /** `false` = a plain picture, not clickable, not in its group. Default `true`. */
   preview?: boolean | ImagePreviewConfigProp;
   /**
