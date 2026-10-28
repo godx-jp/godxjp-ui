@@ -12,8 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Diagnose non-menu DropdownMenuContent children in development and consumer audits; guide arbitrary content to Popover + ListRow (#1457).
 - Audit direct sonner imports and document the existing public toast export so consumers share the kit Toaster store, without changing dependency installation (#1458).
 
+### Changed
+
+- **Behaviour change:** `DatePicker range` (no `showTime`) holds an open half-range internally and emits only completed picks or clear; dismissing discards the draft even when the controlled consumer ignores partial values (gh#1476). Before, the first click emitted `{ from, to: undefined }`; a consumer that wants an open-ended range keeps it by choosing both ends or typing the end date.
 
 ### Fixed
+
+- Charts announce missing/non-finite observations as localized no data, keep absent trend marks distinct from zero, and format summary counts independently of value/currency options (gh#1482).
+- Pagination exposes `onPageIntent(page)` for pointer enter, focus and touch start on enabled page/previous/next controls in full and compact modes (gh#1472).
+- Image leaves SSR pictures uncovered until hydration, while retaining the pre-hydration load/error checks; placeholder children can shrink into their frame (gh#1472).
 
 - `Affix`: viewport-targeted pins now remeasure containing-block compensation on captured window scroll and resize, so a paint/transform ancestor cannot move a pinned rail off-screen (gh#1504). Existing requestAnimationFrame coalescing and unpin/unmount cleanup apply to both viewport and element targets.
 

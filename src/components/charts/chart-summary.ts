@@ -10,10 +10,17 @@ import type {
   HeatmapDatum,
 } from "../../props/components/charts.prop";
 
+import { translateCurrent as t } from "../../i18n/translate";
+
 type Formatter = Intl.NumberFormat;
 
-function numeric(value: ChartDatum[string]): number {
-  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+function numeric(value: ChartDatum[string]): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function formatValue(value: ChartDatum[string], fmt: Formatter): string {
+  const number = numeric(value);
+  return number === null ? t("chart.noData") : fmt.format(number);
 }
 
 export type ChartSummary = { rows: string[]; img: string };
@@ -30,7 +37,7 @@ export function buildCartesianSummary(
   const rows = data.map((datum) => {
     const category = String(datum[categoryKey] ?? "");
     const parts = series.map(
-      (s) => `${s.label ?? s.dataKey}: ${fmt.format(numeric(datum[s.dataKey]))}`,
+      (s) => `${s.label ?? s.dataKey}: ${formatValue(datum[s.dataKey], fmt)}`,
     );
     return `${category} — ${list.format(parts)}`;
   });
@@ -50,7 +57,7 @@ export function buildSeriesRows(
   annotate?: (index: number) => string | undefined,
 ): string[] {
   return data.map((datum, index) => {
-    const row = `${String(datum[categoryKey] ?? "")}: ${fmt.format(numeric(datum[valueKey]))}`;
+    const row = `${String(datum[categoryKey] ?? "")}: ${formatValue(datum[valueKey], fmt)}`;
     const note = annotate?.(index);
     return note ? `${row} (${note})` : row;
   });
@@ -90,10 +97,16 @@ export function buildTrendSummary(
  * Negative values plot at the baseline (a compact trend has no negative axis) but
  * still read their true figure in the text alternative.
  */
-export function trendRatios(data: ChartDatum[], valueKey: string): number[] {
-  const values = data.map((datum) => Math.max(0, numeric(datum[valueKey])));
-  const max = values.reduce((acc, value) => (value > acc ? value : acc), 0);
-  return values.map((value) => (max > 0 ? value / max : 0));
+export function trendRatios(data: ChartDatum[], valueKey: string): (number | null)[] {
+  const values = data.map((datum) => {
+    const value = numeric(datum[valueKey]);
+    return value === null ? null : Math.max(0, value);
+  });
+  const max = values.reduce<number>(
+    (acc, value) => (value !== null && value > acc ? value : acc),
+    0,
+  );
+  return values.map((value) => (value === null ? null : max > 0 ? value / max : 0));
 }
 
 /**

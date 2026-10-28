@@ -42,6 +42,7 @@ export function CompactBarTrend({
 }: CompactBarTrendProp) {
   const { t } = useTranslation();
   const fmt = useChartNumberFormat(numberFormat);
+  const countsFormat = useChartNumberFormat();
 
   const hasData = data.length > 0;
   const emphasized = resolveEmphasizedIndex(emphasizedIndex, data.length);
@@ -52,7 +53,7 @@ export function CompactBarTrend({
     categoryKey,
     valueKey,
     fmt,
-    (counts) => t("chart.summaryTrend", { points: fmt.format(counts.points) }),
+    (counts) => t("chart.summaryTrend", { points: countsFormat.format(counts.points) }),
     (index) => (index === emphasized ? t("chart.trendCurrent") : undefined),
   );
 
@@ -76,11 +77,13 @@ export function CompactBarTrend({
           <div className="ui-chart-trend-plot" aria-hidden="true">
             {data.map((datum, index) => (
               <div className="ui-chart-trend-column" key={`${String(datum[categoryKey])}-${index}`}>
-                <div
-                  className="ui-chart-trend-bar"
-                  data-emphasized={index === emphasized ? "true" : undefined}
-                  style={{ "--chart-trend-bar-value": ratios[index] } as React.CSSProperties}
-                />
+                {ratios[index] !== null ? (
+                  <div
+                    className="ui-chart-trend-bar"
+                    data-emphasized={index === emphasized ? "true" : undefined}
+                    style={{ "--chart-trend-bar-value": ratios[index] } as React.CSSProperties}
+                  />
+                ) : null}
               </div>
             ))}
           </div>

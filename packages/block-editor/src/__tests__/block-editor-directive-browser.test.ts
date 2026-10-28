@@ -59,12 +59,15 @@ const actions = [{
 }];
 
 function App() {
+  const [value, setValue] = React.useState(window.__initial || "");
+  const [tick, setTick] = React.useState(0);
+  window.__echo = () => { setValue(window.__value ?? value); setTick(t => t+1); };
   return (
     <AppProvider defaultLocale="ja" persist={false}>
       <div style={{ padding: 16, paddingInlineStart: 64, maxWidth: 720 }}>
         <BlockEditor
           aria-label="本文"
-          defaultValue={window.__initial || ""}
+          value={value}
           onValueChange={(v) => { window.__value = v; }}
           directives={directives}
           actions={actions}
@@ -238,4 +241,43 @@ describe("BlockEditor directive blocks (Chromium)", { timeout: 40_000 }, () => {
     expect(await page.getByTestId("poll-preview").textContent()).toBe("質問 / 2 options");
     await page.close();
   });
+  it.each(["/", "／"])(
+    "keeps commands through controlled value echoes and host rerenders: %s (gh#1484)",
+    async (slash) => {
+      const { page, errors } = await open("Existing prose");
+      const box = page.locator(".ui-block-editor-content");
+      await box.click();
+      await page.keyboard.press("ControlOrMeta+End");
+      await page.keyboard.press("Enter");
+      await page.keyboard.type(slash);
+      const list = page.getByRole("listbox");
+      await list.waitFor();
+      expect(await list.getByRole("option").count()).toBeGreaterThan(5);
+      for (let i = 0; i < 3; i++) {
+        await page.evaluate(() => (window as unknown as { __echo: () => void }).__echo());
+        await page.waitForTimeout(750);
+        expect(await list.getByRole("option").count()).toBeGreaterThan(5);
+      }
+      await list.getByRole("option").filter({ hasText: "投票" }).click();
+      expect(await page.getByTestId("poll-preview").count()).toBe(1);
+      // Save/reopen the emitted Markdown in a fresh editor, then exercise keyboard insertion.
+      const saved = await value(page);
+      const reopened = await open(saved!);
+      await reopened.page.locator(".ui-block-editor-content").click();
+      await reopened.page.keyboard.press("ControlOrMeta+End");
+      await reopened.page.keyboard.press("Enter");
+      await reopened.page.keyboard.type(slash);
+      await reopened.page.getByRole("listbox").waitFor();
+      await reopened.page.keyboard.press("Backspace");
+      await reopened.page.keyboard.type(slash + "poll");
+      await reopened.page.getByRole("option").filter({ hasText: "投票" }).waitFor();
+      await reopened.page.evaluate(() => (window as unknown as { __echo: () => void }).__echo());
+      await reopened.page.keyboard.press("Enter");
+      expect(await reopened.page.getByTestId("poll-preview").count()).toBe(2);
+      expect(reopened.errors).toEqual([]);
+      await reopened.page.close();
+      expect(errors).toEqual([]);
+      await page.close();
+    },
+  );
 });

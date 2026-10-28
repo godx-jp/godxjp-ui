@@ -123,7 +123,7 @@
       "type": "\"date\" | \"week\" | \"month\" | \"quarter\" | \"year\""
     },
     {
-      "description": "CARDINALITY: two endpoints in one control (antd `DatePicker.RangePicker`). value/defaultValue and the callback become `DateRange`; the pair submits as `${name}_from` / `${name}_to`. Composes with `picker`, so a month range is `<DatePicker range picker=\"month\" />`. Never place two DatePickers side by side to fake this.",
+      "description": "With no confirmation, holds the first endpoint internally while open, emits a complete range or clear, and discards half-ranges on close. CARDINALITY: two endpoints in one control (antd `DatePicker.RangePicker`). value/defaultValue and the callback become `DateRange`; the pair submits as `${name}_from` / `${name}_to`. Composes with `picker`, so a month range is `<DatePicker range picker=\"month\" />`. Never place two DatePickers side by side to fake this.",
       "name": "range",
       "type": "boolean"
     },

@@ -4571,6 +4571,13 @@
     color: hsl(var(--muted-foreground));
   }
 
+  .ui-image-placeholder > * {
+    min-block-size: 0;
+    min-inline-size: 0;
+    max-block-size: 100%;
+    max-inline-size: 100%;
+  }
+
   .ui-image-mask {
     position: absolute;
     inset: 0;

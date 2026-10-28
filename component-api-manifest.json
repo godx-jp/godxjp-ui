@@ -13293,6 +13293,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "onPageIntent",
+          "origin": "owned",
+          "required": false,
+          "type": "((page: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,

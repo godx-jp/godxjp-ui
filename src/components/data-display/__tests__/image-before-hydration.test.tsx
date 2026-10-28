@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AppProvider } from "../../../app/app-provider";
 import { Image } from "../image";
@@ -28,4 +29,27 @@ describe("image requests completed before the ref attaches", () => {
       screen.getByRole("button", { name: "Preview: Artwork" }).querySelector("img"),
     ).toHaveAttribute("src", "/loaded.png");
   });
+});
+
+it("leaves SSR pictures uncovered before hydration (gh#1472)", () => {
+  const html = renderToString(
+    <Image
+      src="/eager.png"
+      alt="Artwork"
+      preview={false}
+      loading="eager"
+      placeholder={<span>Loading</span>}
+    />,
+  );
+  expect(html).not.toContain('data-slot="image-placeholder"');
+});
+
+it("shows pending placeholder after mount, then removes it on load", () => {
+  vi.spyOn(HTMLImageElement.prototype, "complete", "get").mockReturnValue(false);
+  const view = render(
+    <Image src="/pending.png" alt="Pending" placeholder="Loading" preview={false} />,
+  );
+  expect(view.container.querySelector('[data-slot="image-placeholder"]')).not.toBeNull();
+  fireEvent.load(screen.getByRole("img", { name: "Pending" }));
+  expect(view.container.querySelector('[data-slot="image-placeholder"]')).toBeNull();
 });

@@ -4463,7 +4463,19 @@ export const COMPONENT_PROP_REGISTRY = {
   PaginationProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp", "SizeProp"],
+    vocabulary: [
+      "ValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "ClassNameProp",
+      "SizeProp",
+      {
+        field: "onPageIntent",
+        local: true,
+        reason:
+          "A page target intent event for cache/router preloading, separate from the controlled value channel; pointer enter, focus and touch start (gh#1472).",
+      },
+    ],
   },
   PaginationSizeProp: {
     group: "navigation",
