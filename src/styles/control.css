@@ -203,6 +203,14 @@
     flex-shrink: 0;
   }
 
+  /* The xs variants own a smaller fallback than the generic control step. Keep the component
+   * declaration and its winning utility on the same chain, including the button override. */
+  .ui-button--xs svg,
+  .ui-button--icon-xs svg {
+    width: var(--button-icon-size, var(--button-xs-icon-size));
+    height: var(--button-icon-size, var(--button-xs-icon-size));
+  }
+
   /* The four resting fills read a knob whose default is the SAME role, resolved here so a scoped
    * theme's role still arrives (gh#880 · docs/TOKEN-RESOLUTION.md §3). Before this, retinting a
    * button meant retinting `--primary` — which is also the link ink, the focus mark and a chart

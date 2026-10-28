@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Charts announce missing/non-finite observations as localized no data, keep absent trend marks distinct from zero, and format summary counts independently of value/currency options (gh#1482).
 - Pagination exposes `onPageIntent(page)` for pointer enter, focus and touch start on enabled page/previous/next controls in full and compact modes (gh#1472).
 - Image leaves SSR pictures uncovered until hydration, while retaining the pre-hydration load/error checks; placeholder children can shrink into their frame (gh#1472).
+- Editorial shadow knobs resolve scoped `--shadow-color` at their use sites; catalog module button aliases carry explicit defaults. Calendar day radius, outline button foreground, and button icon size remain reachable through their utility classes without changing default rendering (gh#1383).
 
 - `Affix`: viewport-targeted pins now remeasure containing-block compensation on captured window scroll and resize, so a paint/transform ancestor cannot move a pinned rail off-screen (gh#1504). Existing requestAnimationFrame coalescing and unpin/unmount cleanup apply to both viewport and element targets.
 

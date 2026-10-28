@@ -126,9 +126,11 @@ describe("CatalogDetailSection (gh#1438)", () => {
 
   it("gives the module's buttons their own glyph gap / size, not a page-wide --button-* knob", () => {
     const body = rule('.ui-catalog-detail-section[data-variant="module"]');
-    expect(body).toMatch(/--button-gap:\s*var\(--editorial-catalog-detail-module-button-gap\)/);
     expect(body).toMatch(
-      /--button-icon-size:\s*var\(--editorial-catalog-detail-module-button-icon-size\)/,
+      /--button-gap:\s*var\(--editorial-catalog-detail-module-button-gap,\s*initial\)/,
+    );
+    expect(body).toMatch(
+      /--button-icon-size:\s*var\(\s*--editorial-catalog-detail-module-button-icon-size,\s*initial\)/,
     );
     expect(tokens).toMatch(/--editorial-catalog-detail-module-button-gap:\s*initial/);
     expect(tokens).toMatch(/--editorial-catalog-detail-module-button-icon-size:\s*initial/);

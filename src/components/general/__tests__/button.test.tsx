@@ -122,7 +122,7 @@ describe("Button", () => {
     // The glyph rule must stay a UTILITY (Tailwind v4 orders utilities after components, so a
     // components-layer rule could never out-rank the child's own `size-4`). It now reads the
     // token instead of a literal step, so the 12px is themeable without losing that precedence.
-    expect(button.className).toContain("[&_svg]:size-[var(--button-xs-icon-size)]");
+    expect(button.className).toContain("[&_svg]:size-[var(--button-icon-size,var(--button-xs-icon-size))]");
     expect(button.className).toContain("[&_svg]:shrink-0");
   });
 

@@ -177,7 +177,7 @@ export default function Demo() {
           variant="outline"
           size="sm"
           aria-label="検索"
-          className="text-muted-foreground w-auto justify-start sm:w-full sm:max-w-sm"
+          className="w-auto justify-start text-[color:var(--button-outline-foreground,hsl(var(--muted-foreground)))] sm:w-full sm:max-w-sm"
         >
           <Search />
           <span className="hidden sm:inline">検索…</span>

@@ -248,7 +248,7 @@ export function Calendar({
         day: cn("ui-calendar-day", classNames?.day),
         day_button: cn(
           buttonVariants({ variant: "ghost" }),
-          "ui-calendar-day-button",
+          "ui-calendar-day-button rounded-[var(--calendar-day-radius,var(--button-radius))]",
           classNames?.day_button,
         ),
         range_start: cn("day-range-start", classNames?.range_start),
