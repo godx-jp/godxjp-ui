@@ -2999,10 +2999,32 @@
   /* Pinned and taller than the room left between the pin line and the far edge of the visible
    * scrollport (gh#1510): past that edge a fixed box is unreachable, so it scrolls on its own.
    * The component writes the room and the attribute only when the box does not fit. */
-  .ui-affix-content[data-affixed][data-clamped] {
+  .ui-affix-content[data-affixed][data-clamped],
+  .ui-affix[data-pin] > .ui-affix-content[data-clamped] {
     max-block-size: var(--affix-content-max-block-size, none);
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+
+  /* STICKY MODE (gh#1510), written by the component only when the scroll box is also the fixed
+   * containing block (`.app-main`): a fixed box there rides the scroll and is put back a frame
+   * late, which reads as the bar jumping; a sticky one is pinned by the browser in the same frame.
+   * The content stays in flow, so the fixed-mode rules above are switched off for it. */
+  .ui-affix[data-pin="sticky-start"] {
+    position: sticky;
+    inset-block-start: var(--affix-inset-block-start);
+    z-index: var(--sticky-z-index);
+  }
+
+  .ui-affix[data-pin="sticky-end"] {
+    position: sticky;
+    inset-block-end: var(--affix-inset-block-end);
+    z-index: var(--sticky-z-index);
+  }
+
+  .ui-affix[data-pin] > .ui-affix-content[data-affixed] {
+    position: static;
+    inline-size: auto;
   }
 
   /* `--affix-target-inset` is `0px` against the viewport and the live block-start (or block-end)
