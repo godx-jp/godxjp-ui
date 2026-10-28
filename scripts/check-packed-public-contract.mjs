@@ -260,7 +260,7 @@ function checkPackedStyleEntries(tarball, manifest, packedFiles) {
 
     const css = flattenPackedCss(tarball, path);
     if (contract.expect.editorial !== undefined) {
-      const hasEditorial = /\.ui-(?:editorial-(?:section|hero)|catalog-card|holding-grid)[\s:{\[]/.test(css);
+      const hasEditorial = /\.ui-(?:editorial-(?:section|hero)|catalog-card|holding-grid)[\s:{[]/.test(css);
       if (hasEditorial !== contract.expect.editorial) {
         errors.push(
           `${contract.subpath}: editorial layout presence must be ${contract.expect.editorial}`,

@@ -131,7 +131,7 @@ try {
     requireThat(css.includes(".ui-page-container"), `${name} must retain PageContainer`);
     if (!name.startsWith("all")) {
       requireThat(
-        !/\.ui-(?:editorial-(?:section|hero)|catalog-card|holding-grid)[\s:{\[]/.test(css),
+        !/\.ui-(?:editorial-(?:section|hero)|catalog-card|holding-grid)[\s:{[]/.test(css),
         `${name} must omit editorial, catalog and holding layouts`,
       );
     }

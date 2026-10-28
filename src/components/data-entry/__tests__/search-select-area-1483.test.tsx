@@ -27,7 +27,7 @@ describe("controlled area picker #1483", () => {
                   showSearch
                   aria-label="Area"
                   value={value}
-                  onValueChange={(v) => {
+                  onValueChange={(v: string) => {
                     change(v);
                     setValue(v);
                   }}

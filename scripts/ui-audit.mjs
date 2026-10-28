@@ -372,7 +372,7 @@ const RULES = [
     scope: "consumer",
     severity: "error",
     spansElement: true,
-    test: /\bimport\s+(?!type\b)(?:[^;\"']*?\s+from\s*)?["']sonner["']/g,
+    test: /\bimport\s+(?!type\b)(?:[^;"']*?\s+from\s*)?["']sonner["']/g,
     message:
       "import toast from @godxjp/ui — use `import { toast } from \"@godxjp/ui\"`; a consumer's sonner may own a different toast store from the kit's Toaster.",
   },

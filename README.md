@@ -232,7 +232,7 @@ No Tailwind (you import `@godxjp/ui/styles.css`)? Add `--precompiled` (gh#1455):
 npx godxjp-ui prune-css src --out src/godx-ui.css --precompiled
 ```
 
-The emitted file imports `@godxjp/ui/styles/precompiled/*` instead: the same precompiled CSS as
+The emitted file imports the precompiled slices instead (`@import "@godxjp/ui/styles/precompiled/base";` and one per kept layer): the same precompiled CSS as
 `styles.css`, cut per manifest file at build time (`base` = tokens, preflight and the utilities
 the components use; one slice per layer and vendor sheet). Your bundler only has to inline plain
 `@import`s. Import it INSTEAD of `@godxjp/ui/styles.css`.

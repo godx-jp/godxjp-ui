@@ -18,12 +18,9 @@ describe("#1464b synchronous locale compatibility boundary", () => {
         expect(context.dateFnsLocale).toBe(getDateFnsLocale(locale));
         expect(context.dayPickerLocale).toBe(getDayPickerLocale(locale));
         const names = context.dateFnsLocale.localize.month(0, { width: "wide" });
-        const label = context.dayPickerLocale.labels!.labelDayButton!(
-          new Date(2026, 0, 1),
-          { selected: true },
-          undefined,
-          undefined,
-        );
+        const label = (
+          context.dayPickerLocale.labels!.labelDayButton as (...args: unknown[]) => string
+        )(new Date(2026, 0, 1), { selected: true }, undefined, undefined);
         return <span>{`${names}|${label}`}</span>;
       }
       const html = renderToStaticMarkup(

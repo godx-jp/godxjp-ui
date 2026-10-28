@@ -45,8 +45,9 @@ it("public and feedback toast exports use the same store as the kit Toaster", as
   const { publicToast, feedbackToast, store } = module.exports;
   expect(publicToast).toBe(feedbackToast);
   const id = publicToast("public store regression", { duration: Infinity });
-  expect(store.getToasts().find((item: { id: unknown }) => item.id === id)?.title).toBe(
-    "public store regression",
-  );
+  expect(
+    (store.getToasts().find((item: { id: unknown }) => item.id === id) as { title?: unknown })
+      ?.title,
+  ).toBe("public store regression");
   publicToast.dismiss(id);
 });
