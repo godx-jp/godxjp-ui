@@ -5,6 +5,11 @@
   "name": "PieChart",
   "props": [
     {
+      "description": "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
+      "name": "animated",
+      "type": "boolean"
+    },
+    {
       "description": "Opt-in pointer and Enter/Space selection. seriesKey is dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
       "name": "onDatumSelect",
       "type": "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void"

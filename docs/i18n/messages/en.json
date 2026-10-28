@@ -2540,5 +2540,8 @@
     "title": "Reports",
     "break": "Break this page",
     "help": "Help"
+  },
+  "radarDemo": {
+    "title": "Quantitative profile"
   }
 }

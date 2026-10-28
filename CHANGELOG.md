@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Dependency-free RadarChart with explicit shared zero-based scale, finite-data guard and locale-aware accessible summary (same-unit 3–6-axis profiles).
+
+
 ## [33.25.0] - 2026-10-28
 
 - Add controlled 49-option searchable area-picker regression coverage for typing, pointer/keyboard selection, clearing and reopening (#1483; not reproducible on this branch).

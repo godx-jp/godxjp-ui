@@ -41,6 +41,8 @@ export type ChartDatumSelect<T = ChartDatum> = (
 
 /** Shared base for the cartesian charts (Line / Bar / Area). */
 type ChartCartesianBase = {
+  /** Override built-in chart animation; false lets the consumer own reduced-motion-safe feedback. */
+  animated?: boolean;
   /** Row data. Each row is one category with a value per series. */
   data: ChartDatum[];
   /** One or more plotted series. */
@@ -237,6 +239,8 @@ export type AreaChartProp = ChartCartesianBase & {
 
 /** @see PieChart */
 export type PieChartProp = {
+  /** Override built-in pie animation; false leaves the full static meaning visible. */
+  animated?: boolean;
   /** Select a slice by pointer or Enter/Space; seriesKey is dataKey. Arrows navigate slices. */
   onDatumSelect?: ChartDatumSelect;
   /** Row data — one slice per row. */
@@ -272,4 +276,24 @@ export type PieChartProp = {
   emptyMessage?: EmptyMessageProp;
   className?: ClassNameProp;
   id?: IdProp;
+};
+
+/** Single quantitative profile on a shared zero-based scale; incomplete data is never zero-filled. */
+export type RadarChartProp = {
+  data: ChartDatum[];
+  categoryKey: string;
+  valueKey: string;
+  /** Required common ceiling, strictly positive; values outside [0,valueMax] are invalid. */
+  valueMax: number;
+  valueTicks?: number[];
+  label: LabelProp;
+  showCaption?: boolean;
+  description?: DescriptionProp;
+  size?: SizeProp;
+  numberFormat?: Intl.NumberFormatOptions;
+  emptyMessage?: EmptyMessageProp;
+  footer?: FooterProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+  ref?: React.Ref<HTMLElement>;
 };
