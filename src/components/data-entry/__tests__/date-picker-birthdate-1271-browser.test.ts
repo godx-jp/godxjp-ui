@@ -232,16 +232,12 @@ describe("year-first typed dates (gh#1271 b)", { timeout: 60_000 }, () => {
     });
   }
 
-  it("a loose range edge buffers on blur and commits only after both dates (gh#1476)", async () => {
+  it("a range edge commits 2026/10/01 on blur even with preserveInvalidOnBlur", async () => {
     const page = await open("range-preserve");
     const from = page.locator("input.ui-month-picker-input").first();
     await from.click();
     await from.pressSequentially("2026/10/01");
     await from.press("Tab");
-    expect(await dates(page)).toEqual([]);
-    const to = page.locator("input.ui-month-picker-input").nth(1);
-    await to.fill("2026/10/15");
-    await to.press("Tab");
     expect((await dates(page)).at(-1)).toEqual([2026, 10, 1]);
     await page.close();
   });

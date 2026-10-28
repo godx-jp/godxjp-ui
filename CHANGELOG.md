@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Behaviour change:** `DatePicker range` (no `showTime`) holds an open half-range internally and emits only completed picks or clear; dismissing discards the draft even when the controlled consumer ignores partial values (gh#1476). Before, the first click emitted `{ from, to: undefined }`; a consumer that wants an open-ended range keeps it by choosing both ends or typing the end date.
+- **Behaviour change:** `DatePicker range` (no `showTime`) holds an open half-range internally and emits only completed picks or clear; dismissing discards the draft even when the controlled consumer ignores partial values (gh#1476). Typed edges (Enter / blur) still commit at once, so an open-ended range entered from the keyboard is kept. Before, the first click emitted `{ from, to: undefined }`; a consumer that wants an open-ended range keeps it by choosing both ends or typing the end date.
 - Add `styles/application` and additive `styles/editorial` entries; separate editorial layouts from shared page/grid CSS and use one generated family map for entries and `prune-css --exclude-family editorial` (#1475).
 - Verify `prune-css` and `prune-css --precompiled` against an independently installed npm tarball, including CSS compiler resolution and measured raw/gzip savings (#1455).
 
