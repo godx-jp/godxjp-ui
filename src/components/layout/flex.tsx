@@ -1,4 +1,4 @@
-import { Children, type CSSProperties } from "react";
+import { Children, useEffect, useRef, type CSSProperties } from "react";
 import { mergeAriaIds } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { flexGapClass, padStyle, padStepToken } from "../../lib/variants";
@@ -83,6 +83,12 @@ export function Flex(props: FlexProp) {
 
 function LayoutFlex({
   as: Element = "div",
+  viewport,
+  ref: forwardedRef,
+  basis,
+  overflow,
+  rotate,
+  animated,
   direction = "row",
   marker,
   grow,
@@ -112,13 +118,36 @@ function LayoutFlex({
   children,
   ...props
 }: FlexProp) {
+  const viewportRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const node = viewportRef.current;
+    if (!viewport || !node) return;
+    const update = () => {
+      const visual = window.visualViewport;
+      const bottom = visual ? visual.height + visual.offsetTop : window.innerHeight;
+      const available = Math.max(0, bottom - Math.max(0, node.getBoundingClientRect().top));
+      node.style.setProperty("--flex-viewport-available", `${available}px`);
+    };
+    update();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    observer?.observe(document.documentElement);
+    window.addEventListener("resize", update);
+    window.addEventListener("scroll", update, true);
+    window.visualViewport?.addEventListener("resize", update);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", update, true);
+      window.visualViewport?.removeEventListener("resize", update);
+    };
+  }, [viewport, Element]);
   // FormField legitimately lands its contract here when a Flex wraps a composite field (range
   // from/to pair, 年/月 combo), so a NAMED Flex defaults to role="group" — the WAI-ARIA container
   // for exactly that — and keeps only the aria the group role allows: aria-errormessage folds
   // into aria-describedby, and the widget-only aria-required/aria-invalid are dropped (same
   // policy as pickGroupFieldA11y). An explicit `role` prop opts out of ALL of this — the caller
   // then owns the attribute set (e.g. DataTable.BulkActions' role="region").
-  let domProps: FlexProp = props;
+  let domProps: Omit<FlexProp, "ref"> = props;
   if (
     props.role === undefined &&
     !HAS_IMPLICIT_ROLE.has(typeof Element === "string" ? Element : "") &&
@@ -151,6 +180,16 @@ function LayoutFlex({
     : {};
   return (
     <Element
+      ref={(node: HTMLElement | null) => {
+        viewportRef.current = node;
+        if (typeof forwardedRef === "function") forwardedRef(node);
+        else if (forwardedRef) forwardedRef.current = node;
+      }}
+      data-viewport={viewport ? "" : undefined}
+      data-basis={basis}
+      data-overflow={overflow}
+      data-rotate={rotate}
+      data-animated={animated ? "" : undefined}
       data-direction={responsive ? "responsive" : direction}
       data-grow={grow ? "" : undefined}
       data-shrink={shrink === false ? "false" : undefined}
@@ -226,6 +265,11 @@ function LayoutFlex({
  * and react-aria puts a `<template>` beside it, which `> *` rules silently missed.
  */
 function AttachedFlex({
+  viewport: _viewport,
+  basis: _basis,
+  overflow: _overflow,
+  rotate: _rotate,
+  animated: _animated,
   as: _as,
   direction,
   marker: _marker,

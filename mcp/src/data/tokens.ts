@@ -11,6 +11,24 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--flex-card-width",
+    category: "component",
+    tier: "component",
+    role: "Responsive portrait tile inline measure, 46–70px default.",
+  },
+  {
+    name: "--flex-compact-card-width",
+    category: "component",
+    tier: "component",
+    role: "Responsive compact tile inline measure, 30–40px default.",
+  },
+  {
+    name: "--flex-orientation-duration",
+    category: "component",
+    tier: "component",
+    role: "Declarative orientation transition duration; reduced motion disables it.",
+  },
+  {
     name: "--mobile-shell-tab-bar-active-color",
     category: "component",
     tier: "component",

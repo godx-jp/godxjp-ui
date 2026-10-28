@@ -9369,6 +9369,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
+    "name": "--flex-card-width",
+    "value": "clamp(2.875rem, 5.2vw, 4.375rem)",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-compact-card-width",
+    "value": "clamp(1.875rem, 3vw, 2.5rem)",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-orientation-duration",
+    "value": "180ms",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
     "name": "--float-button-offset-block-end",
     "value": "var(--space-stack-xl)",
     "description": "THE TWO CORNER INSETS gh#558 ASKED FOR BY NAME. Ant Design's are `marginXXL` (48px) from the bottom and `marginLG` (24px) from the inline end. Spelled here in this library's own stack/inline steps, which land on the same two numbers: --space-stack-xl = --space-10 = 40px, --space-6 = 24px. The block inset is the one a service actually has to move — a sticky action bar, a cookie strip, a mobile tab bar all live in that corner — and moving it is now retuning ONE custom property, not writing a media query at the call site (which is `no-arbitrary-spacing` and has no legal spelling)."

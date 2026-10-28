@@ -5078,3 +5078,88 @@
     }
   }
 }
+
+/* Bounded compositions: every scroll owner has a zero automatic minimum. */
+@layer components {
+  .ui-flex[data-viewport] {
+    block-size: var(--flex-viewport-available, 100dvh);
+    min-block-size: 0;
+    overflow: hidden;
+  }
+  .ui-flex[data-basis="equal"] {
+    flex: 1 1 0;
+    min-block-size: 0;
+    min-inline-size: 0;
+  }
+  .ui-flex[data-overflow] {
+    min-block-size: 0;
+    min-inline-size: 0;
+  }
+  .ui-flex[data-overflow="hidden"] {
+    overflow: hidden;
+  }
+  .ui-flex[data-overflow="auto"] {
+    overflow: auto;
+  }
+  .ui-flex[data-overflow="scroll-x"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .ui-flex[data-overflow="scroll-y"] {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .ui-flex[data-measure="card"],
+  .ui-flex[data-measure="card-compact"] {
+    margin-inline: 0;
+    flex: 0 0 auto;
+    max-inline-size: none;
+  }
+  .ui-flex[data-measure="card"] {
+    inline-size: calc(var(--flex-card-width) * 1.4);
+    block-size: calc(var(--flex-card-width) * 1.4);
+    align-items: center;
+    justify-content: center;
+  }
+  .ui-flex[data-measure="card-compact"] {
+    inline-size: calc(var(--flex-compact-card-width) * 1.4);
+    block-size: calc(var(--flex-compact-card-width) * 1.4);
+    align-items: center;
+    justify-content: center;
+  }
+  .ui-flex[data-rotate="0"] {
+    transform: rotate(0deg);
+  }
+  .ui-flex[data-rotate="90"] {
+    transform: rotate(90deg);
+  }
+  .ui-flex[data-rotate="180"] {
+    transform: rotate(180deg);
+  }
+  .ui-flex[data-rotate="270"] {
+    transform: rotate(270deg);
+  }
+  .ui-flex[data-animated][data-rotate] {
+    transition: transform var(--flex-orientation-duration) ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-flex[data-animated][data-rotate] {
+      transition: none;
+    }
+  }
+}
+
+@layer components {
+  .ui-flex[data-measure="card"] > * {
+    inline-size: var(--flex-card-width);
+    max-inline-size: var(--flex-card-width);
+  }
+  .ui-flex[data-measure="card-compact"] > * {
+    inline-size: var(--flex-compact-card-width);
+    max-inline-size: var(--flex-compact-card-width);
+  }
+  .ui-flex[data-viewport] {
+    padding-block-end: env(safe-area-inset-bottom, 0px);
+    box-sizing: border-box;
+  }
+}

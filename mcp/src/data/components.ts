@@ -2171,6 +2171,32 @@ import { Button } from "@godxjp/ui/general";
       "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls — and, with `attached`, a row of controls welded into ONE visual unit (antd Space.Compact).",
     props: [
       {
+        name: "viewport",
+        type: "boolean",
+        description:
+          "Measure actual top and fit remaining visual viewport; observes resize and scroll.",
+      },
+      {
+        name: "basis",
+        type: '"equal"',
+        description: "Equal flexible region with zero block and inline minimum.",
+      },
+      {
+        name: "overflow",
+        type: '"hidden" | "auto" | "scroll-x" | "scroll-y"',
+        description: "Internal scroll ownership without document growth.",
+      },
+      {
+        name: "rotate",
+        type: "0 | 90 | 180 | 270",
+        description: "Declarative orientation, never infers an action.",
+      },
+      {
+        name: "animated",
+        type: "boolean",
+        description: "Orientation transition only; reduced motion is immediate.",
+      },
+      {
         name: "attached",
         type: "boolean",
         defaultValue: "false",
@@ -2262,7 +2288,7 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "measure",
-        type: '"narrow" | "medium" | "wide"',
+        type: '"narrow" | "medium" | "wide" | "card" | "card-compact"',
         description:
           'CENTRE this box and CAP it at a page measure (--page-measure-narrow 42rem / -medium 48rem / -wide 72rem): margin-inline:auto + inline-size:100% + max-inline-size. THE public answer to "full-bleed outside, measured column inside" — a marketing <section> paints edge to edge and its inner Flex measure="wide" holds the content on the page measure. Deliberately NOT on PageContainer: that owns page padding and a header/toolbar/footer scaffold, so a full-bleed page cannot consume it, and the refusal left the centred column owned by nobody — three showcases each hand-wrote the same four declarations (gh#839). It adds NO gutter: the page inset is pad={{ inline: 6 }}, and one band with two padding owners drifts. A MAX, so nothing binds below the cap at 390px. An explicit `width` wins. Do not give a READING column "wide" — prose stays narrow/medium, which bracket Bringhurst\'s 45-75 characters. Omitted emits no attribute at all.',
       },

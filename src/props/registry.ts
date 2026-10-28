@@ -983,6 +983,36 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [
       {
+        field: "viewport",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "basis",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "overflow",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "rotate",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "animated",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
         field: "as",
         local: true,
         reason:
@@ -1702,9 +1732,17 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "variant", local: true, reason: "inset (site search) or inline (collection row)." },
       { field: "count", local: true, reason: "Live count at the end of the inline row." },
       { field: "debounce", local: true, reason: "Settle delay in ms, as SearchInput.debounce." },
-      { field: "suggestions", local: true, reason: "Grouped suggestion rows under the box (gh#1447)." },
+      {
+        field: "suggestions",
+        local: true,
+        reason: "Grouped suggestion rows under the box (gh#1447).",
+      },
       { field: "suggestionsFooter", local: true, reason: "Last popup row linking to all results." },
-      { field: "suggestionsLabel", local: true, reason: "Accessible name of the suggestions listbox." },
+      {
+        field: "suggestionsLabel",
+        local: true,
+        reason: "Accessible name of the suggestions listbox.",
+      },
       {
         field: "onQueryChange",
         local: true,

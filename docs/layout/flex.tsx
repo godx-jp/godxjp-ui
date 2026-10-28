@@ -438,6 +438,32 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("showcase.flexViewport.title")}</CardTitle>
+            <CardDescription>{t("showcase.flexViewport.lead")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" overflow="hidden" aria-label={t("showcase.flexViewport.title")}>
+              <Flex basis="equal" overflow="scroll-x" gap="sm" tabIndex={0}>
+                {[0, 90, 0].map((rotation, index) => (
+                  <Flex
+                    key={index}
+                    measure="card"
+                    rotate={rotation as 0 | 90}
+                    animated
+                    surface="muted"
+                    align="center"
+                    justify="center"
+                  >
+                    <Text>{t("showcase.flexViewport.item", { index: index + 1 })}</Text>
+                  </Flex>
+                ))}
+              </Flex>
+              <Text size="sm">{t("showcase.flexViewport.note")}</Text>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

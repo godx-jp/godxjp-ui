@@ -208,10 +208,23 @@ export type FlexJustifyProp = "start" | "center" | "end" | "between" | "around" 
  * Bringhurst's 45–75 character reading band, `wide` (72rem) is the MARKETING measure. Do not give
  * a reading column `wide` — that rule is `--page-measure-wide`'s own, and it travels with the word.
  */
-export type FlexMeasureProp = "narrow" | "medium" | "wide";
+export type FlexMeasureProp = "narrow" | "medium" | "wide" | "card" | "card-compact";
 
 /** @see Flex */
 export type FlexProp = React.HTMLAttributes<HTMLElement> & {
+  /** React19 ref to the rendered element. */
+  ref?: React.Ref<HTMLElement>;
+  /** Fit the visual viewport below this element's measured top; observes resize and scroll. */
+  viewport?: boolean;
+  /** Equal flexible region: flex 1 1 0 with zero minimum block size. */
+  basis?: "equal";
+  /** Internal scrolling; scroll-x and scroll-y constrain the other axis. */
+  overflow?: "hidden" | "auto" | "scroll-x" | "scroll-y";
+  /** Declarative orientation; no implied domain action. */
+  rotate?: 0 | 90 | 180 | 270;
+  /** Animate orientation changes only. Reduced motion always settles immediately. */
+  animated?: boolean;
+
   /**
    * Render element — `div` (default) or `span` when the Flex sits in a PHRASING context and a
    * `<div>` would be invalid HTML: inside a `TabsTrigger`/`PopoverTrigger`/`Button` (all of which

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Flex measured viewport fitting, equal zero-minimum regions, internal overflow, responsive card measures and reduced-motion-aware declarative orientation (#1513).
+
+
 ## [33.22.2] - 2026-10-25
 
 ### Fixed

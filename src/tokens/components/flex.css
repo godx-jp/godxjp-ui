@@ -6,3 +6,9 @@
   --flex-actions-offset-block: initial;
   --flex-actions-offset-inline: initial;
 }
+
+:root {
+  --flex-card-width: clamp(2.875rem, 5.2vw, 4.375rem);
+  --flex-compact-card-width: clamp(1.875rem, 3vw, 2.5rem);
+  --flex-orientation-duration: 180ms;
+}
