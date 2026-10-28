@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.25.2] - 2026-10-29
+
+### Fixed
+
+- `Affix` inside a scroll box that is also the fixed containing block (AppShell's `.app-main`: `overflow: auto` + `contain: paint`) pins with `position: sticky` instead of `position: fixed`. The fixed box rode the scroll and was put back a frame late, so a pinned rail visibly jumped on every wheel tick; measured on a production reader, its top ran from −1403 to 64 during one smooth scroll. Sticky is taken only when the parent is taller than the box; otherwise the fixed pin stays (gh#1510).
+- `Affix`: the room a pinned box is held to (33.25.1) is read from the scroll box's pin line, not from the box's own painted edge, which lags while scrolling. The height and `data-clamped` no longer flicker during a scroll (gh#1510).
+
 ## [33.25.1] - 2026-10-28
 
 ### Fixed

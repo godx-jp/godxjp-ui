@@ -248,7 +248,11 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
   // `!inView` reads as "scrolled past". Measured on the docs page, an Anchor hidden below md
   // reported `affixed` (and fired `onChange(true)`) for a bar nobody could see (gh#984).
   const [rendered, setRendered] = React.useState(true);
-  const affixed = !inView && rendered;
+  // STICKY MODE (gh#1510): see `measure`. There the pin is the browser's, and `stuck` is read from
+  // where the box is painted rather than from the sentinel, which a sticky box carries with it.
+  const [sticky, setSticky] = React.useState(false);
+  const [stuck, setStuck] = React.useState(false);
+  const affixed = (sticky ? stuck : !inView) && rendered;
 
   const [box, setBox] = React.useState<{ inline: number; block: number } | null>(null);
   const [targetInset, setTargetInset] = React.useState(0);
@@ -285,6 +289,39 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
      * block's own offset puts the two back in the same coordinate space. `null` is the viewport,
      * where the offset is 0 and this is the arithmetic it always was. */
     const blockEl = fixedContainingBlock(content);
+
+    // The offsets in px, from the sentinel the CSS already placed with them — never parsed from a
+    // custom property (see the header). Both boxes are in the same frame, so this is exact.
+    const sentinelRect = sentinelRef.current?.getBoundingClientRect();
+    const insetStart = sentinelRect ? rootRect.top - sentinelRect.top : 0;
+    const insetEnd = sentinelRect ? sentinelRect.bottom - rootRect.bottom : 0;
+    // The pin line and the far edge of what is visible, both from the scroll box alone: neither
+    // moves while the page scrolls, unlike the painted edge of a box that is being repositioned.
+    const visibleTop = Math.max(rect ? rect.top : 0, 0);
+    const visibleBottom = Math.min(rect ? rect.bottom : window.innerHeight, window.innerHeight);
+    const line = pinToEnd ? visibleBottom - insetEnd : (rect ? rect.top : 0) + insetStart;
+
+    /* STICKY MODE (gh#1510). When the scroll box IS the fixed containing block — this package's
+     * own `.app-main` (`overflow: auto` + `contain: paint`) — a fixed box scrolls with the content
+     * and can only be put back by the measurement below, one frame later: on a production reader
+     * its top ran from -1403 to 64 during one smooth scroll, which a reader sees as the rail
+     * jumping. There `position: sticky` pins in the same frame as the scroll, because the browser
+     * does it. It needs room to travel, so it is taken only when the parent is taller than the
+     * box; otherwise the fixed pin stays, lag and all, rather than not pinning at all. */
+    const parent = root.parentElement;
+    const nextSticky =
+      blockEl !== null &&
+      blockEl === targetElement &&
+      parent !== null &&
+      parent.getBoundingClientRect().height > rootRect.height + 1;
+    setSticky((previous) => (previous === nextSticky ? previous : nextSticky));
+    if (nextSticky) {
+      const atLine = Math.abs((pinToEnd ? rootRect.bottom : rootRect.top) - line) < 1;
+      const nextStuck = atLine && (targetElement?.scrollTop ?? 0) > 0;
+      setStuck((previous) => (previous === nextStuck ? previous : nextStuck));
+      setTargetInset((previous) => (previous === 0 ? previous : 0));
+    }
+
     const block = blockEl?.getBoundingClientRect();
     const viewportInset = rect ? (pinToEnd ? window.innerHeight - rect.bottom : rect.top) : 0;
     /* THE BLOCK'S ORIGIN, WHICH IS NOT ITS BOX WHEN THE BLOCK IS ALSO A SCROLLER (gh#897).
@@ -304,26 +341,21 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
         : block.top - (blockEl?.scrollTop ?? 0)
       : 0;
     const next = viewportInset - blockOffset;
-    setTargetInset((previous) => (previous === next ? previous : next));
+    if (!nextSticky) setTargetInset((previous) => (previous === next ? previous : next));
 
     /* THE ROOM A PINNED BOX HAS (gh#1510). A fixed box does not move with the page, so whatever of
      * it lies past the visible scrollport can never be scrolled to — a long "On this page" outline
-     * lost every heading below the fold. Pinned, it is held to the space between where it is
-     * painted and the far edge of what is visible (the viewport, or the target's visible box) and
-     * scrolls inside it. Read from the painted edge, so offsets and containing blocks are already
-     * in it. Unpinned, or pinned and fitting, nothing is written and the box is what it was. */
-    if (!affixed) {
+     * lost every heading below the fold. Pinned, it is held to the space between the pin line and
+     * the far edge of what is visible (the viewport, or the target's visible box) and scrolls
+     * inside it. Read from the scroll box, never from the box's own painted edge: that edge lags a
+     * frame while the page scrolls, and a room read from it made the height — and the clamp —
+     * flicker on every scroll. Unpinned, or fitting, nothing is written and the box is what it was.
+     * A sticky box is clamped whether or not it is stuck yet: it is one rail either way. */
+    if (!affixed && !nextSticky) {
       setRoom((previous) => (previous === null ? previous : null));
       return;
     }
-    const nextRoom = Math.max(
-      0,
-      Math.floor(
-        pinToEnd
-          ? contentRect.bottom - Math.max(rect ? rect.top : 0, 0)
-          : Math.min(rect ? rect.bottom : window.innerHeight, window.innerHeight) - contentRect.top,
-      ),
-    );
+    const nextRoom = Math.max(0, Math.floor(pinToEnd ? line - visibleTop : visibleBottom - line));
     // Only a box that does not fit is clamped: one that fits keeps `overflow: visible`, so a
     // pinned bar's own unportaled menu or shadow is never clipped by this.
     const clamp = blockSize > nextRoom ? nextRoom : null;
@@ -354,7 +386,8 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
   // window scroll. Both target kinds therefore remeasure while pinned. Capture sees inner-scroll
   // events too; one animation frame coalesces scroll/resize, and unpinning removes the listeners.
   React.useEffect(() => {
-    if (!affixed || typeof window === "undefined") return undefined;
+    // A sticky box must also be watched while it is NOT stuck yet: that is how it learns it is.
+    if ((!affixed && !sticky) || typeof window === "undefined") return undefined;
     let frame: number | null = null;
     const onScroll = () => {
       if (frame !== null) return;
@@ -370,7 +403,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
       window.removeEventListener("resize", onScroll);
       if (frame !== null) window.cancelAnimationFrame(frame);
     };
-  }, [affixed, targetElement, measure]);
+  }, [affixed, sticky, targetElement, measure]);
 
   // WCAG 2.4.11 — see the header. Only a block-start pin obscures what the browser scrolls TO. The
   // padding is the bar's own measured bottom edge inside the scroll box, so it needs no second
@@ -414,9 +447,9 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
     ...(offsetBlockEnd === undefined
       ? undefined
       : { "--affix-inset-block-end": `${offsetBlockEnd}px` }),
-    ...(targetInset === 0 ? undefined : { "--affix-target-inset": `${targetInset}px` }),
-    ...(affixed && box ? { "--affix-content-inline-size": `${box.inline}px` } : undefined),
-    ...(affixed && room !== null ? { "--affix-content-max-block-size": `${room}px` } : undefined),
+    ...(sticky || targetInset === 0 ? undefined : { "--affix-target-inset": `${targetInset}px` }),
+    ...(!sticky && affixed && box ? { "--affix-content-inline-size": `${box.inline}px` } : undefined),
+    ...((affixed || sticky) && room !== null ? { "--affix-content-max-block-size": `${room}px` } : undefined),
   };
 
   return (
@@ -429,6 +462,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
       id={id}
       data-slot="affix"
       data-affixed={affixed ? "" : undefined}
+      data-pin={sticky ? (pinToEnd ? "sticky-end" : "sticky-start") : undefined}
       className={cn("ui-affix", className)}
       style={style}
       {...rest}
@@ -442,7 +476,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
       />
       {/* The flow keeper. It exists ONLY while pinned and it holds the MEASURED block size — which
           is the whole reason the page does not move at the instant the content leaves the flow. */}
-      {affixed && box ? (
+      {affixed && box && !sticky ? (
         <div
           data-slot="affix-placeholder"
           aria-hidden="true"
@@ -458,7 +492,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
         ref={contentRef}
         data-slot="affix-content"
         data-edge={pinToEnd ? "block-end" : "block-start"}
-        data-clamped={affixed && room !== null ? "" : undefined}
+        data-clamped={(affixed || sticky) && room !== null ? "" : undefined}
         data-affixed={affixed ? "" : undefined}
         className="ui-affix-content"
       >
