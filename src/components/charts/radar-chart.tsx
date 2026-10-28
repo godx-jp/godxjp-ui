@@ -66,7 +66,7 @@ export function RadarChart({
       summaryRows={rows}
       imgSummary={summary}
       hasData={valid}
-      height={chartHeight(size)}
+
       size={size}
       footer={footer}
       className={className}
@@ -75,7 +75,7 @@ export function RadarChart({
       {valid ? (
         <svg
           width="100%"
-          height="100%"
+          style={{ maxHeight: chartHeight(size), display: "block" }}
           viewBox="0 0 480 320"
           aria-hidden="true"
           data-slot="radar-plot"
@@ -120,10 +120,10 @@ export function RadarChart({
           />
           {data.map((d, i) => {
             const [x, y] = point(i, Number(d[valueKey]) / valueMax);
-            const [lx, ly] = point(i, 1, 116);
+            const [lx, ly] = point(i, 1, 140);
             const fullLabel = String(d[categoryKey] ?? "");
             const side = Math.abs(lx - 240) > 2;
-            const budget = side ? 8 : 22;
+            const budget = side ? 6 : 22;
             let shown = "";
             let units = 0;
             for (const char of Array.from(fullLabel)) {
