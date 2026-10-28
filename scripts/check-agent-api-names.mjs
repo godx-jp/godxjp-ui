@@ -83,6 +83,23 @@ export const NOT_PACKAGE_API = {
 
 const PACKAGE = "@godxjp/ui";
 
+/** Node's subpath rule: an exact key, or a pattern key with one `*` that matches any text — slashes
+ * included — between its prefix and suffix (`./styles/*` covers `./styles/precompiled/base`). */
+function inExportMap(subpath, exportsMap) {
+  if (subpath in exportsMap) return true;
+  return Object.keys(exportsMap).some((key) => {
+    const star = key.indexOf("*");
+    if (star === -1 || key.indexOf("*", star + 1) !== -1) return false;
+    const prefix = key.slice(0, star);
+    const suffix = key.slice(star + 1);
+    return (
+      subpath.length > prefix.length + suffix.length &&
+      subpath.startsWith(prefix) &&
+      subpath.endsWith(suffix)
+    );
+  });
+}
+
 /* ---------- 1. what the package exports ---------- */
 
 /**
@@ -357,7 +374,7 @@ export function run(root, { proposeFiles = false } = {}) {
   for (const { where, text } of sources) {
     for (const subpath of subpathsMentioned(text)) {
       checked += 1;
-      if (!(subpath in (pkg.exports ?? {})))
+      if (!inExportMap(subpath, pkg.exports ?? {}))
         note(`${PACKAGE}${subpath.slice(1)}`, `${where} (not in export map)`);
     }
   }

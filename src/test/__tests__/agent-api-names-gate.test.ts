@@ -102,6 +102,22 @@ describe("check:agent-api-names", () => {
     expect(output).toContain("@godxjp/ui/nowhere");
   });
 
+  it("resolves a subpath through a pattern key the way Node does, slashes included", () => {
+    const pkg = JSON.stringify({
+      name: "@godxjp/ui",
+      files: ["agent", "dist", "docs"],
+      exports: {
+        ".": { types: "./dist/index.d.ts", import: "./dist/index.js" },
+        "./styles/*": "./dist/styles/*.css",
+      },
+    });
+    const readme = "Import `@godxjp/ui/styles/precompiled/base`, not `@godxjp/ui/nowhere/base`.\n";
+    const { code, output } = run(repo({ readme, extra: { "package.json": pkg } }));
+    expect(code).toBe(1);
+    expect(output).toContain("@godxjp/ui/nowhere/base");
+    expect(output).not.toContain("@godxjp/ui/styles/precompiled/base");
+  });
+
   it("does not treat the left column of the migration table as API", () => {
     const readme =
       "## Migrating\n\n| Removed | Replacement |\n| --- | --- |\n| `Stack` | `Flex` |\n";
