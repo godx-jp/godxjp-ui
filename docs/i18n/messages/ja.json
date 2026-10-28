@@ -1,4 +1,23 @@
 {
+  "imageLifecycleDocs": {
+    "loading": "画像の状態: 読み込み中",
+    "loaded": "画像の状態: 読み込み済み",
+    "error": "画像の状態: エラー",
+    "hint": "onStatusChange はマウント前に完了したリクエストを含め、loading・loaded・error を通知します。代替画像の読み込み後も error のままです。"
+  },
+  "noticeBarDocs": {
+    "page": "プライバシー設定",
+    "body": "このページを読みながら、任意のアクセス解析を許可するか選べます。",
+    "reopen": "設定を確認",
+    "title": "任意のアクセス解析",
+    "description": "サービス改善のため、匿名の利用状況の計測を許可しますか。",
+    "privacy": "プライバシーポリシー",
+    "policy": "任意のアクセス解析は同意後に開始します。同意しなくてもサービスを利用できます。",
+    "decline": "同意しない",
+    "accept": "同意する",
+    "accepted": "アクセス解析を許可しました。",
+    "declined": "アクセス解析を許可しませんでした。"
+  },
   "chartDrillDocs": {
     "title": "店舗ダッシュボード",
     "chart": "店舗別売上",

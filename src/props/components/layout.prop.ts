@@ -1,5 +1,6 @@
 /** Layout component prop types — @see docs/COMPONENTS.md#layout */
 import type * as React from "react";
+import type { ImageProp } from "./data-display.prop";
 import type { ComponentType, ReactNode, SVGProps } from "react";
 import type {
   BreadcrumbProp,
@@ -2779,8 +2780,10 @@ export type EditorialFilterFieldProp = {
 export type CatalogDetailProp = {
   /** `"sealed"` frames a product package instead of a card. */
   variant?: "card" | "sealed";
-  /** The picture — an `<img>` (or a link around one). */
-  media: ReactNode;
+  /** Custom media. Used when `image` is omitted. */
+  media?: ReactNode;
+  /** Kit-owned, source-keyed Image with loading skeleton and error fallback. Takes precedence over media. */
+  image?: Pick<ImageProp, "src" | "alt" | "width" | "height" | "fallback"> & { priority?: boolean };
   /** The save toggle over the frame's corner (same shape as `CatalogCard`'s). */
   favorite?: CatalogCardProp["favorite"];
   /** A line under the frame (the picture's source, an official link). */

@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pagination exposes `onPageIntent(page)` for pointer enter, focus and touch start on enabled page/previous/next controls in full and compact modes (gh#1472).
 - Image leaves SSR pictures uncovered until hydration, while retaining the pre-hydration load/error checks; placeholder children can shrink into their frame (gh#1472).
 - Editorial shadow knobs resolve scoped `--shadow-color` at their use sites; catalog module button aliases carry explicit defaults. Calendar day radius, outline button foreground, and button icon size remain reachable through their utility classes without changing default rendering (gh#1383).
+- `EditorialCard` spotlight now sizes a kit `Image` media wrapper to its slot, preserving placeholders and fallback images instead of a zero-size containing box (gh#1474).
+- `CatalogDetail` adds `image={{ src, alt, width, height, fallback, priority }}` alongside custom `media`: source-keyed kit `Image`, frame `data-status`, reduced-motion-aware loading skeleton and error fallback. `Image onStatusChange` exposes its existing cached/load/error lifecycle (gh#1460).
+- Native browser chrome now follows the light/dark theme selectors via CSS `color-scheme`; printing remains light (gh#1490).
+- Documented a fixed, non-modal, localized consent composition with `Card`, wrapping actions, safe-area padding and measured Toaster clearance; no new framework component because the Framework-Component Test fails C3 (gh#1463).
 
 - `Affix`: viewport-targeted pins now remeasure containing-block compensation on captured window scroll and resize, so a paint/transform ancestor cannot move a pinned rail off-screen (gh#1504). Existing requestAnimationFrame coalescing and unpin/unmount cleanup apply to both viewport and element targets.
 

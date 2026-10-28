@@ -1,4 +1,23 @@
 {
+  "imageLifecycleDocs": {
+    "loading": "Trạng thái ảnh: đang tải",
+    "loaded": "Trạng thái ảnh: đã tải",
+    "error": "Trạng thái ảnh: lỗi",
+    "hint": "onStatusChange thông báo loading, loaded hoặc error, kể cả yêu cầu hoàn tất trước khi gắn. Trạng thái error được giữ khi tải ảnh dự phòng."
+  },
+  "noticeBarDocs": {
+    "page": "Tùy chọn quyền riêng tư",
+    "body": "Bạn có thể đọc trang này trong khi quyết định có cho phép phân tích tùy chọn hay không.",
+    "reopen": "Xem lại tùy chọn",
+    "title": "Phân tích tùy chọn",
+    "description": "Cho phép đo lường sử dụng ẩn danh để cải thiện dịch vụ.",
+    "privacy": "Chính sách quyền riêng tư",
+    "policy": "Phân tích tùy chọn chỉ bắt đầu sau khi bạn đồng ý. Bạn vẫn có thể sử dụng dịch vụ nếu từ chối.",
+    "decline": "Từ chối",
+    "accept": "Đồng ý",
+    "accepted": "Đã cho phép phân tích.",
+    "declined": "Đã từ chối phân tích."
+  },
   "chartDrillDocs": {
     "title": "Tổng quan cửa hàng",
     "chart": "Doanh thu theo cửa hàng",

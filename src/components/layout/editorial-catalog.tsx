@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Bookmark } from "lucide-react";
 
+import { Image } from "../data-display/image";
 import { cn } from "../../lib/utils";
 import type {
   CatalogDetailProp,
@@ -81,6 +82,7 @@ export function EditorialFilterField({
 export function CatalogDetail({
   variant = "card",
   media,
+  image,
   favorite,
   mediaCaption,
   overline,
@@ -91,6 +93,21 @@ export function CatalogDetail({
   facts,
   className,
 }: CatalogDetailProp) {
+  const [load, setLoad] = React.useState<{
+    src: string;
+    status: "loading" | "loaded" | "error";
+  } | null>(null);
+  const src = image?.src;
+  const status = image ? (load && load.src === src ? load.status : "loading") : undefined;
+  const onStatusChange = React.useCallback(
+    (next: "loading" | "loaded" | "error") => {
+      if (src !== undefined)
+        setLoad((previous) =>
+          previous?.src === src && previous.status === next ? previous : { src, status: next },
+        );
+    },
+    [src],
+  );
   return (
     <div
       data-slot="catalog-detail"
@@ -98,7 +115,11 @@ export function CatalogDetail({
       className={cn("ui-catalog-detail", className)}
     >
       <div className="ui-catalog-detail-visual">
-        <div className="ui-catalog-detail-art">
+        <div
+          className="ui-catalog-detail-art"
+          data-status={status}
+          aria-busy={status === "loading" ? true : undefined}
+        >
           {favorite && (
             <button
               type="button"
@@ -111,7 +132,22 @@ export function CatalogDetail({
               <Bookmark aria-hidden className="ui-catalog-card-favorite-icon" />
             </button>
           )}
-          {media}
+          {image ? (
+            <Image
+              key={image.src}
+              src={image.src}
+              alt={image.alt}
+              width={image.width}
+              height={image.height}
+              fit="contain"
+              fallback={image.fallback}
+              fetchPriority={image.priority ? "high" : undefined}
+              preview={false}
+              onStatusChange={onStatusChange}
+            />
+          ) : (
+            media
+          )}
         </div>
         {mediaCaption != null && <p className="ui-catalog-detail-caption">{mediaCaption}</p>}
       </div>

@@ -3,11 +3,13 @@ import cover from "../assets/cover-terrain.svg";
 import { useState } from "react";
 import { Bookmark } from "lucide-react";
 import { useTranslation } from "@godxjp/ui/i18n";
+import { Image } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import {
   CenteredShell,
   EditorialSection,
   CatalogDetail,
+  EditorialCard,
   CatalogDetailTag,
   CatalogDetailSection,
   PriceSummary,
@@ -26,7 +28,7 @@ export default function Demo() {
         <CatalogDetail
           title={t("editorialExamples.item")}
           overline={<Eyebrow>{t("editorialExamples.category")}</Eyebrow>}
-          media={<img src={cover} alt={t("editorialExamples.item")} />}
+          image={{ src: cover, alt: t("editorialExamples.item"), priority: true }}
           mediaCaption={t("editorialExamples.source")}
           favorite={{
             pressed: saved,
@@ -84,6 +86,13 @@ export default function Demo() {
             }
           />
         </CatalogDetailSection>
+        <EditorialCard
+          variant="spotlight"
+          link={<a href="#reference-price" />}
+          title={t("editorialExamples.item")}
+          description={t("editorialExamples.note")}
+          media={<Image src={cover} alt="" preview={false} placeholder fallback={cover} />}
+        />
       </EditorialSection>
     </CenteredShell>
   );

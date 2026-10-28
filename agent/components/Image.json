@@ -9,6 +9,11 @@
   "name": "Image",
   "props": [
     {
+      "description": "Reports resolved status, including cached images; error remains final while showing fallback.",
+      "name": "onStatusChange",
+      "type": "(status: \"loading\" | \"loaded\" | \"error\") => void"
+    },
+    {
       "description": "Image URL.",
       "name": "src",
       "type": "string"

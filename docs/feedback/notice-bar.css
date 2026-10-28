@@ -1,0 +1,28 @@
+/* A layout recipe, not an Alert: opaque Card, fixed from first paint, no live announcement. */
+.notice-bar-recipe {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--sticky-z-index);
+  padding-block-end: env(safe-area-inset-bottom, 0px);
+  padding-inline-start: env(safe-area-inset-left, 0px);
+  padding-inline-end: env(safe-area-inset-right, 0px);
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+.notice-bar-recipe > .ui-card {
+  --card-radius: 0;
+}
+.notice-bar-recipe-copy {
+  flex: 1 1 var(--page-measure-narrow);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+[dir="rtl"] .notice-bar-recipe,
+.notice-bar-recipe[dir="rtl"] {
+  padding-inline-start: env(safe-area-inset-right, 0px);
+  padding-inline-end: env(safe-area-inset-left, 0px);
+}
+.notice-bar-recipe a {
+  text-decoration-line: underline;
+}

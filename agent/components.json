@@ -1685,7 +1685,8 @@
     ],
     "tagline": "A whole-card link (gh#1435). `variant=\"journal\"`: an edge-to-edge cover, category, title, two lines of description and a footer with a circled arrow; the link is named by its title (aria-labelledby). `variant=\"spotlight\"`: kicker, title and a line beside a tilted picture. Pass the link element (router Link or `<a href>`) as `link`; the card content is rendered into it. Geometry: `--editorial-journal-*`, `--editorial-spotlight-*`.",
     "usage": [
-      "DO lay journal cards out with `ResponsiveGrid preset=\"trio\"`."
+      "DO lay journal cards out with `ResponsiveGrid preset=\"trio\"`.",
+      "DO use kit Image with preview={false} for media inside the whole-card link. Spotlight sizes the Image frame to fill its slot, including placeholder and fallback (gh#1474)."
     ]
   },
   {
@@ -1983,7 +1984,7 @@
     ]
   },
   {
-    "example": "import { CatalogDetail, CatalogDetailTag, Eyebrow } from \"@godxjp/ui/layout\";\n\n<CatalogDetail media={<img src={src} alt={name} />} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: \"Market\", price: \"¥32,800\" }} facts={[{ key: \"set\", label: \"Expansion\", value: \"151\" }]} />",
+    "example": "import { CatalogDetail, CatalogDetailTag, Eyebrow } from \"@godxjp/ui/layout\";\n\n<CatalogDetail image={{ src: \"/reference.svg\", alt: \"Reference\", priority: true }} overline={<Eyebrow>Pokémon</Eyebrow>} title={name} meta={<CatalogDetailTag>SAR</CatalogDetailTag>} summary={{ label: \"Market\", price: \"¥32,800\" }} facts={[{ key: \"set\", label: \"Expansion\", value: \"151\" }]} />",
     "group": "layout",
     "importPath": "@godxjp/ui/layout",
     "name": "CatalogDetail",
@@ -1995,10 +1996,14 @@
         "type": "\"card\" | \"sealed\""
       },
       {
-        "description": "The picture.",
+        "description": "Custom picture; used when image is omitted.",
         "name": "media",
-        "required": true,
         "type": "ReactNode"
+      },
+      {
+        "description": "Kit Image keyed per src. Art frame exposes data-status loading|loaded|error and aria-busy; token-driven skeleton respects reduced motion. priority requests eager/high priority. Takes precedence over media.",
+        "name": "image",
+        "type": "{ src: string; alt: string; width?: number | string; height?: number | string; fallback?: string; priority?: boolean }"
       },
       {
         "description": "Save toggle over the frame.",
@@ -18534,6 +18539,11 @@
     "importPath": "@godxjp/ui/data-display",
     "name": "Image",
     "props": [
+      {
+        "description": "Reports resolved status, including cached images; error remains final while showing fallback.",
+        "name": "onStatusChange",
+        "type": "(status: \"loading\" | \"loaded\" | \"error\") => void"
+      },
       {
         "description": "Image URL.",
         "name": "src",

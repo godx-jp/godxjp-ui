@@ -316,17 +316,20 @@
     },
     "CatalogDetail": {
       "layers": [
-        "editorial-layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "CatalogDetailSection": {
       "layers": [
-        "editorial-layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "CatalogDetailTag": {
       "layers": [
-        "editorial-layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "CenteredShell": {
@@ -584,12 +587,14 @@
     },
     "EditorialFilterField": {
       "layers": [
-        "editorial-layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialFilterPanel": {
       "layers": [
-        "editorial-layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialFooter": {
@@ -658,7 +663,8 @@
     },
     "EditorialPrompt": {
       "layers": [
-        "editorial-layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "EditorialSearch": {
@@ -1069,7 +1075,8 @@
     },
     "PriceSummary": {
       "layers": [
-        "editorial-layout.css"
+        "editorial-layout.css",
+        "data-display-layout.css"
       ]
     },
     "Progress": {

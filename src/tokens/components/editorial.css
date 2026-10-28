@@ -642,6 +642,9 @@
   --editorial-catalog-detail-art-height: auto;
   --editorial-catalog-detail-art-max-width: none;
   --editorial-catalog-detail-art-padding: var(--space-10);
+  --editorial-catalog-detail-loading-background: initial;
+  --editorial-catalog-detail-loading-duration: var(--duration-loop);
+  --editorial-catalog-detail-loading-alpha: 0.5;
   --editorial-catalog-detail-art-radius: calc(var(--radius) * 2);
   --editorial-catalog-detail-media-width: 15.625rem;
   --editorial-catalog-detail-media-height: 22.5rem;
