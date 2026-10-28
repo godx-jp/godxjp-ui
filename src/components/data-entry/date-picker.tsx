@@ -712,7 +712,7 @@ export function DatePicker(props: DatePickerProp) {
       <Calendar
         mode="multiple"
         selected={Array.isArray(working) ? (working as Date[]) : []}
-        onSelect={choose}
+        onSelect={(days) => choose(days)}
         disabled={(day) => !allowed(day)}
         {...calendarShared}
       />
