@@ -11,6 +11,72 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--flex-felt-background",
+    category: "component",
+    tier: "component",
+    role: "HSL channels for the material fill; initial falls back to primary.",
+  },
+  {
+    name: "--flex-felt-foreground",
+    category: "component",
+    tier: "component",
+    role: "HSL channels for material text; initial falls back to primary-foreground.",
+  },
+  {
+    name: "--flex-felt-muted-foreground",
+    category: "component",
+    tier: "component",
+    role: "HSL channels for secondary material text; initial keeps full contrast.",
+  },
+  {
+    name: "--flex-felt-focus-color",
+    category: "component",
+    tier: "component",
+    role: "HSL channels for visible focus on material; initial uses primary-foreground.",
+  },
+  {
+    name: "--flex-felt-grain-size",
+    category: "component",
+    tier: "component",
+    role: "Material grain spacing, default3px.",
+  },
+  {
+    name: "--flex-felt-grain-alpha",
+    category: "component",
+    tier: "component",
+    role: "Subtle grain opacity, default0.025.",
+  },
+  {
+    name: "--flex-felt-highlight-alpha",
+    category: "component",
+    tier: "component",
+    role: "Central highlight opacity, default0.045.",
+  },
+  {
+    name: "--flex-etched-border-color",
+    category: "component",
+    tier: "component",
+    role: "HSL channels for etched region borders; initial inherits foreground.",
+  },
+  {
+    name: "--flex-etched-border-alpha",
+    category: "component",
+    tier: "component",
+    role: "Etched border alpha, default0.5.",
+  },
+  {
+    name: "--flex-etched-border-size",
+    category: "component",
+    tier: "component",
+    role: "Etched region boundary stroke, defaults shared hairline.",
+  },
+  {
+    name: "--flex-etched-radius",
+    category: "component",
+    tier: "component",
+    role: "Etched region corner radius, defaults shared medium.",
+  },
+  {
     name: "--flex-card-width",
     category: "component",
     tier: "component",

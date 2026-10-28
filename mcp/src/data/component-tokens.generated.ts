@@ -9370,17 +9370,72 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--flex-card-width",
-    "value": "clamp(2.875rem, 5.2vw, 4.375rem)",
+    "value": "clamp(3.25rem, 6.6vw, 5.625rem)",
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
     "name": "--flex-compact-card-width",
-    "value": "clamp(1.875rem, 3vw, 2.5rem)",
+    "value": "clamp(1.875rem, 3.3vw, 2.8125rem)",
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
     "name": "--flex-orientation-duration",
     "value": "180ms",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-background",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-foreground",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-muted-foreground",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-focus-color",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-grain-size",
+    "value": "3px",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-grain-alpha",
+    "value": "0.025",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-highlight-alpha",
+    "value": "0.045",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-etched-border-color",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-etched-border-alpha",
+    "value": "0.5",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-etched-border-size",
+    "value": "var(--stroke-hairline)",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-etched-radius",
+    "value": "var(--radius-md)",
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {

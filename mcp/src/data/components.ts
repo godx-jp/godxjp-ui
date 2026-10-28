@@ -2225,8 +2225,9 @@ import { Button } from "@godxjp/ui/general";
       { name: "bleed", type: "GapProp", description: "Negative inline inset on the token scale." },
       {
         name: "surface",
-        type: '"muted" | "popover" | "warning"',
-        description: "Lightweight surface, without Card structure.",
+        type: '"muted" | "popover" | "warning" | "felt" | "etched"',
+        description:
+          "Lightweight surface, without Card structure. Felt is a themeable textured material with scoped high-contrast ink and focus roles; etched is a transparent outlined region.",
       },
       { name: "shrink", type: "boolean", description: "false prevents shrinking." },
       { name: "grow", type: "boolean", description: "Grow into remaining flex space." },

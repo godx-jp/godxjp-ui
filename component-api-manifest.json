@@ -9752,8 +9752,8 @@
           "name": "surface",
           "origin": "owned",
           "required": false,
-          "type": "\"muted\" | \"popover\" | \"warning\" | undefined",
-          "values": ["muted", "popover", "warning"],
+          "type": "\"muted\" | \"popover\" | \"warning\" | \"felt\" | \"etched\" | undefined",
+          "values": ["muted", "popover", "warning", "felt", "etched"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

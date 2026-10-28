@@ -254,7 +254,7 @@ export type FlexProp = React.HTMLAttributes<HTMLElement> & {
    */
   marker?: FlexMarkerProp;
   /** Lightweight surfaces for rows and notices; no Card elevation by default. */
-  surface?: "muted" | "popover" | "warning";
+  surface?: "muted" | "popover" | "warning" | "felt" | "etched";
   /** Negative inline inset, using the same spacing scale as pad. */
   bleed?: GapProp;
   /** Floating row actions: show on parent hover, focus-within, and touch. */

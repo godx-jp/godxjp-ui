@@ -706,6 +706,13 @@
       "lead": "Use viewport on the root and basis=equal on internal flexible regions. Directional overflow keeps scrolling inside each lane.",
       "item": "Item {index}",
       "note": "Rotation reflects supplied orientation only; reduced motion disables transitions."
+    },
+    "flexMaterial": {
+      "title": "Material surfaces",
+      "lead": "Felt and transparent etched boundaries use theme roles. Layout and interactions stay in the consumer composition.",
+      "field": "Field",
+      "resources": "Resources",
+      "inspect": "Inspect"
     }
   },
   "serviceLauncherShowcase": {

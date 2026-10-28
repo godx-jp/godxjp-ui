@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Opt-in Flex felt material and etched region surfaces with scoped contrast/focus roles and themeable texture; larger responsive portrait measures (#1515).
+
+
+### Added
 - Flex measured viewport fitting, equal zero-minimum regions, internal overflow, responsive card measures and reduced-motion-aware declarative orientation (#1513).
 
 

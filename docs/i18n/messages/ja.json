@@ -700,6 +700,13 @@
       "lead": "ルートにviewport、内部領域にbasis=equalを指定します。各領域の中だけでスクロールします。",
       "item": "項目 {index}",
       "note": "回転は指定された向きだけを反映します。動きを減らす設定では即時に切り替わります。"
+    },
+    "flexMaterial": {
+      "title": "質感のあるサーフェス",
+      "lead": "フェルトと透明な境界線はテーマの色を使用します。配置と操作は利用側で構成します。",
+      "field": "メイン領域",
+      "resources": "リソース",
+      "inspect": "詳細を見る"
     }
   },
   "serviceLauncherShowcase": {

@@ -5163,3 +5163,40 @@
     box-sizing: border-box;
   }
 }
+
+/* Opt-in material surfaces. The consumer owns the themed ink, ivory and accent roles. */
+@layer components {
+  .ui-flex[data-surface="felt"] {
+    --background: var(--flex-felt-background, var(--primary));
+    --foreground: var(--flex-felt-foreground, var(--primary-foreground));
+    --muted-foreground: var(--flex-felt-muted-foreground, var(--primary-foreground));
+    --ring: var(--flex-felt-focus-color, var(--primary-foreground));
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--flex-felt-background, var(--primary)));
+    background-image:
+      radial-gradient(
+        ellipse at center,
+        hsl(var(--foreground) / var(--flex-felt-highlight-alpha)),
+        transparent 72%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        hsl(var(--foreground) / var(--flex-felt-grain-alpha)) 0,
+        transparent 1px,
+        transparent var(--flex-felt-grain-size)
+      ),
+      repeating-linear-gradient(
+        90deg,
+        hsl(var(--foreground) / var(--flex-felt-grain-alpha)) 0,
+        transparent 1px,
+        transparent var(--flex-felt-grain-size)
+      );
+  }
+  .ui-flex[data-surface="etched"] {
+    border: var(--flex-etched-border-size) solid
+      hsl(var(--flex-etched-border-color, var(--foreground)) / var(--flex-etched-border-alpha));
+    border-radius: var(--flex-etched-radius);
+    background: transparent;
+    box-sizing: border-box;
+  }
+}

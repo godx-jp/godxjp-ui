@@ -464,6 +464,27 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("showcase.flexMaterial.title")}</CardTitle>
+            <CardDescription>{t("showcase.flexMaterial.lead")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex surface="felt" direction="col" pad={4} gap="sm">
+              <Flex surface="etched" pad={3}>
+                <Text>{t("showcase.flexMaterial.field")}</Text>
+              </Flex>
+              <Flex gap="sm">
+                <Flex surface="etched" grow pad={3}>
+                  <Text>{t("showcase.flexMaterial.resources")}</Text>
+                </Flex>
+                <Flex surface="etched" pad={3}>
+                  <Button variant="ghost">{t("showcase.flexMaterial.inspect")}</Button>
+                </Flex>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

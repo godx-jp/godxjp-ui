@@ -3010,9 +3010,9 @@
         "type": "GapProp"
       },
       {
-        "description": "Lightweight surface, without Card structure.",
+        "description": "Lightweight surface, without Card structure. Felt is a themeable textured material with scoped high-contrast ink and focus roles; etched is a transparent outlined region.",
         "name": "surface",
-        "type": "\"muted\" | \"popover\" | \"warning\""
+        "type": "\"muted\" | \"popover\" | \"warning\" | \"felt\" | \"etched\""
       },
       {
         "description": "false prevents shrinking.",
