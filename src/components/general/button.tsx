@@ -54,11 +54,12 @@ const buttonVariants = cva("ui-button", {
       md: "ui-button--default-size",
       // utilities after components, so only a utility can out-rank a child's own `size-*`.
       // They read the token, so the value is still themeable.
-      xs: "ui-button--xs [&_svg:not([class*='size-'])]:size-[var(--button-xs-icon-size)]",
+      xs: "ui-button--xs [&_svg:not([class*='size-'])]:size-[var(--button-icon-size,var(--button-xs-icon-size))]",
       sm: "ui-button--sm",
       lg: "ui-button--lg",
       icon: "ui-button--icon",
-      "icon-xs": "ui-button--icon-xs [&_svg]:size-[var(--button-xs-icon-size)] [&_svg]:shrink-0",
+      "icon-xs":
+        "ui-button--icon-xs [&_svg]:size-[var(--button-icon-size,var(--button-xs-icon-size))] [&_svg]:shrink-0",
       "icon-sm": "ui-button--icon-sm",
       "icon-lg": "ui-button--icon-lg",
       // The glove step (gh#1304): ≥56×56, `--control-height-touch`.

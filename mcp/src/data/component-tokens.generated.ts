@@ -2276,7 +2276,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--calendar-day-radius",
     "value": "initial",
-    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
+    "description": "Scoped at the reader: interactive days fall back to --button-radius; read-only cells to calc(var(--radius) / var(--radius-ratio))."
   },
   {
     "name": "--calendar-chevron-size",
@@ -6480,7 +6480,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-search-shadow",
-    "value": "0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06)",
+    "value": "initial",
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {
@@ -6580,7 +6580,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-search-popup-shadow",
-    "value": "0 12px 32px rgb(var(--shadow-color, 0 0 0) / 0.12)",
+    "value": "initial",
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {
@@ -6950,7 +6950,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-showcase-caption-shadow",
-    "value": "0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06)",
+    "value": "initial",
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {
@@ -7140,7 +7140,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-catalog-card-hover-shadow",
-    "value": "0 10px 28px rgb(var(--shadow-color, 0 0 0) / 0.1)",
+    "value": "initial",
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {
@@ -7495,7 +7495,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-spotlight-hover-shadow",
-    "value": "0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06)",
+    "value": "initial",
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {
@@ -7630,7 +7630,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-journal-hover-shadow",
-    "value": "0 12px 28px rgb(var(--shadow-color, 0 0 0) / 0.08)",
+    "value": "initial",
     "description": "Editorial family tokens (gh#1435) — the public, magazine-like pages of a site built on `CenteredShell preset=\"public-landing\" flow=\"sections\"`: full-width sections, a hero with a product showcase, the ruled kicker, a section head, the inset site search, a pill navigation band, catalog / editorial cards and the brand banner. Every geometry value a design states lives here, so a theme retunes it once — including at its OWN breakpoints, by re-declaring the token under a width query in its theme file (the shapes here never hard-code a breakpoint of their own). Colour knobs are role mirrors: `initial`, with the documented default resolved at the call site, so a scoped [data-tenant] / dark override still reaches them."
   },
   {

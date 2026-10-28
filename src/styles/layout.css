@@ -3511,7 +3511,7 @@
       var(--editorial-search-border-color, hsl(var(--input)));
     border-radius: var(--editorial-search-radius);
     background: var(--editorial-search-background, hsl(var(--card)));
-    box-shadow: var(--editorial-search-shadow);
+    box-shadow: var(--editorial-search-shadow, 0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06));
   }
 
   /* The scope control (the kit's Select) is PART of the bar, not a box inside it: flat, no edge, no
@@ -3624,7 +3624,10 @@
     border-radius: var(--editorial-search-popup-radius);
     background: var(--editorial-search-popup-background, hsl(var(--popover)));
     color: hsl(var(--popover-foreground));
-    box-shadow: var(--editorial-search-popup-shadow);
+    box-shadow: var(
+      --editorial-search-popup-shadow,
+      0 12px 32px rgb(var(--shadow-color, 0 0 0) / 0.12)
+    );
     text-align: start;
   }
 
@@ -3928,7 +3931,10 @@
     border: var(--stroke-hairline) solid hsl(var(--border));
     border-radius: var(--editorial-showcase-caption-radius);
     background: hsl(var(--card));
-    box-shadow: var(--editorial-showcase-caption-shadow);
+    box-shadow: var(
+      --editorial-showcase-caption-shadow,
+      0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06)
+    );
   }
 
   .ui-card-showcase-caption-icon {
@@ -4059,7 +4065,10 @@
   }
 
   .ui-catalog-card:hover {
-    box-shadow: var(--editorial-catalog-card-hover-shadow);
+    box-shadow: var(
+      --editorial-catalog-card-hover-shadow,
+      0 10px 28px rgb(var(--shadow-color, 0 0 0) / 0.1)
+    );
     transform: translateY(var(--editorial-catalog-card-hover-translate));
   }
 
@@ -4284,7 +4293,10 @@
   }
 
   .ui-editorial-card[data-variant="spotlight"]:hover {
-    box-shadow: var(--editorial-spotlight-hover-shadow);
+    box-shadow: var(
+      --editorial-spotlight-hover-shadow,
+      0 4px 16px rgb(var(--shadow-color, 0 0 0) / 0.06)
+    );
   }
 
   .ui-editorial-card[data-variant="spotlight"] .ui-editorial-card-copy {
@@ -4360,7 +4372,10 @@
       var(--editorial-ornament-color, hsl(var(--border))),
       hsl(var(--border)) 45%
     );
-    box-shadow: var(--editorial-journal-hover-shadow);
+    box-shadow: var(
+      --editorial-journal-hover-shadow,
+      0 12px 28px rgb(var(--shadow-color, 0 0 0) / 0.08)
+    );
     transform: translateY(var(--editorial-catalog-card-hover-translate));
   }
 
@@ -4950,8 +4965,8 @@
   .ui-catalog-detail-section[data-variant="module"] {
     /* The module's buttons have their own glyph gap / size (v4 .price-button), not a site-wide
      * --button-gap / --button-icon-size; unset knobs fall back to the control defaults. */
-    --button-gap: var(--editorial-catalog-detail-module-button-gap);
-    --button-icon-size: var(--editorial-catalog-detail-module-button-icon-size);
+    --button-gap: var(--editorial-catalog-detail-module-button-gap, initial);
+    --button-icon-size: var(--editorial-catalog-detail-module-button-icon-size, initial);
     padding-block: var(--editorial-catalog-detail-module-padding-block);
     border-block-start: 0;
   }

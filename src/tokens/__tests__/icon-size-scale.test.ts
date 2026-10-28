@@ -328,8 +328,8 @@ describe("icon size migration moved nothing (gh#326)", () => {
     const control = readFileSync("src/styles/control.css", "utf8");
     const layout = readFileSync("src/styles/layout.css", "utf8");
     expect(control).toContain("var(--button-icon-size, var(--control-icon-size))");
-    expect(layout).toContain(
-      "--button-icon-size: var(--editorial-catalog-detail-module-button-icon-size)",
+    expect(layout).toMatch(
+      /--button-icon-size:\s*var\(\s*--editorial-catalog-detail-module-button-icon-size,\s*initial\)/,
     );
     for (const token of MIRROR_DEFAULTS.keys()) expect(root.get(token)).toBe("initial");
   });
