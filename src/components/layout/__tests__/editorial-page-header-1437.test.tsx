@@ -18,7 +18,7 @@ const read = (relativePath: string) =>
     /\/\*[\s\S]*?\*\//g,
     "",
   );
-const layoutCss = read("../../../styles/layout.css");
+const layoutCss = read("../../../styles/layout.css") + read("../../../styles/editorial-layout.css");
 const tokens = read("../../../tokens/components/editorial.css");
 
 const rule = (selector: string) => {

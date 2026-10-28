@@ -12,7 +12,7 @@ import { Heading } from "../typography";
 
 const read = (file: string) => readFileSync(resolve(__dirname, file), "utf8");
 const text = read("../../../styles/text-layout.css");
-const layout = read("../../../styles/layout.css");
+const layout = read("../../../styles/layout.css") + read("../../../styles/editorial-layout.css");
 const foundation = read("../../../tokens/foundation.css");
 
 describe("Heading family", () => {
