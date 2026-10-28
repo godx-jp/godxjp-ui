@@ -495,6 +495,10 @@
   }
 
   .ui-popover-content {
+    /* RAC caps max-height inline. Scroll the content inside that cap (gh#1456).
+     * Normal inset leaves room for outside rings; flush content uses contained rings below. */
+    overflow: auto;
+    scroll-padding: calc(var(--focus-ring-width) + var(--focus-outline-offset));
     z-index: var(--overlay-z-index);
     /* Width goes through a knob, not an absolute value, so a panel that owns its own box can
      * retune it from ANY stylesheet. A modifier that re-declares `width` instead only wins if it
@@ -655,5 +659,11 @@
    * and the footer is pushed out of view. */
   .ui-sheet-body-space {
     min-block-size: 0;
+  }
+}
+
+@layer components {
+  .ui-popover-content[data-flush] :focus-visible {
+    --focus-ring-contained-offset: var(--focus-ring-inset-offset);
   }
 }

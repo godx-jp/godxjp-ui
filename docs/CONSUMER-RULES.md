@@ -54,3 +54,11 @@ information belongs on the screen:
 If the control is disabled _pending something the user can fix_, prefer leaving it enabled and
 explaining on submit: an inert control with a paragraph beside it is often a validation message
 wearing a disguise.
+
+## Floating content and toast imports
+
+Use `DropdownMenuContent` only for menu collection nodes (`DropdownMenuItem`, checkbox/radio items, groups, labels and separators). Arbitrary notification headers, lists and links use `Popover` + `ListRow`. Development diagnostics and `dropdown-menu-non-menu-children` identify unsupported DOM children. Opaque components returning menu items remain supported.
+
+`PopoverContent` scrolls automatically when the available viewport height caps it; focus rings stay inside the scroll boundary, including `flush` content.
+
+Always use `import { toast } from "@godxjp/ui"` (or `@godxjp/ui/feedback`) with the kit's `Toaster`. Do not import toast directly from `sonner`: an app-installed version can create a separate toast store and calls never reach the kit's Toaster. The `no-direct-sonner-import` audit rule flags runtime imports. Sonner remains a dependency; no peer dependency migration is required.

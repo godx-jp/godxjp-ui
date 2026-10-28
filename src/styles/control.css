@@ -2517,7 +2517,8 @@
     padding-inline-end: var(--control-trigger-space-inline-end);
   }
 
-  /* SEARCH-SELECT — Popover + Command combobox. */
+  /* A minimum must obey the same cap as the maximum (gh#1497). The viewport measure
+   * excludes classic scrollbars; Popover publishes it independently of placement. */
   .ui-search-select-panel {
     --popover-surface-inline-size: max-content;
     --popover-space-inset: 0;
@@ -2526,22 +2527,30 @@
     max-block-size: var(--radix-popover-content-available-height);
     max-inline-size: min(
       var(--search-select-panel-max-width),
-      calc(100vw - var(--search-select-panel-viewport-inset))
+      calc(var(--popover-viewport-inline-size, 100vw) - var(--search-select-panel-viewport-inset))
     );
-    min-inline-size: var(--radix-popover-trigger-width);
+    min-inline-size: min(
+      var(--radix-popover-trigger-width),
+      var(--search-select-panel-max-width),
+      calc(var(--popover-viewport-inline-size, 100vw) - var(--search-select-panel-viewport-inset))
+    );
   }
 
-  /* antd `popupMatchSelectWidth`. Absent = `true` = the rule above (the trigger width is the
-   * floor). `content` drops that floor so a panel of short rows stops being padded out to a wide
-   * trigger; `fixed` pins BOTH edges, which is the only way a number can mean one width rather
-   * than a minimum. */
   .ui-search-select-panel[data-popup-match="content"] {
     min-inline-size: auto;
   }
 
   .ui-search-select-panel[data-popup-match="fixed"] {
-    min-inline-size: var(--search-select-panel-inline-size);
-    inline-size: var(--search-select-panel-inline-size);
+    min-inline-size: min(
+      var(--search-select-panel-inline-size, var(--radix-popover-trigger-width)),
+      var(--search-select-panel-max-width),
+      calc(var(--popover-viewport-inline-size, 100vw) - var(--search-select-panel-viewport-inset))
+    );
+    inline-size: min(
+      var(--search-select-panel-inline-size, var(--radix-popover-trigger-width)),
+      var(--search-select-panel-max-width),
+      calc(var(--popover-viewport-inline-size, 100vw) - var(--search-select-panel-viewport-inset))
+    );
   }
 
   /* antd `menuItemSelectedIcon` — parked at the row's inline end so it never displaces the label. */

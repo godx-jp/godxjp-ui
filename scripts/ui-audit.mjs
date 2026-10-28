@@ -367,6 +367,27 @@ const LIST_TAGS = new Set(["DataTable", "Table", "List", "ListRow"]);
  */
 const RULES = [
   {
+    id: "no-direct-sonner-import",
+    replacement: "import { toast } from '@godxjp/ui'",
+    scope: "consumer",
+    severity: "error",
+    spansElement: true,
+    test: /\bimport\s+(?!type\b)(?:[^;\"']*?\s+from\s*)?["']sonner["']/g,
+    message:
+      "import toast from @godxjp/ui — use `import { toast } from \"@godxjp/ui\"`; a consumer's sonner may own a different toast store from the kit's Toaster.",
+  },
+  {
+    id: "dropdown-menu-non-menu-children",
+    replacement: "Popover + ListRow",
+    scope: "consumer",
+    severity: "error",
+    spansElement: true,
+    matches: dropdownNonMenuMatches,
+    message:
+      "DropdownMenuContent accepts menu collection children only. Use DropdownMenuItem for actions; use Popover + ListRow for arbitrary headers, lists and links.",
+  },
+
+  {
     id: "no-utility-spacing",
     replacement: "Flex gap / ResponsiveGrid / PageContainer",
     classOnly: true,
@@ -2936,3 +2957,18 @@ if (filesScanned === 0 && !changedNoFiles) {
 
 // See the note above --rules: exitCode, so a large JSON report drains fully.
 if (filesScanned > 0 || changedNoFiles) process.exitCode = errors.length > 0 ? 1 : 0;
+
+/** Known DOM children are invalid collection nodes; opaque wrappers are deliberately allowed. */
+function* dropdownNonMenuMatches(source) {
+  const containers = new Set([
+    "DropdownMenuContent",
+    "DropdownMenuSubContent",
+    "DropdownMenuGroup",
+    "DropdownMenuRadioGroup",
+  ]);
+  for (const { tag, index, openTag, stack } of jsxElements(source)) {
+    if (!/^[a-z]/.test(tag)) continue;
+    const parent = [...stack].reverse().find((frame) => !frame.attr && frame.tag !== "");
+    if (parent && containers.has(parent.tag)) yield { 0: openTag, index };
+  }
+}

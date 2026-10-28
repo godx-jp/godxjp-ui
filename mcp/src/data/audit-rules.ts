@@ -40,6 +40,20 @@ expressions — a className/class attribute, a class-named binding (\`baseClass\
 finding and needs no suppression.`;
 
 export const AUDIT_RULES: AuditRule[] = [
+  {
+    id: "no-direct-sonner-import",
+    severity: "error",
+    category: "api",
+    standard: null,
+    fix: 'Use `import { toast } from "@godxjp/ui"` (or @godxjp/ui/feedback). A consumer-installed sonner can have a separate toast store from the kit Toaster and silently hide notifications. Sonner remains a dependency; no peer migration is required.',
+  },
+  {
+    id: "dropdown-menu-non-menu-children",
+    severity: "error",
+    category: "composition",
+    standard: null,
+    fix: "DropdownMenuContent accepts menu collection nodes only. Use DropdownMenuItem for actions and Popover + ListRow for arbitrary headers, notification lists and links. Custom components returning menu items remain valid.",
+  },
   // ── composition (layout owners, not utilities) ───────────────────────────
   {
     id: "dialog-needs-body",

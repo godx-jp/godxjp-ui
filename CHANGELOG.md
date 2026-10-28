@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add controlled 49-option searchable area-picker regression coverage for typing, pointer/keyboard selection, clearing and reopening (#1483; not reproducible on this branch).
+- Fix searchable Select popup minimum and numeric widths exceeding the viewport with classic scrollbars (#1497).
+- Scroll capped PopoverContent and contain focus rings at scroll boundaries (#1456).
+- Diagnose non-menu DropdownMenuContent children in development and consumer audits; guide arbitrary content to Popover + ListRow (#1457).
+- Audit direct sonner imports and document the existing public toast export so consumers share the kit Toaster store, without changing dependency installation (#1458).
+
+
 ### Fixed
 
 - `Affix`: viewport-targeted pins now remeasure containing-block compensation on captured window scroll and resize, so a paint/transform ancestor cannot move a pinned rail off-screen (gh#1504). Existing requestAnimationFrame coalescing and unpin/unmount cleanup apply to both viewport and element targets.

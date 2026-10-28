@@ -84,7 +84,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 14,
     title: "Every third-party library is a deliberate, declared choice",
-    body: "The runtime stack is what `package.json` declares: react-aria-components / react-aria / react-stately, cmdk, sonner, lucide-react, @tanstack/react-table, react-day-picker, class-variance-authority + clsx + tailwind-merge. A new dependency needs an ADR saying why it is the canonical choice and why an existing one cannot do it.",
+    body: "The runtime stack is what `package.json` declares: react-aria-components / react-aria / react-stately, cmdk, sonner, lucide-react, @tanstack/react-table, react-day-picker, class-variance-authority + clsx + tailwind-merge. Consumers must import toast from @godxjp/ui (or @godxjp/ui/feedback), never directly from sonner: two installed versions own separate toast stores and silently miss the kit Toaster. The audit rule no-direct-sonner-import enforces this. A new dependency needs an ADR saying why it is the canonical choice and why an existing one cannot do it.",
   },
   {
     number: 15,

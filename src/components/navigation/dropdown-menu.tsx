@@ -23,6 +23,7 @@ import {
 import { Check, ChevronRight } from "lucide-react";
 import { ariaKeyShortcuts, parseShortcut, shouldHandleShortcut } from "../../lib/shortcut";
 import { cn } from "../../lib/utils";
+import { isDevelopment } from "../../lib/dev";
 import { Slot } from "../../lib/slot";
 import type {
   DropdownMenuPlacementProp,
@@ -122,7 +123,7 @@ class MenuCollectionBoundary extends React.Component<
         "application is unaffected. A menu's children must be collection nodes (DropdownMenuItem, " +
         "DropdownMenuCheckboxItem, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, " +
         "DropdownMenuGroup, DropdownMenuSub) or components returning one — an icon or a text label " +
-        "belongs INSIDE an item, not beside it. Underlying error:",
+        "belongs INSIDE an item, not beside it. Use Popover + ListRow for arbitrary panel content. Underlying error:",
       error,
     );
   }
@@ -820,6 +821,22 @@ interface DropdownMenuContentPropsOwn {
 
 type DropdownMenuContentProps = React.PropsWithChildren<DropdownMenuContentPropsOwn>;
 
+/** Inspect only known collection structure. Opaque components may legitimately return an item. */
+function hasNonMenuChildren(children: React.ReactNode): boolean {
+  return React.Children.toArray(children).some((child) => {
+    if (!React.isValidElement<{ children?: React.ReactNode }>(child)) return true;
+    if (typeof child.type === "string") return true;
+    if (
+      child.type === React.Fragment ||
+      child.type === DropdownMenuGroup ||
+      child.type === DropdownMenuRadioGroup
+    ) {
+      return hasNonMenuChildren(child.props.children);
+    }
+    return false;
+  });
+}
+
 /**
  * Một phần tử của Radix (`Content`) tách thành HAI ở RAC: `Popover` là hộp được định vị, `Menu` là
  * phần tử mang `role="menu"`. `data-slot` và lớp `ui-dropdown-menu-content` ở lại trên HỘP, cùng
@@ -849,6 +866,13 @@ export function DropdownMenuContent({
   sticky,
   forceMount,
 }: DropdownMenuContentProps) {
+  React.useEffect(() => {
+    if (isDevelopment() && hasNonMenuChildren(children)) {
+      console.error(
+        "[@godxjp/ui] DropdownMenuContent accepts menu collection children only. Use DropdownMenuItem for actions; use Popover + ListRow for notifications, headers, lists and links.",
+      );
+    }
+  }, [children]);
   void hideWhenDetached;
   void sticky;
   void forceMount;

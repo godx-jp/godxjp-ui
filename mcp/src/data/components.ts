@@ -9641,6 +9641,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
     ],
     usage: [
+      "DO: Searchable popup widths, including numeric popupMatchSelectWidth, are capped by --search-select-panel-max-width and --search-select-panel-viewport-inset, using the viewport width excluding classic scrollbars.",
       "Coarse pointers: affix actions use --control-affix-touch-target-size (44px by default); text space is reserved separately. Fine-pointer geometry is unchanged.",
       'FREE-TEXT TAGS WITH NO LIST (keywords, email recipients, labels typed from scratch): `<Select mode="tags" open={false} value={tags} onValueChange={setTags} />` — the inline chip field. Use plain `mode="tags"` (popup) only when there is a list of existing tags to pick from. There is no `TagInput` component.',
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
@@ -11251,7 +11252,7 @@ import { Button } from "@godxjp/ui/general";
     usage: [
       "DO: Mount exactly ONE `<Toaster richColors />` at the app root (e.g. inside your layout or AppShell children). Multiple mounts create duplicate toast stacks — there is no provider context, only DOM portals.",
       'DO: Import `toast` from `"@godxjp/ui/feedback"` to fire toasts anywhere: `toast.success(…)`, `toast.error(…)`, `toast.warning(…)`, `toast.info(…)`, `toast.loading(…)`, `toast.promise(…)`. It is Sonner\'s own API with one house default: `toast.error` and `toast.warning` carry a close button (opt out per call with `{ closeButton: false }`), success/info stay auto-dismiss only (gh#1253).',
-      'DON\'T: Import `toast` from `"sonner"` directly — it works, but it skips the close-button default on error/warning. Also note `toast.promise` settling into an error does not gain the button; pass `closeButton` there yourself if the failure must stay dismissible.',
+      'DON\'T: Import `toast` from `"sonner"` directly — a consumer-installed version can own a different toast store from the kit Toaster, silently hiding toasts. Use `import { toast } from "@godxjp/ui"` (also available from `@godxjp/ui/feedback`); this also preserves close-button defaults. Also note `toast.promise` settling into an error does not gain the button; pass `closeButton` there yourself if the failure must stay dismissible.',
       "DO: Tune how long toasts stay with the `--toast-duration` token in the theme (default 4000ms) rather than a `duration` prop on every mount. Never truncate a toast's body — it wraps.",
       "DO: Let the wrapper handle theming — it uses `useDocumentTheme()` to sync with the document `dark` class and `prefers-color-scheme` automatically. Never pass a hardcoded `theme` prop unless you are deliberately overriding.",
       "DON'T: Use `Toaster` for persistent errors or blocking confirmations. Toasts auto-dismiss; they are not a substitute for `Alert` (inline persistent warnings) or `Dialog` (decisions requiring user input).",
@@ -11705,6 +11706,7 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       },
     ],
     usage: [
+      "DO: Use only menu collection nodes inside DropdownMenuContent. Arbitrary headers, notification lists and links belong in Popover + ListRow; development diagnostics and the dropdown-menu-non-menu-children audit rule name this fix.",
       "DO compose the full sub-part tree: DropdownMenu (root) → DropdownMenuTrigger (with asChild to delegate to your Button/icon) → DropdownMenuContent → DropdownMenuItem / DropdownMenuSeparator / DropdownMenuLabel / DropdownMenuGroup. Omitting any level (e.g. rendering DropdownMenuContent without DropdownMenu as ancestor) breaks Radix context and the menu will not open.",
       "DO use DropdownMenuTrigger with asChild and pass a godx-ui Button or icon Button as the child — never render a raw <button> or <div> as the trigger, and never omit asChild when the child is already a button-like element (double-button nesting breaks a11y).",
       "DO use variant='destructive' on DropdownMenuItem for irreversible actions (delete, revoke, void) — this applies the semantic destructive colour token automatically without any className override.",
@@ -15126,6 +15128,7 @@ function CustomRadioGroup() {
       },
     ],
     usage: [
+      "DO: PopoverContent scrolls automatically when its available height caps content. Focus rings remain contained at scroll edges, including flush panels.",
       "HOVER CARD: `<Popover openOn=\"hover\"><PopoverTrigger asChild><a href=…>@yamada</a></PopoverTrigger><PopoverContent>…</PopoverContent></Popover>` for RICH preview content (an avatar + bio, an entity summary). For a short plain-text hint use Tooltip. DON'T put essential information only in a hover card — touch never opens it; make the same content reachable from the trigger's destination. There is no `HoverCard` component.",
       "DO compose: <Popover> → <PopoverTrigger asChild> → <Button/> and <PopoverContent>. All four parts are required for any popover to function; omitting PopoverTrigger or PopoverContent produces nothing.",
       'DO set `<PopoverContent width="auto">` when the child brings its own measure — a Calendar, a chart, a fixed-width preview. The panel\'s own 18rem clips them, and a `w-*` utility on className is a per-call-site constant no service theme can retune, which is exactly what `flush` exists to avoid on the padding axis. `width="trigger"` matches the anchor, the shape every select-like control wants.',
