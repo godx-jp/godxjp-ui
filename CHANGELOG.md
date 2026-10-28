@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.25.0] - 2026-10-28
+
 - Add controlled 49-option searchable area-picker regression coverage for typing, pointer/keyboard selection, clearing and reopening (#1483; not reproducible on this branch).
 - Fix searchable Select popup minimum and numeric widths exceeding the viewport with classic scrollbars (#1497).
 - Scroll capped PopoverContent and contain focus rings at scroll boundaries (#1456).

@@ -58,7 +58,7 @@ static files straight from this public repo — no hosting, no deploy step:
 | [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.4 MB | all 212 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
 | [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 1.4 MB | all 3203 design tokens, their values and why they exist |
 | [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json) | 7 KB | the controlled prop vocabulary |
-| [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json) | 23 KB | the 44 cardinal rules |
+| [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json) | 24 KB | the 44 cardinal rules |
 <!-- prettier-ignore-end -->
 <!-- agent-catalog-files:end -->
 
