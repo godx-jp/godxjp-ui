@@ -107,6 +107,7 @@ type AffixStyle = React.CSSProperties & {
   "--affix-inset-block-end"?: string;
   "--affix-target-inset"?: string;
   "--affix-content-inline-size"?: string;
+  "--affix-content-max-block-size"?: string;
 };
 
 /**
@@ -251,6 +252,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
 
   const [box, setBox] = React.useState<{ inline: number; block: number } | null>(null);
   const [targetInset, setTargetInset] = React.useState(0);
+  const [room, setRoom] = React.useState<number | null>(null);
 
   const measure = React.useCallback(() => {
     const root = rootRef.current;
@@ -263,10 +265,14 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
     // placeholder then has to hold open.
     const rootRect = root.getBoundingClientRect();
     const contentRect = content.getBoundingClientRect();
+    // A pinned box held to `room` (below) reports its CLAMPED height; the placeholder has to keep
+    // holding the in-flow one, or the page jumps up by the difference the moment it clamps.
+    const blockSize =
+      content.scrollHeight > content.clientHeight + 1 ? content.scrollHeight : contentRect.height;
     setBox((previous) =>
-      previous && previous.inline === rootRect.width && previous.block === contentRect.height
+      previous && previous.inline === rootRect.width && previous.block === blockSize
         ? previous
-        : { inline: rootRect.width, block: contentRect.height },
+        : { inline: rootRect.width, block: blockSize },
     );
 
     // Against the viewport the line is the token alone. Against an ELEMENT the line moves with the
@@ -299,7 +305,30 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
       : 0;
     const next = viewportInset - blockOffset;
     setTargetInset((previous) => (previous === next ? previous : next));
-  }, [pinToEnd, targetElement]);
+
+    /* THE ROOM A PINNED BOX HAS (gh#1510). A fixed box does not move with the page, so whatever of
+     * it lies past the visible scrollport can never be scrolled to — a long "On this page" outline
+     * lost every heading below the fold. Pinned, it is held to the space between where it is
+     * painted and the far edge of what is visible (the viewport, or the target's visible box) and
+     * scrolls inside it. Read from the painted edge, so offsets and containing blocks are already
+     * in it. Unpinned, or pinned and fitting, nothing is written and the box is what it was. */
+    if (!affixed) {
+      setRoom((previous) => (previous === null ? previous : null));
+      return;
+    }
+    const nextRoom = Math.max(
+      0,
+      Math.floor(
+        pinToEnd
+          ? contentRect.bottom - Math.max(rect ? rect.top : 0, 0)
+          : Math.min(rect ? rect.bottom : window.innerHeight, window.innerHeight) - contentRect.top,
+      ),
+    );
+    // Only a box that does not fit is clamped: one that fits keeps `overflow: visible`, so a
+    // pinned bar's own unportaled menu or shadow is never clipped by this.
+    const clamp = blockSize > nextRoom ? nextRoom : null;
+    setRoom((previous) => (previous === clamp ? previous : clamp));
+  }, [affixed, pinToEnd, targetElement]);
 
   // Synchronous and before paint, so a pinned bar is never painted at the wrong size for a frame.
   React.useLayoutEffect(() => {
@@ -387,6 +416,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
       : { "--affix-inset-block-end": `${offsetBlockEnd}px` }),
     ...(targetInset === 0 ? undefined : { "--affix-target-inset": `${targetInset}px` }),
     ...(affixed && box ? { "--affix-content-inline-size": `${box.inline}px` } : undefined),
+    ...(affixed && room !== null ? { "--affix-content-max-block-size": `${room}px` } : undefined),
   };
 
   return (
@@ -428,6 +458,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
         ref={contentRef}
         data-slot="affix-content"
         data-edge={pinToEnd ? "block-end" : "block-start"}
+        data-clamped={affixed && room !== null ? "" : undefined}
         data-affixed={affixed ? "" : undefined}
         className="ui-affix-content"
       >
