@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import {
   Badge,
   Card,
@@ -133,8 +134,13 @@ export default function Demo() {
                 <Button size="icon-xs" variant="ghost" aria-label="Edit">
                   <Pencil />
                 </Button>
-                <Button size="icon-xs" variant="ghost" aria-label="Edit with 16px icon">
-                  <Pencil className="size-4" />
+                <Button
+                  size="icon-xs"
+                  variant="ghost"
+                  style={{ "--button-icon-size": "1rem" } as CSSProperties}
+                  aria-label="Edit with 16px icon"
+                >
+                  <Pencil />
                 </Button>
                 <Button size="icon-sm" variant="ghost" aria-label="Edit">
                   <Pencil />
@@ -151,8 +157,13 @@ export default function Demo() {
                   <Button size="icon-xs" variant="ghost" aria-label="Compact edit">
                     <Pencil />
                   </Button>
-                  <Button size="icon-xs" variant="ghost" aria-label="Compact edit with 16px icon">
-                    <Pencil className="size-4" />
+                  <Button
+                    size="icon-xs"
+                    variant="ghost"
+                    style={{ "--button-icon-size": "1rem" } as CSSProperties}
+                    aria-label="Compact edit with 16px icon"
+                  >
+                    <Pencil />
                   </Button>
                 </Flex>
               </div>
