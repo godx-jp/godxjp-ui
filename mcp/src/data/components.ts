@@ -17380,6 +17380,12 @@ export function NotifyRow() {
       "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot.",
     props: [
       {
+        name: "animated",
+        type: "boolean",
+        description:
+          "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
+      },
+      {
         name: "onDatumSelect",
         type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
         description:
@@ -17524,6 +17530,13 @@ export function NotifyRow() {
     tagline:
       "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram.",
     props: [
+      {name:"showValues",type:"boolean",description:"Show locale-formatted exact values at the end of each bar."},
+      {
+        name: "animated",
+        type: "boolean",
+        description:
+          "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
+      },
       {
         name: "onDatumSelect",
         type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
@@ -17648,6 +17661,92 @@ export function NotifyRow() {
   series={[{ dataKey: "sales", label: t("metric.sales") }]}
   numberFormat={{ notation: "compact" }}
 />`,
+    rules: [],
+  },
+  {
+    name: "RadarChart",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts/radar-chart",
+    tagline:
+      "Dependency-free quantitative radar/spider profile with 3–6 axes and an explicit shared zero-based scale. Missing or out-of-domain values are not zero-filled. Not an inferred quality score.",
+    props: [
+      {
+        name: "data",
+        type: "ChartDatum[]",
+        required: true,
+        description:
+          "Three to six same-unit axes; missing, negative or nonfinite values invalidate the whole plot.",
+      },
+      {
+        name: "categoryKey",
+        type: "string",
+        required: true,
+        description:
+          "Key for already-translated axis labels; full names remain in the accessible data summary.",
+      },
+      {
+        name: "valueKey",
+        type: "string",
+        required: true,
+        description: "Key for finite numeric axis values.",
+      },
+      {
+        name: "valueMax",
+        type: "number",
+        required: true,
+        description: "Strictly positive common scale ceiling; zero baseline is fixed.",
+      },
+      {
+        name: "valueTicks",
+        type: "number[]",
+        required: false,
+        description:
+          "Optional positive scale ticks within the ceiling, e.g. [1,2,3] for an ordinal rubric.",
+      },
+      { name: "label", type: "ReactNode", required: true, description: "Accessible figure name." },
+      {
+        name: "showCaption",
+        type: "boolean",
+        required: false,
+        description: "Show the caption; false retains the accessible name.",
+      },
+      {
+        name: "description",
+        type: "ReactNode",
+        required: false,
+        description: "Explain units, normalization and provenance.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        required: false,
+        description: "Shared chart canvas height tier.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        required: false,
+        description: "Locale-aware axis number options.",
+      },
+      {
+        name: "emptyMessage",
+        type: "ReactNode",
+        required: false,
+        description: "Message for incomplete or invalid data.",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        required: false,
+        description: "Visible exact-value table or legend beneath the plot.",
+      },
+      { name: "className", type: "string", required: false, description: "Optional class." },
+      { name: "id", type: "string", required: false, description: "Stable figure identifier." },
+      { name: "ref", type: "React.Ref<HTMLElement>", required: false, description: "Figure ref." },
+    ],
+    related: ["BarChart — exact category comparison.", "PieChart — part-to-whole breakdown."],
+    example: `<RadarChart data={profile} categoryKey="axis" valueKey="value" valueMax={3} valueTicks={[1,2,3]} label={t("profile.title")} />`,
+    storyPath: "charts/radar-chart.tsx",
     rules: [],
   },
   {
@@ -17903,6 +18002,12 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot.",
     props: [
       {
+        name: "animated",
+        type: "boolean",
+        description:
+          "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
+      },
+      {
         name: "onDatumSelect",
         type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
         description:
@@ -18044,6 +18149,12 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     tagline:
       "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
     props: [
+      {
+        name: "animated",
+        type: "boolean",
+        description:
+          "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
+      },
       {
         name: "onDatumSelect",
         type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",

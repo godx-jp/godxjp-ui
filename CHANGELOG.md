@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Flex measured viewport fitting, equal zero-minimum regions, internal overflow, responsive card measures and reduced-motion-aware declarative orientation (#1513).
 - Opt-in Flex felt material and etched region surfaces with scoped contrast/focus roles and themeable texture; larger responsive portrait measures (#1515).
+- Dependency-free RadarChart with explicit shared zero-based scale, finite-data guard and locale-aware accessible summary (same-unit 3–6-axis profiles) (#1508).
 
 ## [33.25.2] - 2026-10-29
 
@@ -96,6 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `@godxjp/block-editor` directive previews can change their own block (#1479): the `directives` renderer receives a second argument `{ update(source), remove(), editable }`. `update` goes through the same path as "Edit source" → Done (still one directive → the same block with the new source, one undo step; anything else replaces it), `remove` deletes the block, and both do nothing in a read-only / disabled editor (`editable: false`). A host's picker or config form (a data block: a card, a list of events) writes its result back without the source textarea. New type `BlockEditorDirectiveControls`.
+
 ## [33.22.2] - 2026-10-25
 
 ### Fixed

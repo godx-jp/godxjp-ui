@@ -23,3 +23,6 @@ export { PieChart } from "./pie-chart";
 export type { PieChartProp, PieChartProps } from "./pie-chart";
 export type { ChartSeriesProp, ChartDatum, ChartDatumSelect } from "../../props/components/charts.prop";
 export { CHART_COLORS } from "./chart-frame";
+
+export { RadarChart } from "./radar-chart";
+export type { RadarChartProp, RadarChartProps } from "./radar-chart";

@@ -1819,6 +1819,14 @@
       "group": "charts",
       "props": [
         {
+          "name": "animated",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "categoryKey",
           "origin": "owned",
           "required": true,
@@ -2423,6 +2431,14 @@
       "group": "charts",
       "props": [
         {
+          "name": "animated",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "categoryKey",
           "origin": "owned",
           "required": true,
@@ -2544,6 +2560,14 @@
         },
         {
           "name": "showLegend",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "showValues",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -11493,6 +11517,14 @@
       "group": "charts",
       "props": [
         {
+          "name": "animated",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "categoryKey",
           "origin": "owned",
           "required": true,
@@ -13930,6 +13962,14 @@
       "group": "charts",
       "props": [
         {
+          "name": "animated",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "className",
           "origin": "owned",
           "required": false,
@@ -14513,6 +14553,131 @@
           "type": "string",
           "values": [],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
+    "RadarChart": {
+      "group": "charts",
+      "props": [
+        {
+          "name": "categoryKey",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "data",
+          "origin": "owned",
+          "required": true,
+          "type": "ChartDatum[]",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "emptyMessage",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "footer",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "numberFormat",
+          "origin": "owned",
+          "required": false,
+          "type": "Intl.NumberFormatOptions | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "ref",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "showCaption",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueKey",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueMax",
+          "origin": "owned",
+          "required": true,
+          "type": "number",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueTicks",
+          "origin": "owned",
+          "required": false,
+          "type": "number[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
         }
       ]
     },

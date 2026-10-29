@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 339,
-    dimensionCells: 4746,
+    exports: 340,
+    dimensionCells: 4760,
     covered: 89,
-    untested: 2595,
-    notApplicable: 2062,
+    untested: 2603,
+    notApplicable: 2068,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -324,6 +324,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"Progress","group":"data-display","frame":"docs/data-display/progress.tsx","covered":["sizes","tones"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","shapes"],"notApplicable":["density","states","variants"]},
   {"name":"Prose","group":"data-display","frame":"docs/data-display/prose.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"QrCode","group":"data-display","frame":"docs/data-display/qr-code.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","states","tones","variants"]},
+  {"name":"RadarChart","group":"charts","frame":"docs/charts/radar-chart.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"Radio","group":"data-entry","frame":"docs/data-entry/radio-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"RadioGroup","group":"data-entry","frame":"docs/data-entry/radio-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states"],"notApplicable":["density","shapes","tones","variants"]},
   {"name":"RadioGroupRoot","group":"data-entry","frame":"docs/data-entry/radio-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},

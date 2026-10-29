@@ -2546,5 +2546,8 @@
     "title": "Báo cáo",
     "break": "Làm hỏng trang này",
     "help": "Trợ giúp"
+  },
+  "radarDemo": {
+    "title": "Hồ sơ định lượng"
   }
 }

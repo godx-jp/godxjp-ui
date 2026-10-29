@@ -39,6 +39,8 @@ import { listFormat } from "../../lib/intl-cache";
 type CartesianKind = "line" | "bar" | "area";
 
 type CartesianChartProps = {
+  showValues?: boolean;
+  animated?: boolean;
   kind: CartesianKind;
   data: ChartDatum[];
   series: ChartSeriesProp[];
@@ -69,6 +71,8 @@ type CartesianChartProps = {
 };
 
 export function CartesianChart({
+  showValues,
+  animated,
   kind,
   data,
   series,
@@ -336,7 +340,7 @@ export function CartesianChart({
               stroke={chartColor(i, s.color)}
               dot={onDatumSelect ? shapes[i]!.dot : showDots}
               activeDot={onDatumSelect ? false : undefined}
-              isAnimationActive={onDatumSelect ? false : undefined}
+              isAnimationActive={onDatumSelect ? false : animated}
             />
           ))}
         </RLineChart>
@@ -361,7 +365,7 @@ export function CartesianChart({
               fill={s.fillColor ?? chartColor(i, s.color)}
               dot={onDatumSelect ? shapes[i]!.dot : showDots}
               activeDot={onDatumSelect ? false : undefined}
-              isAnimationActive={onDatumSelect ? false : undefined}
+              isAnimationActive={onDatumSelect ? false : animated}
             />
           ))}
         </RAreaChart>
@@ -383,8 +387,9 @@ export function CartesianChart({
             fill={chartColor(i, s.color)}
             radius={2}
             shape={onDatumSelect ? shapes[i]!.bar : undefined}
-            isAnimationActive={onDatumSelect ? false : undefined}
+            isAnimationActive={onDatumSelect ? false : animated}
             onClick={onBarClick}
+            label={showValues ? { position: horizontal ? "right" : "top", fill: "hsl(var(--foreground))", formatter: (value: unknown) => fmt.format(Number(value)) } : false}
             // A full-height hit column behind the mark, so a 1px bar is as easy to hit as a tall
             // one. recharts drops zero-height entries before drawing backgrounds, so each series
             // brings its own: a category is a target when ANY series has a value there. A fully
