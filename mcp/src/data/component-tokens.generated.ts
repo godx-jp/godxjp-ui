@@ -11521,7 +11521,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--radar-chart-label-radius",
     "value": "124px",
-    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+    "description": "scale-exempt: polar distance in viewBox user units, not a corner radius"
   },
   {
     "name": "--radar-chart-grid-alpha",
@@ -11541,7 +11541,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--radar-chart-label-font-size",
     "value": "16px",
-    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+    "description": "scale-exempt: viewBox user units, scaled with the SVG, not CSS type"
   },
   {
     "name": "--radar-chart-label-line-height",
@@ -11556,12 +11556,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--radar-chart-tick-font-size",
     "value": "10px",
-    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+    "description": "scale-exempt: viewBox user units, scaled with the SVG, not CSS type"
   },
   {
     "name": "--radar-chart-point-radius",
     "value": "3px",
-    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+    "description": "scale-exempt: SVG circle r in viewBox user units, not a corner radius"
   },
   {
     "name": "--radar-chart-grid-color",
