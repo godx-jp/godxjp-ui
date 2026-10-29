@@ -28,7 +28,6 @@ export type {
  * optional peer dependency.
  */
 export function PieChart({
-  animated,
   onDatumSelect,
   data,
   dataKey,
@@ -105,7 +104,7 @@ export function PieChart({
           <RPieChart accessibilityLayer={onDatumSelect ? false : undefined}>
             <Pie
               shape={onDatumSelect ? stableShape : undefined}
-              isAnimationActive={onDatumSelect ? false : animated}
+              isAnimationActive={onDatumSelect ? false : undefined}
               data={data}
               dataKey={dataKey}
               nameKey={nameKey}

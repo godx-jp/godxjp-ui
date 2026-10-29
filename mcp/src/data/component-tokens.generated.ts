@@ -9444,6 +9444,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
+    "name": "--flex-card-size-ratio",
+    "value": "1.4",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
     "name": "--flex-card-width",
     "value": "clamp(3.25rem, 6.6vw, 5.625rem)",
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
@@ -9489,6 +9494,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
+    "name": "--flex-felt-grain-width",
+    "value": "1px",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-highlight-size",
+    "value": "72%",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
     "name": "--flex-felt-grain-size",
     "value": "3px",
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
@@ -9520,7 +9535,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--flex-etched-radius",
-    "value": "var(--radius-md)",
+    "value": "initial",
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
@@ -11492,6 +11507,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--persona-description-color",
     "value": "initial",
     "description": "Role mirror: hsl(var(--muted-foreground))."
+  },
+  {
+    "name": "--radar-chart-label-inset",
+    "value": "8px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-plot-radius",
+    "value": "96",
+    "description": "Unitless scale of the normalized polar geometry."
+  },
+  {
+    "name": "--radar-chart-label-radius",
+    "value": "124px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-grid-alpha",
+    "value": "0.16",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-boundary-alpha",
+    "value": "0.32",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-axis-alpha",
+    "value": "0.2",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-label-font-size",
+    "value": "16px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-label-line-height",
+    "value": "1.25",
+    "description": "Unitless second-line leading, multiplied by the resolved label font size."
+  },
+  {
+    "name": "--radar-chart-tick-offset",
+    "value": "6px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-tick-font-size",
+    "value": "10px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-point-radius",
+    "value": "3px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-grid-color",
+    "value": "initial",
+    "description": "HSL channels; default muted-foreground resolves at the chart."
+  },
+  {
+    "name": "--radar-chart-label-color",
+    "value": "initial",
+    "description": "HSL channels; default foreground resolves at the chart."
+  },
+  {
+    "name": "--radar-chart-grid-stroke-width",
+    "value": "1px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
   },
   {
     "name": "--resizable-handle-size",

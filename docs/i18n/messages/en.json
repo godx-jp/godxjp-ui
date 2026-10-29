@@ -2555,6 +2555,13 @@
     "help": "Help"
   },
   "radarDemo": {
+    "axis1": "Operational quality",
+    "axis2": "Business continuity",
+    "axis3": "Customer satisfaction",
+    "axis4": "Information security",
+    "axis5": "Audit readiness",
+    "axis6": "Financial resilience",
+
     "title": "Quantitative profile"
   }
 }

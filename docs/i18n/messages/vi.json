@@ -2548,6 +2548,13 @@
     "help": "Trợ giúp"
   },
   "radarDemo": {
+    "axis1": "Chất lượng vận hành",
+    "axis2": "Tính liên tục kinh doanh",
+    "axis3": "Mức hài lòng khách hàng",
+    "axis4": "An toàn thông tin",
+    "axis5": "Khả năng kiểm toán",
+    "axis6": "Ổn định tài chính",
+
     "title": "Hồ sơ định lượng"
   }
 }

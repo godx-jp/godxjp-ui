@@ -18,7 +18,7 @@ npm i @godxjp/ui
 
 <!-- agent-catalog-counts:start -->
 
-The catalog — 213 components, 3219 tokens, 44 cardinal rules — is published in two forms from one
+The catalog — 213 components, 3236 tokens, 44 cardinal rules — is published in two forms from one
 source. **Entry point for either: [`AGENTS.md`](AGENTS.md).**
 <!-- agent-catalog-counts:end -->
 
@@ -56,7 +56,7 @@ static files straight from this public repo — no hosting, no deploy step:
 | [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 47 KB | all 213 as name + group + tagline — **fetch this first** |
 | [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1 KB–38 KB | one file per component, each with its `importPath` — **this is the route to take** |
 | [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json) | 1.4 MB | all 213 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
-| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 1.4 MB | all 3219 design tokens, their values and why they exist |
+| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json) | 1.4 MB | all 3236 design tokens, their values and why they exist |
 | [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json) | 7 KB | the controlled prop vocabulary |
 | [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json) | 24 KB | the 44 cardinal rules |
 <!-- prettier-ignore-end -->

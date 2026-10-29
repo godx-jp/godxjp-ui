@@ -233,6 +233,7 @@ const OWNERS = {
     "BarChart",
     "AreaChart",
     "PieChart",
+    "RadarChart",
     "CompactBarTrend",
     "HeatmapChart",
   ],

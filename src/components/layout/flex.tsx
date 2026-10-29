@@ -134,11 +134,13 @@ function LayoutFlex({
     window.addEventListener("resize", update);
     window.addEventListener("scroll", update, true);
     window.visualViewport?.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("scroll", update);
     return () => {
       observer?.disconnect();
       window.removeEventListener("resize", update);
       window.removeEventListener("scroll", update, true);
       window.visualViewport?.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("scroll", update);
     };
   }, [viewport, Element]);
   // FormField legitimately lands its contract here when a Flex wraps a composite field (range

@@ -779,6 +779,7 @@
   "chart": {
     "datumLabel": "{label}, {series}: {value}",
     "empty": "データがありません",
+    "summaryRadar": "{points}軸のプロファイル（共通尺度：0〜{maximum}）",
     "summaryCartesian": "{series}系列・{points}データ点のグラフ",
     "summaryPie": "{slices}区分の円グラフ",
     "summaryTrend": "{points}データ点の推移棒グラフ",

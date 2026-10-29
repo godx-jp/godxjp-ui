@@ -1,0 +1,9 @@
+
+ RUN  v4.1.10 /Users/satoshi01/Herd/godxjp-ui-b26/mcp
+
+
+ Test Files  25 passed (25)
+      Tests  1768 passed (1768)
+   Start at  08:46:36
+   Duration  4.57s (transform 578ms, setup 0ms, import 2.36s, tests 517ms, environment 1ms)
+

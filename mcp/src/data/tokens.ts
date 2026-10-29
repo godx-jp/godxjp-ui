@@ -11,6 +11,109 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--radar-chart-tick-offset",
+    category: "component",
+    tier: "component",
+    role: "Horizontal distance of scale values from the top axis; default 6px in intrinsic SVG coordinates.",
+  },
+  {
+    name: "--flex-felt-grain-width",
+    category: "component",
+    tier: "component",
+    role: "Static material grain stripe width; default 1px.",
+  },
+  {
+    name: "--flex-felt-highlight-size",
+    category: "component",
+    tier: "component",
+    role: "Central material highlight extent; default 72%.",
+  },
+  {
+    name: "--radar-chart-label-inset",
+    category: "component",
+    tier: "component",
+    role: "Label edge clearance in intrinsic SVG coordinates; default 8px. Actual font metrics wrap labels into at most two lines.",
+  },
+  {
+    name: "--flex-card-size-ratio",
+    category: "component",
+    tier: "component",
+    role: "Orientation-safe square footprint relative to portrait width; default 1.4.",
+  },
+  {
+    name: "--radar-chart-plot-radius",
+    category: "component",
+    tier: "component",
+    role: "Radar plot-radius; default 96. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-label-radius",
+    category: "component",
+    tier: "component",
+    role: "Radar label-radius; default 124px. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-grid-alpha",
+    category: "component",
+    tier: "component",
+    role: "Radar grid-alpha; default 0.16. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-boundary-alpha",
+    category: "component",
+    tier: "component",
+    role: "Radar boundary-alpha; default 0.32. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-axis-alpha",
+    category: "component",
+    tier: "component",
+    role: "Radar axis-alpha; default 0.2. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-label-font-size",
+    category: "component",
+    tier: "component",
+    role: "Radar label-font-size; default 16px. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-label-line-height",
+    category: "component",
+    tier: "component",
+    role: "Radar label-line-height; default 1.25. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-tick-font-size",
+    category: "component",
+    tier: "component",
+    role: "Radar tick-font-size; default 10px. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-point-radius",
+    category: "component",
+    tier: "component",
+    role: "Radar point-radius; default 3px. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-grid-color",
+    category: "component",
+    tier: "component",
+    role: "Radar grid-color; default initial. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-label-color",
+    category: "component",
+    tier: "component",
+    role: "Radar label-color; default initial. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+  {
+    name: "--radar-chart-grid-stroke-width",
+    category: "component",
+    tier: "component",
+    role: "Radar grid-stroke-width; default 1px. Lengths use intrinsic SVG coordinates; role colors resolve at the chart.",
+  },
+
+  {
     name: "--editorial-catalog-detail-loading-background",
     category: "component",
     tier: "component",
@@ -104,7 +207,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--flex-etched-radius",
     category: "component",
     tier: "component",
-    role: "Etched region corner radius, defaults shared medium.",
+    role: "Etched region corner radius; initial resolves shared medium in the local theme scope.",
   },
   {
     name: "--flex-card-width",

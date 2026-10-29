@@ -1,0 +1,62 @@
+[
+  {
+    "name": "radar",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "errors": [],
+    "geometry": {
+      "documentWidth": 390,
+      "viewportWidth": 390,
+      "stage": null
+    }
+  },
+  {
+    "name": "flex",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "errors": [],
+    "geometry": {
+      "documentWidth": 390,
+      "viewportWidth": 390,
+      "stage": {
+        "top": 495.390625,
+        "bottom": 844,
+        "height": 348.609375
+      }
+    }
+  },
+  {
+    "name": "radar",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "errors": [],
+    "geometry": {
+      "documentWidth": 1366,
+      "viewportWidth": 1366,
+      "stage": null
+    }
+  },
+  {
+    "name": "flex",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "errors": [],
+    "geometry": {
+      "documentWidth": 1366,
+      "viewportWidth": 1366,
+      "stage": {
+        "top": 424.765625,
+        "bottom": 768,
+        "height": 343.234375
+      }
+    }
+  }
+]

@@ -1,0 +1,6 @@
+
+> @godxjp/ui@33.25.2 check:frame-token-wins /Users/satoshi01/Herd/godxjp-ui-b26
+> node scripts/check-frame-token-wins.mjs http://127.0.0.1:6786 --only layout-sidebar
+
+PARTIAL, not a release gate: layout-sidebar
+✓ check:frame-token-wins — 1 frame(s) swept, 92 element(s) asked, 2 known inert token(s), 22 FIXED since the baseline (run --update-baseline to bank it).

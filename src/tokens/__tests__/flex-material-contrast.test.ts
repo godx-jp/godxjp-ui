@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { contrast, declaration, hslToRgb, over } from "./wcag-contrast";
+import { contrast, declaration, hsl, hslToRgb, over } from "./wcag-contrast";
 
 const css = readFileSync(resolve(__dirname, "../../styles/layout.css"), "utf8");
 const tokens = readFileSync(resolve(__dirname, "../components/flex.css"), "utf8");
@@ -34,4 +34,38 @@ describe("Material control contrast", () => {
       contrast(ivory, over(brass, ink, Number(declaration(tokens, "flex-felt-track-alpha")))),
     ).toBeGreaterThan(1);
   });
+});
+
+describe("Default felt material in shipped theme scopes", () => {
+  const foundation = readFileSync(resolve(__dirname, "../foundation.css"), "utf8");
+  for (const [theme, selector] of [
+    ["light", ":root {"],
+    ["dark", ':root[data-theme="dark"] {'],
+  ]) {
+    it(`maintains AA text and focus in ${theme}`, () => {
+      const start = foundation.indexOf(selector);
+      expect(start).toBeGreaterThanOrEqual(0);
+      const scope = foundation.slice(start, foundation.indexOf("\n}", start));
+      expect(declaration(body, "background")).toBe("var(--flex-felt-background, var(--primary))");
+      expect(declaration(body, "muted-foreground")).toBe(
+        "var(--flex-felt-muted-foreground, var(--primary-foreground))",
+      );
+      const background = hslToRgb(hsl(scope, "primary"));
+      const foreground = hslToRgb(hsl(scope, "primary-foreground"));
+      expect(declaration(body, "foreground")).toBe(
+        "var(--flex-felt-foreground, var(--primary-foreground))",
+      );
+      expect(declaration(body, "ring")).toBe(
+        "var(--flex-felt-focus-color, var(--primary-foreground))",
+      );
+      // Worst-case overlap of both grain directions and the central highlight.
+      const alpha =
+        1 -
+        (1 - Number(declaration(tokens, "flex-felt-grain-alpha"))) ** 2 *
+          (1 - Number(declaration(tokens, "flex-felt-highlight-alpha")));
+      const painted = over(foreground, background, alpha);
+      expect(contrast(foreground, painted)).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(foreground, painted)).toBeGreaterThanOrEqual(3);
+    });
+  }
 });

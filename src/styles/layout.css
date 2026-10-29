@@ -3079,7 +3079,6 @@
     grid-template-columns: var(--responsive-grid-panels-track-size);
     gap: var(--responsive-grid-panels-gap);
   }
-
 }
 
 /* Bounded compositions: every scroll owner has a zero automatic minimum. */
@@ -3119,14 +3118,14 @@
     max-inline-size: none;
   }
   .ui-flex[data-measure="card"] {
-    inline-size: calc(var(--flex-card-width) * 1.4);
-    block-size: calc(var(--flex-card-width) * 1.4);
+    inline-size: calc(var(--flex-card-width) * var(--flex-card-size-ratio));
+    block-size: calc(var(--flex-card-width) * var(--flex-card-size-ratio));
     align-items: center;
     justify-content: center;
   }
   .ui-flex[data-measure="card-compact"] {
-    inline-size: calc(var(--flex-compact-card-width) * 1.4);
-    block-size: calc(var(--flex-compact-card-width) * 1.4);
+    inline-size: calc(var(--flex-compact-card-width) * var(--flex-card-size-ratio));
+    block-size: calc(var(--flex-compact-card-width) * var(--flex-card-size-ratio));
     align-items: center;
     justify-content: center;
   }
@@ -3143,7 +3142,7 @@
     transform: rotate(270deg);
   }
   .ui-flex[data-animated][data-rotate] {
-    transition: transform var(--flex-orientation-duration) ease-out;
+    transition: transform var(--flex-orientation-duration) var(--ease-decelerate);
   }
   @media (prefers-reduced-motion: reduce) {
     .ui-flex[data-animated][data-rotate] {
@@ -3199,25 +3198,25 @@
       radial-gradient(
         ellipse at center,
         hsl(var(--foreground) / var(--flex-felt-highlight-alpha)),
-        transparent 72%
+        transparent var(--flex-felt-highlight-size)
       ),
       repeating-linear-gradient(
         0deg,
         hsl(var(--foreground) / var(--flex-felt-grain-alpha)) 0,
-        transparent 1px,
+        transparent var(--flex-felt-grain-width),
         transparent var(--flex-felt-grain-size)
       ),
       repeating-linear-gradient(
         90deg,
         hsl(var(--foreground) / var(--flex-felt-grain-alpha)) 0,
-        transparent 1px,
+        transparent var(--flex-felt-grain-width),
         transparent var(--flex-felt-grain-size)
       );
   }
   .ui-flex[data-surface="etched"] {
     border: var(--flex-etched-border-size) solid
       hsl(var(--flex-etched-border-color, var(--foreground)) / var(--flex-etched-border-alpha));
-    border-radius: var(--flex-etched-radius);
+    border-radius: var(--flex-etched-radius, var(--radius-md));
     background: transparent;
     box-sizing: border-box;
   }

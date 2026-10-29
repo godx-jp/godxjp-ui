@@ -17380,12 +17380,6 @@ export function NotifyRow() {
       "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot.",
     props: [
       {
-        name: "animated",
-        type: "boolean",
-        description:
-          "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
-      },
-      {
         name: "onDatumSelect",
         type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
         description:
@@ -17530,13 +17524,6 @@ export function NotifyRow() {
     tagline:
       "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram.",
     props: [
-      {name:"showValues",type:"boolean",description:"Show locale-formatted exact values at the end of each bar."},
-      {
-        name: "animated",
-        type: "boolean",
-        description:
-          "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
-      },
       {
         name: "onDatumSelect",
         type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
@@ -17726,7 +17713,7 @@ export function NotifyRow() {
         name: "numberFormat",
         type: "Intl.NumberFormatOptions",
         required: false,
-        description: "Locale-aware axis number options.",
+        description: "Locale-aware number options; defaults preserve up to 21 significant digits.",
       },
       {
         name: "emptyMessage",
@@ -17747,7 +17734,16 @@ export function NotifyRow() {
     related: ["BarChart — exact category comparison.", "PieChart — part-to-whole breakdown."],
     example: `<RadarChart data={profile} categoryKey="axis" valueKey="value" valueMax={3} valueTicks={[1,2,3]} label={t("profile.title")} />`,
     storyPath: "charts/radar-chart.tsx",
-    rules: [],
+    usage: [
+      "DO use same-unit axes with a disclosed common zero baseline and positive ceiling; invalid data renders the empty state.",
+      "DO retain a visible exact-value table in the footer where users compare values; the accessible summary always retains exact localized values.",
+      "DO theme grid, geometry and measured two-line axis labels through --radar-chart-* tokens. Full labels remain in SVG titles and the accessible summary.",
+    ],
+    useCases: [
+      "Same-unit operational capacity profiles.",
+      "Disclosed ordinal assessment rubrics without inferred scores.",
+    ],
+    rules: [21, 23, 44, 45],
   },
   {
     name: "CompactBarTrend",
@@ -18002,12 +17998,6 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot.",
     props: [
       {
-        name: "animated",
-        type: "boolean",
-        description:
-          "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
-      },
-      {
         name: "onDatumSelect",
         type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",
         description:
@@ -18149,12 +18139,6 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
     tagline:
       "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
     props: [
-      {
-        name: "animated",
-        type: "boolean",
-        description:
-          "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
-      },
       {
         name: "onDatumSelect",
         type: "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void",

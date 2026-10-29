@@ -61,3 +61,70 @@ describe("RadarChart shared-scale and data-truth contract", () => {
     }
   });
 });
+
+describe("Radar boundaries and localized truth", () => {
+  it.each([
+    ["two axes", data.slice(0, 2), 3],
+    ["seven axes", [...data, data[0]], 3],
+    ["above maximum", [{ ...data[0], value: 4 }, ...data.slice(1)], 3],
+    ["negative", [{ ...data[0], value: -1 }, ...data.slice(1)], 3],
+    ["NaN", [{ ...data[0], value: NaN }, ...data.slice(1)], 3],
+    ["missing", [{ axis: "Missing" }, ...data.slice(1)], 3],
+    ["zero ceiling", data, 0],
+    ["negative ceiling", data, -3],
+    ["infinite ceiling", data, Infinity],
+  ])("shows empty state for %s", (_, rows, maximum) => {
+    const { queryByRole, getByText, container } = renderWithUi(
+      <RadarChart
+        data={rows}
+        categoryKey="axis"
+        valueKey="value"
+        valueMax={maximum}
+        label="Plan"
+        emptyMessage="Incomplete"
+      />,
+    );
+    expect(getByText("Incomplete")).toBeVisible();
+    expect(queryByRole("list")).toBeNull();
+    expect(container.querySelector('[data-slot="radar-plot"]')).toBeNull();
+  });
+  it("keeps exact localized decimals in each summary row", () => {
+    const { container, getByRole } = renderWithUi(
+      <RadarChart
+        data={data.slice(0, 3).map((d, i) => ({ ...d, value: 1234.56789 + i }))}
+        categoryKey="axis"
+        valueKey="value"
+        valueMax={2000}
+        label="Plan"
+      />,
+    );
+    const rows = container.querySelectorAll("li");
+    expect(rows).toHaveLength(3);
+    rows.forEach((row, i) =>
+      expect(row).toHaveTextContent(
+        `Axis ${i + 1}: ${new Intl.NumberFormat("vi", { maximumSignificantDigits: 21 }).format(1234.56789 + i)}`,
+      ),
+    );
+    expect(getByRole("img")).toHaveAttribute(
+      "aria-label",
+      expect.stringContaining(new Intl.NumberFormat("vi").format(2000)),
+    );
+  });
+  it("drops ticks outside the positive common domain", () => {
+    const { container } = renderWithUi(
+      <RadarChart
+        data={data}
+        categoryKey="axis"
+        valueKey="value"
+        valueMax={3}
+        valueTicks={[-1, 0, 1, 3, 4, NaN, Infinity]}
+        label="Plan"
+      />,
+    );
+    const grid = container.querySelectorAll('polygon[fill="none"]');
+    expect(grid).toHaveLength(2);
+    expect(
+      Array.from(container.querySelectorAll('[data-slot="radar-tick"]')).map((n) => n.textContent),
+    ).toEqual(["1", "3"]);
+  });
+});

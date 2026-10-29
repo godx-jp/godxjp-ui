@@ -59,6 +59,9 @@ describe("Flex bounded workspace", () => {
     visual.height = 400;
     act(() => visual.dispatchEvent(new Event("resize")));
     expect(ref.current?.style.getPropertyValue("--flex-viewport-available")).toBe("320px");
+    visual.offsetTop = 70;
+    act(() => visual.dispatchEvent(new Event("scroll")));
+    expect(ref.current?.style.getPropertyValue("--flex-viewport-available")).toBe("350px");
     unmount();
     expect(ref.current).toBe(null);
     rect.mockRestore();

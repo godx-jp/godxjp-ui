@@ -144,6 +144,10 @@
       "types": "./dist/components/charts/area-chart.d.ts",
       "import": "./dist/components/charts/area-chart.js"
     },
+    "./charts/radar-chart": {
+      "types": "./dist/components/charts/radar-chart.d.ts",
+      "import": "./dist/components/charts/radar-chart.js"
+    },
     "./charts/pie-chart": {
       "types": "./dist/components/charts/pie-chart.d.ts",
       "import": "./dist/components/charts/pie-chart.js"
@@ -347,10 +351,6 @@
     "./ui/dropdown-menu": {
       "types": "./dist/components/navigation/dropdown-menu.d.ts",
       "import": "./dist/components/navigation/dropdown-menu.js"
-    },
-    "./charts/radar-chart": {
-      "types": "./dist/components/charts/radar-chart.d.ts",
-      "import": "./dist/components/charts/radar-chart.js"
     }
   },
   "scripts": {

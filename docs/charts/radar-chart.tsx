@@ -5,7 +5,10 @@ import { useTranslation } from "@godxjp/ui/i18n";
 /** Static API states: all sizes/axis counts, incomplete, zero, out-of-domain, hidden caption and footer. */
 export default function RadarChartExample() {
   const { t } = useTranslation();
-  const data = Array.from({ length: 6 }, (_, i) => ({ axis: String(i + 1), value: (i % 3) + 1 }));
+  const data = Array.from({ length: 6 }, (_, i) => ({
+    axis: t(`radarDemo.axis${i + 1}`),
+    value: (i % 3) + 1,
+  }));
   return (
     <PageContainer>
       <ResponsiveGrid columns={{ base: 1, md: 2 }} gap="md">

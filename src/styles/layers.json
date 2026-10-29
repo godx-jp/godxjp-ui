@@ -1096,7 +1096,8 @@
     },
     "RadarChart": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "chart-layout.css"
       ]
     },
     "Radio": {

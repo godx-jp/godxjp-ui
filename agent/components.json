@@ -15780,11 +15780,6 @@
     "name": "LineChart",
     "props": [
       {
-        "description": "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
-        "name": "animated",
-        "type": "boolean"
-      },
-      {
         "description": "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
         "name": "onDatumSelect",
         "type": "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void"
@@ -15910,16 +15905,6 @@
     "importPath": "@godxjp/ui/charts",
     "name": "BarChart",
     "props": [
-      {
-        "description": "Show locale-formatted exact values at the end of each bar.",
-        "name": "showValues",
-        "type": "boolean"
-      },
-      {
-        "description": "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
-        "name": "animated",
-        "type": "boolean"
-      },
       {
         "description": "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
         "name": "onDatumSelect",
@@ -16098,7 +16083,7 @@
         "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
       },
       {
-        "description": "Locale-aware axis number options.",
+        "description": "Locale-aware number options; defaults preserve up to 21 significant digits.",
         "name": "numberFormat",
         "required": false,
         "type": "Intl.NumberFormatOptions"
@@ -16138,9 +16123,23 @@
       "BarChart — exact category comparison.",
       "PieChart — part-to-whole breakdown."
     ],
-    "rules": [],
+    "rules": [
+      21,
+      23,
+      44,
+      45
+    ],
     "storyPath": "charts/radar-chart.tsx",
-    "tagline": "Dependency-free quantitative radar/spider profile with 3–6 axes and an explicit shared zero-based scale. Missing or out-of-domain values are not zero-filled. Not an inferred quality score."
+    "tagline": "Dependency-free quantitative radar/spider profile with 3–6 axes and an explicit shared zero-based scale. Missing or out-of-domain values are not zero-filled. Not an inferred quality score.",
+    "usage": [
+      "DO use same-unit axes with a disclosed common zero baseline and positive ceiling; invalid data renders the empty state.",
+      "DO retain a visible exact-value table in the footer where users compare values; the accessible summary always retains exact localized values.",
+      "DO theme grid, geometry and measured two-line axis labels through --radar-chart-* tokens. Full labels remain in SVG titles and the accessible summary."
+    ],
+    "useCases": [
+      "Same-unit operational capacity profiles.",
+      "Disclosed ordinal assessment rubrics without inferred scores."
+    ]
   },
   {
     "example": "import { CompactBarTrend } from \"@godxjp/ui/charts/compact-bar-trend\";\nimport { Text } from \"@godxjp/ui/general\";\n\n<CompactBarTrend\n  label={t(\"dashboard.newOrganizations7d\")}\n  description={t(\"dashboard.newOrganizationsHint\")}\n  data={trend}\n  categoryKey=\"date\"\n  valueKey=\"count\"\n  emphasizedIndex={-1}\n  size=\"xs\"\n  footer={<Text size=\"xs\" tone=\"muted\">{t(\"dashboard.lastUpdated\", { at: new Date().toISOString() })}</Text>}\n/>",
@@ -16353,11 +16352,6 @@
     "name": "AreaChart",
     "props": [
       {
-        "description": "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
-        "name": "animated",
-        "type": "boolean"
-      },
-      {
         "description": "Opt-in pointer and Enter/Space selection. seriesKey is the series dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
         "name": "onDatumSelect",
         "type": "(datum: ChartDatum, context: { seriesKey: string; index: number }) => void"
@@ -16485,11 +16479,6 @@
     "importPath": "@godxjp/ui/charts",
     "name": "PieChart",
     "props": [
-      {
-        "description": "Override the built-in mark animation; false lets a consumer own motion and reduced-motion behavior. Selection mode remains static.",
-        "name": "animated",
-        "type": "boolean"
-      },
       {
         "description": "Opt-in pointer and Enter/Space selection. seriesKey is dataKey; index is the original data index. Arrows navigate; Home/End move to ends. Finite data only (pie: positive slices). No handler preserves the non-selectable chart. Dashboard owns filter state.",
         "name": "onDatumSelect",

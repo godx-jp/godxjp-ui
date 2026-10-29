@@ -444,13 +444,19 @@ export default function Demo() {
             <CardDescription>{t("showcase.flexViewport.lead")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" overflow="hidden" aria-label={t("showcase.flexViewport.title")}>
+            <Flex
+              id="bounded-workspace"
+              viewport
+              direction="col"
+              overflow="hidden"
+              aria-label={t("showcase.flexViewport.title")}
+            >
               <Flex basis="equal" overflow="scroll-x" gap="sm" tabIndex={0}>
-                {[0, 90, 0].map((rotation, index) => (
+                {[0, 90, 180, 270].map((rotation, index) => (
                   <Flex
                     key={index}
                     measure="card"
-                    rotate={rotation as 0 | 90}
+                    rotate={rotation as 0 | 90 | 180 | 270}
                     animated
                     surface="muted"
                     align="center"
@@ -459,6 +465,27 @@ export default function Demo() {
                     <Text>{t("showcase.flexViewport.item", { index: index + 1 })}</Text>
                   </Flex>
                 ))}
+              </Flex>
+              <Flex basis="equal" overflow="scroll-y" direction="col">
+                <Flex overflow="auto" wrap>
+                  {[0, 90, 180, 270].map((rotate) => (
+                    <Flex
+                      key={rotate}
+                      measure="card-compact"
+                      rotate={rotate as 0 | 90 | 180 | 270}
+                      animated={false}
+                      surface="etched"
+                    >
+                      <Text
+                        size="xs"
+                        truncate
+                        title={t("showcase.flexViewport.item", { index: rotate })}
+                      >
+                        {t("showcase.flexViewport.item", { index: rotate })}
+                      </Text>
+                    </Flex>
+                  ))}
+                </Flex>
               </Flex>
               <Text size="sm">{t("showcase.flexViewport.note")}</Text>
             </Flex>

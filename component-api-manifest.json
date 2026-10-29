@@ -1819,14 +1819,6 @@
       "group": "charts",
       "props": [
         {
-          "name": "animated",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/charts.prop.ts"]
-        },
-        {
           "name": "categoryKey",
           "origin": "owned",
           "required": true,
@@ -2431,14 +2423,6 @@
       "group": "charts",
       "props": [
         {
-          "name": "animated",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/charts.prop.ts"]
-        },
-        {
           "name": "categoryKey",
           "origin": "owned",
           "required": true,
@@ -2560,14 +2544,6 @@
         },
         {
           "name": "showLegend",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/charts.prop.ts"]
-        },
-        {
-          "name": "showValues",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -11517,14 +11493,6 @@
       "group": "charts",
       "props": [
         {
-          "name": "animated",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/charts.prop.ts"]
-        },
-        {
           "name": "categoryKey",
           "origin": "owned",
           "required": true,
@@ -13961,14 +13929,6 @@
     "PieChart": {
       "group": "charts",
       "props": [
-        {
-          "name": "animated",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/charts.prop.ts"]
-        },
         {
           "name": "className",
           "origin": "owned",

@@ -59,7 +59,7 @@
       "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
     },
     {
-      "description": "Locale-aware axis number options.",
+      "description": "Locale-aware number options; defaults preserve up to 21 significant digits.",
       "name": "numberFormat",
       "required": false,
       "type": "Intl.NumberFormatOptions"
@@ -99,7 +99,21 @@
     "BarChart — exact category comparison.",
     "PieChart — part-to-whole breakdown."
   ],
-  "rules": [],
+  "rules": [
+    21,
+    23,
+    44,
+    45
+  ],
   "storyPath": "charts/radar-chart.tsx",
-  "tagline": "Dependency-free quantitative radar/spider profile with 3–6 axes and an explicit shared zero-based scale. Missing or out-of-domain values are not zero-filled. Not an inferred quality score."
+  "tagline": "Dependency-free quantitative radar/spider profile with 3–6 axes and an explicit shared zero-based scale. Missing or out-of-domain values are not zero-filled. Not an inferred quality score.",
+  "usage": [
+    "DO use same-unit axes with a disclosed common zero baseline and positive ceiling; invalid data renders the empty state.",
+    "DO retain a visible exact-value table in the footer where users compare values; the accessible summary always retains exact localized values.",
+    "DO theme grid, geometry and measured two-line axis labels through --radar-chart-* tokens. Full labels remain in SVG titles and the accessible summary."
+  ],
+  "useCases": [
+    "Same-unit operational capacity profiles.",
+    "Disclosed ordinal assessment rubrics without inferred scores."
+  ]
 }

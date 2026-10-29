@@ -1,0 +1,260 @@
+[
+  {
+    "file": "src/tokens/__tests__/brand-identity-role.test.ts",
+    "exit": 0,
+    "tests": 17,
+    "seconds": 1.11
+  },
+  {
+    "file": "src/tokens/__tests__/button-count-contrast.test.ts",
+    "exit": 0,
+    "tests": 20,
+    "seconds": 0.97
+  },
+  {
+    "file": "src/tokens/__tests__/carbon-scale-alignment.test.ts",
+    "exit": 0,
+    "tests": 8,
+    "seconds": 0.94
+  },
+  {
+    "file": "src/tokens/__tests__/code-block-syntax-contrast.test.ts",
+    "exit": 0,
+    "tests": 30,
+    "seconds": 0.97
+  },
+  {
+    "file": "src/tokens/__tests__/derived-hue-lock.test.ts",
+    "exit": 0,
+    "tests": 70,
+    "seconds": 0.94
+  },
+  {
+    "file": "src/tokens/__tests__/derived-seed-sweep.test.ts",
+    "exit": 0,
+    "tests": 81,
+    "seconds": 1.64
+  },
+  {
+    "file": "src/tokens/__tests__/destructive-contrast.test.ts",
+    "exit": 0,
+    "tests": 7,
+    "seconds": 0.97
+  },
+  {
+    "file": "src/tokens/__tests__/dxs-canonical-theme.test.ts",
+    "exit": 0,
+    "tests": 8,
+    "seconds": 0.97
+  },
+  {
+    "file": "src/tokens/__tests__/error-text-tier.test.ts",
+    "exit": 0,
+    "tests": 11,
+    "seconds": 0.97
+  },
+  {
+    "file": "src/tokens/__tests__/flex-material-contrast.test.ts",
+    "exit": 0,
+    "tests": 4,
+    "seconds": 1.0
+  },
+  {
+    "file": "src/tokens/__tests__/focus-ring-contrast.test.ts",
+    "exit": 0,
+    "tests": 71,
+    "seconds": 2.11
+  },
+  {
+    "file": "src/tokens/__tests__/gen-brand-matches-foundation.test.ts",
+    "exit": 0,
+    "tests": 12,
+    "seconds": 1.02
+  },
+  {
+    "file": "src/tokens/__tests__/generator-css-block.test.ts",
+    "exit": 0,
+    "tests": 4,
+    "seconds": 0.94
+  },
+  {
+    "file": "src/tokens/__tests__/geometry-axis-scales.test.ts",
+    "exit": 0,
+    "tests": 61,
+    "seconds": 1.06
+  },
+  {
+    "file": "src/tokens/__tests__/godx-lockup.test.ts",
+    "exit": 0,
+    "tests": 6,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/tokens/__tests__/icon-size-scale.test.ts",
+    "exit": 0,
+    "tests": 114,
+    "seconds": 1.06
+  },
+  {
+    "file": "src/tokens/__tests__/inert-token-wins-824.test.ts",
+    "exit": 0,
+    "tests": 15,
+    "seconds": 0.96
+  },
+  {
+    "file": "src/tokens/__tests__/input-boundary-contrast.test.ts",
+    "exit": 0,
+    "tests": 24,
+    "seconds": 0.94
+  },
+  {
+    "file": "src/tokens/__tests__/interactive-fill-contrast.test.ts",
+    "exit": 0,
+    "tests": 12,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/tokens/__tests__/logo-identity-contrast.test.ts",
+    "exit": 0,
+    "tests": 8,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/tokens/__tests__/motion-tier-at-root.test.ts",
+    "exit": 0,
+    "tests": 10,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/tokens/__tests__/neutral-primary-1220.test.ts",
+    "exit": 0,
+    "tests": 6,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/tokens/__tests__/primary-text-contrast.test.ts",
+    "exit": 0,
+    "tests": 8,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/tokens/__tests__/radius-tier-unfreeze-888.test.ts",
+    "exit": 0,
+    "tests": 4,
+    "seconds": 1.6
+  },
+  {
+    "file": "src/tokens/__tests__/showcase-input-contrast.test.ts",
+    "exit": 0,
+    "tests": 12,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/tokens/__tests__/sidebar-active-contrast.test.ts",
+    "exit": 0,
+    "tests": 32,
+    "seconds": 2.46
+  },
+  {
+    "file": "src/tokens/__tests__/status-fill-contrast.test.ts",
+    "exit": 0,
+    "tests": 8,
+    "seconds": 0.96
+  },
+  {
+    "file": "src/tokens/__tests__/status-surface-role-866.test.ts",
+    "exit": 0,
+    "tests": 44,
+    "seconds": 0.98
+  },
+  {
+    "file": "src/tokens/__tests__/table-stripe-contrast.test.ts",
+    "exit": 0,
+    "tests": 45,
+    "seconds": 0.96
+  },
+  {
+    "file": "src/tokens/__tests__/tenant-scope-freeze-687.test.ts",
+    "exit": 0,
+    "tests": 10,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/tokens/__tests__/text-link-contrast.test.ts",
+    "exit": 0,
+    "tests": 20,
+    "seconds": 0.96
+  },
+  {
+    "file": "src/tokens/__tests__/tone-mark-contrast.test.ts",
+    "exit": 0,
+    "tests": 45,
+    "seconds": 0.95
+  },
+  {
+    "file": "src/components/charts/__tests__/chart-category-axis.test.ts",
+    "exit": 0,
+    "tests": 6,
+    "seconds": 0.96
+  },
+  {
+    "file": "src/components/charts/__tests__/chart-category-click.test.tsx",
+    "exit": 0,
+    "tests": 5,
+    "seconds": 2.56
+  },
+  {
+    "file": "src/components/charts/__tests__/chart-datum-select-browser.test.ts",
+    "exit": 0,
+    "tests": 2,
+    "seconds": 6.12
+  },
+  {
+    "file": "src/components/charts/__tests__/chart-missing-1482.test.tsx",
+    "exit": 0,
+    "tests": 4,
+    "seconds": 2.39
+  },
+  {
+    "file": "src/components/charts/__tests__/chart-series-knobs-865.test.tsx",
+    "exit": 0,
+    "tests": 16,
+    "seconds": 2.8
+  },
+  {
+    "file": "src/components/charts/__tests__/charts.test.tsx",
+    "exit": 0,
+    "tests": 10,
+    "seconds": 2.23
+  },
+  {
+    "file": "src/components/charts/__tests__/radar-chart.test.tsx",
+    "exit": 0,
+    "tests": 14,
+    "seconds": 3.02
+  },
+  {
+    "file": "src/components/layout/__tests__/flex-viewport.test.tsx",
+    "exit": 0,
+    "tests": 3,
+    "seconds": 1.02
+  },
+  {
+    "file": "src/components/layout/__tests__/flex-material.test.tsx",
+    "exit": 0,
+    "tests": 2,
+    "seconds": 1.06
+  },
+  {
+    "file": "src/components/layout/__tests__/flex-workspace-browser.test.ts",
+    "exit": 0,
+    "tests": 2,
+    "seconds": 2.97
+  },
+  {
+    "file": "src/__tests__/style-layers-manifest.test.ts",
+    "exit": 0,
+    "tests": 8,
+    "seconds": 1.17
+  }
+]

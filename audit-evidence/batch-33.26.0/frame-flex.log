@@ -1,0 +1,5 @@
+
+> @godxjp/ui@33.25.2 check:frame-overflow /Users/satoshi01/Herd/godxjp-ui-b26
+> node scripts/check-frame-overflow.mjs http://127.0.0.1:6786 --only layout-flex
+
+✓ check:frame-overflow — 1 frame(s) swept (--only layout-flex; 236 skipped — PARTIAL, not a release gate), 0 known overflow(s).
