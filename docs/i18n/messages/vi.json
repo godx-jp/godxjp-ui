@@ -713,6 +713,19 @@
       "s3Title": "Tuần đầu tiên",
       "s3p1": "Đọc quy trình phát hành của nhóm và xem khoảng ba ghi chú phát hành gần đây.",
       "s3p2": "Cuối tuần, họp nhìn lại 30 phút với người hướng dẫn. Ghi trước những điểm chưa rõ sẽ giúp buổi họp hiệu quả hơn."
+    },
+    "flexViewport": {
+      "title": "Không gian làm việc giới hạn",
+      "lead": "Dùng viewport ở vùng gốc và basis=equal ở các vùng linh hoạt bên trong. Cuộn theo trục nằm trong từng vùng.",
+      "item": "Mục {index}",
+      "note": "Xoay chỉ phản ánh hướng đã cung cấp; giảm chuyển động tắt hiệu ứng."
+    },
+    "flexMaterial": {
+      "title": "Bề mặt vật liệu",
+      "lead": "Nền nỉ và đường viền trong suốt dùng token của giao diện. Bố cục và tương tác thuộc phần ứng dụng.",
+      "field": "Khu vực chính",
+      "resources": "Tài nguyên",
+      "inspect": "Xem chi tiết"
     }
   },
   "serviceLauncherShowcase": {

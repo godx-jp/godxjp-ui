@@ -989,6 +989,36 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [
       {
+        field: "viewport",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "basis",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "overflow",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "rotate",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "animated",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
         field: "as",
         local: true,
         reason:

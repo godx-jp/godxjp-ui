@@ -719,6 +719,19 @@
       "s3Title": "First week",
       "s3p1": "Read your team's release procedure and look through about three past release notes.",
       "s3p2": "At the end of the week, hold a 30-minute retrospective with your mentor. Writing down what was unclear beforehand helps."
+    },
+    "flexViewport": {
+      "title": "Bounded workspaces",
+      "lead": "Use viewport on the root and basis=equal on internal flexible regions. Directional overflow keeps scrolling inside each lane.",
+      "item": "Item {index}",
+      "note": "Rotation reflects supplied orientation only; reduced motion disables transitions."
+    },
+    "flexMaterial": {
+      "title": "Material surfaces",
+      "lead": "Felt and transparent etched boundaries use theme roles. Layout and interactions stay in the consumer composition.",
+      "field": "Field",
+      "resources": "Resources",
+      "inspect": "Inspect"
     }
   },
   "serviceLauncherShowcase": {
