@@ -96,6 +96,16 @@ const CONVERTED: ReadonlyArray<[file: string, selector: string, why: string]> = 
     ".ui-data-table-ellipsis",
     "a truncated cell is a tab stop and a rendered cell may hold a link; `text-overflow` still applies under `clip` (gh#1262)",
   ],
+  [
+    "layout.css",
+    ".ui-flex[data-viewport]",
+    "a bounded workspace holds whatever regions the consumer composes; its outermost controls sit flush with the viewport edge (gh#1513)",
+  ],
+  [
+    "layout.css",
+    '.ui-flex[data-overflow="hidden"]',
+    "a clipped region holds consumer content, controls included (gh#1513)",
+  ],
 ];
 
 /**
@@ -199,6 +209,11 @@ describe("focus-ring clip margin", () => {
       'shell-layout.css::.ui-topbar[data-overflow="menu"]',
       'data-display-layout.css::.ui-scroll-area[data-orientation="vertical"]',
       'data-display-layout.css::.ui-scroll-area[data-orientation="horizontal"]',
+      // Single-axis Flex scrollers (gh#1513), the same shape as the ScrollArea orientations: the
+      // cross axis computes to `hidden` beside `auto` whatever keyword is written, so no clip
+      // margin is reachable there.
+      'layout.css::.ui-flex[data-overflow="scroll-x"]',
+      'layout.css::.ui-flex[data-overflow="scroll-y"]',
       ...CONVERTED.map(([f, s]) => `${f}::${s}`),
       ...RADIUS_CROP_EXEMPT.map(([f, s]) => `${f}::${s}`),
     ]);
