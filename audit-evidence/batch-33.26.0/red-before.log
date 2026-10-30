@@ -1,0 +1,76 @@
+Radar validation bypass
+ RUN  v4.1.11 /Users/satoshi01/Herd/godxjp-ui-b26
+
+ ❯ |unit| src/components/charts/__tests__/radar-chart.test.tsx (14 tests | 11 failed) 182ms
+     × does not turn an unanswered axis into zero or plot an out-of-domain value 16ms
+     × accepts verified zeroes but rejects misleading axis counts or invalid ceilings 13ms
+     × shows empty state for two axes 7ms
+     × shows empty state for seven axes 10ms
+     × shows empty state for above maximum 8ms
+     × shows empty state for negative 7ms
+     × shows empty state for NaN 10ms
+     × shows empty state for missing 7ms
+     × shows empty state for zero ceiling 7ms
+     × shows empty state for negative ceiling 6ms
+     × shows empty state for infinite ceiling 8ms
+
+ Test Files  1 failed (1)
+      Tests  11 failed | 3 passed (14)
+   Start at  08:45:04
+
+
+Radar raw number formatting
+ RUN  v4.1.11 /Users/satoshi01/Herd/godxjp-ui-b26
+
+ ❯ |unit| src/components/charts/__tests__/radar-chart.test.tsx (14 tests | 1 failed) 134ms
+     × keeps exact localized decimals in each summary row 5ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  08:45:06
+
+
+Radar unfiltered ticks
+ RUN  v4.1.11 /Users/satoshi01/Herd/godxjp-ui-b26
+
+ ❯ |unit| src/components/charts/__tests__/radar-chart.test.tsx (14 tests | 1 failed) 138ms
+     × drops ticks outside the positive common domain 8ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  08:45:08
+
+
+Radar Cartesian summary
+ RUN  v4.1.11 /Users/satoshi01/Herd/godxjp-ui-b26
+
+ ❯ |unit| src/components/charts/__tests__/radar-chart.test.tsx (14 tests | 1 failed) 136ms
+     × keeps exact localized decimals in each summary row 7ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  08:45:10
+
+
+Reduced motion transition restored
+ RUN  v4.1.11 /Users/satoshi01/Herd/godxjp-ui-b26
+
+ ❯ |unit| src/components/layout/__tests__/flex-workspace-browser.test.ts (2 tests | 2 failed) 1428ms
+     × keeps equal regions, scrolling and controls within 390 × 844 439ms
+     × keeps equal regions, scrolling and controls within 1366 × 768 218ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  08:45:00
+
+
+Visual viewport scroll listener removed
+ RUN  v4.1.11 /Users/satoshi01/Herd/godxjp-ui-b26
+
+ ❯ |unit| src/components/layout/__tests__/flex-viewport.test.tsx (3 tests | 1 failed) 23ms
+     × uses visual viewport coordinates and forwards the rendered element ref 4ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  08:45:03
+

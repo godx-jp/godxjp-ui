@@ -1494,8 +1494,8 @@
           "name": "responsive",
           "origin": "owned",
           "required": false,
-          "type": "\"popover\" | \"auto\" | \"sheet\" | \"fullscreen\" | undefined",
-          "values": ["popover", "auto", "sheet", "fullscreen"],
+          "type": "\"auto\" | \"popover\" | \"sheet\" | \"fullscreen\" | undefined",
+          "values": ["auto", "popover", "sheet", "fullscreen"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -9605,6 +9605,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "animated",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "as",
           "origin": "owned",
           "required": false,
@@ -9618,6 +9626,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "basis",
+          "origin": "owned",
+          "required": false,
+          "type": "\"equal\" | undefined",
+          "values": ["equal"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -9737,7 +9753,15 @@
           "origin": "owned",
           "required": false,
           "type": "FlexMeasureProp | undefined",
-          "values": ["narrow", "medium", "wide"],
+          "values": ["narrow", "medium", "wide", "card", "card-compact"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "\"hidden\" | \"auto\" | \"scroll-x\" | \"scroll-y\" | undefined",
+          "values": ["hidden", "auto", "scroll-x", "scroll-y"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -9757,11 +9781,27 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "ref",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "reveal",
           "origin": "owned",
           "required": false,
           "type": "\"hover\" | undefined",
           "values": ["hover"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "rotate",
+          "origin": "owned",
+          "required": false,
+          "type": "0 | 90 | 180 | 270 | undefined",
+          "values": [0, 90, 180, 270],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -9776,8 +9816,16 @@
           "name": "surface",
           "origin": "owned",
           "required": false,
-          "type": "\"muted\" | \"popover\" | \"warning\" | undefined",
-          "values": ["muted", "popover", "warning"],
+          "type": "\"muted\" | \"popover\" | \"warning\" | \"felt\" | \"etched\" | undefined",
+          "values": ["muted", "popover", "warning", "felt", "etched"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "viewport",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -12921,8 +12969,8 @@
           "name": "responsive",
           "origin": "owned",
           "required": false,
-          "type": "\"dialog\" | \"popover\" | \"auto\" | \"sheet\" | undefined",
-          "values": ["dialog", "popover", "auto", "sheet"],
+          "type": "\"dialog\" | \"auto\" | \"popover\" | \"sheet\" | undefined",
+          "values": ["dialog", "auto", "popover", "sheet"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -14410,7 +14458,7 @@
           "origin": "owned",
           "required": false,
           "type": "FlexMeasureProp | undefined",
-          "values": ["narrow", "medium", "wide"],
+          "values": ["narrow", "medium", "wide", "card", "card-compact"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
@@ -14465,6 +14513,131 @@
           "type": "string",
           "values": [],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
+    "RadarChart": {
+      "group": "charts",
+      "props": [
+        {
+          "name": "categoryKey",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "data",
+          "origin": "owned",
+          "required": true,
+          "type": "ChartDatum[]",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "emptyMessage",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "footer",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "numberFormat",
+          "origin": "owned",
+          "required": false,
+          "type": "Intl.NumberFormatOptions | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "ref",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "showCaption",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueKey",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueMax",
+          "origin": "owned",
+          "required": true,
+          "type": "number",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueTicks",
+          "origin": "owned",
+          "required": false,
+          "type": "number[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
         }
       ]
     },
@@ -18752,7 +18925,7 @@
           "name": "width",
           "origin": "owned",
           "required": false,
-          "type": "number | `${number}em` | `${number}px` | `${number}rem` | `${number}%` | `${number}ch` | `${number}ex` | `${number}lh` | `${number}rlh` | `${number}vw` | `${number}vh` | `${number}vi` | `${number}vb` | `${number}vmin` | `${number}vmax` | `${number}svw` | `${number}svh` | `${number}lvw` | `${number}lvh` | `${number}dvw` | `${number}dvh` | `${number}cqw` | `${number}cqh` | `${number}cqi` | `${number}cqb` | `${number}cqmin` | `${number}cqmax` | `${number}cm` | `${number}mm` | `${number}in` | `${number}pt` | `${number}pc` | \"auto\" | \"max-content\" | \"min-content\" | \"fit-content\" | `calc(${string})` | `min(${string})` | `max(${string})` | `clamp(${string})` | `var(${string})` | `fit-content(${string})` | undefined",
+          "type": "number | \"auto\" | `${number}em` | `${number}px` | `${number}rem` | `${number}%` | `${number}ch` | `${number}ex` | `${number}lh` | `${number}rlh` | `${number}vw` | `${number}vh` | `${number}vi` | `${number}vb` | `${number}vmin` | `${number}vmax` | `${number}svw` | `${number}svh` | `${number}lvw` | `${number}lvh` | `${number}dvw` | `${number}dvh` | `${number}cqw` | `${number}cqh` | `${number}cqi` | `${number}cqb` | `${number}cqmin` | `${number}cqmax` | `${number}cm` | `${number}mm` | `${number}in` | `${number}pt` | `${number}pc` | \"max-content\" | \"min-content\" | \"fit-content\" | `calc(${string})` | `min(${string})` | `max(${string})` | `clamp(${string})` | `var(${string})` | `fit-content(${string})` | undefined",
           "values": [],
           "declaredIn": [
             "node_modules/@types/react/index.d.ts",

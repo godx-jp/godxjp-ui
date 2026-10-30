@@ -952,6 +952,11 @@
   },
   {
     "group": "data-display",
+    "name": "RadarChart",
+    "tagline": "Dependency-free quantitative radar/spider profile with 3–6 axes and an explicit shared zero-based scale."
+  },
+  {
+    "group": "data-display",
     "name": "CompactBarTrend",
     "tagline": "DEPENDENCY-FREE compact vertical bar trend for dashboard summary cards — N category/value pairs, muted marks plus ONE emphasized 'current' bar, all geometry from --chart-trend-* tokens."
   },

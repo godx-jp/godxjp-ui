@@ -1,0 +1,21 @@
+/** RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope. */
+:root {
+  --radar-chart-label-inset: 8px;
+  /* Unitless scale of the normalized polar geometry. */
+  --radar-chart-plot-radius: 96;
+  --radar-chart-label-radius: 124px; /* scale-exempt: polar distance in viewBox user units, not a corner radius */
+  --radar-chart-grid-alpha: 0.16;
+  --radar-chart-boundary-alpha: 0.32;
+  --radar-chart-axis-alpha: 0.2;
+  --radar-chart-label-font-size: 16px; /* scale-exempt: viewBox user units, scaled with the SVG, not CSS type */
+  /* Unitless second-line leading, multiplied by the resolved label font size. */
+  --radar-chart-label-line-height: 1.25;
+  --radar-chart-tick-offset: 6px;
+  --radar-chart-tick-font-size: 10px; /* scale-exempt: viewBox user units, scaled with the SVG, not CSS type */
+  --radar-chart-point-radius: 3px; /* scale-exempt: SVG circle r in viewBox user units, not a corner radius */
+  /* HSL channels; default muted-foreground resolves at the chart. */
+  --radar-chart-grid-color: initial;
+  /* HSL channels; default foreground resolves at the chart. */
+  --radar-chart-label-color: initial;
+  --radar-chart-grid-stroke-width: 1px;
+}

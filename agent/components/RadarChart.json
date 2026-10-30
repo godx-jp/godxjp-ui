@@ -1,0 +1,119 @@
+{
+  "example": "<RadarChart data={profile} categoryKey=\"axis\" valueKey=\"value\" valueMax={3} valueTicks={[1,2,3]} label={t(\"profile.title\")} />",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/charts/radar-chart",
+  "name": "RadarChart",
+  "props": [
+    {
+      "description": "Three to six same-unit axes; missing, negative or nonfinite values invalidate the whole plot.",
+      "name": "data",
+      "required": true,
+      "type": "ChartDatum[]"
+    },
+    {
+      "description": "Key for already-translated axis labels; full names remain in the accessible data summary.",
+      "name": "categoryKey",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Key for finite numeric axis values.",
+      "name": "valueKey",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Strictly positive common scale ceiling; zero baseline is fixed.",
+      "name": "valueMax",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "description": "Optional positive scale ticks within the ceiling, e.g. [1,2,3] for an ordinal rubric.",
+      "name": "valueTicks",
+      "required": false,
+      "type": "number[]"
+    },
+    {
+      "description": "Accessible figure name.",
+      "name": "label",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Show the caption; false retains the accessible name.",
+      "name": "showCaption",
+      "required": false,
+      "type": "boolean"
+    },
+    {
+      "description": "Explain units, normalization and provenance.",
+      "name": "description",
+      "required": false,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Shared chart canvas height tier.",
+      "name": "size",
+      "required": false,
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Locale-aware number options; defaults preserve up to 21 significant digits.",
+      "name": "numberFormat",
+      "required": false,
+      "type": "Intl.NumberFormatOptions"
+    },
+    {
+      "description": "Message for incomplete or invalid data.",
+      "name": "emptyMessage",
+      "required": false,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Visible exact-value table or legend beneath the plot.",
+      "name": "footer",
+      "required": false,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Optional class.",
+      "name": "className",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "description": "Stable figure identifier.",
+      "name": "id",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "description": "Figure ref.",
+      "name": "ref",
+      "required": false,
+      "type": "React.Ref<HTMLElement>"
+    }
+  ],
+  "related": [
+    "BarChart — exact category comparison.",
+    "PieChart — part-to-whole breakdown."
+  ],
+  "rules": [
+    21,
+    23,
+    44,
+    45
+  ],
+  "storyPath": "charts/radar-chart.tsx",
+  "tagline": "Dependency-free quantitative radar/spider profile with 3–6 axes and an explicit shared zero-based scale. Missing or out-of-domain values are not zero-filled. Not an inferred quality score.",
+  "usage": [
+    "DO use same-unit axes with a disclosed common zero baseline and positive ceiling; invalid data renders the empty state.",
+    "DO retain a visible exact-value table in the footer where users compare values; the accessible summary always retains exact localized values.",
+    "DO theme grid, geometry and measured two-line axis labels through --radar-chart-* tokens. Full labels remain in SVG titles and the accessible summary."
+  ],
+  "useCases": [
+    "Same-unit operational capacity profiles.",
+    "Disclosed ordinal assessment rubrics without inferred scores."
+  ]
+}

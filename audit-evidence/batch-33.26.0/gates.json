@@ -1,0 +1,107 @@
+[
+  {
+    "command": "pnpm typecheck",
+    "exit": 0,
+    "seconds": 4.21
+  },
+  {
+    "command": "pnpm typecheck:mcp",
+    "exit": 0,
+    "seconds": 0.38
+  },
+  {
+    "command": "pnpm check:token-tiers",
+    "exit": 0,
+    "seconds": 0.31
+  },
+  {
+    "command": "pnpm check:prop-vocabulary",
+    "exit": 0,
+    "seconds": 0.28
+  },
+  {
+    "command": "pnpm check:mcp-sync",
+    "exit": 0,
+    "seconds": 0.29
+  },
+  {
+    "command": "pnpm check:mcp-orphans",
+    "exit": 0,
+    "seconds": 0.28
+  },
+  {
+    "command": "pnpm check:component-api-manifest",
+    "exit": 0,
+    "seconds": 3.36
+  },
+  {
+    "command": "pnpm check:registry",
+    "exit": 0,
+    "seconds": 0.25
+  },
+  {
+    "command": "pnpm check:agent-api-names",
+    "exit": 0,
+    "seconds": 1.09
+  },
+  {
+    "command": "pnpm check:no-hardcoded-css-values",
+    "exit": 0,
+    "seconds": 0.34
+  },
+  {
+    "command": "pnpm check:no-consumer-coupling",
+    "exit": 0,
+    "seconds": 0.77
+  },
+  {
+    "command": "pnpm check:mcp-prop-sync",
+    "exit": 0,
+    "seconds": 0.34
+  },
+  {
+    "command": "pnpm check:disclosure-duplication",
+    "exit": 0,
+    "seconds": 0.28
+  },
+  {
+    "command": "pnpm preview:build",
+    "exit": 0,
+    "seconds": 2.34
+  },
+  {
+    "command": "pnpm check:frame-contracts",
+    "exit": 0,
+    "seconds": 4.69
+  },
+  {
+    "command": "pnpm build",
+    "exit": 0,
+    "seconds": 2.22
+  },
+  {
+    "command": "pnpm run audit",
+    "exit": 0,
+    "seconds": 1.6
+  },
+  {
+    "command": "pnpm typecheck:docs",
+    "exit": 0,
+    "seconds": 1.1
+  },
+  {
+    "command": "pnpm lint",
+    "exit": 0,
+    "seconds": 1.53
+  },
+  {
+    "command": "pnpm regen",
+    "exit": 0,
+    "seconds": 4.39
+  },
+  {
+    "command": "pnpm regen",
+    "exit": 0,
+    "seconds": 4.27
+  }
+]

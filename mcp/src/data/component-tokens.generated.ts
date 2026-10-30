@@ -9444,6 +9444,101 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
+    "name": "--flex-card-size-ratio",
+    "value": "1.4",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-card-width",
+    "value": "clamp(3.25rem, 6.6vw, 5.625rem)",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-compact-card-width",
+    "value": "clamp(1.875rem, 3.3vw, 2.8125rem)",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-orientation-duration",
+    "value": "180ms",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-background",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-foreground",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-muted-foreground",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-focus-color",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-control-border-alpha",
+    "value": "0.65",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-track-alpha",
+    "value": "0.8",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-grain-width",
+    "value": "1px",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-highlight-size",
+    "value": "72%",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-grain-size",
+    "value": "3px",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-grain-alpha",
+    "value": "0.025",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-felt-highlight-alpha",
+    "value": "0.045",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-etched-border-color",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-etched-border-alpha",
+    "value": "0.5",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-etched-border-size",
+    "value": "var(--stroke-hairline)",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--flex-etched-radius",
+    "value": "initial",
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
     "name": "--float-button-offset-block-end",
     "value": "var(--space-stack-xl)",
     "description": "THE TWO CORNER INSETS gh#558 ASKED FOR BY NAME. Ant Design's are `marginXXL` (48px) from the bottom and `marginLG` (24px) from the inline end. Spelled here in this library's own stack/inline steps, which land on the same two numbers: --space-stack-xl = --space-10 = 40px, --space-6 = 24px. The block inset is the one a service actually has to move — a sticky action bar, a cookie strip, a mobile tab bar all live in that corner — and moving it is now retuning ONE custom property, not writing a media query at the call site (which is `no-arbitrary-spacing` and has no legal spelling)."
@@ -11412,6 +11507,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--persona-description-color",
     "value": "initial",
     "description": "Role mirror: hsl(var(--muted-foreground))."
+  },
+  {
+    "name": "--radar-chart-label-inset",
+    "value": "8px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-plot-radius",
+    "value": "96",
+    "description": "Unitless scale of the normalized polar geometry."
+  },
+  {
+    "name": "--radar-chart-label-radius",
+    "value": "124px",
+    "description": "scale-exempt: polar distance in viewBox user units, not a corner radius"
+  },
+  {
+    "name": "--radar-chart-grid-alpha",
+    "value": "0.16",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-boundary-alpha",
+    "value": "0.32",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-axis-alpha",
+    "value": "0.2",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-label-font-size",
+    "value": "16px",
+    "description": "scale-exempt: viewBox user units, scaled with the SVG, not CSS type"
+  },
+  {
+    "name": "--radar-chart-label-line-height",
+    "value": "1.25",
+    "description": "Unitless second-line leading, multiplied by the resolved label font size."
+  },
+  {
+    "name": "--radar-chart-tick-offset",
+    "value": "6px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
+  },
+  {
+    "name": "--radar-chart-tick-font-size",
+    "value": "10px",
+    "description": "scale-exempt: viewBox user units, scaled with the SVG, not CSS type"
+  },
+  {
+    "name": "--radar-chart-point-radius",
+    "value": "3px",
+    "description": "scale-exempt: SVG circle r in viewBox user units, not a corner radius"
+  },
+  {
+    "name": "--radar-chart-grid-color",
+    "value": "initial",
+    "description": "HSL channels; default muted-foreground resolves at the chart."
+  },
+  {
+    "name": "--radar-chart-label-color",
+    "value": "initial",
+    "description": "HSL channels; default foreground resolves at the chart."
+  },
+  {
+    "name": "--radar-chart-grid-stroke-width",
+    "value": "1px",
+    "description": "RadarChart tokens. Radii and font sizes use intrinsic SVG coordinates; colors resolve in the local theme scope."
   },
   {
     "name": "--resizable-handle-size",

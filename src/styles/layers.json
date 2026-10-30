@@ -1094,6 +1094,12 @@
         "data-display-layout.css"
       ]
     },
+    "RadarChart": {
+      "layers": [
+        "layout.css",
+        "chart-layout.css"
+      ]
+    },
     "Radio": {
       "layers": [
         "control.css",

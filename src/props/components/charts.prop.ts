@@ -273,3 +273,23 @@ export type PieChartProp = {
   className?: ClassNameProp;
   id?: IdProp;
 };
+
+/** Single quantitative profile on a shared zero-based scale; incomplete data is never zero-filled. */
+export type RadarChartProp = {
+  data: ChartDatum[];
+  categoryKey: string;
+  valueKey: string;
+  /** Required common ceiling, strictly positive; values outside [0,valueMax] are invalid. */
+  valueMax: number;
+  valueTicks?: number[];
+  label: LabelProp;
+  showCaption?: boolean;
+  description?: DescriptionProp;
+  size?: SizeProp;
+  numberFormat?: Intl.NumberFormatOptions;
+  emptyMessage?: EmptyMessageProp;
+  footer?: FooterProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+  ref?: React.Ref<HTMLElement>;
+};

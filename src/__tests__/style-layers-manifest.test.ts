@@ -13,6 +13,10 @@ const ROOT = process.cwd();
 const manifest = JSON.parse(readFileSync(join(ROOT, "src/styles/layers.json"), "utf8"));
 
 describe("style layer manifest (gh#971)", () => {
+  it("keeps dependency-free radar chart chrome in the same CSS slice as other chart frames", () => {
+    expect(manifest.components.RadarChart.layers).toEqual(manifest.components.PieChart.layers);
+    expect(manifest.components.RadarChart.layers).toContain("chart-layout.css");
+  });
   it("is current — regenerating produces the committed file", () => {
     const result = spawnSync(
       process.execPath,

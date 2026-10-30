@@ -307,7 +307,8 @@ export default function Demo() {
         <Button
           variant="outline"
           size="sm"
-          className="text-muted-foreground w-full max-w-sm justify-start"
+          className="w-full max-w-sm justify-start"
+          style={{ "--button-outline-foreground": "hsl(var(--muted-foreground))" } as CSSProperties}
         >
           <Search />
           検索…

@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "33.25.2",
-  "godxUiMcp": "33.25.2",
+  "version": "33.26.0",
+  "godxUiMcp": "33.26.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -143,6 +143,10 @@
     "./charts/area-chart": {
       "types": "./dist/components/charts/area-chart.d.ts",
       "import": "./dist/components/charts/area-chart.js"
+    },
+    "./charts/radar-chart": {
+      "types": "./dist/components/charts/radar-chart.d.ts",
+      "import": "./dist/components/charts/radar-chart.js"
     },
     "./charts/pie-chart": {
       "types": "./dist/components/charts/pie-chart.d.ts",

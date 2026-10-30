@@ -2190,6 +2190,32 @@ import { Button } from "@godxjp/ui/general";
       "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls — and, with `attached`, a row of controls welded into ONE visual unit (antd Space.Compact).",
     props: [
       {
+        name: "viewport",
+        type: "boolean",
+        description:
+          "Measure actual top and fit remaining visual viewport; observes resize and scroll.",
+      },
+      {
+        name: "basis",
+        type: '"equal"',
+        description: "Equal flexible region with zero block and inline minimum.",
+      },
+      {
+        name: "overflow",
+        type: '"hidden" | "auto" | "scroll-x" | "scroll-y"',
+        description: "Internal scroll ownership without document growth.",
+      },
+      {
+        name: "rotate",
+        type: "0 | 90 | 180 | 270",
+        description: "Declarative orientation, never infers an action.",
+      },
+      {
+        name: "animated",
+        type: "boolean",
+        description: "Orientation transition only; reduced motion is immediate.",
+      },
+      {
         name: "attached",
         type: "boolean",
         defaultValue: "false",
@@ -2218,8 +2244,9 @@ import { Button } from "@godxjp/ui/general";
       { name: "bleed", type: "GapProp", description: "Negative inline inset on the token scale." },
       {
         name: "surface",
-        type: '"muted" | "popover" | "warning"',
-        description: "Lightweight surface, without Card structure.",
+        type: '"muted" | "popover" | "warning" | "felt" | "etched"',
+        description:
+          "Lightweight surface, without Card structure. Felt is a themeable textured material with scoped high-contrast ink and focus roles; etched is a transparent outlined region.",
       },
       { name: "shrink", type: "boolean", description: "false prevents shrinking." },
       { name: "grow", type: "boolean", description: "Grow into remaining flex space." },
@@ -2281,7 +2308,7 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "measure",
-        type: '"narrow" | "medium" | "wide"',
+        type: '"narrow" | "medium" | "wide" | "card" | "card-compact"',
         description:
           'CENTRE this box and CAP it at a page measure (--page-measure-narrow 42rem / -medium 48rem / -wide 72rem): margin-inline:auto + inline-size:100% + max-inline-size. THE public answer to "full-bleed outside, measured column inside" — a marketing <section> paints edge to edge and its inner Flex measure="wide" holds the content on the page measure. Deliberately NOT on PageContainer: that owns page padding and a header/toolbar/footer scaffold, so a full-bleed page cannot consume it, and the refusal left the centred column owned by nobody — three showcases each hand-wrote the same four declarations (gh#839). It adds NO gutter: the page inset is pad={{ inline: 6 }}, and one band with two padding owners drifts. A MAX, so nothing binds below the cap at 390px. An explicit `width` wins. Do not give a READING column "wide" — prose stays narrow/medium, which bracket Bringhurst\'s 45-75 characters. Omitted emits no attribute at all.',
       },
@@ -17622,6 +17649,101 @@ export function NotifyRow() {
   numberFormat={{ notation: "compact" }}
 />`,
     rules: [],
+  },
+  {
+    name: "RadarChart",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts/radar-chart",
+    tagline:
+      "Dependency-free quantitative radar/spider profile with 3–6 axes and an explicit shared zero-based scale. Missing or out-of-domain values are not zero-filled. Not an inferred quality score.",
+    props: [
+      {
+        name: "data",
+        type: "ChartDatum[]",
+        required: true,
+        description:
+          "Three to six same-unit axes; missing, negative or nonfinite values invalidate the whole plot.",
+      },
+      {
+        name: "categoryKey",
+        type: "string",
+        required: true,
+        description:
+          "Key for already-translated axis labels; full names remain in the accessible data summary.",
+      },
+      {
+        name: "valueKey",
+        type: "string",
+        required: true,
+        description: "Key for finite numeric axis values.",
+      },
+      {
+        name: "valueMax",
+        type: "number",
+        required: true,
+        description: "Strictly positive common scale ceiling; zero baseline is fixed.",
+      },
+      {
+        name: "valueTicks",
+        type: "number[]",
+        required: false,
+        description:
+          "Optional positive scale ticks within the ceiling, e.g. [1,2,3] for an ordinal rubric.",
+      },
+      { name: "label", type: "ReactNode", required: true, description: "Accessible figure name." },
+      {
+        name: "showCaption",
+        type: "boolean",
+        required: false,
+        description: "Show the caption; false retains the accessible name.",
+      },
+      {
+        name: "description",
+        type: "ReactNode",
+        required: false,
+        description: "Explain units, normalization and provenance.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        required: false,
+        description: "Shared chart canvas height tier.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        required: false,
+        description: "Locale-aware number options; defaults preserve up to 21 significant digits.",
+      },
+      {
+        name: "emptyMessage",
+        type: "ReactNode",
+        required: false,
+        description: "Message for incomplete or invalid data.",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        required: false,
+        description: "Visible exact-value table or legend beneath the plot.",
+      },
+      { name: "className", type: "string", required: false, description: "Optional class." },
+      { name: "id", type: "string", required: false, description: "Stable figure identifier." },
+      { name: "ref", type: "React.Ref<HTMLElement>", required: false, description: "Figure ref." },
+    ],
+    related: ["BarChart — exact category comparison.", "PieChart — part-to-whole breakdown."],
+    example: `<RadarChart data={profile} categoryKey="axis" valueKey="value" valueMax={3} valueTicks={[1,2,3]} label={t("profile.title")} />`,
+    storyPath: "charts/radar-chart.tsx",
+    usage: [
+      "DO use same-unit axes with a disclosed common zero baseline and positive ceiling; invalid data renders the empty state.",
+      "DO retain a visible exact-value table in the footer where users compare values; the accessible summary always retains exact localized values.",
+      "DO theme grid, geometry and measured two-line axis labels through --radar-chart-* tokens. Full labels remain in SVG titles and the accessible summary.",
+    ],
+    useCases: [
+      "Same-unit operational capacity profiles.",
+      "Disclosed ordinal assessment rubrics without inferred scores.",
+    ],
+    rules: [21, 23, 44, 45],
   },
   {
     name: "CompactBarTrend",

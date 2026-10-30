@@ -6,3 +6,28 @@
   --flex-actions-offset-block: initial;
   --flex-actions-offset-inline: initial;
 }
+
+:root {
+  --flex-card-size-ratio: 1.4;
+  --flex-card-width: clamp(3.25rem, 6.6vw, 5.625rem);
+  --flex-compact-card-width: clamp(1.875rem, 3.3vw, 2.8125rem);
+  --flex-orientation-duration: 180ms;
+}
+
+:root {
+  --flex-felt-background: initial;
+  --flex-felt-foreground: initial;
+  --flex-felt-muted-foreground: initial;
+  --flex-felt-focus-color: initial;
+  --flex-felt-control-border-alpha: 0.65;
+  --flex-felt-track-alpha: 0.8;
+  --flex-felt-grain-width: 1px;
+  --flex-felt-highlight-size: 72%;
+  --flex-felt-grain-size: 3px;
+  --flex-felt-grain-alpha: 0.025;
+  --flex-felt-highlight-alpha: 0.045;
+  --flex-etched-border-color: initial;
+  --flex-etched-border-alpha: 0.5;
+  --flex-etched-border-size: var(--stroke-hairline);
+  --flex-etched-radius: initial;
+}

@@ -989,6 +989,36 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [
       {
+        field: "viewport",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "basis",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "overflow",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "rotate",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
+        field: "animated",
+        local: true,
+        reason:
+          "Generic bounded composition and declarative orientation capability; inert when omitted.",
+      },
+      {
         field: "as",
         local: true,
         reason:
@@ -4002,6 +4032,31 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "valueTicks", local: true, reason: "Explicit tick positions on the value axis." },
       { field: "curved", local: true, reason: "Smooth (monotone) line rendering." },
       { field: "showDots", local: true, reason: "Chart-specific point-marker toggle." },
+    ],
+  },
+  RadarChartProp: {
+    group: "data-display",
+    file: "components/charts.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "DescriptionProp",
+      "SizeProp",
+      "EmptyMessageProp",
+      "FooterProp",
+      "ClassNameProp",
+      "IdProp",
+      { field: "data", local: true, reason: "Complete same-unit polar profile rows." },
+      { field: "categoryKey", local: true, reason: "Accessor for translated axis labels." },
+      { field: "valueKey", local: true, reason: "Accessor for the quantitative axis value." },
+      { field: "valueMax", local: true, reason: "Required positive shared scale ceiling." },
+      { field: "valueTicks", local: true, reason: "Optional positive shared scale ticks." },
+      {
+        field: "showCaption",
+        local: true,
+        reason: "Hide visible caption while preserving figure name.",
+      },
+      { field: "numberFormat", local: true, reason: "Intl options for exact profile values." },
+      { field: "ref", local: true, reason: "Forwarded figure reference." },
     ],
   },
   BarChartProp: {

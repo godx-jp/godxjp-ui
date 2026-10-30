@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [33.26.0] - 2026-10-30
+
+### Added
+
+- Flex measured viewport fitting, equal zero-minimum regions, internal overflow, responsive card measures and reduced-motion-aware declarative orientation (#1513).
+- Opt-in Flex felt material and etched region surfaces with scoped contrast/focus roles and themeable texture; larger responsive portrait measures (#1515).
+- Dependency-free RadarChart with explicit shared zero-based scale, finite-data guard and locale-aware accessible summary (same-unit 3–6-axis profiles) (#1508).
+- RadarChart geometry, grid, axis, label typography and color tokens (`--radar-chart-*`), plus Flex portrait footprint, grain width and highlight extent knobs.
+- RadarChart wraps measured Japanese and English labels into at most two lines, retains full titles and exact localized summaries, and includes chart styles in pruned CSS.
+
 ## [33.25.2] - 2026-10-29
 
 ### Fixed
