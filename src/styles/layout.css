@@ -3086,7 +3086,9 @@
   .ui-flex[data-viewport] {
     block-size: var(--flex-viewport-available, 100dvh);
     min-block-size: 0;
-    overflow: hidden;
+    /* clip, not hidden: only clip honours the ring headroom (focus-ring-clip-margin test). */
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
   }
   .ui-flex[data-basis="equal"] {
     flex: 1 1 0;
@@ -3098,7 +3100,8 @@
     min-inline-size: 0;
   }
   .ui-flex[data-overflow="hidden"] {
-    overflow: hidden;
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
   }
   .ui-flex[data-overflow="auto"] {
     overflow: auto;
