@@ -320,8 +320,18 @@ export type FlexProp = React.HTMLAttributes<HTMLElement> & {
    * Ghi đè `pad` ở TỪNG CẠNH, không phải cả cụm.
    */
   padRaw?: PadRawProp;
+  /** Cross-axis alignment of the children (`align-items`). Unset keeps the browser default, `stretch`. */
   align?: FlexAlignProp;
+  /** Main-axis distribution of the children (`justify-content`). Unset keeps the browser default, `start`. */
   justify?: FlexJustifyProp;
+  /**
+   * Let the children wrap onto further lines (`flex-wrap: wrap`) instead of overflowing one line.
+   *
+   * It also changes the Flex's behaviour INSIDE a table cell: it emits `data-wrap`, which opts the
+   * row out of the table-cell rule that pulls buttons, badges and avatars up with a negative
+   * `margin-block` (table-layout.css). A wrapping chip list needs that opt-out: with the negative
+   * margin, its second line overlaps the first (gh#1495).
+   */
   wrap?: boolean;
   /**
    * Drop this region below a breakpoint step (`sm` 40rem · `md` 48rem · `lg` 64rem · `xl` 80rem).

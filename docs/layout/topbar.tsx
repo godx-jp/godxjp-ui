@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { AppShell, Flex, PageContainer, Sidebar, Topbar, TopbarItem } from "@godxjp/ui/layout";
 import type { SidebarSectionProp } from "@godxjp/ui/layout";
@@ -149,7 +149,8 @@ export default function Demo() {
     <Button
       variant="outline"
       size="sm"
-      className="text-muted-foreground w-full max-w-sm justify-start"
+      className="w-full max-w-sm justify-start"
+      style={{ "--button-outline-foreground": "hsl(var(--muted-foreground))" } as CSSProperties}
       onClick={() => setSearchOpenCount((n) => n + 1)}
     >
       <Search />
