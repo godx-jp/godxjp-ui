@@ -680,3 +680,138 @@
     }
   }
 }
+
+/* Public reading recipe (#1521). An ancestor opts in; only main content is styled.
+ * Exclude entire control regions, including anchors nested inside bespoke surfaces.
+ * Zero-specificity exclusions let the scope outrank component ink without !important. */
+@layer components {
+  [data-ui-reading-links]
+    main
+    a[href]:not(
+      :where(
+        [data-ui-link-style="control"],
+        [data-ui-link-style="control"] *,
+        [data-slot="button"],
+        .ui-button,
+        .ui-list-row,
+        .ui-list-row *,
+        [role="button"],
+        [role="tab"],
+        [role="tablist"] *,
+        [role="menuitem"],
+        [role="menuitemcheckbox"],
+        [role="menuitemradio"],
+        [role="menu"] *,
+        [role="navigation"] *,
+        nav *,
+        header *,
+        footer *,
+        .ui-auth-shell *,
+        .app-root *,
+        [data-disabled],
+        [aria-disabled="true"]
+      )
+    ) {
+    color: hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels)));
+    text-decoration-line: var(--text-link-decoration-line);
+    text-underline-offset: var(--text-link-underline-offset);
+    text-decoration-thickness: var(--text-link-underline-width);
+  }
+  [data-ui-reading-links]
+    main
+    a[href]:not(
+      :where(
+        [data-ui-link-style="control"],
+        [data-ui-link-style="control"] *,
+        [data-slot="button"],
+        .ui-button,
+        .ui-list-row,
+        .ui-list-row *,
+        [role="button"],
+        [role="tab"],
+        [role="tablist"] *,
+        [role="menuitem"],
+        [role="menuitemcheckbox"],
+        [role="menuitemradio"],
+        [role="menu"] *,
+        [role="navigation"] *,
+        nav *,
+        header *,
+        footer *,
+        .ui-auth-shell *,
+        .app-root *,
+        [data-disabled],
+        [aria-disabled="true"]
+      )
+    ):hover {
+    color: hsl(
+      var(--text-link-hover, var(--text-link, from hsl(var(--primary)) var(--text-link-channels)))
+    );
+  }
+  [data-ui-reading-links]
+    main
+    a[href]:not(
+      :where(
+        [data-ui-link-style="control"],
+        [data-ui-link-style="control"] *,
+        [data-slot="button"],
+        .ui-button,
+        .ui-list-row,
+        .ui-list-row *,
+        [role="button"],
+        [role="tab"],
+        [role="tablist"] *,
+        [role="menuitem"],
+        [role="menuitemcheckbox"],
+        [role="menuitemradio"],
+        [role="menu"] *,
+        [role="navigation"] *,
+        nav *,
+        header *,
+        footer *,
+        .ui-auth-shell *,
+        .app-root *,
+        [data-disabled],
+        [aria-disabled="true"]
+      )
+    ):focus-visible {
+    outline-width: var(--focus-ring-width);
+    outline-style: solid;
+    outline-color: hsl(
+      var(--focus-outline-color, var(--focus-ring-color, var(--ring))) /
+        var(--focus-ring-opacity, 1)
+    );
+    outline-offset: var(--focus-ring-offset);
+  }
+  /* Whole-card headings inherit link ink; summaries retain their muted role. */
+  [data-ui-reading-links]
+    main
+    a[href]:not(
+      :where(
+        [data-ui-link-style="control"],
+        [data-ui-link-style="control"] *,
+        [data-slot="button"],
+        .ui-button,
+        .ui-list-row,
+        .ui-list-row *,
+        [role="button"],
+        [role="tab"],
+        [role="tablist"] *,
+        [role="menuitem"],
+        [role="menuitemcheckbox"],
+        [role="menuitemradio"],
+        [role="menu"] *,
+        [role="navigation"] *,
+        nav *,
+        header *,
+        footer *,
+        .ui-auth-shell *,
+        .app-root *,
+        [data-disabled],
+        [aria-disabled="true"]
+      )
+    )
+    :is([data-slot="heading"], .ui-editorial-card-title, .ui-catalog-card-title) {
+    color: inherit;
+  }
+}

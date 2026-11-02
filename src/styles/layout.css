@@ -3219,7 +3219,10 @@
   .ui-flex[data-surface="etched"] {
     border: var(--flex-etched-border-size) solid
       hsl(var(--flex-etched-border-color, var(--foreground)) / var(--flex-etched-border-alpha));
-    border-radius: var(--flex-etched-radius, var(--radius-md));
+    border-radius: var(
+      --flex-etched-radius,
+      var(--radius-md, calc(var(--radius) / var(--radius-ratio)))
+    );
     background: transparent;
     box-sizing: border-box;
   }

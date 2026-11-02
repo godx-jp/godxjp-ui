@@ -3,8 +3,29 @@
 All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+A fix for a defect that corrupts rendering (overlap, clipping, unreadable content) gets its own line,
+starting `**Display corruption** (affects X–Y):`, so the affected range shows when you scan a release.
 
 ## [Unreleased]
+
+## [33.27.0] - 2026-11-02
+
+### Added
+
+- `data-ui-reading-links` ancestor scope: opt-in main-content reading links, control-subtree escape hatch, precompiled pruning support, and `--text-link-hover` theme knob (#1521).
+
+### Fixed
+
+- `Flex surface="etched"`: the region's corner falls back to the radius formula like every other surface. It read `--radius-md` bare, which is `initial` at `:root`, so it drew square corners (nightly `check:frame-token-scope`).
+
+### Documentation
+
+- `FlexProp.wrap`, `align` and `justify` have docblocks. `wrap` states its table-cell effect: `data-wrap` opts the row out of the negative `margin-block` rule (gh#1520).
+- Docs Topbar demo: the search trigger sets its muted ink through `--button-outline-foreground`. The `text-muted-foreground` class lost to the token (nightly `check:frame-token-wins`).
+
+### Upgrade note
+
+- **Display corruption** (affects 32.3.1–33.22.x): a wrapping row inside a `DataTable` cell (`<Flex wrap>` or `flex flex-wrap`) had its badges and buttons pulled up by the cell's negative `margin-block`, so the second line overlapped the first. Fixed in 33.23.0 (gh#1495). If you upgrade from below 33.19.0 to get this fix, you also cross the 33.19.0 `WidthProp` change (gh#1431): replace size words in `Form` `labelWidth`/`controlWidth` with lengths (`"md"` → e.g. `"20rem"`). Runtime is unchanged; those values were already invalid CSS (gh#1520).
 
 ## [33.26.0] - 2026-10-30
 
@@ -42,7 +63,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Behaviour change:** `DatePicker range` (no `showTime`) holds an open half-range internally and emits only completed picks or clear; dismissing discards the draft even when the controlled consumer ignores partial values (gh#1476). Typed edges (Enter / blur) still commit at once, so an open-ended range entered from the keyboard is kept. Before, the first click emitted `{ from, to: undefined }`; a consumer that wants an open-ended range keeps it by choosing both ends or typing the end date.
 - Add `styles/application` and additive `styles/editorial` entries; separate editorial layouts from shared page/grid CSS and use one generated family map for entries and `prune-css --exclude-family editorial` (#1475).
 - Verify `prune-css` and `prune-css --precompiled` against an independently installed npm tarball, including CSS compiler resolution and measured raw/gzip savings (#1455).
-
 
 ### Fixed
 
@@ -98,6 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Image recovers failed requests that complete before hydration, so fallback and disabled preview match the actual image state.
 
 - Long unbroken breadcrumb labels, page subtitles and editorial titles wrap inside narrow screens without discarding content. Explicit breadcrumb ellipsis remains unchanged.
+
 ### Added
 
 - `@godxjp/block-editor` directive previews can change their own block (#1479): the `directives` renderer receives a second argument `{ update(source), remove(), editable }`. `update` goes through the same path as "Edit source" → Done (still one directive → the same block with the new source, one undo step; anything else replaces it), `remove` deletes the block, and both do nothing in a read-only / disabled editor (`editable: false`). A host's picker or config form (a data block: a card, a list of events) writes its result back without the source textarea. New type `BlockEditorDirectiveControls`.
@@ -128,6 +149,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@godxjp/markdown/codec`: such a directive is a `directive{name, source}` node (was a `rawBlock`), its canonical source byte-stable under `normalize`; `readDirective(source)` returns its `DirectiveBlock` parts; `MODELLED_DIRECTIVES`. The serialized Markdown is unchanged, so `CODEC_ID` stays `kit-md@2`. A malformed toggle or column row is still a raw block.
 - `@godxjp/block-editor`: a directive is one atomic `directive` block — dragged, deleted and moved whole from the handle, its source edited behind "Edit source" (re-parsed on Done: still one directive, it stays the block; anything else replaces it). `directives={{ poll: (block) => <Preview/> }}` previews it by name (otherwise its source shows); a host `/` row inserts one with `api.insertMarkdown(skeleton)`. New label `directive` (ja / en / vi).
 - `@godxjp/markdown/lazy`: the same `Markdown` with KaTeX (+ `katex.css`) and highlight.js each in its own chunk, imported the first time a rendered body has math or a fence with a language; until then math shows its TeX as code and fences are plain. `preloadMarkdownRuntime(body?)` loads them up front, for a server render or a hydration that must match the eager HTML. Measured with Vite on a host importing only `Markdown`: entry 560 KB JS (173 KB gzip) + 23.5 KB CSS → 220 KB JS (70 KB gzip), no CSS; KaTeX 262 KB (78 KB gzip) + its CSS and highlight.js 81 KB (26 KB gzip) load on demand. The default entry stays eager (a server or Worker render is synchronous); its output and `RENDERER_VERSION` (6) are unchanged.
+
 ### Added
 
 - `prune-css --precompiled` (#1455): the layer-pruned stylesheet for apps without Tailwind. The build now also writes `styles.css` cut along the layer manifest to `dist/styles/precompiled/` (`base` — tokens, preflight, the components' utilities — plus one slice per `*-layout.css` layer and vendor sheet, each through the same Tailwind pass), and the flag makes prune-css import those slices (`@godxjp/ui/styles/precompiled/*`) instead of the Tailwind sources, with Tailwind's `properties` layer named first as in `styles.css`. Proven in Chromium: the slices picked for a component set style it exactly like `styles.css`.

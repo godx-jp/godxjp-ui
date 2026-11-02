@@ -11,6 +11,12 @@ export interface TokenEntry {
 
 export const TOKENS: TokenEntry[] = [
   {
+    name: "--text-link-hover",
+    category: "semantic",
+    tier: "semantic",
+    role: "Reading-link scope hover ink (HSL channels). Unset by default; resolves to the live --text-link ink at the call site, including scoped tenant and dark themes. Underline and focus use the existing text-link and focus-ring tokens.",
+  },
+  {
     name: "--radar-chart-tick-offset",
     category: "component",
     tier: "component",

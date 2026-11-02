@@ -173,7 +173,7 @@ const OWNERS = {
     "ServiceLauncherCard",
     "ServiceCatalogCta",
   ],
-  "text-layout.css": ["Text", "Heading"],
+  "text-layout.css": ["Text", "Heading", "CenteredShell"], // reading-links ancestor recipe (#1521)
   "table-layout.css": ["Table", "DataTable", "Skeleton"],
   "dialog-layout.css": [
     "Dialog",
