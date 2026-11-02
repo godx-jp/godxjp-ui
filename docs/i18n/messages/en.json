@@ -1,4 +1,15 @@
 {
+  "readingLinksDocs": {
+    "title": "Publications",
+    "intro": "Guidance and reference material for service teams.",
+    "article": "Operating a shared service",
+    "summary": "Responsibilities, review cadence and support contacts.",
+    "body": "Read the service guide before submitting a request.",
+    "action": "Submit a request",
+    "header": "Service portal",
+    "footer": "Contact",
+    "control": "Saved publications"
+  },
   "imageLifecycleDocs": {
     "loading": "Image status: loading",
     "loaded": "Image status: loaded",

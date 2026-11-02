@@ -1,0 +1,232 @@
+{
+  "issue": 1521,
+  "branch": "batch/33.26.1",
+  "version": "33.26.0 (unchanged)",
+  "implementation": "Place data-ui-reading-links on an ancestor of a public CenteredShell. Only descendant main-content anchors participate. data-ui-link-style=\"control\" excludes itself and its descendants.",
+  "decisions": [
+    "Attribute recipe rather than a new component or prop: composes the existing shell and preserves the shared prop file already changed on this branch.",
+    "Quiet resting underline plus existing ink/focus tokens: readable affordance without new geometry, chrome or motion.",
+    "Headings inherit link ink; summary Text keeps its explicit muted role.",
+    "Control roles, navigation, header/footer and task-shell subtrees retain their own presentation.",
+    "CenteredShell owns the text-layout pruning dependency in the generator as well as generated layers.json, so regeneration and precompiled pruning retain the recipe."
+  ],
+  "framework_component_test": {
+    "C1": "PASS: universal reading-content need",
+    "C2": "FAIL: no new interaction or state semantics",
+    "C3": "FAIL: expressible as a scope over existing primitives and tokens",
+    "C4": "FAIL for a new component: configuration carrier rather than a controlled primitive",
+    "C5": "PASS: fully token driven, no brand baked in",
+    "C6": "FAIL for a new component: native link semantics already provide its international contract",
+    "C7": "FAIL for a new component: no extra JS primitive earns bundle cost",
+    "verdict": "Composition recipe; no new src/components implementation."
+  },
+  "new_tokens": [
+    {
+      "name": "--text-link-hover",
+      "tier": "semantic",
+      "source": "src/tokens/derived.css",
+      "default": "initial",
+      "fallback": "Live --text-link role, then its existing primary-derived link channels; resolved at the anchor call site."
+    }
+  ],
+  "gates": [
+    {
+      "command": "pnpm build",
+      "seconds": 3.72,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm typecheck",
+      "seconds": 12.4,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm typecheck:docs",
+      "seconds": 3.29,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm typecheck:mcp",
+      "seconds": 0.74,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm lint",
+      "seconds": 2.64,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm run audit",
+      "seconds": 2.13,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:token-tiers",
+      "seconds": 0.32,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:prop-vocabulary",
+      "seconds": 0.29,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:mcp-sync",
+      "seconds": 0.27,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:mcp-orphans",
+      "seconds": 0.27,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:component-api-manifest",
+      "seconds": 3.36,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:registry",
+      "seconds": 0.29,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:no-hardcoded-css-values",
+      "seconds": 0.43,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:no-consumer-coupling",
+      "seconds": 0.87,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:mcp-prop-sync",
+      "seconds": 0.42,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:disclosure-duplication",
+      "seconds": 0.37,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:token-scale-bypass",
+      "seconds": 0.32,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:example-imports",
+      "seconds": 0.7,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:frame-contracts",
+      "seconds": 7.27,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:frame-token-wins http://127.0.0.1:6191 --only layout-reading-links",
+      "seconds": 2.46,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:frame-token-wins http://127.0.0.1:6191 --only layout-topbar",
+      "seconds": 5.81,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:frame-token-scope http://127.0.0.1:6191 --only layout-reading-links",
+      "seconds": 2.61,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:frame-token-scope http://127.0.0.1:6191 --only layout-flex",
+      "seconds": 2.65,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm preview:build",
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm check:style-layers",
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm regen (final pass 1)",
+      "result": "PASS; 9 artifacts settled in 1 pass"
+    },
+    {
+      "command": "pnpm regen (final pass 2)",
+      "result": "PASS; 9 artifacts settled in 1 pass"
+    }
+  ],
+  "frame_limit": "The --only wins/scope runs are PARTIAL, not release gates. No baseline was edited.",
+  "suites": [
+    {
+      "command": "pnpm vitest run src/components/layout/__tests__/reading-links-browser-1521.test.ts src/__tests__/prune-css-cli.test.ts --maxWorkers=2",
+      "files": 2,
+      "tests": 23,
+      "result": "PASS",
+      "new_tests": 6
+    },
+    {
+      "command": "files=($(grep -rlE readdirSync src tests --include='*.test.ts' --include='*.test.tsx' | xargs grep -lE 'styles|\\.css' | sort -u)); pnpm vitest run \"${files[@]}\" --maxWorkers=2",
+      "files": 19,
+      "tests": 312,
+      "result": "PASS"
+    },
+    {
+      "command": "files=($(rg --files src/tokens/__tests__ | rg '\\.test\\.tsx?$')); pnpm vitest run \"${files[@]}\" --maxWorkers=2",
+      "files": 32,
+      "tests": 827,
+      "result": "PASS"
+    },
+    {
+      "cwd": "mcp",
+      "command": "files=($(rg --files src | rg '\\.test\\.tsx?$')); npx vitest run --root . \"${files[@]}\" --maxWorkers=2",
+      "files": 25,
+      "tests": 1768,
+      "result": "PASS"
+    }
+  ],
+  "red_before_proof": [
+    "Missing text-layout dependency: source-manifest test and real prune-css precompiled CLI test both fail.",
+    "Broken scope marker: ordinary/catalog ink and scoped hover tests fail.",
+    "Underline changed to none: resting underline assertion fails.",
+    "Focus selector broken: keyboard outline-style assertion fails.",
+    "Control opt-out marker broken: before/after control-style equality fails.",
+    "Heading forced to foreground: heading/link colour equality fails.",
+    "Link ink changed to background: both light and dark AA contrast tests fail.",
+    "Each mutation was restored. Final feature suite: 23/23 passing."
+  ],
+  "visual_audit_ledger": {
+    "route": "/isolate/layout-reading-links",
+    "examples": [
+      "CatalogCard image-led title",
+      "Whole-link heading with muted summary"
+    ],
+    "actions": "Prose, catalog title, whole-heading link, Button, bespoke control opt-out, header and footer links all clicked to #reading-guide.",
+    "keyboard": "Tab from the header link focuses the prose link; computed outline-style=solid, outline-width=2px.",
+    "viewports_reviewed": [
+      "1280x900",
+      "768x900",
+      "390x844 (scroll start and footer)"
+    ],
+    "console": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "stateful_modes": "Not applicable: native anchor recipe, no state.",
+    "scoped_theme_and_rtl": "Browser regression test overrides main ink/hover/underline tokens under dir=rtl. Light/dark page and card resting/hover contrast computed >=4.5:1.",
+    "server": "Static Vite preview on 127.0.0.1:6191; stopped after verification. Browser tabs closed and viewport override reset."
+  },
+  "warnings": {
+    "lint": "0 errors, 4 existing warnings in untouched files",
+    "audit": "0 errors, 96 warnings outside this change",
+    "build": "Existing Vite config, CSS candidate and large-chunk warnings; build exits 0."
+  },
+  "constraints": "No push, publication, version bump, baseline edits, axe, contrast sweep, full overflow sweep, ship:surface, verify:ci:static or full root test suite. Existing branch files overlap only CHANGELOG.md.",
+  "deferred": "Publication and consumer deployment are outside the requested local commit. Full/axe sweeps were intentionally not run under owner prohibition."
+}

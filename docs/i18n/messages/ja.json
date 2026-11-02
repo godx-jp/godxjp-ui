@@ -1,4 +1,15 @@
 {
+  "readingLinksDocs": {
+    "title": "刊行物",
+    "intro": "サービス担当者向けのガイドと参考資料。",
+    "article": "共同サービスの運用",
+    "summary": "担当範囲、見直しの周期、お問い合わせ先。",
+    "body": "申請前にサービスガイドをご確認ください。",
+    "action": "申請する",
+    "header": "サービスポータル",
+    "footer": "お問い合わせ",
+    "control": "保存した刊行物"
+  },
   "imageLifecycleDocs": {
     "loading": "画像の状態: 読み込み中",
     "loaded": "画像の状態: 読み込み済み",

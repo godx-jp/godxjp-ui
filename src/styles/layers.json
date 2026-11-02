@@ -334,7 +334,8 @@
     },
     "CenteredShell": {
       "layers": [
-        "shell-layout.css"
+        "shell-layout.css",
+        "text-layout.css"
       ]
     },
     "ChatBubble": {

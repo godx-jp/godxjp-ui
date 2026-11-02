@@ -268,3 +268,12 @@ describe("prune-css family contract (#1475)", () => {
     }
   });
 });
+
+it("keeps reading-link CSS for a CenteredShell-only precompiled consumer (#1521)", () => {
+  const result = prune(
+    { "src/page.tsx": 'import { CenteredShell } from "@godxjp/ui/layout";' },
+    { args: ["src", "--precompiled"] },
+  );
+  expect(result.status).toBe(0);
+  expect(result.css).toContain('@godxjp/ui/styles/precompiled/text-layout"');
+});

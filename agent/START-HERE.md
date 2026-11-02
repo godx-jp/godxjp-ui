@@ -61,7 +61,7 @@ screen anatomy, the visual target the rules below do not give you. Then fetch in
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 44 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 3236 design tokens, each tagged with its `tier`. **If you were handed a
+4. `tokens.json` — 3237 design tokens, each tagged with its `tier`. **If you were handed a
    brand, read the 223 `foundation` entries first** — `--primary`, `--background`,
    `--radius`, `--font-size-base` are the handful everything else derives from. The
    2900 `component` entries are per-part knobs; reach for one only when a role is
@@ -149,7 +149,7 @@ has stopped following the brand.
 | `tier` | count | what it is | set it? |
 |---|---|---|---|
 | `foundation` | 223 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** The default `--primary` is a neutral placeholder: set it (`:root { --primary: <H> <S>% <L>%; }`, HSL components, no `hsl()` wrapper) or import a theme preset such as `@godxjp/ui/themes/godx.css` |
-| `semantic` | 113 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
+| `semantic` | 114 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
 | `component` | 2900 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
 
 A token whose `value` is `initial` is not empty and not broken: `initial` is the guaranteed-invalid

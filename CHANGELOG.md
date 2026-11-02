@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Added
+
+- `data-ui-reading-links` ancestor scope: opt-in main-content reading links, control-subtree escape hatch, precompiled pruning support, and `--text-link-hover` theme knob (#1521).
+
 ### Fixed
 
 - `Flex surface="etched"`: the region's corner falls back to the radius formula like every other surface. It read `--radius-md` bare, which is `initial` at `:root`, so it drew square corners (nightly `check:frame-token-scope`).

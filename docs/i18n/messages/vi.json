@@ -1,4 +1,15 @@
 {
+  "readingLinksDocs": {
+    "title": "Ấn phẩm",
+    "intro": "Hướng dẫn và tài liệu tham khảo cho nhóm dịch vụ.",
+    "article": "Vận hành dịch vụ chung",
+    "summary": "Trách nhiệm, chu kỳ đánh giá và liên hệ hỗ trợ.",
+    "body": "Đọc hướng dẫn dịch vụ trước khi gửi yêu cầu.",
+    "action": "Gửi yêu cầu",
+    "header": "Cổng dịch vụ",
+    "footer": "Liên hệ",
+    "control": "Ấn phẩm đã lưu"
+  },
   "imageLifecycleDocs": {
     "loading": "Trạng thái ảnh: đang tải",
     "loaded": "Trạng thái ảnh: đã tải",

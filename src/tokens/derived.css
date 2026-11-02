@@ -135,6 +135,8 @@
    * `hsl(var(--mark-primary, var(--text-primary, from hsl(var(--primary)) …)) / .2)` and every
    * level still overrides. The mark tier follows with it. */
   --text-link: initial;
+  /* Reading-scope hover ink resolves to the live text-link role at the call site. */
+  --text-link-hover: initial;
   --text-brand: initial;
   --text-primary: initial;
   /* Light: one step DOWN the ramp from the action colour — the same step `--primary-hover` takes,

@@ -2717,7 +2717,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
     absorbed: ["AuthShell", "OrganizationChoiceList"],
     group: "layout",
     tagline:
-      'The centred root shell, two shapes: `variant="page"` (default) — authenticated, no-sidebar, centred-column page (hosted-ID My Page / account / standalone settings) with a padded topbar; `variant="auth"` / `"auth-canonical"` — the unauthenticated login/mfa/reset shell (brand bar + vertically centred auth card + footer). Zero custom CSS either way.',
+      'The centred root shell, two shapes: `variant="page"` (default) — authenticated, no-sidebar, centred-column page (hosted-ID My Page / account / standalone settings) with a padded topbar; `variant="auth"` / `"auth-canonical"` — the unauthenticated login/mfa/reset shell (brand bar + vertically centred auth card + footer). Zero custom CSS either way. For public reading content, wrap the shell in `<div data-ui-reading-links>`: main links use text-link/text-link-hover ink, underline and keyboard focus; image-led card headings follow link ink while summaries stay muted. Header/footer, task shells, Button, ListRow, tabs, menus and data-ui-link-style="control" subtrees retain their roles. Demo: docs/layout/reading-links.tsx.',
     props: [
       {
         name: "variant",
