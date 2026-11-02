@@ -8,6 +8,8 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.27.0] - 2026-11-02
+
 ### Added
 
 - `data-ui-reading-links` ancestor scope: opt-in main-content reading links, control-subtree escape hatch, precompiled pruning support, and `--text-link-hover` theme knob (#1521).
