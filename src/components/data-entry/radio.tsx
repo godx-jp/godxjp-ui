@@ -3,7 +3,12 @@ import { Radio as AriaRadio, RadioGroup as AriaRadioGroup } from "react-aria-com
 import { Circle } from "lucide-react";
 
 import { cn } from "../../lib/utils";
-import { pickFieldA11y, useFieldIdentity, useMirroredInputAttributes } from "../../lib/field-a11y";
+import {
+  choiceOptionDomId,
+  pickFieldA11y,
+  useFieldIdentity,
+  useMirroredInputAttributes,
+} from "../../lib/field-a11y";
 import { Field } from "./field";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
 import { withOwnHitTarget } from "./choice-hit-target";
@@ -233,7 +238,7 @@ function RadioGroupOptions({
   // in every build, so nothing outside React can address it. Derive it from the group's OWN id
   // whenever there is one; `useId` stays the fallback for a group that has none.
   const optionDomId = (optionValue: string, index: number) =>
-    id ? `${id}-${optionValue}` : `${reactId}-${optionValue}-${index}`;
+    choiceOptionDomId(id, reactId, optionValue, index);
 
   if (options && options.length > 0) {
     return (

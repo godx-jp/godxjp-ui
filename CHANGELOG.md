@@ -8,6 +8,12 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.27.1] - 2026-11-03
+
+### Fixed
+
+- `RadioGroup` / `CheckboxGroup` with `options`: an option whose value is one of the field's own id suffixes (`label`, `helper`, `feedback`, `error`, `description`, `select-all`) took the field's id — `<id>-label` was both the FormField label and the radio, so the group's `aria-labelledby` named the option and the DOM held a duplicate id. Such an option's id is now `<id>-option-<value>`; every other value keeps the stable `<id>-<value>` (gh#337).
+
 ## [33.27.0] - 2026-11-02
 
 ### Added

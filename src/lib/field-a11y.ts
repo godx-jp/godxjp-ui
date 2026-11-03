@@ -225,3 +225,34 @@ export function useReportFieldError(message: React.ReactNode): boolean {
   }, [report, message]);
   return report !== null;
 }
+
+/**
+ * The words a field spells its own nodes with: FormField's `<id>-label` / `-helper` / `-feedback`
+ * / `-error`, Field's `-description`, CheckboxGroup's `-select-all`.
+ */
+const FIELD_OWN_ID_SUFFIXES = new Set([
+  "label",
+  "helper",
+  "feedback",
+  "error",
+  "description",
+  "select-all",
+]);
+
+/**
+ * The DOM id of one option of a radio or checkbox group. With a group id it is the STABLE
+ * `<id>-<value>` (gh#337: automation addresses options by it), except for a value that is one of
+ * the field's own suffixes — `<id>-label` is the field's label — which moves to
+ * `<id>-option-<value>` so no two elements share an id. Without one, `React.useId()` plus the index.
+ */
+export function choiceOptionDomId(
+  groupId: string | undefined,
+  reactId: string,
+  optionValue: string,
+  index: number,
+): string {
+  if (!groupId) return `${reactId}-${optionValue}-${index}`;
+  return FIELD_OWN_ID_SUFFIXES.has(optionValue)
+    ? `${groupId}-option-${optionValue}`
+    : `${groupId}-${optionValue}`;
+}
