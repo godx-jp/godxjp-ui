@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
-import { pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
+import { choiceOptionDomId, pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { Checkbox } from "./checkbox";
 import { Field } from "./field";
 import { Separator } from "../layout/separator";
@@ -59,7 +59,7 @@ export function CheckboxGroup({
   // so each box needs its own, and a `React.useId()` value is regenerated on every mount and so
   // cannot be addressed from outside React. Derive it from the group's own id when there is one.
   const optionDomId = (optionValue: string, index: number) =>
-    id ? `${id}-${optionValue}` : `${reactId}-${optionValue}-${index}`;
+    choiceOptionDomId(id, reactId, optionValue, index);
 
   const toggle = (optionValue: string) => {
     const next = value.includes(optionValue)
