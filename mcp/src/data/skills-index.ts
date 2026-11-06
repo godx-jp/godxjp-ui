@@ -4,6 +4,8 @@
  * `get_skill_section` to drill into one section.
  */
 
+import { SHIPPED_SKILL_FILES } from "./shipped-skills.generated.js";
+
 export interface SkillSection {
   /** URL-safe section id. */
   id: string;
@@ -1582,7 +1584,73 @@ Do not advance a step until the prior artifact is signed off.`,
       },
     ],
   },
+  // ── shipped skills (skills/*/SKILL.md, embedded by gen-agent-catalog — gh#1527) ──
+  ...SHIPPED_SKILL_FILES.map(shippedSkill),
 ];
+
+/** `## 2. Hard rules` → `hard-rules`; `## DON'T` → `don-t`. */
+function sectionSlug(heading: string): string {
+  return heading
+    .replace(/^\d+\.\s*/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** The first prose line of a section body, as its one-line tagline. */
+function firstLine(body: string): string {
+  const line = body.split("\n").find((l) => l.trim() && !l.startsWith("```"));
+  const text = (line ?? "").replace(/^[-*>]\s*/, "").trim();
+  return text.length > 160 ? `${text.slice(0, 157)}…` : text;
+}
+
+/** Split Markdown at `## ` headings outside code fences; text before the first is `overview`. */
+function splitSections(markdown: string): { heading: string | null; body: string }[] {
+  const parts: { heading: string | null; lines: string[] }[] = [{ heading: null, lines: [] }];
+  let fenced = false;
+  for (const line of markdown.split("\n")) {
+    if (line.startsWith("```")) fenced = !fenced;
+    if (!fenced && line.startsWith("## ")) parts.push({ heading: line.slice(3).trim(), lines: [] });
+    else parts[parts.length - 1].lines.push(line);
+  }
+  return parts
+    .map((p) => ({ heading: p.heading, body: p.lines.join("\n").trim() }))
+    .filter((p) => p.heading !== null || p.body);
+}
+
+/**
+ * A shipped `skills/<id>/SKILL.md` as a consumer Skill (gh#1527): the SAME file `gx skills` installs,
+ * so the MCP and an installed copy cannot disagree. Each `## ` heading is a section, the text above
+ * the first is `overview`, and each `references/<file>.md` is a `references-<file>` section.
+ */
+function shippedSkill(file: (typeof SHIPPED_SKILL_FILES)[number]): Skill {
+  const title = /^# (.+)$/m.exec(file.body)?.[1].trim() ?? file.id;
+  const sections: SkillSection[] = splitSections(file.body.replace(/^\s*# .+\n/, "")).map(
+    ({ heading, body }) => ({
+      id: heading ? sectionSlug(heading) : "overview",
+      title: heading ?? title,
+      tagline: firstLine(body),
+      body,
+    }),
+  );
+  for (const [name, text] of Object.entries(file.references)) {
+    const base = name.replace(/\.md$/, "");
+    sections.push({
+      id: `references-${sectionSlug(base)}`,
+      title: /^# (.+)$/m.exec(text)?.[1].trim() ?? `references/${name}`,
+      tagline: firstLine(text.replace(/^\s*# .+\n/, "")),
+      body: text.trim(),
+    });
+  }
+  return {
+    id: file.id,
+    audience: "consumer",
+    name: title,
+    whenToUse: file.description,
+    source: `skills/${file.id}/SKILL.md — shipped in the @godxjp/ui tarball (also installable with \`gx skills\`)`,
+    sections,
+  };
+}
 
 export function findSkill(id: string): Skill | undefined {
   return SKILLS.find((s) => s.id === id);
@@ -1902,6 +1970,69 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     "taste",
     "form-discipline",
     "Form must have explicit label + help + error wired via FormField (rule 34).",
+  );
+
+  // The shipped skills (skills/*/SKILL.md — gh#1527): served here so a consumer keeps no copy.
+  route(
+    [
+      "form",
+      "create form",
+      "edit form",
+      "create page",
+      "edit page",
+      "input width",
+      "form field",
+      "フォーム",
+      "入力フォーム",
+      "biểu mẫu",
+    ],
+    "godxjp-ui-form",
+    "overview",
+    "The seven form rules: 3+ fields is a page not a modal, always <Form> + FormField, inputs sized to their content (GOV.UK), no hand-laid field rows, discovery before JSX, gates, issue instead of hand-roll.",
+    ["godxjp-ui-form/a-form-with-3-or-more-fields-is-its-own-page-not-a-modal"],
+  );
+  route(
+    [
+      "navigation",
+      "nav",
+      "menu",
+      "sidebar",
+      "sidebar menu",
+      "breadcrumb",
+      "bottom bar",
+      "tab bar",
+      "bottom navigation",
+      "メニュー",
+      "ナビゲーション",
+      "パンくず",
+      "サイドバー",
+      "điều hướng",
+      "thanh bên",
+    ],
+    "godxjp-ui-navigation",
+    "procedure-the-order-is-the-rule",
+    "Navigation for multi-role apps: tasks → menu tree → walkthrough → measure, then the hard rules (per-role landing, phone bottom bar, breadcrumbs, in-page tabs). Read BEFORE adding a menu item or a page.",
+    [
+      "godxjp-ui-navigation/hard-rules",
+      "godxjp-ui-navigation/self-check-gate-before-asking-for-approval-before-merging",
+    ],
+  );
+  route(
+    [
+      "design review",
+      "review the design",
+      "topbar",
+      "top bar",
+      "app shell",
+      "status chip",
+      "status badge",
+      "do and don't",
+      "dos and don'ts",
+    ],
+    "godxjp-ui-design",
+    "overview",
+    "Design do/don't rules learned from real review feedback: one-line status chips, an opaque sticky topbar, the signed-in profile kept in the bar.",
+    ["godxjp-ui-design/do", "godxjp-ui-design/don-t"],
   );
 
   // Loading / saving
