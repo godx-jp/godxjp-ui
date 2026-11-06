@@ -8,6 +8,8 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.28.0] - 2026-11-06
+
 ### Fixed
 
 - **Display corruption** (affects every release before this one): a `data-slot` passed to a kit component replaced the component's own slot, and every rule keyed on it stopped matching — `<Alert data-slot="x">` lost its flex row (the icon fell onto its own line), surface, border and padding; Card, Badge, DialogContent, Button and the rest the same. A component's own `data-slot` now always wins and the passed value is discarded; the markup is byte-identical when none is passed (gh#1527).

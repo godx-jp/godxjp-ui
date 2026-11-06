@@ -80,7 +80,7 @@ describe("catalog gate via GODX_UI_VERSION from launcher (gh#543)", () => {
 
 describe("a mismatch serves the INSTALLED package's own catalog when it is on disk (gh#1527)", () => {
   it("reads node_modules/@godxjp/ui/agent/components.json + patterns.json", async () => {
-    // The kintai case: an MCP pinned to an older catalog, the app on a newer @godxjp/ui.
+    // The reported case: an MCP pinned to an older catalog, the app on a newer @godxjp/ui.
     const root = project({
       version: "20.1.0",
       components: [
