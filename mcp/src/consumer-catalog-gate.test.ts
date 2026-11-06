@@ -116,9 +116,24 @@ describe("a mismatch serves the INSTALLED package's own catalog when it is on di
   });
 
   it("falls back to the bundled entry when the installed catalog lacks the name or its shape", async () => {
-    project({ version: "20.1.0", components: [{ name: sampleComponent, props: "not-an-array" }] });
+    project({
+      version: "20.1.0",
+      components: [{ name: sampleComponent, props: "not-an-array" }, { name: 42 }, null],
+      patterns: [{ name: 7, aliases: 3 }],
+    });
     const out = await dispatchTool("get_component", { name: sampleComponent });
+    expect(out).toMatch(/has no usable entry for this name/);
     expect(out).toMatch(/BUNDLED catalog/);
+    expect(out).toContain("## Props");
+    const patternOut = await dispatchTool("get_pattern", { name: samplePattern });
+    expect(patternOut).toMatch(/BUNDLED catalog/);
+    expect(patternOut).toMatch(/```tsx/);
+  });
+
+  it("says so when the installed package ships no agent/ catalog", async () => {
+    project({ version: "20.1.0" });
+    const out = await dispatchTool("get_component", { name: sampleComponent });
+    expect(out).toMatch(/No installed `agent\/` catalog was found on disk/);
     expect(out).toContain("## Props");
   });
 });

@@ -626,9 +626,15 @@ if (OUT === join(ROOT, "agent")) {
     const raw = readFileSync(join(ROOT, dir), "utf8");
     const fm = /^---\n([\s\S]*?)\n---\n/.exec(raw);
     const field = (key) => fm && new RegExp(`^${key}:\\s*(.+)$`, "m").exec(fm[1])?.[1].trim();
-    if (!fm || field("name") !== id || !field("description")) {
+    if (
+      !fm ||
+      field("name") !== id ||
+      !field("description") ||
+      /^[>|]/.test(field("description"))
+    ) {
       console.error(
-        `✗ gen-agent-catalog — ${dir} needs frontmatter with \`name: ${id}\` and a description.`,
+        `✗ gen-agent-catalog — ${dir} needs frontmatter with \`name: ${id}\` and a one-line ` +
+          `description (a folded \`>-\` / \`|\` block is not read here).`,
       );
       process.exit(1);
     }

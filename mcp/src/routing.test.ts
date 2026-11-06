@@ -199,6 +199,7 @@ const FIRST_HIT: Array<[string, string]> = [
   ["fix the spacing on the settings page", "contract"],
   ["which token for the page background colour", "contract"],
   ["redesign and audit an existing page", "contract"],
+  ["fix the spacing on the terms of service page", "contract"],
 ];
 
 describe("route_consumer_task — first hit (gh#1296)", () => {

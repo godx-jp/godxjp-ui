@@ -930,16 +930,22 @@ function installedCatalog<T>(
 function catalogMismatchNotice(
   installed: string,
   tool: "get_component" | "get_pattern",
-  servedFrom: { version: string | null; path: string } | null,
+  theirs: { version: string | null; path: string } | null,
+  servedFromTheirs: boolean,
 ): string {
   const range = (pkg as { godxUiCompatibility?: string }).godxUiCompatibility ?? pkg.version;
-  const source = servedFrom
-    ? `The entry below is the INSTALLED package's own catalog (\`${servedFrom.path}\`` +
-      `${servedFrom.version ? `, @godxjp/ui ${servedFrom.version}` : ""}), so its props match the ` +
-      `build you run; supplementary notes (tokens, coverage) still come from this server.`
-    : `The installed package's own catalog was not found on disk, so the entry below is this ` +
-      `server's BUNDLED catalog (@godxjp/ui ${range}): props, defaults and examples may differ from ` +
-      `the installed build — confirm a prop in \`node_modules/@godxjp/ui/dist\` before relying on it.`;
+  const bundled =
+    `the entry below is this server's BUNDLED catalog (@godxjp/ui ${range}): props, defaults and ` +
+    `examples may differ from the installed build — confirm a prop in ` +
+    `\`node_modules/@godxjp/ui/dist\` before relying on it.`;
+  const source =
+    theirs && servedFromTheirs
+      ? `The entry below is the INSTALLED package's own catalog (\`${theirs.path}\`` +
+        `${theirs.version ? `, @godxjp/ui ${theirs.version}` : ""}), so its props match the ` +
+        `build you run; supplementary notes (tokens, coverage) still come from this server.`
+      : theirs
+        ? `The installed catalog at \`${theirs.path}\` has no usable entry for this name, so ${bundled}`
+        : `No installed \`agent/\` catalog was found on disk, so ${bundled}`;
   return (
     `> ⚠️ **VERSION MISMATCH — \`${tool}\` answers anyway.** The project has **@godxjp/ui ` +
     `${installed}** installed; this server is **@godxjp/ui-mcp ${pkg.version}** (catalog for ` +
@@ -1286,13 +1292,14 @@ function getComponent(name: string, verbose = false): string {
     // Only a well-formed entry renders: a catalog from another schema falls back to the bundled one.
     const hit = theirs?.entries.find(
       (e) =>
-        e?.name?.toLowerCase() === wanted &&
+        typeof e?.name === "string" &&
+        e.name.toLowerCase() === wanted &&
         Array.isArray(e.props) &&
         Array.isArray(e.rules) &&
         typeof e.example === "string",
     );
     return (
-      catalogMismatchNotice(installed, "get_component", hit && theirs ? theirs : null) +
+      catalogMismatchNotice(installed, "get_component", theirs, !!hit) +
       componentAnswer(name, verbose, hit)
     );
   }
@@ -1481,13 +1488,12 @@ function getPattern(name: string): string {
     const slug = name.trim().toLowerCase();
     const hit = theirs?.entries.find(
       (p) =>
-        (p?.name === slug || p?.aliases?.includes(slug)) &&
+        (p?.name === slug || (Array.isArray(p?.aliases) && p.aliases.includes(slug))) &&
         typeof p.code === "string" &&
         Array.isArray(p.tags),
     );
     return (
-      catalogMismatchNotice(installed, "get_pattern", hit && theirs ? theirs : null) +
-      patternAnswer(name, hit)
+      catalogMismatchNotice(installed, "get_pattern", theirs, !!hit) + patternAnswer(name, hit)
     );
   }
   return patternAnswer(name);

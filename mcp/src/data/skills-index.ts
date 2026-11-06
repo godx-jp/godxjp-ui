@@ -1804,18 +1804,25 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     "lỗi",
     "error",
   ]);
-  // Documentation / manual / help / legal pages — document chrome, ahead of the app-screen route so
-  // the first hit is never AppShell + Topbar for a manual (gh#1527).
-  route(
-    DOCUMENT_SITE_KEYWORDS,
-    "compose-a-screen",
-    "document-site",
-    'A documentation / manual / help / legal page is document chrome, not app chrome: CenteredShell `topbar={<EditorialMasthead brand nav actions />}` + LegalDocumentShell (@godxjp/ui/lab) for the document body; inside a signed-in app use get_exemplar archetype="reader". Never AppShell + Topbar + a Text brand.',
-    ["compose-a-screen/pick-primitives", "contract/loop"],
-  );
+  // Documentation / manual / help / legal pages — document chrome, just ahead of the app-screen
+  // route (and placed like it around the contract) so the first non-contract hit is never
+  // AppShell + Topbar for a manual (gh#1527).
+  const documentSite = () =>
+    route(
+      DOCUMENT_SITE_KEYWORDS,
+      "compose-a-screen",
+      "document-site",
+      'A documentation / manual / help / legal page is document chrome, not app chrome: CenteredShell `topbar={<EditorialMasthead brand nav actions />}` + LegalDocumentShell (@godxjp/ui/lab) for the document body; inside a signed-in app use get_exemplar archetype="reader". Never AppShell + Topbar + a Text brand.',
+      ["compose-a-screen/pick-primitives", "contract/loop"],
+    );
 
-  if (!contractFirst) appScreen();
-  const screenMatched = matches.some((m) => m.skill === "compose-a-screen");
+  if (!contractFirst) {
+    documentSite();
+    appScreen();
+  }
+  const screenMatched = matches.some(
+    (m) => m.skill === "compose-a-screen" && m.section === "pick-primitives",
+  );
 
   /*
    * Hợp đồng cứng đứng TRƯỚC mọi skill về gu, và cố ý bắt rộng.
@@ -1866,7 +1873,10 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     ["contract/loop", "contract/spacing", "contract/escape"],
   );
 
-  if (contractFirst) appScreen();
+  if (contractFirst) {
+    documentSite();
+    appScreen();
+  }
 
   // List-page filtering — before any taste skill: the strip's shape is a rule, not a taste call.
   route(
