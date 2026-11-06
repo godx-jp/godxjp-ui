@@ -9,6 +9,7 @@ import {
 } from "react-aria-components";
 
 import { Slot } from "../../lib/slot";
+import { withoutSlot } from "../../lib/without-slot";
 
 /*
  * Collapsible — nền là `Disclosure` / `DisclosurePanel` của react-aria-components,
@@ -92,7 +93,7 @@ export function Collapsible({
         } = racProps as RacDomProps;
         return (
           <div
-            {...props}
+            {...withoutSlot(props)}
             {...rest}
             ref={mergeRefs(ref, racRef)}
             data-state={isExpanded ? "open" : "closed"}

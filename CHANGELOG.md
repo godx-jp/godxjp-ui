@@ -17,7 +17,7 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ### Changed
 
-- Kit composites name an inner kit component's slot through `data-kit-slot` (internal channel), and `asChild` forwards the wrapper's slot to a component child the same way, so `AuthDivider`, `<DialogClose asChild><Button>` and friends keep the names they rendered before. A `data-slot` written on a kit component — by a consumer or a first-party package — no longer does anything (gh#1527).
+- Kit composites name an inner kit component's slot through `data-kit-slot` (internal channel), and `asChild` forwards the wrapper's slot to a component child the same way, so `AuthDivider`, `<DialogClose asChild><Button>` and friends keep the names they rendered before. A `data-slot` written on a kit component — by a consumer or a first-party package — no longer does anything (gh#1527). `asChild` onto a NON-kit component child (a router `Link`, any component that spreads to its element) still lands `data-slot` as before, and that element now also carries a `data-kit-slot` attribute with the same value — update a markup snapshot that pins those attributes.
 - `@godxjp/ui-mcp`: a version mismatch no longer withholds the catalog. `get_component` / `get_pattern` answer from the installed package's own `node_modules/@godxjp/ui/agent/{components,patterns}.json` when it is on disk, else from the bundled catalog, under a warning that names both versions and the fix (`npx @godxjp/ui sync-rules`, then restart) (gh#1527).
 
 ### Added

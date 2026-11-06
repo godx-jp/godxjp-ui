@@ -16,6 +16,7 @@ import { AuthDivider } from "../../components/layout/auth-divider";
 import { DialogClose } from "../../components/feedback/dialog";
 import { Sheet, SheetContent, SheetTitle } from "../../components/feedback/sheet";
 import { Slot } from "../slot";
+import { Collapsible, CollapsibleTrigger } from "../../components/data-display/collapsible";
 import { withoutSlot } from "../without-slot";
 
 /*
@@ -114,6 +115,28 @@ describe("a consumer data-slot never replaces the component's own slot (gh#1527)
     const a = container.querySelector("a");
     expect(a?.getAttribute("data-slot")).toBe("wrapper");
     expect(a?.hasAttribute("data-kit-slot")).toBe(false);
+  });
+
+  it("the kit channel never reaches the DOM through a kit recipient (ColorPicker presets group)", () => {
+    const { container } = render(
+      <Collapsible {...({ "data-kit-slot": "color-picker-presets-group" } as object)}>
+        <CollapsibleTrigger>t</CollapsibleTrigger>
+      </Collapsible>,
+    );
+    expect(container.querySelector("[data-kit-slot]")).toBeNull();
+    expect(container.querySelector('[data-slot="color-picker-presets-group"]')).not.toBeNull();
+  });
+
+  it("asChild onto a NON-kit component child: data-slot lands; the kit key rides along (documented)", () => {
+    const Link = (p: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...p} />;
+    const { container } = render(
+      <Slot data-slot="wrapper">
+        <Link href="#x">x</Link>
+      </Slot>,
+    );
+    const a = container.querySelector("a");
+    expect(a?.getAttribute("data-slot")).toBe("wrapper");
+    expect(a?.getAttribute("data-kit-slot")).toBe("wrapper");
   });
 
   it("other consumer attributes still reach the element", () => {

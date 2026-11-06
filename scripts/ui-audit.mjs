@@ -692,7 +692,11 @@ const RULES = [
       const names = kitImportNames(content);
       if (names.size === 0) return [];
       const tag = [...names].join("|");
-      return [...content.matchAll(new RegExp(`<(?:${tag})(?![\\w.])${ATTRS}?\\bdata-slot=`, "g"))];
+      return [
+        ...content.matchAll(
+          new RegExp(`<(?:${tag})(?![\\w.])${ATTRS}?\\bdata-(?:kit-)?slot=`, "g"),
+        ),
+      ];
     },
     message:
       "Don't pass data-slot to a @godxjp/ui component: it is the component's own identity and is discarded. Use data-testid for a test hook, className for styling (gh#1527).",

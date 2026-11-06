@@ -38,9 +38,10 @@ describe("no-data-slot-on-kit-component (gh#1527)", () => {
       '  <Alert variant="callout" data-slot="a">x</Alert>',
       '  <KitCard\n    className="c"\n    data-slot="b"\n  />',
       '  <UI.Badge data-slot="c">b</UI.Badge>',
+      '  <Alert data-kit-slot="d">x</Alert>',
       "</>);",
     ].join("\n");
-    expect(count(audit(src).output)).toBe(3);
+    expect(count(audit(src).output)).toBe(4);
   });
 
   it("does not flag a local component, a host element, a type-only import, or data-testid", () => {
