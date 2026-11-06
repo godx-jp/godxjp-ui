@@ -16,10 +16,13 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 ### Changed
 
 - Kit composites name an inner kit component's slot through `data-kit-slot` (internal channel), and `asChild` forwards the wrapper's slot to a component child the same way, so `AuthDivider`, `<DialogClose asChild><Button>` and friends keep the names they rendered before. A `data-slot` written on a kit component — by a consumer or a first-party package — no longer does anything (gh#1527).
+- `@godxjp/ui-mcp`: a version mismatch no longer withholds the catalog. `get_component` / `get_pattern` answer from the installed package's own `node_modules/@godxjp/ui/agent/{components,patterns}.json` when it is on disk, else from the bundled catalog, under a warning that names both versions and the fix (`npx @godxjp/ui sync-rules`, then restart) (gh#1527).
 
 ### Added
 
 - `npx @godxjp/ui audit` rule `no-data-slot-on-kit-component` (error): flags `data-slot` passed to a component imported from `@godxjp/ui` — named, aliased or namespaced. Also listed in `list_anti_ai_tells` (gh#1527).
+- `@godxjp/ui-mcp`: `route_consumer_task` sends documentation sites, manuals, help centers, user guides and terms/privacy pages (EN/JA/VI) to the new `compose-a-screen/document-site` section — `CenteredShell` + `EditorialMasthead` + `LegalDocumentShell` — and `get_exemplar` resolves the same words to the reader exemplar. AppShell / Topbar guidance now says they are app chrome, not document chrome (gh#1527).
+- `@godxjp/ui-mcp`: the shipped skills `godxjp-ui-navigation`, `godxjp-ui-form` and `godxjp-ui-design` are served by `list_consumer_skills` / `get_consumer_skill` / `route_consumer_task`, embedded from `skills/*/SKILL.md` by `gen:agent-catalog` so the MCP and `gx skills` serve the same text (gh#1527).
 
 ## [33.27.1] - 2026-11-03
 

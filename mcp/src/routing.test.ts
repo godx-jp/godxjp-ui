@@ -199,6 +199,7 @@ const FIRST_HIT: Array<[string, string]> = [
   ["fix the spacing on the settings page", "contract"],
   ["which token for the page background colour", "contract"],
   ["redesign and audit an existing page", "contract"],
+  ["fix the spacing on the terms of service page", "contract"],
 ];
 
 describe("route_consumer_task — first hit (gh#1296)", () => {
@@ -214,5 +215,48 @@ describe("route_consumer_task — first hit (gh#1296)", () => {
     });
     expect(out.indexOf("`compose-a-screen`")).toBeGreaterThan(-1);
     expect(out.indexOf("`compose-a-screen`")).toBeLessThan(out.indexOf("`contract`"));
+  });
+});
+
+/**
+ * gh#1527 — a consumer built a manual site's chrome from AppShell + Topbar + Text (a plain-text
+ * brand, a bare "back" link) because nothing routed a documentation page anywhere else. The FIRST
+ * hit for a docs / manual / help / legal task is now the document-chrome section, which names
+ * EditorialMasthead and LegalDocumentShell.
+ */
+describe("route_consumer_task — documentation / manual / legal pages get document chrome (gh#1527)", () => {
+  it.each([
+    "build a documentation / manual site",
+    "a help center for the product",
+    "a user guide page",
+    "the terms of service and privacy policy pages",
+    "勤怠アプリのマニュアル",
+    "利用規約ページ",
+    "trang tài liệu hướng dẫn",
+  ])("'%s' → compose-a-screen/document-site first", (task) => {
+    const hits = routeTask(task, { consumerOnly: true });
+    expect(`${hits[0]?.skill}/${hits[0]?.section}`, task).toBe("compose-a-screen/document-site");
+    expect(hits[0]?.why).toContain("EditorialMasthead");
+    expect(hits[0]?.why).toContain("LegalDocumentShell");
+  });
+
+  it("the routed section resolves and names both primitives", async () => {
+    const out = await dispatchTool("route_consumer_task", {
+      task: "build a documentation / manual site",
+    });
+    expect(out).toContain("`document-site`");
+    const body = await dispatchTool("get_consumer_skill", {
+      skill: "compose-a-screen",
+      section: "document-site",
+    });
+    expect(body).toContain("EditorialMasthead");
+    expect(body).toContain("LegalDocumentShell");
+  });
+
+  it("an app list of documents is still an app screen, not document chrome", () => {
+    const keys = routeTask("documents list page", { consumerOnly: true }).map(
+      (r) => `${r.skill}/${r.section}`,
+    );
+    expect(keys).not.toContain("compose-a-screen/document-site");
   });
 });

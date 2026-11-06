@@ -230,7 +230,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 | Tool                   | Returns                                                                                                                                                      | Size   |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
-| `list_skills`          | 15 design skills (audience-tagged) + section ids                                                                                                             | ~1 KB  |
+| `list_skills`          | Every design skill (audience-tagged) + section ids                                                                                                           | ~1 KB  |
 | `list_primitives`      | All components, grouped + tagline. Optional `group` filter.                                                                                                  | ~3 KB  |
 | `list_utilities`       | Every NON-component export — hooks, helper functions, constants (`cn`, `formatDate`, `toast`, `useDebouncedValue`, `CHART_COLORS`…). Optional `kind` filter. | ~2 KB  |
 | `list_patterns`        | 7 canonical patterns + taglines                                                                                                                              | ~500 B |
