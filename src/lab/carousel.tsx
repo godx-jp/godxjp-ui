@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../i18n/use-translation";
 import { cn } from "../lib/utils";
+import { withoutSlot } from "../lib/without-slot";
 
 type UseEmblaReturn = ReturnType<typeof useEmblaCarousel>;
 
@@ -117,7 +118,7 @@ export const Carousel = React.forwardRef<
         role="region"
         aria-roledescription={t("dataDisplay.carousel.roleDescription")}
         aria-label={t("dataDisplay.carousel.ariaLabel")}
-        {...props}
+        {...withoutSlot(props)}
       >
         <div className="ui-carousel-viewport" ref={emblaRef}>
           {children}
@@ -160,7 +161,7 @@ export const CarouselContent = React.forwardRef<
       ref={ref}
       data-slot="carousel-content"
       className={cn("ui-carousel-content", className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       {decorated}
     </div>
@@ -178,7 +179,7 @@ export const CarouselItem = React.forwardRef<HTMLDivElement, CarouselItemProps>(
       role="group"
       aria-roledescription="slide"
       className={cn("ui-carousel-item", className)}
-      {...props}
+      {...withoutSlot(props)}
     />
   ),
 );
@@ -198,7 +199,7 @@ export const CarouselPrevious = React.forwardRef<
       disabled={!canScrollPrev}
       className={cn("ui-carousel-previous", className)}
       onClick={scrollPrev}
-      {...props}
+      {...withoutSlot(props)}
     >
       {/* The glyph is REPLACEABLE and the accessible name is not. `children` swaps the mark —
        * a different chevron set, a caret, a brand arrow — while the `sr-only` label stays, so a
@@ -227,7 +228,7 @@ export const CarouselNext = React.forwardRef<
       disabled={!canScrollNext}
       className={cn("ui-carousel-next", className)}
       onClick={scrollNext}
-      {...props}
+      {...withoutSlot(props)}
     >
       {/* The glyph is REPLACEABLE and the accessible name is not. `children` swaps the mark —
        * a different chevron set, a caret, a brand arrow — while the `sr-only` label stays, so a
@@ -261,7 +262,7 @@ export const CarouselDots = React.forwardRef<HTMLDivElement, React.ComponentProp
         className={cn("ui-carousel-dots", className)}
         role="tablist"
         aria-label={t("dataDisplay.carousel.dotsLabel")}
-        {...props}
+        {...withoutSlot(props)}
       >
         {scrollSnaps.map((_, index) => {
           const active = index === selectedIndex;

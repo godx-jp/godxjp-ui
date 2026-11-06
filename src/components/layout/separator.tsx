@@ -10,6 +10,7 @@ export type {
   SeparatorProp as SeparatorProps,
 } from "../../props/components/layout.prop";
 import { isDevelopment } from "../../lib/dev";
+import { withoutSlot } from "../../lib/without-slot";
 
 /**
  * ACCESSIBILITY — the whole point of the labelled form is that the label is ANNOUNCED, exactly
@@ -76,7 +77,7 @@ export const Separator = React.forwardRef<HTMLDivElement, SeparatorProp>(
         orientation={orientation}
         aria-label={labelled && !isDecorative ? label : undefined}
         className={cn("ui-separator", className)}
-        {...props}
+        {...withoutSlot(props)}
         render={({ role, "aria-orientation": ariaOrientation, ...domProps }) => (
           <div
             // A decorative rule leaves the accessibility tree entirely — RAC has no say in it.
@@ -88,7 +89,7 @@ export const Separator = React.forwardRef<HTMLDivElement, SeparatorProp>(
             // global events. `SeparatorProp` promises the whole of `HTMLAttributes<HTMLDivElement>`,
             // so the dropped half is put back here; `domProps` still wins for everything it did
             // carry — including the ref RAC expects to land on this element.
-            {...props}
+            {...withoutSlot(props)}
             {...domProps}
           >
             {labelled ? (

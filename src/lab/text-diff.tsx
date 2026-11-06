@@ -5,6 +5,7 @@ import { cn } from "../lib/utils";
 import type { TextDiffProp, TextDiffSegment } from "../props/components/data-display.prop";
 import { Button } from "../components/general/button";
 import { VisuallyHidden } from "../components/general/visually-hidden";
+import { withoutSlot } from "../lib/without-slot";
 
 export type {
   TextDiffProp,
@@ -304,7 +305,7 @@ export const TextDiff = React.forwardRef<HTMLDivElement, TextDiffProp>(function 
       data-mode={mode}
       lang={lang}
       className={cn("ui-text-diff", className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       {mode === "split" ? (
         <div className="ui-text-diff-split">

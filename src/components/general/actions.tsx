@@ -20,6 +20,7 @@ import type {
   ActionsItemsProp,
   ActionsProp,
 } from "../../props/components/general.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   ActionsProp,
@@ -152,7 +153,7 @@ export const Actions = React.forwardRef<HTMLDivElement, ActionsProp>(
         data-fade-in={fadeIn || fadeInLeft ? "" : undefined}
         data-fade-in-inline={fadeInLeft ? "" : undefined}
         className={cn("ui-actions", className)}
-        {...rest}
+        {...withoutSlot(rest)}
       >
         {items.map((item) => {
           if (item.actionRender) {
@@ -264,13 +265,13 @@ export const ActionsItem = React.forwardRef<HTMLButtonElement, ActionsItemProp>(
             type="button"
             size="icon-sm"
             variant="ghost"
-            data-slot="actions-item"
+            data-kit-slot="actions-item"
             data-status={status}
             aria-label={name}
             aria-busy={status === "loading" || undefined}
             loading={status === "loading"}
             className={cn("ui-actions-item", className)}
-            {...rest}
+            {...withoutSlot(rest)}
           >
             {glyph}
           </Button>
@@ -324,12 +325,12 @@ export const ActionsCopy = React.forwardRef<HTMLButtonElement, ActionsCopyProp>(
               type="button"
               size="icon-sm"
               variant="ghost"
-              data-slot="actions-copy"
+              data-kit-slot="actions-copy"
               data-copied={copied ? "" : undefined}
               aria-label={name}
               className={cn("ui-actions-copy", className)}
               onClick={run}
-              {...rest}
+              {...withoutSlot(rest)}
             >
               {copied ? <Check aria-hidden="true" /> : (icon ?? <Copy aria-hidden="true" />)}
             </Button>
@@ -371,7 +372,7 @@ export const ActionsFeedback = React.forwardRef<HTMLDivElement, ActionsFeedbackP
         aria-label={label ?? t("general.actions.feedback")}
         data-slot="actions-feedback"
         className={cn("ui-actions-feedback", className)}
-        {...rest}
+        {...withoutSlot(rest)}
       >
         <LabelledIconButton
           label={likeLabel ?? t("general.actions.like")}

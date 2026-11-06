@@ -12,6 +12,7 @@ import {
 import { cn } from "../../lib/utils";
 import { getActiveElement } from "../../lib/active-element";
 import { Slot } from "../../lib/slot";
+import { withoutSlot } from "../../lib/without-slot";
 
 /*
  * Tooltip — nền là `TooltipTrigger` / `Tooltip` của react-aria-components, API công khai vẫn
@@ -240,7 +241,7 @@ export function TooltipContent({
              * (`data-[state=delayed-open]:animate-in`), là tên Radix đặt cho "đã mở sau khi chờ".
              */
             data-state={isExiting ? "closed" : "delayed-open"}
-            {...props}
+            {...withoutSlot(props)}
             ref={mergeRefs(ref, racRef)}
             className={cn(
               "ui-tooltip-content",

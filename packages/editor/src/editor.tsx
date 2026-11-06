@@ -384,7 +384,7 @@ export const MarkdownEditor = React.forwardRef<HTMLTextAreaElement, MarkdownEdit
     );
 
     return (
-      <Flex direction="col" gap="xs" data-slot="markdown-editor" data-mode={mode}>
+      <Flex direction="col" gap="xs" data-kit-slot="markdown-editor" data-mode={mode}>
         <Flex justify="between" align="center" gap="xs" wrap>
           <Actions
             label={label("toolbar")}

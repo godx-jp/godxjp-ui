@@ -221,9 +221,20 @@ describe("Separator — khớp từng điểm với @radix-ui/react-separator", 
       expect(radix.current).toBe(b.container.querySelector('[data-slot="separator"]'));
     });
 
-    it("props của consumer ghi đè được data-slot (AuthDivider dựa vào đúng chỗ này)", () => {
-      const { shape } = sameElement({ "data-slot": "auth-divider" } as SeparatorProp);
-      expect(shape.attrs["data-slot"]).toBe("auth-divider");
+    // gh#1527: a consumer `data-slot` used to replace the slot and every rule keyed on it. It is
+    // now discarded; a kit composite (AuthDivider) names the root through the kit channel.
+    it("data-slot của consumer KHÔNG ghi đè slot của Separator (gh#1527)", () => {
+      const { container } = render(<Separator {...({ "data-slot": "x" } as SeparatorProp)} />);
+      expect(container.firstElementChild?.getAttribute("data-slot")).toBe("separator");
+    });
+
+    it("composite của kit đặt tên slot qua data-kit-slot (AuthDivider dựa vào đúng chỗ này)", () => {
+      const { container } = render(
+        <Separator {...({ "data-kit-slot": "auth-divider" } as SeparatorProp)} />,
+      );
+      const el = container.firstElementChild;
+      expect(el?.getAttribute("data-slot")).toBe("auth-divider");
+      expect(el?.hasAttribute("data-kit-slot")).toBe(false);
     });
 
     it("giữ nguyên phần HTMLAttributes mà filterDOMProps của RAC vứt đi", () => {

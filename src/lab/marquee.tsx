@@ -9,6 +9,7 @@ import { revealInMarquee } from "./marquee-reveal";
 import { ScrollArea } from "../components/data-display/scroll-area";
 import type { MarqueeProp } from "../props/components/data-display.prop";
 import type { GapProp } from "../props/vocabulary";
+import { withoutSlot } from "../lib/without-slot";
 
 export type {
   MarqueeDirectionProp,
@@ -198,7 +199,7 @@ export const Marquee = React.forwardRef<HTMLDivElement, MarqueeProp>(function Ma
         data-direction={direction}
         className={cn("ui-marquee", className)}
         style={rootStyle}
-        {...props}
+        {...withoutSlot(props)}
       >
         <ScrollArea
           orientation="horizontal"
@@ -246,7 +247,7 @@ export const Marquee = React.forwardRef<HTMLDivElement, MarqueeProp>(function Ma
       data-fade={fade ? "true" : "false"}
       className={cn("ui-marquee", className)}
       style={animatedStyle}
-      {...props}
+      {...withoutSlot(props)}
     >
       <div
         ref={viewportRef}
@@ -288,7 +289,7 @@ export const Marquee = React.forwardRef<HTMLDivElement, MarqueeProp>(function Ma
         type="button"
         variant="ghost"
         size="icon-sm"
-        data-slot="marquee-control"
+        data-kit-slot="marquee-control"
         className="ui-marquee-control"
         aria-label={controlLabel}
         aria-controls={trackId}

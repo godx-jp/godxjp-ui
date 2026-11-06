@@ -6,6 +6,7 @@ import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
 import type { ButtonProp } from "../../props/components/general.prop";
 import { numberFormat } from "../../lib/intl-cache";
+import { withoutSlot } from "../../lib/without-slot";
 
 const buttonVariants = cva("ui-button", {
   variants: {
@@ -200,8 +201,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
           buttonVariants({ variant, size, shape, className }),
         )}
         ref={ref}
-        {...props}
-        {...foldedAriaLabel}
+        {...withoutSlot(props)}
+        {...withoutSlot(foldedAriaLabel)}
       >
         {asChild ? (
           children

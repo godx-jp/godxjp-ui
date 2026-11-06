@@ -4,6 +4,7 @@ import * as ResizablePrimitive from "react-resizable-panels";
 import { revealKeyboardFocus } from "../../lib/focus-reveal";
 import { cn } from "../../lib/utils";
 import { useScrollableRegionTabIndex } from "../../lib/hooks";
+import { withoutSlot } from "../../lib/without-slot";
 
 export const ResizablePanelGroup = ({
   className,
@@ -12,7 +13,7 @@ export const ResizablePanelGroup = ({
   <ResizablePrimitive.Group
     data-slot="resizable-panel-group"
     className={cn("ui-resizable-panel-group", className)}
-    {...props}
+    {...withoutSlot(props)}
   />
 );
 
@@ -45,7 +46,7 @@ export const ResizablePanel = ({
       data-slot="resizable-panel"
       className={cn("ui-resizable-panel", className)}
       elementRef={setRootElement}
-      {...props}
+      {...withoutSlot(props)}
       onFocusCapture={(event) => {
         revealKeyboardFocus(event, scrollRegion ?? event.currentTarget);
         onFocusCapture?.(event);
@@ -63,7 +64,7 @@ export const ResizableHandle = ({
   <ResizablePrimitive.Separator
     data-slot="resizable-handle"
     className={cn("ui-resizable-handle", className)}
-    {...props}
+    {...withoutSlot(props)}
   />
 );
 ResizableHandle.displayName = "ResizableHandle";

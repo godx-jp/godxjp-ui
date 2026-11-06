@@ -11,6 +11,7 @@ import {
 } from "./control-appearance";
 import { resolveAllowClear } from "./control-surface";
 import type { InputProp } from "../../props/components/data-entry.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type { InputProp, InputProp as InputProps } from "../../props/components/data-entry.prop";
 
@@ -192,10 +193,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
           defaultValue={defaultValue}
           onChange={handleChange}
           className={cn(inputBaseClass, chrome, className)}
-          {...props}
-          {...nameFallback}
-          {...identity}
-          {...appearance}
+          {...withoutSlot(props)}
+          {...withoutSlot(nameFallback)}
+          {...withoutSlot(identity)}
+          {...withoutSlot(appearance)}
         />
       );
       return hasAddon ? withAddons(bare, addonBefore, addonAfter, size, appearance) : bare;
@@ -246,10 +247,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
             (trailing != null || counter !== null) && "ui-input--trailing-affix",
             className,
           )}
-          {...props}
-          {...nameFallback}
-          {...identity}
-          {...appearance}
+          {...withoutSlot(props)}
+          {...withoutSlot(nameFallback)}
+          {...withoutSlot(identity)}
+          {...withoutSlot(appearance)}
         />
         {trailing != null || counter !== null ? (
           <span className="ui-input-trailing" ref={setTrailingRef}>

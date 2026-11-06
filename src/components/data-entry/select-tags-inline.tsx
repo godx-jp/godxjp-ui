@@ -18,6 +18,7 @@ import type {
   MaxTagPlaceholderProp,
   SizeProp,
 } from "../../props/vocabulary";
+import { withoutSlot } from "../../lib/without-slot";
 
 /**
  * The INLINE presentation of `<Select mode="tags" open={false}>` — a free-text chip field whose
@@ -193,7 +194,7 @@ export const SelectTagsInline = React.forwardRef<HTMLInputElement, SelectTagsInl
         aria-readonly={readOnly || undefined}
         // The same `variant` × `status` × `size` matrix the select family reads, so a form row
         // holding a Select and a TagInput cannot end up with two different fields.
-        {...controlSurfaceAttrs({ variant, status, size })}
+        {...withoutSlot(controlSurfaceAttrs({ variant, status, size }))}
         aria-invalid={status === "error" ? true : undefined}
         className={cn(
           "ui-tag-input ui-control-surface",

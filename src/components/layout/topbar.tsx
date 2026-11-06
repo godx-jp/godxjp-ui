@@ -9,6 +9,7 @@ import { cn } from "../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { TopbarItem } from "./topbar-item";
 import type { TopbarProp } from "../../props/components/layout.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type { TopbarProp, TopbarProp as TopbarProps } from "../../props/components/layout.prop";
 
@@ -140,7 +141,7 @@ export function Topbar({
       style={{ ...style, ...padStyle(pad, undefined) }}
       data-slot="topbar"
       className={cn("ui-topbar", className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       {children ??
         (hasIdentity ? (

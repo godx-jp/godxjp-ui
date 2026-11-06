@@ -13,6 +13,7 @@ import type {
   MegaMenuLinkProp,
   MegaMenuProp,
 } from "../props/components/navigation.prop";
+import { withoutSlot } from "../lib/without-slot";
 
 export type {
   MegaMenuGroupProp,
@@ -656,7 +657,7 @@ export const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProp>(function Meg
       onPointerEnter={onRootPointerEnter}
       onPointerLeave={onRootPointerLeave}
       onBlurCapture={onBlurCapture}
-      {...props}
+      {...withoutSlot(props)}
     >
       <ul data-slot="mega-menu-bar" className="ui-mega-menu-bar">
         {items.map((item, index) => {

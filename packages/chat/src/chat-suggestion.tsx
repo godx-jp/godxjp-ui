@@ -369,7 +369,7 @@ export function ChatSuggestion({
       <PopoverAnchor
         ref={anchorRef}
         id={id}
-        data-slot="chat-suggestion"
+        data-kit-slot="chat-suggestion"
         className={cn("block w-full", className)}
         // A caret moved by the POINTER fires no key event, so the token under it is re-read here
         // too — otherwise clicking away from `/hel` left a stale list open over the draft.

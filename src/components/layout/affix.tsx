@@ -6,6 +6,7 @@ import { isDevelopment } from "../../lib/dev";
 import { scrollBoxOf, useInView } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import type { AffixProp } from "../../props/components/layout.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   AffixProp,
@@ -448,8 +449,12 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
       ? undefined
       : { "--affix-inset-block-end": `${offsetBlockEnd}px` }),
     ...(sticky || targetInset === 0 ? undefined : { "--affix-target-inset": `${targetInset}px` }),
-    ...(!sticky && affixed && box ? { "--affix-content-inline-size": `${box.inline}px` } : undefined),
-    ...((affixed || sticky) && room !== null ? { "--affix-content-max-block-size": `${room}px` } : undefined),
+    ...(!sticky && affixed && box
+      ? { "--affix-content-inline-size": `${box.inline}px` }
+      : undefined),
+    ...((affixed || sticky) && room !== null
+      ? { "--affix-content-max-block-size": `${room}px` }
+      : undefined),
   };
 
   return (
@@ -465,7 +470,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
       data-pin={sticky ? (pinToEnd ? "sticky-end" : "sticky-start") : undefined}
       className={cn("ui-affix", className)}
       style={style}
-      {...rest}
+      {...withoutSlot(rest)}
     >
       <div
         ref={sentinelRef}

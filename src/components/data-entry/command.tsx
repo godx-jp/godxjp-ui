@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { controlIconLeadingClass } from "../../lib/control-styles";
 import type { CommandProp, CommandSeparatorProp } from "../../props/components/data-entry.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type { CommandProp, CommandProp as CommandProps };
 export type { CommandSeparatorProp, CommandSeparatorProp as CommandSeparatorProps };
@@ -115,7 +116,7 @@ export const CommandSeparator = React.forwardRef<
     data-slot="command-separator"
     aria-hidden="true"
     alwaysRender={alwaysRender}
-    {...props}
+    {...withoutSlot(props)}
   />
 ));
 CommandSeparator.displayName = CommandPrimitive.Separator.displayName;

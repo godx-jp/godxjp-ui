@@ -27,6 +27,7 @@ import {
 } from "../../lib/control-styles";
 import type { AgentBadgeProp } from "../../props/components/data-display.prop";
 import type { ShapeProp, ToneProp } from "../../props/vocabulary";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type BadgeVariant = "default" | "secondary" | "outline" | "dashed";
 /**
@@ -313,7 +314,7 @@ export function Badge({
           className,
         )}
         style={tinted ? { ...style, ["--badge-color" as string]: color } : style}
-        {...props}
+        {...withoutSlot(props)}
       >
         {ResolvedIcon ? <ResolvedIcon data-slot="badge-icon" aria-hidden="true" /> : null}
         {/* Label span so badge-layout.css can text-box-trim the line box — JP faces (Noto Sans JP,
@@ -380,7 +381,7 @@ export function AgentBadge({
       data-agent=""
       data-shape="pill"
       className={cn(badgeVariants({ variant: "tinted", shape: "pill" }), className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       <span data-slot="badge-label">{children ?? t("dataDisplay.avatar.agent")}</span>
     </Element>

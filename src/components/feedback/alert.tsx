@@ -29,6 +29,7 @@ import type {
   AlertQueryErrorProp,
   AlertTitleProp,
 } from "../../props/components/feedback.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   AlertProp,
@@ -113,7 +114,7 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
           data-tone={tone}
           data-dismissible={onDismiss ? "" : undefined}
           className={className}
-          {...props}
+          {...withoutSlot(props)}
         >
           {IconComponent && (
             <IconComponent data-slot="alert-icon" data-tone={tone} aria-hidden="true" />
@@ -145,7 +146,13 @@ export const AlertTitle = React.forwardRef<HTMLParagraphElement, AlertTitleProp>
   ({ className, ...props }, ref) => {
     const tone = React.useContext(AlertContext);
     return (
-      <p ref={ref} data-slot="alert-title" data-tone={tone} className={className} {...props} />
+      <p
+        ref={ref}
+        data-slot="alert-title"
+        data-tone={tone}
+        className={className}
+        {...withoutSlot(props)}
+      />
     );
   },
 );
@@ -155,21 +162,21 @@ export const AlertContent = React.forwardRef<HTMLDivElement, AlertContentProp>(
   // `min-w-0 flex-1` moved to alert-layout.css [data-slot="alert-content"] — same box, but a
   // consumer className now overrides it from the utilities layer instead of tying with it.
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-slot="alert-content" className={className} {...props} />
+    <div ref={ref} data-slot="alert-content" className={className} {...withoutSlot(props)} />
   ),
 );
 AlertContent.displayName = "AlertContent";
 
 export const AlertDescription = React.forwardRef<HTMLParagraphElement, AlertDescriptionProp>(
   ({ className, ...props }, ref) => (
-    <p ref={ref} data-slot="alert-description" className={className} {...props} />
+    <p ref={ref} data-slot="alert-description" className={className} {...withoutSlot(props)} />
   ),
 );
 AlertDescription.displayName = "AlertDescription";
 
 export const AlertActions = React.forwardRef<HTMLDivElement, AlertActionsProp>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-slot="alert-actions" className={className} {...props} />
+    <div ref={ref} data-slot="alert-actions" className={className} {...withoutSlot(props)} />
   ),
 );
 AlertActions.displayName = "AlertActions";
@@ -247,7 +254,7 @@ export function AlertQueryError({
         tone="muted"
         role="status"
         aria-live="polite"
-        data-slot="alert-query-auth-pending"
+        data-kit-slot="alert-query-auth-pending"
         className={className}
       >
         {t("query.authExpiry.redirecting")}

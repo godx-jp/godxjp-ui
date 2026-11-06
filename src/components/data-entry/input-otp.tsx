@@ -5,6 +5,7 @@ import { Minus } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { controlSurfaceAttrs, resolveAriaInvalid } from "./control-surface";
 import type { InputOTPGroupProp, InputOTPProp } from "../../props/components/data-entry.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 /** antd's masking glyph for `mask={true}`. A string `mask` supplies its own. */
 const DEFAULT_MASK_CHAR = "•";
@@ -78,7 +79,7 @@ export const InputOTP = React.forwardRef<HTMLInputElement, InputOTPProp>(functio
     "data-slot": "input-otp",
     // INERT DEFAULT: `start` emits no attribute, so an existing field keeps its exact DOM.
     "data-align": align && align !== "start" ? align : undefined,
-    ...controlSurfaceAttrs({ size, status, variant }),
+    ...withoutSlot(controlSurfaceAttrs({ size, status, variant })),
     "aria-invalid": resolveAriaInvalid(ariaInvalid, status),
     // Native `readonly` already conveys the state, but the library's readOnly contract names
     // `aria-readonly` explicitly and half the controls did not honour it.
@@ -88,7 +89,7 @@ export const InputOTP = React.forwardRef<HTMLInputElement, InputOTPProp>(functio
     onChange: handleChange,
     containerClassName: cn("ui-otp-container", containerClassName),
     className: cn("ui-otp-input", className),
-    ...props,
+    ...withoutSlot(props),
   };
 
   // `input-otp` types its props as `render XOR children`; the two branches keep that union intact
@@ -121,7 +122,7 @@ export const InputOTPGroup = React.forwardRef<HTMLDivElement, InputOTPGroupProp>
       data-slot="input-otp-group"
       data-appearance={appearance}
       className={cn("ui-otp-group", className)}
-      {...props}
+      {...withoutSlot(props)}
     />
   ),
 );
@@ -144,7 +145,7 @@ export const InputOTPSlot = React.forwardRef<
       data-active={slot.isActive || undefined}
       data-masked={maskChar && slot.char !== null ? "" : undefined}
       className={cn("ui-otp-slot", className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       {painted}
       {slot.hasFakeCaret ? (
@@ -161,7 +162,7 @@ export const InputOTPSeparator = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ ...props }, ref) => (
-  <div ref={ref} data-slot="input-otp-separator" role="separator" {...props}>
+  <div ref={ref} data-slot="input-otp-separator" role="separator" {...withoutSlot(props)}>
     <Minus className="ui-otp-separator-icon" aria-hidden="true" />
   </div>
 ));

@@ -6,6 +6,7 @@ import { FormErrorsProvider } from "./form-errors";
 import { ResponsiveGrid } from "../layout/responsive-grid";
 import type { FormProp } from "../../props/components/data-entry.prop";
 import type { BreakpointProp, FormLayoutProp, WidthProp } from "../../props/vocabulary";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type { FormProp, FormProp as FormProps } from "../../props/components/data-entry.prop";
 
@@ -105,7 +106,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
             data-slot="form"
             data-layout={layout}
             className={cn("ui-form", density && `ui-density-${density}`, className)}
-            {...props}
+            {...withoutSlot(props)}
           >
             {asChildContent(children, columns)}
           </Slot>,
@@ -120,7 +121,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
       data-slot="form"
       data-layout={layout}
       className={cn("ui-form", density && `ui-density-${density}`, className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       <FormLayoutContext.Provider value={ctx}>{withRegistry(content)}</FormLayoutContext.Provider>
     </form>

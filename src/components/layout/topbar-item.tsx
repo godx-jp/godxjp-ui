@@ -3,6 +3,7 @@ import { Slot } from "../../lib/slot";
 
 import { cn } from "../../lib/utils";
 import type { TopbarItemProp } from "../../props/components/layout.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   TopbarItemProp,
@@ -128,7 +129,7 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
       // A bare `<button>` inside a form defaults to `type="submit"`; under `asChild` the child owns
       // its own element and must not be handed a `type` it may not accept (an `<a>`, a `<div>`).
       type={asChild ? undefined : (type ?? "button")}
-      {...props}
+      {...withoutSlot(props)}
     >
       {asChild ? (
         slotted

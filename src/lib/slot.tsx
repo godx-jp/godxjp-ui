@@ -3,6 +3,8 @@
 import { mergeProps } from "@react-aria/utils";
 import * as React from "react";
 
+import { KIT_SLOT } from "./without-slot";
+
 /**
  * `Slot` — nền của `asChild`, và từ v20 là của CHÍNH kho này.
  *
@@ -59,8 +61,24 @@ export function Slot({
   const slotStyle = slotProps.style;
   const childStyle = child.props.style;
 
+  /*
+   * gh#1527: a kit component drops a `data-slot` it is handed, so `<DialogClose asChild><Button>`
+   * would come out `button` instead of the close trigger. The slot reaching this point is always the
+   * kit's own (every wrapper strips the consumer's before it gets here), so a COMPONENT child is
+   * also handed it on the kit channel, which `withoutSlot` turns back into the slot. A host element
+   * needs nothing: it takes `data-slot` directly, as before.
+   */
+  const slotName = (slotProps as Record<string, unknown>)["data-slot"];
+  const kitSlot =
+    typeof child.type !== "string" &&
+    slotName !== undefined &&
+    !(KIT_SLOT in (child.props as object))
+      ? { [KIT_SLOT]: slotName }
+      : null;
+
   return React.cloneElement(child, {
     ...merged,
+    ...kitSlot,
     style:
       slotStyle === undefined && childStyle === undefined
         ? undefined

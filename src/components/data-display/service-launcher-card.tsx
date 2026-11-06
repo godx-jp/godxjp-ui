@@ -143,7 +143,7 @@ export const ServiceLauncherCard = React.forwardRef<HTMLDivElement, ServiceLaunc
               <Heading data-slot="service-launcher-title">{title}</Heading>
             </div>
             {statusLabel != null ? (
-              <Badge tone={statusTone} data-slot="service-launcher-status">
+              <Badge tone={statusTone} data-kit-slot="service-launcher-status">
                 {statusLabel}
               </Badge>
             ) : null}

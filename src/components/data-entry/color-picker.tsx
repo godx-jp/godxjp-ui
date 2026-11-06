@@ -97,7 +97,7 @@ function ColorPickerPresetGroup({
     <Collapsible
       defaultOpen={preset.defaultOpen ?? true}
       className="ui-color-picker-presets-group"
-      data-slot="color-picker-presets-group"
+      data-kit-slot="color-picker-presets-group"
     >
       <CollapsibleTrigger className="ui-color-picker-presets-trigger ui-focus-ring">
         <ChevronDown className="ui-color-picker-presets-chevron" aria-hidden="true" />

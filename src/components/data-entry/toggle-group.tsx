@@ -15,6 +15,7 @@ import {
   type ToggleCountFields,
   type ToggleProp,
 } from "./toggle";
+import { withoutSlot } from "../../lib/without-slot";
 
 type ToggleGroupVariant = ToggleProp["variant"];
 type ToggleGroupSize = ToggleProp["size"];
@@ -214,7 +215,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
         // match and a group that never opted in is byte-identical to 27.10.0 (gh#741).
         data-wrap={wrap ? "true" : undefined}
         className={cn("ui-toggle-group", className)}
-        {...(props as Omit<ToggleButtonGroupProps, "children" | "className">)}
+        {...withoutSlot(props as Omit<ToggleButtonGroupProps, "children" | "className">)}
         selectionMode={type}
         selectedKeys={selectedKeys}
         defaultSelectedKeys={defaultSelectedKeys}
@@ -229,7 +230,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
         // `radiogroup` and `toolbar` both do, so it survives untouched in those two modes.
         render={(domProps) => (
           <div
-            {...props}
+            {...withoutSlot(props)}
             {...domProps}
             // MERGE, never replace: `domProps` carries React Aria's own ref, and overwriting it
             // leaves `useToolbar` with a null element — which silently kills the arrow keys this
@@ -350,7 +351,7 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
           toggleVariants({ variant: resolvedVariant, size: resolvedSize, shape: resolvedShape }),
           className,
         )}
-        {...(props as Omit<ToggleButtonProps, "children" | "className">)}
+        {...withoutSlot(props as Omit<ToggleButtonProps, "children" | "className">)}
         id={value}
         isDisabled={disabled}
         // React Aria stamps `role="radio"` + `aria-checked` on every item of a single group and

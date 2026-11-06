@@ -5,6 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
 import { numberFormat } from "../../lib/intl-cache";
+import { withoutSlot } from "../../lib/without-slot";
 
 const toggleVariants = cva("ui-toggle", {
   variants: {
@@ -238,7 +239,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProp>(
         data-state={isPressed ? "on" : "off"}
         aria-label={resolvedAriaLabel}
         className={cn(toggleVariants({ variant, size, shape }), className)}
-        {...(props as Omit<ToggleButtonProps, "children" | "className">)}
+        {...withoutSlot(props as Omit<ToggleButtonProps, "children" | "className">)}
         isSelected={isPressed}
         onChange={onSelectionChange}
         isDisabled={disabled}

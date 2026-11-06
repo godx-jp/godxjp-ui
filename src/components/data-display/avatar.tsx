@@ -9,6 +9,7 @@ import { useImageLoadingStatus, type ImageLoadingStatus } from "../../lib/image-
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
 import type { AvatarImageFitProp, AvatarProp } from "../../props/components/data-display.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 type AvatarContextValue = {
   imageLoadingStatus: ImageLoadingStatus;
@@ -84,7 +85,7 @@ export const Avatar = React.forwardRef<
           // so the AI tag can straddle the mark's corner.
           data-kind={kind === "agent" ? "agent" : undefined}
           className={cn("ui-avatar", className)}
-          {...props}
+          {...withoutSlot(props)}
         >
           {children}
           {/* Owned by Avatar rather than offered as an `AvatarPresence` part or left to the consumer, because the dot's inset is a function of the mark's OWN --avatar-* radius/size tokens and the root's clip: nothing outside the avatar can read either, which is why every consumer ended up with the same hand-rolled `<span className="relative">` + `bg-green-500 ring-2` workaround. The node exists ONLY when the prop does, so an entity with no presence concept (an organization mark, a capability medallion) emits nothing at all — and `presence="offline"` stays a different, positive statement from an absent prop. */}
@@ -157,7 +158,7 @@ export const AvatarImage = React.forwardRef<
       // Absent at the default, so an image that never sets it renders the node it always did.
       data-fit={fit === "contain" ? "contain" : undefined}
       className={cn("ui-avatar-image", className)}
-      {...props}
+      {...withoutSlot(props)}
       src={src}
     />
   ) : null;
@@ -191,7 +192,7 @@ export const AvatarFallback = React.forwardRef<
       ref={ref}
       data-slot="avatar-fallback"
       className={cn("ui-avatar-fallback", className)}
-      {...props}
+      {...withoutSlot(props)}
     />
   ) : null;
 });

@@ -13,6 +13,7 @@ import { ChevronDown } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
+import { withoutSlot } from "../../lib/without-slot";
 
 /*
  * Accordion — nền là `DisclosureGroup` / `Disclosure` của react-aria-components,
@@ -272,8 +273,8 @@ export function AccordionItem({
           <div
             data-slot="accordion-item"
             className={cn("ui-accordion-item", className)}
-            {...props}
-            {...rest}
+            {...withoutSlot(props)}
+            {...withoutSlot(rest)}
             ref={mergeRefs(ref, racRef)}
             data-state={isExpanded ? "open" : "closed"}
             data-disabled={isDisabled ? "" : undefined}
@@ -329,7 +330,7 @@ export function AccordionTrigger({
         data-orientation={item.orientation}
         disabled={item.isDisabled}
         className={cn("ui-accordion-trigger", className)}
-        {...props}
+        {...withoutSlot(props)}
         onClick={chain(onClick, () => {
           if (!item.isDisabled) {
             state.toggle();
@@ -372,8 +373,8 @@ export function AccordionContent({
           <div
             data-slot="accordion-content"
             className={cn("ui-accordion-content", className)}
-            {...props}
-            {...rest}
+            {...withoutSlot(props)}
+            {...withoutSlot(rest)}
             ref={mergeRefs(ref, racRef)}
             data-state={state.isExpanded ? "open" : "closed"}
             data-disabled={item.isDisabled ? "" : undefined}

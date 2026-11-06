@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { cn } from "../../lib/utils";
 import type { SwatchProp } from "../../props/components/data-display.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   SwatchProp,
@@ -40,7 +41,7 @@ export function Swatch({ color, className, style, ...props }: SwatchProp) {
       style={{ ...style, ["--swatch-color" as string]: color } as CSSProperties}
       role={named ? "img" : undefined}
       aria-hidden={named ? undefined : true}
-      {...props}
+      {...withoutSlot(props)}
     />
   );
 }

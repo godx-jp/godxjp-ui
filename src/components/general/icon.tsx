@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { cn } from "../../lib/utils";
 import type { IconGlyphProp } from "../../props/components/general.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   IconGlyphProp,
@@ -49,7 +50,7 @@ export const Icon = React.forwardRef<SVGSVGElement, IconGlyphProp>(function Icon
       role={named ? "img" : undefined}
       aria-label={named ? label : undefined}
       aria-hidden={named ? undefined : true}
-      {...props}
+      {...withoutSlot(props)}
     />
   );
 });

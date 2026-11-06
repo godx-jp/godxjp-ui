@@ -21,6 +21,7 @@ import type {
   DialogContentProp,
   DialogProp,
 } from "../../props/components/feedback.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   AlertDialogProp,
@@ -302,11 +303,11 @@ function DialogShell({
       render={(racProps) => {
         const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
         return modal ? (
-          <section {...rest} {...props} style={style} ref={mergeRefs(ref, racRef)} />
+          <section {...rest} {...withoutSlot(props)} style={style} ref={mergeRefs(ref, racRef)} />
         ) : (
           <section
             {...rest}
-            {...props}
+            {...withoutSlot(props)}
             style={style}
             ref={mergeRefs(ref, racRef, contentRef)}
             onKeyDown={chain(
@@ -387,7 +388,7 @@ function DialogTrigger({ asChild, onClick, ...props }: DialogTriggerProps) {
       aria-haspopup="dialog"
       aria-expanded={state.isOpen}
       data-state={state.isOpen ? "open" : "closed"}
-      {...props}
+      {...withoutSlot(props)}
       onClick={chain(onClick, () => {
         state.setOpen(!state.isOpen);
       })}
@@ -418,7 +419,7 @@ function DialogClose({ asChild, onClick, ...props }: DialogCloseProps) {
     <Comp
       type="button"
       data-slot="dialog-close"
-      {...props}
+      {...withoutSlot(props)}
       onClick={chain(onClick, () => {
         state.setOpen(false);
       })}
@@ -543,7 +544,7 @@ const DialogHeader = ({
       data-slot="dialog-header"
       data-tone={tone}
       className={cn(overlayHeaderToneClass[tone], className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       {children ?? (
         // Chrome rhythm lives in dialog-layout.css (`.ui-dialog-*`, mirroring `.ui-sheet-*`), so
@@ -565,14 +566,14 @@ DialogHeader.displayName = "DialogHeader";
 // [data-slot="dialog-body"]: full-bleed inset (matches the dialog padding) so a full-width
 // control's 3px focus ring never clips against the scroll container. Mirrors SheetBody.
 const DialogBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div data-slot="dialog-body" className={className} {...props} />
+  <div data-slot="dialog-body" className={className} {...withoutSlot(props)} />
 );
 DialogBody.displayName = "DialogBody";
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   // Layout (right-aligned actions, mobile column-reverse) lives in feedback-layout.css
   // [data-slot="dialog-footer"]. Destructive action goes to the start via `className="me-auto"`.
-  <div data-slot="dialog-footer" className={className} {...props} />
+  <div data-slot="dialog-footer" className={className} {...withoutSlot(props)} />
 );
 DialogFooter.displayName = "DialogFooter";
 
@@ -581,7 +582,13 @@ const DialogTitle = React.forwardRef<HTMLHeadingElement, React.ComponentPropsWit
     const labels = React.useContext(DialogLabelContext);
     const cls = cn(className);
     return (
-      <h2 ref={ref} id={labels?.titleId} data-slot="dialog-title" className={cls} {...props} />
+      <h2
+        ref={ref}
+        id={labels?.titleId}
+        data-slot="dialog-title"
+        className={cls}
+        {...withoutSlot(props)}
+      />
     );
   },
 );
@@ -599,7 +606,7 @@ const DialogDescription = React.forwardRef<
       id={labels?.descriptionId}
       data-slot="dialog-description"
       className={cls}
-      {...props}
+      {...withoutSlot(props)}
     />
   );
 });
@@ -707,7 +714,7 @@ const AlertDialogHeader = ({
       data-slot="dialog-header"
       data-tone={tone}
       className={cn(overlayHeaderToneClass[tone], className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       {children ?? (
         <div className="ui-dialog-title-row">
@@ -725,7 +732,7 @@ AlertDialogHeader.displayName = "AlertDialogHeader";
 
 const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   // Layout lives in feedback-layout.css [data-slot="dialog-footer"] (right-aligned actions).
-  <div data-slot="dialog-footer" className={cn(className)} {...props} />
+  <div data-slot="dialog-footer" className={cn(className)} {...withoutSlot(props)} />
 );
 AlertDialogFooter.displayName = "AlertDialogFooter";
 

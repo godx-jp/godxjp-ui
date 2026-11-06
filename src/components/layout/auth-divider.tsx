@@ -14,7 +14,7 @@ export type {
 export function AuthDivider({ label, className }: AuthDividerProp) {
   return (
     <Separator
-      data-slot="auth-divider"
+      data-kit-slot="auth-divider"
       label={label}
       className={cn("ui-auth-divider", className)}
     />

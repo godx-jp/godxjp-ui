@@ -4,6 +4,7 @@ import { useTranslation } from "../../i18n/use-translation";
 import { useScrollsOnAxis } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import type { ScrollAreaProp } from "../../props/components/data-display.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type ScrollAreaProps = ScrollAreaProp &
   Omit<React.ComponentPropsWithoutRef<"div">, keyof ScrollAreaProp>;
@@ -273,8 +274,8 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
         data-orientation={orientation}
         data-scrollbar={scrollbar}
         className={cn("ui-scroll-area", className)}
-        {...(scrolls ? { role: "group", "aria-label": regionLabel, tabIndex: 0 } : {})}
-        {...props}
+        {...withoutSlot(scrolls ? { role: "group", "aria-label": regionLabel, tabIndex: 0 } : {})}
+        {...withoutSlot(props)}
       >
         <div data-slot="scroll-area-content" className="ui-scroll-area-content">
           {children}

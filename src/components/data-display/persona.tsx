@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../../lib/utils";
 import type { PersonaProp } from "../../props/components/data-display.prop";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   PersonaProp,
@@ -19,7 +20,7 @@ export const Persona = React.forwardRef<HTMLSpanElement, PersonaProp>(
       data-slot="persona"
       data-size={size}
       className={cn("ui-persona", className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       <Avatar size={size} aria-hidden="true">
         {avatarSrc ? <AvatarImage src={avatarSrc} alt="" /> : null}

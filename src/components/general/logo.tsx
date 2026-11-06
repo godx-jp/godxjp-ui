@@ -11,6 +11,7 @@ import {
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
 import { VisuallyHidden } from "./visually-hidden";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type LogoSize = "xs" | "sm" | "md" | "lg";
 export type LogoTone = "primary" | "success";
@@ -419,14 +420,14 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
       return renderRoot(
         {
           "data-slot": "logo-lockup",
-          ...identity,
+          ...withoutSlot(identity),
           className: cn("ui-logo-lockup", className),
           role: label ? "img" : undefined,
           "aria-label": label,
-          ...props,
+          ...withoutSlot(props),
         } as React.HTMLAttributes<HTMLElement>,
         <>
-          <span data-slot="logo" {...identity} className="ui-logo" aria-hidden="true">
+          <span data-slot="logo" {...withoutSlot(identity)} className="ui-logo" aria-hidden="true">
             <MarkArtwork mark={mark} glyph={glyph} />
           </span>
           {/* `data-logotype` marks this as brand-name artwork: WCAG 2.2 SC 1.4.3 exempts "text
@@ -459,12 +460,12 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
     return renderRoot(
       {
         "data-slot": "logo",
-        ...identity,
+        ...withoutSlot(identity),
         className: cn("ui-logo", className),
         role: label ? "img" : undefined,
         "aria-label": label,
         "aria-hidden": label ? undefined : true,
-        ...props,
+        ...withoutSlot(props),
       } as React.HTMLAttributes<HTMLElement>,
       <MarkArtwork mark={mark} glyph={glyph} />,
     );

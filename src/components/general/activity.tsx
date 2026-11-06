@@ -4,6 +4,7 @@ import { cn } from "../../lib/utils";
 import { Text } from "./typography";
 import type { ActivityProp } from "../../props/components/general.prop";
 import type { SizeProp, TextSizeProp } from "../../props/vocabulary";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   ActivityProp,
@@ -96,7 +97,7 @@ export const Activity = React.forwardRef<HTMLSpanElement, ActivityProp>(function
       data-size={size}
       data-tone={tone}
       className={cn("ui-activity", className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       <span className="ui-activity-mark" data-slot="activity-mark" aria-hidden="true">
         <ActivityMark variant={variant} />

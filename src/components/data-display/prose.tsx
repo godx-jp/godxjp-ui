@@ -4,6 +4,7 @@ import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import type { ProseProp } from "../../props/components/data-display.prop";
 import { ImagePreviewGroup } from "./image";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type { ProseProp, ProseProp as ProseProps };
 
@@ -118,7 +119,7 @@ export const Prose = React.forwardRef<
         onKeyDown?.(event);
         if (event.key === "Enter" || event.key === " ") open(event);
       }}
-      {...rest}
+      {...withoutSlot(rest)}
     >
       {children}
     </div>
