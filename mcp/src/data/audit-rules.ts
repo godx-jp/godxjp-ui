@@ -265,6 +265,13 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: "Use <Button> from @godxjp/ui, not a raw <button>.",
   },
   {
+    id: "no-data-slot-on-kit-component",
+    severity: "error",
+    category: "composition",
+    standard: null,
+    fix: "Don't pass data-slot to a @godxjp/ui component — it is the component's identity and is discarded (gh#1527). Use data-testid for a test hook, className for styling.",
+  },
+  {
     id: "card-manual-padding",
     severity: "error",
     category: "composition",
