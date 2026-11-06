@@ -15,6 +15,7 @@ import type {
   SliderRangeConfigProp,
   SliderTooltipProp,
 } from "../../props/components/data-entry.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type { SliderProp, SliderProp as SliderProps } from "../../props/components/data-entry.prop";
 
@@ -645,7 +646,7 @@ function SliderBody({ model }: { model: SliderModel }) {
       // `SliderTrackProps` leaves keyboard events out of its TYPE, but SliderTrack spreads every
       // prop it is given onto its div — and this div holds every thumb's input, so it is the one
       // element whose capture phase runs before react-aria's key handlers on the thumb.
-      {...({ onKeyDownCapture } as React.HTMLAttributes<HTMLDivElement>)}
+      {...withoutSlot({ onKeyDownCapture } as React.HTMLAttributes<HTMLDivElement>)}
     >
       <span ref={railRef} data-slot="slider-track" className="ui-slider-track">
         {/* antd `included={false}` — the rail carries marks only and nothing is "up to here",

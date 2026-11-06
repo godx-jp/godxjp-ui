@@ -29,6 +29,7 @@ import type {
   DropdownMenuPlacementProp,
   DropdownMenuTriggerActionProp,
 } from "../../props/components/navigation.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   DropdownMenuPlacementProp,
@@ -610,19 +611,24 @@ export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMen
             "data-slot": "dropdown-menu-trigger",
             "data-state": dataState,
             // The root's `shortcut`, announced (gh#1267); a consumer's own value wins.
-            ...(keyShortcuts &&
-            (children.props as Record<string, unknown>)["aria-keyshortcuts"] === undefined
-              ? { "aria-keyshortcuts": keyShortcuts }
-              : {}),
+            ...withoutSlot(
+              keyShortcuts &&
+                (children.props as Record<string, unknown>)["aria-keyshortcuts"] === undefined
+                ? { "aria-keyshortcuts": keyShortcuts }
+                : {},
+            ),
             // A right click target is usually a region rather than a button, and Shift+F10 needs it
             // focusable — so it is given a tab stop unless the consumer already placed one.
-            ...(wantsContextMenu &&
-            (children.props as Record<string, unknown>).tabIndex === undefined
-              ? { tabIndex: 0 }
-              : {}),
-            ...chainGestureProps(
-              children.props as Record<string, unknown>,
-              gestureProps as Record<string, unknown>,
+            ...withoutSlot(
+              wantsContextMenu && (children.props as Record<string, unknown>).tabIndex === undefined
+                ? { tabIndex: 0 }
+                : {},
+            ),
+            ...withoutSlot(
+              chainGestureProps(
+                children.props as Record<string, unknown>,
+                gestureProps as Record<string, unknown>,
+              ),
             ),
           }) as React.ReactElement<React.DOMAttributes<Element>, string>
         }
@@ -762,7 +768,7 @@ export function DropdownMenuRadioGroup({
   return (
     <>
       {sections.map((run, index) => (
-        <MenuSection key={index} data-slot="dropdown-menu-radio-group" {...selection}>
+        <MenuSection key={index} data-slot="dropdown-menu-radio-group" {...withoutSlot(selection)}>
           {run.label}
           {run.items}
         </MenuSection>
@@ -1037,10 +1043,10 @@ export function DropdownMenuItem({
             "data-inset": inset,
             "data-variant": variant,
             "data-description": hasDescription ? "" : undefined,
-            ...radixItemState(state),
+            ...withoutSlot(radixItemState(state)),
             // LAST, so a consumer's own `id`/`data-*` wins over ours rather than being
             // overwritten by the slot bookkeeping above (gh#631).
-            ...forwarded,
+            ...withoutSlot(forwarded),
           },
           content,
         );
@@ -1184,7 +1190,11 @@ export function DropdownMenuCheckboxItem({
           const { children: content, ...rest } = props as ItemDomProps;
           return renderItemTag(
             tag,
-            { ...rest, "data-slot": "dropdown-menu-checkbox-item", ...radixItemState(state) },
+            {
+              ...rest,
+              "data-slot": "dropdown-menu-checkbox-item",
+              ...withoutSlot(radixItemState(state)),
+            },
             <>
               <span className="ui-dropdown-menu-indicator-slot">
                 {state.isSelected ? (
@@ -1232,7 +1242,11 @@ export function DropdownMenuRadioItem({
         const { children: content, ...rest } = props as ItemDomProps;
         return renderItemTag(
           tag,
-          { ...rest, "data-slot": "dropdown-menu-radio-item", ...radixItemState(state) },
+          {
+            ...rest,
+            "data-slot": "dropdown-menu-radio-item",
+            ...withoutSlot(radixItemState(state)),
+          },
           content,
         );
       }}
@@ -1278,7 +1292,7 @@ export function DropdownMenuSubTrigger({
             ...rest,
             "data-slot": "dropdown-menu-sub-trigger",
             "data-inset": inset,
-            ...radixItemState(state),
+            ...withoutSlot(radixItemState(state)),
           },
           <>
             {content}
@@ -1365,6 +1379,6 @@ export const DropdownMenuShortcut = ({
   <span
     data-slot="dropdown-menu-shortcut"
     className={cn("text-muted-foreground ms-auto text-xs tracking-widest", className)}
-    {...props}
+    {...withoutSlot(props)}
   />
 );

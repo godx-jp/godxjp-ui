@@ -14,6 +14,7 @@ import {
   useMergedConfig,
   writeClipboard,
 } from "../general/typography";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type { CodeBlockProp, CodeBlockProp as CodeBlockProps };
 
@@ -71,7 +72,7 @@ function CodeBlockCopy({
           type="button"
           variant="ghost"
           size="icon-xs"
-          data-slot="code-block-copy"
+          data-kit-slot="code-block-copy"
           data-state={copied ? "copied" : "idle"}
           aria-label={copyAriaLabel}
           tabIndex={config.tabIndex}
@@ -136,7 +137,7 @@ export const CodeBlock = React.forwardRef<
       data-language={language}
       tabIndex={scrolls ? 0 : undefined}
       className={cn("ui-code-block", className)}
-      {...rest}
+      {...withoutSlot(rest)}
     >
       <code ref={codeRef}>{children}</code>
     </pre>

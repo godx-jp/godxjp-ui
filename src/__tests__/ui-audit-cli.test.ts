@@ -26,6 +26,41 @@ function audit(source: string, framework = false, path?: string, filename = "sam
   }
 }
 
+describe("no-data-slot-on-kit-component (gh#1527)", () => {
+  const RULE = '"no-data-slot-on-kit-component"';
+  const count = (out: string) => out.split(RULE).length - 1;
+
+  it("flags data-slot on a named, aliased, wrapped or namespaced kit component", () => {
+    const src = [
+      'import { Alert, Card as KitCard } from "@godxjp/ui";',
+      'import * as UI from "@godxjp/ui";',
+      "export const P = () => (<>",
+      '  <Alert variant="callout" data-slot="a">x</Alert>',
+      '  <KitCard\n    className="c"\n    data-slot="b"\n  />',
+      '  <UI.Badge data-slot="c">b</UI.Badge>',
+      '  <Alert data-kit-slot="d">x</Alert>',
+      "</>);",
+    ].join("\n");
+    expect(count(audit(src).output)).toBe(4);
+  });
+
+  it("does not flag a local component, a host element, a type-only import, or data-testid", () => {
+    const src = [
+      'import type { Alert } from "@godxjp/ui";',
+      'import { Button } from "@godxjp/ui";',
+      'import { Local } from "./local";',
+      "export const P = () => (<>",
+      '  <Local data-slot="a" />',
+      '  <div data-slot="b" />',
+      '  <Alert data-slot="c" />',
+      '  <Button data-testid="d">x</Button>',
+      '  <ButtonGroup data-slot="e" />',
+      "</>);",
+    ].join("\n");
+    expect(count(audit(src).output)).toBe(0);
+  });
+});
+
 describe("consumer audit CLI regressions", () => {
   /**
    * `\p{Extended_Pictographic}` covers U+00A9 ©, U+00AE ® and U+2122 ™, and all three are

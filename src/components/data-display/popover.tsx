@@ -8,6 +8,7 @@ import { getActiveElement } from "../../lib/active-element";
 import { Slot } from "../../lib/slot";
 import { useOverlayCloseFocus } from "../feedback/overlay-close-focus";
 import type { FlushProp } from "../../props/vocabulary";
+import { withoutSlot } from "../../lib/without-slot";
 
 /*
  * Popover — nền là `Popover` của react-aria-components, API công khai vẫn nguyên văn Radix:
@@ -371,7 +372,7 @@ function ClickTrigger({ asChild, onClick, ref, ...props }: PopoverTriggerProps) 
       id={props.id ?? root.triggerId}
       aria-controls={root.open ? root.contentId : undefined}
       data-state={root.open ? "open" : "closed"}
-      {...props}
+      {...withoutSlot(props)}
       ref={mergeRefs(ref, root.triggerRef)}
       onClick={chain(onClick, () => root.setOpen(!root.open))}
     />
@@ -432,7 +433,9 @@ export function PopoverAnchor({ asChild, ref, ...props }: PopoverAnchorProps) {
     return () => setAnchored(false);
   }, [setAnchored]);
 
-  return <Comp data-slot="popover-anchor" {...props} ref={mergeRefs(ref, root.anchorRef)} />;
+  return (
+    <Comp data-slot="popover-anchor" {...withoutSlot(props)} ref={mergeRefs(ref, root.anchorRef)} />
+  );
 }
 
 /**
@@ -707,7 +710,7 @@ function ClickContent({
             data-state={isExiting ? "closed" : "open"}
             data-flush={flush ? "" : undefined}
             data-width={width && width !== "panel" ? width : undefined}
-            {...props}
+            {...withoutSlot(props)}
             /*
              * AFTER `{...props}`, and computed from `props` rather than `rest`: `rest` is RAC's own
              * DOM bag, so a consumer's `aria-label` is not in it. Reading the wrong bag put an
@@ -822,7 +825,7 @@ function HoverContent({
             data-side={side}
             data-align={align}
             data-state={isExiting ? "closed" : "open"}
-            {...props}
+            {...withoutSlot(props)}
             ref={mergeRefs(ref, racRef)}
             /* The pointer crossed from the trigger onto the card: cancel the pending close. */
             onPointerEnter={chain(onPointerEnter, () => root.cancelClose())}
@@ -852,7 +855,11 @@ function HoverContent({
 }
 
 export const PopoverHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div data-slot="popover-header" className={cn("ui-popover-header", className)} {...props} />
+  <div
+    data-slot="popover-header"
+    className={cn("ui-popover-header", className)}
+    {...withoutSlot(props)}
+  />
 );
 
 export const PopoverTitle = ({ className, id, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -869,7 +876,7 @@ export const PopoverTitle = ({ className, id, ...props }: React.HTMLAttributes<H
       data-slot="popover-title"
       id={id ?? root.titleId}
       className={cn("font-medium", className)}
-      {...props}
+      {...withoutSlot(props)}
     />
   );
 };
@@ -890,7 +897,7 @@ export const PopoverDescription = ({
       data-slot="popover-description"
       id={id ?? root.descriptionId}
       className={cn("text-muted-foreground", className)}
-      {...props}
+      {...withoutSlot(props)}
     />
   );
 };

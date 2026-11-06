@@ -13,6 +13,7 @@ import { overlayHeaderToneClass } from "./overlay-header-tone";
 import { useOverlayCloseFocus } from "./overlay-close-focus";
 import { closeOnEscape, NonModalPortal, useNonModalPortal } from "./non-modal-layer";
 import { useTranslation } from "../../i18n/use-translation";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type { SheetResponsiveProp } from "../../props/components/feedback.prop";
 
@@ -159,7 +160,7 @@ export function SheetTrigger({ asChild, onClick, ...props }: SheetTriggerProps) 
       aria-haspopup="dialog"
       aria-expanded={state.isOpen}
       data-state={state.isOpen ? "open" : "closed"}
-      {...props}
+      {...withoutSlot(props)}
       onClick={chain(onClick, () => {
         state.setOpen(!state.isOpen);
       })}
@@ -180,7 +181,7 @@ export function SheetClose({ asChild, onClick, ...props }: SheetCloseProps) {
     <Comp
       type="button"
       data-slot="sheet-close"
-      {...props}
+      {...withoutSlot(props)}
       onClick={chain(onClick, () => {
         state.setOpen(false);
       })}
@@ -333,11 +334,16 @@ export function SheetContent({
       render={(racProps) => {
         const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
         return modal ? (
-          <section {...rest} {...props} style={mergedStyle} ref={mergeRefs(ref, racRef)} />
+          <section
+            {...rest}
+            {...withoutSlot(props)}
+            style={mergedStyle}
+            ref={mergeRefs(ref, racRef)}
+          />
         ) : (
           <section
             {...rest}
-            {...props}
+            {...withoutSlot(props)}
             style={mergedStyle}
             ref={mergeRefs(ref, racRef, contentRef)}
             onKeyDown={chain(
@@ -424,7 +430,7 @@ export const SheetHeader = ({
         overlayHeaderToneClass[tone],
         className,
       )}
-      {...props}
+      {...withoutSlot(props)}
     >
       {children ?? (
         // `pe-8` reserves room for the absolute close button (end-4) so title/extra never sit under it.
@@ -452,7 +458,7 @@ export const SheetBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivE
       "ui-sheet-body-space -mx-[var(--sheet-pad-x)] flex-1 overflow-y-auto px-[var(--sheet-pad-x)]",
       className,
     )}
-    {...props}
+    {...withoutSlot(props)}
   />
 );
 
@@ -468,7 +474,7 @@ export const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDi
       "ui-sheet-footer-row -mx-[var(--sheet-pad-x)] mt-auto -mb-[var(--sheet-pad-y)] px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
       className,
     )}
-    {...props}
+    {...withoutSlot(props)}
   />
 );
 
@@ -483,7 +489,7 @@ export const SheetTitle = React.forwardRef<
       id={labels?.titleId}
       data-slot="sheet-title"
       className={cn("ui-sheet-title", className)}
-      {...props}
+      {...withoutSlot(props)}
     />
   );
 });
@@ -500,7 +506,7 @@ export const SheetDescription = React.forwardRef<
       id={labels?.descriptionId}
       data-slot="sheet-description"
       className={cn("ui-sheet-description", className)}
-      {...props}
+      {...withoutSlot(props)}
     />
   );
 });

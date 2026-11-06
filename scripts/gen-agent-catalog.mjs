@@ -612,6 +612,45 @@ if (OUT === join(ROOT, "agent")) {
   }
   files["../mcp/src/data/exemplars.generated.ts"] =
     `${banner}export const EXEMPLAR_SOURCES: Record<string, string> = ${JSON.stringify(sources, null, 2)};\n`;
+
+  /* THE SHIPPED SKILLS ARE SERVED BY THE MCP TOO (gh#1527).
+   *
+   * `skills/<id>/SKILL.md` ships in the @godxjp/ui tarball for `gx skills`, and was reachable no
+   * other way: a consumer repo copied one into its own `.claude/skills/`, the copy drifted, and the
+   * drift shipped. The files are embedded here verbatim so `list_consumer_skills` /
+   * `get_consumer_skill` / `route_consumer_task` serve the same text, and `--check` fails the moment
+   * a SKILL.md changes without a regen. Parsing into sections happens in skills-index.ts. */
+  const shipped = [];
+  for (const dir of globSync("skills/*/SKILL.md", { cwd: ROOT }).sort()) {
+    const id = dir.split("/")[1];
+    const raw = readFileSync(join(ROOT, dir), "utf8");
+    const fm = /^---\n([\s\S]*?)\n---\n/.exec(raw);
+    const field = (key) => fm && new RegExp(`^${key}:\\s*(.+)$`, "m").exec(fm[1])?.[1].trim();
+    if (
+      !fm ||
+      field("name") !== id ||
+      !field("description") ||
+      /^[>|]/.test(field("description"))
+    ) {
+      console.error(
+        `✗ gen-agent-catalog — ${dir} needs frontmatter with \`name: ${id}\` and a one-line ` +
+          `description (a folded \`>-\` / \`|\` block is not read here).`,
+      );
+      process.exit(1);
+    }
+    const references = {};
+    for (const ref of globSync(`skills/${id}/references/*.md`, { cwd: ROOT }).sort()) {
+      references[ref.split("/").pop()] = readFileSync(join(ROOT, ref), "utf8");
+    }
+    shipped.push({
+      id,
+      description: field("description"),
+      body: raw.slice(fm[0].length),
+      references,
+    });
+  }
+  files["../mcp/src/data/shipped-skills.generated.ts"] =
+    `${banner}export const SHIPPED_SKILL_FILES: { id: string; description: string; body: string; references: Record<string, string> }[] = ${JSON.stringify(shipped, null, 2)};\n`;
 }
 
 mkdirSync(OUT, { recursive: true });

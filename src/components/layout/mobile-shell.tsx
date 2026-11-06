@@ -1,5 +1,6 @@
 import { forwardRef, useRef, type ComponentPropsWithoutRef } from "react";
 
+import { regionFocusOriginHandlers } from "../../lib/region-focus-origin";
 import { useTranslation } from "../../i18n/use-translation";
 import { useToastStickyBarClearance } from "../../lib/toast-clearance";
 import { cn } from "../../lib/utils";
@@ -93,6 +94,7 @@ export function MobileShell({
       {/* tabIndex={0} for axe `scrollable-region-focusable`: this is the shell's only scroll
        * container, so a keyboard user must be able to focus and scroll it (same as `.app-main`). */}
       <main
+        {...regionFocusOriginHandlers}
         className="ui-mobile-shell-main"
         aria-label={t("layout.appShell.mainLabel")}
         tabIndex={0}

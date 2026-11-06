@@ -26,6 +26,7 @@ import type {
   ImageProp,
 } from "../../props/components/data-display.prop";
 import { useOverlayCloseFocus } from "../feedback/overlay-close-focus";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   ImageFitProp,
@@ -709,7 +710,7 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
     caption == null ? (
       image
     ) : (
-      <figure data-slot="image-tile" className="ui-image-tile" {...frame}>
+      <figure data-slot="image-tile" className="ui-image-tile" {...withoutSlot(frame)}>
         {image}
         <figcaption data-slot="image-caption" className="ui-image-caption">
           {caption}
@@ -723,7 +724,7 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
         ref={wrapperRef}
         data-slot="image"
         data-status={status}
-        {...frame}
+        {...withoutSlot(frame)}
         className={cn("ui-image", className)}
       >
         {picture}
@@ -741,7 +742,7 @@ const ImageRoot = React.forwardRef<HTMLImageElement, ImageProp>(function Image(
         data-slot="image"
         data-status={status}
         data-preview=""
-        {...frame}
+        {...withoutSlot(frame)}
         className={cn("ui-image ui-focus-ring", className)}
         aria-label={
           alt ? t("dataDisplay.image.previewLabel", { alt }) : t("dataDisplay.image.previewUnnamed")

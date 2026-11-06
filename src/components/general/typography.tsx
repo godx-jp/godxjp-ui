@@ -28,6 +28,7 @@ export type {
 } from "../../props/components/general.prop";
 import { isDevelopment } from "../../lib/dev";
 import { isImeComposing } from "../../lib/ime";
+import { withoutSlot } from "../../lib/without-slot";
 
 /*
  * ═══════════════════════════════════════════════════════════════════════════════════════════════
@@ -249,7 +250,7 @@ const TypographyAction = React.forwardRef<
     type="button"
     data-slot={slot}
     className={cn("ui-typography-action", className)}
-    {...props}
+    {...withoutSlot(props)}
   />
 ));
 TypographyAction.displayName = "TypographyAction";
@@ -795,10 +796,10 @@ const TextBase = React.forwardRef<HTMLElement, TextProp>((props, ref) => {
     "data-chip": chip ? "" : undefined,
     "data-mono": mono ? "" : undefined,
     "aria-disabled": disabled ? true : undefined,
-    ...block.attrs,
+    ...withoutSlot(block.attrs),
     onClick: block.onTextClick,
     className: cn("ui-text", className),
-    ...rest,
+    ...withoutSlot(rest),
   } as Record<string, unknown>;
 
   if (block.editing) return block.editor;
@@ -945,7 +946,7 @@ export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProp>(
       // Only the opt-in face is stamped; a default heading keeps its markup byte-for-byte.
       "data-family": family === "editorial" ? "editorial" : undefined,
       className: cn("ui-heading", className),
-      ...props,
+      ...withoutSlot(props),
     }),
 );
 Heading.displayName = "Heading";

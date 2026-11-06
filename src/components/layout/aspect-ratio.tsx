@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
+import { withoutSlot } from "../../lib/without-slot";
 
 /**
  * AspectRatio — hộp giữ tỉ lệ, dựng bằng thuộc tính CSS `aspect-ratio`.
@@ -36,7 +37,7 @@ export const AspectRatio = React.forwardRef<
       // phần định vị của hộp, vì một hộp tỉ lệ bị đổi `position`/`width` thì
       // thôi là hộp tỉ lệ.
       style={{ ...style, position: "relative", width: "100%", aspectRatio: `${ratio}` }}
-      {...props}
+      {...withoutSlot(props)}
     />
   );
 });

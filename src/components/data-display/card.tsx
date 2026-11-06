@@ -9,6 +9,7 @@ import { cn } from "../../lib/utils";
 import type { HeadingLevelProp } from "../../props/vocabulary";
 import type { CardTabItemProp } from "../../props/components/data-display.prop";
 import { Tabs, type TabsExtraProp, type TabsProps } from "../navigation/tabs";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   CardTabItemProp,
@@ -280,7 +281,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         // The hook card-layout.css keys the head band on. A card WITHOUT `tabList` emits nothing
         // and keeps the exact DOM it had.
         data-tab-list={tabs?.length ? "" : undefined}
-        {...props}
+        {...withoutSlot(props)}
       >
         {tabs?.length ? (
           <>
@@ -332,7 +333,12 @@ export type CardCoverProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const CardCover = React.forwardRef<HTMLDivElement, CardCoverProps>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-slot="card-cover" className={cn("ui-card-cover", className)} {...props} />
+    <div
+      ref={ref}
+      data-slot="card-cover"
+      className={cn("ui-card-cover", className)}
+      {...withoutSlot(props)}
+    />
   ),
 );
 CardCover.displayName = "CardCover";
@@ -349,7 +355,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
       data-slot="card-header"
       data-banded={banded ? "" : undefined}
       className={cn(banded && "ui-card-header--banded", className)}
-      {...props}
+      {...withoutSlot(props)}
     />
   ),
 );
@@ -370,7 +376,7 @@ export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className, children, level = 3, as, ...props }, ref) =>
     React.createElement(
       as ?? `h${level}`,
-      { ref, "data-slot": "card-title", className, ...props },
+      { ref, "data-slot": "card-title", className, ...withoutSlot(props) },
       children,
     ),
 );
@@ -380,7 +386,7 @@ export const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} data-slot="card-description" className={className} {...props} />
+  <p ref={ref} data-slot="card-description" className={className} {...withoutSlot(props)} />
 ));
 CardDescription.displayName = "CardDescription";
 
@@ -402,7 +408,7 @@ export const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
       data-tight={tight ? "" : undefined}
       data-solo={solo ? "" : undefined}
       className={className}
-      {...props}
+      {...withoutSlot(props)}
     />
   ),
 );
@@ -433,7 +439,7 @@ export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
       data-flush={flush ? "" : undefined}
       data-actions={actions ? "" : undefined}
       className={className}
-      {...props}
+      {...withoutSlot(props)}
     />
   ),
 );
@@ -469,7 +475,7 @@ export const CardBar = React.forwardRef<HTMLDivElement, CardBarProps>(
       }}
       data-slot="card-bar"
       className={cn("ui-card-bar", className)}
-      {...props}
+      {...withoutSlot(props)}
     >
       <div data-slot="card-bar-main" className="ui-card-bar-main">
         {children}
@@ -583,7 +589,7 @@ export function StatCard({
 /** Header actions slot — compose beside CardTitle inside CardHeader; the header owns positioning. */
 export const CardAction = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-slot="card-action" className={className} {...props} />
+    <div ref={ref} data-slot="card-action" className={className} {...withoutSlot(props)} />
   ),
 );
 CardAction.displayName = "CardAction";

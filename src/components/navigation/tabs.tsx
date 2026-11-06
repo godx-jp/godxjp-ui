@@ -30,6 +30,7 @@ import type {
   TabsProp,
 } from "../../props/components/navigation.prop";
 import type { SidebarLinkProp } from "../../props/components/layout.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   TabItemProp,
@@ -259,10 +260,10 @@ function withDomProps<E extends keyof React.JSX.IntrinsicElements>(
   const dom = domProps as Record<string, unknown>;
   return React.createElement(element, {
     "data-slot": slot,
-    ...raw,
-    ...dom,
+    ...withoutSlot(raw),
+    ...withoutSlot(dom),
     id: (raw.id as string | undefined) ?? (dom.id as string | undefined),
-    ...own,
+    ...withoutSlot(own),
   });
 }
 

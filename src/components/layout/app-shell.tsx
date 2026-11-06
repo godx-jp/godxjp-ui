@@ -1,4 +1,5 @@
 import { revealKeyboardFocus } from "../../lib/focus-reveal";
+import { regionFocusOriginHandlers } from "../../lib/region-focus-origin";
 import * as React from "react";
 import { Menu } from "lucide-react";
 
@@ -425,6 +426,7 @@ export function AppShell({
       )}
       <main
         onFocusCapture={revealKeyboardFocus}
+        {...regionFocusOriginHandlers}
         className="app-main"
         aria-label={t("layout.appShell.mainLabel")}
         tabIndex={0}

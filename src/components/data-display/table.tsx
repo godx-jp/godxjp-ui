@@ -14,6 +14,7 @@ import type {
   TableRowToneProp,
   WidthProp,
 } from "../../props/vocabulary";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
   /**
@@ -355,7 +356,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
             data-striped={striped === undefined ? undefined : striped ? "" : "false"}
             // Type metrics live on `[data-slot="table"]` in table-layout.css
             className={cn("w-full caption-bottom", bordered && "ui-table-bordered", className)}
-            {...props}
+            {...withoutSlot(props)}
           />
         </TablePresetContext.Provider>
       </div>
@@ -377,7 +378,7 @@ export const TableBody = React.forwardRef<
   // "The last row draws no rule" is an idiom, not a service-tunable constant, so it is a CSS
   // rule (`[data-slot="table-body"] .ui-table-row:last-child`) rather than a utility. That only
   // works because TableRow's own bottom rule moved to `.ui-table-row` in the same layer: while
-  <tbody ref={ref} data-slot="table-body" className={cn(className)} {...props} />
+  <tbody ref={ref} data-slot="table-body" className={cn(className)} {...withoutSlot(props)} />
 ));
 TableBody.displayName = "TableBody";
 
@@ -393,7 +394,7 @@ export const TableCaption = React.forwardRef<
   HTMLTableCaptionElement,
   React.HTMLAttributes<HTMLTableCaptionElement>
 >(({ className, ...props }, ref) => (
-  <caption ref={ref} data-slot="table-caption" className={cn(className)} {...props} />
+  <caption ref={ref} data-slot="table-caption" className={cn(className)} {...withoutSlot(props)} />
 ));
 TableCaption.displayName = "TableCaption";
 
@@ -511,7 +512,7 @@ export const TableHead = React.forwardRef<
     data-wrap={wrap ? "" : undefined}
     className={cn(tableHeadHeightClass, className)}
     style={width === undefined ? style : { ...style, inlineSize: cellWidth(width) }}
-    {...props}
+    {...withoutSlot(props)}
   />
 ));
 TableHead.displayName = "TableHead";
@@ -587,7 +588,7 @@ export const TableCell = React.forwardRef<
                 ...(width === undefined ? null : { inlineSize: cellWidth(width) }),
               } as React.CSSProperties)
         }
-        {...props}
+        {...withoutSlot(props)}
       >
         {/* gh#1102 — an EMPTY cell (a `render` that returned null on a read-only row) prints no
          * label either: a heading over nothing was a dead line in every stacked card. With neither,

@@ -8,6 +8,24 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.28.0] - 2026-11-06
+
+### Fixed
+
+- **Display corruption** (affects every release before this one): a `data-slot` passed to a kit component replaced the component's own slot, and every rule keyed on it stopped matching — `<Alert data-slot="x">` lost its flex row (the icon fell onto its own line), surface, border and padding; Card, Badge, DialogContent, Button and the rest the same. A component's own `data-slot` now always wins and the passed value is discarded; the markup is byte-identical when none is passed (gh#1527).
+- `AppShell` / `MobileShell`: clicking empty content focused `main` (it is `tabIndex={0}` for axe `scrollable-region-focusable`), and the next key press — any key — painted a 2px inset frame around the whole content region. The region ring now paints only when focus ARRIVED by keyboard (Tab, Shift+Tab, a skip link); `main` carries `data-focus-origin="keyboard" | "pointer"` while focused (gh#1527).
+
+### Changed
+
+- Kit composites name an inner kit component's slot through `data-kit-slot` (internal channel), and `asChild` forwards the wrapper's slot to a component child the same way, so `AuthDivider`, `<DialogClose asChild><Button>` and friends keep the names they rendered before. A `data-slot` written on a kit component — by a consumer or a first-party package — no longer does anything (gh#1527). `asChild` onto a NON-kit component child (a router `Link`, any component that spreads to its element) still lands `data-slot` as before, and that element now also carries a `data-kit-slot` attribute with the same value — update a markup snapshot that pins those attributes.
+- `@godxjp/ui-mcp`: a version mismatch no longer withholds the catalog. `get_component` / `get_pattern` answer from the installed package's own `node_modules/@godxjp/ui/agent/{components,patterns}.json` when it is on disk, else from the bundled catalog, under a warning that names both versions and the fix (`npx @godxjp/ui sync-rules`, then restart) (gh#1527).
+
+### Added
+
+- `npx @godxjp/ui audit` rule `no-data-slot-on-kit-component` (error): flags `data-slot` passed to a component imported from `@godxjp/ui` — named, aliased or namespaced. Also listed in `list_anti_ai_tells` (gh#1527).
+- `@godxjp/ui-mcp`: `route_consumer_task` sends documentation sites, manuals, help centers, user guides and terms/privacy pages (EN/JA/VI) to the new `compose-a-screen/document-site` section — `CenteredShell` + `EditorialMasthead` + `LegalDocumentShell` — and `get_exemplar` resolves the same words to the reader exemplar. AppShell / Topbar guidance now says they are app chrome, not document chrome (gh#1527).
+- `@godxjp/ui-mcp`: the shipped skills `godxjp-ui-navigation`, `godxjp-ui-form` and `godxjp-ui-design` are served by `list_consumer_skills` / `get_consumer_skill` / `route_consumer_task`, embedded from `skills/*/SKILL.md` by `gen:agent-catalog` so the MCP and `gx skills` serve the same text (gh#1527).
+
 ## [33.27.1] - 2026-11-03
 
 ### Fixed

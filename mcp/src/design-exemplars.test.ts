@@ -108,7 +108,16 @@ describe("get_exemplar (gh#1294 F)", () => {
   });
 
   it("has a reader exemplar for a long-form document page (gh#1296)", async () => {
-    for (const archetype of ["reader", "document", "wiki"]) {
+    for (const archetype of [
+      "reader",
+      "document",
+      "wiki",
+      "manual",
+      "help center",
+      "user guide",
+      "terms",
+      "マニュアル",
+    ]) {
       const out = await dispatchTool("get_exemplar", { archetype });
       expect(out, archetype).toContain("docs/showcase/page-reader.tsx");
       expect(out, archetype).toContain(anatomySubsection("Reader")!);

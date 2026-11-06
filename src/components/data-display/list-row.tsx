@@ -6,6 +6,7 @@ import type { ListRowDensityProp } from "../../props/components/data-display.pro
 import { cn } from "../../lib/utils";
 import { TRUNCATION_FOCUSABLE, truncatedPart } from "../../lib/truncation";
 import { Text } from "../general/typography";
+import { withoutSlot } from "../../lib/without-slot";
 
 /**
  * A TRUNCATED TITLE MUST STAY READABLE (gh#1298). The row truncates its title and description, and
@@ -188,7 +189,7 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
         data-density={density === "compact" ? "compact" : undefined}
         data-unread={unread === true ? "" : undefined}
         className={cn("ui-list-row", className)}
-        {...props}
+        {...withoutSlot(props)}
       >
         {asChild && React.isValidElement(children)
           ? React.cloneElement(children as React.ReactElement, undefined, content)

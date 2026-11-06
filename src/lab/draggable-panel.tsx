@@ -8,6 +8,7 @@ import type {
   DraggablePanelPositionProp,
   DraggablePanelProp,
 } from "../props/components/layout.prop";
+import { withoutSlot } from "../lib/without-slot";
 
 export type {
   DraggablePanelProp,
@@ -274,7 +275,7 @@ export const DraggablePanel = React.forwardRef<HTMLElement, DraggablePanelProp>(
             "--draggable-panel-offset-y": current.y,
           } as React.CSSProperties
         }
-        {...props}
+        {...withoutSlot(props)}
       >
         <div className="ui-draggable-panel-bar">
           <button

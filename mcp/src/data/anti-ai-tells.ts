@@ -388,6 +388,18 @@ Render \`<Skeleton className="h-9 w-full" />\` in place of each control
 put. Height and fill are this screen's measurements; never add a
 \`rounded-*\`, because Skeleton already carries the radius token. Layout stays stable, perceived speed improves.`,
   },
+  {
+    category: "structure",
+    name: "data-slot on every kit component",
+    body: `An agent stamps \`data-slot="<name>"\` on each @godxjp/ui root so it can
+target it later. \`data-slot\` is the component's OWN identity: every rule in its
+stylesheet keys on it. Before gh#1527 the passed value replaced it and the
+component lost its layout, surface, border and padding (one consumer: 44 call
+sites, Alert icons dropping onto their own line). The kit now discards it.`,
+    fix: `Never pass \`data-slot\` to a kit component. A test hook is
+\`data-testid\`; styling goes through the component's props, tokens or
+\`className\`. \`npx @godxjp/ui audit\` flags it as no-data-slot-on-kit-component.`,
+  },
 ];
 
 export function aiTellsByCategory(cat: AiTell["category"]): AiTell[] {

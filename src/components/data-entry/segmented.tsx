@@ -5,6 +5,7 @@ import { withOwnHitTarget } from "./choice-hit-target";
 import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
 import { numberFormat } from "../../lib/intl-cache";
+import { withoutSlot } from "../../lib/without-slot";
 
 /** Counter pill fields on {@link SegmentedOption} — same vocabulary as `Button` / `Toggle`. */
 type SegmentedCountFields = {
@@ -173,7 +174,7 @@ export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(functio
       // same rule resolveFieldA11y applies to every other field control.
       aria-labelledby={ariaLabelledBy}
       aria-label={ariaLabelledBy ? undefined : ariaLabel}
-      {...props}
+      {...withoutSlot(props)}
     >
       {options.map((option) => (
         <AriaRadio

@@ -258,6 +258,35 @@ const EMOJI_FLAG = /\p{Regional_Indicator}/u;
 const ATTRS = String.raw`(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|=>|[^>"'])*`;
 
 /**
+ * Local names bound by `import { … } from "@godxjp/ui"` (or a `@godxjp/ui/…` subpath), aliases
+ * included, plus `X.<member>` for a namespace import — the tags a JSX element can use to render a
+ * kit component (gh#1527). Type-only imports are skipped. Entries are regex SOURCE, already escaped.
+ */
+function kitImportNames(content) {
+  const names = new Set();
+  for (const m of content.matchAll(
+    /import\s+(type\s+)?([^;]*?)\s+from\s+["']@godxjp\/ui(?:\/[^"']*)?["']/g,
+  )) {
+    if (m[1]) continue;
+    const clause = m[2];
+    const ns = clause.match(/\*\s+as\s+([A-Za-z_$][\w$]*)/);
+    if (ns) names.add(`${ns[1]}\\.[A-Za-z_$][\\w$]*`);
+    const braces = clause.match(/\{([^}]*)\}/);
+    if (!braces) continue;
+    for (const part of braces[1].split(",")) {
+      const spec = part.trim();
+      if (!spec || spec.startsWith("type ")) continue;
+      const local = spec
+        .split(/\s+as\s+/)
+        .pop()
+        .trim();
+      if (/^[A-Z][\w$]*$/.test(local)) names.add(local.replace(/\$/g, "\\$"));
+    }
+  }
+  return names;
+}
+
+/**
  * A raw lowercase HTML opening tag, wherever its line ends (gh#673).
  *
  * The control rules were `/<button[\s>]/` run ONE LINE at a time. Prettier leaves `<button` alone on
@@ -648,6 +677,29 @@ const RULES = [
     test: rawTag("button"),
     matches: rawTagOutsideAsChildSlot("button"),
     message: "Use <Button> from @godxjp/ui, not a raw <button> (rules §3).",
+  },
+  {
+    // gh#1527: a kit component's `data-slot` is its identity, and every rule in its stylesheet keys
+    // on it. A passed `data-slot` used to REPLACE it, and Alert lost its flex row, surface,
+    // border and padding (measured: 44 call sites in one consumer). The kit now discards the value,
+    // so the attribute does nothing at all — use `data-testid` for a hook, `className` for styling.
+    id: "no-data-slot-on-kit-component",
+    replacement: "data-testid (test hook) or className (styling)",
+    severity: "error",
+    spansElement: true,
+    test: /(?!)/g,
+    matches: (content) => {
+      const names = kitImportNames(content);
+      if (names.size === 0) return [];
+      const tag = [...names].join("|");
+      return [
+        ...content.matchAll(
+          new RegExp(`<(?:${tag})(?![\\w.])${ATTRS}?\\bdata-(?:kit-)?slot=`, "g"),
+        ),
+      ];
+    },
+    message:
+      "Don't pass data-slot to a @godxjp/ui component: it is the component's own identity and is discarded. Use data-testid for a test hook, className for styling (gh#1527).",
   },
   {
     id: "card-manual-padding",

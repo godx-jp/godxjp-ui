@@ -9,6 +9,7 @@ import { Input } from "./input";
 import type { NumberInputProp } from "../../props/components/data-entry.prop";
 import { numberFormat } from "../../lib/intl-cache";
 import { isImeComposing } from "../../lib/ime";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   NumberInputProp,
@@ -343,7 +344,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
           inputMode="decimal"
           autoComplete="off"
           role="spinbutton"
-          data-slot="number-input-field"
+          data-kit-slot="number-input-field"
           data-testid={dataTestId}
           data-field={(ariaProps as { "data-field"?: string })["data-field"]}
           className="ui-number-input-field"
@@ -353,7 +354,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
           readOnly={readOnly}
           status={status}
           variant={variant}
-          {...fieldA11y}
+          {...withoutSlot(fieldA11y)}
           aria-valuenow={numericValue ?? undefined}
           aria-valuemin={min}
           aria-valuemax={max}

@@ -13,6 +13,7 @@ import { Field } from "./field";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
 import { withOwnHitTarget } from "./choice-hit-target";
 import type { RadioGroupProp, RadioProp } from "../../props/components/data-entry.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 export type {
   RadioGroupProp,
@@ -92,7 +93,7 @@ const RadioGroupRoot = React.forwardRef<HTMLDivElement, RadioGroupRootProps>(
         isInvalid={invalid !== undefined && invalid !== false && invalid !== "false"}
         orientation={orientation}
         aria-label={props["aria-labelledby"] ? undefined : ariaLabel}
-        {...(rest as unknown as Record<string, never>)}
+        {...withoutSlot(rest as unknown as Record<string, never>)}
       />
     );
   },
@@ -125,7 +126,7 @@ const RadioItem = React.forwardRef<HTMLLabelElement, RadioProp>(
           "ui-radio data-[invalid]:border-destructive inline-flex shrink-0 items-center justify-center shadow-xs transition-shadow",
           className,
         )}
-        {...(props as unknown as Record<string, never>)}
+        {...withoutSlot(props as unknown as Record<string, never>)}
         // `withOwnHitTarget` replaces react-aria's 1px clipped input wrapper with one the
         // stylesheet sizes to the painted dot — see gh#476 and choice-hit-target.tsx.
         render={(domProps, state) => (

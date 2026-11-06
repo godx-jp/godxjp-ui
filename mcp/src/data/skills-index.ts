@@ -4,6 +4,8 @@
  * `get_skill_section` to drill into one section.
  */
 
+import { SHIPPED_SKILL_FILES } from "./shipped-skills.generated.js";
+
 export interface SkillSection {
   /** URL-safe section id. */
   id: string;
@@ -1313,6 +1315,44 @@ including regions you must not change. No top-N or round cap; report "probes pas
 independent acceptance pending". If a failure traces to @godxjp/ui itself, do not fake around it — see report-bug.`,
       },
       {
+        id: "document-site",
+        title: "Documentation / manual / help / legal page — document chrome, not app chrome",
+        tagline:
+          "A docs site, manual, help center, user guide or terms/privacy page: CenteredShell + EditorialMasthead + LegalDocumentShell, never AppShell + Topbar + Text.",
+        body: `A documentation site, manual, help center, user guide or legal page (terms, privacy,
+cookie policy) is DOCUMENT chrome. AppShell + Topbar are the chrome of a signed-in app with a
+sidebar workspace; a manual built from them with a \`Text\` brand and a bare "back" text link
+reads as a broken app screen (gh#1527).
+
+Standalone docs / manual / legal site:
+
+  <CenteredShell
+    topbar={
+      <EditorialMasthead
+        brand={<a href="/" aria-label="Home"><img src="/logo.svg" alt="" /></a>}
+        navLabel="Main navigation"
+        nav={<EditorialMastheadLink href="/guide/" aria-current="page">Guide</EditorialMastheadLink>}
+      />
+    }
+  >
+    <LegalDocumentShell title="User guide" sections={sections}
+      effectiveDate="2026-04-01" dateKind="updated" />
+  </CenteredShell>
+
+• EditorialMasthead (@godxjp/ui/layout), in CenteredShell's \`topbar\` slot: \`brand\` (required —
+  the logo LINK, never a Text), \`nav\` (EditorialMastheadLink; aria-current="page" marks the current
+  one), \`navLabel\`, \`actions\` (EditorialMastheadAction 44px icon controls), \`menu\` (phone-only
+  Sheet trigger). The way home is the brand link or a nav link, not a bare text link.
+• LegalDocumentShell (@godxjp/ui/lab): \`title\` + \`sections\` ({ id, title, content }[]) required;
+  owns the page's one <h1>, the contents rail, scroll-spy and hash deep links. \`effectiveDate\` is
+  ISO 8601; \`dateKind="updated"\` for a help article revised on a date, "effective" for a policy.
+• Footer: EditorialFooter in CenteredShell \`footer\` with \`footerTone="inverse"\`.
+
+A manual page INSIDE a signed-in app (reached from the app's own sidebar) keeps the app's
+AppShell: get_exemplar archetype="reader" — PageContainer with breadcrumb + extra and NO title,
+LegalDocumentShell as the body. Confirm every prop with get_component before writing.`,
+      },
+      {
         id: "report-bug",
         title: "godx-ui bug / can't-follow-a-rule → file a gh issue (never fake it)",
         tagline:
@@ -1544,7 +1584,73 @@ Do not advance a step until the prior artifact is signed off.`,
       },
     ],
   },
+  // ── shipped skills (skills/*/SKILL.md, embedded by gen-agent-catalog — gh#1527) ──
+  ...SHIPPED_SKILL_FILES.map(shippedSkill),
 ];
+
+/** `## 2. Hard rules` → `hard-rules`; `## DON'T` → `don-t`. */
+function sectionSlug(heading: string): string {
+  return heading
+    .replace(/^\d+\.\s*/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** The first prose line of a section body, as its one-line tagline. */
+function firstLine(body: string): string {
+  const line = body.split("\n").find((l) => l.trim() && !l.startsWith("```"));
+  const text = (line ?? "").replace(/^[-*>]\s*/, "").trim();
+  return text.length > 160 ? `${text.slice(0, 157)}…` : text;
+}
+
+/** Split Markdown at `## ` headings outside code fences; text before the first is `overview`. */
+function splitSections(markdown: string): { heading: string | null; body: string }[] {
+  const parts: { heading: string | null; lines: string[] }[] = [{ heading: null, lines: [] }];
+  let fenced = false;
+  for (const line of markdown.split("\n")) {
+    if (line.startsWith("```")) fenced = !fenced;
+    if (!fenced && line.startsWith("## ")) parts.push({ heading: line.slice(3).trim(), lines: [] });
+    else parts[parts.length - 1].lines.push(line);
+  }
+  return parts
+    .map((p) => ({ heading: p.heading, body: p.lines.join("\n").trim() }))
+    .filter((p) => p.heading !== null || p.body);
+}
+
+/**
+ * A shipped `skills/<id>/SKILL.md` as a consumer Skill (gh#1527): the SAME file `gx skills` installs,
+ * so the MCP and an installed copy cannot disagree. Each `## ` heading is a section, the text above
+ * the first is `overview`, and each `references/<file>.md` is a `references-<file>` section.
+ */
+function shippedSkill(file: (typeof SHIPPED_SKILL_FILES)[number]): Skill {
+  const title = /^# (.+)$/m.exec(file.body)?.[1].trim() ?? file.id;
+  const sections: SkillSection[] = splitSections(file.body.replace(/^\s*# .+\n/, "")).map(
+    ({ heading, body }) => ({
+      id: heading ? sectionSlug(heading) : "overview",
+      title: heading ?? title,
+      tagline: firstLine(body),
+      body,
+    }),
+  );
+  for (const [name, text] of Object.entries(file.references)) {
+    const base = name.replace(/\.md$/, "");
+    sections.push({
+      id: `references-${sectionSlug(base)}`,
+      title: /^# (.+)$/m.exec(text)?.[1].trim() ?? `references/${name}`,
+      tagline: firstLine(text.replace(/^\s*# .+\n/, "")),
+      body: text.trim(),
+    });
+  }
+  return {
+    id: file.id,
+    audience: "consumer",
+    name: title,
+    whenToUse: file.description,
+    source: `skills/${file.id}/SKILL.md — shipped in the @godxjp/ui tarball (also installable with \`gx skills\`)`,
+    sections,
+  };
+}
 
 export function findSkill(id: string): Skill | undefined {
   return SKILLS.find((s) => s.id === id);
@@ -1609,6 +1715,37 @@ const APP_SCREEN_KEYWORDS = [
   "app",
 ];
 
+/** Words that make a task a documentation / manual / legal page — document chrome (gh#1527). */
+const DOCUMENT_SITE_KEYWORDS = [
+  "documentation",
+  "documentation site",
+  "docs site",
+  "docs page",
+  "manual",
+  "user manual",
+  "user guide",
+  "help center",
+  "help centre",
+  "help page",
+  "knowledge base",
+  "faq page",
+  "terms of service",
+  "terms of use",
+  "terms page",
+  "privacy policy",
+  "cookie policy",
+  "legal page",
+  "マニュアル",
+  "ヘルプ",
+  "利用規約",
+  "プライバシーポリシー",
+  "取扱説明書",
+  "tài liệu hướng dẫn",
+  "hướng dẫn sử dụng",
+  "điều khoản",
+  "chính sách bảo mật",
+];
+
 export function routeTask(task: string, opts?: { consumerOnly?: boolean }): RouteResult[] {
   const q = task.toLowerCase();
   const matches: RouteResult[] = [];
@@ -1667,8 +1804,25 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     "lỗi",
     "error",
   ]);
-  if (!contractFirst) appScreen();
-  const screenMatched = matches.some((m) => m.skill === "compose-a-screen");
+  // Documentation / manual / help / legal pages — document chrome, just ahead of the app-screen
+  // route (and placed like it around the contract) so the first non-contract hit is never
+  // AppShell + Topbar for a manual (gh#1527).
+  const documentSite = () =>
+    route(
+      DOCUMENT_SITE_KEYWORDS,
+      "compose-a-screen",
+      "document-site",
+      'A documentation / manual / help / legal page is document chrome, not app chrome: CenteredShell `topbar={<EditorialMasthead brand nav actions />}` + LegalDocumentShell (@godxjp/ui/lab) for the document body; inside a signed-in app use get_exemplar archetype="reader". Never AppShell + Topbar + a Text brand.',
+      ["compose-a-screen/pick-primitives", "contract/loop"],
+    );
+
+  if (!contractFirst) {
+    documentSite();
+    appScreen();
+  }
+  const screenMatched = matches.some(
+    (m) => m.skill === "compose-a-screen" && m.section === "pick-primitives",
+  );
 
   /*
    * Hợp đồng cứng đứng TRƯỚC mọi skill về gu, và cố ý bắt rộng.
@@ -1719,7 +1873,10 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     ["contract/loop", "contract/spacing", "contract/escape"],
   );
 
-  if (contractFirst) appScreen();
+  if (contractFirst) {
+    documentSite();
+    appScreen();
+  }
 
   // List-page filtering — before any taste skill: the strip's shape is a rule, not a taste call.
   route(
@@ -1823,6 +1980,69 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     "taste",
     "form-discipline",
     "Form must have explicit label + help + error wired via FormField (rule 34).",
+  );
+
+  // The shipped skills (skills/*/SKILL.md — gh#1527): served here so a consumer keeps no copy.
+  route(
+    [
+      "form",
+      "create form",
+      "edit form",
+      "create page",
+      "edit page",
+      "input width",
+      "form field",
+      "フォーム",
+      "入力フォーム",
+      "biểu mẫu",
+    ],
+    "godxjp-ui-form",
+    "overview",
+    "The seven form rules: 3+ fields is a page not a modal, always <Form> + FormField, inputs sized to their content (GOV.UK), no hand-laid field rows, discovery before JSX, gates, issue instead of hand-roll.",
+    ["godxjp-ui-form/a-form-with-3-or-more-fields-is-its-own-page-not-a-modal"],
+  );
+  route(
+    [
+      "navigation",
+      "nav",
+      "menu",
+      "sidebar",
+      "sidebar menu",
+      "breadcrumb",
+      "bottom bar",
+      "tab bar",
+      "bottom navigation",
+      "メニュー",
+      "ナビゲーション",
+      "パンくず",
+      "サイドバー",
+      "điều hướng",
+      "thanh bên",
+    ],
+    "godxjp-ui-navigation",
+    "procedure-the-order-is-the-rule",
+    "Navigation for multi-role apps: tasks → menu tree → walkthrough → measure, then the hard rules (per-role landing, phone bottom bar, breadcrumbs, in-page tabs). Read BEFORE adding a menu item or a page.",
+    [
+      "godxjp-ui-navigation/hard-rules",
+      "godxjp-ui-navigation/self-check-gate-before-asking-for-approval-before-merging",
+    ],
+  );
+  route(
+    [
+      "design review",
+      "review the design",
+      "topbar",
+      "top bar",
+      "app shell",
+      "status chip",
+      "status badge",
+      "do and don't",
+      "dos and don'ts",
+    ],
+    "godxjp-ui-design",
+    "overview",
+    "Design do/don't rules learned from real review feedback: one-line status chips, an opaque sticky topbar, the signed-in profile kept in the bar.",
+    ["godxjp-ui-design/do", "godxjp-ui-design/don-t"],
   );
 
   // Loading / saving

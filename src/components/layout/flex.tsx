@@ -4,6 +4,7 @@ import { cn } from "../../lib/utils";
 import { flexGapClass, padStyle, padStepToken } from "../../lib/variants";
 import type { FlexMarkerProp, FlexProp } from "../../props/components/layout.prop";
 import type { WidthProp } from "../../props/vocabulary";
+import { withoutSlot } from "../../lib/without-slot";
 
 const toCssLength = (value: WidthProp): string =>
   typeof value === "number" ? `${value}px` : value;
@@ -328,7 +329,7 @@ function AttachedFlex({
       data-orientation={orientation}
       data-full-width={fullWidth ? "true" : undefined}
       className={cn("ui-space-compact", density && `ui-density-${density}`, className)}
-      {...(domProps as React.HTMLAttributes<HTMLDivElement>)}
+      {...withoutSlot(domProps as React.HTMLAttributes<HTMLDivElement>)}
     >
       {Children.toArray(children).map((child, index) => (
         <div

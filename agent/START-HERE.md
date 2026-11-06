@@ -3,7 +3,7 @@
 You are about to write code against a design system you did not author. This file is the whole
 contract. Read it before you write JSX.
 
-**This catalog describes `@godxjp/ui` 33.27.1.** If the project you are editing has a different
+**This catalog describes `@godxjp/ui` 33.28.0.** If the project you are editing has a different
 version in its `package.json`, read the pinned catalog for THAT version instead
 (`…/v<their-version>/agent/…`). A catalog newer than the installed package describes props that do
 not exist yet; older, and it hides props that do. Neither failure announces itself.
@@ -66,7 +66,7 @@ screen anatomy, the visual target the rules below do not give you. Then fetch in
    `--radius`, `--font-size-base` are the handful everything else derives from. The
    2900 `component` entries are per-part knobs; reach for one only when a role is
    right everywhere except one component.
-5. `anti-ai-tells.json` — 35 shapes that make generated UI look generated, each with the
+5. `anti-ai-tells.json` — 36 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
 
 **Do not fetch `components.json`.** It is 1.4 MB, and most URL fetchers truncate a

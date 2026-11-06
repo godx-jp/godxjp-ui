@@ -139,7 +139,7 @@ export const CredentialReveal = React.forwardRef<HTMLDivElement, CredentialRevea
             <Text
               mono
               size="sm"
-              data-slot="credential-reveal-secret"
+              data-kit-slot="credential-reveal-secret"
               data-state={isRevealed ? "revealed" : "masked"}
               aria-labelledby={label ? labelId : undefined}
               aria-label={label ? undefined : accessibleName}

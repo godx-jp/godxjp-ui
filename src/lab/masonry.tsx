@@ -9,6 +9,7 @@ import type {
   MasonryLayoutEntryProp,
   MasonryProp,
 } from "../props/components/layout.prop";
+import { withoutSlot } from "../lib/without-slot";
 
 export type {
   MasonryColumnsProp,
@@ -371,7 +372,7 @@ export const Masonry = React.forwardRef(function Masonry<TData = unknown>(
       data-slot="masonry"
       className={cn("ui-masonry", className)}
       style={style}
-      {...rest}
+      {...withoutSlot(rest)}
     >
       {(items ?? []).map((item: MasonryItemProp<TData>, index) => {
         const key = item.key ?? index;

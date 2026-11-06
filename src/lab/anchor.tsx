@@ -14,6 +14,7 @@ import type {
   AnchorItemProp,
   AnchorProp,
 } from "../props/components/navigation.prop";
+import { withoutSlot } from "../lib/without-slot";
 
 export type {
   AnchorContainerProp,
@@ -433,7 +434,7 @@ export function Anchor({
       data-ink={affix === false && !showInkInFixed ? "hidden" : undefined}
       aria-label={label ?? t("navigation.anchor.ariaLabel")}
       className={cn("ui-anchor", className)}
-      {...rest}
+      {...withoutSlot(rest)}
     >
       {/* The rail is a SIBLING of the list, not a child of it: a `<ul>` may only contain `<li>`
           (plus script/template), and a stray `<span>` inside one is invalid HTML that a browser

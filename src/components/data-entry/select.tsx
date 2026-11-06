@@ -48,6 +48,7 @@ import type {
   SelectLabeledValueProp,
   SelectPlacementProp,
 } from "../../props/components/data-entry.prop";
+import { withoutSlot } from "../../lib/without-slot";
 
 /*
  * NỀN: react-aria-components, không còn @radix-ui/react-select.
@@ -445,7 +446,7 @@ export function SelectGroup({ className, children, ...props }: React.HTMLAttribu
     <ListBoxSection
       data-slot="select-group"
       className={className}
-      {...(splitDomProps(props).attributes as object)}
+      {...withoutSlot(splitDomProps(props).attributes as object)}
     >
       {children}
     </ListBoxSection>
@@ -472,7 +473,7 @@ export const SelectValue = React.forwardRef<HTMLSpanElement, SelectValueProp>(fu
       data-slot="select-value"
       className={className ?? ""}
       style={style}
-      {...(props as object)}
+      {...withoutSlot(props as object)}
     >
       {/*
        * `""`, not `null`, when no placeholder is given. React Aria treats a render function that
@@ -824,7 +825,7 @@ const SelectPopup = React.forwardRef<HTMLDivElement, SelectPopupProp>(function S
     <ListBox
       data-slot="select-viewport"
       className="ui-select-viewport"
-      {...(events as object)}
+      {...withoutSlot(events as object)}
       onScroll={onPopupScroll}
       renderEmptyState={
         renderEmpty === undefined
@@ -892,7 +893,7 @@ export const SelectLabel = React.forwardRef<HTMLElement, React.HTMLAttributes<HT
         ref={ref}
         data-slot="select-label"
         className={cn("ui-select-label", className)}
-        {...props}
+        {...withoutSlot(props)}
       />
     );
   },
@@ -995,7 +996,7 @@ export const SelectSeparator = React.forwardRef<HTMLElement, React.HTMLAttribute
         ref={ref}
         data-slot="select-separator"
         className={cn("ui-select-separator", className)}
-        {...(splitDomProps(props).attributes as object)}
+        {...withoutSlot(splitDomProps(props).attributes as object)}
         // `render`, not a prop: react-aria writes `role="separator"` from `useSeparator` AFTER the
         // caller's props (`mergeProps(DOMProps, separatorProps)`), and `filterDOMProps` drops a
         // bare `aria-hidden` on the way through — both were tried and neither reaches the DOM.
