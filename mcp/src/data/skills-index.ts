@@ -1313,6 +1313,44 @@ including regions you must not change. No top-N or round cap; report "probes pas
 independent acceptance pending". If a failure traces to @godxjp/ui itself, do not fake around it — see report-bug.`,
       },
       {
+        id: "document-site",
+        title: "Documentation / manual / help / legal page — document chrome, not app chrome",
+        tagline:
+          "A docs site, manual, help center, user guide or terms/privacy page: CenteredShell + EditorialMasthead + LegalDocumentShell, never AppShell + Topbar + Text.",
+        body: `A documentation site, manual, help center, user guide or legal page (terms, privacy,
+cookie policy) is DOCUMENT chrome. AppShell + Topbar are the chrome of a signed-in app with a
+sidebar workspace; a manual built from them with a \`Text\` brand and a bare "back" text link
+reads as a broken app screen (gh#1527).
+
+Standalone docs / manual / legal site:
+
+  <CenteredShell
+    topbar={
+      <EditorialMasthead
+        brand={<a href="/" aria-label="Home"><img src="/logo.svg" alt="" /></a>}
+        navLabel="Main navigation"
+        nav={<EditorialMastheadLink href="/guide/" aria-current="page">Guide</EditorialMastheadLink>}
+      />
+    }
+  >
+    <LegalDocumentShell title="User guide" sections={sections}
+      effectiveDate="2026-04-01" dateKind="updated" />
+  </CenteredShell>
+
+• EditorialMasthead (@godxjp/ui/layout), in CenteredShell's \`topbar\` slot: \`brand\` (required —
+  the logo LINK, never a Text), \`nav\` (EditorialMastheadLink; aria-current="page" marks the current
+  one), \`navLabel\`, \`actions\` (EditorialMastheadAction 44px icon controls), \`menu\` (phone-only
+  Sheet trigger). The way home is the brand link or a nav link, not a bare text link.
+• LegalDocumentShell (@godxjp/ui/lab): \`title\` + \`sections\` ({ id, title, content }[]) required;
+  owns the page's one <h1>, the contents rail, scroll-spy and hash deep links. \`effectiveDate\` is
+  ISO 8601; \`dateKind="updated"\` for a help article revised on a date, "effective" for a policy.
+• Footer: EditorialFooter in CenteredShell \`footer\` with \`footerTone="inverse"\`.
+
+A manual page INSIDE a signed-in app (reached from the app's own sidebar) keeps the app's
+AppShell: get_exemplar archetype="reader" — PageContainer with breadcrumb + extra and NO title,
+LegalDocumentShell as the body. Confirm every prop with get_component before writing.`,
+      },
+      {
         id: "report-bug",
         title: "godx-ui bug / can't-follow-a-rule → file a gh issue (never fake it)",
         tagline:
@@ -1609,6 +1647,37 @@ const APP_SCREEN_KEYWORDS = [
   "app",
 ];
 
+/** Words that make a task a documentation / manual / legal page — document chrome (gh#1527). */
+const DOCUMENT_SITE_KEYWORDS = [
+  "documentation",
+  "documentation site",
+  "docs site",
+  "docs page",
+  "manual",
+  "user manual",
+  "user guide",
+  "help center",
+  "help centre",
+  "help page",
+  "knowledge base",
+  "faq page",
+  "terms of service",
+  "terms of use",
+  "terms page",
+  "privacy policy",
+  "cookie policy",
+  "legal page",
+  "マニュアル",
+  "ヘルプ",
+  "利用規約",
+  "プライバシーポリシー",
+  "取扱説明書",
+  "tài liệu hướng dẫn",
+  "hướng dẫn sử dụng",
+  "điều khoản",
+  "chính sách bảo mật",
+];
+
 export function routeTask(task: string, opts?: { consumerOnly?: boolean }): RouteResult[] {
   const q = task.toLowerCase();
   const matches: RouteResult[] = [];
@@ -1667,6 +1736,16 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     "lỗi",
     "error",
   ]);
+  // Documentation / manual / help / legal pages — document chrome, ahead of the app-screen route so
+  // the first hit is never AppShell + Topbar for a manual (gh#1527).
+  route(
+    DOCUMENT_SITE_KEYWORDS,
+    "compose-a-screen",
+    "document-site",
+    'A documentation / manual / help / legal page is document chrome, not app chrome: CenteredShell `topbar={<EditorialMasthead brand nav actions />}` + LegalDocumentShell (@godxjp/ui/lab) for the document body; inside a signed-in app use get_exemplar archetype="reader". Never AppShell + Topbar + a Text brand.',
+    ["compose-a-screen/pick-primitives", "contract/loop"],
+  );
+
   if (!contractFirst) appScreen();
   const screenMatched = matches.some((m) => m.skill === "compose-a-screen");
 
