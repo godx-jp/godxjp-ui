@@ -1,8 +1,3 @@
----
-name: godxjp-ui-navigation
-description: Navigation design rules (sidebar menu, per-role landing page, phone bottom bar, links between pages, breadcrumbs, in-page tabs) for multi-role business apps built with @godxjp/ui. Use BEFORE adding or changing a menu item, adding a page, or changing a role's landing page, and whenever navigation is criticised as confusing ("I can't tell what anything in this menu is for"). Covers the procedure (tasks → menu tree → walkthrough → measure), 28 sourced rules (NN/g, Material 3, Apple HIG, GOV.UK, SAP Fiori, Shopify Polaris and others) and an illustrative pattern for inspection and compliance apps.
----
-
 # Navigation for multi-role business apps (@godxjp/ui)
 
 One question: **for a person in this role, doing this task, where does the first click go — and are
@@ -13,7 +8,7 @@ Distilled from measured failures in a real multi-role app: 17 menu items grouped
 ("Records / Standards / Supplies / Master data"), three overlapping entries for one task ("Log an
 inspection / Inspections / Checklists"), a Settings area that was a dead end, every role seeing every
 item, and a phone layout with nothing but a drawer. The owner's verdict: *"I can't tell what anything
-in this menu is for."* Full sources: [references/principles.md](references/principles.md) (28 rules,
+in this menu is for."* Full sources: [navigation-principles.md](navigation-principles.md) (28 rules,
 with the URL behind each one). An app may keep its own industry benchmark notes (competitor
 comparisons, domain vocabulary) in its own repository; they do not belong in this package.
 
@@ -123,5 +118,5 @@ An example only, for apps that run recurring checks across many sites:
 - [ ] Structural change → the project owner has approved the proposal.
 
 When @godxjp/ui can't do something you need (bottom bar, menu filtering, scope switcher), open an issue
-on the @godxjp/ui repository with the use case instead of hand-rolling it (the same rule as the
-`godxjp-ui-form` skill).
+on the @godxjp/ui repository with the use case instead of hand-rolling it (the same rule as
+[forms.md](forms.md) rule 7).

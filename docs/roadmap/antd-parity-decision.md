@@ -1,5 +1,9 @@
 # ADR: Make capability accounting primary and deliver reviewed Godx behavior
 
+> Moved from `debate/antd-parity-scope-and-sequencing/04-Decision.md`. The debate transcripts it
+> cites (`00-Topic.md`, `01-Bus.md`, `02-Research/`, `03-Reports/`) were removed from the tree; read
+> them at commit `f95beb8b` (`git show f95beb8b:debate/antd-parity-scope-and-sequencing/00-Topic.md`).
+
 ## Status
 accepted  (2026-09-10)
 

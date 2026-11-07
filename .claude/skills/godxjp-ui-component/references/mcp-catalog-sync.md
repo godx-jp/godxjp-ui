@@ -1,8 +1,4 @@
----
-name: godxjp-ui-mcp-catalog-sync
-description: >-
-  BẮT BUỘC khi thêm/sửa/đổi-tên/deprecate/xoá BẤT KỲ component, prop-vocabulary, token, cardinal rule, hay pattern của @godxjp/ui — phần catalog của MCP (mcp/src/data/*) và bộ test của nó PHẢI được cập nhật cùng lúc, nếu không consumer sẽ nhận API sai. Ép quy trình: cập nhật mcp/src/data, chạy check:mcp-sync + check:mcp-orphans, và chạy/bổ sung test MCP cho mọi thay đổi. Đọc TRƯỚC khi commit một thay đổi chạm tới bề mặt public.
----
+> Formerly the separate skill `godxjp-ui-mcp-catalog-sync`; now a reference of `godxjp-ui-component`.
 
 # Keeping the MCP catalog (and its tests) in sync
 
@@ -12,7 +8,7 @@ description: >-
 > `.claude/skills/README.md`.
 
 **Follow-map:** this is the **last** stage of the core chain. After [[godxjp-ui-component]] ships a
-new/changed component (and [[godxjp-ui-example-page]] gives it a docs page), come here to mirror it
+new/changed component (and [[godxjp-ui-component]] (`references/example-page.md`) gives it a docs page), come here to mirror it
 into the MCP catalog and lock it with tests. The catalog is `mcp/src/data/*`; the tests are
 `mcp/src/*.test.ts`.
 

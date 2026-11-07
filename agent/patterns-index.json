@@ -427,6 +427,28 @@
   },
   {
     "aliases": [
+      "brand-surface",
+      "expressive-login",
+      "login-art",
+      "sign-in-hero",
+      "branded-sign-in"
+    ],
+    "name": "auth-brand-surface",
+    "tagline": "EXPRESSIVE sign-in surface (opt-in, owner-chosen) on the restrained kit: a picture of the product itself (SVG from fixed data) beside kit-only form controls, kit tokens re-set per theme with --primary/--ring untouched, ThemeScope, GSAP entrance (form first) + pausable ambient loop with a reduced-motion branch, a designed 390px band. Governed by the shipped skill godxjp-ui-brand-surface; CSS in its references/exemplar-css.md. The restrained default stays auth-recovery-panels.",
+    "tags": [
+      "auth",
+      "sign-in",
+      "login",
+      "brand",
+      "onboarding",
+      "motion",
+      "gsap",
+      "art-direction",
+      "layout"
+    ]
+  },
+  {
+    "aliases": [
       "recovery-email",
       "backup-codes",
       "security-settings",

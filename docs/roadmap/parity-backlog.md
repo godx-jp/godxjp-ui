@@ -2,7 +2,7 @@
 
 Sources: `parity-audit-data-entry.md` · `parity-audit-data-display-feedback.md` ·
 `parity-audit-layout-navigation-general.md`. Sequencing strategy is decided in
-`debate/antd-parity-scope-and-sequencing/04-Decision.md`.
+[`antd-parity-decision.md`](antd-parity-decision.md).
 
 ## The headline the audits actually produced
 

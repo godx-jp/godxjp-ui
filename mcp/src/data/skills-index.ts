@@ -1421,7 +1421,7 @@ dual-React artifact under vitest).`,
     whenToUse:
       "You are building or redesigning a COMPLEX multi-layer admin/console/back-office UI (platform admin, workspace admin, multi-tenant management, control panel) — the kind that spans several administrative tiers (Platform → Org/Tenant → Brand → Org-unit → Shop → Staff), not one flat resource list. Read this BEFORE writing JSX: it forces the right order — lock the entity model → study exemplars → design a LAYERED information architecture → wireframe (as an Artifact) → validate → only THEN code. Stops the flat-console anti-pattern (every resource in one list, create-form + list + detail crammed on one screen, no dashboards). For a single ordinary screen use compose-a-screen; for a design handoff bundle use design-to-page.",
     source:
-      "@godxjp/ui .claude/skills/design-complex-admin/SKILL.md — the multi-tenant admin-console redesign process (entity-tree concept → layered wireframe → code)",
+      "@godxjp/ui skills/godxjp-ui-design/references/complex-admin.md — the multi-tenant admin-console redesign process (entity-tree concept → layered wireframe → code)",
     sections: [
       {
         id: "entity-model-first",

@@ -40,7 +40,7 @@ Pasteable bootstrap:
 > for the props of the ones you chose. Tell me which catalog version you read.
 
 **Pin to your installed version.** Every URL above tracks `main`. Swap `main` for the tag that
-matches the `@godxjp/ui` in your `package.json` — `.../v28.4.0/agent/...` — because a catalog
+matches the `@godxjp/ui` in your `package.json` — `.../v<version>/agent/...` — because a catalog
 newer than your package describes props you do not have, an older one hides props you do, and
 neither says so.
 
@@ -74,12 +74,14 @@ Files: [`agent/`](agent/) · entry [`agent/llms.txt`](agent/llms.txt) · manifes
 - Do not add an axe job, an `@axe-core/playwright` step, or a workflow that invokes `check:frame-axe`, even to fix a regression or to "restore coverage". `check:gate-coverage` lists the gate as EXEMPT for exactly this reason; its absence from `.github/workflows/` is a declaration, not a dead gate.
 - The cost is accepted, not overlooked: a new a11y defect is caught when someone runs the gate locally, not at merge. It runs when the owner asks for it by name (see "The batch run" below); for a PR that touches markup, ARIA, focus behaviour or colour, say so when asking. Its output is committed to `audit-evidence/frame-axe/`. Procedure and rationale: `docs/FRAME-A11Y-CI.md`.
 
-## Two skill families — pick the right one first
+## Three skill families — pick the right one first
 
-Skills are split by audience (see **`.claude/skills/README.md`** for the full map):
+Skills are split by audience (see **`.claude/skills/README.md`** for the full map, including the
+old skill names that were merged):
 
-- **CORE** (this repo's `src/`/`docs/`/`mcp/`) → the `godxjp-ui-*` skills in `.claude/skills/`. Start with **`godxjp-ui-component`** (below), then its follow-map: interaction-feel → behavioral-test → example-page → best-ux → **`godxjp-ui-mcp-catalog-sync`** (keep the MCP catalog + tests in sync on any public-API change). - **CONSUMER** (an app importing `@godxjp/ui`) → served by the `godxjp-ui` MCP, never these files: `list_consumer_skills` / `route_consumer_task` / `get_consumer_skill` (`design-to-page`, `compose-a-screen`, taste family) + `draft_bug_report` for filing library bugs.
-- **SHIPPED** (`skills/` at the root, in the npm tarball) → `godxjp-ui-form`, `godxjp-ui-navigation`, `godxjp-ui-design`. Consumers install them into their own `.claude/skills/` with `gx skills` (`{"from": "npm:@godxjp/ui", "version": "match-package"}` in `godx.skills.json`), pinned to the package version they run. Written in English and consumer-agnostic like `agent/` (no product names — `check:no-consumer-coupling` does not scan this directory, so read the diff). Each folder name equals its frontmatter `name`, or `gx skills sync` refuses it.
+- **CORE** (this repo's `src/`/`docs/`/`mcp/`) → three skills in `.claude/skills/`: **`agent-dev-loop`** (a batch of issues), **`godxjp-ui-component`** (below; its `references/` carry interaction-feel → behavioral-test → example-page → mcp-catalog-sync, the last one keeping the MCP catalog + tests in sync on any public-API change, plus performance) and **`godxjp-ui-best-ux`** (taste, premium craft, design handoff).
+- **CONSUMER** (an app importing `@godxjp/ui`) → served by the `godxjp-ui` MCP, never the CORE files: `list_consumer_skills` / `route_consumer_task` / `get_consumer_skill` (`design-to-page`, `compose-a-screen`, taste family) + `draft_bug_report` for filing library bugs.
+- **SHIPPED** (`skills/` at the root, in the npm tarball) → `godxjp-ui-design` (app screens; forms, navigation, complex admin and craft are its `references/`) and `godxjp-ui-brand-surface` (an expressive sign-in / onboarding surface). Consumers install them into their own `.claude/skills/` with `gx skills` (`{"from": "npm:@godxjp/ui", "version": "match-package"}` in `godx.skills.json`), pinned to the package version they run. Written in English and consumer-agnostic like `agent/` (no product names — `check:no-consumer-coupling` does not scan this directory, so read the diff). Each folder name equals its frontmatter `name`, or `gx skills sync` refuses it. Add a topic as a `references/` file of an existing skill, not as a new skill.
 
 ## MANDATORY: read the component skill before touching UI
 

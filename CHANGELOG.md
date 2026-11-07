@@ -8,6 +8,23 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.27.3] - 2026-11-07
+
+Skills, docs and catalog only, off v33.27.2. No component code.
+
+### Added
+
+- Shipped skill `godxjp-ui-brand-surface` (`skills/godxjp-ui-brand-surface/`): how to build an EXPRESSIVE sign-in / onboarding surface on the restrained kit — when it applies (never admin screens), the art-direction and motion process, composition rules (the picture shows the product itself, kit components on the form side, kit tokens re-set per theme with `--primary`/`--ring` untouched, `ThemeScope`, bundled fonts per script, AA contrast, a designed 390px layout, GSAP with a reduced-motion branch and a pause control), a checklist, and `references/exemplar-css.md`. Pattern `auth-brand-surface` is its TSX exemplar. DESIGN.md Known Gaps points at it.
+
+### Changed
+
+- Shipped skills are now two: `godxjp-ui-design` and `godxjp-ui-brand-surface`. `godxjp-ui-form` → `godxjp-ui-design/references/forms.md`, `godxjp-ui-navigation` → `references/navigation.md` (+ `navigation-principles.md`), and the CONSUMER skill `design-complex-admin` (a repo file hand-copied into the MCP) → `references/complex-admin.md`, with its colour and StatCard advice brought in line with DESIGN.md. New `references/craft.md` distils the consumer half of the repo's craft skills. (On 33.27.x the MCP does not serve shipped skills yet; that arrives with 33.28.x.) A consumer's `gx skills` copy of `godxjp-ui-form` / `godxjp-ui-navigation` is stale after this release: delete it.
+- `no-hand-rolled-list` replacement text, the Flex `gap` and ListRow docs agree on `<Flex as="ul" marker="none" direction="col" gap="none">` for a ListRow list; the dashboard and portal showcases (served by `get_exemplar`) no longer use the raw `<ul className="divide-y">` the audit flags (context: gh#1533).
+
+### Removed
+
+- Outdated or duplicate docs: `docs/CANONICAL-CONTRACTS.md` (declared `Banner` and `AuthShell preset` exported; both removed in v32), `HANDOVER-guinea-pig-findings.md`, `.agent-notes/213-214-215-audit.md`, `skills-lock.json` (pointed at a nonexistent `skills/shadcn`), and the `debate/` transcripts (the accepted ADR moved to `docs/roadmap/antd-parity-decision.md`). Stale names fixed in docs: `DateFormatPicker`, `DialogConfirmProp`, `Banner`, `godxjp_ui_guide`, `godx-ui-component-placement`, `packages/ui` paths.
+
 ## [33.27.2] - 2026-11-07
 
 ### Fixed

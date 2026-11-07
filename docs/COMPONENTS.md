@@ -42,7 +42,7 @@ Every admin page **must** use PageContainer.
 
 ## Mobile-first
 
-All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640px+) adds horizontal layouts. See `packages/ui/src/tokens/base.css` and `.ui-page-*` in `src/styles/index.css`. Preview defaults to mobile viewport.
+All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640px+) adds horizontal layouts. See `src/tokens/base.css` and `.ui-page-*` in `src/styles/index.css`. Preview defaults to mobile viewport.
 
 ### Flex
 
@@ -106,13 +106,12 @@ and sets `min-inline-size: 0` so a truncating child ellipses instead of widening
 
 ## Feedback
 
-| Component   | Prop type           | Key props                                                                    |
-| ----------- | ------------------- | ---------------------------------------------------------------------------- |
-| `Alert`     | `AlertProp`         | `tone` (colour), `variant` (measure), slots, `onDismiss`, `Alert.QueryError` |
-| `Banner`    | `BannerProp`        | page-level `Alert` (`variant="banner"`); same tones/slots/dismiss            |
-| `Dialog`    | `DialogConfirmProp` | `mode: form \| confirm`, `Dialog.Confirm` preset                             |
-| `Sheet`     | Radix primitives    | slide-in panel (mobile filters, detail flyouts)                              |
-| `Skeleton*` | `SkeletonRowsProp`  | loading placeholders                                                         |
+| Component   | Prop type          | Key props                                                                    |
+| ----------- | ------------------ | ---------------------------------------------------------------------------- |
+| `Alert`     | `AlertProp`        | `tone` (colour), `variant` (measure), slots, `onDismiss`, `Alert.QueryError` |
+| `Dialog`    | `DialogProp`       | form dialog; a confirmation is `AlertDialog`                                 |
+| `Sheet`     | Radix primitives   | slide-in panel (mobile filters, detail flyouts)                              |
+| `Skeleton*` | `SkeletonRowsProp` | loading placeholders                                                         |
 
 ---
 

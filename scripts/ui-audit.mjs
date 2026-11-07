@@ -856,7 +856,7 @@ const RULES = [
   },
   {
     id: "no-hand-rolled-list",
-    replacement: 'Flex as="ul" marker="none" + ListRow as="li"',
+    replacement: 'Flex as="ul" marker="none" direction="col" gap="none" + ListRow as="li"',
     scope: "consumer",
     severity: "warn",
     spansElement: true,
@@ -885,7 +885,7 @@ const RULES = [
     standard:
       "WAI-ARIA 1.2 (list / listitem) · HTML Living Standard (ul/ol/li) · WCAG 2.2 SC 1.3.1",
     message:
-      'Hand-rolled list — a raw <ul>/<ol>, an ARIA role="list"/"listitem", or a <li> wrapped around a library row. Build it from <Flex as="ul" marker="none"> (keeps the element, the <li> semantics and the gap token; no bullet, no indent) with <ListRow as="li"> as the rows. A row inside a wrapper of its own is an only child, so its :not(:last-child) divider never matches and every divider disappears silently (docs/CONSUMER-RULES.md §4, gh#714).',
+      'Hand-rolled list — a raw <ul>/<ol>, an ARIA role="list"/"listitem", or a <li> wrapped around a library row. Build it from <Flex as="ul" marker="none" direction="col" gap="none"> (keeps the element and the <li> semantics; no bullet, no indent; gap="none" because the rows draw their own dividers) with <ListRow as="li"> as the rows. A row inside a wrapper of its own is an only child, so its :not(:last-child) divider never matches and every divider disappears silently (docs/CONSUMER-RULES.md §4, gh#714).',
   },
   {
     id: "no-hand-rolled-scrollport",

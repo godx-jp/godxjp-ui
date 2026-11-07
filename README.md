@@ -51,7 +51,7 @@ static files straight from this public repo — no hosting, no deploy step:
 | --- | --- | --- |
 | [`agent/START-HERE.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md) | 11 KB | **read first** — self-contained: the four rules, the token override model, a page that passes review |
 | [`agent/llms.txt`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/llms.txt) | 3 KB | the [llms.txt](https://llmstxt.org/) entry point |
-| [`agent/DESIGN.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md) | 18 KB | the visual spec: tokens, colour scarcity, admin screen anatomy, do/don't |
+| [`agent/DESIGN.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/DESIGN.md) | 19 KB | the visual spec: tokens, colour scarcity, admin screen anatomy, do/don't |
 | [`agent/index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json) | 3 KB | manifest: version, counts, every file's URL |
 | [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json) | 47 KB | all 213 as name + group + tagline — **fetch this first** |
 | [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1 KB–38 KB | one file per component, each with its `importPath` — **this is the route to take** |
@@ -70,7 +70,7 @@ Pasteable bootstrap:
 > version you read.
 
 **Pin to the version you installed.** Every URL above tracks `main`. Swap `main` for the matching
-tag — `https://raw.githubusercontent.com/godx-jp/godxjp-ui/v28.4.0/agent/...` — because a catalog
+tag — `https://raw.githubusercontent.com/godx-jp/godxjp-ui/v<version>/agent/...` — because a catalog
 newer than your package describes props you do not have, an older one hides props you do, and
 neither failure announces itself. Pinned URLs only resolve for releases whose tag contains
 `agent/`; on a 404 the release predates this catalog, so read `main` and compare
@@ -91,8 +91,9 @@ This package is **the single source of UI truth**. It is shared, versioned infra
 
 - **Editing it requires explicit session permission** (the hard gate — see [DEVELOPMENT.md](./docs/DEVELOPMENT.md#0-what-this-package-is--and-the-boundary-it-must-keep)). By default the package is off-limits; consumers _compose_ its primitives, they don't fork them. - **It is generic and presentational only.** No app i18n (`useTranslation`), no Inertia (`router`/`<Form>`), no Wayfinder routes, no business entities or domain logic, no product copy, no raw colors. Those are **consumer-layer** concerns — they must never leak into this package.
 
-> Deciding whether a component belongs here vs. app-level? Use the
-> **`godx-ui-component-placement`** skill.
+> Deciding whether a component belongs here vs. app-level? Read
+> [`docs/COMPOSITION-VS-COMPONENT.md`](docs/COMPOSITION-VS-COMPONENT.md) and
+> [`docs/WHAT-BELONGS-HERE.md`](docs/WHAT-BELONGS-HERE.md).
 
 Full contributor rules: **[docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)**.
 

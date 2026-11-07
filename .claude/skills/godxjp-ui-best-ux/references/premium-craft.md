@@ -1,15 +1,4 @@
----
-name: godxjp-ui-premium-craft
-description: >-
-  BẮT BUỘC đọc khi một component của @godxjp/ui "trông nhàm chán", khi nâng cấp UI/UX cho một
-  component, hoặc khi ai đó đưa ra một bản "premium/upgraded UI" để tham khảo. Skill này rút ra từ việc
-  mổ xẻ 27 cặp Basic→Premium (premium-code-library), đọc trọn mã nguồn VÀ chạy trong Chromium thật: đo mọi
-  animation bằng document.getAnimations(), chụp khung hình 0/120/400ms, chạy luồng gõ/chọn/xoá thật.
-  Kết luận đo được: phần "premium" ~30% là tay nghề (trạng thái, phản hồi, phân cấp, đếm, gợi ý phím tắt)
-  và ~70% là trang trí (gradient, glow, hover-lift, lò xo, vòng lặp). Skill dạy cách lấy đúng 30% đó và
-  dịch sang token của @godxjp/ui trong khuôn khổ tiết chế của godxjp-ui-best-ux, kèm danh sách cấm có
-  bằng chứng, quy trình nâng cấp từng bước và một probe đo motion để CHỨNG MINH bằng số, không bằng mắt.
----
+> Formerly the separate skill `godxjp-ui-premium-craft`; now a reference of `godxjp-ui-best-ux`.
 
 # Premium craft — make a component feel alive without decorating it
 
@@ -21,7 +10,7 @@ description: >-
 **reject list** of premium-demo patterns we never copy.
 **It does not own** the taste coordinates (chroma, weights, spacing, the 渋み/間/簡素 DNA). Those
 belong to [[godxjp-ui-best-ux]], which wins on any conflict. It also does not own the catalogue of
-state-truthful behaviours ([[godxjp-ui-interaction-feel]]) or the correctness contract
+state-truthful behaviours ([[godxjp-ui-component]] (`references/interaction-feel.md`)) or the correctness contract
 ([[godxjp-ui-component]]).
 
 ## Why this skill exists: what the study measured
@@ -166,11 +155,11 @@ Visual treatment comes from [[godxjp-ui-best-ux]]. In short: 1 px `--border` and
 For each upgraded component:
 
 - [ ] lens audit written (applies / done / gap, with `file:line`)
-- [ ] a behavioural test beside the component, red on the old code ([[godxjp-ui-behavioral-test]])
+- [ ] a behavioural test beside the component, red on the old code ([[godxjp-ui-component]] (`references/behavioral-test.md`))
 - [ ] `motion-probe.mjs` verdict all ✓, `probe.json` attached to the issue
 - [ ] frames at 0/120/400 ms compared before and after (attach both)
 - [ ] `pnpm check:frame-overflow --only <slug>` if layout moved; `pnpm check:frame-axe` locally if markup/ARIA changed
-- [ ] the gates for the diff ([[godxjp-ui-component]] §5); public prop → `pnpm regen` + catalog sync ([[godxjp-ui-mcp-catalog-sync]])
+- [ ] the gates for the diff ([[godxjp-ui-component]] §5); public prop → `pnpm regen` + catalog sync ([[godxjp-ui-component]] (`references/mcp-catalog-sync.md`))
 - [ ] before/after numbers in the issue
 
 ## 7. The backlog this study produced (ranked by value/cost)

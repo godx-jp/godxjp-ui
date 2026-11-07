@@ -1,6 +1,7 @@
 # Tree components — audit + normalized spec
 
-> **Status:** audit complete 2026-09-10. `Tree` is NOT implemented. Read this before touching
+> **Status:** audit complete 2026-09-10. `Tree` has since shipped (`src/components/data-display/tree.tsx`)
+> and `TreeList` is gone; the tables below are the pre-implementation audit, kept as history. Read this before touching
 > anything under `src/components/**/tree-*`.
 > **Contract:** `.claude/skills/godxjp-ui-component/SKILL.md` is the hard gate. This document only
 > normalizes *what* to build; the skill owns *how*.

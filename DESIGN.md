@@ -211,6 +211,7 @@ A list whose rows are decisions. Show requester, target, reason, submitted time;
 ## Known Gaps
 
 - The default primary is neutral by design; a product without a brand colour looks monochrome until one is set.
+- The kit ships no expressive surface. A sign-in, onboarding or first empty state that should carry the brand is built on top of the kit, never inside it: the shipped skill `godxjp-ui-brand-surface` governs it (kit components on the form side, kit tokens re-set on the surface, `--primary` untouched; pattern `auth-brand-surface`). Every other screen stays as this document describes.
 - `ui-audit` checks primitives and tokens, not structure: a page can pass it and still show every Don't above.
 - No edge-mounted rail toggle (a control straddling the sidebar border); `Sidebar action` is the supported place. Under `topbarSpan="full"` the bar shares no keyline with the content column.
 - `card-per-section` counts Cards per file, so a screen split across components can pass with a Card around every section.

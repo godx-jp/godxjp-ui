@@ -1,11 +1,4 @@
----
-name: godxjp-ui-interaction-feel
-description: >-
-  BẮT BUỘC đọc khi xây/sửa/audit BẤT KỲ component có state hoặc tương tác (select, tree, cascader,
-  calendar/range, combobox, checkbox-group, stepper, async list…). Đây là catalog các hành vi UX
-  TINH TẾ mà người dùng MẶC ĐỊNH mong đợi — thứ phân biệt "chạy được" với "thấy đúng". Mỗi pattern:
-  kỳ vọng · cách hỏng thường gặp · cách verify. Dùng kèm Audit Evidence Ledger (godxjp-ui-example-page).
----
+> Formerly the separate skill `godxjp-ui-interaction-feel`; now a reference of `godxjp-ui-component`.
 
 # Interaction feel — những hành vi "đúng cảm giác", không chỉ "chạy được"
 
@@ -14,7 +7,7 @@ description: >-
 
 **Đây là OWNER của các hành vi state-truthful** — [[godxjp-ui-component]] §2e và [[godxjp-ui-best-ux]]
 "Interaction hygiene" đều TRỎ về đây, không lặp lại. Dùng kèm Audit Evidence Ledger của
-[[godxjp-ui-example-page]]; mỗi phát hiện codify thành test theo [[godxjp-ui-behavioral-test]].
+[[godxjp-ui-component]] (`references/example-page.md`); mỗi phát hiện codify thành test theo [[godxjp-ui-component]] (`references/behavioral-test.md`).
 
 **DO / DON'T:**
 
@@ -143,7 +136,7 @@ lý thuyết.
 1. **Trước khi build/sửa** một control có state: đọc lướt 9 mục, chọn mục liên quan, thiết kế cho ĐÚNG
    ngay từ đầu.
 2. **Khi audit:** mỗi mục là một dòng bằng chứng trong **Audit Evidence Ledger**
-   (`godxjp-ui-example-page`). Drive thật, mở console, đối chiếu affordance ↔ trạng thái thật.
+   (`references/example-page.md`). Drive thật, mở console, đối chiếu affordance ↔ trạng thái thật.
 3. **Khi phát hiện một hành vi tinh tế MỚI** chưa có ở đây → bổ sung ngay một mục (kỳ vọng · cách hỏng ·
    verify), để lần sau bắt được bằng thiết kế.
 

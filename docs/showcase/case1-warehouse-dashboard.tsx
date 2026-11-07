@@ -222,7 +222,7 @@ export default function WarehouseDashboardShowcase() {
                 </CardAction>
               </CardHeader>
               <CardContent flush>
-                <ul className="divide-border divide-y">
+                <Flex as="ul" marker="none" direction="col" gap="none">
                   {QUEUE.map((q) => {
                     return (
                       <ListRow
@@ -238,7 +238,7 @@ export default function WarehouseDashboardShowcase() {
                       />
                     );
                   })}
-                </ul>
+                </Flex>
               </CardContent>
             </Card>
 
