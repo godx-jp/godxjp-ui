@@ -77,6 +77,9 @@ These patterns recur in premium products and fit the kit:
 className="dark"`), so link and visited inks switch to their dark values (4.5:1 or better on
     the band). A band that only re-sets `--background`/`--foreground` must also re-set
     `--text-link` and `--text-link-visited`, or its links paint the light theme's inks on dark.
+11. **A marker that carries state is never drawn in the border colour.** A dot or tick that marks
+    a status or the current item is a graphic with meaning: 3:1 or better on its surface (muted
+    ink at rest, brand ink when current). The hairline border token is ~1.4:1 and disappears.
 
 ## 4. Interaction hygiene
 

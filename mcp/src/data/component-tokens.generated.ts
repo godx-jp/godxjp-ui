@@ -6741,7 +6741,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-pill-dot-color",
     "value": "initial",
-    "description": "Default = the ornament colour."
+    "description": "Default = muted ink (≥3:1, a marker); the current pill's dot = its brand ink."
   },
   {
     "name": "--editorial-showcase-height",
