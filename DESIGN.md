@@ -106,6 +106,8 @@ Colour is scarce. Most of the screen is canvas, ink and hairline.
 
 - A link is identifiable **at rest**, without hover (WCAG 1.4.1): link ink plus a second cue, weight or underline. Inside the AppShell `main` the kit does this for every `a[href]`: link ink and medium weight at rest, underline on hover and keyboard focus. In running text (`[data-ui-reading-links]`, `Link`, `Text link`) the underline is at rest.
 - A visited link has its own ink (`--text-link-visited`). Never remove it.
+- Only an inline text link takes link ink. A link that wraps block content (a stat tile, a card) is a control link and keeps its content's ink; the kit skips a link with block children.
+- On a dark or brand band, use a dark scope (`ThemeScope className="dark"`) so link and visited inks clear 4.5:1 there; a band that re-sets only `--background`/`--foreground` must re-set `--text-link` and `--text-link-visited` too.
 - A link that is a control (a button-shaped link, a tab, a menu item, a whole card, a row) opts out with `data-ui-link-style="control"`; the kit's Button, ListRow, tabs, menus, navigation and header/footer regions already do. Never strip link ink with a utility class (`text-foreground`, `text-inherit`, `no-underline`) to make a name in a table cell look like plain text.
 
 ## Typography

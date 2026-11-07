@@ -64,6 +64,19 @@ These patterns recur in premium products and fit the kit:
    tables and cards.
 7. **Overlay headers leave room for the close button.** Anything at the end of a `Sheet` or
    `Dialog` header must not sit under the close button. Open the overlay and look.
+8. **Tabs on a list page are `variant="line"`.** Tabs that split one list into views (users /
+   invitations, open / closed) are an underline strip: `<Tabs variant="line">`, with `count` on each
+   `TabsTrigger` for the size of each view. The default pill strip is for a compact switch inside a
+   card or panel; `card` is for document-style tabs. Do not hand-style a strip to look like either.
+9. **A clickable tile or card is a control link, not a text link.** A link that wraps block
+   content (a stat tile with its number, a card body, a heading and summary) keeps the content's
+   own ink: it is never painted link colour or visited violet. The kit skips a link with block
+   children; mark any other one `data-ui-link-style="control"`. Link ink is for a link in running
+   text or a table cell.
+10. **Links on a dark band.** An inverse or brand band is a dark scope (`ThemeScope
+className="dark"`), so link and visited inks switch to their dark values (4.5:1 or better on
+    the band). A band that only re-sets `--background`/`--foreground` must also re-set
+    `--text-link` and `--text-link-visited`, or its links paint the light theme's inks on dark.
 
 ## 4. Interaction hygiene
 

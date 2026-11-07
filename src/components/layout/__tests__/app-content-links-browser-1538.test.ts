@@ -1,6 +1,7 @@
 import { chromium, type Browser } from "playwright";
 import { afterAll, beforeAll, expect, it } from "vitest";
 import { compileRealCss } from "../../data-entry/__tests__/compile-real-css";
+import { contrast } from "../../../tokens/__tests__/wcag-contrast";
 
 /**
  * gh#1538 — inside the AppShell's <main>, a content link is visibly a link at rest (link ink +
@@ -21,6 +22,9 @@ const markup = `<div class="app-root"><header><a id="header" href="#">Header</a>
 <a id="self-control" data-ui-link-style="control" href="#">Control</a>
 <a id="kit-link" data-slot="text" data-link data-tone="destructive" href="#">Delete</a>
 <a id="disabled" aria-disabled="true" href="#">Disabled</a>
+<a id="tile" href="#"><div>Waiting for me</div><div>12</div></a>
+<a id="tile-heading" href="#"><h3>Approvals</h3><p>3 waiting</p></a>
+<p>Read the <a id="inline" href="#">policy <span>now</span></a>.</p>
 </main><footer><a id="footer" href="#">Footer</a></footer></div><a id="outside" href="#">Outside</a>`;
 
 beforeAll(async () => {
@@ -64,10 +68,12 @@ it("paints content links with link ink and weight at rest, leaves controls alone
       "self-control",
       "kit-link",
       "disabled",
+      "tile",
+      "tile-heading",
     ])
       expect(on[id], id).toEqual(off[id]);
 
-    for (const id of ["cell", "in-card"]) {
+    for (const id of ["cell", "in-card", "inline"]) {
       expect(on[id]?.[0], id).not.toBe(on.body?.[0]);
       expect(on[id]?.[0], id).not.toBe(off[id]?.[0]);
       expect(Number(on[id]?.[2]), id).toBeGreaterThan(Number(on.body?.[2]));
@@ -114,6 +120,30 @@ it("ships a :visited rule for app, reading and kit links, and a light + dark vis
     const color = (id: string) => page.locator(id).evaluate((el) => getComputedStyle(el).color);
     expect(await color("#l")).toBe("rgb(115, 80, 155)");
     expect(await color("#d")).toBe("rgb(187, 159, 219)");
+  } finally {
+    await page.close();
+  }
+});
+
+// gh#1538 follow-up: an inverse band is a dark scope; there the link and visited inks are light.
+it("a dark-scoped band gets link and visited inks that clear 4.5:1 on its background", async () => {
+  const page = await browser.newPage();
+  try {
+    await page.setContent(
+      `<style>${css}</style><div class="dark" style="background:hsl(var(--background))"><p id="bg" style="background:hsl(var(--background))">x</p><p id="link" style="color:hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels)))">x</p><p id="visited" style="color:hsl(var(--text-link-visited))">x</p></div>`,
+    );
+    const rgb = (s: string) =>
+      s
+        .match(/[\d.]+/g)!
+        .slice(0, 3)
+        .map((v) => Number(v) * (s.startsWith("color(srgb") ? 255 : 1)) as [number, number, number];
+    const bg = rgb(
+      await page.locator("#bg").evaluate((el) => getComputedStyle(el).backgroundColor),
+    );
+    for (const id of ["link", "visited"]) {
+      const ink = rgb(await page.locator(`#${id}`).evaluate((el) => getComputedStyle(el).color));
+      expect(contrast(ink, bg), id).toBeGreaterThanOrEqual(4.5);
+    }
   } finally {
     await page.close();
   }

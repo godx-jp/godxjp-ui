@@ -8,7 +8,17 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
-Also released as 33.27.4 (off v33.27.3) while #1536 blocks 33.28.x:
+Also released as 33.27.4 (off v33.27.3) and 33.27.5 (off v33.27.4) while #1536 blocks 33.28.x:
+
+### Fixed
+
+- AppShell content links (gh#1538): a link that wraps block content (`div`, `p`, headings, lists, `table`, `section`, `article`, `figure` — a stat tile, a card body) is a control link and no longer takes link ink or the visited violet. `CenteredShell footerTone="inverse"` keeps its link ink on `:visited` instead of the light-theme violet (~2:1 on the band).
+
+### Changed
+
+- DESIGN.md Links and `craft.md` §3: a clickable tile/card is a control link; on a dark band use a dark scope (`ThemeScope className="dark"`, link and visited inks ≥ 4.5:1) or re-set `--text-link` and `--text-link-visited` with the band.
+- Shipped skill `godxjp-ui-design`, `references/craft.md` §3: tabs that split a list page into views are `Tabs variant="line"` with a `count` per trigger.
+- `button-mutation-needs-loading` flags only a mutation the click fires directly; one fired from a nested callback (a confirm dialog's `run`) is no longer reported (measured on a consumer: 1 false positive in 60).
 
 ### Added
 
