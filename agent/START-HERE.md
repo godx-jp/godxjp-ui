@@ -48,7 +48,7 @@ inspect every screenshot at every width region by region (no top-N cap), and han
 → These files are for you. Read `DESIGN.md` (in this folder) first: tokens, scarcity rules and
 screen anatomy, the visual target the rules below do not give you. Then fetch in this order:
 
-0. `patterns-index.json` — 29 whole-task patterns as name + tagline + tags. **If your
+0. `patterns-index.json` — 30 whole-task patterns as name + tagline + tags. **If your
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
    filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
    copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".

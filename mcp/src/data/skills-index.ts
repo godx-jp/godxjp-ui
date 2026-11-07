@@ -1453,137 +1453,6 @@ dual-React artifact under vitest).`,
     ],
   },
 
-  // ── design-complex-admin (consumer) ────────────────────────────
-  {
-    id: "design-complex-admin",
-    audience: "consumer",
-    name: "Design a complex admin console — wireframe-first, layered IA",
-    whenToUse:
-      "You are building or redesigning a COMPLEX multi-layer admin/console/back-office UI (platform admin, workspace admin, multi-tenant management, control panel) — the kind that spans several administrative tiers (Platform → Org/Tenant → Brand → Org-unit → Shop → Staff), not one flat resource list. Read this BEFORE writing JSX: it forces the right order — lock the entity model → study exemplars → design a LAYERED information architecture → wireframe (as an Artifact) → validate → only THEN code. Stops the flat-console anti-pattern (every resource in one list, create-form + list + detail crammed on one screen, no dashboards). For a single ordinary screen use compose-a-screen; for a design handoff bundle use design-to-page.",
-    source:
-      "@godxjp/ui .claude/skills/design-complex-admin/SKILL.md — the multi-tenant admin-console redesign process (entity-tree concept → layered wireframe → code)",
-    sections: [
-      {
-        id: "entity-model-first",
-        title: "Step 0 — Lock the entity model before you draw a pixel",
-        tagline:
-          "Enumerate entities, cardinality, boundaries, and what does NOT exist; get it confirmed first.",
-        body: `Do NOT open an editor at a flat "here are the resources" list. First produce a
-CONCEPT artifact (a tree of entities + a glossary + the rules) and get it confirmed:
-- every entity + its cardinality (1-N / N-N) + its boundary (tenant / RLS / subscription scope);
-- the identity split matters — Principal/User (can log in, carries authz) ≠ Employee/Staff
-  (a domain record that may never log in); never fuse them in the IA;
-- explicitly list what is OUT OF SCOPE / does NOT exist, so the console doesn't invent tiers.
-Worked example (a multi-tenant admin console): Org = Tenant = 法人 · Brand · Org-unit (branch) · Shop = Branch ·
-Staff · Principal = User. No code until this tree is agreed — a wrong entity model is a wrong
-console, and it is far cheaper to fix here than in built screens.
-🔴 Entity-category colour is NON-SEMANTIC: never use red/amber/orange to distinguish a category
-(reads as error/warning/danger). Reserve red strictly for a real \`danger\` action. Differentiate
-tiers/categories with cool hues (sky/teal/indigo/violet) + a LABEL — never colour alone
-(colour-only meaning also fails WCAG).`,
-      },
-      {
-        id: "study-exemplars",
-        title: "Step 1 — Study the best-in-class consoles for this domain",
-        tagline: "Borrow proven IA from Auth0/WorkOS/Stripe/Cloudflare/Vercel/Supabase/Clerk.",
-        body: `Before inventing structure, learn the information architecture of the strongest
-consoles in the same shape (identity/back-office/multi-tenant): Auth0, WorkOS, Stripe Connect,
-Cloudflare, Vercel, Supabase, Clerk — pick the closest to your domain. Extract the RECURRING
-patterns they all converge on and plan to reuse them:
-- a top scope switcher (change tenant/org/project) that re-scopes the whole shell;
-- a per-scope sidebar (nav that changes with the active scope);
-- breadcrumb trails + a ⌘K command palette for deep navigation;
-- a "needs attention" surface (what's broken / pending right now) on the landing dashboard;
-- first-run / empty / onboarding states, not just the happy populated view.
-These aren't decoration — they are the skeleton the layered IA hangs on.`,
-      },
-      {
-        id: "layered-ia",
-        title: "Step 2 — Layered information architecture (never flat)",
-        tagline:
-          "Map each surface to an administrative TIER; every tier gets dashboard + list + detail as SEPARATE routes.",
-        body: `Reject the flat console (every resource dumped into one list). Map each admin surface
-onto an administrative TIER of the domain (Platform → Org/Tenant → Brand → Org-unit → Shop → Staff)
-so the navigation mirrors how the business is actually administered.
-Each tier gets its OWN route set, and CRUD is split across routes — never one mega-screen:
-- an overview DASHBOARD (summary of that tier: counts, health, needs-attention);
-- a LIST route (browse/search the tier's entities);
-- a DETAIL route per entity (read + its sub-resources);
-- CREATE / EDIT as their own route or a focused Dialog/Sheet — NOT inlined beside the list.
-🔴 The single worst anti-pattern this skill exists to kill: create-form + list + detail crammed
-onto one screen. If you can't name the tier a screen belongs to, the IA isn't finished.`,
-      },
-      {
-        id: "scope-and-chrome",
-        title: "Step 3 — Scope model + shell chrome (real @godxjp/ui primitives)",
-        tagline:
-          "AppShell + Sidebar + Topbar slots + Breadcrumb; summary before detail; encode attention visually.",
-        body: `Build the shell from REAL primitives (MCP-first — get_component before you wire a
-prop), never hand-rolled nav:
-- \`AppShell\` composes the frame; \`Sidebar\` is the DATA-DRIVEN nav rail (pass its items, never
-  build nav from raw buttons) and it SWaps with the active scope; \`Topbar\` is a pure slot bar —
-  drop the scope switcher into a slot (compose it from \`Select\`/\`DropdownMenu\`; use
-  \`AppSettingPicker\` for locale/theme/density axes), the shell bakes no chrome itself.
-- \`Breadcrumb\` for the trail; a ⌘K command palette is a COMPOSITION (\`Dialog\` + \`Input\` +
-  a results list / \`DropdownMenu\`) — there is no Command primitive, so build it from these or,
-  if you want a first-class one, file it via draft_bug_report rather than faking it.
-- Landing = a DASHBOARD: summary BEFORE detail — a few \`StatCard\` KPIs in a \`ResponsiveGrid\`
-  (StatCard is already bordered — never wrap it in Card) + ONE primary list, not an 8-card wall.
-- Encode "needs attention" VISUALLY (a \`Badge\` with \`status\`, a StatCard \`accent\` rail, a
-  \`Progress\` tone) — never a bare number the eye can't triage. Status uses the FIXED semantic
-  mapping; never recolour a category hue into a role.`,
-      },
-      {
-        id: "wireframe-first",
-        title: "Step 4 — Wireframe FIRST (as an Artifact), then validate",
-        tagline:
-          "Low-fi but REAL content, theme-aware, token-driven; stakeholder approves before code.",
-        body: `Produce a low-fidelity WIREFRAME as an Artifact and get it approved BEFORE writing
-components — fixing structure in a wireframe is far cheaper than in built screens. The wireframe must:
-- use REAL content, never lorem — real tier names, real entity fields, real empty/attention copy;
-- be theme-aware (light + dark) and token-driven (semantic tokens, not raw hex) so it maps 1:1 to
-  the eventual @godxjp/ui build;
-- cover the whole IA: the nav/scope model, the tier palette, EACH tier's dashboard/list/detail,
-  plus before/after and do/don't panels so reviewers see the reasoning.
-Only after sign-off do you move to code. A wireframe skipped = a redesign relitigated in code.`,
-      },
-      {
-        id: "validate-then-build",
-        title: "Steps 5–6 — Validate against godx-ui, THEN build route-by-route",
-        tagline:
-          "Run cardinal rules / patterns / anti-AI-tells; then each page = its own route from real primitives; hand off.",
-        body: `Validate the wireframe against the system before building: cross-check the cardinal
-rules + canonical patterns (get_rule / list_patterns / get_pattern), run the ui-audit / visual-audit
-lens, and scan for anti-AI tells (list_anti_ai_tells) — flat 8-stat walls, rainbow tag walls,
-category-as-error colour, placeholder-as-label.
-Then BUILD, one route at a time — and hand off the per-screen craft to the screen skills rather
-than re-deriving it here:
-- each page is its OWN route (dashboard / list / detail / create split, per Step 2);
-- every block is a real @godxjp/ui primitive — no hand-rolled UI, no raw <input>/<select>/<table>;
-- a tier list = \`PageContainer\` + \`Card\` + \`CardContent\` flush + \`DataTable\`; detail =
-  \`Descriptions\` + \`StatCard\`; empty = \`EmptyState\`;
-- ui-audit clean (0/0 semantic tokens), tests ≥95%.
-HAND-OFF: use compose-a-screen (build a screen from a brief) or design-to-page (from a handoff
-bundle) for each individual screen; if a needed block has no primitive, use design-to-page's
-gaps-extend-or-ask + report-bug — never fake it.`,
-      },
-      {
-        id: "anti-patterns",
-        title: "Anti-patterns this skill must block + the per-run outputs",
-        tagline: "The six failures to reject on sight, and the four artifacts every run produces.",
-        body: `Reject on sight (each is a FINDING, stop and fix):
-1. Code written before an agreed entity model AND an approved wireframe exist.
-2. A FLAT IA — every resource in one list, no administrative tiers.
-3. create-form + list + detail crammed onto one screen (CRUD not split into routes).
-4. A tier with no dashboard/summary — detail with nothing to orient it.
-5. Category/tier coloured with red/amber/orange (reads as error/warning) — use cool hues + labels.
-6. Hand-rolled UI instead of @godxjp/ui primitives (raw nav buttons, styled-div "Card", raw table).
-Every run of this skill produces, in order: (1) a stakeholder-confirmed concept/entity artifact →
-(2) a layered IA doc → (3) an approved wireframe Artifact → (4) a per-route implementation checklist.
-Do not advance a step until the prior artifact is signed off.`,
-      },
-    ],
-  },
   // ── shipped skills (skills/*/SKILL.md, embedded by gen-agent-catalog — gh#1527) ──
   ...SHIPPED_SKILL_FILES.map(shippedSkill),
 ];
@@ -1651,6 +1520,17 @@ function shippedSkill(file: (typeof SHIPPED_SKILL_FILES)[number]): Skill {
     sections,
   };
 }
+
+/**
+ * Skills merged into another one, by their old id: `[new skill, its section]`. A consumer whose
+ * notes, hooks or habits still name the old id is answered from the new place, not with
+ * "not found".
+ */
+export const MERGED_SKILLS: Record<string, [string, string]> = {
+  "godxjp-ui-form": ["godxjp-ui-design", "references-forms"],
+  "godxjp-ui-navigation": ["godxjp-ui-design", "references-navigation"],
+  "design-complex-admin": ["godxjp-ui-design", "references-complex-admin"],
+};
 
 export function findSkill(id: string): Skill | undefined {
   return SKILLS.find((s) => s.id === id);
@@ -1996,10 +1876,10 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
       "入力フォーム",
       "biểu mẫu",
     ],
-    "godxjp-ui-form",
-    "overview",
+    "godxjp-ui-design",
+    "references-forms",
     "The seven form rules: 3+ fields is a page not a modal, always <Form> + FormField, inputs sized to their content (GOV.UK), no hand-laid field rows, discovery before JSX, gates, issue instead of hand-roll.",
-    ["godxjp-ui-form/a-form-with-3-or-more-fields-is-its-own-page-not-a-modal"],
+    ["godxjp-ui-design/overview"],
   );
   route(
     [
@@ -2019,13 +1899,10 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
       "điều hướng",
       "thanh bên",
     ],
-    "godxjp-ui-navigation",
-    "procedure-the-order-is-the-rule",
+    "godxjp-ui-design",
+    "references-navigation",
     "Navigation for multi-role apps: tasks → menu tree → walkthrough → measure, then the hard rules (per-role landing, phone bottom bar, breadcrumbs, in-page tabs). Read BEFORE adding a menu item or a page.",
-    [
-      "godxjp-ui-navigation/hard-rules",
-      "godxjp-ui-navigation/self-check-gate-before-asking-for-approval-before-merging",
-    ],
+    ["godxjp-ui-design/references-navigation-principles"],
   );
   route(
     [
@@ -2038,11 +1915,33 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
       "status badge",
       "do and don't",
       "dos and don'ts",
+      "polish",
+      "craft",
+      "looks generic",
     ],
     "godxjp-ui-design",
     "overview",
-    "Design do/don't rules learned from real review feedback: one-line status chips, an opaque sticky topbar, the signed-in profile kept in the bar.",
-    ["godxjp-ui-design/do", "godxjp-ui-design/don-t"],
+    "Design do/don't rules learned from real review feedback (one-line status chips, an opaque sticky topbar, the signed-in profile kept in the bar), plus the craft guide: taste dials, craft lenses, layout, interaction and motion hygiene.",
+    ["godxjp-ui-design/do", "godxjp-ui-design/don-t", "godxjp-ui-design/references-craft"],
+  );
+  route(
+    [
+      "brand surface",
+      "sign-in screen",
+      "sign in screen",
+      "login screen",
+      "login page",
+      "onboarding",
+      "art direction",
+      "expressive",
+      "first impression",
+      "ログイン画面",
+      "màn hình đăng nhập",
+    ],
+    "godxjp-ui-brand-surface",
+    "when-it-applies",
+    "Expressive sign-in/onboarding on the restrained kit: when it applies (never admin screens), a picture of the product itself, kit-only controls, tokens re-set per theme, GSAP with reduced motion and a pause control, the checklist and the auth-brand-surface exemplar.",
+    ["godxjp-ui-brand-surface/composition-rules", "godxjp-ui-brand-surface/checklist"],
   );
 
   // Loading / saving
@@ -2192,14 +2091,10 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
       "layered ia",
       "information architecture",
     ],
-    "design-complex-admin",
-    "entity-model-first",
-    "A complex multi-tier admin console: lock the entity model → study exemplars → design a LAYERED IA → wireframe (Artifact) → validate → build route-by-route. Kills the flat-console anti-pattern.",
-    [
-      "design-complex-admin/layered-ia",
-      "design-complex-admin/wireframe-first",
-      "compose-a-screen/pick-primitives",
-    ],
+    "godxjp-ui-design",
+    "references-complex-admin",
+    "A complex multi-tier admin console: lock the entity model → study exemplars → design a LAYERED IA → wireframe (Artifact) → validate → build route-by-route. Kills the flat-console anti-pattern. (Formerly the design-complex-admin skill.)",
+    ["compose-a-screen/pick-primitives"],
   );
 
   // Consumer routing hides core-only skills (e.g. component-discipline) so an

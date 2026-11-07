@@ -5,7 +5,8 @@ description: >-
   Enforces: real @godxjp/ui primitives only (no invented/hand-rolled/faked, no raw HTML controls),
   MCP-first, no duplication, and full international standards — i18n (Intl/CLDR/ISO/IANA/BCP-47),
   accessibility (WAI-ARIA APG + WCAG 2.2 AA), RTL, and the controlled-vocabulary API. Read this
-  FIRST; do not skip a single gate.
+  FIRST; do not skip a single gate. Also owns, as references/, the follow-on steps that used to be
+  separate skills: interaction-feel, behavioral-test, example-page, mcp-catalog-sync, performance.
 ---
 
 # Building a @godxjp/ui component — the discipline
@@ -16,11 +17,12 @@ description: >-
 > `.claude/skills/README.md`.
 
 **This is the MASTER core skill — follow it FIRST, then chain in order:**
-`godxjp-ui-component` (this — correctness contract) → **godxjp-ui-interaction-feel** (state-truthful
-behaviours for any stateful control) → **godxjp-ui-behavioral-test** (drive in a real browser, then
-codify as user-event tests) → **godxjp-ui-example-page** (a complete docs page + the Audit Evidence
-Ledger) → **godxjp-ui-best-ux** (taste / reference design) → **godxjp-ui-mcp-catalog-sync** (keep the MCP
-catalog + tests in sync). Single source of truth: this skill owns _real-primitives / no-raw-HTML /
+`godxjp-ui-component` (this — correctness contract) → **`references/interaction-feel.md`** (state-truthful
+behaviours for any stateful control) → **`references/behavioral-test.md`** (drive in a real browser, then
+codify as user-event tests) → **`references/example-page.md`** (a complete docs page + the Audit Evidence
+Ledger) → **godxjp-ui-best-ux** (taste / reference design) → **`references/mcp-catalog-sync.md`** (keep the MCP
+catalog + tests in sync). Performance work: **`references/performance.md`**. These five were separate
+skills until they were merged here; each file keeps its old name. Single source of truth: this skill owns _real-primitives / no-raw-HTML /
 MCP-first / no-duplication_; the others point here for that.
 
 **DO / DON'T (quick gate — full rules below):**
@@ -30,7 +32,7 @@ MCP-first / no-duplication_; the others point here for that.
 | Consult the `godxjp-ui` MCP first (`get_component`, `search_components`, `get_rule`, `get_vocab`, `get_tokens`) | Guess a prop name/shape, or re-create what a primitive already does (`Select` = searchable/async) |
 | Compose real installable primitives fully (`CardContent` for padding)                                           | Invent/hand-roll/fake a component, or use raw `<input>/<select>/<button>/<textarea>/<table>`      |
 | Route every string + `aria-label` through `t()`; format via `Intl`/CLDR                                         | Hardcode EN/JA, hand-build number/currency/date, ship emoji flags                                 |
-| Implement the WAI-ARIA APG pattern, and assert role / name / keyboard by test                                            | Colour-only state, missing accessible name, positive tabindex, keyboard traps                     |
+| Implement the WAI-ARIA APG pattern, and assert role / name / keyboard by test                                   | Colour-only state, missing accessible name, positive tabindex, keyboard traps                     |
 | Logical CSS only (`ms-/me-/ps-/pe-`, `start-/end-`)                                                             | Physical `ml-/mr-/pl-/pr-/left-/right-`                                                           |
 | Controlled triad `value`/`defaultValue`/`onValueChange`; `size ∈ xs\|sm\|md\|lg`; `tone` for status             | `size="default"`, bespoke `current`/`onChange`, missing `defaultValue`                            |
 | Size from the `--control-height` tier                                                                           | Literal `height`/`width` or `calc(var(--control-height) ± …)`                                     |
@@ -152,7 +154,7 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
 > because only the search card was tested). A blank or "looks fine" = not done. The example-page
 > skill's **Audit Evidence Ledger** is the template; reproduce it. For the _refined_ expected
 > behaviours (parent checkbox aggregation/indeterminate, reset-on-complete, value-at-rest,
-> hover-intent, no nested interactive controls), consult **godxjp-ui-interaction-feel**.
+> hover-intent, no nested interactive controls), consult **`references/interaction-feel.md`**.
 
 - **Drive EVERY mode to its TERMINAL state — one happy path is not an audit.** A multi-state
   control has one demo card per mode for a reason: exercise each. For a Cascader that means
@@ -164,8 +166,8 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
 <button>` / hydration / `act()` warning is a real defect. Never nest interactive elements; render
   the clear/affordance as a sibling overlay (`pointer-events-none` wrapper, `pointer-events-auto`
   control). The audit isn't done until the console is clean. (No-nested-interactive fix detail:
-  [[godxjp-ui-interaction-feel]] §8.)
-- **The refined state-truthful behaviours are owned by [[godxjp-ui-interaction-feel]] — don't
+  [[godxjp-ui-component]] (`references/interaction-feel.md`) §8.)
+- **The refined state-truthful behaviours are owned by [[godxjp-ui-component]] (`references/interaction-feel.md`) — don't
   re-document them here.** Parent-checkbox aggregation/indeterminate, hover-intent that reaches the
   deepest leaf, multi-step **reset-on-complete** (range → `resetOnSelect:true`), **value-at-rest
   visible on open** (`defaultMonth`/`scrollTo`/`defaultValue`), controlled **type↔click mirroring**:
@@ -205,21 +207,21 @@ align a shrink-wrapped secondary label to the parent flex start to keep the iden
 ## 5. Verify what the DIFF touched — not a fixed list
 
 > **A fixed chain of gates gives a one-line CSS change the same checks as a new component.** The
-> owner, after one padding fix: *"tao chỉ yêu cầu sửa mỗi 1 cái padding mày run đủ thứ là thế lồn
-> nào???"* A fixed checklist is not diligence, it is not reading the diff.
+> owner, after one padding fix: _"tao chỉ yêu cầu sửa mỗi 1 cái padding mày run đủ thứ là thế lồn
+> nào???"_ A fixed checklist is not diligence, it is not reading the diff.
 
 **Rule: a gate runs when the diff contains a file it can have an opinion about. Otherwise it does
 not run.** Not "it is cheap so why not" — a check that cannot fail is not evidence, it is noise,
 and nine of them is a minute you spend on every edit forever.
 
-| you changed | run exactly this |
-| --- | --- |
-| **`.css` only** | `pnpm run audit` · `check:token-tiers` · `check:control-sizing` · that component's tests |
-| **`.tsx`/`.ts` in `src/`** | `pnpm typecheck` · `pnpm lint` · `pnpm run audit` · that component's tests |
-| **a public prop / export** | + `pnpm regen` (4s) · `check:prop-vocabulary` · `check:mcp-sync` · `check:mcp-orphans` · `check:component-api-manifest` · `check:registry` — **NOT `ship:surface`**, which is `regen && verify:ci:static && frame-contracts` ≈ 70s and belongs to the batch run |
-| **a token in `src/tokens/`** | + `check:token-tiers` · `pnpm vitest run src/tokens/__tests__` · `pnpm regen` TWICE (gh#847) |
-| **a file in `docs/`** | `pnpm typecheck:docs` · `pnpm run audit` · `check:example-imports` |
-| **anything that moves layout** | `pnpm check:frame-overflow --only <slug>` (~18s) — the full sweep is part of the batch run |
+| you changed                    | run exactly this                                                                                                                                                                                                                                                |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`.css` only**                | `pnpm run audit` · `check:token-tiers` · `check:control-sizing` · that component's tests                                                                                                                                                                        |
+| **`.tsx`/`.ts` in `src/`**     | `pnpm typecheck` · `pnpm lint` · `pnpm run audit` · that component's tests                                                                                                                                                                                      |
+| **a public prop / export**     | + `pnpm regen` (4s) · `check:prop-vocabulary` · `check:mcp-sync` · `check:mcp-orphans` · `check:component-api-manifest` · `check:registry` — **NOT `ship:surface`**, which is `regen && verify:ci:static && frame-contracts` ≈ 70s and belongs to the batch run |
+| **a token in `src/tokens/`**   | + `check:token-tiers` · `pnpm vitest run src/tokens/__tests__` · `pnpm regen` TWICE (gh#847)                                                                                                                                                                    |
+| **a file in `docs/`**          | `pnpm typecheck:docs` · `pnpm run audit` · `check:example-imports`                                                                                                                                                                                              |
+| **anything that moves layout** | `pnpm check:frame-overflow --only <slug>` (~18s) — the full sweep is part of the batch run                                                                                                                                                                      |
 
 `pnpm typecheck` covers `src/`, NOT `docs/`; a `docs/`-only change needs `typecheck:docs` and
 gets nothing from `typecheck`. `check:mcp-sync`/`check:mcp-orphans` compare the catalog to the
@@ -276,8 +278,8 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - [ ] **RTL** — logical CSS only; flips correctly under `dir="rtl"`
 - [ ] **Vocabulary API** — `value`/`defaultValue`/`onValueChange` (+ uncontrolled); `size ∈ xs\|sm\|md\|lg`; positive booleans; `tone` for status; `ref` forwarded; `XProp` exported + **registered in `src/props/registry.ts`**
 - [ ] **Tokens** — semantic only; control box from the `--control-height` tier (no literal height/`calc`)
-- [ ] **Stateful correctness** — drove EVERY mode to terminal state in a real browser, console clean; refined behaviours per [[godxjp-ui-interaction-feel]]; codified via [[godxjp-ui-behavioral-test]]
-- [ ] **Catalog + docs** — added `mcp/src/data/components.ts` entry + a real-screen docs page ([[godxjp-ui-example-page]]); see [[godxjp-ui-mcp-catalog-sync]]
+- [ ] **Stateful correctness** — drove EVERY mode to terminal state in a real browser, console clean; refined behaviours per [[godxjp-ui-component]] (`references/interaction-feel.md`); codified via [[godxjp-ui-component]] (`references/behavioral-test.md`)
+- [ ] **Catalog + docs** — added `mcp/src/data/components.ts` entry + a real-screen docs page ([[godxjp-ui-component]] (`references/example-page.md`)); see [[godxjp-ui-component]] (`references/mcp-catalog-sync.md`)
 - [ ] **Gates matched to the DIFF** — §5's table, not a fixed chain. Name the files you changed, then run only the gates that can have an opinion about them, then **your component's tests only** (`pnpm vitest run src/components/<group>/__tests__/<name> --maxWorkers=2`, see §5). NEVER `pnpm test`; the full suite is CI's, and the owner decides when it runs.
 
 ## References (read when unsure)

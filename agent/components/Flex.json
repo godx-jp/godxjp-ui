@@ -92,7 +92,7 @@
     },
     {
       "defaultValue": "\"md\"",
-      "description": "Token gap between children, shared with other layout primitives. \"none\" is a DELIBERATE zero for two lines that read as one block — a name over its role, a weekday over its date, a tab bar with no seam — not a way to opt out of the token scale.",
+      "description": "Token gap between children, shared with other layout primitives. \"none\" is a DELIBERATE zero for two lines that read as one block — a name over its role, a weekday over its date, a tab bar with no seam — and for a list of ListRows (`<Flex as=\"ul\" marker=\"none\" direction=\"col\" gap=\"none\">`), whose own dividers are the seam: any gap would split an `unread` band into separate stripes. It is not a way to opt out of the token scale anywhere else.",
       "name": "gap",
       "type": "\"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\""
     },

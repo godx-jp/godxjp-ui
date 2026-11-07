@@ -1,8 +1,3 @@
----
-name: godxjp-ui-form
-description: Rules for building forms with @godxjp/ui. Use when creating or changing any form, create/edit screen, or labelled input in an app that installs the @godxjp/ui npm package. Covers page-not-modal, mandatory Form + FormField, content-sized input widths (GOV.UK Design System), and the escape hatch (open an issue on the library instead of hand-rolling). Not for apps that vendored their own copy of the components and have their own form rules.
----
-
 # Form rules (@godxjp/ui)
 
 > Applies only to apps that install the `@godxjp/ui` npm package. **Out of scope:** apps that
@@ -11,8 +6,6 @@ description: Rules for building forms with @godxjp/ui. Use when creating or chan
 
 Seven rules, each distilled from defects MEASURED in a production app and approved one by one by
 its owner. A violation is a bug, not a style preference.
-
-Sibling skills: `godxjp-ui-design` (visual do/don't rules), `godxjp-ui-navigation`.
 
 ## 1. A form with 3 or more fields is its own PAGE, not a modal
 

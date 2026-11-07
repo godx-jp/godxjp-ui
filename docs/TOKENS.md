@@ -496,7 +496,7 @@ It is reserved for `@container` / `@media` re-points. Everything static stays in
 
 ## MCP
 
-`godxjp_ui_guide` topic=`golden-ratio` · `tokens`
+MCP: `get_tokens` (category `spacing` / `typography`).
 
 ## Second pass: hierarchy and rhythm
 

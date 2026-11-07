@@ -137,10 +137,14 @@ describe("route_consumer_task — app screens never reach marketing taste (gh#12
     expect(hits.slice(0, 2)).toEqual(["compose-a-screen", "contract"]);
   });
 
-  it("compose-a-screen comes before design-complex-admin for an admin console", () => {
-    const hits = routeTask("an admin console", { consumerOnly: true }).map((r) => r.skill);
-    expect(hits.indexOf("compose-a-screen")).toBeGreaterThanOrEqual(0);
-    expect(hits.indexOf("compose-a-screen")).toBeLessThan(hits.indexOf("design-complex-admin"));
+  it("compose-a-screen comes before the complex-admin guide for an admin console", () => {
+    const hits = routeTask("an admin console", { consumerOnly: true }).map(
+      (r) => `${r.skill}/${r.section}`,
+    );
+    const guide = hits.indexOf("godxjp-ui-design/references-complex-admin");
+    expect(hits.indexOf("compose-a-screen/pick-primitives")).toBeGreaterThanOrEqual(0);
+    expect(guide).toBeGreaterThanOrEqual(0);
+    expect(hits.indexOf("compose-a-screen/pick-primitives")).toBeLessThan(guide);
   });
 
   it("the app-screen route points at the design DNA", () => {

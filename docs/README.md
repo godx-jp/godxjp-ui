@@ -2,7 +2,7 @@
 
 | Doc                                          | Purpose                                                                                                                                                                                                               |
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [CONSUMER-RULES.md](./CONSUMER-RULES.md)     | **Start here if you build an app with @godxjp/ui** — the rules the audit enforces (styles entry, layout owners, real primitives, tokens)                                                                          |
+| [CONSUMER-RULES.md](./CONSUMER-RULES.md)     | **Start here if you build an app with @godxjp/ui** — the rules the audit enforces (styles entry, layout owners, real primitives, tokens)                                                                              |
 | [DEVELOPMENT.md](./DEVELOPMENT.md)           | **Contributor guideline** — role/boundary, architecture, how to add/extend, verify                                                                                                                                    |
 | [COMPONENTS.md](./COMPONENTS.md)             | Component catalog by taxonomy group                                                                                                                                                                                   |
 | [PROPS-VOCABULARY.md](./PROPS-VOCABULARY.md) | Atomic prop types (`*Prop` suffix)                                                                                                                                                                                    |
@@ -18,30 +18,14 @@
 ## Preview
 
 ```bash
-cd packages/ui
 pnpm preview          # http://localhost:6008
 pnpm preview:build    # static site → preview/dist/ — heavy; CI's job, run at most once pre-PR
 ```
 
-### Preview doc format
-
-```
-docs/
-  primitives/              ← sidebar group (folder name → title)
-    README.md              ← optional group intro
-    data-display/
-      README.md
-      overview.tsx         ← 1 story = 1 demo (default export)
-      overview.md          ← optional story docs (YAML frontmatter: title, layout)
-      _shared.ts           ← prefix _ = not a story
-```
-
-- **Navigation** = folder tree; leaves = `.tsx` files (not `README.md`, not `_*.tsx`).
-- **Live demo** = `export default function Demo()` from the `.tsx` file.
-- **Imports** = `@godxjp/ui/{data-display,layout,general,…}` — same public paths as app code (`FORMS.md`). **Not** `@/components/…` (internal dev alias only).
-- **Code panel** = same `.tsx` file raw — no duplicate `parameters.docs.source.code`.
-- **Story docs** = optional same-name `.md` beside the demo (tiếng Việt): giới thiệu, khi nào dùng, import, props (hiển thị / hành động / DOM). Regenerate: `pnpm docs:sync-primitives`.
-- Component preview examples live in `examples/**/*.preview.tsx`.
+Each docs page is `docs/<group>/<component>.tsx` (or `docs/<group>/<component>/index.tsx` with
+per-feature screens in `examples/`), served at `/isolate/<group>-<component>`. Pages import the
+public paths (`@godxjp/ui/{data-display,layout,general,…}`), never `@/components/…`. The full layout
+is in [DEVELOPMENT.md](./DEVELOPMENT.md) §4.
 
 ## Props folder layout
 

@@ -1,7 +1,4 @@
----
-name: godxjp-ui-design-handoff
-description: BẮT BUỘC khi nhận một Claude Design handoff bundle (export từ claude.ai/design — README + chats/ + project/ HTML/CSS prototypes, vd .design/bundle/<name>/) và cần hiện thực hoá nó. Biến design thành SHOWCASE base trên @godxjp/ui ở preview 6008 (docs/) — KHÔNG bao giờ thêm vào ui framework. Áp theo kiểu "khung xương" (tái hiện ý đồ thị giác/UX bằng real component), không copy máy móc HTML prototype. Đọc TRƯỚC khi viết.
----
+> Formerly the separate skill `godxjp-ui-design-handoff`; now a reference of `godxjp-ui-best-ux`.
 
 # Implementing a Claude Design handoff on @godxjp/ui — skeleton, not transcription
 
@@ -10,11 +7,11 @@ description: BẮT BUỘC khi nhận một Claude Design handoff bundle (export 
 > MCP), which builds a handoff into the **app-dev's own app**. Same input, different target.
 > CORE↔CONSUMER map: `.claude/skills/README.md`.
 
-**Follow-map:** build the showcase per [[godxjp-ui-example-page]] (completeness + Audit Evidence
+**Follow-map:** build the showcase per [[godxjp-ui-component]] (`references/example-page.md`) (completeness + Audit Evidence
 Ledger), composing real primitives per [[godxjp-ui-component]] (correctness). Taste + the
 DNA/Layout/Interaction hygiene are owned by [[godxjp-ui-best-ux]]; refined behaviours by
-[[godxjp-ui-interaction-feel]] — this skill points there, it does not restate them. Register the
-result in the MCP catalog per [[godxjp-ui-mcp-catalog-sync]].
+[[godxjp-ui-component]] (`references/interaction-feel.md`) — this skill points there, it does not restate them. Register the
+result in the MCP catalog per [[godxjp-ui-component]] (`references/mcp-catalog-sync.md`).
 
 **DO / DON'T:**
 
@@ -31,7 +28,7 @@ code. Your job is **not** to translate its markup line-by-line. It is to read th
 _visual + interaction skeleton_, and **rebuild it with REAL `@godxjp/ui` components** as a **showcase**.
 
 > **Mechanical = wrong.** A pixel-copy that hand-rolls `<div class="card">` to match the mock is a
-> failure. The right output composes `Card`/`DataTable`/`PageShell`/`Badge`… so the showcase _is_
+> failure. The right output composes `Card`/`DataTable`/`PageContainer`/`Badge`… so the showcase _is_
 > how a consumer should actually build it. The prototype is the **target look**, godx-ui is the **means**.
 
 ## The hard boundary (read this twice)
@@ -56,17 +53,17 @@ _visual + interaction skeleton_, and **rebuild it with REAL `@godxjp/ui` compone
    godx-ui component is this?_ (page chrome → `PageContainer`/`AppShell`/`Sidebar`/`Topbar`; a stat
    row → `ResponsiveGrid` + `StatCard`; a data grid → `DataTable`; a status pill → `Badge tone=…`;
    a filter row → `Form` inline + `Select`/`Input`; an empty state → `EmptyState`; a confirm →
-   `AlertDialog`). Use the **`godxjp_ui_guide` MCP** / `list_primitives` to map, don't guess.
+   `AlertDialog`). Use the MCP (`list_primitives`, `search_components`, `get_exemplar`) to map, don't guess.
 4. **Identify GAPS** — blocks no existing component (or prop/variant) can express.
    - First try: **extend** — can an existing component take one more `variant`/`size`/`tone`/slot?
    - Genuine gap or unclear: run **`/debate`** ("new component vs. new variant on `<X>` vs.
      app-level composition") and converge on an ADR before building. **Never silently invent.**
    - The fix for a gap is _still a showcase composition or an upstream component change_ — never a
      bespoke one-off baked into the showcase page.
-5. **Build the showcase** in `docs/<group-or-recipes>/<screen>.tsx` per the **`godxjp-ui-example-page`**
+5. **Build the showcase** in `docs/<group-or-recipes>/<screen>.tsx` per **`godxjp-ui-component` → `references/example-page.md`**
    skill (completeness, real states, tokens, a11y). Recreate the _look_, not the prototype's DOM.
 6. **Verify** at `:6008/isolate/<id>` (390/768/1280), console clean, `pnpm typecheck:docs` + `pnpm audit`.
-7. **Make it MCP-discoverable** — register the showcase so `godxjp_ui_guide` can serve it as a
+7. **Make it MCP-discoverable** — register the showcase so the MCP (`get_exemplar`) can serve it as a
    pattern (so future consumers get "here's how a real kintai dashboard is built", not just atoms).
 
 ## Tables are first-class (DataTable matters most)
@@ -96,7 +93,7 @@ prototype's divs — apply them, not the markup.
 - [ ] Every gap resolved by extend-or-`/debate`+ADR — nothing silently invented, nothing added to `src/components`
 - [ ] Tables showcased broadly (≥ the variants above); DataTable is the centerpiece
 - [ ] Tokens consumed, never redeclared; DNA rules applied (density, color signaling, small headings, 14/1.7, no emoji)
-- [ ] Built per `godxjp-ui-example-page` (states/props/a11y complete); verified at :6008 390/768/1280; typecheck + audit clean
+- [ ] Built per `godxjp-ui-component/references/example-page.md` (states/props/a11y complete); verified at :6008 390/768/1280; typecheck + audit clean
 - [ ] Showcase registered so the MCP can serve it as a pattern to consumers
 
 ## Layout hygiene & Interaction hygiene (BẮT BUỘC)
@@ -105,9 +102,9 @@ prototype's divs — apply them, not the markup.
 sections; do not re-read them here.** In short: no decorative edge fades/scrims (1px border ends
 content); no dead grey panes (`items-start`/`h-fit`/`EmptyState`); mobile-first multi-column
 (default 1 col, add cols only at `md:`/`lg:` when each keeps ≥14px body); consistent
-`PageContainer` padding + `Stack` gap (two bordered surfaces never touch); short headings stay one
+`PageContainer` padding + `Flex` gap (two bordered surfaces never touch); short headings stay one
 line (wrap the whole cluster, never break a label mid-word); natural-width components (calendar/
 picker/segmented) stay `w-fit`. Interaction: multi-step selections reset-on-complete (range
 `resetOnSelect:true`), value-at-rest visible on open, controlled value mirrors type↔click — drive
 each by hand in a real browser (these never show on a static screenshot). Behaviour catalogue:
-[[godxjp-ui-interaction-feel]].
+[[godxjp-ui-component]] (`references/interaction-feel.md`).

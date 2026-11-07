@@ -360,7 +360,7 @@ export default function AcmePortalShowcase() {
                   </CardAction>
                 </CardHeader>
                 <CardContent flush>
-                  <ul className="divide-border divide-y">
+                  <Flex as="ul" marker="none" direction="col" gap="none">
                     {QUEUE.map((q) => (
                       <ListRow
                         as="li"
@@ -382,7 +382,7 @@ export default function AcmePortalShowcase() {
                         }
                       />
                     ))}
-                  </ul>
+                  </Flex>
                 </CardContent>
               </Card>
 

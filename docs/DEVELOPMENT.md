@@ -1,6 +1,6 @@
 # Development Guideline — `@godxjp/ui`
 
-How to work **on** the design system (not just with it). If you only consume the framework from the app, read [the ten consumer rules](./CONSUMER-RULES.md) instead — this file is for people **editing `packages/godx-ui/`**.
+How to work **on** the design system (not just with it). If you only consume the framework from the app, read [the ten consumer rules](./CONSUMER-RULES.md) instead — this file is for people **editing this repository**.
 
 ---
 
@@ -14,7 +14,7 @@ How to work **on** the design system (not just with it). If you only consume the
 
 A component in this package may **not** import or assume any of the following. These belong to the **consumer** (the app), which composes framework primitives around them:
 
-| ❌ Never inside `packages/godx-ui/`                              | ✅ Where it belongs                                                 |
+| ❌ Never inside this package                                     | ✅ Where it belongs                                                 |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------- |
 | App i18n — `useTranslation`, `t()`, `resources/js/i18n`          | App passes already-translated strings in as props                   |
 | Inertia — `router`, `usePage`, `<Form>`, `@inertiajs/*`          | App wires navigation/submit; pass `onClick`/`href`/`onSubmit` props |
@@ -27,7 +27,7 @@ A component in this package may **not** import or assume any of the following. T
 > **Litmus test:** if a component can't render in a Storybook-style preview with
 > plain props and zero app context, it does **not** belong in this package. Keep it
 > app-level (`resources/js/components/admin/…`) and have it _compose_ framework
-> primitives. See the **`godx-ui-component-placement`** skill for the full decision.
+> primitives. See [COMPOSITION-VS-COMPONENT.md](./COMPOSITION-VS-COMPONENT.md) for the full decision.
 
 The framework ships its **own theme** (colors, fonts, type scale, wa-iro palette) in `src/tokens/foundation.css`, so consumers import `@godxjp/ui/styles` and need **zero** extra theme config. Do not push theme decisions back onto the consumer.
 
@@ -271,4 +271,4 @@ npm versions are immutable, so you can never "fix" a bad published version in pl
 - [CONSUMER-RULES.md](./CONSUMER-RULES.md) — the rules every consumer follows (the audit enforces them).
 - `docs/TOKENS.md`, `docs/SPACING.md`, `docs/PROPS-VOCABULARY.md`, `docs/PROPS-REGISTRY.md`.
 - [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) — per-frame axe a11y (**local only, never in CI**) + geometry + coverage gates.
-- **`godx-ui-component-placement`** skill — decide whether a component belongs here.
+- [COMPOSITION-VS-COMPONENT.md](./COMPOSITION-VS-COMPONENT.md) · [WHAT-BELONGS-HERE.md](./WHAT-BELONGS-HERE.md) — decide whether a component belongs here.

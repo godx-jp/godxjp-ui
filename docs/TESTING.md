@@ -91,8 +91,8 @@ Never test forms with raw `useState` — mirror production `FormRoot` + `FormFie
 
 The full suite must pass with zero failures before any UI PR merges — **and that run belongs
 to CI, not to you.** Locally you run only the tests for the files you changed; CI runs
-everything on the PR. `tal --help` states the same rule for the agent loop: *FULL SUITE KHÔNG
-THUỘC VỀ VÒNG LẶP.*
+everything on the PR. `tal --help` states the same rule for the agent loop: _FULL SUITE KHÔNG
+THUỘC VỀ VÒNG LẶP._
 
 ## When tests fail
 
@@ -104,4 +104,4 @@ Guard suites and fix playbooks:
 | Theme axes integration   | `src/components/__tests__/theme-axes-integration.test.tsx`    |
 | formatDate / AppProvider | `src/lib/__tests__/format-date.test.ts`, `src/app/__tests__/` |
 
-**Full failure routing:** MCP tool `godxjp_ui_guide` topic=`testing-troubleshooting` or `godxjp_ui_verify` with `failureHint` from CI log (see `tools/godxjp-ui-mcp/`).
+**Full failure routing:** the MCP (`mcp/`): `route_task` with the failing gate's name, then `get_skill_section`.

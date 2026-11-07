@@ -33,9 +33,9 @@ Omit `locale`, `timezone`, `timeFormat`, `dateFormat` → synced from AppProvide
 Japanese-first consumer shipped its own date formatter as an explicit stopgap purely to get the
 slashes — rule 1 above broken by this package's own default. Only the DEFAULT moved: a stored
 preference still wins, `defaultDateFormat` still pins any value, and `iso` is one option away in
-`<DateFormatPicker />`.
+`<AppSettingPicker kind="dateFormat" />`.
 
-Sent to backend as `x-date-format`. Pick with `<DateFormatPicker />`.
+Sent to backend as `x-date-format`. Pick with `<AppSettingPicker kind="dateFormat" />`.
 
 ## kind presets
 
