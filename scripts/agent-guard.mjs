@@ -11,7 +11,7 @@
  *   pre   BLOCK (exit 2) unless the agent's own transcript shows it consulted the catalog: a tool
  *         call to `mcp__<key>__*` for the repo's catalog key, or a Bash call to the stdio fallback
  *         (`godxjp-ui mcp-call …`, or `godx-ui-mcp call …`). A subagent is judged by ITS transcript
- *         (`agent_transcript_path`), so a parent's lookup does not license a subagent's write.
+ *         only, so a parent's lookup does not license a subagent's write — see transcriptFor.
  *   post  When the session did not start in <repo root>, the repo's own PostToolUse audit hook
  *         never loaded: run this package's audit-hook.mjs in its place. Otherwise do nothing, so
  *         a session that did start there is not audited twice.
@@ -67,6 +67,22 @@ export function consulted(transcript, keys) {
     }
   }
   return false;
+}
+
+/**
+ * The transcript that judges this write. A subagent's PreToolUse payload carries the PARENT
+ * session's `transcript_path` plus `agent_id`, and no `agent_transcript_path` (Claude Code 2.1.x
+ * sends that field on SubagentStop only); the subagent's own transcript is
+ * `<transcript_path minus .jsonl>/subagents/agent-<agent_id>.jsonl`. Once `agent_id` is present the
+ * parent's transcript is never the judge: when the subagent's file is missing, the path returned
+ * does not exist and the guard fails open.
+ */
+export function transcriptFor(payload) {
+  if (payload?.agent_transcript_path) return payload.agent_transcript_path;
+  const t = payload?.transcript_path;
+  if (!payload?.agent_id || typeof t !== "string" || t.includes(`${sep}subagents${sep}`)) return t;
+  if (!t.endsWith(".jsonl")) return undefined; // an unknown layout: nothing to judge by
+  return join(t.slice(0, -".jsonl".length), "subagents", `agent-${payload.agent_id}.jsonl`);
 }
 
 const realOrSelf = (p) => {
@@ -157,7 +173,7 @@ function main() {
     process.exit(r.status === 2 ? 2 : 0);
   }
 
-  const transcriptPath = payload.agent_transcript_path ?? payload.transcript_path;
+  const transcriptPath = transcriptFor(payload);
   if (!transcriptPath || !existsSync(transcriptPath)) process.exit(0); // nothing to judge by
   const keys = catalogKeys(root);
   if (consulted(readFileSync(transcriptPath, "utf8"), keys)) process.exit(0);

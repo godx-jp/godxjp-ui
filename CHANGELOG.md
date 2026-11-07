@@ -8,6 +8,12 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.27.2] - 2026-11-07
+
+### Fixed
+
+- `init-agent --user` guard (`scripts/agent-guard.mjs`): a subagent was judged by its PARENT's transcript. A subagent's PreToolUse payload carries the parent session's `transcript_path` plus `agent_id`, and no `agent_transcript_path` (Claude Code sends that on `SubagentStop` only), so a subagent that consulted the catalog was blocked whenever the parent had not, and one that never consulted passed whenever the parent had. The guard now reads `<transcript_path minus .jsonl>/subagents/agent-<agent_id>.jsonl`, never the parent's, and still fails open when that file is missing (gh#1529). Patch release off v33.27.1 carrying only this fix; the same fix is in 33.28.1 on main.
+
 ## [33.27.1] - 2026-11-03
 
 ### Fixed
