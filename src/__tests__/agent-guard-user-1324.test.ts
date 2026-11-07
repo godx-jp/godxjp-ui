@@ -17,7 +17,7 @@ import { afterEach, describe, expect, it } from "vitest";
 // @ts-expect-error — plain .mjs script, no declaration file
 import { findUiMcpConfig } from "../../scripts/_agent-setup.mjs";
 // @ts-expect-error — plain .mjs script, no declaration file
-import { consulted, startedIn } from "../../scripts/agent-guard.mjs";
+import { consulted, startedIn, transcriptFor } from "../../scripts/agent-guard.mjs";
 
 /**
  * gh#1324 — a Claude Code session that starts OUTSIDE a consumer repo never loads its `.mcp.json`,
@@ -258,6 +258,69 @@ describe("the guard — PreToolUse block/allow (gh#1324)", () => {
     expect(r.status).toBe(2);
   });
 
+  // A subagent's PreToolUse payload carries the PARENT's transcript_path plus agent_id, and no
+  // agent_transcript_path (that field is SubagentStop-only); its own transcript is
+  // <transcript_path minus .jsonl>/subagents/agent-<agent_id>.jsonl.
+  it("reads a subagent's OWN transcript from transcript_path + agent_id: its lookup licenses it", () => {
+    const ctx = setup();
+    const parent = transcript(ctx.home, [toolUse("Read", {})]);
+    transcript(
+      ctx.home,
+      [toolUse("mcp__godx-ui__search_components", { query: "x" })],
+      "session/subagents/agent-a1b2.jsonl",
+    );
+    const r = hook(ctx, "pre", {
+      tool_input: { file_path: ctx.page },
+      transcript_path: parent,
+      agent_id: "a1b2",
+    });
+    expect(r.status).toBe(0);
+    expect(r.stderr).toBe("");
+  });
+
+  it("BLOCKS a subagent (transcript_path + agent_id) when only the PARENT consulted", () => {
+    const ctx = setup();
+    const parent = transcript(ctx.home, [toolUse("mcp__godx-ui__get_component", { name: "Card" })]);
+    transcript(ctx.home, [toolUse("Read", {})], "session/subagents/agent-a1b2.jsonl");
+    const r = hook(ctx, "pre", {
+      tool_input: { file_path: ctx.page },
+      transcript_path: parent,
+      agent_id: "a1b2",
+    });
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("was NOT written");
+  });
+
+  it("prefers agent_transcript_path when the payload carries it", () => {
+    const ctx = setup();
+    const parent = transcript(ctx.home, [toolUse("Read", {})]);
+    transcript(ctx.home, [toolUse("Read", {})], "session/subagents/agent-a1b2.jsonl");
+    const own = transcript(
+      ctx.home,
+      [toolUse("mcp__godx-ui__search_components", { query: "x" })],
+      "elsewhere/agent.jsonl",
+    );
+    const r = hook(ctx, "pre", {
+      tool_input: { file_path: ctx.page },
+      transcript_path: parent,
+      agent_id: "a1b2",
+      agent_transcript_path: own,
+    });
+    expect(r.status).toBe(0);
+  });
+
+  it("never falls back to the parent's transcript when the subagent's file is missing: fails open", () => {
+    const ctx = setup();
+    const parent = transcript(ctx.home, [toolUse("Read", {})]);
+    const r = hook(ctx, "pre", {
+      tool_input: { file_path: ctx.page },
+      transcript_path: parent,
+      agent_id: "gone",
+    });
+    expect(r.status).toBe(0);
+    expect(r.stderr).toBe("");
+  });
+
   it("leaves the @godxjp/ui repo itself alone — primitives are built from raw elements", () => {
     const ctx = setup();
     writeFileSync(join(ctx.repo, "package.json"), JSON.stringify({ name: "@godxjp/ui" }));
@@ -368,6 +431,31 @@ describe("startedIn / consulted — the two judgements", () => {
     expect(startedIn(repo, main, {})).toBe(true);
     expect(startedIn(repo, sub, {})).toBe(true);
     expect(startedIn(repo, other, {})).toBe(false);
+  });
+
+  it("transcriptFor: agent_transcript_path, else the subagent file under transcript_path, else it", () => {
+    const parent = join("/h", "p", "s1.jsonl");
+    const child = join("/h", "p", "s1", "subagents", "agent-a9.jsonl");
+    expect(transcriptFor({ transcript_path: parent })).toBe(parent);
+    expect(transcriptFor({ transcript_path: parent, agent_id: "a9" })).toBe(child);
+    expect(
+      transcriptFor({ transcript_path: parent, agent_id: "a9", agent_transcript_path: "/o" }),
+    ).toBe("/o");
+    expect(transcriptFor({ transcript_path: child, agent_id: "a9" })).toBe(child);
+    expect(transcriptFor({ transcript_path: "/h/p/s1.log", agent_id: "a9" })).toBeUndefined();
+    expect(transcriptFor({})).toBeUndefined();
+  });
+
+  it("counts every stdio fallback spelling as a consult, and not a bare tool listing", () => {
+    const bash = (command: string) => toolUse("Bash", { command });
+    for (const command of [
+      `godxjp-ui mcp-call get_component '{"name":"Card"}'`,
+      `cd /w/app && npx --no-install @godxjp/ui mcp-call search_components '{"query":"x"}'`,
+      `godx-ui-mcp call search_components '{"query":"x"}'`,
+      `npx @godxjp/ui-mcp@33.28.1 call get_component '{"name":"Card"}'`,
+    ])
+      expect(consulted(bash(command), ["godx-ui"]), command).toBe(true);
+    expect(consulted(bash("npx --no-install @godxjp/ui mcp-call"), ["godx-ui"])).toBe(false);
   });
 
   it("skips torn lines and lines that only mention tool_use in prose", () => {
