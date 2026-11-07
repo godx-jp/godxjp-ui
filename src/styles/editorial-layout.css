@@ -728,10 +728,13 @@
     width: var(--editorial-pill-dot-size);
     height: var(--editorial-pill-dot-size);
     border-radius: var(--editorial-pill-dot-radius);
-    background: var(
-      --editorial-pill-dot-color,
-      var(--editorial-ornament-color, hsl(var(--border)))
-    );
+    /* A marker that carries state is never drawn in the hairline border colour (~1.4:1 in dark,
+       below WCAG 1.4.11's 3:1); muted ink clears 3:1 on the surface in both themes. */
+    background: var(--editorial-pill-dot-color, hsl(var(--muted-foreground)));
+  }
+
+  .ui-editorial-pill[aria-current]:not([aria-current="false"]) .ui-editorial-pill-dot {
+    background: var(--editorial-pill-dot-color, hsl(var(--text-brand, var(--primary))));
   }
 
   .ui-editorial-pill-icon {
