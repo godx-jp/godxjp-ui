@@ -71,6 +71,7 @@ export const B = () => <Button onClick={async () => { await del.mutateAsync(id);
   <Button loading={resend.isPending} onClick={() => resend.mutate()}>Resend</Button>
   <Button onClick={() => setOpen(true)}>Open</Button>
   <Button {...props} onClick={() => save.mutate()}>Save</Button>
+  <Button onClick={() => confirm({ run: () => lock.mutate(ids) })}>Lock</Button>
 </>);`),
     ).toEqual([]);
   });
