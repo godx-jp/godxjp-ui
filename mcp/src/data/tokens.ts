@@ -17,6 +17,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Reading-link scope hover ink (HSL channels). Unset by default; resolves to the live --text-link ink at the call site, including scoped tenant and dark themes. Underline and focus use the existing text-link and focus-ring tokens.",
   },
   {
+    name: "--text-link-visited",
+    category: "semantic",
+    tier: "semantic",
+    role: "Visited link ink (HSL channels): light 268 32% 46%, dark 268 45% 74%. Read by the AppShell app-content link rule (`.app-root main a[href]`), the `[data-ui-reading-links]` recipe and the kit Link/Text link on `:visited` (gh#1538).",
+  },
+  {
     name: "--radar-chart-tick-offset",
     category: "component",
     tier: "component",

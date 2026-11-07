@@ -1,6 +1,6 @@
 ---
 name: godxjp-ui-design
-description: The design rules for app screens built with @godxjp/ui, in one skill. Use when designing, building, redesigning or reviewing any page, form, menu or console in an app that installs the @godxjp/ui npm package. The do/don't rules from real review feedback are here; topic guides are in references/. forms.md covers create/edit screens, Form + FormField and input widths (formerly the godxjp-ui-form skill). navigation.md covers the sidebar menu, per-role landing, bottom bar, breadcrumbs and tabs (formerly godxjp-ui-navigation). complex-admin.md covers multi-tier consoles with wireframe-first, layered IA (formerly design-complex-admin). craft.md covers taste dials, craft lenses, and layout, interaction and motion hygiene. For an EXPRESSIVE sign-in or onboarding screen, use godxjp-ui-brand-surface instead.
+description: The design rules for app screens built with @godxjp/ui, in one skill. Use when designing, building, redesigning or reviewing any page, form, menu or console in an app that installs the @godxjp/ui npm package. The do/don't rules from real review feedback are here; topic guides are in references/. forms.md covers create/edit screens, Form + FormField and input widths (formerly the godxjp-ui-form skill). navigation.md covers the sidebar menu, per-role landing, bottom bar, breadcrumbs and tabs (formerly godxjp-ui-navigation). complex-admin.md covers multi-tier consoles with wireframe-first, layered IA (formerly design-complex-admin). craft.md covers taste dials, craft lenses, layout, interaction and motion hygiene, and action feedback (no silent action). For an EXPRESSIVE sign-in or onboarding screen, use godxjp-ui-brand-surface instead.
 ---
 
 # @godxjp/ui — Design rules for app screens
@@ -31,6 +31,11 @@ Read the reference that matches the task before writing JSX:
   (`<Badge><BadgeCheck/> 確認済み</Badge>` column-stacks and wraps). This is `@godxjp/ui` cardinal
   rule #35 ("Status chips never wrap"). It applies to every verified/pending/active-style chip on
   every surface.
+
+- **No silent action.** A button that waits on the server shows `loading` (re-entry blocked) while it
+  runs, then a short `toast.success` saying what was done, or `toast.error` / an `Alert` with the
+  reason on failure; an undoable action puts Undo on the success toast. Details and example:
+  [references/craft.md §5](references/craft.md).
 
 ## DON'T
 
