@@ -991,6 +991,11 @@
     );
     --border: var(--centered-shell-footer-inverse-border, var(--centered-shell-page-canvas));
     --text-link: var(--centered-shell-footer-inverse-link-color, var(--centered-shell-page-canvas));
+    /* Visited stays the band's link ink: the light-theme visited violet is ~2:1 on this band (gh#1538). */
+    --text-link-visited: var(
+      --centered-shell-footer-inverse-link-color,
+      var(--centered-shell-page-canvas)
+    );
     --ring: var(--centered-shell-footer-inverse-link-color, var(--centered-shell-page-canvas));
     --focus-ring-color: var(--ring);
     background: hsl(

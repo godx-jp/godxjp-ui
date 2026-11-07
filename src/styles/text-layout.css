@@ -860,6 +860,11 @@
  * Controls keep their own look: Button, ListRow, tabs, menus, navigation, header/footer regions,
  * a whole-card link, and anything marked `data-ui-link-style="control"`. The kit's own `Link` /
  * `Text link` is excluded too: it carries its tone and at-rest underline itself (rules above).
+ * Only an INLINE text link: one that wraps block content (a stat tile, a card body, a figure, an
+ * a heading) is a control link and keeps its own ink, the same as `data-ui-link-style="control"`.
+ * On an inverse band, put the band in a dark scope (`ThemeScope className="dark"`): the dark
+ * link and visited inks clear 4.5:1 there; a band that only re-sets --background/--foreground
+ * must also re-set --text-link and --text-link-visited.
  * Zero-specificity exclusions, as above; a consumer utility class (a later layer) still wins. */
 @layer components {
   .app-root
@@ -882,6 +887,7 @@
         [role="navigation"] *,
         [data-slot="card"],
         [data-slot="text"],
+        :has(:is(div, p, h1, h2, h3, h4, h5, h6, ul, ol, table, section, article, figure)),
         nav *,
         header *,
         footer *,
@@ -916,6 +922,7 @@
         [role="navigation"] *,
         [data-slot="card"],
         [data-slot="text"],
+        :has(:is(div, p, h1, h2, h3, h4, h5, h6, ul, ol, table, section, article, figure)),
         nav *,
         header *,
         footer *,
@@ -946,6 +953,7 @@
         [role="navigation"] *,
         [data-slot="card"],
         [data-slot="text"],
+        :has(:is(div, p, h1, h2, h3, h4, h5, h6, ul, ol, table, section, article, figure)),
         nav *,
         header *,
         footer *,
