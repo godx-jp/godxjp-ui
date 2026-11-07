@@ -44,6 +44,7 @@ import { CARDINAL_RULES, findRule } from "../data/rules.js";
 import { PATTERNS, findPattern, searchPatterns, type PatternEntry } from "../data/patterns.js";
 import {
   SKILLS,
+  MERGED_SKILLS,
   findSkill,
   findSection,
   routeTask,
@@ -1133,6 +1134,11 @@ function getRedesignCheck(snippet: string): string {
 }
 
 function getSkillSection(skillId: string, sectionId: string): string {
+  const merged = MERGED_SKILLS[skillId];
+  if (merged && !findSkill(skillId)) {
+    const [target, section] = merged;
+    return `Skill "${skillId}" was merged into "${target}" (section \`${section}\`).\n\n${getSkillSection(target, section)}`;
+  }
   const skill = findSkill(skillId);
   if (!skill) return `Skill "${skillId}" not found. Use \`list_skills\` for available ids.`;
   if (!sectionId) {

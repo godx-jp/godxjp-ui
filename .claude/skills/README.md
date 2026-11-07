@@ -1,59 +1,65 @@
-# @godxjp/ui skills — CORE vs CONSUMER
+# @godxjp/ui skills — CORE, SHIPPED, CONSUMER
 
-There are **two separate skill families**. Pick the right family FIRST; they don't mix.
+There are **three skill families**. Pick the right family FIRST; they don't mix.
 
-|           | **CORE**                                                                       | **CONSUMER**                                                             |
-| --------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| **Who**   | You maintain `@godxjp/ui` itself (this repo: `src/`, `docs/`, the MCP catalog) | You build an APP that imports `@godxjp/ui`                               |
-| **Where** | `.claude/skills/` (this folder) — local to the repo                            | The **`godxjp-ui` MCP** (`mcp/`) — served to any agent, no repo checkout |
-| **Entry** | Activate the `godxjp-ui-*` skill that matches the task                         | `list_consumer_skills` → `route_consumer_task` → `get_consumer_skill`    |
+|           | **CORE** (3)                                                                   | **SHIPPED** (2)                                                              | **CONSUMER (MCP)**                                                    |
+| --------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Who**   | You maintain `@godxjp/ui` itself (this repo: `src/`, `docs/`, the MCP catalog) | You build an APP that installs `@godxjp/ui`                                  | Same, through any MCP client                                          |
+| **Where** | `.claude/skills/` (this folder), local to the repo                             | `skills/` at the repo root, in the npm tarball, installable with `gx skills` | the `godxjp-ui` MCP (`mcp/`), which also serves the SHIPPED skills    |
+| **Entry** | Activate the skill that matches the task                                       | `godxjp-ui-design` (app screens) or `godxjp-ui-brand-surface` (sign-in)      | `list_consumer_skills` → `route_consumer_task` → `get_consumer_skill` |
 
 > An app-dev does **not** read the CORE skills (they assume repo internals — `src/props/registry.ts`,
-> `docs/`, the verify scripts). A maintainer building a real screen _can_ pull consumer guidance from
-> the MCP, but the binding contracts live here.
+> `docs/`, the verify scripts).
 
 ---
 
 ## CORE skills (this folder) — building @godxjp/ui itself
 
-Chain them in this order; each links to the next.
+| Skill                   | Owns                                                                                                                                                                                                          | Read it when                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **agent-dev-loop**      | the four-phase batch loop (classify → implement → review → batch run) and the bans on the full suite; portable, this repo's numbers in `references/this-repo.md`                                              | Handed more than one issue — **first**                               |
+| **godxjp-ui-component** | the hard contract (_real-primitives / no-raw-HTML / MCP-first / no-duplication_), plus `references/`: `interaction-feel.md`, `behavioral-test.md`, `example-page.md`, `mcp-catalog-sync.md`, `performance.md` | Creating/changing ANY component, recipe, doc, example — **first**    |
+| **godxjp-ui-best-ux**   | layout hygiene · interaction hygiene · reference-design DNA (渋み/間/簡素), plus `references/`: `premium-craft.md` (+ `motion-probe.mjs`, study reports), `design-handoff.md`                                 | Judging taste/UX, upgrading a flat component, a Claude Design bundle |
 
-| Skill                          | Owns                                                                                                                     | Read it when                                                                            |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| **godxjp-ui-component**        | the hard contract · _real-primitives / no-raw-HTML / MCP-first / no-duplication_                                         | Creating/changing ANY component, recipe, doc, example — **FIRST**                       |
-| **godxjp-ui-interaction-feel** | the catalogue of **state-truthful behaviours**                                                                           | Building/auditing any stateful control (select/tree/cascader/calendar/range/combobox…)  |
-| **godxjp-ui-behavioral-test**  | the **codify** discipline (browser MCP → user-event tests)                                                               | Proving an interaction works and locking it as a regression test beside the component                 |
-| **godxjp-ui-example-page**     | the **Audit Evidence Ledger** + docs-page completeness                                                                   | Writing/auditing a `docs/**` catalogue page                                             |
-| **godxjp-ui-best-ux**          | **Layout hygiene · Interaction hygiene · reference-design DNA** (渋み/間/簡素)                                           | Judging taste/UX on any repo surface                                                    |
-| **godxjp-ui-premium-craft**    | the **upgrade procedure** for a flat component: craft lenses, motion spec, reject list, motion probe                      | A component "feels boring", or someone hands you a "premium UI" reference to learn from |
-| **godxjp-ui-design-handoff**   | implementing a Claude Design bundle as a **showcase in `docs/`**                                                         | Turning a `claude.ai/design` export into repo showcases                                 |
-| **godxjp-ui-mcp-catalog-sync** | keeping the **MCP catalog + tests** in sync with the public API                                                          | Any change to a component/vocab/token/rule/pattern                                      |
-| **godxjp-ui-performance**      | the **measure-first perf playbook** (longtask/Profiler/bundle probes) + lib per-import budget + proven consumer patterns | Anything feels slow, a `[Violation]` appears, or bundle size is questioned — lib OR app |
+**Dedup rule (single owner):** a topic lives in exactly one file; others point to it.
 
-**Dedup rule (single owner):** a topic lives in exactly one skill; others point to it with `[[name]]`.
+## SHIPPED skills (`skills/`) — in the npm tarball
 
-- _Real-primitives / no-raw-HTML_ → **component**
-- _Refined interaction behaviours_ → **interaction-feel**
-- _Layout/Interaction hygiene + reference-design DNA_ → **best-ux**
-- _Upgrading a flat component (craft lenses, motion spec, reject list)_ → **premium-craft**
-- _Audit Evidence Ledger_ → **example-page**
+| Skill                       | Covers                                                                                                                                 |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **godxjp-ui-design**        | do/don't for app screens; `references/` `forms.md`, `navigation.md` (+ `navigation-principles.md`), `complex-admin.md`, `craft.md`     |
+| **godxjp-ui-brand-surface** | an EXPRESSIVE sign-in / onboarding surface on the restrained kit; exemplar pattern `auth-brand-surface` + `references/exemplar-css.md` |
 
-Every CORE skill carries: a `🛠️ AUDIENCE: CORE` banner · a DO/DON'T table · a follow-map · a
-self-track checklist.
+Written in English and consumer-agnostic like `agent/` (no product names). Each folder name equals its
+frontmatter `name`. The MCP embeds them (`gen:agent-catalog` → `mcp/src/data/shipped-skills.generated.ts`);
+each `references/<file>.md` becomes the section `references-<file>`.
+
+## Merged skills (old name → where it lives now)
+
+| Old skill                        | Now                                                                                                                   |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `godxjp-ui-form` (shipped)       | `skills/godxjp-ui-design/references/forms.md`                                                                         |
+| `godxjp-ui-navigation` (shipped) | `skills/godxjp-ui-design/references/navigation.md`                                                                    |
+| `design-complex-admin`           | `skills/godxjp-ui-design/references/complex-admin.md` (was a CONSUMER skill in this folder, hand-copied into the MCP) |
+| `godxjp-ui-interaction-feel`     | `godxjp-ui-component/references/interaction-feel.md`                                                                  |
+| `godxjp-ui-behavioral-test`      | `godxjp-ui-component/references/behavioral-test.md`                                                                   |
+| `godxjp-ui-example-page`         | `godxjp-ui-component/references/example-page.md`                                                                      |
+| `godxjp-ui-mcp-catalog-sync`     | `godxjp-ui-component/references/mcp-catalog-sync.md`                                                                  |
+| `godxjp-ui-performance`          | `godxjp-ui-component/references/performance.md`                                                                       |
+| `godxjp-ui-premium-craft`        | `godxjp-ui-best-ux/references/premium-craft.md`                                                                       |
+| `godxjp-ui-design-handoff`       | `godxjp-ui-best-ux/references/design-handoff.md`                                                                      |
+
+The MCP still answers `get_consumer_skill` for the three old consumer ids (`MERGED_SKILLS` in
+`mcp/src/data/skills-index.ts`). Code comments in `src/` that name an old CORE skill refer to the file of
+the same name in the table above.
 
 ---
 
 ## CONSUMER skills (via the MCP) — building an app WITH @godxjp/ui
 
-These are **not files here** — they're served by the `godxjp-ui` MCP so any agent (Claude Code,
-Codex, Cursor, …) can use them without this repo. Discover with `list_consumer_skills`.
-
-| Consumer skill                                        | Use when                                                                                                                                                                                                                               |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **design-to-page**                                    | You have a Claude Design handoff (bundle/mock/HTML) → build it as a real page in YOUR app                                                                                                                                              |
-| **compose-a-screen**                                  | You have a written brief → assemble a new screen from real primitives                                                                                                                                                                  |
-| **design-complex-admin**                              | You're building/redesigning a COMPLEX multi-tier admin/console/back-office → lock the entity model → layered IA → wireframe-first → then code (process skill; authored in-repo at `design-complex-admin/SKILL.md`, served via the MCP) |
-| **taste / redesign / output / soft / minimalist / …** | Design-craft guidance (12 taste-family skills, tagged `consumer`/`both`)                                                                                                                                                               |
+Served by the `godxjp-ui` MCP so any agent (Claude Code, Codex, Cursor, …) can use them without this repo.
+Discover with `list_consumer_skills`: `design-to-page`, `compose-a-screen`, the taste family, and the two
+SHIPPED skills above.
 
 Shared **data tools** (both audiences): `get_component`, `get_tokens`, `get_rule`, `get_vocab`,
 `get_pattern`, `search_components`, `suggest_primitive`, `lint_jsx`.
@@ -72,6 +78,7 @@ directly — see **component-discipline** (`get_consumer_skill` will refuse it; 
 
 ```
 Are you changing files inside this repo (src/ · docs/ · mcp/)?
-├─ YES → CORE. Activate godxjp-ui-component first, then follow its chain.
-└─ NO  → CONSUMER. Call the MCP: list_consumer_skills / route_consumer_task.
+├─ YES → CORE. A batch of issues: agent-dev-loop first. Any component work: godxjp-ui-component.
+└─ NO  → SHIPPED / CONSUMER. godxjp-ui-design (or godxjp-ui-brand-surface), or the MCP:
+         list_consumer_skills / route_consumer_task.
 ```

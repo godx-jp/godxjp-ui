@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Measures what a component actually does when touched, in real Chromium. Nothing here is a guess.
 //
-//   node .claude/skills/godxjp-ui-premium-craft/references/motion-probe.mjs \
+//   node .claude/skills/godxjp-ui-best-ux/references/motion-probe.mjs \
 //     http://localhost:6008/isolate/data-entry-select '[data-slot="select-trigger"]' [outDir]
 //
 // For the target it: hovers, clicks, captures frames at 0 / 120 / 400 ms, records every running

@@ -1,7 +1,4 @@
----
-name: godxjp-ui-example-page
-description: BẮT BUỘC khi tạo/sửa trang ví dụ catalogue trong docs/**/*.tsx của @godxjp/ui (mỗi trang = isolate /isolate/<group>-<name>). Ép trang ví dụ phải demo component ĐẦY ĐỦ và ĐÚNG — mọi prop × union value × state × tone — bằng real primitives, đúng types/tokens, "show don't tell". Đọc TRƯỚC khi viết bất kỳ demo nào.
----
+> Formerly the separate skill `godxjp-ui-example-page`; now a reference of `godxjp-ui-component`.
 
 # @godxjp/ui — Example-page completeness discipline
 
@@ -11,8 +8,8 @@ description: BẮT BUỘC khi tạo/sửa trang ví dụ catalogue trong docs/**
 
 **Follow-map:** reached from [[godxjp-ui-component]] (the correctness contract — it owns
 _real-primitives / no-raw-HTML_). This skill **owns the Audit Evidence Ledger** (the forcing gate
-others reference). Pair it with [[godxjp-ui-interaction-feel]] (the refined behaviours each card must
-prove) and [[godxjp-ui-behavioral-test]] (codify what you drove). Taste of the page: [[godxjp-ui-best-ux]].
+others reference). Pair it with [[godxjp-ui-component]] (`references/interaction-feel.md`) (the refined behaviours each card must
+prove) and [[godxjp-ui-component]] (`references/behavioral-test.md`) (codify what you drove). Taste of the page: [[godxjp-ui-best-ux]].
 
 **DO / DON'T:**
 

@@ -1,6 +1,6 @@
 ---
 name: godxjp-ui-best-ux
-description: BẮT BUỘC đọc trước khi thiết kế/đánh giá trải nghiệm người dùng cho bất kỳ surface @godxjp/ui nào. Skill này hợp nhất craft chống-slop của taste-skill (phân cấp typographic, bố cục không gian, motion có chủ đích, kỷ luật em-dash, mapping design-system) VỚI sự tiết chế của reference design (渋み chroma ≤0.18, 間 14px/1.7, 簡素 3 weights, màu signaling cố định, card 1px viền không đổ bóng, không emoji, copy điềm tĩnh). Lấy KỸ THUẬT của taste-skill nhưng GẠT BỎ lời khuyên "hãy táo bạo" của nó — vì reference design là một hệ JP-enterprise đã chốt variance THẤP / motion THẤP một lần ở cấp hệ thống. Khác biệt ở đây = thực thi nhất quán hoàn hảo, KHÔNG phải re-theme. Tham chiếu (không lặp lại) các skill taste/soft/minimalist/brutalist + list_anti_ai_tells trong @godxjp/ui MCP.
+description: BẮT BUỘC đọc trước khi thiết kế/đánh giá trải nghiệm người dùng cho bất kỳ surface @godxjp/ui nào. Skill này hợp nhất craft chống-slop của taste-skill (phân cấp typographic, bố cục không gian, motion có chủ đích, kỷ luật em-dash, mapping design-system) VỚI sự tiết chế của reference design (渋み chroma ≤0.18, 間 14px/1.7, 簡素 3 weights, màu signaling cố định, card 1px viền không đổ bóng, không emoji, copy điềm tĩnh). Lấy KỸ THUẬT của taste-skill nhưng GẠT BỎ lời khuyên "hãy táo bạo" của nó — vì reference design là một hệ JP-enterprise đã chốt variance THẤP / motion THẤP một lần ở cấp hệ thống. Khác biệt ở đây = thực thi nhất quán hoàn hảo, KHÔNG phải re-theme. Tham chiếu (không lặp lại) các skill taste/soft/minimalist/brutalist + list_anti_ai_tells trong @godxjp/ui MCP. Also owns (merged in) upgrading a flat component to premium craft (references/premium-craft.md) and implementing a Claude Design handoff bundle as a docs/ showcase (references/design-handoff.md).
 ---
 
 # godxjp-ui-best-ux — Best UX, reconciled
@@ -9,18 +9,24 @@ description: BẮT BUỘC đọc trước khi thiết kế/đánh giá trải ng
 > this repo. The consumer mirror of this DNA lives in the MCP (`design-to-page/dna` + the taste
 > family); app-devs use that. CORE↔CONSUMER map: `.claude/skills/README.md`.
 
+**Also in this skill (merged in; each file keeps its old name):**
+`references/premium-craft.md` (upgrading a flat component: craft lenses, motion spec, reject list,
+`motion-probe.mjs`, the two study reports) and `references/design-handoff.md` (turning a Claude
+Design bundle into a showcase in `docs/`). Consumer-facing craft is shipped separately, in
+`skills/godxjp-ui-design/references/craft.md`; keep the two consistent.
+
 **This skill is the canonical OWNER of:** the **Layout hygiene** + **Interaction hygiene** blocks
 (below) and the **reference-design DNA** (渋み/間/簡素, fixed color-signaling, density, 14/1.7).
-[[godxjp-ui-design-handoff]] points here for all three instead of repeating them. Correctness is NOT
+`references/design-handoff.md` points here for all three instead of repeating them. Correctness is NOT
 this skill's job — run [[godxjp-ui-component]] first; this governs _taste_ on top. Refined interaction
-behaviours are owned by [[godxjp-ui-interaction-feel]].
+behaviours are owned by [[godxjp-ui-component]] (`references/interaction-feel.md`).
 
 **DO / DON'T (the dials are locked — see §1/§3):**
 
 | ✅ DO                                                                        | ⛔ DON'T                                                               |
 | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | LOW variance, LOW motion — distinctiveness = flawless consistent execution   | "Make it pop": new font, gradient, colored hero, celebratory animation |
-| One font (M PLUS 2), 3 weights (400/500/700), h1 = 20px, body 14/1.7         | Inter/Roboto; weight 300/600; 28px+ headings; 16/1.5 body              |
+| One family (the kit's stack, DESIGN.md), 3 weights (400/500/700), h1 = 20px  | A second face; weight 300/600; 28px+ headings; 16/1.5 body             |
 | `var(--token)` only; chroma ≤ 0.18; `--primary` once per view                | Raw hex/spacing; gradients; saturated brand; rainbow tag wall          |
 | Fixed semantic color-signaling; attention 朱 over danger for non-destructive | Re-theme a wa-iro hue into a semantic role; "everything is red"        |
 | Card 1px border, no shadow at rest; motion only as feedback (120–200ms)      | Drop shadow at rest; scroll choreography; animate to celebrate         |
@@ -49,7 +55,7 @@ taste-skill asks you to choose dial positions per project. They are already chos
 
 ### DESIGN_VARIANCE → **LOW** (locked)
 
-- Layouts are **structured and predictable**: `PageShell` + `PageHeader` + `PageContent`, sidebar 256px, sticky header 48px. List filters in one `FilterBar` that wraps (never scrolls sideways): the 2–4 most-used inline, the rest behind one "More filters" `Sheet` (cardinal rule #51, pattern `list-filters`); a submit-style search form is `Form columns`. Bulk-action toolbar above tables.
+- Layouts are **structured and predictable**: `AppShell` + `PageContainer`, sidebar 256px, sticky header 48px. List filters in one `FilterBar` that wraps (never scrolls sideways): the 2–4 most-used inline, the rest behind one "More filters" `Sheet` (cardinal rule #51, pattern `list-filters`); a submit-style search form is `Form columns`. Bulk-action toolbar above tables.
 - Asymmetry is allowed _only_ as information hierarchy (primary action right-aligned, KPI row, content-vs-meta split) — never as decorative off-balance composition.
 - **No** per-screen hero layouts, diagonal sections, oversized display type, or "editorial" full-bleed imagery on app surfaces.
 - One brand voice across every screen. A user moving from `/admin/.../absences` to `/me/my-shifts` must feel the _same system_, only re-tenant-colored.
@@ -92,16 +98,16 @@ These are the parts of taste-skill that _amplify_ the reference design. Apply th
 
 These are real taste-skill defaults that DO NOT apply to the reference design. If a generic "make it beautiful" instinct produces any of these, stop.
 
-| taste-skill default                                  | OVERRIDDEN by the reference design                                                                                             |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Push DESIGN_VARIANCE up for distinctiveness          | LOW, locked. Distinctiveness = consistent execution.                                                                           |
-| Per-screen font/personality, expressive display type | **One font: M PLUS 2.** Three weights. h1 = 20px. No display type on app surfaces.                                             |
-| Brand gradients, saturated accents, colored heroes   | Chroma ≤ 0.18 OKLCH. No gradients. `--primary` = one calm blue, used for the single most-important action + brand chrome only. |
-| Bold scroll/magnetic/parallax/GSAP motion            | Reserved micro-feedback only. No scroll choreography on app surfaces.                                                          |
-| Celebrate success (animation, confetti, 🎉)          | Quietly state the fact. 「承認しました」. No emoji anywhere in product.                                                        |
-| "Variant: brutalist/soft can break the grid"         | Grid is never broken. 6px radius, 1px borders, no shadow at rest.                                                              |
-| Pill-shaped cards, decorative fills, illustrations   | Forbidden. Empty state = one calm sentence in an `Alert`.                                                                      |
-| Free choice of density to taste                      | Density is a fixed 3-step track chosen per surface.                                                                            |
+| taste-skill default                                  | OVERRIDDEN by the reference design                                                                                                             |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Push DESIGN_VARIANCE up for distinctiveness          | LOW, locked. Distinctiveness = consistent execution.                                                                                           |
+| Per-screen font/personality, expressive display type | **One family** (the kit's stack, DESIGN.md). Three weights. h1 = 20px. No display type on app surfaces.                                        |
+| Brand gradients, saturated accents, colored heroes   | Chroma ≤ 0.18 OKLCH. No gradients. `--primary` (the tenant's brand) for the single most-important action + focus + the selected nav item only. |
+| Bold scroll/magnetic/parallax/GSAP motion            | Reserved micro-feedback only. No scroll choreography on app surfaces.                                                                          |
+| Celebrate success (animation, confetti, 🎉)          | Quietly state the fact. 「承認しました」. No emoji anywhere in product.                                                                        |
+| "Variant: brutalist/soft can break the grid"         | Grid is never broken. 6px radius, 1px borders, no shadow at rest.                                                                              |
+| Pill-shaped cards, decorative fills, illustrations   | Forbidden. Empty state = `EmptyState`: one sentence, at most one action.                                                                       |
+| Free choice of density to taste                      | Density is a fixed 3-step track chosen per surface.                                                                                            |
 
 **Why:** every override protects one of 渋み / 間 / 簡素 or the fixed-color signaling contract. Breaking them doesn't make the UI more distinctive — it makes it look like a different, less trustworthy product. Multi-tenant: a "rejected" badge must read identically in every brand, so semantic colors are never re-themed; tenants override **only** `--primary` / `--ring` / `--foreground`.
 
@@ -113,7 +119,7 @@ taste-skill's anti-slop list targets consumer/marketing tells. Here is the JP-en
 
 **Typographic / chromatic tells (remove these):**
 
-- [ ] Inter / Roboto / Acme / system-ui as the brand face → must be **M PLUS 2**.
+- [ ] A second brand face on an app surface → one family, the kit's stack (DESIGN.md Typography).
 - [ ] 16px / 1.5 body (the Western default) → must be **14px / 1.7** (13/1.5 only at compact).
 - [ ] font-weight 300 (kana strokes vanish) or 600 (ambiguous) → **400 / 500 / 700 only**.
 - [ ] Purple/indigo "AI" gradient, saturated brand color, neon → chroma ≤ 0.18, no gradient.
@@ -168,7 +174,7 @@ The `@godxjp/ui` MCP already bundles the **taste / soft / minimalist / brutalist
 
 ## Source of truth
 
-- Design system: `/Users/satoshi01/sites/godxjp-ui/.design/bundle/reference-design-system/README.md` and `project/README.md` / `project/SKILL.md`.
+- Design system: `DESIGN.md` at the repo root (the visual spec the MCP serves as `get_design`).
 - Tokens: `colors_and_type.css` (mirrors `admin-web/src/app/globals.css`).
 - Correctness gate (run first for component work): **godxjp-ui-component** skill.
 - This skill governs _taste and UX judgement_ on top of those. If a rule here and the design-system docs disagree, the docs win and this skill is updated.
@@ -190,15 +196,15 @@ Ba lỗi showcase hay gặp nhất — chặn từ gốc:
 3. **Quy tắc đa cột responsive — mobile-first, LUÔN LUÔN.** Mọi khối nhiều cột (grid key-value,
    master-detail, grid card) **mặc định 1 cột**, chỉ thêm cột ở `md:`/`lg:` VÀ chỉ khi mỗi cột
    giữ được chữ thân ≥ 14px với bề rộng đủ (≥ ~280px/cột).
-   - Key-value detail: `grid-cols-1 md:grid-cols-2` — KHÔNG nhồi chữ bé vào 2 cột hẹp.
-   - Master-detail: mobile thì xếp dọc (list rồi detail) hoặc detail thành `Sheet`/`Drawer`;
+   - Key-value detail: `Descriptions` / `ResponsiveGrid` 1 cột mặc định, 2 cột từ `md` — KHÔNG nhồi chữ bé vào 2 cột hẹp.
+   - Master-detail: mobile thì xếp dọc (list rồi detail) hoặc detail thành `Sheet`;
      đặt cạnh nhau chỉ từ `lg`. Test 390 / 768 / 1280 — nếu chữ phải co lại để vừa 2 cột → về 1 cột.
 
 Đây là dạng thực thi của Rule #1 (mobile-first) + 間 (thoáng nhưng không rỗng).
 
 4. **Padding trang + gutter giữa các khối có viền — CẤM dán sát.** Nội dung KHÔNG bao giờ sát
-   mép viewport hay sát viền sibling. `PageContainer`/`PageContent` cấp padding nhất quán (mặc
-   định, không để 0); các `Card`/section cách nhau bằng `Stack gap` (≥ token). **Hai bề mặt có
+   mép viewport hay sát viền sibling. `PageContainer` cấp padding nhất quán (mặc
+   định, không để 0); các `Card`/section cách nhau bằng `Flex direction="col" gap` (≥ token). **Hai bề mặt có
    viền KHÔNG được chạm nhau** — luôn có khoảng thở (間). Header band tách khỏi content bằng gap,
    không phải viền-dính-viền. Thấy 2 border kề sát hoặc nội dung sát mép = thiếu padding/gap → sửa
    ngay. Mọi page bọc `PageContainer` (đừng tự đặt padding cấp page lung tung).

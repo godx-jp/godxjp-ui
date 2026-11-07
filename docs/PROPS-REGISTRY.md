@@ -37,16 +37,15 @@ import {
 | `PageContainerProp` | layout       | TitleProp, SubtitleProp, ExtraProp, FooterProp, BreadcrumbProp, DensityProp |
 | `ButtonProp`        | general      | ButtonVariantProp, ButtonSizeProp, AsChildProp                              |
 | `DataTableProp`     | data-display | ColumnDefProp, TableDensityProp, SortStateProp                              |
-| `DialogConfirmProp` | feedback     | OpenProp, TitleProp, DescriptionProp, HandlerProp, PendingProp              |
 | `EmptyStateProp`    | data-display | IconProp, TitleProp, DescriptionProp, ActionProp                            |
 | …                   |              | See `COMPONENT_PROP_REGISTRY`                                               |
 
 ## Before adding a new prop
 
 1. Search this file and `PROPS-VOCABULARY.md`
-2. Run `grep -r "YourConcept" packages/ui/src/props/`
+2. Run `grep -r "YourConcept" src/props/`
 3. Reuse vocabulary type if concept exists
-4. If new: add to vocabulary → component prop → registry → docs → story
+4. If new: add to vocabulary → component prop → registry → docs page
 
 ## Forbidden duplicates
 
