@@ -8,6 +8,18 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.27.6] - 2026-11-08
+
+Patch off v33.27.5.
+
+### Fixed
+
+- `EditorialPillNavItem icon="dot"`: the dot defaulted to the hairline border colour (~1.1:1 on the light surface, ~1.4:1 in dark, below WCAG 1.4.11's 3:1), so the marker vanished. It now defaults to `--muted-foreground` (3:1 or better in both themes), and the current pill's dot takes the pill's brand ink (`--text-brand`, else `--primary`). The dot no longer follows `--editorial-ornament-color`; `--editorial-pill-dot-color` still overrides both dots.
+
+### Changed
+
+- Shipped skill `godxjp-ui-design`, `references/craft.md` §3: a marker that carries state is never drawn in the border colour.
+
 ## [33.27.5] - 2026-11-08
 
 Follow-up to 33.27.4 (gh#1538), off v33.27.4.
