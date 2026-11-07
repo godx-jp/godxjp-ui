@@ -414,6 +414,51 @@ const RULES = [
       'No hand-rolled flex/grid — use <Flex> (row), <Flex direction="col"> (stack) or <ResponsiveGrid> (docs/CONSUMER-RULES.md §3).',
   },
   {
+    id: "link-ink-stripped",
+    replacement: 'drop the ink class; a control-shaped link sets data-ui-link-style="control"',
+    scope: "consumer",
+    severity: "warn",
+    standard: "WCAG 2.2 SC 1.4.1 Use of Color",
+    // gh#1538: a router <Link>/<a href> in a table cell or card given body ink by a utility class
+    // looks like plain text — nothing says it is clickable, and the AppShell link rule (a lower
+    // layer) cannot win against the utility. Kept to the className on the link itself; a link that
+    // really is a control says so with `data-ui-link-style="control"` and is not flagged.
+    spansElement: true,
+    matches: function* (source) {
+      for (const m of source.matchAll(/<(?:Link|NavLink|PrefetchLink|a)(?=[\s>])/g)) {
+        const open = source.slice(m.index, jsxOpeningEnd(source, m.index) + 1);
+        if (open.includes("data-ui-link-style")) continue;
+        const cls = /className=(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`)/.exec(open);
+        const value = cls ? (cls[1] ?? cls[2] ?? cls[3] ?? "") : "";
+        if (/(?<![\w-])text-(?:foreground|inherit|current|muted-foreground)(?![\w-])/.test(value))
+          yield m;
+      }
+    },
+    message:
+      'A link given body ink (text-foreground/text-inherit/text-current/text-muted-foreground) reads as plain text. Drop the class — inside AppShell main a link gets link ink, medium weight, hover underline and a visited colour from the kit (DESIGN.md · Links). A link that is really a control sets data-ui-link-style="control".',
+  },
+  {
+    id: "button-mutation-needs-loading",
+    replacement: "Button loading={mutation.isPending}",
+    scope: "consumer",
+    severity: "warn",
+    standard: "WCAG 2.2 SC 4.1.3 Status Messages",
+    // No silent action (skills/godxjp-ui-design craft.md §5): a <Button> whose onClick fires a
+    // server mutation shows `loading` while it runs, so it says it is working and swallows the
+    // second click. Kept to the button's own opening tag; the toast half is not checked here.
+    spansElement: true,
+    matches: function* (source) {
+      for (const m of source.matchAll(/<Button(?=[\s>])/g)) {
+        const open = source.slice(m.index, jsxOpeningEnd(source, m.index) + 1);
+        const top = topLevelAttrs(open);
+        if (/\bloading\b/.test(top) || /\{\s*\.\.\./.test(open)) continue;
+        if (/\bonClick\s*=\s*\{[^]*?\.mutate(?:Async)?\s*\(/.test(open)) yield m;
+      }
+    },
+    message:
+      "A Button whose onClick calls .mutate/.mutateAsync has no `loading` — pass loading={mutation.isPending} so it shows progress and blocks a second click, then toast.success / toast.error the outcome (godxjp-ui-design craft.md §5: no silent action).",
+  },
+  {
     id: "no-hand-rolled-surface",
     replacement: "Card / Badge / Avatar / ListRow / Descriptions / EmptyState / Progress",
     scope: "consumer",

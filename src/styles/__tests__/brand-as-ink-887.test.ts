@@ -134,6 +134,9 @@ describe("gh#887 · every brand-as-ink call site reads a brand INK role", () => 
       // #1521 is a NEW opt-in reading surface, not a rewiring of shipped ink.
       // Its default and scoped colours are measured in reading-links-browser-1521.test.ts.
       .filter((k) => !k.startsWith("text-layout.css::[data-ui-reading-links] "))
+      // gh#1538 is likewise a NEW surface (AppShell main links), measured in
+      // app-content-links-browser-1538.test.ts.
+      .filter((k) => !k.startsWith("text-layout.css::.app-root main a[href]"))
       .filter((k) => !CANONICAL_BY_DESIGN.has(k));
     expect(moved).toEqual([]);
   });

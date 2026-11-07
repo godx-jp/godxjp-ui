@@ -24,6 +24,7 @@ colors:
   text-warning: "#8f5600" # --text-warning
   text-info: "#1d48a5" # --text-info
   text-error: "#aa181f" # --text-error
+  link-visited: "#73509b" # --text-link-visited (dark: #bb9fdb); `:visited` ink
 
 typography:
   family: "system stack (--font-sans-base); Noto Sans JP via opt-in @godxjp/ui/styles/fonts"
@@ -99,6 +100,13 @@ Colour is scarce. Most of the screen is canvas, ink and hairline.
 - 朱 attention for urgency that is not destructive (late, overdue); 茜 only for loss (delete, failed, irreversible).
 - `--accent` is the hover/selected surface, not a brand colour. `--muted` is for quiet fills.
 - No gradients, glows or tinted page sections on app surfaces.
+- **Link ink**: `--text-link` (one ramp step off `--primary`), `--text-link-hover`, and `--text-link-visited` for a visited link (a muted violet, light `268 32% 46%`, dark `268 45% 74%`; a theme may override it).
+
+### Links
+
+- A link is identifiable **at rest**, without hover (WCAG 1.4.1): link ink plus a second cue, weight or underline. Inside the AppShell `main` the kit does this for every `a[href]`: link ink and medium weight at rest, underline on hover and keyboard focus. In running text (`[data-ui-reading-links]`, `Link`, `Text link`) the underline is at rest.
+- A visited link has its own ink (`--text-link-visited`). Never remove it.
+- A link that is a control (a button-shaped link, a tab, a menu item, a whole card, a row) opts out with `data-ui-link-style="control"`; the kit's Button, ListRow, tabs, menus, navigation and header/footer regions already do. Never strip link ink with a utility class (`text-foreground`, `text-inherit`, `no-underline`) to make a name in a table cell look like plain text.
 
 ## Typography
 
