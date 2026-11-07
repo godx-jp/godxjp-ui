@@ -8,6 +8,20 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+Also released as 33.27.4 (off v33.27.3) while #1536 blocks 33.28.x:
+
+### Added
+
+- Token `--text-link-visited` (light `268 32% 46%`, dark `268 45% 74%`): visited link ink. The `[data-ui-reading-links]` recipe, the kit `Link` / `Text link` (default tone) and the new AppShell link rule paint it on `:visited` (gh#1538).
+- AppShell content links (gh#1538): inside `.app-root main`, every `a[href]` is visibly a link at rest — link ink and medium weight, underline on hover and keyboard focus, `--text-link-visited` once visited. Opt-out, not opt-in: Button, ListRow, tabs, menus, navigation, header/footer regions, a whole-card link (`data-slot="card"`), the kit `Text`/`Link` (they carry their own tone) and `data-ui-link-style="control"` keep their own look.
+- DESIGN.md: `--text-link-visited` in Colors and a **Links** rule (identifiable at rest, WCAG 1.4.1; visited state; controls opt out).
+- Audit rules (warn): `link-ink-stripped` — a router `<Link>` / `<a href>` whose className sets body ink (`text-foreground`, `text-inherit`, `text-current`, `text-muted-foreground`); `button-mutation-needs-loading` — a `<Button>` whose `onClick` calls `.mutate` / `.mutateAsync` with no `loading`.
+- Shipped skill `godxjp-ui-design`: "No silent action" — an action that waits on the server shows `loading`, then `toast.success` stating what was done or `toast.error` / `Alert` with the reason, and Undo on the toast for an undoable action (`references/craft.md` §5, with an example; Motion is now §6).
+
+### Changed
+
+- `--tabs-count-gap` default `--space-1` → `--space-2`: a tab's count stood 10px from its label and read as part of the word (「招待中5」); it is now 14px, for the pill and the neutral tone alike.
+
 ### Added
 
 - Shipped skill `godxjp-ui-brand-surface` (`skills/godxjp-ui-brand-surface/`): how to build an EXPRESSIVE sign-in / onboarding surface on the restrained kit — when it applies (never admin screens), the art-direction and motion process, composition rules (the picture shows the product itself, kit components on the form side, kit tokens re-set per theme with `--primary`/`--ring` untouched, `ThemeScope`, bundled fonts per script, AA contrast, a designed 390px layout, GSAP with a reduced-motion branch and a pause control), a checklist, and `references/exemplar-css.md`. Pattern `auth-brand-surface` is its TSX exemplar. DESIGN.md Known Gaps points at it.

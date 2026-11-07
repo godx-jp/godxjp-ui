@@ -10870,8 +10870,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-count-gap",
-    "value": "var(--space-1)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "var(--space-2)",
+    "description": "Label ↔ count, ON TOP of the trigger's own flex gap (6px). It was --space-1 (10px in all) and the count read as part of the word — 「招待中5」 (gh#1538 follow-up). --space-2 puts 14px between them, a clear word space at every tab size, for the pill and the neutral tone alike."
   },
   {
     "name": "--tabs-count-font-size",

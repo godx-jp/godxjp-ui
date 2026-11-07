@@ -338,6 +338,10 @@
   [data-slot="text"][data-link][data-tone="primary"]:not([data-disabled]) {
     color: hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels)));
   }
+  /* Visited link ink (gh#1538) — the default-tone link only; a toned link keeps its tone. */
+  [data-slot="text"][data-link][data-tone="primary"]:not([data-disabled]):visited {
+    color: hsl(var(--text-link-visited));
+  }
   [data-slot="text"][data-link]:hover,
   [data-slot="text"][data-link]:focus-visible {
     text-decoration-line: underline;
@@ -783,6 +787,37 @@
     );
     outline-offset: var(--focus-ring-offset);
   }
+  /* Visited state (gh#1538): a reader can tell which pages they have already opened. `:visited`
+   * may only change colour, so the token is a plain HSL triple (tokens/derived.css). */
+  [data-ui-reading-links]
+    main
+    a[href]:not(
+      :where(
+        [data-ui-link-style="control"],
+        [data-ui-link-style="control"] *,
+        [data-slot="button"],
+        .ui-button,
+        .ui-list-row,
+        .ui-list-row *,
+        [role="button"],
+        [role="tab"],
+        [role="tablist"] *,
+        [role="menuitem"],
+        [role="menuitemcheckbox"],
+        [role="menuitemradio"],
+        [role="menu"] *,
+        [role="navigation"] *,
+        nav *,
+        header *,
+        footer *,
+        .ui-auth-shell *,
+        .app-root *,
+        [data-disabled],
+        [aria-disabled="true"]
+      )
+    ):visited {
+    color: hsl(var(--text-link-visited));
+  }
   /* Whole-card headings inherit link ink; summaries retain their muted role. */
   [data-ui-reading-links]
     main
@@ -813,5 +848,115 @@
     )
     :is([data-slot="heading"], .ui-editorial-card-title, .ui-catalog-card-title) {
     color: inherit;
+  }
+}
+
+/* App-content links (gh#1538). Inside the AppShell's <main> a link is ALWAYS visibly a link —
+ * opt-out, not opt-in like the reading recipe above, because an admin screen's links (a name in a
+ * table cell, a reference in a card) are its navigation, and in body ink nothing says they are
+ * clickable. WCAG 1.4.1: identifiable at rest without hover — link ink plus medium weight carry it
+ * here (the reading recipe underlines at rest instead; a table of underlined names is noise),
+ * the underline appears on hover and keyboard focus, and a visited link takes its own ink.
+ * Controls keep their own look: Button, ListRow, tabs, menus, navigation, header/footer regions,
+ * a whole-card link, and anything marked `data-ui-link-style="control"`. The kit's own `Link` /
+ * `Text link` is excluded too: it carries its tone and at-rest underline itself (rules above).
+ * Zero-specificity exclusions, as above; a consumer utility class (a later layer) still wins. */
+@layer components {
+  .app-root
+    main
+    a[href]:not(
+      :where(
+        [data-ui-link-style="control"],
+        [data-ui-link-style="control"] *,
+        [data-slot="button"],
+        .ui-button,
+        .ui-list-row,
+        .ui-list-row *,
+        [role="button"],
+        [role="tab"],
+        [role="tablist"] *,
+        [role="menuitem"],
+        [role="menuitemcheckbox"],
+        [role="menuitemradio"],
+        [role="menu"] *,
+        [role="navigation"] *,
+        [data-slot="card"],
+        [data-slot="text"],
+        nav *,
+        header *,
+        footer *,
+        .ui-auth-shell *,
+        [data-disabled],
+        [aria-disabled="true"]
+      )
+    ) {
+    color: hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels)));
+    font-weight: var(--font-weight-medium);
+    text-decoration-line: none;
+    text-underline-offset: var(--text-link-underline-offset);
+    text-decoration-thickness: var(--text-link-underline-width);
+  }
+  .app-root
+    main
+    a[href]:not(
+      :where(
+        [data-ui-link-style="control"],
+        [data-ui-link-style="control"] *,
+        [data-slot="button"],
+        .ui-button,
+        .ui-list-row,
+        .ui-list-row *,
+        [role="button"],
+        [role="tab"],
+        [role="tablist"] *,
+        [role="menuitem"],
+        [role="menuitemcheckbox"],
+        [role="menuitemradio"],
+        [role="menu"] *,
+        [role="navigation"] *,
+        [data-slot="card"],
+        [data-slot="text"],
+        nav *,
+        header *,
+        footer *,
+        .ui-auth-shell *,
+        [data-disabled],
+        [aria-disabled="true"]
+      )
+    ):visited {
+    color: hsl(var(--text-link-visited));
+  }
+  .app-root
+    main
+    a[href]:not(
+      :where(
+        [data-ui-link-style="control"],
+        [data-ui-link-style="control"] *,
+        [data-slot="button"],
+        .ui-button,
+        .ui-list-row,
+        .ui-list-row *,
+        [role="button"],
+        [role="tab"],
+        [role="tablist"] *,
+        [role="menuitem"],
+        [role="menuitemcheckbox"],
+        [role="menuitemradio"],
+        [role="menu"] *,
+        [role="navigation"] *,
+        [data-slot="card"],
+        [data-slot="text"],
+        nav *,
+        header *,
+        footer *,
+        .ui-auth-shell *,
+        [data-disabled],
+        [aria-disabled="true"]
+      )
+    ):is(:hover, :focus-visible) {
+    color: hsl(
+      var(--text-link-hover, var(--text-link, from hsl(var(--primary)) var(--text-link-channels)))
+    );
+    text-decoration-line: underline;
   }
 }

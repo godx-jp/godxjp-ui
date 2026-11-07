@@ -1,4 +1,4 @@
-# Craft on app screens: taste, lenses, layout and interaction hygiene
+# Craft on app screens: taste, lenses, layout, interaction hygiene and action feedback
 
 This guide covers what makes an app screen built with @godxjp/ui read as well made, beyond being
 correct. Read it with DESIGN.md, which owns the visual spec. Where the two differ, DESIGN.md wins.
@@ -80,7 +80,48 @@ show behaviour defects.
 The kit's controls already behave this way. If one of them does not, do not patch it in the app:
 open an issue on the @godxjp/ui repository (MCP `draft_bug_report`).
 
-## 5. Motion on app screens
+## 5. Actions: no silent action
+
+Every action that waits on the server (send, save, delete, resend, approve, import) answers the
+person three times: while it runs, when it succeeds, and when it fails. An action that does none of
+this reads as a dead button, and the person clicks it again.
+
+- **While it runs**: the trigger shows `loading` (and `loadingText` when the label should say what
+  is happening) and does not accept a second click. `Button loading` already blocks re-entry and
+  sets `aria-busy`; do not hand-roll a spinner or a `disabled` flag.
+- **On success**: a short `toast.success` that states what was done, in the past tense
+  (「招待を再送しました」). Not "Success!", not praise. When the result is already on screen (a row
+  moved, a value changed) the toast still confirms it.
+- **On failure**: `toast.error` with the reason the server gave, or an `Alert` next to the form
+  when the person must fix something there. Never swallow the error.
+- **Undoable actions** (archive, remove from a list) get an Undo action on the success toast
+  instead of a confirmation dialog: `toast.success(msg, { action: { label: t("undo"), onClick } })`.
+- Navigation and purely local actions (open a sheet, switch a tab) need none of this.
+
+```tsx
+import { Button, toast } from "@godxjp/ui";
+
+const resend = useMutation({
+  mutationFn: () => api.resendInvite(id),
+  onSuccess: () => toast.success(t("invite.resent")),
+  onError: (e) => toast.error(t("invite.resendFailed"), { description: e.message }),
+});
+
+<Button
+  loading={resend.isPending}
+  loadingText={t("invite.resending")}
+  onClick={() => resend.mutate()}
+>
+  {t("invite.resend")}
+</Button>;
+```
+
+`toast.promise(p, { loading, success, error })` covers the same three answers when there is no
+button to put into `loading` (a keyboard shortcut, a drag). `godxjp-ui audit` warns on a `<Button>`
+whose `onClick` calls `.mutate`/`.mutateAsync` with no `loading` prop (rule
+`button-mutation-needs-loading`).
+
+## 6. Motion on app screens
 
 | Need                                    | Token                                                           | Properties                                                                  |
 | --------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------- |

@@ -137,6 +137,11 @@
   --text-link: initial;
   /* Reading-scope hover ink resolves to the live text-link role at the call site. */
   --text-link-hover: initial;
+  /* VISITED link ink (gh#1538), a plain HSL triple because `:visited` may only change colour. A
+   * muted violet, the convention a reader already knows, kept off every seed's link hue so a
+   * visited link still reads as a link but no longer as "new". Contrast on --background: 6.2:1
+   * light, 7.7:1 dark (WCAG 1.4.3). A theme overrides it like any role. */
+  --text-link-visited: 268 32% 46%;
   --text-brand: initial;
   --text-primary: initial;
   /* Light: one step DOWN the ramp from the action colour — the same step `--primary-hover` takes,
@@ -181,6 +186,8 @@
      * — which is why foundation.css authored them equal here and one step apart in light. */
     --text-link-channels: h s l;
     --text-brand-channels: h s l;
+    /* Visited ink, lifted for the dark canvas (gh#1538). */
+    --text-link-visited: 268 45% 74%;
     /* Dark: the pressed ink is one hover step ABOVE the seed (#E8DAFF), the way foundation.css
      * authored it — the dark ramp runs upward, so "pressed" is brighter, not darker. */
     --text-primary-channels: h s calc(l + 5.8);

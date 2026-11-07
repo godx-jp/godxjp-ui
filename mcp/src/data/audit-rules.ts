@@ -77,6 +77,20 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: 'Replace className="flex …" / "grid …" with <Flex> (row), <Flex direction="col"> (stack) or <ResponsiveGrid columns>.',
   },
   {
+    id: "link-ink-stripped",
+    severity: "warn",
+    category: "a11y",
+    standard: "WCAG 2.2 SC 1.4.1 Use of Color",
+    fix: 'A router <Link>/<a href> whose className sets body ink (text-foreground/inherit/current/muted-foreground) reads as plain text. Drop the class: inside AppShell main the kit paints link ink + medium weight at rest, underline on hover/focus, and --text-link-visited once visited (gh#1538). A control-shaped link sets data-ui-link-style="control".',
+  },
+  {
+    id: "button-mutation-needs-loading",
+    severity: "warn",
+    category: "composition",
+    standard: "WCAG 2.2 SC 4.1.3 Status Messages",
+    fix: "No silent action: a <Button> whose onClick calls .mutate/.mutateAsync passes loading={mutation.isPending} (optionally loadingText) so it shows progress and blocks re-entry; the mutation's onSuccess/onError toast the outcome (toast.success states what was done, toast.error gives the reason). See the godxjp-ui-design skill, references/craft.md §5.",
+  },
+  {
     id: "no-hand-rolled-surface",
     severity: "warn",
     category: "composition",
