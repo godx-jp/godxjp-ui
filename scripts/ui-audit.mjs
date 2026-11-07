@@ -452,7 +452,11 @@ const RULES = [
         const open = source.slice(m.index, jsxOpeningEnd(source, m.index) + 1);
         const top = topLevelAttrs(open);
         if (/\bloading\b/.test(top) || /\{\s*\.\.\./.test(open)) continue;
-        if (/\bonClick\s*=\s*\{[^]*?\.mutate(?:Async)?\s*\(/.test(open)) yield m;
+        // Only a mutation the click fires DIRECTLY: `() => save.mutate()`. One fired from a nested
+        // callback (`() => confirm({ run: () => save.mutate() })`) belongs to whatever runs it.
+        const call = /\bonClick\s*=\s*\{([^]*?)\.mutate(?:Async)?\s*\(/.exec(open);
+        if (call && (call[1].match(/=>/g) ?? []).length <= 1 && !/\bfunction\b/.test(call[1]))
+          yield m;
       }
     },
     message:
