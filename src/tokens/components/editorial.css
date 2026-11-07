@@ -295,7 +295,7 @@
   --editorial-pill-icon-size: var(--icon-size-lg);
   --editorial-pill-dot-size: 0.4375rem;
   --editorial-pill-dot-radius: calc(var(--radius) - 4px);
-  /* Default = the ornament colour. */
+  /* Default = muted ink (≥3:1, a marker); the current pill's dot = its brand ink. */
   --editorial-pill-dot-color: initial;
 
   /* ── CardShowcase preset="fan" ──────────────────────────────────────────────────────────── */
