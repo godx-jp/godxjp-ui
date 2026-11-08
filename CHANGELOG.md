@@ -8,6 +8,15 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.27.9] - 2026-11-09
+
+Patch off v33.27.8.
+
+### Fixed
+
+- `MasterDetail` on a phone moves focus to the detail's first heading (made `tabindex="-1"`) or to the detail region, a focus target outside the tab order; neither had its ring removed (only `.ui-page-title` had), so Chrome drew its own `outline: auto` around the heading block and its text line as two frames. Both now draw no ring, like `.ui-page-title[tabindex="-1"]`.
+- `FilterBar clearDisplay="icon"` below 640px: the bar stacks and the clear button gets a row of its own, where the bare ✕ stood alone at the start edge. There it now shows its text and fills the row like the `label` display; from 640px it is the control-height square, unchanged.
+
 ## [33.27.8] - 2026-11-09
 
 Patch off v33.27.7.

@@ -1910,6 +1910,29 @@
     margin-inline-start: 0;
   }
 
+  /* Icon clear-all on the stacked bar (GDX-1267): below 640px the bar is one column and the clear
+   * button gets a row of its own, where a bare ✕ at the start edge reads as a stray mark. There it
+   * carries its words and fills the row like the `label` display; from 640px it is the square. */
+  .ui-toolbar-clear[data-display="icon"] {
+    width: 100%;
+    padding-inline: var(--button-padding-inline);
+  }
+
+  .ui-toolbar-clear-text {
+    white-space: nowrap;
+  }
+
+  @media (min-width: 640px) {
+    .ui-toolbar-clear[data-display="icon"] {
+      width: var(--control-height);
+      padding-inline: 0;
+    }
+
+    .ui-toolbar-clear[data-display="icon"] .ui-toolbar-clear-text {
+      display: none;
+    }
+  }
+
   .ui-filter-bar-actions {
     display: flex;
     flex-wrap: wrap;
@@ -2363,6 +2386,15 @@
 @layer components {
   .ui-master-detail-back {
     display: none;
+  }
+  /* On a phone the component moves focus to the detail's first heading (made tabindex -1) or, with
+   * none, to the detail region itself, so a screen reader announces where it landed. Both are focus
+   * TARGETS outside the tab order, not controls: a ring there marks nothing the user can operate,
+   * and Chrome's own `outline: auto` drew it around the block and the text line as two frames
+   * (GDX-1267). Same treatment as `.ui-page-title[tabindex="-1"]`. */
+  .ui-master-detail-detail[tabindex="-1"]:focus,
+  .ui-master-detail-detail :is(h1, h2, h3)[tabindex="-1"]:focus {
+    outline: none;
   }
   .ui-master-detail[data-mobile-pane] {
     position: relative;
