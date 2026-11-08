@@ -16970,9 +16970,9 @@ export default function PasswordBlock() {
       },
       {
         name: "options",
-        type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
+        type: "{ value: string; label: ReactNode; shortLabel?: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
         description:
-          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name. Use `count` for a filter total — do not nest `Badge` in `label` (gh#602).",
+          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name. Use `count` for a filter total — do not nest `Badge` in `label` (gh#602). `shortLabel` (GDX-1281) is the shorter visible label the bar switches to while the full labels cannot share one row — measured against the bar's own container, not the viewport; `label` stays the accessible name and the `title`. Ignored on `vertical`.",
       },
       { name: "value", type: "string", description: "Controlled selection." },
       { name: "defaultValue", type: "string", description: "Uncontrolled initial selection." },
@@ -16995,6 +16995,7 @@ export default function PasswordBlock() {
       "DO use it for a list status view. A list status view (All / Active / Closed, each with its count) that shows the SAME table — same columns, same row actions, a different query — is a filter, so it is `Segmented` with `count`, placed in the list's `Toolbar`; past 4 statuses it is a `Select`. `Tabs` only when each status is a genuinely different panel (its own columns, actions or empty state), declared as `TabsContent` or pointed at with `controls` (WAI-ARIA APG: a tab selects a panel, a radiogroup selects a value) (gh#1324).",
       "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
       "DON'T use ToggleGroup for a one-of-N choice unless you also pass `disallowEmptySelection`: without it, type=single is a row of aria-pressed toggle buttons that can end up with nothing selected, which a setting can never be (gh#744). Segmented is the one-of-N control and needs no such switch.",
+      "DO give each long option a `shortLabel` when the bar must stay one row on a phone (a list's status views with counts: `{ label: \"Waiting for me\", shortLabel: \"To approve\", count }`). The bar shows the short labels only while the full ones would wrap or truncate, measured on its own container — DON'T swap `label` on a `useMediaQuery` breakpoint: a viewport query cannot know how wide the bar's slot is, and the swapped label also becomes the accessible name (GDX-1281).",
       "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
       "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
       "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",

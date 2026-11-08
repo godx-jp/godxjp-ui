@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Segmented `shortLabel` (also released as 33.27.10, off v33.27.9)
+
+- **Added** `SegmentedOption.shortLabel?: ReactNode` (GDX-1281). While the full labels cannot share one row (options wrapped to a second row, or a `block` label truncated), the bar shows each option's `shortLabel` instead, and returns to the full labels once its container is wide enough again. The bar measures itself and its container with a ResizeObserver, not the viewport, so it is right in a toolbar slot, a card or a split pane. `label` stays the accessible name (kept visually hidden; the short label is `aria-hidden`) and becomes the segment's `title`. Ignored on `vertical`. If even the short labels do not fit, the bar wraps as before. A bar with no `shortLabel` renders and behaves exactly as before (no observer). Measured in Chromium, three views with counts in en / ja / vi: one row, nothing truncated, no sideways scroll at 320 and 390; full labels at 1280.
+
 ### MasterDetail focus target, FilterBar icon clear when stacked (also released as 33.27.9, off v33.27.8)
 
 - **Fixed** `MasterDetail` on a phone moves focus to the detail's first heading (made `tabindex="-1"`) or to the detail region, a focus target outside the tab order; neither had its ring removed (only `.ui-page-title` had), so Chrome drew its own `outline: auto` around the heading block and its text line as two frames. Both now draw no ring, like `.ui-page-title[tabindex="-1"]`.
