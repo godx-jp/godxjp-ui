@@ -497,8 +497,11 @@ export function AppProvider({
 
   // Reflect the locale on <html>: `dir` flips logical CSS (ms/me/ps/pe, start/end) under RTL,
   // and `lang` drives `:lang()` rules (all supported locales keep the default DXS Noto Sans JP
-  // stack — see styles/fonts.css).
-  React.useEffect(() => {
+  // stack — see styles/fonts.css). A LAYOUT effect (GDX-1254): a parent's passive effect runs after
+  // its children's, so a screen whose first request read `<html lang>` from its own effect sent the
+  // page's stale language. Layout effects run before every passive effect of the commit; React 19
+  // skips them on a server without a warning, so this stays SSR-safe.
+  React.useLayoutEffect(() => {
     if (typeof document !== "undefined") {
       document.documentElement.dir = localeDirection(locale);
       document.documentElement.lang = locale;

@@ -724,6 +724,16 @@
     display: block;
   }
 
+  /* GDX-1254 — the box is 14-17px, under the 24x24 floor of WCAG 2.2 SC 2.5.8, and in a stacked
+   * group its neighbours sit too close for the Spacing exception: visual-audit `target-size-min`
+   * flagged every RadioGroup option. The invisible input grows to --touch-target-min, centred on
+   * the box (a percentage inset is the containing block's own size, so no direction is assumed);
+   * the paint does not move. */
+  .ui-checkbox > .ui-choice-input,
+  .ui-radio > .ui-choice-input {
+    inset: min(0px, calc((100% - var(--touch-target-min)) / 2));
+  }
+
   .ui-choice-input > input {
     position: absolute;
     inset: 0;
