@@ -1,4 +1,5 @@
 import * as React from "react";
+import { mergeRefs, useLayoutEffect } from "@react-aria/utils";
 import { Radio as AriaRadio, RadioGroup as AriaRadioGroup } from "react-aria-components";
 import { withOwnHitTarget } from "./choice-hit-target";
 
@@ -30,6 +31,14 @@ export type SegmentedOption = SegmentedCountFields & {
   value: string;
   /** Visible label. It is also the item's accessible name, so it is required. */
   label: React.ReactNode;
+  /**
+   * Shorter visible label, shown INSTEAD of `label` while the full labels cannot share one row
+   * (the bar measures itself, not the viewport). `label` stays the accessible name and the
+   * `title`, so a screen reader still hears "Waiting for me, 3" when the segment reads
+   * "To approve". Give it to every option that has a long label; an option without one keeps
+   * its label. Ignored on a `vertical` bar, which never runs out of width.
+   */
+  shortLabel?: React.ReactNode;
   /** Optional leading glyph, rendered `aria-hidden` beside the label. */
   icon?: React.ReactNode;
   /** Disable this one choice; the rest of the group stays operable. */
@@ -63,6 +72,90 @@ function SegmentedCountPill({
       <span className="sr-only">{`, ${spoken}`}</span>
     </>
   );
+}
+
+/** Text of a label when it is plain text, for the `title` a compact segment carries. */
+const plainText = (node: React.ReactNode) =>
+  typeof node === "string" || typeof node === "number" ? String(node) : undefined;
+
+/**
+ * Whether a bar given `shortLabel`s must show them (GDX-1281). The topbar's fold
+ * (`useCollapsesToMenu`) applied to one control: with the full labels on, the bar measures itself
+ * — options that moved to a second row, or a label that truncated (`block`), mean they do not fit,
+ * and the width they needed is remembered. Compact, the full labels are gone, so the bar returns
+ * to them only once its CONTAINER is at least that wide. The container and not the bar, because a
+ * default bar hugs its options (`fit-content`) and would never grow back on its own; and only once
+ * the container is WIDER than when the bar compacted, so a container that also holds other things
+ * cannot flip the bar back and forth at one width. Runs in a layout effect, so a bar that does not
+ * fit never paints its full labels.
+ */
+function useCompactLabels(
+  ref: React.RefObject<HTMLDivElement | null>,
+  enabled: boolean,
+  labelsKey: string,
+): boolean {
+  const [compact, setCompact] = React.useState(false);
+  const needed = React.useRef(0);
+  const containerAtCompact = React.useRef(0);
+
+  // New labels or counts: measure them in full again.
+  useLayoutEffect(() => setCompact(false), [labelsKey]);
+
+  useLayoutEffect(() => {
+    const bar = ref.current;
+    if (!enabled || !bar) return undefined;
+    const container = bar.parentElement;
+    const containerWidth = () => {
+      if (!container) return 0;
+      const style = getComputedStyle(container);
+      return (
+        container.clientWidth -
+        (parseFloat(style.paddingInlineStart) || 0) -
+        (parseFloat(style.paddingInlineEnd) || 0)
+      );
+    };
+    const update = () => {
+      const items = [...bar.children].filter(
+        (child): child is HTMLElement =>
+          child instanceof HTMLElement && child.dataset.slot === "segmented-item",
+      );
+      if (!compact) {
+        if (bar.clientWidth === 0 || items.length === 0) return;
+        const wrapped = items.some((item) => item.offsetTop !== items[0]!.offsetTop);
+        let truncated = false;
+        const widths = items.map((item) => {
+          const label = item.querySelector<HTMLElement>('[data-slot="segmented-item-label"]');
+          const cut = label ? Math.max(0, label.scrollWidth - label.clientWidth) : 0;
+          if (cut > 1) truncated = true;
+          return item.offsetWidth + cut;
+        });
+        if (!wrapped && !truncated) return;
+        const style = getComputedStyle(bar);
+        const inset =
+          (parseFloat(style.paddingInlineStart) || 0) + (parseFloat(style.paddingInlineEnd) || 0);
+        needed.current =
+          (bar.dataset.block === "true"
+            ? Math.max(...widths) * widths.length
+            : widths.reduce((sum, width) => sum + width, 0)) + inset;
+        containerAtCompact.current = containerWidth();
+        setCompact(true);
+      } else {
+        const width = containerWidth();
+        if (width > containerAtCompact.current && width >= needed.current) setCompact(false);
+      }
+    };
+    update();
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(update);
+    observer.observe(bar);
+    if (container) observer.observe(container);
+    // The items too: a font that loads late, or a larger text size, grows them inside a bar
+    // whose own box can stay put.
+    if (!compact) for (const item of bar.children) observer.observe(item);
+    return () => observer.disconnect();
+  }, [ref, enabled, compact, labelsKey]);
+
+  return enabled && compact;
 }
 
 export type SegmentedProp = {
@@ -150,13 +243,24 @@ export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(functio
   },
   ref,
 ) {
+  const localRef = React.useRef<HTMLDivElement>(null);
+  const compactable = !vertical && options.some((option) => option.shortLabel != null);
+  const labelsKey = options
+    .map((option) =>
+      [option.value, plainText(option.label), plainText(option.shortLabel), option.count].join(
+        "\u0000",
+      ),
+    )
+    .join("\u0001");
+  const compact = useCompactLabels(localRef, compactable, labelsKey);
   return (
     <AriaRadioGroup
-      ref={ref}
+      ref={mergeRefs(ref, localRef)}
       id={id}
       data-slot="segmented"
       data-block={block ? "true" : undefined}
       data-size={size}
+      data-compact={compact ? "true" : undefined}
       className={cn("ui-segmented", className)}
       // The primitive reads `orientation` to decide WHICH arrow keys move the roving focus, so a
       // vertical bar that only changed its CSS direction would still be driven by ←/→. The
@@ -175,49 +279,68 @@ export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(functio
       aria-label={ariaLabelledBy ? undefined : ariaLabel}
       {...props}
     >
-      {options.map((option) => (
-        <AriaRadio
-          key={option.value}
-          value={option.value}
-          isDisabled={option.disabled}
-          data-slot="segmented-item"
-          className="ui-segmented-item ui-focus-ring"
-          // react-aria spells the chosen member `data-selected`; styles/control.css paints the
-          // pill off `[data-state="checked"]`, the spelling every other control in this library
-          // uses. Translated here, from the primitive's OWN state, so the two can never drift.
-          render={(domProps, state) => (
-            <label
-              {...(domProps as React.HTMLAttributes<HTMLLabelElement> &
-                React.RefAttributes<HTMLLabelElement>)}
-              data-state={state.isSelected ? "checked" : "unchecked"}
-            >
-              {/* A segment is built from the same react-aria parts as Radio, so it carried the
+      {options.map((option) => {
+        const short = compact && option.shortLabel != null;
+        return (
+          <AriaRadio
+            key={option.value}
+            value={option.value}
+            isDisabled={option.disabled}
+            data-slot="segmented-item"
+            className="ui-segmented-item ui-focus-ring"
+            // react-aria spells the chosen member `data-selected`; styles/control.css paints the
+            // pill off `[data-state="checked"]`, the spelling every other control in this library
+            // uses. Translated here, from the primitive's OWN state, so the two can never drift.
+            render={(domProps, state) => (
+              <label
+                {...(domProps as React.HTMLAttributes<HTMLLabelElement> &
+                  React.RefAttributes<HTMLLabelElement>)}
+                data-state={state.isSelected ? "checked" : "unchecked"}
+                // The full name for a pointer hover while the segment shows the short one.
+                title={short ? plainText(option.label) : undefined}
+              >
+                {/* A segment is built from the same react-aria parts as Radio, so it carried the
                   same defect: the input was a 1px clipped box in the corner of a 100px segment.
                   See gh#476 / choice-hit-target.tsx. */}
-              {withOwnHitTarget(domProps.children)}
-            </label>
-          )}
-        >
-          {option.icon == null ? null : (
+                {withOwnHitTarget(domProps.children)}
+              </label>
+            )}
+          >
+            {option.icon == null ? null : (
+              <span
+                data-slot="segmented-item-icon"
+                className="ui-segmented-item-icon"
+                aria-hidden="true"
+              >
+                {option.icon}
+              </span>
+            )}
+            {/* Compact, the full label is still there, visually hidden, so it stays the item's
+              accessible name; the short one is only ink (aria-hidden). */}
             <span
-              data-slot="segmented-item-icon"
-              className="ui-segmented-item-icon"
-              aria-hidden="true"
+              data-slot="segmented-item-label"
+              className={short ? "sr-only" : "ui-segmented-item-label"}
             >
-              {option.icon}
+              {option.label}
             </span>
-          )}
-          <span data-slot="segmented-item-label" className="ui-segmented-item-label">
-            {option.label}
-          </span>
-          <SegmentedCountPill
-            count={option.count}
-            overflowCount={option.overflowCount}
-            showZero={option.showZero}
-            countLabel={option.countLabel}
-          />
-        </AriaRadio>
-      ))}
+            {short ? (
+              <span
+                data-slot="segmented-item-short-label"
+                className="ui-segmented-item-label"
+                aria-hidden="true"
+              >
+                {option.shortLabel}
+              </span>
+            ) : null}
+            <SegmentedCountPill
+              count={option.count}
+              overflowCount={option.overflowCount}
+              showZero={option.showZero}
+              countLabel={option.countLabel}
+            />
+          </AriaRadio>
+        );
+      })}
     </AriaRadioGroup>
   );
 });
