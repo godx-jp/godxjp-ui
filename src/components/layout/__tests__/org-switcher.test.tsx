@@ -214,6 +214,84 @@ describe("OrgSwitcher public contract", () => {
   });
 });
 
+describe("OrgSwitcher with nothing selected", () => {
+  it('draws a neutral glyph, never "?", open and collapsed', () => {
+    // "?" read as an error beside a label that only asks for a choice, and no prop could change it.
+    for (const collapsed of [false, true]) {
+      const { container, unmount } = renderWithUi(
+        <OrgSwitcher organizations={organizations} labels={labels} collapsed={collapsed} />,
+      );
+      const mark = container.querySelector<HTMLElement>(".ui-org-switcher-avatar")!;
+
+      expect(mark).toHaveAttribute("data-placeholder", "true");
+      expect(mark).toHaveAttribute("aria-hidden", "true");
+      expect(mark.textContent).toBe("");
+      expect(mark.querySelector("svg")).not.toBeNull();
+      expect(
+        screen.getByRole("button", { name: "Current organization: Choose organization" }),
+      ).toBeInTheDocument();
+      unmount();
+    }
+  });
+
+  it("takes the consumer's own mark through placeholderAvatar", () => {
+    const { container } = renderWithUi(
+      <OrgSwitcher
+        organizations={organizations}
+        value="missing"
+        labels={labels}
+        placeholderAvatar={<span data-testid="project-icon" />}
+      />,
+    );
+    const mark = container.querySelector<HTMLElement>(".ui-org-switcher-avatar")!;
+
+    expect(mark).toHaveAttribute("data-placeholder", "true");
+    expect(mark).toContainElement(screen.getByTestId("project-icon"));
+    expect(mark.querySelector("svg")).toBeNull();
+  });
+
+  it("keeps the first letter once an organization is selected, without the placeholder flag", () => {
+    const { container } = renderWithUi(
+      <OrgSwitcher
+        organizations={organizations}
+        value="dxs"
+        labels={labels}
+        placeholderAvatar={<span data-testid="project-icon" />}
+      />,
+    );
+    const mark = container.querySelector<HTMLElement>(
+      ".ui-org-switcher-trigger .ui-org-switcher-avatar",
+    )!;
+
+    expect(mark).not.toHaveAttribute("data-placeholder");
+    expect(mark).toHaveTextContent("D");
+    expect(screen.queryByTestId("project-icon")).toBeNull();
+  });
+});
+
+describe("OrgSwitcher trigger padding (the knob Button's size tier used to override)", () => {
+  it("out-ranks Button's padding rules for the open trigger and leaves the collapsed square alone", () => {
+    /*
+     * control.css loads after shell-layout.css in the same layer, so `.ui-button--default-size`
+     * (0,1,0) won on order and `.ui-button--default-size:has(> svg):not([data-label])` (0,2,1)
+     * won outright: the trigger painted 12px a side instead of --org-switcher-trigger-padding-x
+     * (8px), measured, and a nine-character Japanese label lost its last character. jsdom does no
+     * cascade, so what is pinned is the selector that decides it.
+     */
+    const rule =
+      /\.ui-org-switcher > \.ui-org-switcher-trigger\.ui-button:not\(\[data-collapsed="true"\]\)\s*\{\s*padding-inline:\s*var\(--org-switcher-trigger-padding-x\);/;
+    expect(shellStyles).toMatch(rule);
+
+    const { container } = renderWithUi(
+      <OrgSwitcher organizations={organizations} value="dxs" labels={labels} />,
+    );
+    const trigger = container.querySelector<HTMLElement>(".ui-org-switcher-trigger")!;
+    // The selector's shape depends on the trigger being the wrapper's direct child, a Button.
+    expect(trigger.parentElement).toHaveClass("ui-org-switcher");
+    expect(trigger).toHaveClass("ui-button");
+  });
+});
+
 describe("OrgSwitcher badge slot (gh#213)", () => {
   it("renders the badge on the expanded trigger and announces it as a description", () => {
     renderWithUi(<OrgSwitcher organizations={badgedOrganizations} value="dxs" labels={labels} />);

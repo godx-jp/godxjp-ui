@@ -1579,6 +1579,17 @@
     padding: 0;
   }
 
+  /* THE PADDING KNOB NEVER APPLIED. control.css is imported after this file, in the same layer, and
+   * Button's size tier re-declares `padding-inline` on the trigger: `.ui-button--default-size`
+   * (0,1,0) wins on order, and `.ui-button--default-size:has(> svg):not([data-label])` (0,2,1)
+   * matches outright, because the chevron is a direct <svg> child and the name sits in spans, so
+   * Button never marks the trigger labelled. Measured in a consumer's sidebar foot: 12px each side
+   * against the token's 8px, and a nine-character Japanese label was ellipsized by 1px. (0,4,0)
+   * out-ranks both; the collapsed square keeps its own `padding: 0` above. */
+  .ui-org-switcher > .ui-org-switcher-trigger.ui-button:not([data-collapsed="true"]) {
+    padding-inline: var(--org-switcher-trigger-padding-x);
+  }
+
   .ui-org-switcher-avatar {
     display: grid;
     width: var(--org-switcher-avatar-size);
@@ -1596,6 +1607,16 @@
   .ui-org-switcher-avatar > * {
     width: 100%;
     height: 100%;
+  }
+
+  /* Nothing selected: a glyph at icon size in the muted ink, not an owned avatar filling the box. */
+  .ui-org-switcher-avatar[data-placeholder="true"] {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-org-switcher-avatar[data-placeholder="true"] > * {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
   }
 
   .ui-org-switcher-current,

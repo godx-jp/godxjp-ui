@@ -8,6 +8,12 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### OrgSwitcher with nothing selected (also released as 33.27.7, off v33.27.6)
+
+- **Added** `OrgSwitcher` `placeholderAvatar?: ReactNode`: the trigger's mark while `value` matches no organization, open and collapsed.
+- **Changed** that mark's default from a hard-coded "?" (it read as an error beside a label that only asks for a choice) to a neutral organization glyph at `--icon-size-md` in the muted ink. The trigger carries `data-placeholder="true"` on its mark while nothing is selected.
+- **Fixed** `--org-switcher-trigger-padding-x` never applied to the open trigger: Button's size tier (`.ui-button--default-size`, and its `:has(> svg):not([data-label])` icon rule, which matched because the chevron is a direct `<svg>`) re-declared `padding-inline` after it. The trigger painted 12px a side instead of the token's 8px; measured in a consumer's sidebar foot, a nine-character Japanese label lost its last character to the ellipsis (name box 111px for 112px of text). It now paints the token (8px), giving the name 8px more; the collapsed square keeps `padding: 0`.
+
 Also released as 33.27.4 (off v33.27.3) and 33.27.5 (off v33.27.4) while #1536 blocks 33.28.x:
 
 ### Fixed
