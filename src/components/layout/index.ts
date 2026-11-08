@@ -15,7 +15,7 @@ export type {
 } from "./flex";
 export { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "./resizable";
 export { NavList } from "./nav-list";
-export type { NavListProp, NavListProps } from "./nav-list";
+export type { NavListProp, NavListProps, NavListSectionProp } from "./nav-list";
 export { AppShell } from "./app-shell";
 export type { AppShellProps } from "./app-shell";
 export { AppLauncher } from "./app-launcher";

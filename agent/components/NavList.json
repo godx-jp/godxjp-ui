@@ -5,10 +5,14 @@
   "name": "NavList",
   "props": [
     {
-      "description": "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. An item carrying `children` renders as a collapsible GROUP — the rail's own `.sb-nav-group`, opened by the route whenever a descendant is active (gh#815). `icon` is optional; a row without one keeps an empty 16px slot so the label column still aligns.",
+      "description": "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. An item carrying `children` renders as a collapsible GROUP — the rail's own `.sb-nav-group`, opened by the route whenever a descendant is active (gh#815). `icon` is optional; a row without one keeps an empty 16px slot so the label column still aligns. Rendered before `sections`; may be omitted when every row sits in a section.",
       "name": "items",
-      "required": true,
       "type": "SidebarItemProp[]"
+    },
+    {
+      "description": "Fixed, headed sections inside the same `<nav>` (GDX-1230): the heading is the rail's `.sb-section-label` and never folds; its `items` may be folding groups (`children`). Each section is a `role=\"group\"` named by its heading. One NavList for a settings column of headings with groups folding under them.",
+      "name": "sections",
+      "type": "{ id?: string; label: string; items: SidebarItemProp[] }[]"
     },
     {
       "description": "`id` of the current route. That row gets the active tokens and aria-current=\"page\".",
@@ -48,6 +52,7 @@
   "usage": [
     "DO use NavList for a settings / account / preferences sub-navigation beside the pane it drives — typically as MasterDetail's `master`.",
     "DO group with `item.children` — one NavList, one `<nav>` landmark, however many groups. Before gh#815 NavList dropped `children` silently (it type-checked, rendered one flat row, and the subtree vanished), so the workaround was one NavList per group wrapped in SidebarSection, i.e. N landmarks for one navigation. Don't write that any more.",
+    "DO use `sections` for fixed headings over the rows (General / Integrations / Work), with groups that fold inside a section (`children`): one NavList, one landmark. DON'T wrap one NavList per heading in SidebarSection to get a heading — that is N landmarks again (GDX-1230).",
     "DON'T repeat a group's icons on its children: a nested row draws the rail's dot marker instead of the 16px icon column, exactly like the rail's submenu. Icons belong on the rows that sit at the top level.",
     "DON'T reach for Sidebar here: it is the app's primary rail and lays into AppShell's grid area, so nested in a page it has no grid to lay into.",
     "DON'T hand-roll the rows out of Buttons with the current one encoded as a variant swap. That loses aria-current, loses the icon column the labels align to, and invents a different nav in every app.",
