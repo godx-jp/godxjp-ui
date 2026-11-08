@@ -1429,6 +1429,13 @@ export type OrgSwitcherProp = {
   onRetry?: () => void;
   labels: OrgSwitcherLabels;
   /**
+   * The trigger's mark while `value` matches no organization (nothing chosen yet). Defaults to a
+   * neutral organization glyph — never "?", which reads as an error beside a label that is only
+   * asking for a choice. Pass a product's own icon when the switcher picks something else (a
+   * project, a workspace). Decorative: the trigger's name comes from `labels.trigger`.
+   */
+  placeholderAvatar?: ReactNode;
+  /**
    * WHICH SURFACE the panel opens on.
    *
    * - `"auto"` (default) — popover above `--sheet-responsive-breakpoint-width`, focus-trapped

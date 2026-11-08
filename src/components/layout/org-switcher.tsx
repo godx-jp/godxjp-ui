@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronsUpDown, Loader2, RotateCcw } from "lucide-react";
+import { Building2, Check, ChevronsUpDown, Loader2, RotateCcw } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
@@ -40,16 +40,37 @@ export type {
   OrgSwitcherProp as OrgSwitcherProps,
 } from "../../props/components/layout.prop";
 
-function OrganizationMark({ organization }: { organization?: OrgSwitcherOrganization }) {
+/*
+ * NOTHING SELECTED IS NOT AN ERROR. The empty trigger used to draw "?" here, which reads as a
+ * failure state beside a label that is only asking for a choice, and no prop could change it. The
+ * default is now a neutral organization glyph; `placeholderAvatar` replaces it (a product whose
+ * switcher picks a project or a workspace passes its own icon).
+ */
+function OrganizationMark({
+  organization,
+  placeholder,
+}: {
+  organization?: OrgSwitcherOrganization;
+  placeholder?: React.ReactNode;
+}) {
+  if (organization == null) {
+    return (
+      <span className="ui-org-switcher-avatar" data-placeholder="true" aria-hidden="true">
+        {placeholder ?? <Building2 />}
+      </span>
+    );
+  }
+
   return (
     <span className="ui-org-switcher-avatar" aria-hidden="true">
-      {organization?.avatar ?? organization?.name.trim().charAt(0).toUpperCase() ?? "?"}
+      {organization.avatar ?? organization.name.trim().charAt(0).toUpperCase()}
     </span>
   );
 }
 
 type OrgSwitcherTriggerProps = React.ComponentPropsWithoutRef<typeof Button> & {
   organization?: OrgSwitcherOrganization;
+  placeholderAvatar?: React.ReactNode;
   collapsed: boolean;
   label: string;
 };
@@ -77,7 +98,7 @@ function OrganizationBadge({ organization }: { organization: OrgSwitcherOrganiza
 type DataAttributes = { [key: `data-${string}`]: string | number | boolean | undefined };
 
 const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTriggerProps>(
-  ({ organization, collapsed, disabled, label, ...props }, ref) => {
+  ({ organization, placeholderAvatar, collapsed, disabled, label, ...props }, ref) => {
     const reactId = React.useId();
     // The trigger's accessible name comes from `aria-label`, which SUPPRESSES descendant text — so a
     // meaningful badge is announced as a DESCRIPTION (APG: name then description) rather than lost.
@@ -106,7 +127,7 @@ const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTrigge
         aria-describedby={badgeDescriptionId}
         {...props}
       >
-        <OrganizationMark organization={organization} />
+        <OrganizationMark organization={organization} placeholder={placeholderAvatar} />
         {!collapsed ? (
           <>
             <span className="ui-org-switcher-current">
@@ -232,6 +253,7 @@ export function OrgSwitcher({
   error,
   onRetry,
   labels,
+  placeholderAvatar,
   responsive = "auto",
   open,
   onOpenChange,
@@ -280,6 +302,7 @@ export function OrgSwitcher({
   const trigger = (
     <OrgSwitcherTrigger
       organization={current}
+      placeholderAvatar={placeholderAvatar}
       collapsed={collapsed}
       disabled={triggerDisabled}
       label={triggerLabel}
