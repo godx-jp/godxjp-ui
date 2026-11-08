@@ -18901,6 +18901,12 @@ import { Logo } from "@godxjp/ui/general";
         description: "Localized trigger, search, state, and retry copy.",
       },
       {
+        name: "placeholderAvatar",
+        type: "ReactNode",
+        description:
+          "The trigger's mark while `value` matches no organization (nothing chosen yet), open and collapsed. Defaults to a neutral organization glyph at --icon-size-md in the muted ink — never \"?\", which reads as an error. Pass the product's own icon when the switcher picks something else (a project, a workspace). Decorative (aria-hidden); the accessible name stays `labels.trigger`.",
+      },
+      {
         name: "collapsed",
         type: "boolean",
         defaultValue: "false",

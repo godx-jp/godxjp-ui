@@ -63,7 +63,7 @@ export default function Demo() {
             <CardDescription>
               検索可能なpopover。選択状態はconsumerが保持します。`responsive=&quot;auto&quot;`は共有
               トークン `--sheet-responsive-breakpoint-width`（48rem）で popover と bottom sheet
-              を切り替えます。badgeはtriggerとmenu行の末尾に並びます（collapsed時は非表示）。
+              を切り替えます。badgeはtriggerとmenu行の末尾に並びます（collapsed時は非表示）。未選択のtriggerは中立のマークを表示し、`placeholderAvatar`で差し替えられます。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -84,6 +84,12 @@ export default function Demo() {
                 labels={labels}
                 collapsed
                 responsive="sheet"
+              />
+              {/* Nothing selected yet: a neutral mark, replaceable with `placeholderAvatar`. */}
+              <OrgSwitcher
+                organizations={organizations}
+                labels={{ ...labels, trigger: () => "組織を選択" }}
+                responsive="popover"
               />
             </Flex>
           </CardContent>
