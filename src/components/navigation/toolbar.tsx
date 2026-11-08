@@ -75,7 +75,9 @@ export function Toolbar({
           <TooltipTrigger asChild>
             <Button
               variant="ghost"
-              size="icon-sm"
+              /* `icon`, not `icon-sm` (GDX-1254): a 32px square beside the bar's default-size
+               * buttons and control-height fields was `mixed-button-height` in visual-audit. */
+              size="icon"
               onClick={onClear}
               disabled={isDisabled}
               aria-label={label}

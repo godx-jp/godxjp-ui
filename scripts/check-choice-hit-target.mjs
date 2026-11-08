@@ -28,7 +28,10 @@ import { chromium } from "playwright";
  *      (native click plus react-aria's press) would pass 1-3 and still be broken;
  *   5. the box keeps the size its tokens ask for, so nothing about the paint moved;
  *   6. the keyboard path is untouched: Space toggles, and the focus ring still lands on the
- *      painted box (`data-focus-visible`).
+ *      painted box (`data-focus-visible`);
+ *   7. a Checkbox / Radio input is at least --touch-target-min (24px, WCAG 2.2 SC 2.5.8) on each
+ *      side, centred on the smaller painted box (GDX-1254: a 14px radio in a stacked group failed
+ *      visual-audit `target-size-min`, its neighbours too close for the Spacing exception).
  *
  * "THE TWO STATES DO NOT RENDER IDENTICALLY" WAS ASSERTED HERE AND HAS MOVED to
  * `scripts/check-state-legible.mjs` (gh#615 → gh#622). It could only ever ask that of the four
@@ -40,15 +43,15 @@ const port = Number(process.env.PREVIEW_PORT) || 6019;
 const base = `http://localhost:${port}`;
 const stopServer = await ensurePreviewServer(base);
 
-/** `[frame, selector of the painted box, token pair the box is sized from]` */
+/** `[frame, selector of the painted box, token pair the box is sized from, input ≥ target floor]` */
 const SURFACES = [
-  ["data-entry-checkbox", "label.ui-checkbox", ["--checkbox-size", "--checkbox-size"]],
-  ["data-entry-radio-group", "label.ui-radio", ["--checkbox-size", "--checkbox-size"]],
-  ["data-entry-switch", "label.ui-switch", ["--switch-width", "--switch-height"]],
-  ["data-entry-segmented", "label.ui-segmented-item", null],
+  ["data-entry-checkbox", "label.ui-checkbox", ["--checkbox-size", "--checkbox-size"], true],
+  ["data-entry-radio-group", "label.ui-radio", ["--checkbox-size", "--checkbox-size"], true],
+  ["data-entry-switch", "label.ui-switch", ["--switch-width", "--switch-height"], false],
+  ["data-entry-segmented", "label.ui-segmented-item", null, false],
 ];
 
-function scan([selector, tokens]) {
+function scan([selector, tokens, targetFloor]) {
   const boxes = [...document.querySelectorAll(selector)];
   if (!boxes.length) throw new Error(`${selector}: nothing rendered`);
   /**
@@ -90,7 +93,8 @@ function scan([selector, tokens]) {
           pointY > b.bottom - border - 1;
         const at = `(${Math.round(pointX)},${Math.round(pointY)})`;
         if (el === input) hits.input++;
-        else if (ring) hits.box++; // the border itself — a click there is asserted separately
+        else if (ring)
+          hits.box++; // the border itself — a click there is asserted separately
         else if (el === box || box.contains(el)) {
           hits.foreign.push(`inner point ${at} → the label, not the input`);
         } else hits.foreign.push(`inner point ${at} → ${el?.tagName ?? "nothing"}`);
@@ -108,6 +112,15 @@ function scan([selector, tokens]) {
         Math.round(i.top + i.height / 2 - (b.top + b.height / 2)),
       ],
       covers: i.width >= b.width - 2 * border - 1 && i.height >= b.height - 2 * border - 1,
+      // (7) the target floor: the input, not the paint, is what a pointer has to reach.
+      targetHeld: targetFloor
+        ? (() => {
+            const min = px(
+              getComputedStyle(document.documentElement).getPropertyValue("--touch-target-min"),
+            );
+            return i.width >= min - 0.5 && i.height >= min - 0.5;
+          })()
+        : true,
       // Never SMALLER than its tokens — an overlay that shrank the control would show up here.
       // (A switch carrying a word is wider than the token on purpose, so this is a floor, not an
       // equality; "the paint is byte-identical" is proven by the screenshot comparison in the PR.)
@@ -124,7 +137,7 @@ const summary = [];
 let browser;
 try {
   browser = await chromium.launch({ headless: true });
-  for (const [frame, selector, tokens] of SURFACES) {
+  for (const [frame, selector, tokens, targetFloor] of SURFACES) {
     for (const dir of ["ltr", "rtl"]) {
       const page = await browser.newPage({ viewport: { width: 1024, height: 900 } });
       await page.goto(`${base}/isolate/${frame}${dir === "rtl" ? "?dir=rtl" : ""}`, {
@@ -134,7 +147,7 @@ try {
       await page.evaluate((d) => document.documentElement.setAttribute("dir", d), dir);
       await page.waitForTimeout(200);
 
-      const controls = await page.evaluate(scan, [selector, tokens]);
+      const controls = await page.evaluate(scan, [selector, tokens, targetFloor]);
       for (const control of controls) {
         const where = `${frame} ${dir} #${control.index}${control.id ? ` (${control.id})` : ""}`;
         if (!control.covers) {
@@ -143,7 +156,11 @@ try {
         if (Math.abs(control.centreOffset[0]) > 1 || Math.abs(control.centreOffset[1]) > 1) {
           failures.push(`${where}: input is off-centre by ${control.centreOffset}`);
         }
-        if (!control.sizeHeld) failures.push(`${where}: painted box ${control.box} left its tokens`);
+        if (!control.targetHeld) {
+          failures.push(`${where}: input ${control.input} is under the 24x24 target floor`);
+        }
+        if (!control.sizeHeld)
+          failures.push(`${where}: painted box ${control.box} left its tokens`);
         if (control.hits.foreign.length) {
           failures.push(`${where}: ${control.hits.foreign.join(", ")}`);
         }
