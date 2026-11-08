@@ -1298,13 +1298,32 @@ export type SidebarItemProp = {
  * vocabulary: the row is the same row, so a service that learnt the rail's item shape does not
  * learn a second one, and a fix to the row reaches both.
  */
+/** One headed section of a `NavList` (see `NavListProp.sections`). */
+export type NavListSectionProp = {
+  /** Stable key; defaults to `label`. */
+  id?: string;
+  /** The heading: always shown, never a toggle. */
+  label: string;
+  /** Its rows; an item with `children` folds inside the section. */
+  items: SidebarItemProp[];
+};
+
 export type NavListProp = Omit<React.HTMLAttributes<HTMLElement>, "onSelect"> & {
   /**
    * Rows, in reading order. An item carrying `children` renders as a collapsible GROUP — the same
    * `.sb-nav-group` the rail draws, opened by the route whenever a descendant is active — so a
    * grouped settings nav is one `NavList` and one `<nav>` landmark, not one per group (gh#815).
+   * Rendered before `sections`; may be omitted when every row sits in a section.
    */
-  items: SidebarItemProp[];
+  items?: SidebarItemProp[];
+  /**
+   * Fixed, headed sections inside the same `<nav>` (GDX-1230): a heading that never folds — the
+   * rail's `.sb-section-label` — over rows of its own, which may themselves be folding groups.
+   * A settings column of 一般 / 連携 / 作業 headings with マシン and エージェント folding under
+   * 作業 is one `NavList` this way, not one `NavList` per heading wrapped in `SidebarSection`
+   * (N landmarks for one navigation). Each section is a `role="group"` named by its heading.
+   */
+  sections?: NavListSectionProp[];
   /** `SidebarItemProp.id` of the current route; that row gets `aria-current="page"`. */
   activeId?: string;
   /** Accessible name for the `<nav>` landmark. Required: a page may hold more than one. */
