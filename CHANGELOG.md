@@ -8,6 +8,12 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Choice target size, `<html lang>` timing, FilterBar icon clear (also released as 33.27.8, off v33.27.7)
+
+- **Fixed** `Radio` / `Checkbox`: the real input under the 14–17px box was the box's own size, under the 24×24 floor of WCAG 2.2 SC 2.5.8, and a stacked `RadioGroup` sits too tight for the Spacing exception, so visual-audit `target-size-min` flagged every option (seen at 768 and 1024 in a consumer). The invisible input now grows to `--touch-target-min`, centred on the box; the paint does not move.
+- **Fixed** `AppProvider` set `<html lang>` / `<html dir>` in a passive effect, which runs after the children's: a screen that sent its first request from its own effect read the page's stale `lang` (index.html's `en`). It is now a layout effect, before every passive effect of the commit (no server warning on React 19).
+- **Fixed** `FilterBar clearDisplay="icon"` drew an `icon-sm` (32px) square beside the bar's default-size buttons (36px), which visual-audit fails as `mixed-button-height`. It is `size="icon"`, the control height its docs promise.
+
 ### OrgSwitcher with nothing selected (also released as 33.27.7, off v33.27.6)
 
 - **Added** `OrgSwitcher` `placeholderAvatar?: ReactNode`: the trigger's mark while `value` matches no organization, open and collapsed.
