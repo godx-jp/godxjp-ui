@@ -72,6 +72,12 @@ const view =
         clearDisplay="icon"
       />
     </div>
+  ) : kind === "clear-icon-row" ? (
+    <div style={{ width: 1200 }}>
+      <Toolbar search={{ ariaLabel: "Search issues" }} onClear={() => {}} clearDisplay="icon">
+        <Button id="more" variant="outline">More filters</Button>
+      </Toolbar>
+    </div>
   ) : (
     <div style={{ width: 900 }}>
       <Toolbar
@@ -199,6 +205,23 @@ describe("Toolbar clearDisplay and views (gh#1264)", { timeout: 60_000 }, () => 
     expect(Math.round(icon.width)).toBe(Math.round(icon.height));
     expect(icon.width).toBeLessThan(label.width / 2);
     await iconPage.close();
+  });
+
+  // GDX-1254: the icon clear was `icon-sm` (32px) beside a default-size Button (36px) in the same
+  // row, and visual-audit failed it as `mixed-button-height`. It is a control-height square.
+  it('clearDisplay="icon" is as tall as a default Button and the search beside it', async () => {
+    const page = await open("clear-icon-row");
+    const heights = await page.evaluate(() => ({
+      clear: document.querySelector(".ui-toolbar-clear")!.getBoundingClientRect().height,
+      more: document.getElementById("more")!.getBoundingClientRect().height,
+      search: document
+        .querySelector(".ui-filter-bar-search input")!
+        .closest("[data-slot]")!
+        .getBoundingClientRect().height,
+    }));
+    expect(Math.abs(heights.clear - heights.more)).toBeLessThanOrEqual(0.5);
+    expect(Math.abs(heights.clear - heights.search)).toBeLessThanOrEqual(0.5);
+    await page.close();
   });
 
   it("views render above the filter strip", async () => {
