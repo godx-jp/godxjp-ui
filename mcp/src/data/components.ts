@@ -3523,9 +3523,14 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       {
         name: "items",
         type: "SidebarItemProp[]",
-        required: true,
         description:
-          "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. An item carrying `children` renders as a collapsible GROUP — the rail's own `.sb-nav-group`, opened by the route whenever a descendant is active (gh#815). `icon` is optional; a row without one keeps an empty 16px slot so the label column still aligns.",
+          "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. An item carrying `children` renders as a collapsible GROUP — the rail's own `.sb-nav-group`, opened by the route whenever a descendant is active (gh#815). `icon` is optional; a row without one keeps an empty 16px slot so the label column still aligns. Rendered before `sections`; may be omitted when every row sits in a section.",
+      },
+      {
+        name: "sections",
+        type: "{ id?: string; label: string; items: SidebarItemProp[] }[]",
+        description:
+          'Fixed, headed sections inside the same `<nav>` (GDX-1230): the heading is the rail\'s `.sb-section-label` and never folds; its `items` may be folding groups (`children`). Each section is a `role="group"` named by its heading. One NavList for a settings column of headings with groups folding under them.',
       },
       {
         name: "activeId",
@@ -3555,6 +3560,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
     usage: [
       "DO use NavList for a settings / account / preferences sub-navigation beside the pane it drives — typically as MasterDetail's `master`.",
       "DO group with `item.children` — one NavList, one `<nav>` landmark, however many groups. Before gh#815 NavList dropped `children` silently (it type-checked, rendered one flat row, and the subtree vanished), so the workaround was one NavList per group wrapped in SidebarSection, i.e. N landmarks for one navigation. Don't write that any more.",
+      "DO use `sections` for fixed headings over the rows (General / Integrations / Work), with groups that fold inside a section (`children`): one NavList, one landmark. DON'T wrap one NavList per heading in SidebarSection to get a heading — that is N landmarks again (GDX-1230).",
       "DON'T repeat a group's icons on its children: a nested row draws the rail's dot marker instead of the 16px icon column, exactly like the rail's submenu. Icons belong on the rows that sit at the top level.",
       "DON'T reach for Sidebar here: it is the app's primary rail and lays into AppShell's grid area, so nested in a page it has no grid to lay into.",
       "DON'T hand-roll the rows out of Buttons with the current one encoded as a variant swap. That loses aria-current, loses the icon column the labels align to, and invents a different nav in every app.",
@@ -16993,7 +16999,7 @@ export default function PasswordBlock() {
       "DO use it for a list status view. A list status view (All / Active / Closed, each with its count) that shows the SAME table — same columns, same row actions, a different query — is a filter, so it is `Segmented` with `count`, placed in the list's `Toolbar`; past 4 statuses it is a `Select`. `Tabs` only when each status is a genuinely different panel (its own columns, actions or empty state), declared as `TabsContent` or pointed at with `controls` (WAI-ARIA APG: a tab selects a panel, a radiogroup selects a value) (gh#1324).",
       "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
       "DON'T use ToggleGroup for a one-of-N choice unless you also pass `disallowEmptySelection`: without it, type=single is a row of aria-pressed toggle buttons that can end up with nothing selected, which a setting can never be (gh#744). Segmented is the one-of-N control and needs no such switch.",
-      "DO give each long option a `shortLabel` when the bar must stay one row on a phone (a list's status views with counts: `{ label: \"Waiting for me\", shortLabel: \"To approve\", count }`). The bar shows the short labels only while the full ones would wrap or truncate, measured on its own container — DON'T swap `label` on a `useMediaQuery` breakpoint: a viewport query cannot know how wide the bar's slot is, and the swapped label also becomes the accessible name (GDX-1281).",
+      'DO give each long option a `shortLabel` when the bar must stay one row on a phone (a list\'s status views with counts: `{ label: "Waiting for me", shortLabel: "To approve", count }`). The bar shows the short labels only while the full ones would wrap or truncate, measured on its own container — DON\'T swap `label` on a `useMediaQuery` breakpoint: a viewport query cannot know how wide the bar\'s slot is, and the swapped label also becomes the accessible name (GDX-1281).',
       "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
       "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
       "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",

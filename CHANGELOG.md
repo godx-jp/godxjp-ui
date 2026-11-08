@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### NavList `sections` (also released as 33.27.11, off v33.27.10)
+
+- **Added** `NavList.sections?: { id?, label, items }[]` (GDX-1230). Each section draws a fixed heading — the rail's `.sb-section-label`, never a toggle — over its own rows, which may be folding groups (`children`), all inside the one `<nav>` landmark; each section is a `role="group"` named by its heading. `items` is now optional and renders before the sections. A settings column of headings with Machines and Agents folding under Work no longer needs one NavList per heading wrapped in `SidebarSection`. A NavList without `sections` renders exactly as before.
+
 ### Segmented `shortLabel` (also released as 33.27.10, off v33.27.9)
 
 - **Added** `SegmentedOption.shortLabel?: ReactNode` (GDX-1281). While the full labels cannot share one row (options wrapped to a second row, or a `block` label truncated), the bar shows each option's `shortLabel` instead, and returns to the full labels once its container is wide enough again. The bar measures itself and its container with a ResizeObserver, not the viewport, so it is right in a toolbar slot, a card or a split pane. `label` stays the accessible name (kept visually hidden; the short label is `aria-hidden`) and becomes the segment's `title`. Ignored on `vertical`. If even the short labels do not fit, the bar wraps as before. A bar with no `shortLabel` renders and behaves exactly as before (no observer). Measured in Chromium, three views with counts in en / ja / vi: one row, nothing truncated, no sideways scroll at 320 and 390; full labels at 1280.

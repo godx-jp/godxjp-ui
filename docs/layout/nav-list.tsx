@@ -37,6 +37,7 @@ import {
   MasterDetail,
   NavList,
   PageContainer,
+  type NavListSectionProp,
   type SidebarItemProp,
 } from "@godxjp/ui/layout";
 
@@ -294,12 +295,51 @@ const LONG_ITEMS: SidebarItemProp[] = [
   { id: "seats", label: "座席の割り当て", icon: Users },
 ];
 
+/** 固定の見出し（一般 · 作業）と、その下で開閉するグループ（マシン · エージェント）（GDX-1230）。 */
+const PROJECT_SECTIONS: NavListSectionProp[] = [
+  {
+    label: "一般",
+    items: [
+      { id: "basics", label: "基本", icon: Building2 },
+      { id: "members", label: "メンバー", icon: Users },
+    ],
+  },
+  {
+    label: "作業",
+    items: [
+      {
+        id: "group:machines",
+        label: "マシン",
+        icon: Smartphone,
+        children: [
+          { id: "servers", label: "サーバーとコンピュート" },
+          { id: "pools", label: "プール" },
+        ],
+      },
+      {
+        id: "group:agents",
+        label: "エージェント",
+        icon: Plug,
+        children: [
+          { id: "team", label: "チームのエージェント" },
+          { id: "schedules", label: "実行スケジュール" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "セキュリティ",
+    items: [{ id: "vault", label: "Vault", icon: ShieldCheck }],
+  },
+];
+
 export default function Demo() {
   const [route, setRoute] = useState("two-factor");
   const [flatRoute, setFlatRoute] = useState("password");
   const [groupedRoute, setGroupedRoute] = useState("password");
   const [longRoute, setLongRoute] = useState("api-keys");
   const [narrowRoute, setNarrowRoute] = useState("profile");
+  const [sectionRoute, setSectionRoute] = useState("pools");
   const [narrowPane, setNarrowPane] = useState<"master" | "detail">("master");
 
   return (
@@ -365,6 +405,29 @@ export default function Demo() {
                 onSelect={setGroupedRoute}
               />
             </Flex>
+          </Flex>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle level={2}>固定の見出し · その中で開閉するグループ</CardTitle>
+          <CardDescription>
+            これがないと、見出しを出すために見出しごとに NavList を SidebarSection
+            で包むことになり、 ナビゲーション 1 つに &lt;nav&gt;
+            ランドマークが見出しの数だけ並びます。sections
+            の見出しはレールの見出しと同じで、開閉しません。その下の行は item.children
+            で開閉できます。各見出しは role=&quot;group&quot; の名前になります（GDX-1230）。
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Flex direction="col" gap="sm" width={280}>
+            <NavList
+              label="プロジェクト設定"
+              sections={PROJECT_SECTIONS}
+              activeId={sectionRoute}
+              onSelect={setSectionRoute}
+            />
           </Flex>
         </CardContent>
       </Card>
