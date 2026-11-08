@@ -8,7 +8,9 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
-### NavList `sections` (also released as 33.27.11, off v33.27.10)
+### NavList `sections` (also released as 33.27.11 and 33.27.12, off v33.27.10)
+
+33.27.12 is the same code as 33.27.11: `@godxjp/markdown`, `editor`, `block-editor` and `chat` 33.27.11 were published without their `dist/` (deprecated); use 33.27.12.
 
 - **Added** `NavList.sections?: { id?, label, items }[]` (GDX-1230). Each section draws a fixed heading — the rail's `.sb-section-label`, never a toggle — over its own rows, which may be folding groups (`children`), all inside the one `<nav>` landmark; each section is a `role="group"` named by its heading. `items` is now optional and renders before the sections. A settings column of headings with Machines and Agents folding under Work no longer needs one NavList per heading wrapped in `SidebarSection`. A NavList without `sections` renders exactly as before.
 
