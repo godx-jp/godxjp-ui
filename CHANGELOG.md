@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### MasterDetail focus target, FilterBar icon clear when stacked (also released as 33.27.9, off v33.27.8)
+
+- **Fixed** `MasterDetail` on a phone moves focus to the detail's first heading (made `tabindex="-1"`) or to the detail region, a focus target outside the tab order; neither had its ring removed (only `.ui-page-title` had), so Chrome drew its own `outline: auto` around the heading block and its text line as two frames. Both now draw no ring, like `.ui-page-title[tabindex="-1"]`.
+- **Fixed** `FilterBar clearDisplay="icon"` below 640px: the bar stacks and the clear button gets a row of its own, where the bare ✕ stood alone at the start edge. There it now shows its text and fills the row like the `label` display; from 640px it is the control-height square, unchanged.
+
 ### Choice target size, `<html lang>` timing, FilterBar icon clear (also released as 33.27.8, off v33.27.7)
 
 - **Fixed** `Radio` / `Checkbox`: the real input under the 14–17px box was the box's own size, under the 24×24 floor of WCAG 2.2 SC 2.5.8, and a stacked `RadioGroup` sits too tight for the Spacing exception, so visual-audit `target-size-min` flagged every option (seen at 768 and 1024 in a consumer). The invisible input now grows to `--touch-target-min`, centred on the box; the paint does not move.

@@ -85,6 +85,9 @@ export function Toolbar({
               data-display="icon"
             >
               <X aria-hidden="true" />
+              {/* Shown only below 640px, where the stacked bar gives the button a row of its own
+               * (GDX-1267); the same words as the accessible name. */}
+              <span className="ui-toolbar-clear-text">{label}</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>{label}</TooltipContent>

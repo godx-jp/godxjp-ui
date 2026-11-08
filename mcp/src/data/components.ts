@@ -11996,7 +11996,7 @@ import { Button } from "@godxjp/ui/general";
         type: '"label" | "icon"',
         defaultValue: '"label"',
         description:
-          'How the clear-all button shows itself (gh#1264). `label` is ✕ + the localized "Clear filters"; `icon` is the ✕ alone — same accessible name, a tooltip with the text, a control-height square instead of ~150px — so a bar with a few active filters keeps one row.',
+          'How the clear-all button shows itself (gh#1264). `label` is ✕ + the localized "Clear filters"; `icon` is the ✕ alone — same accessible name, a tooltip with the text, a control-height square instead of ~150px — so a bar with a few active filters keeps one row. Below 640px, where the bar stacks and the button gets a row of its own, `icon` shows the text too (GDX-1267).',
       },
       {
         name: "views",

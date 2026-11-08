@@ -141,6 +141,8 @@ export type ToolbarProp = {
    * How the clear-all button shows itself (gh#1264). `label` (default) is the ✕ plus the localized
    * "Clear filters" text; `icon` is the ✕ alone — the same accessible name, a tooltip with the text,
    * and a control-height square instead of ~150px, so a bar with a few active filters keeps one row.
+   * Below 640px, where the bar stacks and the button gets a row of its own, `icon` shows the text
+   * too (GDX-1267): a bare ✕ alone on a row reads as a stray mark.
    */
   clearDisplay?: FilterBarClearDisplayProp;
   /**
