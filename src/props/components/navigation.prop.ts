@@ -361,6 +361,14 @@ export type StepsProp = Omit<
   size?: "md" | "sm";
   titlePlacement?: "horizontal" | "vertical";
   /**
+   * Ant Design `responsive`. `true` (the default) folds a horizontal rail to vertical at or below
+   * `--steps-responsive-breakpoint-width` (33.25rem, antd's 532px), where each step's column is too
+   * narrow for its title — measured at 320px: four steps, 48px per title, Japanese titles broken
+   * inside the word. `type="inline"` never folds (it has no columns); `responsive={false}` keeps
+   * the rail horizontal at every width.
+   */
+  responsive?: boolean;
+  /**
    * Ant Design `percent` — completion of the CURRENT (`process`) step only, 0–100. Draws a
    * determinate arc around that step's marker and exposes it to assistive tech as a
    * `progressbar`. Ignored by `inline`, which has no marker to draw into.
