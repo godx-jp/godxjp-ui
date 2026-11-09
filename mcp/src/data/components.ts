@@ -11865,6 +11865,13 @@ import { Button } from "@godxjp/ui/general";
         description: "Lay step titles beside or below the step icons.",
       },
       {
+        name: "responsive",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'Ant Design `responsive`. Folds a horizontal rail to vertical at or below `--steps-responsive-breakpoint-width` (33.25rem, antd\'s 532px), where a column is too narrow for its title (four steps at 320px: 48px per title, Japanese broken inside the word). `type="inline"` never folds; `false` keeps the rail horizontal at every width.',
+      },
+      {
         name: "separator",
         type: '"chevron" | "arrow"',
         defaultValue: '"chevron"',
