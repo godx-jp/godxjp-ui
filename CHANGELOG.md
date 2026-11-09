@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Steps on a phone (also released as 33.27.14, off v33.27.13)
+
+- **Fixed** four horizontal `Steps` at 320px gave each title a 48px column and Japanese titles broke inside the word (「プロジ|ェクト」, 「同期モ|ード」) (GDX-1363). New `responsive` prop (Ant Design, default `true`): at or below `--steps-responsive-breakpoint-width` (33.25rem, antd's 532px) a horizontal rail is laid out vertically; `type="inline"` never folds, `responsive={false}` or a `0px` token keeps it horizontal. Steps titles, subtitles, descriptions and inline titles also join the `:lang(ja)` phrase-breaking rule (`word-break: auto-phrase; line-break: strict`).
+
 ### Disabled choice options read as disabled (also released as 33.27.13, off v33.27.12)
 
 - **Fixed** a disabled `RadioGroup` option faded only its circle; its label and description kept full ink (rgb(36,35,30), opacity 1) (GDX-1303). A choice row (`Field`) whose control carries `data-disabled` now fades its label and description with `--control-label-disabled-alpha` and shows `not-allowed` on the label. `Field` is shared, so disabled `Checkbox` and `Switch` rows read the same.
