@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### A compact row keeps its action beside the title on a phone (also released as 33.27.16, off v33.27.15)
+
+- **Fixed** below 360px every `ListRow` gave `trailing` the full width, so a `density="compact"` row's one short action dropped under the title even where it fits: GDX's channel list put its 参加 (Join) Button on a line of its own at 320 (GDX-1454). The narrow rule now applies to the default density only. A compact row, the documented inline-actions row, keeps its action beside the title while it fits, and a cluster that cannot fit still wraps through the row's own `flex-wrap` (#224). Measured at 320 (icon, title, description, `size="sm"` Button): compact row 102px → 62px, action inline; default row unchanged at 114px with the action stacked; no page overflow.
+
 ### Hidden columns take no share (also released as 33.27.15, off v33.27.14)
 
 - **Fixed** in an `action-collection` table below its collapse step, a column hidden by `hideBelow` still counted toward the priority budget, so a queue that fits it was put on the rem floors: GDX's project team list (name, two `meta` columns hidden below `xl`, a `secondary`, a `meta` status) gave its name column 125px at 1024 (GDX-1444). The over-budget gate now counts only the heads the current viewport shows (`:nth-child(7 of …)` and the repeated-tier arms leave out each band's hidden `hideBelow` heads), so the table lays out exactly as if the hidden columns were not there; measured on a 560px card at 1024, name 180px → 324px. Shown columns still count: at 1280 the same queue keeps its floors.
