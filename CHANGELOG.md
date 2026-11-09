@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Disabled choice options read as disabled (also released as 33.27.13, off v33.27.12)
+
+- **Fixed** a disabled `RadioGroup` option faded only its circle; its label and description kept full ink (rgb(36,35,30), opacity 1) (GDX-1303). A choice row (`Field`) whose control carries `data-disabled` now fades its label and description with `--control-label-disabled-alpha` and shows `not-allowed` on the label. `Field` is shared, so disabled `Checkbox` and `Switch` rows read the same.
+
 ### MasterDetail focus target, FilterBar icon clear when stacked (also released as 33.27.9, off v33.27.8)
 
 - **Fixed** `MasterDetail` on a phone moves focus to the detail's first heading (made `tabindex="-1"`) or to the detail region, a focus target outside the tab order; neither had its ring removed (only `.ui-page-title` had), so Chrome drew its own `outline: auto` around the heading block and its text line as two frames. Both now draw no ring, like `.ui-page-title[tabindex="-1"]`.
