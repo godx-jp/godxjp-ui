@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Steps on a phone (also released as 33.27.14, off v33.27.13)
+
+- **Fixed** four horizontal `Steps` at 320px gave each title a 48px column and Japanese titles broke inside the word (「プロジ|ェクト」, 「同期モ|ード」) (GDX-1363). New `responsive` prop (Ant Design, default `true`): at or below `--steps-responsive-breakpoint-width` (33.25rem, antd's 532px) a horizontal rail is laid out vertically; `type="inline"` never folds, `responsive={false}` or a `0px` token keeps it horizontal. Steps titles, subtitles, descriptions and inline titles also join the `:lang(ja)` phrase-breaking rule (`word-break: auto-phrase; line-break: strict`).
+
 ### MasterDetail focus target, FilterBar icon clear when stacked (also released as 33.27.9, off v33.27.8)
 
 - **Fixed** `MasterDetail` on a phone moves focus to the detail's first heading (made `tabindex="-1"`) or to the detail region, a focus target outside the tab order; neither had its ring removed (only `.ui-page-title` had), so Chrome drew its own `outline: auto` around the heading block and its text line as two frames. Both now draw no ring, like `.ui-page-title[tabindex="-1"]`.
