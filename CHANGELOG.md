@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Hidden columns take no share (also released as 33.27.15, off v33.27.14)
+
+- **Fixed** in an `action-collection` table below its collapse step, a column hidden by `hideBelow` still counted toward the priority budget, so a queue that fits it was put on the rem floors: GDX's project team list (name, two `meta` columns hidden below `xl`, a `secondary`, a `meta` status) gave its name column 125px at 1024 (GDX-1444). The over-budget gate now counts only the heads the current viewport shows (`:nth-child(7 of …)` and the repeated-tier arms leave out each band's hidden `hideBelow` heads), so the table lays out exactly as if the hidden columns were not there; measured on a 560px card at 1024, name 180px → 324px. Shown columns still count: at 1280 the same queue keeps its floors.
+
 ### Steps on a phone (also released as 33.27.14, off v33.27.13)
 
 - **Fixed** four horizontal `Steps` at 320px gave each title a 48px column and Japanese titles broke inside the word (「プロジ|ェクト」, 「同期モ|ード」) (GDX-1363). New `responsive` prop (Ant Design, default `true`): at or below `--steps-responsive-breakpoint-width` (33.25rem, antd's 532px) a horizontal rail is laid out vertically; `type="inline"` never folds, `responsive={false}` or a `0px` token keeps it horizontal. Steps titles, subtitles, descriptions and inline titles also join the `:lang(ja)` phrase-breaking rule (`word-break: auto-phrase; line-break: strict`).
