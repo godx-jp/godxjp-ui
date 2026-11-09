@@ -773,6 +773,19 @@
     font-size: var(--choice-description-font-size);
   }
 
+  /* GDX-1303 — a disabled option's words read as disabled too, not only its box. The label
+   * sits in a sibling column, so Label's `peer-disabled:` never matched and a disabled RadioGroup
+   * option kept full ink (rgb(36,35,30), opacity 1) beside a faded circle. The control carries
+   * `data-disabled` (react-aria, group- or option-level alike); the label and description take
+   * the label tier's own disabled alpha, the one `peer-disabled:` already names. */
+  .ui-choice-field:has(> .ui-choice-control [data-disabled]) > .ui-choice-content {
+    opacity: var(--control-label-disabled-alpha);
+  }
+
+  .ui-choice-field:has(> .ui-choice-control [data-disabled]) .ui-choice-label {
+    cursor: not-allowed;
+  }
+
   /* --text-error is the TEXT tier, not the destructive FILL tier — the same distinction
    * `.ui-form-field-required` and FormField's error line already make, and for the same reason:
    * the fill tier does not reach AA as body text on the dark spine (gh#610). */
