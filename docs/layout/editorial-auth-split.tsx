@@ -39,17 +39,17 @@ export default function Demo() {
         <Flex wrap gap="sm">
           {(
             [
-              ["T", "appTasks"],
-              ["R", "appRestaurant"],
-              ["P", "appPages"],
-              ["K", "appAttendance"],
+              ["T", "appTasks", "tasks"],
+              ["R", "appRestaurant", "restaurant"],
+              ["P", "appPages", "pages"],
+              ["K", "appAttendance", "attendance"],
             ] as const
-          ).map(([letter, key]) => (
+          ).map(([letter, key, app]) => (
             <Badge
               key={key}
               variant="glass"
               leading={
-                <Avatar shape="square" size="xs" appearance="tinted">
+                <Avatar shape="square" size="xs" colorKey={app}>
                   <AvatarFallback>{letter}</AvatarFallback>
                 </Avatar>
               }

@@ -2725,6 +2725,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
+      {
+        field: "measure",
+        local: true,
+        reason: "Inline field width — default (16rem) or wide (26.25rem).",
+      },
       "LabelProp",
       "PlaceholderProp",
       "DisabledProp",
@@ -3766,7 +3771,18 @@ export const COMPONENT_PROP_REGISTRY = {
   AvatarProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["AvatarShapeProp", "SizeProp", "LabelProp", "ChildrenProp", "ClassNameProp"],
+    vocabulary: [
+      {
+        field: "colorKey",
+        local: true,
+        reason: "Stable key hashed onto the categorical palette for a distinct tile colour.",
+      },
+      "AvatarShapeProp",
+      "SizeProp",
+      "LabelProp",
+      "ChildrenProp",
+      "ClassNameProp",
+    ],
   },
   AvatarAppearanceProp: {
     group: "data-display",

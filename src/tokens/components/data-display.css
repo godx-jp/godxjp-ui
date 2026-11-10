@@ -229,6 +229,12 @@
      CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph ·
      --control-icon-size glyph box. */
   --avatar-tinted-background: initial;
+  /* `Avatar colorKey`: the fill is the key's `--chart-N` step (set per step at the call site)
+   * mixed this far toward black, under this ink (an HSL triple). 75% keeps white initials at
+   * >= 4.5:1 on every categorical step in both themes. */
+  --avatar-color-key-base: initial;
+  --avatar-color-key-depth: 75%;
+  --avatar-color-key-foreground: 0 0% 100%;
   --avatar-tinted-foreground: initial;
   --avatar-tinted-glyph-size: var(--control-icon-size);
 

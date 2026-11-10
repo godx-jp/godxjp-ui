@@ -26,11 +26,27 @@ function useAvatarContext(part: string): AvatarContextValue {
   return context;
 }
 
+/** The categorical steps a `colorKey` hashes onto — one per `--chart-N` palette token. */
+export const AVATAR_COLOR_KEY_STEPS = 6;
+
+/**
+ * A stable step (1…AVATAR_COLOR_KEY_STEPS) for a key: FNV-1a over the UTF-16 code units, so the
+ * same id is the same colour on every render, every page and every device.
+ */
+export function avatarColorStep(key: string): number {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < key.length; index += 1) {
+    hash ^= key.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return ((hash >>> 0) % AVATAR_COLOR_KEY_STEPS) + 1;
+}
+
 export const Avatar = React.forwardRef<
   HTMLSpanElement,
   React.ComponentPropsWithoutRef<"span"> & { asChild?: boolean } & Pick<
       AvatarProp,
-      "shape" | "appearance" | "presence" | "presenceLabel" | "size" | "kind"
+      "shape" | "appearance" | "presence" | "presenceLabel" | "size" | "kind" | "colorKey"
     >
 >(
   (
@@ -42,6 +58,7 @@ export const Avatar = React.forwardRef<
       presence,
       presenceLabel,
       kind = "person",
+      colorKey,
       asChild = false,
       children,
       ...props
@@ -84,6 +101,8 @@ export const Avatar = React.forwardRef<
           // INERT DEFAULT: a person emits nothing. `agent` lifts the clip the same way presence does,
           // so the AI tag can straddle the mark's corner.
           data-kind={kind === "agent" ? "agent" : undefined}
+          // A stable categorical fill from a key (an app id, a user id); absent, nothing is emitted.
+          data-color-key={colorKey ? avatarColorStep(colorKey) : undefined}
           className={cn("ui-avatar", className)}
           {...withoutSlot(props)}
         >

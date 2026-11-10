@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### TopbarSearch wide measure; Avatar stable categorical colour
+
+- **Added** `TopbarSearch measure?: "default" | "wide"` (default `"default"`, 16rem). `"wide"` reads `--topbar-search-wide-inline-size` (26.25rem) for a home / portal search; it still shrinks toward the text floor when the bar is short of room.
+- **Added** `Avatar colorKey?: string` — a stable key (an app id, a user id) hashed onto the six categorical palette steps (`--chart-1…6`), so each tile gets a distinct, repeatable colour. The fill is the step deepened toward black (`--avatar-color-key-depth`, 75%) under white initials (`--avatar-color-key-foreground`): at least 4.5:1 on every step in both themes. Wins over `shape` / `appearance` fills.
+
 ## [33.28.7] - 2026-11-10
 
 ### Tabs add button for every variant, AppShell push panel, dashed Card (Platform Home)

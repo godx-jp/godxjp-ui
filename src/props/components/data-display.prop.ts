@@ -338,6 +338,13 @@ export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
    * `OrgChartNode.variant`.
    */
   kind?: AvatarKindProp;
+  /**
+   * A stable key (an app id, a user id) hashed onto the categorical palette (`--chart-1…6`), so
+   * every tile in a row gets a distinct, repeatable colour. The fill is the palette step deepened
+   * (`--avatar-color-key-depth`, 75%) under white initials (`--avatar-color-key-foreground`) —
+   * ≥ 4.5:1 for every step in both themes. Wins over `shape`'s and `appearance`'s fill.
+   */
+  colorKey?: string;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };

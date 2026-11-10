@@ -428,6 +428,8 @@
   --topbar-search-min-text-inline-size: 8ch;
   /* The inline field's preferred width from the step up; it shrinks toward the floor above. */
   --topbar-search-inline-size: 16rem;
+  /* `TopbarSearch measure="wide"`: the home / portal search's preferred width. */
+  --topbar-search-wide-inline-size: 26.25rem;
 
   /* TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped
    * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's

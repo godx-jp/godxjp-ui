@@ -97,6 +97,43 @@
     color: var(--avatar-tinted-foreground, hsl(var(--text-brand, var(--primary))));
   }
 
+  /* `colorKey` — a stable categorical fill: the `--chart-N` step chosen by the key, deepened toward
+   * black so white initials clear AA on every step in both themes (measured: the weakest light
+   * step, --chart-3 #af8000, goes 3.4:1 → 5.8:1). Declared after `shape`/`appearance` so the key
+   * wins over their fills. */
+  .ui-avatar[data-color-key] {
+    --avatar-background: color-mix(
+      in srgb,
+      var(--avatar-color-key-base) var(--avatar-color-key-depth),
+      black
+    );
+    color: hsl(var(--avatar-color-key-foreground));
+  }
+
+  .ui-avatar[data-color-key="1"] {
+    --avatar-color-key-base: var(--chart-1);
+  }
+
+  .ui-avatar[data-color-key="2"] {
+    --avatar-color-key-base: var(--chart-2);
+  }
+
+  .ui-avatar[data-color-key="3"] {
+    --avatar-color-key-base: var(--chart-3);
+  }
+
+  .ui-avatar[data-color-key="4"] {
+    --avatar-color-key-base: var(--chart-4);
+  }
+
+  .ui-avatar[data-color-key="5"] {
+    --avatar-color-key-base: var(--chart-5);
+  }
+
+  .ui-avatar[data-color-key="6"] {
+    --avatar-color-key-base: var(--chart-6);
+  }
+
   .ui-avatar[data-appearance="tinted"] svg {
     inline-size: var(--avatar-tinted-glyph-size);
     block-size: var(--avatar-tinted-glyph-size);

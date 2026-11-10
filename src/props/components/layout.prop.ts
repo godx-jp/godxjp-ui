@@ -1858,6 +1858,12 @@ export type TopbarSearchProp = SearchInputProp & {
    * compact step, shared with `TopbarItem labelHideBelow` and `AppShell logoCompactBelow`.
    */
   collapseBelow?: BreakpointProp;
+  /**
+   * The inline field's preferred width. `"default"` reads `--topbar-search-inline-size` (16rem);
+   * `"wide"` reads `--topbar-search-wide-inline-size` (26.25rem, a home/portal search). Either way
+   * it still shrinks toward the text floor when the bar is short of room.
+   */
+  measure?: "default" | "wide";
 };
 
 /**

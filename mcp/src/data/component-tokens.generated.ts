@@ -3344,6 +3344,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Capability medallion — `<Avatar appearance=\"tinted\">` (gh#12): the tinted plate a capability / feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape=\"square\" for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph · --control-icon-size glyph box."
   },
   {
+    "name": "--avatar-color-key-base",
+    "value": "initial",
+    "description": "`Avatar colorKey`: the fill is the key's `--chart-N` step (set per step at the call site) mixed this far toward black, under this ink (an HSL triple). 75% keeps white initials at >= 4.5:1 on every categorical step in both themes."
+  },
+  {
+    "name": "--avatar-color-key-depth",
+    "value": "75%",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--avatar-color-key-foreground",
+    "value": "0 0% 100%",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--avatar-tinted-foreground",
     "value": "initial",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
@@ -12767,6 +12782,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--topbar-search-inline-size",
     "value": "16rem",
     "description": "The inline field's preferred width from the step up; it shrinks toward the floor above."
+  },
+  {
+    "name": "--topbar-search-wide-inline-size",
+    "value": "26.25rem",
+    "description": "`TopbarSearch measure=\"wide\"`: the home / portal search's preferred width."
   },
   {
     "name": "--topbar-item-padding-inline",

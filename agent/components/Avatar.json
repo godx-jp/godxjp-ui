@@ -39,6 +39,11 @@
       "type": "\"person\" | \"agent\""
     },
     {
+      "description": "A stable key (an app id, a user id) hashed (FNV-1a) onto the six categorical palette steps (--chart-1…6), so each tile in a row gets a distinct, repeatable colour — `<Avatar shape=\"square\" size=\"xs\" colorKey=\"tasks\"><AvatarFallback>T</AvatarFallback></Avatar>`. The fill is the step deepened toward black (--avatar-color-key-depth, 75%) under white initials (--avatar-color-key-foreground): >= 4.5:1 on every step in both themes. Wins over `shape`/`appearance` fills.",
+      "name": "colorKey",
+      "type": "string"
+    },
+    {
       "description": "Compose AvatarImage and AvatarFallback.",
       "name": "children",
       "type": "ReactNode"
