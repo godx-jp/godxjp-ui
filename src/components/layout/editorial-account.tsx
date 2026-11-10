@@ -436,11 +436,31 @@ export function EditorialAuth({
   appearance = "default",
   titleSize = "lg",
   bandDescription = "visible",
+  layout = "card",
   benefits,
   children,
   className,
 }: EditorialAuthProp) {
   const Heading = level === 2 ? "h2" : "h1";
+  const split = layout === "split";
+  const middle = (
+    <>
+      <Heading className="ui-editorial-auth-title">{title}</Heading>
+      {description != null && <p className="ui-editorial-auth-description">{description}</p>}
+      {artFrame === "none" ? (
+        art != null && (
+          <div aria-hidden data-frame="none" className="ui-editorial-auth-art">
+            {art}
+          </div>
+        )
+      ) : (
+        <div aria-hidden className="ui-editorial-auth-art">
+          <div />
+          <div>{art}</div>
+        </div>
+      )}
+    </>
+  );
   return (
     <div
       data-slot="editorial-auth"
@@ -448,6 +468,7 @@ export function EditorialAuth({
       data-appearance={appearance === "brand" ? "brand" : undefined}
       data-title-size={titleSize === "md" ? "md" : undefined}
       data-band-description={bandDescription === "hidden" ? "hidden" : undefined}
+      data-layout={split ? "split" : undefined}
       className={cn("ui-editorial-auth", className)}
     >
       <div
@@ -456,20 +477,9 @@ export function EditorialAuth({
         data-logo-scheme={appearance === "brand" ? "dark" : undefined}
       >
         {eyebrow}
-        <Heading className="ui-editorial-auth-title">{title}</Heading>
-        {description != null && <p className="ui-editorial-auth-description">{description}</p>}
-        {artFrame === "none" ? (
-          art != null && (
-            <div aria-hidden data-frame="none" className="ui-editorial-auth-art">
-              {art}
-            </div>
-          )
-        ) : (
-          <div aria-hidden className="ui-editorial-auth-art">
-            <div />
-            <div>{art}</div>
-          </div>
-        )}
+        {/* Split: the title, copy and art are one group, centred between the logo and the
+         * benefits pinned at the bottom. The card layout keeps its flat children. */}
+        {split ? <div className="ui-editorial-auth-story-body">{middle}</div> : middle}
         {benefits != null && benefits.length > 0 && (
           <ul className="ui-editorial-auth-benefits">
             {benefits.map((benefit, index) => (

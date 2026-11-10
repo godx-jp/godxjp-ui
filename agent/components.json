@@ -2799,6 +2799,12 @@
         "type": "\"visible\" | \"hidden\""
       },
       {
+        "defaultValue": "\"card\"",
+        "description": "\"card\" keeps the story beside the form card inside the page gutters. \"split\" is a FULL-BLEED sign-in page — render it as the page root, no shell padding: the story fills its side edge to edge and top to bottom (--editorial-auth-split-track-size 1.15fr 1fr, --editorial-auth-split-min-height 100dvh) over a grid texture (--editorial-auth-split-texture-background-image; none drops it), logo at the top, title + copy + art centred, benefits pinned at the bottom in a row; the form card becomes a plain centred column (--editorial-auth-split-form-max-width 25rem). Below 48rem the story is a full-bleed band over the form. Pair with appearance=\"brand\".",
+        "name": "layout",
+        "type": "\"card\" | \"split\""
+      },
+      {
         "description": "Benefit lines.",
         "name": "benefits",
         "type": "ReactNode[]"

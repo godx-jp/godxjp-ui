@@ -523,6 +523,49 @@ describe("EditorialAuth (gh#1439)", () => {
     expect(narrow).toContain("--editorial-auth-title-md-font-size: 1.625rem;");
   });
 
+  it('layout="split" is a full-bleed page: centred title group, benefits pinned, plain form', () => {
+    const { container, rerender } = render(
+      <EditorialAuth title="x" description="y" benefits={["a"]}>
+        <EditorialAuthCard title="Sign in" />
+      </EditorialAuth>,
+    );
+    const root = container.firstElementChild!;
+    // The card layout keeps its flat story: no hook, no body wrapper.
+    expect(root).not.toHaveAttribute("data-layout");
+    expect(container.querySelector(".ui-editorial-auth-story-body")).toBeNull();
+
+    rerender(
+      <EditorialAuth layout="split" appearance="brand" title="x" description="y" benefits={["a"]}>
+        <EditorialAuthCard title="Sign in" />
+      </EditorialAuth>,
+    );
+    expect(root).toHaveAttribute("data-layout", "split");
+    const body = container.querySelector(".ui-editorial-auth-story-body")!;
+    expect(body.querySelector(".ui-editorial-auth-title")).toBeTruthy();
+    expect(body.querySelector(".ui-editorial-auth-description")).toBeTruthy();
+    // Benefits stay OUTSIDE the centred group, after it, so they pin to the bottom.
+    expect(body.nextElementSibling).toHaveClass("ui-editorial-auth-benefits");
+
+    expect(rule('.ui-editorial-auth[data-layout="split"]')).toContain(
+      "grid-template-columns: var(--editorial-auth-split-track-size)",
+    );
+    const story = rule('.ui-editorial-auth[data-layout="split"] > .ui-editorial-auth-story');
+    expect(story).toContain("padding: var(--editorial-auth-split-story-padding)");
+    expect(story).toContain("border-radius: 0");
+    expect(
+      rule('.ui-editorial-auth[data-layout="split"] > .ui-editorial-auth-story::before'),
+    ).toContain("background-image: var(--editorial-auth-split-texture-background-image)");
+    expect(rule(".ui-editorial-auth-story-body")).toContain("margin-block: auto");
+    const form = rule('.ui-editorial-auth[data-layout="split"] > .ui-editorial-auth-card');
+    expect(form).toContain("background: transparent");
+    expect(form).toContain("border: 0");
+    expect(tokens).toContain("--editorial-auth-split-track-size: 1.15fr 1fr;");
+    expect(tokens).toContain("--editorial-auth-split-form-max-width: 25rem;");
+    const narrow = tokens.match(/@media \(width < 48rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(narrow).toContain("--editorial-auth-split-track-size: minmax(0, 1fr);");
+    expect(narrow).toContain("--editorial-auth-split-min-height: 0;");
+  });
+
   it("keeps a gap between the description and the first benefit line", () => {
     expect(tokens).toContain("--editorial-auth-description-space-block-end: var(--space-6);");
     expect(rule(".ui-editorial-auth-description")).toContain(
@@ -530,8 +573,8 @@ describe("EditorialAuth (gh#1439)", () => {
     );
   });
 
-  it("shrinks both columns on a tablet (48rem-64rem) instead of overflowing", () => {
-    const tablet = tokens.match(/@media \(48rem <= width < 64rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+  it("shrinks both columns below 64rem (the phone block overrides what differs) instead of overflowing", () => {
+    const tablet = tokens.match(/@media \(width < 64rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
     expect(tablet).toContain("--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);");
     expect(tablet).toContain("--editorial-auth-gap: var(--space-10);");
   });

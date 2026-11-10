@@ -1058,6 +1058,74 @@
     color: hsl(var(--foreground));
   }
 
+  /* `layout="split"` — a full-bleed sign-in page. The root owns the viewport (no block padding, no
+   * gap); the story fills its side edge to edge, the form is a plain centred column. Declared after
+   * the brand rule at the same specificity, so the split padding and the square edge win. */
+  .ui-editorial-auth[data-layout="split"] {
+    grid-template-columns: var(--editorial-auth-split-track-size);
+    align-items: stretch;
+    gap: 0;
+    min-height: var(--editorial-auth-split-min-height);
+    padding-block: 0;
+  }
+
+  .ui-editorial-auth[data-layout="split"] > .ui-editorial-auth-story {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: var(--editorial-auth-split-story-padding);
+    border-radius: 0;
+  }
+
+  /* The grid texture: a token so a theme swaps or drops it (`none`); masked to fade at the edges. */
+  .ui-editorial-auth[data-layout="split"] > .ui-editorial-auth-story::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--editorial-auth-split-texture-background-image);
+    background-size: var(--editorial-auth-split-texture-size);
+    mask-image: var(--editorial-auth-split-texture-mask-gradient);
+    pointer-events: none;
+  }
+
+  .ui-editorial-auth[data-layout="split"] > .ui-editorial-auth-story > * {
+    position: relative;
+  }
+
+  /* Auto margins centre the title group between the logo and the benefits, and pin the benefits
+   * to the bottom; on a short viewport they resolve to 0 and the column simply flows. */
+  .ui-editorial-auth-story-body {
+    max-width: var(--editorial-auth-split-story-body-max-width);
+    margin-block: auto;
+    padding-block: var(--editorial-auth-split-story-body-padding-block);
+  }
+
+  /* A split title keeps its authored line breaks in the phone band too: collapsing a CJK break
+   * leaves a stray space mid-phrase (「で、 仕事の」). */
+  .ui-editorial-auth[data-layout="split"] .ui-editorial-auth-title {
+    white-space: var(--editorial-auth-split-title-white-space);
+  }
+
+  .ui-editorial-auth[data-layout="split"] .ui-editorial-auth-benefits {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: var(--editorial-auth-split-benefits-column-gap);
+  }
+
+  .ui-editorial-auth[data-layout="split"] > .ui-editorial-auth-card {
+    align-self: var(--editorial-auth-split-form-align);
+    justify-self: center;
+    max-width: calc(
+      var(--editorial-auth-split-form-max-width) + 2 * var(--editorial-auth-split-form-padding)
+    );
+    padding: var(--editorial-auth-split-form-padding);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
   .ui-editorial-auth-card {
     width: 100%;
     padding: var(--editorial-auth-card-padding);

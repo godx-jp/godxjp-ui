@@ -2305,6 +2305,11 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Phone band copy — visible (default) or hidden for a one-line band.",
       },
+      {
+        field: "layout",
+        local: true,
+        reason: "Page shape — card (default, inside the page gutters) or a full-bleed split.",
+      },
     ],
   },
   EditorialAuthCardProp: {
