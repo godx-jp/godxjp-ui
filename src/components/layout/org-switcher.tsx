@@ -1,4 +1,5 @@
 import * as React from "react";
+import { defaultFilter, useCommandState } from "cmdk";
 import { Building2, Check, ChevronsUpDown, Loader2, RotateCcw } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
@@ -62,7 +63,11 @@ function OrganizationMark({
   }
 
   return (
-    <span className="ui-org-switcher-avatar" aria-hidden="true">
+    <span
+      className="ui-org-switcher-avatar"
+      data-kind={organization.kind === "personal" ? "personal" : undefined}
+      aria-hidden="true"
+    >
       {organization.avatar ?? organization.name.trim().charAt(0).toUpperCase()}
     </span>
   );
@@ -151,6 +156,89 @@ const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTrigge
 );
 OrgSwitcherTrigger.displayName = "OrgSwitcherTrigger";
 
+/*
+ * THE PERSONAL SECTION (#1556). The account's own workspace is listed apart from the companies,
+ * after them, so nobody mistakes it for one and it is never the first row. Search narrows the
+ * ORGANIZATIONS only: there is one personal workspace, and hiding it because a company name did
+ * not match would make "where is my own space" depend on what was typed.
+ *
+ * cmdk re-appends the groups that match in score order and leaves an unmatched group where it was,
+ * so a personal group that scored 0 would be hoisted ABOVE the matching organizations. It scores
+ * the smallest positive number instead: always matched, always last. That also puts it in cmdk's
+ * filtered count, so the empty line is the component's own, counted over organizations.
+ */
+const PERSONAL_KEYWORD = "\u0000org-switcher-personal";
+const PERSONAL_SCORE = Number.MIN_VALUE;
+
+function orgSwitcherFilter(value: string, search: string, keywords?: string[]) {
+  return keywords?.includes(PERSONAL_KEYWORD)
+    ? PERSONAL_SCORE
+    : defaultFilter(value, search, keywords);
+}
+
+function OrganizationsEmpty({
+  personal,
+  children,
+}: {
+  personal: number;
+  children: React.ReactNode;
+}) {
+  const organizations = useCommandState((state) => state.filtered.count) - personal;
+  if (organizations > 0) return null;
+  // The same box CommandEmpty renders — it cannot be used here, because it counts every row.
+  return (
+    <div className="ui-command-empty" role="presentation">
+      {children}
+    </div>
+  );
+}
+
+function OrganizationRow({
+  organization,
+  value,
+  onValueChange,
+  labels,
+  close,
+}: Pick<OrgSwitcherProp, "value" | "onValueChange" | "labels"> & {
+  organization: OrgSwitcherOrganization;
+  close: () => void;
+}) {
+  const selected = organization.id === value;
+  const keywords =
+    organization.badgeLabel != null
+      ? [organization.id, organization.badgeLabel]
+      : [organization.id];
+  return (
+    <CommandItem
+      value={`${organization.name} ${String(organization.meta ?? "")}`}
+      keywords={organization.kind === "personal" ? [...keywords, PERSONAL_KEYWORD] : keywords}
+      disabled={organization.disabled}
+      onSelect={() => {
+        onValueChange?.(organization.id);
+        close();
+      }}
+    >
+      <OrganizationMark organization={organization} />
+      <span className="ui-org-switcher-option">
+        <span className="ui-org-switcher-name">{organization.name}</span>
+        {organization.meta != null ? (
+          <span className="ui-org-switcher-meta">{organization.meta}</span>
+        ) : null}
+      </span>
+      <OrganizationBadge organization={organization} />
+      {organization.badge != null && organization.badgeLabel != null ? (
+        <span className="sr-only">{organization.badgeLabel}</span>
+      ) : null}
+      {selected ? (
+        <>
+          <Check className="ui-org-switcher-check" aria-hidden="true" />
+          <span className="sr-only">({labels.title})</span>
+        </>
+      ) : null}
+    </CommandItem>
+  );
+}
+
 function OrgSwitcherPanel({
   organizations,
   value,
@@ -166,6 +254,7 @@ function OrgSwitcherPanel({
 > & {
   close: () => void;
 }) {
+  const { t } = useTranslation();
   if (loading) {
     return (
       <div className="ui-org-switcher-state" role="status">
@@ -189,50 +278,39 @@ function OrgSwitcherPanel({
     );
   }
 
+  const companies = organizations.filter((organization) => organization.kind !== "personal");
+  const personal = organizations.filter((organization) => organization.kind === "personal");
+  const row = (organization: OrgSwitcherOrganization) => (
+    <OrganizationRow
+      key={organization.id}
+      organization={organization}
+      value={value}
+      onValueChange={onValueChange}
+      labels={labels}
+      close={close}
+    />
+  );
+
   return (
-    <Command label={labels.title} className="ui-org-switcher-command" split>
+    <Command
+      label={labels.title}
+      className="ui-org-switcher-command"
+      split
+      filter={personal.length > 0 ? orgSwitcherFilter : undefined}
+    >
       <CommandInput placeholder={labels.search} aria-label={labels.search} />
       <CommandList>
-        <CommandEmpty>{labels.empty}</CommandEmpty>
-        <CommandGroup>
-          {organizations.map((organization) => {
-            const selected = organization.id === value;
-            return (
-              <CommandItem
-                key={organization.id}
-                value={`${organization.name} ${String(organization.meta ?? "")}`}
-                keywords={
-                  organization.badgeLabel != null
-                    ? [organization.id, organization.badgeLabel]
-                    : [organization.id]
-                }
-                disabled={organization.disabled}
-                onSelect={() => {
-                  onValueChange?.(organization.id);
-                  close();
-                }}
-              >
-                <OrganizationMark organization={organization} />
-                <span className="ui-org-switcher-option">
-                  <span className="ui-org-switcher-name">{organization.name}</span>
-                  {organization.meta != null ? (
-                    <span className="ui-org-switcher-meta">{organization.meta}</span>
-                  ) : null}
-                </span>
-                <OrganizationBadge organization={organization} />
-                {organization.badge != null && organization.badgeLabel != null ? (
-                  <span className="sr-only">{organization.badgeLabel}</span>
-                ) : null}
-                {selected ? (
-                  <>
-                    <Check className="ui-org-switcher-check" aria-hidden="true" />
-                    <span className="sr-only">({labels.title})</span>
-                  </>
-                ) : null}
-              </CommandItem>
-            );
-          })}
-        </CommandGroup>
+        {personal.length > 0 ? (
+          <OrganizationsEmpty personal={personal.length}>{labels.empty}</OrganizationsEmpty>
+        ) : (
+          <CommandEmpty>{labels.empty}</CommandEmpty>
+        )}
+        <CommandGroup>{companies.map(row)}</CommandGroup>
+        {personal.length > 0 ? (
+          <CommandGroup heading={labels.personal ?? t("layout.orgSwitcher.personal")}>
+            {personal.map(row)}
+          </CommandGroup>
+        ) : null}
       </CommandList>
     </Command>
   );

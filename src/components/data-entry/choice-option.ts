@@ -8,7 +8,24 @@ export type ChoiceOption = {
   value: string;
   disabled?: boolean;
   description?: React.ReactNode;
+  /** `RadioGroup optionType="card"` only — see `ChoiceOptionProp.leading`. */
+  leading?: React.ReactNode;
+  /** `RadioGroup optionType="card"` only — see `ChoiceOptionProp.extra`. */
+  extra?: React.ReactNode;
 };
+
+/** A labelled section of options — see `ChoiceOptionSectionProp`. */
+export type ChoiceOptionSection = {
+  label: React.ReactNode;
+  options: ChoiceOption[];
+  appearance?: "muted";
+};
+
+export function isChoiceOptionSection(
+  entry: ChoiceOption | ChoiceOptionSection,
+): entry is ChoiceOptionSection {
+  return "options" in entry && Array.isArray(entry.options);
+}
 
 export type ChoiceOrientation = "horizontal" | "vertical";
 

@@ -102,6 +102,11 @@ const CONVERTED: ReadonlyArray<[file: string, selector: string, why: string]> = 
     "a bounded workspace holds whatever regions the consumer composes; its outermost controls sit flush with the viewport edge (gh#1513)",
   ],
   [
+    "data-display-layout.css",
+    ".ui-accordion-content",
+    "the content has no inline padding, so a control flush with its edge loses its ring at the inline start (gh#1543)",
+  ],
+  [
     "layout.css",
     '.ui-flex[data-overflow="hidden"]',
     "a clipped region holds consumer content, controls included (gh#1513)",

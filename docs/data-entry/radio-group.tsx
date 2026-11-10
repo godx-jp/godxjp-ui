@@ -1,6 +1,12 @@
 import { useState } from "react";
 
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Avatar,
+  AvatarFallback,
   Badge,
   Card,
   CardContent,
@@ -8,8 +14,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import { Form, Field, FormField, RadioGroup, RadioItem } from "@godxjp/ui/data-entry";
+import { Form, Field, FormField, RadioGroup, RadioItem, SearchInput } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 /** 配送時間帯 · 選択肢が2〜4個を超えたときの見え方を確かめるための実データ。 */
 const DELIVERY_SLOTS = [
@@ -24,14 +31,33 @@ const DELIVERY_SLOTS = [
 
 const CLOSING_DAYS = ["5日", "10日", "15日", "20日", "25日", "月末"];
 
+/** 組織を選択 · optionType="card" と見出し付きセクションの実データ。 */
+const ORGANIZATIONS = [
+  { value: "acme", name: "株式会社アクメ", role: "owner", members: 12, lastUsed: true },
+  { value: "globex", name: "グロービクス合同会社", role: "member", members: 4, lastUsed: false },
+  { value: "initech", name: "イニテック", role: "viewer", members: 31, lastUsed: false },
+] as const;
+
+/** The signed-in person, whose initial marks the personal workspace. */
+const VIEWER_NAME = "田中 さくら";
+
 /**
  * RadioGroup — 2–4 mutually-exclusive choices, all visible at once (use Select
  * when the list is long or must collapse). Data-driven via an options array.
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t, locale } = useTranslation();
+  const yen = new Intl.NumberFormat(locale, { style: "currency", currency: "JPY" });
   const [controlled, setControlled] = useState("email");
   const [plan, setPlan] = useState("business");
+  const [context, setContext] = useState<string | null>(null);
+  const [orgQuery, setOrgQuery] = useState("");
+  // Filtering is the consumer's: match however the product needs, and keep the chosen option in
+  // the list so the selection never disappears while the user types.
+  const visibleOrgs = ORGANIZATIONS.filter(
+    (org) => org.value === context || org.name.includes(orgQuery.trim()),
+  );
 
   return (
     <PageContainer
@@ -58,12 +84,8 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>選択肢ごとの説明 · プラン選択</CardTitle>
-            <CardDescription>
-              options[].description が各行に付く。料金や条件を選択肢の外に書くと、どの行の
-              説明なのかが読み手側の推測になる。末尾の Badge は label を ReactNode にして
-              入れる。Badge は押せないのでラベルのクリック判定を壊さない。
-            </CardDescription>
+            <CardTitle level={2}>{t("radioGroupDocs.plan.title")}</CardTitle>
+            <CardDescription>{t("radioGroupDocs.plan.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <RadioGroup
@@ -73,34 +95,140 @@ export default function Demo() {
               options={[
                 {
                   value: "standard",
-                  label: "スタンダード",
-                  description: "月額 4,800 円 · 5ユーザーまで · メールサポート",
+                  label: t("radioGroupDocs.plan.standard"),
+                  description: t("radioGroupDocs.plan.standardDescription", {
+                    price: yen.format(4800),
+                    users: 5,
+                  }),
                 },
                 {
                   value: "business",
                   label: (
                     <>
-                      ビジネス
+                      {t("radioGroupDocs.plan.business")}
                       <Badge as="span" tone="info">
-                        推奨
+                        {t("radioGroupDocs.plan.recommended")}
                       </Badge>
                     </>
                   ),
-                  description: "月額 12,000 円 · 30ユーザーまで · 監査ログと権限テンプレート",
+                  description: t("radioGroupDocs.plan.businessDescription", {
+                    price: yen.format(12000),
+                    users: 30,
+                  }),
                 },
                 {
                   value: "enterprise",
-                  label: "エンタープライズ",
-                  description: "個別見積 · SAML SSO · 専任担当とSLA",
+                  label: t("radioGroupDocs.plan.enterprise"),
+                  description: t("radioGroupDocs.plan.enterpriseDescription"),
                 },
                 {
                   value: "legacy",
-                  label: "ライト (新規受付終了)",
+                  label: t("radioGroupDocs.plan.legacy"),
                   disabled: true,
-                  description: "既存契約のみ継続。移行先はスタンダードです",
+                  description: t("radioGroupDocs.plan.legacyDescription"),
                 },
               ]}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("radioGroupDocs.org.title")}</CardTitle>
+            <CardDescription>{t("radioGroupDocs.org.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <SearchInput
+                aria-label={t("radioGroupDocs.org.filterLabel")}
+                placeholder={t("radioGroupDocs.org.filterPlaceholder")}
+                value={orgQuery}
+                onValueChange={setOrgQuery}
+              />
+              <RadioGroup
+                aria-label={t("radioGroupDocs.org.choose")}
+                name="context"
+                optionType="card"
+                value={context}
+                onValueChange={setContext}
+                options={[
+                  {
+                    label: t("radioGroupDocs.org.section", { count: visibleOrgs.length }),
+                    options: visibleOrgs.map((org) => ({
+                      value: org.value,
+                      label: org.name,
+                      description: `${t(`radioGroupDocs.org.role.${org.role}`)} · ${t(
+                        "radioGroupDocs.org.members",
+                        { count: org.members },
+                      )}`,
+                      leading: (
+                        <Avatar shape="square">
+                          <AvatarFallback>{org.name.slice(0, 1)}</AvatarFallback>
+                        </Avatar>
+                      ),
+                      extra: org.lastUsed ? (
+                        <Badge as="span">{t("radioGroupDocs.org.lastUsed")}</Badge>
+                      ) : undefined,
+                    })),
+                  },
+                  {
+                    label: t("radioGroupDocs.org.personal"),
+                    appearance: "muted",
+                    options: [
+                      {
+                        value: "personal",
+                        label: t("radioGroupDocs.org.personalWorkspace"),
+                        description: t("radioGroupDocs.org.personalDescription"),
+                        leading: (
+                          <Avatar>
+                            <AvatarFallback>{VIEWER_NAME.slice(0, 1)}</AvatarFallback>
+                          </Avatar>
+                        ),
+                      },
+                    ],
+                  },
+                ]}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("radioGroupDocs.accordion.title")}</CardTitle>
+            <CardDescription>{t("radioGroupDocs.accordion.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" defaultValue="shipping">
+              <AccordionItem value="shipping">
+                <AccordionTrigger>{t("radioGroupDocs.accordion.shipping")}</AccordionTrigger>
+                <AccordionContent>
+                  <RadioGroup
+                    aria-label={t("radioGroupDocs.accordion.shipping")}
+                    optionType="card"
+                    defaultValue="air"
+                    options={[
+                      {
+                        value: "air",
+                        label: t("radioGroupDocs.accordion.air"),
+                        description: t("radioGroupDocs.accordion.days", { min: 3, max: 5 }),
+                      },
+                      {
+                        value: "sea",
+                        label: t("radioGroupDocs.accordion.sea"),
+                        description: t("radioGroupDocs.accordion.days", { min: 14, max: 21 }),
+                      },
+                      {
+                        value: "express",
+                        label: t("radioGroupDocs.accordion.express"),
+                        description: t("radioGroupDocs.accordion.nextDay"),
+                        disabled: true,
+                      },
+                    ]}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </CardContent>
         </Card>
 
@@ -133,9 +261,10 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>optionType=&quot;button&quot; · 箱型の選択</CardTitle>
             <CardDescription>
-              箱で選ばせたいときはこれが唯一の描画。カード型ラジオという別コンポーネントは
-              無い。role は radiogroup / radio のままなので、矢印キーの移動も name での送信も
-              変わらない。buttonStyle は選択中の塗りだけを決める。
+              箱を横に溶接して選ばせる描画。カード型の行は optionType=&quot;card&quot; で、
+              どちらも別コンポーネントではない。role は radiogroup / radio
+              のままなので、矢印キーの移動も name での送信も 変わらない。buttonStyle
+              は選択中の塗りだけを決める。
             </CardDescription>
           </CardHeader>
           <CardContent>

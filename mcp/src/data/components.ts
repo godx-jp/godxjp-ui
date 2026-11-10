@@ -10443,10 +10443,10 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
     props: [
       {
         name: "optionType",
-        type: '"default" | "button"',
+        type: '"default" | "button" | "card"',
         defaultValue: '"default"',
         description:
-          "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds the choices into one segmented bar. The role stays `radiogroup`/`radio` either way: this is paint, never semantics, so a screen reader hears the same group in both.",
+          "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds the choices into one segmented bar; `card` (gh#1555) draws each choice as a bordered row whose WHOLE surface is the label (a press anywhere selects), with the option's `leading` before the title and `extra` at the inline end. Selected = border + inner ring + filled dot, never colour alone; the focus ring is drawn inside the card, so an `overflow: hidden` ancestor cannot clip it. The role stays `radiogroup`/`radio` in every case: this is paint, never semantics.",
       },
       {
         name: "buttonStyle",
@@ -10467,7 +10467,12 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
         type: "string",
         description: "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
       },
-      { name: "value", type: "string", description: "Controlled selected value." },
+      {
+        name: "value",
+        type: "string | null",
+        description:
+          'Controlled selected value. `null` (or `""`) means nothing chosen yet: the group stays controlled and the first enabled radio takes the tab stop (gh#1544).',
+      },
       {
         name: "onValueChange",
         type: "(value: string) => void",
@@ -10475,8 +10480,9 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
       },
       {
         name: "options",
-        type: "ChoiceOptionProp[]",
-        description: "Declarative list: { label, value, disabled?, description? }.",
+        type: "(ChoiceOptionProp | ChoiceOptionSectionProp)[]",
+        description:
+          'Declarative list: { label, value, disabled?, description?, leading?, extra? } (`leading`/`extra` render only with optionType="card", and must not be interactive). An entry { label, options, appearance?: "muted" } is a labelled SECTION: a `role="group"` named by its label, inside the one radiogroup, so the arrow keys run across sections. Sections render for `default` and `card`; a `button` bar flattens them.',
       },
       {
         name: "orientation",
@@ -10486,7 +10492,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
       },
       {
         name: "defaultValue",
-        type: "string",
+        type: "string | null",
         description: "Uncontrolled initial selected value.",
       },
       {
@@ -10505,6 +10511,9 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
       "DO provide `name` whenever the group lives inside an HTML form: the group renders a hidden `<input name={name}>` carrying the selected string value, making the field natively form-submittable without a separate hidden input.",
       "DO use controlled mode (`value` + `onValueChange`) for any form managed by useForm or a state manager. Use `defaultValue` only for truly uncontrolled UI where you never need to read the value in code.",
       "DO NOT reach for children / manual composition unless the options list is dynamic-JSX (e.g. each item needs a custom rendered label with an icon). When you do compose children manually, wrap each Radio.Item in a Field — rendering a bare Radio.Item without Field skips the label and breaks a11y.",
+      'DO use `optionType="card"` for a page-level single choice whose options need a mark and a status (an organization or workspace chooser): `{ value, label, description, leading: <Avatar shape="square">…</Avatar>, extra: <Badge>Last used</Badge> }`. Never build a radio card from `Card asChild` + `Radio`. Group the options into labelled sections with `{ label, options, appearance: "muted" }` entries instead of rendering several RadioGroups — several groups break the arrow keys and allow one choice per group.',
+      "DO filter a long card list by COMPOSITION, not a prop: a `SearchInput` above the group, and the consumer filters `options` (keep the currently chosen option in the list so the selection never vanishes while typing). Past ~10 options with no marks to show, use `Select showSearch` instead.",
+      'DO write `value={choice ?? null}` (or `""`) for a controlled group with nothing chosen yet — both keep the group keyboard-reachable (gh#1544).',
       "DO NOT use RadioGroup when the user may select zero or multiple items — that is CheckboxGroup. RadioGroup enforces exactly one selection at all times (or none before first interaction when uncontrolled).",
       'A11y: the root emits `role=radiogroup`; each item is a real `<input type="radio">` (implicit `role=radio`) and is keyboard-navigable with arrow keys. Never suppress `name` on the Root when inside a form — without it the input is unnamed and won\'t submit. Name an item with `<Label htmlFor>` (or `Field`) BESIDE it, never by wrapping it: the control already sits inside its own `<label>`, and a second one nested outside leaves it nameless.',
     ],
@@ -10522,11 +10531,23 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
       "Field — use when there are exactly two states that map to on/off (boolean); RadioGroup is the right pick when the two-or-more options are semantically distinct named values, not a toggle.",
       "Field — the low-level label+description wrapper that RadioGroup uses internally for each item. Use it directly only when manually composing Radio.Item children inside Radio.Group; never hand-roll a label alongside a bare Radio.Item without it.",
     ],
-    example: `import { RadioGroup } from "@godxjp/ui/data-entry";
+    example: `import { Avatar, AvatarFallback, Badge } from "@godxjp/ui/data-display";
+import { RadioGroup } from "@godxjp/ui/data-entry";
 
 <RadioGroup value={trigger} onValueChange={setTrigger} orientation="horizontal" options={[
   { label: "初回購入", value: "first_purchase" },
   { label: "誕生日", value: "birthday" },
+]} />
+
+// optionType="card" with labelled sections (gh#1555)
+<RadioGroup aria-label="組織を選択" optionType="card" value={context ?? null} onValueChange={setContext} options={[
+  { label: "組織 · 2", options: [
+    { value: "acme", label: "株式会社アクメ", description: "オーナー · 12 名",
+      leading: <Avatar shape="square"><AvatarFallback>ア</AvatarFallback></Avatar>,
+      extra: <Badge as="span">前回利用</Badge> },
+    { value: "globex", label: "グロービクス合同会社", description: "メンバー · 4 名" },
+  ] },
+  { label: "個人", appearance: "muted", options: [{ value: "personal", label: "個人ワークスペース" }] },
 ]} />`,
     storyPath: "data-entry/radio-group.tsx",
     rules: [23],
@@ -18909,7 +18930,8 @@ import { Logo } from "@godxjp/ui/general";
         name: "organizations",
         type: "readonly OrgSwitcherOrganization[]",
         required: true,
-        description: "Consumer-provided organization choices.",
+        description:
+          'Consumer-provided organization choices. An entry with `kind: "personal"` (the account\'s own workspace; default `"organization"`) is listed in its own labelled section after the organizations, whatever its position in the array, with a circular avatar on the row and on the trigger; search filters the organizations only and keeps it listed.',
       },
       { name: "value", type: "string", description: "Selected organization id." },
       {
@@ -18921,7 +18943,8 @@ import { Logo } from "@godxjp/ui/general";
         name: "labels",
         type: "OrgSwitcherLabels",
         required: true,
-        description: "Localized trigger, search, state, and retry copy.",
+        description:
+          'Localized trigger, search, state, and retry copy. `personal` titles the personal section; it defaults to the kit\'s t("layout.orgSwitcher.personal") (Personal / 個人 / Cá nhân).',
       },
       {
         name: "placeholderAvatar",
@@ -18966,6 +18989,7 @@ import { Logo } from "@godxjp/ui/general";
     usage: [
       "Provide only organizations the current user may select; the component does not authorize or fetch tenants.",
       "Keep persistence and navigation in `onValueChange`; use loading/error props for the real query state.",
+      'DO mark the account\'s own workspace `kind: "personal"` rather than pushing it into the company list: it gets its own section after the organizations (named by `labels.personal`), a round avatar, and it stays listed while the user searches organizations — so nobody mistakes it for a company and it is never the first row (#1556).',
       "DO put a plan/status affordance in `organization.badge` (a <Badge>) instead of stuffing it into `meta` — the badge is end-aligned in the expanded trigger and in the menu row, and hidden in the collapsed rail. ALWAYS pair it with a localized `organization.badgeLabel`: the trigger's accessible name comes from `labels.trigger`, so the badge is announced as an aria-describedby DESCRIPTION and the raw node is marked presentational (WCAG 1.1.1). `badgeLabel` also becomes a search keyword.",
       'DON\'T wrap OrgSwitcher in your own media query to pick popover vs sheet — `responsive="auto"` already reads the shared --sheet-responsive-breakpoint-width token.',
       "DON'T put it in the SIDEBAR — not as a row, not in `Sidebar`'s `brand` slot, not stacked under the product lockup. Which organization you are in is PLATFORM scope: it survives changing app, while everything else in the sidebar is this app's own sections. Its two legal homes are `AppShell`'s `navRail` (a permanent 3.5rem column — the Slack shape, when switching is frequent enough to deserve the width) and the topbar (a `TopbarItem`-height control, with `topbarSpan=\"full\"` so the bar outranks the section beneath it). Stacking it under the sidebar's own logo also puts two lockups of different heights in one header, which is what visibly skews the sidebar's top edge against the topbar's.",

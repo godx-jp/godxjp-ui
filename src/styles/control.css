@@ -4838,6 +4838,123 @@
     border-radius: var(--control-radius);
   }
 
+  /* ── RADIO `optionType="card"` (gh#1555) ──────────────────────────────────────────────────
+   * Paint over the same radiogroup: each member is react-aria's `<label>` root drawn as a bordered
+   * row, so the whole row is the hit target. SELECTED is a border AND an inner ring (the `::after`
+   * below) AND the filled dot, never colour alone (WCAG 1.4.1). */
+  .ui-radio-card {
+    /* Containing block for `.ui-choice-input` (the real input covers the row) and the ring. */
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--choice-card-gap);
+    padding-block: var(--choice-card-padding-block);
+    padding-inline: var(--choice-card-padding-inline);
+    color: hsl(var(--foreground));
+    background: hsl(var(--choice-card-background, var(--background)));
+    border: var(--stroke-hairline) solid hsl(var(--choice-card-border-color, var(--border)));
+    border-radius: var(--choice-card-radius, var(--control-radius));
+    cursor: pointer;
+    transition-property: background-color, border-color;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--ease-standard);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ui-radio-card {
+      transition: none;
+    }
+  }
+
+  .ui-radio-card[data-state="checked"] {
+    border-color: hsl(var(--choice-card-selected-border-color, var(--primary)));
+  }
+
+  /* The ring is a pseudo-element, not a `box-shadow` on the card: focus-ring.css writes the card's
+   * `box-shadow` while it has keyboard focus, which would erase a selected ring drawn there. Inset,
+   * so it can never be clipped by an ancestor or move the layout. */
+  .ui-radio-card[data-state="checked"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 var(--choice-card-selected-ring-width)
+      hsl(var(--choice-card-selected-border-color, var(--primary)));
+    pointer-events: none;
+  }
+
+  /* #1543 — the focus mark is drawn INSIDE the card, and its outer halo is dropped, so nothing of
+   * it paints past the card's border box: an `overflow: hidden` ancestor (an AccordionContent, a
+   * scroll area, a dialog body) cannot clip it. Focus-only, so no descendant inherits it. */
+  .ui-radio-card[data-focus-visible] {
+    --focus-ring-contained-offset: var(--focus-ring-inset-offset);
+    --focus-field-shadow: none;
+  }
+
+  .ui-radio-card[data-invalid] {
+    border-color: hsl(var(--destructive));
+  }
+
+  .ui-radio-card[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  /* The painted dot. `.ui-radio` gives it the box; the item variant gets its centring from
+   * utility classes on the component, which this span does not carry. */
+  .ui-radio-card-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ui-radio-card-leading,
+  .ui-radio-card-extra {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .ui-radio-card-extra {
+    margin-inline-start: auto;
+  }
+
+  .ui-radio-card-content {
+    display: grid;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    gap: var(--choice-description-gap);
+    line-height: var(--line-height-tight);
+  }
+
+  .ui-radio-card-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    overflow-wrap: anywhere;
+  }
+
+  .ui-radio-card-description {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--choice-description-font-size);
+    overflow-wrap: anywhere;
+  }
+
+  /* Sections: a heading over its own rows, inside the one radiogroup. */
+  .ui-radio-section {
+    display: grid;
+    gap: var(--choice-section-gap);
+  }
+
+  .ui-radio-section-label {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--choice-description-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-radio-section[data-appearance="muted"] .ui-radio-card {
+    background: hsl(var(--choice-card-muted-background, var(--muted)));
+  }
+
   /* ── SEGMENTED `block` / `vertical` / `size` ─────────────────────────────────────────────
    * `block` shares the width EQUALLY (`1fr` per item, not `flex: 1` on content), so the
    * selected pill does not resize when the label under it changes length — which is the whole
