@@ -6678,13 +6678,19 @@ import { Flex } from "@godxjp/ui/layout";
         type: '"default" | "compact"',
         defaultValue: '"default"',
         description:
-          "Row geometry. It only lowers thresholds — the row and its trailing cluster still wrap, so a cluster that cannot fit drops to its own line rather than widening the page root.",
+          "Row geometry. It tightens the block axis and lowers thresholds — the row and its trailing cluster still wrap, so a cluster that cannot fit drops to its own line rather than widening the page root. The inline inset and gap stay the default row's, so a compact row's title starts on the same x as a default row's (33.27.17, GDX-1465).",
       },
       {
         name: "unread",
         type: "boolean",
         description:
           "Read/unread state for notification rows — renders the indicator dot (with localized `sr-only` text, never colour alone) plus the tokenized `--list-row-unread-background`. OMIT the prop for rows with no read state; pass `false` for a read row so its title keeps the same optical axis as the unread ones.",
+      },
+      {
+        name: "indicator",
+        type: '"reserve"',
+        description:
+          '`reserve` keeps the indicator slot on a row with NO read state — empty, `aria-hidden`, no `sr-only` text — so its title shares the axis of `unread` rows in a list beside it. Ignored when `unread` is set. Use it instead of `unread={false}`, which would announce "Read" on a row that has no read state.',
       },
     ],
     usage: [
@@ -6696,6 +6702,7 @@ import { Flex } from "@godxjp/ui/layout";
       'DON\'T hand-roll `<div className="flex items-center justify-between border-b py-3">` — that is exactly the repeated pattern ListRow replaces (border/radius/padding are tokenized via `--list-row-*`).',
       'DO put the row\'s action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as="li"` when the rows live inside a semantic list, and build that list as `<Flex as="ul" marker="none" direction="col" gap="none">` (the rows draw their own dividers) — `ui-audit` flags a raw `<ul>`/`role="list"` as `no-hand-rolled-list`.',
       'DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text ("Unread"/"Read"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON\'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.',
+      'DO pass `indicator="reserve"` on rows with no read state that sit beside a list of `unread` rows (channels to join under the channels you are in), so both lists start their titles on one axis (24px apart without it, GDX-1465). DON\'T pass `unread={false}` for that — it announces "Read" on a row that has no read state.',
       'DO pass `density="compact"` for the canonical invitation / history row — an Avatar, a title (+ description) and one or two small trailing Buttons that must read as ONE line inside a narrow card (≈326px content at 390px), or a history row whose status Badge + ISO-8601 date belongs beside the title. Measured at 390px: 62px tall vs 126px at the default density (where the actions wrapped), history row 41px vs 114px. Below 360px a default row\'s actions take a line of their own; a compact row keeps them beside the title while they fit (one `size="sm"` 参加 Button at 320: 62px vs 102px before 33.27.16, GDX-1454). DON\'T reach for it just to "make things tighter" on a roomy page — the default density is the entity-row measure.',
       'DON\'T add one-off `min-width`/wrapping CSS in the consumer app for a long title + two trailing Buttons. The row already shrinks and WRAPS: the content column keeps only `min(var(--list-row-body-min-width), 100%)` and the trailing actions drop onto their own line below the threshold. Retune the threshold with `--list-row-body-min-width` (default 12rem) and the action gap with `--list-row-trailing-gap`; pass `overflow="wrap"` (usually with `align="start"`) when the title must stay fully readable at 390px instead of truncating.',
       'DO expect rows ANYWHERE inside a padded (non-flush) `CardContent` — directly, in a `Flex as="ul"`, or wrapped (`DataState` children in a div > `Flex as="ul"` > `ListRow as="li" asChild` > link, gh#1325) — to drop their own inline padding: the card already holds the inset, so the row text lines up with the CardTitle instead of sitting 16px inside it. A row keeps `--list-row-padding-x` inside `CardContent flush` (the documented home, with edge-to-edge dividers) — including a flush CardContent nested in a padded one — and inside a table cell.',

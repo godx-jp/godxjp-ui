@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### One title axis for rows with and without a read state, at both densities (also released as 33.27.17, off v33.27.16)
+
+- **Added** `ListRow` `indicator="reserve"`: a row with no read state keeps the indicator slot, empty, `aria-hidden` and with no `sr-only` text, so its title starts on the same x as the `unread` rows of a list beside it. Before, the only way to keep the slot was `unread={false}`, which announces "Read" (既読) on a row that has none: GDX's chat home showed the channels you are in (`unread`) above the channels to join, whose titles started 20px to the left (GDX-1465).
+- **Fixed** `density="compact"` narrowed the row's inline gap to `--space-2` while its inline inset stayed the default row's, so a compact row's title started 4px left of a default row's: the rest of GDX-1465's 24px. Compact now tightens the block axis only (`row-gap` `--space-2`, padding); the inline gap stays `--list-row-gap`, so the title axis is one at both densities. A theme that sets `--list-row-compact-gap` keeps it on both axes. Measured at 320/390/1280: default `unread` row, default and compact `indicator="reserve"` rows all start their title at the same x (was 81 vs 57 at 320); the compact row keeps its 参加 Button inline at 320 (GDX-1454 test unchanged).
+
 ### A compact row keeps its action beside the title on a phone (also released as 33.27.16, off v33.27.15)
 
 - **Fixed** below 360px every `ListRow` gave `trailing` the full width, so a `density="compact"` row's one short action dropped under the title even where it fits: GDX's channel list put its 参加 (Join) Button on a line of its own at 320 (GDX-1454). The narrow rule now applies to the default density only. A compact row, the documented inline-actions row, keeps its action beside the title while it fits, and a cluster that cannot fit still wraps through the row's own `flex-wrap` (#224). Measured at 320 (icon, title, description, `size="sm"` Button): compact row 102px → 62px, action inline; default row unchanged at 114px with the action stacked; no page overflow.

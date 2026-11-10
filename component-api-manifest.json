@@ -11987,6 +11987,14 @@
           "declaredIn": ["src/components/data-display/list-row.tsx"]
         },
         {
+          "name": "indicator",
+          "origin": "owned",
+          "required": false,
+          "type": "\"reserve\" | undefined",
+          "values": ["reserve"],
+          "declaredIn": ["src/components/data-display/list-row.tsx"]
+        },
+        {
           "name": "leading",
           "origin": "owned",
           "required": false,
