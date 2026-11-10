@@ -119,6 +119,12 @@ export interface ListRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
    * state; pass `false` for a read row so its title stays on the same optical axis as unread ones.
    */
   unread?: boolean;
+  /**
+   * `reserve` keeps the indicator slot on a row that has NO read state — empty, `aria-hidden`, no
+   * `sr-only` text — so its title shares the axis of `unread` rows in a list beside it (a list of
+   * channels to join under the channels you are in, GDX-1465). Ignored when `unread` is set.
+   */
+  indicator?: "reserve";
 }
 
 export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
@@ -135,6 +141,7 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
       overflow = "truncate",
       density = "default",
       unread,
+      indicator,
       className,
       ...props
     },
@@ -164,6 +171,8 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
               {unread ? t("dataDisplay.listRow.unread") : t("dataDisplay.listRow.read")}
             </span>
           </span>
+        ) : indicator === "reserve" ? (
+          <span data-slot="list-row-indicator" aria-hidden="true" />
         ) : null}
         {leading != null ? <span data-slot="list-row-leading">{leading}</span> : null}
         <span data-slot="list-row-body">

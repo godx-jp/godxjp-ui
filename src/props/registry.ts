@@ -3826,6 +3826,12 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "Row-local overflow resolution for the title/description column (truncate | wrap, #224).",
       },
+      {
+        field: "indicator",
+        local: true,
+        reason:
+          "Row-local seam (reserve) that keeps the empty indicator slot on a row with no read state, so its title shares the axis of unread rows beside it (GDX-1465).",
+      },
     ],
   },
   MarqueeDirectionProp: {

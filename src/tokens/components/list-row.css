@@ -26,14 +26,15 @@
    * density-scaled and re-declared inside a `.ui-density-*` subtree, so a :root binding would
    * freeze compact rows at the :root density (docs/TOKENS.md — the :root freeze rule).
    * Defaults = var(--space-2) block padding · var(--list-row-padding-x) inline padding ·
-   * var(--space-2) gap. */
+   * var(--space-2) row gap · var(--list-row-gap) column gap (one title axis with default rows,
+   * GDX-1465). */
   --list-row-compact-padding-y: initial;
-  /* Inline inset defaults to the default row axis so compact and default rows in the same Card keep
+  /* Inline inset (and inline gap) default to the default row axis so compact and default rows keep
    * one optical axis; a service retunes it to its own grid (#45). */
   --list-row-compact-padding-x: initial;
   --list-row-compact-gap: initial;
   /* Compact body threshold — small enough that avatar + body + two compact Buttons fit the
-   * canonical column (36 + 8 + 96 + 8 + 146 = 294 ≤ 326), and still a readable measure. */
+   * canonical column (36 + 12 + 96 + 12 + 146 = 302 ≤ 326), and still a readable measure. */
   --list-row-compact-body-min-width: 6rem;
   /* Read (default) row surface — `initial`, documented default = transparent, i.e. the Card
    * surface shows through untouched (#44 — chrome defaults to the quietest state). */
