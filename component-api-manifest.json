@@ -2261,7 +2261,7 @@
           "name": "colorKey",
           "origin": "owned",
           "required": false,
-          "type": "string | undefined",
+          "type": "string | number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },

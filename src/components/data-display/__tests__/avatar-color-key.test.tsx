@@ -7,7 +7,6 @@ import { Avatar, AvatarFallback, avatarColorStep } from "../avatar";
 
 const read = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8");
 const css = read("src/styles/data-display-layout.css");
-const foundation = read("src/tokens/foundation.css");
 const tokens = read("src/tokens/components/data-display.css");
 
 const hex = (value: string) => [1, 3, 5].map((i) => parseInt(value.slice(i, i + 2), 16));
@@ -24,8 +23,10 @@ describe("Avatar colorKey — a stable categorical tile colour", () => {
       ["tasks", "restaurant", "pages", "attendance", "dataview", "fleet"].map(avatarColorStep),
     );
     expect(steps.size).toBeGreaterThanOrEqual(4);
+    // A number picks the hue directly, wrapping past the last one.
+    expect([1, 2, 10, 11].map(avatarColorStep)).toEqual([1, 2, 10, 1]);
     for (const step of steps) expect(step).toBeGreaterThanOrEqual(1);
-    for (const step of steps) expect(step).toBeLessThanOrEqual(6);
+    for (const step of steps) expect(step).toBeLessThanOrEqual(10);
   });
 
   it("emits data-color-key only when a key is given", () => {
@@ -46,19 +47,19 @@ describe("Avatar colorKey — a stable categorical tile colour", () => {
     );
   });
 
-  it("every step, light and dark, keeps white initials at AA after the 75% deepening", () => {
-    expect(tokens).toContain("--avatar-color-key-depth: 75%;");
+  it("every tile hue keeps white initials at >= 4.5:1, and the palette is the tile set, not the chart series", () => {
     expect(tokens).toContain("--avatar-color-key-foreground: 0 0% 100%;");
-    for (let n = 1; n <= 6; n += 1) {
+    expect(tokens).toContain("--avatar-color-key-ring-color: hsl(var(--avatar-color-key-foreground) / 0.45);");
+    for (let n = 1; n <= 10; n += 1) {
       expect(css).toContain(`.ui-avatar[data-color-key="${n}"] {`);
-      const values = [...foundation.matchAll(new RegExp(`--chart-${n}:\\s*(#[0-9a-f]{6});`, "gi"))];
-      expect(values.length).toBeGreaterThan(0);
-      for (const [, value] of values) {
-        // color-mix(in srgb, X 75%, black) scales the encoded channels.
-        const mixed = hex(value).map((c) => Math.round(c * 0.75));
-        const ratio = 1.05 / (luminance(mixed) + 0.05);
-        expect(ratio, `--chart-${n} ${value}`).toBeGreaterThanOrEqual(4.5);
-      }
+      expect(css).toContain(`--avatar-background: var(--avatar-color-key-${n});`);
+      const value = tokens.match(
+        new RegExp(`--avatar-color-key-${n}:\\s*(#[0-9a-f]{6});`, "i"),
+      )?.[1];
+      expect(value, `--avatar-color-key-${n}`).toBeDefined();
+      const ratio = 1.05 / (luminance(hex(value!)) + 0.05);
+      expect(ratio, `--avatar-color-key-${n} ${value}`).toBeGreaterThanOrEqual(4.5);
     }
+    expect(css).not.toMatch(/data-color-key[^{]*\{[^}]*--chart-/);
   });
 });

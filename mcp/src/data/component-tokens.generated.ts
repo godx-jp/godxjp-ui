@@ -3359,19 +3359,64 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Capability medallion — `<Avatar appearance=\"tinted\">` (gh#12): the tinted plate a capability / feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape=\"square\" for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph · --control-icon-size glyph box."
   },
   {
-    "name": "--avatar-color-key-base",
-    "value": "initial",
-    "description": "`Avatar colorKey`: the fill is the key's `--chart-N` step (set per step at the call site) mixed this far toward black, under this ink (an HSL triple). 75% keeps white initials at >= 4.5:1 on every categorical step in both themes."
+    "name": "--avatar-color-key-1",
+    "value": "#6d28d9",
+    "description": "`Avatar colorKey` — the TILE palette: ten hues of their own (not the chart series), each a solid fill under white initials at >= 5:1 (violet 7.1 · purple 7.0 · teal 5.5 · blue 6.7 · slate 7.6 · orange 5.2 · red 6.5 · cyan 5.4 · pink 6.0 · green 5.0). A tile is a self-contained chip, so one value serves both themes. The ring is a faint light edge that keeps a tile readable on a ground of its own hue (a teal tile on the teal brand story). violet"
   },
   {
-    "name": "--avatar-color-key-depth",
-    "value": "75%",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "name": "--avatar-color-key-2",
+    "value": "#7e22ce",
+    "description": "purple"
+  },
+  {
+    "name": "--avatar-color-key-3",
+    "value": "#0f766e",
+    "description": "teal"
+  },
+  {
+    "name": "--avatar-color-key-4",
+    "value": "#1d4ed8",
+    "description": "blue"
+  },
+  {
+    "name": "--avatar-color-key-5",
+    "value": "#475569",
+    "description": "slate"
+  },
+  {
+    "name": "--avatar-color-key-6",
+    "value": "#c2410c",
+    "description": "orange"
+  },
+  {
+    "name": "--avatar-color-key-7",
+    "value": "#b91c1c",
+    "description": "red"
+  },
+  {
+    "name": "--avatar-color-key-8",
+    "value": "#0e7490",
+    "description": "cyan"
+  },
+  {
+    "name": "--avatar-color-key-9",
+    "value": "#be185d",
+    "description": "pink"
+  },
+  {
+    "name": "--avatar-color-key-10",
+    "value": "#15803d",
+    "description": "green"
   },
   {
     "name": "--avatar-color-key-foreground",
     "value": "0 0% 100%",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--avatar-color-key-ring-color",
+    "value": "hsl(var(--avatar-color-key-foreground) / 0.45)",
+    "description": "The ring is an inset OUTLINE (painted above the fallback that fills the box), an alpha of the initials ink."
   },
   {
     "name": "--avatar-tinted-foreground",

@@ -341,12 +341,15 @@ export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
    */
   kind?: AvatarKindProp;
   /**
-   * A stable key (an app id, a user id) hashed onto the categorical palette (`--chart-1…6`), so
-   * every tile in a row gets a distinct, repeatable colour. The fill is the palette step deepened
-   * (`--avatar-color-key-depth`, 75%) under white initials (`--avatar-color-key-foreground`) —
-   * ≥ 4.5:1 for every step in both themes. Wins over `shape`'s and `appearance`'s fill.
+   * A stable key (an app id, a user id) hashed onto the ten-hue TILE palette
+   * (`--avatar-color-key-1…10`: violet, purple, teal, blue, slate, orange, red, cyan, pink, green),
+   * so every tile in a row gets a distinct, repeatable colour. Solid fill under white initials
+   * (`--avatar-color-key-foreground`), >= 5:1 for every hue in both themes, with a faint light ring
+   * (`--avatar-color-key-ring-color`) so a tile stays visible on a ground of its own hue. Wins over
+   * `shape`'s and `appearance`'s fill. Ten hues means two keys CAN share one; pass a NUMBER (1–10,
+   * wrapping) to pick the hue directly for a known short list that must never repeat.
    */
-  colorKey?: string;
+  colorKey?: string | number;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };

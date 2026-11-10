@@ -39,9 +39,9 @@
       "type": "\"person\" | \"agent\""
     },
     {
-      "description": "A stable key (an app id, a user id) hashed (FNV-1a) onto the six categorical palette steps (--chart-1…6), so each tile in a row gets a distinct, repeatable colour — `<Avatar shape=\"square\" size=\"xs\" colorKey=\"tasks\"><AvatarFallback>T</AvatarFallback></Avatar>`. The fill is the step deepened toward black (--avatar-color-key-depth, 75%) under white initials (--avatar-color-key-foreground): >= 4.5:1 on every step in both themes. Wins over `shape`/`appearance` fills.",
+      "description": "A stable key (an app id, a user id) hashed (FNV-1a) onto the ten-hue TILE palette --avatar-color-key-1…10 (violet, purple, teal, blue, slate, orange, red, cyan, pink, green — not the chart series), so each tile in a row gets a distinct, repeatable colour: `<Avatar shape=\"square\" size=\"xs\" colorKey=\"tasks\"><AvatarFallback>T</AvatarFallback></Avatar>`. Solid fill under white initials (--avatar-color-key-foreground), >= 5:1 for every hue in both themes, plus a faint light ring (--avatar-color-key-ring-color) so a tile stays visible on a ground of its own hue (a teal tile on the brand story). Wins over `shape`/`appearance` fills. Ten hues means two string keys CAN share one; pass a NUMBER (1–10, wrapping) to pick the hue directly for a short list that must never repeat.",
       "name": "colorKey",
-      "type": "string"
+      "type": "string | number"
     },
     {
       "description": "Compose AvatarImage and AvatarFallback.",

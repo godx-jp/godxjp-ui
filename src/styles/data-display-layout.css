@@ -97,41 +97,53 @@
     color: var(--avatar-tinted-foreground, hsl(var(--text-brand, var(--primary))));
   }
 
-  /* `colorKey` — a stable categorical fill: the `--chart-N` step chosen by the key, deepened toward
-   * black so white initials clear AA on every step in both themes (measured: the weakest light
-   * step, --chart-3 #af8000, goes 3.4:1 → 5.8:1). Declared after `shape`/`appearance` so the key
-   * wins over their fills. */
+  /* `colorKey` — a stable tile colour from the tile palette (`--avatar-color-key-1…10`), white
+   * initials, a faint light ring so a tile stays visible on a ground of its own hue. Declared
+   * after `shape`/`appearance` so the key wins over their fills. */
   .ui-avatar[data-color-key] {
-    --avatar-background: color-mix(
-      in srgb,
-      var(--avatar-color-key-base) var(--avatar-color-key-depth),
-      black
-    );
+    outline: var(--stroke-hairline) solid var(--avatar-color-key-ring-color);
+    outline-offset: calc(-1 * var(--stroke-hairline));
     color: hsl(var(--avatar-color-key-foreground));
   }
 
   .ui-avatar[data-color-key="1"] {
-    --avatar-color-key-base: var(--chart-1);
+    --avatar-background: var(--avatar-color-key-1);
   }
 
   .ui-avatar[data-color-key="2"] {
-    --avatar-color-key-base: var(--chart-2);
+    --avatar-background: var(--avatar-color-key-2);
   }
 
   .ui-avatar[data-color-key="3"] {
-    --avatar-color-key-base: var(--chart-3);
+    --avatar-background: var(--avatar-color-key-3);
   }
 
   .ui-avatar[data-color-key="4"] {
-    --avatar-color-key-base: var(--chart-4);
+    --avatar-background: var(--avatar-color-key-4);
   }
 
   .ui-avatar[data-color-key="5"] {
-    --avatar-color-key-base: var(--chart-5);
+    --avatar-background: var(--avatar-color-key-5);
   }
 
   .ui-avatar[data-color-key="6"] {
-    --avatar-color-key-base: var(--chart-6);
+    --avatar-background: var(--avatar-color-key-6);
+  }
+
+  .ui-avatar[data-color-key="7"] {
+    --avatar-background: var(--avatar-color-key-7);
+  }
+
+  .ui-avatar[data-color-key="8"] {
+    --avatar-background: var(--avatar-color-key-8);
+  }
+
+  .ui-avatar[data-color-key="9"] {
+    --avatar-background: var(--avatar-color-key-9);
+  }
+
+  .ui-avatar[data-color-key="10"] {
+    --avatar-background: var(--avatar-color-key-10);
   }
 
   .ui-avatar[data-appearance="tinted"] svg {
