@@ -15,6 +15,7 @@ import {
   allRules,
   evaluateProbes,
   isTrackedUppercaseLabel,
+  focusRingClips,
   parseViewports,
   // @ts-expect-error — plain .mjs script module, no types
 } from "../../../scripts/visual-audit.mjs";
@@ -319,6 +320,66 @@ describe("evaluateProbes — per-rule predicates on synthetic measurements", () 
     expect(isTrackedUppercaseLabel({ ...l, uppercase: false })).toBe(false);
     expect(isTrackedUppercaseLabel({ ...l, literal: true })).toBe(false);
     expect(rules(run({ c12: { mapped: [l] } }))).toEqual(["c12-tracked-uppercase-label"]);
+  });
+
+  it("C13: a ring cut by a clipping ancestor names the control, the ancestor and the px", () => {
+    const control = {
+      element: "label.ui-radio",
+      name: "Option X",
+      box: { left: 1, top: 10, right: 17, bottom: 26 },
+      ring: { left: -3, top: 6, right: 21, bottom: 30 },
+      clips: [
+        {
+          element: "div.ui-accordion-content",
+          overflow: "hidden",
+          x: true,
+          y: true,
+          rect: { left: 0, top: 0, right: 300, bottom: 100 },
+        },
+      ],
+    };
+    expect(focusRingClips(control)).toEqual([
+      { clipper: "div.ui-accordion-content", overflow: "hidden", side: "left", px: 3 },
+    ]);
+    const out = run({ c13: { mapped: [control] } });
+    expect(rules(out)).toEqual(["c13-focus-ring-clipped"]);
+    expect(out.findings[0]).toMatchObject({
+      element: "label.ui-radio",
+      measured: { clippedPx: 3, side: "left", clipper: "div.ui-accordion-content" },
+    });
+    expect(out.cell.rules["c13-focus-ring-clipped"]).toBe("fail");
+    // The clip margin a `clip` ancestor grants (folded into its rect by the collector) is room.
+    const margin = {
+      ...control.clips[0],
+      overflow: "clip",
+      rect: { left: -8, top: -8, right: 308, bottom: 108 },
+    };
+    expect(focusRingClips({ ...control, clips: [margin] })).toEqual([]);
+    // Within the 0.5px tolerance: subpixel rounding is not a cut.
+    expect(focusRingClips({ ...control, ring: { ...control.ring, left: -0.4 } })).toEqual([]);
+    // Only the clipping axes count: an overflow-x scroller does not cut the ring vertically.
+    const xOnly = {
+      ...control.clips[0],
+      y: false,
+      rect: { left: -10, top: 8, right: 300, bottom: 28 },
+    };
+    expect(focusRingClips({ ...control, clips: [xOnly] })).toEqual([]);
+    // A control half-scrolled out of a list is scrolled content, not a cut ring…
+    const scrolled = {
+      ...control,
+      box: { ...control.box, top: -5 },
+      ring: { ...control.ring, top: -9 },
+    };
+    expect(focusRingClips({ ...scrolled, ring: { ...scrolled.ring, left: 0 } })).toEqual([]);
+    // …and a ring wholly outside a clip is hidden content (a closed drawer), never a finding.
+    const away = { left: 400, top: 10, right: 420, bottom: 26 };
+    expect(focusRingClips({ ...control, box: away, ring: away })).toEqual([]);
+    expect(run({ c13: { mapped: [] } }).cell.rules["c13-focus-ring-clipped"]).toBe("not-found");
+    expect(
+      run({ c13: { mapped: [{ ...control, clips: [margin] }] } }).cell.rules[
+        "c13-focus-ring-clipped"
+      ],
+    ).toBe("pass");
   });
 
   it("checklist rules and the per-width checklist are always pending", () => {
