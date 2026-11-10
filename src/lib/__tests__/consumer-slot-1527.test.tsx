@@ -18,6 +18,13 @@ import { Sheet, SheetContent, SheetTitle } from "../../components/feedback/sheet
 import { Slot } from "../slot";
 import { Collapsible, CollapsibleTrigger } from "../../components/data-display/collapsible";
 import { withoutSlot } from "../without-slot";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../components/navigation/dropdown-menu";
+import { TopbarItem } from "../../components/layout/topbar-item";
 
 /*
  * gh#1527 — a consumer's `data-slot` replaced the component's own slot, so every rule keyed on
@@ -104,6 +111,44 @@ describe("a consumer data-slot never replaces the component's own slot (gh#1527)
     const cancel = screen.getByRole("button", { name: "Cancel" });
     expect(cancel.getAttribute("data-slot")).toBe("dialog-close");
     expect(cancel.hasAttribute("data-kit-slot")).toBe(false);
+  });
+
+  // gh#1564: DropdownMenuTrigger clones its child itself (not through Slot), so it must use the
+  // kit channel too, or a kit child (TopbarItem, Button) renders its own slot instead.
+  it.each([
+    ["TopbarItem", () => <TopbarItem aria-label="Account">A</TopbarItem>],
+    ["Button", () => <Button>Account</Button>],
+  ] as Array<[string, () => React.ReactElement]>)(
+    "DropdownMenuTrigger asChild keeps dropdown-menu-trigger on a kit child: %s",
+    (_name, child) => {
+      render(
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>{child()}</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>x</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>,
+      );
+      const trigger = screen.getByRole("button", { name: "Account" });
+      expect(trigger.getAttribute("data-slot")).toBe("dropdown-menu-trigger");
+      expect(trigger.hasAttribute("data-kit-slot")).toBe(false);
+    },
+  );
+
+  it("DropdownMenuTrigger asChild onto a host element: data-slot only, no kit key", () => {
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button type="button">Account</button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>x</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>,
+    );
+    const trigger = screen.getByRole("button", { name: "Account" });
+    expect(trigger.getAttribute("data-slot")).toBe("dropdown-menu-trigger");
+    expect(trigger.hasAttribute("data-kit-slot")).toBe(false);
   });
 
   it("asChild onto a host element passes data-slot only, no kit key", () => {
