@@ -38,6 +38,9 @@ createRoot(document.getElementById("root")).render(
     <Field id="device" groups={[4, 4]} mono />
     <Field id="twofa" groups={[3, 3]} size="lg" />
     <Field id="invalid" groups={[3, 3]} size="lg" status="error" />
+    <div id="phone" style={{ width: 358, marginInline: 16 }}>
+      <Field id="narrow" groups={[4, 4]} mono />
+    </div>
     <CenteredShell variant="auth-canonical" preset="device-authorization">
       <Field id="preset" groups={[4, 4]} mono />
     </CenteredShell>
@@ -107,7 +110,9 @@ describe('InputOTPGroup appearance="boxed"', { timeout: 60_000 }, () => {
     const page = await fixture.open("", { width: 1280, height: 900 });
     const m = await page.evaluate(measure, "preset");
     await page.close();
-    expect(m.w).toBeCloseTo(40, 0);
+    // The preset's --otp-slot-inline-size (27.5px) does not reach it; at most the row gives way a
+    // pixel or two to fit the 380px card.
+    expect(m.w).toBeGreaterThan(36);
     expect(m.h).toBeCloseTo(52, 0);
   });
 
@@ -121,5 +126,40 @@ describe('InputOTPGroup appearance="boxed"', { timeout: 60_000 }, () => {
     expect(moving.animation).toBe("ui-otp-reject");
     expect(still.animation).toBe("none");
     expect(valid.animation).toBe("none");
+  });
+
+  it("fits a 4+4 code into a 358px phone column without page overflow", async () => {
+    const page = await fixture.open("", { width: 390, height: 844 });
+    const m = await page.evaluate(() => {
+      const col = document.getElementById("phone")!.getBoundingClientRect();
+      const slots = [...document.querySelectorAll('#narrow [data-slot="input-otp-slot"]')].map(
+        (s) => s.getBoundingClientRect(),
+      );
+      return {
+        right: Math.max(...slots.map((r) => r.right)),
+        colRight: col.right,
+        w: slots[0]!.width,
+        h: slots[0]!.height,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    await page.close();
+    expect(m.right).toBeLessThanOrEqual(m.colRight + 0.5);
+    expect(m.w).toBeGreaterThanOrEqual(28);
+    expect(m.w).toBeLessThan(40);
+    expect(m.h).toBeCloseTo(52, 0);
+    expect(m.overflow).toBe(0);
+  });
+
+  it("clips input-otp's password-manager widening so the page does not scroll sideways", async () => {
+    const page = await fixture.open("", { width: 390, height: 844 });
+    const overflow = await page.evaluate(() => {
+      // What input-otp does when it pushes a password-manager badge: the hidden input grows 40px.
+      const input = document.querySelector<HTMLInputElement>("#narrow input")!;
+      input.style.width = "calc(100% + 40px)";
+      return document.documentElement.scrollWidth - document.documentElement.clientWidth;
+    });
+    await page.close();
+    expect(overflow).toBe(0);
   });
 });

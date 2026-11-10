@@ -1742,6 +1742,12 @@
   .ui-otp-container {
     display: flex;
     align-items: center;
+    /* input-otp widens its hidden <input> by 40px (calc(100% + 40px)) to push a password-manager
+     * badge beside the row; that box is invisible but still scrollable overflow, and on a phone it
+     * pushed the page sideways. Clip it, keeping room for the focus ring: BOTH axes, because a
+     * single-axis clip ignores overflow-clip-margin and would shave the ring. */
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
     justify-content: var(--otp-container-align, flex-start);
     gap: var(--space-2);
   }
@@ -1915,12 +1921,25 @@
    * takes the larger two-factor step; xs/sm fall back to the shared control ladder. The ring, the
    * invalid/warning edge and the disabled fill come from the slot rules above unchanged. */
   .ui-otp-group[data-appearance="boxed"] {
+    min-width: 0;
+    flex: 0 1 auto;
     gap: var(--otp-boxed-gap);
+  }
+  /* A boxed row SHRINKS to its column: 8 device boxes at 40px plus the separator are wider than a
+   * 390px phone column, so each box is a flex item that starts at its token width and gives way
+   * down to --otp-boxed-slot-min-inline-size, the row never wider than the container. */
+  .ui-otp-container:has(.ui-otp-group[data-appearance="boxed"]) {
+    min-width: 0;
+    max-width: 100%;
   }
   .ui-otp-group[data-appearance="boxed"] .ui-otp-slot,
   .ui-otp-group[data-appearance="boxed"] .ui-otp-slot:first-child,
   .ui-otp-group[data-appearance="boxed"] .ui-otp-slot:last-child {
+    /* `width` is the preferred size (and what the group's intrinsic width adds up); flex-shrink lets
+     * it give way in a narrow column, never below the min. */
     width: var(--otp-boxed-slot-inline-size);
+    min-width: var(--otp-boxed-slot-min-inline-size);
+    flex: 0 1 auto;
     height: var(--otp-boxed-slot-block-size);
     border-inline-start-width: var(--control-border-width, var(--stroke-hairline));
     border-radius: var(

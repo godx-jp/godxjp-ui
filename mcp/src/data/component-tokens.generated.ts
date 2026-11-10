@@ -2644,6 +2644,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "scale-exempt: 58px two-factor box, the larger 6-digit challenge"
   },
   {
+    "name": "--otp-boxed-slot-min-inline-size",
+    "value": "1.75rem",
+    "description": "scale-exempt: 28px floor a boxed slot shrinks to in a narrow (phone) column"
+  },
+  {
     "name": "--otp-boxed-slot-font-size",
     "value": "1.5rem",
     "description": "scale-exempt: 24px code digit, read at arm's length off another device"

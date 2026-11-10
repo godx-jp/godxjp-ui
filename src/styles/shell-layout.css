@@ -873,20 +873,21 @@
     min-width: 0;
     flex-direction: column;
   }
-  .ui-auth-account-name,
-  .ui-auth-account-status {
+  .ui-auth-account-name {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-  .ui-auth-account-name {
     color: hsl(var(--foreground));
     font-size: var(--auth-account-summary-email-font-size);
     line-height: var(--auth-account-summary-email-line-height);
     font-weight: var(--font-weight-medium);
   }
   .ui-auth-account-status {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: hsl(var(--muted-foreground));
     font-size: var(--auth-account-summary-status-font-size);
     line-height: var(--line-height-normal);

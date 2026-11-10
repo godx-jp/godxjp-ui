@@ -798,6 +798,8 @@
   --otp-boxed-slot-inline-size-lg: 3rem;
   /* scale-exempt: 58px two-factor box, the larger 6-digit challenge */
   --otp-boxed-slot-block-size-lg: 3.625rem;
+  /* scale-exempt: 28px floor a boxed slot shrinks to in a narrow (phone) column */
+  --otp-boxed-slot-min-inline-size: 1.75rem;
   /* scale-exempt: 24px code digit, read at arm's length off another device */
   --otp-boxed-slot-font-size: 1.5rem;
   /* scale-exempt: 26px two-factor digit */
