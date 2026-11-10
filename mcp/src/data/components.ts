@@ -11533,10 +11533,10 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       },
       {
         name: "variant",
-        type: '"default" | "line" | "card" | "editable-card"',
+        type: '"default" | "line" | "card" | "editable-card" | "chips"',
         defaultValue: '"default"',
         description:
-          "Trigger-strip appearance — this is Ant Design's `type` under the library's own `variant` vocabulary. `default` is the pill strip (antd has no equivalent). `line` is UNDERLINE-ONLY: the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. `card` gives each tab a boxed face on a rail (--tabs-card-*). `editable-card` is `card` plus the add button and per-tab remove shortcut, and needs `onEdit` to do anything. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant=\"line\">`.",
+          "Trigger-strip appearance — this is Ant Design's `type` under the library's own `variant` vocabulary. `default` is the pill strip (antd has no equivalent). `line` is UNDERLINE-ONLY: the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. `card` gives each tab a boxed face on a rail (--tabs-card-*). `editable-card` is `card` plus the add button and per-tab remove shortcut, and needs `onEdit` to do anything. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant=\"line\">`. `chips` — the phone desktop switcher: each tab a separate rounded chip with a gap (selected = ink fill --tabs-chip-active-background under inverse text, the rest --tabs-chip-background muted), the strip scrolling sideways, `onAdd` a round chip at the end; keyboard and ARIA unchanged.",
       },
       {
         name: "tabPlacement",

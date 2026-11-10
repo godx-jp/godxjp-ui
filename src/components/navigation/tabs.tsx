@@ -526,7 +526,7 @@ export function Tabs({
   const addInline =
     showAdd &&
     resolvedOrientation === "horizontal" &&
-    (variant === "default" || variant === "line");
+    (variant === "default" || variant === "line" || variant === "chips");
   // `collapsible` counts even while NOTHING overflows. If the bar row appeared only once a tab
   // went out of view, the strip would be re-parented mid-scroll — remounting the list and losing
   // both its scroll offset and the observers watching it.
@@ -628,10 +628,19 @@ export function Tabs({
     // (`justify-content` centres its CONTENT). `safe` keeps the overflow rule the strip
     // already depends on — plain `center` strands the leading tab outside the scrollport.
     centered && "mx-auto justify-center-safe",
+    // CHIPS strip: no joined pill track — separate chips with a gap, the strip scrolling sideways.
+    // The block inset is the focus ring's reach, because the strip clips its block axis.
+    variant === "chips" &&
+      "justify-start gap-[var(--tabs-chips-gap)] rounded-none px-0 py-[var(--tabs-chips-list-space-inset-y)]",
     addInline && "data-[orientation=horizontal]:w-auto",
     listClassName,
   );
   const itemTriggerClassName = cn(
+    // CHIPS face: a content-width rounded chip. The ink is a utility (the base trigger's own
+    // muted / active ink are utilities too); the fills are components-layer rules keyed on the
+    // root, in src/styles/navigation-layout.css.
+    variant === "chips" &&
+      "flex-none rounded-[var(--tabs-chip-radius)] px-[var(--tabs-chip-padding-x)] py-[var(--tabs-chip-padding-y)] text-foreground data-[state=active]:text-[hsl(var(--tabs-chip-active-foreground,var(--background)))]",
     // Geometry only — the active underline is the token-owned `::after` bar the
     // line variant already owns (never a second, hand-rolled border-b indicator).
     // They are arbitrary-value utilities so tailwind-merge keeps dropping the pill

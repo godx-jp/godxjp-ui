@@ -316,6 +316,29 @@
     );
   }
 
+  /* `variant="chips"` — separate chips: no track fill, a muted chip per tab, the selected one an
+   * ink fill (`--tabs-chip-active-background`, default --foreground) under inverse text. Keyed on
+   * the ROOT so they out-rank the default track / active-tab fills above. */
+  [data-slot="tabs"][data-variant="chips"] [data-slot="tabs-list"] {
+    background-color: transparent;
+  }
+
+  [data-slot="tabs"][data-variant="chips"] [data-slot="tabs-trigger"] {
+    background-color: var(--tabs-chip-background, hsl(var(--muted)));
+  }
+
+  [data-slot="tabs"][data-variant="chips"] [data-slot="tabs-trigger"][data-state="active"] {
+    background-color: var(--tabs-chip-active-background, hsl(var(--foreground)));
+  }
+
+  /* The add button as a round chip at the end of the run. */
+  .ui-tabs-bar[data-variant="chips"] > .ui-tabs-add {
+    border-width: 0;
+    border-radius: var(--radius-pill);
+    background: var(--tabs-chip-background, hsl(var(--muted)));
+    color: hsl(var(--foreground));
+  }
+
   /* The bar row: strip + `editable-card` add button + the two `extra` slots on ONE inline run.
    * It only exists when something needs it, so a plain <Tabs items> keeps the DOM it always had. */
   .ui-tabs-bar {

@@ -16,6 +16,8 @@ import { Tabs } from "@godxjp/ui/navigation";
  * - `AppShell aside` — the "add" catalogue PUSHES the page instead of covering it; on a phone it
  *   is a full-screen panel, and Esc (or the close button) reports `onAsideOpenChange(false)`.
  * - `Card variant="dashed" accent="primary"` — the area being edited.
+ * - `Tabs variant="chips"` — the phone switcher: one rounded chip per desktop, the selected one
+ *   inked, the ＋ a round chip at the end, the strip scrolling sideways.
  * - `TopbarSearch measure="wide"` — the home search at its ~420px measure.
  */
 export default function Demo() {
@@ -84,6 +86,15 @@ export default function Demo() {
                 </Button>
               ),
             }}
+          />
+          {/* The phone switcher (Home f5): separate chips, the ＋ a round chip at the end. */}
+          <Tabs
+            variant="chips"
+            aria-label={t("homeEditingDocs.desktopsPhone")}
+            items={desktops.map((id) => ({ value: id, label: label(id) }))}
+            defaultValue="home"
+            onAdd={() => setDesktops((list) => [...list, `desktop-${list.length + 1}`])}
+            addLabel={t("homeEditingDocs.addDesktop")}
           />
           <Card variant="dashed" accent="primary">
             <CardContent>

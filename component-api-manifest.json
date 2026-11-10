@@ -19487,7 +19487,7 @@
           "origin": "owned",
           "required": false,
           "type": "TabsVariantProp | undefined",
-          "values": ["line", "default", "card", "editable-card"],
+          "values": ["line", "default", "card", "editable-card", "chips"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]

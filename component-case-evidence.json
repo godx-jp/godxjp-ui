@@ -3349,12 +3349,15 @@
             "line",
             "default",
             "card",
-            "editable-card"
+            "editable-card",
+            "chips"
           ],
           "evidence": [
             "docs/navigation/tabs.tsx",
             "src/components/navigation/__tests__/tabs-variants.test.tsx",
-            "src/components/navigation/__tests__/tabs-antd-parity.test.tsx"
+            "src/components/navigation/__tests__/tabs-antd-parity.test.tsx",
+            "docs/layout/home-editing.tsx",
+            "src/components/navigation/__tests__/tabs-chips.test.tsx"
           ]
         },
         "tabPlacement": {

@@ -280,6 +280,17 @@
   --tabs-overflow-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --tabs-overflow-icon-size: var(--control-icon-size);
   --tabs-add-size: var(--band-height-md);
+  /* `variant="chips"` — the phone desktop switcher. Fills are `initial` role mirrors resolved at
+   * the call site: --tabs-chip-background = hsl(var(--muted)); --tabs-chip-active-background =
+   * hsl(var(--foreground)); --tabs-chip-active-foreground (an HSL triple) = var(--background). */
+  --tabs-chips-gap: var(--space-2);
+  --tabs-chips-list-space-inset-y: calc(var(--focus-ring-width) + var(--focus-ring-glow-width));
+  --tabs-chip-radius: var(--radius-pill);
+  --tabs-chip-padding-x: calc(var(--space-3) + 0.125rem);
+  --tabs-chip-padding-y: calc(var(--space-1) + 0.125rem);
+  --tabs-chip-background: initial;
+  --tabs-chip-active-background: initial;
+  --tabs-chip-active-foreground: initial;
   --tabs-add-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --tabs-add-icon-size: var(--control-icon-size);
   --tabs-trigger-icon-size: var(--control-icon-size);

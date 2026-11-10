@@ -11434,6 +11434,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--tabs-chips-gap",
+    "value": "var(--space-2)",
+    "description": "`variant=\"chips\"` — the phone desktop switcher. Fills are `initial` role mirrors resolved at the call site: --tabs-chip-background = hsl(var(--muted)); --tabs-chip-active-background = hsl(var(--foreground)); --tabs-chip-active-foreground (an HSL triple) = var(--background)."
+  },
+  {
+    "name": "--tabs-chips-list-space-inset-y",
+    "value": "calc(var(--focus-ring-width) + var(--focus-ring-glow-width))",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-radius",
+    "value": "var(--radius-pill)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-padding-x",
+    "value": "calc(var(--space-3) + 0.125rem)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-padding-y",
+    "value": "calc(var(--space-1) + 0.125rem)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-background",
+    "value": "initial",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-active-background",
+    "value": "initial",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-active-foreground",
+    "value": "initial",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
     "name": "--tabs-add-radius",
     "value": "initial",
     "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
