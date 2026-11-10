@@ -12,9 +12,14 @@
     },
     {
       "defaultValue": "\"default\"",
-      "description": "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border.",
+      "description": "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border. `glass` = a translucent pill for a DARK / brand surface (decorative app tiles on a sign-in story): fill and edge are the surface's own `--foreground` at low alpha (--badge-glass-background-alpha / -border-alpha), larger box (--badge-glass-space-x/-y, -font-size, -radius), so it reads wherever the ink is re-scoped — EditorialAuth appearance=\"brand\" sets it to white. Pair with `leading` for the app's letter tile.",
       "name": "variant",
-      "type": "\"default\" | \"secondary\" | \"outline\" | \"dashed\""
+      "type": "\"default\" | \"secondary\" | \"outline\" | \"dashed\" | \"glass\""
+    },
+    {
+      "description": "A decorative node before the label — an app's letter tile (`<Avatar shape=\"square\" size=\"xs\">T</Avatar>`), a mark. aria-hidden; the label carries the name.",
+      "name": "leading",
+      "type": "ReactNode"
     },
     {
       "description": "SEMANTIC colour intent (BadgeTone = ToneProp + `primary`). This is the colour knob — success/warning/destructive/info/etc. `primary` is a SOFT brand pill (tinted brand fill + brand text) for the dashboard role-pill pattern; for a SOLID brand fill use `variant=\"default\"`. Keep variant for structure, tone for meaning.",

@@ -416,7 +416,10 @@ export type BadgeProp = {
    * a `<label>`, a `<p>`). Swaps the tag only.
    */
   as?: "div" | "span";
-  variant?: "default" | "secondary" | "outline";
+  /** `glass` — a translucent pill for a dark / brand surface (decorative app tiles). */
+  variant?: "default" | "secondary" | "outline" | "dashed" | "glass";
+  /** Decorative node before the label (an app's letter tile); `aria-hidden`. */
+  leading?: React.ReactNode;
   /** Status tones plus a brand `primary` tone (soft brand pill); solid brand = `variant="default"`. */
   tone?: ToneProp | "primary";
   /**

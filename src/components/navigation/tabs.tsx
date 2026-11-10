@@ -395,6 +395,8 @@ export function Tabs({
   onEdit,
   addIcon,
   hideAdd,
+  onAdd,
+  addLabel,
   closeIcon,
   onTabClick,
   overflow = "scroll",
@@ -514,7 +516,17 @@ export function Tabs({
   const overflowItems = collapsible
     ? items.filter((item) => hiddenValues.includes(item.value))
     : [];
-  const showAdd = editable && !hideAdd && Boolean(onEdit);
+  const showAdd = !hideAdd && (onAdd != null || (editable && Boolean(onEdit)));
+  /*
+   * THE ADD BUTTON SITS RIGHT AFTER THE LAST TAB on the `default` and `line` strips: the strip
+   * stops growing (content width) and, for `line`, the rail is drawn by the bar row so it still
+   * runs to the end. The card strips keep it at the strip's end — their rail and joined body are
+   * the strip's own box, which must keep the full row.
+   */
+  const addInline =
+    showAdd &&
+    resolvedOrientation === "horizontal" &&
+    (variant === "default" || variant === "line");
   // `collapsible` counts even while NOTHING overflows. If the bar row appeared only once a tab
   // went out of view, the strip would be re-parented mid-scroll — remounting the list and losing
   // both its scroll offset and the observers watching it.
@@ -616,6 +628,7 @@ export function Tabs({
     // (`justify-content` centres its CONTENT). `safe` keeps the overflow rule the strip
     // already depends on — plain `center` strands the leading tab outside the scrollport.
     centered && "mx-auto justify-center-safe",
+    addInline && "data-[orientation=horizontal]:w-auto",
     listClassName,
   );
   const itemTriggerClassName = cn(
@@ -873,7 +886,12 @@ export function Tabs({
           {items ? (
             <>
               {needsBar ? (
-                <div data-slot="tabs-bar" className="ui-tabs-bar">
+                <div
+                  data-slot="tabs-bar"
+                  data-add={addInline ? "inline" : undefined}
+                  data-variant={addInline ? variant : undefined}
+                  className="ui-tabs-bar"
+                >
                   {extraStart ? (
                     <div data-slot="tabs-extra" data-side="start" className="ui-tabs-extra">
                       {extraStart}
@@ -885,8 +903,8 @@ export function Tabs({
                       type="button"
                       data-slot="tabs-add"
                       className="ui-tabs-add"
-                      aria-label={t("navigation.tabs.addTab")}
-                      onClick={(event) => onEdit?.(event, "add")}
+                      aria-label={addLabel ?? t("navigation.tabs.addTab")}
+                      onClick={(event) => (onAdd ? onAdd(event) : onEdit?.(event, "add"))}
                     >
                       {addIcon ?? <Plus className="ui-tabs-add-icon" aria-hidden="true" />}
                     </button>

@@ -17,9 +17,9 @@
     },
     {
       "defaultValue": "\"default\"",
-      "description": "Surface fill AND edge. `outline` is Ant Design's `outlined` — no fill, hairline kept. `borderless` is Ant Design's `variant=\"borderless\"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement=\"perimeter\"` instead.",
+      "description": "Surface fill AND edge. `outline` is Ant Design's `outlined` — no fill, hairline kept. `borderless` is Ant Design's `variant=\"borderless\"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement=\"perimeter\"` instead. `dashed` is an EDITING / drop area (a layout being edited, an \"add\" tile): no fill, no elevation, a dashed perimeter (--card-dashed-border-color, default the hairline colour; --card-dashed-border-width, default --stroke-md); `accent` retints the dash on all four sides — `<Card variant=\"dashed\" accent=\"primary\">` around the edited grid.",
       "name": "variant",
-      "type": "\"default\" | \"muted\" | \"outline\" | \"borderless\" | \"featured\""
+      "type": "\"default\" | \"muted\" | \"outline\" | \"borderless\" | \"featured\" | \"dashed\""
     },
     {
       "description": "Ant Design `hoverable` — the card lifts to `--card-hover-shadow` on hover and takes a pointer cursor. PRESENTATION ONLY: it announces nothing and binds no handler, so pair it with a real control (a Link/Button inside, or the whole card rendered as one via `asChild`). Never with a bare onClick on the Card div — a keyboard or screen-reader user cannot reach that. Composes with `accent`/`accentPlacement=\"perimeter\"`: the hover raises the shadow TOKEN, so the attention ring survives the hover.",

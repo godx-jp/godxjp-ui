@@ -2713,6 +2713,23 @@
     "email": "メールアドレス",
     "next": "次へ",
     "or": "または",
-    "passkey": "パスキーでログイン"
+    "passkey": "パスキーでログイン",
+    "bandSubtitle": "タスク・レストラン管理・Pages…"
+  },
+  "homeEditingDocs": {
+    "home": "ホーム",
+    "shop": "店舗の運営",
+    "newDesktop": "新しいデスクトップ",
+    "add": "追加する",
+    "close": "閉じる",
+    "search": "ウィジェットを検索",
+    "myTasks": "自分のタスク",
+    "approvals": "承認待ち",
+    "title": "「ホーム」を編集",
+    "desktops": "デスクトップ",
+    "addDesktop": "デスクトップを追加",
+    "edit": "編集",
+    "todo": "やること",
+    "news": "お知らせ"
   }
 }

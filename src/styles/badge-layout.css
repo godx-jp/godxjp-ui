@@ -128,6 +128,26 @@
     height: var(--badge-remove-icon-size);
   }
 
+  /* `variant="glass"` — a translucent pill for a dark / brand surface: fill and edge are the
+   * surface's own ink at low alpha, so it reads on whatever ground re-scopes `--foreground`
+   * (EditorialAuth appearance="brand" sets it to white). */
+  [data-slot="badge"][data-variant="glass"] {
+    --badge-space-x: var(--badge-glass-space-x);
+    --badge-space-y: var(--badge-glass-space-y);
+    --badge-space-gap: var(--badge-glass-space-gap);
+    --badge-font-size: var(--badge-glass-font-size);
+    --badge-radius: var(--badge-glass-radius);
+    border-color: hsl(var(--foreground) / var(--badge-glass-border-alpha));
+    background-color: hsl(var(--foreground) / var(--badge-glass-background-alpha));
+    color: hsl(var(--foreground));
+    backdrop-filter: blur(var(--badge-glass-backdrop-blur-size));
+  }
+
+  [data-slot="badge-leading"] {
+    display: inline-flex;
+    flex: none;
+  }
+
   /* AgentBadge — the "AI agent" label beside a name: violet outline, transparent ground, never
    * wraps. Reads the --agent role through --badge-agent-* role-mirror knobs. */
   [data-slot="badge"][data-agent] {

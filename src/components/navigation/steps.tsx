@@ -88,6 +88,7 @@ export function Steps({
   responsive = true,
   separator = "chevron",
   percent,
+  align = "center",
   onValueChange,
   className,
   ...props
@@ -120,6 +121,7 @@ export function Steps({
     <ol
       data-direction={inline ? undefined : isVertical ? "vertical" : "horizontal"}
       data-type={type}
+      data-align={inline && align === "start" ? "start" : undefined}
       className={cn("flex w-full", inline ? "ui-steps-inline" : "ui-steps-list", className)}
       // The localized name is the DEFAULT, so a caller-supplied `aria-label` still wins — the
       // spread has to come after it, not before.

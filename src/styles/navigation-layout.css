@@ -344,6 +344,42 @@
     flex: 1 1 auto;
   }
 
+  /* `onAdd` on a default / line strip: the strip is content-width so the add button sits right
+   * after the last tab, the end `extra` is pushed to the row's end, and the line rail moves from
+   * the strip to the bar so it still spans the row. */
+  [data-slot="tabs"]:not([data-orientation="vertical"])
+    .ui-tabs-bar[data-add="inline"]
+    > [data-slot="tabs-list"] {
+    flex: 0 1 auto;
+  }
+
+  .ui-tabs-bar[data-add="inline"] > .ui-tabs-extra[data-side="end"] {
+    margin-inline-start: auto;
+  }
+
+  /* The line rail continues past the content-width strip to the row's end. The strip keeps its
+   * own hairline; this one is drawn at the SAME line — the strip's border box reaches the focus-
+   * ring inset below the bar (its negative block margin), so the rail is offset by that inset. */
+  .ui-tabs-bar[data-add="inline"][data-variant="line"] {
+    position: relative;
+  }
+
+  .ui-tabs-bar[data-add="inline"][data-variant="line"]::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: calc(
+      -1 *
+        var(
+          --tabs-list-focus-ring-space-inset,
+          calc(var(--focus-ring-width) + var(--focus-ring-glow-width))
+        )
+    );
+    block-size: var(--stroke-hairline);
+    background: hsl(var(--border));
+    pointer-events: none;
+  }
+
   /* A VERTICAL STRIP MUST NEVER BE SHRUNK OUT OF EXISTENCE (gh#502). Strip and panel are two flex
    * items on one inline axis, and a flex item shrinks by default — so a panel whose content has a
    * wide min-content takes the whole row and leaves the strip at its `min-inline-size: 0`.
@@ -1034,6 +1070,9 @@
     gap: var(--steps-inline-gap);
     font-size: var(--steps-inline-font-size);
     line-height: var(--line-height-tight);
+  }
+  .ui-steps-inline[data-align="start"] {
+    justify-content: flex-start;
   }
 
   .ui-steps-inline-item {

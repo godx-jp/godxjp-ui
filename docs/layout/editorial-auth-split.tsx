@@ -1,7 +1,7 @@
 import { KeyRound } from "lucide-react";
 import { useTranslation } from "@godxjp/ui/i18n";
 
-import { Badge } from "@godxjp/ui/data-display";
+import { Avatar, AvatarFallback, Badge } from "@godxjp/ui/data-display";
 import { Form, FormField, Input } from "@godxjp/ui/data-entry";
 import { Button, Logo, Text } from "@godxjp/ui/general";
 import {
@@ -18,8 +18,9 @@ import {
  * gutters): the brand story fills the start side edge to edge over its grid texture, the logo at
  * the top, the title + copy + free-form app chips centred, the benefits pinned at the bottom; the
  * form is a plain centred column, not a card. Below 48rem the story is a full-bleed band over the
- * form (bandDescription="hidden" keeps that band to the logo and the title). Verify at 1280x800
- * and 390x844.
+ * form, showing the short `bandSubtitle` instead of the long description. The app chips are glass
+ * Badges with a letter tile, legible on the brand surface; the form card owns the page h1 and
+ * takes the 48px sign-in controls (`controlSize="lg"`). Verify at 1280x800 and 390x844.
  */
 export default function Demo() {
   const { t } = useTranslation();
@@ -28,17 +29,34 @@ export default function Demo() {
       layout="split"
       appearance="brand"
       titleSize="md"
-      bandDescription="hidden"
+      level={2}
+      bandSubtitle={t("editorialAuthSplit.bandSubtitle")}
       artFrame="none"
       eyebrow={<Logo mark="godx-lockup" productSuffix="ID" />}
       title={t("editorialAuthSplit.title")}
       description={t("editorialAuthSplit.lead")}
       art={
         <Flex wrap gap="sm">
-          <Badge variant="outline">{t("editorialAuthSplit.appTasks")}</Badge>
-          <Badge variant="outline">{t("editorialAuthSplit.appRestaurant")}</Badge>
-          <Badge variant="outline">{t("editorialAuthSplit.appPages")}</Badge>
-          <Badge variant="outline">{t("editorialAuthSplit.appAttendance")}</Badge>
+          {(
+            [
+              ["T", "appTasks"],
+              ["R", "appRestaurant"],
+              ["P", "appPages"],
+              ["K", "appAttendance"],
+            ] as const
+          ).map(([letter, key]) => (
+            <Badge
+              key={key}
+              variant="glass"
+              leading={
+                <Avatar shape="square" size="xs" appearance="tinted">
+                  <AvatarFallback>{letter}</AvatarFallback>
+                </Avatar>
+              }
+            >
+              {t(`editorialAuthSplit.${key}`)}
+            </Badge>
+          ))}
         </Flex>
       }
       benefits={[
@@ -49,7 +67,8 @@ export default function Demo() {
     >
       <EditorialAuthCard
         title={t("editorialAuthSplit.signIn")}
-        level={2}
+        level={1}
+        controlSize="lg"
         footer={
           <Flex justify="between" align="center">
             <Text>{t("editorialAuthSplit.newHere")}</Text>

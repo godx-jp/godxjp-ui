@@ -51,6 +51,10 @@ export function AppShell({
   mobileNavOnCloseAutoFocus,
   mobileNavOpen,
   onMobileNavOpenChange,
+  aside,
+  asideOpen = true,
+  onAsideOpenChange,
+  asideLabel,
 }: AppShellProp) {
   const { t } = useTranslation();
   const navigationMode = useAppShellNavigationMode();
@@ -403,6 +407,8 @@ export function AppShell({
       data-topbar-span={topbarSpan === "full" ? "full" : undefined}
       data-nav-rail={navRail !== undefined ? "" : undefined}
       data-nav-rail-position={navRail !== undefined ? navRailPosition : undefined}
+      // Emitted only while a panel is open, so a shell without one keeps its exact box.
+      data-aside={aside !== undefined && asideOpen ? "open" : undefined}
     >
       {/* Grid areas place these regardless of source order, so source order is free to be the
        * ACCESSIBLE one: whichever region the eye reaches first comes first in the DOM. With a
@@ -447,6 +453,21 @@ export function AppShell({
           {mobileTabBar}
         </ShellTabBar>
       )}
+      {/* LAST in source: the panel is reached after the page it edits (WCAG 2.4.3). */}
+      {aside !== undefined && asideOpen ? (
+        <aside
+          className="app-aside"
+          aria-label={asideLabel}
+          onKeyDown={(event) => {
+            if (event.key === "Escape" && onAsideOpenChange) {
+              event.stopPropagation();
+              onAsideOpenChange(false);
+            }
+          }}
+        >
+          {aside}
+        </aside>
+      ) : null}
     </div>
   );
 }

@@ -2721,6 +2721,23 @@
     "email": "Email address",
     "next": "Next",
     "or": "or",
-    "passkey": "Sign in with a passkey"
+    "passkey": "Sign in with a passkey",
+    "bandSubtitle": "Tasks · Restaurant · Pages…"
+  },
+  "homeEditingDocs": {
+    "home": "Home",
+    "shop": "Store operations",
+    "newDesktop": "New desktop",
+    "add": "Add",
+    "close": "Close",
+    "search": "Search widgets",
+    "myTasks": "My tasks",
+    "approvals": "Waiting for approval",
+    "title": "Edit “Home”",
+    "desktops": "Desktops",
+    "addDesktop": "Add a desktop",
+    "edit": "Edit",
+    "todo": "To do",
+    "news": "Notifications"
   }
 }

@@ -269,6 +269,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Badge component tokens."
   },
   {
+    "name": "--badge-glass-space-x",
+    "value": "calc(var(--space-3) + 0.125rem)",
+    "description": "`variant=\"glass\"` — the translucent pill on a dark / brand surface (decorative app tiles)."
+  },
+  {
+    "name": "--badge-glass-space-y",
+    "value": "calc(var(--space-2) + 0.125rem)",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-space-gap",
+    "value": "calc(var(--space-2) + 0.125rem)",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-font-size",
+    "value": "var(--font-size-base)",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-radius",
+    "value": "calc(var(--radius) + 0.375rem)",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-background-alpha",
+    "value": "0.08",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-border-alpha",
+    "value": "0.19",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-backdrop-blur-size",
+    "value": "6px",
+    "description": "Badge component tokens."
+  },
+  {
     "name": "--badge-agent-border",
     "value": "initial",
     "description": "AgentBadge — the violet outline and ink of the \"AI agent\" label. Role-mirrors, `initial`: hsl(var(--agent)) border and hsl(var(--text-agent)) ink at the call site."
@@ -527,6 +567,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--card-featured-border-color",
     "value": "initial",
     "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card at once. Default = hsl(var(--primary))."
+  },
+  {
+    "name": "--card-dashed-border-color",
+    "value": "initial",
+    "description": "`variant=\"dashed\"` — the editing / drop area. Colour default = hsl(var(--border)) (an `accent` retints it); width default = var(--stroke-md). Both resolved at the call site."
+  },
+  {
+    "name": "--card-dashed-border-width",
+    "value": "initial",
+    "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
     "name": "--card-featured-ring-width",
@@ -5559,6 +5609,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`bandDescription=\"hidden\"`: the description's display — `none` only below the phone line."
   },
   {
+    "name": "--editorial-auth-band-subtitle-display",
+    "value": "none",
+    "description": "`bandSubtitle`: shown only below the phone line."
+  },
+  {
+    "name": "--editorial-auth-band-subtitle-font-size",
+    "value": "var(--font-size-base)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-control-height-lg",
+    "value": "var(--band-height-2xl)",
+    "description": "`EditorialAuthCard controlSize=\"lg\"`: the 48px sign-in control tier."
+  },
+  {
     "name": "--editorial-auth-description-max-width",
     "value": "30.625rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
@@ -5961,6 +6026,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-auth-band-description-display",
     "value": "none",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-band-subtitle-display",
+    "value": "block",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
@@ -12467,6 +12537,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-shell-sidebar-width",
     "value": "16rem",
     "description": "Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once instead of forking `.app-root`. THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word \"rail\": - `--app-shell-sidebar-width` the sidebar track, expanded. - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`. - `--app-shell-nav-rail-width` a SECOND, separate track that only exists when the `navRail` slot is filled (the Slack/Teams shape). The middle one shipped as `--app-shell-rail-width` through 19.x, which read as \"the width of the rail\" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both 4rem, both spelled \"rail\", meaning entirely different things. Renamed with NO alias: an alias would resolve to a plausible width in either reading and break silently, which is precisely the failure class this package gates against everywhere else."
+  },
+  {
+    "name": "--app-shell-aside-width",
+    "value": "26.25rem",
+    "description": "`aside` — the inline-end panel that pushes the page. Background default = hsl(var(--card)), an HSL triple knob resolved at the call site."
+  },
+  {
+    "name": "--app-shell-aside-background",
+    "value": "initial",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-sidebar-collapsed-width",

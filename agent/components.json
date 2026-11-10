@@ -2799,6 +2799,11 @@
         "type": "\"visible\" | \"hidden\""
       },
       {
+        "description": "A short line shown ONLY in the phone band (< 48rem), in place of the description; desktop and tablet keep `description` (--editorial-auth-band-subtitle-display / -font-size).",
+        "name": "bandSubtitle",
+        "type": "ReactNode"
+      },
+      {
         "defaultValue": "\"card\"",
         "description": "\"card\" keeps the story beside the form card inside the page gutters. \"split\" is a FULL-BLEED sign-in page — render it as the page root, no shell padding: the story fills its side edge to edge and top to bottom (--editorial-auth-split-track-size 1.15fr 1fr, --editorial-auth-split-min-height 100dvh) over a grid texture (--editorial-auth-split-texture-background-image; none drops it), logo at the top, title + copy + art centred, benefits pinned at the bottom in a row; the form card becomes a plain centred column (--editorial-auth-split-form-max-width 25rem). Below 48rem the story is a full-bleed band over the form. Pair with appearance=\"brand\".",
         "name": "layout",
@@ -2850,14 +2855,20 @@
         "type": "ReactNode"
       },
       {
-        "description": "Heading level. Default: 2.",
+        "description": "Heading level. Default: 2. `1` makes the card title the page h1 (pair with `<EditorialAuth level={2}>`).",
         "name": "level",
-        "type": "2 | 3"
+        "type": "1 | 2 | 3"
       },
       {
         "description": "Copy.",
         "name": "description",
         "type": "ReactNode"
+      },
+      {
+        "defaultValue": "\"md\"",
+        "description": "\"lg\" scopes `--control-height` inside the card to --editorial-auth-card-control-height-lg (48px), so every Input / Button / Select in the form takes the sign-in density.",
+        "name": "controlSize",
+        "type": "\"md\" | \"lg\""
       },
       {
         "description": "The form.",
@@ -3432,6 +3443,27 @@
         "description": "Change handler for the mobile drawer open state.",
         "name": "onMobileNavOpenChange",
         "type": "(open: boolean) => void"
+      },
+      {
+        "description": "A panel at the inline END that PUSHES the page aside instead of overlaying it (an \"add widget\" catalogue, an inspector): full height beside the topbar, --app-shell-aside-width wide (default 26.25rem; background --app-shell-aside-background, default the card surface); the topbar, main and footer give it the room. Below 48rem it covers the screen. An `<aside>` landmark named by `asideLabel`, last in focus order; bring your own header and close control.",
+        "name": "aside",
+        "type": "ReactNode"
+      },
+      {
+        "defaultValue": "true",
+        "description": "Whether `aside` is shown.",
+        "name": "asideOpen",
+        "type": "boolean"
+      },
+      {
+        "description": "Called with false when Esc is pressed inside the panel; pairs with asideOpen.",
+        "name": "onAsideOpenChange",
+        "type": "(open: boolean) => void"
+      },
+      {
+        "description": "Accessible name of the aside landmark, supplied by the product.",
+        "name": "asideLabel",
+        "type": "string"
       }
     ],
     "related": [
@@ -5899,9 +5931,9 @@
       },
       {
         "defaultValue": "\"default\"",
-        "description": "Surface fill AND edge. `outline` is Ant Design's `outlined` — no fill, hairline kept. `borderless` is Ant Design's `variant=\"borderless\"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement=\"perimeter\"` instead.",
+        "description": "Surface fill AND edge. `outline` is Ant Design's `outlined` — no fill, hairline kept. `borderless` is Ant Design's `variant=\"borderless\"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement=\"perimeter\"` instead. `dashed` is an EDITING / drop area (a layout being edited, an \"add\" tile): no fill, no elevation, a dashed perimeter (--card-dashed-border-color, default the hairline colour; --card-dashed-border-width, default --stroke-md); `accent` retints the dash on all four sides — `<Card variant=\"dashed\" accent=\"primary\">` around the edited grid.",
         "name": "variant",
-        "type": "\"default\" | \"muted\" | \"outline\" | \"borderless\" | \"featured\""
+        "type": "\"default\" | \"muted\" | \"outline\" | \"borderless\" | \"featured\" | \"dashed\""
       },
       {
         "description": "Ant Design `hoverable` — the card lifts to `--card-hover-shadow` on hover and takes a pointer cursor. PRESENTATION ONLY: it announces nothing and binds no handler, so pair it with a real control (a Link/Button inside, or the whole card rendered as one via `asChild`). Never with a bare onClick on the Card div — a keyboard or screen-reader user cannot reach that. Composes with `accent`/`accentPlacement=\"perimeter\"`: the hover raises the shadow TOKEN, so the attention ring survives the hover.",
@@ -6277,9 +6309,14 @@
       },
       {
         "defaultValue": "\"default\"",
-        "description": "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border.",
+        "description": "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border. `glass` = a translucent pill for a DARK / brand surface (decorative app tiles on a sign-in story): fill and edge are the surface's own `--foreground` at low alpha (--badge-glass-background-alpha / -border-alpha), larger box (--badge-glass-space-x/-y, -font-size, -radius), so it reads wherever the ink is re-scoped — EditorialAuth appearance=\"brand\" sets it to white. Pair with `leading` for the app's letter tile.",
         "name": "variant",
-        "type": "\"default\" | \"secondary\" | \"outline\" | \"dashed\""
+        "type": "\"default\" | \"secondary\" | \"outline\" | \"dashed\" | \"glass\""
+      },
+      {
+        "description": "A decorative node before the label — an app's letter tile (`<Avatar shape=\"square\" size=\"xs\">T</Avatar>`), a mark. aria-hidden; the label carries the name.",
+        "name": "leading",
+        "type": "ReactNode"
       },
       {
         "description": "SEMANTIC colour intent (BadgeTone = ToneProp + `primary`). This is the colour knob — success/warning/destructive/info/etc. `primary` is a SOFT brand pill (tinted brand fill + brand text) for the dashboard role-pill pattern; for a SOLID brand fill use `variant=\"default\"`. Keep variant for structure, tone for meaning.",
@@ -10922,6 +10959,16 @@
         "type": "boolean"
       },
       {
+        "description": "An ADD button for EVERY variant (\"+ new desktop\"). On the `default` and `line` strips it sits RIGHT AFTER the last tab — the strip shrinks to its tabs, the `line` rail is drawn by the bar so it still spans the row, an end `extra` is pushed to the row end; on the card variants it sits at the strip end. A real `<button>` beside the tablist: the next Tab stop after the strip, logical in RTL. On `editable-card` it wins over `onEdit(event, \"add\")`. `addIcon` replaces the glyph; not available on a route strip (items with `href`).",
+        "name": "onAdd",
+        "type": "(event: React.MouseEvent<HTMLButtonElement>) => void"
+      },
+      {
+        "description": "Accessible name of the add button, supplied by the product. Defaults to the kit's navigation.tabs.addTab.",
+        "name": "addLabel",
+        "type": "string"
+      },
+      {
         "description": "Ant Design `removeIcon` — the strip-wide default glyph on `editable-card`'s remove shortcut. An item's own `closeIcon` still wins over it, which is antd's precedence. It replaces the glyph only: the × stays an `aria-hidden` pointer shortcut inside the tab and the announced route stays Delete/Backspace, so a custom icon never becomes a second focusable control inside a `role=\"tab\"`.",
         "name": "closeIcon",
         "type": "React.ReactNode"
@@ -11331,6 +11378,12 @@
         "description": "`chevron` (›) is the breadcrumb-flavoured original; `arrow` (→) is the canonical hosted-identity progression marker — a chevron reads \"drill into\", an arrow reads \"then\", which is what a step row means. Both flip under dir=\"rtl\". Ignored by every other `type`.",
         "name": "separator",
         "type": "\"chevron\" | \"arrow\""
+      },
+      {
+        "defaultValue": "\"center\"",
+        "description": "`type=\"inline\"` only: where the run sits on its row — centred (default) or at the inline-start edge (logical in RTL), e.g. a step strip at the top of a form column.",
+        "name": "align",
+        "type": "\"center\" | \"start\""
       },
       {
         "description": "Fires with the clicked step index (0-based).",
@@ -17289,15 +17342,13 @@
         "type": "ReactNode"
       },
       {
-        "description": "Localized visible switch-account action label.",
+        "description": "Localized visible switch-account action label. Optional: omit it (and `onAction`) for a read-only signed-in row with no action.",
         "name": "actionLabel",
-        "required": true,
         "type": "ReactNode"
       },
       {
         "description": "Consumer-owned account-switch navigation/action.",
         "name": "onAction",
-        "required": true,
         "type": "() => void"
       },
       {

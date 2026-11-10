@@ -21,15 +21,13 @@
       "type": "ReactNode"
     },
     {
-      "description": "Localized visible switch-account action label.",
+      "description": "Localized visible switch-account action label. Optional: omit it (and `onAction`) for a read-only signed-in row with no action.",
       "name": "actionLabel",
-      "required": true,
       "type": "ReactNode"
     },
     {
       "description": "Consumer-owned account-switch navigation/action.",
       "name": "onAction",
-      "required": true,
       "type": "() => void"
     },
     {

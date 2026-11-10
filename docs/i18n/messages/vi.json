@@ -2713,6 +2713,23 @@
     "email": "Địa chỉ email",
     "next": "Tiếp",
     "or": "hoặc",
-    "passkey": "Đăng nhập bằng passkey"
+    "passkey": "Đăng nhập bằng passkey",
+    "bandSubtitle": "Công việc · Nhà hàng · Pages…"
+  },
+  "homeEditingDocs": {
+    "home": "Trang chủ",
+    "shop": "Vận hành cửa hàng",
+    "newDesktop": "Màn hình mới",
+    "add": "Thêm",
+    "close": "Đóng",
+    "search": "Tìm tiện ích",
+    "myTasks": "Việc của tôi",
+    "approvals": "Chờ duyệt",
+    "title": "Sửa “Trang chủ”",
+    "desktops": "Màn hình",
+    "addDesktop": "Thêm màn hình",
+    "edit": "Sửa",
+    "todo": "Việc cần làm",
+    "news": "Thông báo"
   }
 }

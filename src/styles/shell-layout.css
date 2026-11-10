@@ -434,6 +434,41 @@
       saturate(var(--surface-backdrop-saturate, 160%));
   }
 
+  /* `aside` — the inline-END panel that PUSHES the page: the root reserves its width as inline
+   * padding (every grid track shrinks by it, the topbar included) and the panel sits in that
+   * padding, full height. Below 48rem it is a full-screen panel over the page instead. */
+  .app-root[data-aside="open"] {
+    position: relative;
+    padding-inline-end: var(--app-shell-aside-width);
+  }
+
+  .app-aside {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    display: flex;
+    inline-size: var(--app-shell-aside-width);
+    min-block-size: 0;
+    flex-direction: column;
+    overflow: auto;
+    border-inline-start: var(--stroke-hairline) solid hsl(var(--border));
+    background: hsl(var(--app-shell-aside-background, var(--card)));
+  }
+
+  @media (width < 48rem) {
+    .app-root[data-aside="open"] {
+      padding-inline-end: 0;
+    }
+
+    .app-aside {
+      position: fixed;
+      z-index: var(--overlay-z-index);
+      inset: 0;
+      inline-size: auto;
+      border-inline-start: 0;
+    }
+  }
+
   .app-main {
     scroll-padding: calc(var(--focus-ring-weight) + var(--focus-outline-offset));
     grid-area: main;

@@ -35,9 +35,11 @@ export const AuthAccountSummary = React.forwardRef<HTMLDivElement, AuthAccountSu
           {email}
         </span>
       </div>
-      <Button variant="ghost" size="sm" disabled={disabled} onClick={onAction}>
-        {actionLabel}
-      </Button>
+      {actionLabel != null ? (
+        <Button variant="ghost" size="sm" disabled={disabled} onClick={onAction}>
+          {actionLabel}
+        </Button>
+      ) : null}
     </div>
   ),
 );

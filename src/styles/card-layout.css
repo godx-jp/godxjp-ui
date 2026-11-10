@@ -237,6 +237,22 @@
     padding-inline-start: var(--card-space-inset);
   }
 
+  /* `variant="dashed"` — an EDITING / drop area: no fill, no elevation, a dashed perimeter.
+   * Declared after the accent rules so an `accent` RETINTS the dash on all four sides (no rail,
+   * no solid ring — a dashed box with a solid ring around it reads as two frames). */
+  [data-slot="card"][data-variant="dashed"],
+  [data-slot="card"][data-variant="dashed"][data-accent] {
+    border-style: dashed;
+    border-width: var(--card-dashed-border-width, var(--stroke-md));
+    border-color: var(--card-dashed-border-color, hsl(var(--border)));
+    background: transparent;
+    box-shadow: none;
+  }
+
+  [data-slot="card"][data-variant="dashed"][data-accent] {
+    border-color: var(--card-accent-color);
+  }
+
   /* ── `hoverable` (antd `hoverable`) — the lift a pointer-interactive card takes ──────────
    * Ported from `components/card/style/index.ts` (antd, MIT), which pairs `cursor: pointer` with
    * a `box-shadow` transition and raises the shadow on hover.

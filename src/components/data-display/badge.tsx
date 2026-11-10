@@ -29,7 +29,7 @@ import type { AgentBadgeProp } from "../../props/components/data-display.prop";
 import type { ShapeProp, ToneProp } from "../../props/vocabulary";
 import { withoutSlot } from "../../lib/without-slot";
 
-export type BadgeVariant = "default" | "secondary" | "outline" | "dashed";
+export type BadgeVariant = "default" | "secondary" | "outline" | "dashed" | "glass";
 /**
  * Badge tones extend the shared status `ToneProp` with a brand `primary` tone — a SOFT brand pill
  * (tinted fill + brand text), the dashboard "role pill" pattern. The status tones stay status-only;
@@ -84,6 +84,10 @@ const badgeVariants = cva(
         // brand whose plain chip reads muted sets it once instead of wrapping every label.
         outline: "text-[color:var(--badge-outline-foreground,hsl(var(--foreground)))]",
         dashed: "border-dashed text-[color:var(--badge-outline-foreground,hsl(var(--foreground)))]",
+        /* A GLASS chip for a dark / brand surface (decorative app tiles on a sign-in story). Every
+         * paint lives in badge-layout.css `[data-variant="glass"]`, from the surface's own
+         * `--foreground`, so it stays readable wherever that ink is re-scoped. */
+        glass: "",
         /* `color` mode. Deliberately empty and deliberately NOT in the public
          * `BadgeVariant` union: every fill, border and text utility has to stay
          * off the element so badge-layout.css's `[data-tinted]` rule is
@@ -199,6 +203,11 @@ export interface BadgeProps
   removeLabel?: string;
   /** Disables only the × when `onRemove` is set (FilterBar bar/chip disabled). Label stays visible. */
   removeDisabled?: boolean;
+  /**
+   * A decorative node before the label — an app's letter tile (`<Avatar shape="square" size="xs">`),
+   * a mark. `aria-hidden`; the label carries the name.
+   */
+  leading?: React.ReactNode;
 }
 
 const badgeToneClass: Record<BadgeTone, string | undefined> = {
@@ -227,6 +236,7 @@ export function Badge({
   onRemove,
   removeLabel: removeLabelProp,
   removeDisabled,
+  leading,
   ...props
 }: BadgeProps) {
   const { t } = useTranslation();
@@ -300,6 +310,7 @@ export function Badge({
         data-shape={shape ?? "default"}
         data-tabular={tabular ? "" : undefined}
         data-removable={onRemove ? "" : undefined}
+        data-variant={variant === "glass" ? "glass" : undefined}
         className={cn(
           badgeVariants({
             // A status tone paints the chip itself (`badgeToneClass` below), so the variant must not
@@ -316,6 +327,11 @@ export function Badge({
         style={tinted ? { ...style, ["--badge-color" as string]: color } : style}
         {...withoutSlot(props)}
       >
+        {leading != null ? (
+          <span data-slot="badge-leading" aria-hidden="true">
+            {leading}
+          </span>
+        ) : null}
         {ResolvedIcon ? <ResolvedIcon data-slot="badge-icon" aria-hidden="true" /> : null}
         {/* Label span so badge-layout.css can text-box-trim the line box — JP faces (Noto Sans JP,
             M PLUS 2) carry a bottom-heavy em box (ascent ≫ descent), so flex-centering the raw text
