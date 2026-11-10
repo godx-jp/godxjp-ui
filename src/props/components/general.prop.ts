@@ -296,6 +296,16 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
    * Sets `flex: 1 1 auto` and `min-inline-size: 0`; pair it with a `<Text truncate>` label.
    */
   fill?: boolean;
+  /**
+   * Give way to the siblings WITHOUT growing: as wide as the label while it fits, narrower — the
+   * label ellipsed — when the row needs the room. `fill` is this plus growing into the leftover
+   * space; a toolbar's menu trigger beside its tools wants this half only (GDX-1493).
+   *
+   * Sets `flex: 0 1 auto` and `min-inline-size: var(--control-height-default)`, so it never drops
+   * under the 44px target on a finger. Pair it with a `<Text truncate>` label, as with `fill`.
+   * With both set, `fill` wins.
+   */
+  shrink?: boolean;
   /** Allow a text button to grow vertically for multi-line labels. */
   wrap?: boolean;
   /** Logical content alignment, especially for full-width collection actions. */

@@ -185,6 +185,17 @@
     opacity: var(--disabled-opacity);
   }
 
+  /* `shrink` — `fill` without the growing (GDX-1493): as wide as the label while it fits, and
+   * giving way, the label ellipsed, when the siblings need the room. A phone toolbar's menu
+   * trigger beside its tools: measured on GDX at 320, the resting `flex-shrink: 0` pushed the last
+   * tool 6px past the row, and `fill` would stretch the trigger across it. The floor is the
+   * default control height, so the cut button stays a 44px target under a finger (rule #24).
+   * Declared BEFORE `[data-fill]` at the same specificity: with both set, `fill` wins. */
+  .ui-button[data-shrink] {
+    flex: 0 1 auto;
+    min-inline-size: var(--control-height-default);
+  }
+
   /* `fill` — take the space the siblings leave and let the label ellipse, the same axis Flex
    * carries. Button's resting `flex-shrink: 0` is right almost everywhere and wrong in a
    * constrained bar: an account menu holding an avatar plus a person's name keeps its full width

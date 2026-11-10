@@ -122,7 +122,9 @@ describe("Button", () => {
     // The glyph rule must stay a UTILITY (Tailwind v4 orders utilities after components, so a
     // components-layer rule could never out-rank the child's own `size-4`). It now reads the
     // token instead of a literal step, so the 12px is themeable without losing that precedence.
-    expect(button.className).toContain("[&_svg]:size-[var(--button-icon-size,var(--button-xs-icon-size))]");
+    expect(button.className).toContain(
+      "[&_svg]:size-[var(--button-icon-size,var(--button-xs-icon-size))]",
+    );
     expect(button.className).toContain("[&_svg]:shrink-0");
   });
 
@@ -336,5 +338,28 @@ describe("Button fill", () => {
     const { container } = renderWithUi(<Button>save</Button>);
     const el = container.querySelector("button");
     expect(el).not.toHaveAttribute("data-fill");
+  });
+});
+
+describe("Button shrink", () => {
+  it("gives way without growing, floored at the control height (GDX-1493)", () => {
+    // Geometry is measured in Chromium (button-shrink-1493.test.ts); here, the axis and the rule.
+    const { container } = renderWithUi(<Button shrink>プロジェクト設定</Button>);
+    const el = container.querySelector("button");
+    expect(el).toHaveAttribute("data-shrink");
+    expect(el).not.toHaveAttribute("data-fill");
+    const css = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
+    expect(css).toMatch(
+      /\.ui-button\[data-shrink\]\s*\{[^}]*flex:\s*0 1 auto;[^}]*min-inline-size:\s*var\(--control-height-default\);/s,
+    );
+    // `fill` comes later at the same specificity, so with both set it wins.
+    expect(css.indexOf(".ui-button[data-shrink] {")).toBeLessThan(
+      css.indexOf(".ui-button[data-fill] {"),
+    );
+  });
+
+  it("emits nothing when not asked", () => {
+    const { container } = renderWithUi(<Button>save</Button>);
+    expect(container.querySelector("button")).not.toHaveAttribute("data-shrink");
   });
 });

@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Button can give way without growing (GDX-1493)
+
+- **Added** `Button shrink` (`data-shrink`): `flex: 0 1 auto` with `min-inline-size: var(--control-height-default)`. The button is as wide as its label while that fits and narrower, the label (`<Text truncate>`) ellipsed, when its siblings need the room; it never grows, which is what separates it from `fill` (`flex: 1 1 auto`). Under a finger it stays a 44px target. With both set, `fill` wins. Works on a `DropdownMenuTrigger asChild` Button. Measured in Chromium at 320: a trigger with a long label beside two icon tools pushed the last tool 63px past a 288px row before, and keeps every tool in the row after, label ellipsed; in a 1200px row it stays at its label's width. GDX's phone project menu needed a stylesheet rule for this (GDX-1487).
+
 ## [33.28.3] - 2026-11-10
 
 ### Breadcrumb never cuts the current page, and can fold its middle (GDX-1489)

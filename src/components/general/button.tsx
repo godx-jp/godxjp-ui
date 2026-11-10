@@ -95,6 +95,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
       shape,
       fullWidth = false,
       fill = false,
+      shrink = false,
       wrap = false,
       align = "center",
       asChild = false,
@@ -185,6 +186,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         data-shape={shape ?? "default"}
         data-full-width={fullWidth ? "" : undefined}
         data-fill={fill ? "" : undefined}
+        data-shrink={shrink ? "" : undefined}
         data-wrap={wrap ? "" : undefined}
         data-align={align === "center" ? undefined : align}
         data-loading={isLoading ? "" : undefined}

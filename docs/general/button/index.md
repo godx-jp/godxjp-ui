@@ -14,3 +14,9 @@ button variant, so an outline button never ends up with a doubled border.
 For long collection labels, use `wrap` with `align="start"` and `fullWidth`. The button
 grows vertically while retaining the size preset's minimum target height. Keep badges
 and other row metadata outside the button. `align="end"` follows the document direction.
+
+In a constrained row the button keeps its width (`flex-shrink: 0`). `fill` lets it take the
+room its siblings leave and shrink, the label ellipsed; `shrink` only lets it give way, so a
+toolbar's menu trigger stays as wide as its label until the tools beside it need the room.
+Pair either with a `<Text truncate title={label}>` label:
+`<DropdownMenuTrigger asChild><Button variant="outline" shrink><Text truncate title={label}>{label}</Text></Button></DropdownMenuTrigger>`.
