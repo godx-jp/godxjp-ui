@@ -40,6 +40,7 @@ import {
   type NavListSectionProp,
   type SidebarItemProp,
 } from "@godxjp/ui/layout";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 /**
  * NavList · ページ内のルート遷移ナビゲーション。
@@ -334,6 +335,7 @@ const PROJECT_SECTIONS: NavListSectionProp[] = [
 ];
 
 export default function Demo() {
+  const { t } = useTranslation();
   const [route, setRoute] = useState("two-factor");
   const [flatRoute, setFlatRoute] = useState("password");
   const [groupedRoute, setGroupedRoute] = useState("password");
@@ -343,10 +345,10 @@ export default function Demo() {
   const [narrowPane, setNarrowPane] = useState<"master" | "detail">("master");
 
   return (
-    <PageContainer title="NavList" subtitle="ページ内のルート遷移ナビゲーション">
+    <PageContainer title="NavList" subtitle={t("navListDocs.subtitle")}>
       <Card>
         <CardHeader>
-          <CardTitle level={2}>設定ナビゲーション · 正準形</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.canonical.title")}</CardTitle>
           <CardDescription>
             これがないと、各アプリが Button を並べて設定ナビを自作し、aria-current=&quot;page&quot;
             とアイコン列が失われます。グループは item.children です。ページのナビゲーションは 1
@@ -358,11 +360,16 @@ export default function Demo() {
           <MasterDetail
             rail="master"
             railWidth="compact"
-            masterLabel="設定"
-            detailLabel="設定の内容"
+            masterLabel={t("navListDocs.settings")}
+            detailLabel={t("navListDocs.settingsContent")}
             detailId="nav-list-settings-pane"
             master={
-              <NavList label="設定" items={SETTINGS_NAV} activeId={route} onSelect={setRoute} />
+              <NavList
+                label={t("navListDocs.settings")}
+                items={SETTINGS_NAV}
+                activeId={route}
+                onSelect={setRoute}
+              />
             }
           >
             <SettingsPane routeId={route} />
@@ -372,7 +379,7 @@ export default function Demo() {
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>グループあり · グループなし</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.grouping.title")}</CardTitle>
           <CardDescription>
             これがないと、12
             項目を一列に並べた読めないナビが既定になります。グループにする方法は一つだけ（item.children）だと示しておかないと、各アプリが独自の見出しマークアップを発明します。
@@ -385,10 +392,10 @@ export default function Demo() {
           <Flex direction={{ base: "col", md: "row" }} gap="xl" align="start">
             <Flex direction="col" gap="sm" grow>
               <Text size="sm" weight="medium">
-                フラット · 12 行 · ランドマーク 1 つ
+                {t("navListDocs.grouping.flatCaption")}
               </Text>
               <NavList
-                label="設定（フラット）"
+                label={t("navListDocs.grouping.flatLabel")}
                 items={FLAT_ITEMS}
                 activeId={flatRoute}
                 onSelect={setFlatRoute}
@@ -396,10 +403,10 @@ export default function Demo() {
             </Flex>
             <Flex direction="col" gap="sm" grow>
               <Text size="sm" weight="medium">
-                グループあり · 開閉 4 つ · ランドマーク 1 つ
+                {t("navListDocs.grouping.groupedCaption")}
               </Text>
               <NavList
-                label="設定（グループあり）"
+                label={t("navListDocs.grouping.groupedLabel")}
                 items={SETTINGS_NAV}
                 activeId={groupedRoute}
                 onSelect={setGroupedRoute}
@@ -411,7 +418,7 @@ export default function Demo() {
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>固定の見出し · その中で開閉するグループ</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.sections.title")}</CardTitle>
           <CardDescription>
             これがないと、見出しを出すために見出しごとに NavList を SidebarSection
             で包むことになり、 ナビゲーション 1 つに &lt;nav&gt;
@@ -423,7 +430,7 @@ export default function Demo() {
         <CardContent>
           <Flex direction="col" gap="sm" width={280}>
             <NavList
-              label="プロジェクト設定"
+              label={t("navListDocs.sections.label")}
               sections={PROJECT_SECTIONS}
               activeId={sectionRoute}
               onSelect={setSectionRoute}
@@ -434,7 +441,7 @@ export default function Demo() {
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>行の末尾に置けるもの</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.trailing.title")}</CardTitle>
           <CardDescription>
             これがないと、シェブロンが badge に渡されます。badge は中身を .sb-badge
             のカプセルで包むので、16px の先頭アイコンの隣に 24px の SVG
@@ -444,13 +451,17 @@ export default function Demo() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <NavList label="行末スロット" items={TRAILING_ITEMS} activeId="mentions" />
+          <NavList
+            label={t("navListDocs.trailing.label")}
+            items={TRAILING_ITEMS}
+            activeId="mentions"
+          />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>アイコン列とラベルの極端なケース</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.extremes.title")}</CardTitle>
           <CardDescription>
             これがないと、icon のない行は型が許さないと誤解されます。icon は任意です。無い行も空の
             .sb-icon 箱を保つので、ラベルの列は動きません。だから「2 文字のラベル」も「3
@@ -461,25 +472,33 @@ export default function Demo() {
           <Flex direction={{ base: "col", md: "row" }} gap="xl">
             <Flex direction="col" gap="sm" fill>
               <Text size="sm" weight="medium">
-                レール幅（compact · 18.75rem）
+                {t("navListDocs.extremes.railCaption")}
               </Text>
-              <NavList label="ラベル長のストレス" items={LABEL_STRESS_ITEMS} activeId="mfa" />
+              <NavList
+                label={t("navListDocs.extremes.stressLabel")}
+                items={LABEL_STRESS_ITEMS}
+                activeId="mfa"
+              />
             </Flex>
             <Flex direction="col" gap="sm" width={180}>
               <Text size="sm" weight="medium">
-                180px に絞ったとき
+                {t("navListDocs.extremes.narrowCaption")}
               </Text>
               <NavList
-                label="ラベル長のストレス（狭幅）"
+                label={t("navListDocs.extremes.stressNarrowLabel")}
                 items={LABEL_STRESS_ITEMS}
                 activeId="mfa"
               />
             </Flex>
             <Flex direction="col" gap="sm" width={240}>
               <Text size="sm" weight="medium">
-                icon あり · なしの混在
+                {t("navListDocs.extremes.mixedCaption")}
               </Text>
-              <NavList label="アイコンの混在" items={MIXED_ICON_ITEMS} activeId="webhooks" />
+              <NavList
+                label={t("navListDocs.extremes.mixedLabel")}
+                items={MIXED_ICON_ITEMS}
+                activeId="webhooks"
+              />
             </Flex>
           </Flex>
         </CardContent>
@@ -487,7 +506,7 @@ export default function Demo() {
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>状態 · active · disabled · 破壊的操作</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.states.title")}</CardTitle>
           <CardDescription>
             これがないと、disabled な行が見た目だけ薄くなって遷移してしまいます。実際は
             aria-disabled が付き、href も落ちます。行そのものに tone
@@ -498,18 +517,22 @@ export default function Demo() {
         <CardContent>
           <Flex direction={{ base: "col", md: "row" }} gap="xl" align="start">
             <Flex direction="col" gap="sm" width={240}>
-              <NavList label="状態" items={STATE_ITEMS} activeId="profile" />
+              <NavList
+                label={t("navListDocs.states.label")}
+                items={STATE_ITEMS}
+                activeId="profile"
+              />
             </Flex>
             <Flex direction="col" gap="sm" grow>
               <Text size="sm" weight="medium">
-                「アカウントを削除」を選んだあとのペイン
+                {t("navListDocs.states.paneCaption")}
               </Text>
               <Text size="sm" tone="muted">
-                削除は 30 日後に確定します。それまでは同じ画面から取り消せます。
+                {t("navListDocs.states.paneNote", { days: 30 })}
               </Text>
               <Flex>
                 <Button variant="destructive" size="sm">
-                  アカウントを削除
+                  {t("navListDocs.states.delete")}
                 </Button>
               </Flex>
             </Flex>
@@ -519,7 +542,9 @@ export default function Demo() {
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>16 項目をレールに収める</CardTitle>
+          <CardTitle level={2}>
+            {t("navListDocs.long.title", { count: LONG_ITEMS.length })}
+          </CardTitle>
           <CardDescription>
             これがないと、NavList
             自体はスクロールしないという事実が隠れます。列は内容ぶんだけ伸び、積み重なったあとの詳細は画面外に落ちます。MasterDetail
@@ -532,11 +557,11 @@ export default function Demo() {
             rail="master"
             railWidth="compact"
             masterViewport="compact"
-            masterLabel="設定（全 16 項目）"
-            detailLabel="設定の内容"
+            masterLabel={t("navListDocs.long.label", { count: LONG_ITEMS.length })}
+            detailLabel={t("navListDocs.settingsContent")}
             master={
               <NavList
-                label="設定（全 16 項目）"
+                label={t("navListDocs.long.label", { count: LONG_ITEMS.length })}
                 items={LONG_ITEMS}
                 activeId={longRoute}
                 onSelect={setLongRoute}
@@ -550,7 +575,7 @@ export default function Demo() {
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>MasterDetail の外に置くとき</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.outside.title")}</CardTitle>
           <CardDescription>
             これがないと、レールの外で同じ一覧を置いた瞬間に高さの制約が消えます。囲いが Card、
             スクロールするのは ScrollArea、高さはこの画面の寸法なので className に残ります。NavList
@@ -562,7 +587,11 @@ export default function Demo() {
             <CardContent flush solo>
               <ScrollArea className="h-64" scrollbar="always">
                 <Flex direction="col" pad={3}>
-                  <NavList label="設定（カード内スクロール）" items={LONG_ITEMS} activeId="audit" />
+                  <NavList
+                    label={t("navListDocs.outside.label")}
+                    items={LONG_ITEMS}
+                    activeId="audit"
+                  />
                 </Flex>
               </ScrollArea>
             </CardContent>
@@ -572,7 +601,7 @@ export default function Demo() {
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>項目が 0 件のとき</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.empty.title")}</CardTitle>
           <CardDescription>
             これがないと、空配列が空の &lt;nav&gt;
             を残します。画面には何も出ないのに、スクリーンリーダーには名前だけのランドマークが残り、
@@ -583,19 +612,19 @@ export default function Demo() {
           <Flex direction={{ base: "col", md: "row" }} gap="xl" align="start">
             <Flex direction="col" gap="sm" width={280}>
               <Text size="sm" weight="medium">
-                NavList items={"{[]}"} · 何も描かれない
+                {t("navListDocs.empty.caption")}
               </Text>
-              <NavList label="権限のある設定（0 件）" items={[]} />
+              <NavList label={t("navListDocs.empty.label")} items={[]} />
             </Flex>
             <Flex direction="col" gap="sm" grow>
               <Text size="sm" weight="medium">
-                差し替え
+                {t("navListDocs.empty.replacement")}
               </Text>
               <EmptyState
                 variant="compact"
                 icon={KeyRound}
-                title="表示できる設定がありません"
-                description="この組織での権限では設定項目を開けません。管理者に権限の付与を依頼してください。"
+                title={t("navListDocs.empty.emptyTitle")}
+                description={t("navListDocs.empty.emptyDescription")}
               />
             </Flex>
           </Flex>
@@ -604,7 +633,7 @@ export default function Demo() {
 
       <Card>
         <CardHeader>
-          <CardTitle level={2}>電話幅のとき</CardTitle>
+          <CardTitle level={2}>{t("navListDocs.phone.title")}</CardTitle>
           <CardDescription>
             これがないと、狭い幅でナビと内容が縦に積まれ、内容がナビの下 800px
             に沈みます。MasterDetail の mobilePane は一度に片方だけを見せ、戻り導線は detailBack
@@ -619,16 +648,16 @@ export default function Demo() {
             railWidth="compact"
             collapseBelow="lg"
             mobilePane={narrowPane}
-            masterLabel="設定"
-            detailLabel="設定の内容"
+            masterLabel={t("navListDocs.settings")}
+            detailLabel={t("navListDocs.settingsContent")}
             detailBack={
               <Button variant="ghost" size="sm" onClick={() => setNarrowPane("master")}>
-                設定一覧へ戻る
+                {t("navListDocs.phone.back")}
               </Button>
             }
             master={
               <NavList
-                label="設定"
+                label={t("navListDocs.settings")}
                 items={SETTINGS_NAV}
                 activeId={narrowRoute}
                 onSelect={(id) => {

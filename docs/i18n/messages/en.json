@@ -2583,5 +2583,110 @@
     "axis5": "Audit readiness",
     "axis6": "Financial resilience",
     "title": "Quantitative profile"
+  },
+  "radioGroupDocs": {
+    "plan": {
+      "title": "Per-option descriptions · choosing a plan",
+      "description": "options[].description sits on each row. Write prices or conditions outside the options and the reader has to guess which row they belong to. The trailing Badge goes in by making label a ReactNode; a Badge is not pressable, so it does not break the label's click target.",
+      "standard": "Standard",
+      "standardDescription": "{price}/month · up to {users} users · email support",
+      "business": "Business",
+      "recommended": "Recommended",
+      "businessDescription": "{price}/month · up to {users} users · audit log and permission templates",
+      "enterprise": "Enterprise",
+      "enterpriseDescription": "Custom quote · SAML SSO · dedicated contact and SLA",
+      "legacy": "Lite (no longer offered)",
+      "legacyDescription": "Existing contracts only. The migration path is Standard"
+    },
+    "org": {
+      "title": "optionType=\"card\" · choose an organization",
+      "description": "The whole row is the label, so pressing anywhere selects it. Avatar goes in leading, Badge in extra. Passing { label, options, appearance } in options makes a headed section, and the arrow keys move across sections as one radiogroup. Nothing chosen is value={null}, and Tab lands on the first row. Filtering is SearchInput plus the consumer's own filter, and the chosen row always stays in the list.",
+      "filterLabel": "Filter organizations",
+      "filterPlaceholder": "Filter by organization name",
+      "choose": "Choose an organization",
+      "section": "Organizations · {count}",
+      "lastUsed": "Last used",
+      "personal": "Personal",
+      "personalWorkspace": "Personal workspace",
+      "personalDescription": "Files and pages only you can see",
+      "role": {
+        "owner": "Owner",
+        "member": "Member",
+        "viewer": "View only"
+      },
+      "members": {
+        "one": "{count} member",
+        "other": "{count} members"
+      }
+    },
+    "accordion": {
+      "title": "optionType=\"card\" · inside an Accordion",
+      "description": "AccordionContent is overflow: clip with overflow-clip-margin, so a focus ring may paint just past its edge. A card draws its focus ring inside the card as well, so a row flush with the edge is never cut.",
+      "shipping": "Shipping method",
+      "air": "Air mail",
+      "sea": "Sea mail",
+      "express": "Express",
+      "days": "{min}–{max} days",
+      "nextDay": "Next day"
+    }
+  },
+  "navListDocs": {
+    "subtitle": "Route navigation inside a page",
+    "settings": "Settings",
+    "settingsContent": "Settings content",
+    "canonical": {
+      "title": "Settings navigation · canonical form"
+    },
+    "grouping": {
+      "title": "Grouped · ungrouped",
+      "flatCaption": "Flat · 12 rows · one landmark",
+      "flatLabel": "Settings (flat)",
+      "groupedCaption": "Grouped · 4 collapsible · one landmark",
+      "groupedLabel": "Settings (grouped)"
+    },
+    "sections": {
+      "title": "Fixed headings · collapsible groups inside them",
+      "label": "Project settings"
+    },
+    "trailing": {
+      "title": "What can sit at the end of a row",
+      "label": "Row-end slots"
+    },
+    "extremes": {
+      "title": "Extreme cases of the icon column and labels",
+      "railCaption": "Rail width (compact · 18.75rem)",
+      "stressLabel": "Label length stress",
+      "narrowCaption": "Squeezed to 180px",
+      "stressNarrowLabel": "Label length stress (narrow)",
+      "mixedCaption": "Mixed: with and without icon",
+      "mixedLabel": "Mixed icons"
+    },
+    "states": {
+      "title": "States · active · disabled · destructive action",
+      "label": "States",
+      "paneCaption": "The pane after choosing \"Delete account\"",
+      "paneNote": "Deletion becomes final after {days} days. Until then it can be undone from the same screen.",
+      "delete": "Delete account"
+    },
+    "long": {
+      "title": "Fitting {count} items in the rail",
+      "label": "Settings (all {count} items)"
+    },
+    "outside": {
+      "title": "Placed outside MasterDetail",
+      "label": "Settings (scrolling inside a card)"
+    },
+    "empty": {
+      "title": "When there are 0 items",
+      "caption": "NavList items={[]} · nothing is drawn",
+      "label": "Settings you have access to (0)",
+      "replacement": "Replacement",
+      "emptyTitle": "No settings to show",
+      "emptyDescription": "Your permissions in this organization do not open any settings. Ask an administrator to grant access."
+    },
+    "phone": {
+      "title": "At phone width",
+      "back": "Back to settings"
+    }
   }
 }
