@@ -206,6 +206,9 @@
    *   on the floors is 4.75 characters per line and scrolls, which is the trade SC 1.4.10
    *   already sanctions above.
    *
+   * Only SHOWN columns count (GDX-1444): a head hidden by `hideBelow` is `display: none` and
+   * takes no column, so the gate leaves out the heads the current viewport hides.
+   *
    * `max(%, length)` is not an alternative to the switch. It is not merely ignored: in the
    * fixed algorithm Chromium resolves `max(24%, 6rem)` on a 340px table to 113px — neither the
    * 81.6px percentage nor the 96px floor — so it cannot express "this column, floored".

@@ -2340,6 +2340,16 @@
       "verdictRadioGroup": "Kết quả (RadioGroup)",
       "ok": "Đạt",
       "ng": "Không đạt"
+    },
+    "shortLabel": {
+      "title": "Tên ngắn trên điện thoại · shortLabel",
+      "description": "Ba chế độ xem của một danh sách, mỗi cái kèm số đếm. Khi nhãn đầy đủ không vừa một hàng, thanh hiện shortLabel của từng lựa chọn, đo theo chỗ chứa nó chứ không theo bề rộng màn hình. Tên đọc và tooltip vẫn là nhãn đầy đủ; chỉ khi tên ngắn cũng không vừa thì thanh mới xuống hàng.",
+      "views": "Yêu cầu nào",
+      "inbox": "Chờ tôi duyệt",
+      "inboxShort": "Chờ duyệt",
+      "mine": "Tôi đã gửi",
+      "mineShort": "Đã gửi",
+      "all": "Tất cả"
     }
   },
   "toggleGroupDocs": {
@@ -2565,7 +2575,6 @@
     "axis4": "An toàn thông tin",
     "axis5": "Khả năng kiểm toán",
     "axis6": "Ổn định tài chính",
-
     "title": "Hồ sơ định lượng"
   }
 }

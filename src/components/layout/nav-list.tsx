@@ -3,9 +3,13 @@
 import * as React from "react";
 import { cn } from "../../lib/utils";
 import { NavGroup, SidebarItem } from "./sidebar";
-import type { NavListProp } from "../../props/components/layout.prop";
+import type {
+  NavListProp,
+  NavListSectionProp,
+  SidebarItemProp,
+} from "../../props/components/layout.prop";
 
-export type { NavListProp };
+export type { NavListProp, NavListSectionProp };
 
 export type NavListProps = NavListProp;
 
@@ -33,9 +37,9 @@ export type NavListProps = NavListProp;
  * `NavList`, one landmark, and the group opens itself whenever the route lands on a descendant.
  */
 export const NavList = React.forwardRef<HTMLElement, NavListProps>(
-  ({ items, activeId, label, linkComponent, onSelect, className, ...props }, ref) => (
-    <nav ref={ref} aria-label={label} className={cn("ui-nav-list", className)} {...props}>
-      {items.map((item) =>
+  ({ items, sections, activeId, label, linkComponent, onSelect, className, ...props }, ref) => {
+    const rows = (list: SidebarItemProp[]) =>
+      list.map((item) =>
         item.children && item.children.length > 0 ? (
           <NavGroup
             key={item.id}
@@ -53,8 +57,27 @@ export const NavList = React.forwardRef<HTMLElement, NavListProps>(
             onActivate={onSelect}
           />
         ),
-      )}
-    </nav>
-  ),
+      );
+    return (
+      <nav ref={ref} aria-label={label} className={cn("ui-nav-list", className)} {...props}>
+        {rows(items ?? [])}
+        {/* GDX-1230: a fixed heading per section — the rail's section label, never a toggle —
+            over its own rows, which may fold. One landmark for the whole column. */}
+        {(sections ?? []).map((section) => (
+          <div
+            key={section.id ?? section.label}
+            role="group"
+            aria-label={section.label}
+            className="sb-section"
+          >
+            <div className="sb-section-label" aria-hidden="true">
+              {section.label}
+            </div>
+            <div className="sb-nav">{rows(section.items)}</div>
+          </div>
+        ))}
+      </nav>
+    );
+  },
 );
 NavList.displayName = "NavList";

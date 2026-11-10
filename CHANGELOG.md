@@ -8,6 +8,32 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### A compact row keeps its action beside the title on a phone (also released as 33.27.16, off v33.27.15)
+
+- **Fixed** below 360px every `ListRow` gave `trailing` the full width, so a `density="compact"` row's one short action dropped under the title even where it fits: GDX's channel list put its 参加 (Join) Button on a line of its own at 320 (GDX-1454). The narrow rule now applies to the default density only. A compact row, the documented inline-actions row, keeps its action beside the title while it fits, and a cluster that cannot fit still wraps through the row's own `flex-wrap` (#224). Measured at 320 (icon, title, description, `size="sm"` Button): compact row 102px → 62px, action inline; default row unchanged at 114px with the action stacked; no page overflow.
+
+### Hidden columns take no share (also released as 33.27.15, off v33.27.14)
+
+- **Fixed** in an `action-collection` table below its collapse step, a column hidden by `hideBelow` still counted toward the priority budget, so a queue that fits it was put on the rem floors: GDX's project team list (name, two `meta` columns hidden below `xl`, a `secondary`, a `meta` status) gave its name column 125px at 1024 (GDX-1444). The over-budget gate now counts only the heads the current viewport shows (`:nth-child(7 of …)` and the repeated-tier arms leave out each band's hidden `hideBelow` heads), so the table lays out exactly as if the hidden columns were not there; measured on a 560px card at 1024, name 180px → 324px. Shown columns still count: at 1280 the same queue keeps its floors.
+
+### Steps on a phone (also released as 33.27.14, off v33.27.13)
+
+- **Fixed** four horizontal `Steps` at 320px gave each title a 48px column and Japanese titles broke inside the word (「プロジ|ェクト」, 「同期モ|ード」) (GDX-1363). New `responsive` prop (Ant Design, default `true`): at or below `--steps-responsive-breakpoint-width` (33.25rem, antd's 532px) a horizontal rail is laid out vertically; `type="inline"` never folds, `responsive={false}` or a `0px` token keeps it horizontal. Steps titles, subtitles, descriptions and inline titles also join the `:lang(ja)` phrase-breaking rule (`word-break: auto-phrase; line-break: strict`).
+
+### Disabled choice options read as disabled (also released as 33.27.13, off v33.27.12)
+
+- **Fixed** a disabled `RadioGroup` option faded only its circle; its label and description kept full ink (rgb(36,35,30), opacity 1) (GDX-1303). A choice row (`Field`) whose control carries `data-disabled` now fades its label and description with `--control-label-disabled-alpha` and shows `not-allowed` on the label. `Field` is shared, so disabled `Checkbox` and `Switch` rows read the same.
+
+### NavList `sections` (also released as 33.27.11 and 33.27.12, off v33.27.10)
+
+33.27.12 is the same code as 33.27.11: `@godxjp/markdown`, `editor`, `block-editor` and `chat` 33.27.11 were published without their `dist/` (deprecated); use 33.27.12.
+
+- **Added** `NavList.sections?: { id?, label, items }[]` (GDX-1230). Each section draws a fixed heading — the rail's `.sb-section-label`, never a toggle — over its own rows, which may be folding groups (`children`), all inside the one `<nav>` landmark; each section is a `role="group"` named by its heading. `items` is now optional and renders before the sections. A settings column of headings with Machines and Agents folding under Work no longer needs one NavList per heading wrapped in `SidebarSection`. A NavList without `sections` renders exactly as before.
+
+### Segmented `shortLabel` (also released as 33.27.10, off v33.27.9)
+
+- **Added** `SegmentedOption.shortLabel?: ReactNode` (GDX-1281). While the full labels cannot share one row (options wrapped to a second row, or a `block` label truncated), the bar shows each option's `shortLabel` instead, and returns to the full labels once its container is wide enough again. The bar measures itself and its container with a ResizeObserver, not the viewport, so it is right in a toolbar slot, a card or a split pane. `label` stays the accessible name (kept visually hidden; the short label is `aria-hidden`) and becomes the segment's `title`. Ignored on `vertical`. If even the short labels do not fit, the bar wraps as before. A bar with no `shortLabel` renders and behaves exactly as before (no observer). Measured in Chromium, three views with counts in en / ja / vi: one row, nothing truncated, no sideways scroll at 320 and 390; full labels at 1280.
+
 ### MasterDetail focus target, FilterBar icon clear when stacked (also released as 33.27.9, off v33.27.8)
 
 - **Fixed** `MasterDetail` on a phone moves focus to the detail's first heading (made `tabindex="-1"`) or to the detail region, a focus target outside the tab order; neither had its ring removed (only `.ui-page-title` had), so Chrome drew its own `outline: auto` around the heading block and its text line as two frames. Both now draw no ring, like `.ui-page-title[tabindex="-1"]`.

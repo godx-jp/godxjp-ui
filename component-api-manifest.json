@@ -4247,8 +4247,8 @@
           "name": "flow",
           "origin": "owned",
           "required": false,
-          "type": "\"column\" | \"sections\" | undefined",
-          "values": ["column", "sections"],
+          "type": "\"sections\" | \"column\" | undefined",
+          "values": ["sections", "column"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -12593,8 +12593,8 @@
         {
           "name": "items",
           "origin": "owned",
-          "required": true,
-          "type": "SidebarItemProp[]",
+          "required": false,
+          "type": "SidebarItemProp[] | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
@@ -12619,6 +12619,14 @@
           "origin": "owned",
           "required": false,
           "type": "((id: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "sections",
+          "origin": "owned",
+          "required": false,
+          "type": "NavListSectionProp[] | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
@@ -18648,6 +18656,14 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "responsive",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {

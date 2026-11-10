@@ -195,17 +195,27 @@ describe("Table action-collection priority floors (gh#262)", () => {
     // free-text one included, which `auto` would collapse to 0px — takes its rem floor, so the
     // table grows and the wrapper scrolls. `actions` is already an absolute measure, so repeating
     // it over-subscribes nothing and is deliberately NOT an arm.
+    // Only a SHOWN head counts (GDX-1444): each viewport band leaves out the `hideBelow` heads its
+    // media query hides, so every step carries one gate per band.
     const head = '[data-slot="table-head"]';
-    const gate =
-      `:has(${head}:nth-child(7),` +
-      `${head}[data-priority="primary"]~${head}[data-priority="primary"],` +
-      `${head}[data-priority="secondary"]~${head}[data-priority="secondary"],` +
-      `${head}[data-priority="meta"]~${head}[data-priority="meta"])` +
-      "{--table-action-collection-primary-width:var(--table-action-collection-primary-width-floor);";
-    expect(tableCssFlat.split(gate).length - 1).toBe(4); // sm / md / lg / xl
+    for (const shown of [
+      ":not([data-hide-below])",
+      ':not([data-hide-below]:not([data-hide-below="sm"]))',
+      ':not([data-hide-below="lg"],[data-hide-below="xl"])',
+      ':not([data-hide-below="xl"])',
+      "",
+    ]) {
+      const gate =
+        `:has(${head}:nth-child(7of${head}${shown}),` +
+        `${head}[data-priority="primary"]${shown}~${head}[data-priority="primary"]${shown},` +
+        `${head}[data-priority="secondary"]${shown}~${head}[data-priority="secondary"]${shown},` +
+        `${head}[data-priority="meta"]${shown}~${head}[data-priority="meta"]${shown})` +
+        "{--table-action-collection-primary-width:var(--table-action-collection-primary-width-floor);";
+      expect(tableCssFlat.split(gate).length - 1).toBe(4); // sm / md / lg / xl
+    }
     const flexFloor =
       "--table-action-collection-flex-width:var(--table-action-collection-flex-width-floor)";
-    expect(tableCssFlat.split(flexFloor).length - 1).toBe(4);
+    expect(tableCssFlat.split(flexFloor).length - 1).toBe(20);
     // Base rule: the cell measure falls back through the flex slot before `auto`, so the floor
     // tier can floor unmarked columns without touching marked ones.
     expect(tableCssFlat).toContain(
@@ -274,7 +284,9 @@ describe("Table action-collection compact tier — the layer contract (gh#412)",
     // Every compact re-point — type AND measures — is inside the last layer…
     expect(responsiveLayer.match(/@container ui-table-collection \(width </g)).toHaveLength(4);
     expect(
-      responsiveLayer.match(/font-size: var\(\s*--table-font-size, var\(--table-action-collection-font-size-compact\)\)/g),
+      responsiveLayer.match(
+        /font-size: var\(\s*--table-font-size, var\(--table-action-collection-font-size-compact\)\)/g,
+      ),
     ).toHaveLength(4);
     // …and none of it is left behind in `@layer components` (prose comments aside).
     const beforeRules = beforeResponsive.replace(/\/\*[\s\S]*?\*\//g, "");

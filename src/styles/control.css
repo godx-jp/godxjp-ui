@@ -773,6 +773,19 @@
     font-size: var(--choice-description-font-size);
   }
 
+  /* GDX-1303 — a disabled option's words read as disabled too, not only its box. The label
+   * sits in a sibling column, so Label's `peer-disabled:` never matched and a disabled RadioGroup
+   * option kept full ink (rgb(36,35,30), opacity 1) beside a faded circle. The control carries
+   * `data-disabled` (react-aria, group- or option-level alike); the label and description take
+   * the label tier's own disabled alpha, the one `peer-disabled:` already names. */
+  .ui-choice-field:has(> .ui-choice-control [data-disabled]) > .ui-choice-content {
+    opacity: var(--control-label-disabled-alpha);
+  }
+
+  .ui-choice-field:has(> .ui-choice-control [data-disabled]) .ui-choice-label {
+    cursor: not-allowed;
+  }
+
   /* --text-error is the TEXT tier, not the destructive FILL tier — the same distinction
    * `.ui-form-field-required` and FormField's error line already make, and for the same reason:
    * the fill tier does not reach AA as body text on the dark spine (gh#610). */
@@ -1981,7 +1994,10 @@
      * 「失踪・帰国 0」 showed 9.1px of its 25.1px count. The catalog promises 2-4 options, so four
      * must survive a phone. An item wider than the WHOLE track still shrinks and ellipsizes: that
      * is the last resort, not the default. A vertical bar never wraps (its block size is auto),
-     * and `block` keeps its equal shares (`flex: 1 1 0`), so it still truncates — by contract. */
+     * and `block` keeps its equal shares (`flex: 1 1 0`), so it still truncates — by contract.
+     * Options that carry a `shortLabel` (GDX-1281) compact BEFORE they wrap: the bar measures
+     * itself (segmented.tsx, `useCompactLabels`), sets `data-compact`, and wraps only if even the
+     * short labels cannot share the row. */
     flex-wrap: wrap;
     align-items: stretch;
     padding: var(--segmented-track-padding);
