@@ -325,7 +325,12 @@ export type StepItemProp = {
  * value). `inline` is the compact numbered auth/device progress row. `navigation` is antd's
  * chevron-sectioned bar: each step becomes a full-width slab pointing at the next one.
  */
-export type StepsTypeProp = "default" | "dot" | "inline" | "navigation";
+/**
+ * Marker appearance. `bar` is the thin step-progress bar of a short hosted flow (コード入力 → 確認
+ * → 完了): one equal segment per step, filled for finished and current steps, the title under it.
+ * Like `inline` it has no marker and never folds to vertical.
+ */
+export type StepsTypeProp = "default" | "dot" | "inline" | "navigation" | "bar";
 
 /** @see Steps */
 /**

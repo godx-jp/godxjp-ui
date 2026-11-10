@@ -12028,9 +12028,9 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "type",
-        type: '"default" | "dot" | "inline" | "navigation"',
+        type: '"default" | "dot" | "inline" | "navigation" | "bar"',
         description:
-          "Render full markers, compact dots, a numbered inline auth progress row, or Ant Design's `navigation` bar — slab steps with a chevron between them (the default hairline connector is switched off there so it is not drawn through the glyph). `dot` IS antd's `progressDot`; antd 6.6.2 deprecates that prop in favour of exactly this value.",
+          "`bar` = the thin step-progress bar of a short hosted flow (コード入力 → 確認 → 完了): one equal 4px segment per step (`--steps-bar-track-size`, 6px apart `--steps-bar-gap`), finished + current segments filled (`--steps-bar-fill-color`, default --primary; error = destructive), the title UNDER the segment, current title in medium weight; the fill grows from the inline start over `--steps-bar-fill-duration` (350ms, --ease-emphasized) and cross-fades under prefers-reduced-motion; never folds to vertical; `description` is not drawn. Otherwise: render full markers, compact dots, a numbered inline auth progress row, or Ant Design's `navigation` bar — slab steps with a chevron between them (the default hairline connector is switched off there so it is not drawn through the glyph). `dot` IS antd's `progressDot`; antd 6.6.2 deprecates that prop in favour of exactly this value.",
       },
       {
         name: "percent",

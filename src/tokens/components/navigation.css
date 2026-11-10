@@ -56,6 +56,21 @@
   --steps-inline-index-font-weight: var(--font-weight-bold);
   --steps-inline-index-color: initial; /* default = currentColor at the call site */
   --steps-inline-separator-color: initial; /* default = hsl(var(--muted-foreground)) */
+  /* STEPS `type="bar"` — the thin step-progress bar. Track = a 4px segment per step; the colours are
+   * role-mirror knobs (`initial`, role resolved at the call site: track --border, fill --primary,
+   * waiting title --muted-foreground). The fill grows over --steps-bar-fill-duration. */
+  /* scale-exempt: 4px progress hairline, between --stroke-xl and --space-1 */
+  --steps-bar-track-size: 0.25rem;
+  --steps-bar-radius: initial; /* default = half the track, a fully rounded segment */
+  /* scale-exempt: 6px between segments, between --space-1 and --space-2 */
+  --steps-bar-gap: 0.375rem;
+  /* scale-exempt: 6px segment-to-title gap, same step as the segment gap */
+  --steps-bar-label-gap: 0.375rem;
+  --steps-bar-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+  --steps-bar-track-color: initial; /* default = hsl(var(--border)) */
+  --steps-bar-fill-color: initial; /* default = hsl(var(--primary)) */
+  --steps-bar-wait-color: initial; /* default = hsl(var(--muted-foreground)) */
+  --steps-bar-fill-duration: 350ms;
 
   /* AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an
    * auth/legal footer, where the square icon-only default reads as a stray button and the full

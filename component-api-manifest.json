@@ -18911,7 +18911,7 @@
           "origin": "owned",
           "required": false,
           "type": "StepsTypeProp | undefined",
-          "values": ["default", "inline", "dot", "navigation"],
+          "values": ["default", "inline", "dot", "navigation", "bar"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {

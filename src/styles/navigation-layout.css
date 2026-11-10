@@ -1159,6 +1159,87 @@
     color: var(--steps-inline-separator-color, hsl(var(--muted-foreground)));
   }
 
+  /* STEPS `type="bar"` — the thin step-progress bar of a short hosted flow: one equal segment per
+   * step, the title UNDER it. Finished and current steps fill the segment, the current title is
+   * the ink one. The fill is a transformed overlay that grows from the inline start
+   * (critically damped, `--ease-emphasized`) when a step is reached; under reduced motion it
+   * cross-fades instead. Status is never colour alone: each step carries its sr-only status and
+   * the current one `aria-current="step"`. */
+  .ui-steps-bar {
+    gap: var(--steps-bar-gap);
+  }
+  .ui-steps-bar-item {
+    min-width: 0;
+  }
+  .ui-steps-bar-control {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--steps-bar-label-gap);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
+    font-size: var(--steps-bar-font-size);
+    line-height: var(--line-height-tight);
+    text-align: start;
+    color: var(--steps-bar-wait-color, hsl(var(--muted-foreground)));
+    outline: none;
+  }
+  .ui-steps-bar-segment {
+    position: relative;
+    display: block;
+    height: var(--steps-bar-track-size);
+    overflow: hidden;
+    border-radius: var(--steps-bar-radius, calc(var(--steps-bar-track-size) / 2));
+    background: var(--steps-bar-track-color, hsl(var(--border)));
+  }
+  .ui-steps-bar-segment::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--steps-bar-fill-color, hsl(var(--primary)));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--steps-bar-fill-duration) var(--ease-emphasized);
+  }
+  [dir="rtl"] .ui-steps-bar-segment::after {
+    transform-origin: right center;
+  }
+  .ui-steps-bar-item:is([data-status="finish"], [data-status="process"], [data-status="error"])
+    .ui-steps-bar-segment::after {
+    transform: none;
+  }
+  .ui-steps-bar-item[data-status="error"] .ui-steps-bar-segment::after {
+    background: hsl(var(--destructive));
+  }
+  .ui-steps-bar-title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .ui-steps-bar-item[data-status="finish"] .ui-steps-bar-control {
+    color: hsl(var(--muted-foreground));
+  }
+  .ui-steps-bar-item[data-status="process"] .ui-steps-bar-control {
+    color: hsl(var(--foreground));
+    font-weight: var(--font-weight-medium);
+  }
+  .ui-steps-bar-item[data-status="error"] .ui-steps-bar-control {
+    color: hsl(var(--text-error));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-steps-bar-segment::after {
+      transform: none;
+      opacity: 0;
+      transition: opacity var(--duration-base) linear;
+    }
+    .ui-steps-bar-item:is([data-status="finish"], [data-status="process"], [data-status="error"])
+      .ui-steps-bar-segment::after {
+      opacity: 1;
+    }
+  }
+
   /* DROPDOWN MENU — the third Radix menu surface. */
   .ui-dropdown-menu-content,
   .ui-dropdown-menu-sub-content {

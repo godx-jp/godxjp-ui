@@ -1328,6 +1328,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'InputOTPGroup `appearance="boxed"` — the large code field, every slot its own rounded box. md (default) = the device-code box 40x52 with a 24px digit; `-lg` (InputOTP `size="lg"`) = the two-factor box 48x58 with a 26px digit; `--otp-boxed-gap` 6px between boxes; `--otp-boxed-radius` `initial` (default `--radius-md` at the call site); The caret takes the boxed digit size. Deliberately NOT the `--otp-slot-*` chain, so a shell preset that retunes the joined/grouped slot (device-authorization sets `--otp-slot-inline-size`) cannot reach it. `--otp-reject-translate` (6px) / `--otp-reject-duration` (280ms) time the one-shot shake when a boxed field turns invalid; prefers-reduced-motion drops the motion and keeps the red edge.',
   },
   {
+    name: "--steps-bar-{track-size,radius,gap,label-gap,font-size,track-color,fill-color,wait-color,fill-duration}",
+    category: "component",
+    tier: "component",
+    role: 'Steps `type="bar"` — the thin step-progress bar. `--steps-bar-track-size` 4px segment, `--steps-bar-radius` (initial → half the track), `--steps-bar-gap` 6px between segments, `--steps-bar-label-gap` 6px segment→title, `--steps-bar-font-size` (xs). Colour knobs are role mirrors declared `initial`: track → hsl(var(--border)), fill → hsl(var(--primary)), waiting title → hsl(var(--muted-foreground)) (kept at text contrast; a service may lighten it). `--steps-bar-fill-duration` 350ms with --ease-emphasized; reduced motion cross-fades over --duration-base.',
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

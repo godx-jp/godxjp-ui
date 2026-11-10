@@ -27,6 +27,7 @@ const onboardingSteps = [
 export default function Demo() {
   const [approvalCurrent, setApprovalCurrent] = useState(1);
   const [wizardCurrent, setWizardCurrent] = useState(0);
+  const [barStep, setBarStep] = useState(1);
   /* Seeded TRUE so `status="error"` paints on mount. The toggle below is still the point of the
    * demo, but starting from `false` meant the error state was reachable only by clicking —
    * and a surface that needs an interaction is a surface no sweep measures (gh#612), which is
@@ -265,6 +266,38 @@ export default function Demo() {
                   not, and it reads the same tone token (gh#612). */}
               <Steps
                 type="inline"
+                status="error"
+                value={1}
+                items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Bar · 細いステップバー (type=&quot;bar&quot;)</CardTitle>
+            <CardDescription>
+              短いホステッドフロー（コード入力 → 確認 → 完了）の上に置く進捗。1
+              段ごとに同じ幅の線、完了と現在の段は塗り、題は線の下。段が進むと線が左から伸び、prefers-reduced-motion
+              ではクロスフェード。縦に折りたたまない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Steps
+                type="bar"
+                value={0}
+                items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+              />
+              <Steps
+                type="bar"
+                value={barStep}
+                onValueChange={setBarStep}
+                items={[{ title: "入力" }, { title: "メールを確認" }, { title: "完了" }]}
+              />
+              <Steps
+                type="bar"
                 status="error"
                 value={1}
                 items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
