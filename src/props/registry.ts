@@ -1345,6 +1345,12 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "Auth-shell content-slot measure; wide is the split brand-panel login (and the two-column context-selection chooser).",
       },
+      {
+        field: "barAppearance",
+        local: true,
+        reason:
+          "Top-bar material — default (unchanged) or frosted (sticky translucent pane with backdrop blur; solid under prefers-reduced-transparency).",
+      },
       "ActionProp",
       "AuthShellPresetProp",
     ],
@@ -1493,6 +1499,12 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "flow",
         local: true,
         reason: "Column page or a stack of full-width EditorialSection bands (gh#1435).",
+      },
+      {
+        field: "barAppearance",
+        local: true,
+        reason:
+          "Top-bar material — default (unchanged) or frosted (sticky translucent pane with backdrop blur; solid under prefers-reduced-transparency).",
       },
     ],
   },

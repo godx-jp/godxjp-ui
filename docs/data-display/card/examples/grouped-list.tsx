@@ -21,9 +21,9 @@ import { ChevronRight } from "lucide-react";
  * they start on the same axis. No page-local CSS.
  */
 const scopes = [
-  { title: "基本的なプロフィール情報", scope: "profile" },
-  { title: "組織のメンバー一覧を見る", scope: "members.read" },
-  { title: "勤務シフトを見る・編集する", scope: "shifts.write" },
+  { title: "Basic profile information", scope: "profile" },
+  { title: "See the members of the organisation", scope: "members.read" },
+  { title: "See and edit work shifts", scope: "shifts.write" },
 ];
 
 export default function GroupedListExample() {
@@ -31,17 +31,17 @@ export default function GroupedListExample() {
     <CenteredShell variant="auth" brand={<Logo />}>
       <Flex direction="col" gap="lg">
         <Flex direction="col" gap="xs" align="center">
-          <Heading level={1}>シフト表 Pro</Heading>
+          <Heading level={1}>Shift Planner Pro</Heading>
           <Text tone="muted" align="center">
-            以下のアプリがあなたのアカウントへのアクセスを求めています。
+            This app is asking for access to your account.
           </Text>
         </Flex>
 
         <Card variant="grouped">
           <CardContent flush>
             <Descriptions layout="horizontal" columns={1}>
-              <Descriptions.Item label="提供元">株式会社サンプルソフト</Descriptions.Item>
-              <Descriptions.Item label="対象の組織">株式会社サンプル</Descriptions.Item>
+              <Descriptions.Item label="Provider">Sample Software Ltd.</Descriptions.Item>
+              <Descriptions.Item label="Organisation">Sample Inc.</Descriptions.Item>
             </Descriptions>
           </CardContent>
         </Card>
@@ -49,7 +49,7 @@ export default function GroupedListExample() {
         <Flex direction="col" gap="xs">
           <Flex pad={{ inline: 4 }}>
             <Text size="sm" tone="muted">
-              許可する権限 · {scopes.length}
+              Permissions to allow · {scopes.length}
             </Text>
           </Flex>
           <Card variant="grouped">
@@ -72,7 +72,7 @@ export default function GroupedListExample() {
           </Card>
           <Flex pad={{ inline: 4 }}>
             <Text size="sm" tone="muted">
-              許可すると、このアプリは上記の権限で組織のデータにアクセスできます。
+              Allowing lets this app reach the organisation data with the permissions above.
             </Text>
           </Flex>
         </Flex>
@@ -84,14 +84,14 @@ export default function GroupedListExample() {
                 as="li"
                 leading={
                   <Avatar shape="square" appearance="tinted">
-                    <AvatarFallback>規</AvatarFallback>
+                    <AvatarFallback>T</AvatarFallback>
                   </Avatar>
                 }
-                title="利用規約"
-                description="第 3 版 · 11/30 まで"
+                title="Terms of service"
+                description="Version 3 · due 30 Nov"
                 trailing={
                   <>
-                    <Badge tone="warning">未対応</Badge>
+                    <Badge tone="warning">To do</Badge>
                     <ChevronRight aria-hidden="true" />
                   </>
                 }
@@ -100,19 +100,19 @@ export default function GroupedListExample() {
                 as="li"
                 leading={
                   <Avatar shape="square" appearance="tinted">
-                    <AvatarFallback>個</AvatarFallback>
+                    <AvatarFallback>P</AvatarFallback>
                   </Avatar>
                 }
-                title="プライバシーポリシー"
-                description="2026-10-01 改定"
+                title="Privacy policy"
+                description="Revised 2026-10-01"
                 trailing={<ChevronRight aria-hidden="true" />}
               />
             </Flex>
           </CardContent>
         </Card>
 
-        <Button fullWidth>許可する</Button>
-        <AuthAccountSummary email="yamada@example.com" avatarFallback="山" actionLabel="切替" />
+        <Button fullWidth>Allow</Button>
+        <AuthAccountSummary email="yamada@example.com" avatarFallback="Y" actionLabel="Switch" />
       </Flex>
     </CenteredShell>
   );

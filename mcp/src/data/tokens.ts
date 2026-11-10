@@ -1334,6 +1334,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'Steps `type="bar"` — the thin step-progress bar. `--steps-bar-track-size` 4px segment, `--steps-bar-radius` (initial → half the track), `--steps-bar-gap` 6px between segments, `--steps-bar-label-gap` 6px segment→title, `--steps-bar-font-size` (xs). Colour knobs are role mirrors declared `initial`: track → hsl(var(--border)), fill → hsl(var(--primary)), waiting title → hsl(var(--muted-foreground)) (kept at text contrast; a service may lighten it). `--steps-bar-fill-duration` 350ms with --ease-emphasized; reduced motion cross-fades over --duration-base.',
   },
   {
+    name: "--centered-shell-bar-frosted-{background-alpha,backdrop-blur-size,border-color}",
+    category: "component",
+    tier: "component",
+    role: 'CenteredShell `barAppearance="frosted"` (auth and page shapes): the sticky translucent top bar. Fill = the muted shell ground at `--centered-shell-bar-frosted-background-alpha` (72%); blur `--centered-shell-bar-frosted-backdrop-blur-size` (20px) with the shared `--surface-backdrop-saturate`; hairline below in `--centered-shell-bar-frosted-border-color` (role mirror, `initial` → hsl(var(--border))). Under prefers-reduced-transparency: reduce, and without backdrop-filter support, the library paints the solid ground.',
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

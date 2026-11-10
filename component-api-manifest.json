@@ -4308,6 +4308,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "barAppearance",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"frosted\" | undefined",
+          "values": ["default", "frosted"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "brand",
           "origin": "owned",
           "required": false,

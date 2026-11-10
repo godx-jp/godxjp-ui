@@ -276,11 +276,11 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Bar · 細いステップバー (type=&quot;bar&quot;)</CardTitle>
+            <CardTitle level={2}>Bar · thin step bar (type=&quot;bar&quot;)</CardTitle>
             <CardDescription>
-              短いホステッドフロー（コード入力 → 確認 → 完了）の上に置く進捗。1
-              段ごとに同じ幅の線、完了と現在の段は塗り、題は線の下。段が進むと線が左から伸び、prefers-reduced-motion
-              ではクロスフェード。縦に折りたたまない。
+              Progress above a short hosted flow (code, confirm, done): one equal segment per step,
+              finished and current segments filled, the title under its segment. The fill grows from
+              the inline start; under prefers-reduced-motion it cross-fades. It never folds.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -288,19 +288,19 @@ export default function Demo() {
               <Steps
                 type="bar"
                 value={0}
-                items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+                items={[{ title: "Enter code" }, { title: "Confirm" }, { title: "Done" }]}
               />
               <Steps
                 type="bar"
                 value={barStep}
                 onValueChange={setBarStep}
-                items={[{ title: "入力" }, { title: "メールを確認" }, { title: "完了" }]}
+                items={[{ title: "Details" }, { title: "Check email" }, { title: "Done" }]}
               />
               <Steps
                 type="bar"
                 status="error"
                 value={1}
-                items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+                items={[{ title: "Enter code" }, { title: "Confirm" }, { title: "Done" }]}
               />
             </Flex>
           </CardContent>

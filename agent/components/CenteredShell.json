@@ -66,6 +66,12 @@
       "description": "the auth shape only. Vertical density scoped to auth-card descendants. Defaults to \"compact\" under variant=\"canonical\" and \"comfortable\" otherwise.",
       "name": "density",
       "type": "\"comfortable\" | \"compact\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "BOTH shapes. The top bar material. \"frosted\" pins the bar (sticky) as a translucent pane the page scrolls UNDER: the muted shell ground at `--centered-shell-bar-frosted-background-alpha` (72%), `--centered-shell-bar-frosted-backdrop-blur-size` (20px) + the shared `--surface-backdrop-saturate`, a hairline in `--centered-shell-bar-frosted-border-color`. The library writes the fallbacks: under `prefers-reduced-transparency: reduce` and where `backdrop-filter` is unsupported the bar is SOLID — write no consumer @media for it. \"default\" keeps the bar byte-identical.",
+      "name": "barAppearance",
+      "type": "\"default\" | \"frosted\""
     }
   ],
   "related": [
@@ -98,6 +104,7 @@
     "AUTH SHAPE: DO build the password-recovery and sign-in MFA CHALLENGE panels as a COMPOSITION inside `preset=\"account-recovery\"` — there is NO PasswordRecoveryPanel and NO MfaChallengePanel component: Card > CardHeader(CardTitle + CardDescription, INSIDE the bordered surface) > CardContent > AuthStack[ Alert notice · FormField fields · Button fullWidth · Flex justify=\"between\" wrap fallback row ]. Do NOT put AuthIdentity above the panel there (it always renders the hosted mark), and NEVER reuse TwoFactorSetup — that is the ENROLLMENT dialog, not a sign-in challenge. See the `auth-recovery-panels` pattern.",
     "AUTH SHAPE: DO combine `variant` and `preset` — they are orthogonal: `variant` owns control density + heading size, `preset` owns the page measure. `variant=\"auth-canonical\" preset=\"device-authorization\"` is the canonical device screen.",
     "AUTH SHAPE: DO let `preset=\"context-selection\"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing \"remember\" row pass as three siblings with NO page-local spacing.",
+    "DO use `barAppearance=\"frosted\"` for a centred auth / approval page whose bar should stay on screen with the page scrolling beneath it (logo in `brand`, the language picker in `actions`). Do NOT hand-roll `backdrop-blur` / `bg-*/70` / `sticky` classes on the bar, and do not write your own reduced-transparency fallback — the shell owns both.",
     "AUTH SHAPE: DO NOT add a page-local width, inset or colour to hit an artboard — if a measure is missing, it is a library gap: a new preset or token, never consumer CSS (rules #44/#45).",
     "AUTH SHAPE: DO state the block placement with `align` when a product wants the opposite of its preset's default — align=\"center\" on preset=\"login\" for a vertically centred SCR-001, align=\"anchored\" to top-anchor a preset that centres. It collapses the preset's block-start inset to its block-end one on desktop AND mobile, so justify-content has nothing to fight. Re-declaring --auth-shell-login-flow-offset-block (or any preset offset token) from a consumer stylesheet is the anti-pattern it replaces.",
     "AUTH SHAPE: DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",

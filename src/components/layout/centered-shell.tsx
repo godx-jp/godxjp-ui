@@ -44,6 +44,7 @@ function PageLayout({
   preset = "default",
   footerTone = "default",
   flow = "column",
+  barAppearance = "default",
   className,
 }: CenteredShellPageProp) {
   const { t } = useTranslation();
@@ -55,6 +56,8 @@ function PageLayout({
       data-preset={preset === "default" ? undefined : preset}
       // Emitted only for the section flow, so a column page keeps its exact box (gh#1435).
       data-flow={flow === "sections" ? "sections" : undefined}
+      // Emitted only for the frosted material, so a default bar keeps its exact box.
+      data-bar={barAppearance === "frosted" ? "frosted" : undefined}
       className={cn("ui-centered-shell", className)}
     >
       {topbar !== undefined && (
@@ -94,6 +97,7 @@ function AuthLayout({
   measure = "default",
   align,
   density,
+  barAppearance = "default",
   className,
 }: CenteredShellAuthProp) {
   const { t } = useTranslation();
@@ -117,6 +121,7 @@ function AuthLayout({
       // otherwise decide the default by source order.
       data-align={align}
       data-density={resolvedDensity}
+      data-bar={barAppearance === "frosted" ? "frosted" : undefined}
       className={cn("ui-auth-shell", className)}
     >
       {(brand !== undefined || actions !== undefined) && (

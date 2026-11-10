@@ -553,6 +553,43 @@
     margin-inline-start: auto;
   }
 
+  /* FROSTED BAR (`barAppearance="frosted"`, both CenteredShell shapes) — the bar is pinned to the
+   * top and the page scrolls UNDER it: the shell's own muted ground at an alpha, a backdrop blur
+   * with the shared saturate companion, and a hairline below (Apple's bar material). All knobs; the
+   * accessibility fallbacks are the library's, not the consumer's: `prefers-reduced-transparency`
+   * and an engine without `backdrop-filter` both get the SOLID ground. A blurred element is the
+   * containing block of its fixed descendants — nothing in a bar is position: fixed (menus portal
+   * to the body), so that trap does not apply here. */
+  .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
+  .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 0;
+    background-color: hsl(var(--muted) / var(--centered-shell-bar-frosted-background-alpha));
+    background-image: none;
+    box-shadow: 0 var(--stroke-hairline) 0
+      var(--centered-shell-bar-frosted-border-color, hsl(var(--border)));
+    -webkit-backdrop-filter: blur(var(--centered-shell-bar-frosted-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
+    backdrop-filter: blur(var(--centered-shell-bar-frosted-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
+    .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
+      background-color: hsl(var(--muted));
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
+    .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
+      background-color: hsl(var(--muted));
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
   .ui-auth-shell-main {
     display: flex;
     flex: 1 1 auto;

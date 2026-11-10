@@ -39,16 +39,16 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle level={2}>boxed · デバイスコード（4+4）と二要素認証（3+3）</CardTitle>
+            <CardTitle level={2}>boxed · device code (4+4) and two-factor code (3+3)</CardTitle>
             <CardDescription>
-              1 マスずつ独立した大きな箱。デバイスコードは mono
-              で「ltzw-czps」の貼り付けも同じ形に揃う。二要素は size=&quot;lg&quot;、6 桁目で
-              onComplete。
+              One large box per character. The device code is mono, and a pasted
+              &quot;ltzw-czps&quot; lands in the same shape. The two-factor code is
+              size=&quot;lg&quot; and auto-submits through onComplete on the sixth digit.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Form>
-              <FormField label="デバイスのコード">
+              <FormField label="Device code">
                 <InputOTP
                   id="device-code"
                   maxLength={8}
@@ -74,7 +74,7 @@ export default function Demo() {
                   </InputOTPGroup>
                 </InputOTP>
               </FormField>
-              <FormField label="認証コード">
+              <FormField label="Verification code">
                 <InputOTP
                   id="two-factor"
                   maxLength={6}

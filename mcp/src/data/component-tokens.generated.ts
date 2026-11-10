@@ -11159,6 +11159,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = hsl(var(--muted-foreground))"
   },
   {
+    "name": "--steps-bar-track-size",
+    "value": "0.25rem",
+    "description": "scale-exempt: 4px progress hairline, between --stroke-xl and --space-1"
+  },
+  {
+    "name": "--steps-bar-radius",
+    "value": "initial",
+    "description": "default = half the track, a fully rounded segment"
+  },
+  {
+    "name": "--steps-bar-gap",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px between segments, between --space-1 and --space-2"
+  },
+  {
+    "name": "--steps-bar-label-gap",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px segment-to-title gap, same step as the segment gap"
+  },
+  {
+    "name": "--steps-bar-font-size",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--steps-bar-track-color",
+    "value": "initial",
+    "description": "default = hsl(var(--border))"
+  },
+  {
+    "name": "--steps-bar-fill-color",
+    "value": "initial",
+    "description": "default = hsl(var(--primary))"
+  },
+  {
+    "name": "--steps-bar-wait-color",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground))"
+  },
+  {
+    "name": "--steps-bar-fill-duration",
+    "value": "350ms",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
     "name": "--app-setting-picker-compact-control-height",
     "value": "var(--control-height-sm)",
     "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an auth/legal footer, where the square icon-only default reads as a stray button and the full labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
@@ -13831,6 +13876,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--centered-shell-bar-padding-x-compact",
     "value": "var(--space-page-compact-x)",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--centered-shell-bar-frosted-background-alpha",
+    "value": "72%",
+    "description": "FROSTED BAR (`barAppearance=\"frosted\"`, both CenteredShell shapes): the muted shell ground at this alpha, this blur (+ the shared --surface-backdrop-saturate), and a hairline in --centered-shell-bar-frosted-border-color (role mirror, `initial` → hsl(var(--border)) at the call site). Reduced transparency / no backdrop-filter → solid, written by the library."
+  },
+  {
+    "name": "--centered-shell-bar-frosted-backdrop-blur-size",
+    "value": "20px",
+    "description": "scale-exempt: 20px backdrop blur radius, an optical value not a layout step"
+  },
+  {
+    "name": "--centered-shell-bar-frosted-border-color",
+    "value": "initial",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {

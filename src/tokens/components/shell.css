@@ -982,6 +982,14 @@
   --centered-shell-bar-height: var(--app-shell-bar-height);
   --centered-shell-bar-padding-x: var(--space-page-x);
   --centered-shell-bar-padding-x-compact: var(--space-page-compact-x);
+  /* FROSTED BAR (`barAppearance="frosted"`, both CenteredShell shapes): the muted shell ground at
+   * this alpha, this blur (+ the shared --surface-backdrop-saturate), and a hairline in
+   * --centered-shell-bar-frosted-border-color (role mirror, `initial` → hsl(var(--border)) at the
+   * call site). Reduced transparency / no backdrop-filter → solid, written by the library. */
+  --centered-shell-bar-frosted-background-alpha: 72%;
+  /* scale-exempt: 20px backdrop blur radius, an optical value not a layout step */
+  --centered-shell-bar-frosted-backdrop-blur-size: 20px;
+  --centered-shell-bar-frosted-border-color: initial;
   --centered-shell-main-padding: var(--space-6);
   /* Inline-only compact steps. They exist as their own knobs rather than as a redefinition of the
    * shorthands above, so `--centered-shell-main-padding` keeps meaning all four sides and a service

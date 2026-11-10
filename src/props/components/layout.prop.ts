@@ -805,6 +805,16 @@ export type CenteredShellAuthProp = {
    * `"compact"`; the default variant defaults to `"comfortable"`.
    */
   density?: "comfortable" | "compact";
+  /**
+   * The top bar's MATERIAL. `"default"` keeps the bar exactly as it was. `"frosted"` pins it to the
+   * top (sticky) as a translucent pane with a backdrop blur, so the page scrolls UNDER it — the
+   * Apple bar material: the shell ground at `--centered-shell-bar-frosted-background-alpha`,
+   * `--centered-shell-bar-frosted-backdrop-blur-size` + the shared saturate, and a hairline
+   * (`--centered-shell-bar-frosted-border`). Under `prefers-reduced-transparency: reduce`, and
+   * where `backdrop-filter` is unsupported, the library paints it solid — a consumer writes no
+   * fallback.
+   */
+  barAppearance?: "default" | "frosted";
   className?: ClassNameProp;
 };
 
@@ -1080,6 +1090,16 @@ export type CenteredShellPageProp = {
    * default) emits no attribute and keeps the shell's exact box.
    */
   flow?: "column" | "sections";
+  /**
+   * The top bar's MATERIAL. `"default"` keeps the bar exactly as it was. `"frosted"` pins it to the
+   * top (sticky) as a translucent pane with a backdrop blur, so the page scrolls UNDER it — the
+   * Apple bar material: the shell ground at `--centered-shell-bar-frosted-background-alpha`,
+   * `--centered-shell-bar-frosted-backdrop-blur-size` + the shared saturate, and a hairline
+   * (`--centered-shell-bar-frosted-border`). Under `prefers-reduced-transparency: reduce`, and
+   * where `backdrop-filter` is unsupported, the library paints it solid — a consumer writes no
+   * fallback.
+   */
+  barAppearance?: "default" | "frosted";
   /**
    * Max-width of the centred content column: `sm` ~32rem, `md` (default) ~46rem, `lg` ~64rem — all
    * wider than AuthShell's 24rem auth card. A service retunes each tier via `--centered-shell-width-*`.

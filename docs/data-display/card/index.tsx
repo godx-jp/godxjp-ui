@@ -131,12 +131,12 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            grouped · インセットのグループ化リスト（行の区切り線は本文の位置から）
+            grouped · inset grouped list (row hairlines start at the row text)
           </Text>
           <Flex direction="col" gap="xs">
             <Flex pad={{ inline: 4 }}>
               <Text size="sm" tone="muted">
-                リクエストされる権限 · 2
+                Requested permissions · 2
               </Text>
             </Flex>
             <Card variant="grouped">
@@ -144,7 +144,7 @@ export default function Demo() {
                 <Flex as="ul" marker="none" direction="col" gap="none">
                   <ListRow
                     as="li"
-                    title="あなたのアカウントでのサインイン"
+                    title="Sign in with your account"
                     trailing={
                       <Text mono size="xs" tone="muted">
                         openid
@@ -153,8 +153,8 @@ export default function Demo() {
                   />
                   <ListRow
                     as="li"
-                    title="基本プロフィール"
-                    description="氏名・言語・タイムゾーンなど"
+                    title="Basic profile"
+                    description="Name, language, time zone"
                     trailing={
                       <Text mono size="xs" tone="muted">
                         profile
@@ -166,7 +166,7 @@ export default function Demo() {
             </Card>
             <Flex pad={{ inline: 4 }}>
               <Text size="sm" tone="muted">
-                承認すると、このデバイスが表示された権限でアカウントに接続されます。
+                Approving connects this device to your account with the permissions above.
               </Text>
             </Flex>
           </Flex>
