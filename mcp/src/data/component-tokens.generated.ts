@@ -10709,6 +10709,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`BreadcrumbItemProp.ellipsis` (gh#1046) — the widest a truncating crumb may grow. `none` = it only cuts when the one-line trail runs out of room; a theme may cap it (e.g. `16em`)."
   },
   {
+    "name": "--breadcrumb-item-min-inline-size",
+    "value": "2.5em",
+    "description": "GDX-1489 — the narrowest an ancestor crumb gives way to, so a separator and \"…\" stay readable beside a current page that takes the rest of the line."
+  },
+  {
     "name": "--menu-shortcut-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
