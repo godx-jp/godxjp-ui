@@ -2784,6 +2784,30 @@ export const COMPONENT_PROP_REGISTRY = {
       "PendingProp",
     ],
   },
+  StepTransitionProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "ClassNameProp",
+      {
+        field: "value",
+        local: true,
+        reason:
+          "Identity of the step on screen; a change runs the exit + enter transition (not a controlled form value).",
+      },
+      {
+        field: "direction",
+        local: true,
+        reason: "forward (out to start, in from end) or backward (the mirrored path).",
+      },
+    ],
+  },
+  StepTransitionDirectionProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [],
+  },
   RevealProp: {
     group: "general",
     file: "components/general.prop.ts",

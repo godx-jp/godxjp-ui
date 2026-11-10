@@ -389,6 +389,11 @@
     "tagline": "The official entrance-motion primitive (staggered fade-up) — reads DS motion tokens and honours prefers-reduced-motion, replacing hand-rolled @keyframes + .app-reveal/.d1..d6 classes."
   },
   {
+    "group": "general",
+    "name": "StepTransition",
+    "tagline": "The exit + enter motion between the steps of a multi-step flow (email → password, code → confirm → done): the outgoing step slides toward the inline start and fades while the next enters from the inline end, critically damped; a cross-fade under prefers-reduced-motion."
+  },
+  {
     "absorbed": [
       "Spin",
       "Spinner",

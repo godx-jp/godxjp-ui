@@ -5300,6 +5300,52 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
     rules: [],
   },
   {
+    name: "StepTransition",
+    group: "general",
+    tagline:
+      "The exit + enter motion between the steps of a multi-step flow (email → password, code → confirm → done): the outgoing step slides toward the inline start and fades while the next enters from the inline end, critically damped; a cross-fade under prefers-reduced-motion.",
+    props: [
+      {
+        name: "value",
+        type: "string | number",
+        required: true,
+        description:
+          "Identity of the step on screen. A CHANGE runs the transition; the first render does not animate. The incoming step is keyed by it, so it mounts fresh (no state leaks from the previous step).",
+      },
+      {
+        name: "direction",
+        type: '"forward" | "backward"',
+        defaultValue: '"forward"',
+        description:
+          "`forward`: out toward the inline start, in from the inline end. `backward` (going back, 変更 / 戻る): the mirrored path. RTL flips both.",
+      },
+      { name: "children", type: "ReactNode", description: "The current step's content." },
+      { name: "className", type: "string", description: "Extra classes on the wrapper." },
+    ],
+    usage: [
+      'DO wrap the swapping part of a multi-step screen and give it the step as `value`: `<StepTransition value={step} direction={back ? "backward" : "forward"}>{step === "email" ? <EmailStep /> : <PasswordStep />}</StepTransition>`. Keep the shell, the title that does not change and the footer OUTSIDE it.',
+      "DO NOT add GSAP / Framer for this, and do not hand-write @keyframes: the travel (`--step-transition-translate`, 24px), durations (`--step-transition-duration` = --duration-slow, `--step-transition-exit-duration` = --duration-base, `--step-transition-reduced-duration` 200ms) and the --ease-emphasized curve are tokens.",
+      "DO move focus to the new step's heading or first field yourself after `value` changes — the outgoing layer is `inert` + `aria-hidden` while it is painted, so focus can never stay on it, but the component does not choose a target for you.",
+      "The two layers share one grid cell, so the box is as tall as the taller step while they cross; the outgoing layer is removed on its animationend (1s fallback).",
+    ],
+    useCases: [
+      'Sign-in: the email step leaves and the password step enters; 変更 goes back with direction="backward".',
+      'Device authorization: code → confirm → done under a Steps type="bar".',
+      "Account creation: the form → 'check your email' in the same column.",
+    ],
+    related: [
+      "Reveal — ENTRANCE only (a section fading up on mount / in view). StepTransition is the swap between two contents.",
+      'Steps — `type="bar"` is the progress line that usually sits above a StepTransition.',
+    ],
+    example: `import { StepTransition } from "@godxjp/ui/general";
+
+<StepTransition value={step} direction={goingBack ? "backward" : "forward"}>
+  {step === "email" ? <EmailStep /> : <PasswordStep />}
+</StepTransition>`,
+    storyPath: "general/step-transition.tsx",
+    rules: [],
+  },
+  {
     name: "Activity",
     // gh#830 — "there is no standalone spinner in 165 components". There is: this is it, and the
     // reason nobody found it is that the catalog never said the word. antd's `Spin` is FOUR

@@ -1291,6 +1291,11 @@
         "navigation-layout.css"
       ]
     },
+    "StepTransition": {
+      "layers": [
+        "motion.css"
+      ]
+    },
     "Steps": {
       "layers": [
         "navigation-layout.css"

@@ -1346,6 +1346,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'CenteredShell `barAppearance="frosted"` (auth and page shapes): the sticky translucent top bar. Fill = the muted shell ground at `--centered-shell-bar-frosted-background-alpha` (72%); blur `--centered-shell-bar-frosted-backdrop-blur-size` (20px) with the shared `--surface-backdrop-saturate`; hairline below in `--centered-shell-bar-frosted-border-color` (role mirror, `initial` → hsl(var(--border))). Under prefers-reduced-transparency: reduce, and without backdrop-filter support, the library paints the solid ground.',
   },
   {
+    name: "--step-transition-{translate,duration,exit-duration,reduced-duration}",
+    category: "primitive",
+    tier: "primitive",
+    role: "StepTransition motion: `--step-transition-translate` (24px) is how far the outgoing step travels toward the inline start and the incoming one starts from the inline end; `--step-transition-duration` (--duration-slow) times the entrance, `--step-transition-exit-duration` (--duration-base) the quicker exit, both on --ease-emphasized; `--step-transition-reduced-duration` (200ms) is the cross-fade used under prefers-reduced-motion.",
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

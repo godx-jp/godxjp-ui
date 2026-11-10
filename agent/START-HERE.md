@@ -52,7 +52,7 @@ screen anatomy, the visual target the rules below do not give you. Then fetch in
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
    filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
    copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".
-1. `components-index.json` — 47 KB, all 213 components as name + group +
+1. `components-index.json` — 47 KB, all 214 components as name + group +
    tagline. Read this when you already know the SHAPE you need. Each entry may carry `absorbed`:
    names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
    `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field
@@ -61,8 +61,8 @@ screen anatomy, the visual target the rules below do not give you. Then fetch in
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 44 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 3378 design tokens, each tagged with its `tier`. **If you were handed a
-   brand, read the 225 `foundation` entries first** — `--primary`, `--background`,
+4. `tokens.json` — 3382 design tokens, each tagged with its `tier`. **If you were handed a
+   brand, read the 229 `foundation` entries first** — `--primary`, `--background`,
    `--radius`, `--font-size-base` are the handful everything else derives from. The
    3038 `component` entries are per-part knobs; reach for one only when a role is
    right everywhere except one component.
@@ -148,7 +148,7 @@ has stopped following the brand.
 
 | `tier` | count | what it is | set it? |
 |---|---|---|---|
-| `foundation` | 225 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** The default `--primary` is a neutral placeholder: set it (`:root { --primary: <H> <S>% <L>%; }`, HSL components, no `hsl()` wrapper) or import a theme preset such as `@godxjp/ui/themes/godx.css` |
+| `foundation` | 229 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** The default `--primary` is a neutral placeholder: set it (`:root { --primary: <H> <S>% <L>%; }`, HSL components, no `hsl()` wrapper) or import a theme preset such as `@godxjp/ui/themes/godx.css` |
 | `semantic` | 115 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
 | `component` | 3038 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
 

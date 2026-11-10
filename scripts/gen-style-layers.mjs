@@ -66,7 +66,7 @@ const OWNERS = {
     "ServiceRolePanel",
     "ErrorSurface",
   ],
-  "motion.css": ["Reveal", "Activity", "Marquee"],
+  "motion.css": ["Reveal", "StepTransition", "Activity", "Marquee"],
   // The editorial account family (gh#1439).
   "editorial-account-layout.css": [
     "EditorialTextButton",
