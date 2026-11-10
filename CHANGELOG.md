@@ -8,6 +8,8 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.28.7] - 2026-11-10
+
 ### Tabs add button for every variant, AppShell push panel, dashed Card (Platform Home)
 
 - **Added** `Tabs onAdd?: (event) => void` and `addLabel?: string` — an add button for EVERY variant, not only `editable-card`. On `default` and `line` strips it sits right after the last tab (the strip becomes content-width, the `line` rail continues to the row's end, an end `extra` is pushed to the end); on the card variants at the strip end. A real `<button>` after the tablist (the next Tab stop), logical in RTL; on `editable-card` it wins over `onEdit(event, "add")`. `addIcon` / `hideAdd` apply. Not on a route strip (`href` items).
