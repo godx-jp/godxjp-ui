@@ -345,7 +345,7 @@
   }
 
   /* `onAdd` on a default / line strip: the strip is content-width so the add button sits right
-   * after the last tab, the end `extra` is pushed to the row's end, and the line rail moves from
+   * after the last tab, the end `extra` keeps the row's end, and the line rail moves from
    * the strip to the bar so it still spans the row. */
   [data-slot="tabs"]:not([data-orientation="vertical"])
     .ui-tabs-bar[data-add="inline"]
@@ -353,8 +353,11 @@
     flex: 0 1 auto;
   }
 
-  .ui-tabs-bar[data-add="inline"] > .ui-tabs-extra[data-side="end"] {
-    margin-inline-start: auto;
+  /* The add button takes the free space after it, so an end `extra` (and the overflow menu) keep
+   * the row's end — the extra itself carries no margin (gh#766: an ungated extra margin moves
+   * every strip). */
+  .ui-tabs-bar[data-add="inline"] > .ui-tabs-add {
+    margin-inline-end: auto;
   }
 
   /* The line rail continues past the content-width strip to the row's end. The strip keeps its

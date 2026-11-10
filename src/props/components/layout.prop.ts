@@ -719,7 +719,7 @@ export type AppShellProp = {
   /**
    * A panel at the inline END that PUSHES the page aside instead of overlaying it ("add widget",
    * an inspector): full height, beside the topbar, `--app-shell-aside-width` wide (default
-   * 26.25rem); the topbar, main and footer give it the room. Below 48rem it covers the screen
+   * 26.25rem); the topbar, main and footer give it the room. At the shell's narrow breakpoint (56.25rem) it covers the screen
    * (a full-screen panel over the page). Rendered as an `<aside>` landmark named by `asideLabel`.
    * Bring your own header and close control inside it.
    */

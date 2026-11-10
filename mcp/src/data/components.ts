@@ -2730,7 +2730,7 @@ import { StatCard } from "@godxjp/ui/data-display";
         name: "aside",
         type: "ReactNode",
         description:
-          'A panel at the inline END that PUSHES the page aside instead of overlaying it (an "add widget" catalogue, an inspector): full height beside the topbar, --app-shell-aside-width wide (default 26.25rem; background --app-shell-aside-background, default the card surface); the topbar, main and footer give it the room. Below 48rem it covers the screen. An `<aside>` landmark named by `asideLabel`, last in focus order; bring your own header and close control.',
+          'A panel at the inline END that PUSHES the page aside instead of overlaying it (an "add widget" catalogue, an inspector): full height beside the topbar, --app-shell-aside-width wide (default 26.25rem; background --app-shell-aside-background, default the card surface); the topbar, main and footer give it the room. At the shell narrow breakpoint (56.25rem) it covers the screen. An `<aside>` landmark named by `asideLabel`, last in focus order; bring your own header and close control.',
       },
       {
         name: "asideOpen",
