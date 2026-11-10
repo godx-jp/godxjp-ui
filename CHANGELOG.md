@@ -8,6 +8,8 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.28.3] - 2026-11-10
+
 ### Breadcrumb never cuts the current page, and can fold its middle (GDX-1489)
 
 - **Changed** `BreadcrumbItemProp.ellipsis` applies to ancestor crumbs only, in `Breadcrumb` and in `PageContainer`'s trail: the current page is never cut. Its `ellipsis` is ignored; it keeps its whole label on one line while that fits and wraps when even the whole line cannot hold it, and the ancestors give way first, down to the new `--breadcrumb-item-min-inline-size` (default `2.5em`, a separator and "…"). Measured on GDX at 320, before: three `ellipsis` crumbs shrank together and the current page read 「一般設…」 (42 of 50px); after: the current page whole, the ancestors cut, no page overflow at 320 and 390. A current crumb that asked for `ellipsis` loses the recovered `aria-label` / `title` it carried while clipped (it is no longer clipped; its text is its name).
