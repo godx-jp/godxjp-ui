@@ -364,6 +364,11 @@
   --editorial-auth-title-space-block: var(--space-5);
   /* `pre-line` keeps a title's authored line breaks; the narrow band collapses them (`normal`). */
   --editorial-auth-title-white-space: pre-line;
+  /* `titleSize="md"` — the sign-in density title. */
+  --editorial-auth-title-md-font-size: 2rem; /* scale-exempt: measured 32px sign-in title (Platform) */
+  --editorial-auth-title-md-line-height: 1.4;
+  /* `bandDescription="hidden"`: the description's display — `none` only below the phone line. */
+  --editorial-auth-band-description-display: block;
   --editorial-auth-description-max-width: 30.625rem;
   --editorial-auth-description-font-size: calc(var(--font-size-base) + 0.125rem);
   --editorial-auth-description-line-height: 1.9;
@@ -390,11 +395,14 @@
   /* `artFrame="none"`: the unframed art box. */
   --editorial-auth-art-free-max-width: none;
   --editorial-auth-art-free-height: auto;
-  /* `appearance="brand"`: the story surface. Background default = hsl(var(--brand)) (a gradient is
-   * a valid value); foreground is an HSL triple, default = var(--brand-foreground) — the identity
-   * pair the kit already holds at AA; muted foreground (the copy and kicker) defaults to it. */
+  /* `appearance="brand"`: the story surface, DARK in every theme. Background default = a deep
+   * gradient of the --primary hue at the angle below (resolved at the call site; any colour or
+   * gradient is valid); foreground is an HSL triple (white, >= 6:1 on <= 24% L); muted foreground
+   * (the copy and kicker) defaults to it. Retint the background lighter and you retint the
+   * foreground too, at AA. */
   --editorial-auth-brand-background: initial;
-  --editorial-auth-brand-foreground: initial;
+  --editorial-auth-brand-gradient-angle: 160deg;
+  --editorial-auth-brand-foreground: 0 0% 100%;
   --editorial-auth-brand-muted-foreground: initial;
   --editorial-auth-brand-padding: var(--space-10);
   --editorial-auth-brand-radius: var(--editorial-auth-card-radius);
@@ -431,6 +439,17 @@
   --editorial-auth-card-footer-space-block-start: var(--space-6);
 }
 
+/* EditorialAuth on a TABLET (48rem–64rem): the 460px card and the hero gap left too little for the
+ * story (an 800px viewport overflowed by 84px). Both columns stay, both may shrink: the card caps at
+ * 22.5rem and the gap drops to the phone-to-desktop midpoint. */
+@media (48rem <= width < 64rem) {
+  :root {
+    --editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);
+    --editorial-auth-gap: var(--space-10);
+    --editorial-auth-card-padding: var(--space-6);
+  }
+}
+
 /* EditorialAuth below the kit's phone line (48rem — `--sheet-responsive-breakpoint-width`, the
  * `md` step). The kit's DEFAULT, declared as tokens so the layout rules still name no breakpoint
  * and a theme re-declares any of them under its own query: the 460px card track would overflow a
@@ -447,6 +466,9 @@
     --editorial-auth-title-line-height: 1.4;
     --editorial-auth-title-space-block: var(--space-2);
     --editorial-auth-title-white-space: normal;
+    --editorial-auth-title-md-font-size: 1.625rem; /* scale-exempt: the band's 26px title, as above */
+    --editorial-auth-title-md-line-height: 1.4;
+    --editorial-auth-band-description-display: none;
     --editorial-auth-art-display: none;
     --editorial-auth-benefits-display: none;
     --editorial-auth-brand-padding: var(--space-5);

@@ -39,9 +39,21 @@
     },
     {
       "defaultValue": "\"default\"",
-      "description": "\"brand\" paints the story column with the brand surface — --editorial-auth-brand-background (default hsl(var(--brand)); a deep gradient is a valid value) — and re-scopes --foreground / --muted-foreground / --text-brand inside it so the title, copy, kicker and benefit tick take the on-brand ink (--editorial-auth-brand-foreground, an HSL triple, default var(--brand-foreground); --editorial-auth-brand-muted-foreground defaults to it). Padded and rounded by --editorial-auth-brand-padding / --editorial-auth-brand-radius. Keep the pair at WCAG AA when you retint it.",
+      "description": "\"brand\" paints the story column with a DARK brand surface in every theme — --editorial-auth-brand-background, default a deep gradient of the --primary hue (lightness capped 24% → 14%, angle --editorial-auth-brand-gradient-angle) — and re-scopes --foreground / --muted-foreground / --text-brand inside it so the title, copy, kicker and benefit tick take light ink (--editorial-auth-brand-foreground, an HSL triple, default 0 0% 100%; --editorial-auth-brand-muted-foreground defaults to it). A Logo in the eyebrow shows its dark-surface artwork automatically (data-logo-scheme=\"dark\"). Padded and rounded by --editorial-auth-brand-padding / --editorial-auth-brand-radius. Keep the pair at WCAG AA when you retint it.",
       "name": "appearance",
       "type": "\"default\" | \"brand\""
+    },
+    {
+      "defaultValue": "\"lg\"",
+      "description": "\"lg\" is the editorial hero (2.5rem / 1.7); \"md\" is sign-in density (--editorial-auth-title-md-font-size 2rem / --editorial-auth-title-md-line-height 1.4). The phone band sets its own size for both.",
+      "name": "titleSize",
+      "type": "\"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "\"visible\"",
+      "description": "The description in the phone band (< 48rem). \"hidden\" makes the band one line — kicker/logo and title only (--editorial-auth-band-description-display). Desktop and tablet always show it.",
+      "name": "bandDescription",
+      "type": "\"visible\" | \"hidden\""
     },
     {
       "description": "Benefit lines.",
@@ -67,6 +79,7 @@
   "tagline": "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`.",
   "usage": [
     "DO keep the form in an EditorialAuthCard with Form + FormField.",
-    "Below 48rem the columns stack and the story becomes a compact band (kicker + one-line title, copy kept; art and benefits hidden). It is the kit's default as tokens (--editorial-auth-track-size, --editorial-auth-title-white-space, --editorial-auth-art-display, --editorial-auth-benefits-display …); re-declare them under your own query to keep the art."
+    "Below 48rem the columns stack and the story becomes a compact band (kicker + one-line title, copy kept; art and benefits hidden). It is the kit's default as tokens (--editorial-auth-track-size, --editorial-auth-title-white-space, --editorial-auth-art-display, --editorial-auth-benefits-display …); re-declare them under your own query to keep the art.",
+    "From 48rem to 64rem (tablet) both columns stay and shrink: the card caps at 22.5rem (--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem)) and the gap drops to --space-10, so nothing overflows from 320px up."
   ]
 }

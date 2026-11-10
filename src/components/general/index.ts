@@ -13,7 +13,7 @@ export type {
 export { Icon } from "./icon";
 export type { IconGlyphProp, IconProps } from "./icon";
 export { Logo } from "./logo";
-export type { LogoMark, LogoProps, LogoSize, LogoTone } from "./logo";
+export type { LogoMark, LogoProps, LogoScheme, LogoSize, LogoTone } from "./logo";
 export { Reveal } from "./reveal";
 export type { RevealProp, RevealProps } from "./reveal";
 export { Activity } from "./activity";

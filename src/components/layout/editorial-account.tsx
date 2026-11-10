@@ -434,6 +434,8 @@ export function EditorialAuth({
   art,
   artFrame = "cards",
   appearance = "default",
+  titleSize = "lg",
+  bandDescription = "visible",
   benefits,
   children,
   className,
@@ -444,9 +446,15 @@ export function EditorialAuth({
       data-slot="editorial-auth"
       // Emitted only for a non-default choice, so the default page keeps its exact box.
       data-appearance={appearance === "brand" ? "brand" : undefined}
+      data-title-size={titleSize === "md" ? "md" : undefined}
+      data-band-description={bandDescription === "hidden" ? "hidden" : undefined}
       className={cn("ui-editorial-auth", className)}
     >
-      <div className="ui-editorial-auth-story">
+      <div
+        className="ui-editorial-auth-story"
+        // The brand surface is dark in every theme, so a Logo in the eyebrow takes its light artwork.
+        data-logo-scheme={appearance === "brand" ? "dark" : undefined}
+      >
         {eyebrow}
         <Heading className="ui-editorial-auth-title">{title}</Heading>
         {description != null && <p className="ui-editorial-auth-description">{description}</p>}

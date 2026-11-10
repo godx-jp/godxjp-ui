@@ -38,6 +38,12 @@ const organizations = [
   { id: "suspended", name: "Archived Workspace", meta: "利用停止", disabled: true },
 ];
 
+/** The account's own workspace is listed in its own section, after the organizations. */
+const withPersonal = [
+  ...organizations,
+  { id: "personal", name: "山田 太郎", meta: "個人ワークスペース", kind: "personal" as const },
+];
+
 const labels: OrgSwitcherLabels = {
   trigger: (name) => `現在の組織: ${name}`,
   title: "組織を選択",
@@ -71,10 +77,10 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               <OrgSwitcher
-                organizations={organizations}
+                organizations={withPersonal}
                 value={value}
                 onValueChange={setValue}
-                labels={labels}
+                labels={{ ...labels, personal: "個人" }}
                 responsive="auto"
                 // Rows under the list (popover and mobile sheet): ↑↓ reach them, Enter runs them.
                 actions={[
@@ -87,7 +93,7 @@ export default function Demo() {
                 ]}
               />
               <Text size="sm" tone="muted" aria-live="polite">
-                選択中: {organizations.find((organization) => organization.id === value)?.name}
+                選択中: {withPersonal.find((organization) => organization.id === value)?.name}
                 {managed ? " · 組織の管理を開きました" : ""}
               </Text>
               <OrgSwitcher
