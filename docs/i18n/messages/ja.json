@@ -2576,5 +2576,109 @@
     "axis5": "監査対応の整備",
     "axis6": "財務の安定性",
     "title": "数値プロフィール"
+  },
+  "radioGroupDocs": {
+    "plan": {
+      "title": "選択肢ごとの説明 · プラン選択",
+      "description": "options[].description が各行に付く。料金や条件を選択肢の外に書くと、どの行の説明なのかが読み手側の推測になる。末尾の Badge は label を ReactNode にして入れる。Badge は押せないのでラベルのクリック判定を壊さない。",
+      "standard": "スタンダード",
+      "standardDescription": "月額 {price} · {users}ユーザーまで · メールサポート",
+      "business": "ビジネス",
+      "recommended": "推奨",
+      "businessDescription": "月額 {price} · {users}ユーザーまで · 監査ログと権限テンプレート",
+      "enterprise": "エンタープライズ",
+      "enterpriseDescription": "個別見積 · SAML SSO · 専任担当とSLA",
+      "legacy": "ライト (新規受付終了)",
+      "legacyDescription": "既存契約のみ継続。移行先はスタンダードです"
+    },
+    "org": {
+      "title": "optionType=\"card\" · 組織を選択",
+      "description": "行全体がラベルで、どこを押しても選べる。leading に Avatar、extra に Badge。options に { label, options, appearance } を渡すと見出し付きのセクションになり、矢印キーはセクションをまたいで1つの radiogroup として動く。何も選んでいない状態は value={null} で、最初の行に Tab で入れる。絞り込みは SearchInput と利用側の filter の組み合わせで、選択中の行は常に残す。",
+      "filterLabel": "組織を絞り込む",
+      "filterPlaceholder": "組織名で絞り込む",
+      "choose": "組織を選択",
+      "section": "組織 · {count}",
+      "lastUsed": "前回利用",
+      "personal": "個人",
+      "personalWorkspace": "個人ワークスペース",
+      "personalDescription": "自分だけのファイルとページ",
+      "role": {
+        "owner": "オーナー",
+        "member": "メンバー",
+        "viewer": "閲覧のみ"
+      },
+      "members": {
+        "other": "{count} 名"
+      }
+    },
+    "accordion": {
+      "title": "optionType=\"card\" · Accordion の中",
+      "description": "AccordionContent は overflow: clip と overflow-clip-margin で、フォーカス枠のぶんだけ端の外まで描ける。カードのフォーカス枠もカードの内側に描くので、端に接していても切れない。",
+      "shipping": "配送方法",
+      "air": "航空便",
+      "sea": "船便",
+      "express": "特急",
+      "days": "{min}〜{max} 日",
+      "nextDay": "翌日"
+    }
+  },
+  "navListDocs": {
+    "subtitle": "ページ内のルート遷移ナビゲーション",
+    "settings": "設定",
+    "settingsContent": "設定の内容",
+    "canonical": {
+      "title": "設定ナビゲーション · 正準形"
+    },
+    "grouping": {
+      "title": "グループあり · グループなし",
+      "flatCaption": "フラット · 12 行 · ランドマーク 1 つ",
+      "flatLabel": "設定（フラット）",
+      "groupedCaption": "グループあり · 開閉 4 つ · ランドマーク 1 つ",
+      "groupedLabel": "設定（グループあり）"
+    },
+    "sections": {
+      "title": "固定の見出し · その中で開閉するグループ",
+      "label": "プロジェクト設定"
+    },
+    "trailing": {
+      "title": "行の末尾に置けるもの",
+      "label": "行末スロット"
+    },
+    "extremes": {
+      "title": "アイコン列とラベルの極端なケース",
+      "railCaption": "レール幅（compact · 18.75rem）",
+      "stressLabel": "ラベル長のストレス",
+      "narrowCaption": "180px に絞ったとき",
+      "stressNarrowLabel": "ラベル長のストレス（狭幅）",
+      "mixedCaption": "icon あり · なしの混在",
+      "mixedLabel": "アイコンの混在"
+    },
+    "states": {
+      "title": "状態 · active · disabled · 破壊的操作",
+      "label": "状態",
+      "paneCaption": "「アカウントを削除」を選んだあとのペイン",
+      "paneNote": "削除は {days} 日後に確定します。それまでは同じ画面から取り消せます。",
+      "delete": "アカウントを削除"
+    },
+    "long": {
+      "title": "{count} 項目をレールに収める",
+      "label": "設定（全 {count} 項目）"
+    },
+    "outside": {
+      "title": "MasterDetail の外に置くとき",
+      "label": "設定（カード内スクロール）"
+    },
+    "empty": {
+      "title": "項目が 0 件のとき",
+      "caption": "NavList items={[]} · 何も描かれない",
+      "label": "権限のある設定（0 件）",
+      "replacement": "差し替え",
+      "emptyTitle": "表示できる設定がありません",
+      "emptyDescription": "この組織での権限では設定項目を開けません。管理者に権限の付与を依頼してください。"
+    },
+    "phone": {
+      "title": "電話幅のとき",
+      "back": "設定一覧へ戻る"
+    }
   }
 }
