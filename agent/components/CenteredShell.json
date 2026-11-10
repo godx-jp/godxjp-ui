@@ -58,7 +58,7 @@
     },
     {
       "defaultValue": "\"default\"",
-      "description": "the auth shape only. Inline MEASURE of the shell content slot. \"default\" is the single auth card (24rem, or 22.5rem under variant=\"canonical\"). \"wide\" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry.",
+      "description": "the auth shape only. Inline MEASURE of the shell content slot. \"default\" is the single auth card (24rem, or 22.5rem under variant=\"canonical\"). \"wide\" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry — EXCEPT preset=\"context-selection\": there \"wide\" opens the slot to --auth-shell-context-wide-card-max-width (default = the wide measure) so the chooser sits beside an explanation column (wrap both in one <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> child), and a phone keeps a --auth-shell-context-wide-main-padding-mobile gutter.",
       "name": "measure",
       "type": "\"default\" | \"wide\""
     },

@@ -1,5 +1,5 @@
 {
-  "example": "import { EditorialAuth, EditorialAuthCard, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title=\"Make room for what you love.\" benefits={[\"A collection of your own\"]}><EditorialAuthCard title=\"Welcome back.\" /></EditorialAuth>",
+  "example": "import { EditorialAuth, EditorialAuthCard, Eyebrow } from \"@godxjp/ui/layout\";\n\n<EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title=\"Make room for what you love.\" benefits={[\"A collection of your own\"]}><EditorialAuthCard title=\"Welcome back.\" /></EditorialAuth>\n\n// Brand story column, free-form art, the form card owns the h1:\n<EditorialAuth appearance=\"brand\" artFrame=\"none\" art={<AppChips />} level={2} title=\"…\"><EditorialAuthCard level={2} title=\"Sign in\" /></EditorialAuth>",
   "group": "layout",
   "importPath": "@godxjp/ui/layout",
   "name": "EditorialAuth",
@@ -10,10 +10,16 @@
       "type": "ReactNode"
     },
     {
-      "description": "Display title (h1).",
+      "description": "Display title.",
       "name": "title",
       "required": true,
       "type": "ReactNode"
+    },
+    {
+      "defaultValue": "1",
+      "description": "Heading level of the story title. Pass 2 when the form card owns the page h1 (`<EditorialAuthCard level>`).",
+      "name": "level",
+      "type": "1 | 2"
     },
     {
       "description": "Copy.",
@@ -21,9 +27,21 @@
       "type": "ReactNode"
     },
     {
-      "description": "Picture on the front card.",
+      "description": "Decorative art (aria-hidden): the picture on the front card under artFrame=\"cards\", rendered as given under artFrame=\"none\".",
       "name": "art",
       "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"cards\"",
+      "description": "\"cards\" wraps `art` in the fixed rotated card pair; \"none\" renders free-form art (floating app chips, an illustration) in an unframed auto-height box (--editorial-auth-art-free-max-width / --editorial-auth-art-free-height).",
+      "name": "artFrame",
+      "type": "\"cards\" | \"none\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "\"brand\" paints the story column with the brand surface — --editorial-auth-brand-background (default hsl(var(--brand)); a deep gradient is a valid value) — and re-scopes --foreground / --muted-foreground / --text-brand inside it so the title, copy, kicker and benefit tick take the on-brand ink (--editorial-auth-brand-foreground, an HSL triple, default var(--brand-foreground); --editorial-auth-brand-muted-foreground defaults to it). Padded and rounded by --editorial-auth-brand-padding / --editorial-auth-brand-radius. Keep the pair at WCAG AA when you retint it.",
+      "name": "appearance",
+      "type": "\"default\" | \"brand\""
     },
     {
       "description": "Benefit lines.",
@@ -48,6 +66,7 @@
   ],
   "tagline": "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`.",
   "usage": [
-    "DO keep the form in an EditorialAuthCard with Form + FormField."
+    "DO keep the form in an EditorialAuthCard with Form + FormField.",
+    "Below 48rem the columns stack and the story becomes a compact band (kicker + one-line title, copy kept; art and benefits hidden). It is the kit's default as tokens (--editorial-auth-track-size, --editorial-auth-title-white-space, --editorial-auth-art-display, --editorial-auth-benefits-display …); re-declare them under your own query to keep the art."
   ]
 }

@@ -589,3 +589,93 @@ describe("OrgSwitcher personal workspace section (#1556)", () => {
     expect(names()).toHaveLength(2);
   });
 });
+
+describe("OrgSwitcher actions under the list", () => {
+  const withPersonal = [
+    { id: "me", name: "Pham Thai Duong", meta: "Personal", kind: "personal" as const },
+    { id: "dxs", name: "DXS Holdings", meta: "Owner" },
+    { id: "acme", name: "Acme Trading", meta: "Member" },
+  ];
+  const names = () => screen.getAllByRole("option").map((o) => o.textContent);
+
+  it("lists the actions last, keeps them while searching, and runs one with the keyboard", async () => {
+    const user = userEvent.setup();
+    const onManage = vi.fn();
+    const onOpenChange = vi.fn();
+    renderWithUi(
+      <OrgSwitcher
+        organizations={withPersonal}
+        value="dxs"
+        labels={labels}
+        responsive="popover"
+        open
+        onOpenChange={onOpenChange}
+        actions={[{ id: "manage", label: "組織を管理", onSelect: onManage }]}
+      />,
+    );
+    await screen.findByRole("option", { name: /DXS Holdings/ });
+    expect(names()).toEqual([
+      expect.stringContaining("DXS Holdings"),
+      expect.stringContaining("Acme Trading"),
+      expect.stringContaining("Pham Thai Duong"),
+      "組織を管理",
+    ]);
+    expect(screen.getByRole("option", { name: "組織を管理" })).toHaveAttribute(
+      "data-action",
+      "manage",
+    );
+
+    const search = screen.getByLabelText("Search organizations");
+    await user.type(search, "zzzz");
+    await waitFor(() => expect(screen.getAllByRole("option")).toHaveLength(2));
+    expect(names()).toEqual([expect.stringContaining("Pham Thai Duong"), "組織を管理"]);
+    // The empty line counts organizations only — the personal row and the action are not matches.
+    expect(screen.getByText("No organizations")).toBeInTheDocument();
+
+    await user.clear(search);
+    await user.type(search, "Acme");
+    await waitFor(() => expect(screen.getAllByRole("option")).toHaveLength(3));
+    expect(names().at(-1)).toBe("組織を管理");
+
+    // ↓ past the matches to the action, Enter runs it and closes the panel.
+    await user.keyboard("{ArrowDown}{ArrowDown}");
+    expect(screen.getByRole("option", { name: "組織を管理" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await user.keyboard("{Enter}");
+    expect(onManage).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it("renders the actions in the mobile sheet too, and none without the prop", async () => {
+    const user = userEvent.setup();
+    const onManage = vi.fn();
+    const { unmount } = renderWithUi(
+      <OrgSwitcher
+        organizations={organizations}
+        value="dxs"
+        labels={labels}
+        responsive="sheet"
+        open
+        actions={[{ id: "manage", label: "組織を管理", onSelect: onManage }]}
+      />,
+    );
+    await user.click(await screen.findByRole("option", { name: "組織を管理" }));
+    expect(onManage).toHaveBeenCalledTimes(1);
+    unmount();
+
+    renderWithUi(
+      <OrgSwitcher
+        organizations={organizations}
+        value="dxs"
+        labels={labels}
+        responsive="popover"
+        open
+      />,
+    );
+    await screen.findByRole("option", { name: /DXS Holdings/ });
+    expect(names()).toHaveLength(2);
+    expect(document.querySelector("[data-action]")).toBeNull();
+  });
+});
