@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C01 bad: a clip that cuts the scroll container's own viewport</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+      .row { display: flex; align-items: center; gap: 8px; height: 32px; }
+    </style>
+  </head>
+  <body>
+    <!-- The nav's viewport is 160px but the aside around it shows 112px: the fourth row sits
+         inside the nav's viewport (no scroll reveals more of it) and its icon is still cut 8px. -->
+    <aside style="height: 112px; overflow-y: clip">
+      <nav style="height: 160px; overflow-y: auto">
+        <div class="row">One</div>
+        <div class="row">Two</div>
+        <div class="row">Three</div>
+        <div class="row"><svg id="c01-scroller-cut" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect width="16" height="16" /></svg></div>
+        <div class="row">Five</div>
+        <div class="row">Six</div>
+      </nav>
+    </aside>
+  </body>
+</html>
