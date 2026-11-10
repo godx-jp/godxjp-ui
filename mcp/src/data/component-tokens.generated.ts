@@ -5575,8 +5575,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-auth-description-space-block-end",
-    "value": "0",
-    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+    "value": "var(--space-6)",
+    "description": "The gap under the copy, so the first benefit line (or the art) does not sit flush on it. Block margins collapse, so beside the art the art's own --editorial-auth-art-space-block-start wins."
   },
   {
     "name": "--editorial-auth-art-display",

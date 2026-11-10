@@ -372,7 +372,9 @@
   --editorial-auth-description-max-width: 30.625rem;
   --editorial-auth-description-font-size: calc(var(--font-size-base) + 0.125rem);
   --editorial-auth-description-line-height: 1.9;
-  --editorial-auth-description-space-block-end: 0;
+  /* The gap under the copy, so the first benefit line (or the art) does not sit flush on it. Block
+   * margins collapse, so beside the art the art's own --editorial-auth-art-space-block-start wins. */
+  --editorial-auth-description-space-block-end: var(--space-6);
   --editorial-auth-art-display: block;
   --editorial-auth-art-height: 14.375rem;
   --editorial-auth-art-max-width: 21.875rem;

@@ -523,6 +523,13 @@ describe("EditorialAuth (gh#1439)", () => {
     expect(narrow).toContain("--editorial-auth-title-md-font-size: 1.625rem;");
   });
 
+  it("keeps a gap between the description and the first benefit line", () => {
+    expect(tokens).toContain("--editorial-auth-description-space-block-end: var(--space-6);");
+    expect(rule(".ui-editorial-auth-description")).toContain(
+      "margin: 0 0 var(--editorial-auth-description-space-block-end)",
+    );
+  });
+
   it("shrinks both columns on a tablet (48rem-64rem) instead of overflowing", () => {
     const tablet = tokens.match(/@media \(48rem <= width < 64rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
     expect(tablet).toContain("--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);");
