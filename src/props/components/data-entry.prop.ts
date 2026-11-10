@@ -757,7 +757,10 @@ export type RadioGroupProp = FieldA11yProps & {
    * antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label;
    * `button` welds the choices into one segmented bar of radio buttons; `card` (gh#1555) draws
    * each choice as a bordered row whose whole surface is the label, with the option's `leading`
-   * and `extra`. The role stays `radiogroup`/`radio` in every case: this is paint, never semantics.
+   * and `extra`. `list` draws the same rows as ONE inset grouped list (the iOS Settings look): a
+   * single card surface per section (the section label above it), rows separated by a hairline
+   * inset to the row text, and the radio mark at the row's END. The role stays
+   * `radiogroup`/`radio` in every case: this is paint, never semantics.
    */
   optionType?: RadioOptionTypeProp;
   /** antd `buttonStyle` — fill of the selected choice while `optionType="button"`. */
@@ -771,7 +774,7 @@ export type RadioGroupProp = FieldA11yProps & {
 };
 
 /** antd `RadioGroupOptionType` — a radio group drawn as dots or as a welded button bar. */
-export type RadioOptionTypeProp = "default" | "button" | "card";
+export type RadioOptionTypeProp = "default" | "button" | "card" | "list";
 
 /** antd `RadioGroupButtonStyle` — the selected button is outlined, or filled with the brand. */
 export type RadioButtonStyleProp = "outline" | "solid";

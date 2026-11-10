@@ -14974,7 +14974,7 @@
           "origin": "owned",
           "required": false,
           "type": "RadioOptionTypeProp | undefined",
-          "values": ["button", "default", "card"],
+          "values": ["button", "default", "card", "list"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {

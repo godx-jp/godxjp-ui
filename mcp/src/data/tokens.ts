@@ -1352,6 +1352,12 @@ export const TOKENS: TokenEntry[] = [
     role: "StepTransition motion: `--step-transition-translate` (24px) is how far the outgoing step travels toward the inline start and the incoming one starts from the inline end; `--step-transition-duration` (--duration-slow) times the entrance, `--step-transition-exit-duration` (--duration-base) the quicker exit, both on --ease-emphasized; `--step-transition-reduced-duration` (200ms) is the cross-fade used under prefers-reduced-motion.",
   },
   {
+    name: "--choice-list-{background,radius,divider-color,divider-inset,divider-leading-inset,section-gap,label-gap}",
+    category: "component",
+    tier: "component",
+    role: 'RadioGroup `optionType="list"` — the inset grouped list. One surface per section: `--choice-list-background` (initial → hsl(var(--card))) and `--choice-list-radius` (initial → the card radius). Rows separate with a hairline in `--choice-list-divider-color` (initial → --border) starting at `--choice-list-divider-inset` (initial → --choice-card-padding-inline, the row text) or, with a leading avatar, `--choice-list-divider-leading-inset` (inset + avatar + gap). Sections stack `--choice-list-section-gap` (space-5) apart with the label `--choice-list-label-gap` (6px) above its surface.',
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

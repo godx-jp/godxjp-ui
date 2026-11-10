@@ -1494,6 +1494,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--choice-list-background",
+    "value": "initial",
+    "description": "Radio `optionType=\"list\"` — the inset grouped list. Surface = the card fill and card radius (role mirrors, `initial`); the hairline between rows starts at the row text (`--choice-list-divider-inset`, default the row inset; `-leading-inset` past a leading avatar); sections stack --choice-list-section-gap apart, the label --choice-list-label-gap above. default = var(--card)"
+  },
+  {
+    "name": "--choice-list-radius",
+    "value": "initial",
+    "description": "default = the card radius"
+  },
+  {
+    "name": "--choice-list-divider-color",
+    "value": "initial",
+    "description": "default = var(--border)"
+  },
+  {
+    "name": "--choice-list-divider-inset",
+    "value": "initial",
+    "description": "default = var(--choice-card-padding-inline)"
+  },
+  {
+    "name": "--choice-list-divider-leading-inset",
+    "value": "initial",
+    "description": "default = inset + avatar + gap"
+  },
+  {
+    "name": "--choice-list-section-gap",
+    "value": "var(--space-5)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--choice-list-label-gap",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px caption-to-group gap of a grouped list header"
+  },
+  {
     "name": "--toggle-focus-ring-width",
     "value": "initial",
     "description": "Ring knobs for the two controls that historically wanted a softer mark than the global default — both are filled surfaces where the ring was felt to read as a second border. THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between the focused and unfocused states of the pixels that mark focus, and colour is the whole of that bar. Measured against this palette, the focus hue at alpha 0.35 composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as quiet as it likes because it is decoration rather than the indicator. The knobs stay — a service can still trade the criterion away deliberately — but the shipped default no longer makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts. default = var(--stroke-lg), resolved at the call site (gh#906)"

@@ -10640,10 +10640,10 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
     props: [
       {
         name: "optionType",
-        type: '"default" | "button" | "card"',
+        type: '"default" | "button" | "card" | "list"',
         defaultValue: '"default"',
         description:
-          "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds the choices into one segmented bar; `card` (gh#1555) draws each choice as a bordered row whose WHOLE surface is the label (a press anywhere selects), with the option's `leading` before the title and `extra` at the inline end. Selected = border + inner ring + filled dot, never colour alone; the focus ring is drawn inside the card, so an `overflow: hidden` ancestor cannot clip it. The role stays `radiogroup`/`radio` in every case: this is paint, never semantics.",
+          "`list` = the INSET GROUPED LIST (iOS Settings / an organisation chooser): the same rows as `card` (whole row is the label, `leading`/`extra`, sections, native arrow keys across sections) drawn as ONE card surface per section with the section label above it, a hairline inset to the row text between rows, and the radio mark at the row END after `extra`; selected = the filled dot (no ring). Put it on a muted ground (the auth shell). Tokens `--choice-list-{background,radius,divider-color,divider-inset,divider-leading-inset,section-gap,label-gap}`. antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds the choices into one segmented bar; `card` (gh#1555) draws each choice as a bordered row whose WHOLE surface is the label (a press anywhere selects), with the option's `leading` before the title and `extra` at the inline end. Selected = border + inner ring + filled dot, never colour alone; the focus ring is drawn inside the card, so an `overflow: hidden` ancestor cannot clip it. The role stays `radiogroup`/`radio` in every case: this is paint, never semantics.",
       },
       {
         name: "buttonStyle",

@@ -322,6 +322,26 @@ function RadioSection({
   );
 }
 
+/** Runs of loose options collapse into one entry so each run gets ONE list surface. */
+function groupLooseOptions(
+  entries: (ChoiceOption | ChoiceOptionSection)[],
+): (
+  { section: ChoiceOptionSection; options?: never } | { section?: never; options: ChoiceOption[] }
+)[] {
+  const out: (
+    { section: ChoiceOptionSection; options?: never } | { section?: never; options: ChoiceOption[] }
+  )[] = [];
+  for (const entry of entries) {
+    if (isChoiceOptionSection(entry)) out.push({ section: entry });
+    else {
+      const last = out[out.length - 1];
+      if (last && last.options) last.options.push(entry);
+      else out.push({ options: [entry] });
+    }
+  }
+  return out;
+}
+
 function RadioGroupOptions({
   value,
   defaultValue,
@@ -360,7 +380,7 @@ function RadioGroupOptions({
     let flatIndex = 0;
     const renderOption = (opt: ChoiceOption) => {
       const optionId = optionDomId(opt.value, flatIndex++);
-      if (optionType === "card") {
+      if (optionType === "card" || optionType === "list") {
         return (
           <RadioCard key={opt.value} id={optionId} option={opt} resolvedField={resolvedField} />
         );
@@ -393,8 +413,12 @@ function RadioGroupOptions({
         data-button-style={optionType === "button" ? buttonStyle : undefined}
         data-size={optionType === "button" && size === "touch" ? size : undefined}
         className={cn(
-          optionType === "button" ? "ui-radio-button-bar" : choiceGroupClassName(orientation),
-          optionType === "card" && "ui-radio-card-group",
+          optionType === "button"
+            ? "ui-radio-button-bar"
+            : optionType === "list"
+              ? "ui-radio-list"
+              : choiceGroupClassName(orientation),
+          (optionType === "card" || optionType === "list") && "ui-radio-card-group",
           className,
         )}
       >
@@ -407,6 +431,26 @@ function RadioGroupOptions({
             optionDomId={optionDomId}
             resolvedField={resolvedField}
           />
+        ) : optionType === "list" ? (
+          // A list is a surface PER SECTION, the section label above it (an iOS grouped table).
+          // Loose options before, between or after sections share one surface of their own.
+          groupLooseOptions(options).map((entry, sectionIndex) =>
+            entry.section ? (
+              <RadioSection
+                key={`section-${sectionIndex}`}
+                id={`${sectionBase}-section-${sectionIndex}`}
+                section={entry.section}
+              >
+                <div className="ui-radio-list-surface">
+                  {entry.section.options.map(renderOption)}
+                </div>
+              </RadioSection>
+            ) : (
+              <div key={`loose-${sectionIndex}`} className="ui-radio-list-surface">
+                {entry.options.map(renderOption)}
+              </div>
+            ),
+          )
         ) : (
           options.map((entry, sectionIndex) =>
             isChoiceOptionSection(entry) ? (

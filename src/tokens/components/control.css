@@ -206,6 +206,18 @@
   --choice-card-selected-ring-width: var(--stroke-hairline);
   --choice-card-muted-background: initial; /* default = var(--muted) */
   --choice-section-gap: var(--space-2);
+  /* Radio `optionType="list"` — the inset grouped list. Surface = the card fill and card radius
+   * (role mirrors, `initial`); the hairline between rows starts at the row text
+   * (`--choice-list-divider-inset`, default the row inset; `-leading-inset` past a leading avatar);
+   * sections stack --choice-list-section-gap apart, the label --choice-list-label-gap above. */
+  --choice-list-background: initial; /* default = var(--card) */
+  --choice-list-radius: initial; /* default = the card radius */
+  --choice-list-divider-color: initial; /* default = var(--border) */
+  --choice-list-divider-inset: initial; /* default = var(--choice-card-padding-inline) */
+  --choice-list-divider-leading-inset: initial; /* default = inset + avatar + gap */
+  --choice-list-section-gap: var(--space-5);
+  /* scale-exempt: 6px caption-to-group gap of a grouped list header */
+  --choice-list-label-gap: 0.375rem;
 
   /* Ring knobs for the two controls that historically wanted a softer mark than the global
    * default — both are filled surfaces where the ring was felt to read as a second border.

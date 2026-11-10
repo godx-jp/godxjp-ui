@@ -5058,6 +5058,71 @@
     background: hsl(var(--choice-card-muted-background, var(--muted)));
   }
 
+  /* ── RADIO `optionType="list"` — the inset grouped list ─────────────────────────────────
+   * The same rows as `card` (the whole row is the radio's label, native radios, arrows across
+   * sections), drawn as ONE card surface per section with the label above it: rows lose their
+   * border and radius, a hairline inset to the row text separates them, and the mark sits at the
+   * row END. Selected = the filled dot (a shape change, not colour alone); no card ring. */
+  .ui-radio-list {
+    display: grid;
+    gap: var(--choice-list-section-gap);
+  }
+  .ui-radio-list .ui-radio-section {
+    gap: var(--choice-list-label-gap);
+  }
+  .ui-radio-list .ui-radio-section-label {
+    padding-inline: var(--choice-card-padding-inline);
+  }
+  .ui-radio-list-surface {
+    display: grid;
+    overflow: hidden;
+    border-radius: var(
+      --choice-list-radius,
+      var(--card-radius, calc(var(--radius) * var(--radius-ratio)))
+    );
+    background: hsl(var(--choice-list-background, var(--card)));
+  }
+  .ui-radio-list .ui-radio-card,
+  .ui-radio-list .ui-radio-card[data-state="checked"],
+  .ui-radio-list .ui-radio-card[data-invalid] {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .ui-radio-list .ui-radio-card[data-state="checked"]::after {
+    content: none;
+  }
+  .ui-radio-list .ui-radio-card + .ui-radio-card::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: var(--choice-list-divider-inset, var(--choice-card-padding-inline));
+    inset-inline-end: 0;
+    border-block-start: var(--stroke-hairline) solid
+      hsl(var(--choice-list-divider-color, var(--border)));
+    pointer-events: none;
+  }
+  .ui-radio-list .ui-radio-card + .ui-radio-card:has(.ui-radio-card-leading)::before {
+    inset-inline-start: var(
+      --choice-list-divider-leading-inset,
+      calc(
+        var(--choice-card-padding-inline) + var(--avatar-size, var(--control-height)) +
+          var(--choice-card-gap)
+      )
+    );
+  }
+  /* The mark at the END: after the extra (a Badge), pushed to the edge when there is none. */
+  .ui-radio-list .ui-radio-card-mark {
+    order: 1;
+    margin-inline-start: auto;
+  }
+  .ui-radio-list .ui-radio-card:has(.ui-radio-card-extra) .ui-radio-card-mark {
+    margin-inline-start: 0;
+  }
+  .ui-radio-list .ui-radio-section[data-appearance="muted"] .ui-radio-list-surface {
+    background: hsl(var(--choice-card-muted-background, var(--muted)));
+  }
+
   /* ── SEGMENTED `block` / `vertical` / `size` ─────────────────────────────────────────────
    * `block` shares the width EQUALLY (`1fr` per item, not `flex: 1` on content), so the
    * selected pill does not resize when the label under it changes length — which is the whole
