@@ -48,7 +48,7 @@ describe("AppShell aside — a panel that pushes the page", () => {
     expect(onAsideOpenChange).toHaveBeenCalledWith(false);
   });
 
-  it("pushes by reserving its width as the root's inline-end padding; full screen below 48rem", () => {
+  it("pushes by reserving its width as the root's inline-end padding; full screen at the shell's 56.25rem breakpoint", () => {
     expect(css).toMatch(
       /\.app-root\[data-aside="open"\]\s*\{[^}]*padding-inline-end:\s*var\(--app-shell-aside-width\)/,
     );
@@ -57,7 +57,7 @@ describe("AppShell aside — a panel that pushes the page", () => {
     );
     const narrow =
       css.match(
-        /@media \(width < 48rem\)\s*\{\s*\.app-root\[data-aside="open"\][\s\S]*?\n {2}\}/,
+        /@media \(width <= 56\.25rem\)\s*\{\s*\/\*[^*]*\*\/\s*\.app-root\[data-aside="open"\][\s\S]*?\n {2}\}/,
       )?.[0] ?? "";
     expect(narrow).toContain("padding-inline-end: 0");
     expect(narrow).toMatch(/\.app-aside\s*\{[^}]*position:\s*fixed;[^}]*inset:\s*0;/);

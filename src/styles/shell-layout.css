@@ -436,7 +436,8 @@
 
   /* `aside` — the inline-END panel that PUSHES the page: the root reserves its width as inline
    * padding (every grid track shrinks by it, the topbar included) and the panel sits in that
-   * padding, full height. Below 48rem it is a full-screen panel over the page instead. */
+   * padding, full height. At the shell's one narrow breakpoint (56.25rem) it becomes a full-screen
+   * panel over the page instead — declared in that block below. */
   .app-root[data-aside="open"] {
     position: relative;
     padding-inline-end: var(--app-shell-aside-width);
@@ -453,20 +454,6 @@
     overflow: auto;
     border-inline-start: var(--stroke-hairline) solid hsl(var(--border));
     background: hsl(var(--app-shell-aside-background, var(--card)));
-  }
-
-  @media (width < 48rem) {
-    .app-root[data-aside="open"] {
-      padding-inline-end: 0;
-    }
-
-    .app-aside {
-      position: fixed;
-      z-index: var(--overlay-z-index);
-      inset: 0;
-      inline-size: auto;
-      border-inline-start: 0;
-    }
   }
 
   .app-main {
@@ -1394,6 +1381,19 @@
   }
 
   @media (width <= 56.25rem) {
+    /* `aside` on a narrow shell: a full-screen panel over the page, no reserved inline padding. */
+    .app-root[data-aside="open"] {
+      padding-inline-end: 0;
+    }
+
+    .app-aside {
+      position: fixed;
+      z-index: var(--overlay-z-index);
+      inset: 0;
+      inline-size: auto;
+      border-inline-start: 0;
+    }
+
     /* ONE selector, not a list of five. Everything that builds a MULTI-column template now lives
      * in the wide-only block above, so there is nothing left here to out-specify: a bare
      * `.app-root` is enough, and a state nobody has thought of yet still lands in one column. */

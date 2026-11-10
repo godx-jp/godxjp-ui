@@ -81,7 +81,7 @@ describe("Tabs onAdd — an add button for every variant", () => {
       /\.ui-tabs-bar\[data-add="inline"\]\[data-variant="line"\]::after\s*\{[^}]*inset-inline:\s*0;/,
     );
     expect(css).toMatch(
-      /\.ui-tabs-bar\[data-add="inline"\] > \.ui-tabs-extra\[data-side="end"\]\s*\{\s*margin-inline-start:\s*auto;/,
+      /\.ui-tabs-bar\[data-add="inline"\] > \.ui-tabs-add\s*\{\s*margin-inline-end:\s*auto;/,
     );
   });
 });
