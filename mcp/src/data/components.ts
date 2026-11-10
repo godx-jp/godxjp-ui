@@ -3022,7 +3022,7 @@ export function HandyInbound() {
         name: "scrollRef",
         type: "React.Ref<HTMLElement>",
         description:
-          "Ref to the navigation's scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136).",
+          "Ref to the navigation's scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136). The nav itself scrolls the aria-current=\"page\" row into view on mount and on activeId change, by the least amount and only when that row is not already whole in view, so a restored position that shows it is kept (GDX-1456).",
       },
       {
         name: "activeId",
