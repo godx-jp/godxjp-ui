@@ -2713,7 +2713,8 @@
     "email": "メールアドレス",
     "next": "次へ",
     "or": "または",
-    "passkey": "パスキーでログイン"
+    "passkey": "パスキーでログイン",
+    "bandSubtitle": "タスク・レストラン管理・Pages…"
   },
   "homeEditingDocs": {
     "home": "ホーム",

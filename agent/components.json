@@ -2799,6 +2799,11 @@
         "type": "\"visible\" | \"hidden\""
       },
       {
+        "description": "A short line shown ONLY in the phone band (< 48rem), in place of the description; desktop and tablet keep `description` (--editorial-auth-band-subtitle-display / -font-size).",
+        "name": "bandSubtitle",
+        "type": "ReactNode"
+      },
+      {
         "defaultValue": "\"card\"",
         "description": "\"card\" keeps the story beside the form card inside the page gutters. \"split\" is a FULL-BLEED sign-in page — render it as the page root, no shell padding: the story fills its side edge to edge and top to bottom (--editorial-auth-split-track-size 1.15fr 1fr, --editorial-auth-split-min-height 100dvh) over a grid texture (--editorial-auth-split-texture-background-image; none drops it), logo at the top, title + copy + art centred, benefits pinned at the bottom in a row; the form card becomes a plain centred column (--editorial-auth-split-form-max-width 25rem). Below 48rem the story is a full-bleed band over the form. Pair with appearance=\"brand\".",
         "name": "layout",
@@ -2850,14 +2855,20 @@
         "type": "ReactNode"
       },
       {
-        "description": "Heading level. Default: 2.",
+        "description": "Heading level. Default: 2. `1` makes the card title the page h1 (pair with `<EditorialAuth level={2}>`).",
         "name": "level",
-        "type": "2 | 3"
+        "type": "1 | 2 | 3"
       },
       {
         "description": "Copy.",
         "name": "description",
         "type": "ReactNode"
+      },
+      {
+        "defaultValue": "\"md\"",
+        "description": "\"lg\" scopes `--control-height` inside the card to --editorial-auth-card-control-height-lg (48px), so every Input / Button / Select in the form takes the sign-in density.",
+        "name": "controlSize",
+        "type": "\"md\" | \"lg\""
       },
       {
         "description": "The form.",
@@ -6298,9 +6309,14 @@
       },
       {
         "defaultValue": "\"default\"",
-        "description": "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border.",
+        "description": "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border. `glass` = a translucent pill for a DARK / brand surface (decorative app tiles on a sign-in story): fill and edge are the surface's own `--foreground` at low alpha (--badge-glass-background-alpha / -border-alpha), larger box (--badge-glass-space-x/-y, -font-size, -radius), so it reads wherever the ink is re-scoped — EditorialAuth appearance=\"brand\" sets it to white. Pair with `leading` for the app's letter tile.",
         "name": "variant",
-        "type": "\"default\" | \"secondary\" | \"outline\" | \"dashed\""
+        "type": "\"default\" | \"secondary\" | \"outline\" | \"dashed\" | \"glass\""
+      },
+      {
+        "description": "A decorative node before the label — an app's letter tile (`<Avatar shape=\"square\" size=\"xs\">T</Avatar>`), a mark. aria-hidden; the label carries the name.",
+        "name": "leading",
+        "type": "ReactNode"
       },
       {
         "description": "SEMANTIC colour intent (BadgeTone = ToneProp + `primary`). This is the colour knob — success/warning/destructive/info/etc. `primary` is a SOFT brand pill (tinted brand fill + brand text) for the dashboard role-pill pattern; for a SOLID brand fill use `variant=\"default\"`. Keep variant for structure, tone for meaning.",
@@ -11362,6 +11378,12 @@
         "description": "`chevron` (›) is the breadcrumb-flavoured original; `arrow` (→) is the canonical hosted-identity progression marker — a chevron reads \"drill into\", an arrow reads \"then\", which is what a step row means. Both flip under dir=\"rtl\". Ignored by every other `type`.",
         "name": "separator",
         "type": "\"chevron\" | \"arrow\""
+      },
+      {
+        "defaultValue": "\"center\"",
+        "description": "`type=\"inline\"` only: where the run sits on its row — centred (default) or at the inline-start edge (logical in RTL), e.g. a step strip at the top of a form column.",
+        "name": "align",
+        "type": "\"center\" | \"start\""
       },
       {
         "description": "Fires with the clicked step index (0-based).",
@@ -17320,15 +17342,13 @@
         "type": "ReactNode"
       },
       {
-        "description": "Localized visible switch-account action label.",
+        "description": "Localized visible switch-account action label. Optional: omit it (and `onAction`) for a read-only signed-in row with no action.",
         "name": "actionLabel",
-        "required": true,
         "type": "ReactNode"
       },
       {
         "description": "Consumer-owned account-switch navigation/action.",
         "name": "onAction",
-        "required": true,
         "type": "() => void"
       },
       {

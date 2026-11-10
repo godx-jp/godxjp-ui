@@ -16,14 +16,20 @@
       "type": "ReactNode"
     },
     {
-      "description": "Heading level. Default: 2.",
+      "description": "Heading level. Default: 2. `1` makes the card title the page h1 (pair with `<EditorialAuth level={2}>`).",
       "name": "level",
-      "type": "2 | 3"
+      "type": "1 | 2 | 3"
     },
     {
       "description": "Copy.",
       "name": "description",
       "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "\"lg\" scopes `--control-height` inside the card to --editorial-auth-card-control-height-lg (48px), so every Input / Button / Select in the form takes the sign-in density.",
+      "name": "controlSize",
+      "type": "\"md\" | \"lg\""
     },
     {
       "description": "The form.",

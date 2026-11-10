@@ -57,7 +57,7 @@ describe("AppShell aside — a panel that pushes the page", () => {
     );
     const narrow =
       css.match(
-        /@media \(width < 48rem\)\s*\{\s*\.app-root\[data-aside="open"\][\s\S]*?\n  \}/,
+        /@media \(width < 48rem\)\s*\{\s*\.app-root\[data-aside="open"\][\s\S]*?\n {2}\}/,
       )?.[0] ?? "";
     expect(narrow).toContain("padding-inline-end: 0");
     expect(narrow).toMatch(/\.app-aside\s*\{[^}]*position:\s*fixed;[^}]*inset:\s*0;/);

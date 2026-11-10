@@ -148,7 +148,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Activity | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Icon | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | DataTable | ✓ | ✓ | · | · | · | · | · | · | · | · |
-| Card | ✓ | · | N/A | N/A | · | · | · | · | · | · |
+| Card | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | CardContent | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | StatCard | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | ServiceLauncherCard | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |

@@ -269,6 +269,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Badge component tokens."
   },
   {
+    "name": "--badge-glass-space-x",
+    "value": "calc(var(--space-3) + 0.125rem)",
+    "description": "`variant=\"glass\"` — the translucent pill on a dark / brand surface (decorative app tiles)."
+  },
+  {
+    "name": "--badge-glass-space-y",
+    "value": "calc(var(--space-2) + 0.125rem)",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-space-gap",
+    "value": "calc(var(--space-2) + 0.125rem)",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-font-size",
+    "value": "var(--font-size-base)",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-radius",
+    "value": "calc(var(--radius) + 0.375rem)",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-background-alpha",
+    "value": "0.08",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-border-alpha",
+    "value": "0.19",
+    "description": "Badge component tokens."
+  },
+  {
+    "name": "--badge-glass-backdrop-blur-size",
+    "value": "6px",
+    "description": "Badge component tokens."
+  },
+  {
     "name": "--badge-agent-border",
     "value": "initial",
     "description": "AgentBadge — the violet outline and ink of the \"AI agent\" label. Role-mirrors, `initial`: hsl(var(--agent)) border and hsl(var(--text-agent)) ink at the call site."
@@ -5569,6 +5609,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`bandDescription=\"hidden\"`: the description's display — `none` only below the phone line."
   },
   {
+    "name": "--editorial-auth-band-subtitle-display",
+    "value": "none",
+    "description": "`bandSubtitle`: shown only below the phone line."
+  },
+  {
+    "name": "--editorial-auth-band-subtitle-font-size",
+    "value": "var(--font-size-base)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-control-height-lg",
+    "value": "var(--band-height-2xl)",
+    "description": "`EditorialAuthCard controlSize=\"lg\"`: the 48px sign-in control tier."
+  },
+  {
     "name": "--editorial-auth-description-max-width",
     "value": "30.625rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
@@ -5971,6 +6026,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-auth-band-description-display",
     "value": "none",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-band-subtitle-display",
+    "value": "block",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {

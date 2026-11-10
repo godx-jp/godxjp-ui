@@ -2047,7 +2047,7 @@
         {
           "name": "actionLabel",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
@@ -2095,8 +2095,8 @@
         {
           "name": "onAction",
           "origin": "owned",
-          "required": true,
-          "type": "() => void",
+          "required": false,
+          "type": "(() => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
@@ -2377,6 +2377,14 @@
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {
+          "name": "leading",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
           "name": "onRemove",
           "origin": "owned",
           "required": false,
@@ -2446,7 +2454,7 @@
           "origin": "owned",
           "required": false,
           "type": "BadgeVariant | null | undefined",
-          "values": ["default", "secondary", "outline", "dashed"],
+          "values": ["default", "secondary", "outline", "dashed", "glass"],
           "declaredIn": ["src/components/data-display/badge.tsx"]
         }
       ]
@@ -7432,6 +7440,14 @@
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
+          "name": "bandSubtitle",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
           "name": "benefits",
           "origin": "owned",
           "required": false,
@@ -7533,6 +7549,14 @@
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
+          "name": "controlSize",
+          "origin": "owned",
+          "required": false,
+          "type": "\"md\" | \"lg\" | undefined",
+          "values": ["md", "lg"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
           "name": "description",
           "origin": "owned",
           "required": false,
@@ -7552,8 +7576,8 @@
           "name": "level",
           "origin": "owned",
           "required": false,
-          "type": "2 | 3 | undefined",
-          "values": [2, 3],
+          "type": "1 | 2 | 3 | undefined",
+          "values": [1, 2, 3],
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
@@ -18674,6 +18698,14 @@
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {
+          "name": "leading",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
           "name": "onRemove",
           "origin": "owned",
           "required": false,
@@ -18743,7 +18775,7 @@
           "origin": "owned",
           "required": false,
           "type": "BadgeVariant | null | undefined",
-          "values": ["default", "secondary", "outline", "dashed"],
+          "values": ["default", "secondary", "outline", "dashed", "glass"],
           "declaredIn": ["src/components/data-display/badge.tsx"]
         }
       ]
@@ -18751,6 +18783,14 @@
     "Steps": {
       "group": "navigation",
       "props": [
+        {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | undefined",
+          "values": ["center", "start"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
         {
           "name": "className",
           "origin": "owned",

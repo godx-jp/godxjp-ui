@@ -2713,7 +2713,8 @@
     "email": "Địa chỉ email",
     "next": "Tiếp",
     "or": "hoặc",
-    "passkey": "Đăng nhập bằng passkey"
+    "passkey": "Đăng nhập bằng passkey",
+    "bandSubtitle": "Công việc · Nhà hàng · Pages…"
   },
   "homeEditingDocs": {
     "home": "Trang chủ",

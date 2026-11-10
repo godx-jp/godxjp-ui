@@ -65,6 +65,12 @@
       "type": "\"chevron\" | \"arrow\""
     },
     {
+      "defaultValue": "\"center\"",
+      "description": "`type=\"inline\"` only: where the run sits on its row — centred (default) or at the inline-start edge (logical in RTL), e.g. a step strip at the top of a form column.",
+      "name": "align",
+      "type": "\"center\" | \"start\""
+    },
+    {
       "description": "Fires with the clicked step index (0-based).",
       "name": "onValueChange",
       "type": "(value: number) => void"

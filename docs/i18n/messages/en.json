@@ -2721,7 +2721,8 @@
     "email": "Email address",
     "next": "Next",
     "or": "or",
-    "passkey": "Sign in with a passkey"
+    "passkey": "Sign in with a passkey",
+    "bandSubtitle": "Tasks · Restaurant · Pages…"
   },
   "homeEditingDocs": {
     "home": "Home",
