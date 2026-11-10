@@ -2576,5 +2576,109 @@
     "axis5": "Khả năng kiểm toán",
     "axis6": "Ổn định tài chính",
     "title": "Hồ sơ định lượng"
+  },
+  "radioGroupDocs": {
+    "plan": {
+      "title": "Mô tả cho từng lựa chọn · chọn gói",
+      "description": "options[].description nằm trên từng dòng. Viết giá hay điều kiện bên ngoài các lựa chọn thì người đọc phải đoán nó thuộc dòng nào. Badge ở cuối được đặt vào bằng cách cho label là ReactNode; Badge không bấm được nên không làm hỏng vùng bấm của nhãn.",
+      "standard": "Tiêu chuẩn",
+      "standardDescription": "{price}/tháng · tối đa {users} người dùng · hỗ trợ qua email",
+      "business": "Doanh nghiệp",
+      "recommended": "Khuyên dùng",
+      "businessDescription": "{price}/tháng · tối đa {users} người dùng · nhật ký kiểm toán và mẫu phân quyền",
+      "enterprise": "Tập đoàn",
+      "enterpriseDescription": "Báo giá riêng · SAML SSO · người phụ trách riêng và SLA",
+      "legacy": "Lite (ngừng nhận đăng ký mới)",
+      "legacyDescription": "Chỉ tiếp tục cho hợp đồng hiện có. Gói chuyển sang là Tiêu chuẩn"
+    },
+    "org": {
+      "title": "optionType=\"card\" · chọn tổ chức",
+      "description": "Cả dòng là nhãn, bấm vào đâu cũng chọn được. Avatar đặt ở leading, Badge ở extra. Truyền { label, options, appearance } vào options sẽ tạo một phần có tiêu đề, và phím mũi tên di chuyển xuyên các phần như một radiogroup duy nhất. Chưa chọn gì là value={null}, và Tab vào dòng đầu tiên. Lọc là SearchInput cộng filter của bên dùng, dòng đang chọn luôn được giữ lại.",
+      "filterLabel": "Lọc tổ chức",
+      "filterPlaceholder": "Lọc theo tên tổ chức",
+      "choose": "Chọn tổ chức",
+      "section": "Tổ chức · {count}",
+      "lastUsed": "Dùng lần trước",
+      "personal": "Cá nhân",
+      "personalWorkspace": "Không gian làm việc cá nhân",
+      "personalDescription": "Tệp và trang chỉ mình bạn thấy",
+      "role": {
+        "owner": "Chủ sở hữu",
+        "member": "Thành viên",
+        "viewer": "Chỉ xem"
+      },
+      "members": {
+        "other": "{count} thành viên"
+      }
+    },
+    "accordion": {
+      "title": "optionType=\"card\" · bên trong Accordion",
+      "description": "AccordionContent là overflow: clip cùng overflow-clip-margin, nên vòng focus được vẽ ra quá mép một khoảng. Vòng focus của thẻ cũng vẽ bên trong thẻ, nên dòng sát mép không bao giờ bị cắt.",
+      "shipping": "Phương thức giao hàng",
+      "air": "Đường hàng không",
+      "sea": "Đường biển",
+      "express": "Hỏa tốc",
+      "days": "{min}–{max} ngày",
+      "nextDay": "Ngày hôm sau"
+    }
+  },
+  "navListDocs": {
+    "subtitle": "Điều hướng tuyến trong một trang",
+    "settings": "Cài đặt",
+    "settingsContent": "Nội dung cài đặt",
+    "canonical": {
+      "title": "Điều hướng cài đặt · dạng chuẩn"
+    },
+    "grouping": {
+      "title": "Có nhóm · không nhóm",
+      "flatCaption": "Phẳng · 12 dòng · một landmark",
+      "flatLabel": "Cài đặt (phẳng)",
+      "groupedCaption": "Có nhóm · 4 nhóm đóng mở · một landmark",
+      "groupedLabel": "Cài đặt (có nhóm)"
+    },
+    "sections": {
+      "title": "Tiêu đề cố định · nhóm đóng mở bên trong",
+      "label": "Cài đặt dự án"
+    },
+    "trailing": {
+      "title": "Những gì đặt được ở cuối dòng",
+      "label": "Khe cuối dòng"
+    },
+    "extremes": {
+      "title": "Trường hợp cực đoan của cột biểu tượng và nhãn",
+      "railCaption": "Độ rộng rail (compact · 18.75rem)",
+      "stressLabel": "Thử độ dài nhãn",
+      "narrowCaption": "Thu hẹp còn 180px",
+      "stressNarrowLabel": "Thử độ dài nhãn (hẹp)",
+      "mixedCaption": "Lẫn có và không có icon",
+      "mixedLabel": "Biểu tượng lẫn lộn"
+    },
+    "states": {
+      "title": "Trạng thái · active · disabled · thao tác phá hủy",
+      "label": "Trạng thái",
+      "paneCaption": "Khung sau khi chọn \"Xóa tài khoản\"",
+      "paneNote": "Việc xóa được xác nhận sau {days} ngày. Trước đó có thể hủy từ cùng màn hình.",
+      "delete": "Xóa tài khoản"
+    },
+    "long": {
+      "title": "Xếp {count} mục vào rail",
+      "label": "Cài đặt (tất cả {count} mục)"
+    },
+    "outside": {
+      "title": "Khi đặt ngoài MasterDetail",
+      "label": "Cài đặt (cuộn trong thẻ)"
+    },
+    "empty": {
+      "title": "Khi có 0 mục",
+      "caption": "NavList items={[]} · không vẽ gì",
+      "label": "Cài đặt bạn có quyền (0)",
+      "replacement": "Thay thế",
+      "emptyTitle": "Không có cài đặt nào để hiển thị",
+      "emptyDescription": "Quyền của bạn trong tổ chức này không mở được mục cài đặt nào. Hãy nhờ quản trị viên cấp quyền."
+    },
+    "phone": {
+      "title": "Ở độ rộng điện thoại",
+      "back": "Quay lại danh sách cài đặt"
+    }
   }
 }
