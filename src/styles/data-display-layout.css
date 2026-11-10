@@ -1346,8 +1346,12 @@
   [data-slot="list-row"][data-overflow="wrap"] [data-slot="list-row-body"] {
     overflow-wrap: anywhere;
   }
+  /* Compact tightens the block axis only: the inline gap stays the default row's, so a compact row's
+   * title starts on the same x as a default row's (GDX-1465: 4px apart with --space-2). A theme's
+   * --list-row-compact-gap still sets both axes. */
   [data-slot="list-row"][data-density="compact"] {
-    gap: var(--list-row-compact-gap, var(--space-2));
+    row-gap: var(--list-row-compact-gap, var(--space-2));
+    column-gap: var(--list-row-compact-gap, var(--list-row-gap));
     padding: var(--list-row-compact-padding-y, var(--space-2))
       var(--list-row-compact-padding-x, var(--list-row-padding-x));
   }

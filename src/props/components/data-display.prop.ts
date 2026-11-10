@@ -602,6 +602,7 @@ export type ListRowProp = {
   overflow?: "truncate" | "wrap";
   density?: ListRowDensityProp;
   unread?: boolean;
+  indicator?: "reserve";
   className?: ClassNameProp;
 };
 
