@@ -948,7 +948,7 @@ export function Tabs({
                       <TabsContent
                         key={item.value}
                         value={item.value}
-                        data-slot="tabs-panel"
+                        data-kit-slot="tabs-panel"
                         forceMount={keepMounted ? true : undefined}
                         hidden={keepMounted ? item.value !== activeValue : undefined}
                         // No variant geometry: the panel has never carried a top margin (the root is a flex

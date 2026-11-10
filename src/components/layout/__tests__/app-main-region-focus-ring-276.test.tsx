@@ -9,9 +9,14 @@ const tokens = () => readFileSync(join(__dirname, "../../../tokens/foundation.cs
 
 describe("AppShell region focus ring (gh#276)", () => {
   it("gates the .app-main ring on --region-focus-ring-width (not the control ring width)", () => {
-    const block = css().match(/\.app-main:focus-visible \{[^}]+\}/)?.[0] ?? "";
+    // Since 33.28.0 (gh#1527): `:focus-visible` drops the outline for any arrival, and the ring is
+    // painted by its own rule for a keyboard arrival only (not after a click on empty content).
+    expect(css().match(/\.app-main:focus-visible \{[^}]+\}/)?.[0] ?? "").toContain("outline: none");
+    const block =
+      css().match(
+        /\.app-main:focus-visible:not\(\[data-focus-origin="pointer"\]\) \{[^}]+\}/,
+      )?.[0] ?? "";
     expect(block).toContain("var(--region-focus-ring-width)");
-    expect(block).toContain("outline: none");
     // Colour falls back to the live focus-ring hue at the call site.
     expect(block).toContain(
       "var(--region-focus-ring-color, hsl(var(--focus-ring-color, var(--ring))))",

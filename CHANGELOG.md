@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Tabs panels and FloatButton keep their slot (GDX-1486)
+
+- **Fixed** two more 33.28.0 regressions of the kind #1564 fixed (gh#1527): `Tabs items` handed `data-slot="tabs-panel"` to the kit's own `TabsContent`, and `FloatButton` handed `data-slot="float-button"` to `Button`; both components discard a handed slot, so the panel rendered `tabs-content` and the button `button`. Every rule keyed on those slots stopped matching: a flush `Card` no longer reached through a tab panel (gh#554), the tab strip in a card head added a second inset, and the force-rendered panels' `hidden` hook and FloatButton's group and back-top behaviour lost their handle. Both now name the slot on the kit channel (`data-kit-slot`).
+- Tests that read the `.app-main` region ring as one rule now read the two rules 33.28.0 split it into (outline off for any focus; the ring for a keyboard arrival only), and `RadioGroup optionType="card"` (33.27.19) has its frame-contract case. Main CI is green again.
+
 ## [33.28.2] - 2026-11-10
 
 First 33.28 release on npm (33.28.0 and 33.28.1 were never published): it carries 33.28.0 and 33.28.1 below, the 33.27.4–33.27.20 fixes released off the 33.27 line, and two fixes found when GDX moved to it.

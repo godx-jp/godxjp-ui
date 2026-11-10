@@ -199,7 +199,7 @@ const FloatButtonRoot = React.forwardRef<HTMLElement, FloatButtonProp>(function 
   );
 
   const shared = {
-    "data-slot": "float-button",
+    "data-kit-slot": "float-button",
     "data-type": type,
     "data-shape": mergedShape,
     "data-individual": (group?.individual ?? true) ? "" : undefined,

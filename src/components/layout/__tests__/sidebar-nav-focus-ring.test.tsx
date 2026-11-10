@@ -100,6 +100,9 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
     // `.app-main` defaults to width 0 on purpose — a frame around the whole content area reads
     // as a glitch. A ring hugging one 32px row is the affordance, so it must not be gated.
     expect(shadowFormRule()).not.toMatch(/--region-focus-ring-width/);
-    expect(ruleBody(shell, ".app-main:focus-visible")).toMatch(/--region-focus-ring-width/);
+    // Since 33.28.0 (gh#1527) the region ring paints for a keyboard arrival only, in its own rule.
+    expect(ruleBody(shell, '.app-main:focus-visible:not([data-focus-origin="pointer"])')).toMatch(
+      /--region-focus-ring-width/,
+    );
   });
 });
