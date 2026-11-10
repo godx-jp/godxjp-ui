@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### A focus ring is never cut by AccordionContent, and visual-audit measures the cut (#1543)
+
+- **Display corruption** (affects every release up to 33.27.17): `AccordionContent` was `overflow: hidden` with no inline padding, so a control flush with its edge (a `RadioGroup` in a `FormField`) lost its ring at the inline start: measured 4px cut in LTR and RTL. It is now `overflow: clip` + `overflow-clip-margin: var(--focus-ring-clip-margin)`, the pattern `.ui-command` and `.ui-carousel-viewport` already use. Panel geometry is unchanged, and so is collapsing: a closed panel is `hidden="until-found"` and there is no height animation.
+- **Added** visual-audit probe `c13-focus-ring-clipped` (warn, all widths). It focuses each tab stop, finds the element that paints the ring (a react-aria choice rings its label, not its hidden input), grows its box by the ring's reach (outline width + offset, outer box-shadow), and reports every ancestor whose overflow is not `visible` (`hidden`, `clip`, `auto`, `scroll`) that cuts it by more than 0.5px. The finding names the control, the clipping ancestor, the side and the px. `overflow-clip-margin` counts only when both axes are `clip`. A control scrolled part-way out of view, a ring wholly outside its clip, a visually hidden control and an absolutely positioned control that escapes a static ancestor are not reported. The probe only measures what is on screen at load, so its checklist line asks the reviewer to rerun it with each disclosure open.
+
 ### One title axis for rows with and without a read state, at both densities (also released as 33.27.17, off v33.27.16)
 
 - **Added** `ListRow` `indicator="reserve"`: a row with no read state keeps the indicator slot, empty, `aria-hidden` and with no `sr-only` text, so its title starts on the same x as the `unread` rows of a list beside it. Before, the only way to keep the slot was `unread={false}`, which announces "Read" (既読) on a row that has none: GDX's chat home showed the channels you are in (`unread`) above the channels to join, whose titles started 20px to the left (GDX-1465).

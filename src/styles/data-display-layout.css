@@ -1014,8 +1014,13 @@
 .ui-accordion-trigger[data-state="open"] .ui-accordion-chevron {
   transform: rotate(180deg);
 }
+/* `clip` + the ring margin, not `hidden` (gh#1543). The content has no inline padding, so a control
+ * flush with its edge (a RadioGroup in a FormField) had its ring cut: measured, 4px at the inline
+ * start. `overflow-clip-margin` is honoured only on `clip` (both axes); there is no height
+ * animation here for the 8px to leak through, since a closed panel is `hidden="until-found"`. */
 .ui-accordion-content {
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: var(--focus-ring-clip-margin);
   font-size: var(--font-size-base);
 }
 .ui-accordion-content-inner {

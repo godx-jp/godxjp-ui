@@ -14,7 +14,7 @@ export interface VisualRule {
   standard: string;
   fix: string;
   /**
-   * Responsive rules C01–C12 (ADR 2026-10-14): `probe` = measured per width, advisory until the
+   * Responsive rules C01–C13 (ADR 2026-10-14): `probe` = measured per width, advisory until the
    * pilot promotes it; `checklist` = a human reviewer resolves it, the audit never passes it.
    */
   kind?: "probe" | "checklist";
@@ -196,6 +196,14 @@ export const VISUAL_RULES: VisualRule[] = [
       "section label uppercase AND ≤12px AND tracking ≥0.04em fails (repo-chosen threshold); no WCAG font floor implied",
     kind: "probe",
     fix: "Section labels read as sentence-case text at the body scale, not tiny tracked capitals. Literal domain codes are exempt when marked as such (<code>, <kbd>, data-audit-literal).",
+  },
+  {
+    id: "c13-focus-ring-clipped",
+    severity: "warn",
+    category: "a11y",
+    standard: "WCAG 2.2 SC 2.4.7 / 2.4.13; ring cut ≤0.5px tolerated (repo-chosen threshold)",
+    kind: "probe",
+    fix: "A focused control's ring must paint whole: its box grown by the ring's reach (outline width + offset, outer box-shadow) has to lie inside every ancestor whose overflow is not visible. Give the clipping ancestor room — `overflow: clip` + `overflow-clip-margin: var(--focus-ring-clip-margin)` instead of `hidden`, or inline padding at least the ring's reach — or draw an inset ring inside a scroll container.",
   },
 ];
 

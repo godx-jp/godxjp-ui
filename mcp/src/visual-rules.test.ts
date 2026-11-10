@@ -39,6 +39,7 @@ describe("visual-rules catalog", () => {
       "c10-rail-toggle-attached",
       "c11-search-keyline",
       "c12-tracked-uppercase-label",
+      "c13-focus-ring-clipped",
     ])
       expect(findVisualRule(id)?.kind, id).toBe("probe");
     for (const id of [
