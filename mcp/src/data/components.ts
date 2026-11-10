@@ -4552,6 +4552,13 @@ import { MessageCircle, Share2 } from "lucide-react";
           "Take the space the siblings leave, and let a long label ELLIPSE instead of widening the row — the same axis Flex calls `fill`, for the same reason. Button ships flex-shrink: 0, which is right almost everywhere and wrong in a constrained bar: an account menu holding an avatar plus a person's name keeps its full width while the cluster clips it, so a keyboard user tabs to a control they cannot see (SC 2.4.7). Sets flex: 1 1 auto and min-inline-size: 0; pair it with a <Text truncate> label. This is what replaces className=\"min-w-0 flex-1\", which ui-audit blocks — and which this package's own Topbar guidance used to recommend.",
       },
       {
+        name: "shrink",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Give way to the siblings WITHOUT growing (GDX-1493): as wide as the label while it fits, narrower with the label ellipsed when the row needs the room. `fill` shrinks AND grows; `shrink` is the half a phone toolbar's menu trigger beside its tools wants (with `fill` it would stretch across the row). Works on a `DropdownMenuTrigger asChild` Button. Sets flex: 0 1 auto and min-inline-size: var(--control-height-default), so it stays a 44px target under a finger. Pair it with a <Text truncate> label. With both set, `fill` wins. Replaces a consumer rule like `flex: 0 1 auto; min-inline-size: 0` on the trigger.",
+      },
+      {
         name: "wrap",
         type: "boolean",
         defaultValue: "false",
