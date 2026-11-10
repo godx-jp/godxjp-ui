@@ -35,6 +35,7 @@ export type {
   CheckboxProp,
   CheckboxGroupProp,
   ChoiceOptionProp,
+  ChoiceOptionSectionProp,
   RadioProp,
   RadioGroupProp,
   SwitchProp,

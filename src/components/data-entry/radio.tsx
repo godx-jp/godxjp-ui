@@ -10,7 +10,12 @@ import {
   useMirroredInputAttributes,
 } from "../../lib/field-a11y";
 import { Field } from "./field";
-import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
+import {
+  choiceGroupClassName,
+  isChoiceOptionSection,
+  type ChoiceOption,
+  type ChoiceOptionSection,
+} from "./choice-option";
 import { withOwnHitTarget } from "./choice-hit-target";
 import type { RadioGroupProp, RadioProp } from "../../props/components/data-entry.prop";
 
@@ -55,8 +60,9 @@ type RadioGroupRootProps = Omit<
   React.ComponentPropsWithoutRef<"div">,
   "defaultValue" | "onChange" | "dir"
 > & {
-  value?: string;
-  defaultValue?: string;
+  /** `""` and `null` both mean "nothing chosen" (gh#1544). */
+  value?: string | null;
+  defaultValue?: string | null;
   onValueChange?: (value: string) => void;
   disabled?: boolean;
   required?: boolean;
@@ -84,8 +90,12 @@ const RadioGroupRoot = React.forwardRef<HTMLDivElement, RadioGroupRootProps>(
         ref={ref}
         data-slot="radio-group"
         className={cn("ui-choice-group", className)}
-        value={value}
-        defaultValue={defaultValue}
+        // gh#1544 — react-aria reads `""` as a SELECTED key that matches no radio and gives every
+        // radio `tabIndex=-1`, so Tab skipped the group. `""` is how a consumer says "nothing
+        // chosen" through a `string` prop; `null` is react-aria's spelling of the same thing, and it
+        // keeps the group controlled (`undefined` would flip it to uncontrolled mid-life).
+        value={value === "" ? null : value}
+        defaultValue={defaultValue === "" ? null : defaultValue}
         onChange={onValueChange}
         isDisabled={disabled}
         isRequired={required}
@@ -207,6 +217,110 @@ function RadioButtonBar({
   );
 }
 
+/**
+ * `optionType="card"` (gh#1555) — one bordered row per choice. The WHOLE row is the radio's
+ * `<label>` (the same react-aria root the button bar uses), so a press anywhere on it selects, and
+ * the hidden `<input>` is stretched over the row by `withOwnHitTarget` + `.ui-choice-input`.
+ *
+ * The accessible name is the `label` alone (`aria-labelledby` → the title), not the row's whole
+ * text: `extra` and `description` are wired to `aria-describedby` by id (react-aria's own
+ * description slot resolved a second card to the FIRST card's text, measured in jsdom), so a screen reader hears "Acme, radio, 1 of 3, Last used, Owner · 12
+ * members". `leading` is decorative and hidden.
+ */
+function RadioCard({
+  id,
+  option,
+  resolvedField,
+}: {
+  id: string;
+  option: ChoiceOption;
+  resolvedField?: string;
+}) {
+  const inputRef = useFieldKeyedInput(resolvedField);
+  const titleId = `${id}-title`;
+  const extraId = option.extra != null ? `${id}-extra` : undefined;
+  const descriptionId = option.description != null ? `${id}-description` : undefined;
+  const describedBy = [extraId, descriptionId].filter(Boolean).join(" ") || undefined;
+  return (
+    <AriaRadio
+      id={id}
+      inputRef={inputRef}
+      value={option.value}
+      isDisabled={option.disabled}
+      aria-labelledby={titleId}
+      aria-describedby={describedBy}
+      data-slot="radio-card"
+      className="ui-radio-card ui-focus-ring"
+      render={(domProps, state) => (
+        <label {...(domProps as RadioLabelProps)} data-state={checkedState(state.isSelected)}>
+          {withOwnHitTarget(domProps.children)}
+        </label>
+      )}
+    >
+      {({ isSelected }) => (
+        <>
+          <span className="ui-radio ui-radio-card-mark" data-state={checkedState(isSelected)}>
+            <span className="ui-choice-indicator">
+              <Circle className="ui-radio-icon" aria-hidden="true" />
+            </span>
+          </span>
+          {option.leading != null ? (
+            <span className="ui-radio-card-leading" aria-hidden="true">
+              {option.leading}
+            </span>
+          ) : null}
+          <span className="ui-radio-card-content">
+            <span id={titleId} className="ui-radio-card-title">
+              {option.label}
+            </span>
+            {option.description != null ? (
+              <span id={descriptionId} className="ui-radio-card-description">
+                {option.description}
+              </span>
+            ) : null}
+          </span>
+          {option.extra != null ? (
+            <span id={extraId} className="ui-radio-card-extra">
+              {option.extra}
+            </span>
+          ) : null}
+        </>
+      )}
+    </AriaRadio>
+  );
+}
+
+/**
+ * A labelled section (gh#1555): a `role="group"` named by its heading, INSIDE the one
+ * `radiogroup` — react-aria's arrow-key walker reads every radio input under the group root, so
+ * the arrows run straight across section boundaries.
+ */
+function RadioSection({
+  id,
+  section,
+  children,
+}: {
+  id: string;
+  section: ChoiceOptionSection;
+  children: React.ReactNode;
+}) {
+  const labelId = `${id}-label`;
+  return (
+    <div
+      role="group"
+      aria-labelledby={labelId}
+      data-slot="radio-section"
+      data-appearance={section.appearance}
+      className="ui-radio-section"
+    >
+      <span id={labelId} className="ui-radio-section-label">
+        {section.label}
+      </span>
+      {children}
+    </div>
+  );
+}
+
 function RadioGroupOptions({
   value,
   defaultValue,
@@ -241,6 +355,27 @@ function RadioGroupOptions({
     choiceOptionDomId(id, reactId, optionValue, index);
 
   if (options && options.length > 0) {
+    // One running index across sections, so option ids stay unique when sections are used.
+    let flatIndex = 0;
+    const renderOption = (opt: ChoiceOption) => {
+      const optionId = optionDomId(opt.value, flatIndex++);
+      if (optionType === "card") {
+        return (
+          <RadioCard key={opt.value} id={optionId} option={opt} resolvedField={resolvedField} />
+        );
+      }
+      return (
+        <Field key={opt.value} id={optionId} label={opt.label} description={opt.description}>
+          <RadioItem
+            id={optionId}
+            value={opt.value}
+            disabled={opt.disabled}
+            data-field={resolvedField}
+          />
+        </Field>
+      );
+    };
+    const sectionBase = id ?? reactId;
     return (
       <RadioGroupRoot
         value={value}
@@ -258,36 +393,34 @@ function RadioGroupOptions({
         data-size={optionType === "button" && size === "touch" ? size : undefined}
         className={cn(
           optionType === "button" ? "ui-radio-button-bar" : choiceGroupClassName(orientation),
+          optionType === "card" && "ui-radio-card-group",
           className,
         )}
       >
         {optionType === "button" ? (
+          // A welded bar has no room for headings: sections are flattened into one bar.
           <RadioButtonBar
-            options={options}
+            options={options.flatMap((entry) =>
+              isChoiceOptionSection(entry) ? entry.options : [entry],
+            )}
             optionDomId={optionDomId}
             resolvedField={resolvedField}
           />
-        ) : null}
-        {optionType === "button"
-          ? null
-          : options.map((opt: ChoiceOption, index) => {
-              const optionId = optionDomId(opt.value, index);
-              return (
-                <Field
-                  key={opt.value}
-                  id={optionId}
-                  label={opt.label}
-                  description={opt.description}
-                >
-                  <RadioItem
-                    id={optionId}
-                    value={opt.value}
-                    disabled={opt.disabled}
-                    data-field={resolvedField}
-                  />
-                </Field>
-              );
-            })}
+        ) : (
+          options.map((entry, sectionIndex) =>
+            isChoiceOptionSection(entry) ? (
+              <RadioSection
+                key={`section-${sectionIndex}`}
+                id={`${sectionBase}-section-${sectionIndex}`}
+                section={entry}
+              >
+                {entry.options.map(renderOption)}
+              </RadioSection>
+            ) : (
+              renderOption(entry)
+            ),
+          )
+        )}
       </RadioGroupRoot>
     );
   }

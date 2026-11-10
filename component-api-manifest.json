@@ -14717,7 +14717,7 @@
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
-          "type": "string | undefined",
+          "type": "string | null | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -14757,7 +14757,7 @@
           "name": "options",
           "origin": "owned",
           "required": false,
-          "type": "ChoiceOptionProp[] | undefined",
+          "type": "(ChoiceOptionProp | ChoiceOptionSectionProp)[] | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -14766,7 +14766,7 @@
           "origin": "owned",
           "required": false,
           "type": "RadioOptionTypeProp | undefined",
-          "values": ["button", "default"],
+          "values": ["button", "default", "card"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -14789,7 +14789,7 @@
           "name": "value",
           "origin": "owned",
           "required": false,
-          "type": "string | undefined",
+          "type": "string | null | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
@@ -14802,7 +14802,7 @@
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
-          "type": "string | undefined",
+          "type": "string | null | undefined",
           "values": [],
           "declaredIn": ["src/components/data-entry/radio.tsx"]
         },
@@ -14850,7 +14850,7 @@
           "name": "value",
           "origin": "owned",
           "required": false,
-          "type": "string | undefined",
+          "type": "string | null | undefined",
           "values": [],
           "declaredIn": ["src/components/data-entry/radio.tsx"]
         }

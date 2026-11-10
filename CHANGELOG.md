@@ -8,6 +8,15 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### RadioGroup: card rows, labelled sections, and "nothing chosen" reachable by keyboard
+
+- **Fixed** a controlled `RadioGroup` with nothing chosen (`value=""`) could not be reached by keyboard: react-aria read `""` as a selected key matching no radio, so every radio had `tabindex="-1"` and Tab skipped the group (#1544). `""` is now mapped to `null` before react-aria, and `value` / `defaultValue` also accept `null`; the group stays controlled and the first enabled radio takes the tab stop. Applies to the `options` and the children (`RadioGroupRoot`) forms.
+- **Added** `RadioGroup optionType="card"` (#1555): each choice is a bordered row whose whole surface is the radio's label, so a press anywhere selects. Selected is a border, an inner ring and the filled dot, not colour alone. The focus mark is drawn inside the card with no outer halo, so an `overflow: hidden` ancestor (an `AccordionContent`, #1543) cannot clip it. The accessible name is the option's `label`; `description` and `extra` are its description.
+- **Added** `ChoiceOptionProp.leading` (a decorative mark before the title, e.g. an `Avatar`; hidden from assistive tech) and `ChoiceOptionProp.extra` (trailing, e.g. a `Badge`), both rendered by `optionType="card"` only.
+- **Added** labelled sections in `RadioGroup options`: an entry `{ label, options, appearance?: "muted" }` (`ChoiceOptionSectionProp`) renders a `role="group"` named by its label inside the one `radiogroup`, so the arrow keys run across sections. `appearance="muted"` puts the section's cards on the muted surface. Sections render for `default` and `card`; a `button` bar flattens them.
+- **Added** component tokens `--choice-card-padding-block`, `--choice-card-padding-inline`, `--choice-card-gap`, `--choice-card-radius`, `--choice-card-background`, `--choice-card-border-color`, `--choice-card-selected-border-color`, `--choice-card-selected-ring-width`, `--choice-card-muted-background` and `--choice-section-gap`.
+- Filtering a long list is a documented composition, not a prop: a `SearchInput` above the group, with the consumer filtering `options` and keeping the chosen option in the list (docs page and catalog).
+
 ### The sidebar shows the current page's row (also released as 33.27.18, off v33.27.17)
 
 - **Fixed** a `Sidebar` with more rows than its nav's height, opened on a page near the end of the list, painted the current row half under the fold: GDX's System console at /system/ai/quotas, 1024×900, cut 8.6px of the 32px クォータ row (GDX-1456). On mount and whenever `activeId` changes, the nav now scrolls by the least amount that shows the `aria-current="page"` row whole, inside its own scroller only (the page never moves). A row already in view moves nothing, so a `scrollRef` consumer restoring its `scrollTop` keeps its position.
