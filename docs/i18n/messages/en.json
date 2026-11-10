@@ -2700,5 +2700,27 @@
       "title": "At phone width",
       "back": "Back to settings"
     }
+  },
+  "orgSwitcherDocs": {
+    "manage": "Manage organizations",
+    "managed": " · Opened organization management"
+  },
+  "editorialAuthSplit": {
+    "title": "One ID,\nevery work app.",
+    "lead": "Tasks, restaurant management, Pages… Sign in once and walk straight into any app.",
+    "appTasks": "GoDX Tasks",
+    "appRestaurant": "Restaurant management",
+    "appPages": "GoDX Pages",
+    "appAttendance": "Attendance",
+    "benefitPasskey": "Passkeys",
+    "benefitMfa": "Two-factor authentication",
+    "benefitTenant": "Data kept apart per organization",
+    "signIn": "Sign in",
+    "newHere": "New here?",
+    "createAccount": "Create an account",
+    "email": "Email address",
+    "next": "Next",
+    "or": "or",
+    "passkey": "Sign in with a passkey"
   }
 }

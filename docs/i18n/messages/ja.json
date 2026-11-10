@@ -2692,5 +2692,27 @@
       "title": "電話幅のとき",
       "back": "設定一覧へ戻る"
     }
+  },
+  "orgSwitcherDocs": {
+    "manage": "組織を管理",
+    "managed": " · 組織の管理を開きました"
+  },
+  "editorialAuthSplit": {
+    "title": "ひとつの ID で、\n仕事のアプリすべてへ。",
+    "lead": "タスク、レストラン管理、Pages…。一度ログインすれば、どのアプリにもそのまま入れます。",
+    "appTasks": "GoDX タスク",
+    "appRestaurant": "レストラン管理",
+    "appPages": "GoDX Pages",
+    "appAttendance": "勤怠",
+    "benefitPasskey": "パスキー対応",
+    "benefitMfa": "二要素認証",
+    "benefitTenant": "組織ごとに分かれたデータ",
+    "signIn": "ログイン",
+    "newHere": "はじめての方",
+    "createAccount": "アカウントを作成",
+    "email": "メールアドレス",
+    "next": "次へ",
+    "or": "または",
+    "passkey": "パスキーでログイン"
   }
 }

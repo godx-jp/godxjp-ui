@@ -2692,5 +2692,27 @@
       "title": "Ở độ rộng điện thoại",
       "back": "Quay lại danh sách cài đặt"
     }
+  },
+  "orgSwitcherDocs": {
+    "manage": "Quản lý tổ chức",
+    "managed": " · Đã mở trang quản lý tổ chức"
+  },
+  "editorialAuthSplit": {
+    "title": "Một ID,\nmọi ứng dụng công việc.",
+    "lead": "Công việc, quản lý nhà hàng, Pages… Đăng nhập một lần là vào thẳng mọi ứng dụng.",
+    "appTasks": "GoDX Công việc",
+    "appRestaurant": "Quản lý nhà hàng",
+    "appPages": "GoDX Pages",
+    "appAttendance": "Chấm công",
+    "benefitPasskey": "Hỗ trợ passkey",
+    "benefitMfa": "Xác thực hai lớp",
+    "benefitTenant": "Dữ liệu tách riêng theo tổ chức",
+    "signIn": "Đăng nhập",
+    "newHere": "Lần đầu?",
+    "createAccount": "Tạo tài khoản",
+    "email": "Địa chỉ email",
+    "next": "Tiếp",
+    "or": "hoặc",
+    "passkey": "Đăng nhập bằng passkey"
   }
 }

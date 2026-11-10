@@ -1,4 +1,5 @@
 import { KeyRound } from "lucide-react";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 import { Badge } from "@godxjp/ui/data-display";
 import { Form, FormField, Input } from "@godxjp/ui/data-entry";
@@ -21,6 +22,7 @@ import {
  * and 390x844.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <EditorialAuth
       layout="split"
@@ -29,31 +31,35 @@ export default function Demo() {
       bandDescription="hidden"
       artFrame="none"
       eyebrow={<Logo mark="godx-lockup" productSuffix="ID" />}
-      title={"ひとつの ID で、\n仕事のアプリすべてへ。"}
-      description="タスク、レストラン管理、Pages…。一度ログインすれば、どのアプリにもそのまま入れます。"
+      title={t("editorialAuthSplit.title")}
+      description={t("editorialAuthSplit.lead")}
       art={
         <Flex wrap gap="sm">
-          <Badge variant="outline">GoDX タスク</Badge>
-          <Badge variant="outline">レストラン管理</Badge>
-          <Badge variant="outline">GoDX Pages</Badge>
-          <Badge variant="outline">勤怠</Badge>
+          <Badge variant="outline">{t("editorialAuthSplit.appTasks")}</Badge>
+          <Badge variant="outline">{t("editorialAuthSplit.appRestaurant")}</Badge>
+          <Badge variant="outline">{t("editorialAuthSplit.appPages")}</Badge>
+          <Badge variant="outline">{t("editorialAuthSplit.appAttendance")}</Badge>
         </Flex>
       }
-      benefits={["パスキー対応", "二要素認証", "組織ごとに分かれたデータ"]}
+      benefits={[
+        t("editorialAuthSplit.benefitPasskey"),
+        t("editorialAuthSplit.benefitMfa"),
+        t("editorialAuthSplit.benefitTenant"),
+      ]}
     >
       <EditorialAuthCard
-        title="ログイン"
+        title={t("editorialAuthSplit.signIn")}
         level={2}
         footer={
           <Flex justify="between" align="center">
-            <Text>はじめての方</Text>
-            <EditorialTextButton>アカウントを作成</EditorialTextButton>
+            <Text>{t("editorialAuthSplit.newHere")}</Text>
+            <EditorialTextButton>{t("editorialAuthSplit.createAccount")}</EditorialTextButton>
           </Flex>
         }
       >
         <Form onSubmit={(event) => event.preventDefault()}>
           <Flex direction="col" gap="md">
-            <FormField id="split-email" label="メールアドレス">
+            <FormField id="split-email" label={t("editorialAuthSplit.email")}>
               <Input
                 id="split-email"
                 type="email"
@@ -61,11 +67,11 @@ export default function Demo() {
                 placeholder="you@example.co.jp"
               />
             </FormField>
-            <Button type="submit">次へ</Button>
-            <AuthDivider label="または" />
+            <Button type="submit">{t("editorialAuthSplit.next")}</Button>
+            <AuthDivider label={t("editorialAuthSplit.or")} />
             <Button variant="outline">
               <KeyRound aria-hidden="true" />
-              パスキーでログイン
+              {t("editorialAuthSplit.passkey")}
             </Button>
             <ResponsiveGrid columns={{ base: 3 }}>
               <Button variant="outline">Google</Button>
