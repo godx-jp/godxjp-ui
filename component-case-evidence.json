@@ -2549,10 +2549,12 @@
         "optionType": {
           "cases": [
             "default",
-            "button"
+            "button",
+            "card"
           ],
           "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx"
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/radio-card-1555.test.tsx"
           ]
         },
         "buttonStyle": {
