@@ -2063,7 +2063,21 @@ import { Moon, Sun } from "lucide-react";
         type: '"default" | "brand"',
         defaultValue: '"default"',
         description:
-          '"brand" paints the story column with the brand surface — --editorial-auth-brand-background (default hsl(var(--brand)); a deep gradient is a valid value) — and re-scopes --foreground / --muted-foreground / --text-brand inside it so the title, copy, kicker and benefit tick take the on-brand ink (--editorial-auth-brand-foreground, an HSL triple, default var(--brand-foreground); --editorial-auth-brand-muted-foreground defaults to it). Padded and rounded by --editorial-auth-brand-padding / --editorial-auth-brand-radius. Keep the pair at WCAG AA when you retint it.',
+          '"brand" paints the story column with a DARK brand surface in every theme — --editorial-auth-brand-background, default a deep gradient of the --primary hue (lightness capped 24% → 14%, angle --editorial-auth-brand-gradient-angle) — and re-scopes --foreground / --muted-foreground / --text-brand inside it so the title, copy, kicker and benefit tick take light ink (--editorial-auth-brand-foreground, an HSL triple, default 0 0% 100%; --editorial-auth-brand-muted-foreground defaults to it). A Logo in the eyebrow shows its dark-surface artwork automatically (data-logo-scheme="dark"). Padded and rounded by --editorial-auth-brand-padding / --editorial-auth-brand-radius. Keep the pair at WCAG AA when you retint it.',
+      },
+      {
+        name: "titleSize",
+        type: '"md" | "lg"',
+        defaultValue: '"lg"',
+        description:
+          '"lg" is the editorial hero (2.5rem / 1.7); "md" is sign-in density (--editorial-auth-title-md-font-size 2rem / --editorial-auth-title-md-line-height 1.4). The phone band sets its own size for both.',
+      },
+      {
+        name: "bandDescription",
+        type: '"visible" | "hidden"',
+        defaultValue: '"visible"',
+        description:
+          'The description in the phone band (< 48rem). "hidden" makes the band one line — kicker/logo and title only (--editorial-auth-band-description-display). Desktop and tablet always show it.',
       },
       { name: "benefits", type: "ReactNode[]", description: "Benefit lines." },
       { name: "children", type: "ReactNode", description: "EditorialAuthCard." },
@@ -2071,6 +2085,7 @@ import { Moon, Sun } from "lucide-react";
     usage: [
       "DO keep the form in an EditorialAuthCard with Form + FormField.",
       "Below 48rem the columns stack and the story becomes a compact band (kicker + one-line title, copy kept; art and benefits hidden). It is the kit's default as tokens (--editorial-auth-track-size, --editorial-auth-title-white-space, --editorial-auth-art-display, --editorial-auth-benefits-display …); re-declare them under your own query to keep the art.",
+      "From 48rem to 64rem (tablet) both columns stay and shrink: the card caps at 22.5rem (--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem)) and the gap drops to --space-10, so nothing overflows from 320px up.",
     ],
     related: [
       "EditorialAuthCard — the card.",
@@ -2846,7 +2861,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       'AUTH SHAPE: DO state the block placement with `align` when a product wants the opposite of its preset\'s default — align="center" on preset="login" for a vertically centred SCR-001, align="anchored" to top-anchor a preset that centres. It collapses the preset\'s block-start inset to its block-end one on desktop AND mobile, so justify-content has nothing to fight. Re-declaring --auth-shell-login-flow-offset-block (or any preset offset token) from a consumer stylesheet is the anti-pattern it replaces.',
       "AUTH SHAPE: DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",
       'AUTH SHAPE: DO put page-level controls in `actions` — the locale picker, the theme <ToggleGroup>, a "need help?" link. They land at the banner\'s inline end at a tokenized gap (`--auth-shell-bar-gap`), and the banner appears even with no `brand`. Do NOT hand-roll a top-right row with `ms-auto` on the `brand` content, and do NOT reach for CenteredShell just to get a topbar with actions: CenteredShell is the AUTHENTICATED shell.',
-      'AUTH SHAPE: DO use `measure="wide"` for the SPLIT login — a brand/marketing panel beside the auth card. The content slot opens to 64rem (`--auth-shell-wide-card-max-width`) and centres with auto margins, so the tall two-column layout starts at the top instead of overflowing above the scroll origin; lay the two halves out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> and hide the panel below `lg`. It is IGNORED under a `preset` (a preset owns its flow geometry), so pick one or the other.',
+      'AUTH SHAPE: DO use `measure="wide"` for the SPLIT login — a brand/marketing panel beside the auth card. The content slot opens to 64rem (`--auth-shell-wide-card-max-width`) and centres with auto margins, so the tall two-column layout starts at the top instead of overflowing above the scroll origin; lay the two halves out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> and hide the panel below `lg`. It is IGNORED under every `preset` except `preset="context-selection"` (a preset owns its flow geometry): there `measure="wide"` opens the slot to `--auth-shell-context-wide-card-max-width` so the chooser sits beside an explanation column — both in one `<ResponsiveGrid columns={{ sm: 1, lg: 2 }}>` child, with a `--auth-shell-context-wide-main-padding-mobile` phone gutter.',
       "AUTH SHAPE: DO use `footer` for compliance/legal/support links or a locale switch — it renders as the contentinfo landmark below the card.",
       'AUTH SHAPE: DO wrap the card in <Reveal> for the entrance animation (`<CenteredShell variant="auth"><Reveal><Card/></Reveal></CenteredShell>`) — Reveal honours prefers-reduced-motion; the auth CenteredShell itself stays layout-only.',
       "AUTH SHAPE: DO NOT re-scope control height or heading size in the app — the auth CenteredShell already sets the comfortable control tier (44px, WCAG touch floor) and the larger auth heading via `--auth-shell-control-height` / `--auth-shell-heading-size`; a service retunes those tokens, not a bespoke class.",
@@ -5008,6 +5023,13 @@ import { Trash2 } from "lucide-react";
         defaultValue: '"primary"',
         description:
           "Semantic fill role. The boxed glyph's INK defaults to --logo-identity-foreground (near-black), NOT --brand-foreground: --brand-foreground is the artwork KNOCKOUT colour and clears only 3.67:1 on the emerald, while a boxed glyph renders real TEXT and owes WCAG 2.2 SC 1.4.3's 4.5:1 (14px bold is not \"large text\"). Re-theming --brand to a DARK fill? Override --logo-success-foreground to re-invert the ink.",
+      },
+      {
+        name: "scheme",
+        type: '"auto" | "light" | "dark"',
+        defaultValue: '"auto"',
+        description:
+          'The SURFACE the logo sits on: picks the master artwork of mark="godx" / "godx-lockup" and the lockup ink. "auto" follows the page theme; "dark" / "light" pin it for a band whose ground is not the page\'s (a brand panel, an inverse footer). An ancestor pins every logo inside it with data-logo-scheme="dark" | "light" (EditorialAuth appearance="brand" does); the nearest pin wins.',
       },
       {
         name: "wordmark",

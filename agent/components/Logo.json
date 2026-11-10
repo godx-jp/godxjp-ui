@@ -29,6 +29,12 @@
       "type": "\"primary\" | \"success\""
     },
     {
+      "defaultValue": "\"auto\"",
+      "description": "The SURFACE the logo sits on: picks the master artwork of mark=\"godx\" / \"godx-lockup\" and the lockup ink. \"auto\" follows the page theme; \"dark\" / \"light\" pin it for a band whose ground is not the page's (a brand panel, an inverse footer). An ancestor pins every logo inside it with data-logo-scheme=\"dark\" | \"light\" (EditorialAuth appearance=\"brand\" does); the nearest pin wins.",
+      "name": "scheme",
+      "type": "\"auto\" | \"light\" | \"dark\""
+    },
+    {
       "description": "Readable product name rendered BESIDE the mark as ONE lockup — pass the localized product name (or an inline <svg> logotype when a real asset exists). Set it INSTEAD of hand-rolling `inline-flex items-center gap-2` around a Logo and a Text. The lockup root takes ref/className/…props; the mark becomes decorative and the wordmark text carries the accessible name, so the pair is announced once. Colour/face/weight/tracking/size and the mark↔wordmark gap are tokens (--logo-wordmark-*); on mark=\"godx\" / tone=\"success\" the wordmark is canonical emerald from the --brand identity role and NEVER reads --primary or --success.",
       "name": "wordmark",
       "type": "React.ReactNode"

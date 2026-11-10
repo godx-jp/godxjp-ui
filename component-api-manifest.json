@@ -7352,6 +7352,14 @@
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
+          "name": "bandDescription",
+          "origin": "owned",
+          "required": false,
+          "type": "\"hidden\" | \"visible\" | undefined",
+          "values": ["hidden", "visible"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
           "name": "benefits",
           "origin": "owned",
           "required": false,
@@ -7405,6 +7413,14 @@
           "required": true,
           "type": "ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "titleSize",
+          "origin": "owned",
+          "required": false,
+          "type": "\"md\" | \"lg\" | undefined",
+          "values": ["md", "lg"],
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         }
       ]
@@ -12109,6 +12125,14 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/components/general/logo.tsx"]
+        },
+        {
+          "name": "scheme",
+          "origin": "owned",
+          "required": false,
+          "type": "LogoScheme | undefined",
+          "values": ["auto", "light", "dark"],
           "declaredIn": ["src/components/general/logo.tsx"]
         },
         {

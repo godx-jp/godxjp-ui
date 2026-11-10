@@ -473,21 +473,60 @@ describe("EditorialAuth (gh#1439)", () => {
     const { container } = render(<EditorialAuth title="Make room." appearance="brand" />);
     expect(container.firstElementChild).toHaveAttribute("data-appearance", "brand");
     const brand = rule('.ui-editorial-auth[data-appearance="brand"] > .ui-editorial-auth-story');
-    expect(brand).toContain(
-      "background: var(--editorial-auth-brand-background, hsl(var(--brand)))",
+    expect(brand).toMatch(
+      /background: var\(\s*--editorial-auth-brand-background,\s*linear-gradient\(/,
     );
     expect(brand).toContain("padding: var(--editorial-auth-brand-padding)");
     expect(brand).toContain("border-radius: var(--editorial-auth-brand-radius)");
     // Title (foreground), copy + kicker (muted) and the benefit tick (text-brand) all flip.
-    expect(brand).toMatch(
-      /--foreground:\s*var\(--editorial-auth-brand-foreground, var\(--brand-foreground\)\)/,
-    );
+    expect(brand).toMatch(/--foreground:\s*var\(--editorial-auth-brand-foreground\);/);
     expect(brand).toMatch(/--muted-foreground:/);
     expect(brand).toMatch(/--text-brand:/);
     expect(brand).toContain("--editorial-kicker-color: hsl(var(--muted-foreground))");
-    for (const knob of ["background", "foreground", "muted-foreground"]) {
+    for (const knob of ["background", "muted-foreground"]) {
       expect(tokens).toContain(`--editorial-auth-brand-${knob}: initial;`);
     }
+  });
+
+  it('appearance="brand" is a dark surface in every theme and pins its logos to the dark artwork', () => {
+    const { container } = render(
+      <EditorialAuth appearance="brand" title="x" eyebrow={<span className="logo" />} />,
+    );
+    expect(container.querySelector(".ui-editorial-auth-story")).toHaveAttribute(
+      "data-logo-scheme",
+      "dark",
+    );
+    expect(tokens).toContain("--editorial-auth-brand-foreground: 0 0% 100%;");
+    const brand = rule('.ui-editorial-auth[data-appearance="brand"] > .ui-editorial-auth-story');
+    expect(brand).toMatch(/hsl\(from hsl\(var\(--primary\)\) h s min\(l, 24\)\)/);
+    // The default story pins nothing.
+    const { container: plain } = render(<EditorialAuth title="x" />);
+    expect(plain.querySelector(".ui-editorial-auth-story")).not.toHaveAttribute("data-logo-scheme");
+  });
+
+  it('titleSize="md" and bandDescription="hidden" hook their own knobs; defaults emit nothing', () => {
+    const { container, rerender } = render(<EditorialAuth title="x" description="y" />);
+    const root = container.firstElementChild!;
+    expect(root).not.toHaveAttribute("data-title-size");
+    expect(root).not.toHaveAttribute("data-band-description");
+    rerender(<EditorialAuth title="x" description="y" titleSize="md" bandDescription="hidden" />);
+    expect(root).toHaveAttribute("data-title-size", "md");
+    expect(root).toHaveAttribute("data-band-description", "hidden");
+    expect(rule('.ui-editorial-auth[data-title-size="md"]')).toContain(
+      "--editorial-auth-title-font-size: var(--editorial-auth-title-md-font-size)",
+    );
+    expect(tokens).toContain("--editorial-auth-title-md-font-size: 2rem;");
+    expect(tokens).toContain("--editorial-auth-band-description-display: block;");
+    const narrow = tokens.match(/@media \(width < 48rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(narrow).toContain("--editorial-auth-band-description-display: none;");
+    // The band keeps its own title size under titleSize="md" too.
+    expect(narrow).toContain("--editorial-auth-title-md-font-size: 1.625rem;");
+  });
+
+  it("shrinks both columns on a tablet (48rem-64rem) instead of overflowing", () => {
+    const tablet = tokens.match(/@media \(48rem <= width < 64rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(tablet).toContain("--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);");
+    expect(tablet).toContain("--editorial-auth-gap: var(--space-10);");
   });
 
   it("stacks into a compact band below the 48rem phone line, by tokens only", () => {

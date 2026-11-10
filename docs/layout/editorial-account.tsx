@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "@godxjp/ui/i18n";
 import { Badge } from "@godxjp/ui/data-display";
 import { Form, FormField, Input } from "@godxjp/ui/data-entry";
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Logo, Text } from "@godxjp/ui/general";
 import {
   CenteredShell,
   EditorialSection,
@@ -98,10 +98,14 @@ export default function Demo() {
           {t("editorialExamples.note")}
         </EditorialFootnote>
         {/* The sign-in shape: a brand story column (on-brand ink), free-form art instead of the
-         * rotated card pair, and an h2 story title because this page already owns its h1. Below
-         * 48rem the columns stack and the story becomes a compact band. */}
+         * rotated card pair, and an h2 story title because this page already owns its h1. The
+         * lockup takes its dark-surface artwork on the brand band by itself. Below 48rem the
+         * columns stack into a one-line band (logo + title; bandDescription="hidden"). */}
         <EditorialAuth
           appearance="brand"
+          eyebrow={<Logo mark="godx-lockup" size="sm" />}
+          titleSize="md"
+          bandDescription="hidden"
           level={2}
           title={t("editorialExamples.signIn")}
           description={t("editorialExamples.signInLead")}

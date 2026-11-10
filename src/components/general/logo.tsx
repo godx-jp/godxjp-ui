@@ -15,6 +15,7 @@ import { VisuallyHidden } from "./visually-hidden";
 export type LogoSize = "xs" | "sm" | "md" | "lg";
 export type LogoTone = "primary" | "success";
 export type LogoMark = "glyph" | "godx" | "godx-lockup";
+export type LogoScheme = "auto" | "light" | "dark";
 
 export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /**
@@ -48,6 +49,14 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
    * the application's primary action colour.
    */
   tone?: LogoTone;
+  /**
+   * The SURFACE the logo sits on, which picks the master artwork (`godx`, `godx-lockup`) and the
+   * lockup ink. `"auto"` (default) follows the page theme. `"dark"` / `"light"` pin it for a band
+   * whose ground is not the page's — a brand panel, an inverse footer. An ancestor can set the same
+   * thing for every logo inside it with `data-logo-scheme="dark" | "light"` (EditorialAuth
+   * `appearance="brand"` does).
+   */
+  scheme?: LogoScheme;
   /**
    * Readable product name rendered BESIDE the mark as one lockup. Pass the localized product name
    * (a string, or a node when the name needs its own markup).
@@ -335,6 +344,7 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
       mark = "glyph",
       size = "md",
       tone = "primary",
+      scheme = "auto",
       wordmark,
       productSuffix,
       label,
@@ -348,7 +358,13 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
     const hasWordmark = wordmark !== undefined && wordmark !== null && wordmark !== false;
     const hasProductSuffix =
       productSuffix !== undefined && productSuffix !== null && productSuffix !== false;
-    const identity = { "data-mark": mark, "data-size": size, "data-tone": tone } as const;
+    const identity = {
+      "data-mark": mark,
+      "data-size": size,
+      "data-tone": tone,
+      // Emitted only when pinned, so an auto logo keeps its exact attributes.
+      "data-logo-scheme": scheme === "auto" ? undefined : scheme,
+    } as const;
 
     /*
      * THE HALF OF THE NAME THAT IS DRAWN.

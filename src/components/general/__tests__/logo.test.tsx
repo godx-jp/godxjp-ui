@@ -232,3 +232,26 @@ describe("Logo brand tokens", () => {
     );
   });
 });
+
+describe("Logo scheme (a pinned surface)", () => {
+  const css = readFileSync(resolve(process.cwd(), "src/styles/logo-layout.css"), "utf8");
+
+  it("emits data-logo-scheme only when pinned, and the pin drives both artworks and the ink", () => {
+    const { container, rerender } = render(<Logo mark="godx-lockup" />);
+    expect(container.firstElementChild).not.toHaveAttribute("data-logo-scheme");
+    rerender(<Logo mark="godx-lockup" scheme="dark" />);
+    expect(container.firstElementChild).toHaveAttribute("data-logo-scheme", "dark");
+    // Both masters are still rendered; the pin picks one through inherited knobs (nearest wins).
+    expect(container.querySelectorAll('[data-slot="logo-artwork"]')).toHaveLength(2);
+    expect(css).toMatch(
+      /\[data-logo-scheme="dark"\]\s*\{[^}]*--logo-scheme-light-display:\s*none;[^}]*--logo-scheme-dark-display:\s*block;[^}]*--logo-godx-ink-color:\s*var\(--logo-godx-ink-color-on-dark\)/s,
+    );
+    expect(css).toMatch(
+      /:root \[data-logo-scheme\] \[data-slot="logo-artwork"\]\[data-scheme="light"\]\s*\{\s*display:\s*var\(--logo-scheme-light-display\);/,
+    );
+    // The pinned rules come AFTER the theme rules they must beat at equal specificity.
+    expect(css.indexOf(":root [data-logo-scheme]")).toBeGreaterThan(
+      css.indexOf(':root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="dark"]'),
+    );
+  });
+});

@@ -2295,6 +2295,16 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Story surface — page ground (default) or a brand surface with on-brand ink.",
       },
+      {
+        field: "titleSize",
+        local: true,
+        reason: "Story title tier — lg editorial hero (default) or md sign-in density.",
+      },
+      {
+        field: "bandDescription",
+        local: true,
+        reason: "Phone band copy — visible (default) or hidden for a one-line band.",
+      },
     ],
   },
   EditorialAuthCardProp: {

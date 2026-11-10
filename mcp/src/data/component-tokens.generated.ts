@@ -5544,6 +5544,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`pre-line` keeps a title's authored line breaks; the narrow band collapses them (`normal`)."
   },
   {
+    "name": "--editorial-auth-title-md-font-size",
+    "value": "2rem",
+    "description": "`titleSize=\"md\"` — the sign-in density title. scale-exempt: measured 32px sign-in title (Platform)"
+  },
+  {
+    "name": "--editorial-auth-title-md-line-height",
+    "value": "1.4",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-band-description-display",
+    "value": "block",
+    "description": "`bandDescription=\"hidden\"`: the description's display — `none` only below the phone line."
+  },
+  {
     "name": "--editorial-auth-description-max-width",
     "value": "30.625rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
@@ -5671,11 +5686,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-auth-brand-background",
     "value": "initial",
-    "description": "`appearance=\"brand\"`: the story surface. Background default = hsl(var(--brand)) (a gradient is a valid value); foreground is an HSL triple, default = var(--brand-foreground) — the identity pair the kit already holds at AA; muted foreground (the copy and kicker) defaults to it."
+    "description": "`appearance=\"brand\"`: the story surface, DARK in every theme. Background default = a deep gradient of the --primary hue at the angle below (resolved at the call site; any colour or gradient is valid); foreground is an HSL triple (white, >= 6:1 on <= 24% L); muted foreground (the copy and kicker) defaults to it. Retint the background lighter and you retint the foreground too, at AA."
+  },
+  {
+    "name": "--editorial-auth-brand-gradient-angle",
+    "value": "160deg",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
     "name": "--editorial-auth-brand-foreground",
-    "value": "initial",
+    "value": "0 0% 100%",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
@@ -5795,6 +5815,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-auth-track-size",
+    "value": "minmax(0, 1fr) minmax(0, 22.5rem)",
+    "description": "EditorialAuth on a TABLET (48rem–64rem): the 460px card and the hero gap left too little for the story (an 800px viewport overflowed by 84px). Both columns stay, both may shrink: the card caps at 22.5rem and the gap drops to the phone-to-desktop midpoint."
+  },
+  {
+    "name": "--editorial-auth-gap",
+    "value": "var(--space-10)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-padding",
+    "value": "var(--space-6)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-track-size",
     "value": "minmax(0, 1fr)",
     "description": "EditorialAuth below the kit's phone line (48rem — `--sheet-responsive-breakpoint-width`, the `md` step). The kit's DEFAULT, declared as tokens so the layout rules still name no breakpoint and a theme re-declares any of them under its own query: the 460px card track would overflow a 390px viewport, so the columns stack, and the story column becomes a compact band — kicker and a one-line title (authored line breaks collapse), the copy kept, the art and benefits hidden."
   },
@@ -5836,6 +5871,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-auth-title-white-space",
     "value": "normal",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-md-font-size",
+    "value": "1.625rem",
+    "description": "scale-exempt: the band's 26px title, as above"
+  },
+  {
+    "name": "--editorial-auth-title-md-line-height",
+    "value": "1.4",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-band-description-display",
+    "value": "none",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
@@ -10227,6 +10277,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--logo-godx-ink-color",
     "value": "235 68.6% 13.7%",
     "description": "── The LOGOTYPE ink (`<Logo mark=\"godx-lockup\" />`, identity v2.3) ──────────────────────── The lockup's letters G, o and D are the kit's indigo #0B0F3B; the mark and the X are the brand identity colour and read --logo-godx-color instead. They are two ROLES, not a decorative split, so they get two knobs. A TOKEN AND NOT THE LITERAL, because the literal only works in one theme: #0B0F3B is 18.00:1 on the light canvas and 1.03:1 on the dark one — invisible. Dark takes the kit's own dark text colour instead (#F7FAF8, 16.87:1), flipped in the block at the end of this file the same way the boxed glyph's ink is."
+  },
+  {
+    "name": "--logo-godx-ink-color-on-light",
+    "value": "235 68.6% 13.7%",
+    "description": "The two inks a PINNED surface (`<Logo scheme>` / `data-logo-scheme`) reads: the light-theme ink and the dark-theme ink above, independent of the page theme."
+  },
+  {
+    "name": "--logo-godx-ink-color-on-dark",
+    "value": "140 23.1% 97.5%",
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-glyph-cap-baseline-optical-offset",

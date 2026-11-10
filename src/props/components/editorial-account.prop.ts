@@ -231,13 +231,25 @@ export type EditorialAuthProp = {
    */
   artFrame?: "cards" | "none";
   /**
-   * `"default"` — the story sits on the page ground. `"brand"` — the story column is a brand
-   * surface (`--editorial-auth-brand-background`, default `hsl(var(--brand))`; a deep gradient is
-   * a token value) with on-brand ink for the title, copy and benefit tick
-   * (`--editorial-auth-brand-foreground`, default `hsl(var(--brand-foreground))`), padded and
-   * rounded by `--editorial-auth-brand-padding` / `--editorial-auth-brand-radius`.
+   * `"default"` — the story sits on the page ground. `"brand"` — the story column is a DARK brand
+   * surface in every theme (`--editorial-auth-brand-background`, default a deep gradient of the
+   * `--primary` hue, lightness capped at 24% → 14%) with light ink for the title, copy, kicker and
+   * benefit tick (`--editorial-auth-brand-foreground`, an HSL triple, default `0 0% 100%`), padded
+   * and rounded by `--editorial-auth-brand-padding` / `--editorial-auth-brand-radius`. Every `Logo`
+   * inside the story shows its dark-surface artwork (`data-logo-scheme="dark"`).
    */
   appearance?: "default" | "brand";
+  /**
+   * Title size. `"lg"` (default) — the editorial hero (`--editorial-auth-title-font-size`,
+   * 2.5rem / 1.7). `"md"` — sign-in density (`--editorial-auth-title-md-font-size` /
+   * `--editorial-auth-title-md-line-height`, 2rem / 1.4). The phone band sets its own size for both.
+   */
+  titleSize?: "md" | "lg";
+  /**
+   * The description in the phone band. `"visible"` (default) keeps it; `"hidden"` makes the band one
+   * line — kicker/logo and title only. Desktop and tablet always show it.
+   */
+  bandDescription?: "visible" | "hidden";
   /** Short benefit lines, each led by a check glyph. */
   benefits?: ReactNode[];
   children?: ReactNode;
