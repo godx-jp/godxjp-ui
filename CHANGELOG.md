@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### DropdownMenuTrigger asChild keeps its slot on a kit child (#1564)
+
+- **Fixed** a 33.28.0 regression (gh#1527): `<DropdownMenuTrigger asChild>` around a kit component (`TopbarItem`, `Button`) rendered the child's own slot (`topbar-item`, `button`) instead of `dropdown-menu-trigger`, because the trigger clones its child itself rather than through `Slot` and the child's `withoutSlot` discarded the handed `data-slot`. It now names the trigger on the kit channel (`data-kit-slot`), as `Slot` does, so the element carries `data-slot="dropdown-menu-trigger"` as it did in 33.27, and visual-audit c04 finds it again. A host child (`<button>`) is unchanged. Seen in GDX: the account menu's `TopbarItem` lost every rule keyed on the trigger's slot (avatar ring, fallback surface).
+
 ### @godxjp/markdown: display math keeps its limits, and a narrowed body keeps a formula whole (also released as 33.27.20, off v33.27.19)
 
 - **Display corruption** (affects every release since 33.18.0): `katex.css` makes `.katex-display` scroll sideways (`overflow-x: auto`), which clips both axes, and the box had no vertical room, so an integral's or a sum's limits were cut: GDX's issue screen lost about 3px off `\int_0^1 x\,dx` (GDX-1466). Measured in Chromium at 16px: glyphs reached 3.3px above and 4px below the box (`\sum_{i=1}^{n}` 2.2/2.1, `\lim_{x \to 0}\frac{\sin x}{x}` 4.1/3.4). Half of KaTeX's 1em margin now sits inside the box as padding (`margin-block: 0.5em; padding-block: 0.5em`), so every glyph is inside it. Spacing in a `Prose`, measured at 14px from the paragraph above and below to the formula's glyph box: 14px above (unchanged), 19px below (was 14px: the next paragraph's own margin now collapses with the smaller 0.5em, then the padding adds to it).

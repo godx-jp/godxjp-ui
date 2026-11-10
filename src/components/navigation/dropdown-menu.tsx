@@ -29,7 +29,7 @@ import type {
   DropdownMenuPlacementProp,
   DropdownMenuTriggerActionProp,
 } from "../../props/components/navigation.prop";
-import { withoutSlot } from "../../lib/without-slot";
+import { KIT_SLOT, withoutSlot } from "../../lib/without-slot";
 
 export type {
   DropdownMenuPlacementProp,
@@ -608,6 +608,12 @@ export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMen
       <Pressable isDisabled={isDisabled}>
         {
           React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
+            // gh#1564: a kit child (TopbarItem, Button) drops a handed `data-slot`; name the trigger
+            // on the kit channel, as `Slot` does. A host child takes `data-slot` directly.
+            ...(typeof children.type !== "string" &&
+            !(KIT_SLOT in (children.props as Record<string, unknown>))
+              ? { [KIT_SLOT]: "dropdown-menu-trigger" }
+              : {}),
             "data-slot": "dropdown-menu-trigger",
             "data-state": dataState,
             // The root's `shortcut`, announced (gh#1267); a consumer's own value wins.
