@@ -363,6 +363,7 @@
       "noDetail": "ロールを選択すると詳細が表示されます"
     },
     "orgSwitcher": {
+      "personal": "個人",
       "hintMove": "移動",
       "hintSelect": "選択",
       "hintClose": "閉じる"

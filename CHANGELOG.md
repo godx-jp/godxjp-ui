@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### OrgSwitcher lists the personal workspace in its own section (#1556)
+
+- **Added** `OrgSwitcherOrganization.kind?: "organization" | "personal"` (default `"organization"`). Personal entries are listed in their own labelled section after the organizations, whatever their position in `organizations`, with a circular avatar (`--radius-pill`) on the row and on the trigger. Search filters the organizations only: the personal entry stays listed and last, and `labels.empty` shows when no organization matches. New `labels.personal` titles the section; it defaults to the kit's `layout.orgSwitcher.personal` (Personal / 個人 / Cá nhân). A list without personal entries renders exactly as before.
+
 ### A focus ring is never cut by AccordionContent, and visual-audit measures the cut (#1543)
 
 - **Display corruption** (affects every release up to 33.27.17): `AccordionContent` was `overflow: hidden` with no inline padding, so a control flush with its edge (a `RadioGroup` in a `FormField`) lost its ring at the inline start: measured 4px cut in LTR and RTL. It is now `overflow: clip` + `overflow-clip-margin: var(--focus-ring-clip-margin)`, the pattern `.ui-command` and `.ui-carousel-viewport` already use. Panel geometry is unchanged, and so is collapsing: a closed panel is `hidden="until-found"` and there is no height animation.

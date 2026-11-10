@@ -364,6 +364,7 @@
       "noDetail": "Chọn một vai trò để xem chi tiết"
     },
     "orgSwitcher": {
+      "personal": "Cá nhân",
       "hintMove": "Di chuyển",
       "hintSelect": "Chọn",
       "hintClose": "Đóng"

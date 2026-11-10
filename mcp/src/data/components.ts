@@ -18928,7 +18928,8 @@ import { Logo } from "@godxjp/ui/general";
         name: "organizations",
         type: "readonly OrgSwitcherOrganization[]",
         required: true,
-        description: "Consumer-provided organization choices.",
+        description:
+          'Consumer-provided organization choices. An entry with `kind: "personal"` (the account\'s own workspace; default `"organization"`) is listed in its own labelled section after the organizations, whatever its position in the array, with a circular avatar on the row and on the trigger; search filters the organizations only and keeps it listed.',
       },
       { name: "value", type: "string", description: "Selected organization id." },
       {
@@ -18940,7 +18941,8 @@ import { Logo } from "@godxjp/ui/general";
         name: "labels",
         type: "OrgSwitcherLabels",
         required: true,
-        description: "Localized trigger, search, state, and retry copy.",
+        description:
+          'Localized trigger, search, state, and retry copy. `personal` titles the personal section; it defaults to the kit\'s t("layout.orgSwitcher.personal") (Personal / 個人 / Cá nhân).',
       },
       {
         name: "placeholderAvatar",
@@ -18985,6 +18987,7 @@ import { Logo } from "@godxjp/ui/general";
     usage: [
       "Provide only organizations the current user may select; the component does not authorize or fetch tenants.",
       "Keep persistence and navigation in `onValueChange`; use loading/error props for the real query state.",
+      'DO mark the account\'s own workspace `kind: "personal"` rather than pushing it into the company list: it gets its own section after the organizations (named by `labels.personal`), a round avatar, and it stays listed while the user searches organizations — so nobody mistakes it for a company and it is never the first row (#1556).',
       "DO put a plan/status affordance in `organization.badge` (a <Badge>) instead of stuffing it into `meta` — the badge is end-aligned in the expanded trigger and in the menu row, and hidden in the collapsed rail. ALWAYS pair it with a localized `organization.badgeLabel`: the trigger's accessible name comes from `labels.trigger`, so the badge is announced as an aria-describedby DESCRIPTION and the raw node is marked presentational (WCAG 1.1.1). `badgeLabel` also becomes a search keyword.",
       'DON\'T wrap OrgSwitcher in your own media query to pick popover vs sheet — `responsive="auto"` already reads the shared --sheet-responsive-breakpoint-width token.',
       "DON'T put it in the SIDEBAR — not as a row, not in `Sidebar`'s `brand` slot, not stacked under the product lockup. Which organization you are in is PLATFORM scope: it survives changing app, while everything else in the sidebar is this app's own sections. Its two legal homes are `AppShell`'s `navRail` (a permanent 3.5rem column — the Slack shape, when switching is frequent enough to deserve the width) and the topbar (a `TopbarItem`-height control, with `topbarSpan=\"full\"` so the bar outranks the section beneath it). Stacking it under the sidebar's own logo also puts two lockups of different heights in one header, which is what visibly skews the sidebar's top edge against the topbar's.",
