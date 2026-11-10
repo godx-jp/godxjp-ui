@@ -8,8 +8,6 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
-## [33.29.0] - 2026-11-11
-
 ### TopbarSearch wide measure; Avatar stable categorical colour and xl tile; AuthFooter body face
 
 - **Added** `TopbarSearch measure?: "default" | "wide"` (default `"default"`, 16rem). `"wide"` reads `--topbar-search-wide-inline-size` (26.25rem) for a home / portal search; it still shrinks toward the text floor when the bar is short of room.
