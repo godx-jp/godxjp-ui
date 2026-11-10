@@ -8,11 +8,16 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.28.6] - 2026-11-10
+
 ### EditorialAuth full-bleed split sign-in page (Platform login wireframe)
 
+- **Fixed** the EditorialAuth phone token block re-declared `--editorial-auth-title-md-line-height` and `--editorial-auth-card-padding` with the value an earlier scope already set, which failed the release contract on 33.28.5. The tablet block now covers everything below 64rem and the phone block overrides only what differs; no rendered value changes.
 - **Added** `EditorialAuth layout?: "card" | "split"` (default `"card"`, unchanged). `"split"` is a full-bleed sign-in page rendered as the page root: the story fills its side edge to edge and top to bottom (`--editorial-auth-split-track-size`, default `1.15fr 1fr`; `--editorial-auth-split-min-height`, default `100dvh`) over a faint grid texture (`--editorial-auth-split-texture-background-image`, `--editorial-auth-split-texture-size`, `--editorial-auth-split-texture-mask-gradient`; `none` drops it), the logo at the top, title + copy + art centred (`--editorial-auth-split-story-body-max-width`), the benefits pinned at the bottom in a row. The form card loses its surface and becomes a plain centred column (`--editorial-auth-split-form-max-width` 25rem, `--editorial-auth-split-form-padding`). 48–64rem: two equal columns; below 48rem: the story is a full-bleed band over the form, keeping its authored title breaks (`--editorial-auth-split-title-white-space`). Measured at 320–1280: no sideways overflow.
 
 ## [33.28.5] - 2026-11-10
+
+> **Never published.** The `v33.28.5` tag points at a commit whose release-contract check failed (an identical token re-declaration in the EditorialAuth phone block, which the MCP catalog rejects), so the publish refused it. Everything below ships in 33.28.6 together with that fix.
 
 ### EditorialAuth on a phone and on a brand surface; CenteredShell context-selection two-column; OrgSwitcher actions (Platform)
 
