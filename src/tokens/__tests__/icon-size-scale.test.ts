@@ -124,6 +124,8 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--avatar-glyph-size-xs": ["0.75rem", "0.69rem", "0.81rem"],
   "--avatar-glyph-size-sm": ["0.875rem", "0.805rem", "0.945rem"],
   "--avatar-glyph-size-lg": ["1.25rem", "1.15rem", "1.35rem"],
+  // The 64px xl tile (Platform login f6 mail tile): the 36px --icon-size-2xl step, --scaling-multiplied.
+  "--avatar-glyph-size-xl": ["2.25rem", "2.07rem", "2.43rem"],
   "--button-xs-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   "--card-service-launcher-icon-glyph-size": ["1.25rem", "1.15rem", "1.35rem"],
   "--card-service-launcher-icon-size": ["2.25rem", "2.07rem", "2.43rem"],

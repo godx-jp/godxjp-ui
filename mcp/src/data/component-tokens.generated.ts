@@ -3315,7 +3315,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-glyph-size-xl",
-    "value": "calc(2rem * var(--scaling))",
+    "value": "calc(var(--icon-size-2xl) * var(--scaling))",
     "description": "Glyph in the 64px mark — half the box."
   },
   {

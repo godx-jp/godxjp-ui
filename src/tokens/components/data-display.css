@@ -207,7 +207,7 @@
     )
   );
   /* Glyph in the 64px mark — half the box. */
-  --avatar-glyph-size-xl: calc(2rem * var(--scaling));
+  --avatar-glyph-size-xl: calc(var(--icon-size-2xl) * var(--scaling));
 
   /* Glyph box per step — the `--icon-size-*` scale the `Icon` primitive was minted on (gh#712),
      multiplied by --scaling exactly as --control-icon-size is, so a glyph inside a sized mark

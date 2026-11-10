@@ -77,8 +77,19 @@ describe(
   "Select popup width near the inline-end edge (Chromium, classic scrollbars)",
   { timeout: 40_000 },
   () => {
-    it("opens at one width and keeps it, inside the page", async () => {
+    it("opens at one width and keeps it, inside the page", async ({ skip }) => {
       const page = await browser.newPage({ viewport: { width: 1512, height: 900 } });
+      // The defect needs a classic scrollbar with a width (Linux Chromium, as in CI). macOS
+      // Chromium always draws overlay scrollbars, even without --hide-scrollbars: react-aria's
+      // scroll lock then has no gutter to reserve, so the precondition below can never hold.
+      await page.setContent('<div style="height:200vh"></div>');
+      const scrollbar = await page.evaluate(
+        () => window.innerWidth - document.documentElement.clientWidth,
+      );
+      if (scrollbar === 0) {
+        await page.close();
+        skip("overlay scrollbars on this platform; needs classic scrollbars (Linux Chromium)");
+      }
       await page.setContent(
         `<!doctype html><html lang="ja"><head><style>${css}</style></head><body style="margin:0"><div id="root"></div><script>${js}</script></body></html>`,
       );
