@@ -41,8 +41,9 @@ export type BreadcrumbItemProp = {
    * One line, a long label cut with "…" (gh#1046). antd's Breadcrumb has no per-item ellipsis;
    * the name and shape are antd Typography's `ellipsis`. The full label shows in a tooltip on hover
    * and on keyboard focus of the crumb link — `true` / `{}` use the label, `{ tooltip: node }`
-   * replaces it, `{ tooltip: false }` drops it. Applies to link and current crumbs, not to a
-   * `menu` segment or an `itemRender` body. The trail then stays on one line; a theme may cap
+   * replaces it, `{ tooltip: false }` drops it. Applies to ancestor (link) crumbs, not to a
+   * `menu` segment or an `itemRender` body; the CURRENT page is never cut (GDX-1489), so its
+   * `ellipsis` is ignored and it wraps if the whole line cannot hold it. The trail then stays on one line; a theme may cap
    * each such crumb with `--breadcrumb-item-max-inline-size`.
    * @see BreadcrumbItemEllipsisProp
    */

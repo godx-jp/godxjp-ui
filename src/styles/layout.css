@@ -1544,7 +1544,7 @@
     white-space: nowrap;
   }
   .ui-breadcrumb-item[data-ellipsis] {
-    min-inline-size: 0;
+    min-inline-size: var(--breadcrumb-item-min-inline-size);
     max-inline-size: var(--breadcrumb-item-max-inline-size);
   }
   .ui-breadcrumb-item[data-ellipsis] > svg,
@@ -1556,6 +1556,20 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  /* THE CURRENT PAGE IS NEVER CUT (GDX-1489). The component drops `ellipsis` from the current
+   * crumb, so in a one-line trail it would be held whole on one line (`flex-shrink: 0` above) and
+   * could push the trail past its container. It keeps its whole width while that fits, and is
+   * capped at the line, where its label wraps: the ancestors give way first, down to
+   * `--breadcrumb-item-min-inline-size` ("…"). A trail that long is what `maxItems` folds. */
+  .ui-breadcrumb-list[data-ellipsis] > .ui-breadcrumb-item[data-current] {
+    /* The line, less what each crumb before it keeps: its floor and the gap after it. The
+     * component publishes how many crumbs precede the current one. */
+    max-inline-size: calc(
+      100% - var(--breadcrumb-crumbs-before, 0) *
+        (var(--breadcrumb-item-min-inline-size) + var(--space-inline-xs))
+    );
+    white-space: normal;
   }
 
   .ui-empty-state {

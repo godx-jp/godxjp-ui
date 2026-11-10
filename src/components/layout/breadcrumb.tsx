@@ -1,8 +1,8 @@
-import { ChevronDown, ChevronRight } from "lucide-react";
-import type { ElementType, ReactNode } from "react";
+import { ChevronDown, ChevronRight, MoreHorizontal } from "lucide-react";
+import type { CSSProperties, ElementType, ReactNode } from "react";
 
 import { useTranslation } from "../../i18n/use-translation";
-import { BreadcrumbCrumbText, trailEllipsis } from "./breadcrumb-ellipsis";
+import { BreadcrumbCrumbText, shownCrumb, trailEllipsis } from "./breadcrumb-ellipsis";
 import type {
   BreadcrumbCurrentItemProp,
   BreadcrumbItemProp,
@@ -36,7 +36,41 @@ export type BreadcrumbProps = {
    * the trail a landmark. Use it to hand the trail a router `<Link>` (Inertia, react-router).
    */
   itemRender?: BreadcrumbItemRenderProp;
+  /**
+   * Fold the middle of a long trail (GDX-1489; the name and defaults are MUI Breadcrumbs', antd
+   * has none). When there are MORE than `maxItems` crumbs, the first `itemsBeforeCollapse` and the
+   * last `itemsAfterCollapse` stay, and the ones between become one "…" menu button whose entries
+   * link to them. Unset: never folds. The current page is always among the last ones kept.
+   */
+  maxItems?: number;
+  /** Crumbs kept before the fold. Default 1. */
+  itemsBeforeCollapse?: number;
+  /** Crumbs kept after the fold, the current page included. Default 1. */
+  itemsAfterCollapse?: number;
 };
+
+/** One rendered position of the trail: a real crumb, or the fold standing for the hidden ones. */
+type TrailEntry =
+  | { kind: "item"; item: BreadcrumbItemProp; index: number }
+  | { kind: "fold"; hidden: BreadcrumbItemProp[] };
+
+function foldTrail(
+  items: BreadcrumbProp,
+  maxItems: number | undefined,
+  before: number,
+  after: number,
+): TrailEntry[] {
+  const all = items.map((item, index) => ({ kind: "item" as const, item, index }));
+  const keepBefore = Math.max(0, Math.floor(before));
+  const keepAfter = Math.max(1, Math.floor(after));
+  if (maxItems === undefined || items.length <= maxItems || keepBefore + keepAfter >= items.length)
+    return all;
+  return [
+    ...all.slice(0, keepBefore),
+    { kind: "fold", hidden: items.slice(keepBefore, items.length - keepAfter) },
+    ...all.slice(items.length - keepAfter),
+  ];
+}
 
 export function Breadcrumb({
   items,
@@ -45,6 +79,9 @@ export function Breadcrumb({
   ariaLabel,
   separator,
   itemRender,
+  maxItems,
+  itemsBeforeCollapse = 1,
+  itemsAfterCollapse = 1,
 }: BreadcrumbProps) {
   const { t } = useTranslation();
   // `undefined` = "not asked for" → the default glyph. `""`/null = "asked for none" → nothing.
@@ -53,36 +90,84 @@ export function Breadcrumb({
 
   return (
     <nav aria-label={ariaLabel ?? t("navigation.breadcrumb.ariaLabel")} className="ui-breadcrumb">
-      <ol className="ui-breadcrumb-list" data-ellipsis={trailEllipsis(items)}>
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1;
-
-          return (
-            <li
-              key={item.to ?? index}
-              className="ui-breadcrumb-item"
-              data-ellipsis={item.ellipsis ? "" : undefined}
-            >
-              {/* The separator LEADS the crumb it introduces (gh#1308): the item is one unbreakable
-                  box, so a wrapped trail carries `›` onto the next line with the crumb instead of
-                  leaving it alone at the end of the line before. */}
-              {index > 0 ? (
+      <ol
+        className="ui-breadcrumb-list"
+        data-ellipsis={trailEllipsis(
+          items.map((item, index) =>
+            shownCrumb(item, index === items.length - 1 && currentItem === "last"),
+          ),
+        )}
+      >
+        {foldTrail(items, maxItems, itemsBeforeCollapse, itemsAfterCollapse).map(
+          (entry, position) => {
+            const separatorSpan =
+              position > 0 ? (
                 <span className="ui-breadcrumb-separator" aria-hidden="true">
                   {separatorNode}
                 </span>
-              ) : null}
-              {renderBreadcrumbSegment({
-                item,
-                index,
-                isLast,
-                isCurrent: isLast && currentItem === "last",
-                items,
-                itemRender,
-                LinkComponent,
-              })}
-            </li>
-          );
-        })}
+              ) : null;
+            if (entry.kind === "fold") {
+              return (
+                <li key="fold" className="ui-breadcrumb-item" data-fold="">
+                  {separatorSpan}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      className="ui-breadcrumb-menu-trigger ui-breadcrumb-fold ui-focus-ring"
+                      aria-label={t("navigation.breadcrumb.showHidden")}
+                    >
+                      <MoreHorizontal aria-hidden="true" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent placement="bottomStart">
+                      {entry.hidden.map((hidden, i) => (
+                        <DropdownMenuItem key={hidden.to ?? i} asChild={hidden.to !== undefined}>
+                          {hidden.to !== undefined ? (
+                            <LinkComponent href={hidden.to} to={hidden.to}>
+                              {hidden.label}
+                            </LinkComponent>
+                          ) : (
+                            hidden.label
+                          )}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </li>
+              );
+            }
+            const { index } = entry;
+            const isLast = index === items.length - 1;
+            const isCurrent = isLast && currentItem === "last";
+            const item = shownCrumb(entry.item, isCurrent);
+
+            return (
+              <li
+                key={item.to ?? index}
+                className="ui-breadcrumb-item"
+                data-ellipsis={item.ellipsis ? "" : undefined}
+                data-current={isCurrent ? "" : undefined}
+                style={
+                  isCurrent && position > 0
+                    ? ({ "--breadcrumb-crumbs-before": position } as CSSProperties)
+                    : undefined
+                }
+              >
+                {/* The separator LEADS the crumb it introduces (gh#1308): the item is one unbreakable
+                  box, so a wrapped trail carries `›` onto the next line with the crumb instead of
+                  leaving it alone at the end of the line before. */}
+                {separatorSpan}
+                {renderBreadcrumbSegment({
+                  item,
+                  index,
+                  isLast,
+                  isCurrent,
+                  items,
+                  itemRender,
+                  LinkComponent,
+                })}
+              </li>
+            );
+          },
+        )}
       </ol>
     </nav>
   );

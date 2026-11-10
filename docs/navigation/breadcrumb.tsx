@@ -210,6 +210,28 @@ export default function Demo() {
             </div>
           </CardContent>
         </Card>
+
+        {/* GDX-1489 — the middle of a long trail folded into one menu button. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("breadcrumbExamples.foldTitle")}</CardTitle>
+            <CardDescription>{t("breadcrumbExamples.foldDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Breadcrumb
+              ariaLabel={t("breadcrumbExamples.foldAria")}
+              maxItems={3}
+              itemsAfterCollapse={2}
+              items={[
+                { label: t("breadcrumbExamples.home"), to: "/" },
+                { label: t("breadcrumbExamples.foldProjects"), to: "/projects" },
+                { label: t("breadcrumbExamples.foldProject"), to: "/projects/web" },
+                { label: suite, to: "/suites/412", ellipsis: true },
+                { label: section },
+              ]}
+            />
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

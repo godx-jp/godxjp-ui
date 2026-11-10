@@ -52,7 +52,9 @@ describe("Breadcrumb complete recovery (#1393)", () => {
               };
             }),
           );
-        expect(boxes).toHaveLength(9);
+        // Two cut crumbs per script: the Breadcrumb ancestor and the PageContainer one. The
+        // Breadcrumb's current crumb asks for `ellipsis` too, and is no longer cut (GDX-1489).
+        expect(boxes).toHaveLength(6);
         for (const box of boxes) {
           expect(box.clipped, box.label!).toBe(true);
           expect(box.start, box.label!).toBeGreaterThanOrEqual(-1);

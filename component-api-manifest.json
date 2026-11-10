@@ -2793,10 +2793,34 @@
           "declaredIn": ["src/components/layout/breadcrumb.tsx"]
         },
         {
+          "name": "itemsAfterCollapse",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/layout/breadcrumb.tsx"]
+        },
+        {
+          "name": "itemsBeforeCollapse",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/layout/breadcrumb.tsx"]
+        },
+        {
           "name": "linkComponent",
           "origin": "owned",
           "required": false,
           "type": "ElementType | undefined",
+          "values": [],
+          "declaredIn": ["src/components/layout/breadcrumb.tsx"]
+        },
+        {
+          "name": "maxItems",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/components/layout/breadcrumb.tsx"]
         },

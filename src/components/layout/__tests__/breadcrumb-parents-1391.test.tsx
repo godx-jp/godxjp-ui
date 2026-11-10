@@ -49,9 +49,12 @@ for (const kind of ["breadcrumb", "page"] as const) {
       expect(link).toHaveAttribute("aria-label", trail[0]!.label);
       expect(link).toHaveAttribute("title", trail[0]!.label);
       expect(link).not.toHaveAttribute("aria-describedby");
+      // The current page is never cut (GDX-1489): its `ellipsis` is dropped, so it needs no
+      // recovered name — it is not clipped and reads as its own text.
       const current = document.querySelector('[aria-current="page"]');
-      expect(current).toHaveAttribute("title", "Record");
-      expect(current).toHaveAttribute("aria-label", "Record");
+      expect(current).toHaveTextContent("Record");
+      expect(current).not.toHaveClass("ui-breadcrumb-ellipsis");
+      expect(current).not.toHaveAttribute("title");
     });
   });
 }

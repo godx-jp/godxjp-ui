@@ -568,7 +568,8 @@
       }
     },
     "breadcrumb": {
-      "ariaLabel": "パンくずリスト"
+      "ariaLabel": "パンくずリスト",
+      "showHidden": "途中の階層を表示"
     },
     "anchor": {
       "ariaLabel": "このページの内容"

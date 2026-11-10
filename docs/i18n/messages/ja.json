@@ -1702,11 +1702,16 @@
     "parentsDescription": "currentItem=\"none\" はすべての祖先ページをリンクとして表示し、現在ページを示しません。レコード名を見出しに置く PageContainer では breadcrumbCurrentItem=\"none\" を指定します。省略したラベルも完全なアクセシブル名と title を持ち、ツールチップの説明は重複しません。",
     "parentsAria": "祖先ページ",
     "ellipsisTitle": "ellipsis · 長いセグメントを 1 行に",
-    "ellipsisDescription": "セグメントに ellipsis を付けるとパンくずは 1 行のまま、そのラベルを「…」で省略します。全文はホバーと、パンくずのリンクへのキーボードフォーカスでツールチップに出ます。antd の Breadcrumb に項目単位の省略はなく、形は Typography に合わせています。PageContainer の breadcrumb も同じ項目フィールドを受け付けます。",
+    "ellipsisDescription": "セグメントに ellipsis を付けるとパンくずは 1 行のまま、そのラベルを「…」で省略します。全文はホバーと、パンくずのリンクへのキーボードフォーカスでツールチップに出ます。antd の Breadcrumb に項目単位の省略はなく、形は Typography に合わせています。PageContainer の breadcrumb も同じ項目フィールドを受け付けます。現在のページは省略しません。省略されるのは祖先だけで、1 行に収まらない現在ページのラベルは折り返します。",
     "ellipsisAria": "省略付きパンくずリスト",
     "home": "ホーム",
     "longSuite": "第3四半期 結合テスト 決済モジュール 請求書再発行シナリオ",
-    "longSection": "2026年9月 リリース候補の受入基準レビュー"
+    "longSection": "2026年9月 リリース候補の受入基準レビュー",
+    "foldTitle": "maxItems · 長いパンくずの途中を畳む",
+    "foldDescription": "maxItems より多いと、先頭 itemsBeforeCollapse 件と末尾 itemsAfterCollapse 件を残し、その間を 1 つの「…」メニューボタンにまとめます。メニューの項目はそれぞれの階層へのリンクです。",
+    "foldAria": "畳んだパンくずリスト",
+    "foldProjects": "プロジェクト",
+    "foldProject": "コーポレートサイト"
   },
   "timelineDocs": {
     "log": {
