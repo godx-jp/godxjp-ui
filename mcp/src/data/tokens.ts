@@ -1358,6 +1358,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'RadioGroup `optionType="list"` — the inset grouped list. One surface per section: `--choice-list-background` (initial → hsl(var(--card))) and `--choice-list-radius` (initial → the card radius). Rows separate with a hairline in `--choice-list-divider-color` (initial → --border) starting at `--choice-list-divider-inset` (initial → --choice-card-padding-inline, the row text) or, with a leading avatar, `--choice-list-divider-leading-inset` (inset + avatar + gap). Sections stack `--choice-list-section-gap` (space-5) apart with the label `--choice-list-label-gap` (6px) above its surface.',
   },
   {
+    name: "--empty-state-hero-{title-font-size,description-font-size,medallion-size,icon-glyph-size,gap,space-y}",
+    category: "component",
+    tier: "component",
+    role: 'EmptyState `variant="hero"` — the result page. `--empty-state-hero-title-font-size` (initial → the display --font-size-3xl step; the title is bold and reads the display optics), `--empty-state-hero-description-font-size` (lg), `--empty-state-hero-medallion-size` (band-3xl, 56px) / `--empty-state-hero-icon-glyph-size` (icon-xl), `--empty-state-hero-gap` (space-4) and `--empty-state-hero-space-y` (space-6).',
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

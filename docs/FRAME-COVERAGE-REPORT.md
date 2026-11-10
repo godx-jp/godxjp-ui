@@ -165,7 +165,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | CredentialReveal | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | QrCode | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
 | Descriptions | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| EmptyState | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
+| EmptyState | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Progress | ✓ | · | N/A | · | · | · | · | · | · | · |
 | CodeBlock | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Markdown | ✓ | · | · | · | · | · | · | · | · | · |

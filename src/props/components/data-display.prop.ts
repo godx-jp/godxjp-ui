@@ -234,8 +234,13 @@ export type EmptyStateProp = {
   title: TitleProp;
   description?: DescriptionProp;
   action?: ActionProp;
-  /** Visual weight appropriate to the empty condition. Default `page`. */
-  variant?: "page" | "section" | "compact";
+  /**
+   * Visual weight appropriate to the empty condition. Default `page`. `hero` is a RESULT PAGE
+   * (approved / denied / expired / done): the title at the display `3xl` step in bold with the
+   * display optics (`--letter-spacing-display` / `--line-height-display`), a larger medallion and
+   * a lead-size description — pair it with `titleLevel={1}`, since it is the page's heading.
+   */
+  variant?: "page" | "section" | "compact" | "hero";
   /** Medallion colour intent. Default `muted` (the neutral placeholder look). */
   tone?: EmptyStateToneProp;
   /** Semantic heading level (`h1`–`h4`) for the title. Default `3`. */

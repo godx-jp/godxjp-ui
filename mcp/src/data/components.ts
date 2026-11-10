@@ -7267,9 +7267,10 @@ import { Flex } from "@godxjp/ui/layout";
       { name: "action", type: "ReactNode", description: "CTA element (e.g. a Button)." },
       {
         name: "variant",
-        type: '"page" | "section" | "compact"',
+        type: '"page" | "section" | "compact" | "hero"',
         defaultValue: '"page"',
-        description: "Contextual visual weight. Compact omits the icon medallion.",
+        description:
+          "Contextual visual weight. Compact omits the icon medallion. `hero` is a RESULT PAGE (approved / denied / expired / connected): a bold title at the display 3xl step with the display optics (`--letter-spacing-display` / `--line-height-display`), a 56px medallion (`--empty-state-hero-medallion-size`), a lead-size description (`--empty-state-hero-description-font-size`); use it with `titleLevel={1}` as the page heading, `tone` for the outcome, and `action` for the next step.",
       },
       {
         name: "tone",

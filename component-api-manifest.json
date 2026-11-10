@@ -8856,7 +8856,7 @@
           "origin": "owned",
           "required": false,
           "type": "EditorialSectionToneProp | undefined",
-          "values": ["default", "surface", "subtle", "hero"],
+          "values": ["default", "hero", "surface", "subtle"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -9330,8 +9330,8 @@
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"section\" | \"compact\" | \"page\" | undefined",
-          "values": ["section", "compact", "page"],
+          "type": "\"section\" | \"compact\" | \"page\" | \"hero\" | undefined",
+          "values": ["section", "compact", "page", "hero"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]

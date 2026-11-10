@@ -9689,6 +9689,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
+    "name": "--empty-state-hero-title-font-size",
+    "value": "initial",
+    "description": "`variant=\"hero\"` — the result page: title size (initial → the display 3xl step), the lead description, the larger medallion, and the stack gap / block padding."
+  },
+  {
+    "name": "--empty-state-hero-description-font-size",
+    "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-medallion-size",
+    "value": "var(--band-height-3xl)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-icon-glyph-size",
+    "value": "var(--icon-size-xl)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-gap",
+    "value": "var(--space-4)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-space-y",
+    "value": "var(--space-6)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
     "name": "--empty-state-icon-foreground",
     "value": "initial",
     "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) or washes the medallion fill (--empty-state-icon-tint) without forking. Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
