@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.28.2] - 2026-11-10
+
+First 33.28 release on npm (33.28.0 and 33.28.1 were never published): it carries 33.28.0 and 33.28.1 below, the 33.27.4–33.27.20 fixes released off the 33.27 line, and two fixes found when GDX moved to it.
+
 ### DropdownMenuTrigger asChild keeps its slot on a kit child (#1564)
 
 - **Fixed** a 33.28.0 regression (gh#1527): `<DropdownMenuTrigger asChild>` around a kit component (`TopbarItem`, `Button`) rendered the child's own slot (`topbar-item`, `button`) instead of `dropdown-menu-trigger`, because the trigger clones its child itself rather than through `Slot` and the child's `withoutSlot` discarded the handed `data-slot`. It now names the trigger on the kit channel (`data-kit-slot`), as `Slot` does, so the element carries `data-slot="dropdown-menu-trigger"` as it did in 33.27, and visual-audit c04 finds it again. A host child (`<button>`) is unchanged. Seen in GDX: the account menu's `TopbarItem` lost every rule keyed on the trigger's slot (avatar ring, fallback surface).
