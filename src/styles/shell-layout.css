@@ -548,9 +548,21 @@
    * bar, so an actions-only bar (no brand mark) still puts them on the right. */
   .ui-auth-shell-bar-actions {
     display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: flex-end;
     gap: var(--auth-shell-bar-gap);
     margin-inline-start: auto;
+  }
+  /* An action is never SQUEEZED: plain text (「管理者 · 日本語」) or a Badge keeps its one-line width.
+   * CJK may break between any two characters, so a shrinking flex item used to fold to two lines or
+   * one character per line on a phone. Out of room, the cluster wraps — under the brand as a unit,
+   * then among its items — instead. */
+  .ui-auth-shell-bar-actions > * {
+    max-inline-size: 100%;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   /* FROSTED BAR (`barAppearance="frosted"`, both CenteredShell shapes) — the bar is pinned to the
