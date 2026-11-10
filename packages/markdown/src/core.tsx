@@ -89,7 +89,8 @@ export type MarkdownProps = {
   /**
    * NARROW the elements a body may produce — an activity feed that shows only inline formatting.
    * react-markdown's own options, applied after the sanitiser; they can only remove, never allow
-   * what the schema strips (gh#1116).
+   * what the schema strips (gh#1116). A KaTeX formula is one unit they never take apart: it stays
+   * whole, its spans and MathML included, whatever the list says (GDX-1467).
    */
   allowedElements?: ReactMarkdownOptions["allowedElements"];
   disallowedElements?: ReactMarkdownOptions["disallowedElements"];
@@ -164,6 +165,29 @@ function rehypeResolveUrls(options: { resolve?: MarkdownProps["resolveUrl"] }) {
       if (typeof value !== "string") return;
       const resolved = options.resolve!(value, key!);
       if (resolved !== undefined) node.properties = { ...node.properties, [key!]: resolved };
+    });
+  };
+}
+
+/** Every element of a KaTeX formula, marked by `rehypeMarkFormulas` (GDX-1467). */
+const FORMULA = new WeakSet<Element>();
+
+/**
+ * rehype plugin, last: marks each KaTeX formula (`span.katex`, `span.katex-display`) and all its
+ * descendants, so a host's element filter (`allowedElements` …) treats a formula as one unit.
+ * Unwrapped piece by piece it read as its drawn glyphs, its MathML and its TeX source run together
+ * ("a2a^2a2").
+ */
+function rehypeMarkFormulas() {
+  return (tree: Root) => {
+    visit(tree, "element", (node: Element) => {
+      const className = node.properties?.className;
+      if (!Array.isArray(className)) return;
+      if (!className.includes("katex") && !className.includes("katex-display")) return;
+      visit(node, "element", (part: Element) => {
+        FORMULA.add(part);
+      });
+      return "skip";
     });
   };
 }
@@ -312,6 +336,19 @@ export function MarkdownCore({
       }),
     [calloutTitles, directiveNames],
   );
+  // A host's element filter, applied around formulas but never inside one (GDX-1467).
+  const narrows = Boolean(allowedElements || disallowedElements || allowElement);
+  const keepElement = React.useMemo<ReactMarkdownOptions["allowElement"]>(() => {
+    if (!narrows) return undefined;
+    return (element, index, parent) => {
+      if (FORMULA.has(element)) return true;
+      // react-markdown's precedence: the allow-list, else the deny-list, then the predicate.
+      const listed = allowedElements
+        ? allowedElements.includes(element.tagName)
+        : !disallowedElements?.includes(element.tagName);
+      return listed && (allowElement ? allowElement(element, index, parent) : true);
+    };
+  }, [narrows, allowedElements, disallowedElements, allowElement]);
   const live = React.useRef(directives);
   live.current = directives;
   const merged = React.useMemo<Components>(() => {
@@ -400,12 +437,11 @@ export function MarkdownCore({
         [rehypeShortCells, { max: shortCellLength }],
         [rehypeExternalLinks, { policy: externalLinks, origin }],
         ...rehypePlugins,
+        ...(narrows ? [rehypeMarkFormulas] : []),
       ]}
       urlTransform={safeUrl}
       components={merged}
-      allowedElements={allowedElements}
-      disallowedElements={disallowedElements}
-      allowElement={allowElement}
+      allowElement={keepElement}
       unwrapDisallowed={unwrapDisallowed}
     >
       {children}

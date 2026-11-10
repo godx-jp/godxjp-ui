@@ -7376,7 +7376,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "allowedElements",
         type: "string[]",
         description:
-          "Narrow the elements a body may produce (with `unwrapDisallowed` to keep their text) — an activity feed showing only strong / em / del / code. Only removes; never allows what the schema strips (gh#1116).",
+          "Narrow the elements a body may produce (with `unwrapDisallowed` to keep their text) — an activity feed showing only strong / em / del / code. Only removes; never allows what the schema strips (gh#1116). A KaTeX formula is one unit it never takes apart: list no span, svg or MathML tags to keep math (GDX-1467).",
       },
       {
         name: "shortCellLength",

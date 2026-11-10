@@ -87,10 +87,11 @@ describe("math (renderer v6)", () => {
     expect(outline(markdown).map((entry) => entry.id)).toEqual(ids);
   });
 
-  it("is still narrowed by allowedElements: a feed without math shows the formula's text", () => {
+  // Unwrapped piece by piece a formula read as its glyphs, MathML and TeX run together (GDX-1467).
+  it("is not taken apart by allowedElements: a narrowed feed keeps the formula whole", () => {
     const html = render("a $x$ b", { allowedElements: ["p"], unwrapDisallowed: true });
-    expect(html).not.toContain("<span");
-    expect(html).toContain("a ");
+    expect(html.match(/class="katex"/g)).toHaveLength(1);
+    expect(html).toMatch(/^<p>a <span class="katex">.*<\/span> b<\/p>$/);
   });
 });
 
