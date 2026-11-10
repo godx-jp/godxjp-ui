@@ -3525,9 +3525,14 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       {
         name: "items",
         type: "SidebarItemProp[]",
-        required: true,
         description:
-          "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. An item carrying `children` renders as a collapsible GROUP — the rail's own `.sb-nav-group`, opened by the route whenever a descendant is active (gh#815). `icon` is optional; a row without one keeps an empty 16px slot so the label column still aligns.",
+          "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. An item carrying `children` renders as a collapsible GROUP — the rail's own `.sb-nav-group`, opened by the route whenever a descendant is active (gh#815). `icon` is optional; a row without one keeps an empty 16px slot so the label column still aligns. Rendered before `sections`; may be omitted when every row sits in a section.",
+      },
+      {
+        name: "sections",
+        type: "{ id?: string; label: string; items: SidebarItemProp[] }[]",
+        description:
+          'Fixed, headed sections inside the same `<nav>` (GDX-1230): the heading is the rail\'s `.sb-section-label` and never folds; its `items` may be folding groups (`children`). Each section is a `role="group"` named by its heading. One NavList for a settings column of headings with groups folding under them.',
       },
       {
         name: "activeId",
@@ -3557,6 +3562,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
     usage: [
       "DO use NavList for a settings / account / preferences sub-navigation beside the pane it drives — typically as MasterDetail's `master`.",
       "DO group with `item.children` — one NavList, one `<nav>` landmark, however many groups. Before gh#815 NavList dropped `children` silently (it type-checked, rendered one flat row, and the subtree vanished), so the workaround was one NavList per group wrapped in SidebarSection, i.e. N landmarks for one navigation. Don't write that any more.",
+      "DO use `sections` for fixed headings over the rows (General / Integrations / Work), with groups that fold inside a section (`children`): one NavList, one landmark. DON'T wrap one NavList per heading in SidebarSection to get a heading — that is N landmarks again (GDX-1230).",
       "DON'T repeat a group's icons on its children: a nested row draws the rail's dot marker instead of the 16px icon column, exactly like the rail's submenu. Icons belong on the rows that sit at the top level.",
       "DON'T reach for Sidebar here: it is the app's primary rail and lays into AppShell's grid area, so nested in a page it has no grid to lay into.",
       "DON'T hand-roll the rows out of Buttons with the current one encoded as a variant swap. That loses aria-current, loses the icon column the labels align to, and invents a different nav in every app.",
@@ -6690,7 +6696,7 @@ import { Flex } from "@godxjp/ui/layout";
       'DON\'T hand-roll `<div className="flex items-center justify-between border-b py-3">` — that is exactly the repeated pattern ListRow replaces (border/radius/padding are tokenized via `--list-row-*`).',
       'DO put the row\'s action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as="li"` when the rows live inside a semantic list, and build that list as `<Flex as="ul" marker="none" direction="col" gap="none">` (the rows draw their own dividers) — `ui-audit` flags a raw `<ul>`/`role="list"` as `no-hand-rolled-list`.',
       'DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text ("Unread"/"Read"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON\'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.',
-      'DO pass `density="compact"` for the canonical invitation / history row — an Avatar, a title (+ description) and one or two small trailing Buttons that must read as ONE line inside a narrow card (≈326px content at 390px), or a history row whose status Badge + ISO-8601 date belongs beside the title. Measured at 390px: 62px tall vs 126px at the default density (where the actions wrapped), history row 41px vs 114px. DON\'T reach for it just to "make things tighter" on a roomy page — the default density is the entity-row measure.',
+      'DO pass `density="compact"` for the canonical invitation / history row — an Avatar, a title (+ description) and one or two small trailing Buttons that must read as ONE line inside a narrow card (≈326px content at 390px), or a history row whose status Badge + ISO-8601 date belongs beside the title. Measured at 390px: 62px tall vs 126px at the default density (where the actions wrapped), history row 41px vs 114px. Below 360px a default row\'s actions take a line of their own; a compact row keeps them beside the title while they fit (one `size="sm"` 参加 Button at 320: 62px vs 102px before 33.27.16, GDX-1454). DON\'T reach for it just to "make things tighter" on a roomy page — the default density is the entity-row measure.',
       'DON\'T add one-off `min-width`/wrapping CSS in the consumer app for a long title + two trailing Buttons. The row already shrinks and WRAPS: the content column keeps only `min(var(--list-row-body-min-width), 100%)` and the trailing actions drop onto their own line below the threshold. Retune the threshold with `--list-row-body-min-width` (default 12rem) and the action gap with `--list-row-trailing-gap`; pass `overflow="wrap"` (usually with `align="start"`) when the title must stay fully readable at 390px instead of truncating.',
       'DO expect rows ANYWHERE inside a padded (non-flush) `CardContent` — directly, in a `Flex as="ul"`, or wrapped (`DataState` children in a div > `Flex as="ul"` > `ListRow as="li" asChild` > link, gh#1325) — to drop their own inline padding: the card already holds the inset, so the row text lines up with the CardTitle instead of sitting 16px inside it. A row keeps `--list-row-padding-x` inside `CardContent flush` (the documented home, with edge-to-edge dividers) — including a flush CardContent nested in a padded one — and inside a table cell.',
     ],
@@ -11861,6 +11867,13 @@ import { Button } from "@godxjp/ui/general";
         description: "Lay step titles beside or below the step icons.",
       },
       {
+        name: "responsive",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'Ant Design `responsive`. Folds a horizontal rail to vertical at or below `--steps-responsive-breakpoint-width` (33.25rem, antd\'s 532px), where a column is too narrow for its title (four steps at 320px: 48px per title, Japanese broken inside the word). `type="inline"` never folds; `false` keeps the rail horizontal at every width.',
+      },
+      {
         name: "separator",
         type: '"chevron" | "arrow"',
         defaultValue: '"chevron"',
@@ -16970,9 +16983,9 @@ export default function PasswordBlock() {
       },
       {
         name: "options",
-        type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
+        type: "{ value: string; label: ReactNode; shortLabel?: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
         description:
-          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name. Use `count` for a filter total — do not nest `Badge` in `label` (gh#602).",
+          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name. Use `count` for a filter total — do not nest `Badge` in `label` (gh#602). `shortLabel` (GDX-1281) is the shorter visible label the bar switches to while the full labels cannot share one row — measured against the bar's own container, not the viewport; `label` stays the accessible name and the `title`. Ignored on `vertical`.",
       },
       { name: "value", type: "string", description: "Controlled selection." },
       { name: "defaultValue", type: "string", description: "Uncontrolled initial selection." },
@@ -16995,6 +17008,7 @@ export default function PasswordBlock() {
       "DO use it for a list status view. A list status view (All / Active / Closed, each with its count) that shows the SAME table — same columns, same row actions, a different query — is a filter, so it is `Segmented` with `count`, placed in the list's `Toolbar`; past 4 statuses it is a `Select`. `Tabs` only when each status is a genuinely different panel (its own columns, actions or empty state), declared as `TabsContent` or pointed at with `controls` (WAI-ARIA APG: a tab selects a panel, a radiogroup selects a value) (gh#1324).",
       "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
       "DON'T use ToggleGroup for a one-of-N choice unless you also pass `disallowEmptySelection`: without it, type=single is a row of aria-pressed toggle buttons that can end up with nothing selected, which a setting can never be (gh#744). Segmented is the one-of-N control and needs no such switch.",
+      'DO give each long option a `shortLabel` when the bar must stay one row on a phone (a list\'s status views with counts: `{ label: "Waiting for me", shortLabel: "To approve", count }`). The bar shows the short labels only while the full ones would wrap or truncate, measured on its own container — DON\'T swap `label` on a `useMediaQuery` breakpoint: a viewport query cannot know how wide the bar\'s slot is, and the swapped label also becomes the accessible name (GDX-1281).',
       "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
       "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
       "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",

@@ -1398,12 +1398,16 @@
     margin-inline-start: auto;
   }
 
+  /* Below 360px a default row's actions take a line of their own. A compact row is the
+   * inline-actions row (one or two small Buttons beside the title, gh#246), so it is left out:
+   * its action stays beside the title while it fits, and a cluster that cannot fit still wraps
+   * through the row's own flex-wrap (#224). GDX-1454: a 参加 Button dropped under the title at 320. */
   @media (max-width: 359px) {
     [data-slot="list-row"] {
       flex-wrap: wrap;
     }
 
-    [data-slot="list-row-trailing"] {
+    [data-slot="list-row"]:not([data-density="compact"]) [data-slot="list-row-trailing"] {
       width: 100%;
       flex-wrap: wrap;
       justify-content: flex-end;

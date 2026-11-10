@@ -2347,6 +2347,16 @@
       "verdictRadioGroup": "Verdict (RadioGroup)",
       "ok": "Pass",
       "ng": "Fail"
+    },
+    "shortLabel": {
+      "title": "Short names on a phone · shortLabel",
+      "description": "Three views of a list, each with its count. When the full labels cannot share one row, the bar shows each option's shortLabel instead, measured against its own container rather than the viewport. The full label stays the accessible name and the tooltip, and the bar wraps only if even the short labels do not fit.",
+      "views": "Which requests",
+      "inbox": "Waiting for me",
+      "inboxShort": "To approve",
+      "mine": "Sent by me",
+      "mineShort": "Sent",
+      "all": "All"
     }
   },
   "toggleGroupDocs": {
@@ -2572,7 +2582,6 @@
     "axis4": "Information security",
     "axis5": "Audit readiness",
     "axis6": "Financial resilience",
-
     "title": "Quantitative profile"
   }
 }

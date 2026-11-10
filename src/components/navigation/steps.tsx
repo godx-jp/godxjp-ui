@@ -4,6 +4,7 @@ import { ArrowRight, Check, ChevronRight, Circle, Loader2, X } from "lucide-reac
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { controlIconClass } from "../../lib/control-styles";
+import { useMaxWidthBreakpoint } from "../../lib/breakpoint-token";
 import type { StepStatusProp, StepsProp } from "../../props/components/navigation.prop";
 
 export type {
@@ -32,6 +33,11 @@ function resolveStepStatus(
   if (index === current) return currentStatus ?? "process";
   return "wait";
 }
+
+/** Theme knob holding the width at which a horizontal rail folds (src/tokens/components/navigation.css). */
+const STEPS_RESPONSIVE_BREAKPOINT_TOKEN = "--steps-responsive-breakpoint-width";
+/** Mirrors the token default (33.25rem @ a 16px root) so SSR and a token-less test env agree. */
+const STEPS_RESPONSIVE_BREAKPOINT_FALLBACK_QUERY = "(max-width: 532px)";
 
 function StepIcon({
   status,
@@ -79,6 +85,7 @@ export function Steps({
   type = "default",
   size = "md",
   titlePlacement = "horizontal",
+  responsive = true,
   separator = "chevron",
   percent,
   onValueChange,
@@ -87,9 +94,16 @@ export function Steps({
 }: StepsProp) {
   const { t } = useTranslation();
   const base = defaultValue;
-  const isVertical = orientation === "vertical";
   const compact = size === "sm";
   const inline = type === "inline";
+  // NARROW FOLD (Ant Design `responsive`): below the token width a horizontal rail's columns are
+  // too narrow for a title, so it is laid out vertically. Resolved in JS because every
+  // `data-direction` below keys on it.
+  const narrow = useMaxWidthBreakpoint(
+    STEPS_RESPONSIVE_BREAKPOINT_TOKEN,
+    STEPS_RESPONSIVE_BREAKPOINT_FALLBACK_QUERY,
+  );
+  const isVertical = orientation === "vertical" || (responsive && narrow && !inline);
   // antd's `navigation` bar: slab steps that point at the next one. It keeps the full marker/text
   // block (unlike `inline`), so it rides the SAME list and item markup and differs only in paint.
   const navigation = type === "navigation";

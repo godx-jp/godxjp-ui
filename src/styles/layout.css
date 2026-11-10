@@ -1591,7 +1591,8 @@
    * prose `auto-phrase`, but a page title, a document title and an EmptyState sentence still broke
    * mid-word (「リ|リース」, 「オンボー|ディング」, 「ませ|ん。」 measured in godx-content); so did
    * breadcrumb crumbs (gh#1316: 「…オンボーディ|ング…」 at 390/320; `.ui-breadcrumb-item` covers
-   * Breadcrumb and PageContainer's own trail, and the link/page text inherits). Scoped to
+   * Breadcrumb and PageContainer's own trail, and the link/page text inherits); so did Steps titles
+   * (「プロジ|ェクト」, 「同期モ|ード」 at 320 — the rail now also folds there). Scoped to
    * `:lang(ja)`: Chromium phrase-segments Japanese only, so Latin and Vietnamese wrap as before;
    * unsupported engines drop the value and keep their own CJK breaking. */
   :is(
@@ -1604,7 +1605,11 @@
     .ui-page-title,
     .ui-empty-state-title,
     .ui-empty-state-description,
-    .ui-breadcrumb-item
+    .ui-breadcrumb-item,
+    .ui-steps-title,
+    .ui-steps-subtitle,
+    .ui-steps-description,
+    .ui-steps-inline-title
   ):lang(ja) {
     word-break: auto-phrase;
     line-break: strict;

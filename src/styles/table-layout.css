@@ -1263,22 +1263,142 @@
      * budget at ANY column count and takes the surplus out of the free-text column. A
      * budget-shaped queue (one column per priority, one free-text column) matches none of them
      * and keeps its scroll-free percent tier byte-for-byte. See tokens/components/table.css. */
-    [data-collapse-below="sm"]
-      [data-slot="table"]:has(
-        [data-slot="table-head"]:nth-child(7),
-        [data-slot="table-head"][data-priority="primary"]
-          ~ [data-slot="table-head"][data-priority="primary"],
-        [data-slot="table-head"][data-priority="secondary"]
-          ~ [data-slot="table-head"][data-priority="secondary"],
-        [data-slot="table-head"][data-priority="meta"]
-          ~ [data-slot="table-head"][data-priority="meta"]
-      ) {
-      --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
-      --table-action-collection-secondary-width: var(
-        --table-action-collection-secondary-width-floor
-      );
-      --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
-      --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+    /* Only a SHOWN head counts (GDX-1444): a `hideBelow` head is `display: none` below its
+     * viewport step (layout.css) and takes no column, so each band leaves out what it hides. */
+    @media (width < 40rem) {
+      [data-collapse-below="sm"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(7 of [data-slot="table-head"]:not([data-hide-below])),
+          [data-slot="table-head"][data-priority="primary"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="primary"]:not([data-hide-below]),
+          [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below]),
+          [data-slot="table-head"][data-priority="meta"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="meta"]:not([data-hide-below])
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (40rem <= width < 48rem) {
+      [data-collapse-below="sm"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below]:not([data-hide-below="sm"]))
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            ),
+          [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            ),
+          [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (48rem <= width < 64rem) {
+      [data-collapse-below="sm"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below="lg"], [data-hide-below="xl"])
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            ),
+          [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            ),
+          [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (64rem <= width < 80rem) {
+      [data-collapse-below="sm"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below="xl"])
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="primary"]:not([data-hide-below="xl"]),
+          [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below="xl"]),
+          [data-slot="table-head"][data-priority="meta"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="meta"]:not([data-hide-below="xl"])
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (width >= 80rem) {
+      [data-collapse-below="sm"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(7 of [data-slot="table-head"]),
+          [data-slot="table-head"][data-priority="primary"]
+            ~ [data-slot="table-head"][data-priority="primary"],
+          [data-slot="table-head"][data-priority="secondary"]
+            ~ [data-slot="table-head"][data-priority="secondary"],
+          [data-slot="table-head"][data-priority="meta"]
+            ~ [data-slot="table-head"][data-priority="meta"]
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
     }
   }
 
@@ -1315,22 +1435,142 @@
      * budget at ANY column count and takes the surplus out of the free-text column. A
      * budget-shaped queue (one column per priority, one free-text column) matches none of them
      * and keeps its scroll-free percent tier byte-for-byte. See tokens/components/table.css. */
-    [data-collapse-below="md"]
-      [data-slot="table"]:has(
-        [data-slot="table-head"]:nth-child(7),
-        [data-slot="table-head"][data-priority="primary"]
-          ~ [data-slot="table-head"][data-priority="primary"],
-        [data-slot="table-head"][data-priority="secondary"]
-          ~ [data-slot="table-head"][data-priority="secondary"],
-        [data-slot="table-head"][data-priority="meta"]
-          ~ [data-slot="table-head"][data-priority="meta"]
-      ) {
-      --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
-      --table-action-collection-secondary-width: var(
-        --table-action-collection-secondary-width-floor
-      );
-      --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
-      --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+    /* Only a SHOWN head counts (GDX-1444): a `hideBelow` head is `display: none` below its
+     * viewport step (layout.css) and takes no column, so each band leaves out what it hides. */
+    @media (width < 40rem) {
+      [data-collapse-below="md"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(7 of [data-slot="table-head"]:not([data-hide-below])),
+          [data-slot="table-head"][data-priority="primary"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="primary"]:not([data-hide-below]),
+          [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below]),
+          [data-slot="table-head"][data-priority="meta"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="meta"]:not([data-hide-below])
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (40rem <= width < 48rem) {
+      [data-collapse-below="md"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below]:not([data-hide-below="sm"]))
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            ),
+          [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            ),
+          [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (48rem <= width < 64rem) {
+      [data-collapse-below="md"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below="lg"], [data-hide-below="xl"])
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            ),
+          [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            ),
+          [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (64rem <= width < 80rem) {
+      [data-collapse-below="md"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below="xl"])
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="primary"]:not([data-hide-below="xl"]),
+          [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below="xl"]),
+          [data-slot="table-head"][data-priority="meta"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="meta"]:not([data-hide-below="xl"])
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (width >= 80rem) {
+      [data-collapse-below="md"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(7 of [data-slot="table-head"]),
+          [data-slot="table-head"][data-priority="primary"]
+            ~ [data-slot="table-head"][data-priority="primary"],
+          [data-slot="table-head"][data-priority="secondary"]
+            ~ [data-slot="table-head"][data-priority="secondary"],
+          [data-slot="table-head"][data-priority="meta"]
+            ~ [data-slot="table-head"][data-priority="meta"]
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
     }
   }
 
@@ -1367,22 +1607,142 @@
      * budget at ANY column count and takes the surplus out of the free-text column. A
      * budget-shaped queue (one column per priority, one free-text column) matches none of them
      * and keeps its scroll-free percent tier byte-for-byte. See tokens/components/table.css. */
-    [data-collapse-below="lg"]
-      [data-slot="table"]:has(
-        [data-slot="table-head"]:nth-child(7),
-        [data-slot="table-head"][data-priority="primary"]
-          ~ [data-slot="table-head"][data-priority="primary"],
-        [data-slot="table-head"][data-priority="secondary"]
-          ~ [data-slot="table-head"][data-priority="secondary"],
-        [data-slot="table-head"][data-priority="meta"]
-          ~ [data-slot="table-head"][data-priority="meta"]
-      ) {
-      --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
-      --table-action-collection-secondary-width: var(
-        --table-action-collection-secondary-width-floor
-      );
-      --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
-      --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+    /* Only a SHOWN head counts (GDX-1444): a `hideBelow` head is `display: none` below its
+     * viewport step (layout.css) and takes no column, so each band leaves out what it hides. */
+    @media (width < 40rem) {
+      [data-collapse-below="lg"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(7 of [data-slot="table-head"]:not([data-hide-below])),
+          [data-slot="table-head"][data-priority="primary"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="primary"]:not([data-hide-below]),
+          [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below]),
+          [data-slot="table-head"][data-priority="meta"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="meta"]:not([data-hide-below])
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (40rem <= width < 48rem) {
+      [data-collapse-below="lg"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below]:not([data-hide-below="sm"]))
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            ),
+          [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            ),
+          [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (48rem <= width < 64rem) {
+      [data-collapse-below="lg"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below="lg"], [data-hide-below="xl"])
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            ),
+          [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            ),
+          [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (64rem <= width < 80rem) {
+      [data-collapse-below="lg"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below="xl"])
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="primary"]:not([data-hide-below="xl"]),
+          [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below="xl"]),
+          [data-slot="table-head"][data-priority="meta"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="meta"]:not([data-hide-below="xl"])
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (width >= 80rem) {
+      [data-collapse-below="lg"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(7 of [data-slot="table-head"]),
+          [data-slot="table-head"][data-priority="primary"]
+            ~ [data-slot="table-head"][data-priority="primary"],
+          [data-slot="table-head"][data-priority="secondary"]
+            ~ [data-slot="table-head"][data-priority="secondary"],
+          [data-slot="table-head"][data-priority="meta"]
+            ~ [data-slot="table-head"][data-priority="meta"]
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
     }
   }
 
@@ -1419,22 +1779,142 @@
      * budget at ANY column count and takes the surplus out of the free-text column. A
      * budget-shaped queue (one column per priority, one free-text column) matches none of them
      * and keeps its scroll-free percent tier byte-for-byte. See tokens/components/table.css. */
-    [data-collapse-below="xl"]
-      [data-slot="table"]:has(
-        [data-slot="table-head"]:nth-child(7),
-        [data-slot="table-head"][data-priority="primary"]
-          ~ [data-slot="table-head"][data-priority="primary"],
-        [data-slot="table-head"][data-priority="secondary"]
-          ~ [data-slot="table-head"][data-priority="secondary"],
-        [data-slot="table-head"][data-priority="meta"]
-          ~ [data-slot="table-head"][data-priority="meta"]
-      ) {
-      --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
-      --table-action-collection-secondary-width: var(
-        --table-action-collection-secondary-width-floor
-      );
-      --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
-      --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+    /* Only a SHOWN head counts (GDX-1444): a `hideBelow` head is `display: none` below its
+     * viewport step (layout.css) and takes no column, so each band leaves out what it hides. */
+    @media (width < 40rem) {
+      [data-collapse-below="xl"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(7 of [data-slot="table-head"]:not([data-hide-below])),
+          [data-slot="table-head"][data-priority="primary"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="primary"]:not([data-hide-below]),
+          [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below]),
+          [data-slot="table-head"][data-priority="meta"]:not([data-hide-below])
+            ~ [data-slot="table-head"][data-priority="meta"]:not([data-hide-below])
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (40rem <= width < 48rem) {
+      [data-collapse-below="xl"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below]:not([data-hide-below="sm"]))
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            ),
+          [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            ),
+          [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+            ~ [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below]:not([data-hide-below="sm"])
+            )
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (48rem <= width < 64rem) {
+      [data-collapse-below="xl"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below="lg"], [data-hide-below="xl"])
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="primary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            ),
+          [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="secondary"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            ),
+          [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+            ~ [data-slot="table-head"][data-priority="meta"]:not(
+              [data-hide-below="lg"],
+              [data-hide-below="xl"]
+            )
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (64rem <= width < 80rem) {
+      [data-collapse-below="xl"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(
+            7 of [data-slot="table-head"]:not([data-hide-below="xl"])
+          ),
+          [data-slot="table-head"][data-priority="primary"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="primary"]:not([data-hide-below="xl"]),
+          [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="secondary"]:not([data-hide-below="xl"]),
+          [data-slot="table-head"][data-priority="meta"]:not([data-hide-below="xl"])
+            ~ [data-slot="table-head"][data-priority="meta"]:not([data-hide-below="xl"])
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
+    }
+
+    @media (width >= 80rem) {
+      [data-collapse-below="xl"]
+        [data-slot="table"]:has(
+          [data-slot="table-head"]:nth-child(7 of [data-slot="table-head"]),
+          [data-slot="table-head"][data-priority="primary"]
+            ~ [data-slot="table-head"][data-priority="primary"],
+          [data-slot="table-head"][data-priority="secondary"]
+            ~ [data-slot="table-head"][data-priority="secondary"],
+          [data-slot="table-head"][data-priority="meta"]
+            ~ [data-slot="table-head"][data-priority="meta"]
+        ) {
+        --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+        --table-action-collection-secondary-width: var(
+          --table-action-collection-secondary-width-floor
+        );
+        --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+        --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+      }
     }
   }
 

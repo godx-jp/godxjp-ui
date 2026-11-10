@@ -116,6 +116,34 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        <Card id="short-labels">
+          <CardHeader>
+            <CardTitle level={2}>{t("segmentedDocs.shortLabel.title")}</CardTitle>
+            <CardDescription>{t("segmentedDocs.shortLabel.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Segmented
+              aria-label={t("segmentedDocs.shortLabel.views")}
+              defaultValue="inbox"
+              options={[
+                {
+                  value: "inbox",
+                  label: t("segmentedDocs.shortLabel.inbox"),
+                  shortLabel: t("segmentedDocs.shortLabel.inboxShort"),
+                  count: 3,
+                },
+                {
+                  value: "mine",
+                  label: t("segmentedDocs.shortLabel.mine"),
+                  shortLabel: t("segmentedDocs.shortLabel.mineShort"),
+                  count: 12,
+                },
+                { value: "all", label: t("segmentedDocs.shortLabel.all") },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>size · vertical · block</CardTitle>
