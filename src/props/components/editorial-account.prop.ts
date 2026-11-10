@@ -250,6 +250,17 @@ export type EditorialAuthProp = {
    * line — kicker/logo and title only. Desktop and tablet always show it.
    */
   bandDescription?: "visible" | "hidden";
+  /**
+   * `"card"` (default) — the story column beside the form card, inside the page's own gutters.
+   * `"split"` — a FULL-BLEED sign-in page: render it as the page root (no shell padding). The story
+   * fills the start side edge to edge and top to bottom (`--editorial-auth-split-track-size`,
+   * default `1.15fr 1fr`), over a faint grid texture (`--editorial-auth-split-texture-background-image`, `none`
+   * turns it off), logo at the top, title + copy + art centred, benefits pinned at the bottom in a
+   * row. The form card loses its surface and becomes a plain centred column
+   * (`--editorial-auth-split-form-max-width`, 25rem). Below 48rem the story is a full-bleed band
+   * over the form. Pair with `appearance="brand"`.
+   */
+  layout?: "card" | "split";
   /** Short benefit lines, each led by a check glyph. */
   benefits?: ReactNode[];
   children?: ReactNode;

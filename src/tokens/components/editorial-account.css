@@ -408,6 +408,27 @@
   --editorial-auth-brand-muted-foreground: initial;
   --editorial-auth-brand-padding: var(--space-10);
   --editorial-auth-brand-radius: var(--editorial-auth-card-radius);
+  /* `layout="split"`: the full-bleed sign-in page. */
+  --editorial-auth-split-track-size: 1.15fr 1fr;
+  --editorial-auth-split-title-white-space: pre-line;
+  --editorial-auth-split-min-height: 100dvh;
+  --editorial-auth-split-story-padding: var(--space-12) calc(var(--space-12) + var(--space-2));
+  --editorial-auth-split-story-body-max-width: 28.75rem;
+  --editorial-auth-split-story-body-padding-block: var(--space-10);
+  /* A 40px grid of hairlines in the on-brand ink at 6%, faded to the edges. `none` drops it. */
+  --editorial-auth-split-texture-background-image:
+    linear-gradient(hsl(var(--editorial-auth-brand-foreground) / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--editorial-auth-brand-foreground) / 0.06) 1px, transparent 1px);
+  --editorial-auth-split-texture-size: 2.5rem 2.5rem;
+  --editorial-auth-split-texture-mask-gradient: radial-gradient(
+    70% 60% at 60% 50%,
+    #000,
+    transparent
+  );
+  --editorial-auth-split-benefits-column-gap: calc(var(--space-4) + 0.125rem);
+  --editorial-auth-split-form-max-width: 25rem;
+  --editorial-auth-split-form-padding: var(--space-10);
+  --editorial-auth-split-form-align: center;
   --editorial-auth-benefits-display: flex;
   --editorial-auth-benefits-gap: calc(var(--space-3) + 0.125rem);
   --editorial-auth-benefits-font-size: var(--font-size-base);
@@ -449,6 +470,9 @@
     --editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);
     --editorial-auth-gap: var(--space-10);
     --editorial-auth-card-padding: var(--space-6);
+    --editorial-auth-split-track-size: minmax(0, 1fr) minmax(0, 1fr);
+    --editorial-auth-split-story-padding: var(--space-10);
+    --editorial-auth-split-form-padding: var(--space-6);
   }
 }
 
@@ -471,6 +495,14 @@
     --editorial-auth-title-md-font-size: 1.625rem; /* scale-exempt: the band's 26px title, as above */
     --editorial-auth-title-md-line-height: 1.4;
     --editorial-auth-band-description-display: none;
+    /* Split on a phone: the story is a full-bleed band over the form, which starts at the top. */
+    --editorial-auth-split-track-size: minmax(0, 1fr);
+    --editorial-auth-split-min-height: 0;
+    --editorial-auth-split-story-padding: calc(var(--space-5) + 0.125rem) var(--space-5)
+      calc(var(--space-6) + 0.125rem);
+    --editorial-auth-split-story-body-padding-block: 0;
+    --editorial-auth-split-form-padding: var(--space-4);
+    --editorial-auth-split-form-align: start;
     --editorial-auth-art-display: none;
     --editorial-auth-benefits-display: none;
     --editorial-auth-brand-padding: var(--space-5);

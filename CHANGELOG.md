@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### EditorialAuth full-bleed split sign-in page (Platform login wireframe)
+
+- **Added** `EditorialAuth layout?: "card" | "split"` (default `"card"`, unchanged). `"split"` is a full-bleed sign-in page rendered as the page root: the story fills its side edge to edge and top to bottom (`--editorial-auth-split-track-size`, default `1.15fr 1fr`; `--editorial-auth-split-min-height`, default `100dvh`) over a faint grid texture (`--editorial-auth-split-texture-background-image`, `--editorial-auth-split-texture-size`, `--editorial-auth-split-texture-mask-gradient`; `none` drops it), the logo at the top, title + copy + art centred (`--editorial-auth-split-story-body-max-width`), the benefits pinned at the bottom in a row. The form card loses its surface and becomes a plain centred column (`--editorial-auth-split-form-max-width` 25rem, `--editorial-auth-split-form-padding`). 48–64rem: two equal columns; below 48rem: the story is a full-bleed band over the form, keeping its authored title breaks (`--editorial-auth-split-title-white-space`). Measured at 320–1280: no sideways overflow.
+
 ## [33.28.5] - 2026-11-10
 
 ### EditorialAuth on a phone and on a brand surface; CenteredShell context-selection two-column; OrgSwitcher actions (Platform)

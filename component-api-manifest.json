@@ -7440,6 +7440,14 @@
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
+          "name": "layout",
+          "origin": "owned",
+          "required": false,
+          "type": "\"card\" | \"split\" | undefined",
+          "values": ["card", "split"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
           "name": "level",
           "origin": "owned",
           "required": false,
