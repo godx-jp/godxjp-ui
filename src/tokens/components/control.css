@@ -194,6 +194,19 @@
   --choice-button-solid-background: initial; /* default = var(--primary) */
   --choice-button-solid-color: initial; /* default = var(--primary-foreground) */
 
+  /* Radio `optionType="card"` (gh#1555) — a bordered row per choice, and its labelled sections.
+   * The colour knobs default at the call site, for the same freeze reason as the four above. */
+  --choice-card-padding-block: var(--space-3);
+  --choice-card-padding-inline: var(--space-4);
+  --choice-card-gap: var(--space-3);
+  --choice-card-radius: initial; /* default = var(--control-radius) */
+  --choice-card-background: initial; /* default = var(--background) */
+  --choice-card-border-color: initial; /* default = var(--border) */
+  --choice-card-selected-border-color: initial; /* default = var(--primary) */
+  --choice-card-selected-ring-width: var(--stroke-hairline);
+  --choice-card-muted-background: initial; /* default = var(--muted) */
+  --choice-section-gap: var(--space-2);
+
   /* Ring knobs for the two controls that historically wanted a softer mark than the global
    * default — both are filled surfaces where the ring was felt to read as a second border.
    *

@@ -3224,7 +3224,12 @@ export const COMPONENT_PROP_REGISTRY = {
   ChoiceOptionProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["LabelProp", "ValueProp", "DisabledProp", "DescriptionProp"],
+    vocabulary: ["LabelProp", "ValueProp", "DisabledProp", "DescriptionProp", "ExtraProp"],
+  },
+  ChoiceOptionSectionProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["LabelProp"],
   },
   RadioProp: {
     group: "data-entry",

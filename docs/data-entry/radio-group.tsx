@@ -1,6 +1,12 @@
 import { useState } from "react";
 
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Avatar,
+  AvatarFallback,
   Badge,
   Card,
   CardContent,
@@ -8,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import { Form, Field, FormField, RadioGroup, RadioItem } from "@godxjp/ui/data-entry";
+import { Form, Field, FormField, RadioGroup, RadioItem, SearchInput } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /** 配送時間帯 · 選択肢が2〜4個を超えたときの見え方を確かめるための実データ。 */
@@ -24,6 +30,13 @@ const DELIVERY_SLOTS = [
 
 const CLOSING_DAYS = ["5日", "10日", "15日", "20日", "25日", "月末"];
 
+/** 組織を選択 · optionType="card" と見出し付きセクションの実データ。 */
+const ORGANIZATIONS = [
+  { value: "acme", name: "株式会社アクメ", meta: "オーナー · 12 名", lastUsed: true },
+  { value: "globex", name: "グロービクス合同会社", meta: "メンバー · 4 名", lastUsed: false },
+  { value: "initech", name: "イニテック", meta: "閲覧のみ · 31 名", lastUsed: false },
+];
+
 /**
  * RadioGroup — 2–4 mutually-exclusive choices, all visible at once (use Select
  * when the list is long or must collapse). Data-driven via an options array.
@@ -32,6 +45,13 @@ const CLOSING_DAYS = ["5日", "10日", "15日", "20日", "25日", "月末"];
 export default function Demo() {
   const [controlled, setControlled] = useState("email");
   const [plan, setPlan] = useState("business");
+  const [context, setContext] = useState<string | null>(null);
+  const [orgQuery, setOrgQuery] = useState("");
+  // Filtering is the consumer's: match however the product needs, and keep the chosen option in
+  // the list so the selection never disappears while the user types.
+  const visibleOrgs = ORGANIZATIONS.filter(
+    (org) => org.value === context || org.name.includes(orgQuery.trim()),
+  );
 
   return (
     <PageContainer
@@ -106,6 +126,97 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>optionType=&quot;card&quot; · 組織を選択</CardTitle>
+            <CardDescription>
+              行全体がラベルで、どこを押しても選べる。leading に Avatar、extra に Badge。 options に{" "}
+              {"{ label, options, appearance }"} を渡すと見出し付きのセクションになり、
+              矢印キーはセクションをまたいで1つの radiogroup として動く。何も選んでいない状態は
+              value={"{null}"} で、最初の行に Tab で入れる。絞り込みは SearchInput と利用側の filter
+              の組み合わせで、選択中の行は常に残す。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <SearchInput
+                aria-label="組織を絞り込む"
+                placeholder="組織名で絞り込む"
+                value={orgQuery}
+                onValueChange={setOrgQuery}
+              />
+              <RadioGroup
+                aria-label="組織を選択"
+                name="context"
+                optionType="card"
+                value={context}
+                onValueChange={setContext}
+                options={[
+                  {
+                    label: `組織 · ${visibleOrgs.length}`,
+                    options: visibleOrgs.map((org) => ({
+                      value: org.value,
+                      label: org.name,
+                      description: org.meta,
+                      leading: (
+                        <Avatar shape="square">
+                          <AvatarFallback>{org.name.slice(0, 1)}</AvatarFallback>
+                        </Avatar>
+                      ),
+                      extra: org.lastUsed ? <Badge as="span">前回利用</Badge> : undefined,
+                    })),
+                  },
+                  {
+                    label: "個人",
+                    appearance: "muted",
+                    options: [
+                      {
+                        value: "personal",
+                        label: "個人ワークスペース",
+                        description: "自分だけのファイルとページ",
+                        leading: (
+                          <Avatar>
+                            <AvatarFallback>田</AvatarFallback>
+                          </Avatar>
+                        ),
+                      },
+                    ],
+                  },
+                ]}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>optionType=&quot;card&quot; · Accordion の中</CardTitle>
+            <CardDescription>
+              AccordionContent は overflow: hidden。カードのフォーカス枠はカードの内側に描くので、
+              端に接していても切れない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" defaultValue="shipping">
+              <AccordionItem value="shipping">
+                <AccordionTrigger>配送方法</AccordionTrigger>
+                <AccordionContent>
+                  <RadioGroup
+                    aria-label="配送方法"
+                    optionType="card"
+                    defaultValue="air"
+                    options={[
+                      { value: "air", label: "航空便", description: "3〜5 日" },
+                      { value: "sea", label: "船便", description: "14〜21 日" },
+                      { value: "express", label: "特急", description: "翌日", disabled: true },
+                    ]}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>ラベルの長さ · 2文字と3行が同じ群に並ぶ</CardTitle>
             <CardDescription>
               短いラベルと折り返す長いラベルが同居する。丸は1行目の中心に留まり、2行目以降は
@@ -133,9 +244,10 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>optionType=&quot;button&quot; · 箱型の選択</CardTitle>
             <CardDescription>
-              箱で選ばせたいときはこれが唯一の描画。カード型ラジオという別コンポーネントは
-              無い。role は radiogroup / radio のままなので、矢印キーの移動も name での送信も
-              変わらない。buttonStyle は選択中の塗りだけを決める。
+              箱を横に溶接して選ばせる描画。カード型の行は optionType=&quot;card&quot; で、
+              どちらも別コンポーネントではない。role は radiogroup / radio
+              のままなので、矢印キーの移動も name での送信も 変わらない。buttonStyle
+              は選択中の塗りだけを決める。
             </CardDescription>
           </CardHeader>
           <CardContent>
