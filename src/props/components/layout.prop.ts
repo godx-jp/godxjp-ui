@@ -946,6 +946,12 @@ export type AuthFooterProp = {
   privacy: ReactNode;
   /** Optional consumer-owned locale control (e.g. `<AppSettingPicker kind="locale" compact />`). */
   locale?: ReactNode;
+  /**
+   * Set the line in the monospace face (default `true`, the hosted-identity look). `false` uses the
+   * body face (`--auth-footer-font-family`), which is narrower and keeps a long legal line on one
+   * row in a 400px column.
+   */
+  mono?: boolean;
   className?: ClassNameProp;
 };
 

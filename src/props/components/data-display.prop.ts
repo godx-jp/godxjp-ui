@@ -313,9 +313,11 @@ export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
    * The initials' type step and a glyph's box move with the box — one step of the type scale and
    * one step of the `--icon-size-*` scale per step — so a small mark is small, not clipped.
    * `shape="square"` rides the identical ladder. Beyond the ladder (a 96px profile mark) is a
-   * `className` size utility, exactly as before; the ladder is for the control row.
+   * `className` size utility, exactly as before; the ladder is for the control row. `xl` (64px,
+   * `--avatar-size-xl`) is OFF the ladder on purpose: a feature tile (a mail / app medallion), not a
+   * control-row mark; `shape="square"` takes it too.
    */
-  size?: SizeProp;
+  size?: SizeProp | "xl";
   appearance?: AvatarAppearanceProp;
   /**
    * Presence — WHO is reachable right now, drawn as an indicator at the block-end/inline-end

@@ -936,6 +936,9 @@
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
   );
+  /* `AuthFooter mono={false}`: the body face. Default = var(--font-family-body), resolved at the
+   * call site. */
+  --auth-footer-font-family: initial;
   /* The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page
    * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the
    * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the

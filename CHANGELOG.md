@@ -8,10 +8,12 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
-### TopbarSearch wide measure; Avatar stable categorical colour
+### TopbarSearch wide measure; Avatar stable categorical colour and xl tile; AuthFooter body face
 
 - **Added** `TopbarSearch measure?: "default" | "wide"` (default `"default"`, 16rem). `"wide"` reads `--topbar-search-wide-inline-size` (26.25rem) for a home / portal search; it still shrinks toward the text floor when the bar is short of room.
 - **Added** `Avatar colorKey?: string` — a stable key (an app id, a user id) hashed onto the six categorical palette steps (`--chart-1…6`), so each tile gets a distinct, repeatable colour. The fill is the step deepened toward black (`--avatar-color-key-depth`, 75%) under white initials (`--avatar-color-key-foreground`): at least 4.5:1 on every step in both themes. Wins over `shape` / `appearance` fills.
+- **Added** `Avatar size="xl"` — a 64px feature tile (`--avatar-size-xl`, `--avatar-font-size-xl`, `--avatar-glyph-size-xl`), off the control ladder on purpose; `shape="square"` takes it too.
+- **Added** `AuthFooter mono?: boolean` (default `true`). `mono={false}` sets the legal line in the body face (`--auth-footer-font-family`, default `--font-family-body`), so a long line stays on one row in a 400px column.
 
 ## [33.28.7] - 2026-11-10
 

@@ -1410,6 +1410,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
+      {
+        field: "mono",
+        local: true,
+        reason: "Monospace face (default) or the body face for a long legal line.",
+      },
       "ClassNameProp",
       {
         field: "product",

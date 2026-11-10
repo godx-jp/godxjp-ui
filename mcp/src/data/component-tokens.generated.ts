@@ -3284,6 +3284,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The 36px step — the mark for a `size=\"lg\"` row (a list row's leading identity)."
   },
   {
+    "name": "--avatar-size-xl",
+    "value": "calc(4rem * var(--scaling))",
+    "description": "The 64px step (`size=\"xl\"`) — a feature tile, off the control ladder: a mail / app medallion."
+  },
+  {
     "name": "--avatar-font-size",
     "value": "var(--font-size-base)",
     "description": "Initials TYPE per step — one step of the type scale per step of the box, so the two letters in a 24px mark are not the 14px set for a 32px one. The ratio holds (~0.44 of the box at every step), which is what keeps initials centred and legible rather than clipped."
@@ -3302,6 +3307,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--avatar-font-size-lg",
     "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
     "description": "Initials in the 36px mark — one step above the body step."
+  },
+  {
+    "name": "--avatar-font-size-xl",
+    "value": "var( --font-size-2xl, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )",
+    "description": "Initials in the 64px mark — the type scale's 2xl step."
+  },
+  {
+    "name": "--avatar-glyph-size-xl",
+    "value": "calc(2rem * var(--scaling))",
+    "description": "Glyph in the 64px mark — half the box."
   },
   {
     "name": "--avatar-glyph-size-xs",
@@ -13602,6 +13617,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--auth-footer-text-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
+  },
+  {
+    "name": "--auth-footer-font-family",
+    "value": "initial",
+    "description": "`AuthFooter mono={false}`: the body face. Default = var(--font-family-body), resolved at the call site."
   },
   {
     "name": "--auth-footer-target-min-size",

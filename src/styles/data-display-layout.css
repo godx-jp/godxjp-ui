@@ -168,6 +168,14 @@
     --avatar-tinted-glyph-size: var(--avatar-glyph-size-lg);
   }
 
+  .ui-avatar[data-size="xl"] {
+    --avatar-size: var(--avatar-size-xl);
+    --avatar-square-size: var(--avatar-size-xl);
+    --avatar-font-size: var(--avatar-font-size-xl);
+    --avatar-glyph-size: var(--avatar-glyph-size-xl);
+    --avatar-tinted-glyph-size: var(--avatar-glyph-size-xl);
+  }
+
   /* A lucide glyph ships width="24", which is the whole 24px of an `xs` mark. Scoped to a SIZED
    * avatar on purpose: a bare `.ui-avatar svg` would out-rank the per-call-site icon classes
    * existing avatars carry, and `<Icon>` (0,3,1) still wins over this (0,2,1) so a call site that

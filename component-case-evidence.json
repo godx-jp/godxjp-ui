@@ -402,10 +402,12 @@
             "xs",
             "sm",
             "md",
-            "lg"
+            "lg",
+            "xl"
           ],
           "evidence": [
-            "docs/data-display/avatar.tsx"
+            "docs/data-display/avatar.tsx",
+            "src/components/data-display/__tests__/avatar-size-xl.test.tsx"
           ]
         }
       }

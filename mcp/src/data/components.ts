@@ -16287,10 +16287,10 @@ import { fetchInvoice } from "@/api/invoices";
       },
       {
         name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg" | "xl"',
         defaultValue: '"md"',
         description:
-          'Box size on the SHARED CONTROL LADDER — md 32px (--control-height, the inert default), sm 28px, xs 24px, lg 36px, the same --control-height-* tier Button and Input read. STATE IT WHENEVER THE ROW\'S HEIGHT IS ALREADY DECIDED: a mark inside a `<Button size="icon-sm">` trigger, a mark in a 24/28px dense table row, a mark beside a `size="sm"` Button. A `size="sm"` avatar measures exactly as tall as a `size="sm"` Button, so the row stays level. Before gh#716 the box was welded to --control-height: a 32px mark inside a 28px icon-sm trigger OVERFLOWED it, and a consumer sweeping control heights across 38 routes had no legal move but to raise the whole row to 32px. The initials\' type step and a glyph\'s box move WITH the box (one step of the type scale, one step of the --icon-size-* scale), and shape="square" rides the identical ladder — so a small mark is small, never clipped. A size BEYOND the control ladder (a 96px profile mark) is still a className size utility; the prop is for the control row.',
+          'Box size on the SHARED CONTROL LADDER — md 32px (--control-height, the inert default), sm 28px, xs 24px, lg 36px, the same --control-height-* tier Button and Input read. STATE IT WHENEVER THE ROW\'S HEIGHT IS ALREADY DECIDED: a mark inside a `<Button size="icon-sm">` trigger, a mark in a 24/28px dense table row, a mark beside a `size="sm"` Button. A `size="sm"` avatar measures exactly as tall as a `size="sm"` Button, so the row stays level. Before gh#716 the box was welded to --control-height: a 32px mark inside a 28px icon-sm trigger OVERFLOWED it, and a consumer sweeping control heights across 38 routes had no legal move but to raise the whole row to 32px. The initials\' type step and a glyph\'s box move WITH the box (one step of the type scale, one step of the --icon-size-* scale), and shape="square" rides the identical ladder — so a small mark is small, never clipped. A size BEYOND the control ladder (a 96px profile mark) is still a className size utility; the prop is for the control row. `xl` (64px, --avatar-size-xl) is OFF the ladder: a feature tile (a mail / app medallion); `shape="square"` takes it too.',
       },
       {
         name: "appearance",
@@ -18908,6 +18908,13 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
         description: "Privacy link or localized text.",
       },
       { name: "locale", type: "ReactNode", description: "Optional consumer-owned locale control." },
+      {
+        name: "mono",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Set the line in the monospace face (default). `false` uses the body face (--auth-footer-font-family, default --font-family-body), narrower, so a long legal line stays on one row in a 400px column.",
+      },
       {
         name: "className",
         type: "string",

@@ -844,6 +844,11 @@
     font-size: var(--auth-footer-text-font-size);
   }
 
+  /* `mono={false}` — the body face, read through a knob a theme can retarget. */
+  .ui-auth-legal-footer[data-font="body"] {
+    font-family: var(--auth-footer-font-family, var(--font-family-body, inherit));
+  }
+
   .ui-auth-legal-footer-item {
     display: inline-flex;
     align-items: center;

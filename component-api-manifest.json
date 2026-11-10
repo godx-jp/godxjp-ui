@@ -2164,6 +2164,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "mono",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "privacy",
           "origin": "owned",
           "required": true,
@@ -2293,8 +2301,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "SizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg"],
+          "type": "\"xl\" | SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
