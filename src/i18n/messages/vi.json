@@ -381,6 +381,9 @@
       "title": "Không thể hiển thị trang này",
       "description": "Đã xảy ra lỗi khi hiển thị trang này. Các phần khác của ứng dụng vẫn hoạt động: hãy tải lại trang, hoặc chuyển sang trang khác từ menu.",
       "reload": "Tải lại trang"
+    },
+    "authAccountSummary": {
+      "signedIn": "Đang đăng nhập · {email}"
     }
   },
   "dataDisplay": {

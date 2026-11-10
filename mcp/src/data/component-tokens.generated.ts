@@ -13824,6 +13824,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--auth-account-summary-status-font-size",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
+    "description": "The muted \"Signed in · email\" line under `name`."
+  },
+  {
     "name": "--auth-footer-content-gap",
     "value": "0.375rem",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { UserRound } from "lucide-react";
 
+import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import type { AuthAccountSummaryProp } from "../../props/components/layout.prop";
 // Import the MODULES, not the group barrels. `../data-display` re-exports DataTable, which pulls
@@ -16,31 +17,45 @@ export type {
 
 /** Compact, token-owned signed-in identity row for hosted auth and device authorization. */
 export const AuthAccountSummary = React.forwardRef<HTMLDivElement, AuthAccountSummaryProp>(
-  ({ email, avatarSrc, avatarFallback, actionLabel, onAction, disabled, className }, ref) => (
-    <div
-      ref={ref}
-      data-slot="auth-account-summary"
-      className={cn("ui-auth-account-summary", className)}
-    >
-      <div data-slot="auth-account-identity" className="ui-auth-account-identity">
-        <Avatar className="ui-auth-account-avatar" aria-hidden="true">
-          {avatarSrc ? <AvatarImage src={avatarSrc} alt="" /> : null}
-          <AvatarFallback>
-            {avatarFallback ?? (
-              <UserRound className="ui-auth-account-fallback-icon" aria-hidden="true" />
-            )}
-          </AvatarFallback>
-        </Avatar>
-        <span className="ui-auth-account-email" dir="auto" title={email}>
-          {email}
-        </span>
+  ({ email, name, avatarSrc, avatarFallback, actionLabel, onAction, disabled, className }, ref) => {
+    const { t } = useTranslation();
+    return (
+      <div
+        ref={ref}
+        data-slot="auth-account-summary"
+        className={cn("ui-auth-account-summary", className)}
+      >
+        <div data-slot="auth-account-identity" className="ui-auth-account-identity">
+          <Avatar className="ui-auth-account-avatar" aria-hidden="true">
+            {avatarSrc ? <AvatarImage src={avatarSrc} alt="" /> : null}
+            <AvatarFallback>
+              {avatarFallback ?? (
+                <UserRound className="ui-auth-account-fallback-icon" aria-hidden="true" />
+              )}
+            </AvatarFallback>
+          </Avatar>
+          {name != null ? (
+            <span data-slot="auth-account-text" className="ui-auth-account-text">
+              <span className="ui-auth-account-name" dir="auto">
+                {name}
+              </span>
+              <span className="ui-auth-account-status" dir="auto" title={email}>
+                {t("layout.authAccountSummary.signedIn", { email })}
+              </span>
+            </span>
+          ) : (
+            <span className="ui-auth-account-email" dir="auto" title={email}>
+              {email}
+            </span>
+          )}
+        </div>
+        {actionLabel != null ? (
+          <Button variant="ghost" size="sm" disabled={disabled} onClick={onAction}>
+            {actionLabel}
+          </Button>
+        ) : null}
       </div>
-      {actionLabel != null ? (
-        <Button variant="ghost" size="sm" disabled={disabled} onClick={onAction}>
-          {actionLabel}
-        </Button>
-      ) : null}
-    </div>
-  ),
+    );
+  },
 );
 AuthAccountSummary.displayName = "AuthAccountSummary";

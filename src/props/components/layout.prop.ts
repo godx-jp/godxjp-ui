@@ -1036,6 +1036,12 @@ export type AccountChipProp = {
 
 export type AuthAccountSummaryProp = {
   email: string;
+  /**
+   * The person's display name. With it the row reads as two lines — the name, then a localized
+   * "Signed in · {email}" line (`layout.authAccountSummary.signedIn`) — the identity card under a
+   * device / consent screen. Without it the row stays the single email line.
+   */
+  name?: ReactNode;
   avatarSrc?: string;
   avatarFallback?: ReactNode;
   /**

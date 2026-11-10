@@ -929,6 +929,11 @@
   --auth-account-summary-avatar-size: var(--control-height-sm);
   --auth-account-summary-avatar-glyph-size: var(--control-icon-size-sm);
   --auth-account-summary-email-font-size: var(--font-size-sm, var(--font-size-base));
+  /* The muted "Signed in · email" line under `name`. */
+  --auth-account-summary-status-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --auth-footer-content-gap: 0.375rem;
   /* The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard
    * anchor at all, only the literal. GEOMETRY MOVES by 0.11px. */

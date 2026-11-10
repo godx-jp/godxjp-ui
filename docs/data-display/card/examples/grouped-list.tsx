@@ -112,7 +112,12 @@ export default function GroupedListExample() {
         </Card>
 
         <Button fullWidth>Allow</Button>
-        <AuthAccountSummary email="yamada@example.com" avatarFallback="Y" actionLabel="Switch" />
+        <AuthAccountSummary
+          name="Hanako Yamada"
+          email="yamada@example.com"
+          avatarFallback="HY"
+          actionLabel="Switch"
+        />
       </Flex>
     </CenteredShell>
   );

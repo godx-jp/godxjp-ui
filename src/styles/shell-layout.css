@@ -866,6 +866,32 @@
     white-space: nowrap;
   }
 
+  /* `name` — two lines: the name in the email's face, then the muted "Signed in · email" line.
+   * Both truncate inside the identity column so a long address never widens the card. */
+  .ui-auth-account-text {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+  .ui-auth-account-name,
+  .ui-auth-account-status {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ui-auth-account-name {
+    color: hsl(var(--foreground));
+    font-size: var(--auth-account-summary-email-font-size);
+    line-height: var(--auth-account-summary-email-line-height);
+    font-weight: var(--font-weight-medium);
+  }
+  .ui-auth-account-status {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--auth-account-summary-status-font-size);
+    line-height: var(--line-height-normal);
+  }
+
   .ui-auth-account-summary > [data-slot="button"] {
     margin-inline-start: auto;
   }

@@ -19053,6 +19053,12 @@ import { Logo } from "@godxjp/ui/general";
         required: true,
         description: "Authoritative signed-in email.",
       },
+      {
+        name: "name",
+        type: "ReactNode",
+        description:
+          'The person\'s display name. With it the row is two lines: the name, then a localized "Signed in · {email}" line (ja ログイン中 · …, key layout.authAccountSummary.signedIn, `--auth-account-summary-status-font-size`) — the identity card under a device / consent screen. Without it the single email line is unchanged.',
+      },
       { name: "avatarSrc", type: "string", description: "Optional real avatar URL." },
       {
         name: "avatarFallback",

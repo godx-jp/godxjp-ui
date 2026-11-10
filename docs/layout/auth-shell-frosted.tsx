@@ -129,7 +129,12 @@ export default function Demo() {
           </Flex>
         )}
 
-        <AuthAccountSummary email="yamada@example.com" avatarFallback="Y" actionLabel="Switch" />
+        <AuthAccountSummary
+          name="Hanako Yamada"
+          email="yamada@example.com"
+          avatarFallback="HY"
+          actionLabel="Switch"
+        />
       </Flex>
     </CenteredShell>
   );
