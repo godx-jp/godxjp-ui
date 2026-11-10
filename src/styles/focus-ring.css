@@ -410,6 +410,45 @@
     --focus-ring-offset: calc(-1 * var(--focus-ring-width));
   }
 
+  /* A pill in an EditorialPillNav lives in a sideways scroller with no room around it, so its
+   * outline was cut 3-4.5px (GDX-1484). It takes the inner mark of the rail links above. */
+  .ui-editorial-pill-nav .ui-editorial-pill {
+    --focus-ring-offset: calc(-1 * var(--focus-ring-width));
+  }
+
+  /* THE HALO GOES INSIDE TOO (GDX-1484). The carriers above, and a TopbarItem (its offset is
+   * `--topbar-item-focus-ring-offset`, the same inner mark), draw the outline inside because
+   * there is no room outside them: a scroller, or a `Topbar overflow="menu"` bar, which must stay
+   * `overflow: hidden` to measure its clusters. The halo rule below still painted its glow
+   * OUTSIDE, so exactly that glow was cut (visual-audit C13: 2px on every such row and cell). The
+   * glow is drawn inside the mark instead: same colour and alpha, `--focus-ring-glow-width` wide,
+   * just inside the outline (its inner edge is the mark's offset, contained or not). The surface
+   * gap a contained carrier paints between edge and mark (gh#1380) is kept, first, unchanged.
+   * Read only while the halo rule applies, so the off switch still wins. */
+  .ui-scroll-area [data-slot="anchor-link"],
+  a.ui-list-row,
+  tr.ui-focus-ring,
+  .sb-nav-item,
+  .ui-app-setting-picker-icon[data-appearance="bar"],
+  .ui-legal-document-toc-link,
+  .ui-topbar-item,
+  .ui-editorial-pill-nav .ui-editorial-pill {
+    --focus-field-shadow:
+      inset 0 0 0 calc(-1 * var(--focus-ring-contained-offset, 0px)) hsl(var(--background)),
+      inset 0 0 0
+        calc(
+          -1 * var(--focus-ring-contained-offset, var(--focus-ring-offset)) +
+            var(--focus-ring-glow-width)
+        )
+        hsl(
+          var(
+              --focus-ring-glow-color,
+              var(--control-outline, from hsl(var(--primary)) var(--control-outline-channels))
+            ) /
+            var(--focus-ring-glow-alpha)
+        );
+  }
+
   /* Containment belongs to the actual clipped focus carrier, NEVER its ancestors
    * (gh#1378). Focus-only assignment cannot leak into a descendant tab stop.
    * Padded strip/rail items have room for this inner mark; plain text links and

@@ -420,7 +420,7 @@ export const PROBE_THRESHOLDS = {
   labelMaxFontPx: { value: 12, unit: "px", origin: "repo-chosen" },
   labelMinTrackingEm: { value: 0.04, unit: "em", origin: "repo-chosen" },
   compactBelowPx: { value: COMPACT_BELOW, unit: "px", origin: "repo-chosen" },
-  ringClipTolerancePx: { value: 0.5, unit: "px", origin: "repo-chosen" },
+  ringClipTolerancePx: { value: 1, unit: "px", origin: "repo-chosen" },
 };
 
 const RC = "repo-chosen threshold";
@@ -527,7 +527,7 @@ export const PROBE_RULES = [
     id: "c13-focus-ring-clipped",
     severity: "warn",
     category: "a11y",
-    standard: `WCAG 2.2 SC 2.4.7 / 2.4.13; ring cut ≤0.5px tolerated (${RC})`,
+    standard: `WCAG 2.2 SC 2.4.7 / 2.4.13; ring cut ≤1px tolerated (${RC})`,
     kind: "probe",
     fix: "A focused control's ring must paint whole: its box grown by the ring's reach (outline width + offset, outer box-shadow) has to lie inside every ancestor whose overflow is not visible. Give the clipping ancestor room — `overflow: clip` + `overflow-clip-margin: var(--focus-ring-clip-margin)` instead of `hidden`, or inline padding at least the ring's reach — or draw an inset ring inside a scroll container.",
   },

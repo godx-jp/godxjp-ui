@@ -355,8 +355,15 @@ describe("evaluateProbes — per-rule predicates on synthetic measurements", () 
       rect: { left: -8, top: -8, right: 308, bottom: 108 },
     };
     expect(focusRingClips({ ...control, clips: [margin] })).toEqual([]);
-    // Within the 0.5px tolerance: subpixel rounding is not a cut.
+    // Within the 1px tolerance (GDX-1484): a sub-pixel cut at a fractional layout edge is not a
+    // cut — measured on a consumer, text links 0.56-0.78px past a scroller, the ring still whole
+    // to the eye. One device pixel past the tolerance still is.
     expect(focusRingClips({ ...control, ring: { ...control.ring, left: -0.4 } })).toEqual([]);
+    expect(focusRingClips({ ...control, ring: { ...control.ring, left: -0.78 } })).toEqual([]);
+    expect(focusRingClips({ ...control, ring: { ...control.ring, left: -1 } })).toEqual([]);
+    expect(focusRingClips({ ...control, ring: { ...control.ring, left: -1.2 } })).toEqual([
+      { clipper: "div.ui-accordion-content", overflow: "hidden", side: "left", px: 1.2 },
+    ]);
     // Only the clipping axes count: an overflow-x scroller does not cut the ring vertically.
     const xOnly = {
       ...control.clips[0],

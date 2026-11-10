@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### A focus ring drawn inside is never cut, and C13 tolerates sub-pixel (GDX-1484)
+
+- **Fixed** visual-audit C13 reported focus rings cut where a consumer cannot make room, measured on GDX: a full-height `TopbarItem` in a `Topbar overflow="menu"` bar (which must stay `overflow: hidden` to measure its clusters) and a link `ListRow` flush in a scrolling `CardContent` lost their whole 2px halo, and an `EditorialPillNav` pill (the nav scrolls sideways) lost 3–4.5px of its outline. Those carriers already drew their outline inside; the halo is now drawn inside too (`--focus-ring-glow-width` just inside the mark, same colour and alpha; a contained carrier keeps its surface gap first), and a pill in an `EditorialPillNav` takes the inner mark of the rail links. Applies to `a.ui-list-row`, `.ui-topbar-item`, `.sb-nav-item`, focusable table rows, the bar app-setting picker, legal-document TOC links and scroll-area anchor links. Geometry does not move.
+- **Changed** C13's tolerance from 0.5px to 1px (`ringClipTolerancePx`, repo-chosen): a cut of 0.56–0.78px at a fractional layout edge (text links beside a scroller) is not reported; 1.2px still is.
+
 ### Tabs panels and FloatButton keep their slot (GDX-1486)
 
 - **Fixed** two more 33.28.0 regressions of the kind #1564 fixed (gh#1527): `Tabs items` handed `data-slot="tabs-panel"` to the kit's own `TabsContent`, and `FloatButton` handed `data-slot="float-button"` to `Button`; both components discard a handed slot, so the panel rendered `tabs-content` and the button `button`. Every rule keyed on those slots stopped matching: a flush `Card` no longer reached through a tab panel (gh#554), the tab strip in a card head added a second inset, and the force-rendered panels' `hidden` hook and FloatButton's group and back-top behaviour lost their handle. Both now name the slot on the kit channel (`data-kit-slot`).

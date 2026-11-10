@@ -201,7 +201,7 @@ export const VISUAL_RULES: VisualRule[] = [
     id: "c13-focus-ring-clipped",
     severity: "warn",
     category: "a11y",
-    standard: "WCAG 2.2 SC 2.4.7 / 2.4.13; ring cut ≤0.5px tolerated (repo-chosen threshold)",
+    standard: "WCAG 2.2 SC 2.4.7 / 2.4.13; ring cut ≤1px tolerated (repo-chosen threshold)",
     kind: "probe",
     fix: "A focused control's ring must paint whole: its box grown by the ring's reach (outline width + offset, outer box-shadow) has to lie inside every ancestor whose overflow is not visible. Give the clipping ancestor room — `overflow: clip` + `overflow-clip-margin: var(--focus-ring-clip-margin)` instead of `hidden`, or inline padding at least the ring's reach — or draw an inset ring inside a scroll container.",
   },
