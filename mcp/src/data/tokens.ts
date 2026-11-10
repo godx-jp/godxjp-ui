@@ -1322,6 +1322,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'ListRow `density="compact"` inline-actions geometry — the compact invitation/history row: a 36px leading Avatar, a shrinkable title+description and one or two small trailing Buttons on ONE line inside the canonical 358px card (326px content). `--list-row-compact-body-min-width` (6rem) is the compact body threshold — the default 12rem `--list-row-body-min-width` is what forced the actions (and a history Badge + date) onto a second line at 390px; it is consumed as `min(<token>, 100%)` exactly like the default knob, so the #224 wrap contract is intact and a cluster that genuinely cannot fit still wraps instead of widening the page root. `--list-row-compact-{padding-y,padding-x,gap}` are declared `initial` with the density-scaled default at the CALL SITE (`var(--space-2)` block, `var(--list-row-padding-x)` inline, `var(--space-2)` gap) — a `:root` binding would freeze compact rows at the `:root` density. Measured at 390px: invitation row 62px (was 126px, actions wrapped), history row 41px (was 114px), documentElement scrollWidth === clientWidth.',
   },
   {
+    name: "--otp-boxed-{slot-inline-size,slot-block-size,slot-font-size,slot-font-weight,gap,radius}[-lg] / --otp-reject-{translate,duration}",
+    category: "component",
+    tier: "component",
+    role: 'InputOTPGroup `appearance="boxed"` — the large code field, every slot its own rounded box. md (default) = the device-code box 40x52 with a 24px digit; `-lg` (InputOTP `size="lg"`) = the two-factor box 48x58 with a 26px digit; `--otp-boxed-gap` 6px between boxes; `--otp-boxed-radius` `initial` (default `--radius-md` at the call site); The caret takes the boxed digit size. Deliberately NOT the `--otp-slot-*` chain, so a shell preset that retunes the joined/grouped slot (device-authorization sets `--otp-slot-inline-size`) cannot reach it. `--otp-reject-translate` (6px) / `--otp-reject-duration` (280ms) time the one-shot shake when a boxed field turns invalid; prefers-reduced-motion drops the motion and keeps the red edge.',
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

@@ -11346,6 +11346,14 @@
           ]
         },
         {
+          "name": "mono",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "nonce",
           "origin": "owned",
           "required": false,
@@ -11465,7 +11473,7 @@
           "origin": "owned",
           "required": false,
           "type": "InputOTPGroupAppearanceProp | undefined",
-          "values": ["grouped", "slots"],
+          "values": ["grouped", "slots", "boxed"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]

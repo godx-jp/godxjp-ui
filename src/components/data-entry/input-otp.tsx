@@ -39,6 +39,7 @@ export const InputOTP = React.forwardRef<HTMLInputElement, InputOTPProp>(functio
     className,
     containerClassName,
     align,
+    mono,
     mask,
     formatter,
     size,
@@ -79,6 +80,9 @@ export const InputOTP = React.forwardRef<HTMLInputElement, InputOTPProp>(functio
     "data-slot": "input-otp",
     // INERT DEFAULT: `start` emits no attribute, so an existing field keeps its exact DOM.
     "data-align": align && align !== "start" ? align : undefined,
+    // Same route as `align`: the attribute rides the hidden input and the slots read it through
+    // `:has()`. Emitted only when asked for, so an existing field keeps its exact DOM.
+    "data-mono": mono ? "" : undefined,
     ...withoutSlot(controlSurfaceAttrs({ size, status, variant })),
     "aria-invalid": resolveAriaInvalid(ariaInvalid, status),
     // Native `readonly` already conveys the state, but the library's readOnly contract names

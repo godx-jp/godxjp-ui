@@ -46,8 +46,13 @@ import type {
 } from "../vocabulary";
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
-/** One-outline-per-group appearance for the compound InputOTP control. */
-export type InputOTPGroupAppearanceProp = "slots" | "grouped";
+/**
+ * How a group of InputOTP slots is drawn. `slots` (default): one joined strip, the slots sharing
+ * edges. `grouped`: one outline around the whole group. `boxed`: every slot its own rounded box
+ * with a gap between them — the large device-code / two-factor field (4+4 / 3+3 with an
+ * `InputOTPSeparator` between groups), sized by `--otp-boxed-*` instead of the control ladder.
+ */
+export type InputOTPGroupAppearanceProp = "slots" | "grouped" | "boxed";
 
 /** @see InputOTPGroup */
 export type InputOTPGroupProp = React.HTMLAttributes<HTMLDivElement> & {
@@ -111,6 +116,11 @@ export type InputOTPProp = Omit<
   mask?: InputOTPMaskProp;
   /** Main-axis alignment of the whole code row. */
   align?: InputOTPAlignProp;
+  /**
+   * Paint the characters in the mono face (`--font-family-mono`) — a device code of letters and
+   * digits (`LTZW-CZPS`) reads column for column, and an `I`/`1`, `O`/`0` pair stays apart.
+   */
+  mono?: boolean;
   /** Control height tier — the shared `--control-height` ladder, as on every other field. */
   size?: SizeProp;
   /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */

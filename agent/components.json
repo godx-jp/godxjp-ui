@@ -15356,6 +15356,12 @@
         "type": "boolean"
       },
       {
+        "defaultValue": "false",
+        "description": "Paint the characters in the mono face (`--font-family-mono`): a device code of letters and digits (`LTZW-CZPS`) reads column for column and I/1, O/0 stay apart. Emits `data-mono` on the hidden input only when set.",
+        "name": "mono",
+        "type": "boolean"
+      },
+      {
         "description": "Number of slots (e.g. 6).",
         "name": "maxLength",
         "required": true,
@@ -15438,6 +15444,7 @@
       "DO centre a challenge with `align=\"center\"` on InputOTP — never with a wrapper `<div className=\"flex justify-center\">`. The container is owned by input-otp, so a wrapper is the only thing a consumer CAN reach, which is exactly why the prop exists.",
       "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
       "For device codes, set `appearance='grouped'` on each InputOTPGroup to render one outline per group while preserving the single hidden input, paste, caret, keyboard and screen-reader behavior.",
+      "DO use `appearance=\"boxed\"` on each InputOTPGroup for the LARGE code field — every slot its own rounded box with a gap (`--otp-boxed-gap`, 6px): a device code is `<InputOTP maxLength={8} mono formatter={(v) => v.toUpperCase()} pasteTransformer={(v) => v.replace(/[^a-z0-9]/gi, \"\")}>` with two 4-slot boxed groups and an InputOTPSeparator (40x52 boxes, 24px digit); a two-factor code is `size=\"lg\"` with two 3-slot groups (48x58, 26px) and `onComplete` for auto-submit. Boxed geometry is its own `--otp-boxed-*` set, so the device-authorization preset (which retunes `--otp-slot-*`) does not shrink it; `size=\"xs\"|\"sm\"` fall back to the control ladder. A rejected code (status=\"error\" / aria-invalid) shakes the boxed row once (x ±6px, 280ms, `--otp-reject-translate` / `--otp-reject-duration`); under prefers-reduced-motion only the red edge shows.",
       "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
       "DO widen the slots with `--otp-slot-size` when a challenge row must fill a wide auth panel — it defaults to the live `--control-height` tier, so re-scoping `--control-height` on the card instead would also resize the submit button and every other input in it. Set a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
       "DO use `--otp-slot-inline-size` / `--otp-slot-block-size` when the code field is NOT square — a device-grant slot is taller than it is wide. They win over the `--otp-slot-size` shorthand and fall back to it, so setting neither keeps the square control tier. You rarely set them by hand inside `the auth CenteredShell preset=\"device-authorization\"`: that preset already owns its code-field measure.",

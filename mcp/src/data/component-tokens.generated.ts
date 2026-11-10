@@ -2624,6 +2624,61 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--otp-boxed-slot-inline-size",
+    "value": "2.5rem",
+    "description": "InputOTP `appearance=\"boxed\"` — the large code field (device code 4+4, two-factor 3+3): each slot its own rounded box. Its own geometry so a shell retuning the joined/grouped slot chain (--otp-slot-*) does not reach it. md = the device-code box, lg = the two-factor box. scale-exempt: code-entry box 40x52 / 48x58 and its 24/26px digit, off the control band ladder by design"
+  },
+  {
+    "name": "--otp-boxed-slot-block-size",
+    "value": "3.25rem",
+    "description": "scale-exempt: 52px code box, a display input between band-2xl (48) and band-3xl (56)"
+  },
+  {
+    "name": "--otp-boxed-slot-inline-size-lg",
+    "value": "3rem",
+    "description": "scale-exempt: 48px two-factor box width, one step up from the 40px device box"
+  },
+  {
+    "name": "--otp-boxed-slot-block-size-lg",
+    "value": "3.625rem",
+    "description": "scale-exempt: 58px two-factor box, the larger 6-digit challenge"
+  },
+  {
+    "name": "--otp-boxed-slot-font-size",
+    "value": "1.5rem",
+    "description": "scale-exempt: 24px code digit, read at arm's length off another device"
+  },
+  {
+    "name": "--otp-boxed-slot-font-size-lg",
+    "value": "1.625rem",
+    "description": "scale-exempt: 26px two-factor digit"
+  },
+  {
+    "name": "--otp-boxed-slot-font-weight",
+    "value": "var(--font-weight-medium)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--otp-boxed-gap",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px between code boxes, between --space-1 and --space-2"
+  },
+  {
+    "name": "--otp-boxed-radius",
+    "value": "initial",
+    "description": "default = var(--radius-md) at the call site"
+  },
+  {
+    "name": "--otp-reject-translate",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px shake travel, a motion distance not a layout step"
+  },
+  {
+    "name": "--otp-reject-duration",
+    "value": "280ms",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--button-count-min-width",
     "value": "var(--space-4)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."

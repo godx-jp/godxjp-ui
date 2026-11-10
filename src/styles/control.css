@@ -1903,6 +1903,79 @@
     color: hsl(var(--muted-foreground));
   }
 
+  /* `mono` — the mono face for a code of letters and digits (read off the hidden input). */
+  .ui-otp-container:has(.ui-otp-input[data-mono]) .ui-otp-slot {
+    font-family: var(--font-family-mono, ui-monospace, "SFMono-Regular", monospace);
+  }
+
+  /* `appearance="boxed"` — every slot its own rounded box, a gap between them: the large
+   * device-code / two-factor field. Its geometry is its OWN knob set (`--otp-boxed-*`), not the
+   * generic `--otp-slot-*` chain, so a shell preset that retunes the joined/grouped slot (the
+   * device-authorization preset sets --otp-slot-inline-size) cannot shrink these boxes. `size="lg"`
+   * takes the larger two-factor step; xs/sm fall back to the shared control ladder. The ring, the
+   * invalid/warning edge and the disabled fill come from the slot rules above unchanged. */
+  .ui-otp-group[data-appearance="boxed"] {
+    gap: var(--otp-boxed-gap);
+  }
+  .ui-otp-group[data-appearance="boxed"] .ui-otp-slot,
+  .ui-otp-group[data-appearance="boxed"] .ui-otp-slot:first-child,
+  .ui-otp-group[data-appearance="boxed"] .ui-otp-slot:last-child {
+    width: var(--otp-boxed-slot-inline-size);
+    height: var(--otp-boxed-slot-block-size);
+    border-inline-start-width: var(--control-border-width, var(--stroke-hairline));
+    border-radius: var(
+      --otp-boxed-radius,
+      var(--radius-md, calc(var(--radius) / var(--radius-ratio)))
+    );
+    font-size: var(--otp-boxed-slot-font-size);
+    font-weight: var(--otp-boxed-slot-font-weight);
+    line-height: 1;
+    /* The caret is as tall as the boxed digit, not the 1rem body caret. */
+    --otp-caret-block-size: var(--otp-boxed-slot-font-size);
+  }
+  .ui-otp-container:has(.ui-otp-input[data-size="lg"])
+    .ui-otp-group[data-appearance="boxed"]
+    .ui-otp-slot {
+    width: var(--otp-boxed-slot-inline-size-lg);
+    height: var(--otp-boxed-slot-block-size-lg);
+    font-size: var(--otp-boxed-slot-font-size-lg);
+    --otp-caret-block-size: var(--otp-boxed-slot-font-size-lg);
+  }
+  .ui-otp-container:has(.ui-otp-input:is([data-size="xs"], [data-size="sm"]))
+    .ui-otp-group[data-appearance="boxed"]
+    .ui-otp-slot {
+    width: var(--otp-slot-inline-size, var(--otp-slot-size, var(--control-height)));
+    height: var(--otp-slot-block-size, var(--otp-slot-size, var(--control-height)));
+    font-size: var(--font-size-base);
+  }
+
+  /* A REJECTED code shakes the boxed row once — x ±6px, two round trips, 0.28s — the moment the
+   * field turns invalid (the selector starting to match restarts the animation; staying invalid
+   * does not repeat it). Under prefers-reduced-motion the row does not move: the red edge above is
+   * the whole signal. */
+  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]):has(
+      .ui-otp-group[data-appearance="boxed"]
+    ) {
+    animation: ui-otp-reject var(--otp-reject-duration) var(--ease-standard) 1;
+  }
+  @keyframes ui-otp-reject {
+    20%,
+    60% {
+      transform: translateX(calc(-1 * var(--otp-reject-translate)));
+    }
+    40%,
+    80% {
+      transform: translateX(var(--otp-reject-translate));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]):has(
+        .ui-otp-group[data-appearance="boxed"]
+      ) {
+      animation: none;
+    }
+  }
+
   /* Rating */
   .ui-rating {
     display: inline-flex;
