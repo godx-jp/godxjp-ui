@@ -9319,6 +9319,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Rhythm between the status code, the EmptyState body, the metadata list and the progress meter."
   },
   {
+    "name": "--error-surface-start-gap",
+    "value": "var(--space-5)",
+    "description": "`align=\"start\"`: the stack gap between heading · details · action · secondary, and the gap inside the heading (status code · title · description)."
+  },
+  {
+    "name": "--error-surface-heading-gap",
+    "value": "var(--space-2)",
+    "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
+  },
+  {
     "name": "--error-surface-padding-block",
     "value": "var(--space-10)",
     "description": "Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css)."

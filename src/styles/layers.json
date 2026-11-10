@@ -130,9 +130,12 @@
         "shell-layout.css",
         "layout.css",
         "control.css",
+        "toggle.css",
+        "card-layout.css",
         "text-layout.css",
         "dialog-layout.css",
-        "data-display-layout.css"
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     },
     "AreaChart": {
@@ -732,9 +735,12 @@
         "shell-layout.css",
         "layout.css",
         "control.css",
+        "toggle.css",
+        "card-layout.css",
         "text-layout.css",
         "dialog-layout.css",
-        "data-display-layout.css"
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     },
     "Eyebrow": {
@@ -1016,9 +1022,12 @@
         "shell-layout.css",
         "layout.css",
         "control.css",
+        "toggle.css",
+        "card-layout.css",
         "text-layout.css",
         "dialog-layout.css",
-        "data-display-layout.css"
+        "data-display-layout.css",
+        "navigation-layout.css"
       ]
     },
     "Pagination": {

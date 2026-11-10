@@ -12,6 +12,10 @@
 
   /* Rhythm between the status code, the EmptyState body, the metadata list and the progress meter. */
   --error-surface-gap: var(--space-3);
+  /* `align="start"`: the stack gap between heading · details · action · secondary, and the gap
+   * inside the heading (status code · title · description). */
+  --error-surface-start-gap: var(--space-5);
+  --error-surface-heading-gap: var(--space-2);
 
   /* Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the
    * 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css). */

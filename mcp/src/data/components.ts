@@ -4151,6 +4151,25 @@ function Assistant() {
         description:
           "system mode ONLY — measure of the centred column (the CenteredShell width tier).",
       },
+      {
+        name: "align",
+        type: '"center" | "start"',
+        defaultValue: '"center"',
+        description:
+          '`"start"` = the HOSTED-PAGE shape (an auth / approval site\'s 403 / 404 / expired page): a small mono status code over a LARGE bold start-aligned title (Heading size 3xl, display optics), the description, the organization / permission / request id / maintenance window as an inset grouped card (Card variant="grouped" + Descriptions) ABOVE the action, the action stretched to the column so `Button fullWidth size="lg"` spans it, and `secondaryAction` centred under it. No medallion. `"center"` (default) is unchanged.',
+      },
+      {
+        name: "secondaryAction",
+        type: "ReactNode",
+        description:
+          'A secondary NAVIGATION link under the action (「ダッシュボードへ」) — a `Button variant="link"` or a router Link. Not a second recovery action; `action` stays the single recovery. Both aligns.',
+      },
+      {
+        name: "topbar",
+        type: "ReactNode",
+        description:
+          "system mode ONLY — the page top bar (a `<Topbar start={<Logo/>} end={<AppSettingPicker …/>}/>`), forwarded to the CenteredShell `topbar` slot.",
+      },
       { name: "id", type: "string", description: "Root element id." },
       { name: "className", type: "string", description: "Root class override (rarely needed)." },
     ],

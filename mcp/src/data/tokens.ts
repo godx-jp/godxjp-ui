@@ -1364,6 +1364,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'EmptyState `variant="hero"` — the result page. `--empty-state-hero-title-font-size` (initial → the display --font-size-3xl step; the title is bold and reads the display optics), `--empty-state-hero-description-font-size` (lg), `--empty-state-hero-medallion-size` (band-3xl, 56px) / `--empty-state-hero-icon-glyph-size` (icon-xl), `--empty-state-hero-gap` (space-4) and `--empty-state-hero-space-y` (space-6).',
   },
   {
+    name: "--error-surface-{start-gap,heading-gap}",
+    category: "component",
+    tier: "component",
+    role: 'ErrorSurface `align="start"` (the hosted-page shape): `--error-surface-start-gap` (space-5) between the heading block, the details card, the action and the secondary link; `--error-surface-heading-gap` (space-2) between the status code, the title and the description.',
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

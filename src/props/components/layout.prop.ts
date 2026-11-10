@@ -1278,6 +1278,21 @@ export type ErrorSurfaceProp = {
    * `system` mode only — measure of the centred column (`CenteredShell` width tier). Default `sm`.
    */
   width?: CenteredShellWidthProp;
+  /**
+   * How the surface is laid out. `"center"` (default, unchanged): the centred EmptyState with its
+   * icon medallion. `"start"`: the hosted-page shape — a small mono status code, a LARGE bold
+   * start-aligned title (display 3xl + display optics), the description, the metadata as an inset
+   * grouped card ABOVE the action, the action stretched to the column (a `Button fullWidth
+   * size="lg"` is honoured), then `secondaryAction` centred under it. No icon medallion.
+   */
+  align?: "center" | "start";
+  /**
+   * A secondary NAVIGATION link under the action (「ダッシュボードへ」) — a `Button variant="link"`
+   * or a `Link`. Not a second recovery action; `action` stays the one recovery.
+   */
+  secondaryAction?: ReactNode;
+  /** `system` mode only — the page top bar (a `Topbar`), the CenteredShell `topbar` slot. */
+  topbar?: ReactNode;
   id?: IdProp;
   className?: ClassNameProp;
 };

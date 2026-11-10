@@ -2475,6 +2475,22 @@ export const COMPONENT_PROP_REGISTRY = {
       "IdProp",
       "ClassNameProp",
       {
+        field: "align",
+        local: true,
+        reason:
+          "Surface layout — center (the EmptyState medallion shape) or start (hosted page: large start-aligned title, details card above a stretched action).",
+      },
+      {
+        field: "secondaryAction",
+        local: true,
+        reason: "One secondary navigation link under the single recovery action.",
+      },
+      {
+        field: "topbar",
+        local: true,
+        reason: "system mode page top bar, forwarded to the CenteredShell topbar slot.",
+      },
+      {
         field: "tone",
         local: true,
         reason:

@@ -3847,6 +3847,36 @@
     max-width: var(--error-surface-progress-max-width);
   }
 
+  /* `align="start"` — the hosted-page shape: start-aligned large title, the details card above the
+   * action, the action stretched to the column so `Button fullWidth size="lg"` reads full width,
+   * the secondary link centred under it. */
+  .ui-error-surface[data-align="start"] {
+    align-items: stretch;
+    gap: var(--error-surface-start-gap);
+    text-align: start;
+  }
+  .ui-error-surface-heading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--error-surface-heading-gap);
+  }
+  .ui-error-surface-heading .ui-error-surface-status,
+  .ui-error-surface-heading .ui-error-surface-title,
+  .ui-error-surface-heading .ui-error-surface-description {
+    margin: 0;
+  }
+  .ui-error-surface[data-align="start"] .ui-error-surface-brand {
+    justify-content: flex-start;
+  }
+  .ui-error-surface-action {
+    display: flex;
+    flex-direction: column;
+  }
+  .ui-error-surface-secondary {
+    display: flex;
+    justify-content: center;
+  }
+
   /* NARROW STEP (the 390 case). */
   @container error-surface (width < 30rem) {
     .ui-error-surface {

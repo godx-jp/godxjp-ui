@@ -9348,6 +9348,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | undefined",
+          "values": ["center", "start"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "brand",
           "origin": "owned",
           "required": false,
@@ -9436,6 +9444,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "secondaryAction",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "status",
           "origin": "owned",
           "required": true,
@@ -9465,6 +9481,14 @@
           "required": false,
           "type": "EmptyStateToneProp | undefined",
           "values": ["muted", "warning", "success", "destructive", "info"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "topbar",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
