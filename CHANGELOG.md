@@ -8,6 +8,15 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### OrgSwitcher lists the personal workspace in its own section (#1556)
+
+- **Added** `OrgSwitcherOrganization.kind?: "organization" | "personal"` (default `"organization"`). Personal entries are listed in their own labelled section after the organizations, whatever their position in `organizations`, with a circular avatar (`--radius-pill`) on the row and on the trigger. Search filters the organizations only: the personal entry stays listed and last, and `labels.empty` shows when no organization matches. New `labels.personal` titles the section; it defaults to the kit's `layout.orgSwitcher.personal` (Personal / 個人 / Cá nhân). A list without personal entries renders exactly as before.
+
+### A focus ring is never cut by AccordionContent, and visual-audit measures the cut (#1543)
+
+- **Display corruption** (affects every release up to 33.27.17): `AccordionContent` was `overflow: hidden` with no inline padding, so a control flush with its edge (a `RadioGroup` in a `FormField`) lost its ring at the inline start: measured 4px cut in LTR and RTL. It is now `overflow: clip` + `overflow-clip-margin: var(--focus-ring-clip-margin)`, the pattern `.ui-command` and `.ui-carousel-viewport` already use. Panel geometry is unchanged, and so is collapsing: a closed panel is `hidden="until-found"` and there is no height animation.
+- **Added** visual-audit probe `c13-focus-ring-clipped` (warn, all widths). It focuses each tab stop, finds the element that paints the ring (a react-aria choice rings its label, not its hidden input), grows its box by the ring's reach (outline width + offset, outer box-shadow), and reports every ancestor whose overflow is not `visible` (`hidden`, `clip`, `auto`, `scroll`) that cuts it by more than 0.5px. The finding names the control, the clipping ancestor, the side and the px. `overflow-clip-margin` counts only when both axes are `clip`. A control scrolled part-way out of view, a ring wholly outside its clip, a visually hidden control and an absolutely positioned control that escapes a static ancestor are not reported. The probe only measures what is on screen at load, so its checklist line asks the reviewer to rerun it with each disclosure open.
+
 ### RadioGroup: card rows, labelled sections, and "nothing chosen" reachable by keyboard
 
 - **Fixed** a controlled `RadioGroup` with nothing chosen (`value=""`) could not be reached by keyboard: react-aria read `""` as a selected key matching no radio, so every radio had `tabindex="-1"` and Tab skipped the group (#1544). `""` is now mapped to `null` before react-aria, and `value` / `defaultValue` also accept `null`; the group stays controlled and the first enabled radio takes the tab stop. Applies to the `options` and the children (`RadioGroupRoot`) forms.

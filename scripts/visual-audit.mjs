@@ -41,7 +41,7 @@ export function buildFinding(ruleId, url, message) {
   };
 }
 
-/** Every rule `--rules` prints: the legacy checks plus the C01–C12 probes and checklist rules. */
+/** Every rule `--rules` prints: the legacy checks plus the C01–C13 probes and checklist rules. */
 export function allRules() {
   return [...VISUAL_RULES, ...PROBE_RULES];
 }
@@ -420,6 +420,7 @@ export const PROBE_THRESHOLDS = {
   labelMaxFontPx: { value: 12, unit: "px", origin: "repo-chosen" },
   labelMinTrackingEm: { value: 0.04, unit: "em", origin: "repo-chosen" },
   compactBelowPx: { value: COMPACT_BELOW, unit: "px", origin: "repo-chosen" },
+  ringClipTolerancePx: { value: 0.5, unit: "px", origin: "repo-chosen" },
 };
 
 const RC = "repo-chosen threshold";
@@ -522,6 +523,14 @@ export const PROBE_RULES = [
     kind: "probe",
     fix: "Section labels read as sentence-case text at the body scale, not tiny tracked capitals. Literal domain codes are exempt when marked as such (<code>, <kbd>, data-audit-literal).",
   },
+  {
+    id: "c13-focus-ring-clipped",
+    severity: "warn",
+    category: "a11y",
+    standard: `WCAG 2.2 SC 2.4.7 / 2.4.13; ring cut ≤0.5px tolerated (${RC})`,
+    kind: "probe",
+    fix: "A focused control's ring must paint whole: its box grown by the ring's reach (outline width + offset, outer box-shadow) has to lie inside every ancestor whose overflow is not visible. Give the clipping ancestor room — `overflow: clip` + `overflow-clip-margin: var(--focus-ring-clip-margin)` instead of `hidden`, or inline padding at least the ring's reach — or draw an inset ring inside a scroll container.",
+  },
 ];
 
 /** Checklist lines a reviewer resolves per width (C03 + the semantic qualifiers of C01–C12). */
@@ -598,6 +607,12 @@ export const REVIEW_CHECKLIST = [
     check:
       "Classify flagged and unmapped small capitals: section labels fail, literal codes and metadata are exempt.",
   },
+  {
+    rule: "c13-focus-ring-clipped",
+    scope: "all",
+    check:
+      "The probe focuses only what is on screen at load: open each disclosure, accordion, dialog and menu and rerun (or Tab through it), so controls revealed by a state are measured too.",
+  },
 ];
 
 const PROBE_SCOPE = {
@@ -609,6 +624,7 @@ const PROBE_SCOPE = {
   "c10-rail-toggle-attached": "desktop",
   "c11-search-keyline": "desktop",
   "c12-tracked-uppercase-label": "all",
+  "c13-focus-ring-clipped": "all",
 };
 
 /** Does a rule scope (all | compact | desktop) apply at this viewport width? */
@@ -644,6 +660,49 @@ export function isTrackedUppercaseLabel(l) {
     l.fontPx <= T.labelMaxFontPx.value &&
     l.trackingEm >= T.labelMinTrackingEm.value - 1e-6
   );
+}
+
+/**
+ * C13 predicate on one focused control (pure): how far its ring is cut by each clipping ancestor.
+ *
+ * `ring` is the ring carrier's border box grown by the ring's reach on each side; `box` is the
+ * carrier's own border box. Each clip is an ancestor's padding box, already grown by its
+ * `overflow-clip-margin` when the collector found one that applies. A side counts only when the
+ * control's own box lies inside the clip on that axis: a control half-scrolled out of a list is
+ * scrolled content (C01's business), not a ring defect. A ring wholly outside a clip is hidden
+ * content (a closed drawer, an off-screen slide) and reports nothing.
+ *
+ * @returns {{clipper:string, overflow:string, side:string, px:number}[]} one entry per ancestor
+ *   that cuts the ring by more than `tol`, with its worst side.
+ */
+export function focusRingClips(control, tol = PROBE_THRESHOLDS.ringClipTolerancePx.value) {
+  const { ring, box, clips = [] } = control;
+  const out = [];
+  for (const c of clips) {
+    const r = c.rect;
+    if (
+      ring.right <= r.left ||
+      ring.left >= r.right ||
+      ring.bottom <= r.top ||
+      ring.top >= r.bottom
+    )
+      return [];
+    const sides = [];
+    const inside = (lo, hi, a, b) => lo >= a - tol && hi <= b + tol;
+    if (c.x && inside(box.left, box.right, r.left, r.right))
+      sides.push(["left", r.left - ring.left], ["right", ring.right - r.right]);
+    if (c.y && inside(box.top, box.bottom, r.top, r.bottom))
+      sides.push(["top", r.top - ring.top], ["bottom", ring.bottom - r.bottom]);
+    const worst = sides.reduce((w, s) => (s[1] > w[1] ? s : w), ["", 0]);
+    if (worst[1] > tol)
+      out.push({
+        clipper: c.element,
+        overflow: c.overflow,
+        side: worst[0],
+        px: +worst[1].toFixed(2),
+      });
+  }
+  return out;
 }
 
 /**
@@ -872,6 +931,19 @@ export function evaluateProbes(raw, { url, viewport }) {
       );
   noteUnmapped("c12-tracked-uppercase-label", raw.c12?.candidates);
   settle("c12-tracked-uppercase-label", labels.length);
+
+  // C13 — a focused control's ring is cut by an ancestor whose overflow is not visible.
+  const focused = raw.c13?.mapped || [];
+  for (const f of focused)
+    for (const c of focusRingClips(f))
+      add(
+        "c13-focus-ring-clipped",
+        f.element,
+        `focus ring of ${f.name ? `"${f.name}" ` : ""}${f.element} is cut ${c.px}px at the ${c.side} edge by ${c.clipper} (overflow: ${c.overflow}) (> ${T.ringClipTolerancePx.value}px, repo-chosen tolerance)`,
+        { clippedPx: c.px, side: c.side, clipper: c.clipper, overflow: c.overflow },
+        T.ringClipTolerancePx,
+      );
+  settle("c13-focus-ring-clipped", focused.length);
 
   for (const r of PROBE_RULES) if (r.kind === "checklist") rules[r.id] = "checklist";
 
@@ -1514,6 +1586,198 @@ export function collectProbes(opts) {
 }
 /* c8 ignore stop */
 
+/**
+ * C13 collector — FOCUS each tab stop, find what paints its ring, and return the ring's box with
+ * the padding box of every ancestor that can clip it (gh#1543). Async and self-contained
+ * (serialised into Chromium). It moves focus, so it runs before any probe that clicks, and it
+ * gives focus back to whatever held it.
+ *
+ * WHERE THE RING IS. A react-aria checkbox/radio/switch focuses a visually hidden `<input>` and
+ * rings the `<label>` around it (`data-focus-visible`); a command search rings its wrapper through
+ * `:has(:focus-visible)`. So the carrier is the nearest of the control and its three closest
+ * ancestors whose outline or box-shadow CHANGED when focus arrived and that is not under
+ * `opacity: 0` — a resting card shadow is not a ring, and a control whose focus paints nothing is
+ * not measured here at all.
+ *
+ * WHAT CLIPS IT. An ancestor clips on an axis whose computed overflow is not `visible` — `hidden`,
+ * `clip`, `auto` and `scroll` alike — at its padding box, grown by `overflow-clip-margin` only when
+ * BOTH axes are `clip` (the only case Chromium honours it). An ancestor that is not in the ring's
+ * containing-block chain (a static box above an absolutely positioned control) does not clip it,
+ * and a fixed control is clipped by nothing but the viewport. `body` and `html` propagate their
+ * overflow to the viewport, so they are not counted either.
+ */
+/* c8 ignore start — runs inside the browser; exercised by the visual-audit-probes spawn test. */
+export async function collectFocusRings() {
+  const LIMIT = 400;
+  const px = (v) => parseFloat(v) || 0;
+  const self = (n) => {
+    let s = n.tagName.toLowerCase();
+    if (n.id) s += `#${n.id}`;
+    const slot = n.getAttribute("data-slot");
+    if (slot) s += `[data-slot=${slot}]`;
+    const cls = [...n.classList].find((c) => /^(ui-|app-|sb-|tb-)/.test(c)) || n.classList[0];
+    if (cls && !slot) s += `.${cls}`;
+    return s;
+  };
+  const desc = (el) => {
+    if (el.id) return self(el);
+    const anc = el.parentElement && el.parentElement.closest("[id]");
+    return anc ? `${self(anc)} ${self(el)}` : self(el);
+  };
+  const accName = (el) => {
+    const label = el.getAttribute("aria-label");
+    if (label && label.trim()) return label.trim().slice(0, 40);
+    const by = el.getAttribute("aria-labelledby");
+    const ref = by && document.getElementById(by.split(/\s+/)[0]);
+    const text = (ref || (el.labels && el.labels[0]) || el.closest("label") || el).textContent;
+    return (text || "").replace(/\s+/g, " ").trim().slice(0, 40);
+  };
+  /** Outward reach of the painted ring per side, or null when the element paints none. */
+  const reachOf = (s) => {
+    const reach = { left: -Infinity, right: -Infinity, top: -Infinity, bottom: -Infinity };
+    let painted = false;
+    if (s.outlineStyle !== "none" && px(s.outlineWidth) > 0) {
+      const r = px(s.outlineWidth) + px(s.outlineOffset);
+      for (const k in reach) reach[k] = Math.max(reach[k], r);
+      painted = true;
+    }
+    if (s.boxShadow && s.boxShadow !== "none") {
+      // Split on the commas BETWEEN shadows, not the ones inside rgb()/color-mix().
+      let depth = 0;
+      let cur = "";
+      const parts = [];
+      for (const ch of s.boxShadow) {
+        if (ch === "(") depth++;
+        if (ch === ")") depth--;
+        if (ch === "," && depth === 0) {
+          parts.push(cur);
+          cur = "";
+        } else cur += ch;
+      }
+      parts.push(cur);
+      for (const part of parts) {
+        if (/\binset\b/.test(part)) continue;
+        const alpha = part.match(/rgba?\([^)]*?[,/]\s*([\d.]+)\s*\)/);
+        if (alpha && Number(alpha[1]) === 0) continue;
+        const lengths = (part.replace(/[a-z-]+\([^)]*\)/gi, " ").match(/-?[\d.]+px/g) || []).map(
+          px,
+        );
+        const [x = 0, y = 0, blur = 0, spread = 0] = lengths;
+        const grow = spread + blur;
+        if (grow <= 0 && x === 0 && y === 0) continue;
+        reach.left = Math.max(reach.left, grow - x);
+        reach.right = Math.max(reach.right, grow + x);
+        reach.top = Math.max(reach.top, grow - y);
+        reach.bottom = Math.max(reach.bottom, grow + y);
+        painted = true;
+      }
+    }
+    return painted ? reach : null;
+  };
+  const signature = (el) => {
+    const s = getComputedStyle(el);
+    return `${s.outlineStyle} ${s.outlineWidth} ${s.outlineOffset} ${s.outlineColor} | ${s.boxShadow}`;
+  };
+  const chain = (el) => {
+    const out = [];
+    for (let a = el; a && out.length < 4 && a !== document.body; a = a.parentElement) out.push(a);
+    return out;
+  };
+  const clipsOf = (carrier) => {
+    const clips = [];
+    let position = getComputedStyle(carrier).position;
+    if (position === "fixed") return clips;
+    for (
+      let a = carrier.parentElement;
+      a && a !== document.body && a !== document.documentElement;
+      a = a.parentElement
+    ) {
+      const s = getComputedStyle(a);
+      const establishes = s.position !== "static" || s.transform !== "none" || s.contain !== "none";
+      // An absolutely positioned descendant escapes every overflow box below its containing block.
+      const skip = position === "absolute" && !establishes;
+      if (!skip && (s.overflowX !== "visible" || s.overflowY !== "visible")) {
+        if (a.clientWidth <= 1 || a.clientHeight <= 1) return null; // visually-hidden idiom
+        const r = a.getBoundingClientRect();
+        const both = s.overflowX === "clip" && s.overflowY === "clip";
+        const margin = both ? px(s.overflowClipMargin) : 0;
+        const left = r.left + a.clientLeft - margin;
+        const top = r.top + a.clientTop - margin;
+        clips.push({
+          element: desc(a),
+          overflow: s.overflowX === s.overflowY ? s.overflowX : `${s.overflowX} ${s.overflowY}`,
+          x: s.overflowX !== "visible",
+          y: s.overflowY !== "visible",
+          margin,
+          rect: {
+            left,
+            top,
+            right: left + a.clientWidth + 2 * margin,
+            bottom: top + a.clientHeight + 2 * margin,
+          },
+        });
+      }
+      if (!skip && s.position !== "static") position = s.position;
+      if (position === "fixed") break;
+    }
+    return clips;
+  };
+
+  const SELECTOR =
+    "a[href], button, input:not([type=hidden]), select, textarea, summary, [tabindex], [contenteditable=''], [contenteditable=true]";
+  const stops = [...document.querySelectorAll(SELECTOR)].filter(
+    (el) => el.tabIndex >= 0 && !el.disabled && !el.closest("[inert], [aria-hidden=true]"),
+  );
+  const previous = document.activeElement;
+  const mapped = [];
+  for (const el of stops.slice(0, LIMIT)) {
+    const near = chain(el);
+    const shown = near.some((n) => {
+      const r = n.getBoundingClientRect();
+      return r.width > 1 && r.height > 1;
+    });
+    if (!shown || getComputedStyle(el).visibility === "hidden") continue;
+    const before = near.map(signature);
+    el.focus({ preventScroll: true });
+    if (document.activeElement !== el) continue;
+    // react-aria mirrors focus-visible as `data-focus-visible` in a React commit: let it land.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    // A ring on an `opacity: 0` box paints nothing: the kit's choice inputs sit invisibly over
+    // their box, and the browser's own outline on them changes on focus all the same.
+    const opaque = (n) => {
+      for (let a = n; a && a !== document.body; a = a.parentElement)
+        if (getComputedStyle(a).opacity === "0") return false;
+      return true;
+    };
+    const carrier = near.find(
+      (n, k) => signature(n) !== before[k] && opaque(n) && reachOf(getComputedStyle(n)),
+    );
+    const reach = carrier && reachOf(getComputedStyle(carrier));
+    if (carrier && reach) {
+      const b = carrier.getBoundingClientRect();
+      const clips = b.width > 1 && b.height > 1 ? clipsOf(carrier) : null;
+      if (clips)
+        mapped.push({
+          element: desc(carrier),
+          name: accName(el),
+          box: { left: b.left, top: b.top, right: b.right, bottom: b.bottom },
+          ring: {
+            left: b.left - reach.left,
+            top: b.top - reach.top,
+            right: b.right + reach.right,
+            bottom: b.bottom + reach.bottom,
+          },
+          clips,
+        });
+    }
+    el.blur();
+  }
+  if (previous && previous !== document.body && typeof previous.focus === "function")
+    previous.focus({ preventScroll: true });
+  return { mapped };
+}
+/* c8 ignore stop */
+
 // ─────────────────────────────────────────────────────────────────────────────────────────────
 // Evidence modes (gh#1316): `--text-spacing` (WCAG 2.2 SC 1.4.12) and `--text-zoom 200` (SC 1.4.4).
 // A consumer reported "W12 0/0/0" from captures byte-identical to the base render — the override
@@ -1778,6 +2042,8 @@ async function runEvidence(page, url, viewport, mode, { zoom, screenshots }) {
 async function runProbes(page, url, viewport) {
   const opts = { width: viewport.width, compactBelow: COMPACT_BELOW, desktopFrom: DESKTOP_FROM };
   const raw = await page.evaluate(collectProbes, opts);
+  // C13 moves focus, so it runs BEFORE the activations below, which click.
+  raw.c13 = await page.evaluate(collectFocusRings);
   const menuState = () =>
     page.evaluate(() => {
       const vis = (el) => {
@@ -2059,7 +2325,7 @@ async function audit(
             if (seen) seen.viewports.push(vp);
             else findings.push({ ...f, viewport: vp, viewports: [vp] });
           }
-          // 3) responsive probes C01–C12 for this cell.
+          // 3) responsive probes C01–C13 for this cell.
           const probed = await runProbes(page, url, viewport);
           findings.push(...probed.findings);
           unmapped.push(...probed.unmapped);

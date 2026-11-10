@@ -147,6 +147,14 @@ const COMPACT: Case[] = [
   C("c12/repaired.html", "c12-tracked-uppercase-label", "pass"),
   C("c12/clean.html", "c12-tracked-uppercase-label", "pass"),
   C("c12/unmapped.html", "c12-tracked-uppercase-label", "unmapped"),
+
+  // gh#1543 — a focused control's ring cut by an overflow ancestor: hidden, and a scroll container.
+  C("c13/bad.html", "c13-focus-ring-clipped", "fail", [["c13-focus-ring-clipped", "#c13-flush"]]),
+  C("c13/bad-shadow.html", "c13-focus-ring-clipped", "fail", [
+    ["c13-focus-ring-clipped", "#c13-halo"],
+  ]),
+  C("c13/repaired.html", "c13-focus-ring-clipped", "pass"),
+  C("c13/clean.html", "c13-focus-ring-clipped", "pass"),
 ];
 
 const DESKTOP: Case[] = [
@@ -191,7 +199,7 @@ function expectCases(result: Result | null, out: string, cases: Case[]) {
 }
 
 describe("visual-audit probes — calibration controls (bad red · repaired green · clean green)", () => {
-  it("compact controls (390×844): C01 C02 C04 C05 C06 C12", async () => {
+  it("compact controls (390×844): C01 C02 C04 C05 C06 C12 C13", async () => {
     const { result, out } = await audit(
       "390x844",
       COMPACT.map((c) => c.route),

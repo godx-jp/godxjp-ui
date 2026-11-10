@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { Badge } from "../../data-display/badge";
+import { AppProvider } from "../../../app/app-provider";
 import { OrgSwitcher } from "../org-switcher";
 
 const shellStyles = readFileSync(resolve(process.cwd(), "src/styles/shell-layout.css"), "utf8");
@@ -481,5 +482,110 @@ describe("OrgSwitcher responsive contract shares the Sheet breakpoint token (gh#
       /--dialog-space-inset:\s*var\(\s*--dialog-space-y\)\s*var\(\s*--org-switcher-sheet-inset\)/,
     );
     expect(block).toMatch(/--dialog-space-x:\s*var\(\s*--org-switcher-sheet-inset\)/);
+  });
+});
+
+describe("OrgSwitcher personal workspace section (#1556)", () => {
+  // The personal entry is FIRST in the input on purpose: the section order is the component's.
+  const withPersonal = [
+    { id: "me", name: "Pham Thai Duong", meta: "Personal", kind: "personal" as const },
+    { id: "dxs", name: "DXS Holdings", meta: "Owner" },
+    { id: "acme", name: "Acme Trading", meta: "Member", kind: "organization" as const },
+  ];
+  const names = () => screen.getAllByRole("option").map((o) => o.textContent);
+  const renderOpen = (props: Partial<React.ComponentProps<typeof OrgSwitcher>> = {}) =>
+    renderWithUi(
+      <OrgSwitcher
+        organizations={withPersonal}
+        value="dxs"
+        labels={labels}
+        responsive="popover"
+        open
+        {...props}
+      />,
+    );
+
+  it("lists organizations first, then the personal entry in its own named section", async () => {
+    renderOpen();
+    await screen.findByRole("option", { name: /DXS Holdings/ });
+    expect(names()).toEqual([
+      expect.stringContaining("DXS Holdings"),
+      expect.stringContaining("Acme Trading"),
+      expect.stringContaining("Pham Thai Duong"),
+    ]);
+    // The section is a named group (the kit's default in the test locale, vi), holding only the
+    // personal row.
+    const section = screen.getByRole("group", { name: "Cá nhân" });
+    expect(section).toContainElement(screen.getByRole("option", { name: /Pham Thai Duong/ }));
+    expect(section).not.toContainElement(screen.getByRole("option", { name: /DXS Holdings/ }));
+  });
+
+  it("takes the section title from labels.personal, and localizes the default", async () => {
+    const { unmount } = renderOpen({ labels: { ...labels, personal: "My workspace" } });
+    expect(await screen.findByRole("group", { name: "My workspace" })).toBeInTheDocument();
+    unmount();
+    renderWithUi(
+      <AppProvider persist={false} defaultLocale="ja">
+        <OrgSwitcher
+          organizations={withPersonal}
+          value="dxs"
+          labels={labels}
+          responsive="popover"
+          open
+        />
+      </AppProvider>,
+    );
+    expect(await screen.findByRole("group", { name: "個人" })).toBeInTheDocument();
+  });
+
+  it("search filters organizations only; the personal entry stays listed, and last", async () => {
+    const user = userEvent.setup();
+    renderOpen();
+    await user.type(await screen.findByLabelText("Search organizations"), "Acme");
+    await waitFor(() => expect(screen.getAllByRole("option")).toHaveLength(2));
+    expect(names()).toEqual([
+      expect.stringContaining("Acme Trading"),
+      expect.stringContaining("Pham Thai Duong"),
+    ]);
+    expect(screen.queryByText("No organizations")).not.toBeInTheDocument();
+
+    // No organization matches: the empty line is shown, and the personal entry is still there.
+    await user.clear(screen.getByLabelText("Search organizations"));
+    await user.type(screen.getByLabelText("Search organizations"), "zzzz");
+    await waitFor(() => expect(screen.getAllByRole("option")).toHaveLength(1));
+    expect(screen.getByRole("option", { name: /Pham Thai Duong/ })).toBeInTheDocument();
+    expect(screen.getByText("No organizations")).toBeInTheDocument();
+  });
+
+  it("selects the personal entry like any row and draws its mark round, on the trigger too", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    renderOpen({ onValueChange });
+    const row = await screen.findByRole("option", { name: /Pham Thai Duong/ });
+    expect(row.querySelector(".ui-org-switcher-avatar")).toHaveAttribute("data-kind", "personal");
+    expect(
+      screen.getByRole("option", { name: /DXS Holdings/ }).querySelector(".ui-org-switcher-avatar"),
+    ).not.toHaveAttribute("data-kind");
+    await user.click(row);
+    expect(onValueChange).toHaveBeenCalledWith("me");
+
+    renderWithUi(
+      <OrgSwitcher organizations={withPersonal} value="me" labels={labels} responsive="popover" />,
+    );
+    const trigger = screen.getByRole("button", { name: "Current organization: Pham Thai Duong" });
+    expect(trigger.querySelector(".ui-org-switcher-avatar")).toHaveAttribute(
+      "data-kind",
+      "personal",
+    );
+    expect(shellStyles).toMatch(
+      /\.ui-org-switcher-avatar\[data-kind="personal"\]\s*\{\s*border-radius:\s*var\(--radius-pill\);/,
+    );
+  });
+
+  it("without personal entries renders one unnamed group, exactly as before", async () => {
+    renderOpen({ organizations });
+    await screen.findByRole("option", { name: /DXS Holdings/ });
+    expect(screen.queryByRole("group", { name: "Cá nhân" })).not.toBeInTheDocument();
+    expect(names()).toHaveLength(2);
   });
 });

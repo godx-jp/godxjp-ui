@@ -371,6 +371,7 @@
       "noDetail": "Select a role to see its detail"
     },
     "orgSwitcher": {
+      "personal": "Personal",
       "hintMove": "Move",
       "hintSelect": "Select",
       "hintClose": "Close"

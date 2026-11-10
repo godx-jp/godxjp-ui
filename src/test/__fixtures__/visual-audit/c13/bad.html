@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C13 bad: a flush control's ring cut by an overflow:hidden panel</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      button {
+        font: inherit;
+        min-width: 32px;
+        min-height: 32px;
+        margin: 0;
+      }
+      .ring:focus-visible {
+        outline: 1px solid #0b5;
+        outline-offset: 2px;
+      }
+      .panel {
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c13-panel" class="panel">
+      <button id="c13-flush" class="ring">Option X</button>
+    </div>
+  </body>
+</html>

@@ -1609,6 +1609,11 @@
     height: 100%;
   }
 
+  /* The account's own workspace is a person, not a company: a circular mark (#1556). */
+  .ui-org-switcher-avatar[data-kind="personal"] {
+    border-radius: var(--radius-pill);
+  }
+
   /* Nothing selected: a glyph at icon size in the muted ink, not an owned avatar filling the box. */
   .ui-org-switcher-avatar[data-placeholder="true"] {
     color: hsl(var(--muted-foreground));

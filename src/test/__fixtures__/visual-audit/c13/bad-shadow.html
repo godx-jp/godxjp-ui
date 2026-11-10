@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C13 bad: a focus halo cut by a scroll container with no block padding</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      button {
+        font: inherit;
+        min-width: 32px;
+        min-height: 32px;
+        margin: 0;
+      }
+      .ring:focus-visible {
+        outline: 1px solid #0b5;
+        outline-offset: 2px;
+      }
+      nav {
+        display: flex;
+        gap: 8px;
+        overflow: auto;
+        padding-inline: 8px;
+      }
+      .halo {
+        outline: none;
+      }
+      .halo:focus-visible {
+        box-shadow: 0 0 0 2px rgb(0 120 80 / 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <nav id="c13-nav" aria-label="Pages">
+      <button id="c13-halo" class="halo">Next</button>
+    </nav>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C13 clean: room for the ring, inset rings, scrolled and hidden controls</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      button {
+        font: inherit;
+        min-width: 32px;
+        min-height: 32px;
+        margin: 0;
+      }
+      .ring:focus-visible {
+        outline: 1px solid #0b5;
+        outline-offset: 2px;
+      }
+      .padded {
+        overflow: hidden;
+        padding: 4px;
+      }
+      .inset:focus-visible {
+        outline: 2px solid #0b5;
+        outline-offset: -2px;
+      }
+      .scroller {
+        overflow: auto;
+        height: 60px;
+        padding: 4px;
+      }
+      .scroller button {
+        display: block;
+        height: 40px;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+      .drawer {
+        overflow: hidden;
+        width: 200px;
+      }
+      .track {
+        transform: translateX(-300px);
+      }
+      .abs-host {
+        overflow: hidden;
+        height: 40px;
+      }
+      .abs {
+        position: absolute;
+        top: 200px;
+        inset-inline-start: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="padded"><button class="ring">Room for the ring</button></div>
+    <div style="overflow: hidden"><button class="inset">Inset ring</button></div>
+    <!-- A control half-scrolled out of a list is scrolled content, not a cut ring. -->
+    <div class="scroller"><button class="ring">One</button><button class="ring">Two</button></div>
+    <span class="sr-only"><button class="ring">Visually hidden</button></span>
+    <div class="drawer">
+      <div class="track"><button class="ring">Off-screen slide</button></div>
+    </div>
+    <!-- Positioned out of a static overflow box: that box is not in its containing-block chain. -->
+    <div class="abs-host"><button class="abs ring" aria-label="Escaped"></button></div>
+    <button class="ring">No ancestor clips</button>
+  </body>
+</html>
