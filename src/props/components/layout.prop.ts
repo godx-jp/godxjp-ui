@@ -1423,6 +1423,13 @@ export type OrgSwitcherOrganization = {
    */
   badgeLabel?: string;
   disabled?: boolean;
+  /**
+   * `"personal"` marks the account's own workspace, which is not a company. Personal entries are
+   * listed in their own labelled section AFTER the organizations, whatever their position in
+   * `organizations`, with a circular avatar; search filters the organizations only and keeps them
+   * listed. Default `"organization"`.
+   */
+  kind?: "organization" | "personal";
 };
 
 /** Localized copy owned by the consuming product, never hard-coded by the component. */
@@ -1433,6 +1440,8 @@ export type OrgSwitcherLabels = {
   empty: string;
   loading: string;
   retry?: string;
+  /** Heading of the personal section (`kind: "personal"`). Defaults to the kit's "Personal" / 個人. */
+  personal?: string;
 };
 
 /** @see OrgSwitcher */
