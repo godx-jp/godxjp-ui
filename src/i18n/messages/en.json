@@ -579,7 +579,8 @@
       }
     },
     "breadcrumb": {
-      "ariaLabel": "Breadcrumb"
+      "ariaLabel": "Breadcrumb",
+      "showHidden": "Show hidden path"
     },
     "anchor": {
       "ariaLabel": "On this page"

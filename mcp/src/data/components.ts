@@ -3022,7 +3022,7 @@ export function HandyInbound() {
         name: "scrollRef",
         type: "React.Ref<HTMLElement>",
         description:
-          "Ref to the navigation's scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136). The nav itself scrolls the aria-current=\"page\" row into view on mount and on activeId change, by the least amount and only when that row is not already whole in view, so a restored position that shows it is kept (GDX-1456).",
+          'Ref to the navigation\'s scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136). The nav itself scrolls the aria-current="page" row into view on mount and on activeId change, by the least amount and only when that row is not already whole in view, so a restored position that shows it is kept (GDX-1456).',
       },
       {
         name: "activeId",
@@ -4329,7 +4329,7 @@ export function TermsPage() {
         type: "BreadcrumbItemProp[]",
         required: true,
         description:
-          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, with the full label as aria-label and title on the clipped element (no duplicate aria-describedby), showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
+          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, with the full label as aria-label and title on the clipped element (no duplicate aria-describedby), showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Ancestor (link) segments only: the current page is never cut (GDX-1489) — its `ellipsis` is ignored, it keeps its whole label and wraps if even the whole line cannot hold it, while the ancestors give way down to `--breadcrumb-item-min-inline-size` (default `2.5em`). `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
       },
       {
         name: "separator",
@@ -4342,6 +4342,24 @@ export function TermsPage() {
         type: "(item: BreadcrumbItemProp, info: { index: number; isLast: boolean; items: BreadcrumbItemProp[] }) => React.ReactNode",
         description:
           "Ant Design `itemRender`. Replaces ONE segment's body while Breadcrumb keeps owning the `<nav>` landmark, the `<ol>`/`<li>`, the separators and `aria-current`. Use it to hand the trail a router `<Link>` (Inertia, react-router) instead of a bare `<a>`.",
+      },
+      {
+        name: "maxItems",
+        type: "number",
+        description:
+          'Fold the middle of a long trail (GDX-1489; MUI Breadcrumbs\' name and defaults — antd has none). With MORE than maxItems crumbs, the first itemsBeforeCollapse and the last itemsAfterCollapse stay and the ones between become one "…" menu button (localized name "Show hidden path") whose entries link to them. Unset: never folds.',
+      },
+      {
+        name: "itemsBeforeCollapse",
+        type: "number",
+        defaultValue: "1",
+        description: "Crumbs kept before the fold when maxItems folds the trail.",
+      },
+      {
+        name: "itemsAfterCollapse",
+        type: "number",
+        defaultValue: "1",
+        description: "Crumbs kept after the fold, the current page included (at least 1).",
       },
       {
         name: "aria-label",

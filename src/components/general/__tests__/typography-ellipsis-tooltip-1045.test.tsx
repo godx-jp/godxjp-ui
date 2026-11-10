@@ -41,7 +41,9 @@ const LONG = ${JSON.stringify(LONG)};
 const crumbs = [
   { label: "Home", to: "#home" },
   { label: LONG, to: "#suite", ellipsis: true },
-  { label: LONG, ellipsis: true },
+  { label: LONG, to: "#case", ellipsis: true },
+  // The current page asks for ellipsis too and is never cut (GDX-1489).
+  { label: "Detail", ellipsis: true },
 ];
 
 createRoot(document.getElementById("root")).render(
@@ -258,7 +260,7 @@ describe("Text ellipsis tooltip + DataTable header + Breadcrumb ellipsis (Chromi
       await page.mouse.move(1200, 1350);
       await expectNoTooltip(page);
 
-      await page.hover("#crumb .ui-breadcrumb-current");
+      await page.hover("#crumb a.ui-breadcrumb-ellipsis");
       await expectTooltip(page);
     } finally {
       await page.close();

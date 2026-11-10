@@ -75,6 +75,9 @@
   /* `BreadcrumbItemProp.ellipsis` (gh#1046) — the widest a truncating crumb may grow. `none` = it
    * only cuts when the one-line trail runs out of room; a theme may cap it (e.g. `16em`). */
   --breadcrumb-item-max-inline-size: none;
+  /* GDX-1489 — the narrowest an ancestor crumb gives way to, so a separator and "…" stay
+   * readable beside a current page that takes the rest of the line. */
+  --breadcrumb-item-min-inline-size: 2.5em;
   --menu-shortcut-font-size: var(
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))

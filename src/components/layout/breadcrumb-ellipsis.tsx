@@ -41,6 +41,15 @@ function labelText(label: ReactNode): string {
     .join("");
 }
 
+/**
+ * The crumb as it renders: the current page is never cut (GDX-1489), so its `ellipsis` is
+ * dropped. Only ancestors give way; the current crumb keeps its whole label and wraps if even the
+ * whole line cannot hold it.
+ */
+export function shownCrumb(item: BreadcrumbItemProp, isCurrent: boolean): BreadcrumbItemProp {
+  return isCurrent && item.ellipsis ? { ...item, ellipsis: undefined } : item;
+}
+
 /** `data-ellipsis` for the `<ol>`: present when any crumb truncates, so the trail stays one line. */
 export function trailEllipsis(items: BreadcrumbProp): "" | undefined {
   return items.some((item) => item.ellipsis) ? "" : undefined;

@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Breadcrumb never cuts the current page, and can fold its middle (GDX-1489)
+
+- **Changed** `BreadcrumbItemProp.ellipsis` applies to ancestor crumbs only, in `Breadcrumb` and in `PageContainer`'s trail: the current page is never cut. Its `ellipsis` is ignored; it keeps its whole label on one line while that fits and wraps when even the whole line cannot hold it, and the ancestors give way first, down to the new `--breadcrumb-item-min-inline-size` (default `2.5em`, a separator and "…"). Measured on GDX at 320, before: three `ellipsis` crumbs shrank together and the current page read 「一般設…」 (42 of 50px); after: the current page whole, the ancestors cut, no page overflow at 320 and 390. A current crumb that asked for `ellipsis` loses the recovered `aria-label` / `title` it carried while clipped (it is no longer clipped; its text is its name).
+- **Added** `Breadcrumb maxItems`, `itemsBeforeCollapse` (default 1) and `itemsAfterCollapse` (default 1), MUI Breadcrumbs' names and defaults (antd has none): with more than `maxItems` crumbs, the middle ones become one "…" menu button (localized name: Show hidden path / 途中の階層を表示 / Hiện các cấp ở giữa) whose entries link to them. Unset: never folds.
+
 ### A focus ring drawn inside is never cut, and C13 tolerates sub-pixel (GDX-1484)
 
 - **Fixed** visual-audit C13 reported focus rings cut where a consumer cannot make room, measured on GDX: a full-height `TopbarItem` in a `Topbar overflow="menu"` bar (which must stay `overflow: hidden` to measure its clusters) and a link `ListRow` flush in a scrolling `CardContent` lost their whole 2px halo, and an `EditorialPillNav` pill (the nav scrolls sideways) lost 3–4.5px of its outline. Those carriers already drew their outline inside; the halo is now drawn inside too (`--focus-ring-glow-width` just inside the mark, same colour and alpha; a contained carrier keeps its surface gap first), and a pill in an `EditorialPillNav` takes the inner mark of the rail links. Applies to `a.ui-list-row`, `.ui-topbar-item`, `.sb-nav-item`, focusable table rows, the bar app-setting picker, legal-document TOC links and scroll-area anchor links. Geometry does not move.

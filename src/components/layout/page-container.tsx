@@ -1,12 +1,19 @@
 /** PageContainer — mandatory shell for every admin page (the PageHeader equivalent). */
-import { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { scrollParent, useInView } from "../../lib/hooks";
 import { useToastStickyBarClearance } from "../../lib/toast-clearance";
 import { cn } from "../../lib/utils";
-import { BreadcrumbCrumbText, trailEllipsis } from "./breadcrumb-ellipsis";
+import { BreadcrumbCrumbText, shownCrumb, trailEllipsis } from "./breadcrumb-ellipsis";
 import { densityClass, pageContainerVariantClass, padStyle } from "../../lib/variants";
 import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
 
@@ -203,10 +210,22 @@ function PageContainerRoot({
               }
               className="ui-breadcrumb"
             >
-              <ol className="ui-breadcrumb-list" data-ellipsis={trailEllipsis(breadcrumb)}>
-                {breadcrumb.map((item, i) => {
+              <ol
+                className="ui-breadcrumb-list"
+                data-ellipsis={trailEllipsis(
+                  breadcrumb.map((crumb, i) =>
+                    shownCrumb(
+                      crumb,
+                      i === breadcrumb.length - 1 && breadcrumbCurrentItem === "last",
+                    ),
+                  ),
+                )}
+              >
+                {breadcrumb.map((crumb, i) => {
                   const isLast = i === breadcrumb.length - 1;
                   const isCurrent = isLast && breadcrumbCurrentItem === "last";
+                  // The current page is never cut (GDX-1489).
+                  const item = shownCrumb(crumb, isCurrent);
                   return (
                     // `--space-inline-xs` gap the previous `.ui-inline-xs` gave, and it brings
                     // `.ui-breadcrumb-item svg { 0.75rem }` with it, so the separator glyph no
@@ -217,6 +236,12 @@ function PageContainerRoot({
                       key={i}
                       className="ui-breadcrumb-item"
                       data-ellipsis={item.ellipsis ? "" : undefined}
+                      data-current={isCurrent ? "" : undefined}
+                      style={
+                        isCurrent && i > 0
+                          ? ({ "--breadcrumb-crumbs-before": i } as CSSProperties)
+                          : undefined
+                      }
                     >
                       {/* Leads the crumb it introduces, as in <Breadcrumb> (gh#1308). */}
                       {i > 0 ? (

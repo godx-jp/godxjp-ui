@@ -569,7 +569,8 @@
       }
     },
     "breadcrumb": {
-      "ariaLabel": "Đường dẫn"
+      "ariaLabel": "Đường dẫn",
+      "showHidden": "Hiện các cấp ở giữa"
     },
     "anchor": {
       "ariaLabel": "Trong trang này"
