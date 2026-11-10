@@ -1456,6 +1456,61 @@
     white-space: normal;
     overflow-wrap: anywhere;
   }
+  /* INSET DIVIDERS inside `Card variant="grouped"` (the inset grouped list). A border cannot start
+   * part-way along its own edge, so the row's full-width `border-block-end` gives way to a
+   * hairline drawn by `::after` from the row TEXT edge to the card's end edge — the separator Apple
+   * draws in a grouped table. Without a leading slot the text edge is the row inset; with one the
+   * line also clears the leading avatar/icon and its gap. Both are knobs (`initial`, default
+   * resolved here). The `li` wrapper of an `as="li" asChild` row carries the line instead of its
+   * row, exactly as it carries the border outside a group. Logical insets only — it flips in RTL. */
+  [data-slot="card"][data-variant="grouped"]
+    :is([data-slot="list-row"], [data-slot="list-row-item"]):not(:last-child) {
+    position: relative;
+    border-block-end-width: 0;
+  }
+  [data-slot="card"][data-variant="grouped"]
+    :is([data-slot="list-row"], [data-slot="list-row-item"]):not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: var(--list-row-divider-inset, var(--list-row-padding-x));
+    inset-inline-end: 0;
+    border-block-end: var(--list-row-border, var(--stroke-hairline) solid hsl(var(--border)));
+    pointer-events: none;
+  }
+  [data-slot="card"][data-variant="grouped"]
+    :is([data-slot="list-row"], [data-slot="list-row-item"]):not(:last-child):has(
+      [data-slot="list-row-leading"]
+    )::after {
+    inset-inline-start: var(
+      --list-row-divider-leading-inset,
+      calc(
+        var(--list-row-padding-x) + var(--avatar-size, var(--control-height)) + var(--list-row-gap)
+      )
+    );
+  }
+  /* A Descriptions in the same group reads as rows of the same list: the ROW inset and rhythm of a
+   * ListRow, no grid gap between items, and the same inset hairline. */
+  /* Set through the knobs the `dl` already reads (its gap is a utility, which outranks this layer),
+   * and the theme-wide ruled-row border is switched off here so a grouped item never draws two. */
+  [data-slot="card"][data-variant="grouped"] [data-slot="descriptions"] {
+    --descriptions-row-gap: 0px;
+    --descriptions-row-border: none;
+  }
+  [data-slot="card"][data-variant="grouped"] [data-slot="descriptions-item"] {
+    position: relative;
+    padding: var(--list-row-padding-y) var(--list-row-padding-x);
+  }
+  [data-slot="card"][data-variant="grouped"]
+    [data-slot="descriptions-item"]:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: var(--list-row-divider-inset, var(--list-row-padding-x));
+    inset-inline-end: 0;
+    border-block-end: var(--list-row-border, var(--stroke-hairline) solid hsl(var(--border)));
+    pointer-events: none;
+  }
   [data-slot="list-row"][data-density="compact"] [data-slot="list-row-body"] {
     min-inline-size: min(var(--list-row-compact-body-min-width, 6rem), 100%);
     flex-basis: var(--list-row-compact-body-min-width, 6rem);

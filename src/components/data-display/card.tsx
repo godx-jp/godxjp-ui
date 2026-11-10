@@ -34,8 +34,13 @@ type CardAccentPlacement = "edge" | "perimeter";
  * values exist: neither one substitutes for the other. `dashed` is an EDITING / drop area: no fill,
  * no elevation, a dashed perimeter (`--card-dashed-border-color` / `-width`); `accent` retints the
  * dash, e.g. `<Card variant="dashed" accent="primary">` around a layout being edited.
+ * `grouped` is the INSET GROUPED LIST (Apple's `.insetGrouped` list style, the Settings look):
+ * `borderless`'s fill with no edge, and inside it ListRow / Descriptions rows separate with a
+ * hairline INSET to the row's text edge instead of running card-wide (`--list-row-divider-inset`,
+ * `--list-row-divider-leading-inset`). Rows go in a `CardContent flush`.
  */
-type CardVariant = "default" | "muted" | "outline" | "borderless" | "featured" | "dashed";
+type CardVariant =
+  "default" | "muted" | "outline" | "borderless" | "featured" | "dashed" | "grouped";
 /** Padding density — base 16px · tight 12px · cozy 20px. */
 type CardDensity = "tight" | "cozy";
 

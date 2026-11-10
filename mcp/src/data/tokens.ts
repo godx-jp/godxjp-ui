@@ -1322,6 +1322,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'ListRow `density="compact"` inline-actions geometry — the compact invitation/history row: a 36px leading Avatar, a shrinkable title+description and one or two small trailing Buttons on ONE line inside the canonical 358px card (326px content). `--list-row-compact-body-min-width` (6rem) is the compact body threshold — the default 12rem `--list-row-body-min-width` is what forced the actions (and a history Badge + date) onto a second line at 390px; it is consumed as `min(<token>, 100%)` exactly like the default knob, so the #224 wrap contract is intact and a cluster that genuinely cannot fit still wraps instead of widening the page root. `--list-row-compact-{padding-y,padding-x,gap}` are declared `initial` with the density-scaled default at the CALL SITE (`var(--space-2)` block, `var(--list-row-padding-x)` inline, `var(--space-2)` gap) — a `:root` binding would freeze compact rows at the `:root` density. Measured at 390px: invitation row 62px (was 126px, actions wrapped), history row 41px (was 114px), documentElement scrollWidth === clientWidth.',
   },
   {
+    name: "--list-row-divider-{inset,leading-inset}",
+    category: "component",
+    tier: "component",
+    role: 'ListRow INSET DIVIDER inside `Card variant="grouped"` (the inset grouped list, Apple `.insetGrouped`). In a group the row hairline is drawn by `::after` from the row TEXT edge to the card end edge instead of `border-block-end` running card-wide. `--list-row-divider-inset` is where it starts on a row with no leading slot (default `var(--list-row-padding-x)`); `--list-row-divider-leading-inset` on a row with a leading avatar/icon (default `calc(var(--list-row-padding-x) + var(--avatar-size) + var(--list-row-gap))`, i.e. past the 32px tile). Both `initial` with the default resolved at the call site. The hairline itself is still `--list-row-border`. A Descriptions inside the same group takes the row inset and the same line. Set 0 for card-wide lines. Outside a grouped card nothing reads these.',
+  },
+  {
     name: "--list-row-{body-min-width,trailing-gap,indicator-size,read-background,unread-background,indicator-color}",
     category: "component",
     tier: "component",

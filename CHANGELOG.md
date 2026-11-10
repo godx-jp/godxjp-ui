@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Hosted-identity redesign kit: inset grouped list, code boxes, step bar, frosted auth bar, display tracking
+
+- **Added** `Card variant="grouped"` — the inset grouped list (Apple `.insetGrouped`, the Settings look): borderless fill, and the `ListRow` / `Descriptions` rows inside its `CardContent flush` separate with a hairline INSET to the row text instead of a card-wide rule. Without a leading slot the line starts at `--list-row-divider-inset` (default `--list-row-padding-x`), with one at `--list-row-divider-leading-inset` (default padding + `--avatar-size` + `--list-row-gap`); it runs to the card end edge, none under the last row, logical in RTL. A `Descriptions` in the group takes the row inset and rhythm (no grid gap) and the same line, so key/value rows and entity rows read as one list. Header/footer captions are `<Flex pad={{ inline: 4 }}><Text size="sm" tone="muted">`, which starts on the row text. Measured in Chromium: line start = row text ±1px, with and without a leading avatar, in LTR and RTL.
+
 ### TopbarSearch wide measure; Avatar stable categorical colour and xl tile; AuthFooter body face
 
 - **Added** `TopbarSearch measure?: "default" | "wide"` (default `"default"`, 16rem). `"wide"` reads `--topbar-search-wide-inline-size` (26.25rem) for a home / portal search; it still shrinks toward the text floor when the bar is short of room.

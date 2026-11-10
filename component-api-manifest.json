@@ -3410,7 +3410,7 @@
           "origin": "owned",
           "required": false,
           "type": "CardVariant | undefined",
-          "values": ["default", "muted", "outline", "dashed", "borderless", "featured"],
+          "values": ["default", "muted", "outline", "dashed", "borderless", "featured", "grouped"],
           "declaredIn": ["src/components/data-display/card.tsx"]
         }
       ]
@@ -11465,7 +11465,7 @@
           "origin": "owned",
           "required": false,
           "type": "InputOTPGroupAppearanceProp | undefined",
-          "values": ["slots", "grouped"],
+          "values": ["grouped", "slots"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]

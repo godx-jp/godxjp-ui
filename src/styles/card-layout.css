@@ -125,6 +125,14 @@
     border-width: 0;
   }
 
+  /* `grouped` — the inset grouped list (Apple `.insetGrouped`, the Settings look). The surface is
+   * `borderless`'s: fill kept, no edge; the group is told apart from the page by fill alone, which
+   * is why it belongs on a muted page ground (the auth shell's). What makes it a GROUP is the row
+   * chrome inside it, scoped in data-display-layout.css: hairlines inset to the row text. */
+  [data-slot="card"][data-variant="grouped"] {
+    border-width: 0;
+  }
+
   /* `featured` = the brand-toned perimeter. */
   [data-slot="card"][data-variant="featured"] {
     border-color: var(--card-featured-border-color, hsl(var(--primary)));

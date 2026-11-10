@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
   Descriptions,
+  ListRow,
   Table,
   TableBody,
   TableCell,
@@ -126,6 +127,49 @@ export default function Demo() {
               <CardContent>強調サーフェス</CardContent>
             </Card>
           </ResponsiveGrid>
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            grouped · インセットのグループ化リスト（行の区切り線は本文の位置から）
+          </Text>
+          <Flex direction="col" gap="xs">
+            <Flex pad={{ inline: 4 }}>
+              <Text size="sm" tone="muted">
+                リクエストされる権限 · 2
+              </Text>
+            </Flex>
+            <Card variant="grouped">
+              <CardContent flush>
+                <Flex as="ul" marker="none" direction="col" gap="none">
+                  <ListRow
+                    as="li"
+                    title="あなたのアカウントでのサインイン"
+                    trailing={
+                      <Text mono size="xs" tone="muted">
+                        openid
+                      </Text>
+                    }
+                  />
+                  <ListRow
+                    as="li"
+                    title="基本プロフィール"
+                    description="氏名・言語・タイムゾーンなど"
+                    trailing={
+                      <Text mono size="xs" tone="muted">
+                        profile
+                      </Text>
+                    }
+                  />
+                </Flex>
+              </CardContent>
+            </Card>
+            <Flex pad={{ inline: 4 }}>
+              <Text size="sm" tone="muted">
+                承認すると、このデバイスが表示された権限でアカウントに接続されます。
+              </Text>
+            </Flex>
+          </Flex>
         </Flex>
 
         <Flex direction="col" gap="sm">

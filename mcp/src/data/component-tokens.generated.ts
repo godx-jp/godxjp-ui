@@ -10464,6 +10464,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Diameter of the read/unread indicator dot; the gutter is reserved on read rows too so the titles of a mixed list stay on one optical axis."
   },
   {
+    "name": "--list-row-divider-inset",
+    "value": "initial",
+    "description": "INSET DIVIDER inside `Card variant=\"grouped\"` — where the row hairline STARTS, measured from the row's inline-start edge; it always runs to the card's end edge. `initial`, defaults resolved at the call site so a density/[data-tenant] scope that restates the row inset reaches it: a row without a leading slot starts at its text, var(--list-row-padding-x); a row with one clears the leading avatar/icon too, calc(var(--list-row-padding-x) + var(--avatar-size) + var(--list-row-gap)). Set 0 for card-wide lines in a group."
+  },
+  {
+    "name": "--list-row-divider-leading-inset",
+    "value": "initial",
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+  },
+  {
     "name": "--logo-radius",
     "value": "initial",
     "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
