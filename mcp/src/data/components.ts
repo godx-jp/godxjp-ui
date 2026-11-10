@@ -5028,6 +5028,7 @@ import { Trash2 } from "lucide-react";
       },
     ],
     usage: [
+      'DO give a large PAGE TITLE its display optics from the theme, not per call site: `<Heading level={1} size="3xl" weight="bold">` and, once in theme.css, `--letter-spacing-display: -0.022em; --line-height-display: 1.12` (plus `--font-size-3xl: 2.125rem` for an exact 34px at every width — the default 3xl is fluid). Every 3xl/4xl/5xl Heading and Text reads those two knobs; unset they resolve to `--letter-spacing-tight` / `--line-height-tight`, so nothing moves until a theme opts in. Never hand-write `tracking-[-0.022em]` / `leading-[1.12]`.',
       'DO use `<Heading level>` for section titles instead of a raw `<h2 className="text-lg font-semibold">`. The level drives both the token size and the semantic element.',
       "Inside a Card use `<CardTitle>`; use `<Heading>` for free-standing page/section headings not covered by a component slot.",
     ],

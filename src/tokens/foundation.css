@@ -715,6 +715,15 @@
   --line-height-normal: 1.5;
   --line-height-body: 1.7;
   --letter-spacing-tight: 0;
+  /* DISPLAY OPTICS — the tracking and leading of the display ramp (`size="3xl" | "4xl" | "5xl"` on
+   * Text AND Heading). Large type wants NEGATIVE tracking and a tighter line box (Apple's optical
+   * sizing: about -0.022em at 34px, -0.02em at 28px); body sizes do not, which is why these are
+   * their own knobs instead of moving --letter-spacing-tight, which every Heading reads. `initial`
+   * — the defaults resolve at the call site to the current --letter-spacing-tight /
+   * --line-height-tight, so nothing moves until a theme opts in, e.g.
+   * `--letter-spacing-display: -0.022em; --line-height-display: 1.12`. */
+  --letter-spacing-display: initial;
+  --line-height-display: initial;
 
   /* ── SCALING — the one global density knob (Radix Themes model). A single
    * dimensionless multiplier on every SIZE token (spacing grid, control / table /

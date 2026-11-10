@@ -203,6 +203,13 @@ export default function Demo() {
                 </Text>
               </Flex>
 
+              {/* DISPLAY OPTICS: large type wants negative tracking and a tighter line box. The
+                  display steps read --letter-spacing-display / --line-height-display, inert until a
+                  theme sets them, so an app opts in once for every 3xl-5xl title. */}
+              <Text size="2xs" mono tone="muted">
+                {`theme.css → --font-size-3xl: 2.125rem; --letter-spacing-display: -0.022em; --line-height-display: 1.12  ·  <Heading level={1} size="3xl" weight="bold">`}
+              </Text>
+
               {/* An EDITORIAL heading (gh#1420): a public page sets its hero and section headings in
                   an opt-in face (a theme sets --font-family-editorial, e.g. a serif) while every UI
                   heading keeps the display face. Inert until the token is set. */}

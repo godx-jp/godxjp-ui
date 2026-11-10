@@ -471,6 +471,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Raw typography scale. `--font-size-display` is the BASE KNOB of the display ramp (`3xl`/`4xl`/`5xl` derive from it), so one declaration moves a marketing hero AND the two steps under it — never restate `--font-size-5xl`. It takes any length expression, so a FLUID hero is `--font-size-display: clamp(2.125rem, 4vw, 3.5rem)`; pinned at a single rem it paints the desktop size on a phone (measured: 56px at a 390 viewport where the brand scale said 34px). Pair with `--font-family-display`, and for a CJK product do NOT put a Latin-only face first in that stack — the browser falls through per glyph so it LOOKS fine, while the Latin inside a Japanese headline silently renders in a different face than the headline. Keep the CJK face as the display family and opt into the Latin face per element (eyebrow, price, code).",
   },
   {
+    name: "--letter-spacing-display / --line-height-display",
+    category: "primitive",
+    tier: "primitive",
+    role: 'DISPLAY OPTICS — the tracking and leading of the display ramp (`size="3xl" | "4xl" | "5xl"` on Text AND Heading). Large type wants negative tracking and a tighter line box (Apple optical sizing: about -0.022em at 34px, -0.02em at 28px), body sizes do not, so these are separate from `--letter-spacing-tight`, which every Heading reads. Both `initial`, defaulting at the call site to `--letter-spacing-tight` (0) / `--line-height-tight` (1.25): nothing moves until a theme opts in, e.g. `--letter-spacing-display: -0.022em; --line-height-display: 1.12`. Pair with `--font-size-3xl: 2.125rem` for a fixed 34px page title (the default 3xl is fluid, derived from --font-size-display).',
+  },
+  {
     name: "--font-family-editorial",
     category: "semantic",
     tier: "semantic",
