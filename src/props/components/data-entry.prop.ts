@@ -13,6 +13,7 @@ import type {
   EmptyMessageProp,
   ErrorBagProp,
   ErrorProp,
+  ExtraProp,
   HelperProp,
   IdProp,
   LabelProp,
@@ -677,6 +678,28 @@ export type ChoiceOptionProp = {
   value: string;
   disabled?: boolean;
   description?: React.ReactNode;
+  /**
+   * `RadioGroup optionType="card"` only (gh#1555): a decorative mark before the title, e.g. an
+   * `Avatar`. Hidden from assistive tech, because the label already names the choice. Must not be
+   * interactive: the whole card is the radio's `<label>`, so a press anywhere in it selects.
+   */
+  leading?: React.ReactNode;
+  /**
+   * `RadioGroup optionType="card"` only (gh#1555): trailing content, e.g. a `Badge`. Read as part
+   * of the radio's description. Must not be interactive, for the same reason as `leading`.
+   */
+  extra?: ExtraProp;
+};
+
+/**
+ * A labelled section of `RadioGroup` options (gh#1555). Every section stays inside the ONE
+ * `radiogroup`, so the arrow keys run through all of them; each is a `role="group"` named by its
+ * `label`. `appearance="muted"` puts the section's cards on the muted surface.
+ */
+export type ChoiceOptionSectionProp = {
+  label: React.ReactNode;
+  options: ChoiceOptionProp[];
+  appearance?: "muted";
 };
 
 /** @see Checkbox.Group */
@@ -704,10 +727,15 @@ export type CheckboxGroupProp = FieldA11yProps & {
 
 /** @see Radio.Group */
 export type RadioGroupProp = FieldA11yProps & {
-  value?: ValueProp;
-  defaultValue?: DefaultValueProp;
+  /**
+   * The chosen value. `null` — or `""` — means nothing is chosen yet, and the group stays
+   * controlled: the first enabled radio takes the tab stop (gh#1544).
+   */
+  value?: ValueProp<string | null>;
+  defaultValue?: DefaultValueProp<string | null>;
   onValueChange?: OnValueChangeProp;
-  options?: ChoiceOptionProp[];
+  /** Options, or labelled sections of options (`{ label, options, appearance? }`, gh#1555). */
+  options?: (ChoiceOptionProp | ChoiceOptionSectionProp)[];
   orientation?: "horizontal" | "vertical";
   disabled?: DisabledProp;
   name?: NameProp;
@@ -717,8 +745,9 @@ export type RadioGroupProp = FieldA11yProps & {
   children?: React.ReactNode;
   /**
    * antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label;
-   * `button` welds the choices into one segmented bar of radio buttons. The role stays
-   * `radiogroup`/`radio` either way: this is paint, never semantics.
+   * `button` welds the choices into one segmented bar of radio buttons; `card` (gh#1555) draws
+   * each choice as a bordered row whose whole surface is the label, with the option's `leading`
+   * and `extra`. The role stays `radiogroup`/`radio` in every case: this is paint, never semantics.
    */
   optionType?: RadioOptionTypeProp;
   /** antd `buttonStyle` — fill of the selected choice while `optionType="button"`. */
@@ -732,7 +761,7 @@ export type RadioGroupProp = FieldA11yProps & {
 };
 
 /** antd `RadioGroupOptionType` — a radio group drawn as dots or as a welded button bar. */
-export type RadioOptionTypeProp = "default" | "button";
+export type RadioOptionTypeProp = "default" | "button" | "card";
 
 /** antd `RadioGroupButtonStyle` — the selected button is outlined, or filled with the brand. */
 export type RadioButtonStyleProp = "outline" | "solid";

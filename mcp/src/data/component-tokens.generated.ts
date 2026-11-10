@@ -1394,6 +1394,56 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = var(--primary-foreground)"
   },
   {
+    "name": "--choice-card-padding-block",
+    "value": "var(--space-3)",
+    "description": "Radio `optionType=\"card\"` (gh#1555) — a bordered row per choice, and its labelled sections. The colour knobs default at the call site, for the same freeze reason as the four above."
+  },
+  {
+    "name": "--choice-card-padding-inline",
+    "value": "var(--space-4)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--choice-card-gap",
+    "value": "var(--space-3)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--choice-card-radius",
+    "value": "initial",
+    "description": "default = var(--control-radius)"
+  },
+  {
+    "name": "--choice-card-background",
+    "value": "initial",
+    "description": "default = var(--background)"
+  },
+  {
+    "name": "--choice-card-border-color",
+    "value": "initial",
+    "description": "default = var(--border)"
+  },
+  {
+    "name": "--choice-card-selected-border-color",
+    "value": "initial",
+    "description": "default = var(--primary)"
+  },
+  {
+    "name": "--choice-card-selected-ring-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--choice-card-muted-background",
+    "value": "initial",
+    "description": "default = var(--muted)"
+  },
+  {
+    "name": "--choice-section-gap",
+    "value": "var(--space-2)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--toggle-focus-ring-width",
     "value": "initial",
     "description": "Ring knobs for the two controls that historically wanted a softer mark than the global default — both are filled surfaces where the ring was felt to read as a second border. THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between the focused and unfocused states of the pixels that mark focus, and colour is the whole of that bar. Measured against this palette, the focus hue at alpha 0.35 composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as quiet as it likes because it is decoration rather than the indicator. The knobs stay — a service can still trade the criterion away deliberately — but the shipped default no longer makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts. default = var(--stroke-lg), resolved at the call site (gh#906)"

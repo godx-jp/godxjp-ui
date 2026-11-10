@@ -8,6 +8,15 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### RadioGroup: card rows, labelled sections, and "nothing chosen" reachable by keyboard
+
+- **Fixed** a controlled `RadioGroup` with nothing chosen (`value=""`) could not be reached by keyboard: react-aria read `""` as a selected key matching no radio, so every radio had `tabindex="-1"` and Tab skipped the group (#1544). `""` is now mapped to `null` before react-aria, and `value` / `defaultValue` also accept `null`; the group stays controlled and the first enabled radio takes the tab stop. Applies to the `options` and the children (`RadioGroupRoot`) forms.
+- **Added** `RadioGroup optionType="card"` (#1555): each choice is a bordered row whose whole surface is the radio's label, so a press anywhere selects. Selected is a border, an inner ring and the filled dot, not colour alone. The focus mark is drawn inside the card with no outer halo, so an `overflow: hidden` ancestor (an `AccordionContent`, #1543) cannot clip it. The accessible name is the option's `label`; `description` and `extra` are its description.
+- **Added** `ChoiceOptionProp.leading` (a decorative mark before the title, e.g. an `Avatar`; hidden from assistive tech) and `ChoiceOptionProp.extra` (trailing, e.g. a `Badge`), both rendered by `optionType="card"` only.
+- **Added** labelled sections in `RadioGroup options`: an entry `{ label, options, appearance?: "muted" }` (`ChoiceOptionSectionProp`) renders a `role="group"` named by its label inside the one `radiogroup`, so the arrow keys run across sections. `appearance="muted"` puts the section's cards on the muted surface. Sections render for `default` and `card`; a `button` bar flattens them.
+- **Added** component tokens `--choice-card-padding-block`, `--choice-card-padding-inline`, `--choice-card-gap`, `--choice-card-radius`, `--choice-card-background`, `--choice-card-border-color`, `--choice-card-selected-border-color`, `--choice-card-selected-ring-width`, `--choice-card-muted-background` and `--choice-section-gap`.
+- Filtering a long list is a documented composition, not a prop: a `SearchInput` above the group, with the consumer filtering `options` and keeping the chosen option in the list (docs page and catalog).
+
 ### One title axis for rows with and without a read state, at both densities (also released as 33.27.17, off v33.27.16)
 
 - **Added** `ListRow` `indicator="reserve"`: a row with no read state keeps the indicator slot, empty, `aria-hidden` and with no `sr-only` text, so its title starts on the same x as the `unread` rows of a list beside it. Before, the only way to keep the slot was `unread={false}`, which announces "Read" (既読) on a row that has none: GDX's chat home showed the channels you are in (`unread`) above the channels to join, whose titles started 20px to the left (GDX-1465).
