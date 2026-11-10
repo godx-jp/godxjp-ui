@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C01 clean: a row below the fold of a scroller that sits in a clip of the same size</title>
+    <style>
+      body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+      button { font: inherit; min-width: 32px; min-height: 32px; }
+      .row { display: flex; align-items: center; gap: 8px; height: 32px; }
+    </style>
+  </head>
+  <body>
+    <!-- GDX-1456: the app sidebar's aside clips (overflow-y: clip) and its nav scrolls inside it,
+         edge for edge. A row half below the nav's fold is reachable by scrolling the nav. -->
+    <aside style="height: 110px; overflow-y: clip">
+      <nav style="height: 110px; overflow-y: auto">
+        <div class="row">One</div>
+        <div class="row">Two</div>
+        <div class="row">Three</div>
+        <div class="row" id="c01-fold-row"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect width="16" height="16" /></svg>Four, cut by the fold</div>
+        <div class="row">Five</div>
+      </nav>
+    </aside>
+  </body>
+</html>

@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### The sidebar shows the current page's row (to be released as 33.28.2)
+
+- **Fixed** a `Sidebar` with more rows than its nav's height, opened on a page near the end of the list, painted the current row half under the fold: GDX's System console at /system/ai/quotas, 1024×900, cut 8.6px of the 32px クォータ row (GDX-1456). On mount and whenever `activeId` changes, the nav now scrolls by the least amount that shows the `aria-current="page"` row whole, inside its own scroller only (the page never moves). A row already in view moves nothing, so a `scrollRef` consumer restoring its `scrollTop` keeps its position.
+- **Fixed** `visual-audit` C01 reported ink inside a scroll container as cut by a clip ancestor OUTSIDE that container, measuring the content's current scroll position instead of the container's viewport: the sidebar row below its `overflow-y: auto` nav's fold was reported cut by the `overflow-y: clip` aside around it, edge for edge (GDX-1456). Past a scroll container the box is clamped to its viewport on each scrolling axis, so an outer clip fires only when it cuts what the viewport shows (`c01/bad-scroller-cut.html` still fails; `c01/clean-scroll-in-clip.html` passes).
+
 ### One title axis for rows with and without a read state, at both densities (also released as 33.27.17, off v33.27.16)
 
 - **Added** `ListRow` `indicator="reserve"`: a row with no read state keeps the indicator slot, empty, `aria-hidden` and with no `sr-only` text, so its title starts on the same x as the `unread` rows of a list beside it. Before, the only way to keep the slot was `unread={false}`, which announces "Read" (既読) on a row that has none: GDX's chat home showed the channels you are in (`unread`) above the channels to join, whose titles started 20px to the left (GDX-1465).
