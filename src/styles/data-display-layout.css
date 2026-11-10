@@ -146,6 +146,13 @@
     --avatar-background: var(--avatar-color-key-10);
   }
 
+  /* `appearance="neutral"` — an unavailable / 準備中 tile: grey fill, muted initials, in both
+   * themes from the page roles (the muted pair is AA by construction). */
+  .ui-avatar[data-appearance="neutral"] {
+    --avatar-background: var(--avatar-neutral-background, hsl(var(--muted)));
+    color: var(--avatar-neutral-foreground, hsl(var(--muted-foreground)));
+  }
+
   .ui-avatar[data-appearance="tinted"] svg {
     inline-size: var(--avatar-tinted-glyph-size);
     block-size: var(--avatar-tinted-glyph-size);

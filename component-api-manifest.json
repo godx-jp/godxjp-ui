@@ -2246,7 +2246,7 @@
           "origin": "owned",
           "required": false,
           "type": "AvatarAppearanceProp | undefined",
-          "values": ["default", "tinted"],
+          "values": ["default", "neutral", "tinted"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {

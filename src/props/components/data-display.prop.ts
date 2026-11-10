@@ -396,7 +396,11 @@ export type AvatarPresenceProp = "online" | "away" | "busy" | "offline";
  *
  * @see Avatar
  */
-export type AvatarAppearanceProp = "default" | "tinted";
+/**
+ * `neutral` — a grey, muted mark for an unavailable / 準備中 tile (`--avatar-neutral-background`,
+ * `--avatar-neutral-foreground`); it ignores `colorKey`.
+ */
+export type AvatarAppearanceProp = "default" | "tinted" | "neutral";
 
 /**
  * How an `AvatarImage` fills its frame (`object-fit`). `cover` (default) fills the frame and crops

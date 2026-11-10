@@ -102,7 +102,7 @@ export const Avatar = React.forwardRef<
           // behind a role-coloured glyph, sized by --avatar-tinted-* — the plate a feature/capability
           // icon sits on. Orthogonal to `shape`, so `shape="square" appearance="tinted"` is the
           // canonical rounded-square medallion and a tinted circle is equally reachable.
-          data-appearance={appearance === "tinted" ? "tinted" : undefined}
+          data-appearance={appearance === "default" ? undefined : appearance}
           // Only a marked-up presence lifts the root's `overflow:
           // hidden` so the corner dot can straddle the mark's edge — the clip then moves onto the
           data-presence={presence}
@@ -111,7 +111,10 @@ export const Avatar = React.forwardRef<
           data-kind={kind === "agent" ? "agent" : undefined}
           // A stable categorical fill from a key (an app id, a user id); absent, nothing is emitted.
           data-color-key={
-            colorKey != null && colorKey !== "" ? avatarColorStep(colorKey) : undefined
+            // `neutral` (an unavailable tile) wins: it is grey whatever its key.
+            appearance !== "neutral" && colorKey != null && colorKey !== ""
+              ? avatarColorStep(colorKey)
+              : undefined
           }
           className={cn("ui-avatar", className)}
           {...withoutSlot(props)}

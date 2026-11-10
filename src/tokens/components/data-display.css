@@ -242,6 +242,10 @@
      CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph ·
      --control-icon-size glyph box. */
   --avatar-tinted-background: initial;
+  /* `appearance="neutral"` — the unavailable tile. Defaults = hsl(var(--muted)) fill and
+   * hsl(var(--muted-foreground)) initials, resolved at the call site. */
+  --avatar-neutral-background: initial;
+  --avatar-neutral-foreground: initial;
   /* `Avatar colorKey` — the TILE palette: ten hues of their own (not the chart series), each a
    * solid fill under white initials at >= 5:1 (violet 7.1 · purple 7.0 · teal 5.5 · blue 6.7 ·
    * slate 7.6 · orange 5.2 · red 6.5 · cyan 5.4 · pink 6.0 · green 5.0). A tile is a self-contained

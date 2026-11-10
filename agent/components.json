@@ -14653,9 +14653,9 @@
       },
       {
         "defaultValue": "\"default\"",
-        "description": "Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape=\"square\"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape=\"square\" appearance=\"tinted\"` is the canonical rounded-square medallion a feature/capability icon sits on.",
+        "description": "Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape=\"square\"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape=\"square\" appearance=\"tinted\"` is the canonical rounded-square medallion a feature/capability icon sits on. `neutral` is an UNAVAILABLE / 準備中 tile: grey fill (--avatar-neutral-background, default --muted) and muted initials (--avatar-neutral-foreground, default --muted-foreground), both themes; it wins over `colorKey`.",
         "name": "appearance",
-        "type": "\"default\" | \"tinted\""
+        "type": "\"default\" | \"tinted\" | \"neutral\""
       },
       {
         "description": "Realtime reachability, drawn as an indicator at the block-end/inline-end corner of the mark. Ships the dot, its geometry tokens and a localized sr-only label TOGETHER, so presence is never colour-only (WCAG 1.4.1): each value also has its own silhouette — online = filled disc (--success), away = half-filled (--warning), busy = filled + a horizontal do-not-disturb bar (--destructive), offline = hollow ring (--muted-foreground). OMIT the prop for an entity with no presence concept (an organization mark, a capability medallion): no node and no attribute are emitted. `presence=\"offline\"` is the DIFFERENT, positive statement \"known to be unreachable\" — the same distinction ListRow draws between an omitted and a `false` `unread`.",
@@ -14674,7 +14674,7 @@
         "type": "\"person\" | \"agent\""
       },
       {
-        "description": "A stable key (an app id, a user id) hashed (FNV-1a) onto the ten-hue TILE palette --avatar-color-key-1…10 (violet, purple, teal, blue, slate, orange, red, cyan, pink, green — not the chart series), so each tile in a row gets a distinct, repeatable colour: `<Avatar shape=\"square\" size=\"xs\" colorKey=\"tasks\"><AvatarFallback>T</AvatarFallback></Avatar>`. Solid fill under white initials (--avatar-color-key-foreground), >= 5:1 for every hue in both themes, plus a faint light ring (--avatar-color-key-ring-color) so a tile stays visible on a ground of its own hue (a teal tile on the brand story). Wins over `shape`/`appearance` fills. Ten hues means two string keys CAN share one; pass a NUMBER (1–10, wrapping) to pick the hue directly for a short list that must never repeat.",
+        "description": "A stable key (an app id, a user id) hashed (FNV-1a) onto the ten-hue TILE palette --avatar-color-key-1…10 (violet, purple, teal, blue, slate, orange, red, cyan, pink, green — not the chart series), so each tile in a row gets a distinct, repeatable colour: `<Avatar shape=\"square\" size=\"xs\" colorKey=\"tasks\"><AvatarFallback>T</AvatarFallback></Avatar>`. Solid fill under white initials (--avatar-color-key-foreground), >= 5:1 for every hue in both themes, plus a faint light ring (--avatar-color-key-ring-color) so a tile stays visible on a ground of its own hue (a teal tile on the brand story). Wins over `shape` and `tinted` fills; ignored under `appearance=\"neutral\"`. Ten hues means two string keys CAN share one; pass a NUMBER (1–10, wrapping) to pick the hue directly for a short list that must never repeat.",
         "name": "colorKey",
         "type": "string | number"
       },

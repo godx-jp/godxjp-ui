@@ -49,7 +49,9 @@ describe("Avatar colorKey — a stable categorical tile colour", () => {
 
   it("every tile hue keeps white initials at >= 4.5:1, and the palette is the tile set, not the chart series", () => {
     expect(tokens).toContain("--avatar-color-key-foreground: 0 0% 100%;");
-    expect(tokens).toContain("--avatar-color-key-ring-color: hsl(var(--avatar-color-key-foreground) / 0.45);");
+    expect(tokens).toContain(
+      "--avatar-color-key-ring-color: hsl(var(--avatar-color-key-foreground) / 0.45);",
+    );
     for (let n = 1; n <= 10; n += 1) {
       expect(css).toContain(`.ui-avatar[data-color-key="${n}"] {`);
       expect(css).toContain(`--avatar-background: var(--avatar-color-key-${n});`);
@@ -61,5 +63,26 @@ describe("Avatar colorKey — a stable categorical tile colour", () => {
       expect(ratio, `--avatar-color-key-${n} ${value}`).toBeGreaterThanOrEqual(4.5);
     }
     expect(css).not.toMatch(/data-color-key[^{]*\{[^}]*--chart-/);
+  });
+});
+
+describe('Avatar appearance="neutral" — the unavailable tile', () => {
+  it("emits the neutral appearance, drops any colorKey, and reads the muted pair", () => {
+    const { container } = render(
+      <Avatar shape="square" appearance="neutral" colorKey="dataview">
+        <AvatarFallback>D</AvatarFallback>
+      </Avatar>,
+    );
+    expect(container.firstElementChild).toHaveAttribute("data-appearance", "neutral");
+    expect(container.firstElementChild).not.toHaveAttribute("data-color-key");
+    const rule = css.match(/\.ui-avatar\[data-appearance="neutral"\]\s*\{([^}]*)\}/)?.[1] ?? "";
+    expect(rule).toContain(
+      "--avatar-background: var(--avatar-neutral-background, hsl(var(--muted)))",
+    );
+    expect(rule).toContain("color: var(--avatar-neutral-foreground, hsl(var(--muted-foreground)))");
+    // After the square brand fill it has to beat.
+    expect(css.indexOf('.ui-avatar[data-appearance="neutral"] {')).toBeGreaterThan(
+      css.indexOf('.ui-avatar[data-shape="square"] {'),
+    );
   });
 });

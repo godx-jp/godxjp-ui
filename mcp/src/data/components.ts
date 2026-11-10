@@ -16294,10 +16294,10 @@ import { fetchInvoice } from "@/api/invoices";
       },
       {
         name: "appearance",
-        type: '"default" | "tinted"',
+        type: '"default" | "tinted" | "neutral"',
         defaultValue: '"default"',
         description:
-          'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on.',
+          'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on. `neutral` is an UNAVAILABLE / 準備中 tile: grey fill (--avatar-neutral-background, default --muted) and muted initials (--avatar-neutral-foreground, default --muted-foreground), both themes; it wins over `colorKey`.',
       },
       {
         name: "presence",
@@ -16322,7 +16322,7 @@ import { fetchInvoice } from "@/api/invoices";
         name: "colorKey",
         type: "string | number",
         description:
-          'A stable key (an app id, a user id) hashed (FNV-1a) onto the ten-hue TILE palette --avatar-color-key-1…10 (violet, purple, teal, blue, slate, orange, red, cyan, pink, green — not the chart series), so each tile in a row gets a distinct, repeatable colour: `<Avatar shape="square" size="xs" colorKey="tasks"><AvatarFallback>T</AvatarFallback></Avatar>`. Solid fill under white initials (--avatar-color-key-foreground), >= 5:1 for every hue in both themes, plus a faint light ring (--avatar-color-key-ring-color) so a tile stays visible on a ground of its own hue (a teal tile on the brand story). Wins over `shape`/`appearance` fills. Ten hues means two string keys CAN share one; pass a NUMBER (1–10, wrapping) to pick the hue directly for a short list that must never repeat.',
+          'A stable key (an app id, a user id) hashed (FNV-1a) onto the ten-hue TILE palette --avatar-color-key-1…10 (violet, purple, teal, blue, slate, orange, red, cyan, pink, green — not the chart series), so each tile in a row gets a distinct, repeatable colour: `<Avatar shape="square" size="xs" colorKey="tasks"><AvatarFallback>T</AvatarFallback></Avatar>`. Solid fill under white initials (--avatar-color-key-foreground), >= 5:1 for every hue in both themes, plus a faint light ring (--avatar-color-key-ring-color) so a tile stays visible on a ground of its own hue (a teal tile on the brand story). Wins over `shape` and `tinted` fills; ignored under `appearance="neutral"`. Ten hues means two string keys CAN share one; pass a NUMBER (1–10, wrapping) to pick the hue directly for a short list that must never repeat.',
       },
       {
         name: "children",
