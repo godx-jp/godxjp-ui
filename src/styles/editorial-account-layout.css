@@ -929,7 +929,7 @@
     font-weight: var(--editorial-auth-title-font-weight);
     line-height: var(--editorial-auth-title-line-height);
     letter-spacing: var(--editorial-auth-title-letter-spacing);
-    white-space: pre-line;
+    white-space: var(--editorial-auth-title-white-space);
   }
 
   .ui-editorial-auth-description {
@@ -950,7 +950,7 @@
     transform-origin: left top;
   }
 
-  .ui-editorial-auth-art > div {
+  .ui-editorial-auth-art:not([data-frame="none"]) > div {
     position: absolute;
     inset-inline-start: var(--editorial-auth-art-back-inset-inline-start);
     inset-block-start: var(--editorial-auth-art-back-inset-block-start);
@@ -962,7 +962,7 @@
     transform: rotate(var(--editorial-auth-art-back-rotate-offset));
   }
 
-  .ui-editorial-auth-art > div:first-child::after {
+  .ui-editorial-auth-art:not([data-frame="none"]) > div:first-child::after {
     content: "";
     position: absolute;
     display: block;
@@ -972,7 +972,7 @@
     opacity: 0.5;
   }
 
-  .ui-editorial-auth-art > div:last-child {
+  .ui-editorial-auth-art:not([data-frame="none"]) > div:last-child {
     display: grid;
     place-items: center;
     inset-inline-start: var(--editorial-auth-art-front-inset-inline-start);
@@ -981,6 +981,14 @@
     background: var(--editorial-account-surface-background, hsl(var(--card)));
     box-shadow: var(--editorial-auth-art-shadow);
     transform: rotate(var(--editorial-auth-art-front-rotate-offset));
+  }
+
+  /* `artFrame="none"` — free-form art (floating app chips, an illustration): no card pair, no
+   * fixed box. The art keeps the frame's block rhythm and its narrow-band `display` knob. */
+  .ui-editorial-auth-art[data-frame="none"] {
+    max-width: var(--editorial-auth-art-free-max-width);
+    height: var(--editorial-auth-art-free-height);
+    transform: none;
   }
 
   .ui-editorial-auth-art img {
@@ -1008,6 +1016,24 @@
     width: var(--editorial-auth-benefit-icon-size);
     height: var(--editorial-auth-benefit-icon-size);
     color: hsl(var(--text-brand, var(--primary)));
+  }
+
+  /* `appearance="brand"` — the story column is a brand surface. The page roles are re-scoped
+   * INSIDE the band (the `footerTone="inverse"` technique), so the title, the copy, the kicker and
+   * the benefit tick all take the on-brand ink without a selector of their own. */
+  .ui-editorial-auth[data-appearance="brand"] > .ui-editorial-auth-story {
+    --foreground: var(--editorial-auth-brand-foreground, var(--brand-foreground));
+    --muted-foreground: var(
+      --editorial-auth-brand-muted-foreground,
+      var(--editorial-auth-brand-foreground, var(--brand-foreground))
+    );
+    --text-brand: var(--editorial-auth-brand-foreground, var(--brand-foreground));
+    --ring: var(--editorial-auth-brand-foreground, var(--brand-foreground));
+    --editorial-kicker-color: hsl(var(--muted-foreground));
+    padding: var(--editorial-auth-brand-padding);
+    border-radius: var(--editorial-auth-brand-radius);
+    background: var(--editorial-auth-brand-background, hsl(var(--brand)));
+    color: hsl(var(--foreground));
   }
 
   .ui-editorial-auth-card {

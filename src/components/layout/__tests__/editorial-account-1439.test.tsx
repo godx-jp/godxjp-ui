@@ -426,6 +426,80 @@ describe("EditorialAuth (gh#1439)", () => {
       "New here?",
     );
     expect(tokens).toContain("--editorial-auth-track-size: 1fr 460px;");
+    // Defaults emit nothing new: no appearance / frame hook on the default page.
+    expect(container.firstElementChild).not.toHaveAttribute("data-appearance");
+    expect(container.querySelector(".ui-editorial-auth-art")).not.toHaveAttribute("data-frame");
+  });
+
+  it("level={2} demotes the story title so the form card can own the page h1", () => {
+    render(
+      <EditorialAuth title="Make room." level={2}>
+        <EditorialAuthCard title="Sign in" level={3} />
+      </EditorialAuth>,
+    );
+    expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
+    expect(screen.getByRole("heading", { level: 2, name: "Make room." })).toBeTruthy();
+  });
+
+  it('artFrame="none" renders free-form art without the rotated card pair', () => {
+    const { container } = render(
+      <EditorialAuth
+        title="Make room."
+        artFrame="none"
+        art={
+          <span className="chips">
+            <span>App</span>
+          </span>
+        }
+      />,
+    );
+    const art = container.querySelector(".ui-editorial-auth-art")!;
+    expect(art).toHaveAttribute("data-frame", "none");
+    expect(art).toHaveAttribute("aria-hidden");
+    expect(art.firstElementChild).toHaveClass("chips");
+    expect(art.children).toHaveLength(1);
+    // The card-pair rules cannot reach the unframed box; it reads its own free-size tokens.
+    expect(css).toContain('.ui-editorial-auth-art:not([data-frame="none"]) > div {');
+    expect(css).not.toMatch(/\.ui-editorial-auth-art > div/);
+    expect(rule('.ui-editorial-auth-art[data-frame="none"]')).toContain(
+      "height: var(--editorial-auth-art-free-height)",
+    );
+    // No art passed with no frame: no empty decorative box.
+    const { container: bare } = render(<EditorialAuth title="x" artFrame="none" />);
+    expect(bare.querySelector(".ui-editorial-auth-art")).toBeNull();
+  });
+
+  it('appearance="brand" paints the story with the brand surface and re-scopes its ink', () => {
+    const { container } = render(<EditorialAuth title="Make room." appearance="brand" />);
+    expect(container.firstElementChild).toHaveAttribute("data-appearance", "brand");
+    const brand = rule('.ui-editorial-auth[data-appearance="brand"] > .ui-editorial-auth-story');
+    expect(brand).toContain(
+      "background: var(--editorial-auth-brand-background, hsl(var(--brand)))",
+    );
+    expect(brand).toContain("padding: var(--editorial-auth-brand-padding)");
+    expect(brand).toContain("border-radius: var(--editorial-auth-brand-radius)");
+    // Title (foreground), copy + kicker (muted) and the benefit tick (text-brand) all flip.
+    expect(brand).toMatch(
+      /--foreground:\s*var\(--editorial-auth-brand-foreground, var\(--brand-foreground\)\)/,
+    );
+    expect(brand).toMatch(/--muted-foreground:/);
+    expect(brand).toMatch(/--text-brand:/);
+    expect(brand).toContain("--editorial-kicker-color: hsl(var(--muted-foreground))");
+    for (const knob of ["background", "foreground", "muted-foreground"]) {
+      expect(tokens).toContain(`--editorial-auth-brand-${knob}: initial;`);
+    }
+  });
+
+  it("stacks into a compact band below the 48rem phone line, by tokens only", () => {
+    const narrow = tokens.match(/@media \(width < 48rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(narrow).toContain("--editorial-auth-track-size: minmax(0, 1fr);");
+    expect(narrow).toContain("--editorial-auth-art-display: none;");
+    expect(narrow).toContain("--editorial-auth-benefits-display: none;");
+    expect(narrow).toContain("--editorial-auth-title-white-space: normal;");
+    expect(tokens).toContain("--editorial-auth-title-white-space: pre-line;");
+    expect(rule(".ui-editorial-auth-title")).toContain(
+      "white-space: var(--editorial-auth-title-white-space)",
+    );
   });
 });
 

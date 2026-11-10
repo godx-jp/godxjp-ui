@@ -2556,7 +2556,14 @@
     "all": "すべての資料",
     "saved": "保存済み",
     "inheritText": "周囲の文字サイズで読みます。",
-    "inheritLink": "文字サイズ一覧へ"
+    "inheritLink": "文字サイズ一覧へ",
+    "signIn": "コレクションにサインイン",
+    "signInLead": "保存した資料をひとつの場所にまとめます。",
+    "welcome": "おかえりなさい",
+    "email": "メールアドレス",
+    "continue": "続行",
+    "benefitSync": "すべての端末で同期",
+    "benefitNotes": "項目ごとの非公開メモ"
   },
   "pageErrorBoundaryDocs": {
     "section": "業務",

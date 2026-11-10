@@ -203,6 +203,7 @@
     "DON'T reach for `Button variant=\"link\"` in running content. `.ui-button` is a CONTROL box — `white-space: nowrap`, `flex-shrink: 0`, a `--control-height` tier and inline padding — so in a table cell it cannot wrap to a second line and cannot share the cell's line box. If you find yourself writing `whitespace-normal` back on top of it, you wanted `<Text link>`. `Button variant=\"link\"` stays right for a link-LOOKING action that submits or opens something."
   ],
   "useCases": [
+    "A keyboard-key hint (Kbd / key cap / shortcut legend): `<Text size=\"xs\" tone=\"muted\"><Text keyboard>↑</Text> <Text keyboard>↓</Text> 移動 · <Text keyboard>Enter</Text> 選択</Text>` — `keyboard` wraps the text in `<kbd>` with the key-cap edge; there is no separate Kbd component.",
     "A muted caption under a value: `<Text size=\"xs\" tone=\"muted\">2026年5月度</Text>`.",
     "A monospace id in a list row: `<Text size=\"xs\" mono tone=\"muted\">RC-204881</Text>`.",
     "A staff email in a narrow DataTable cell at 320px, wrapping instead of scrolling the page: `<Text size=\"sm\" break=\"anywhere\">{staff.email}</Text>`.",

@@ -1325,7 +1325,8 @@ export const COMPONENT_PROP_REGISTRY = {
       {
         field: "measure",
         local: true,
-        reason: "Auth-shell content-slot measure; wide is the split brand-panel login.",
+        reason:
+          "Auth-shell content-slot measure; wide is the split brand-panel login (and the two-column context-selection chooser).",
       },
       "ActionProp",
       "AuthShellPresetProp",
@@ -2283,6 +2284,17 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "art", local: true, reason: "Picture on the front card." },
       { field: "benefits", local: true, reason: "Benefit lines." },
       { field: "children", local: true, reason: "The form card." },
+      { field: "level", local: true, reason: "Story title heading level (1 default, 2)." },
+      {
+        field: "artFrame",
+        local: true,
+        reason: "Art frame — the rotated card pair (cards) or free-form art (none).",
+      },
+      {
+        field: "appearance",
+        local: true,
+        reason: "Story surface — page ground (default) or a brand surface with on-brand ink.",
+      },
     ],
   },
   EditorialAuthCardProp: {

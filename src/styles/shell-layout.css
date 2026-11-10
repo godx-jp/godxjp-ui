@@ -634,6 +634,13 @@
     --auth-shell-card-stack-gap: var(--auth-shell-context-card-stack-gap);
   }
 
+  /* `measure="wide"` is honoured by THIS preset (and only this one: login / registration / device /
+   * recovery own artboard measures down to the pixel). A chooser beside an explanation column
+   * needs the wide slot; the preset keeps its stack rhythm and block alignment. */
+  .ui-auth-shell[data-preset="context-selection"][data-measure="wide"] {
+    --auth-shell-card-max-width: var(--auth-shell-context-wide-card-max-width);
+  }
+
   /* Title + description live INSIDE the bordered surface here, so the panel is `Card >
    * CardHeader(CardTitle + CardDescription)` with no `AuthIdentity` mark above it — the preset
    * only re-measures the page, it never dictates content. */
@@ -890,6 +897,10 @@
 
     .ui-auth-shell[data-preset="context-selection"] {
       --auth-shell-main-padding: var(--auth-shell-context-main-padding-mobile);
+    }
+
+    .ui-auth-shell[data-preset="context-selection"][data-measure="wide"] {
+      --auth-shell-main-padding: var(--auth-shell-context-wide-main-padding-mobile);
     }
 
     /* account-recovery = 15px inline at 390 (panel x=15, width=360). */
@@ -1673,6 +1684,22 @@
 
   .ui-org-switcher-check {
     margin-inline-start: auto;
+  }
+
+  /* An action row (「組織を管理」): its glyph sits in the avatar column, so the label starts on the
+   * organization names' keyline. */
+  .ui-org-switcher-action-icon {
+    display: inline-grid;
+    width: var(--org-switcher-avatar-size);
+    height: var(--org-switcher-avatar-size);
+    flex: 0 0 auto;
+    place-items: center;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-org-switcher-action-icon > svg {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
   }
 
   /* Through the popover's KNOBS, not the raw properties: this file is imported before

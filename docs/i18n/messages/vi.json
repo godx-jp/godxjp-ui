@@ -2556,7 +2556,14 @@
     "all": "Tất cả tài liệu",
     "saved": "Đã lưu",
     "inheritText": "Đọc với cỡ chữ xung quanh.",
-    "inheritLink": "Khám phá thang chữ"
+    "inheritLink": "Khám phá thang chữ",
+    "signIn": "Đăng nhập vào bộ sưu tập",
+    "signInLead": "Giữ mọi tư liệu bạn lưu ở một nơi.",
+    "welcome": "Chào mừng trở lại",
+    "email": "Email",
+    "continue": "Tiếp tục",
+    "benefitSync": "Đồng bộ trên mọi thiết bị",
+    "benefitNotes": "Ghi chú riêng cho từng mục"
   },
   "pageErrorBoundaryDocs": {
     "section": "Nghiệp vụ",

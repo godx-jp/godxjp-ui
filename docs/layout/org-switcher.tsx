@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Settings } from "lucide-react";
 
 import {
   Badge,
@@ -52,6 +53,7 @@ const labels: OrgSwitcherLabels = {
  */
 export default function Demo() {
   const [value, setValue] = useState("godx");
+  const [managed, setManaged] = useState(false);
   const [error, setError] = useState<string | undefined>("組織一覧を取得できませんでした。");
 
   return (
@@ -74,9 +76,19 @@ export default function Demo() {
                 onValueChange={setValue}
                 labels={labels}
                 responsive="auto"
+                // Rows under the list (popover and mobile sheet): ↑↓ reach them, Enter runs them.
+                actions={[
+                  {
+                    id: "manage",
+                    label: "組織を管理",
+                    icon: <Settings />,
+                    onSelect: () => setManaged(true),
+                  },
+                ]}
               />
               <Text size="sm" tone="muted" aria-live="polite">
                 選択中: {organizations.find((organization) => organization.id === value)?.name}
+                {managed ? " · 組織の管理を開きました" : ""}
               </Text>
               <OrgSwitcher
                 organizations={organizations}

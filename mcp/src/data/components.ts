@@ -2036,20 +2036,52 @@ import { Moon, Sun } from "lucide-react";
       "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`.",
     props: [
       { name: "eyebrow", type: "ReactNode", description: "Kicker." },
-      { name: "title", type: "ReactNode", required: true, description: "Display title (h1)." },
+      { name: "title", type: "ReactNode", required: true, description: "Display title." },
+      {
+        name: "level",
+        type: "1 | 2",
+        defaultValue: "1",
+        description:
+          "Heading level of the story title. Pass 2 when the form card owns the page h1 (`<EditorialAuthCard level>`).",
+      },
       { name: "description", type: "ReactNode", description: "Copy." },
-      { name: "art", type: "ReactNode", description: "Picture on the front card." },
+      {
+        name: "art",
+        type: "ReactNode",
+        description:
+          'Decorative art (aria-hidden): the picture on the front card under artFrame="cards", rendered as given under artFrame="none".',
+      },
+      {
+        name: "artFrame",
+        type: '"cards" | "none"',
+        defaultValue: '"cards"',
+        description:
+          '"cards" wraps `art` in the fixed rotated card pair; "none" renders free-form art (floating app chips, an illustration) in an unframed auto-height box (--editorial-auth-art-free-max-width / --editorial-auth-art-free-height).',
+      },
+      {
+        name: "appearance",
+        type: '"default" | "brand"',
+        defaultValue: '"default"',
+        description:
+          '"brand" paints the story column with the brand surface — --editorial-auth-brand-background (default hsl(var(--brand)); a deep gradient is a valid value) — and re-scopes --foreground / --muted-foreground / --text-brand inside it so the title, copy, kicker and benefit tick take the on-brand ink (--editorial-auth-brand-foreground, an HSL triple, default var(--brand-foreground); --editorial-auth-brand-muted-foreground defaults to it). Padded and rounded by --editorial-auth-brand-padding / --editorial-auth-brand-radius. Keep the pair at WCAG AA when you retint it.',
+      },
       { name: "benefits", type: "ReactNode[]", description: "Benefit lines." },
       { name: "children", type: "ReactNode", description: "EditorialAuthCard." },
     ],
-    usage: ["DO keep the form in an EditorialAuthCard with Form + FormField."],
+    usage: [
+      "DO keep the form in an EditorialAuthCard with Form + FormField.",
+      "Below 48rem the columns stack and the story becomes a compact band (kicker + one-line title, copy kept; art and benefits hidden). It is the kit's default as tokens (--editorial-auth-track-size, --editorial-auth-title-white-space, --editorial-auth-art-display, --editorial-auth-benefits-display …); re-declare them under your own query to keep the art.",
+    ],
     related: [
       "EditorialAuthCard — the card.",
       'CenteredShell — use variant="auth" for the application sign-in shell.',
     ],
     example: `import { EditorialAuth, EditorialAuthCard, Eyebrow } from "@godxjp/ui/layout";
 
-<EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title="Make room for what you love." benefits={["A collection of your own"]}><EditorialAuthCard title="Welcome back." /></EditorialAuth>`,
+<EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title="Make room for what you love." benefits={["A collection of your own"]}><EditorialAuthCard title="Welcome back." /></EditorialAuth>
+
+// Brand story column, free-form art, the form card owns the h1:
+<EditorialAuth appearance="brand" artFrame="none" art={<AppChips />} level={2} title="…"><EditorialAuthCard level={2} title="Sign in" /></EditorialAuth>`,
   },
   {
     rules: [2, 6, 44, 45],
@@ -2786,7 +2818,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
         type: '"default" | "wide"',
         defaultValue: '"default"',
         description:
-          'the auth shape only. Inline MEASURE of the shell content slot. "default" is the single auth card (24rem, or 22.5rem under variant="canonical"). "wide" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry.',
+          'the auth shape only. Inline MEASURE of the shell content slot. "default" is the single auth card (24rem, or 22.5rem under variant="canonical"). "wide" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry — EXCEPT preset="context-selection": there "wide" opens the slot to --auth-shell-context-wide-card-max-width (default = the wide measure) so the chooser sits beside an explanation column (wrap both in one <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> child), and a phone keeps a --auth-shell-context-wide-main-padding-mobile gutter.',
       },
       {
         name: "density",
@@ -3021,7 +3053,7 @@ export function HandyInbound() {
         name: "scrollRef",
         type: "React.Ref<HTMLElement>",
         description:
-          "Ref to the navigation's scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136). The nav itself scrolls the aria-current=\"page\" row into view on mount and on activeId change, by the least amount and only when that row is not already whole in view, so a restored position that shows it is kept (GDX-1456).",
+          'Ref to the navigation\'s scroll container (`.sb-nav-scroll`, the overflow-y element) — persist and restore its scrollTop across navigations or remounts (gh#1136). The nav itself scrolls the aria-current="page" row into view on mount and on activeId change, by the least amount and only when that row is not already whole in view, so a restored position that shows it is kept (GDX-1456).',
       },
       {
         name: "activeId",
@@ -4822,6 +4854,7 @@ import { Trash2 } from "lucide-react";
       'DON\'T reach for `Button variant="link"` in running content. `.ui-button` is a CONTROL box — `white-space: nowrap`, `flex-shrink: 0`, a `--control-height` tier and inline padding — so in a table cell it cannot wrap to a second line and cannot share the cell\'s line box. If you find yourself writing `whitespace-normal` back on top of it, you wanted `<Text link>`. `Button variant="link"` stays right for a link-LOOKING action that submits or opens something.',
     ],
     useCases: [
+      'A keyboard-key hint (Kbd / key cap / shortcut legend): `<Text size="xs" tone="muted"><Text keyboard>↑</Text> <Text keyboard>↓</Text> 移動 · <Text keyboard>Enter</Text> 選択</Text>` — `keyboard` wraps the text in `<kbd>` with the key-cap edge; there is no separate Kbd component.',
       'A muted caption under a value: `<Text size="xs" tone="muted">2026年5月度</Text>`.',
       'A monospace id in a list row: `<Text size="xs" mono tone="muted">RC-204881</Text>`.',
       'A staff email in a narrow DataTable cell at 320px, wrapping instead of scrolling the page: `<Text size="sm" break="anywhere">{staff.email}</Text>`.',
@@ -18943,6 +18976,12 @@ import { Logo } from "@godxjp/ui/general";
         required: true,
         description:
           'Localized trigger, search, state, and retry copy. `personal` titles the personal section; it defaults to the kit\'s t("layout.orgSwitcher.personal") (Personal / 個人 / Cá nhân).',
+      },
+      {
+        name: "actions",
+        type: "readonly { id: string; label: string; icon?: ReactNode; onSelect: () => void; disabled?: boolean }[]",
+        description:
+          'Action rows under the organization list (「組織を管理」, "Create organization") on every surface — popover, dialog and mobile Sheet — after a hairline. They are options of the same list: ↑↓ reach them, Enter runs them, a search never hides them, and the panel closes after `onSelect` (navigate with your router there). `id` is the key and the `data-action` hook; labels are the product\'s own. Not shown while loading/error replaces the list.',
       },
       {
         name: "placeholderAvatar",

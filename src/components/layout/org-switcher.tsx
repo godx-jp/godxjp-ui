@@ -4,7 +4,11 @@ import { Building2, Check, ChevronsUpDown, Loader2, RotateCcw } from "lucide-rea
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
-import type { OrgSwitcherOrganization, OrgSwitcherProp } from "../../props/components/layout.prop";
+import type {
+  OrgSwitcherAction,
+  OrgSwitcherOrganization,
+  OrgSwitcherProp,
+} from "../../props/components/layout.prop";
 import {
   Dialog,
   DialogBody,
@@ -22,6 +26,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "../data-entry/command";
 import {
   Sheet,
@@ -35,6 +40,7 @@ import {
 import { Button } from "../general/button";
 
 export type {
+  OrgSwitcherAction,
   OrgSwitcherLabels,
   OrgSwitcherOrganization,
   OrgSwitcherProp,
@@ -168,22 +174,30 @@ OrgSwitcherTrigger.displayName = "OrgSwitcherTrigger";
  * filtered count, so the empty line is the component's own, counted over organizations.
  */
 const PERSONAL_KEYWORD = "\u0000org-switcher-personal";
-const PERSONAL_SCORE = Number.MIN_VALUE;
+/*
+ * THE ACTIONS (「組織を管理」) take the same always-matched trick one step lower: a search never hides
+ * them, and their group is appended after the personal one, so they stay the last rows.
+ */
+const ACTION_KEYWORD = "\u0000org-switcher-action";
+const ACTION_SCORE = Number.MIN_VALUE;
+const PERSONAL_SCORE = Number.MIN_VALUE * 2;
 
 function orgSwitcherFilter(value: string, search: string, keywords?: string[]) {
+  if (keywords?.includes(ACTION_KEYWORD)) return ACTION_SCORE;
   return keywords?.includes(PERSONAL_KEYWORD)
     ? PERSONAL_SCORE
     : defaultFilter(value, search, keywords);
 }
 
 function OrganizationsEmpty({
-  personal,
+  alwaysListed,
   children,
 }: {
-  personal: number;
+  /** Rows the filter always matches (personal workspaces, actions) — not organizations. */
+  alwaysListed: number;
   children: React.ReactNode;
 }) {
-  const organizations = useCommandState((state) => state.filtered.count) - personal;
+  const organizations = useCommandState((state) => state.filtered.count) - alwaysListed;
   if (organizations > 0) return null;
   // The same box CommandEmpty renders — it cannot be used here, because it counts every row.
   return (
@@ -241,6 +255,7 @@ function OrganizationRow({
 
 function OrgSwitcherPanel({
   organizations,
+  actions = [],
   value,
   onValueChange,
   loading,
@@ -250,7 +265,14 @@ function OrgSwitcherPanel({
   close,
 }: Pick<
   OrgSwitcherProp,
-  "organizations" | "value" | "onValueChange" | "loading" | "error" | "onRetry" | "labels"
+  | "organizations"
+  | "actions"
+  | "value"
+  | "onValueChange"
+  | "loading"
+  | "error"
+  | "onRetry"
+  | "labels"
 > & {
   close: () => void;
 }) {
@@ -280,6 +302,7 @@ function OrgSwitcherPanel({
 
   const companies = organizations.filter((organization) => organization.kind !== "personal");
   const personal = organizations.filter((organization) => organization.kind === "personal");
+  const alwaysListed = personal.length + actions.length;
   const row = (organization: OrgSwitcherOrganization) => (
     <OrganizationRow
       key={organization.id}
@@ -296,12 +319,12 @@ function OrgSwitcherPanel({
       label={labels.title}
       className="ui-org-switcher-command"
       split
-      filter={personal.length > 0 ? orgSwitcherFilter : undefined}
+      filter={alwaysListed > 0 ? orgSwitcherFilter : undefined}
     >
       <CommandInput placeholder={labels.search} aria-label={labels.search} />
       <CommandList>
-        {personal.length > 0 ? (
-          <OrganizationsEmpty personal={personal.length}>{labels.empty}</OrganizationsEmpty>
+        {alwaysListed > 0 ? (
+          <OrganizationsEmpty alwaysListed={alwaysListed}>{labels.empty}</OrganizationsEmpty>
         ) : (
           <CommandEmpty>{labels.empty}</CommandEmpty>
         )}
@@ -310,6 +333,34 @@ function OrgSwitcherPanel({
           <CommandGroup heading={labels.personal ?? t("layout.orgSwitcher.personal")}>
             {personal.map(row)}
           </CommandGroup>
+        ) : null}
+        {actions.length > 0 ? (
+          <>
+            <CommandSeparator />
+            <CommandGroup>
+              {actions.map((action: OrgSwitcherAction) => (
+                <CommandItem
+                  key={action.id}
+                  value={`${ACTION_KEYWORD} ${action.id}`}
+                  keywords={[ACTION_KEYWORD]}
+                  disabled={action.disabled}
+                  data-action={action.id}
+                  className="ui-org-switcher-action"
+                  onSelect={() => {
+                    action.onSelect();
+                    close();
+                  }}
+                >
+                  {action.icon != null ? (
+                    <span className="ui-org-switcher-action-icon" aria-hidden="true">
+                      {action.icon}
+                    </span>
+                  ) : null}
+                  <span className="ui-org-switcher-name">{action.label}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
         ) : null}
       </CommandList>
     </Command>
@@ -323,6 +374,7 @@ function OrgSwitcherPanel({
  */
 export function OrgSwitcher({
   organizations,
+  actions,
   value,
   onValueChange,
   collapsed = false,
@@ -390,6 +442,7 @@ export function OrgSwitcher({
   const panel = (
     <OrgSwitcherPanel
       organizations={organizations}
+      actions={actions}
       value={value}
       onValueChange={onValueChange}
       loading={loading}

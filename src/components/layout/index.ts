@@ -28,6 +28,7 @@ export type {
 } from "./app-launcher";
 export { OrgSwitcher } from "./org-switcher";
 export type {
+  OrgSwitcherAction,
   OrgSwitcherLabels,
   OrgSwitcherOrganization,
   OrgSwitcherProp,

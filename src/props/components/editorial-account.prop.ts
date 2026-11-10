@@ -206,14 +206,38 @@ export type ThemePickerProp = {
 
 /**
  * @see EditorialAuth — a sign-in / sign-up page: a story column (kicker, display title, copy,
- * decorative art, benefits) beside the form card (`children`).
+ * decorative art, benefits) beside the form card (`children`). Below the kit's 48rem phone line
+ * the two columns stack and the story column becomes a compact band (kicker + a one-line title;
+ * art and benefits hidden) — every part of that band is an `--editorial-auth-narrow-*` token.
  */
 export type EditorialAuthProp = {
   eyebrow?: ReactNode;
   title: ReactNode;
+  /**
+   * Heading level of the story title. Default `1`. Pass `2` when the form card carries the page's
+   * `h1` (`<EditorialAuthCard level={…}>` stays the form's own heading).
+   */
+  level?: 1 | 2;
   description?: ReactNode;
-  /** The picture on the front card of the decorative card pair (e.g. the brand mark). */
+  /**
+   * The decorative art. With `artFrame="cards"` (default) it is the picture on the front card of
+   * the rotated card pair (e.g. the brand mark); with `artFrame="none"` it renders as given.
+   */
   art?: ReactNode;
+  /**
+   * `"cards"` (default) — the fixed rotated card pair around `art`. `"none"` — no frame: free-form
+   * art (floating app chips, an illustration) in an unframed, auto-height box. Decorative either
+   * way (`aria-hidden`).
+   */
+  artFrame?: "cards" | "none";
+  /**
+   * `"default"` — the story sits on the page ground. `"brand"` — the story column is a brand
+   * surface (`--editorial-auth-brand-background`, default `hsl(var(--brand))`; a deep gradient is
+   * a token value) with on-brand ink for the title, copy and benefit tick
+   * (`--editorial-auth-brand-foreground`, default `hsl(var(--brand-foreground))`), padded and
+   * rounded by `--editorial-auth-brand-padding` / `--editorial-auth-brand-radius`.
+   */
+  appearance?: "default" | "brand";
   /** Short benefit lines, each led by a check glyph. */
   benefits?: ReactNode[];
   children?: ReactNode;

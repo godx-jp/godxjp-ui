@@ -7328,11 +7328,27 @@
       "group": "layout",
       "props": [
         {
+          "name": "appearance",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"brand\" | undefined",
+          "values": ["default", "brand"],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
           "name": "art",
           "origin": "owned",
           "required": false,
           "type": "ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "artFrame",
+          "origin": "owned",
+          "required": false,
+          "type": "\"none\" | \"cards\" | undefined",
+          "values": ["none", "cards"],
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
@@ -7373,6 +7389,14 @@
           "required": false,
           "type": "ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/editorial-account.prop.ts"]
+        },
+        {
+          "name": "level",
+          "origin": "owned",
+          "required": false,
+          "type": "1 | 2 | undefined",
+          "values": [1, 2],
           "declaredIn": ["src/props/components/editorial-account.prop.ts"]
         },
         {
@@ -12893,6 +12917,14 @@
     "OrgSwitcher": {
       "group": "layout",
       "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly OrgSwitcherAction[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
         {
           "name": "className",
           "origin": "owned",

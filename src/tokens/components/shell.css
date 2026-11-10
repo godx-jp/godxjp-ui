@@ -829,6 +829,11 @@
   --auth-shell-context-main-padding: var(--space-6);
   --auth-shell-context-main-padding-mobile: var(--space-6) 0;
   --auth-shell-context-card-stack-gap: 1rem;
+  /* `measure="wide"` on this preset — the chooser BESIDE an explanation column (the consumer lays
+   * the two out, e.g. a `ResponsiveGrid`), with a page gutter on a phone so the explanation copy
+   * does not run to the screen edge the way the edge-to-edge chooser card does. */
+  --auth-shell-context-wide-card-max-width: var(--auth-shell-wide-card-max-width);
+  --auth-shell-context-wide-main-padding-mobile: var(--space-6) var(--space-4);
 
   /* Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel
    * (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP ·

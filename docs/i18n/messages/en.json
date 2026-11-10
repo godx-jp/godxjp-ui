@@ -2563,7 +2563,14 @@
     "all": "All references",
     "saved": "Saved references",
     "inheritText": "Read at the surrounding text size.",
-    "inheritLink": "Explore the type scale"
+    "inheritLink": "Explore the type scale",
+    "signIn": "Sign in to your collection",
+    "signInLead": "Keep every reference you save in one place.",
+    "welcome": "Welcome back",
+    "email": "Email",
+    "continue": "Continue",
+    "benefitSync": "Saved across devices",
+    "benefitNotes": "Private notes on every item"
   },
   "pageErrorBoundaryDocs": {
     "section": "Operations",

@@ -429,22 +429,39 @@ export function ThemePicker({
 export function EditorialAuth({
   eyebrow,
   title,
+  level = 1,
   description,
   art,
+  artFrame = "cards",
+  appearance = "default",
   benefits,
   children,
   className,
 }: EditorialAuthProp) {
+  const Heading = level === 2 ? "h2" : "h1";
   return (
-    <div data-slot="editorial-auth" className={cn("ui-editorial-auth", className)}>
+    <div
+      data-slot="editorial-auth"
+      // Emitted only for a non-default choice, so the default page keeps its exact box.
+      data-appearance={appearance === "brand" ? "brand" : undefined}
+      className={cn("ui-editorial-auth", className)}
+    >
       <div className="ui-editorial-auth-story">
         {eyebrow}
-        <h1 className="ui-editorial-auth-title">{title}</h1>
+        <Heading className="ui-editorial-auth-title">{title}</Heading>
         {description != null && <p className="ui-editorial-auth-description">{description}</p>}
-        <div aria-hidden className="ui-editorial-auth-art">
-          <div />
-          <div>{art}</div>
-        </div>
+        {artFrame === "none" ? (
+          art != null && (
+            <div aria-hidden data-frame="none" className="ui-editorial-auth-art">
+              {art}
+            </div>
+          )
+        ) : (
+          <div aria-hidden className="ui-editorial-auth-art">
+            <div />
+            <div>{art}</div>
+          </div>
+        )}
         {benefits != null && benefits.length > 0 && (
           <ul className="ui-editorial-auth-benefits">
             {benefits.map((benefit, index) => (
