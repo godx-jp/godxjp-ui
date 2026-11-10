@@ -17418,6 +17418,12 @@
         "type": "ReactNode"
       },
       {
+        "defaultValue": "\"muted\"",
+        "description": "Row fill. \"muted\" (default) for a row inside a card. \"card\" for a row placed directly on the muted auth page: the card fill, the card radius and a roomier inset (`--auth-account-summary-card-padding`).",
+        "name": "surface",
+        "type": "\"muted\" | \"card\""
+      },
+      {
         "description": "Optional real avatar URL.",
         "name": "avatarSrc",
         "type": "string"

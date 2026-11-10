@@ -131,6 +131,7 @@ export default function Demo() {
 
         <AuthAccountSummary
           name="Hanako Yamada"
+          surface="card"
           email="yamada@example.com"
           avatarFallback="HY"
           actionLabel="Switch"

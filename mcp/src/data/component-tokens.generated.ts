@@ -13809,6 +13809,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--auth-account-summary-card-padding",
+    "value": "var(--space-3) var(--space-4)",
+    "description": "`surface=\"card\"`: the roomier inset of the row as its own card."
+  },
+  {
     "name": "--auth-account-summary-identity-min-width",
     "value": "12rem",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."

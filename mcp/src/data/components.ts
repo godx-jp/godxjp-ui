@@ -19105,6 +19105,13 @@ import { Logo } from "@godxjp/ui/general";
         description:
           'The person\'s display name. With it the row is two lines: the name, then a localized "Signed in · {email}" line (ja ログイン中 · …, key layout.authAccountSummary.signedIn, `--auth-account-summary-status-font-size`) — the identity card under a device / consent screen. Without it the single email line is unchanged.',
       },
+      {
+        name: "surface",
+        type: '"muted" | "card"',
+        defaultValue: '"muted"',
+        description:
+          'Row fill. "muted" (default) for a row inside a card. "card" for a row placed directly on the muted auth page: the card fill, the card radius and a roomier inset (`--auth-account-summary-card-padding`).',
+      },
       { name: "avatarSrc", type: "string", description: "Optional real avatar URL." },
       {
         name: "avatarFallback",

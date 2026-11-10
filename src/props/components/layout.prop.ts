@@ -1042,6 +1042,12 @@ export type AuthAccountSummaryProp = {
    * device / consent screen. Without it the row stays the single email line.
    */
   name?: ReactNode;
+  /**
+   * The row's fill. `"muted"` (default, unchanged) sits on a card. `"card"` is the row as its own
+   * card — the card fill and the card radius with a roomier inset — for a row placed directly on
+   * the muted auth page ground (under a device / consent screen).
+   */
+  surface?: "muted" | "card";
   avatarSrc?: string;
   avatarFallback?: ReactNode;
   /**

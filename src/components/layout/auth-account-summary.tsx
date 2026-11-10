@@ -17,12 +17,26 @@ export type {
 
 /** Compact, token-owned signed-in identity row for hosted auth and device authorization. */
 export const AuthAccountSummary = React.forwardRef<HTMLDivElement, AuthAccountSummaryProp>(
-  ({ email, name, avatarSrc, avatarFallback, actionLabel, onAction, disabled, className }, ref) => {
+  (
+    {
+      email,
+      name,
+      surface = "muted",
+      avatarSrc,
+      avatarFallback,
+      actionLabel,
+      onAction,
+      disabled,
+      className,
+    },
+    ref,
+  ) => {
     const { t } = useTranslation();
     return (
       <div
         ref={ref}
         data-slot="auth-account-summary"
+        data-surface={surface === "card" ? "card" : undefined}
         className={cn("ui-auth-account-summary", className)}
       >
         <div data-slot="auth-account-identity" className="ui-auth-account-identity">

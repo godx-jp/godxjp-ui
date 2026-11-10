@@ -925,6 +925,8 @@
   --auth-account-summary-min-height: var(--control-height-comfortable);
   --auth-account-summary-gap: var(--space-2);
   --auth-account-summary-padding: var(--space-1) var(--space-2);
+  /* `surface="card"`: the roomier inset of the row as its own card. */
+  --auth-account-summary-card-padding: var(--space-3) var(--space-4);
   --auth-account-summary-identity-min-width: 12rem;
   --auth-account-summary-avatar-size: var(--control-height-sm);
   --auth-account-summary-avatar-glyph-size: var(--control-icon-size-sm);

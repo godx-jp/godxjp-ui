@@ -114,6 +114,7 @@ export default function GroupedListExample() {
         <Button fullWidth>Allow</Button>
         <AuthAccountSummary
           name="Hanako Yamada"
+          surface="card"
           email="yamada@example.com"
           avatarFallback="HY"
           actionLabel="Switch"

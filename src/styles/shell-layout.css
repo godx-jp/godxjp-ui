@@ -836,6 +836,13 @@
     background: hsl(var(--muted));
   }
 
+  /* `surface="card"` — the row as its own card on the muted auth ground. */
+  .ui-auth-account-summary[data-surface="card"] {
+    padding: var(--auth-account-summary-card-padding);
+    border-radius: var(--card-radius, calc(var(--radius) * var(--radius-ratio)));
+    background: hsl(var(--card-background, var(--card)));
+  }
+
   .ui-auth-account-identity {
     display: flex;
     min-width: min(100%, var(--auth-account-summary-identity-min-width));

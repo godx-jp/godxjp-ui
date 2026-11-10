@@ -1471,7 +1471,7 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: ["DisabledProp", "ClassNameProp"],
-    local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction"],
+    local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction", "surface"],
   },
   AccountChipProp: {
     group: "layout",

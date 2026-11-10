@@ -41,4 +41,24 @@ describe("AuthAccountSummary name", () => {
     expect(container.querySelector(".ui-auth-account-email")?.textContent).toBe("h@example.com");
     expect(container.querySelector(".ui-auth-account-text")).toBeNull();
   });
+
+  it("surface=card marks the row as its own card; the default emits nothing", () => {
+    const { container, rerender } = render(
+      <AppProvider defaultLocale="en" persist={false}>
+        <AuthAccountSummary email="h@example.com" surface="card" />
+      </AppProvider>,
+    );
+    expect(container.querySelector('[data-slot="auth-account-summary"]')).toHaveAttribute(
+      "data-surface",
+      "card",
+    );
+    rerender(
+      <AppProvider defaultLocale="en" persist={false}>
+        <AuthAccountSummary email="h@example.com" />
+      </AppProvider>,
+    );
+    expect(container.querySelector('[data-slot="auth-account-summary"]')).not.toHaveAttribute(
+      "data-surface",
+    );
+  });
 });
