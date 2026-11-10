@@ -1606,6 +1606,30 @@
       "group": "layout",
       "props": [
         {
+          "name": "aside",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "asideLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "asideOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "breadcrumb",
           "origin": "owned",
           "required": false,
@@ -1747,6 +1771,14 @@
           "required": false,
           "type": "\"start\" | \"end\" | \"top\" | \"bottom\" | undefined",
           "values": ["start", "end", "top", "bottom"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "onAsideOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((open: boolean) => void) | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -3354,7 +3386,7 @@
           "origin": "owned",
           "required": false,
           "type": "CardVariant | undefined",
-          "values": ["default", "muted", "outline", "borderless", "featured"],
+          "values": ["default", "muted", "outline", "dashed", "borderless", "featured"],
           "declaredIn": ["src/components/data-display/card.tsx"]
         }
       ]
@@ -19168,6 +19200,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "addLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "animated",
           "origin": "owned",
           "required": false,
@@ -19303,6 +19343,14 @@
           "origin": "owned",
           "required": false,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onAdd",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: React.MouseEvent<HTMLButtonElement>) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },

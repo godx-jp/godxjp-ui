@@ -31,9 +31,11 @@ type CardAccentPlacement = "edge" | "perimeter";
  * Surface fill and edge. `outline` is antd's `outlined` — it drops the FILL and keeps the
  * hairline; `borderless` is antd's `variant="borderless"` (its deprecated `bordered={false}`) —
  * it drops the HAIRLINE and keeps the fill. They are two different cards, which is why both
- * values exist: neither one substitutes for the other.
+ * values exist: neither one substitutes for the other. `dashed` is an EDITING / drop area: no fill,
+ * no elevation, a dashed perimeter (`--card-dashed-border-color` / `-width`); `accent` retints the
+ * dash, e.g. `<Card variant="dashed" accent="primary">` around a layout being edited.
  */
-type CardVariant = "default" | "muted" | "outline" | "borderless" | "featured";
+type CardVariant = "default" | "muted" | "outline" | "borderless" | "featured" | "dashed";
 /** Padding density — base 16px · tight 12px · cozy 20px. */
 type CardDensity = "tight" | "cozy";
 

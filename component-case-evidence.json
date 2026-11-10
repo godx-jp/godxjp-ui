@@ -695,10 +695,13 @@
             "muted",
             "outline",
             "borderless",
-            "featured"
+            "featured",
+            "dashed"
           ],
           "evidence": [
-            "docs/data-display/card/index.tsx"
+            "docs/data-display/card/index.tsx",
+            "docs/layout/home-editing.tsx",
+            "src/components/data-display/__tests__/card-dashed.test.tsx"
           ]
         },
         "density": {

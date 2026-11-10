@@ -2708,6 +2708,29 @@ import { StatCard } from "@godxjp/ui/data-display";
         type: "(open: boolean) => void",
         description: "Change handler for the mobile drawer open state.",
       },
+      {
+        name: "aside",
+        type: "ReactNode",
+        description:
+          'A panel at the inline END that PUSHES the page aside instead of overlaying it (an "add widget" catalogue, an inspector): full height beside the topbar, --app-shell-aside-width wide (default 26.25rem; background --app-shell-aside-background, default the card surface); the topbar, main and footer give it the room. Below 48rem it covers the screen. An `<aside>` landmark named by `asideLabel`, last in focus order; bring your own header and close control.',
+      },
+      {
+        name: "asideOpen",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Whether `aside` is shown.",
+      },
+      {
+        name: "onAsideOpenChange",
+        type: "(open: boolean) => void",
+        description:
+          "Called with false when Esc is pressed inside the panel; pairs with asideOpen.",
+      },
+      {
+        name: "asideLabel",
+        type: "string",
+        description: "Accessible name of the aside landmark, supplied by the product.",
+      },
     ],
     usage: [
       'AppShell is APP chrome — a signed-in workspace with a sidebar — not document chrome. A standalone documentation site, manual, help center, user guide or legal page (terms, privacy) is `CenteredShell topbar={<EditorialMasthead …/>}` with `LegalDocumentShell` (@godxjp/ui/lab) as the body; never AppShell + Topbar + a `Text` brand and a bare back link (gh#1527). A manual page inside the app keeps AppShell: get_exemplar archetype="reader".',
@@ -5807,10 +5830,10 @@ export default function InvoiceList({
       },
       {
         name: "variant",
-        type: '"default" | "muted" | "outline" | "borderless" | "featured"',
+        type: '"default" | "muted" | "outline" | "borderless" | "featured" | "dashed"',
         defaultValue: '"default"',
         description:
-          'Surface fill AND edge. `outline` is Ant Design\'s `outlined` — no fill, hairline kept. `borderless` is Ant Design\'s `variant="borderless"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement="perimeter"` instead.',
+          'Surface fill AND edge. `outline` is Ant Design\'s `outlined` — no fill, hairline kept. `borderless` is Ant Design\'s `variant="borderless"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement="perimeter"` instead. `dashed` is an EDITING / drop area (a layout being edited, an "add" tile): no fill, no elevation, a dashed perimeter (--card-dashed-border-color, default the hairline colour; --card-dashed-border-width, default --stroke-md); `accent` retints the dash on all four sides — `<Card variant="dashed" accent="primary">` around the edited grid.',
       },
       {
         name: "hoverable",
@@ -11541,6 +11564,18 @@ toast.error("保存に失敗しました"); // also carries a close button`,
         type: "boolean",
         description:
           "Ant Design `hideAdd` — keep editable-card's remove shortcuts but drop the add button.",
+      },
+      {
+        name: "onAdd",
+        type: "(event: React.MouseEvent<HTMLButtonElement>) => void",
+        description:
+          'An ADD button for EVERY variant ("+ new desktop"). On the `default` and `line` strips it sits RIGHT AFTER the last tab — the strip shrinks to its tabs, the `line` rail is drawn by the bar so it still spans the row, an end `extra` is pushed to the row end; on the card variants it sits at the strip end. A real `<button>` beside the tablist: the next Tab stop after the strip, logical in RTL. On `editable-card` it wins over `onEdit(event, "add")`. `addIcon` replaces the glyph; not available on a route strip (items with `href`).',
+      },
+      {
+        name: "addLabel",
+        type: "string",
+        description:
+          "Accessible name of the add button, supplied by the product. Defaults to the kit's navigation.tabs.addTab.",
       },
       {
         name: "closeIcon",

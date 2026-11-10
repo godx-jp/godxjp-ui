@@ -211,6 +211,10 @@
    * would resolve to a plausible width in either reading and break silently, which is precisely the
    * failure class this package gates against everywhere else. */
   --app-shell-sidebar-width: 16rem;
+  /* `aside` — the inline-end panel that pushes the page. Background default = hsl(var(--card)),
+   * an HSL triple knob resolved at the call site. */
+  --app-shell-aside-width: 26.25rem;
+  --app-shell-aside-background: initial;
   --app-shell-sidebar-collapsed-width: 4rem;
   /* 3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default
    * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide

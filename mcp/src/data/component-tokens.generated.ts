@@ -529,6 +529,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card at once. Default = hsl(var(--primary))."
   },
   {
+    "name": "--card-dashed-border-color",
+    "value": "initial",
+    "description": "`variant=\"dashed\"` — the editing / drop area. Colour default = hsl(var(--border)) (an `accent` retints it); width default = var(--stroke-md). Both resolved at the call site."
+  },
+  {
+    "name": "--card-dashed-border-width",
+    "value": "initial",
+    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+  },
+  {
     "name": "--card-featured-ring-width",
     "value": "initial",
     "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
@@ -12467,6 +12477,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-shell-sidebar-width",
     "value": "16rem",
     "description": "Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once instead of forking `.app-root`. THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word \"rail\": - `--app-shell-sidebar-width` the sidebar track, expanded. - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`. - `--app-shell-nav-rail-width` a SECOND, separate track that only exists when the `navRail` slot is filled (the Slack/Teams shape). The middle one shipped as `--app-shell-rail-width` through 19.x, which read as \"the width of the rail\" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both 4rem, both spelled \"rail\", meaning entirely different things. Renamed with NO alias: an alias would resolve to a plausible width in either reading and break silently, which is precisely the failure class this package gates against everywhere else."
+  },
+  {
+    "name": "--app-shell-aside-width",
+    "value": "26.25rem",
+    "description": "`aside` — the inline-end panel that pushes the page. Background default = hsl(var(--card)), an HSL triple knob resolved at the call site."
+  },
+  {
+    "name": "--app-shell-aside-background",
+    "value": "initial",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-sidebar-collapsed-width",

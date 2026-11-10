@@ -716,6 +716,20 @@ export type AppShellProp = {
   mobileNavOpen?: boolean;
   /** Change handler for the mobile drawer open state (pairs with `mobileNavOpen`). */
   onMobileNavOpenChange?: (open: boolean) => void;
+  /**
+   * A panel at the inline END that PUSHES the page aside instead of overlaying it ("add widget",
+   * an inspector): full height, beside the topbar, `--app-shell-aside-width` wide (default
+   * 26.25rem); the topbar, main and footer give it the room. Below 48rem it covers the screen
+   * (a full-screen panel over the page). Rendered as an `<aside>` landmark named by `asideLabel`.
+   * Bring your own header and close control inside it.
+   */
+  aside?: ReactNode;
+  /** Whether `aside` is shown. Default `true` when `aside` is set. */
+  asideOpen?: boolean;
+  /** Called with `false` when Esc is pressed inside the panel; pairs with `asideOpen`. */
+  onAsideOpenChange?: (open: boolean) => void;
+  /** Accessible name of the panel landmark, supplied by the product ("追加する"). */
+  asideLabel?: string;
 };
 
 /**
@@ -1008,8 +1022,12 @@ export type AuthAccountSummaryProp = {
   email: string;
   avatarSrc?: string;
   avatarFallback?: ReactNode;
-  actionLabel: ReactNode;
-  onAction: () => void;
+  /**
+   * The row's action ("変更" / switch account). Optional: without `actionLabel` the row renders the
+   * identity alone (a read-only "signed in as").
+   */
+  actionLabel?: ReactNode;
+  onAction?: () => void;
   disabled?: DisabledProp;
   className?: ClassNameProp;
 };

@@ -8,6 +8,12 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Tabs add button for every variant, AppShell push panel, dashed Card (Platform Home)
+
+- **Added** `Tabs onAdd?: (event) => void` and `addLabel?: string` — an add button for EVERY variant, not only `editable-card`. On `default` and `line` strips it sits right after the last tab (the strip becomes content-width, the `line` rail continues to the row's end, an end `extra` is pushed to the end); on the card variants at the strip end. A real `<button>` after the tablist (the next Tab stop), logical in RTL; on `editable-card` it wins over `onEdit(event, "add")`. `addIcon` / `hideAdd` apply. Not on a route strip (`href` items).
+- **Added** `AppShell aside` / `asideOpen` (default `true`) / `onAsideOpenChange` / `asideLabel` — an inline-end panel that PUSHES the page instead of covering it: full height, `--app-shell-aside-width` (26.25rem) wide, background `--app-shell-aside-background` (default the card surface); the topbar, main and footer give it the room. Below 48rem it is a full-screen panel. An `<aside>` landmark, last in focus order; Esc inside it calls `onAsideOpenChange(false)`.
+- **Added** `Card variant="dashed"` — an editing / drop area: no fill, no elevation, a dashed perimeter (`--card-dashed-border-color`, default the hairline colour; `--card-dashed-border-width`, default `--stroke-md`). `accent` retints the dash on all four sides: `<Card variant="dashed" accent="primary">`.
+
 ## [33.28.6] - 2026-11-10
 
 ### EditorialAuth full-bleed split sign-in page (Platform login wireframe)

@@ -629,10 +629,23 @@ export type TabsProp = {
   destroyOnHidden?: boolean;
   /** Ant Design `onEdit`. `remove` passes the item's `value`; `add` passes the click event. */
   onEdit?: TabsOnEditProp;
-  /** Ant Design `addIcon` — replaces the default + on the `editable-card` add button. */
+  /** Ant Design `addIcon` — replaces the default + on the add button (any variant). */
   addIcon?: React.ReactNode;
   /** Ant Design `hideAdd` — keep `editable-card`'s remove buttons but drop the add button. */
   hideAdd?: boolean;
+  /**
+   * An ADD button for EVERY variant ("+ new desktop"): rendered right after the last tab on the
+   * `default` and `line` strips (the strip shrinks to its tabs and the line rail runs on to the
+   * row's end), at the end of the strip on the card variants. It is a real `<button>` beside the
+   * tablist — the next Tab stop after the strip, logical in RTL. Called with the click event.
+   * On `editable-card` it takes precedence over `onEdit(event, "add")`.
+   */
+  onAdd?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  /**
+   * Accessible name of the add button, supplied by the product ("デスクトップを追加"). Defaults to
+   * the kit's `navigation.tabs.addTab`.
+   */
+  addLabel?: string;
   /**
    * Ant Design `removeIcon` — the strip-wide default glyph on `editable-card`'s remove shortcut.
    * A `TabItemProp.closeIcon` on one item still wins over it, which is antd's own precedence.

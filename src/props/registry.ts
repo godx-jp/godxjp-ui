@@ -1285,6 +1285,23 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [
       "ChildrenProp",
       {
+        field: "aside",
+        local: true,
+        reason:
+          "Inline-end panel that pushes the page (inspector, add-widget); full screen on a phone.",
+      },
+      {
+        field: "asideOpen",
+        local: true,
+        reason: "Whether the aside panel is shown (default true).",
+      },
+      {
+        field: "onAsideOpenChange",
+        local: true,
+        reason: "Esc inside the aside panel reports false; pairs with asideOpen.",
+      },
+      { field: "asideLabel", local: true, reason: "Accessible name of the aside landmark." },
+      {
         field: "errorBoundary",
         local: true,
         reason:
@@ -4646,6 +4663,12 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: [
+      {
+        field: "onAdd",
+        local: true,
+        reason: "Add button for every variant, right after the last tab on default/line strips.",
+      },
+      { field: "addLabel", local: true, reason: "Accessible name of the add button." },
       "ValueProp",
       "DefaultValueProp",
       "OnValueChangeProp",
