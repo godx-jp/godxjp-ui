@@ -107,8 +107,12 @@ const COMPACT: Case[] = [
   C("c01/bad-nested-clip.html", "c01-content-reachable", "fail", [
     ["c01-content-reachable", "#c01-nested-icon"],
   ]),
+  C("c01/bad-scroller-cut.html", "c01-content-reachable", "fail", [
+    ["c01-content-reachable", "#c01-scroller-cut"],
+  ]),
   C("c01/repaired.html", "c01-content-reachable", "pass"),
   C("c01/clean.html", "c01-content-reachable", "pass"),
+  C("c01/clean-scroll-in-clip.html", "c01-content-reachable", "pass"),
 
   C("c02/bad-narrow.html", "c02-search-usable", "fail", [["c02-search-usable", "#c02-narrow"]]),
   C("c02/bad-hint.html", "c02-search-usable", "fail", [["c02-search-usable", "#c02-hint"]]),
