@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### @godxjp/markdown: display math keeps its limits, and a narrowed body keeps a formula whole (also released as 33.27.20, off v33.27.19)
+
+- **Display corruption** (affects every release since 33.18.0): `katex.css` makes `.katex-display` scroll sideways (`overflow-x: auto`), which clips both axes, and the box had no vertical room, so an integral's or a sum's limits were cut: GDX's issue screen lost about 3px off `\int_0^1 x\,dx` (GDX-1466). Measured in Chromium at 16px: glyphs reached 3.3px above and 4px below the box (`\sum_{i=1}^{n}` 2.2/2.1, `\lim_{x \to 0}\frac{\sin x}{x}` 4.1/3.4). Half of KaTeX's 1em margin now sits inside the box as padding (`margin-block: 0.5em; padding-block: 0.5em`), so every glyph is inside it. Spacing in a `Prose`, measured at 14px from the paragraph above and below to the formula's glyph box: 14px above (unchanged), 19px below (was 14px: the next paragraph's own margin now collapses with the smaller 0.5em, then the padding adds to it).
+- **Display corruption** (affects every release since 33.18.0): `allowedElements`, `disallowedElements` and `allowElement` took a KaTeX formula apart, unwrapping its spans and MathML one by one, so an activity feed narrowed to inline marks showed `$a^2$` as "a2a^2a2" (GDX-1467). A formula (`span.katex`, `span.katex-display`) is now one unit the narrowing never enters: it stays whole, MathML included, and the host's lists and predicate still apply to everything around it. A host no longer needs `span`, `svg` and the MathML tags in its list.
+
 ### OrgSwitcher lists the personal workspace in its own section (#1556) (also released as 33.27.19, off v33.27.18)
 
 - **Added** `OrgSwitcherOrganization.kind?: "organization" | "personal"` (default `"organization"`). Personal entries are listed in their own labelled section after the organizations, whatever their position in `organizations`, with a circular avatar (`--radius-pill`) on the row and on the trigger. Search filters the organizations only: the personal entry stays listed and last, and `labels.empty` shows when no organization matches. New `labels.personal` titles the section; it defaults to the kit's `layout.orgSwitcher.personal` (Personal / 個人 / Cá nhân). A list without personal entries renders exactly as before.

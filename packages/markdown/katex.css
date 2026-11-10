@@ -4,8 +4,14 @@
  */
 @import "katex/dist/katex.min.css";
 
-/* A display formula wider than the column scrolls, as a wide table does, instead of widening the page. */
+/* A display formula wider than the column scrolls, as a wide table does, instead of widening the page.
+ * A scroll box clips both axes, so half of KaTeX's 1em margin moves inside it as padding: an
+ * integral's or a sum's limits reach past the line box and were cut by about 3px (GDX-1466). On
+ * its own the formula keeps 1em around its glyphs; after a paragraph with a larger top margin, that
+ * margin collapses with the 0.5em and the gap below grows by the difference. */
 .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
+  margin-block: 0.5em;
+  padding-block: 0.5em;
 }
