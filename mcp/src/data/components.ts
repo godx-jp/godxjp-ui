@@ -2080,6 +2080,12 @@ import { Moon, Sun } from "lucide-react";
           'The description in the phone band (< 48rem). "hidden" makes the band one line — kicker/logo and title only (--editorial-auth-band-description-display). Desktop and tablet always show it.',
       },
       {
+        name: "bandSubtitle",
+        type: "ReactNode",
+        description:
+          "A short line shown ONLY in the phone band (< 48rem), in place of the description; desktop and tablet keep `description` (--editorial-auth-band-subtitle-display / -font-size).",
+      },
+      {
         name: "layout",
         type: '"card" | "split"',
         defaultValue: '"card"',
@@ -2114,8 +2120,20 @@ import { Moon, Sun } from "lucide-react";
     props: [
       { name: "badge", type: "ReactNode", description: "Badge slot." },
       { name: "title", type: "ReactNode", required: true, description: "Title." },
-      { name: "level", type: "2 | 3", description: "Heading level. Default: 2." },
+      {
+        name: "level",
+        type: "1 | 2 | 3",
+        description:
+          "Heading level. Default: 2. `1` makes the card title the page h1 (pair with `<EditorialAuth level={2}>`).",
+      },
       { name: "description", type: "ReactNode", description: "Copy." },
+      {
+        name: "controlSize",
+        type: '"md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          '"lg" scopes `--control-height` inside the card to --editorial-auth-card-control-height-lg (48px), so every Input / Button / Select in the form takes the sign-in density.',
+      },
       { name: "children", type: "ReactNode", description: "The form." },
       { name: "footer", type: "ReactNode", description: "Ruled footer line." },
     ],
@@ -6267,10 +6285,16 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "variant",
-        type: '"default" | "secondary" | "outline" | "dashed"',
+        type: '"default" | "secondary" | "outline" | "dashed" | "glass"',
         defaultValue: '"default"',
         description:
-          "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border.",
+          "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border. `glass` = a translucent pill for a DARK / brand surface (decorative app tiles on a sign-in story): fill and edge are the surface's own `--foreground` at low alpha (--badge-glass-background-alpha / -border-alpha), larger box (--badge-glass-space-x/-y, -font-size, -radius), so it reads wherever the ink is re-scoped — EditorialAuth appearance=\"brand\" sets it to white. Pair with `leading` for the app's letter tile.",
+      },
+      {
+        name: "leading",
+        type: "ReactNode",
+        description:
+          'A decorative node before the label — an app\'s letter tile (`<Avatar shape="square" size="xs">T</Avatar>`), a mark. aria-hidden; the label carries the name.',
       },
       {
         name: "tone",
@@ -12029,6 +12053,13 @@ import { Button } from "@godxjp/ui/general";
         defaultValue: '"chevron"',
         description:
           '`chevron` (›) is the breadcrumb-flavoured original; `arrow` (→) is the canonical hosted-identity progression marker — a chevron reads "drill into", an arrow reads "then", which is what a step row means. Both flip under dir="rtl". Ignored by every other `type`.',
+      },
+      {
+        name: "align",
+        type: '"center" | "start"',
+        defaultValue: '"center"',
+        description:
+          '`type="inline"` only: where the run sits on its row — centred (default) or at the inline-start edge (logical in RTL), e.g. a step strip at the top of a form column.',
       },
       {
         name: "onValueChange",
@@ -18993,13 +19024,12 @@ import { Logo } from "@godxjp/ui/general";
       {
         name: "actionLabel",
         type: "ReactNode",
-        required: true,
-        description: "Localized visible switch-account action label.",
+        description:
+          "Localized visible switch-account action label. Optional: omit it (and `onAction`) for a read-only signed-in row with no action.",
       },
       {
         name: "onAction",
         type: "() => void",
-        required: true,
         description: "Consumer-owned account-switch navigation/action.",
       },
       {

@@ -2323,6 +2323,11 @@ export const COMPONENT_PROP_REGISTRY = {
         reason: "Phone band copy — visible (default) or hidden for a one-line band.",
       },
       {
+        field: "bandSubtitle",
+        local: true,
+        reason: "Short line shown only in the phone band, in place of the description.",
+      },
+      {
         field: "layout",
         local: true,
         reason: "Page shape — card (default, inside the page gutters) or a full-bleed split.",
@@ -2338,6 +2343,11 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "title", local: true, reason: "Card title." },
       { field: "level", local: true, reason: "Heading level." },
       { field: "description", local: true, reason: "Copy." },
+      {
+        field: "controlSize",
+        local: true,
+        reason: "Control tier of the form inside — md (page tier) or lg (48px sign-in density).",
+      },
       { field: "children", local: true, reason: "The form." },
       { field: "footer", local: true, reason: "Ruled footer line." },
     ],
@@ -3796,6 +3806,7 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display.prop.ts",
     vocabulary: [
+      { field: "leading", local: true, reason: "Decorative node before the label (app tile)." },
       {
         field: "as",
         local: true,
@@ -4616,7 +4627,14 @@ export const COMPONENT_PROP_REGISTRY = {
   StepsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["ValueProp", "DefaultValueProp", "SizeProp", "OnValueChangeProp", "ClassNameProp"],
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "SizeProp",
+      "OnValueChangeProp",
+      "ClassNameProp",
+      { field: "align", local: true, reason: "Inline run placement — center (default) or start." },
+    ],
   },
   InputOTPProp: {
     group: "data-entry",

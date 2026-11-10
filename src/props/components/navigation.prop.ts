@@ -379,6 +379,11 @@ export type StepsProp = Omit<
    * breadcrumb-flavoured original.
    */
   separator?: StepsSeparatorProp;
+  /**
+   * `type="inline"` only: where the run sits on its row. `"center"` (default) or `"start"` (the
+   * inline-start edge, logical in RTL) — a step strip at the top of a form column.
+   */
+  align?: "center" | "start";
   onValueChange?: (value: number) => void;
   className?: ClassNameProp;
 };

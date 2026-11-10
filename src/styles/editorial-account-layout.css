@@ -944,6 +944,20 @@
     display: var(--editorial-auth-band-description-display);
   }
 
+  /* `bandSubtitle` — the phone band's short line; hidden above the phone line. */
+  .ui-editorial-auth-band-subtitle {
+    display: var(--editorial-auth-band-subtitle-display);
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--editorial-auth-band-subtitle-font-size);
+    line-height: var(--editorial-auth-description-line-height);
+  }
+
+  /* `controlSize="lg"` — the sign-in density: every control in the card reads the larger tier. */
+  .ui-editorial-auth-card[data-control-size="lg"] {
+    --control-height: var(--editorial-auth-card-control-height-lg);
+  }
+
   .ui-editorial-auth-description {
     max-width: var(--editorial-auth-description-max-width);
     margin: 0 0 var(--editorial-auth-description-space-block-end);

@@ -251,6 +251,11 @@ export type EditorialAuthProp = {
    */
   bandDescription?: "visible" | "hidden";
   /**
+   * A short line shown ONLY in the phone band, in place of the description ("タスク・レストラン管理・
+   * Pages…"); desktop and tablet keep `description`.
+   */
+  bandSubtitle?: ReactNode;
+  /**
    * `"card"` (default) — the story column beside the form card, inside the page's own gutters.
    * `"split"` — a FULL-BLEED sign-in page: render it as the page root (no shell padding). The story
    * fills the start side edge to edge and top to bottom (`--editorial-auth-split-track-size`,
@@ -274,9 +279,18 @@ export type EditorialAuthProp = {
 export type EditorialAuthCardProp = {
   badge?: ReactNode;
   title: ReactNode;
-  /** Heading level of the title. Default `2`. */
-  level?: 2 | 3;
+  /**
+   * Heading level of the title. Default `2`. `1` makes the card's title the page `h1` (pair it with
+   * `<EditorialAuth level={2}>`).
+   */
+  level?: 1 | 2 | 3;
   description?: ReactNode;
+  /**
+   * Height of the form controls inside (Input, Button, Select…). `"md"` (default) keeps the page's
+   * tier; `"lg"` scopes `--control-height` to `--editorial-auth-card-control-height-lg` (48px),
+   * the sign-in density.
+   */
+  controlSize?: "md" | "lg";
   children?: ReactNode;
   footer?: ReactNode;
   className?: ClassNameProp;

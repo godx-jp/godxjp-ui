@@ -1071,6 +1071,9 @@
     font-size: var(--steps-inline-font-size);
     line-height: var(--line-height-tight);
   }
+  .ui-steps-inline[data-align="start"] {
+    justify-content: flex-start;
+  }
 
   .ui-steps-inline-item {
     display: inline-flex;

@@ -369,6 +369,11 @@
   --editorial-auth-title-md-line-height: 1.4;
   /* `bandDescription="hidden"`: the description's display — `none` only below the phone line. */
   --editorial-auth-band-description-display: block;
+  /* `bandSubtitle`: shown only below the phone line. */
+  --editorial-auth-band-subtitle-display: none;
+  --editorial-auth-band-subtitle-font-size: var(--font-size-base);
+  /* `EditorialAuthCard controlSize="lg"`: the 48px sign-in control tier. */
+  --editorial-auth-card-control-height-lg: var(--band-height-2xl);
   --editorial-auth-description-max-width: 30.625rem;
   --editorial-auth-description-font-size: calc(var(--font-size-base) + 0.125rem);
   --editorial-auth-description-line-height: 1.9;
@@ -494,6 +499,7 @@
     --editorial-auth-title-white-space: normal;
     --editorial-auth-title-md-font-size: 1.625rem; /* scale-exempt: the band's 26px title, as above */
     --editorial-auth-band-description-display: none;
+    --editorial-auth-band-subtitle-display: block;
     /* Split on a phone: the story is a full-bleed band over the form, which starts at the top. */
     --editorial-auth-split-track-size: minmax(0, 1fr);
     --editorial-auth-split-min-height: 0;

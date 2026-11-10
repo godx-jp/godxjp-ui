@@ -566,6 +566,38 @@ describe("EditorialAuth (gh#1439)", () => {
     expect(narrow).toContain("--editorial-auth-split-min-height: 0;");
   });
 
+  it('EditorialAuthCard level={1} owns the page h1; controlSize="lg" scopes the control tier', () => {
+    const { container } = render(
+      <EditorialAuth title="Story" level={2}>
+        <EditorialAuthCard title="ログイン" level={1} controlSize="lg" />
+      </EditorialAuth>,
+    );
+    expect(screen.getByRole("heading", { level: 1, name: "ログイン" })).toBeTruthy();
+    expect(screen.getByRole("heading", { level: 2, name: "Story" })).toBeTruthy();
+    const card = container.querySelector(".ui-editorial-auth-card")!;
+    expect(card).toHaveAttribute("data-control-size", "lg");
+    expect(rule('.ui-editorial-auth-card[data-control-size="lg"]')).toContain(
+      "--control-height: var(--editorial-auth-card-control-height-lg)",
+    );
+    expect(tokens).toContain("--editorial-auth-card-control-height-lg: var(--band-height-2xl);");
+    const { container: plain } = render(<EditorialAuthCard title="x" />);
+    expect(plain.firstElementChild).not.toHaveAttribute("data-control-size");
+  });
+
+  it("bandSubtitle replaces the description in the phone band only", () => {
+    const { container } = render(
+      <EditorialAuth title="x" description="Long copy" bandSubtitle="Short line" />,
+    );
+    expect(container.querySelector(".ui-editorial-auth-band-subtitle")?.textContent).toBe(
+      "Short line",
+    );
+    // The description is hidden in the band by the same knob bandDescription="hidden" uses.
+    expect(container.firstElementChild).toHaveAttribute("data-band-description", "hidden");
+    expect(tokens).toContain("--editorial-auth-band-subtitle-display: none;");
+    const narrow = tokens.match(/@media \(width < 48rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(narrow).toContain("--editorial-auth-band-subtitle-display: block;");
+  });
+
   it("keeps a gap between the description and the first benefit line", () => {
     expect(tokens).toContain("--editorial-auth-description-space-block-end: var(--space-6);");
     expect(rule(".ui-editorial-auth-description")).toContain(

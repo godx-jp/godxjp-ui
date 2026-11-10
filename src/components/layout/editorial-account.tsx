@@ -436,6 +436,7 @@ export function EditorialAuth({
   appearance = "default",
   titleSize = "lg",
   bandDescription = "visible",
+  bandSubtitle,
   layout = "card",
   benefits,
   children,
@@ -447,6 +448,7 @@ export function EditorialAuth({
     <>
       <Heading className="ui-editorial-auth-title">{title}</Heading>
       {description != null && <p className="ui-editorial-auth-description">{description}</p>}
+      {bandSubtitle != null && <p className="ui-editorial-auth-band-subtitle">{bandSubtitle}</p>}
       {artFrame === "none" ? (
         art != null && (
           <div aria-hidden data-frame="none" className="ui-editorial-auth-art">
@@ -467,7 +469,9 @@ export function EditorialAuth({
       // Emitted only for a non-default choice, so the default page keeps its exact box.
       data-appearance={appearance === "brand" ? "brand" : undefined}
       data-title-size={titleSize === "md" ? "md" : undefined}
-      data-band-description={bandDescription === "hidden" ? "hidden" : undefined}
+      data-band-description={
+        bandDescription === "hidden" || bandSubtitle != null ? "hidden" : undefined
+      }
       data-layout={split ? "split" : undefined}
       className={cn("ui-editorial-auth", className)}
     >
@@ -502,13 +506,18 @@ export function EditorialAuthCard({
   title,
   level,
   description,
+  controlSize = "md",
   children,
   footer,
   className,
 }: EditorialAuthCardProp) {
-  const Heading = headingTag(level);
+  const Heading = level === 1 ? "h1" : headingTag(level);
   return (
-    <div data-slot="editorial-auth-card" className={cn("ui-editorial-auth-card", className)}>
+    <div
+      data-slot="editorial-auth-card"
+      data-control-size={controlSize === "lg" ? "lg" : undefined}
+      className={cn("ui-editorial-auth-card", className)}
+    >
       {badge != null && <div className="ui-editorial-auth-card-badge">{badge}</div>}
       <Heading className="ui-editorial-auth-card-title">{title}</Heading>
       {description != null && <p className="ui-editorial-auth-card-description">{description}</p>}
