@@ -11439,6 +11439,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`variant=\"chips\"` — the phone desktop switcher. Fills are `initial` role mirrors resolved at the call site: --tabs-chip-background = hsl(var(--muted)); --tabs-chip-active-background = hsl(var(--foreground)); --tabs-chip-active-foreground (an HSL triple) = var(--background)."
   },
   {
+    "name": "--tabs-chips-list-radius",
+    "value": "0",
+    "description": "The chips strip itself is not a box: no corner, no side inset (each chip carries its own)."
+  },
+  {
+    "name": "--tabs-chips-list-space-inset-x",
+    "value": "0",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
     "name": "--tabs-chips-list-space-inset-y",
     "value": "calc(var(--focus-ring-width) + var(--focus-ring-glow-width))",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."

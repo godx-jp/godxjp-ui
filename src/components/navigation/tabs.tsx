@@ -631,7 +631,7 @@ export function Tabs({
     // CHIPS strip: no joined pill track — separate chips with a gap, the strip scrolling sideways.
     // The block inset is the focus ring's reach, because the strip clips its block axis.
     variant === "chips" &&
-      "justify-start gap-[var(--tabs-chips-gap)] rounded-none px-0 py-[var(--tabs-chips-list-space-inset-y)]",
+      "justify-start gap-[var(--tabs-chips-gap)] rounded-[var(--tabs-chips-list-radius)] px-[var(--tabs-chips-list-space-inset-x)] py-[var(--tabs-chips-list-space-inset-y)]",
     addInline && "data-[orientation=horizontal]:w-auto",
     listClassName,
   );
