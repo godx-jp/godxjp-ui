@@ -1018,13 +1018,38 @@ export function collectProbes(opts) {
     let hidden = false;
     // Walk outward from the nearest box. Text is clipped by its OWN element too (a truncating
     // span); an icon starts at its parent. A scroll container (auto/scroll) keeps content
-    // reachable on that axis, but it never excuses a hidden/clip ancestor INSIDE it.
+    // reachable on that axis, but it never excuses a hidden/clip ancestor INSIDE it; one OUTSIDE
+    // it is measured against the scroll viewport, not the content's current scroll position.
     for (
       let a = it.owner;
       a && a !== document.body && a !== document.documentElement;
       a = a.parentElement
     ) {
       const s = cs(a);
+      const scrollX = s.overflowX === "auto" || s.overflowX === "scroll";
+      const scrollY = s.overflowY === "auto" || s.overflowY === "scroll";
+      if ((scrollX || scrollY) && a.clientWidth > 1 && a.clientHeight > 1) {
+        // Past a scroll container, the content can be scrolled anywhere into that container's
+        // viewport, so an ancestor OUTSIDE it can only cut what the viewport shows (GDX-1456: a
+        // sidebar row below the fold of its overflow-y:auto nav was reported cut by the
+        // overflow-y:clip aside around it, edge for edge). Clamp the box to the viewport on each
+        // scrolling axis; a box wholly scrolled away is reachable, not cut.
+        const sr = a.getBoundingClientRect();
+        const vl = sr.left + a.clientLeft;
+        const vt = sr.top + a.clientTop;
+        if (scrollX) {
+          box.left = Math.max(box.left, vl);
+          box.right = Math.min(box.right, vl + a.clientWidth);
+        }
+        if (scrollY) {
+          box.top = Math.max(box.top, vt);
+          box.bottom = Math.min(box.bottom, vt + a.clientHeight);
+        }
+        if (box.right <= box.left || box.bottom <= box.top) {
+          hidden = true;
+          break;
+        }
+      }
       const clipX = s.overflowX === "hidden" || s.overflowX === "clip";
       const clipY = s.overflowY === "hidden" || s.overflowY === "clip";
       if (!clipX && !clipY) continue;

@@ -578,6 +578,39 @@ export function Sidebar({
   /* `action` (gh#1185) is the third slot inside the collapsible rail, so it reads the same value. */
   const actionNode = typeof action === "function" ? action(collapsed) : action;
 
+  /*
+   * THE CURRENT PAGE'S ROW IS SHOWN WHOLE (GDX-1456). A console with more rows than the window
+   * opened on a page near the end of the list — /system/ai/quotas at 1024×900 — painted the
+   * current row half under the nav's fold (8.6px of a 32px row cut), so the one row that says
+   * where you are was the one you could not read. On mount and whenever `activeId` changes, the
+   * nav scrolls by the least amount that shows that row, inside its own scroller only (never the
+   * page, unlike scrollIntoView). A row already in view is left alone, so a `scrollRef` consumer
+   * restoring its scrollTop keeps its position.
+   */
+  const navRef = React.useRef<HTMLElement | null>(null);
+  const setNavRef = React.useCallback(
+    (node: HTMLElement | null) => {
+      navRef.current = node;
+      if (typeof scrollRef === "function") scrollRef(node);
+      else if (scrollRef) (scrollRef as React.MutableRefObject<HTMLElement | null>).current = node;
+    },
+    [scrollRef],
+  );
+  React.useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav || nav.clientHeight === 0 || nav.scrollHeight <= nav.clientHeight) return;
+    const row = nav.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!row || row.getClientRects().length === 0) return; // inside a closed group: not painted
+    const view = nav.getBoundingClientRect();
+    const box = row.getBoundingClientRect();
+    const style = getComputedStyle(nav);
+    const top = view.top + nav.clientTop + (parseFloat(style.paddingTop) || 0);
+    const bottom =
+      view.top + nav.clientTop + nav.clientHeight - (parseFloat(style.paddingBottom) || 0);
+    if (box.bottom > bottom) nav.scrollTop += Math.min(box.bottom - bottom, box.top - top);
+    else if (box.top < top) nav.scrollTop -= top - box.top;
+  }, [activeId, collapsed]);
+
   return (
     <div className="sb-root" data-collapsed={collapsed ? "true" : undefined}>
       {brand !== undefined ? (
@@ -664,7 +697,7 @@ export function Sidebar({
       ) : null}
 
       <nav
-        ref={scrollRef}
+        ref={setNavRef}
         className="sb-nav-scroll"
         aria-label={ariaLabel ?? ariaLabelCamel ?? t("layout.sidebar.ariaLabel")}
       >
