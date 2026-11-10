@@ -5881,7 +5881,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-auth-track-size",
     "value": "minmax(0, 1fr) minmax(0, 22.5rem)",
-    "description": "EditorialAuth on a TABLET (48rem–64rem): the 460px card and the hero gap left too little for the story (an 800px viewport overflowed by 84px). Both columns stay, both may shrink: the card caps at 22.5rem and the gap drops to the phone-to-desktop midpoint."
+    "description": "EditorialAuth on a TABLET (below 64rem; the phone block after it overrides what differs): the 460px card and the hero gap left too little for the story (an 800px viewport overflowed by 84px). Both columns stay, both may shrink: the card caps at 22.5rem and the gap drops to the phone-to-desktop midpoint."
   },
   {
     "name": "--editorial-auth-gap",
@@ -5959,11 +5959,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "scale-exempt: the band's 26px title, as above"
   },
   {
-    "name": "--editorial-auth-title-md-line-height",
-    "value": "1.4",
-    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
-  },
-  {
     "name": "--editorial-auth-band-description-display",
     "value": "none",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
@@ -6011,11 +6006,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-auth-brand-padding",
     "value": "var(--space-5)",
-    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
-  },
-  {
-    "name": "--editorial-auth-card-padding",
-    "value": "var(--space-6)",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {

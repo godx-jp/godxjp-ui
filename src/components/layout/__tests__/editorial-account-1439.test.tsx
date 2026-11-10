@@ -573,8 +573,8 @@ describe("EditorialAuth (gh#1439)", () => {
     );
   });
 
-  it("shrinks both columns on a tablet (48rem-64rem) instead of overflowing", () => {
-    const tablet = tokens.match(/@media \(48rem <= width < 64rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+  it("shrinks both columns below 64rem (the phone block overrides what differs) instead of overflowing", () => {
+    const tablet = tokens.match(/@media \(width < 64rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
     expect(tablet).toContain("--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);");
     expect(tablet).toContain("--editorial-auth-gap: var(--space-10);");
   });

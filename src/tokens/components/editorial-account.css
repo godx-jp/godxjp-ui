@@ -462,10 +462,10 @@
   --editorial-auth-card-footer-space-block-start: var(--space-6);
 }
 
-/* EditorialAuth on a TABLET (48rem–64rem): the 460px card and the hero gap left too little for the
+/* EditorialAuth on a TABLET (below 64rem; the phone block after it overrides what differs): the 460px card and the hero gap left too little for the
  * story (an 800px viewport overflowed by 84px). Both columns stay, both may shrink: the card caps at
  * 22.5rem and the gap drops to the phone-to-desktop midpoint. */
-@media (48rem <= width < 64rem) {
+@media (width < 64rem) {
   :root {
     --editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);
     --editorial-auth-gap: var(--space-10);
@@ -493,7 +493,6 @@
     --editorial-auth-title-space-block: var(--space-2);
     --editorial-auth-title-white-space: normal;
     --editorial-auth-title-md-font-size: 1.625rem; /* scale-exempt: the band's 26px title, as above */
-    --editorial-auth-title-md-line-height: 1.4;
     --editorial-auth-band-description-display: none;
     /* Split on a phone: the story is a full-bleed band over the form, which starts at the top. */
     --editorial-auth-split-track-size: minmax(0, 1fr);
@@ -506,6 +505,5 @@
     --editorial-auth-art-display: none;
     --editorial-auth-benefits-display: none;
     --editorial-auth-brand-padding: var(--space-5);
-    --editorial-auth-card-padding: var(--space-6);
   }
 }
