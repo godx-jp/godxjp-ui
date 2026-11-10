@@ -411,6 +411,30 @@
     padding-bottom: var(--card-space-body-y);
   }
 
+  /* Described header with an action (GDX-1481): the action sits beside the title at the inline
+   * end, the description runs under the title. Before, only the toolbar header (no description)
+   * was a row, so a described one stacked the action on a line of its own under the description.
+   * A grid, not a wrapping row, so the description keeps the title's column instead of taking the
+   * full width under the action. Banded or not; padding is left to the rules above. */
+  [data-slot="card-header"]:has(> [data-slot="card-action"]):has(> [data-slot="card-description"]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: var(--space-inline-md);
+    row-gap: var(--card-space-gap);
+  }
+
+  [data-slot="card-header"]:has(> [data-slot="card-action"]):has(> [data-slot="card-description"])
+    > :not([data-slot="card-action"]) {
+    grid-column: 1;
+  }
+
+  [data-slot="card-header"]:has(> [data-slot="card-description"]) > [data-slot="card-action"] {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin-inline-start: 0;
+  }
+
   /* Valid equivalent: zero it for any header-hosted action, then the described (non-toolbar)
    * header restores the gap in the equal-specificity rule after this one. */
   /* Both halves of the pair exclude [data-flush]: a flush body owns its block axis outright in the
