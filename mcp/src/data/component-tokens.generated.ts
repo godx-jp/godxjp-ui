@@ -5539,6 +5539,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
+    "name": "--editorial-auth-title-white-space",
+    "value": "pre-line",
+    "description": "`pre-line` keeps a title's authored line breaks; the narrow band collapses them (`normal`)."
+  },
+  {
+    "name": "--editorial-auth-title-md-font-size",
+    "value": "2rem",
+    "description": "`titleSize=\"md\"` — the sign-in density title. scale-exempt: measured 32px sign-in title (Platform)"
+  },
+  {
+    "name": "--editorial-auth-title-md-line-height",
+    "value": "1.4",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-band-description-display",
+    "value": "block",
+    "description": "`bandDescription=\"hidden\"`: the description's display — `none` only below the phone line."
+  },
+  {
     "name": "--editorial-auth-description-max-width",
     "value": "30.625rem",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
@@ -5555,8 +5575,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-auth-description-space-block-end",
-    "value": "0",
-    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+    "value": "var(--space-6)",
+    "description": "The gap under the copy, so the first benefit line (or the art) does not sit flush on it. Block margins collapse, so beside the art the art's own --editorial-auth-art-space-block-start wins."
   },
   {
     "name": "--editorial-auth-art-display",
@@ -5651,6 +5671,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--editorial-auth-art-shadow",
     "value": "0 15px 25px rgb(35 25 29 / 0.08)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-free-max-width",
+    "value": "none",
+    "description": "`artFrame=\"none\"`: the unframed art box."
+  },
+  {
+    "name": "--editorial-auth-art-free-height",
+    "value": "auto",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-brand-background",
+    "value": "initial",
+    "description": "`appearance=\"brand\"`: the story surface, DARK in every theme. Background default = a deep gradient of the --primary hue at the angle below (resolved at the call site; any colour or gradient is valid); foreground is an HSL triple (white, >= 6:1 on <= 24% L); muted foreground (the copy and kicker) defaults to it. Retint the background lighter and you retint the foreground too, at AA."
+  },
+  {
+    "name": "--editorial-auth-brand-gradient-angle",
+    "value": "160deg",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-brand-foreground",
+    "value": "0 0% 100%",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-brand-muted-foreground",
+    "value": "initial",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-brand-padding",
+    "value": "var(--space-10)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-brand-radius",
+    "value": "var(--editorial-auth-card-radius)",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
   {
@@ -5750,6 +5810,101 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--editorial-auth-card-footer-space-block-start",
+    "value": "var(--space-6)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-track-size",
+    "value": "minmax(0, 1fr) minmax(0, 22.5rem)",
+    "description": "EditorialAuth on a TABLET (48rem–64rem): the 460px card and the hero gap left too little for the story (an 800px viewport overflowed by 84px). Both columns stay, both may shrink: the card caps at 22.5rem and the gap drops to the phone-to-desktop midpoint."
+  },
+  {
+    "name": "--editorial-auth-gap",
+    "value": "var(--space-10)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-padding",
+    "value": "var(--space-6)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-track-size",
+    "value": "minmax(0, 1fr)",
+    "description": "EditorialAuth below the kit's phone line (48rem — `--sheet-responsive-breakpoint-width`, the `md` step). The kit's DEFAULT, declared as tokens so the layout rules still name no breakpoint and a theme re-declares any of them under its own query: the 460px card track would overflow a 390px viewport, so the columns stack, and the story column becomes a compact band — kicker and a one-line title (authored line breaks collapse), the copy kept, the art and benefits hidden."
+  },
+  {
+    "name": "--editorial-auth-gap",
+    "value": "var(--space-6)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-padding-block-start",
+    "value": "var(--space-6)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-padding-block-end",
+    "value": "var(--space-10)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-story-padding-block-start",
+    "value": "0",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-font-size",
+    "value": "1.625rem",
+    "description": "scale-exempt: the band's one-line 26px title; no ratio step lands on it"
+  },
+  {
+    "name": "--editorial-auth-title-line-height",
+    "value": "1.4",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-space-block",
+    "value": "var(--space-2)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-white-space",
+    "value": "normal",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-title-md-font-size",
+    "value": "1.625rem",
+    "description": "scale-exempt: the band's 26px title, as above"
+  },
+  {
+    "name": "--editorial-auth-title-md-line-height",
+    "value": "1.4",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-band-description-display",
+    "value": "none",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-art-display",
+    "value": "none",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-benefits-display",
+    "value": "none",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-brand-padding",
+    "value": "var(--space-5)",
+    "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-padding",
     "value": "var(--space-6)",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
   },
@@ -10124,6 +10279,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "── The LOGOTYPE ink (`<Logo mark=\"godx-lockup\" />`, identity v2.3) ──────────────────────── The lockup's letters G, o and D are the kit's indigo #0B0F3B; the mark and the X are the brand identity colour and read --logo-godx-color instead. They are two ROLES, not a decorative split, so they get two knobs. A TOKEN AND NOT THE LITERAL, because the literal only works in one theme: #0B0F3B is 18.00:1 on the light canvas and 1.03:1 on the dark one — invisible. Dark takes the kit's own dark text colour instead (#F7FAF8, 16.87:1), flipped in the block at the end of this file the same way the boxed glyph's ink is."
   },
   {
+    "name": "--logo-godx-ink-color-on-light",
+    "value": "235 68.6% 13.7%",
+    "description": "The two inks a PINNED surface (`<Logo scheme>` / `data-logo-scheme`) reads: the light-theme ink and the dark-theme ink above, independent of the page theme."
+  },
+  {
+    "name": "--logo-godx-ink-color-on-dark",
+    "value": "140 23.1% 97.5%",
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
+  },
+  {
     "name": "--logo-glyph-cap-baseline-optical-offset",
     "value": "-0.01em",
     "description": "── Optical centring of the boxed GLYPH (`<Logo glyph=\"…\" />`, gh#370) ───────────────────── A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are untouched, only the letterform moves. WHY THERE ARE FOUR. `place-items: center` centres a LINE BOX, and a line box is not a letterform. Every CSS rule available is ONE constant shift that cannot see which character it is moving, and the glyph classes do not share an optical centre: measured over Noto Sans JP, M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart. So the COMPONENT classifies the glyph string it was handed — the only layer that can — and emits `data-ink`; these are the per-band constants it selects between. The band is the (top edge, bottom edge) of the UNION of the string's ink, so `\"gX\"` is cap→descender, not `\"g\"`'s x-height→descender. Every CJK and kana form counts as a cap-height top: the em box overshoots the cap band above the baseline and below it by about the same amount, so it centres where a capital does (measured -0.001em against -0.008em). MEASURED — worst |ink offset| from the box centre over 4 faces × 4 tiers × the sample listed: cap-baseline -0.01em 1.38px G GX TH A 8 b kt J 神 あ ン ゴ 神A Aあ cap-descender -0.09em 1.25px gX Gy Bp hy 神g gあ 東y x-baseline -0.11em 0.88px x o xo ae s x-descender -0.21em 0.94px g y p q go Worst case 1.38px, against 2.25px for the best glyph-blind rule (`text-box: trim-both ex alphabetic`) and 3.94px untreated, on that same sample. The residual is within-band variation — kana do not all fill the em box (ゴ sits 0.04em above 神) — plus the half-pixel the browser snaps a line box by; no classifier can remove either."
@@ -13076,6 +13241,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-shell-context-card-stack-gap",
     "value": "1rem",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--auth-shell-context-wide-card-max-width",
+    "value": "var(--auth-shell-wide-card-max-width)",
+    "description": "`measure=\"wide\"` on this preset — the chooser BESIDE an explanation column (the consumer lays the two out, e.g. a `ResponsiveGrid`), with a page gutter on a phone so the explanation copy does not run to the screen edge the way the edge-to-edge chooser card does."
+  },
+  {
+    "name": "--auth-shell-context-wide-main-padding-mobile",
+    "value": "var(--space-6) var(--space-4)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {

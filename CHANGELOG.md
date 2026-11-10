@@ -8,6 +8,21 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.28.5] - 2026-11-10
+
+### EditorialAuth on a phone and on a brand surface; CenteredShell context-selection two-column; OrgSwitcher actions (Platform)
+
+- **Fixed** `EditorialAuth` overflowed a phone: the `1fr 460px` track had no narrow value, so the card ran off a 390px viewport. Below 48rem (the `--sheet-responsive-breakpoint-width` / `md` line) the columns now stack and the story column becomes a compact band — kicker and a one-line title (authored line breaks collapse through the new `--editorial-auth-title-white-space`), the copy kept, the art and benefits hidden. It is declared as tokens in `tokens/components/editorial-account.css`, so the layout rules still name no breakpoint and a theme re-declares any of them.
+- **Added** `EditorialAuth appearance="brand"`: the story column is a DARK brand surface in every theme — `--editorial-auth-brand-background`, default a deep gradient of the `--primary` hue (lightness capped 24% → 14%, angle `--editorial-auth-brand-gradient-angle`; any colour or gradient is valid) — with light ink for the title, copy, kicker and benefit tick (`--editorial-auth-brand-foreground`, HSL triple, default `0 0% 100%`; `--editorial-auth-brand-muted-foreground` defaults to it), padded and rounded by `--editorial-auth-brand-padding` / `--editorial-auth-brand-radius`. A `Logo` in the story shows its dark-surface artwork automatically. The default emits nothing new.
+- **Added** `Logo scheme?: "auto" | "light" | "dark"` (default `"auto"`, the page theme): pins the master artwork and lockup ink to the surface the logo sits on. An ancestor pins every logo inside it with `data-logo-scheme`; the nearest pin wins. New tokens `--logo-godx-ink-color-on-light` / `--logo-godx-ink-color-on-dark`, new type `LogoScheme`.
+- **Fixed** `EditorialAuth` overflowed between 48rem and 64rem (84px at 800px): on a tablet both columns now shrink — `--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem)`, `--editorial-auth-gap: var(--space-10)`.
+- **Added** `EditorialAuth titleSize?: "md" | "lg"` (default `"lg"`, 2.5rem / 1.7): `"md"` is sign-in density (`--editorial-auth-title-md-font-size` 2rem, `--editorial-auth-title-md-line-height` 1.4). `bandDescription?: "visible" | "hidden"` (default `"visible"`): `"hidden"` makes the phone band one line (`--editorial-auth-band-description-display`).
+- **Added** `EditorialAuth artFrame="none"`: free-form art without the rotated card pair, in an unframed auto-height box (`--editorial-auth-art-free-max-width`, `--editorial-auth-art-free-height`). Default `"cards"` is unchanged.
+- **Fixed** `EditorialAuth` put its description flush on the first benefit line: `--editorial-auth-description-space-block-end` now defaults to `var(--space-6)` (was `0`). Beside the art the art's own block-start space still wins (the margins collapse).
+- **Added** `EditorialAuth level?: 1 | 2` (default `1`) for the story title, so a form card can own the page `h1`.
+- **Changed** `CenteredShell variant="auth" preset="context-selection" measure="wide"` now honours the wide measure (`--auth-shell-context-wide-card-max-width`, default the 64rem wide measure) so a chooser sits beside an explanation column; a phone keeps a `--auth-shell-context-wide-main-padding-mobile` gutter. Every other preset still ignores `measure`.
+- **Added** `OrgSwitcher actions?: { id, label, icon?, onSelect, disabled? }[]` — rows under the organization list on the popover, dialog and mobile Sheet, after a hairline: ↑↓ reach them, Enter runs them, a search never hides them, the panel closes after `onSelect`. `id` is also the `data-action` hook. New type `OrgSwitcherAction`.
+
 ## [33.28.4] - 2026-11-10
 
 ### Button can give way without growing (GDX-1493)

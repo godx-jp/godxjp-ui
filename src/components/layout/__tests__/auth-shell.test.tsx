@@ -286,4 +286,33 @@ describe("AuthShell", () => {
       /\.ui-auth-shell\[data-measure="wide"\]:not\(\[data-preset\]\)\s+\.ui-auth-shell-card\s*\{[^}]*margin-block:\s*auto;/s,
     );
   });
+
+  it('honours measure="wide" under preset="context-selection" only — a chooser beside an explanation', () => {
+    const { container } = renderWithUi(
+      <CenteredShell variant="auth-canonical" preset="context-selection" measure="wide">
+        <div>x</div>
+      </CenteredShell>,
+    );
+    const shell = container.querySelector('[data-slot="auth-shell"]');
+    expect(shell).toHaveAttribute("data-preset", "context-selection");
+    expect(shell).toHaveAttribute("data-measure", "wide");
+
+    const css = readFileSync(join(__dirname, "../../../styles/shell-layout.css"), "utf8");
+    const tokens = readFileSync(join(__dirname, "../../../tokens/components/shell.css"), "utf8");
+    expect(css).toMatch(
+      /\.ui-auth-shell\[data-preset="context-selection"\]\[data-measure="wide"\]\s*\{[^}]*--auth-shell-card-max-width:\s*var\(\s*--auth-shell-context-wide-card-max-width\);/s,
+    );
+    // The phone keeps a page gutter for the explanation copy (the plain preset is edge-to-edge).
+    const mobile = css.match(/@media \(max-width: 30rem\)\s*\{[\s\S]*?\n {2}\}/)?.[0] ?? "";
+    expect(mobile).toMatch(
+      /\[data-preset="context-selection"\]\[data-measure="wide"\]\s*\{[^}]*--auth-shell-context-wide-main-padding-mobile/s,
+    );
+    expect(tokens).toContain(
+      "--auth-shell-context-wide-card-max-width: var(--auth-shell-wide-card-max-width);",
+    );
+    // No other preset reads the wide measure.
+    expect(css).not.toMatch(
+      /data-preset="(login|registration|device-authorization|account-recovery)"\]\[data-measure/,
+    );
+  });
 });

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Settings } from "lucide-react";
 
 import {
   Badge,
@@ -37,6 +38,12 @@ const organizations = [
   { id: "suspended", name: "Archived Workspace", meta: "利用停止", disabled: true },
 ];
 
+/** The account's own workspace is listed in its own section, after the organizations. */
+const withPersonal = [
+  ...organizations,
+  { id: "personal", name: "山田 太郎", meta: "個人ワークスペース", kind: "personal" as const },
+];
+
 const labels: OrgSwitcherLabels = {
   trigger: (name) => `現在の組織: ${name}`,
   title: "組織を選択",
@@ -52,6 +59,7 @@ const labels: OrgSwitcherLabels = {
  */
 export default function Demo() {
   const [value, setValue] = useState("godx");
+  const [managed, setManaged] = useState(false);
   const [error, setError] = useState<string | undefined>("組織一覧を取得できませんでした。");
 
   return (
@@ -69,14 +77,24 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               <OrgSwitcher
-                organizations={organizations}
+                organizations={withPersonal}
                 value={value}
                 onValueChange={setValue}
-                labels={labels}
+                labels={{ ...labels, personal: "個人" }}
                 responsive="auto"
+                // Rows under the list (popover and mobile sheet): ↑↓ reach them, Enter runs them.
+                actions={[
+                  {
+                    id: "manage",
+                    label: "組織を管理",
+                    icon: <Settings />,
+                    onSelect: () => setManaged(true),
+                  },
+                ]}
               />
               <Text size="sm" tone="muted" aria-live="polite">
-                選択中: {organizations.find((organization) => organization.id === value)?.name}
+                選択中: {withPersonal.find((organization) => organization.id === value)?.name}
+                {managed ? " · 組織の管理を開きました" : ""}
               </Text>
               <OrgSwitcher
                 organizations={organizations}

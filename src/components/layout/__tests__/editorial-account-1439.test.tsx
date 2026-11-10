@@ -426,6 +426,126 @@ describe("EditorialAuth (gh#1439)", () => {
       "New here?",
     );
     expect(tokens).toContain("--editorial-auth-track-size: 1fr 460px;");
+    // Defaults emit nothing new: no appearance / frame hook on the default page.
+    expect(container.firstElementChild).not.toHaveAttribute("data-appearance");
+    expect(container.querySelector(".ui-editorial-auth-art")).not.toHaveAttribute("data-frame");
+  });
+
+  it("level={2} demotes the story title so the form card can own the page h1", () => {
+    render(
+      <EditorialAuth title="Make room." level={2}>
+        <EditorialAuthCard title="Sign in" level={3} />
+      </EditorialAuth>,
+    );
+    expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
+    expect(screen.getByRole("heading", { level: 2, name: "Make room." })).toBeTruthy();
+  });
+
+  it('artFrame="none" renders free-form art without the rotated card pair', () => {
+    const { container } = render(
+      <EditorialAuth
+        title="Make room."
+        artFrame="none"
+        art={
+          <span className="chips">
+            <span>App</span>
+          </span>
+        }
+      />,
+    );
+    const art = container.querySelector(".ui-editorial-auth-art")!;
+    expect(art).toHaveAttribute("data-frame", "none");
+    expect(art).toHaveAttribute("aria-hidden");
+    expect(art.firstElementChild).toHaveClass("chips");
+    expect(art.children).toHaveLength(1);
+    // The card-pair rules cannot reach the unframed box; it reads its own free-size tokens.
+    expect(css).toContain('.ui-editorial-auth-art:not([data-frame="none"]) > div {');
+    expect(css).not.toMatch(/\.ui-editorial-auth-art > div/);
+    expect(rule('.ui-editorial-auth-art[data-frame="none"]')).toContain(
+      "height: var(--editorial-auth-art-free-height)",
+    );
+    // No art passed with no frame: no empty decorative box.
+    const { container: bare } = render(<EditorialAuth title="x" artFrame="none" />);
+    expect(bare.querySelector(".ui-editorial-auth-art")).toBeNull();
+  });
+
+  it('appearance="brand" paints the story with the brand surface and re-scopes its ink', () => {
+    const { container } = render(<EditorialAuth title="Make room." appearance="brand" />);
+    expect(container.firstElementChild).toHaveAttribute("data-appearance", "brand");
+    const brand = rule('.ui-editorial-auth[data-appearance="brand"] > .ui-editorial-auth-story');
+    expect(brand).toMatch(
+      /background: var\(\s*--editorial-auth-brand-background,\s*linear-gradient\(/,
+    );
+    expect(brand).toContain("padding: var(--editorial-auth-brand-padding)");
+    expect(brand).toContain("border-radius: var(--editorial-auth-brand-radius)");
+    // Title (foreground), copy + kicker (muted) and the benefit tick (text-brand) all flip.
+    expect(brand).toMatch(/--foreground:\s*var\(--editorial-auth-brand-foreground\);/);
+    expect(brand).toMatch(/--muted-foreground:/);
+    expect(brand).toMatch(/--text-brand:/);
+    expect(brand).toContain("--editorial-kicker-color: hsl(var(--muted-foreground))");
+    for (const knob of ["background", "muted-foreground"]) {
+      expect(tokens).toContain(`--editorial-auth-brand-${knob}: initial;`);
+    }
+  });
+
+  it('appearance="brand" is a dark surface in every theme and pins its logos to the dark artwork', () => {
+    const { container } = render(
+      <EditorialAuth appearance="brand" title="x" eyebrow={<span className="logo" />} />,
+    );
+    expect(container.querySelector(".ui-editorial-auth-story")).toHaveAttribute(
+      "data-logo-scheme",
+      "dark",
+    );
+    expect(tokens).toContain("--editorial-auth-brand-foreground: 0 0% 100%;");
+    const brand = rule('.ui-editorial-auth[data-appearance="brand"] > .ui-editorial-auth-story');
+    expect(brand).toMatch(/hsl\(from hsl\(var\(--primary\)\) h s min\(l, 24\)\)/);
+    // The default story pins nothing.
+    const { container: plain } = render(<EditorialAuth title="x" />);
+    expect(plain.querySelector(".ui-editorial-auth-story")).not.toHaveAttribute("data-logo-scheme");
+  });
+
+  it('titleSize="md" and bandDescription="hidden" hook their own knobs; defaults emit nothing', () => {
+    const { container, rerender } = render(<EditorialAuth title="x" description="y" />);
+    const root = container.firstElementChild!;
+    expect(root).not.toHaveAttribute("data-title-size");
+    expect(root).not.toHaveAttribute("data-band-description");
+    rerender(<EditorialAuth title="x" description="y" titleSize="md" bandDescription="hidden" />);
+    expect(root).toHaveAttribute("data-title-size", "md");
+    expect(root).toHaveAttribute("data-band-description", "hidden");
+    expect(rule('.ui-editorial-auth[data-title-size="md"]')).toContain(
+      "--editorial-auth-title-font-size: var(--editorial-auth-title-md-font-size)",
+    );
+    expect(tokens).toContain("--editorial-auth-title-md-font-size: 2rem;");
+    expect(tokens).toContain("--editorial-auth-band-description-display: block;");
+    const narrow = tokens.match(/@media \(width < 48rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(narrow).toContain("--editorial-auth-band-description-display: none;");
+    // The band keeps its own title size under titleSize="md" too.
+    expect(narrow).toContain("--editorial-auth-title-md-font-size: 1.625rem;");
+  });
+
+  it("keeps a gap between the description and the first benefit line", () => {
+    expect(tokens).toContain("--editorial-auth-description-space-block-end: var(--space-6);");
+    expect(rule(".ui-editorial-auth-description")).toContain(
+      "margin: 0 0 var(--editorial-auth-description-space-block-end)",
+    );
+  });
+
+  it("shrinks both columns on a tablet (48rem-64rem) instead of overflowing", () => {
+    const tablet = tokens.match(/@media \(48rem <= width < 64rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(tablet).toContain("--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);");
+    expect(tablet).toContain("--editorial-auth-gap: var(--space-10);");
+  });
+
+  it("stacks into a compact band below the 48rem phone line, by tokens only", () => {
+    const narrow = tokens.match(/@media \(width < 48rem\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(narrow).toContain("--editorial-auth-track-size: minmax(0, 1fr);");
+    expect(narrow).toContain("--editorial-auth-art-display: none;");
+    expect(narrow).toContain("--editorial-auth-benefits-display: none;");
+    expect(narrow).toContain("--editorial-auth-title-white-space: normal;");
+    expect(tokens).toContain("--editorial-auth-title-white-space: pre-line;");
+    expect(rule(".ui-editorial-auth-title")).toContain(
+      "white-space: var(--editorial-auth-title-white-space)",
+    );
   });
 });
 

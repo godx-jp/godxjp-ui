@@ -427,3 +427,30 @@
     display: block;
   }
 }
+
+/* A PINNED surface (`<Logo scheme>`, or an ancestor's `data-logo-scheme`) — a brand panel or an
+ * inverse band whose ground is not the page's. The choice travels as inherited custom properties,
+ * so the NEAREST pin wins (a light-pinned logo inside a dark band stays light); `:root` gives these
+ * rules the theme rules' specificity and they come after them, so a pin wins in every theme. The
+ * lockup ink flips with the artwork. */
+@media not print {
+  [data-logo-scheme="dark"] {
+    --logo-scheme-light-display: none;
+    --logo-scheme-dark-display: block;
+    --logo-godx-ink-color: var(--logo-godx-ink-color-on-dark);
+  }
+
+  [data-logo-scheme="light"] {
+    --logo-scheme-light-display: block;
+    --logo-scheme-dark-display: none;
+    --logo-godx-ink-color: var(--logo-godx-ink-color-on-light);
+  }
+
+  :root [data-logo-scheme] [data-slot="logo-artwork"][data-scheme="light"] {
+    display: var(--logo-scheme-light-display);
+  }
+
+  :root [data-logo-scheme] [data-slot="logo-artwork"][data-scheme="dark"] {
+    display: var(--logo-scheme-dark-display);
+  }
+}

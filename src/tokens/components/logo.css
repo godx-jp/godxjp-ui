@@ -75,6 +75,10 @@
    * colour instead (#F7FAF8, 16.87:1), flipped in the block at the end of this file the same way
    * the boxed glyph's ink is. */
   --logo-godx-ink-color: 235 68.6% 13.7%;
+  /* The two inks a PINNED surface (`<Logo scheme>` / `data-logo-scheme`) reads: the light-theme ink
+   * and the dark-theme ink above, independent of the page theme. */
+  --logo-godx-ink-color-on-light: 235 68.6% 13.7%;
+  --logo-godx-ink-color-on-dark: 140 23.1% 97.5%;
 
   /* ── Optical centring of the boxed GLYPH (`<Logo glyph="…" />`, gh#370) ─────────────────────
    * A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every

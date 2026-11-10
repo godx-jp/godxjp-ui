@@ -362,10 +362,19 @@
   --editorial-auth-title-letter-spacing: -0.03em;
   --editorial-auth-title-font-weight: 500;
   --editorial-auth-title-space-block: var(--space-5);
+  /* `pre-line` keeps a title's authored line breaks; the narrow band collapses them (`normal`). */
+  --editorial-auth-title-white-space: pre-line;
+  /* `titleSize="md"` — the sign-in density title. */
+  --editorial-auth-title-md-font-size: 2rem; /* scale-exempt: measured 32px sign-in title (Platform) */
+  --editorial-auth-title-md-line-height: 1.4;
+  /* `bandDescription="hidden"`: the description's display — `none` only below the phone line. */
+  --editorial-auth-band-description-display: block;
   --editorial-auth-description-max-width: 30.625rem;
   --editorial-auth-description-font-size: calc(var(--font-size-base) + 0.125rem);
   --editorial-auth-description-line-height: 1.9;
-  --editorial-auth-description-space-block-end: 0;
+  /* The gap under the copy, so the first benefit line (or the art) does not sit flush on it. Block
+   * margins collapse, so beside the art the art's own --editorial-auth-art-space-block-start wins. */
+  --editorial-auth-description-space-block-end: var(--space-6);
   --editorial-auth-art-display: block;
   --editorial-auth-art-height: 14.375rem;
   --editorial-auth-art-max-width: 21.875rem;
@@ -385,6 +394,20 @@
   --editorial-auth-art-frame-inset: 12px;
   --editorial-auth-art-frame-radius: calc(var(--radius) - 3px);
   --editorial-auth-art-shadow: 0 15px 25px rgb(35 25 29 / 0.08);
+  /* `artFrame="none"`: the unframed art box. */
+  --editorial-auth-art-free-max-width: none;
+  --editorial-auth-art-free-height: auto;
+  /* `appearance="brand"`: the story surface, DARK in every theme. Background default = a deep
+   * gradient of the --primary hue at the angle below (resolved at the call site; any colour or
+   * gradient is valid); foreground is an HSL triple (white, >= 6:1 on <= 24% L); muted foreground
+   * (the copy and kicker) defaults to it. Retint the background lighter and you retint the
+   * foreground too, at AA. */
+  --editorial-auth-brand-background: initial;
+  --editorial-auth-brand-gradient-angle: 160deg;
+  --editorial-auth-brand-foreground: 0 0% 100%;
+  --editorial-auth-brand-muted-foreground: initial;
+  --editorial-auth-brand-padding: var(--space-10);
+  --editorial-auth-brand-radius: var(--editorial-auth-card-radius);
   --editorial-auth-benefits-display: flex;
   --editorial-auth-benefits-gap: calc(var(--space-3) + 0.125rem);
   --editorial-auth-benefits-font-size: var(--font-size-base);
@@ -416,4 +439,41 @@
   --editorial-auth-card-footer-line-height: 1.9;
   --editorial-auth-card-footer-padding-block-start: var(--space-5);
   --editorial-auth-card-footer-space-block-start: var(--space-6);
+}
+
+/* EditorialAuth on a TABLET (48rem–64rem): the 460px card and the hero gap left too little for the
+ * story (an 800px viewport overflowed by 84px). Both columns stay, both may shrink: the card caps at
+ * 22.5rem and the gap drops to the phone-to-desktop midpoint. */
+@media (48rem <= width < 64rem) {
+  :root {
+    --editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem);
+    --editorial-auth-gap: var(--space-10);
+    --editorial-auth-card-padding: var(--space-6);
+  }
+}
+
+/* EditorialAuth below the kit's phone line (48rem — `--sheet-responsive-breakpoint-width`, the
+ * `md` step). The kit's DEFAULT, declared as tokens so the layout rules still name no breakpoint
+ * and a theme re-declares any of them under its own query: the 460px card track would overflow a
+ * 390px viewport, so the columns stack, and the story column becomes a compact band — kicker and
+ * a one-line title (authored line breaks collapse), the copy kept, the art and benefits hidden. */
+@media (width < 48rem) {
+  :root {
+    --editorial-auth-track-size: minmax(0, 1fr);
+    --editorial-auth-gap: var(--space-6);
+    --editorial-auth-padding-block-start: var(--space-6);
+    --editorial-auth-padding-block-end: var(--space-10);
+    --editorial-auth-story-padding-block-start: 0;
+    --editorial-auth-title-font-size: 1.625rem; /* scale-exempt: the band's one-line 26px title; no ratio step lands on it */
+    --editorial-auth-title-line-height: 1.4;
+    --editorial-auth-title-space-block: var(--space-2);
+    --editorial-auth-title-white-space: normal;
+    --editorial-auth-title-md-font-size: 1.625rem; /* scale-exempt: the band's 26px title, as above */
+    --editorial-auth-title-md-line-height: 1.4;
+    --editorial-auth-band-description-display: none;
+    --editorial-auth-art-display: none;
+    --editorial-auth-benefits-display: none;
+    --editorial-auth-brand-padding: var(--space-5);
+    --editorial-auth-card-padding: var(--space-6);
+  }
 }

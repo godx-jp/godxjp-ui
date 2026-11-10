@@ -206,14 +206,50 @@ export type ThemePickerProp = {
 
 /**
  * @see EditorialAuth — a sign-in / sign-up page: a story column (kicker, display title, copy,
- * decorative art, benefits) beside the form card (`children`).
+ * decorative art, benefits) beside the form card (`children`). Below the kit's 48rem phone line
+ * the two columns stack and the story column becomes a compact band (kicker + a one-line title;
+ * art and benefits hidden) — every part of that band is an `--editorial-auth-narrow-*` token.
  */
 export type EditorialAuthProp = {
   eyebrow?: ReactNode;
   title: ReactNode;
+  /**
+   * Heading level of the story title. Default `1`. Pass `2` when the form card carries the page's
+   * `h1` (`<EditorialAuthCard level={…}>` stays the form's own heading).
+   */
+  level?: 1 | 2;
   description?: ReactNode;
-  /** The picture on the front card of the decorative card pair (e.g. the brand mark). */
+  /**
+   * The decorative art. With `artFrame="cards"` (default) it is the picture on the front card of
+   * the rotated card pair (e.g. the brand mark); with `artFrame="none"` it renders as given.
+   */
   art?: ReactNode;
+  /**
+   * `"cards"` (default) — the fixed rotated card pair around `art`. `"none"` — no frame: free-form
+   * art (floating app chips, an illustration) in an unframed, auto-height box. Decorative either
+   * way (`aria-hidden`).
+   */
+  artFrame?: "cards" | "none";
+  /**
+   * `"default"` — the story sits on the page ground. `"brand"` — the story column is a DARK brand
+   * surface in every theme (`--editorial-auth-brand-background`, default a deep gradient of the
+   * `--primary` hue, lightness capped at 24% → 14%) with light ink for the title, copy, kicker and
+   * benefit tick (`--editorial-auth-brand-foreground`, an HSL triple, default `0 0% 100%`), padded
+   * and rounded by `--editorial-auth-brand-padding` / `--editorial-auth-brand-radius`. Every `Logo`
+   * inside the story shows its dark-surface artwork (`data-logo-scheme="dark"`).
+   */
+  appearance?: "default" | "brand";
+  /**
+   * Title size. `"lg"` (default) — the editorial hero (`--editorial-auth-title-font-size`,
+   * 2.5rem / 1.7). `"md"` — sign-in density (`--editorial-auth-title-md-font-size` /
+   * `--editorial-auth-title-md-line-height`, 2rem / 1.4). The phone band sets its own size for both.
+   */
+  titleSize?: "md" | "lg";
+  /**
+   * The description in the phone band. `"visible"` (default) keeps it; `"hidden"` makes the band one
+   * line — kicker/logo and title only. Desktop and tablet always show it.
+   */
+  bandDescription?: "visible" | "hidden";
   /** Short benefit lines, each led by a check glyph. */
   benefits?: ReactNode[];
   children?: ReactNode;

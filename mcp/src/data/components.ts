@@ -2036,20 +2036,67 @@ import { Moon, Sun } from "lucide-react";
       "A sign-in / sign-up page (gh#1439): a story column (kicker, display title — line breaks kept —, copy, a decorative card pair carrying `art`, benefit lines with a check) beside the form card (`children`, default 460px). Geometry: `--editorial-auth-*`.",
     props: [
       { name: "eyebrow", type: "ReactNode", description: "Kicker." },
-      { name: "title", type: "ReactNode", required: true, description: "Display title (h1)." },
+      { name: "title", type: "ReactNode", required: true, description: "Display title." },
+      {
+        name: "level",
+        type: "1 | 2",
+        defaultValue: "1",
+        description:
+          "Heading level of the story title. Pass 2 when the form card owns the page h1 (`<EditorialAuthCard level>`).",
+      },
       { name: "description", type: "ReactNode", description: "Copy." },
-      { name: "art", type: "ReactNode", description: "Picture on the front card." },
+      {
+        name: "art",
+        type: "ReactNode",
+        description:
+          'Decorative art (aria-hidden): the picture on the front card under artFrame="cards", rendered as given under artFrame="none".',
+      },
+      {
+        name: "artFrame",
+        type: '"cards" | "none"',
+        defaultValue: '"cards"',
+        description:
+          '"cards" wraps `art` in the fixed rotated card pair; "none" renders free-form art (floating app chips, an illustration) in an unframed auto-height box (--editorial-auth-art-free-max-width / --editorial-auth-art-free-height).',
+      },
+      {
+        name: "appearance",
+        type: '"default" | "brand"',
+        defaultValue: '"default"',
+        description:
+          '"brand" paints the story column with a DARK brand surface in every theme — --editorial-auth-brand-background, default a deep gradient of the --primary hue (lightness capped 24% → 14%, angle --editorial-auth-brand-gradient-angle) — and re-scopes --foreground / --muted-foreground / --text-brand inside it so the title, copy, kicker and benefit tick take light ink (--editorial-auth-brand-foreground, an HSL triple, default 0 0% 100%; --editorial-auth-brand-muted-foreground defaults to it). A Logo in the eyebrow shows its dark-surface artwork automatically (data-logo-scheme="dark"). Padded and rounded by --editorial-auth-brand-padding / --editorial-auth-brand-radius. Keep the pair at WCAG AA when you retint it.',
+      },
+      {
+        name: "titleSize",
+        type: '"md" | "lg"',
+        defaultValue: '"lg"',
+        description:
+          '"lg" is the editorial hero (2.5rem / 1.7); "md" is sign-in density (--editorial-auth-title-md-font-size 2rem / --editorial-auth-title-md-line-height 1.4). The phone band sets its own size for both.',
+      },
+      {
+        name: "bandDescription",
+        type: '"visible" | "hidden"',
+        defaultValue: '"visible"',
+        description:
+          'The description in the phone band (< 48rem). "hidden" makes the band one line — kicker/logo and title only (--editorial-auth-band-description-display). Desktop and tablet always show it.',
+      },
       { name: "benefits", type: "ReactNode[]", description: "Benefit lines." },
       { name: "children", type: "ReactNode", description: "EditorialAuthCard." },
     ],
-    usage: ["DO keep the form in an EditorialAuthCard with Form + FormField."],
+    usage: [
+      "DO keep the form in an EditorialAuthCard with Form + FormField.",
+      "Below 48rem the columns stack and the story becomes a compact band (kicker + one-line title, copy kept; art and benefits hidden). It is the kit's default as tokens (--editorial-auth-track-size, --editorial-auth-title-white-space, --editorial-auth-art-display, --editorial-auth-benefits-display …); re-declare them under your own query to keep the art.",
+      "From 48rem to 64rem (tablet) both columns stay and shrink: the card caps at 22.5rem (--editorial-auth-track-size: minmax(0, 1fr) minmax(0, 22.5rem)) and the gap drops to --space-10, so nothing overflows from 320px up.",
+    ],
     related: [
       "EditorialAuthCard — the card.",
       'CenteredShell — use variant="auth" for the application sign-in shell.',
     ],
     example: `import { EditorialAuth, EditorialAuthCard, Eyebrow } from "@godxjp/ui/layout";
 
-<EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title="Make room for what you love." benefits={["A collection of your own"]}><EditorialAuthCard title="Welcome back." /></EditorialAuth>`,
+<EditorialAuth eyebrow={<Eyebrow>YOUR COLLECTION STARTS HERE</Eyebrow>} title="Make room for what you love." benefits={["A collection of your own"]}><EditorialAuthCard title="Welcome back." /></EditorialAuth>
+
+// Brand story column, free-form art, the form card owns the h1:
+<EditorialAuth appearance="brand" artFrame="none" art={<AppChips />} level={2} title="…"><EditorialAuthCard level={2} title="Sign in" /></EditorialAuth>`,
   },
   {
     rules: [2, 6, 44, 45],
@@ -2787,7 +2834,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
         type: '"default" | "wide"',
         defaultValue: '"default"',
         description:
-          'the auth shape only. Inline MEASURE of the shell content slot. "default" is the single auth card (24rem, or 22.5rem under variant="canonical"). "wide" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry.',
+          'the auth shape only. Inline MEASURE of the shell content slot. "default" is the single auth card (24rem, or 22.5rem under variant="canonical"). "wide" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry — EXCEPT preset="context-selection": there "wide" opens the slot to --auth-shell-context-wide-card-max-width (default = the wide measure) so the chooser sits beside an explanation column (wrap both in one <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> child), and a phone keeps a --auth-shell-context-wide-main-padding-mobile gutter.',
       },
       {
         name: "density",
@@ -2815,7 +2862,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       'AUTH SHAPE: DO state the block placement with `align` when a product wants the opposite of its preset\'s default — align="center" on preset="login" for a vertically centred SCR-001, align="anchored" to top-anchor a preset that centres. It collapses the preset\'s block-start inset to its block-end one on desktop AND mobile, so justify-content has nothing to fight. Re-declaring --auth-shell-login-flow-offset-block (or any preset offset token) from a consumer stylesheet is the anti-pattern it replaces.',
       "AUTH SHAPE: DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",
       'AUTH SHAPE: DO put page-level controls in `actions` — the locale picker, the theme <ToggleGroup>, a "need help?" link. They land at the banner\'s inline end at a tokenized gap (`--auth-shell-bar-gap`), and the banner appears even with no `brand`. Do NOT hand-roll a top-right row with `ms-auto` on the `brand` content, and do NOT reach for CenteredShell just to get a topbar with actions: CenteredShell is the AUTHENTICATED shell.',
-      'AUTH SHAPE: DO use `measure="wide"` for the SPLIT login — a brand/marketing panel beside the auth card. The content slot opens to 64rem (`--auth-shell-wide-card-max-width`) and centres with auto margins, so the tall two-column layout starts at the top instead of overflowing above the scroll origin; lay the two halves out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> and hide the panel below `lg`. It is IGNORED under a `preset` (a preset owns its flow geometry), so pick one or the other.',
+      'AUTH SHAPE: DO use `measure="wide"` for the SPLIT login — a brand/marketing panel beside the auth card. The content slot opens to 64rem (`--auth-shell-wide-card-max-width`) and centres with auto margins, so the tall two-column layout starts at the top instead of overflowing above the scroll origin; lay the two halves out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> and hide the panel below `lg`. It is IGNORED under every `preset` except `preset="context-selection"` (a preset owns its flow geometry): there `measure="wide"` opens the slot to `--auth-shell-context-wide-card-max-width` so the chooser sits beside an explanation column — both in one `<ResponsiveGrid columns={{ sm: 1, lg: 2 }}>` child, with a `--auth-shell-context-wide-main-padding-mobile` phone gutter.',
       "AUTH SHAPE: DO use `footer` for compliance/legal/support links or a locale switch — it renders as the contentinfo landmark below the card.",
       'AUTH SHAPE: DO wrap the card in <Reveal> for the entrance animation (`<CenteredShell variant="auth"><Reveal><Card/></Reveal></CenteredShell>`) — Reveal honours prefers-reduced-motion; the auth CenteredShell itself stays layout-only.',
       "AUTH SHAPE: DO NOT re-scope control height or heading size in the app — the auth CenteredShell already sets the comfortable control tier (44px, WCAG touch floor) and the larger auth heading via `--auth-shell-control-height` / `--auth-shell-heading-size`; a service retunes those tokens, not a bespoke class.",
@@ -4849,6 +4896,7 @@ import { Trash2 } from "lucide-react";
       'DON\'T reach for `Button variant="link"` in running content. `.ui-button` is a CONTROL box — `white-space: nowrap`, `flex-shrink: 0`, a `--control-height` tier and inline padding — so in a table cell it cannot wrap to a second line and cannot share the cell\'s line box. If you find yourself writing `whitespace-normal` back on top of it, you wanted `<Text link>`. `Button variant="link"` stays right for a link-LOOKING action that submits or opens something.',
     ],
     useCases: [
+      'A keyboard-key hint (Kbd / key cap / shortcut legend): `<Text size="xs" tone="muted"><Text keyboard>↑</Text> <Text keyboard>↓</Text> 移動 · <Text keyboard>Enter</Text> 選択</Text>` — `keyboard` wraps the text in `<kbd>` with the key-cap edge; there is no separate Kbd component.',
       'A muted caption under a value: `<Text size="xs" tone="muted">2026年5月度</Text>`.',
       'A monospace id in a list row: `<Text size="xs" mono tone="muted">RC-204881</Text>`.',
       'A staff email in a narrow DataTable cell at 320px, wrapping instead of scrolling the page: `<Text size="sm" break="anywhere">{staff.email}</Text>`.',
@@ -5002,6 +5050,13 @@ import { Trash2 } from "lucide-react";
         defaultValue: '"primary"',
         description:
           "Semantic fill role. The boxed glyph's INK defaults to --logo-identity-foreground (near-black), NOT --brand-foreground: --brand-foreground is the artwork KNOCKOUT colour and clears only 3.67:1 on the emerald, while a boxed glyph renders real TEXT and owes WCAG 2.2 SC 1.4.3's 4.5:1 (14px bold is not \"large text\"). Re-theming --brand to a DARK fill? Override --logo-success-foreground to re-invert the ink.",
+      },
+      {
+        name: "scheme",
+        type: '"auto" | "light" | "dark"',
+        defaultValue: '"auto"',
+        description:
+          'The SURFACE the logo sits on: picks the master artwork of mark="godx" / "godx-lockup" and the lockup ink. "auto" follows the page theme; "dark" / "light" pin it for a band whose ground is not the page\'s (a brand panel, an inverse footer). An ancestor pins every logo inside it with data-logo-scheme="dark" | "light" (EditorialAuth appearance="brand" does); the nearest pin wins.',
       },
       {
         name: "wordmark",
@@ -18970,6 +19025,12 @@ import { Logo } from "@godxjp/ui/general";
         required: true,
         description:
           'Localized trigger, search, state, and retry copy. `personal` titles the personal section; it defaults to the kit\'s t("layout.orgSwitcher.personal") (Personal / 個人 / Cá nhân).',
+      },
+      {
+        name: "actions",
+        type: "readonly { id: string; label: string; icon?: ReactNode; onSelect: () => void; disabled?: boolean }[]",
+        description:
+          'Action rows under the organization list (「組織を管理」, "Create organization") on every surface — popover, dialog and mobile Sheet — after a hairline. They are options of the same list: ↑↓ reach them, Enter runs them, a search never hides them, and the panel closes after `onSelect` (navigate with your router there). `id` is the key and the `data-action` hook; labels are the product\'s own. Not shown while loading/error replaces the list.',
       },
       {
         name: "placeholderAvatar",

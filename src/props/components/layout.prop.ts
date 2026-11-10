@@ -763,8 +763,11 @@ export type CenteredShellAuthProp = {
    * `--auth-shell-wide-card-max-width` so a SPLIT login fits — a brand/marketing panel beside the
    * auth card, the shape that previously had no shell and reached for `CenteredShell`. The wide
    * slot centres itself with auto margins, so a tall two-column layout starts at the top instead
-   * of overflowing above the scroll origin. Ignored under a `preset`: a preset already owns its
-   * flow geometry.
+   * of overflowing above the scroll origin. Ignored under a `preset`, which already owns its flow
+   * geometry — except `preset="context-selection"`, where `"wide"` opens the slot to
+   * `--auth-shell-context-wide-card-max-width` so the chooser can sit beside an explanation column
+   * on desktop (lay the two out with `ResponsiveGrid`; it stacks on a phone, where the page keeps a
+   * `--auth-shell-context-wide-main-padding-mobile` gutter).
    */
   measure?: "default" | "wide";
   /**
@@ -1432,6 +1435,23 @@ export type OrgSwitcherOrganization = {
   kind?: "organization" | "personal";
 };
 
+/**
+ * One action row under the organization list of {@link OrgSwitcher} (「組織を管理」, "Create
+ * organization"). It is an option of the same list — reached with ↑↓ and run with Enter like a
+ * row — listed after every organization, kept while searching, and the panel closes after it runs.
+ * Navigation goes in `onSelect` (call the router there).
+ */
+export type OrgSwitcherAction = {
+  /** Stable identifier — the React key and the `data-action` hook an end-to-end test holds. */
+  id: string;
+  /** Localized label, supplied by the product. */
+  label: string;
+  /** Decorative leading glyph. */
+  icon?: ReactNode;
+  onSelect: () => void;
+  disabled?: boolean;
+};
+
 /** Localized copy owned by the consuming product, never hard-coded by the component. */
 export type OrgSwitcherLabels = {
   trigger: (organizationName: string) => string;
@@ -1456,6 +1476,12 @@ export type OrgSwitcherProp = {
   error?: ReactNode;
   onRetry?: () => void;
   labels: OrgSwitcherLabels;
+  /**
+   * Actions listed under the organizations, after a hairline, on every surface (popover, dialog,
+   * mobile Sheet) — e.g. `[{ id: "manage", label: "組織を管理", icon: <Settings />, onSelect }]`.
+   * Not shown while `loading` or `error` replaces the list.
+   */
+  actions?: readonly OrgSwitcherAction[];
   /**
    * The trigger's mark while `value` matches no organization (nothing chosen yet). Defaults to a
    * neutral organization glyph — never "?", which reads as an error beside a label that is only
