@@ -1643,7 +1643,9 @@ export type SidebarProp = {
   ariaLabel?: string;
   /**
    * Ref to the navigation's scroll container (the element with `overflow-y: auto`), to persist
-   * and restore its `scrollTop` across navigations or remounts.
+   * and restore its `scrollTop` across navigations or remounts. The nav itself scrolls the
+   * `aria-current="page"` row into view on mount and on `activeId` change, by the least amount and
+   * only when that row is not already whole in view, so a restored position that shows it is kept.
    */
   scrollRef?: React.Ref<HTMLElement>;
   activeId: string;
