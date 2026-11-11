@@ -6,7 +6,8 @@ import { bootChromium, type ChromiumFixture } from "../../../test/chromium-fixtu
  * The auth bar's `actions` with NON-button content — plain text (「管理者 · 日本語」) and a Badge —
  * on a phone. CJK may break between any two characters, so a squeezed flex item used to collapse
  * to one character per line. Each action keeps its one-line width; when the row runs out of room
- * the actions wrap (as a unit, then among themselves), and the page never scrolls sideways.
+ * the bar wraps the cluster under the brand; at 320px, where text + Badge + picker cannot share one
+ * row, only the plain text truncates (still one line), and the page never scrolls sideways.
  */
 const ENTRY = `
 import * as React from "react";

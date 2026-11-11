@@ -4391,8 +4391,8 @@
           "name": "measure",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"wide\" | undefined",
-          "values": ["default", "wide"],
+          "type": "\"default\" | \"wide\" | \"split\" | \"column\" | undefined",
+          "values": ["default", "wide", "split", "column"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

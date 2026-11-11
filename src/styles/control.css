@@ -5119,8 +5119,11 @@
   .ui-radio-list .ui-radio-card:has(.ui-radio-card-extra) .ui-radio-card-mark {
     margin-inline-start: 0;
   }
-  .ui-radio-list .ui-radio-section[data-appearance="muted"] .ui-radio-list-surface {
-    background: hsl(var(--choice-card-muted-background, var(--muted)));
+  /* A list surface is ALWAYS the card fill, even for a section marked `appearance="muted"`: on the
+   * muted page ground a muted group would vanish. (`muted` still applies under `optionType="card"`,
+   * where the card rows sit on a white surface.) */
+  .ui-radio-list .ui-radio-section[data-appearance="muted"] .ui-radio-card {
+    background: transparent;
   }
 
   /* ── SEGMENTED `block` / `vertical` / `size` ─────────────────────────────────────────────

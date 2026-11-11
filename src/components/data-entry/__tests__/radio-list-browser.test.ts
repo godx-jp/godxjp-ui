@@ -20,6 +20,7 @@ createRoot(document.getElementById("root")).render(
         { value: "acme", label: "Acme", description: "Owner", extra: <Badge>Last used</Badge> },
         { value: "globex", label: "Globex", description: "Member" },
       ] },
+      { label: "Personal", appearance: "muted", options: [{ value: "me", label: "Personal workspace" }] },
     ]} />
   </div></AppProvider>,
 );
@@ -56,6 +57,10 @@ describe('RadioGroup optionType="list"', { timeout: 60_000 }, () => {
         markAfterBadge: mark.left - badge.right,
         markEnd: r2.right - mark2.right,
         radius: parseFloat(getComputedStyle(surface).borderTopLeftRadius),
+        surfaces: [...document.querySelectorAll(".ui-radio-list-surface")].map(
+          (e) => getComputedStyle(e).backgroundColor,
+        ),
+        personalRow: getComputedStyle(rows[2]!).backgroundColor,
       };
     });
     await page.close();
@@ -66,5 +71,9 @@ describe('RadioGroup optionType="list"', { timeout: 60_000 }, () => {
     expect(m.markAfterBadge).toBeGreaterThan(0);
     expect(m.markEnd).toBeCloseTo(16, 0);
     expect(m.radius).toBeGreaterThan(0);
+    // The muted-marked Personal section still gets its own WHITE surface, like Organizations.
+    expect(m.surfaces).toHaveLength(2);
+    expect(m.surfaces[1]).toBe(m.surfaces[0]);
+    expect(m.personalRow).toBe("rgba(0, 0, 0, 0)");
   });
 });

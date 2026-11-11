@@ -1370,6 +1370,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'ErrorSurface `align="start"` (the hosted-page shape): `--error-surface-start-gap` (space-5) between the heading block, the details card, the action and the secondary link; `--error-surface-heading-gap` (space-2) between the status code, the title and the description.',
   },
   {
+    name: "--auth-shell-{column,split}-max-width",
+    category: "component",
+    tier: "component",
+    role: 'Auth CenteredShell `measure="column"` (25rem — the hosted flow\'s single column: sign-in, code entry, consent, a result page) and `measure="split"` (54rem — the two-column page). Both replace `--auth-shell-card-max-width` for that shell and centre the slot with auto margins; a preset still owns its own measure.',
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

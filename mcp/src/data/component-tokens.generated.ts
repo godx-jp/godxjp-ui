@@ -13609,6 +13609,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Content-slot measure for `measure=\"wide\"` — the SPLIT login (brand panel beside the auth card). Same width as the widest CenteredShell tier, so a product's login and its signed-in pages read at one page measure. Only `measure=\"wide\"` reads it; the default 24rem card is untouched."
   },
   {
+    "name": "--auth-shell-column-max-width",
+    "value": "25rem",
+    "description": "`measure=\"column\"` / `\"split\"`: the hosted flow's single column and its two-column page."
+  },
+  {
+    "name": "--auth-shell-split-max-width",
+    "value": "54rem",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
     "name": "--auth-shell-canonical-control-height",
     "value": "var(--band-height-lg)",
     "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on AuthShell and may retune the product theme here rather than overriding individual fields."

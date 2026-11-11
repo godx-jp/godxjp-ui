@@ -748,6 +748,9 @@
    * Same width as the widest CenteredShell tier, so a product's login and its signed-in pages read
    * at one page measure. Only `measure="wide"` reads it; the default 24rem card is untouched. */
   --auth-shell-wide-card-max-width: 64rem;
+  /* `measure="column"` / `"split"`: the hosted flow's single column and its two-column page. */
+  --auth-shell-column-max-width: 25rem;
+  --auth-shell-split-max-width: 54rem;
 
   /* Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on
    * AuthShell and may retune the product theme here rather than overriding individual fields. */

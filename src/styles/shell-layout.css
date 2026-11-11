@@ -548,21 +548,32 @@
    * bar, so an actions-only bar (no brand mark) still puts them on the right. */
   .ui-auth-shell-bar-actions {
     display: flex;
-    min-width: 0;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-end;
     gap: var(--auth-shell-bar-gap);
     margin-inline-start: auto;
   }
   /* An action is never SQUEEZED: plain text (「管理者 · 日本語」) or a Badge keeps its one-line width.
    * CJK may break between any two characters, so a shrinking flex item used to fold to two lines or
-   * one character per line on a phone. Out of room, the cluster wraps — under the brand as a unit,
-   * then among its items — instead. */
+   * one character per line on a phone. Out of room, the BAR wraps the whole cluster under the brand
+   * (`.ui-auth-shell-bar` wraps); the cluster itself stays ONE ROW. It must not wrap on its own: a
+   * picker trigger under a `display: contents` root under-reports its intrinsic width, and a
+   * wrapping cluster sized from that broke the page action and the language picker onto two lines
+   * at every width. */
+  .ui-auth-shell-bar-actions {
+    min-width: 0;
+  }
   .ui-auth-shell-bar-actions > * {
-    max-inline-size: 100%;
     flex-shrink: 0;
     white-space: nowrap;
+  }
+  /* The one give, when a narrow phone truly has no room for every action on the cluster's row:
+   * plain TEXT (not a control) truncates on its one line — never breaks onto two, never scrolls the
+   * page. Controls keep their full box and focus ring. */
+  .ui-auth-shell-bar-actions > [data-slot="text"] {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* FROSTED BAR (`barAppearance="frosted"`, both CenteredShell shapes) — the bar is pinned to the
@@ -643,6 +654,21 @@
    * (the hazard the registration preset documents). Auto margins absorb only the free space that
    * exists, so a tall layout simply starts at the top. */
   .ui-auth-shell[data-measure="wide"]:not([data-preset]) .ui-auth-shell-card {
+    margin-block: auto;
+  }
+
+  /* `measure="column"` / `"split"` — the hosted flow's 25rem single column and 54rem two-column
+   * page, centred with the same auto margins as `wide`. */
+  .ui-auth-shell[data-measure="column"]:not([data-preset]) {
+    --auth-shell-card-max-width: var(--auth-shell-column-max-width);
+    --auth-shell-main-align: flex-start;
+  }
+  .ui-auth-shell[data-measure="split"]:not([data-preset]) {
+    --auth-shell-card-max-width: var(--auth-shell-split-max-width);
+    --auth-shell-main-align: flex-start;
+  }
+  .ui-auth-shell:is([data-measure="column"], [data-measure="split"]):not([data-preset])
+    .ui-auth-shell-card {
     margin-block: auto;
   }
 

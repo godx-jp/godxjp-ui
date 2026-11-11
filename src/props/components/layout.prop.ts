@@ -782,8 +782,13 @@ export type CenteredShellAuthProp = {
    * `--auth-shell-context-wide-card-max-width` so the chooser can sit beside an explanation column
    * on desktop (lay the two out with `ResponsiveGrid`; it stacks on a phone, where the page keeps a
    * `--auth-shell-context-wide-main-padding-mobile` gutter).
+   *
+   * `"column"` is the hosted flow's single 25rem column (`--auth-shell-column-max-width`: sign-in,
+   * code entry, consent, a result page) and `"split"` its 54rem two-column page
+   * (`--auth-shell-split-max-width`: what is connecting beside what it may do), both centred like
+   * `"wide"` — so a product stops overriding the card tokens in its own CSS. Ignored under a preset.
    */
-  measure?: "default" | "wide";
+  measure?: "default" | "wide" | "column" | "split";
   /**
    * Block-axis placement of the auth column, ORTHOGONAL to `preset` the way `variant` is: a preset
    * owns the page MEASURE (card width, inline gutters, section rhythm), `align` owns where that
