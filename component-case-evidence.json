@@ -701,12 +701,15 @@
             "outline",
             "borderless",
             "featured",
-            "dashed"
+            "dashed",
+            "grouped"
           ],
           "evidence": [
             "docs/data-display/card/index.tsx",
             "docs/layout/home-editing.tsx",
-            "src/components/data-display/__tests__/card-dashed.test.tsx"
+            "src/components/data-display/__tests__/card-dashed.test.tsx",
+            "docs/data-display/card/examples/grouped-list.tsx",
+            "src/components/data-display/__tests__/card-grouped-browser.test.ts"
           ]
         },
         "density": {
@@ -1095,10 +1098,12 @@
           "cases": [
             "section",
             "compact",
-            "page"
+            "page",
+            "hero"
           ],
           "evidence": [
-            "docs/data-display/empty-state.tsx"
+            "docs/data-display/empty-state.tsx",
+            "src/components/data-display/__tests__/empty-state-hero-browser.test.ts"
           ]
         },
         "tone": {
@@ -1650,6 +1655,17 @@
           ],
           "evidence": [
             "src/components/data-entry/__tests__/form-feedback.test.tsx"
+          ]
+        },
+        "labelHidden": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/form-field-label-hidden.test.tsx",
+            "src/components/data-entry/__tests__/form-field-label-hidden-browser.test.ts",
+            "docs/layout/auth-shell-measure.tsx"
           ]
         }
       }
@@ -2558,11 +2574,14 @@
           "cases": [
             "default",
             "button",
-            "card"
+            "card",
+            "list"
           ],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
-            "src/components/data-entry/__tests__/radio-card-1555.test.tsx"
+            "src/components/data-entry/__tests__/radio-card-1555.test.tsx",
+            "src/components/data-entry/__tests__/radio-list.test.tsx",
+            "src/components/data-entry/__tests__/radio-list-browser.test.ts"
           ]
         },
         "buttonStyle": {
