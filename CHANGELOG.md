@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Card tab strip code-split (bundle size)
+
+- **Changed** `Card`: the `tabList` strip is code-split and lazy-loaded (`card-tab-strip`), so a card with no `tabList` — and `ErrorSurface`, which `PageErrorBoundary` loads on every AppShell route — no longer pulls Tabs / Toggle / react-aria Tabs / tabs-scroll into the consumer's up-front graph. Measured on dist with esbuild (minify, splitting, react external): a consumer importing only `ErrorSurface` 113,433 → 12,860 B gzip up front; `Card` alone 100,908 → 2,054 B; the strip is a separate chunk. Timing: the FIRST tabbed card on a page renders its selected body alone for one tick (and on SSR) while the strip loads; once loaded the strip renders synchronously everywhere. `tabList` API unchanged.
+
 ### Hosted-identity redesign kit: inset grouped list, code boxes, step bar, frosted auth bar, display tracking
 
 - **Added** `Card variant="grouped"` — the inset grouped list (Apple `.insetGrouped`, the Settings look): borderless fill, and the `ListRow` / `Descriptions` rows inside its `CardContent flush` separate with a hairline INSET to the row text instead of a card-wide rule. Without a leading slot the line starts at `--list-row-divider-inset` (default `--list-row-padding-x`), with one at `--list-row-divider-leading-inset` (default padding + `--avatar-size` + `--list-row-gap`); it runs to the card end edge, none under the last row, logical in RTL. A `Descriptions` in the group takes the row inset and rhythm (no grid gap) and the same line, so key/value rows and entity rows read as one list. Header/footer captions are `<Flex pad={{ inline: 4 }}><Text size="sm" tone="muted">`, which starts on the row text. Measured in Chromium: line start = row text ±1px, with and without a leading avatar, in LTR and RTL.

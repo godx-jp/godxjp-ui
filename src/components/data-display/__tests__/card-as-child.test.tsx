@@ -5,6 +5,13 @@ import * as React from "react";
 
 import { Button } from "../../general/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
+import { beforeAll as preloadBeforeAll } from "vitest";
+import { loadCardTabStrip } from "../card-tab-strip-loader";
+
+// The card tab strip is code-split; load it once so every tabbed card here renders synchronously.
+preloadBeforeAll(async () => {
+  await loadCardTabStrip();
+});
 
 /**
  * `Card asChild` (gh#740) — the half of `hoverable`'s own docblock that had no spelling.

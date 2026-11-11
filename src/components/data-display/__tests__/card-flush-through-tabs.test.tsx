@@ -9,6 +9,13 @@ import { ruleSelectors } from "@/test/css-selector";
 import { Card, CardContent } from "../card";
 import { DataTable } from "../data-table";
 import { Tabs } from "../../navigation/tabs";
+import { beforeAll as preloadBeforeAll } from "vitest";
+import { loadCardTabStrip } from "../card-tab-strip-loader";
+
+// The card tab strip is code-split; load it once so every tabbed card here renders synchronously.
+preloadBeforeAll(async () => {
+  await loadCardTabStrip();
+});
 
 /**
  * `CardContent flush` means "this body touches the card's edge". gh#554: it stopped one link short

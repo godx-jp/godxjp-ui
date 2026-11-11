@@ -10,6 +10,13 @@ import { ruleSelectors } from "@/test/css-selector";
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../card";
 import { DataTable } from "../data-table";
+import { beforeAll as preloadBeforeAll } from "vitest";
+import { loadCardTabStrip } from "../card-tab-strip-loader";
+
+// The card tab strip is code-split; load it once so every tabbed card here renders synchronously.
+preloadBeforeAll(async () => {
+  await loadCardTabStrip();
+});
 
 /**
  * antd's `Card tabList` (gh#570) — the tab strip that belongs to the CARD, not to the page beside

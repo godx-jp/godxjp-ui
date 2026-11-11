@@ -5,6 +5,13 @@ import { renderWithUi, screen } from "@/test/render";
 
 import { Card } from "../card";
 import { Tabs } from "../../navigation/tabs";
+import { beforeAll as preloadBeforeAll } from "vitest";
+import { loadCardTabStrip } from "../card-tab-strip-loader";
+
+// The card tab strip is code-split; load it once so every tabbed card here renders synchronously.
+preloadBeforeAll(async () => {
+  await loadCardTabStrip();
+});
 
 /*
  * gh#757 — two gaps a consumer measured in a real browser while building a saved-views strip.
