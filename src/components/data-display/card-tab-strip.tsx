@@ -10,7 +10,7 @@ import { Tabs, type TabsExtraProp, type TabsProps } from "../navigation/tabs";
  * through it Toggle, react-aria Tabs/ToggleButton and tabs-scroll) into the consumer's graph.
  * Internal: `Card` is the public API; this file is not exported from the barrel.
  */
-export type CardTabStripProps = {
+type CardTabStripProps = {
   tabs: CardTabItemProp[];
   tabProps?: Omit<
     TabsProps,
