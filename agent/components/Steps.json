@@ -86,6 +86,7 @@
   "storyPath": "navigation/steps.tsx",
   "tagline": "Multi-step progress indicator — horizontal or vertical, default or dot style.",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The Steps hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "DO: Pass all steps via the `items` array (each `{ title, subtitle?, description?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",
     "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
     "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",

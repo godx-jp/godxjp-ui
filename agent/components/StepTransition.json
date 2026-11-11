@@ -35,6 +35,7 @@
   "storyPath": "general/step-transition.tsx",
   "tagline": "The exit + enter motion between the steps of a multi-step flow (email → password, code → confirm → done): the outgoing step slides toward the inline start and fades while the next enters from the inline end, critically damped; a cross-fade under prefers-reduced-motion.",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The StepTransition hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "DO wrap the swapping part of a multi-step screen and give it the step as `value`: `<StepTransition value={step} direction={back ? \"backward\" : \"forward\"}>{step === \"email\" ? <EmailStep /> : <PasswordStep />}</StepTransition>`. Keep the shell, the title that does not change and the footer OUTSIDE it.",
     "DO NOT add GSAP / Framer for this, and do not hand-write @keyframes: the travel (`--step-transition-translate`, 24px), durations (`--step-transition-duration` = --duration-slow, `--step-transition-exit-duration` = --duration-base, `--step-transition-reduced-duration` 200ms) and the --ease-emphasized curve are tokens.",
     "DO move focus to the new step's heading or first field yourself after `value` changes — the outgoing layer is `inert` + `aria-hidden` while it is painted, so focus can never stay on it, but the component does not choose a target for you.",

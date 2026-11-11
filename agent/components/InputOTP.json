@@ -129,6 +129,7 @@
   ],
   "tagline": "One-time-code / 2FA input (input-otp) — N single-character slots that behave as one field. Compose InputOTP > InputOTPGroup > InputOTPSlot.",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The InputOTP hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
     "DO centre a challenge with `align=\"center\"` on InputOTP — never with a wrapper `<div className=\"flex justify-center\">`. The container is owned by input-otp, so a wrapper is the only thing a consumer CAN reach, which is exactly why the prop exists.",
     "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",

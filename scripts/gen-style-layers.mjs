@@ -66,7 +66,19 @@ const OWNERS = {
     "ServiceRolePanel",
     "ErrorSurface",
   ],
-  "motion.css": ["Reveal", "StepTransition", "Activity", "Marquee"],
+  "motion.css": ["Reveal", "Activity", "Marquee"],
+  // The hosted sign-in / consent / device-flow rules (33.30.2) — NOT in styles/core.
+  "hosted-flow-layout.css": [
+    "CenteredShell",
+    "AuthAccountSummary",
+    "ErrorSurface",
+    "InputOTP",
+    "RadioGroup",
+    "Steps",
+    "Progress",
+    "EmptyState",
+    "StepTransition",
+  ],
   // The editorial account family (gh#1439).
   "editorial-account-layout.css": [
     "EditorialTextButton",

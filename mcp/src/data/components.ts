@@ -2899,6 +2899,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The CenteredShell hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO use CenteredShell for an AUTHENTICATED page that has a topbar with actions but NO sidebar — the hosted-ID 'My Page', an account / self-service surface, a standalone settings page. It is the third shell: AppShell (needs a sidebar) · the auth CenteredShell (unauthenticated narrow card) · CenteredShell (authenticated centred column).",
       "DO put a <Topbar start={<brand/>} end={<actions/>}/> in `topbar` — CenteredShell wraps it in the padded `.app-topbar` chrome, so you get inline padding + border + backdrop with zero custom CSS. Do NOT hand-roll a bar with raw `padding-inline` — the bare Topbar primitive ships no inset (the .ui-topbar zero-padding footgun) and content sits flush to the edge.",
       "DO pick `width` by content: `sm` (~32rem) for a single settings form, `md` (default, ~46rem) for a My Page of stacked sections, `lg` (~64rem) for a service-launcher grid. All are wider than the auth CenteredShell's 24rem card.",
@@ -4180,6 +4181,7 @@ function Assistant() {
       { name: "className", type: "string", description: "Root class override (rarely needed)." },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The ErrorSurface hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO use ErrorSurface for ANY 400 / 403 / 404 / 500 / 503 page. It is a real import from @godxjp/ui/layout — never hand-compose an error page from the auth CenteredShell + a generic Card, and never add a consumer-local `.canonical-auth-card`-style class (that workaround IS the regression).",
       'DO put mode="application" INSIDE the shell the route already renders: <AppShell …><PageContainer …><ErrorSurface mode="application" …/></PageContainer></AppShell>. The surface returns only its own block on purpose, so the sidebar/topbar/breadcrumb survive and the user can navigate away.',
       'DO use mode="system" for 500/503 and pass NOTHING for geometry — the surface renders CenteredShell align="center" itself. A className="min-h-dvh flex items-center" is always wrong.',
@@ -5386,6 +5388,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       { name: "className", type: "string", description: "Extra classes on the wrapper." },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The StepTransition hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       'DO wrap the swapping part of a multi-step screen and give it the step as `value`: `<StepTransition value={step} direction={back ? "backward" : "forward"}>{step === "email" ? <EmailStep /> : <PasswordStep />}</StepTransition>`. Keep the shell, the title that does not change and the footer OUTSIDE it.',
       "DO NOT add GSAP / Framer for this, and do not hand-write @keyframes: the travel (`--step-transition-translate`, 24px), durations (`--step-transition-duration` = --duration-slow, `--step-transition-exit-duration` = --duration-base, `--step-transition-reduced-duration` 200ms) and the --ease-emphasized curve are tokens.",
       "DO move focus to the new step's heading or first field yourself after `value` changes — the outgoing layer is `inert` + `aria-hidden` while it is painted, so focus can never stay on it, but the component does not choose a target for you.",
@@ -7364,6 +7367,7 @@ import { Flex } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The EmptyState hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       'DO decide whether the empty state is a STATUS MESSAGE (gh#1271). It is not a live region by default: a static "No records yet" that is there when the page loads would otherwise be announced as an update on every render (WCAG 4.1.3 covers content that CHANGES). Pass `live` (→ `role="status"`) only when it appears as the result of a user action — a search or filter that matched nothing: `<EmptyState live icon={SearchIcon} title="No matching invoices" />`. Inside `DataTable` do neither — its empty cell already carries `aria-live="polite"`.',
       "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
       'DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs="p"` so the message is not a heading at all.',
@@ -7471,6 +7475,7 @@ import { Flex } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The Progress hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       'DO import from `@godxjp/ui/data-display`, not from a generic UI path: `import { Progress } from "@godxjp/ui/data-display";`',
       "DO pass `value` as a 0–100 number — the component clamps it internally via `Math.max(0, Math.min(100, value))`, so out-of-range values are safe but misleading; compute the real percentage before passing it.",
       'DO drive `tone` dynamically from business logic — e.g. `variant={pct >= 80 ? "warning" : "success"}` — to communicate threshold status semantically rather than with raw colour classes.',
@@ -10781,6 +10786,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The RadioGroup hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO use the `options` prop for the data-driven path: pass `{ label, value, disabled?, description? }[]` and RadioGroup renders every option as a correctly labelled Field automatically — never hand-roll Radio.Item + Label pairs in a loop yourself.",
       "DO provide `name` whenever the group lives inside an HTML form: the group renders a hidden `<input name={name}>` carrying the selected string value, making the field natively form-submittable without a separate hidden input.",
       "DO use controlled mode (`value` + `onValueChange`) for any form managed by useForm or a state manager. Use `defaultValue` only for truly uncontrolled UI where you never need to read the value in code.",
@@ -12208,6 +12214,7 @@ import { Button } from "@godxjp/ui/general";
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The Steps hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO: Pass all steps via the `items` array (each `{ title, subtitle?, description?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",
       "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
       "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",
@@ -17186,6 +17193,7 @@ export default function PasswordBlock() {
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The InputOTP hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
       'DO centre a challenge with `align="center"` on InputOTP — never with a wrapper `<div className="flex justify-center">`. The container is owned by input-otp, so a wrapper is the only thing a consumer CAN reach, which is exactly why the prop exists.',
       "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
@@ -19214,6 +19222,7 @@ import { Logo } from "@godxjp/ui/general";
       { name: "className", type: "string", description: "Optional structural class override." },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The AuthAccountSummary hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "Pass only the authoritative signed-in email; AuthAccountSummary never fetches or invents identity data.",
       "Pass localized actionLabel and the existing account-switch handler. The component owns no route, mutation or permission behavior.",
       "The package owns avatar fallback, long-email truncation, responsive action wrapping and keyboard focus. Retune only through --auth-account-summary-* tokens.",

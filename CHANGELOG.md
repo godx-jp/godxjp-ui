@@ -8,6 +8,11 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### Error surface out of every route; hosted-flow CSS out of styles/core (bundle size)
+
+- **Changed** `PageErrorBoundary` (and so `AppShell`) loads `ErrorSurface` lazily. Until its chunk arrives — and for good if it cannot load — an inline `role="alert"` fallback shows the same heading, sentence and reload button. AppShell's up-front graph no longer holds `error-surface`, `card`, `descriptions` or `card-tab-strip-loader`. Measured on dist (esbuild minify + splitting, react external), up-front gzip: AppShell 18,890 → 7,364 B; PageErrorBoundary 14,081 → 1,984 B.
+- **Changed** the hosted-flow rules (frosted auth bar, auth `measure` column/split, AuthAccountSummary `name`/`surface="card"`, ErrorSurface `align="start"`/`width="column"`/`legal`, InputOTP `mono`/`appearance="boxed"`, RadioGroup `optionType="list"`, Steps `type="bar"`, Progress `steps`, EmptyState `variant="hero"`, StepTransition) moved into a new layer, `hosted-flow-layout.css`. `@godxjp/ui/styles` and `styles/application` include it (same rules); `@godxjp/ui/styles/core` no longer does — a core consumer that uses one of them adds `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. `styles/core`: 790,744 → 776,777 B raw (98,159 → 96,275 B gzip). `prune-css` knows the new layer.
+
 ### Card tab strip code-split (bundle size)
 
 - **Changed** `Card`: the `tabList` strip is code-split and lazy-loaded (`card-tab-strip`), so a card with no `tabList` — and `ErrorSurface`, which `PageErrorBoundary` loads on every AppShell route — no longer pulls Tabs / Toggle / react-aria Tabs / tabs-scroll into the consumer's up-front graph. Measured on dist with esbuild (minify, splitting, react external): a consumer importing only `ErrorSurface` 113,433 → 12,860 B gzip up front; `Card` alone 100,908 → 2,054 B; the strip is a separate chunk. Timing: the FIRST tabbed card on a page renders its selected body alone for one tick (and on SSR) while the strip loads; once loaded the strip renders synchronously everywhere. `tabList` API unchanged.

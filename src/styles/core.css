@@ -10,6 +10,11 @@
  * no network bytes: they live in `styles/core-with-fallbacks`, a third entry, precisely so this
  * number keeps meaning what it says.
  *
+ * NOT in core (33.30.2): the hosted-flow layer — frosted auth bar, auth column/split measures,
+ * AuthAccountSummary name/card, ErrorSurface's hosted shape, InputOTP boxed/mono, RadioGroup list,
+ * Steps bar, Progress steps, EmptyState hero, StepTransition. A core consumer that renders any of
+ * those adds `@import "@godxjp/ui/styles/hosted-flow-layout";` after this file.
+ *
  * Supported smaller builds: `styles/application` omits editorial/catalog/holding layouts;
  * `styles/editorial` adds them back after the application entry. For content-aware pruning,
  * use the package-owned `prune-css` tool (add --precompiled without Tailwind). Never guess

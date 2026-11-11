@@ -51,6 +51,28 @@ async function mainInputs(entry: string) {
   }
 }
 
+describe("AppShell does not load the error surface up front (33.30.2)", { timeout: 60_000 }, () => {
+  it("AppShell's up-front graph holds no card / descriptions / error-surface module", async () => {
+    const { main, lazy } = await mainInputs(
+      `import { AppShell } from "./src/components/layout/app-shell"; console.log(AppShell);`,
+    );
+    for (const pattern of [
+      /data-display\/card\.tsx$/,
+      /data-display\/descriptions\.tsx$/,
+      /layout\/error-surface\.tsx$/,
+      /card-tab-strip-loader\.ts$/,
+    ]) {
+      expect(
+        main.filter((p) => pattern.test(p)),
+        `AppShell main ⊅ ${pattern}`,
+      ).toEqual([]);
+    }
+    // The boundary itself is up front; the surface it draws is a lazy chunk.
+    expect(main.some((p) => /layout\/page-error-boundary\.tsx$/.test(p))).toBe(true);
+    expect(lazy.some((p) => /layout\/error-surface\.tsx$/.test(p))).toBe(true);
+  });
+});
+
 describe("Card tab strip is code-split", { timeout: 60_000 }, () => {
   for (const [name, entry] of [
     ["Card", `import { Card } from "./src/components/data-display/card"; console.log(Card);`],

@@ -24,6 +24,7 @@
     "navigation-layout.css",
     "chart-layout.css",
     "float-button-layout.css",
+    "hosted-flow-layout.css",
     "icon-layout.css"
   ],
   "vendor": [
@@ -135,13 +136,15 @@
         "text-layout.css",
         "dialog-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "AreaChart": {
       "layers": [
         "layout.css",
-        "chart-layout.css"
+        "chart-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "AspectRatio": {
@@ -158,14 +161,16 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "AuthAccountSummary": {
       "layers": [
         "shell-layout.css",
         "control.css",
-        "data-display-layout.css"
+        "data-display-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "AuthDivider": {
@@ -209,7 +214,8 @@
     "BarChart": {
       "layers": [
         "layout.css",
-        "chart-layout.css"
+        "chart-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "BlockEditor": {
@@ -237,7 +243,8 @@
         "badge-layout.css",
         "data-entry-layout.css",
         "form-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Breadcrumb": {
@@ -338,7 +345,8 @@
     "CenteredShell": {
       "layers": [
         "shell-layout.css",
-        "text-layout.css"
+        "text-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "ChatBubble": {
@@ -350,7 +358,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "ChatBubbleList": {
@@ -362,7 +371,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "ChatComposer": {
@@ -374,7 +384,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "ChatSuggestion": {
@@ -386,7 +397,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Checkbox": {
@@ -440,7 +452,8 @@
     "CompactBarTrend": {
       "layers": [
         "layout.css",
-        "chart-layout.css"
+        "chart-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Conversations": {
@@ -452,7 +465,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "CredentialReveal": {
@@ -492,7 +506,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "form-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "DatePicker": {
@@ -730,7 +745,8 @@
     },
     "EmptyState": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "ErrorSurface": {
@@ -743,7 +759,8 @@
         "text-layout.css",
         "dialog-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Eyebrow": {
@@ -841,7 +858,8 @@
       "layers": [
         "layout.css",
         "dialog-layout.css",
-        "chart-layout.css"
+        "chart-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "HoldingCard": {
@@ -885,7 +903,8 @@
     },
     "InputOTP": {
       "layers": [
-        "control.css"
+        "control.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Label": {
@@ -909,7 +928,8 @@
     "LineChart": {
       "layers": [
         "layout.css",
-        "chart-layout.css"
+        "chart-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Link": {
@@ -1030,7 +1050,8 @@
         "text-layout.css",
         "dialog-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Pagination": {
@@ -1064,7 +1085,8 @@
         "alert-layout.css",
         "badge-layout.css",
         "data-display-layout.css",
-        "form-layout.css"
+        "form-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Persona": {
@@ -1075,7 +1097,8 @@
     "PieChart": {
       "layers": [
         "layout.css",
-        "chart-layout.css"
+        "chart-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Popover": {
@@ -1094,7 +1117,8 @@
     },
     "Progress": {
       "layers": [
-        "data-display-layout.css"
+        "data-display-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Prose": {
@@ -1110,19 +1134,22 @@
     "RadarChart": {
       "layers": [
         "layout.css",
-        "chart-layout.css"
+        "chart-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Radio": {
       "layers": [
         "control.css",
-        "form-layout.css"
+        "form-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "RadioGroup": {
       "layers": [
         "control.css",
-        "form-layout.css"
+        "form-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "RangeTimeline": {
@@ -1148,7 +1175,8 @@
         "badge-layout.css",
         "data-entry-layout.css",
         "form-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "ResizablePanel": {
@@ -1248,7 +1276,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "badge-layout.css",
-        "form-layout.css"
+        "form-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "SettingsLayout": {
@@ -1305,12 +1334,13 @@
     },
     "StepTransition": {
       "layers": [
-        "motion.css"
+        "hosted-flow-layout.css"
       ]
     },
     "Steps": {
       "layers": [
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "Swatch": {
@@ -1370,7 +1400,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     },
     "TimePicker": {
@@ -1540,6 +1571,7 @@
         "data-display-layout.css",
         "data-entry-layout.css",
         "form-layout.css",
+        "hosted-flow-layout.css",
         "icon-layout.css"
       ]
     },
@@ -1565,7 +1597,8 @@
         "dialog-layout.css",
         "alert-layout.css",
         "data-display-layout.css",
-        "navigation-layout.css"
+        "navigation-layout.css",
+        "hosted-flow-layout.css"
       ]
     }
   }

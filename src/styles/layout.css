@@ -1636,33 +1636,6 @@
     max-width: var(--empty-state-description-max-width);
   }
 
-  /* `variant="hero"` — the RESULT PAGE (approved / denied / expired). The title takes the display
-   * 3xl step in bold and the display optics, the description the lead size, the medallion its hero
-   * size; a column of its own, so it carries no page padding of its own beyond the section rhythm. */
-  .ui-empty-state[data-variant="hero"] {
-    gap: var(--empty-state-hero-gap);
-    padding: var(--empty-state-hero-space-y) 0;
-    --empty-state-icon-size: var(--empty-state-hero-medallion-size);
-    --empty-state-icon-glyph-size: var(--empty-state-hero-icon-glyph-size);
-  }
-  .ui-empty-state[data-variant="hero"] .ui-empty-state-title {
-    font-size: var(
-      --empty-state-hero-title-font-size,
-      var(
-        --font-size-3xl,
-        calc(
-          var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio)
-        )
-      )
-    );
-    font-weight: var(--font-weight-bold);
-    line-height: var(--line-height-display, var(--line-height-tight));
-    letter-spacing: var(--letter-spacing-display, var(--letter-spacing-tight));
-  }
-  .ui-empty-state[data-variant="hero"] .ui-empty-state-description {
-    font-size: var(--empty-state-hero-description-font-size);
-  }
-
   .ui-empty-state-icon {
     display: flex;
     align-items: center;

@@ -42,8 +42,19 @@ export async function compileRealCss(
   let source = readCss(entry);
   for (const file of omit) {
     const line = `@import "./${file}";`;
+    if (file === "hosted-flow-layout.css") continue;
     if (!source.includes(line)) throw new Error(`compileRealCss: core.css does not import ${file}`);
     source = source.replace(line, "");
+  }
+  // The hosted-flow layer is outside `styles/core` (33.30.2) but inside `styles`, which is what the
+  // geometry tests measure against; append it, unless omitted or absent at an older `revision`.
+  if (!omit.includes("hosted-flow-layout.css")) {
+    try {
+      readCss(join(dirname(entry), "hosted-flow-layout.css"));
+      source += '\n@import "./hosted-flow-layout.css";\n';
+    } catch {
+      // not at this revision
+    }
   }
   const compiler = await compile(source, {
     base: dirname(entry),

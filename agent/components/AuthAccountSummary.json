@@ -62,6 +62,7 @@
   "storyPath": "layout/auth-account-summary.tsx",
   "tagline": "Compact signed-in account row for hosted auth: avatar fallback, authoritative email and switch action.",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The AuthAccountSummary hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "Pass only the authoritative signed-in email; AuthAccountSummary never fetches or invents identity data.",
     "Pass localized actionLabel and the existing account-switch handler. The component owns no route, mutation or permission behavior.",
     "The package owns avatar fallback, long-email truncation, responsive action wrapping and keyboard focus. Retune only through --auth-account-summary-* tokens."

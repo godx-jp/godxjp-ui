@@ -72,6 +72,7 @@
   "storyPath": "data-display/progress.tsx",
   "tagline": "Progress in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state, drawn as a bar or — with `shape='ring'` — as an arc with the readout inside it) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track).",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The Progress hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "DO import from `@godxjp/ui/data-display`, not from a generic UI path: `import { Progress } from \"@godxjp/ui/data-display\";`",
     "DO pass `value` as a 0–100 number — the component clamps it internally via `Math.max(0, Math.min(100, value))`, so out-of-range values are safe but misleading; compute the real percentage before passing it.",
     "DO drive `tone` dynamically from business logic — e.g. `variant={pct >= 80 ? \"warning\" : \"success\"}` — to communicate threshold status semantically rather than with raw colour classes.",

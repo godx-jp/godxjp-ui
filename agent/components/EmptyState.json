@@ -65,6 +65,7 @@
   "storyPath": "data-display/empty-state.tsx",
   "tagline": "Centred empty placeholder with icon, title, description, and optional CTA.",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The EmptyState hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "DO decide whether the empty state is a STATUS MESSAGE (gh#1271). It is not a live region by default: a static \"No records yet\" that is there when the page loads would otherwise be announced as an update on every render (WCAG 4.1.3 covers content that CHANGES). Pass `live` (→ `role=\"status\"`) only when it appears as the result of a user action — a search or filter that matched nothing: `<EmptyState live icon={SearchIcon} title=\"No matching invoices\" />`. Inside `DataTable` do neither — its empty cell already carries `aria-live=\"polite\"`.",
     "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
     "DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs=\"p\"` so the message is not a heading at all.",

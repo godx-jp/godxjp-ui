@@ -576,48 +576,6 @@
     text-overflow: ellipsis;
   }
 
-  /* FROSTED BAR (`barAppearance="frosted"`, both CenteredShell shapes) — the bar is pinned to the
-   * top and the page scrolls UNDER it: the shell's own muted ground at an alpha, a backdrop blur
-   * with the shared saturate companion, and a hairline below (Apple's bar material). All knobs; the
-   * accessibility fallbacks are the library's, not the consumer's: `prefers-reduced-transparency`
-   * and an engine without `backdrop-filter` both get the SOLID ground. A blurred element is the
-   * containing block of its fixed descendants — nothing in a bar is position: fixed (menus portal
-   * to the body), so that trap does not apply here. */
-  .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
-  .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    /* The bar material is a SLIM bar (the frames' 52px): one control row centred in a fixed band,
-     * a little block padding so a phone's wrapped second row is not flush. */
-    box-sizing: border-box;
-    min-block-size: var(--centered-shell-bar-frosted-height);
-    padding-block: var(--centered-shell-bar-frosted-padding-block);
-    border-bottom: 0;
-    background-color: hsl(var(--muted) / var(--centered-shell-bar-frosted-background-alpha));
-    background-image: none;
-    box-shadow: 0 var(--stroke-hairline) 0
-      var(--centered-shell-bar-frosted-border-color, hsl(var(--border)));
-    -webkit-backdrop-filter: blur(var(--centered-shell-bar-frosted-backdrop-blur-size))
-      saturate(var(--surface-backdrop-saturate, 160%));
-    backdrop-filter: blur(var(--centered-shell-bar-frosted-backdrop-blur-size))
-      saturate(var(--surface-backdrop-saturate, 160%));
-  }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
-    .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
-      background-color: hsl(var(--muted));
-    }
-  }
-  @media (prefers-reduced-transparency: reduce) {
-    .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
-    .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
-      background-color: hsl(var(--muted));
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-    }
-  }
-
   .ui-auth-shell-main {
     display: flex;
     flex: 1 1 auto;
@@ -659,21 +617,6 @@
    * (the hazard the registration preset documents). Auto margins absorb only the free space that
    * exists, so a tall layout simply starts at the top. */
   .ui-auth-shell[data-measure="wide"]:not([data-preset]) .ui-auth-shell-card {
-    margin-block: auto;
-  }
-
-  /* `measure="column"` / `"split"` — the hosted flow's 25rem single column and 54rem two-column
-   * page, centred with the same auto margins as `wide`. */
-  .ui-auth-shell[data-measure="column"]:not([data-preset]) {
-    --auth-shell-card-max-width: var(--auth-shell-column-max-width);
-    --auth-shell-main-align: flex-start;
-  }
-  .ui-auth-shell[data-measure="split"]:not([data-preset]) {
-    --auth-shell-card-max-width: var(--auth-shell-split-max-width);
-    --auth-shell-main-align: flex-start;
-  }
-  .ui-auth-shell:is([data-measure="column"], [data-measure="split"]):not([data-preset])
-    .ui-auth-shell-card {
     margin-block: auto;
   }
 
@@ -879,13 +822,6 @@
     background: hsl(var(--muted));
   }
 
-  /* `surface="card"` — the row as its own card on the muted auth ground. */
-  .ui-auth-account-summary[data-surface="card"] {
-    padding: var(--auth-account-summary-card-padding);
-    border-radius: var(--card-radius, calc(var(--radius) * var(--radius-ratio)));
-    background: hsl(var(--card-background, var(--card)));
-  }
-
   .ui-auth-account-identity {
     display: flex;
     min-width: min(100%, var(--auth-account-summary-identity-min-width));
@@ -914,33 +850,6 @@
     font-weight: var(--font-weight-medium);
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  /* `name` — two lines: the name in the email's face, then the muted "Signed in · email" line.
-   * Both truncate inside the identity column so a long address never widens the card. */
-  .ui-auth-account-text {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-  }
-  .ui-auth-account-name {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: hsl(var(--foreground));
-    font-size: var(--auth-account-summary-email-font-size);
-    line-height: var(--auth-account-summary-email-line-height);
-    font-weight: var(--font-weight-medium);
-  }
-  .ui-auth-account-status {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: hsl(var(--muted-foreground));
-    font-size: var(--auth-account-summary-status-font-size);
-    line-height: var(--line-height-normal);
   }
 
   .ui-auth-account-summary > [data-slot="button"] {
@@ -3834,6 +3743,27 @@
     text-align: center;
   }
 
+  /* PageErrorBoundary's inline fallback — drawn while the lazy ErrorSurface chunk loads (or if it
+   * cannot load). The same centred column and rhythm as the surface, so the swap does not jump. */
+  .ui-page-error-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--error-surface-gap);
+    padding-block: var(--error-surface-padding-block);
+    text-align: center;
+  }
+  .ui-page-error-fallback-title {
+    margin: 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+  }
+  .ui-page-error-fallback-description {
+    margin: 0;
+    max-width: var(--empty-state-description-max-width);
+    color: hsl(var(--muted-foreground));
+  }
+
   .ui-error-surface-brand {
     display: flex;
     justify-content: center;
@@ -3876,50 +3806,6 @@
   .ui-error-surface-progress {
     width: 100%;
     max-width: var(--error-surface-progress-max-width);
-  }
-
-  /* `align="start"` — the hosted-page shape: start-aligned large title, the details card above the
-   * action, the action stretched to the column so `Button fullWidth size="lg"` reads full width,
-   * the secondary link centred under it. */
-  .ui-error-surface[data-align="start"] {
-    align-items: stretch;
-    gap: var(--error-surface-start-gap);
-    text-align: start;
-  }
-  .ui-error-surface-heading {
-    display: flex;
-    flex-direction: column;
-    gap: var(--error-surface-heading-gap);
-  }
-  .ui-error-surface-heading .ui-error-surface-status,
-  .ui-error-surface-heading .ui-error-surface-title,
-  .ui-error-surface-heading .ui-error-surface-description {
-    margin: 0;
-  }
-  .ui-error-surface[data-align="start"] .ui-error-surface-brand {
-    justify-content: flex-start;
-  }
-  .ui-error-surface-action {
-    display: flex;
-    flex-direction: column;
-  }
-  .ui-error-surface-secondary {
-    display: flex;
-    justify-content: center;
-  }
-  /* `width="column"` — the hosted flow's 25rem column. */
-  .ui-error-surface[data-width="column"] {
-    max-width: var(--auth-shell-column-max-width);
-  }
-  /* `legal` — the short legal line under the actions, inside the surface. */
-  .ui-error-surface-legal {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-2);
-    color: hsl(var(--muted-foreground));
-    font-size: var(--error-surface-legal-font-size);
-    text-align: center;
   }
 
   /* NARROW STEP (the 390 case). */
