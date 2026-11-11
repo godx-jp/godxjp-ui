@@ -11291,7 +11291,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--steps-bar-track-color",
     "value": "initial",
-    "description": "default = hsl(var(--border))"
+    "description": "default = hsl(var(--input)): the unfilled segment is a 1.4.11 non-text boundary, ≥3:1"
   },
   {
     "name": "--steps-bar-fill-color",
