@@ -346,6 +346,8 @@
      thinnest a partition can be and still show three fills apart. Below that the ratios are gone,
      which is why there is no `xs`. */
   --progress-meter-block-size: 0.5rem;
+  /* `steps` — the gap between the segments of a segmented bar. */
+  --progress-steps-gap: var(--space-1);
   --progress-meter-block-size-sm: 0.25rem;
   --progress-breakdown-block-size-sm: 0.5rem;
 

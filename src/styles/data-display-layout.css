@@ -402,6 +402,53 @@
     background: var(--progress-fill-background, hsl(var(--mark-primary, var(--primary))));
   }
 
+  /* `steps` — antd's segmented bar: the track is a row of equal segments, each its own pill on
+   * the track colour; filled ones take the fill, by tone. A segment that lights grows in from the
+   * inline start. */
+  .ui-progress[data-steps] .ui-progress-track {
+    display: grid;
+    grid-template-columns: repeat(var(--progress-steps), minmax(0, 1fr));
+    gap: var(--progress-steps-gap);
+    overflow: visible;
+    border-radius: 0;
+    background: none;
+  }
+  .ui-progress-step {
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: var(
+      --progress-track-background,
+      hsl(var(--secondary) / var(--progress-track-background-alpha, 100%))
+    );
+  }
+  .ui-progress-step[data-state="filled"] {
+    transform-origin: left center;
+    background: var(--progress-fill-background, hsl(var(--mark-primary, var(--primary))));
+    animation: ui-progress-step-fill var(--duration-slow) var(--ease-emphasized) both;
+  }
+  [dir="rtl"] .ui-progress-step[data-state="filled"] {
+    transform-origin: right center;
+  }
+  .ui-progress[data-tone="success"] .ui-progress-step[data-state="filled"] {
+    background: hsl(var(--mark-success, var(--text-success)));
+  }
+  .ui-progress[data-tone="warning"] .ui-progress-step[data-state="filled"] {
+    background: hsl(var(--mark-warning, var(--text-warning)));
+  }
+  .ui-progress[data-tone="destructive"] .ui-progress-step[data-state="filled"] {
+    background: hsl(var(--mark-destructive, var(--text-error)));
+  }
+  @keyframes ui-progress-step-fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-progress-step[data-state="filled"] {
+      animation: none;
+    }
+  }
+
   .ui-progress[data-tone="success"] .ui-progress-bar {
     background: hsl(var(--mark-success, var(--text-success)));
   }

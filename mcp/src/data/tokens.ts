@@ -1388,6 +1388,12 @@ export const TOKENS: TokenEntry[] = [
     role: "PRESS FEEDBACK: how far a pressed Button gives (`transform: scale()` on :active, animated with the button's 150ms transition). Default 1 — nothing moves; set 0.97 once in a theme for the Apple press. Never applied under prefers-reduced-motion, or to a disabled / loading button.",
   },
   {
+    name: "--collapse-exit-duration / --progress-steps-gap",
+    category: "primitive",
+    tier: "primitive",
+    role: "`--collapse-exit-duration` (--duration-slow) is how long a CollapseGroup row takes to collapse out (height + opacity → 0, on --ease-emphasized). `--progress-steps-gap` (space-1) is the gap between the segments of `Progress steps`.",
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

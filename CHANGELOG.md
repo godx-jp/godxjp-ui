@@ -33,6 +33,8 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 - **Added** `ErrorSurface width="column"` (the 25rem flow column, `--auth-shell-column-max-width`) and `legal?: ReactNode` (a short legal line directly under the actions, inside the surface; `--error-surface-legal-font-size`).
 - **Changed** `barAppearance="frosted"` is a slim bar: one control row in a 52px band (`--centered-shell-bar-frosted-height`, `--centered-shell-bar-frosted-padding-block`). Measured 52px at 1280 across both auth variants, three presets and text/link actions.
 - **Changed** `StepTransition`'s outgoing layer is the same React instance the step had (same key), so it leaves with its live state instead of re-mounting for the exit.
+- **Added** `CollapseGroup` (`@godxjp/ui/general`) — a removed list child collapses (measured height, block padding/margin, opacity → 0) before it unmounts; plain React removal, no wrapper element, `onExited(key)`, `--collapse-exit-duration`; reduced motion removes at once. Measured in Chromium: the row below slides up over the duration instead of jumping.
+- **Added** `Progress steps?: number` (antd) — the bar as N equal segments, `round(N × value / 100)` filled, still one progressbar; a lit segment grows in (`--progress-steps-gap`).
 - **Added** `InputOTP mono?: boolean` — the mono face (`--font-family-mono`) for a code of letters and digits. Emits `data-mono` only when set.
 
 ### TopbarSearch wide measure; Avatar stable categorical colour and xl tile; AuthFooter body face

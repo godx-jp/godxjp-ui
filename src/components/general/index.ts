@@ -17,6 +17,8 @@ export type { LogoMark, LogoProps, LogoScheme, LogoSize, LogoTone } from "./logo
 export { Reveal } from "./reveal";
 export type { RevealProp, RevealProps } from "./reveal";
 export { StepTransition } from "./step-transition";
+export { CollapseGroup } from "./collapse-group";
+export type { CollapseGroupProp, CollapseGroupProps } from "./collapse-group";
 export type {
   StepTransitionDirectionProp,
   StepTransitionProp,

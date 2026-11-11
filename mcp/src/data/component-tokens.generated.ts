@@ -3664,6 +3664,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`size=\"sm\"` — the SAME two forms, thinner, for a bar that annotates a row rather than being the subject of the screen (an in-table capacity column). The meter step is half its default hairline; the breakdown step lands exactly on the meter's default 0.5rem, which is the thinnest a partition can be and still show three fills apart. Below that the ratios are gone, which is why there is no `xs`."
   },
   {
+    "name": "--progress-steps-gap",
+    "value": "var(--space-1)",
+    "description": "`steps` — the gap between the segments of a segmented bar."
+  },
+  {
     "name": "--progress-meter-block-size-sm",
     "value": "0.25rem",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."

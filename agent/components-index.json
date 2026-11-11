@@ -390,6 +390,11 @@
   },
   {
     "group": "general",
+    "name": "CollapseGroup",
+    "tagline": "A removed list child COLLAPSES (its measured height, block padding/margin and opacity → 0) before it unmounts, so the rows under it slide up instead of jumping."
+  },
+  {
+    "group": "general",
     "name": "StepTransition",
     "tagline": "The exit + enter motion between the steps of a multi-step flow (email → password, code → confirm → done): the outgoing step slides toward the inline start and fades while the next enters from the inline end, critically damped; a cross-fade under prefers-reduced-motion."
   },

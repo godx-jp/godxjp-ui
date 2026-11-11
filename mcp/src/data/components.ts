@@ -5325,6 +5325,44 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
     rules: [],
   },
   {
+    name: "CollapseGroup",
+    group: "general",
+    tagline:
+      "A removed list child COLLAPSES (its measured height, block padding/margin and opacity → 0) before it unmounts, so the rows under it slide up instead of jumping. Works with plain React removal: filter the array. No wrapper element; reduced motion removes at once.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description:
+          'The list\'s KEYED children (rows). Each must accept a `ref` and spread unknown props onto its root (every @godxjp/ui row does, e.g. `ListRow as="li"`).',
+      },
+      {
+        name: "onExited",
+        type: "(key: string) => void",
+        description: "Called with the child's own key once it has collapsed and unmounted.",
+      },
+    ],
+    usage: [
+      'DO put it directly inside the list element and pass the keyed rows: `<Flex as="ul" marker="none" direction="col" gap="none"><CollapseGroup>{pending.map((item) => <ListRow key={item.id} as="li" … />)}</CollapseGroup></Flex>` — remove an item from `pending` and it collapses out (an agreed requirement moving to 完了済み).',
+      "While it leaves, the row is `inert` + `aria-hidden` and carries `data-leaving`; move focus to a sensible neighbour yourself if the removed row held it. Duration `--collapse-exit-duration` (--duration-slow) on --ease-emphasized; under prefers-reduced-motion it is removed at once.",
+    ],
+    useCases: [
+      "A to-do / required-action row that disappears once done.",
+      "Removing a session, token or invitation from a short list.",
+    ],
+    related: [
+      "StepTransition — swaps a whole step; CollapseGroup removes one row from a list.",
+      "ListRow — the row it usually animates.",
+    ],
+    example: `import { CollapseGroup } from "@godxjp/ui/general";
+
+<Flex as="ul" marker="none" direction="col" gap="none">
+  <CollapseGroup>{items.map((item) => <ListRow key={item.id} as="li" title={item.title} />)}</CollapseGroup>
+</Flex>`,
+    storyPath: "general/collapse-group.tsx",
+    rules: [],
+  },
+  {
     name: "StepTransition",
     group: "general",
     tagline:
@@ -7410,6 +7448,12 @@ import { Flex } from "@godxjp/ui/layout";
         defaultValue: "false",
         description:
           "Allow value > 100 to render an over-capacity fill: bar caps at 100% width but gets a diagonal hatch + destructive tone (e.g. 252%). aria-valuetext reports the real ratio. Off by default (clamps to 100). On shape='ring' there is no hatch — diagonal stripes are a rectangle drawing — so the destructive tone and aria-valuetext carry it.",
+      },
+      {
+        name: "steps",
+        type: "number",
+        description:
+          'antd `steps` — the bar drawn as `steps` equal segments, `Math.round(steps × value / 100)` filled: the 「3件中1件完了」 meter is `<Progress steps={3} value={33} label="3件中1件完了" />`. Still ONE progressbar with the same value. A lit segment grows in from the inline start (none under reduced motion). `--progress-steps-gap` (space-1). Bar shape only; ignored by `shape="ring"`.',
       },
       {
         name: "shape",

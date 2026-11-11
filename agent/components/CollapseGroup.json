@@ -1,0 +1,33 @@
+{
+  "example": "import { CollapseGroup } from \"@godxjp/ui/general\";\n\n<Flex as=\"ul\" marker=\"none\" direction=\"col\" gap=\"none\">\n  <CollapseGroup>{items.map((item) => <ListRow key={item.id} as=\"li\" title={item.title} />)}</CollapseGroup>\n</Flex>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "CollapseGroup",
+  "props": [
+    {
+      "description": "The list's KEYED children (rows). Each must accept a `ref` and spread unknown props onto its root (every @godxjp/ui row does, e.g. `ListRow as=\"li\"`).",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Called with the child's own key once it has collapsed and unmounted.",
+      "name": "onExited",
+      "type": "(key: string) => void"
+    }
+  ],
+  "related": [
+    "StepTransition — swaps a whole step; CollapseGroup removes one row from a list.",
+    "ListRow — the row it usually animates."
+  ],
+  "rules": [],
+  "storyPath": "general/collapse-group.tsx",
+  "tagline": "A removed list child COLLAPSES (its measured height, block padding/margin and opacity → 0) before it unmounts, so the rows under it slide up instead of jumping. Works with plain React removal: filter the array. No wrapper element; reduced motion removes at once.",
+  "usage": [
+    "DO put it directly inside the list element and pass the keyed rows: `<Flex as=\"ul\" marker=\"none\" direction=\"col\" gap=\"none\"><CollapseGroup>{pending.map((item) => <ListRow key={item.id} as=\"li\" … />)}</CollapseGroup></Flex>` — remove an item from `pending` and it collapses out (an agreed requirement moving to 完了済み).",
+    "While it leaves, the row is `inert` + `aria-hidden` and carries `data-leaving`; move focus to a sensible neighbour yourself if the removed row held it. Duration `--collapse-exit-duration` (--duration-slow) on --ease-emphasized; under prefers-reduced-motion it is removed at once."
+  ],
+  "useCases": [
+    "A to-do / required-action row that disappears once done.",
+    "Removing a session, token or invitation from a short list."
+  ]
+}

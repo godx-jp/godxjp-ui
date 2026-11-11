@@ -4644,6 +4644,27 @@
         }
       ]
     },
+    "CollapseGroup": {
+      "group": "general",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "onExited",
+          "origin": "owned",
+          "required": false,
+          "type": "((key: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        }
+      ]
+    },
     "Collapsible": {
       "group": "data-display",
       "props": [
@@ -14662,6 +14683,14 @@
           "required": false,
           "type": "\"sm\" | \"md\" | undefined",
           "values": ["sm", "md"],
+          "declaredIn": ["src/components/data-display/progress.tsx"]
+        },
+        {
+          "name": "steps",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {

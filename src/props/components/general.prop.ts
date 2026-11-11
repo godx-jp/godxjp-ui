@@ -349,6 +349,17 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   countLabel?: string;
 };
 
+/**
+ * @see CollapseGroup — a removed list child COLLAPSES (height + block padding/margin + opacity → 0)
+ * before it unmounts, instead of vanishing and jumping the rows under it. No wrapper element.
+ */
+export type CollapseGroupProp = {
+  /** The list's KEYED children (rows). Remove one from the array to make it collapse out. */
+  children?: ChildrenProp;
+  /** Called with the child's key once it has collapsed and unmounted. */
+  onExited?: (key: string) => void;
+};
+
 /** Which way a {@link StepTransitionProp} moves: `forward` (next step) or `backward` (go back). */
 export type StepTransitionDirectionProp = "forward" | "backward";
 

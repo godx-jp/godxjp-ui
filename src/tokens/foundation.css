@@ -970,6 +970,8 @@
   --step-transition-duration: var(--duration-slow);
   --step-transition-exit-duration: var(--duration-base);
   --step-transition-reduced-duration: 200ms;
+  /* CollapseGroup — how long a removed row takes to collapse (height + opacity → 0). */
+  --collapse-exit-duration: var(--duration-slow);
   /* PRESS FEEDBACK — how far a pressed Button gives (`transform: scale()` on :active). 1 = still
    * (the default, nothing moves); 0.97 is the Apple press. Reduced motion keeps it at 1. */
   --press-scale: 1;

@@ -43,6 +43,11 @@
       "type": "boolean"
     },
     {
+      "description": "antd `steps` — the bar drawn as `steps` equal segments, `Math.round(steps × value / 100)` filled: the 「3件中1件完了」 meter is `<Progress steps={3} value={33} label=\"3件中1件完了\" />`. Still ONE progressbar with the same value. A lit segment grows in from the inline start (none under reduced motion). `--progress-steps-gap` (space-1). Bar shape only; ignored by `shape=\"ring\"`.",
+      "name": "steps",
+      "type": "number"
+    },
+    {
       "defaultValue": "\"bar\"",
       "description": "METER geometry — the SAME measurement drawn as a full-width bar or as an arc. Same value, tone, size and ARIA either way; `label` moves INSIDE the ring, which is the point of it: a phone app bar showing '18 of 42 done' beside a title has one square of space, and a bar plus its caption needs two stacked rows. Reach for it when the SPACE is square, not when the number is important. It is meter-only: a ring around a `segments` breakdown is a pie chart, which is `PieChart donut` in the charts entry point — a part-to-whole across CATEGORIES with a legend, announced as an image rather than as a progressbar. The arc reads the MARK token tier, exactly as the bar does, so a warning ring and a warning bar on one screen are one colour.",
       "name": "shape",

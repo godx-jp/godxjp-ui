@@ -6,7 +6,8 @@ import { AppSettingPicker } from "@godxjp/ui/navigation";
  * 403 on a hosted page — `mode="system" align="start"`. The page keeps its top bar (`topbar`), the
  * status code is a small mono line above a LARGE bold start-aligned title, the organization and the
  * missing permission sit in an inset grouped card ABOVE the action, the one recovery action spans
- * the column (`Button fullWidth size="lg"`), and a secondary navigation link sits under it.
+ * the column (`Button fullWidth size="lg"`), a secondary navigation link sits under it, and the
+ * legal line follows directly (`legal`). `width="column"` is the flow's 25rem column.
  */
 export default function Demo() {
   return (
@@ -30,6 +31,14 @@ export default function Demo() {
         </Button>
       }
       secondaryAction={<Button variant="link">Go to the dashboard</Button>}
+      width="column"
+      legal={
+        <>
+          <span>Sample ID</span>
+          <span>Terms</span>
+          <span>Privacy</span>
+        </>
+      }
     />
   );
 }

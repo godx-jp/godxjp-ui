@@ -2806,6 +2806,18 @@ export const COMPONENT_PROP_REGISTRY = {
       "PendingProp",
     ],
   },
+  CollapseGroupProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      {
+        field: "onExited",
+        local: true,
+        reason: "Exit-complete callback with the removed child's key (not a value change).",
+      },
+    ],
+  },
   StepTransitionProp: {
     group: "general",
     file: "components/general.prop.ts",

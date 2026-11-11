@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 341,
-    dimensionCells: 4774,
+    exports: 342,
+    dimensionCells: 4788,
     covered: 87,
-    untested: 2613,
-    notApplicable: 2074,
+    untested: 2620,
+    notApplicable: 2081,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -172,6 +172,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"Checkbox","group":"data-entry","frame":"docs/data-entry/checkbox.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"CheckboxGroup","group":"data-entry","frame":"docs/data-entry/checkbox.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"CodeBlock","group":"data-display","frame":"docs/data-display/code-block.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
+  {"name":"CollapseGroup","group":"general","frame":"docs/general/collapse-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Collapsible","group":"data-display","frame":"docs/data-display/collapsible.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"CollapsibleContent","group":"data-display","frame":"docs/data-display/collapsible.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"CollapsibleTrigger","group":"data-display","frame":"docs/data-display/collapsible.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},

@@ -38,6 +38,21 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>steps · segmented meter</CardTitle>
+            <CardDescription>
+              antd `steps`: N equal segments, round(N × value / 100) filled; still one progressbar.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Progress steps={3} value={33} label="1 of 3 done" />
+              <Progress steps={5} value={80} tone="success" label="4 of 5 checks passed" />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>shape=&quot;ring&quot;</CardTitle>
             <CardDescription>
               同じメーターを弧で描きます。バーと同じ value / tone / size / ARIA のまま、label
