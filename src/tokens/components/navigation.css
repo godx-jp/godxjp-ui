@@ -67,7 +67,7 @@
   /* scale-exempt: 6px segment-to-title gap, same step as the segment gap */
   --steps-bar-label-gap: 0.375rem;
   --steps-bar-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
-  --steps-bar-track-color: initial; /* default = hsl(var(--border)) */
+  --steps-bar-track-color: initial; /* default = hsl(var(--input)): the unfilled segment is a 1.4.11 non-text boundary, ≥3:1 */
   --steps-bar-fill-color: initial; /* default = hsl(var(--primary)) */
   --steps-bar-wait-color: initial; /* default = hsl(var(--muted-foreground)) */
   --steps-bar-fill-duration: 350ms;

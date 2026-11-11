@@ -1193,7 +1193,7 @@
     height: var(--steps-bar-track-size);
     overflow: hidden;
     border-radius: var(--steps-bar-radius, calc(var(--steps-bar-track-size) / 2));
-    background: var(--steps-bar-track-color, hsl(var(--border)));
+    background: var(--steps-bar-track-color, hsl(var(--input)));
   }
   .ui-steps-bar-segment::after {
     content: "";
