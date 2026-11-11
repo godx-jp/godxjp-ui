@@ -2491,6 +2491,12 @@ export const COMPONENT_PROP_REGISTRY = {
         reason: "system mode page top bar, forwarded to the CenteredShell topbar slot.",
       },
       {
+        field: "legal",
+        local: true,
+        reason:
+          "Short legal/product line under the actions, inside the surface (not the footer band).",
+      },
+      {
         field: "tone",
         local: true,
         reason:

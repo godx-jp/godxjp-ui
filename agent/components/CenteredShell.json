@@ -69,7 +69,7 @@
     },
     {
       "defaultValue": "\"default\"",
-      "description": "BOTH shapes. The top bar material. \"frosted\" pins the bar (sticky) as a translucent pane the page scrolls UNDER: the muted shell ground at `--centered-shell-bar-frosted-background-alpha` (72%), `--centered-shell-bar-frosted-backdrop-blur-size` (20px) + the shared `--surface-backdrop-saturate`, a hairline in `--centered-shell-bar-frosted-border-color`. The library writes the fallbacks: under `prefers-reduced-transparency: reduce` and where `backdrop-filter` is unsupported the bar is SOLID — write no consumer @media for it. \"default\" keeps the bar byte-identical.",
+      "description": "BOTH shapes. The top bar material. \"frosted\" is a SLIM bar — one control row in a 52px band (`--centered-shell-bar-frosted-height`, `--centered-shell-bar-frosted-padding-block` 4px) — and pins it (sticky; an ancestor with overflow hidden/clip defeats sticky, so keep the app root overflow visible) as a translucent pane the page scrolls UNDER: the muted shell ground at `--centered-shell-bar-frosted-background-alpha` (72%), `--centered-shell-bar-frosted-backdrop-blur-size` (20px) + the shared `--surface-backdrop-saturate`, a hairline in `--centered-shell-bar-frosted-border-color`. The library writes the fallbacks: under `prefers-reduced-transparency: reduce` and where `backdrop-filter` is unsupported the bar is SOLID — write no consumer @media for it. \"default\" keeps the bar byte-identical.",
       "name": "barAppearance",
       "type": "\"default\" | \"frosted\""
     }

@@ -1000,6 +1000,10 @@
   /* scale-exempt: 20px backdrop blur radius, an optical value not a layout step */
   --centered-shell-bar-frosted-backdrop-blur-size: 20px;
   --centered-shell-bar-frosted-border-color: initial;
+  /* The frosted bar's band: one control row in 52px (the frames' bar), a 4px block inset. */
+  /* scale-exempt: 52px slim bar band, between band-2xl (48) and band-3xl (56) */
+  --centered-shell-bar-frosted-height: 3.25rem;
+  --centered-shell-bar-frosted-padding-block: var(--space-1);
   --centered-shell-main-padding: var(--space-6);
   /* Inline-only compact steps. They exist as their own knobs rather than as a redefinition of the
    * shorthands above, so `--centered-shell-main-padding` keeps meaning all four sides and a service

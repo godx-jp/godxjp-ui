@@ -588,6 +588,11 @@
     position: sticky;
     top: 0;
     z-index: 1;
+    /* The bar material is a SLIM bar (the frames' 52px): one control row centred in a fixed band,
+     * a little block padding so a phone's wrapped second row is not flush. */
+    box-sizing: border-box;
+    min-block-size: var(--centered-shell-bar-frosted-height);
+    padding-block: var(--centered-shell-bar-frosted-padding-block);
     border-bottom: 0;
     background-color: hsl(var(--muted) / var(--centered-shell-bar-frosted-background-alpha));
     background-image: none;
@@ -3901,6 +3906,20 @@
   .ui-error-surface-secondary {
     display: flex;
     justify-content: center;
+  }
+  /* `width="column"` — the hosted flow's 25rem column. */
+  .ui-error-surface[data-width="column"] {
+    max-width: var(--auth-shell-column-max-width);
+  }
+  /* `legal` — the short legal line under the actions, inside the surface. */
+  .ui-error-surface-legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--error-surface-legal-font-size);
+    text-align: center;
   }
 
   /* NARROW STEP (the 390 case). */

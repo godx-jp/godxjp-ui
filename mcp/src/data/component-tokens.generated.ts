@@ -9344,6 +9344,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
   },
   {
+    "name": "--error-surface-legal-font-size",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
+    "description": "The `legal` line under the actions."
+  },
+  {
     "name": "--error-surface-padding-block",
     "value": "var(--space-10)",
     "description": "Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css)."
@@ -14006,6 +14011,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--centered-shell-bar-frosted-border-color",
     "value": "initial",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--centered-shell-bar-frosted-height",
+    "value": "3.25rem",
+    "description": "scale-exempt: 52px slim bar band, between band-2xl (48) and band-3xl (56)"
+  },
+  {
+    "name": "--centered-shell-bar-frosted-padding-block",
+    "value": "var(--space-1)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {

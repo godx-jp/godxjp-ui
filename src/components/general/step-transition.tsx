@@ -21,31 +21,31 @@ type Exiting = { key: string; node: React.ReactNode; direction: string };
 /**
  * StepTransition — exit + enter between the steps of a multi-step flow. Both layers share one grid
  * cell, so the box is as tall as the taller step while they cross and nothing below it jumps. The
- * outgoing layer is a SNAPSHOT of the last rendered children, inert and hidden from assistive
+ * outgoing layer is the SAME instance as the step it was (same key), re-rendered with its last
+ * children — its state survives the exit — inert and hidden from assistive
  * technology; the incoming one is the live children, keyed by `value` so it mounts fresh (form
  * state of the previous step does not leak into the next).
  */
 export const StepTransition = React.forwardRef<HTMLDivElement, StepTransitionProp>(
   function StepTransition({ value, direction = "forward", children, className, ...props }, ref) {
-    const last = React.useRef<{ value: string | number; children: React.ReactNode }>({
-      value,
-      children,
-    });
+    // The step on screen and its last rendered children, kept in STATE so a change of `value` is
+    // seen DURING the render that carries it ("adjusting state while rendering"): the outgoing
+    // step's key is still in the tree for that render, so React keeps its instance — state and
+    // DOM — instead of unmounting it and mounting a copy for the exit.
+    const [shown, setShown] = React.useState<{
+      value: string | number;
+      children: React.ReactNode;
+    }>({ value, children });
     const [exiting, setExiting] = React.useState<Exiting | null>(null);
     const [moved, setMoved] = React.useState(false);
-
-    // Before paint: when the step changed, keep what was on screen as the outgoing layer.
-    React.useLayoutEffect(() => {
-      if (last.current.value !== value) {
-        setExiting({
-          key: String(last.current.value),
-          node: last.current.children,
-          direction,
-        });
-        setMoved(true);
-      }
-      last.current = { value, children };
-    }, [value, children, direction]);
+    if (shown.value !== value) {
+      setExiting({ key: String(shown.value), node: shown.children, direction });
+      setMoved(true);
+      setShown({ value, children });
+    } else if (shown.children !== children) {
+      // Same step, new content: remember it as what this step last showed.
+      setShown({ value, children });
+    }
 
     React.useEffect(() => {
       if (!exiting) return;
@@ -63,7 +63,10 @@ export const StepTransition = React.forwardRef<HTMLDivElement, StepTransitionPro
       >
         {exiting ? (
           <div
-            key={`exit-${exiting.key}`}
+            // The SAME key the step had while current: React keeps that instance, so the outgoing
+            // step leaves with its live state (a typed value, a scroll position) instead of
+            // re-mounting from its initial props for the exit.
+            key={`step-${exiting.key}`}
             data-slot="step-transition-layer"
             data-state="exit"
             data-direction={exiting.direction === "backward" ? "backward" : undefined}

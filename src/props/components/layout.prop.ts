@@ -1281,8 +1281,10 @@ export type ErrorSurfaceProp = {
   footer?: FooterProp;
   /**
    * `system` mode only — measure of the centred column (`CenteredShell` width tier). Default `sm`.
+   * `"column"` is the hosted flow's 25rem column (`--auth-shell-column-max-width`, the same
+   * measure as the auth `CenteredShell measure="column"`), so an error page lines up with the flow.
    */
-  width?: CenteredShellWidthProp;
+  width?: CenteredShellWidthProp | "column";
   /**
    * How the surface is laid out. `"center"` (default, unchanged): the centred EmptyState with its
    * icon medallion. `"start"`: the hosted-page shape — a small mono status code, a LARGE bold
@@ -1298,6 +1300,11 @@ export type ErrorSurfaceProp = {
   secondaryAction?: ReactNode;
   /** `system` mode only — the page top bar (a `Topbar`), the CenteredShell `topbar` slot. */
   topbar?: ReactNode;
+  /**
+   * A short legal / product line placed directly UNDER the actions (「GoDX ID · 利用規約 ·
+   * プライバシー」), part of the surface rather than the page-bottom `footer` band. Small and muted.
+   */
+  legal?: ReactNode;
   id?: IdProp;
   className?: ClassNameProp;
 };

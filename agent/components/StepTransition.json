@@ -38,7 +38,7 @@
     "DO wrap the swapping part of a multi-step screen and give it the step as `value`: `<StepTransition value={step} direction={back ? \"backward\" : \"forward\"}>{step === \"email\" ? <EmailStep /> : <PasswordStep />}</StepTransition>`. Keep the shell, the title that does not change and the footer OUTSIDE it.",
     "DO NOT add GSAP / Framer for this, and do not hand-write @keyframes: the travel (`--step-transition-translate`, 24px), durations (`--step-transition-duration` = --duration-slow, `--step-transition-exit-duration` = --duration-base, `--step-transition-reduced-duration` 200ms) and the --ease-emphasized curve are tokens.",
     "DO move focus to the new step's heading or first field yourself after `value` changes — the outgoing layer is `inert` + `aria-hidden` while it is painted, so focus can never stay on it, but the component does not choose a target for you.",
-    "The two layers share one grid cell, so the box is as tall as the taller step while they cross; the outgoing layer is removed on its animationend (1s fallback)."
+    "The two layers share one grid cell, so the box is as tall as the taller step while they cross; the outgoing layer is removed on its animationend (1s fallback). The outgoing step is the SAME React instance it was while current (same key), so it leaves with its live state — a typed value is still there during the exit; it is not re-mounted."
   ],
   "useCases": [
     "Sign-in: the email step leaves and the password step enters; 変更 goes back with direction=\"backward\".",

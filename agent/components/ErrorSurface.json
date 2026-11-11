@@ -80,9 +80,14 @@
     },
     {
       "defaultValue": "\"sm\"",
-      "description": "system mode ONLY — measure of the centred column (the CenteredShell width tier).",
+      "description": "system mode ONLY — measure of the centred column (the CenteredShell width tier). \"column\" = the hosted flow's 25rem column (`--auth-shell-column-max-width`, the auth CenteredShell `measure=\"column\"`), so an error page lines up with the flow it belongs to.",
       "name": "width",
-      "type": "\"sm\" | \"md\" | \"lg\""
+      "type": "\"sm\" | \"md\" | \"lg\" | \"column\""
+    },
+    {
+      "description": "A short legal / product line DIRECTLY under the actions (「GoDX ID · 利用規約 · プライバシー」), inside the surface rather than in the page-bottom `footer` band; small and muted (`--error-surface-legal-font-size`). Both aligns.",
+      "name": "legal",
+      "type": "ReactNode"
     },
     {
       "defaultValue": "\"center\"",

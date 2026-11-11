@@ -9404,6 +9404,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "legal",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "maintenance",
           "origin": "owned",
           "required": false,
@@ -9495,8 +9503,8 @@
           "name": "width",
           "origin": "owned",
           "required": false,
-          "type": "CenteredShellWidthProp | undefined",
-          "values": ["sm", "md", "lg"],
+          "type": "\"column\" | CenteredShellWidthProp | undefined",
+          "values": ["sm", "md", "lg", "column"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]

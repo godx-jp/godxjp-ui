@@ -14,10 +14,13 @@ import { createRoot } from "react-dom/client";
 import { AppProvider } from "./src/app/app-provider";
 import { ErrorSurface } from "./src/components/layout/error-surface";
 import { Button } from "./src/components/general/button";
-const start = new URLSearchParams(location.search).get("a") !== "center";
+const q = new URLSearchParams(location.search);
+const start = q.get("a") !== "center";
 createRoot(document.getElementById("root")).render(
   <AppProvider defaultLocale="en" persist={false}><div id="ready">
     <ErrorSurface mode="system" status={403} align={start ? "start" : "center"}
+      width={q.get("w") || undefined}
+      legal={<span id="legal">GoDX ID · Terms · Privacy</span>}
       topbar={<span id="bar">brand</span>}
       title="You do not have access" description="This page needs an extra permission."
       organization="Sample Inc." permission="members.manage"
@@ -90,5 +93,27 @@ describe('ErrorSurface align="start"', { timeout: 60_000 }, () => {
     expect(m.align).toBeNull();
     expect(m.medallion).toBe(1);
     expect(m.secondary).toBe(true);
+  });
+
+  it('width="column" is the 25rem flow column; legal sits directly under the secondary link', async () => {
+    const page = await fixture.open("?w=column", { width: 1280, height: 900 });
+    await page.waitForTimeout(200);
+    const m = await page.evaluate(() => {
+      const surface = document
+        .querySelector('[data-slot="error-surface"]')!
+        .getBoundingClientRect();
+      const secondary = document.getElementById("secondary")!.getBoundingClientRect();
+      const legal = document.getElementById("legal")!.getBoundingClientRect();
+      return {
+        width: surface.width,
+        below: legal.top - secondary.bottom,
+        inFooter: !!document.querySelector("footer #legal"),
+      };
+    });
+    await page.close();
+    expect(m.width).toBe(400);
+    expect(m.below).toBeGreaterThanOrEqual(0);
+    expect(m.below).toBeLessThan(32);
+    expect(m.inFooter).toBe(false);
   });
 });

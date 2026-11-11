@@ -30,6 +30,9 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 - **Added** `FormField labelHidden?: boolean` — the label stays the accessible name but is visually hidden; the control spans the row in every layout.
 - **Added** EditorialAuth tokens: `--editorial-auth-background` (page ground behind the form, default transparent), `--editorial-auth-card-footer-border` (`none` drops the rule above the card footer), `--editorial-auth-card-title-font-weight` (e.g. `var(--font-weight-bold)` for 700).
 - **Added** `--press-scale` (default 1, inert): a pressed Button scales to it (`0.97` for the Apple press); never under reduced motion. A PasswordStrength segment that lights now grows in from the inline start (`--duration-slow`, `--ease-emphasized`); no motion under reduced motion.
+- **Added** `ErrorSurface width="column"` (the 25rem flow column, `--auth-shell-column-max-width`) and `legal?: ReactNode` (a short legal line directly under the actions, inside the surface; `--error-surface-legal-font-size`).
+- **Changed** `barAppearance="frosted"` is a slim bar: one control row in a 52px band (`--centered-shell-bar-frosted-height`, `--centered-shell-bar-frosted-padding-block`). Measured 52px at 1280 across both auth variants, three presets and text/link actions.
+- **Changed** `StepTransition`'s outgoing layer is the same React instance the step had (same key), so it leaves with its live state instead of re-mounting for the exit.
 - **Added** `InputOTP mono?: boolean` — the mono face (`--font-family-mono`) for a code of letters and digits. Emits `data-mono` only when set.
 
 ### TopbarSearch wide measure; Avatar stable categorical colour and xl tile; AuthFooter body face

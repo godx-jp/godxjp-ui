@@ -3579,7 +3579,7 @@
       },
       {
         "defaultValue": "\"default\"",
-        "description": "BOTH shapes. The top bar material. \"frosted\" pins the bar (sticky) as a translucent pane the page scrolls UNDER: the muted shell ground at `--centered-shell-bar-frosted-background-alpha` (72%), `--centered-shell-bar-frosted-backdrop-blur-size` (20px) + the shared `--surface-backdrop-saturate`, a hairline in `--centered-shell-bar-frosted-border-color`. The library writes the fallbacks: under `prefers-reduced-transparency: reduce` and where `backdrop-filter` is unsupported the bar is SOLID — write no consumer @media for it. \"default\" keeps the bar byte-identical.",
+        "description": "BOTH shapes. The top bar material. \"frosted\" is a SLIM bar — one control row in a 52px band (`--centered-shell-bar-frosted-height`, `--centered-shell-bar-frosted-padding-block` 4px) — and pins it (sticky; an ancestor with overflow hidden/clip defeats sticky, so keep the app root overflow visible) as a translucent pane the page scrolls UNDER: the muted shell ground at `--centered-shell-bar-frosted-background-alpha` (72%), `--centered-shell-bar-frosted-backdrop-blur-size` (20px) + the shared `--surface-backdrop-saturate`, a hairline in `--centered-shell-bar-frosted-border-color`. The library writes the fallbacks: under `prefers-reduced-transparency: reduce` and where `backdrop-filter` is unsupported the bar is SOLID — write no consumer @media for it. \"default\" keeps the bar byte-identical.",
         "name": "barAppearance",
         "type": "\"default\" | \"frosted\""
       }
@@ -4511,9 +4511,14 @@
       },
       {
         "defaultValue": "\"sm\"",
-        "description": "system mode ONLY — measure of the centred column (the CenteredShell width tier).",
+        "description": "system mode ONLY — measure of the centred column (the CenteredShell width tier). \"column\" = the hosted flow's 25rem column (`--auth-shell-column-max-width`, the auth CenteredShell `measure=\"column\"`), so an error page lines up with the flow it belongs to.",
         "name": "width",
-        "type": "\"sm\" | \"md\" | \"lg\""
+        "type": "\"sm\" | \"md\" | \"lg\" | \"column\""
+      },
+      {
+        "description": "A short legal / product line DIRECTLY under the actions (「GoDX ID · 利用規約 · プライバシー」), inside the surface rather than in the page-bottom `footer` band; small and muted (`--error-surface-legal-font-size`). Both aligns.",
+        "name": "legal",
+        "type": "ReactNode"
       },
       {
         "defaultValue": "\"center\"",
@@ -5573,7 +5578,7 @@
       "DO wrap the swapping part of a multi-step screen and give it the step as `value`: `<StepTransition value={step} direction={back ? \"backward\" : \"forward\"}>{step === \"email\" ? <EmailStep /> : <PasswordStep />}</StepTransition>`. Keep the shell, the title that does not change and the footer OUTSIDE it.",
       "DO NOT add GSAP / Framer for this, and do not hand-write @keyframes: the travel (`--step-transition-translate`, 24px), durations (`--step-transition-duration` = --duration-slow, `--step-transition-exit-duration` = --duration-base, `--step-transition-reduced-duration` 200ms) and the --ease-emphasized curve are tokens.",
       "DO move focus to the new step's heading or first field yourself after `value` changes — the outgoing layer is `inert` + `aria-hidden` while it is painted, so focus can never stay on it, but the component does not choose a target for you.",
-      "The two layers share one grid cell, so the box is as tall as the taller step while they cross; the outgoing layer is removed on its animationend (1s fallback)."
+      "The two layers share one grid cell, so the box is as tall as the taller step while they cross; the outgoing layer is removed on its animationend (1s fallback). The outgoing step is the SAME React instance it was while current (same key), so it leaves with its live state — a typed value is still there during the exit; it is not re-mounted."
     ],
     "useCases": [
       "Sign-in: the email step leaves and the password step enters; 変更 goes back with direction=\"backward\".",

@@ -126,6 +126,7 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
       align = "center",
       secondaryAction,
       topbar,
+      legal,
       id,
       className,
     },
@@ -197,6 +198,7 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
         data-mode={mode}
         data-status={status}
         data-align="start"
+        data-width={width === "column" ? "column" : undefined}
         className={cn("ui-error-surface", className)}
       >
         {brand !== undefined && mode === "system" && (
@@ -251,6 +253,7 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
         {secondaryAction != null && (
           <div className="ui-error-surface-secondary">{secondaryAction}</div>
         )}
+        {legal != null && <div className="ui-error-surface-legal">{legal}</div>}
       </div>
     );
 
@@ -264,6 +267,7 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
           data-slot="error-surface"
           data-mode={mode}
           data-status={status}
+          data-width={width === "column" ? "column" : undefined}
           className={cn("ui-error-surface", className)}
         >
           {brand !== undefined && mode === "system" && (
@@ -301,6 +305,7 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
           {secondaryAction != null && (
             <div className="ui-error-surface-secondary">{secondaryAction}</div>
           )}
+          {legal != null && <div className="ui-error-surface-legal">{legal}</div>}
 
           {hasMetadata && (
             /* A description list, not a sentence: each metadata row keeps a machine-readable
@@ -374,7 +379,7 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
     return (
       <CenteredShell
         align="center"
-        width={width}
+        width={width === "column" ? "sm" : width}
         {...(footer !== undefined ? { footer } : {})}
         {...(topbar !== undefined ? { topbar } : {})}
       >

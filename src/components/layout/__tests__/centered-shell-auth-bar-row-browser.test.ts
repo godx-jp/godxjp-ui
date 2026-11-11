@@ -86,7 +86,8 @@ describe("auth bar actions row", { timeout: 60_000 }, () => {
               expect(m.a1BeforeA2).toBe(true);
               expect(m.overflow).toBe(0);
               // One row: the bar is as tall as one control row plus its block padding, not two.
-              if (width === 1280) expect(m.barH, JSON.stringify(m)).toBeLessThan(90);
+              // One row in the frosted bar's 52px band (the frames' bar).
+              if (width === 1280) expect(m.barH, JSON.stringify(m)).toBe(52);
             }
           });
         }

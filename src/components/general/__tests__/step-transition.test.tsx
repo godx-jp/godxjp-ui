@@ -110,5 +110,9 @@ describe("StepTransition", () => {
     const current = container.querySelector('[data-state="enter"] input');
     expect(current).toHaveValue("");
     expect(current).not.toBe(first);
+    // The outgoing step is the same instance: it leaves with what was typed, not re-mounted.
+    const outgoing = container.querySelector('[data-state="exit"] input');
+    expect(outgoing).toBe(first);
+    expect(outgoing).toHaveValue("typed");
   });
 });
