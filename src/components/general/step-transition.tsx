@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
+import { withoutSlot } from "../../lib/without-slot";
 import type { StepTransitionProp } from "../../props/components/general.prop";
 
 export type {
@@ -59,7 +60,7 @@ export const StepTransition = React.forwardRef<HTMLDivElement, StepTransitionPro
         data-slot="step-transition"
         data-direction={direction === "backward" ? "backward" : undefined}
         className={cn("ui-step-transition", className)}
-        {...props}
+        {...withoutSlot(props)}
       >
         {exiting ? (
           <div
