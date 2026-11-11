@@ -407,7 +407,7 @@
    * inline start. */
   .ui-progress[data-steps] .ui-progress-track {
     display: grid;
-    grid-template-columns: repeat(var(--progress-steps), minmax(0, 1fr));
+    grid-template-columns: repeat(var(--progress-steps, 1), minmax(0, 1fr));
     gap: var(--progress-steps-gap);
     overflow: visible;
     border-radius: 0;
