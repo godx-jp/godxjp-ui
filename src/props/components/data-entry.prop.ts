@@ -530,6 +530,13 @@ export type FormFieldProp =
        * drops to its own line under it, capped to the label column, never into the control column.
        */
       labelAddon?: React.ReactNode;
+      /**
+       * Keep `label` as the control's accessible name but hide it VISUALLY (screen-reader-only) —
+       * a field whose purpose the layout already shows (a single code field under a page title, a
+       * search in a toolbar). The control takes the whole row in every layout. Prefer a visible
+       * label; this is for the case the design deliberately has none.
+       */
+      labelHidden?: boolean;
       /** Override the Form's layout for this field only. */
       layout?: FormLayoutProp;
       /** Override the Form's label width for this field (horizontal layout). */
@@ -582,6 +589,13 @@ export type FormFieldProp =
        * drops to its own line under it, capped to the label column, never into the control column.
        */
       labelAddon?: React.ReactNode;
+      /**
+       * Keep `label` as the control's accessible name but hide it VISUALLY (screen-reader-only) —
+       * a field whose purpose the layout already shows (a single code field under a page title, a
+       * search in a toolbar). The control takes the whole row in every layout. Prefer a visible
+       * label; this is for the case the design deliberately has none.
+       */
+      labelHidden?: boolean;
       /** Override the Form's layout for this field only. */
       layout?: FormLayoutProp;
       /** Override the Form's label width for this field (horizontal layout). */

@@ -970,6 +970,9 @@
   --step-transition-duration: var(--duration-slow);
   --step-transition-exit-duration: var(--duration-base);
   --step-transition-reduced-duration: 200ms;
+  /* PRESS FEEDBACK — how far a pressed Button gives (`transform: scale()` on :active). 1 = still
+   * (the default, nothing moves); 0.97 is the Apple press. Reduced motion keeps it at 1. */
+  --press-scale: 1;
 
   /* AMBIENT/LOOPING motion (gh#313) — the cycle member of the motion tier. `--duration-fast|base|
    * slow` time a TRANSITION (something moves from A to B and stops); a loop needs an INTERVAL, so

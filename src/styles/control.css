@@ -165,8 +165,20 @@
     gap: var(--button-gap, var(--control-gap));
     white-space: nowrap;
     font-weight: var(--button-font-weight);
-    transition-property: color, background-color, border-color, box-shadow;
+    transition-property: color, background-color, border-color, box-shadow, transform;
     transition-duration: 150ms;
+  }
+
+  /* PRESS FEEDBACK — the button gives under the finger/pointer (Apple's 0.97 press). The scale is
+   * the motion knob `--press-scale` (foundation, default 1 = no movement), so a product opts in
+   * once (`--press-scale: 0.97`); reduced motion keeps it still. */
+  .ui-button:active:not(:disabled, [data-loading]) {
+    transform: scale(var(--press-scale, 1));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-button:active:not(:disabled, [data-loading]) {
+      transform: none;
+    }
   }
 
   .ui-button {

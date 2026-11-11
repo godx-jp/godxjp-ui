@@ -41,6 +41,7 @@ export function FormField({
   hasFeedback,
   feedback,
   labelAddon,
+  labelHidden = false,
   layout: layoutProp,
   labelWidth: labelWidthProp,
   controlWidth: controlWidthProp,
@@ -245,11 +246,15 @@ export function FormField({
       data-layout={layout}
       data-collapse-below={String(collapseBelow)}
       data-label-align={labelAlign}
+      data-label-hidden={labelHidden && hasLabel ? "" : undefined}
       style={Object.keys(style).length ? style : undefined}
       className={cn("ui-form-field", className)}
     >
       {hasLabel || labelAddon != null ? (
-        <div data-slot="form-field-label" className="ui-form-field-label">
+        <div
+          data-slot="form-field-label"
+          className={cn("ui-form-field-label", labelHidden && hasLabel && "sr-only")}
+        >
           {/* asChild renders a <span>: the control is named via aria-labelledby, and a
             real <label> whose `for` can dangle (composite children) is a Chrome a11y
             issue. Click-to-focus is preserved by hand. */}

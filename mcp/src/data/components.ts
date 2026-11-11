@@ -5991,7 +5991,7 @@ export default function InvoiceList({
       },
     ],
     usage: [
-      'DO build an INSET GROUPED LIST (iOS Settings style: a rounded group, hairlines inset to the row text, an optional caption above and below) as `<Flex direction="col" gap="xs">` of [a header `<Flex pad={{ inline: 4 }}><Text size="sm" tone="muted">…</Text></Flex>`] · `<Card variant="grouped"><CardContent flush><Flex as="ul" marker="none" direction="col" gap="none">` of `<ListRow as="li" title description trailing>` · [a footer caption the same as the header]. `pad={{ inline: 4 }}` is the row inset (`--list-row-padding-x`, space-4), so the caption starts on the row text. Trailing values: a scope in `<Text mono size="xs" tone="muted">`, a `Badge`, a chevron icon, a `Radio`/`Switch`. Key/value rows (提供元 · 株式会社…) are `<Descriptions layout="horizontal" columns={1}>` in the same `CardContent flush` — inside a grouped card its items take the row inset and the same inset hairline. Do NOT hand-roll a `rounded bg-card` div or draw dividers with `border-b`.',
+      'DO build an INSET GROUPED LIST (iOS Settings style: a rounded group, hairlines inset to the row text, an optional caption above and below) as `<Flex direction="col" gap="xs">` of [a header `<Flex pad={{ inline: 4 }}><Text size="sm" tone="muted">…</Text></Flex>`] · `<Card variant="grouped"><CardContent flush><Flex as="ul" marker="none" direction="col" gap="none">` of `<ListRow as="li" title description trailing>` · [a footer caption the same as the header]. `pad={{ inline: 4 }}` is the row inset (`--list-row-padding-x`, space-4), so the caption starts on the row text. Trailing values: a scope in `<Text mono size="xs" tone="muted">`, a `Badge`, a chevron icon, a `Radio`/`Switch`. Key/value rows (提供元 · 株式会社…) are `<Descriptions layout="horizontal" columns={1}>` in the same `CardContent flush` — inside a grouped card its items take the row inset and the same inset hairline. A FORM in the group (label left, value right, 氏名 · メール · パスワード): `<Card variant="grouped"><CardContent flush><Form layout="horizontal" labelWidth="7rem">` of FormFields — inside a grouped card each FormField is a row (row inset, no gap, inset hairline, the input drawn without its own box). Do NOT hand-roll a `rounded bg-card` div or draw dividers with `border-b`.',
       'DO always wrap body content in <CardContent> — the bare <Card> div has zero inner padding; content renders flush against card edges without it. Never add className="p-4" directly on <Card> as a substitute.',
       "DO put titles/descriptions in <CardHeader>/<CardTitle>/<CardDescription>. Use <CardHeader banded> for a visually separated muted-background header band (mirrors <CardFooter separated>). Pair with <CardAction> inside a flex-row CardHeader for header-level action buttons.",
       'DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as="p"> so it is not announced as a heading.',
@@ -8729,6 +8729,13 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
         name: "field",
         type: "string",
         description: "Tên trường của form — dùng khi `id` không đủ để nối control với error/aria.",
+      },
+      {
+        name: "labelHidden",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Keep `label` as the control's accessible name (aria-labelledby) but hide it VISUALLY (sr-only); the control takes the whole row in every layout. For a field whose purpose the layout already shows (a single code field under a page title). Prefer a visible label.",
       },
       {
         name: "labelAddon",

@@ -1376,6 +1376,18 @@ export const TOKENS: TokenEntry[] = [
     role: 'Auth CenteredShell `measure="column"` (25rem — the hosted flow\'s single column: sign-in, code entry, consent, a result page) and `measure="split"` (54rem — the two-column page). Both replace `--auth-shell-card-max-width` for that shell and centre the slot with auto margins; a preset still owns its own measure.',
   },
   {
+    name: "--editorial-auth-{background,card-footer-border,card-title-font-weight}",
+    category: "component",
+    tier: "component",
+    role: "EditorialAuth hosted-flow knobs. `--editorial-auth-background` (initial → transparent) is the PAGE ground behind the form — the split layout's form side and the centred card page — e.g. `hsl(var(--muted))` for the frame grey while fields and grouped surfaces stay white. `--editorial-auth-card-footer-border` (initial → a hairline in --border; `none` drops it) is the rule above EditorialAuthCard's footer. `--editorial-auth-card-title-font-weight` (initial → --font-weight-semibold; `var(--font-weight-bold)` for a 700 title).",
+  },
+  {
+    name: "--press-scale",
+    category: "primitive",
+    tier: "primitive",
+    role: "PRESS FEEDBACK: how far a pressed Button gives (`transform: scale()` on :active, animated with the button's 150ms transition). Default 1 — nothing moves; set 0.97 once in a theme for the Apple press. Never applied under prefers-reduced-motion, or to a disabled / loading button.",
+  },
+  {
     name: "--list-row-divider-{inset,leading-inset}",
     category: "component",
     tier: "component",

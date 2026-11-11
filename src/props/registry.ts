@@ -3310,6 +3310,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "ErrorProp",
       "FormLayoutProp",
       "WidthProp",
+      {
+        field: "labelHidden",
+        local: true,
+        reason:
+          "Keeps the label as the accessible name but visually hidden (sr-only); the control spans the row.",
+      },
     ],
   },
   FormErrorsProp: {

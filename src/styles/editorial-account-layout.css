@@ -916,6 +916,10 @@
     align-items: start;
     gap: var(--editorial-auth-gap);
     padding-block: var(--editorial-auth-padding-block-start) var(--editorial-auth-padding-block-end);
+    /* The PAGE ground behind the form (the split's form side, the centred card page). Unset =
+     * transparent, the page behind shows through as before; a hosted flow sets the muted frame
+     * grey here while its fields and grouped surfaces stay white. */
+    background: var(--editorial-auth-background, transparent);
   }
 
   .ui-editorial-auth-story {
@@ -1163,7 +1167,7 @@
       var(--editorial-auth-card-title-space-block-end);
     font-family: var(--font-family-editorial, var(--font-family-display));
     font-size: var(--editorial-auth-card-title-font-size);
-    font-weight: var(--font-weight-semibold, 600);
+    font-weight: var(--editorial-auth-card-title-font-weight, var(--font-weight-semibold, 600));
     line-height: var(--editorial-auth-card-title-line-height);
     letter-spacing: var(--editorial-heading-letter-spacing, -0.025em);
   }
@@ -1182,7 +1186,10 @@
   .ui-editorial-auth-card-footer {
     margin-block-start: var(--editorial-auth-card-footer-space-block-start);
     padding-block-start: var(--editorial-auth-card-footer-padding-block-start);
-    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
+    border-block-start: var(
+      --editorial-auth-card-footer-border,
+      var(--stroke-hairline) solid hsl(var(--border))
+    );
     font-size: var(--editorial-auth-card-footer-font-size);
     line-height: var(--editorial-auth-card-footer-line-height);
     text-align: center;

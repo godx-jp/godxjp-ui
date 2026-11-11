@@ -458,3 +458,47 @@
     color: hsl(var(--muted-foreground));
   }
 }
+
+@layer components {
+  /* `labelHidden` — the label is screen-reader-only (still the control's name via
+   * aria-labelledby), so a horizontal / inline field must not keep an empty label track: the
+   * control takes the whole row. The extra attribute out-ranks every breakpoint's grid rule. */
+  .ui-form-field[data-label-hidden][data-collapse-below]:is(
+      [data-layout="horizontal"],
+      [data-layout="inline"]
+    ) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-form-field[data-label-hidden][data-collapse-below] > .ui-form-field-control {
+    grid-column: 1 / -1;
+  }
+}
+
+@layer components {
+  /* FORM ROWS IN AN INSET GROUPED LIST (`Card variant="grouped"`): each FormField is a ROW of the
+   * group — the ListRow inset and rhythm, no gap between fields, a hairline from the row text to
+   * the card edge between rows (none under the last), and the controls drawn without their own
+   * box (the group IS the surface; focus still draws the ring). Lay the Form out
+   * `layout="horizontal"` for the label-left row. */
+  [data-slot="card"][data-variant="grouped"] {
+    --form-block-gap: 0px;
+    --form-grid-row-gap: 0px;
+    --form-field-row-gap: 0px;
+  }
+  [data-slot="card"][data-variant="grouped"] [data-slot="form-field"] {
+    position: relative;
+    align-items: center;
+    padding: var(--list-row-padding-y) var(--list-row-padding-x);
+    --control-surface-border-color: transparent;
+    --control-surface-background: transparent;
+  }
+  [data-slot="card"][data-variant="grouped"] [data-slot="form-field"]:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: var(--list-row-divider-inset, var(--list-row-padding-x));
+    inset-inline-end: 0;
+    border-block-end: var(--list-row-border, var(--stroke-hairline) solid hsl(var(--border)));
+    pointer-events: none;
+  }
+}
