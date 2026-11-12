@@ -223,9 +223,20 @@ describe("input affixes: coarse targets and reserved text (gh#1371)", () => {
     await page.close();
     const off = await open(true, 390, "en", "ltr", "controls=off&suffix=1");
     expect(await off.locator("#number button").count()).toBe(0);
-    expect(
-      await off.locator("#number input").evaluate((el) => getComputedStyle(el).paddingInlineEnd),
-    ).toBe("12px");
+    // The stepper gutter goes; the suffix moves into it and stays reserved (12px + suffix + 4px).
+    const offFits = await off.locator("#number").evaluate((el) => {
+      const input = el.querySelector("input")!;
+      const suffix = el.querySelector('[data-slot="number-input-suffix"]')!;
+      const end = input.getBoundingClientRect().right;
+      return {
+        clear:
+          end - parseFloat(getComputedStyle(input).paddingInlineEnd) <=
+          suffix.getBoundingClientRect().left,
+        suffixInset: end - suffix.getBoundingClientRect().right,
+      };
+    });
+    expect(offFits.clear).toBe(true);
+    expect(offFits.suffixInset).toBeLessThanOrEqual(13);
     await off.close();
   });
 

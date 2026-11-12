@@ -414,7 +414,11 @@ export type NumberInputProp = FieldA11yProps & {
   disabled?: DisabledProp;
   /** Read-only: value is shown and selectable but neither typeable nor steppable. */
   readOnly?: boolean;
-  size?: SizeProp;
+  /**
+   * Control height tier. `touch` is the glove tier (gh#1304) — 56px (`--control-height-touch`),
+   * the height of `Button size="touch"`, so a −/value/+ row shares one band.
+   */
+  size?: SizeProp | "touch";
   placeholder?: PlaceholderProp;
   /** Leading affix inside the field (e.g. `¥`). */
   prefix?: React.ReactNode;

@@ -9054,10 +9054,10 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
       {
         name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg" | "touch"',
         defaultValue: '"md"',
         description:
-          "Control height tier (--control-height). Aligns with sibling controls on a row.",
+          'Control height tier (--control-height). Aligns with sibling controls on a row. `touch` is the glove tier (gh#1304): 56px (`--control-height-touch`), the same band as `Button size="touch"`, so a −/value/+ row of touch Buttons and the field line up; a coarse pointer does not shrink it to the 48px touch band.',
       },
       { name: "placeholder", type: "string", description: "Placeholder shown when empty." },
       {

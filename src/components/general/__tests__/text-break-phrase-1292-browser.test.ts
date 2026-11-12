@@ -33,7 +33,10 @@ const data = [
   { id: "2", name: "チャン・ヴァン・ミン", org: "日越交流協同組合", company: "有限会社サンライズフード", status: "特定技能1号", country: "ベトナム", entry: "2025/10/15", expiry: "2026/10/14", code: "TT-0002" },
   { id: "3", name: "ファム・ホアン・ナム", org: "東海技能実習支援機構", company: "株式会社マルヤマ工業", status: "技能実習3号", country: "ベトナム", entry: "2024/07/01", expiry: "2026/06/30", code: "TT-0003" },
 ];
-const cell = (key) => (row) => <Text break={mode} whitespace={ws}>{row[key]}</Text>;
+// The baseline opts OUT of the base layer's Japanese phrase breaking (every :lang(ja) element
+// inherits it now), so it measures the engine's default CJK breaking the gate must discriminate from.
+const engineDefault = ws ? { wordBreak: "normal", lineBreak: "auto" } : undefined;
+const cell = (key) => (row) => <Text break={mode} whitespace={ws} style={engineDefault}>{row[key]}</Text>;
 const columns = [
   { key: "name", header: "Họ tên thực tập sinh", headerWrap: true, render: cell("name") },
   { key: "org", header: "Tổ chức giám sát", headerWrap: true, render: cell("org") },
@@ -112,7 +115,7 @@ const tableWidth = (page: Page) =>
   page.$eval("table", (t) => Math.round(t.getBoundingClientRect().width));
 
 describe('Text break="phrase" — Japanese prose in a DataTable cell', { timeout: 60_000 }, () => {
-  it("baseline: whitespace=normal breaks between katakana on this fixture (the gate discriminates)", async () => {
+  it("baseline: engine-default breaking splits katakana on this fixture (the gate discriminates)", async () => {
     const page = await fixture.open("?ws=normal");
     const cells = await lines(page, 'tbody [data-slot="text"]');
     expect(breaks(cells).filter(([a, b]) => KATAKANA.test(a) && KATAKANA.test(b))).not.toEqual([]);

@@ -8,6 +8,13 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### NumberInput suffix + touch size, Japanese phrase breaking everywhere, disabled filled Button
+
+- **Fixed** `NumberInput controls={false}` + `suffix`: the suffix kept the inset of the stepper column it no longer had, so in a 96px field the value ran past it (「kg 2」). It now sits at the inline end (`--control-padding-x`) and the field's end padding reserves it. With steppers, the suffix is now reserved too (the value used to run under it on a fine pointer). The reservation is the suffix's MEASURED width (`--number-input-suffix-measured-size`, written by the component), not a fixed 20px — 「時間」 fits as well as 「%」.
+- **Added** `NumberInput size="touch"` — the glove tier (gh#1304): 56px (`--control-height-touch`), the same band as `Button size="touch"`, so a −/value/+ row lines up. The coarse-pointer 48px band does not override it.
+- **Changed** Japanese line breaking is a base-layer BASELINE: every element under `[lang|="ja"]` inherits `word-break: auto-phrase` + `line-break: strict`, so CardDescription, ListRow titles, Button labels and any plain consumer text no longer split words (「取り消せませ｜ん。」). `code`, `kbd`, `samp`, `pre`, `input`, `textarea` and `select` keep the engine default. Zero specificity: any component or utility that sets its own `word-break` still wins. Cost (already documented on `Text break="phrase"`): a phrase is unbreakable for min-content, so a Japanese flex/grid/table column is at least as wide as its longest phrase — a phrase longer than its line still breaks inside itself.
+- **Changed** a disabled `Button` of variant `default` or `destructive` no longer renders its brand fill at `--disabled-opacity`: it paints an opaque neutral surface — `--button-disabled-background` (default `hsl(var(--muted))`), `--button-disabled-foreground` (default `hsl(var(--muted-foreground))`, ≥ 4.5:1 on it), inset hairline `--button-disabled-border-color` (default `hsl(var(--border))`), no shadow. Other variants keep the opacity fade. The `text-destructive-foreground` utility was removed from the destructive variant's class list (the components layer already paints the same ink), so a consumer that asserted that class name will no longer find it.
+
 ## [33.28.7] - 2026-11-10
 
 ### Tabs add button for every variant, AppShell push panel, dashed Card (Platform Home)
