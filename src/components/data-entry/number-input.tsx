@@ -115,6 +115,25 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
      *   · neither → the bare verb, exactly as before.
      */
     const stepperVerbId = React.useId();
+
+    // The suffix is an overlay; the field's end padding reserves its MEASURED width so the value
+    // ends before it (「%」 and 「時間」 are not one size). Same contract as Input's trailing slot.
+    const setSuffixRef = React.useCallback((node: HTMLSpanElement | null) => {
+      if (!node) return;
+      const wrapper = node.parentElement!;
+      const sync = () =>
+        wrapper.style.setProperty(
+          "--number-input-suffix-measured-size",
+          `${node.getBoundingClientRect().width}px`,
+        );
+      sync();
+      const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(sync);
+      observer?.observe(node);
+      return () => {
+        observer?.disconnect();
+        wrapper.style.removeProperty("--number-input-suffix-measured-size");
+      };
+    }, []);
     const fieldLabel =
       typeof fieldA11y["aria-label"] === "string" ? fieldA11y["aria-label"] : undefined;
     const fieldLabelledBy =
@@ -369,6 +388,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
         />
         {suffix != null ? (
           <span
+            ref={setSuffixRef}
             data-slot="number-input-suffix"
             className="ui-number-input-affix"
             aria-hidden="true"

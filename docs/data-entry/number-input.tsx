@@ -204,7 +204,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>size · xs / sm / md / lg</CardTitle>
+            <CardTitle level={2}>size · xs / sm / md / lg / touch</CardTitle>
             <CardDescription>
               制御高さティア (--control-height) に連動。行内の他コントロールと整列。
             </CardDescription>
@@ -223,6 +223,14 @@ export default function Demo() {
                 </FormField>
                 <FormField id="ni-lg" label="lg">
                   <NumberInput id="ni-lg" size="lg" defaultValue={4} aria-label="lg サイズ" />
+                </FormField>
+                <FormField id="ni-touch" label="touch (56px · Button size=touch と同じ帯)">
+                  <NumberInput
+                    id="ni-touch"
+                    size="touch"
+                    defaultValue={5}
+                    aria-label="touch サイズ"
+                  />
                 </FormField>
               </Flex>
             </Form>

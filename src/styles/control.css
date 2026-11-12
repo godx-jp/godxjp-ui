@@ -342,6 +342,21 @@
     background: hsl(var(--secondary-hover) / var(--secondary-hover-alpha, 100%));
   }
 
+  /* DISABLED FILLED BUTTONS LOSE THE FILL, NOT HALF OF IT. At `--disabled-opacity` a disabled
+   * primary was a pale tint of the brand — on a light theme it read as an enabled light button.
+   * The brand-filled variants now paint a neutral, OPAQUE disabled surface with an inset hairline
+   * (no box growth against the enabled state), so nothing about it says "live action" and its
+   * label keeps legible ink on it (muted-foreground on muted ≥ 4.5:1 in both schemes). Knobs:
+   * `--button-disabled-background` / `-foreground` / `-border-color`, `initial` at :root. */
+  .ui-button--default:disabled,
+  .ui-button--destructive:disabled {
+    opacity: 1;
+    background: var(--button-disabled-background, hsl(var(--muted)));
+    color: var(--button-disabled-foreground, hsl(var(--muted-foreground)));
+    box-shadow: inset 0 0 0 var(--stroke-hairline)
+      var(--button-disabled-border-color, hsl(var(--border)));
+  }
+
   /* LINK — the one Button variant whose brand colour is INK on a page surface rather than a FILL.
    *
    * `--primary` is contracted against `--primary-foreground`: that is the pair `tenantTheme()`
@@ -2394,6 +2409,11 @@
   .ui-number-input[data-size="lg"] {
     --control-height: var(--control-height-lg);
   }
+  /* `size="touch"` — the glove tier Button, Segmented and ToggleGroup already have (gh#1304), so a
+   * −/value/+ row of touch Buttons and a NumberInput share one 56px band. */
+  .ui-number-input[data-size="touch"] {
+    --control-height: var(--control-height-touch);
+  }
   /* `width="auto"` (gh#1448): the characters the bounds need (`--number-input-chars`, written by
    * the component), the field's start padding, the stepper column it reserves at the end
    * (`.ui-number-input-field` below) and the border. `ch` is read in the field's own type size. */
@@ -2453,6 +2473,15 @@
   }
   [data-slot="number-input-suffix"] {
     inset-inline-end: calc(var(--control-height) + var(--space-2));
+  }
+  /* A trailing suffix is reserved in the field's end padding, like the prefix at the start: the
+   * value ends BEFORE it instead of running under it. The width is the suffix's own, measured by
+   * the component (`--number-input-suffix-measured-size`) — 「%」 and 「時間」 are not one size. */
+  .ui-number-input:has([data-slot="number-input-suffix"]) .ui-number-input-field {
+    padding-inline-end: calc(
+      var(--control-height) + var(--space-2) +
+        var(--number-input-suffix-measured-size, var(--control-inline-affix-size)) + var(--space-1)
+    );
   }
   .ui-number-input-steppers {
     position: absolute;
@@ -2520,7 +2549,7 @@
    * duplicate a mouse affordance that already has a conforming path is a bigger change than the
    * one it fixes. */
   @media (pointer: coarse) {
-    .ui-number-input:not([data-size="xs"]):not([data-size="sm"]) {
+    .ui-number-input:not([data-size="xs"]):not([data-size="sm"]):not([data-size="touch"]) {
       --control-height: var(--number-input-touch-height);
     }
 
@@ -4558,6 +4587,18 @@
   .ui-number-input[data-controls="off"] .ui-number-input-field {
     padding-inline-end: var(--control-padding-x);
   }
+  /* …and a suffix moves into that gutter: it sat a stepper column (`--control-height` +
+   * `--space-2`) in from the end, so in a 96px field the value ran past it and read 「kg   2」. */
+  .ui-number-input[data-controls="off"] [data-slot="number-input-suffix"] {
+    inset-inline-end: var(--control-padding-x);
+  }
+  .ui-number-input[data-controls="off"]:has([data-slot="number-input-suffix"])
+    .ui-number-input-field {
+    padding-inline-end: calc(
+      var(--control-padding-x) +
+        var(--number-input-suffix-measured-size, var(--control-inline-affix-size)) + var(--space-1)
+    );
+  }
 
   /* ── SWITCH `loading` / `checkedChildren` ────────────────────────────────────────────────
    * `aria-disabled`, never `disabled`: a disabled button leaves the tab order, so a keyboard
@@ -5200,7 +5241,8 @@
       .ui-number-input-field {
       padding-inline-end: calc(
         2 * var(--control-affix-touch-target-size) + var(--space-2) +
-          var(--control-inline-affix-size)
+          var(--number-input-suffix-measured-size, var(--control-inline-affix-size)) +
+          var(--space-1)
       );
     }
   }

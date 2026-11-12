@@ -1209,6 +1209,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = none — a button blurs nothing"
   },
   {
+    "name": "--button-disabled-background",
+    "value": "initial",
+    "description": "A disabled `default` / `destructive` button's surface: an opaque neutral fill, ink and inset hairline instead of the brand fill at half opacity. `initial`; defaults at the call site are hsl(var(--muted)) / hsl(var(--muted-foreground)) / hsl(var(--border))."
+  },
+  {
+    "name": "--button-disabled-foreground",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--button-disabled-border-color",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--control-font-size",
     "value": "var(--font-size-base)",
     "description": "Control surface knobs — font-size, border width and resting shadow of every `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them once instead of each component hard-coding Tailwind utilities. Defaults preserve the historical look (font-size-base, 1px border, shadow-xs)."
