@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.31.0] - 2026-11-12
+
+`main` catches up with npm. 33.29.0, 33.30.0, 33.30.1 and 33.30.2 were published from a branch that only reached `main` in #1581; their changes are the first four sections below (they never had their own CHANGELOG sections). The last section is new in 33.31.0 (#1580).
+
 ### Error surface out of every route; hosted-flow CSS out of styles/core (bundle size)
 
 - **Changed** `PageErrorBoundary` (and so `AppShell`) loads `ErrorSurface` lazily. Until its chunk arrives — and for good if it cannot load — an inline `role="alert"` fallback shows the same heading, sentence and reload button. AppShell's up-front graph no longer holds `error-surface`, `card`, `descriptions` or `card-tab-strip-loader`. Measured on dist (esbuild minify + splitting, react external), up-front gzip: AppShell 18,890 → 7,364 B; PageErrorBoundary 14,081 → 1,984 B.
