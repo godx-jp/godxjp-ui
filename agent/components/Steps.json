@@ -33,9 +33,9 @@
       "type": "\"wait\" | \"process\" | \"finish\" | \"error\""
     },
     {
-      "description": "Render full markers, compact dots, a numbered inline auth progress row, or Ant Design's `navigation` bar — slab steps with a chevron between them (the default hairline connector is switched off there so it is not drawn through the glyph). `dot` IS antd's `progressDot`; antd 6.6.2 deprecates that prop in favour of exactly this value.",
+      "description": "`bar` = the thin step-progress bar of a short hosted flow (コード入力 → 確認 → 完了): one equal 4px segment per step (`--steps-bar-track-size`, 6px apart `--steps-bar-gap`), finished + current segments filled (`--steps-bar-fill-color`, default --primary; error = destructive), the title UNDER the segment, current title in medium weight; the fill grows from the inline start over `--steps-bar-fill-duration` (350ms, --ease-emphasized) and cross-fades under prefers-reduced-motion; never folds to vertical; `description` is not drawn. Otherwise: render full markers, compact dots, a numbered inline auth progress row, or Ant Design's `navigation` bar — slab steps with a chevron between them (the default hairline connector is switched off there so it is not drawn through the glyph). `dot` IS antd's `progressDot`; antd 6.6.2 deprecates that prop in favour of exactly this value.",
       "name": "type",
-      "type": "\"default\" | \"dot\" | \"inline\" | \"navigation\""
+      "type": "\"default\" | \"dot\" | \"inline\" | \"navigation\" | \"bar\""
     },
     {
       "description": "Ant Design `percent` — completion of the CURRENT (`process`) step only, 0–100 (out-of-range values are clamped). Draws a determinate arc around that step's marker and exposes it as a real `progressbar` with aria-valuenow/min/max. Ignored by `type=\"inline\"`, which has no marker to draw into.",
@@ -86,6 +86,7 @@
   "storyPath": "navigation/steps.tsx",
   "tagline": "Multi-step progress indicator — horizontal or vertical, default or dot style.",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The Steps hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "DO: Pass all steps via the `items` array (each `{ title, subtitle?, description?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",
     "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
     "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",

@@ -388,6 +388,9 @@
       "title": "This page could not be displayed",
       "description": "Something went wrong while showing this page. The rest of the app still works: reload the page, or go to another page from the menu.",
       "reload": "Reload page"
+    },
+    "authAccountSummary": {
+      "signedIn": "Signed in · {email}"
     }
   },
   "dataDisplay": {

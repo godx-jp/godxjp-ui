@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-10-09",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 340,
-    "dimensionCells": 4760,
+    "exports": 342,
+    "dimensionCells": 4788,
     "covered": 89,
-    "untested": 2603,
-    "notApplicable": 2068,
+    "untested": 2618,
+    "notApplicable": 2081,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -2759,6 +2759,34 @@
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "untested",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "CollapseGroup": {
+      "group": "general",
+      "owner": "general/collapse-group",
+      "frames": [
+        "docs/general/collapse-group.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -8814,6 +8842,34 @@
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "StepTransition": {
+      "group": "general",
+      "owner": "general/step-transition",
+      "frames": [
+        "docs/general/step-transition.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",

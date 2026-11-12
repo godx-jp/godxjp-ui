@@ -11,6 +11,17 @@
       "type": "string"
     },
     {
+      "description": "The person's display name. With it the row is two lines: the name, then a localized \"Signed in · {email}\" line (ja ログイン中 · …, key layout.authAccountSummary.signedIn, `--auth-account-summary-status-font-size`) — the identity card under a device / consent screen. Without it the single email line is unchanged.",
+      "name": "name",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"muted\"",
+      "description": "Row fill. \"muted\" (default) for a row inside a card. \"card\" for a row placed directly on the muted auth page: the card fill, the card radius and a roomier inset (`--auth-account-summary-card-padding`).",
+      "name": "surface",
+      "type": "\"muted\" | \"card\""
+    },
+    {
       "description": "Optional real avatar URL.",
       "name": "avatarSrc",
       "type": "string"
@@ -51,6 +62,7 @@
   "storyPath": "layout/auth-account-summary.tsx",
   "tagline": "Compact signed-in account row for hosted auth: avatar fallback, authoritative email and switch action.",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The AuthAccountSummary hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "Pass only the authoritative signed-in email; AuthAccountSummary never fetches or invents identity data.",
     "Pass localized actionLabel and the existing account-switch handler. The component owns no route, mutation or permission behavior.",
     "The package owns avatar fallback, long-email truncation, responsive action wrapping and keyboard focus. Retune only through --auth-account-summary-* tokens."

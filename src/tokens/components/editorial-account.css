@@ -465,6 +465,13 @@
   --editorial-auth-card-footer-line-height: 1.9;
   --editorial-auth-card-footer-padding-block-start: var(--space-5);
   --editorial-auth-card-footer-space-block-start: var(--space-6);
+  /* The rule above the card footer — `initial` = a hairline in --border; `none` drops it. */
+  --editorial-auth-card-footer-border: initial;
+  /* Card title weight — `initial` = --font-weight-semibold; --font-weight-bold for a 700 title. */
+  --editorial-auth-card-title-font-weight: initial;
+  /* The PAGE ground behind EditorialAuth (the split's form side, the centred card page) —
+   * `initial` = transparent; e.g. hsl(var(--muted)) for the hosted frame grey. */
+  --editorial-auth-background: initial;
 }
 
 /* EditorialAuth on a TABLET (below 64rem; the phone block after it overrides what differs): the 460px card and the hero gap left too little for the

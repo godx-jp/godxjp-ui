@@ -43,6 +43,11 @@
       "type": "boolean"
     },
     {
+      "description": "antd `steps` — the bar drawn as `steps` equal segments, `Math.round(steps × value / 100)` filled: the 「3件中1件完了」 meter is `<Progress steps={3} value={33} label=\"3件中1件完了\" />`. Still ONE progressbar with the same value. A lit segment grows in from the inline start (none under reduced motion). `--progress-steps-gap` (space-1). Bar shape only; ignored by `shape=\"ring\"`.",
+      "name": "steps",
+      "type": "number"
+    },
+    {
       "defaultValue": "\"bar\"",
       "description": "METER geometry — the SAME measurement drawn as a full-width bar or as an arc. Same value, tone, size and ARIA either way; `label` moves INSIDE the ring, which is the point of it: a phone app bar showing '18 of 42 done' beside a title has one square of space, and a bar plus its caption needs two stacked rows. Reach for it when the SPACE is square, not when the number is important. It is meter-only: a ring around a `segments` breakdown is a pie chart, which is `PieChart donut` in the charts entry point — a part-to-whole across CATEGORIES with a legend, announced as an image rather than as a progressbar. The arc reads the MARK token tier, exactly as the bar does, so a warning ring and a warning bar on one screen are one colour.",
       "name": "shape",
@@ -67,6 +72,7 @@
   "storyPath": "data-display/progress.tsx",
   "tagline": "Progress in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state, drawn as a bar or — with `shape='ring'` — as an arc with the readout inside it) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track).",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The Progress hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "DO import from `@godxjp/ui/data-display`, not from a generic UI path: `import { Progress } from \"@godxjp/ui/data-display\";`",
     "DO pass `value` as a 0–100 number — the component clamps it internally via `Math.max(0, Math.min(100, value))`, so out-of-range values are safe but misleading; compute the real percentage before passing it.",
     "DO drive `tone` dynamically from business logic — e.g. `variant={pct >= 80 ? \"warning\" : \"success\"}` — to communicate threshold status semantically rather than with raw colour classes.",

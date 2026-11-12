@@ -50,4 +50,12 @@
   /* Diameter of the read/unread indicator dot; the gutter is reserved on read rows too so the
    * titles of a mixed list stay on one optical axis. */
   --list-row-indicator-size: var(--space-2);
+  /* INSET DIVIDER inside `Card variant="grouped"` — where the row hairline STARTS, measured from
+   * the row's inline-start edge; it always runs to the card's end edge. `initial`, defaults
+   * resolved at the call site so a density/[data-tenant] scope that restates the row inset
+   * reaches it: a row without a leading slot starts at its text, var(--list-row-padding-x); a row
+   * with one clears the leading avatar/icon too, calc(var(--list-row-padding-x) +
+   * var(--avatar-size) + var(--list-row-gap)). Set 0 for card-wide lines in a group. */
+  --list-row-divider-inset: initial;
+  --list-row-divider-leading-inset: initial;
 }

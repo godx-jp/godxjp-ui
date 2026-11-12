@@ -3,9 +3,11 @@ import { SearchX, ServerCrash, ShieldAlert, TriangleAlert, Wrench } from "lucide
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { Card, CardContent } from "../data-display/card";
+import { Descriptions } from "../data-display/descriptions";
 import { EmptyState } from "../data-display/empty-state";
 import { Progress } from "../data-display/progress";
-import { Text } from "../general/typography";
+import { Heading, Text } from "../general/typography";
 import { CenteredShell } from "./centered-shell";
 import type {
   ErrorSurfaceMaintenanceProp,
@@ -121,6 +123,10 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
       brand,
       footer,
       width = "sm",
+      align = "center",
+      secondaryAction,
+      topbar,
+      legal,
       id,
       className,
     },
@@ -154,108 +160,214 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
       organization !== undefined ||
       maintenanceWindow !== undefined;
 
-    const surface = (
+    const statusCode = (
+      <Text
+        as="p"
+        size="sm"
+        tone="muted"
+        weight="medium"
+        mono
+        tabular
+        className="ui-error-surface-status"
+      >
+        <span aria-hidden="true">{status}</span>
+        <span className="sr-only">
+          {t("layout.errorSurface.statusLabel", { status: String(status) })}
+        </span>
+      </Text>
+    );
+
+    const progress =
+      hasProgress && progressLabel !== undefined ? (
+        <div className="ui-error-surface-progress">
+          <Progress
+            value={Math.max(0, Math.min(100, maintenanceProgress))}
+            label={progressLabel}
+            tone="warning"
+          />
+        </div>
+      ) : null;
+
+    // `align="start"` — the hosted-page shape: large start-aligned title, the metadata as an inset
+    // grouped card ABOVE the action, the action stretched to the column, a secondary link under it.
+    const startSurface = (
       <div
         ref={ref}
         id={id}
         data-slot="error-surface"
         data-mode={mode}
         data-status={status}
+        data-align="start"
+        data-width={width === "column" ? "column" : undefined}
         className={cn("ui-error-surface", className)}
       >
         {brand !== undefined && mode === "system" && (
           <div className="ui-error-surface-brand">{brand}</div>
         )}
-
-        {/* The visible digits are tabular/mono so 403 and 503 occupy the same box; the accessible
-         * name is the full "HTTP status 403" phrase, because a bare "403" is announced as the
-         * cardinal number "four hundred three" and tells a screen-reader user nothing. */}
-        <Text
-          as="p"
-          size="sm"
-          tone="muted"
-          weight="medium"
-          mono
-          tabular
-          className="ui-error-surface-status"
-        >
-          <span aria-hidden="true">{status}</span>
-          <span className="sr-only">
-            {t("layout.errorSurface.statusLabel", { status: String(status) })}
-          </span>
-        </Text>
-
-        <EmptyState
-          icon={resolvedIcon}
-          tone={resolvedTone}
-          titleLevel={resolvedTitleLevel}
-          title={title}
-          description={description}
-          action={singleAction(action)}
-          className="ui-error-surface-body"
-        />
-
+        <div className="ui-error-surface-heading">
+          {statusCode}
+          <Heading
+            level={resolvedTitleLevel}
+            size="3xl"
+            weight="bold"
+            className="ui-error-surface-title"
+          >
+            {title}
+          </Heading>
+          {description !== undefined && (
+            <Text as="p" tone="muted" className="ui-error-surface-description">
+              {description}
+            </Text>
+          )}
+        </div>
         {hasMetadata && (
-          /* A description list, not a sentence: each metadata row keeps a machine-readable
-           * label↔value pair, so "Request ID / 01J9Z…" is navigable instead of being one run-on
-           * paragraph. `<div>` wrappers around dt/dd are valid HTML5 and give each row its box. */
-          <dl className="ui-error-surface-meta">
-            {requestId !== undefined && (
-              <div className="ui-error-surface-meta-row">
-                <Text as="dt" size="xs" tone="muted">
-                  {t("layout.errorSurface.requestId")}
-                </Text>
-                <Text as="dd" size="xs" tone="muted" mono tabular>
-                  {requestId}
-                </Text>
-              </div>
-            )}
-            {permission !== undefined && (
-              <div className="ui-error-surface-meta-row">
-                <Text as="dt" size="xs" tone="muted">
-                  {t("layout.errorSurface.permission")}
-                </Text>
-                <Text as="dd" size="xs" tone="muted" mono>
-                  {permission}
-                </Text>
-              </div>
-            )}
-            {organization !== undefined && (
-              <div className="ui-error-surface-meta-row">
-                <Text as="dt" size="xs" tone="muted">
-                  {t("layout.errorSurface.organization")}
-                </Text>
-                <Text as="dd" size="xs" tone="muted">
-                  {organization}
-                </Text>
-              </div>
-            )}
-            {maintenanceWindow !== undefined && maintenance !== undefined && (
-              <div className="ui-error-surface-meta-row">
-                <Text as="dt" size="xs" tone="muted">
-                  {t("layout.errorSurface.maintenanceWindow")}
-                </Text>
-                <Text as="dd" size="xs" tone="muted">
-                  {/* The MACHINE-readable value stays the ISO-8601 instant; the visible text is the
-                   * CLDR rendering for the active locale. */}
-                  <time dateTime={maintenance.start}>{maintenanceWindow}</time>
-                </Text>
-              </div>
-            )}
-          </dl>
+          <Card variant="grouped" className="ui-error-surface-details">
+            <CardContent flush>
+              <Descriptions layout="horizontal" columns={1}>
+                {organization !== undefined && (
+                  <Descriptions.Item label={t("layout.errorSurface.organization")}>
+                    {organization}
+                  </Descriptions.Item>
+                )}
+                {permission !== undefined && (
+                  <Descriptions.Item label={t("layout.errorSurface.permission")} mono>
+                    {permission}
+                  </Descriptions.Item>
+                )}
+                {requestId !== undefined && (
+                  <Descriptions.Item label={t("layout.errorSurface.requestId")} mono>
+                    {requestId}
+                  </Descriptions.Item>
+                )}
+                {maintenanceWindow !== undefined && maintenance !== undefined && (
+                  <Descriptions.Item label={t("layout.errorSurface.maintenanceWindow")}>
+                    <time dateTime={maintenance.start}>{maintenanceWindow}</time>
+                  </Descriptions.Item>
+                )}
+              </Descriptions>
+            </CardContent>
+          </Card>
         )}
-
-        {hasProgress && progressLabel !== undefined && (
-          <div className="ui-error-surface-progress">
-            <Progress
-              value={Math.max(0, Math.min(100, maintenanceProgress))}
-              label={progressLabel}
-              tone="warning"
-            />
-          </div>
+        {progress}
+        <div className="ui-error-surface-action">{singleAction(action)}</div>
+        {secondaryAction != null && (
+          <div className="ui-error-surface-secondary">{secondaryAction}</div>
         )}
+        {legal != null && <div className="ui-error-surface-legal">{legal}</div>}
       </div>
     );
+
+    const surface =
+      align === "start" ? (
+        startSurface
+      ) : (
+        <div
+          ref={ref}
+          id={id}
+          data-slot="error-surface"
+          data-mode={mode}
+          data-status={status}
+          data-width={width === "column" ? "column" : undefined}
+          className={cn("ui-error-surface", className)}
+        >
+          {brand !== undefined && mode === "system" && (
+            <div className="ui-error-surface-brand">{brand}</div>
+          )}
+
+          {/* The visible digits are tabular/mono so 403 and 503 occupy the same box; the accessible
+           * name is the full "HTTP status 403" phrase, because a bare "403" is announced as the
+           * cardinal number "four hundred three" and tells a screen-reader user nothing. */}
+          <Text
+            as="p"
+            size="sm"
+            tone="muted"
+            weight="medium"
+            mono
+            tabular
+            className="ui-error-surface-status"
+          >
+            <span aria-hidden="true">{status}</span>
+            <span className="sr-only">
+              {t("layout.errorSurface.statusLabel", { status: String(status) })}
+            </span>
+          </Text>
+
+          <EmptyState
+            icon={resolvedIcon}
+            tone={resolvedTone}
+            titleLevel={resolvedTitleLevel}
+            title={title}
+            description={description}
+            action={singleAction(action)}
+            className="ui-error-surface-body"
+          />
+
+          {secondaryAction != null && (
+            <div className="ui-error-surface-secondary">{secondaryAction}</div>
+          )}
+          {legal != null && <div className="ui-error-surface-legal">{legal}</div>}
+
+          {hasMetadata && (
+            /* A description list, not a sentence: each metadata row keeps a machine-readable
+             * label↔value pair, so "Request ID / 01J9Z…" is navigable instead of being one run-on
+             * paragraph. `<div>` wrappers around dt/dd are valid HTML5 and give each row its box. */
+            <dl className="ui-error-surface-meta">
+              {requestId !== undefined && (
+                <div className="ui-error-surface-meta-row">
+                  <Text as="dt" size="xs" tone="muted">
+                    {t("layout.errorSurface.requestId")}
+                  </Text>
+                  <Text as="dd" size="xs" tone="muted" mono tabular>
+                    {requestId}
+                  </Text>
+                </div>
+              )}
+              {permission !== undefined && (
+                <div className="ui-error-surface-meta-row">
+                  <Text as="dt" size="xs" tone="muted">
+                    {t("layout.errorSurface.permission")}
+                  </Text>
+                  <Text as="dd" size="xs" tone="muted" mono>
+                    {permission}
+                  </Text>
+                </div>
+              )}
+              {organization !== undefined && (
+                <div className="ui-error-surface-meta-row">
+                  <Text as="dt" size="xs" tone="muted">
+                    {t("layout.errorSurface.organization")}
+                  </Text>
+                  <Text as="dd" size="xs" tone="muted">
+                    {organization}
+                  </Text>
+                </div>
+              )}
+              {maintenanceWindow !== undefined && maintenance !== undefined && (
+                <div className="ui-error-surface-meta-row">
+                  <Text as="dt" size="xs" tone="muted">
+                    {t("layout.errorSurface.maintenanceWindow")}
+                  </Text>
+                  <Text as="dd" size="xs" tone="muted">
+                    {/* The MACHINE-readable value stays the ISO-8601 instant; the visible text is the
+                     * CLDR rendering for the active locale. */}
+                    <time dateTime={maintenance.start}>{maintenanceWindow}</time>
+                  </Text>
+                </div>
+              )}
+            </dl>
+          )}
+
+          {hasProgress && progressLabel !== undefined && (
+            <div className="ui-error-surface-progress">
+              <Progress
+                value={Math.max(0, Math.min(100, maintenanceProgress))}
+                label={progressLabel}
+                tone="warning"
+              />
+            </div>
+          )}
+        </div>
+      );
 
     // application mode: the surface is the BODY. It returns only its own block, so the AppShell the
     // route already renders (sidebar · topbar · breadcrumb) stays mounted and untouched.
@@ -265,7 +377,12 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
     // viewport-centred geometry — tall localized copy still scrolls from the top instead of
     // clipping, because the auto block offsets collapse.
     return (
-      <CenteredShell align="center" width={width} {...(footer !== undefined ? { footer } : {})}>
+      <CenteredShell
+        align="center"
+        width={width === "column" ? "sm" : width}
+        {...(footer !== undefined ? { footer } : {})}
+        {...(topbar !== undefined ? { topbar } : {})}
+      >
         {surface}
       </CenteredShell>
     );

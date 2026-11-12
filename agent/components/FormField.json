@@ -10,6 +10,12 @@
       "type": "string"
     },
     {
+      "defaultValue": "false",
+      "description": "Keep `label` as the control's accessible name (aria-labelledby) but hide it VISUALLY (sr-only); the control takes the whole row in every layout. For a field whose purpose the layout already shows (a single code field under a page title). Prefer a visible label.",
+      "name": "labelHidden",
+      "type": "boolean"
+    },
+    {
       "description": "Nội dung phụ cạnh nhãn: gợi ý, badge bắt buộc, nút trợ giúp, action chữ ngắn. Nằm TRONG hàng nhãn nên không phá nhịp trường. Ở layout horizontal/inline hàng nhãn xuống dòng: addon không vừa cạnh nhãn thì rơi xuống dòng riêng dưới nhãn, trong cột nhãn, không tràn sang cột control.",
       "name": "labelAddon",
       "type": "ReactNode"

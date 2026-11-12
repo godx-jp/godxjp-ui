@@ -108,6 +108,13 @@ type ProgressMeterProps = ProgressBase & {
    * real ratio.
    */
   over?: boolean;
+  /**
+   * antd `steps` — draw the bar as `steps` equal SEGMENTS, `Math.round(steps × value / 100)` of
+   * them filled: the 「3件中1件完了」 meter (`steps={3} value={33}`). Still ONE `progressbar` with
+   * the same value — the segments are paint. A segment that lights grows in from the inline
+   * start; under reduced motion it does not move. Bar shape only (ignored by `shape="ring"`).
+   */
+  steps?: number;
   segments?: never;
 };
 
@@ -150,6 +157,7 @@ type ProgressBreakdownProps = ProgressBase & {
   value?: never;
   tone?: never;
   over?: never;
+  steps?: never;
   /** A ring around a partition is a pie chart — that is `PieChart donut`, not this. */
   shape?: never;
 };
@@ -170,6 +178,7 @@ type ProgressInternalProps = ProgressBase & {
   tone?: ProgressTone;
   over?: boolean;
   shape?: ProgressShape;
+  steps?: number;
 };
 
 export function Progress(props: ProgressProps) {
@@ -186,6 +195,7 @@ export function Progress(props: ProgressProps) {
     size,
     shape,
     over = false,
+    steps,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
     ...domProps
@@ -267,6 +277,12 @@ export function Progress(props: ProgressProps) {
   // Over-capacity forces the destructive tone unless the caller pins one explicitly. Otherwise the
   // brand role (gh#1308): a bar with no tone is ordinary progress, not a status.
   const effectiveTone: ProgressTone = tone ?? (isOver ? "destructive" : "primary");
+  // antd's `steps`: whole segments, the filled count rounded from the percentage.
+  const stepCount =
+    steps !== undefined && Number.isFinite(steps) && steps >= 1 && shape !== "ring"
+      ? Math.floor(steps)
+      : undefined;
+  const filledSteps = stepCount === undefined ? 0 : Math.round((stepCount * boundedValue) / 100);
 
   return (
     <div
@@ -277,6 +293,7 @@ export function Progress(props: ProgressProps) {
       // already had and the ring rules cannot reach it.
       data-shape={shape === "ring" ? "ring" : undefined}
       data-over={isOver && shape !== "ring" ? "" : undefined}
+      data-steps={stepCount !== undefined ? stepCount : undefined}
       role="progressbar"
       aria-valuenow={boundedValue}
       aria-valuemin={0}
@@ -333,9 +350,24 @@ export function Progress(props: ProgressProps) {
         </div>
       ) : (
         <>
-          <div className="ui-progress-track">
-            <div className="ui-progress-bar" style={{ width: `${boundedValue}%` }} />
-          </div>
+          {stepCount !== undefined ? (
+            <div
+              className="ui-progress-track"
+              style={{ "--progress-steps": stepCount } as React.CSSProperties}
+            >
+              {Array.from({ length: stepCount }, (_, index) => (
+                <div
+                  key={index}
+                  className="ui-progress-step"
+                  data-state={index < filledSteps ? "filled" : "empty"}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="ui-progress-track">
+              <div className="ui-progress-bar" style={{ width: `${boundedValue}%` }} />
+            </div>
+          )}
           {caption}
         </>
       )}

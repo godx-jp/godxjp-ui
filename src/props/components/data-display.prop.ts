@@ -234,8 +234,13 @@ export type EmptyStateProp = {
   title: TitleProp;
   description?: DescriptionProp;
   action?: ActionProp;
-  /** Visual weight appropriate to the empty condition. Default `page`. */
-  variant?: "page" | "section" | "compact";
+  /**
+   * Visual weight appropriate to the empty condition. Default `page`. `hero` is a RESULT PAGE
+   * (approved / denied / expired / done): the title at the display `3xl` step in bold with the
+   * display optics (`--letter-spacing-display` / `--line-height-display`), a larger medallion and
+   * a lead-size description — pair it with `titleLevel={1}`, since it is the page's heading.
+   */
+  variant?: "page" | "section" | "compact" | "hero";
   /** Medallion colour intent. Default `muted` (the neutral placeholder look). */
   tone?: EmptyStateToneProp;
   /** Semantic heading level (`h1`–`h4`) for the title. Default `3`. */
@@ -313,9 +318,11 @@ export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
    * The initials' type step and a glyph's box move with the box — one step of the type scale and
    * one step of the `--icon-size-*` scale per step — so a small mark is small, not clipped.
    * `shape="square"` rides the identical ladder. Beyond the ladder (a 96px profile mark) is a
-   * `className` size utility, exactly as before; the ladder is for the control row.
+   * `className` size utility, exactly as before; the ladder is for the control row. `xl` (64px,
+   * `--avatar-size-xl`) is OFF the ladder on purpose: a feature tile (a mail / app medallion), not a
+   * control-row mark; `shape="square"` takes it too.
    */
-  size?: SizeProp;
+  size?: SizeProp | "xl";
   appearance?: AvatarAppearanceProp;
   /**
    * Presence — WHO is reachable right now, drawn as an indicator at the block-end/inline-end
@@ -338,6 +345,16 @@ export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
    * `OrgChartNode.variant`.
    */
   kind?: AvatarKindProp;
+  /**
+   * A stable key (an app id, a user id) hashed onto the ten-hue TILE palette
+   * (`--avatar-color-key-1…10`: violet, purple, teal, blue, slate, orange, red, cyan, pink, green),
+   * so every tile in a row gets a distinct, repeatable colour. Solid fill under white initials
+   * (`--avatar-color-key-foreground`), >= 5:1 for every hue in both themes, with a faint light ring
+   * (`--avatar-color-key-ring-color`) so a tile stays visible on a ground of its own hue. Wins over
+   * `shape`'s and `appearance`'s fill. Ten hues means two keys CAN share one; pass a NUMBER (1–10,
+   * wrapping) to pick the hue directly for a known short list that must never repeat.
+   */
+  colorKey?: string | number;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };
@@ -384,7 +401,11 @@ export type AvatarPresenceProp = "online" | "away" | "busy" | "offline";
  *
  * @see Avatar
  */
-export type AvatarAppearanceProp = "default" | "tinted";
+/**
+ * `neutral` — a grey, muted mark for an unavailable / 準備中 tile (`--avatar-neutral-background`,
+ * `--avatar-neutral-foreground`); it ignores `colorKey`.
+ */
+export type AvatarAppearanceProp = "default" | "tinted" | "neutral";
 
 /**
  * How an `AvatarImage` fills its frame (`object-fit`). `cover` (default) fills the frame and crops

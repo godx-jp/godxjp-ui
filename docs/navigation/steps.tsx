@@ -27,6 +27,7 @@ const onboardingSteps = [
 export default function Demo() {
   const [approvalCurrent, setApprovalCurrent] = useState(1);
   const [wizardCurrent, setWizardCurrent] = useState(0);
+  const [barStep, setBarStep] = useState(1);
   /* Seeded TRUE so `status="error"` paints on mount. The toggle below is still the point of the
    * demo, but starting from `false` meant the error state was reachable only by clicking —
    * and a surface that needs an interaction is a surface no sweep measures (gh#612), which is
@@ -268,6 +269,38 @@ export default function Demo() {
                 status="error"
                 value={1}
                 items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Bar · thin step bar (type=&quot;bar&quot;)</CardTitle>
+            <CardDescription>
+              Progress above a short hosted flow (code, confirm, done): one equal segment per step,
+              finished and current segments filled, the title under its segment. The fill grows from
+              the inline start; under prefers-reduced-motion it cross-fades. It never folds.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Steps
+                type="bar"
+                value={0}
+                items={[{ title: "Enter code" }, { title: "Confirm" }, { title: "Done" }]}
+              />
+              <Steps
+                type="bar"
+                value={barStep}
+                onValueChange={setBarStep}
+                items={[{ title: "Details" }, { title: "Check email" }, { title: "Done" }]}
+              />
+              <Steps
+                type="bar"
+                status="error"
+                value={1}
+                items={[{ title: "Enter code" }, { title: "Confirm" }, { title: "Done" }]}
               />
             </Flex>
           </CardContent>

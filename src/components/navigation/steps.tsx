@@ -97,6 +97,10 @@ export function Steps({
   const base = defaultValue;
   const compact = size === "sm";
   const inline = type === "inline";
+  // The thin progress bar: a segment per step with the title under it. Like `inline` it carries no
+  // marker and never folds (each column only holds a short title under a line).
+  const bar = type === "bar";
+  const flat = inline || bar;
   // NARROW FOLD (Ant Design `responsive`): below the token width a horizontal rail's columns are
   // too narrow for a title, so it is laid out vertically. Resolved in JS because every
   // `data-direction` below keys on it.
@@ -104,7 +108,7 @@ export function Steps({
     STEPS_RESPONSIVE_BREAKPOINT_TOKEN,
     STEPS_RESPONSIVE_BREAKPOINT_FALLBACK_QUERY,
   );
-  const isVertical = orientation === "vertical" || (responsive && narrow && !inline);
+  const isVertical = !bar && (orientation === "vertical" || (responsive && narrow && !inline));
   // antd's `navigation` bar: slab steps that point at the next one. It keeps the full marker/text
   // block (unlike `inline`), so it rides the SAME list and item markup and differs only in paint.
   const navigation = type === "navigation";
@@ -113,16 +117,20 @@ export function Steps({
   // `percent` is antd's completion of the CURRENT step only, so it needs a marker to draw into —
   // `inline` has none. The ratio is computed OUT of the JSX so the style object carries a value,
   // never an arithmetic literal (check:no-inline-magic-numbers).
-  const showPercent = percent !== undefined && !inline;
+  const showPercent = percent !== undefined && !flat;
   const boundedPercent = boundStepPercent(percent ?? 0);
   const progressRatio = boundedPercent / 100;
 
   return (
     <ol
-      data-direction={inline ? undefined : isVertical ? "vertical" : "horizontal"}
+      data-direction={flat ? undefined : isVertical ? "vertical" : "horizontal"}
       data-type={type}
       data-align={inline && align === "start" ? "start" : undefined}
-      className={cn("flex w-full", inline ? "ui-steps-inline" : "ui-steps-list", className)}
+      className={cn(
+        "flex w-full",
+        inline ? "ui-steps-inline" : bar ? "ui-steps-bar" : "ui-steps-list",
+        className,
+      )}
       // The localized name is the DEFAULT, so a caller-supplied `aria-label` still wins — the
       // spread has to come after it, not before.
       aria-label={t("navigation.steps.ariaLabel")}
@@ -148,14 +156,20 @@ export function Steps({
         // When `onValueChange` is provided the step is an actionable control (a real <button> that
         // may be disabled). When it is not, the steps are purely informational, so render a non-button
         // wrapper to keep disabled steps out of the tab order (WAI-ARIA: don't emit dead buttons).
-        const stepDirection = inline ? undefined : isVertical ? "vertical" : "horizontal";
+        const stepDirection = flat ? undefined : isVertical ? "vertical" : "horizontal";
         const stepClassName = cn(
           "group",
-          inline ? "ui-steps-inline-control" : "ui-steps-control",
+          inline ? "ui-steps-inline-control" : bar ? "ui-steps-bar-control" : "ui-steps-control",
           clickable ? "cursor-pointer" : "cursor-default",
         );
 
-        const stepInner = inline ? (
+        const stepInner = bar ? (
+          <>
+            <span className="ui-steps-bar-segment" aria-hidden="true" />
+            <span className="ui-steps-bar-title">{item.title}</span>
+            <span className="sr-only">{statusLabel}</span>
+          </>
+        ) : inline ? (
           <>
             <span className="ui-steps-inline-index" aria-hidden="true">
               {absoluteIndex + 1}
@@ -202,14 +216,17 @@ export function Steps({
           <li
             key={index}
             aria-current={isCurrent ? "step" : undefined}
-            data-direction={inline ? undefined : isVertical ? "vertical" : "horizontal"}
-            data-title-placement={titlePlacement}
+            data-direction={flat ? undefined : isVertical ? "vertical" : "horizontal"}
+            data-title-placement={bar ? undefined : titlePlacement}
             // The hairline connector is the DEFAULT rail's join. `navigation` draws an explicit
             // chevron between slabs instead, so emitting both would put a line through the glyph.
             data-connector={
-              !isVertical && !inline && !navigation && index < items.length - 1 ? "" : undefined
+              !isVertical && !flat && !navigation && index < items.length - 1 ? "" : undefined
             }
-            className={cn(!inline && "flex-1", inline ? "ui-steps-inline-item" : "ui-steps-item")}
+            className={cn(
+              !inline && "flex-1",
+              inline ? "ui-steps-inline-item" : bar ? "ui-steps-bar-item" : "ui-steps-item",
+            )}
             data-status={stepStatus}
           >
             {interactive ? (

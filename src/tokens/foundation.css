@@ -715,6 +715,15 @@
   --line-height-normal: 1.5;
   --line-height-body: 1.7;
   --letter-spacing-tight: 0;
+  /* DISPLAY OPTICS — the tracking and leading of the display ramp (`size="3xl" | "4xl" | "5xl"` on
+   * Text AND Heading). Large type wants NEGATIVE tracking and a tighter line box (Apple's optical
+   * sizing: about -0.022em at 34px, -0.02em at 28px); body sizes do not, which is why these are
+   * their own knobs instead of moving --letter-spacing-tight, which every Heading reads. `initial`
+   * — the defaults resolve at the call site to the current --letter-spacing-tight /
+   * --line-height-tight, so nothing moves until a theme opts in, e.g.
+   * `--letter-spacing-display: -0.022em; --line-height-display: 1.12`. */
+  --letter-spacing-display: initial;
+  --line-height-display: initial;
 
   /* ── SCALING — the one global density knob (Radix Themes model). A single
    * dimensionless multiplier on every SIZE token (spacing grid, control / table /
@@ -953,6 +962,19 @@
   /* One step of the Reveal stagger ladder — `<Reveal delay={n}>` waits n × this before entering,
    * so a column of reveals cascades. Read instead of a literal `.04s`/`.09s` per-item delay. */
   --reveal-stagger-step: 60ms;
+  /* STEP TRANSITION (StepTransition) — the push between steps of a flow: 24px travel, the incoming
+   * step over --duration-slow, the outgoing one a little quicker so it is gone before the new one
+   * settles; reduced motion is a 200ms cross-fade. */
+  /* scale-exempt: 24px step travel, a motion distance not a layout step */
+  --step-transition-translate: 1.5rem;
+  --step-transition-duration: var(--duration-slow);
+  --step-transition-exit-duration: var(--duration-base);
+  --step-transition-reduced-duration: 200ms;
+  /* CollapseGroup — how long a removed row takes to collapse (height + opacity → 0). */
+  --collapse-exit-duration: var(--duration-slow);
+  /* PRESS FEEDBACK — how far a pressed Button gives (`transform: scale()` on :active). 1 = still
+   * (the default, nothing moves); 0.97 is the Apple press. Reduced motion keeps it at 1. */
+  --press-scale: 1;
 
   /* AMBIENT/LOOPING motion (gh#313) — the cycle member of the motion tier. `--duration-fast|base|
    * slow` time a TRANSITION (something moves from A to B and stops); a loop needs an INTERVAL, so

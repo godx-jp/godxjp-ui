@@ -782,8 +782,13 @@ export type CenteredShellAuthProp = {
    * `--auth-shell-context-wide-card-max-width` so the chooser can sit beside an explanation column
    * on desktop (lay the two out with `ResponsiveGrid`; it stacks on a phone, where the page keeps a
    * `--auth-shell-context-wide-main-padding-mobile` gutter).
+   *
+   * `"column"` is the hosted flow's single 25rem column (`--auth-shell-column-max-width`: sign-in,
+   * code entry, consent, a result page) and `"split"` its 54rem two-column page
+   * (`--auth-shell-split-max-width`: what is connecting beside what it may do), both centred like
+   * `"wide"` — so a product stops overriding the card tokens in its own CSS. Ignored under a preset.
    */
-  measure?: "default" | "wide";
+  measure?: "default" | "wide" | "column" | "split";
   /**
    * Block-axis placement of the auth column, ORTHOGONAL to `preset` the way `variant` is: a preset
    * owns the page MEASURE (card width, inline gutters, section rhythm), `align` owns where that
@@ -805,6 +810,16 @@ export type CenteredShellAuthProp = {
    * `"compact"`; the default variant defaults to `"comfortable"`.
    */
   density?: "comfortable" | "compact";
+  /**
+   * The top bar's MATERIAL. `"default"` keeps the bar exactly as it was. `"frosted"` pins it to the
+   * top (sticky) as a translucent pane with a backdrop blur, so the page scrolls UNDER it — the
+   * Apple bar material: the shell ground at `--centered-shell-bar-frosted-background-alpha`,
+   * `--centered-shell-bar-frosted-backdrop-blur-size` + the shared saturate, and a hairline
+   * (`--centered-shell-bar-frosted-border`). Under `prefers-reduced-transparency: reduce`, and
+   * where `backdrop-filter` is unsupported, the library paints it solid — a consumer writes no
+   * fallback.
+   */
+  barAppearance?: "default" | "frosted";
   className?: ClassNameProp;
 };
 
@@ -946,6 +961,12 @@ export type AuthFooterProp = {
   privacy: ReactNode;
   /** Optional consumer-owned locale control (e.g. `<AppSettingPicker kind="locale" compact />`). */
   locale?: ReactNode;
+  /**
+   * Set the line in the monospace face (default `true`, the hosted-identity look). `false` uses the
+   * body face (`--auth-footer-font-family`), which is narrower and keeps a long legal line on one
+   * row in a 400px column.
+   */
+  mono?: boolean;
   className?: ClassNameProp;
 };
 
@@ -1020,6 +1041,18 @@ export type AccountChipProp = {
 
 export type AuthAccountSummaryProp = {
   email: string;
+  /**
+   * The person's display name. With it the row reads as two lines — the name, then a localized
+   * "Signed in · {email}" line (`layout.authAccountSummary.signedIn`) — the identity card under a
+   * device / consent screen. Without it the row stays the single email line.
+   */
+  name?: ReactNode;
+  /**
+   * The row's fill. `"muted"` (default, unchanged) sits on a card. `"card"` is the row as its own
+   * card — the card fill and the card radius with a roomier inset — for a row placed directly on
+   * the muted auth page ground (under a device / consent screen).
+   */
+  surface?: "muted" | "card";
   avatarSrc?: string;
   avatarFallback?: ReactNode;
   /**
@@ -1074,6 +1107,16 @@ export type CenteredShellPageProp = {
    * default) emits no attribute and keeps the shell's exact box.
    */
   flow?: "column" | "sections";
+  /**
+   * The top bar's MATERIAL. `"default"` keeps the bar exactly as it was. `"frosted"` pins it to the
+   * top (sticky) as a translucent pane with a backdrop blur, so the page scrolls UNDER it — the
+   * Apple bar material: the shell ground at `--centered-shell-bar-frosted-background-alpha`,
+   * `--centered-shell-bar-frosted-backdrop-blur-size` + the shared saturate, and a hairline
+   * (`--centered-shell-bar-frosted-border`). Under `prefers-reduced-transparency: reduce`, and
+   * where `backdrop-filter` is unsupported, the library paints it solid — a consumer writes no
+   * fallback.
+   */
+  barAppearance?: "default" | "frosted";
   /**
    * Max-width of the centred content column: `sm` ~32rem, `md` (default) ~46rem, `lg` ~64rem — all
    * wider than AuthShell's 24rem auth card. A service retunes each tier via `--centered-shell-width-*`.
@@ -1238,8 +1281,30 @@ export type ErrorSurfaceProp = {
   footer?: FooterProp;
   /**
    * `system` mode only — measure of the centred column (`CenteredShell` width tier). Default `sm`.
+   * `"column"` is the hosted flow's 25rem column (`--auth-shell-column-max-width`, the same
+   * measure as the auth `CenteredShell measure="column"`), so an error page lines up with the flow.
    */
-  width?: CenteredShellWidthProp;
+  width?: CenteredShellWidthProp | "column";
+  /**
+   * How the surface is laid out. `"center"` (default, unchanged): the centred EmptyState with its
+   * icon medallion. `"start"`: the hosted-page shape — a small mono status code, a LARGE bold
+   * start-aligned title (display 3xl + display optics), the description, the metadata as an inset
+   * grouped card ABOVE the action, the action stretched to the column (a `Button fullWidth
+   * size="lg"` is honoured), then `secondaryAction` centred under it. No icon medallion.
+   */
+  align?: "center" | "start";
+  /**
+   * A secondary NAVIGATION link under the action (「ダッシュボードへ」) — a `Button variant="link"`
+   * or a `Link`. Not a second recovery action; `action` stays the one recovery.
+   */
+  secondaryAction?: ReactNode;
+  /** `system` mode only — the page top bar (a `Topbar`), the CenteredShell `topbar` slot. */
+  topbar?: ReactNode;
+  /**
+   * A short legal / product line placed directly UNDER the actions (「GoDX ID · 利用規約 ·
+   * プライバシー」), part of the surface rather than the page-bottom `footer` band. Small and muted.
+   */
+  legal?: ReactNode;
   id?: IdProp;
   className?: ClassNameProp;
 };
@@ -1858,6 +1923,12 @@ export type TopbarSearchProp = SearchInputProp & {
    * compact step, shared with `TopbarItem labelHideBelow` and `AppShell logoCompactBelow`.
    */
   collapseBelow?: BreakpointProp;
+  /**
+   * The inline field's preferred width. `"default"` reads `--topbar-search-inline-size` (16rem);
+   * `"wide"` reads `--topbar-search-wide-inline-size` (26.25rem, a home/portal search). Either way
+   * it still shrinks toward the text floor when the bar is short of room.
+   */
+  measure?: "default" | "wide";
 };
 
 /**

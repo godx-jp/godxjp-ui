@@ -28,6 +28,12 @@
       "type": "ReactNode"
     },
     {
+      "defaultValue": "true",
+      "description": "Set the line in the monospace face (default). `false` uses the body face (--auth-footer-font-family, default --font-family-body), narrower, so a long legal line stays on one row in a 400px column.",
+      "name": "mono",
+      "type": "boolean"
+    },
+    {
       "description": "Optional structural class override merged onto the footer root.",
       "name": "className",
       "type": "string"

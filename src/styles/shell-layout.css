@@ -552,6 +552,29 @@
     gap: var(--auth-shell-bar-gap);
     margin-inline-start: auto;
   }
+  /* An action is never SQUEEZED: plain text (「管理者 · 日本語」) or a Badge keeps its one-line width.
+   * CJK may break between any two characters, so a shrinking flex item used to fold to two lines or
+   * one character per line on a phone. Out of room, the BAR wraps the whole cluster under the brand
+   * (`.ui-auth-shell-bar` wraps); the cluster itself stays ONE ROW. It must not wrap on its own: a
+   * picker trigger under a `display: contents` root under-reports its intrinsic width, and a
+   * wrapping cluster sized from that broke the page action and the language picker onto two lines
+   * at every width. */
+  .ui-auth-shell-bar-actions {
+    min-width: 0;
+  }
+  .ui-auth-shell-bar-actions > * {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  /* The one give, when a narrow phone truly has no room for every action on the cluster's row:
+   * plain TEXT (not a control) truncates on its one line — never breaks onto two, never scrolls the
+   * page. Controls keep their full box and focus ring. */
+  .ui-auth-shell-bar-actions > [data-slot="text"] {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .ui-auth-shell-main {
     display: flex;
@@ -842,6 +865,11 @@
     color: hsl(var(--muted-foreground));
     font-family: var(--font-mono);
     font-size: var(--auth-footer-text-font-size);
+  }
+
+  /* `mono={false}` — the body face, read through a knob a theme can retarget. */
+  .ui-auth-legal-footer[data-font="body"] {
+    font-family: var(--auth-footer-font-family, var(--font-family-body, inherit));
   }
 
   .ui-auth-legal-footer-item {
@@ -3053,6 +3081,11 @@
    * 200% text — the field overflowed this wrapper and was painted over the next end cell (gh#1320:
    * control 285.7px in a 256px wrapper at 1280). Now the floor reaches the cluster, which grows or,
    * under `overflow="menu"`, folds. */
+  /* `measure="wide"` — a home / portal search (~420px). Re-points the one knob the field reads. */
+  .ui-topbar-search[data-measure="wide"] {
+    --topbar-search-inline-size: var(--topbar-search-wide-inline-size);
+  }
+
   .ui-topbar-search-panel > .ui-search-input {
     inline-size: var(--topbar-search-inline-size);
     min-inline-size: min-content;
@@ -3708,6 +3741,27 @@
     gap: var(--error-surface-gap);
     padding-block: var(--error-surface-padding-block);
     text-align: center;
+  }
+
+  /* PageErrorBoundary's inline fallback — drawn while the lazy ErrorSurface chunk loads (or if it
+   * cannot load). The same centred column and rhythm as the surface, so the swap does not jump. */
+  .ui-page-error-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--error-surface-gap);
+    padding-block: var(--error-surface-padding-block);
+    text-align: center;
+  }
+  .ui-page-error-fallback-title {
+    margin: 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+  }
+  .ui-page-error-fallback-description {
+    margin: 0;
+    max-width: var(--empty-state-description-max-width);
+    color: hsl(var(--muted-foreground));
   }
 
   .ui-error-surface-brand {

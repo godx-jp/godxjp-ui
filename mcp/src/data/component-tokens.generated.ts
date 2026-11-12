@@ -1509,6 +1509,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--choice-list-background",
+    "value": "initial",
+    "description": "Radio `optionType=\"list\"` — the inset grouped list. Surface = the card fill and card radius (role mirrors, `initial`); the hairline between rows starts at the row text (`--choice-list-divider-inset`, default the row inset; `-leading-inset` past a leading avatar); sections stack --choice-list-section-gap apart, the label --choice-list-label-gap above. default = var(--card)"
+  },
+  {
+    "name": "--choice-list-radius",
+    "value": "initial",
+    "description": "default = the card radius"
+  },
+  {
+    "name": "--choice-list-divider-color",
+    "value": "initial",
+    "description": "default = var(--border)"
+  },
+  {
+    "name": "--choice-list-divider-inset",
+    "value": "initial",
+    "description": "default = var(--choice-card-padding-inline)"
+  },
+  {
+    "name": "--choice-list-divider-leading-inset",
+    "value": "initial",
+    "description": "default = inset + avatar + gap"
+  },
+  {
+    "name": "--choice-list-section-gap",
+    "value": "var(--space-5)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--choice-list-label-gap",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px caption-to-group gap of a grouped list header"
+  },
+  {
     "name": "--toggle-focus-ring-width",
     "value": "initial",
     "description": "Ring knobs for the two controls that historically wanted a softer mark than the global default — both are filled surfaces where the ring was felt to read as a second border. THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between the focused and unfocused states of the pixels that mark focus, and colour is the whole of that bar. Measured against this palette, the focus hue at alpha 0.35 composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as quiet as it likes because it is decoration rather than the indicator. The knobs stay — a service can still trade the criterion away deliberately — but the shipped default no longer makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts. default = var(--stroke-lg), resolved at the call site (gh#906)"
@@ -2639,6 +2674,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--otp-boxed-slot-inline-size",
+    "value": "2.5rem",
+    "description": "InputOTP `appearance=\"boxed\"` — the large code field (device code 4+4, two-factor 3+3): each slot its own rounded box. Its own geometry so a shell retuning the joined/grouped slot chain (--otp-slot-*) does not reach it. md = the device-code box, lg = the two-factor box. scale-exempt: code-entry box 40x52 / 48x58 and its 24/26px digit, off the control band ladder by design"
+  },
+  {
+    "name": "--otp-boxed-slot-block-size",
+    "value": "3.25rem",
+    "description": "scale-exempt: 52px code box, a display input between band-2xl (48) and band-3xl (56)"
+  },
+  {
+    "name": "--otp-boxed-slot-inline-size-lg",
+    "value": "3rem",
+    "description": "scale-exempt: 48px two-factor box width, one step up from the 40px device box"
+  },
+  {
+    "name": "--otp-boxed-slot-block-size-lg",
+    "value": "3.625rem",
+    "description": "scale-exempt: 58px two-factor box, the larger 6-digit challenge"
+  },
+  {
+    "name": "--otp-boxed-slot-min-inline-size",
+    "value": "1.75rem",
+    "description": "scale-exempt: 28px floor a boxed slot shrinks to in a narrow (phone) column"
+  },
+  {
+    "name": "--otp-boxed-slot-font-size",
+    "value": "1.5rem",
+    "description": "scale-exempt: 24px code digit, read at arm's length off another device"
+  },
+  {
+    "name": "--otp-boxed-slot-font-size-lg",
+    "value": "1.625rem",
+    "description": "scale-exempt: 26px two-factor digit"
+  },
+  {
+    "name": "--otp-boxed-slot-font-weight",
+    "value": "var(--font-weight-medium)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--otp-boxed-gap",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px between code boxes, between --space-1 and --space-2"
+  },
+  {
+    "name": "--otp-boxed-radius",
+    "value": "initial",
+    "description": "default = var(--radius-md) at the call site"
+  },
+  {
+    "name": "--otp-reject-translate",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px shake travel, a motion distance not a layout step"
+  },
+  {
+    "name": "--otp-reject-duration",
+    "value": "280ms",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--button-count-min-width",
     "value": "var(--space-4)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -3299,6 +3394,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The 36px step — the mark for a `size=\"lg\"` row (a list row's leading identity)."
   },
   {
+    "name": "--avatar-size-xl",
+    "value": "calc(4rem * var(--scaling))",
+    "description": "The 64px step (`size=\"xl\"`) — a feature tile, off the control ladder: a mail / app medallion."
+  },
+  {
     "name": "--avatar-font-size",
     "value": "var(--font-size-base)",
     "description": "Initials TYPE per step — one step of the type scale per step of the box, so the two letters in a 24px mark are not the 14px set for a 32px one. The ratio holds (~0.44 of the box at every step), which is what keeps initials centred and legible rather than clipped."
@@ -3317,6 +3417,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--avatar-font-size-lg",
     "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
     "description": "Initials in the 36px mark — one step above the body step."
+  },
+  {
+    "name": "--avatar-font-size-xl",
+    "value": "var( --font-size-2xl, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )",
+    "description": "Initials in the 64px mark — the type scale's 2xl step."
+  },
+  {
+    "name": "--avatar-glyph-size-xl",
+    "value": "calc(var(--icon-size-2xl) * var(--scaling))",
+    "description": "Glyph in the 64px mark — half the box."
   },
   {
     "name": "--avatar-glyph-size-xs",
@@ -3357,6 +3467,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--avatar-tinted-background",
     "value": "initial",
     "description": "Capability medallion — `<Avatar appearance=\"tinted\">` (gh#12): the tinted plate a capability / feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape=\"square\" for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph · --control-icon-size glyph box."
+  },
+  {
+    "name": "--avatar-neutral-background",
+    "value": "initial",
+    "description": "`appearance=\"neutral\"` — the unavailable tile. Defaults = hsl(var(--muted)) fill and hsl(var(--muted-foreground)) initials, resolved at the call site."
+  },
+  {
+    "name": "--avatar-neutral-foreground",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--avatar-color-key-1",
+    "value": "#6d28d9",
+    "description": "`Avatar colorKey` — the TILE palette: ten hues of their own (not the chart series), each a solid fill under white initials at >= 5:1 (violet 7.1 · purple 7.0 · teal 5.5 · blue 6.7 · slate 7.6 · orange 5.2 · red 6.5 · cyan 5.4 · pink 6.0 · green 5.0). A tile is a self-contained chip, so one value serves both themes. The ring is a faint light edge that keeps a tile readable on a ground of its own hue (a teal tile on the teal brand story). violet"
+  },
+  {
+    "name": "--avatar-color-key-2",
+    "value": "#7e22ce",
+    "description": "purple"
+  },
+  {
+    "name": "--avatar-color-key-3",
+    "value": "#0f766e",
+    "description": "teal"
+  },
+  {
+    "name": "--avatar-color-key-4",
+    "value": "#1d4ed8",
+    "description": "blue"
+  },
+  {
+    "name": "--avatar-color-key-5",
+    "value": "#475569",
+    "description": "slate"
+  },
+  {
+    "name": "--avatar-color-key-6",
+    "value": "#c2410c",
+    "description": "orange"
+  },
+  {
+    "name": "--avatar-color-key-7",
+    "value": "#b91c1c",
+    "description": "red"
+  },
+  {
+    "name": "--avatar-color-key-8",
+    "value": "#0e7490",
+    "description": "cyan"
+  },
+  {
+    "name": "--avatar-color-key-9",
+    "value": "#be185d",
+    "description": "pink"
+  },
+  {
+    "name": "--avatar-color-key-10",
+    "value": "#15803d",
+    "description": "green"
+  },
+  {
+    "name": "--avatar-color-key-foreground",
+    "value": "0 0% 100%",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--avatar-color-key-ring-color",
+    "value": "hsl(var(--avatar-color-key-foreground) / 0.45)",
+    "description": "The ring is an inset OUTLINE (painted above the fallback that fills the box), an alpha of the initials ink."
   },
   {
     "name": "--avatar-tinted-foreground",
@@ -3497,6 +3677,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--progress-meter-block-size",
     "value": "0.5rem",
     "description": "`size=\"sm\"` — the SAME two forms, thinner, for a bar that annotates a row rather than being the subject of the screen (an in-table capacity column). The meter step is half its default hairline; the breakdown step lands exactly on the meter's default 0.5rem, which is the thinnest a partition can be and still show three fills apart. Below that the ratios are gone, which is why there is no `xs`."
+  },
+  {
+    "name": "--progress-steps-gap",
+    "value": "var(--space-1)",
+    "description": "`steps` — the gap between the segments of a segmented bar."
   },
   {
     "name": "--progress-meter-block-size-sm",
@@ -5957,6 +6142,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--editorial-auth-card-footer-space-block-start",
     "value": "var(--space-6)",
     "description": "Editorial account family tokens (gh#1439) — the signed-in pages of an editorial site: a collection of owned items, display settings, sign-in. Same contract as editorial.css (gh#1435): every geometry value a design states lives here, a theme re-declares it under its OWN width queries (no rule hard-codes a breakpoint), and colour knobs are role mirrors (`initial`, the documented default resolved at the call site)."
+  },
+  {
+    "name": "--editorial-auth-card-footer-border",
+    "value": "initial",
+    "description": "The rule above the card footer — `initial` = a hairline in --border; `none` drops it."
+  },
+  {
+    "name": "--editorial-auth-card-title-font-weight",
+    "value": "initial",
+    "description": "Card title weight — `initial` = --font-weight-semibold; --font-weight-bold for a 700 title."
+  },
+  {
+    "name": "--editorial-auth-background",
+    "value": "initial",
+    "description": "The PAGE ground behind EditorialAuth (the split's form side, the centred card page) — `initial` = transparent; e.g. hsl(var(--muted)) for the hosted frame grey."
   },
   {
     "name": "--editorial-auth-track-size",
@@ -9154,6 +9354,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Rhythm between the status code, the EmptyState body, the metadata list and the progress meter."
   },
   {
+    "name": "--error-surface-start-gap",
+    "value": "var(--space-5)",
+    "description": "`align=\"start\"`: the stack gap between heading · details · action · secondary, and the gap inside the heading (status code · title · description)."
+  },
+  {
+    "name": "--error-surface-heading-gap",
+    "value": "var(--space-2)",
+    "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
+  },
+  {
+    "name": "--error-surface-legal-font-size",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
+    "description": "The `legal` line under the actions."
+  },
+  {
     "name": "--error-surface-padding-block",
     "value": "var(--space-10)",
     "description": "Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css)."
@@ -9521,6 +9736,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--empty-state-compact-space-x",
     "value": "var(--space-2)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-title-font-size",
+    "value": "initial",
+    "description": "`variant=\"hero\"` — the result page: title size (initial → the display 3xl step), the lead description, the larger medallion, and the stack gap / block padding."
+  },
+  {
+    "name": "--empty-state-hero-description-font-size",
+    "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-medallion-size",
+    "value": "var(--band-height-3xl)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-icon-glyph-size",
+    "value": "var(--icon-size-xl)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-gap",
+    "value": "var(--space-4)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--empty-state-hero-space-y",
+    "value": "var(--space-6)",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
@@ -10394,6 +10639,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Diameter of the read/unread indicator dot; the gutter is reserved on read rows too so the titles of a mixed list stay on one optical axis."
   },
   {
+    "name": "--list-row-divider-inset",
+    "value": "initial",
+    "description": "INSET DIVIDER inside `Card variant=\"grouped\"` — where the row hairline STARTS, measured from the row's inline-start edge; it always runs to the card's end edge. `initial`, defaults resolved at the call site so a density/[data-tenant] scope that restates the row inset reaches it: a row without a leading slot starts at its text, var(--list-row-padding-x); a row with one clears the leading avatar/icon too, calc(var(--list-row-padding-x) + var(--avatar-size) + var(--list-row-gap)). Set 0 for card-wide lines in a group."
+  },
+  {
+    "name": "--list-row-divider-leading-inset",
+    "value": "initial",
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+  },
+  {
     "name": "--logo-radius",
     "value": "initial",
     "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
@@ -11024,6 +11279,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = hsl(var(--muted-foreground))"
   },
   {
+    "name": "--steps-bar-track-size",
+    "value": "0.25rem",
+    "description": "scale-exempt: 4px progress hairline, between --stroke-xl and --space-1"
+  },
+  {
+    "name": "--steps-bar-radius",
+    "value": "initial",
+    "description": "default = half the track, a fully rounded segment"
+  },
+  {
+    "name": "--steps-bar-gap",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px between segments, between --space-1 and --space-2"
+  },
+  {
+    "name": "--steps-bar-label-gap",
+    "value": "0.375rem",
+    "description": "scale-exempt: 6px segment-to-title gap, same step as the segment gap"
+  },
+  {
+    "name": "--steps-bar-font-size",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--steps-bar-track-color",
+    "value": "initial",
+    "description": "default = hsl(var(--input)): the unfilled segment is a 1.4.11 non-text boundary, ≥3:1"
+  },
+  {
+    "name": "--steps-bar-fill-color",
+    "value": "initial",
+    "description": "default = hsl(var(--primary))"
+  },
+  {
+    "name": "--steps-bar-wait-color",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground))"
+  },
+  {
+    "name": "--steps-bar-fill-duration",
+    "value": "350ms",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
     "name": "--app-setting-picker-compact-control-height",
     "value": "var(--control-height-sm)",
     "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an auth/legal footer, where the square icon-only default reads as a stray button and the full labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
@@ -11361,6 +11661,56 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-add-size",
     "value": "var(--band-height-md)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chips-gap",
+    "value": "var(--space-2)",
+    "description": "`variant=\"chips\"` — the phone desktop switcher. Fills are `initial` role mirrors resolved at the call site: --tabs-chip-background = hsl(var(--muted)); --tabs-chip-active-background = hsl(var(--foreground)); --tabs-chip-active-foreground (an HSL triple) = var(--background)."
+  },
+  {
+    "name": "--tabs-chips-list-radius",
+    "value": "0",
+    "description": "The chips strip itself is not a box: no corner, no side inset (each chip carries its own)."
+  },
+  {
+    "name": "--tabs-chips-list-space-inset-x",
+    "value": "0",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chips-list-space-inset-y",
+    "value": "calc(var(--focus-ring-width) + var(--focus-ring-glow-width))",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-radius",
+    "value": "var(--radius-pill)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-padding-x",
+    "value": "calc(var(--space-3) + 0.125rem)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-padding-y",
+    "value": "calc(var(--space-1) + 0.125rem)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-background",
+    "value": "initial",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-active-background",
+    "value": "initial",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-chip-active-foreground",
+    "value": "initial",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -12784,6 +13134,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The inline field's preferred width from the step up; it shrinks toward the floor above."
   },
   {
+    "name": "--topbar-search-wide-inline-size",
+    "value": "26.25rem",
+    "description": "`TopbarSearch measure=\"wide\"`: the home / portal search's preferred width."
+  },
+  {
     "name": "--topbar-item-padding-inline",
     "value": "var(--space-3)",
     "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's navigation, and the right-hand action slot of enterprise pro-layouts generally) draws a trigger as a full-height cell whose hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its own hover fill and its own ring, floating inside a taller strip. NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the coarse-pointer override on a touch device. A knob here would be a second answer that goes stale the moment either of those moves."
@@ -13294,6 +13649,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Content-slot measure for `measure=\"wide\"` — the SPLIT login (brand panel beside the auth card). Same width as the widest CenteredShell tier, so a product's login and its signed-in pages read at one page measure. Only `measure=\"wide\"` reads it; the default 24rem card is untouched."
   },
   {
+    "name": "--auth-shell-column-max-width",
+    "value": "25rem",
+    "description": "`measure=\"column\"` / `\"split\"`: the hosted flow's single column and its two-column page."
+  },
+  {
+    "name": "--auth-shell-split-max-width",
+    "value": "54rem",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
     "name": "--auth-shell-canonical-control-height",
     "value": "var(--band-height-lg)",
     "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on AuthShell and may retune the product theme here rather than overriding individual fields."
@@ -13569,6 +13934,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--auth-account-summary-card-padding",
+    "value": "var(--space-3) var(--space-4)",
+    "description": "`surface=\"card\"`: the roomier inset of the row as its own card."
+  },
+  {
     "name": "--auth-account-summary-identity-min-width",
     "value": "12rem",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
@@ -13589,6 +13959,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--auth-account-summary-status-font-size",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
+    "description": "The muted \"Signed in · email\" line under `name`."
+  },
+  {
     "name": "--auth-footer-content-gap",
     "value": "0.375rem",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
@@ -13597,6 +13972,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--auth-footer-text-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
+  },
+  {
+    "name": "--auth-footer-font-family",
+    "value": "initial",
+    "description": "`AuthFooter mono={false}`: the body face. Default = var(--font-family-body), resolved at the call site."
   },
   {
     "name": "--auth-footer-target-min-size",
@@ -13636,6 +14016,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--centered-shell-bar-padding-x-compact",
     "value": "var(--space-page-compact-x)",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--centered-shell-bar-frosted-background-alpha",
+    "value": "72%",
+    "description": "FROSTED BAR (`barAppearance=\"frosted\"`, both CenteredShell shapes): the muted shell ground at this alpha, this blur (+ the shared --surface-backdrop-saturate), and a hairline in --centered-shell-bar-frosted-border-color (role mirror, `initial` → hsl(var(--border)) at the call site). Reduced transparency / no backdrop-filter → solid, written by the library."
+  },
+  {
+    "name": "--centered-shell-bar-frosted-backdrop-blur-size",
+    "value": "20px",
+    "description": "scale-exempt: 20px backdrop blur radius, an optical value not a layout step"
+  },
+  {
+    "name": "--centered-shell-bar-frosted-border-color",
+    "value": "initial",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--centered-shell-bar-frosted-height",
+    "value": "3.25rem",
+    "description": "scale-exempt: 52px slim bar band, between band-2xl (48) and band-3xl (56)"
+  },
+  {
+    "name": "--centered-shell-bar-frosted-padding-block",
+    "value": "var(--space-1)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {

@@ -2879,10 +2879,10 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       },
       {
         name: "measure",
-        type: '"default" | "wide"',
+        type: '"default" | "wide" | "column" | "split"',
         defaultValue: '"default"',
         description:
-          'the auth shape only. Inline MEASURE of the shell content slot. "default" is the single auth card (24rem, or 22.5rem under variant="canonical"). "wide" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry — EXCEPT preset="context-selection": there "wide" opens the slot to --auth-shell-context-wide-card-max-width (default = the wide measure) so the chooser sits beside an explanation column (wrap both in one <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> child), and a phone keeps a --auth-shell-context-wide-main-padding-mobile gutter.',
+          'the auth shape only. "column" = the hosted flow\'s single 25rem column (`--auth-shell-column-max-width`) and "split" = its 54rem two-column page (`--auth-shell-split-max-width`), both centred with auto margins like "wide" and ignored under a preset — use these instead of overriding `--auth-shell-card-max-width` in app CSS. Inline MEASURE of the shell content slot. "default" is the single auth card (24rem, or 22.5rem under variant="canonical"). "wide" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry — EXCEPT preset="context-selection": there "wide" opens the slot to --auth-shell-context-wide-card-max-width (default = the wide measure) so the chooser sits beside an explanation column (wrap both in one <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> child), and a phone keeps a --auth-shell-context-wide-main-padding-mobile gutter.',
       },
       {
         name: "density",
@@ -2890,8 +2890,16 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
         description:
           'the auth shape only. Vertical density scoped to auth-card descendants. Defaults to "compact" under variant="canonical" and "comfortable" otherwise.',
       },
+      {
+        name: "barAppearance",
+        type: '"default" | "frosted"',
+        defaultValue: '"default"',
+        description:
+          'BOTH shapes. The top bar material. "frosted" is a SLIM bar — one control row in a 52px band (`--centered-shell-bar-frosted-height`, `--centered-shell-bar-frosted-padding-block` 4px) — and pins it (sticky; an ancestor with overflow hidden/clip defeats sticky, so keep the app root overflow visible) as a translucent pane the page scrolls UNDER: the muted shell ground at `--centered-shell-bar-frosted-background-alpha` (72%), `--centered-shell-bar-frosted-backdrop-blur-size` (20px) + the shared `--surface-backdrop-saturate`, a hairline in `--centered-shell-bar-frosted-border-color`. The library writes the fallbacks: under `prefers-reduced-transparency: reduce` and where `backdrop-filter` is unsupported the bar is SOLID — write no consumer @media for it. "default" keeps the bar byte-identical.',
+      },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The CenteredShell hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO use CenteredShell for an AUTHENTICATED page that has a topbar with actions but NO sidebar — the hosted-ID 'My Page', an account / self-service surface, a standalone settings page. It is the third shell: AppShell (needs a sidebar) · the auth CenteredShell (unauthenticated narrow card) · CenteredShell (authenticated centred column).",
       "DO put a <Topbar start={<brand/>} end={<actions/>}/> in `topbar` — CenteredShell wraps it in the padded `.app-topbar` chrome, so you get inline padding + border + backdrop with zero custom CSS. Do NOT hand-roll a bar with raw `padding-inline` — the bare Topbar primitive ships no inset (the .ui-topbar zero-padding footgun) and content sits flush to the edge.",
       "DO pick `width` by content: `sm` (~32rem) for a single settings form, `md` (default, ~46rem) for a My Page of stacked sections, `lg` (~64rem) for a service-launcher grid. All are wider than the auth CenteredShell's 24rem card.",
@@ -2906,6 +2914,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       'AUTH SHAPE: DO build the password-recovery and sign-in MFA CHALLENGE panels as a COMPOSITION inside `preset="account-recovery"` — there is NO PasswordRecoveryPanel and NO MfaChallengePanel component: Card > CardHeader(CardTitle + CardDescription, INSIDE the bordered surface) > CardContent > AuthStack[ Alert notice · FormField fields · Button fullWidth · Flex justify="between" wrap fallback row ]. Do NOT put AuthIdentity above the panel there (it always renders the hosted mark), and NEVER reuse TwoFactorSetup — that is the ENROLLMENT dialog, not a sign-in challenge. See the `auth-recovery-panels` pattern.',
       'AUTH SHAPE: DO combine `variant` and `preset` — they are orthogonal: `variant` owns control density + heading size, `preset` owns the page measure. `variant="auth-canonical" preset="device-authorization"` is the canonical device screen.',
       'AUTH SHAPE: DO let `preset="context-selection"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing "remember" row pass as three siblings with NO page-local spacing.',
+      'DO use `barAppearance="frosted"` for a centred auth / approval page whose bar should stay on screen with the page scrolling beneath it (logo in `brand`, the language picker in `actions`). Do NOT hand-roll `backdrop-blur` / `bg-*/70` / `sticky` classes on the bar, and do not write your own reduced-transparency fallback — the shell owns both.',
       "AUTH SHAPE: DO NOT add a page-local width, inset or colour to hit an artboard — if a measure is missing, it is a library gap: a new preset or token, never consumer CSS (rules #44/#45).",
       'AUTH SHAPE: DO state the block placement with `align` when a product wants the opposite of its preset\'s default — align="center" on preset="login" for a vertically centred SCR-001, align="anchored" to top-anchor a preset that centres. It collapses the preset\'s block-start inset to its block-end one on desktop AND mobile, so justify-content has nothing to fight. Re-declaring --auth-shell-login-flow-offset-block (or any preset offset token) from a consumer stylesheet is the anti-pattern it replaces.',
       "AUTH SHAPE: DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",
@@ -3568,6 +3577,13 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
           "The step below which the field folds to a TopbarItem search cell (sm 40rem · md 48rem · lg 64rem · xl 80rem). CSS decides at the step, so SSR and the first paint agree and the typed query survives a resize.",
       },
       {
+        name: "measure",
+        type: '"default" | "wide"',
+        defaultValue: '"default"',
+        description:
+          'The inline field\'s preferred width: "default" reads --topbar-search-inline-size (16rem); "wide" reads --topbar-search-wide-inline-size (26.25rem) for a home / portal search. It still shrinks toward the text floor when the bar is short of room.',
+      },
+      {
         name: "ariaLabel",
         type: "string",
         description:
@@ -4131,15 +4147,41 @@ function Assistant() {
       },
       {
         name: "width",
-        type: '"sm" | "md" | "lg"',
+        type: '"sm" | "md" | "lg" | "column"',
         defaultValue: '"sm"',
         description:
-          "system mode ONLY — measure of the centred column (the CenteredShell width tier).",
+          'system mode ONLY — measure of the centred column (the CenteredShell width tier). "column" = the hosted flow\'s 25rem column (`--auth-shell-column-max-width`, the auth CenteredShell `measure="column"`), so an error page lines up with the flow it belongs to.',
+      },
+      {
+        name: "legal",
+        type: "ReactNode",
+        description:
+          "A short legal / product line DIRECTLY under the actions (「GoDX ID · 利用規約 · プライバシー」), inside the surface rather than in the page-bottom `footer` band; small and muted (`--error-surface-legal-font-size`). Both aligns.",
+      },
+      {
+        name: "align",
+        type: '"center" | "start"',
+        defaultValue: '"center"',
+        description:
+          '`"start"` = the HOSTED-PAGE shape (an auth / approval site\'s 403 / 404 / expired page): a small mono status code over a LARGE bold start-aligned title (Heading size 3xl, display optics), the description, the organization / permission / request id / maintenance window as an inset grouped card (Card variant="grouped" + Descriptions) ABOVE the action, the action stretched to the column so `Button fullWidth size="lg"` spans it, and `secondaryAction` centred under it. No medallion. `"center"` (default) is unchanged.',
+      },
+      {
+        name: "secondaryAction",
+        type: "ReactNode",
+        description:
+          'A secondary NAVIGATION link under the action (「ダッシュボードへ」) — a `Button variant="link"` or a router Link. Not a second recovery action; `action` stays the single recovery. Both aligns.',
+      },
+      {
+        name: "topbar",
+        type: "ReactNode",
+        description:
+          "system mode ONLY — the page top bar (a `<Topbar start={<Logo/>} end={<AppSettingPicker …/>}/>`), forwarded to the CenteredShell `topbar` slot.",
       },
       { name: "id", type: "string", description: "Root element id." },
       { name: "className", type: "string", description: "Root class override (rarely needed)." },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The ErrorSurface hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO use ErrorSurface for ANY 400 / 403 / 404 / 500 / 503 page. It is a real import from @godxjp/ui/layout — never hand-compose an error page from the auth CenteredShell + a generic Card, and never add a consumer-local `.canonical-auth-card`-style class (that workaround IS the regression).",
       'DO put mode="application" INSIDE the shell the route already renders: <AppShell …><PageContainer …><ErrorSurface mode="application" …/></PageContainer></AppShell>. The surface returns only its own block on purpose, so the sidebar/topbar/breadcrumb survive and the user can navigate away.',
       'DO use mode="system" for 500/503 and pass NOTHING for geometry — the surface renders CenteredShell align="center" itself. A className="min-h-dvh flex items-center" is always wrong.',
@@ -5013,6 +5055,7 @@ import { Trash2 } from "lucide-react";
       },
     ],
     usage: [
+      'DO give a large PAGE TITLE its display optics from the theme, not per call site: `<Heading level={1} size="3xl" weight="bold">` and, once in theme.css, `--letter-spacing-display: -0.022em; --line-height-display: 1.12` (plus `--font-size-3xl: 2.125rem` for an exact 34px at every width — the default 3xl is fluid). Every 3xl/4xl/5xl Heading and Text reads those two knobs; unset they resolve to `--letter-spacing-tight` / `--line-height-tight`, so nothing moves until a theme opts in. Never hand-write `tracking-[-0.022em]` / `leading-[1.12]`.',
       'DO use `<Heading level>` for section titles instead of a raw `<h2 className="text-lg font-semibold">`. The level drives both the token size and the semantic element.',
       "Inside a Card use `<CardTitle>`; use `<Heading>` for free-standing page/section headings not covered by a component slot.",
     ],
@@ -5281,6 +5324,91 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
   <Card><CardContent>…</CardContent></Card>
 </Reveal>`,
     storyPath: "general/reveal.tsx",
+    rules: [],
+  },
+  {
+    name: "CollapseGroup",
+    group: "general",
+    tagline:
+      "A removed list child COLLAPSES (its measured height, block padding/margin and opacity → 0) before it unmounts, so the rows under it slide up instead of jumping. Works with plain React removal: filter the array. No wrapper element; reduced motion removes at once.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description:
+          'The list\'s KEYED children (rows). Each must accept a `ref` and spread unknown props onto its root (every @godxjp/ui row does, e.g. `ListRow as="li"`).',
+      },
+      {
+        name: "onExited",
+        type: "(key: string) => void",
+        description: "Called with the child's own key once it has collapsed and unmounted.",
+      },
+    ],
+    usage: [
+      'DO put it directly inside the list element and pass the keyed rows: `<Flex as="ul" marker="none" direction="col" gap="none"><CollapseGroup>{pending.map((item) => <ListRow key={item.id} as="li" … />)}</CollapseGroup></Flex>` — remove an item from `pending` and it collapses out (an agreed requirement moving to 完了済み).',
+      "While it leaves, the row is `inert` + `aria-hidden` and carries `data-leaving`; move focus to a sensible neighbour yourself if the removed row held it. Duration `--collapse-exit-duration` (--duration-slow) on --ease-emphasized; under prefers-reduced-motion it is removed at once.",
+    ],
+    useCases: [
+      "A to-do / required-action row that disappears once done.",
+      "Removing a session, token or invitation from a short list.",
+    ],
+    related: [
+      "StepTransition — swaps a whole step; CollapseGroup removes one row from a list.",
+      "ListRow — the row it usually animates.",
+    ],
+    example: `import { CollapseGroup } from "@godxjp/ui/general";
+
+<Flex as="ul" marker="none" direction="col" gap="none">
+  <CollapseGroup>{items.map((item) => <ListRow key={item.id} as="li" title={item.title} />)}</CollapseGroup>
+</Flex>`,
+    storyPath: "general/collapse-group.tsx",
+    rules: [],
+  },
+  {
+    name: "StepTransition",
+    group: "general",
+    tagline:
+      "The exit + enter motion between the steps of a multi-step flow (email → password, code → confirm → done): the outgoing step slides toward the inline start and fades while the next enters from the inline end, critically damped; a cross-fade under prefers-reduced-motion.",
+    props: [
+      {
+        name: "value",
+        type: "string | number",
+        required: true,
+        description:
+          "Identity of the step on screen. A CHANGE runs the transition; the first render does not animate. The incoming step is keyed by it, so it mounts fresh (no state leaks from the previous step).",
+      },
+      {
+        name: "direction",
+        type: '"forward" | "backward"',
+        defaultValue: '"forward"',
+        description:
+          "`forward`: out toward the inline start, in from the inline end. `backward` (going back, 変更 / 戻る): the mirrored path. RTL flips both.",
+      },
+      { name: "children", type: "ReactNode", description: "The current step's content." },
+      { name: "className", type: "string", description: "Extra classes on the wrapper." },
+    ],
+    usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The StepTransition hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
+      'DO wrap the swapping part of a multi-step screen and give it the step as `value`: `<StepTransition value={step} direction={back ? "backward" : "forward"}>{step === "email" ? <EmailStep /> : <PasswordStep />}</StepTransition>`. Keep the shell, the title that does not change and the footer OUTSIDE it.',
+      "DO NOT add GSAP / Framer for this, and do not hand-write @keyframes: the travel (`--step-transition-translate`, 24px), durations (`--step-transition-duration` = --duration-slow, `--step-transition-exit-duration` = --duration-base, `--step-transition-reduced-duration` 200ms) and the --ease-emphasized curve are tokens.",
+      "DO move focus to the new step's heading or first field yourself after `value` changes — the outgoing layer is `inert` + `aria-hidden` while it is painted, so focus can never stay on it, but the component does not choose a target for you.",
+      "The two layers share one grid cell, so the box is as tall as the taller step while they cross; the outgoing layer is removed on its animationend (1s fallback). The outgoing step is the SAME React instance it was while current (same key), so it leaves with its live state — a typed value is still there during the exit; it is not re-mounted.",
+    ],
+    useCases: [
+      'Sign-in: the email step leaves and the password step enters; 変更 goes back with direction="backward".',
+      'Device authorization: code → confirm → done under a Steps type="bar".',
+      "Account creation: the form → 'check your email' in the same column.",
+    ],
+    related: [
+      "Reveal — ENTRANCE only (a section fading up on mount / in view). StepTransition is the swap between two contents.",
+      'Steps — `type="bar"` is the progress line that usually sits above a StepTransition.',
+    ],
+    example: `import { StepTransition } from "@godxjp/ui/general";
+
+<StepTransition value={step} direction={goingBack ? "backward" : "forward"}>
+  {step === "email" ? <EmailStep /> : <PasswordStep />}
+</StepTransition>`,
+    storyPath: "general/step-transition.tsx",
     rules: [],
   },
   {
@@ -5848,10 +5976,10 @@ export default function InvoiceList({
       },
       {
         name: "variant",
-        type: '"default" | "muted" | "outline" | "borderless" | "featured" | "dashed"',
+        type: '"default" | "muted" | "outline" | "borderless" | "featured" | "dashed" | "grouped"',
         defaultValue: '"default"',
         description:
-          'Surface fill AND edge. `outline` is Ant Design\'s `outlined` — no fill, hairline kept. `borderless` is Ant Design\'s `variant="borderless"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement="perimeter"` instead. `dashed` is an EDITING / drop area (a layout being edited, an "add" tile): no fill, no elevation, a dashed perimeter (--card-dashed-border-color, default the hairline colour; --card-dashed-border-width, default --stroke-md); `accent` retints the dash on all four sides — `<Card variant="dashed" accent="primary">` around the edited grid.',
+          'Surface fill AND edge. `outline` is Ant Design\'s `outlined` — no fill, hairline kept. `borderless` is Ant Design\'s `variant="borderless"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement="perimeter"` instead. `dashed` is an EDITING / drop area (a layout being edited, an "add" tile): no fill, no elevation, a dashed perimeter (--card-dashed-border-color, default the hairline colour; --card-dashed-border-width, default --stroke-md); `accent` retints the dash on all four sides — `<Card variant="dashed" accent="primary">` around the edited grid. `grouped` is the INSET GROUPED LIST (Apple `.insetGrouped`, the Settings look): borderless fill, and the ListRow / Descriptions rows inside a `CardContent flush` separate with a hairline inset to the row text (`--list-row-divider-inset`, `--list-row-divider-leading-inset`) instead of a card-wide rule; Descriptions items take the ListRow inset and rhythm, so key/value rows and entity rows read as one list.',
       },
       {
         name: "hoverable",
@@ -5910,6 +6038,7 @@ export default function InvoiceList({
       },
     ],
     usage: [
+      'DO build an INSET GROUPED LIST (iOS Settings style: a rounded group, hairlines inset to the row text, an optional caption above and below) as `<Flex direction="col" gap="xs">` of [a header `<Flex pad={{ inline: 4 }}><Text size="sm" tone="muted">…</Text></Flex>`] · `<Card variant="grouped"><CardContent flush><Flex as="ul" marker="none" direction="col" gap="none">` of `<ListRow as="li" title description trailing>` · [a footer caption the same as the header]. `pad={{ inline: 4 }}` is the row inset (`--list-row-padding-x`, space-4), so the caption starts on the row text. Trailing values: a scope in `<Text mono size="xs" tone="muted">`, a `Badge`, a chevron icon, a `Radio`/`Switch`. Key/value rows (提供元 · 株式会社…) are `<Descriptions layout="horizontal" columns={1}>` in the same `CardContent flush` — inside a grouped card its items take the row inset and the same inset hairline. A FORM in the group (label left, value right, 氏名 · メール · パスワード): `<Card variant="grouped"><CardContent flush><Form layout="horizontal" labelWidth="7rem">` of FormFields — inside a grouped card each FormField is a row (row inset, no gap, inset hairline, the input drawn without its own box). Do NOT hand-roll a `rounded bg-card` div or draw dividers with `border-b`.',
       'DO always wrap body content in <CardContent> — the bare <Card> div has zero inner padding; content renders flush against card edges without it. Never add className="p-4" directly on <Card> as a substitute.',
       "DO put titles/descriptions in <CardHeader>/<CardTitle>/<CardDescription>. Use <CardHeader banded> for a visually separated muted-background header band (mirrors <CardFooter separated>). Pair with <CardAction> inside a flex-row CardHeader for header-level action buttons.",
       'DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as="p"> so it is not announced as a heading.',
@@ -7204,9 +7333,10 @@ import { Flex } from "@godxjp/ui/layout";
       { name: "action", type: "ReactNode", description: "CTA element (e.g. a Button)." },
       {
         name: "variant",
-        type: '"page" | "section" | "compact"',
+        type: '"page" | "section" | "compact" | "hero"',
         defaultValue: '"page"',
-        description: "Contextual visual weight. Compact omits the icon medallion.",
+        description:
+          "Contextual visual weight. Compact omits the icon medallion. `hero` is a RESULT PAGE (approved / denied / expired / connected): a bold title at the display 3xl step with the display optics (`--letter-spacing-display` / `--line-height-display`), a 56px medallion (`--empty-state-hero-medallion-size`), a lead-size description (`--empty-state-hero-description-font-size`); use it with `titleLevel={1}` as the page heading, `tone` for the outcome, and `action` for the next step.",
       },
       {
         name: "tone",
@@ -7237,6 +7367,7 @@ import { Flex } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The EmptyState hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       'DO decide whether the empty state is a STATUS MESSAGE (gh#1271). It is not a live region by default: a static "No records yet" that is there when the page loads would otherwise be announced as an update on every render (WCAG 4.1.3 covers content that CHANGES). Pass `live` (→ `role="status"`) only when it appears as the result of a user action — a search or filter that matched nothing: `<EmptyState live icon={SearchIcon} title="No matching invoices" />`. Inside `DataTable` do neither — its empty cell already carries `aria-live="polite"`.',
       "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
       'DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs="p"` so the message is not a heading at all.',
@@ -7323,6 +7454,12 @@ import { Flex } from "@godxjp/ui/layout";
           "Allow value > 100 to render an over-capacity fill: bar caps at 100% width but gets a diagonal hatch + destructive tone (e.g. 252%). aria-valuetext reports the real ratio. Off by default (clamps to 100). On shape='ring' there is no hatch — diagonal stripes are a rectangle drawing — so the destructive tone and aria-valuetext carry it.",
       },
       {
+        name: "steps",
+        type: "number",
+        description:
+          'antd `steps` — the bar drawn as `steps` equal segments, `Math.round(steps × value / 100)` filled: the 「3件中1件完了」 meter is `<Progress steps={3} value={33} label="3件中1件完了" />`. Still ONE progressbar with the same value. A lit segment grows in from the inline start (none under reduced motion). `--progress-steps-gap` (space-1). Bar shape only; ignored by `shape="ring"`.',
+      },
+      {
         name: "shape",
         type: '"bar" | "ring"',
         defaultValue: '"bar"',
@@ -7338,6 +7475,7 @@ import { Flex } from "@godxjp/ui/layout";
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The Progress hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       'DO import from `@godxjp/ui/data-display`, not from a generic UI path: `import { Progress } from "@godxjp/ui/data-display";`',
       "DO pass `value` as a 0–100 number — the component clamps it internally via `Math.max(0, Math.min(100, value))`, so out-of-range values are safe but misleading; compute the real percentage before passing it.",
       'DO drive `tone` dynamically from business logic — e.g. `variant={pct >= 80 ? "warning" : "success"}` — to communicate threshold status semantically rather than with raw colour classes.',
@@ -8646,6 +8784,13 @@ const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
         name: "field",
         type: "string",
         description: "Tên trường của form — dùng khi `id` không đủ để nối control với error/aria.",
+      },
+      {
+        name: "labelHidden",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Keep `label` as the control's accessible name (aria-labelledby) but hide it VISUALLY (sr-only); the control takes the whole row in every layout. For a field whose purpose the layout already shows (a single code field under a page title). Prefer a visible label.",
       },
       {
         name: "labelAddon",
@@ -10577,10 +10722,10 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
     props: [
       {
         name: "optionType",
-        type: '"default" | "button" | "card"',
+        type: '"default" | "button" | "card" | "list"',
         defaultValue: '"default"',
         description:
-          "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds the choices into one segmented bar; `card` (gh#1555) draws each choice as a bordered row whose WHOLE surface is the label (a press anywhere selects), with the option's `leading` before the title and `extra` at the inline end. Selected = border + inner ring + filled dot, never colour alone; the focus ring is drawn inside the card, so an `overflow: hidden` ancestor cannot clip it. The role stays `radiogroup`/`radio` in every case: this is paint, never semantics.",
+          "`list` = the INSET GROUPED LIST (iOS Settings / an organisation chooser): the same rows as `card` (whole row is the label, `leading`/`extra`, sections, native arrow keys across sections) drawn as ONE card surface per section with the section label above it, a hairline inset to the row text between rows, and the radio mark at the row END after `extra`; selected = the filled dot (no ring). Put it on a muted ground (the auth shell); every section surface is the card fill, a section's `appearance=\"muted\"` does not grey it in list mode. Tokens `--choice-list-{background,radius,divider-color,divider-inset,divider-leading-inset,section-gap,label-gap}`. antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds the choices into one segmented bar; `card` (gh#1555) draws each choice as a bordered row whose WHOLE surface is the label (a press anywhere selects), with the option's `leading` before the title and `extra` at the inline end. Selected = border + inner ring + filled dot, never colour alone; the focus ring is drawn inside the card, so an `overflow: hidden` ancestor cannot clip it. The role stays `radiogroup`/`radio` in every case: this is paint, never semantics.",
       },
       {
         name: "buttonStyle",
@@ -10641,6 +10786,7 @@ const [description, setDescription] = React.useState<TranslatableValue>({});
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The RadioGroup hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO use the `options` prop for the data-driven path: pass `{ label, value, disabled?, description? }[]` and RadioGroup renders every option as a correctly labelled Field automatically — never hand-roll Radio.Item + Label pairs in a loop yourself.",
       "DO provide `name` whenever the group lives inside an HTML form: the group renders a hidden `<input name={name}>` carrying the selected string value, making the field natively form-submittable without a separate hidden input.",
       "DO use controlled mode (`value` + `onValueChange`) for any form managed by useForm or a state manager. Use `defaultValue` only for truly uncontrolled UI where you never need to read the value in code.",
@@ -11526,10 +11672,10 @@ toast.error("保存に失敗しました"); // also carries a close button`,
       },
       {
         name: "variant",
-        type: '"default" | "line" | "card" | "editable-card"',
+        type: '"default" | "line" | "card" | "editable-card" | "chips"',
         defaultValue: '"default"',
         description:
-          "Trigger-strip appearance — this is Ant Design's `type` under the library's own `variant` vocabulary. `default` is the pill strip (antd has no equivalent). `line` is UNDERLINE-ONLY: the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. `card` gives each tab a boxed face on a rail (--tabs-card-*). `editable-card` is `card` plus the add button and per-tab remove shortcut, and needs `onEdit` to do anything. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant=\"line\">`.",
+          "Trigger-strip appearance — this is Ant Design's `type` under the library's own `variant` vocabulary. `default` is the pill strip (antd has no equivalent). `line` is UNDERLINE-ONLY: the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. `card` gives each tab a boxed face on a rail (--tabs-card-*). `editable-card` is `card` plus the add button and per-tab remove shortcut, and needs `onEdit` to do anything. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant=\"line\">`. `chips` — the phone desktop switcher: each tab a separate rounded chip with a gap (selected = ink fill --tabs-chip-active-background under inverse text, the rest --tabs-chip-background muted), the strip scrolling sideways, `onAdd` a round chip at the end; keyboard and ARIA unchanged.",
       },
       {
         name: "tabPlacement",
@@ -12020,9 +12166,9 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "type",
-        type: '"default" | "dot" | "inline" | "navigation"',
+        type: '"default" | "dot" | "inline" | "navigation" | "bar"',
         description:
-          "Render full markers, compact dots, a numbered inline auth progress row, or Ant Design's `navigation` bar — slab steps with a chevron between them (the default hairline connector is switched off there so it is not drawn through the glyph). `dot` IS antd's `progressDot`; antd 6.6.2 deprecates that prop in favour of exactly this value.",
+          "`bar` = the thin step-progress bar of a short hosted flow (コード入力 → 確認 → 完了): one equal 4px segment per step (`--steps-bar-track-size`, 6px apart `--steps-bar-gap`), finished + current segments filled (`--steps-bar-fill-color`, default --primary; error = destructive), the title UNDER the segment, current title in medium weight; the fill grows from the inline start over `--steps-bar-fill-duration` (350ms, --ease-emphasized) and cross-fades under prefers-reduced-motion; never folds to vertical; `description` is not drawn. Otherwise: render full markers, compact dots, a numbered inline auth progress row, or Ant Design's `navigation` bar — slab steps with a chevron between them (the default hairline connector is switched off there so it is not drawn through the glyph). `dot` IS antd's `progressDot`; antd 6.6.2 deprecates that prop in favour of exactly this value.",
       },
       {
         name: "percent",
@@ -12068,6 +12214,7 @@ import { Button } from "@godxjp/ui/general";
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The Steps hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO: Pass all steps via the `items` array (each `{ title, subtitle?, description?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",
       "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
       "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",
@@ -16280,17 +16427,17 @@ import { fetchInvoice } from "@/api/invoices";
       },
       {
         name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg" | "xl"',
         defaultValue: '"md"',
         description:
-          'Box size on the SHARED CONTROL LADDER — md 32px (--control-height, the inert default), sm 28px, xs 24px, lg 36px, the same --control-height-* tier Button and Input read. STATE IT WHENEVER THE ROW\'S HEIGHT IS ALREADY DECIDED: a mark inside a `<Button size="icon-sm">` trigger, a mark in a 24/28px dense table row, a mark beside a `size="sm"` Button. A `size="sm"` avatar measures exactly as tall as a `size="sm"` Button, so the row stays level. Before gh#716 the box was welded to --control-height: a 32px mark inside a 28px icon-sm trigger OVERFLOWED it, and a consumer sweeping control heights across 38 routes had no legal move but to raise the whole row to 32px. The initials\' type step and a glyph\'s box move WITH the box (one step of the type scale, one step of the --icon-size-* scale), and shape="square" rides the identical ladder — so a small mark is small, never clipped. A size BEYOND the control ladder (a 96px profile mark) is still a className size utility; the prop is for the control row.',
+          'Box size on the SHARED CONTROL LADDER — md 32px (--control-height, the inert default), sm 28px, xs 24px, lg 36px, the same --control-height-* tier Button and Input read. STATE IT WHENEVER THE ROW\'S HEIGHT IS ALREADY DECIDED: a mark inside a `<Button size="icon-sm">` trigger, a mark in a 24/28px dense table row, a mark beside a `size="sm"` Button. A `size="sm"` avatar measures exactly as tall as a `size="sm"` Button, so the row stays level. Before gh#716 the box was welded to --control-height: a 32px mark inside a 28px icon-sm trigger OVERFLOWED it, and a consumer sweeping control heights across 38 routes had no legal move but to raise the whole row to 32px. The initials\' type step and a glyph\'s box move WITH the box (one step of the type scale, one step of the --icon-size-* scale), and shape="square" rides the identical ladder — so a small mark is small, never clipped. A size BEYOND the control ladder (a 96px profile mark) is still a className size utility; the prop is for the control row. `xl` (64px, --avatar-size-xl) is OFF the ladder: a feature tile (a mail / app medallion); `shape="square"` takes it too.',
       },
       {
         name: "appearance",
-        type: '"default" | "tinted"',
+        type: '"default" | "tinted" | "neutral"',
         defaultValue: '"default"',
         description:
-          'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on.',
+          'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on. `neutral` is an UNAVAILABLE / 準備中 tile: grey fill (--avatar-neutral-background, default --muted) and muted initials (--avatar-neutral-foreground, default --muted-foreground), both themes; it wins over `colorKey`.',
       },
       {
         name: "presence",
@@ -16310,6 +16457,12 @@ import { fetchInvoice } from "@/api/invoices";
         defaultValue: '"person"',
         description:
           'Who the mark stands for. `person` (inert default) emits no attribute and no node. `agent` marks an AI AGENT wherever a person could be mistaken for one — a member list, an assignee picker, a comment author: a white-on-violet "AI" pill at the TOP/inline-end corner, spilling slightly past the mark behind a --background ring (presence owns the bottom corner, so the two compose), legible at every size xs..lg, plus a localized sr-only "AI agent" (t("dataDisplay.avatar.agent")), so the difference is never the colour alone (WCAG 1.4.1). Same two values as OrgChart `variant`. Retune with --avatar-agent-* (colour from the --agent role). Where the NAME is printed too, add `<AgentBadge />` beside it; where only the mark appears (icon column, dense cell), the Avatar alone.',
+      },
+      {
+        name: "colorKey",
+        type: "string | number",
+        description:
+          'A stable key (an app id, a user id) hashed (FNV-1a) onto the ten-hue TILE palette --avatar-color-key-1…10 (violet, purple, teal, blue, slate, orange, red, cyan, pink, green — not the chart series), so each tile in a row gets a distinct, repeatable colour: `<Avatar shape="square" size="xs" colorKey="tasks"><AvatarFallback>T</AvatarFallback></Avatar>`. Solid fill under white initials (--avatar-color-key-foreground), >= 5:1 for every hue in both themes, plus a faint light ring (--avatar-color-key-ring-color) so a tile stays visible on a ground of its own hue (a teal tile on the brand story). Wins over `shape` and `tinted` fills; ignored under `appearance="neutral"`. Ten hues means two string keys CAN share one; pass a NUMBER (1–10, wrapping) to pick the hue directly for a short list that must never repeat.',
       },
       {
         name: "children",
@@ -16969,6 +17122,13 @@ export default function PasswordBlock() {
       },
       { name: "readOnly", type: "boolean", description: "Refuse edits including paste." },
       {
+        name: "mono",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Paint the characters in the mono face (`--font-family-mono`): a device code of letters and digits (`LTZW-CZPS`) reads column for column and I/1, O/0 stay apart. Emits `data-mono` on the hidden input only when set.",
+      },
+      {
         name: "maxLength",
         type: "number",
         required: true,
@@ -17033,10 +17193,12 @@ export default function PasswordBlock() {
       },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The InputOTP hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
       'DO centre a challenge with `align="center"` on InputOTP — never with a wrapper `<div className="flex justify-center">`. The container is owned by input-otp, so a wrapper is the only thing a consumer CAN reach, which is exactly why the prop exists.',
       "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
       "For device codes, set `appearance='grouped'` on each InputOTPGroup to render one outline per group while preserving the single hidden input, paste, caret, keyboard and screen-reader behavior.",
+      'DO use `appearance="boxed"` on each InputOTPGroup for the LARGE code field — every slot its own rounded box with a gap (`--otp-boxed-gap`, 6px): a device code is `<InputOTP maxLength={8} mono formatter={(v) => v.toUpperCase()} pasteTransformer={(v) => v.replace(/[^a-z0-9]/gi, "")}>` with two 4-slot boxed groups and an InputOTPSeparator (40x52 boxes, 24px digit); a two-factor code is `size="lg"` with two 3-slot groups (48x58, 26px) and `onComplete` for auto-submit. Boxed geometry is its own `--otp-boxed-*` set, so the device-authorization preset (which retunes `--otp-slot-*`) does not shrink it; `size="xs"|"sm"` fall back to the control ladder. A rejected code (status="error" / aria-invalid) shakes the boxed row once (x ±6px, 280ms, `--otp-reject-translate` / `--otp-reject-duration`); under prefers-reduced-motion only the red edge shows.',
       "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
       "DO widen the slots with `--otp-slot-size` when a challenge row must fill a wide auth panel — it defaults to the live `--control-height` tier, so re-scoping `--control-height` on the card instead would also resize the submit button and every other input in it. Set a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
       'DO use `--otp-slot-inline-size` / `--otp-slot-block-size` when the code field is NOT square — a device-grant slot is taller than it is wide. They win over the `--otp-slot-size` shorthand and fall back to it, so setting neither keeps the square control tier. You rarely set them by hand inside `the auth CenteredShell preset="device-authorization"`: that preset already owns its code-field measure.',
@@ -18896,6 +19058,13 @@ const columns = Array.from({ length: 24 }, (_, hour) => ({ key: hour, label: new
       },
       { name: "locale", type: "ReactNode", description: "Optional consumer-owned locale control." },
       {
+        name: "mono",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Set the line in the monospace face (default). `false` uses the body face (--auth-footer-font-family, default --font-family-body), narrower, so a long legal line stays on one row in a 400px column.",
+      },
+      {
         name: "className",
         type: "string",
         description: "Optional structural class override merged onto the footer root.",
@@ -19015,6 +19184,19 @@ import { Logo } from "@godxjp/ui/general";
         required: true,
         description: "Authoritative signed-in email.",
       },
+      {
+        name: "name",
+        type: "ReactNode",
+        description:
+          'The person\'s display name. With it the row is two lines: the name, then a localized "Signed in · {email}" line (ja ログイン中 · …, key layout.authAccountSummary.signedIn, `--auth-account-summary-status-font-size`) — the identity card under a device / consent screen. Without it the single email line is unchanged.',
+      },
+      {
+        name: "surface",
+        type: '"muted" | "card"',
+        defaultValue: '"muted"',
+        description:
+          'Row fill. "muted" (default) for a row inside a card. "card" for a row placed directly on the muted auth page: the card fill, the card radius and a roomier inset (`--auth-account-summary-card-padding`).',
+      },
       { name: "avatarSrc", type: "string", description: "Optional real avatar URL." },
       {
         name: "avatarFallback",
@@ -19040,6 +19222,7 @@ import { Logo } from "@godxjp/ui/general";
       { name: "className", type: "string", description: "Optional structural class override." },
     ],
     usage: [
+      'DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import "@godxjp/ui/styles/hosted-flow-layout";` after core. The AuthAccountSummary hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.',
       "Pass only the authoritative signed-in email; AuthAccountSummary never fetches or invents identity data.",
       "Pass localized actionLabel and the existing account-switch handler. The component owns no route, mutation or permission behavior.",
       "The package owns avatar fallback, long-email truncation, responsive action wrapping and keyboard focus. Retune only through --auth-account-summary-* tokens.",

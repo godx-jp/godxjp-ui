@@ -40,6 +40,14 @@ export default function Demo() {
               actionLabel="アカウントを切り替える"
               onAction={() => {}}
             />
+            {/* `name` — two lines: the name, then the localized "Signed in · email" line. */}
+            <AuthAccountSummary
+              name="Hanako Yamada"
+              email="hanako.yamada@example.co.jp"
+              avatarFallback="HY"
+              actionLabel="Switch"
+              onAction={() => {}}
+            />
             <AuthAccountSummary
               email="operations@example.co.jp"
               actionLabel="アカウントを切り替える"

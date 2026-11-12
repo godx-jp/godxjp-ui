@@ -325,7 +325,12 @@ export type StepItemProp = {
  * value). `inline` is the compact numbered auth/device progress row. `navigation` is antd's
  * chevron-sectioned bar: each step becomes a full-width slab pointing at the next one.
  */
-export type StepsTypeProp = "default" | "dot" | "inline" | "navigation";
+/**
+ * Marker appearance. `bar` is the thin step-progress bar of a short hosted flow (コード入力 → 確認
+ * → 完了): one equal segment per step, filled for finished and current steps, the title under it.
+ * Like `inline` it has no marker and never folds to vertical.
+ */
+export type StepsTypeProp = "default" | "dot" | "inline" | "navigation" | "bar";
 
 /** @see Steps */
 /**
@@ -465,9 +470,11 @@ export type TabItemProp = {
 /**
  * @see Tabs — trigger-strip appearance. This is Ant Design's `type` spelled in the library's own
  * `variant` vocabulary: `line`, `card` and `editable-card` are antd's values, `default` is the
- * library's pill strip (antd has no equivalent).
+ * library's pill strip (antd has no equivalent). `chips` — each tab is its own rounded chip with a gap between them (selected = ink fill with
+ * inverse text, the rest a muted fill), the strip scrolls sideways, and `onAdd` is a round chip at
+ * the end: the phone desktop switcher. Keyboard and ARIA are the tablist's, unchanged.
  */
-export type TabsVariantProp = "default" | "line" | "card" | "editable-card";
+export type TabsVariantProp = "default" | "line" | "card" | "editable-card" | "chips";
 
 /**
  * @see Tabs — which edge the trigger strip parks on. This is Ant Design 6.6.2's `tabPlacement`

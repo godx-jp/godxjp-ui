@@ -428,6 +428,8 @@
   --topbar-search-min-text-inline-size: 8ch;
   /* The inline field's preferred width from the step up; it shrinks toward the floor above. */
   --topbar-search-inline-size: 16rem;
+  /* `TopbarSearch measure="wide"`: the home / portal search's preferred width. */
+  --topbar-search-wide-inline-size: 26.25rem;
 
   /* TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped
    * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's
@@ -746,6 +748,9 @@
    * Same width as the widest CenteredShell tier, so a product's login and its signed-in pages read
    * at one page measure. Only `measure="wide"` reads it; the default 24rem card is untouched. */
   --auth-shell-wide-card-max-width: 64rem;
+  /* `measure="column"` / `"split"`: the hosted flow's single column and its two-column page. */
+  --auth-shell-column-max-width: 25rem;
+  --auth-shell-split-max-width: 54rem;
 
   /* Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on
    * AuthShell and may retune the product theme here rather than overriding individual fields. */
@@ -923,10 +928,17 @@
   --auth-account-summary-min-height: var(--control-height-comfortable);
   --auth-account-summary-gap: var(--space-2);
   --auth-account-summary-padding: var(--space-1) var(--space-2);
+  /* `surface="card"`: the roomier inset of the row as its own card. */
+  --auth-account-summary-card-padding: var(--space-3) var(--space-4);
   --auth-account-summary-identity-min-width: 12rem;
   --auth-account-summary-avatar-size: var(--control-height-sm);
   --auth-account-summary-avatar-glyph-size: var(--control-icon-size-sm);
   --auth-account-summary-email-font-size: var(--font-size-sm, var(--font-size-base));
+  /* The muted "Signed in · email" line under `name`. */
+  --auth-account-summary-status-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --auth-footer-content-gap: 0.375rem;
   /* The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard
    * anchor at all, only the literal. GEOMETRY MOVES by 0.11px. */
@@ -934,6 +946,9 @@
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
   );
+  /* `AuthFooter mono={false}`: the body face. Default = var(--font-family-body), resolved at the
+   * call site. */
+  --auth-footer-font-family: initial;
   /* The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page
    * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the
    * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the
@@ -977,6 +992,18 @@
   --centered-shell-bar-height: var(--app-shell-bar-height);
   --centered-shell-bar-padding-x: var(--space-page-x);
   --centered-shell-bar-padding-x-compact: var(--space-page-compact-x);
+  /* FROSTED BAR (`barAppearance="frosted"`, both CenteredShell shapes): the muted shell ground at
+   * this alpha, this blur (+ the shared --surface-backdrop-saturate), and a hairline in
+   * --centered-shell-bar-frosted-border-color (role mirror, `initial` → hsl(var(--border)) at the
+   * call site). Reduced transparency / no backdrop-filter → solid, written by the library. */
+  --centered-shell-bar-frosted-background-alpha: 72%;
+  /* scale-exempt: 20px backdrop blur radius, an optical value not a layout step */
+  --centered-shell-bar-frosted-backdrop-blur-size: 20px;
+  --centered-shell-bar-frosted-border-color: initial;
+  /* The frosted bar's band: one control row in 52px (the frames' bar), a 4px block inset. */
+  /* scale-exempt: 52px slim bar band, between band-2xl (48) and band-3xl (56) */
+  --centered-shell-bar-frosted-height: 3.25rem;
+  --centered-shell-bar-frosted-padding-block: var(--space-1);
   --centered-shell-main-padding: var(--space-6);
   /* Inline-only compact steps. They exist as their own knobs rather than as a redefinition of the
    * shorthands above, so `--centered-shell-main-padding` keeps meaning all four sides and a service

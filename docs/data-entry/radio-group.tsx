@@ -193,6 +193,51 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* optionType="list" — the same rows as one inset grouped list per section, on a muted
+            ground: the mark at the row end, hairlines inset to the row text, native arrow keys. */}
+        <Card variant="muted">
+          <CardHeader>
+            <CardTitle level={2}>optionType=&quot;list&quot; · inset grouped list</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup
+              aria-label={t("radioGroupDocs.org.choose")}
+              name="context-list"
+              optionType="list"
+              value={context}
+              onValueChange={setContext}
+              options={[
+                {
+                  label: t("radioGroupDocs.org.section", { count: visibleOrgs.length }),
+                  options: visibleOrgs.map((org) => ({
+                    value: org.value,
+                    label: org.name,
+                    description: t(`radioGroupDocs.org.role.${org.role}`),
+                    leading: (
+                      <Avatar shape="square">
+                        <AvatarFallback>{org.name.slice(0, 1)}</AvatarFallback>
+                      </Avatar>
+                    ),
+                    extra: org.lastUsed ? (
+                      <Badge as="span">{t("radioGroupDocs.org.lastUsed")}</Badge>
+                    ) : undefined,
+                  })),
+                },
+                {
+                  label: t("radioGroupDocs.org.personal"),
+                  options: [
+                    {
+                      value: "personal",
+                      label: t("radioGroupDocs.org.personalWorkspace"),
+                      description: t("radioGroupDocs.org.personalDescription"),
+                    },
+                  ],
+                },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>{t("radioGroupDocs.accordion.title")}</CardTitle>

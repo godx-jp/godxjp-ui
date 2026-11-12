@@ -212,6 +212,18 @@
   --choice-card-selected-ring-width: var(--stroke-hairline);
   --choice-card-muted-background: initial; /* default = var(--muted) */
   --choice-section-gap: var(--space-2);
+  /* Radio `optionType="list"` — the inset grouped list. Surface = the card fill and card radius
+   * (role mirrors, `initial`); the hairline between rows starts at the row text
+   * (`--choice-list-divider-inset`, default the row inset; `-leading-inset` past a leading avatar);
+   * sections stack --choice-list-section-gap apart, the label --choice-list-label-gap above. */
+  --choice-list-background: initial; /* default = var(--card) */
+  --choice-list-radius: initial; /* default = the card radius */
+  --choice-list-divider-color: initial; /* default = var(--border) */
+  --choice-list-divider-inset: initial; /* default = var(--choice-card-padding-inline) */
+  --choice-list-divider-leading-inset: initial; /* default = inset + avatar + gap */
+  --choice-list-section-gap: var(--space-5);
+  /* scale-exempt: 6px caption-to-group gap of a grouped list header */
+  --choice-list-label-gap: 0.375rem;
 
   /* Ring knobs for the two controls that historically wanted a softer mark than the global
    * default — both are filled surfaces where the ring was felt to read as a second border.
@@ -793,6 +805,31 @@
   --otp-caret-block-size: 1rem;
   --otp-caret-inline-size: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --otp-separator-icon-size: var(--icon-size-md);
+  /* InputOTP `appearance="boxed"` — the large code field (device code 4+4, two-factor 3+3): each
+   * slot its own rounded box. Its own geometry so a shell retuning the joined/grouped slot chain
+   * (--otp-slot-*) does not reach it. md = the device-code box, lg = the two-factor box.
+   * scale-exempt: code-entry box 40x52 / 48x58 and its 24/26px digit, off the control band ladder by design */
+  --otp-boxed-slot-inline-size: 2.5rem;
+  /* scale-exempt: 52px code box, a display input between band-2xl (48) and band-3xl (56) */
+  --otp-boxed-slot-block-size: 3.25rem;
+  /* scale-exempt: 48px two-factor box width, one step up from the 40px device box */
+  --otp-boxed-slot-inline-size-lg: 3rem;
+  /* scale-exempt: 58px two-factor box, the larger 6-digit challenge */
+  --otp-boxed-slot-block-size-lg: 3.625rem;
+  /* scale-exempt: 28px floor a boxed slot shrinks to in a narrow (phone) column */
+  --otp-boxed-slot-min-inline-size: 1.75rem;
+  /* scale-exempt: 24px code digit, read at arm's length off another device */
+  --otp-boxed-slot-font-size: 1.5rem;
+  /* scale-exempt: 26px two-factor digit */
+  --otp-boxed-slot-font-size-lg: 1.625rem;
+  --otp-boxed-slot-font-weight: var(--font-weight-medium);
+  /* scale-exempt: 6px between code boxes, between --space-1 and --space-2 */
+  --otp-boxed-gap: 0.375rem;
+  --otp-boxed-radius: initial; /* default = var(--radius-md) at the call site */
+  /* The reject shake (boxed only): distance and duration. Reduced motion drops it. */
+  /* scale-exempt: 6px shake travel, a motion distance not a layout step */
+  --otp-reject-translate: 0.375rem;
+  --otp-reject-duration: 280ms;
 
   --button-count-min-width: var(--space-4);
   --button-count-space-inline: var(--space-1);

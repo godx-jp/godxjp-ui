@@ -56,6 +56,21 @@
   --steps-inline-index-font-weight: var(--font-weight-bold);
   --steps-inline-index-color: initial; /* default = currentColor at the call site */
   --steps-inline-separator-color: initial; /* default = hsl(var(--muted-foreground)) */
+  /* STEPS `type="bar"` — the thin step-progress bar. Track = a 4px segment per step; the colours are
+   * role-mirror knobs (`initial`, role resolved at the call site: track --border, fill --primary,
+   * waiting title --muted-foreground). The fill grows over --steps-bar-fill-duration. */
+  /* scale-exempt: 4px progress hairline, between --stroke-xl and --space-1 */
+  --steps-bar-track-size: 0.25rem;
+  --steps-bar-radius: initial; /* default = half the track, a fully rounded segment */
+  /* scale-exempt: 6px between segments, between --space-1 and --space-2 */
+  --steps-bar-gap: 0.375rem;
+  /* scale-exempt: 6px segment-to-title gap, same step as the segment gap */
+  --steps-bar-label-gap: 0.375rem;
+  --steps-bar-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+  --steps-bar-track-color: initial; /* default = hsl(var(--input)): the unfilled segment is a 1.4.11 non-text boundary, ≥3:1 */
+  --steps-bar-fill-color: initial; /* default = hsl(var(--primary)) */
+  --steps-bar-wait-color: initial; /* default = hsl(var(--muted-foreground)) */
+  --steps-bar-fill-duration: 350ms;
 
   /* AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an
    * auth/legal footer, where the square icon-only default reads as a stray button and the full
@@ -280,6 +295,20 @@
   --tabs-overflow-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --tabs-overflow-icon-size: var(--control-icon-size);
   --tabs-add-size: var(--band-height-md);
+  /* `variant="chips"` — the phone desktop switcher. Fills are `initial` role mirrors resolved at
+   * the call site: --tabs-chip-background = hsl(var(--muted)); --tabs-chip-active-background =
+   * hsl(var(--foreground)); --tabs-chip-active-foreground (an HSL triple) = var(--background). */
+  --tabs-chips-gap: var(--space-2);
+  /* The chips strip itself is not a box: no corner, no side inset (each chip carries its own). */
+  --tabs-chips-list-radius: 0;
+  --tabs-chips-list-space-inset-x: 0;
+  --tabs-chips-list-space-inset-y: calc(var(--focus-ring-width) + var(--focus-ring-glow-width));
+  --tabs-chip-radius: var(--radius-pill);
+  --tabs-chip-padding-x: calc(var(--space-3) + 0.125rem);
+  --tabs-chip-padding-y: calc(var(--space-1) + 0.125rem);
+  --tabs-chip-background: initial;
+  --tabs-chip-active-background: initial;
+  --tabs-chip-active-foreground: initial;
   --tabs-add-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --tabs-add-icon-size: var(--control-icon-size);
   --tabs-trigger-icon-size: var(--control-icon-size);

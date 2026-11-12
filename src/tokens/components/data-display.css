@@ -178,6 +178,8 @@
   --avatar-size-sm: var(--control-height-sm);
   /* The 36px step — the mark for a `size="lg"` row (a list row's leading identity). */
   --avatar-size-lg: var(--control-height-lg);
+  /* The 64px step (`size="xl"`) — a feature tile, off the control ladder: a mail / app medallion. */
+  --avatar-size-xl: calc(4rem * var(--scaling));
 
   /* Initials TYPE per step — one step of the type scale per step of the box, so the two letters
      in a 24px mark are not the 14px set for a 32px one. The ratio holds (~0.44 of the box at
@@ -195,6 +197,17 @@
     --font-size-lg,
     calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
   );
+
+  /* Initials in the 64px mark — the type scale's 2xl step. */
+  --avatar-font-size-xl: var(
+    --font-size-2xl,
+    calc(
+      var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+        var(--font-size-ratio) * var(--font-size-ratio)
+    )
+  );
+  /* Glyph in the 64px mark — half the box. */
+  --avatar-glyph-size-xl: calc(var(--icon-size-2xl) * var(--scaling));
 
   /* Glyph box per step — the `--icon-size-*` scale the `Icon` primitive was minted on (gh#712),
      multiplied by --scaling exactly as --control-icon-size is, so a glyph inside a sized mark
@@ -229,6 +242,29 @@
      CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph ·
      --control-icon-size glyph box. */
   --avatar-tinted-background: initial;
+  /* `appearance="neutral"` — the unavailable tile. Defaults = hsl(var(--muted)) fill and
+   * hsl(var(--muted-foreground)) initials, resolved at the call site. */
+  --avatar-neutral-background: initial;
+  --avatar-neutral-foreground: initial;
+  /* `Avatar colorKey` — the TILE palette: ten hues of their own (not the chart series), each a
+   * solid fill under white initials at >= 5:1 (violet 7.1 · purple 7.0 · teal 5.5 · blue 6.7 ·
+   * slate 7.6 · orange 5.2 · red 6.5 · cyan 5.4 · pink 6.0 · green 5.0). A tile is a self-contained
+   * chip, so one value serves both themes. The ring is a faint light edge that keeps a tile
+   * readable on a ground of its own hue (a teal tile on the teal brand story). */
+  --avatar-color-key-1: #6d28d9; /* violet */
+  --avatar-color-key-2: #7e22ce; /* purple */
+  --avatar-color-key-3: #0f766e; /* teal */
+  --avatar-color-key-4: #1d4ed8; /* blue */
+  --avatar-color-key-5: #475569; /* slate */
+  --avatar-color-key-6: #c2410c; /* orange */
+  --avatar-color-key-7: #b91c1c; /* red */
+  --avatar-color-key-8: #0e7490; /* cyan */
+  --avatar-color-key-9: #be185d; /* pink */
+  --avatar-color-key-10: #15803d; /* green */
+  --avatar-color-key-foreground: 0 0% 100%;
+  /* The ring is an inset OUTLINE (painted above the fallback that fills the box), an alpha of the
+   * initials ink. */
+  --avatar-color-key-ring-color: hsl(var(--avatar-color-key-foreground) / 0.45);
   --avatar-tinted-foreground: initial;
   --avatar-tinted-glyph-size: var(--control-icon-size);
 
@@ -310,6 +346,8 @@
      thinnest a partition can be and still show three fills apart. Below that the ratios are gone,
      which is why there is no `xs`. */
   --progress-meter-block-size: 0.5rem;
+  /* `steps` — the gap between the segments of a segmented bar. */
+  --progress-steps-gap: var(--space-1);
   --progress-meter-block-size-sm: 0.25rem;
   --progress-breakdown-block-size-sm: 0.5rem;
 

@@ -1345,6 +1345,12 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "Auth-shell content-slot measure; wide is the split brand-panel login (and the two-column context-selection chooser).",
       },
+      {
+        field: "barAppearance",
+        local: true,
+        reason:
+          "Top-bar material — default (unchanged) or frosted (sticky translucent pane with backdrop blur; solid under prefers-reduced-transparency).",
+      },
       "ActionProp",
       "AuthShellPresetProp",
     ],
@@ -1410,6 +1416,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
+      {
+        field: "mono",
+        local: true,
+        reason: "Monospace face (default) or the body face for a long legal line.",
+      },
       "ClassNameProp",
       {
         field: "product",
@@ -1460,7 +1471,7 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: ["DisabledProp", "ClassNameProp"],
-    local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction"],
+    local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction", "surface"],
   },
   AccountChipProp: {
     group: "layout",
@@ -1488,6 +1499,12 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "flow",
         local: true,
         reason: "Column page or a stack of full-width EditorialSection bands (gh#1435).",
+      },
+      {
+        field: "barAppearance",
+        local: true,
+        reason:
+          "Top-bar material — default (unchanged) or frosted (sticky translucent pane with backdrop blur; solid under prefers-reduced-transparency).",
       },
     ],
   },
@@ -2458,6 +2475,28 @@ export const COMPONENT_PROP_REGISTRY = {
       "IdProp",
       "ClassNameProp",
       {
+        field: "align",
+        local: true,
+        reason:
+          "Surface layout — center (the EmptyState medallion shape) or start (hosted page: large start-aligned title, details card above a stretched action).",
+      },
+      {
+        field: "secondaryAction",
+        local: true,
+        reason: "One secondary navigation link under the single recovery action.",
+      },
+      {
+        field: "topbar",
+        local: true,
+        reason: "system mode page top bar, forwarded to the CenteredShell topbar slot.",
+      },
+      {
+        field: "legal",
+        local: true,
+        reason:
+          "Short legal/product line under the actions, inside the surface (not the footer band).",
+      },
+      {
         field: "tone",
         local: true,
         reason:
@@ -2725,6 +2764,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
+      {
+        field: "measure",
+        local: true,
+        reason: "Inline field width — default (16rem) or wide (26.25rem).",
+      },
       "LabelProp",
       "PlaceholderProp",
       "DisabledProp",
@@ -2761,6 +2805,42 @@ export const COMPONENT_PROP_REGISTRY = {
       "OnClickProp",
       "PendingProp",
     ],
+  },
+  CollapseGroupProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      {
+        field: "onExited",
+        local: true,
+        reason: "Exit-complete callback with the removed child's key (not a value change).",
+      },
+    ],
+  },
+  StepTransitionProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "ClassNameProp",
+      {
+        field: "value",
+        local: true,
+        reason:
+          "Identity of the step on screen; a change runs the exit + enter transition (not a controlled form value).",
+      },
+      {
+        field: "direction",
+        local: true,
+        reason: "forward (out to start, in from end) or backward (the mirrored path).",
+      },
+    ],
+  },
+  StepTransitionDirectionProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [],
   },
   RevealProp: {
     group: "general",
@@ -3248,6 +3328,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "ErrorProp",
       "FormLayoutProp",
       "WidthProp",
+      {
+        field: "labelHidden",
+        local: true,
+        reason:
+          "Keeps the label as the accessible name but visually hidden (sr-only); the control spans the row.",
+      },
     ],
   },
   FormErrorsProp: {
@@ -3766,7 +3852,18 @@ export const COMPONENT_PROP_REGISTRY = {
   AvatarProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["AvatarShapeProp", "SizeProp", "LabelProp", "ChildrenProp", "ClassNameProp"],
+    vocabulary: [
+      {
+        field: "colorKey",
+        local: true,
+        reason: "Stable key hashed onto the categorical palette for a distinct tile colour.",
+      },
+      "AvatarShapeProp",
+      "SizeProp",
+      "LabelProp",
+      "ChildrenProp",
+      "ClassNameProp",
+    ],
   },
   AvatarAppearanceProp: {
     group: "data-display",

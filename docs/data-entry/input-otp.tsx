@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import {
+  Form,
   FormField,
   InputOTP,
   InputOTPGroup,
@@ -29,9 +30,77 @@ export default function Demo() {
   // without typing. FormField wires aria-invalid + aria-errormessage onto the field.
   const [wrongCode, setWrongCode] = useState("000000");
 
+  // Boxed — the large device-code and two-factor fields.
+  const [deviceCode, setDeviceCode] = useState("LTZWCZP");
+  const [twoFactor, setTwoFactor] = useState("4820");
+
   return (
     <PageContainer title="InputOTP" subtitle="ワンタイムコード入力 · 2FA・SMS認証・招待コード">
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>boxed · device code (4+4) and two-factor code (3+3)</CardTitle>
+            <CardDescription>
+              One large box per character. The device code is mono, and a pasted
+              &quot;ltzw-czps&quot; lands in the same shape. The two-factor code is
+              size=&quot;lg&quot; and auto-submits through onComplete on the sixth digit.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form>
+              <FormField label="Device code">
+                <InputOTP
+                  id="device-code"
+                  maxLength={8}
+                  mono
+                  align="center"
+                  value={deviceCode}
+                  onValueChange={setDeviceCode}
+                  formatter={(v) => v.toUpperCase()}
+                  pasteTransformer={(v) => v.replace(/[^a-z0-9]/gi, "")}
+                >
+                  <InputOTPGroup appearance="boxed">
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup appearance="boxed">
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                    <InputOTPSlot index={6} />
+                    <InputOTPSlot index={7} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormField>
+              <FormField label="Verification code">
+                <InputOTP
+                  id="two-factor"
+                  maxLength={6}
+                  size="lg"
+                  align="center"
+                  pattern="^[0-9]*$"
+                  value={twoFactor}
+                  onValueChange={setTwoFactor}
+                >
+                  <InputOTPGroup appearance="boxed">
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup appearance="boxed">
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>メール認証コード（6桁）</CardTitle>

@@ -67,6 +67,26 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* hero — a RESULT page (approved / denied / expired / done): a bold display title,
+            a larger medallion, a lead description. It is the page heading, so titleLevel={2}
+            here only because PageContainer owns this page's h1; on a real result page use 1. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>hero · result page</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <EmptyState
+              variant="hero"
+              tone="success"
+              icon={SearchX}
+              title="Connected"
+              description="The device is connected to your account. You can close this window."
+              titleLevel={2}
+              action={<Button variant="outline">Back to the dashboard</Button>}
+            />
+          </CardContent>
+        </Card>
+
         {/* section — restrained spacing for a subsection inside a normal page. */}
         <Card>
           <CardHeader>

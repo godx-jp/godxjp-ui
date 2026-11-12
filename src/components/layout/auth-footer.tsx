@@ -10,14 +10,26 @@ export type { AuthFooterProp as AuthFooterProps } from "../../props/components/l
 const SLOTS = ["product", "terms", "privacy", "locale"] as const;
 
 /** Canonical mono legal line shared by hosted identity screens. */
-export function AuthFooter({ product, terms, privacy, locale, className }: AuthFooterProp) {
+export function AuthFooter({
+  product,
+  terms,
+  privacy,
+  locale,
+  mono = true,
+  className,
+}: AuthFooterProp) {
   const bySlot: Record<(typeof SLOTS)[number], ReactNode> = { product, terms, privacy, locale };
   const items = SLOTS.filter(
     (slot) => bySlot[slot] !== null && bySlot[slot] !== undefined && bySlot[slot] !== false,
   );
 
   return (
-    <div data-slot="auth-legal-footer" className={cn("ui-auth-legal-footer", className)}>
+    <div
+      data-slot="auth-legal-footer"
+      // Emitted only for the body face, so the default footer keeps its exact attributes.
+      data-font={mono ? undefined : "body"}
+      className={cn("ui-auth-legal-footer", className)}
+    >
       {items.map((slot, index) => (
         <span
           key={slot}

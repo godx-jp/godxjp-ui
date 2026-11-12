@@ -1,0 +1,539 @@
+/*
+ * HOSTED-FLOW LAYER — the rules for the hosted sign-in / consent / device-flow surfaces: the frosted
+ * auth bar, the auth column/split measures, the account summary's name line and card surface,
+ * ErrorSurface's hosted-page shape, the boxed code field, the grouped radio list, the step bar,
+ * the segmented progress meter, the hero empty state and StepTransition.
+ *
+ * Imported by `@godxjp/ui/styles` and `@godxjp/ui/styles/application`, NOT by
+ * `@godxjp/ui/styles/core` — a core consumer that renders none of these does not pay for them
+ * (33.30.2: an app embedding `styles/core` measured +18 KB raw CSS from them). A core consumer
+ * that DOES use one adds this layer after core:
+ *
+ *   @import "@godxjp/ui/styles/core";
+ *   @import "@godxjp/ui/styles/hosted-flow-layout";
+ *
+ * Every rule stays in `@layer components`, after the core layers, so nothing it overrides moves.
+ */
+@layer components {
+  /* ═══ CenteredShell barAppearance="frosted" (moved from shell-layout.css) ═══ */
+  /* FROSTED BAR (`barAppearance="frosted"`, both CenteredShell shapes) — the bar is pinned to the
+   * top and the page scrolls UNDER it: the shell's own muted ground at an alpha, a backdrop blur
+   * with the shared saturate companion, and a hairline below (Apple's bar material). All knobs; the
+   * accessibility fallbacks are the library's, not the consumer's: `prefers-reduced-transparency`
+   * and an engine without `backdrop-filter` both get the SOLID ground. A blurred element is the
+   * containing block of its fixed descendants — nothing in a bar is position: fixed (menus portal
+   * to the body), so that trap does not apply here. */
+  .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
+  .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    /* The bar material is a SLIM bar (the frames' 52px): one control row centred in a fixed band,
+     * a little block padding so a phone's wrapped second row is not flush. */
+    box-sizing: border-box;
+    min-block-size: var(--centered-shell-bar-frosted-height);
+    padding-block: var(--centered-shell-bar-frosted-padding-block);
+    border-bottom: 0;
+    background-color: hsl(var(--muted) / var(--centered-shell-bar-frosted-background-alpha));
+    background-image: none;
+    box-shadow: 0 var(--stroke-hairline) 0
+      var(--centered-shell-bar-frosted-border-color, hsl(var(--border)));
+    -webkit-backdrop-filter: blur(var(--centered-shell-bar-frosted-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
+    backdrop-filter: blur(var(--centered-shell-bar-frosted-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
+    .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
+      background-color: hsl(var(--muted));
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .ui-auth-shell[data-bar="frosted"] .ui-auth-shell-bar,
+    .ui-centered-shell[data-bar="frosted"] .ui-centered-shell-bar {
+      background-color: hsl(var(--muted));
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  /* ═══ auth CenteredShell measure column / split (moved from shell-layout.css) ═══ */
+  /* `measure="column"` / `"split"` — the hosted flow's 25rem single column and 54rem two-column
+   * page, centred with the same auto margins as `wide`. */
+  .ui-auth-shell[data-measure="column"]:not([data-preset]) {
+    --auth-shell-card-max-width: var(--auth-shell-column-max-width);
+    --auth-shell-main-align: flex-start;
+  }
+  .ui-auth-shell[data-measure="split"]:not([data-preset]) {
+    --auth-shell-card-max-width: var(--auth-shell-split-max-width);
+    --auth-shell-main-align: flex-start;
+  }
+  .ui-auth-shell:is([data-measure="column"], [data-measure="split"]):not([data-preset])
+    .ui-auth-shell-card {
+    margin-block: auto;
+  }
+
+  /* ═══ AuthAccountSummary surface="card" (moved from shell-layout.css) ═══ */
+  /* `surface="card"` — the row as its own card on the muted auth ground. */
+  .ui-auth-account-summary[data-surface="card"] {
+    padding: var(--auth-account-summary-card-padding);
+    border-radius: var(--card-radius, calc(var(--radius) * var(--radius-ratio)));
+    background: hsl(var(--card-background, var(--card)));
+  }
+
+  /* ═══ AuthAccountSummary name (moved from shell-layout.css) ═══ */
+  /* `name` — two lines: the name in the email's face, then the muted "Signed in · email" line.
+   * Both truncate inside the identity column so a long address never widens the card. */
+  .ui-auth-account-text {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+  .ui-auth-account-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: hsl(var(--foreground));
+    font-size: var(--auth-account-summary-email-font-size);
+    line-height: var(--auth-account-summary-email-line-height);
+    font-weight: var(--font-weight-medium);
+  }
+  .ui-auth-account-status {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--auth-account-summary-status-font-size);
+    line-height: var(--line-height-normal);
+  }
+
+  /* ═══ ErrorSurface align="start" / width="column" / legal (moved from shell-layout.css) ═══ */
+  /* `align="start"` — the hosted-page shape: start-aligned large title, the details card above the
+   * action, the action stretched to the column so `Button fullWidth size="lg"` reads full width,
+   * the secondary link centred under it. */
+  .ui-error-surface[data-align="start"] {
+    align-items: stretch;
+    gap: var(--error-surface-start-gap);
+    text-align: start;
+  }
+  .ui-error-surface-heading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--error-surface-heading-gap);
+  }
+  .ui-error-surface-heading .ui-error-surface-status,
+  .ui-error-surface-heading .ui-error-surface-title,
+  .ui-error-surface-heading .ui-error-surface-description {
+    margin: 0;
+  }
+  .ui-error-surface[data-align="start"] .ui-error-surface-brand {
+    justify-content: flex-start;
+  }
+  .ui-error-surface-action {
+    display: flex;
+    flex-direction: column;
+  }
+  .ui-error-surface-secondary {
+    display: flex;
+    justify-content: center;
+  }
+  /* `width="column"` — the hosted flow's 25rem column. */
+  .ui-error-surface[data-width="column"] {
+    max-width: var(--auth-shell-column-max-width);
+  }
+  /* `legal` — the short legal line under the actions, inside the surface. */
+  .ui-error-surface-legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--error-surface-legal-font-size);
+    text-align: center;
+  }
+
+  /* ═══ InputOTP mono / appearance="boxed" / reject shake (moved from control.css) ═══ */
+  /* `mono` — the mono face for a code of letters and digits (read off the hidden input). */
+  .ui-otp-container:has(.ui-otp-input[data-mono]) .ui-otp-slot {
+    font-family: var(--font-family-mono, ui-monospace, "SFMono-Regular", monospace);
+  }
+
+  /* `appearance="boxed"` — every slot its own rounded box, a gap between them: the large
+   * device-code / two-factor field. Its geometry is its OWN knob set (`--otp-boxed-*`), not the
+   * generic `--otp-slot-*` chain, so a shell preset that retunes the joined/grouped slot (the
+   * device-authorization preset sets --otp-slot-inline-size) cannot shrink these boxes. `size="lg"`
+   * takes the larger two-factor step; xs/sm fall back to the shared control ladder. The ring, the
+   * invalid/warning edge and the disabled fill come from the slot rules above unchanged. */
+  .ui-otp-group[data-appearance="boxed"] {
+    min-width: 0;
+    flex: 0 1 auto;
+    gap: var(--otp-boxed-gap);
+  }
+  /* A boxed row SHRINKS to its column: 8 device boxes at 40px plus the separator are wider than a
+   * 390px phone column, so each box is a flex item that starts at its token width and gives way
+   * down to --otp-boxed-slot-min-inline-size, the row never wider than the container. */
+  .ui-otp-container:has(.ui-otp-group[data-appearance="boxed"]) {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .ui-otp-group[data-appearance="boxed"] .ui-otp-slot,
+  .ui-otp-group[data-appearance="boxed"] .ui-otp-slot:first-child,
+  .ui-otp-group[data-appearance="boxed"] .ui-otp-slot:last-child {
+    /* `width` is the preferred size (and what the group's intrinsic width adds up); flex-shrink lets
+     * it give way in a narrow column, never below the min. */
+    width: var(--otp-boxed-slot-inline-size);
+    min-width: var(--otp-boxed-slot-min-inline-size);
+    flex: 0 1 auto;
+    height: var(--otp-boxed-slot-block-size);
+    border-inline-start-width: var(--control-border-width, var(--stroke-hairline));
+    border-radius: var(
+      --otp-boxed-radius,
+      var(--radius-md, calc(var(--radius) / var(--radius-ratio)))
+    );
+    font-size: var(--otp-boxed-slot-font-size);
+    font-weight: var(--otp-boxed-slot-font-weight);
+    line-height: 1;
+    /* The caret is as tall as the boxed digit, not the 1rem body caret. */
+    --otp-caret-block-size: var(--otp-boxed-slot-font-size);
+  }
+  .ui-otp-container:has(.ui-otp-input[data-size="lg"])
+    .ui-otp-group[data-appearance="boxed"]
+    .ui-otp-slot {
+    width: var(--otp-boxed-slot-inline-size-lg);
+    height: var(--otp-boxed-slot-block-size-lg);
+    font-size: var(--otp-boxed-slot-font-size-lg);
+    --otp-caret-block-size: var(--otp-boxed-slot-font-size-lg);
+  }
+  .ui-otp-container:has(.ui-otp-input:is([data-size="xs"], [data-size="sm"]))
+    .ui-otp-group[data-appearance="boxed"]
+    .ui-otp-slot {
+    width: var(--otp-slot-inline-size, var(--otp-slot-size, var(--control-height)));
+    height: var(--otp-slot-block-size, var(--otp-slot-size, var(--control-height)));
+    font-size: var(--font-size-base);
+  }
+
+  /* A REJECTED code shakes the boxed row once — x ±6px, two round trips, 0.28s — the moment the
+   * field turns invalid (the selector starting to match restarts the animation; staying invalid
+   * does not repeat it). Under prefers-reduced-motion the row does not move: the red edge above is
+   * the whole signal. */
+  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]):has(
+      .ui-otp-group[data-appearance="boxed"]
+    ) {
+    animation: ui-otp-reject var(--otp-reject-duration) var(--ease-standard) 1;
+  }
+  @keyframes ui-otp-reject {
+    20%,
+    60% {
+      transform: translateX(calc(-1 * var(--otp-reject-translate)));
+    }
+    40%,
+    80% {
+      transform: translateX(var(--otp-reject-translate));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]):has(
+        .ui-otp-group[data-appearance="boxed"]
+      ) {
+      animation: none;
+    }
+  }
+
+  /* ═══ RadioGroup optionType="list" (moved from control.css) ═══ */
+  /* ── RADIO `optionType="list"` — the inset grouped list ─────────────────────────────────
+   * The same rows as `card` (the whole row is the radio's label, native radios, arrows across
+   * sections), drawn as ONE card surface per section with the label above it: rows lose their
+   * border and radius, a hairline inset to the row text separates them, and the mark sits at the
+   * row END. Selected = the filled dot (a shape change, not colour alone); no card ring. */
+  .ui-radio-list {
+    display: grid;
+    gap: var(--choice-list-section-gap);
+  }
+  .ui-radio-list .ui-radio-section {
+    gap: var(--choice-list-label-gap);
+  }
+  .ui-radio-list .ui-radio-section-label {
+    padding-inline: var(--choice-card-padding-inline);
+  }
+  .ui-radio-list-surface {
+    display: grid;
+    overflow: hidden;
+    border-radius: var(
+      --choice-list-radius,
+      var(--card-radius, calc(var(--radius) * var(--radius-ratio)))
+    );
+    background: hsl(var(--choice-list-background, var(--card)));
+  }
+  .ui-radio-list .ui-radio-card,
+  .ui-radio-list .ui-radio-card[data-state="checked"],
+  .ui-radio-list .ui-radio-card[data-invalid] {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .ui-radio-list .ui-radio-card[data-state="checked"]::after {
+    content: none;
+  }
+  .ui-radio-list .ui-radio-card + .ui-radio-card::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: var(--choice-list-divider-inset, var(--choice-card-padding-inline));
+    inset-inline-end: 0;
+    border-block-start: var(--stroke-hairline) solid
+      hsl(var(--choice-list-divider-color, var(--border)));
+    pointer-events: none;
+  }
+  .ui-radio-list .ui-radio-card + .ui-radio-card:has(.ui-radio-card-leading)::before {
+    inset-inline-start: var(
+      --choice-list-divider-leading-inset,
+      calc(
+        var(--choice-card-padding-inline) + var(--avatar-size, var(--control-height)) +
+          var(--choice-card-gap)
+      )
+    );
+  }
+  /* The mark at the END: after the extra (a Badge), pushed to the edge when there is none. */
+  .ui-radio-list .ui-radio-card-mark {
+    order: 1;
+    margin-inline-start: auto;
+  }
+  .ui-radio-list .ui-radio-card:has(.ui-radio-card-extra) .ui-radio-card-mark {
+    margin-inline-start: 0;
+  }
+  /* A list surface is ALWAYS the card fill, even for a section marked `appearance="muted"`: on the
+   * muted page ground a muted group would vanish. (`muted` still applies under `optionType="card"`,
+   * where the card rows sit on a white surface.) */
+  .ui-radio-list .ui-radio-section[data-appearance="muted"] .ui-radio-card {
+    background: transparent;
+  }
+
+  /* ═══ Steps type="bar" (moved from navigation-layout.css) ═══ */
+  /* STEPS `type="bar"` — the thin step-progress bar of a short hosted flow: one equal segment per
+   * step, the title UNDER it. Finished and current steps fill the segment, the current title is
+   * the ink one. The fill is a transformed overlay that grows from the inline start
+   * (critically damped, `--ease-emphasized`) when a step is reached; under reduced motion it
+   * cross-fades instead. Status is never colour alone: each step carries its sr-only status and
+   * the current one `aria-current="step"`. */
+  .ui-steps-bar {
+    gap: var(--steps-bar-gap);
+  }
+  .ui-steps-bar-item {
+    min-width: 0;
+  }
+  .ui-steps-bar-control {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--steps-bar-label-gap);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
+    font-size: var(--steps-bar-font-size);
+    line-height: var(--line-height-tight);
+    text-align: start;
+    color: var(--steps-bar-wait-color, hsl(var(--muted-foreground)));
+    outline: none;
+  }
+  .ui-steps-bar-segment {
+    position: relative;
+    display: block;
+    height: var(--steps-bar-track-size);
+    overflow: hidden;
+    border-radius: var(--steps-bar-radius, calc(var(--steps-bar-track-size) / 2));
+    background: var(--steps-bar-track-color, hsl(var(--input)));
+  }
+  .ui-steps-bar-segment::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--steps-bar-fill-color, hsl(var(--primary)));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--steps-bar-fill-duration) var(--ease-emphasized);
+  }
+  [dir="rtl"] .ui-steps-bar-segment::after {
+    transform-origin: right center;
+  }
+  .ui-steps-bar-item:is([data-status="finish"], [data-status="process"], [data-status="error"])
+    .ui-steps-bar-segment::after {
+    transform: none;
+  }
+  .ui-steps-bar-item[data-status="error"] .ui-steps-bar-segment::after {
+    background: hsl(var(--destructive));
+  }
+  .ui-steps-bar-title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .ui-steps-bar-item[data-status="finish"] .ui-steps-bar-control {
+    color: hsl(var(--muted-foreground));
+  }
+  .ui-steps-bar-item[data-status="process"] .ui-steps-bar-control {
+    color: hsl(var(--foreground));
+    font-weight: var(--font-weight-medium);
+  }
+  .ui-steps-bar-item[data-status="error"] .ui-steps-bar-control {
+    color: hsl(var(--text-error));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-steps-bar-segment::after {
+      transform: none;
+      opacity: 0;
+      transition: opacity var(--duration-base) linear;
+    }
+    .ui-steps-bar-item:is([data-status="finish"], [data-status="process"], [data-status="error"])
+      .ui-steps-bar-segment::after {
+      opacity: 1;
+    }
+  }
+
+  /* ═══ Progress steps (moved from data-display-layout.css) ═══ */
+  /* `steps` — antd's segmented bar: the track is a row of equal segments, each its own pill on
+   * the track colour; filled ones take the fill, by tone. A segment that lights grows in from the
+   * inline start. */
+  .ui-progress[data-steps] .ui-progress-track {
+    display: grid;
+    grid-template-columns: repeat(var(--progress-steps, 1), minmax(0, 1fr));
+    gap: var(--progress-steps-gap);
+    overflow: visible;
+    border-radius: 0;
+    background: none;
+  }
+  .ui-progress-step {
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: var(
+      --progress-track-background,
+      hsl(var(--secondary) / var(--progress-track-background-alpha, 100%))
+    );
+  }
+  .ui-progress-step[data-state="filled"] {
+    transform-origin: left center;
+    background: var(--progress-fill-background, hsl(var(--mark-primary, var(--primary))));
+    animation: ui-progress-step-fill var(--duration-slow) var(--ease-emphasized) both;
+  }
+  [dir="rtl"] .ui-progress-step[data-state="filled"] {
+    transform-origin: right center;
+  }
+  .ui-progress[data-tone="success"] .ui-progress-step[data-state="filled"] {
+    background: hsl(var(--mark-success, var(--text-success)));
+  }
+  .ui-progress[data-tone="warning"] .ui-progress-step[data-state="filled"] {
+    background: hsl(var(--mark-warning, var(--text-warning)));
+  }
+  .ui-progress[data-tone="destructive"] .ui-progress-step[data-state="filled"] {
+    background: hsl(var(--mark-destructive, var(--text-error)));
+  }
+  @keyframes ui-progress-step-fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-progress-step[data-state="filled"] {
+      animation: none;
+    }
+  }
+
+  /* ═══ EmptyState variant="hero" (moved from layout.css) ═══ */
+  /* `variant="hero"` — the RESULT PAGE (approved / denied / expired). The title takes the display
+   * 3xl step in bold and the display optics, the description the lead size, the medallion its hero
+   * size; a column of its own, so it carries no page padding of its own beyond the section rhythm. */
+  .ui-empty-state[data-variant="hero"] {
+    gap: var(--empty-state-hero-gap);
+    padding: var(--empty-state-hero-space-y) 0;
+    --empty-state-icon-size: var(--empty-state-hero-medallion-size);
+    --empty-state-icon-glyph-size: var(--empty-state-hero-icon-glyph-size);
+  }
+  .ui-empty-state[data-variant="hero"] .ui-empty-state-title {
+    font-size: var(
+      --empty-state-hero-title-font-size,
+      var(
+        --font-size-3xl,
+        calc(
+          var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio)
+        )
+      )
+    );
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-display, var(--line-height-tight));
+    letter-spacing: var(--letter-spacing-display, var(--letter-spacing-tight));
+  }
+  .ui-empty-state[data-variant="hero"] .ui-empty-state-description {
+    font-size: var(--empty-state-hero-description-font-size);
+  }
+
+  /* ═══ StepTransition (moved from motion.css) ═══ */
+  /* STEP TRANSITION — exit + enter between the steps of a flow. Both layers share ONE grid cell, so
+   * the box is the taller step while they cross. Forward: the outgoing step leaves toward the
+   * inline START (translate × -1) and fades, the incoming one arrives from the inline END; backward
+   * mirrors both; RTL flips the sign. The curve is the critically damped --ease-emphasized.
+   * Resting state (no data-state) is fully visible and untranslated. */
+  .ui-step-transition {
+    --step-transition-sign: 1;
+    display: grid;
+  }
+  [dir="rtl"] .ui-step-transition {
+    --step-transition-sign: -1;
+  }
+  .ui-step-transition-layer {
+    grid-area: 1 / 1;
+    min-width: 0;
+  }
+  .ui-step-transition-layer[data-state="exit"] {
+    pointer-events: none;
+    animation: ui-step-out var(--step-transition-exit-duration) var(--ease-emphasized) both;
+  }
+  .ui-step-transition-layer[data-state="enter"] {
+    animation: ui-step-in var(--step-transition-duration) var(--ease-emphasized) both;
+  }
+  .ui-step-transition-layer[data-direction="backward"] {
+    --step-transition-way: -1;
+  }
+  @keyframes ui-step-out {
+    to {
+      opacity: 0;
+      transform: translateX(
+        calc(
+          var(--step-transition-translate) * -1 * var(--step-transition-sign) *
+            var(--step-transition-way, 1)
+        )
+      );
+    }
+  }
+  @keyframes ui-step-in {
+    from {
+      opacity: 0;
+      transform: translateX(
+        calc(
+          var(--step-transition-translate) * var(--step-transition-sign) *
+            var(--step-transition-way, 1)
+        )
+      );
+    }
+  }
+  @keyframes ui-step-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes ui-step-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-step-transition-layer[data-state="exit"] {
+      animation: ui-step-fade-out var(--step-transition-reduced-duration) linear both;
+    }
+    .ui-step-transition-layer[data-state="enter"] {
+      animation: ui-step-fade-in var(--step-transition-reduced-duration) linear both;
+    }
+  }
+}

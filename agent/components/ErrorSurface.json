@@ -80,9 +80,30 @@
     },
     {
       "defaultValue": "\"sm\"",
-      "description": "system mode ONLY — measure of the centred column (the CenteredShell width tier).",
+      "description": "system mode ONLY — measure of the centred column (the CenteredShell width tier). \"column\" = the hosted flow's 25rem column (`--auth-shell-column-max-width`, the auth CenteredShell `measure=\"column\"`), so an error page lines up with the flow it belongs to.",
       "name": "width",
-      "type": "\"sm\" | \"md\" | \"lg\""
+      "type": "\"sm\" | \"md\" | \"lg\" | \"column\""
+    },
+    {
+      "description": "A short legal / product line DIRECTLY under the actions (「GoDX ID · 利用規約 · プライバシー」), inside the surface rather than in the page-bottom `footer` band; small and muted (`--error-surface-legal-font-size`). Both aligns.",
+      "name": "legal",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"center\"",
+      "description": "`\"start\"` = the HOSTED-PAGE shape (an auth / approval site's 403 / 404 / expired page): a small mono status code over a LARGE bold start-aligned title (Heading size 3xl, display optics), the description, the organization / permission / request id / maintenance window as an inset grouped card (Card variant=\"grouped\" + Descriptions) ABOVE the action, the action stretched to the column so `Button fullWidth size=\"lg\"` spans it, and `secondaryAction` centred under it. No medallion. `\"center\"` (default) is unchanged.",
+      "name": "align",
+      "type": "\"center\" | \"start\""
+    },
+    {
+      "description": "A secondary NAVIGATION link under the action (「ダッシュボードへ」) — a `Button variant=\"link\"` or a router Link. Not a second recovery action; `action` stays the single recovery. Both aligns.",
+      "name": "secondaryAction",
+      "type": "ReactNode"
+    },
+    {
+      "description": "system mode ONLY — the page top bar (a `<Topbar start={<Logo/>} end={<AppSettingPicker …/>}/>`), forwarded to the CenteredShell `topbar` slot.",
+      "name": "topbar",
+      "type": "ReactNode"
     },
     {
       "description": "Root element id.",
@@ -109,6 +130,7 @@
   "storyPath": "layout/error-surface/index.tsx",
   "tagline": "Package-owned semantic exception surface for 400 / 403 / 404 / 500 / 503. `mode` is the SHELL CONTRACT: \"application\" renders the body you put inside the AppShell the route already provides (chrome PRESERVED, never reconstructed); \"system\" owns the whole page via CenteredShell align=\"center\" (package-owned 1440/1024/390 geometry). Exactly one recovery action, plus semantic request-id / permission / organization / maintenance metadata slots.",
   "usage": [
+    "DO add the hosted-flow layer when the app imports `@godxjp/ui/styles/core`: `@import \"@godxjp/ui/styles/hosted-flow-layout\";` after core. The ErrorSurface hosted-flow variants (see props) live there since 33.30.2; `@godxjp/ui/styles` and `styles/application` include it.",
     "DO use ErrorSurface for ANY 400 / 403 / 404 / 500 / 503 page. It is a real import from @godxjp/ui/layout — never hand-compose an error page from the auth CenteredShell + a generic Card, and never add a consumer-local `.canonical-auth-card`-style class (that workaround IS the regression).",
     "DO put mode=\"application\" INSIDE the shell the route already renders: <AppShell …><PageContainer …><ErrorSurface mode=\"application\" …/></PageContainer></AppShell>. The surface returns only its own block on purpose, so the sidebar/topbar/breadcrumb survive and the user can navigate away.",
     "DO use mode=\"system\" for 500/503 and pass NOTHING for geometry — the surface renders CenteredShell align=\"center\" itself. A className=\"min-h-dvh flex items-center\" is always wrong.",

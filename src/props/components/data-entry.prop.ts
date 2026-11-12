@@ -46,8 +46,13 @@ import type {
 } from "../vocabulary";
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
-/** One-outline-per-group appearance for the compound InputOTP control. */
-export type InputOTPGroupAppearanceProp = "slots" | "grouped";
+/**
+ * How a group of InputOTP slots is drawn. `slots` (default): one joined strip, the slots sharing
+ * edges. `grouped`: one outline around the whole group. `boxed`: every slot its own rounded box
+ * with a gap between them — the large device-code / two-factor field (4+4 / 3+3 with an
+ * `InputOTPSeparator` between groups), sized by `--otp-boxed-*` instead of the control ladder.
+ */
+export type InputOTPGroupAppearanceProp = "slots" | "grouped" | "boxed";
 
 /** @see InputOTPGroup */
 export type InputOTPGroupProp = React.HTMLAttributes<HTMLDivElement> & {
@@ -111,6 +116,11 @@ export type InputOTPProp = Omit<
   mask?: InputOTPMaskProp;
   /** Main-axis alignment of the whole code row. */
   align?: InputOTPAlignProp;
+  /**
+   * Paint the characters in the mono face (`--font-family-mono`) — a device code of letters and
+   * digits (`LTZW-CZPS`) reads column for column, and an `I`/`1`, `O`/`0` pair stays apart.
+   */
+  mono?: boolean;
   /** Control height tier — the shared `--control-height` ladder, as on every other field. */
   size?: SizeProp;
   /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */
@@ -524,6 +534,13 @@ export type FormFieldProp =
        * drops to its own line under it, capped to the label column, never into the control column.
        */
       labelAddon?: React.ReactNode;
+      /**
+       * Keep `label` as the control's accessible name but hide it VISUALLY (screen-reader-only) —
+       * a field whose purpose the layout already shows (a single code field under a page title, a
+       * search in a toolbar). The control takes the whole row in every layout. Prefer a visible
+       * label; this is for the case the design deliberately has none.
+       */
+      labelHidden?: boolean;
       /** Override the Form's layout for this field only. */
       layout?: FormLayoutProp;
       /** Override the Form's label width for this field (horizontal layout). */
@@ -576,6 +593,13 @@ export type FormFieldProp =
        * drops to its own line under it, capped to the label column, never into the control column.
        */
       labelAddon?: React.ReactNode;
+      /**
+       * Keep `label` as the control's accessible name but hide it VISUALLY (screen-reader-only) —
+       * a field whose purpose the layout already shows (a single code field under a page title, a
+       * search in a toolbar). The control takes the whole row in every layout. Prefer a visible
+       * label; this is for the case the design deliberately has none.
+       */
+      labelHidden?: boolean;
       /** Override the Form's layout for this field only. */
       layout?: FormLayoutProp;
       /** Override the Form's label width for this field (horizontal layout). */
@@ -751,7 +775,10 @@ export type RadioGroupProp = FieldA11yProps & {
    * antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label;
    * `button` welds the choices into one segmented bar of radio buttons; `card` (gh#1555) draws
    * each choice as a bordered row whose whole surface is the label, with the option's `leading`
-   * and `extra`. The role stays `radiogroup`/`radio` in every case: this is paint, never semantics.
+   * and `extra`. `list` draws the same rows as ONE inset grouped list (the iOS Settings look): a
+   * single card surface per section (the section label above it), rows separated by a hairline
+   * inset to the row text, and the radio mark at the row's END. The role stays
+   * `radiogroup`/`radio` in every case: this is paint, never semantics.
    */
   optionType?: RadioOptionTypeProp;
   /** antd `buttonStyle` — fill of the selected choice while `optionType="button"`. */
@@ -765,7 +792,7 @@ export type RadioGroupProp = FieldA11yProps & {
 };
 
 /** antd `RadioGroupOptionType` — a radio group drawn as dots or as a welded button bar. */
-export type RadioOptionTypeProp = "default" | "button" | "card";
+export type RadioOptionTypeProp = "default" | "button" | "card" | "list";
 
 /** antd `RadioGroupButtonStyle` — the selected button is outlined, or filled with the brand. */
 export type RadioButtonStyleProp = "outline" | "solid";

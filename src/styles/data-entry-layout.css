@@ -321,6 +321,26 @@
     background: hsl(var(--muted));
   }
 
+  /* A segment that LIGHTS grows in from the inline start (the meter extends), on the critically
+   * damped curve; re-lit only when it changes from empty to filled. Reduced motion: no growth. */
+  .ui-password-strength-segment[data-state="filled"] {
+    transform-origin: left center;
+    animation: ui-password-strength-fill var(--duration-slow) var(--ease-emphasized) both;
+  }
+  [dir="rtl"] .ui-password-strength-segment[data-state="filled"] {
+    transform-origin: right center;
+  }
+  @keyframes ui-password-strength-fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-password-strength-segment[data-state="filled"] {
+      animation: none;
+    }
+  }
+
   .ui-password-strength-segment[data-tone="destructive"] {
     background: hsl(var(--mark-destructive, var(--text-error)));
   }

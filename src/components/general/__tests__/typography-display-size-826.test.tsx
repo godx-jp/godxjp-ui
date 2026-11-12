@@ -37,9 +37,13 @@ describe("Text — the display ramp is reachable (gh#826)", () => {
     // Body copy sits on --line-height-body (1.7). At 54px that is a 92px gap inside ONE headline,
     // which is what would send a consumer straight back to the class this step exists to remove.
     const rule = TEXT_LAYOUT.match(
-      /\[data-slot="text"\]\[data-size="3xl"\],\s*\[data-slot="text"\]\[data-size="4xl"\],\s*\[data-slot="text"\]\[data-size="5xl"\]\s*\{[^}]*\}/,
+      /\[data-slot="text"\]\[data-size="3xl"\],\s*\[data-slot="text"\]\[data-size="4xl"\],\s*\[data-slot="text"\]\[data-size="5xl"\][^{]*\{[^}]*\}/,
     )?.[0];
-    expect(rule).toMatch(/line-height:\s*var\(\s*--line-height-tight\)/);
+    // The tight leading is the DEFAULT of the display-optics knob (--line-height-display), so an
+    // untouched theme still paints it; a theme may tighten it further for large titles.
+    expect(rule).toMatch(
+      /line-height:\s*var\(\s*--line-height-display,\s*var\(\s*--line-height-tight\)\s*\)/,
+    );
   });
 
   it("keeps the UI ramp exactly as it was", () => {

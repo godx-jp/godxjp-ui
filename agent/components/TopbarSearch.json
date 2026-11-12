@@ -11,6 +11,12 @@
       "type": "BreakpointProp"
     },
     {
+      "defaultValue": "\"default\"",
+      "description": "The inline field's preferred width: \"default\" reads --topbar-search-inline-size (16rem); \"wide\" reads --topbar-search-wide-inline-size (26.25rem) for a home / portal search. It still shrinks toward the text floor when the bar is short of room.",
+      "name": "measure",
+      "type": "\"default\" | \"wide\""
+    },
+    {
       "description": "The search's accessible name — the field's AND the folded cell's. Defaults to the localized \"Search\". Name the scope (\"Search this collection\").",
       "name": "ariaLabel",
       "type": "string"

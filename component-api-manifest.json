@@ -2093,11 +2093,27 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "name",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "onAction",
           "origin": "owned",
           "required": false,
           "type": "(() => void) | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "surface",
+          "origin": "owned",
+          "required": false,
+          "type": "\"muted\" | \"card\" | undefined",
+          "values": ["muted", "card"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -2161,6 +2177,14 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "mono",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -2238,7 +2262,7 @@
           "origin": "owned",
           "required": false,
           "type": "AvatarAppearanceProp | undefined",
-          "values": ["default", "tinted"],
+          "values": ["default", "neutral", "tinted"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
@@ -2248,6 +2272,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-display/avatar.tsx"]
+        },
+        {
+          "name": "colorKey",
+          "origin": "owned",
+          "required": false,
+          "type": "string | number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
           "name": "kind",
@@ -2285,8 +2317,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "SizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg"],
+          "type": "\"xl\" | SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
@@ -3394,7 +3426,7 @@
           "origin": "owned",
           "required": false,
           "type": "CardVariant | undefined",
-          "values": ["default", "muted", "outline", "dashed", "borderless", "featured"],
+          "values": ["default", "muted", "outline", "dashed", "borderless", "featured", "grouped"],
           "declaredIn": ["src/components/data-display/card.tsx"]
         }
       ]
@@ -4292,6 +4324,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "barAppearance",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"frosted\" | undefined",
+          "values": ["default", "frosted"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "brand",
           "origin": "owned",
           "required": false,
@@ -4351,8 +4391,8 @@
           "name": "measure",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"wide\" | undefined",
-          "values": ["default", "wide"],
+          "type": "\"default\" | \"wide\" | \"split\" | \"column\" | undefined",
+          "values": ["default", "wide", "split", "column"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -4601,6 +4641,27 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
+    "CollapseGroup": {
+      "group": "general",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "onExited",
+          "origin": "owned",
+          "required": false,
+          "type": "((key: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
     },
@@ -8816,7 +8877,7 @@
           "origin": "owned",
           "required": false,
           "type": "EditorialSectionToneProp | undefined",
-          "values": ["default", "surface", "subtle", "hero"],
+          "values": ["default", "hero", "surface", "subtle"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -9290,8 +9351,8 @@
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"section\" | \"compact\" | \"page\" | undefined",
-          "values": ["section", "compact", "page"],
+          "type": "\"section\" | \"compact\" | \"page\" | \"hero\" | undefined",
+          "values": ["section", "compact", "page", "hero"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
@@ -9305,6 +9366,14 @@
           "required": true,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | undefined",
+          "values": ["center", "start"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -9356,6 +9425,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "legal",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "maintenance",
           "origin": "owned",
           "required": false,
@@ -9396,6 +9473,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "secondaryAction",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "status",
           "origin": "owned",
           "required": true,
@@ -9428,11 +9513,19 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "topbar",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "width",
           "origin": "owned",
           "required": false,
-          "type": "CenteredShellWidthProp | undefined",
-          "values": ["sm", "md", "lg"],
+          "type": "\"column\" | CenteredShellWidthProp | undefined",
+          "values": ["sm", "md", "lg", "column"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -10356,6 +10449,14 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "labelHidden",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -11330,6 +11431,14 @@
           ]
         },
         {
+          "name": "mono",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "nonce",
           "origin": "owned",
           "required": false,
@@ -11449,7 +11558,7 @@
           "origin": "owned",
           "required": false,
           "type": "InputOTPGroupAppearanceProp | undefined",
-          "values": ["slots", "grouped"],
+          "values": ["grouped", "slots", "boxed"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -14577,6 +14686,14 @@
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {
+          "name": "steps",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/progress.tsx"]
+        },
+        {
           "name": "tone",
           "origin": "owned",
           "required": false,
@@ -14926,7 +15043,7 @@
           "origin": "owned",
           "required": false,
           "type": "RadioOptionTypeProp | undefined",
-          "values": ["button", "default", "card"],
+          "values": ["button", "default", "card", "list"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -18887,7 +19004,7 @@
           "origin": "owned",
           "required": false,
           "type": "StepsTypeProp | undefined",
-          "values": ["default", "inline", "dot", "navigation"],
+          "values": ["default", "inline", "dot", "navigation", "bar"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
@@ -18897,6 +19014,35 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
+        }
+      ]
+    },
+    "StepTransition": {
+      "group": "general",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "direction",
+          "origin": "owned",
+          "required": false,
+          "type": "StepTransitionDirectionProp | undefined",
+          "values": ["forward", "backward"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": true,
+          "type": "string | number",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
     },
@@ -19471,7 +19617,7 @@
           "origin": "owned",
           "required": false,
           "type": "TabsVariantProp | undefined",
-          "values": ["line", "default", "card", "editable-card"],
+          "values": ["line", "default", "card", "editable-card", "chips"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]
@@ -21720,6 +21866,14 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "measure",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"wide\" | undefined",
+          "values": ["default", "wide"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
           "name": "onSearch",

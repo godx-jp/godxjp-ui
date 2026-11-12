@@ -1442,13 +1442,14 @@
     container-type: inline-size;
   }
 
-  /* Sections in the body are spaced by DEFAULT. */
-  .ui-page-body > * + * {
-    margin-block-start: var(--page-body-gap);
-  }
-
-  /* Sections in the body are spaced by DEFAULT. */
-  .ui-page-body > * + * {
+  /* Sections in the body are spaced by DEFAULT — every section after the first.
+   *
+   * `<template>` is NOT a section. React Aria's collection components (Tabs, and any RAC
+   * collection) render a hidden `<template>` beside their root to build the collection, and a plain
+   * `> * + *` gave the section after it a gap and counted the template as the "first": a `Tabs` at
+   * the top of the body got a full --page-body-gap above it (measured 16px on Platform's Home).
+   * `:where()` keeps the original (0,1,0) specificity, so every existing override still wins. */
+  .ui-page-body > :where(:not(template)) ~ :where(:not(template)) {
     margin-block-start: var(--page-body-gap);
   }
 

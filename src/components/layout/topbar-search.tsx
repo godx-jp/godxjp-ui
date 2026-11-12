@@ -20,7 +20,12 @@ export type {
  * by CSS at the step (`data-collapse-below`), not by a media-query hook, so SSR and the first client
  * paint agree and the field keeps its value across a resize.
  */
-export function TopbarSearch({ collapseBelow = "sm", className, ...props }: TopbarSearchProp) {
+export function TopbarSearch({
+  collapseBelow = "sm",
+  measure = "default",
+  className,
+  ...props
+}: TopbarSearchProp) {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -42,6 +47,8 @@ export function TopbarSearch({ collapseBelow = "sm", className, ...props }: Topb
     <div
       data-slot="topbar-search"
       data-collapse-below={collapseBelow}
+      // Emitted only for the wide measure, so a default field keeps its exact attributes.
+      data-measure={measure === "wide" ? "wide" : undefined}
       data-open={open ? "true" : undefined}
       className={cn("ui-topbar-search", className)}
     >

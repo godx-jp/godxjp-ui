@@ -68,9 +68,13 @@
    * read, and it is what both showcases approximated by hand. */
   [data-slot="text"][data-size="3xl"],
   [data-slot="text"][data-size="4xl"],
-  [data-slot="text"][data-size="5xl"] {
-    line-height: var(--line-height-tight);
-    letter-spacing: var(--letter-spacing-tight);
+  [data-slot="text"][data-size="5xl"],
+  [data-slot="heading"][data-size="3xl"],
+  [data-slot="heading"][data-size="4xl"],
+  [data-slot="heading"][data-size="5xl"] {
+    /* Display optics: their own knobs (tokens/foundation.css), defaulting to the tight pair. */
+    line-height: var(--line-height-display, var(--line-height-tight));
+    letter-spacing: var(--letter-spacing-display, var(--letter-spacing-tight));
   }
   [data-slot="text"][data-size="3xl"] {
     font-size: var(

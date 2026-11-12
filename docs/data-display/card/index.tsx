@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
   Descriptions,
+  ListRow,
   Table,
   TableBody,
   TableCell,
@@ -126,6 +127,49 @@ export default function Demo() {
               <CardContent>強調サーフェス</CardContent>
             </Card>
           </ResponsiveGrid>
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            grouped · inset grouped list (row hairlines start at the row text)
+          </Text>
+          <Flex direction="col" gap="xs">
+            <Flex pad={{ inline: 4 }}>
+              <Text size="sm" tone="muted">
+                Requested permissions · 2
+              </Text>
+            </Flex>
+            <Card variant="grouped">
+              <CardContent flush>
+                <Flex as="ul" marker="none" direction="col" gap="none">
+                  <ListRow
+                    as="li"
+                    title="Sign in with your account"
+                    trailing={
+                      <Text mono size="xs" tone="muted">
+                        openid
+                      </Text>
+                    }
+                  />
+                  <ListRow
+                    as="li"
+                    title="Basic profile"
+                    description="Name, language, time zone"
+                    trailing={
+                      <Text mono size="xs" tone="muted">
+                        profile
+                      </Text>
+                    }
+                  />
+                </Flex>
+              </CardContent>
+            </Card>
+            <Flex pad={{ inline: 4 }}>
+              <Text size="sm" tone="muted">
+                Approving connects this device to your account with the permissions above.
+              </Text>
+            </Flex>
+          </Flex>
         </Flex>
 
         <Flex direction="col" gap="sm">

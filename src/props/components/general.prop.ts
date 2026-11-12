@@ -350,6 +350,38 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 /**
+ * @see CollapseGroup — a removed list child COLLAPSES (height + block padding/margin + opacity → 0)
+ * before it unmounts, instead of vanishing and jumping the rows under it. No wrapper element.
+ */
+export type CollapseGroupProp = {
+  /** The list's KEYED children (rows). Remove one from the array to make it collapse out. */
+  children?: ChildrenProp;
+  /** Called with the child's key once it has collapsed and unmounted. */
+  onExited?: (key: string) => void;
+};
+
+/** Which way a {@link StepTransitionProp} moves: `forward` (next step) or `backward` (go back). */
+export type StepTransitionDirectionProp = "forward" | "backward";
+
+/**
+ * @see StepTransition — the exit + enter motion between the steps of a multi-step flow (sign-in
+ * email → password, device code → confirm → done). When `value` changes, the OUTGOING content
+ * slides toward the inline-start edge and fades while the INCOMING content enters from the
+ * inline-end edge (`backward` mirrors both), on the critically damped `--ease-emphasized` curve.
+ * Under `prefers-reduced-motion` it is a plain cross-fade. The outgoing layer is `inert` and
+ * `aria-hidden` for the instant it is still painted, so focus and the accessibility tree only
+ * ever hold the current step. The first render does not animate.
+ */
+export type StepTransitionProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
+  /** Identity of the step on screen (a step index or name). A change runs the transition. */
+  value: string | number;
+  /** `forward` (default): out toward start, in from end. `backward`: the reverse path. */
+  direction?: StepTransitionDirectionProp;
+  /** The current step's content. */
+  children?: ChildrenProp;
+};
+
+/**
  * @see Reveal — entrance-motion primitive (staggered fade-up). Wraps content in a real element
  * that animates in reading the DS motion tokens (`--duration-slow`, `--ease-emphasized`,
  * `--reveal-distance`), replacing hand-rolled `@keyframes` + `.app-reveal`/`.d1..d6` classes.
