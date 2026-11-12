@@ -288,6 +288,22 @@
     border-color: hsl(var(--border));
   }
 
+  /* JAPANESE BREAKS BETWEEN PHRASES, EVERYWHERE — the baseline, not a per-slot opt-in. Only the
+   * slots someone had measured carried `auto-phrase` (prose, headings, EmptyState, Breadcrumb,
+   * Steps, `Text break="phrase"`), so a CardDescription, a ListRow title or a Button label still
+   * split words: 「取り消せませ｜ん。」. Set where the language is declared and INHERITED, so a
+   * component or utility that sets its own `word-break` still wins, and an `lang="en"` island
+   * phrase-segments nothing (Chromium segments Japanese only; other engines drop the value).
+   * Code, preformatted text and form fields keep the engine default. */
+  :where([lang|="ja"]) {
+    word-break: auto-phrase;
+    line-break: strict;
+  }
+  :where(:is(code, kbd, samp, pre, input, textarea, select):lang(ja)) {
+    word-break: normal;
+    line-break: auto;
+  }
+
   /* Visually-hidden, absolutely-positioned helpers must never affect layout or scroll height. */
   :where(select, input)[aria-hidden="true"][tabindex="-1"],
   .sr-only {

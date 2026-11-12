@@ -20,8 +20,9 @@ const buttonVariants = cva("ui-button", {
       // `bg-destructive` LEFT for the reason spelled out on `default` above, and gh#880 is
       // where it finally cost something: a utility out-ranks `@layer components`, so
       // `--button-destructive-background` could not have reached this variant while it stood.
-      // The ink stays a utility — nothing competes for `color` here.
-      destructive: "ui-button--destructive text-destructive-foreground",
+      // The ink went too: the disabled surface now competes for `color`, and the utility would
+      // out-rank it. `.ui-button--destructive` already paints `--destructive-foreground`.
+      destructive: "ui-button--destructive",
       // `shadow-xs` từng nằm ở đây và mắc ĐÚNG lỗi đã nêu ngay trên cho `default`:
       // một utility thì out-rank tầng components, nên bóng của nút outline đi vòng
       // qua tầng token — consumer đặt `--shadow-sm: none` thì `default` sạch bóng còn

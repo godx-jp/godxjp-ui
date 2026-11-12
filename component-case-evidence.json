@@ -1938,11 +1938,13 @@
             "xs",
             "sm",
             "md",
-            "lg"
+            "lg",
+            "touch"
           ],
           "evidence": [
             "docs/data-entry/number-input.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
+            "scripts/check-data-entry-frame-runtime.mjs",
+            "src/components/data-entry/__tests__/number-input-suffix-touch-browser.test.ts"
           ]
         },
         "suffix": {

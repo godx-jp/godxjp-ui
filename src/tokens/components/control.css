@@ -79,6 +79,12 @@
    * default illegible (measured 1.43:1 at `#FFD400`, 1.10:1 on glass) and the service sets this. */
   --button-link-foreground: initial; /* default = hsl(var(--primary)) at the call site */
   --button-backdrop-blur-size: initial; /* default = none — a button blurs nothing */
+  /* A disabled `default` / `destructive` button's surface: an opaque neutral fill, ink and inset
+   * hairline instead of the brand fill at half opacity. `initial`; defaults at the call site are
+   * hsl(var(--muted)) / hsl(var(--muted-foreground)) / hsl(var(--border)). */
+  --button-disabled-background: initial;
+  --button-disabled-foreground: initial;
+  --button-disabled-border-color: initial;
   /* Control surface knobs — font-size, border width and resting shadow of every
    * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them
    * once instead of each component hard-coding Tailwind utilities. Defaults preserve

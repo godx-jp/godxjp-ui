@@ -12943,8 +12943,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "SizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg"],
+          "type": "SizeProp | \"touch\" | undefined",
+          "values": ["xs", "sm", "md", "lg", "touch"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
