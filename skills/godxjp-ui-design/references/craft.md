@@ -80,6 +80,13 @@ className="dark"`), so link and visited inks switch to their dark values (4.5:1 
 11. **A marker that carries state is never drawn in the border colour.** A dot or tick that marks
     a status or the current item is a graphic with meaning: 3:1 or better on its surface (muted
     ink at rest, brand ink when current). The hairline border token is ~1.4:1 and disappears.
+12. **A list row's title link is one line, and its line box is enough.** An issue subject or page
+    name in a `DataTable` cell or list row is `<Flex as="span" align="center" gap="xs"><Text asChild
+link truncate><Link href={…}>{subject}</Link></Text>{badges}</Flex>`: the flex row gives the
+    link a box to ellipsize in, and the full text stays in the accessible name. Its 20–24px line
+    box meets WCAG 2.2 SC 2.5.8 by the Spacing exception, so do not pad it to 24px; keep the row's
+    other targets (checkbox, row menu) more than 24px from the link's centre instead. Wrap it
+    (`truncate={false}`) only where the subject is read, not scanned.
 
 ## 4. Interaction hygiene
 
