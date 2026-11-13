@@ -78,6 +78,7 @@ const HELP = {
   Query the godx-ui catalog without an MCP client — for a session that did not load the app's
   .mcp.json. Launches the app's own .mcp.json catalog entry (the pinned @godxjp/ui-mcp, its env)
   with \`call <tool> <json>\` appended, so the text is what the MCP tool returns. No tool: list them.
+  A pin this package wrote for an older @godxjp/ui is replaced by the installed version's ui-mcp.
     npx --no-install @godxjp/ui mcp-call search_components '{"query":"settings page"}'
     npx --no-install @godxjp/ui mcp-call get_component '{"name":"Segmented"}'
   Network: as the MCP itself — npx may fetch the pinned server once on a cold cache.`,

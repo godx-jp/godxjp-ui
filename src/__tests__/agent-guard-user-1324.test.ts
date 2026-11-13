@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import {
+  chmodSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
@@ -522,6 +523,50 @@ describe("mcp-call — launches the repo's catalog entry with `call` appended (g
     const r = run(repo, ["list_patterns"]);
     expect(r.status).toBe(1);
     expect(r.stderr).toContain("predates `call`");
+  });
+
+  // GDX-2359: an app upgraded @godxjp/ui to 33.30.5 without re-running sync-rules kept the
+  // .mcp.json this package wrote at 33.28.4, and mcp-call answered from that old catalog.
+  it("launches the ui-mcp of the INSTALLED @godxjp/ui over a stale package-written pin", () => {
+    const repo = temp("mcp-call-stale-");
+    const bin = join(repo, "bin");
+    mkdirSync(bin);
+    const npx = join(bin, "npx");
+    writeFileSync(
+      npx,
+      "#!/usr/bin/env node\n" +
+        `process.stdout.write(JSON.stringify({ argv: process.argv.slice(2), ui: process.env.GODX_UI_VERSION }));\n`,
+    );
+    chmodSync(npx, 0o755);
+    writeFileSync(
+      join(repo, ".mcp.json"),
+      JSON.stringify({
+        mcpServers: {
+          "godx-ui": {
+            command: "npx",
+            args: ["@godxjp/ui-mcp@33.28.4"],
+            env: { GODX_UI_VERSION: "33.27.6" },
+          },
+        },
+      }),
+    );
+    mkdirSync(join(repo, "node_modules", "@godxjp", "ui"), { recursive: true });
+    writeFileSync(
+      join(repo, "node_modules", "@godxjp", "ui", "package.json"),
+      JSON.stringify({ name: "@godxjp/ui", version: "9.9.9" }),
+    );
+    const r = spawnSync(process.execPath, [CLI, "mcp-call", "list_patterns"], {
+      cwd: repo,
+      env: cleanEnv(repo, { PATH: `${bin}:${process.env.PATH}` }),
+      encoding: "utf8",
+    });
+    expect(r.status).toBe(0);
+    expect(JSON.parse(r.stdout)).toEqual({
+      argv: ["@godxjp/ui-mcp@9.9.9", "call", "list_patterns"],
+      ui: "9.9.9",
+    });
+    expect(r.stderr).toContain("@godxjp/ui-mcp@33.28.4");
+    expect(r.stderr).toContain("sync-rules");
   });
 
   it("finds no catalog entry where there is none (it then launches the pinned default)", () => {

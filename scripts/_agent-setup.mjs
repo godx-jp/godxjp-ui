@@ -54,7 +54,7 @@ function mcpEntryMatches(a, b) {
  * upgrade: treating it as custom left consumers on the MCP of the release they first installed
  * (a `@godxjp/ui-mcp@25.4.0` pin survived the upgrade to 26.x).
  */
-function isPackageWrittenMcpEntry(entry) {
+export function isPackageWrittenMcpEntry(entry) {
   if (entry?.command !== "npx") return false;
   const args = entry.args ?? [];
   if (args.length !== 1 || !/^@godxjp\/ui-mcp@[^\s]+$/.test(args[0])) return false;

@@ -8,6 +8,13 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.30.6] - 2026-11-14
+
+### mcp-call answers from the catalog of the installed @godxjp/ui (GDX-2359)
+
+- **Fixed** `godxjp-ui mcp-call` launched the repo's `.mcp.json` catalog entry exactly as written. An app that upgraded `@godxjp/ui` without re-running `sync-rules` kept the entry this package had written for an older release, so mcp-call answered from that release's catalog: GoDX Grid on 33.30.5 got `@godxjp/ui-mcp@33.28.4` with `GODX_UI_VERSION=33.27.6`. An entry this package wrote (`npx @godxjp/ui-mcp@<pin>`, only `GODX_UI_VERSION` in env) whose pin or version differs from the installed `@godxjp/ui` is now replaced by the installed version's ui-mcp, with a note on stderr naming the stale pin and `sync-rules`. A custom entry (a local link, other flags or env) is still launched as written.
+- Regression test, failing before the fix: a stale `@godxjp/ui-mcp@33.28.4` entry over an installed 9.9.9 launches `@godxjp/ui-mcp@9.9.9` with `GODX_UI_VERSION=9.9.9`.
+
 ## [33.30.5] - 2026-11-14
 
 ### visual-audit: a target is the region that takes the pointer; a group of controls is not one control (GDX-2343)
