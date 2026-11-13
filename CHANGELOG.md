@@ -8,6 +8,14 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.30.5] - 2026-11-14
+
+### visual-audit: a target is the region that takes the pointer; a group of controls is not one control (GDX-2343)
+
+- **Fixed** `target-size-min` measured a target's paint, not its hit area. NumberInput's steppers paint 24×15 and each carries a 24×24 `::after` anchored away from its sibling (gh#506), and both were reported on a consumer's settings page. An absolutely positioned `::after` / `::before` now counts when `elementFromPoint` at its centre and 1px inside each edge returns the target; a pseudo box a sibling paints over does not count, so the target keeps its paint size. A target below the fold is scrolled into view for the reading, and every scroll position is put back.
+- **Fixed** `control-height-mismatch` read a wrapping group as one control. A PageHeader's `extra` at 320px holds a `Flex` of three 36px Buttons beside the 36px menu trigger; once the Buttons stacked, the group (124px) was compared with the trigger and the row was reported as "mixes control heights 124/36px". A child of the row that holds several controls is now measured through its controls, a `<a data-slot=button>` counts as a control, and a 1×1 visually hidden node (an Upload's file input) is not one. A real mismatch inside a group, which the group's own height hid, is now reported.
+- Chromium regression tests, failing before the fix. Measured on GoDX Grid: `/system/security` and the 課題 gantt, files and members screens went from 4 errors and 2 warnings on these two rules to 0.
+
 ## [33.30.4] - 2026-11-14
 
 ### DataTable: a wrapped sortable header follows its column's alignment (gh#1586, GDX-2342)

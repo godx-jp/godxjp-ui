@@ -162,6 +162,76 @@ export function collectInPage() {
     return false;
   };
 
+  // THE TARGET IS THE REGION THAT TAKES THE POINTER, NOT THE PAINT (GDX-2343). The kit grows small
+  // controls' hit areas with an absolutely positioned pseudo-element (NumberInput steppers paint
+  // 24x15 and carry a 24x24 `::after` each, anchored away from the sibling; the DataTable sort
+  // button; see src/contracts/measurement.json). Measuring only the paint reported both steppers.
+  // A pseudo box counts only when it is MEASURED to take the pointer: `elementFromPoint` at its
+  // centre and 1px inside each edge must return the element — a sibling that paints over it keeps
+  // the element at its paint size. `elementFromPoint` sees only the viewport, so a target below
+  // the fold is scrolled into view for the reading, and every scroll position is put back.
+  const pseudoBoxes = (el) =>
+    ["::after", "::before"]
+      .map((which) => getComputedStyle(el, which))
+      .filter(
+        (p) => p.content !== "none" && p.position === "absolute" && p.pointerEvents !== "none",
+      )
+      .map((p) => ({
+        w: parseFloat(p.width),
+        h: parseFloat(p.height),
+        left: parseFloat(p.left),
+        top: parseFloat(p.top),
+      }))
+      .filter((p) => [p.w, p.h, p.left, p.top].every(Number.isFinite));
+  const hitBox = (el) => {
+    const paint = el.getBoundingClientRect();
+    if (getComputedStyle(el).position === "static") return paint;
+    const pseudos = pseudoBoxes(el).filter((p) => p.w * p.h > paint.width * paint.height);
+    if (!pseudos.length) return paint;
+    const scrolled = [];
+    for (let a = el.parentElement; a; a = a.parentElement)
+      scrolled.push([a, a.scrollLeft, a.scrollTop]);
+    const win = [window.scrollX, window.scrollY];
+    const inView = (r) =>
+      r.top >= 0 && r.left >= 0 && r.bottom <= innerHeight && r.right <= innerWidth;
+    if (!inView(paint))
+      el.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
+    const r = el.getBoundingClientRect();
+    let best = paint;
+    for (const { w, h, left, top } of pseudos) {
+      if (w * h <= best.width * best.height) continue;
+      const box = {
+        left: r.left + el.clientLeft + left,
+        top: r.top + el.clientTop + top,
+        width: w,
+        height: h,
+      };
+      const cx = box.left + w / 2;
+      const cy = box.top + h / 2;
+      const owns = [
+        [cx, cy],
+        [box.left + 1, cy],
+        [box.left + w - 1, cy],
+        [cx, box.top + 1],
+        [cx, box.top + h - 1],
+      ].every(([x, y]) => {
+        const hit = document.elementFromPoint(x, y);
+        return !!hit && (hit === el || el.contains(hit));
+      });
+      // Reported where the paint was measured, so it sits beside the other targets' centres.
+      if (owns)
+        best = { ...box, left: box.left + paint.left - r.left, top: box.top + paint.top - r.top };
+    }
+    if (r.left !== paint.left || r.top !== paint.top) {
+      for (const [a, left, top] of scrolled) {
+        a.scrollLeft = left;
+        a.scrollTop = top;
+      }
+      window.scrollTo({ left: win[0], top: win[1], behavior: "instant" });
+    }
+    return best;
+  };
+
   // Accent surfaces — buttons / primary CTAs / banners whose background carries colour.
   const accents = [];
   for (const el of document.querySelectorAll(
@@ -185,7 +255,7 @@ export function collectInPage() {
     // Dropped BEFORE the list is built, not filtered after: a node nobody can point at must not
     // count as a neighbour either, or it spends the Spacing exception of the real target it sits on.
     if (!visible(el) || clippedAway(el)) continue;
-    const r = el.getBoundingClientRect();
+    const r = hitBox(el);
     const name = (el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 40);
     rawTargets.push({
       el,
@@ -315,14 +385,24 @@ export function collectInPage() {
     ".ui-flex[data-direction=row], .ui-page-header-extra, .ui-page-footer .ui-flex, [data-slot=card-bar]",
   )) {
     if (!visible(row)) continue;
-    const controls = [...row.children].filter(
-      (c) =>
-        visible(c) &&
-        (c.matches(
-          "button, [role=combobox], [role=button], input, [data-slot=avatar], .ui-control, .ui-button",
-        ) ||
-          c.querySelector(":scope > button, :scope > [role=combobox]")),
-    );
+    // A child that directly wraps ONE control (a Tooltip trigger span) is measured as that control;
+    // a child that wraps SEVERAL is a group, and its controls are measured instead (GDX-2343: a
+    // wrapping Flex of three 36px Buttons stacked at 320px and was read as one 124px control).
+    const isControl = (c) =>
+      c.matches(
+        "button, [role=combobox], [role=button], input, [data-slot=avatar], [data-slot=button], .ui-control, .ui-button",
+      );
+    const wrapsOne = (c) => !!c.querySelector(":scope > button, :scope > [role=combobox]");
+    // A 1x1 visually hidden node (an Upload's file input) is painted nowhere: not a control.
+    const painted = (c) => {
+      const r = c.getBoundingClientRect();
+      return visible(c) && r.width > 1 && r.height > 1;
+    };
+    const controls = [...row.children].filter(painted).flatMap((c) => {
+      if (isControl(c)) return [c];
+      const members = [...c.children].filter((m) => painted(m) && (isControl(m) || wrapsOne(m)));
+      return members.length > 1 ? members : wrapsOne(c) ? [c] : [];
+    });
     if (controls.length < 2) continue;
     rows.push({
       name: (row.className || row.tagName).toString().slice(0, 40),
