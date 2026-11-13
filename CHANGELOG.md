@@ -8,6 +8,25 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.30.3] - 2026-11-13
+
+### visual-audit: an enclosing scroll region is not a neighbour; a bare status text is not a banner (GDX-2313)
+
+- **Fixed** `target-size-min`: the SC 2.5.8 Spacing exception no longer counts a target's own ancestor or descendant as a neighbouring target. A DataTable wider than its frame makes `.ui-data-table-scroll` focusable (`tabindex=0`, `role=group`); its centre fell within 24px of one row's 20px title link, so that row alone was reported, and which row moved with the container's centre. Measured in Chromium: 9 identical rows, before 1 flagged (the row under the region's centre), after 0; two 16px links 18px apart are still flagged.
+- **Fixed** `alert-controls-misplaced`: an element with no icon and no control (FilterBar's `<p role="status" class="ui-filter-bar-count">45 件の結果</p>`) is no longer measured as a banner. It was reported as "controls stacked vertically" at all six widths because it is `display:block`. A status region that carries an icon or a control is still measured.
+- **Docs** `Text` use case and `godxjp-ui-design` craft.md §3.12: a list row's one-line title link (`<Text asChild link truncate>` in a `Flex` row) and why its 20–24px line box meets SC 2.5.8 without padding.
+
+### NumberInput suffix + touch size, Japanese phrase breaking everywhere, disabled filled Button
+
+- **Fixed** `NumberInput controls={false}` + `suffix`: the suffix kept the inset of the stepper column it no longer had, so in a 96px field the value ran past it (「kg 2」). It now sits at the inline end (`--control-padding-x`) and the field's end padding reserves it. With steppers, the suffix is now reserved too (the value used to run under it on a fine pointer). The reservation is the suffix's MEASURED width (`--number-input-suffix-measured-size`, written by the component), not a fixed 20px — 「時間」 fits as well as 「%」.
+- **Added** `NumberInput size="touch"` — the glove tier (gh#1304): 56px (`--control-height-touch`), the same band as `Button size="touch"`, so a −/value/+ row lines up. The coarse-pointer 48px band does not override it.
+- **Changed** Japanese line breaking is a base-layer BASELINE: every element under `[lang|="ja"]` inherits `word-break: auto-phrase` + `line-break: strict`, so CardDescription, ListRow titles, Button labels and any plain consumer text no longer split words (「取り消せませ｜ん。」). `code`, `kbd`, `samp`, `pre`, `input`, `textarea` and `select` keep the engine default. Zero specificity: any component or utility that sets its own `word-break` still wins. Cost (already documented on `Text break="phrase"`): a phrase is unbreakable for min-content, so a Japanese flex/grid/table column is at least as wide as its longest phrase — a phrase longer than its line still breaks inside itself.
+- **Changed** a disabled `Button` of variant `default` or `destructive` no longer renders its brand fill at `--disabled-opacity`: it paints an opaque neutral surface — `--button-disabled-background` (default `hsl(var(--muted))`), `--button-disabled-foreground` (default `hsl(var(--muted-foreground))`, ≥ 4.5:1 on it), inset hairline `--button-disabled-border-color` (default `hsl(var(--border))`), no shadow. Other variants keep the opacity fade. The `text-destructive-foreground` utility was removed from the destructive variant's class list (the components layer already paints the same ink), so a consumer that asserted that class name will no longer find it.
+
+## [33.29.0–33.30.2] - 2026-11-11
+
+Published to npm from a branch, landed on `main` by #1581.
+
 ### Error surface out of every route; hosted-flow CSS out of styles/core (bundle size)
 
 - **Changed** `PageErrorBoundary` (and so `AppShell`) loads `ErrorSurface` lazily. Until its chunk arrives — and for good if it cannot load — an inline `role="alert"` fallback shows the same heading, sentence and reload button. AppShell's up-front graph no longer holds `error-surface`, `card`, `descriptions` or `card-tab-strip-loader`. Measured on dist (esbuild minify + splitting, react external), up-front gzip: AppShell 18,890 → 7,364 B; PageErrorBoundary 14,081 → 1,984 B.
@@ -55,13 +74,6 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 - **Added** `Avatar appearance="neutral"` — an unavailable / 準備中 tile: grey fill (`--avatar-neutral-background`, default `--muted`) and muted initials (`--avatar-neutral-foreground`, default `--muted-foreground`); measured 5.2:1 light / 5.5:1 dark. It wins over `colorKey` (no colour key is emitted).
 - **Added** `Avatar size="xl"` — a 64px feature tile (`--avatar-size-xl`, `--avatar-font-size-xl`, `--avatar-glyph-size-xl`), off the control ladder on purpose; `shape="square"` takes it too.
 - **Added** `AuthFooter mono?: boolean` (default `true`). `mono={false}` sets the legal line in the body face (`--auth-footer-font-family`, default `--font-family-body`), so a long line stays on one row in a 400px column.
-
-### NumberInput suffix + touch size, Japanese phrase breaking everywhere, disabled filled Button
-
-- **Fixed** `NumberInput controls={false}` + `suffix`: the suffix kept the inset of the stepper column it no longer had, so in a 96px field the value ran past it (「kg 2」). It now sits at the inline end (`--control-padding-x`) and the field's end padding reserves it. With steppers, the suffix is now reserved too (the value used to run under it on a fine pointer). The reservation is the suffix's MEASURED width (`--number-input-suffix-measured-size`, written by the component), not a fixed 20px — 「時間」 fits as well as 「%」.
-- **Added** `NumberInput size="touch"` — the glove tier (gh#1304): 56px (`--control-height-touch`), the same band as `Button size="touch"`, so a −/value/+ row lines up. The coarse-pointer 48px band does not override it.
-- **Changed** Japanese line breaking is a base-layer BASELINE: every element under `[lang|="ja"]` inherits `word-break: auto-phrase` + `line-break: strict`, so CardDescription, ListRow titles, Button labels and any plain consumer text no longer split words (「取り消せませ｜ん。」). `code`, `kbd`, `samp`, `pre`, `input`, `textarea` and `select` keep the engine default. Zero specificity: any component or utility that sets its own `word-break` still wins. Cost (already documented on `Text break="phrase"`): a phrase is unbreakable for min-content, so a Japanese flex/grid/table column is at least as wide as its longest phrase — a phrase longer than its line still breaks inside itself.
-- **Changed** a disabled `Button` of variant `default` or `destructive` no longer renders its brand fill at `--disabled-opacity`: it paints an opaque neutral surface — `--button-disabled-background` (default `hsl(var(--muted))`), `--button-disabled-foreground` (default `hsl(var(--muted-foreground))`, ≥ 4.5:1 on it), inset hairline `--button-disabled-border-color` (default `hsl(var(--border))`), no shadow. Other variants keep the opacity fade. The `text-destructive-foreground` utility was removed from the destructive variant's class list (the components layer already paints the same ink), so a consumer that asserted that class name will no longer find it.
 
 ## [33.28.7] - 2026-11-10
 

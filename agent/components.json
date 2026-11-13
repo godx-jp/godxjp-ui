@@ -5258,6 +5258,7 @@
       "A trainee's katakana name in a DataTable cell, breaking between phrases instead of mid-katakana: `render: (row) => <Text break=\"phrase\">{row.name}</Text>` (pair long-heading columns with `headerWrap: true`).",
       "An emphasized inline figure: `<Text weight=\"medium\" tabular>¥1,240,000</Text>`.",
       "A service-card description clamped to 2 lines on a narrow (390px) index: `<Text as=\"p\" size=\"sm\" tone=\"muted\" clamp={2}>{description}</Text>`.",
+      "An issue subject on ONE line in a scanned list, badges beside it: `<Flex as=\"span\" align=\"center\" gap=\"xs\"><Text asChild link truncate><Link href={`/view/${key}`}>{subject}</Link></Text>{badges}</Flex>` — the flex row gives the link a box to ellipsize in. Its 20–24px line box meets WCAG 2.2 SC 2.5.8 by the Spacing exception; keep the row's checkbox or menu more than 24px from its centre instead of padding the link to 24px.",
       "An issue subject linking out of a table cell, wrapping to two lines: `<Text asChild link truncate={false}><Link href={`/view/${key}`}>{subject}</Link></Text>`.",
       "A destructive link in a settings row: `<Text as=\"a\" href=\"/danger\" link tone=\"destructive\">取り消す</Text>`."
     ]

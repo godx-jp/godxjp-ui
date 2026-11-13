@@ -188,6 +188,7 @@ export function collectInPage() {
     const r = el.getBoundingClientRect();
     const name = (el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 40);
     rawTargets.push({
+      el,
       width: Math.round(r.width),
       height: Math.round(r.height),
       cx: r.left + r.width / 2,
@@ -199,12 +200,23 @@ export function collectInPage() {
       name,
     });
   }
-  const targets = rawTargets.map((t) => {
+  const targets = rawTargets.map(({ el, ...t }) => {
     if (t.inline) return { ...t, exempt: "inline" };
     // SPACING exception: undersized is allowed when a 24px-DIAMETER circle centred on the target
     // does not intersect the circle of any other target. Two circles of radius 12 intersect when
     // their centres are closer than 24px, so that is the whole test.
-    const crowded = rawTargets.some((o) => o !== t && Math.hypot(o.cx - t.cx, o.cy - t.cy) < 24);
+    //
+    // A target's own ancestor or descendant is not a NEIGHBOUR (GDX-2313): a DataTable wider than
+    // its frame makes `.ui-data-table-scroll` focusable (tabindex=0, role=group), and counting that
+    // enclosing region flagged whichever row's link happened to sit within 24px of its centre —
+    // a verdict that moved with the container's centre, not with any crowding.
+    const crowded = rawTargets.some(
+      (o) =>
+        o.el !== el &&
+        !o.el.contains(el) &&
+        !el.contains(o.el) &&
+        Math.hypot(o.cx - t.cx, o.cy - t.cy) < 24,
+    );
     return { ...t, exempt: crowded ? null : "spacing" };
   });
 
@@ -228,6 +240,10 @@ export function collectInPage() {
     const box = el.getBoundingClientRect();
     const icons = el.querySelectorAll("svg, img").length;
     const btns = [...el.querySelectorAll("button, [role=button], a[href]")];
+    // Text with no icon and no control has no Alert anatomy to misplace (GDX-2313): FilterBar's
+    // result count is `<p role="status">` — display:block, so it read as "controls stacked
+    // vertically" at every width. Every check below measures an icon or a control.
+    if (!icons && !btns.length) continue;
     const actionWidthRatio = btns.length
       ? Math.max(...btns.map((b) => b.getBoundingClientRect().width)) / (box.width || 1)
       : 0;
