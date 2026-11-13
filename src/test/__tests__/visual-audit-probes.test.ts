@@ -113,6 +113,17 @@ const COMPACT: Case[] = [
   C("c01/repaired.html", "c01-content-reachable", "pass"),
   C("c01/clean.html", "c01-content-reachable", "pass"),
   C("c01/clean-scroll-in-clip.html", "c01-content-reachable", "pass"),
+  // GDX-2347 — a BOX cut inside a clipping card while its short labels still fit, and the boxes a
+  // clipper cuts on purpose or never paints.
+  C("c01/bad-box-in-card.html", "c01-content-reachable", "fail", [
+    ["c01-content-reachable", "#c01-column"],
+  ]),
+  C("c01/repaired-box-in-card.html", "c01-content-reachable", "pass"),
+  C("c01/clean-box-scroll.html", "c01-content-reachable", "pass"),
+  C("c01/clean-box-ellipsis.html", "c01-content-reachable", "pass"),
+  C("c01/clean-box-sr-only.html", "c01-content-reachable", "pass"),
+  C("c01/clean-box-hidden.html", "c01-content-reachable", "pass"),
+  C("c01/clean-box-moved.html", "c01-content-reachable", "pass"),
 
   C("c02/bad-narrow.html", "c02-search-usable", "fail", [["c02-search-usable", "#c02-narrow"]]),
   C("c02/bad-hint.html", "c02-search-usable", "fail", [["c02-search-usable", "#c02-hint"]]),

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      C01 clean: wide boxes that are not painted (display none, visibility hidden, zero size)
+    </title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      button {
+        font: inherit;
+        min-width: 32px;
+        min-height: 32px;
+      }
+      .card {
+        width: 212px;
+        padding: 16px;
+        overflow: hidden;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      .row {
+        padding: 4px 8px;
+        background: #eee;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="row">Visible row</div>
+      <div id="c01-none" style="display: none; width: 400px">Not rendered</div>
+      <div id="c01-invisible" style="visibility: hidden; width: 400px">Invisible</div>
+      <div id="c01-zero" style="width: 400px; height: 0"></div>
+    </div>
+  </body>
+</html>

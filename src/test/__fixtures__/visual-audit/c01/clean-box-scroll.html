@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C01 clean: a wide table in a card that scrolls on purpose</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      button {
+        font: inherit;
+        min-width: 32px;
+        min-height: 32px;
+      }
+      .card {
+        width: 212px;
+        padding: 16px;
+        overflow: hidden;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      .row {
+        padding: 4px 8px;
+        background: #eee;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" style="overflow-x: auto">
+      <div id="c01-wide-table" style="width: 600px">
+        <div class="row">A wide row that scrolls</div>
+      </div>
+    </div>
+  </body>
+</html>

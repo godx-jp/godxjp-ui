@@ -529,7 +529,7 @@ export const PROBE_RULES = [
     category: "layout",
     standard: `WCAG 2.2 SC 1.4.10 / 1.4.4 / 1.4.12; 1.5px tolerance ${RC}`,
     kind: "probe",
-    fix: "Nothing may be cut off: no horizontal scroll on the document or the app's main region, and no text/icon partly hidden by an overflow:hidden/clip ancestor. Let the container shrink its content (min-width:0 + wrap), or truncate with a recoverable full value (title / aria-label). Kit Breadcrumb ellipsis requires the complete label in both title and aria-label on its clipping element; a tooltip alone or a partial label is insufficient.",
+    fix: "Nothing may be cut off: no horizontal scroll on the document or the app's main region, and no text/icon, or element box (a column, a row), partly hidden by an overflow:hidden/clip ancestor such as a Card. Let the container shrink its content (min-width:0 + wrap), or truncate with a recoverable full value (title / aria-label). Kit Breadcrumb ellipsis requires the complete label in both title and aria-label on its clipping element; a tooltip alone or a partial label is insufficient.",
   },
   {
     id: "c02-search-usable",
@@ -1148,15 +1148,32 @@ export function collectProbes(opts) {
     if (!n.data.trim() || !p || p.closest(SKIP) || p.closest("svg")) continue;
     items.push({ node: n, owner: p, kind: "text" });
   }
-  for (const el of document.querySelectorAll("svg, img, [role=img], canvas, video")) {
+  const ICON = "svg, img, [role=img], canvas, video";
+  for (const el of document.querySelectorAll(ICON)) {
     if ((el.parentElement && el.parentElement.closest("svg")) || !el.parentElement) continue;
     items.push({ node: el, owner: el.parentElement, kind: "icon" });
   }
+  // GDX-2347: an element's own BOX can be cut while its ink still fits — a 240px nav column in a
+  // 244px card at 320px lost 12px of its rows (hover fill, trailing badge, padding) and C01 said
+  // pass, because the labels were short. Boxes go through the same walk as text and icons, so
+  // they inherit its exceptions (sr-only, wholly clipped, reachable by scrolling). Inline boxes are
+  // left to the text path: their client rect is the font's content area, not what is painted.
+  for (const el of document.body.querySelectorAll("*")) {
+    if (el.matches(ICON) || el.closest(SKIP) || el.closest("svg") || !el.parentElement) continue;
+    const d = cs(el).display;
+    if (d === "inline" || d === "contents" || d === "none") continue;
+    items.push({ node: el, owner: el.parentElement, kind: "box" });
+  }
+  const boxHits = [];
+  const inkHits = [];
   for (const it of items) {
     const host = it.kind === "text" ? it.owner : it.node;
     if (!shown(host)) continue;
     let rects;
-    if (it.kind === "text") {
+    if (it.kind === "box") {
+      const r = it.node.getBoundingClientRect();
+      rects = [r];
+    } else if (it.kind === "text") {
       const range = document.createRange();
       range.selectNodeContents(it.node);
       rects = [...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0);
@@ -1184,6 +1201,14 @@ export function collectProbes(opts) {
     };
     let worst = null;
     let hidden = false;
+    // Content MOVED by a transform inside a clipper is placed there on purpose — a Marquee track,
+    // a carousel slide, a drawer sliding in — so no clipper past the transform can cut it.
+    let moved = it.kind !== "text" && cs(it.node).transform !== "none";
+    // A positioned box escapes every overflow box below its containing block — C13's rule
+    // (`clipsOf`); a fixed one is clipped by nothing but the viewport.
+    let position = it.kind === "box" ? cs(it.node).position : "static";
+    if (position === "fixed") continue;
+    let fixedAbove = false;
     // Walk outward from the nearest box. Text is clipped by its OWN element too (a truncating
     // span); an icon starts at its parent. A scroll container (auto/scroll) keeps content
     // reachable on that axis, but it never excuses a hidden/clip ancestor INSIDE it; one OUTSIDE
@@ -1194,6 +1219,11 @@ export function collectProbes(opts) {
       a = a.parentElement
     ) {
       const s = cs(a);
+      if (fixedAbove) break;
+      const establishes = s.position !== "static" || s.transform !== "none" || s.contain !== "none";
+      if (position === "absolute" && !establishes) continue;
+      if (s.position !== "static") position = s.position;
+      if (position === "fixed") fixedAbove = true;
       const scrollX = s.overflowX === "auto" || s.overflowX === "scroll";
       const scrollY = s.overflowY === "auto" || s.overflowY === "scroll";
       if ((scrollX || scrollY) && a.clientWidth > 1 && a.clientHeight > 1) {
@@ -1213,13 +1243,15 @@ export function collectProbes(opts) {
           box.top = Math.max(box.top, vt);
           box.bottom = Math.min(box.bottom, vt + a.clientHeight);
         }
-        if (box.right <= box.left || box.bottom <= box.top) {
-          hidden = true;
-          break;
-        }
+        // Scrolled wholly out of view: nothing outside the scroller can cut it, but a clip met
+        // INSIDE the scroller already did (GDX-2347: a card below the fold of the demo frame cut
+        // its columns, and the fold erased the finding).
+        if (box.right <= box.left || box.bottom <= box.top) break;
       }
       const clipX = s.overflowX === "hidden" || s.overflowX === "clip";
       const clipY = s.overflowY === "hidden" || s.overflowY === "clip";
+      if (moved && (clipX || clipY)) break;
+      if (s.transform !== "none") moved = true;
       if (!clipX && !clipY) continue;
       if (a.clientWidth <= 1 || a.clientHeight <= 1) {
         hidden = true; // visually-hidden idiom — painted nowhere
@@ -1246,6 +1278,12 @@ export function collectProbes(opts) {
       const truncating =
         (dx >= dy && (s.textOverflow === "ellipsis" || ownerStyle.textOverflow === "ellipsis")) ||
         (s.webkitLineClamp && s.webkitLineClamp !== "none");
+      // A truncating clipper cuts on purpose; whether its text stays recoverable is the text
+      // path's question, never the box's.
+      if (it.kind === "box" && (truncating || cs(it.node).textOverflow === "ellipsis")) {
+        hidden = true;
+        break;
+      }
       let recoverable = false;
       if (it.kind === "text" && truncating) {
         const full = snippet(it.owner.textContent).slice(0, 20);
@@ -1266,15 +1304,29 @@ export function collectProbes(opts) {
               snippet(carrier.getAttribute("title")).includes(full) ||
               snippet(carrier.getAttribute("aria-label")).includes(full));
       }
-      worst = { px, axis: dx >= dy ? "x" : "y", clipper: desc(a), recoverable };
+      worst = { px, axis: dx >= dy ? "x" : "y", clipper: desc(a), clipperEl: a, recoverable };
     }
     if (hidden || !worst) continue;
-    clips.push({
+    const { clipperEl, ...hit } = worst;
+    const entry = {
       kind: it.kind,
       element: desc(host),
       text: it.kind === "text" ? snippet(it.node.data) : "",
-      ...worst,
-    });
+      ...hit,
+    };
+    if (it.kind === "box") boxHits.push({ el: it.node, clipperEl, entry });
+    else {
+      inkHits.push({ el: host, clipperEl, entry });
+      clips.push(entry);
+    }
+  }
+  // One cut, one finding: only the OUTERMOST box a clipper cuts (the column, not each row inside
+  // it), and none where cut text or an icon inside it already names the same clipper.
+  for (const h of boxHits) {
+    const same = (o) => o.clipperEl === h.clipperEl && o.entry.axis === h.entry.axis;
+    if (boxHits.some((o) => o !== h && same(o) && o.el.contains(h.el))) continue;
+    if (inkHits.some((o) => same(o) && h.el.contains(o.el))) continue;
+    clips.push(h.entry);
   }
 
   // ── C02: search fields ───────────────────────────────────────────────────────────────────

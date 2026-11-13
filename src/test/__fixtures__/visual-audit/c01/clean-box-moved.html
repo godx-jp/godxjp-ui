@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C01 clean: a marquee track moved by a transform inside its clipping viewport</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      button {
+        font: inherit;
+        min-width: 32px;
+        min-height: 32px;
+      }
+      .card {
+        width: 212px;
+        padding: 16px;
+        overflow: hidden;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      .row {
+        padding: 4px 8px;
+        background: #eee;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div
+        id="c01-track"
+        style="display: flex; gap: 16px; width: max-content; transform: translateX(-40px)"
+      >
+        <span class="row">Meridian Foods</span><span class="row">Vinh Phat Logistics</span
+        ><span class="row">Sanwa Trading</span>
+      </div>
+    </div>
+  </body>
+</html>

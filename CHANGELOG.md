@@ -8,6 +8,13 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### visual-audit: C01 reports a box cut inside a clipping card (GDX-2347)
+
+- **Fixed** `c01-content-reachable` only measured text and icons, so a box cut by an `overflow: hidden` / `clip` ancestor passed while its labels still fit. On the nav-list docs page at 320px, two 240px columns lost 12px of every row (the row fill and the trailing badge) inside a 244px Card, and C01 said pass. Element boxes now go through the same walk as text and icons, at the clipper's padding box. One cut gives one finding: the outermost box a clipper cuts, naming the box and the clipper. A box is not reported when text or an icon inside it already names the same clipper.
+- **Fixed** a clip met inside a scroll container was dropped when the content sat below that container's fold. The cut came first, but the fold still erased it, so below-the-fold content of a scrolling `main` was never checked.
+- Not reported: a scroll container that has room to scroll, an ellipsis or line-clamp clipper (the text path still requires a recoverable value), screen-reader-only and unpainted boxes, content moved by a transform (a Marquee track, a carousel slide), and a positioned box whose containing block is outside the clipper (C13's rule).
+- Calibration fixtures: `c01/bad-box-in-card` fails on 33.30.5 and passes now; there is a repaired page and five clean pages, one per exception.
+
 ## [33.30.5] - 2026-11-14
 
 ### visual-audit: a target is the region that takes the pointer; a group of controls is not one control (GDX-2343)

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C01 bad: a 240px column cut inside a 244px card (GDX-2347)</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      button {
+        font: inherit;
+        min-width: 32px;
+        min-height: 32px;
+      }
+      .card {
+        width: 212px;
+        padding: 16px;
+        overflow: hidden;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      .row {
+        padding: 4px 8px;
+        background: #eee;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- GDX-2347: the nav-list demo at 320px. The card's padding box is 244px, the column inside it
+         240px from a 16px inset: 12px of every row (fill, trailing badge) is cut while the short
+         labels still fit, so the text path alone says nothing. -->
+    <div class="card">
+      <div id="c01-column" style="width: 240px">
+        <div class="row">Profile</div>
+        <div class="row">Security</div>
+        <div class="row">Billing</div>
+      </div>
+    </div>
+  </body>
+</html>
