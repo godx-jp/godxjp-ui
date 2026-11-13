@@ -183,6 +183,7 @@ export default function Demo() {
                 type="multiple"
                 variant="outline"
                 size="sm"
+                wrap
                 value={facets}
                 onValueChange={setFacets}
                 aria-label="状態で絞り込み"
