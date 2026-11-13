@@ -84,7 +84,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="sm" align="center" justify="between">
+            <Flex direction="row" gap="sm" align="center" justify="between" wrap>
               <Text weight="medium">請求書一覧</Text>
               <Flex direction="row" gap="xs" align="center">
                 <Button variant="outline" size="sm">

@@ -157,7 +157,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="md" align="center">
+            <Flex direction="row" gap="md" align="center" wrap>
               <Toggle size="xs" aria-label="極小サイズ">
                 極小
               </Toggle>

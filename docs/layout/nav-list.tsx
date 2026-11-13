@@ -428,7 +428,7 @@ export default function Demo() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Flex direction="col" gap="sm" width={280}>
+          <Flex direction="col" gap="sm" width="min(280px, 100%)">
             <NavList
               label={t("navListDocs.sections.label")}
               sections={PROJECT_SECTIONS}
@@ -490,7 +490,7 @@ export default function Demo() {
                 activeId="mfa"
               />
             </Flex>
-            <Flex direction="col" gap="sm" width={240}>
+            <Flex direction="col" gap="sm" width="min(240px, 100%)">
               <Text size="sm" weight="medium">
                 {t("navListDocs.extremes.mixedCaption")}
               </Text>
@@ -516,7 +516,7 @@ export default function Demo() {
         </CardHeader>
         <CardContent>
           <Flex direction={{ base: "col", md: "row" }} gap="xl" align="start">
-            <Flex direction="col" gap="sm" width={240}>
+            <Flex direction="col" gap="sm" width="min(240px, 100%)">
               <NavList
                 label={t("navListDocs.states.label")}
                 items={STATE_ITEMS}
@@ -610,7 +610,7 @@ export default function Demo() {
         </CardHeader>
         <CardContent>
           <Flex direction={{ base: "col", md: "row" }} gap="xl" align="start">
-            <Flex direction="col" gap="sm" width={280}>
+            <Flex direction="col" gap="sm" width="min(280px, 100%)">
               <Text size="sm" weight="medium">
                 {t("navListDocs.empty.caption")}
               </Text>
