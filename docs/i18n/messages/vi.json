@@ -2733,5 +2733,9 @@
     "news": "Thông báo",
     "searchApps": "Tìm ứng dụng, trang và người",
     "desktopsPhone": "Màn hình (điện thoại)"
+  },
+  "numberInputDocs": {
+    "touchLabel": "touch (56px · cùng dải với Button size=touch)",
+    "touchAriaLabel": "cỡ touch"
   }
 }

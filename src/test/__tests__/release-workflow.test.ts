@@ -1736,6 +1736,90 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
     expect(world.log.some((entry) => entry.startsWith("npm publish"))).toBe(false);
   });
 
+  describe("waits for CI that has not FINISHED, never for CI that is red (GDX-2341)", () => {
+    // Run 43443126385 (v33.30.3): the tag push started CD 1m39s after CI on the same SHA, every
+    // required gate read `in_progress`, and the release refused instead of waiting.
+    const provenanceAfter = (reads: Array<CheckRun[] | "gh-fails">, ciWaitAttempts = 10) => {
+      let index = 0;
+      let waits = 0;
+      const capture = (binary: string): Capture => {
+        if (binary !== "gh") throw new Error(`unexpected capture: ${binary}`);
+        const read = reads[Math.min(index, reads.length - 1)];
+        index += 1;
+        return read === "gh-fails"
+          ? { status: 1, stdout: "", stderr: "HTTP 502" }
+          : {
+              status: 0,
+              stdout: JSON.stringify({ total_count: read.length, check_runs: read }),
+              stderr: "",
+            };
+      };
+      const runtime = createReleaseRuntime({
+        repositoryRoot: fixture(),
+        run: () => {},
+        capture,
+        repositorySlug: "godxjp/godxjp-ui",
+        wait: () => {
+          waits += 1;
+        },
+        ciWaitAttempts,
+        ciWaitDelayMs: 0,
+      });
+      const step = () =>
+        runtime.runStep(RELEASE_STEPS.VerifyCommitProvenance, { fullVerify: false }, artifacts(), {
+          sourceHead: SOURCE_HEAD,
+        });
+      return { step, reads: () => index, waits: () => waits };
+    };
+    const running = greenCheckRuns(
+      Object.fromEntries(
+        (REQUIRED_CI_CHECK_RUNS as string[]).map((name) => [
+          name,
+          { status: "in_progress", conclusion: null },
+        ]),
+      ),
+    );
+
+    it("waits while gates are running or not yet started, then passes when they go green", () => {
+      const probe = provenanceAfter([[], running, greenCheckRuns()]);
+      expect(probe.step).not.toThrow();
+      expect(probe.reads()).toBe(3);
+      expect(probe.waits()).toBe(2);
+    });
+
+    it("refuses on the first read that shows a red gate, without waiting out the budget", () => {
+      const red = greenCheckRuns({
+        "Build · typecheck · lint · guards": { conclusion: "failure" },
+        "Tests (shard 1/4)": { status: "in_progress", conclusion: null },
+      });
+      const probe = provenanceAfter([running, red, greenCheckRuns()]);
+      expect(probe.step).toThrow("not successful: Build · typecheck · lint · guards (failure)");
+      expect(probe.reads()).toBe(2);
+    });
+
+    it("refuses on an unnamed red check even while gates are still running", () => {
+      const probe = provenanceAfter([
+        [...running, { name: "some-other-gate", status: "completed", conclusion: "failure" }],
+      ]);
+      expect(probe.step).toThrow("other red check: some-other-gate (failure)");
+      expect(probe.waits()).toBe(0);
+    });
+
+    it("gives up with the still-running list once the budget is spent", () => {
+      const probe = provenanceAfter([running], 4);
+      expect(probe.step).toThrow(/still running: Tests \(shard 1\/4\)[\s\S]*4 reads/);
+      expect(probe.reads()).toBe(4);
+      expect(probe.waits()).toBe(3);
+    });
+
+    it("retries a failed check-run read, but not forever", () => {
+      expect(provenanceAfter(["gh-fails", greenCheckRuns()]).step).not.toThrow();
+      const broken = provenanceAfter(["gh-fails"], 50);
+      expect(broken.step).toThrow("`gh api` failed (HTTP 502)");
+      expect(broken.reads()).toBe(5);
+    });
+  });
+
   it("swaps the whole suite for the narrow publish-tree verification, and back again under --full-verify", () => {
     const delta = buildReleasePlan({
       currentVersion: "18.4.0",

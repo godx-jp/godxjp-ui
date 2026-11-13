@@ -331,12 +331,27 @@ const FAILED_CONCLUSIONS = new Set([
  * conclusion all refuse, because none of them is evidence that the gate actually ran and passed.
  */
 export function assertCiProvenance({ sha, checkRuns, totalCount }) {
+  const verdict = evaluateCiProvenance({ sha, checkRuns, totalCount });
+  if (verdict.ok) return { verified: REQUIRED_CI_CHECK_RUNS.length };
+  throw new Error(verdict.message);
+}
+
+/**
+ * The same judgement as `assertCiProvenance`, returned instead of thrown, plus one bit the release
+ * runtime needs: `pending` — CI has not FINISHED judging this SHA, and nothing it has finished is
+ * red. Only that state is worth waiting on (see `ciWaitAttempts` in `createReleaseRuntime`); a red
+ * gate, a red unnamed check or a truncated page is final and refuses at once.
+ */
+export function evaluateCiProvenance({ sha, checkRuns, totalCount }) {
   const runs = Array.isArray(checkRuns) ? checkRuns : [];
   if (typeof totalCount === "number" && totalCount > runs.length) {
-    throw new Error(
-      `CI provenance for ${sha} is truncated (${runs.length} of ${totalCount} check runs read); ` +
+    return {
+      ok: false,
+      pending: false,
+      message:
+        `CI provenance for ${sha} is truncated (${runs.length} of ${totalCount} check runs read); ` +
         "refusing to publish on a partial view.",
-    );
+    };
   }
   // Keep the newest attempt per check-run name, so a re-run that turned a job green is what counts.
   const latestByName = new Map();
@@ -436,9 +451,14 @@ export function assertCiProvenance({ sha, checkRuns, totalCount }) {
     ...notSuccessful.map((entry) => `not successful: ${entry}`),
     ...collateral.map((entry) => `other red check: ${entry}`),
   ];
-  if (!problems.length) return { verified: REQUIRED_CI_CHECK_RUNS.length };
-  throw new Error(
-    `Refusing to publish ${sha}: CI has not proven this commit green.\n` +
+  if (!problems.length) return { ok: true, pending: false, message: null };
+  const pending = !notSuccessful.length && !collateral.length;
+  return {
+    ok: false,
+    pending,
+    waitingOn: [...missing.map((name) => `${name} (not started)`), ...unfinished],
+    message:
+      `Refusing to publish ${sha}: CI has not proven this commit green.\n` +
       problems.map((problem) => `  - ${problem}`).join("\n") +
       "\nEvery gate in verify:release is delegated to a CI check run on this exact SHA (see " +
       "CI_PROOF_FOR_RELEASE_GATE). A `not successful:` line is a gate that made a claim about this " +
@@ -446,7 +466,7 @@ export function assertCiProvenance({ sha, checkRuns, totalCount }) {
       "gate; read it before assuming it is one, and if it turns out not to verify anything, it " +
       "belongs in NOT_A_GATE rather than in a retry loop (gh#634). Wait for CI, fix it, or re-run " +
       "the release with --full-verify to verify this tree locally instead.",
-  );
+  };
 }
 
 /**
@@ -1249,6 +1269,19 @@ export function createReleaseRuntime({
    * the worst measured lag with room to spare; the happy path still returns on the first read.
    */
   registryVerificationAttempts = 300,
+  /*
+   * CD MUST NOT LOSE A RACE WITH THE CI IT DEPENDS ON (GDX-2341).
+   *
+   * The tag is pushed the moment the bump merges, and that same merge starts CI on the same SHA.
+   * Run 43443126385 (v33.30.3) started 1m39s after CI and read every required gate as
+   * `in_progress`, so it refused; the release then went out by hand and `godx-staging` stayed a
+   * version behind. Proof is still demanded — this only waits for CI to FINISH giving it. Only a
+   * `pending` verdict (gates unfinished or not yet started, nothing red) is waited on; any red gate
+   * refuses on the read that sees it. 90 x 30s = 45 min: "CI · code" takes ~16 min (max 17.2 over
+   * the last ten main runs) and can queue behind the previous commit's run on the shared pool.
+   */
+  ciWaitAttempts = 90,
+  ciWaitDelayMs = 30_000,
   registryVerificationDelayMs = 5_000,
 }) {
   const cwdFor = (location) => (location === "mcp" ? join(repositoryRoot, "mcp") : repositoryRoot);
@@ -1382,13 +1415,7 @@ export function createReleaseRuntime({
     );
   };
 
-  const ciProvenance = (sha) => {
-    if (!repositorySlug) {
-      throw new Error(
-        "Cannot prove CI provenance: no repository slug (set GITHUB_REPOSITORY). Re-run with " +
-          "--full-verify to verify this tree locally instead.",
-      );
-    }
+  const readCiProvenance = (sha) => {
     const result = capture(
       "gh",
       [
@@ -1400,23 +1427,66 @@ export function createReleaseRuntime({
       repositoryRoot,
     );
     if (result.status !== 0) {
-      throw new Error(
-        `Cannot prove CI provenance for ${sha}: \`gh api\` failed ` +
+      return {
+        ok: false,
+        pending: true,
+        transient: true,
+        message:
+          `Cannot prove CI provenance for ${sha}: \`gh api\` failed ` +
           `(${(result.stderr ?? result.stdout ?? "").trim() || "no output"}). Re-run with ` +
           "--full-verify to verify this tree locally instead.",
-      );
+      };
     }
     let payload;
     try {
       payload = JSON.parse(result.stdout || "null");
     } catch {
-      throw new Error(`Cannot prove CI provenance for ${sha}: \`gh api\` returned non-JSON.`);
+      return {
+        ok: false,
+        pending: true,
+        transient: true,
+        message: `Cannot prove CI provenance for ${sha}: \`gh api\` returned non-JSON.`,
+      };
     }
-    return assertCiProvenance({
+    return evaluateCiProvenance({
       sha,
       checkRuns: payload?.check_runs,
       totalCount: payload?.total_count,
     });
+  };
+
+  const ciProvenance = (sha) => {
+    if (!repositorySlug) {
+      throw new Error(
+        "Cannot prove CI provenance: no repository slug (set GITHUB_REPOSITORY). Re-run with " +
+          "--full-verify to verify this tree locally instead.",
+      );
+    }
+    // A failed READ is retried a few times (a GitHub 502 is not a verdict), but a read that keeps
+    // failing — revoked token, wrong slug — is not something 45 minutes of waiting will fix.
+    const maxConsecutiveReadFailures = 5;
+    let readFailures = 0;
+    for (let attempt = 1; ; attempt += 1) {
+      const verdict = readCiProvenance(sha);
+      if (verdict.ok) return { verified: REQUIRED_CI_CHECK_RUNS.length };
+      if (!verdict.pending) throw new Error(verdict.message);
+      readFailures = verdict.transient ? readFailures + 1 : 0;
+      if (readFailures >= maxConsecutiveReadFailures) throw new Error(verdict.message);
+      if (attempt >= ciWaitAttempts) {
+        throw new Error(
+          `${verdict.message}\nGave up after waiting ${Math.round(
+            ((ciWaitAttempts - 1) * ciWaitDelayMs) / 1000,
+          )}s (${ciWaitAttempts} reads) for CI to finish on this SHA.`,
+        );
+      }
+      console.log(
+        `… CI has not finished on ${sha.slice(0, 9)} (read ${attempt}/${ciWaitAttempts}); ` +
+          (verdict.transient
+            ? "the check-run read failed, retrying"
+            : `waiting on: ${verdict.waitingOn.join(", ")}`),
+      );
+      wait(ciWaitDelayMs);
+    }
   };
 
   const runStep = (step, plan, artifacts, progress) => {
