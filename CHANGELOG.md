@@ -8,6 +8,12 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.30.4] - 2026-11-14
+
+### DataTable: a wrapped sortable header follows its column's alignment (gh#1586, GDX-2342)
+
+- **Fixed** a sortable header that wraps (`headerWrap`, the default for an `ellipsis` column) centred its lines: the sort `<button>` kept the UA `text-align: center`, so the label's wrapped lines centred inside it while the cells below were start-aligned (GoDX Grid's 件名 column). `.ui-data-table-sort-button` now takes `text-align: inherit`, so start, end and centre headers all follow `align` / `headerAlign`. Chromium regression test (vi 「Đăng nhập gần nhất」 at 140px, ja and en in 64–72px columns, an end-aligned header), failing before the fix.
+
 ## [33.30.3] - 2026-11-13
 
 ### visual-audit: an enclosing scroll region is not a neighbour; a bare status text is not a banner (GDX-2313)

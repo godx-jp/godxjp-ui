@@ -382,6 +382,9 @@
     background: transparent;
     color: inherit;
     font: inherit;
+    /* A <button> defaults to `text-align: center`, so a WRAPPED label centred its lines inside the
+     * button while the cells below stayed start-aligned (gh#1586). Take the header's alignment. */
+    text-align: inherit;
     cursor: pointer;
     outline: none;
     /* Bounded by its cell, so a `<Text ellipsis>` header truncates inside the column instead of
