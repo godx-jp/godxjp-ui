@@ -2741,5 +2741,9 @@
     "news": "Notifications",
     "searchApps": "Search apps, pages and people",
     "desktopsPhone": "Desktops (phone)"
+  },
+  "numberInputDocs": {
+    "touchLabel": "touch (56px · same band as Button size=touch)",
+    "touchAriaLabel": "touch size"
   }
 }

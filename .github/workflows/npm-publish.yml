@@ -13,7 +13,9 @@ name: CD · publish to npm
 #   • VerifyReleaseTag          the tag names the version package.json already carries, points at
 #                               THIS commit, and that commit is an ancestor of origin/main
 #   • VerifyCommitProvenance    every CI check run that verify:release delegates to concluded
-#                               `success` on this exact SHA (or --full-verify re-ran them here)
+#                               `success` on this exact SHA (or --full-verify re-ran them here).
+#                               A tag pushed while CI on its SHA is still running WAITS (≤45 min,
+#                               GDX-2341) instead of refusing; any red gate still refuses at once.
 #   • VerifyTargetOutranksLatest  the version is STRICTLY GREATER than the published `latest` for
 #                               both packages, so promoting `latest` can never move it backwards
 # Lockstep between @godxjp/ui and its pinned @godxjp/ui-mcp is enforced as before (issue #140),

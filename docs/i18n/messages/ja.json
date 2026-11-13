@@ -2733,5 +2733,9 @@
     "news": "お知らせ",
     "searchApps": "アプリ・ページ・人を検索",
     "desktopsPhone": "デスクトップ（スマホ）"
+  },
+  "numberInputDocs": {
+    "touchLabel": "touch (56px · Button size=touch と同じ帯)",
+    "touchAriaLabel": "touch サイズ"
   }
 }

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godx
 import { Form, FormField, NumberInput } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Heading, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 /**
  * NumberInput — WAI-ARIA spinbutton for localized numeric entry. Composes the real `Input`
@@ -12,6 +13,7 @@ import { Heading, Text } from "@godxjp/ui/general";
  * precision on blur/Enter. Steppers disable at the bounds. Composed only from real @godxjp/ui.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [quantity, setQuantity] = useState<number | null>(1);
   const [rating, setRating] = useState<number | null>(3);
   const [price, setPrice] = useState<number | null>(1980);
@@ -224,12 +226,12 @@ export default function Demo() {
                 <FormField id="ni-lg" label="lg">
                   <NumberInput id="ni-lg" size="lg" defaultValue={4} aria-label="lg サイズ" />
                 </FormField>
-                <FormField id="ni-touch" label="touch (56px · Button size=touch と同じ帯)">
+                <FormField id="ni-touch" label={t("numberInputDocs.touchLabel")}>
                   <NumberInput
                     id="ni-touch"
                     size="touch"
                     defaultValue={5}
-                    aria-label="touch サイズ"
+                    aria-label={t("numberInputDocs.touchAriaLabel")}
                   />
                 </FormField>
               </Flex>
