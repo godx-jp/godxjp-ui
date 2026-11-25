@@ -2662,6 +2662,8 @@
       "stressLabel": "ラベル長のストレス",
       "narrowCaption": "180px に絞ったとき",
       "stressNarrowLabel": "ラベル長のストレス（狭幅）",
+      "wrapCaption": "180px · overflow=\"wrap\"（折り返し）",
+      "stressWrapLabel": "ラベル長のストレス（折り返し）",
       "mixedCaption": "icon あり · なしの混在",
       "mixedLabel": "アイコンの混在"
     },

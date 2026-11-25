@@ -2662,6 +2662,8 @@
       "stressLabel": "Thử độ dài nhãn",
       "narrowCaption": "Thu hẹp còn 180px",
       "stressNarrowLabel": "Thử độ dài nhãn (hẹp)",
+      "wrapCaption": "180px · overflow=\"wrap\" (xuống dòng)",
+      "stressWrapLabel": "Thử độ dài nhãn (xuống dòng)",
       "mixedCaption": "Lẫn có và không có icon",
       "mixedLabel": "Biểu tượng lẫn lộn"
     },

@@ -466,6 +466,9 @@ export default function Demo() {
             これがないと、icon のない行は型が許さないと誤解されます。icon は任意です。無い行も空の
             .sb-icon 箱を保つので、ラベルの列は動きません。だから「2 文字のラベル」も「3
             行に折り返す日本語のラベル」も同じ列から始まり、行は縮まず、折り返すのはラベルだけです。
+            既定では長いラベルは 1 行で「…」になり、切れている間だけ title に全文が入ります。
+            ラベルそのものが内容の列（絞り込みの値やブランド名）では overflow=&quot;wrap&quot;
+            を渡すと、ラベルが折り返して行が伸びます。1 行に収まる行は 32px のままです。
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -488,6 +491,17 @@ export default function Demo() {
                 label={t("navListDocs.extremes.stressNarrowLabel")}
                 items={LABEL_STRESS_ITEMS}
                 activeId="mfa"
+              />
+            </Flex>
+            <Flex direction="col" gap="sm" width={180}>
+              <Text size="sm" weight="medium">
+                {t("navListDocs.extremes.wrapCaption")}
+              </Text>
+              <NavList
+                label={t("navListDocs.extremes.stressWrapLabel")}
+                items={LABEL_STRESS_ITEMS}
+                activeId="mfa"
+                overflow="wrap"
               />
             </Flex>
             <Flex direction="col" gap="sm" width="min(240px, 100%)">

@@ -12892,6 +12892,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "\"truncate\" | \"wrap\" | undefined",
+          "values": ["truncate", "wrap"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "sections",
           "origin": "owned",
           "required": false,

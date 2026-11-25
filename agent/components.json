@@ -4122,6 +4122,12 @@
         "description": "Reports the activated row's id, for consumers driving navigation themselves.",
         "name": "onSelect",
         "type": "(id: string) => void"
+      },
+      {
+        "defaultValue": "\"truncate\"",
+        "description": "What a label does when it is wider than its row. `truncate` (default) is the rail's one-line row: an ellipsis, and a `title` with the full text while the label is cut (gh#1493). `wrap` breaks the label onto further lines and lets the row grow, with `--sidebar-nav-item-height` as its minimum — a label that fits is the same 32px row, the line height is kept (no clipped tone marks), icon and badge stay centred, and no `title` is emitted because nothing is cut. Emitted as `data-overflow=\"wrap\"` on the `<nav>`. Same vocabulary as `ListRow.overflow`.",
+        "name": "overflow",
+        "type": "\"truncate\" | \"wrap\""
       }
     ],
     "related": [
@@ -4139,6 +4145,7 @@
     "tagline": "Vertical route navigation for INSIDE a page — the shape a settings nav takes. Renders the same `.sb-nav-item` rows as the Sidebar rail (icon column, label, badge, active tokens, `aria-current=\"page\"`) in a `<nav>` landmark, without the AppShell grid the rail depends on.",
     "usage": [
       "DO use NavList for a settings / account / preferences sub-navigation beside the pane it drives — typically as MasterDetail's `master`.",
+      "DO pass `overflow=\"wrap\"` when the labels ARE the content and must be read whole — a filter column of brand or spec values in a narrow sidebar. Keep the default `truncate` for a settings nav whose labels are short route names.",
       "DO group with `item.children` — one NavList, one `<nav>` landmark, however many groups. Before gh#815 NavList dropped `children` silently (it type-checked, rendered one flat row, and the subtree vanished), so the workaround was one NavList per group wrapped in SidebarSection, i.e. N landmarks for one navigation. Don't write that any more.",
       "DO use `sections` for fixed headings over the rows (General / Integrations / Work), with groups that fold inside a section (`children`): one NavList, one landmark. DON'T wrap one NavList per heading in SidebarSection to get a heading — that is N landmarks again (GDX-1230).",
       "DON'T repeat a group's icons on its children: a nested row draws the rail's dot marker instead of the 16px icon column, exactly like the rail's submenu. Icons belong on the rows that sit at the top level.",

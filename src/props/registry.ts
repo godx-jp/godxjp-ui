@@ -2785,7 +2785,16 @@ export const COMPONENT_PROP_REGISTRY = {
   NavListProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["IdProp", "ClassNameProp"],
+    vocabulary: [
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "overflow",
+        local: true,
+        reason:
+          "Row-label overflow resolution (truncate | wrap) — the same spelling as ListRow.overflow (#224).",
+      },
+    ],
   },
   NavListSectionProp: {
     group: "layout",

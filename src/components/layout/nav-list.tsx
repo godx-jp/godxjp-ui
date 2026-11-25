@@ -35,9 +35,26 @@ export type NavListProps = NavListProp;
  * canonical use of this component, and it took one `NavList` per group wrapped in
  * `SidebarSection`, i.e. N `<nav>` landmarks where the page has one navigation. Now it is one
  * `NavList`, one landmark, and the group opens itself whenever the route lands on a descendant.
+ *
+ * `overflow="wrap"` lets a long label break onto further lines and its row grow, instead of the
+ * rail's one-line ellipsis (emitted as `data-overflow="wrap"`; styles/shell-layout.css). A label
+ * that wraps is never cut, so the gh#1493 measurement gives it no `title`.
  */
 export const NavList = React.forwardRef<HTMLElement, NavListProps>(
-  ({ items, sections, activeId, label, linkComponent, onSelect, className, ...props }, ref) => {
+  (
+    {
+      items,
+      sections,
+      activeId,
+      label,
+      linkComponent,
+      onSelect,
+      overflow = "truncate",
+      className,
+      ...props
+    },
+    ref,
+  ) => {
     const rows = (list: SidebarItemProp[]) =>
       list.map((item) =>
         item.children && item.children.length > 0 ? (
@@ -59,7 +76,13 @@ export const NavList = React.forwardRef<HTMLElement, NavListProps>(
         ),
       );
     return (
-      <nav ref={ref} aria-label={label} className={cn("ui-nav-list", className)} {...props}>
+      <nav
+        ref={ref}
+        aria-label={label}
+        className={cn("ui-nav-list", className)}
+        data-overflow={overflow === "wrap" ? "wrap" : undefined}
+        {...props}
+      >
         {rows(items ?? [])}
         {/* GDX-1230: a fixed heading per section — the rail's section label, never a toggle —
             over its own rows, which may fold. One landmark for the whole column. */}

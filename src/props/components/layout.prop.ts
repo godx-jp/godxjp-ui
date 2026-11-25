@@ -1418,6 +1418,15 @@ export type NavListProp = Omit<React.HTMLAttributes<HTMLElement>, "onSelect"> & 
   linkComponent?: SidebarLinkComponentProp;
   /** Reports the activated row's id, for consumers driving navigation themselves. */
   onSelect?: (id: string) => void;
+  /**
+   * What a label does when it is wider than its row. `truncate` (default) keeps the rail's
+   * one-line row: the label ends in an ellipsis and, while cut, carries its full text as `title`
+   * (gh#1493). `wrap` lets the label break onto further lines and the row grow from
+   * `--sidebar-nav-item-height` (its minimum) — for a column whose labels ARE the content (a
+   * filter list of brand or spec names) and must be read whole, not hovered. Same vocabulary as
+   * `ListRow.overflow`.
+   */
+  overflow?: "truncate" | "wrap";
 };
 
 /** @see Sidebar */

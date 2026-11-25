@@ -2670,6 +2670,8 @@
       "stressLabel": "Label length stress",
       "narrowCaption": "Squeezed to 180px",
       "stressNarrowLabel": "Label length stress (narrow)",
+      "wrapCaption": "180px · overflow=\"wrap\"",
+      "stressWrapLabel": "Label length stress (wrapping)",
       "mixedCaption": "Mixed: with and without icon",
       "mixedLabel": "Mixed icons"
     },

@@ -2775,6 +2775,34 @@
     );
   }
 
+  /* `NavList overflow="wrap"` — a label wraps instead of ending in an ellipsis. The rail's rows are
+   * one line in a fixed height (the ellipsis + `title` of gh#1493 is right for a narrow rail), but
+   * a page column whose labels ARE the content (filter values, brand names) has to show them whole.
+   * The item height becomes the MINIMUM, and the block padding is what a one-line row already has
+   * above and below its line box — (height − line-height × 1em) / 2 — so a label that fits is the
+   * same 32px row as before and a wrapped one grows by whole lines. The label keeps its
+   * `--sidebar-nav-item-line-height`, so a tone mark or descender is not sheared at the row edge.
+   * Icon and badge stay centred on the row, as ListRow's default `align`. */
+  .ui-nav-list[data-overflow="wrap"] .sb-nav-item {
+    height: auto;
+    min-height: var(--sidebar-nav-item-height);
+    padding-block: calc(
+      (var(--sidebar-nav-item-height) - var(--sidebar-nav-item-line-height) * 1em) / 2
+    );
+  }
+
+  /* The sub-row's own 1.75rem, as `.sb-nav-item--sub` above declares it. */
+  .ui-nav-list[data-overflow="wrap"] .sb-nav-item--sub {
+    min-height: 1.75rem;
+    padding-block: calc((1.75rem - var(--sidebar-nav-item-line-height) * 1em) / 2);
+  }
+
+  .ui-nav-list[data-overflow="wrap"] .sb-label {
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
   /* Collapsed-rail flyout — PORTALED (Radix Popover) so it escapes the sidebar's overflow and is
    * never clipped: names a leaf item (tooltip) or reveals a group's submenu on hover/focus. */
   .sb-flyout-pop {

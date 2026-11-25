@@ -8,6 +8,10 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+### NavList: `overflow="wrap"` — a label that is the content wraps instead of ending in 「…」
+
+- **Added** `NavList overflow?: "truncate" | "wrap"` (default `truncate`, unchanged). `wrap` lets a long label break onto further lines and its row grow, with `--sidebar-nav-item-height` as the minimum: a label that fits is the same 32px row (28px for a sub-row), the label keeps `--sidebar-nav-item-line-height` so tone marks and descenders are not sheared, icon and badge stay centred, and no truncation `title` is emitted because nothing is cut. For a page column whose labels are what the reader came for (a filter list of brand or spec values in a 15rem sidebar), where every long value was cut to 「…」 and recoverable only by hover. The rail's one-line ellipsis + `title` (gh#1493) stays the default. Same spelling as `ListRow.overflow`; emitted as `data-overflow="wrap"` on the `<nav>`. Chromium regression test (en / id / vi / ja labels in a 15rem column, beside a default NavList as the control), failing before the fix.
+
 ## [33.30.5] - 2026-11-14
 
 ### visual-audit: a target is the region that takes the pointer; a group of controls is not one control (GDX-2343)
