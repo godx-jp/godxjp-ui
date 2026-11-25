@@ -3490,6 +3490,8 @@
       hsl(var(--border));
     border-inline-start: var(--descriptions-border-width, var(--stroke-hairline)) solid
       hsl(var(--border));
+
+    box-shadow: 0 var(--descriptions-border-width, var(--stroke-hairline)) 0 0 hsl(var(--border));
   }
 
   [data-slot="descriptions"][data-bordered]

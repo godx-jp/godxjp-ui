@@ -1419,11 +1419,20 @@ function isExempt(rule, sameLine, prevLine, nextLine) {
   );
 }
 
+/**
+ * Paths the caller named that EXIST but are not a file this script reads (a `.css`, a `.md`).
+ * Only reachable through an explicit path: the recursion below never hands `walk` a file. They
+ * used to vanish into the 0-file message, which says the path does not exist — a stylesheet
+ * passed on purpose read as a typo, and its rules as audited when nothing had opened it.
+ */
+const unsupportedPaths = [];
+
 function walk(dir, acc = []) {
   // Accept a FILE path directly (the per-file editor hook passes one), not just a directory.
   try {
     if (statSync(dir).isFile()) {
       if (SCANNABLE.test(dir)) acc.push(dir);
+      else unsupportedPaths.push(dir);
       return acc;
     }
   } catch {
@@ -2988,11 +2997,19 @@ if (changedNoFiles && findings.length === 0) {
   process.exit(0);
 }
 
+/** Names the file types this script reads, so a stylesheet passed on purpose is not read as a typo. */
+const unsupportedNote = () =>
+  `ui-audit reads .tsx/.jsx/.ts only, so it did not open ` +
+  `[${unsupportedPaths.map((f) => relative(CWD, f)).join(", ")}]: stylesheets and other files are ` +
+  `not audited by this script.`;
+
 if (filesScanned === 0 && !CHANGED) {
-  const message =
-    `ui-audit scanned 0 files — none of [${SCAN_DIRS.join(", ")}] exists (or all were filtered). ` +
-    `Pass the directories to scan, e.g. \`node scripts/ui-audit.mjs src docs\`. ` +
-    `Reporting a clean audit without opening a file is not a result.`;
+  const message = unsupportedPaths.length
+    ? `ui-audit scanned 0 files — ${unsupportedNote()} ` +
+      `Reporting a clean audit without opening a file is not a result.`
+    : `ui-audit scanned 0 files — none of [${SCAN_DIRS.join(", ")}] exists (or all were filtered). ` +
+      `Pass the directories to scan, e.g. \`node scripts/ui-audit.mjs src docs\`. ` +
+      `Reporting a clean audit without opening a file is not a result.`;
   if (asJson) {
     process.stdout.write(
       JSON.stringify({ summary: null, error: message, findings: [] }, null, 2) + "\n",
@@ -3001,6 +3018,11 @@ if (filesScanned === 0 && !CHANGED) {
     console.error(`✗ ${message}`);
   }
   process.exitCode = 2;
+}
+
+// A mixed call (`ui-audit src theme.css`) still audits what it can; say which paths it skipped.
+if (filesScanned > 0 && unsupportedPaths.length && !asJson && !quiet) {
+  console.error(`⚠ ${unsupportedNote()}`);
 }
 
 if (filesScanned === 0 && !changedNoFiles) {

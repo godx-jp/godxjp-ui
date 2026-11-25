@@ -151,7 +151,12 @@ export function Descriptions({
           } as React.CSSProperties
         }
         className={cn(
-          "grid gap-x-[var(--descriptions-column-gap)] gap-y-[var(--descriptions-row-gap)]",
+          "grid",
+          // A bordered grid is one table: its cells meet edge to edge. The gap utilities sit in the
+          // utilities layer, above the components-layer `gap: 0` the bordered rule declares, so they
+          // must not be emitted at all — with them a 2-column grid left a 24px column gap between
+          // cells and every row rule stopped halfway across.
+          !bordered && "gap-x-[var(--descriptions-column-gap)] gap-y-[var(--descriptions-row-gap)]",
           !contentLabels && legacyColumns,
           className,
         )}
@@ -194,7 +199,7 @@ const LEGACY_SPAN_CLASS: Record<number, string> = {
 };
 
 function DescriptionsItem({ label, mono, span, className, children }: DescriptionsItemProps) {
-  const { layout, labelAlign, contentLabels } = React.useContext(DescriptionsLayoutContext);
+  const { layout, labelAlign, bordered, contentLabels } = React.useContext(DescriptionsLayoutContext);
   const legacySpan =
     !contentLabels && typeof span === "number" ? LEGACY_SPAN_CLASS[span] : undefined;
   const responsiveSpan =
@@ -224,10 +229,18 @@ function DescriptionsItem({ label, mono, span, className, children }: Descriptio
           ? // Label beside value — a token-aligned label column so the values line up. The
             // `--descriptions-label-width` / `--descriptions-label-gap` knobs align labels and set
             // to close the gap in the same step.
-            "grid grid-cols-[var(--descriptions-label-width)_minmax(0,1fr)] items-baseline gap-x-[var(--descriptions-label-gap)]"
+            cn(
+              "grid grid-cols-[var(--descriptions-label-width)_minmax(0,1fr)]",
+              // Bordered: the shaded label is a CELL, so it stretches to the row's height — a
+              // baseline-aligned label stopped short of the rule under it whenever the value (or
+              // the label beside it) wrapped. Unbordered pairs keep sharing one text baseline.
+              // The label gap utility would likewise outrank the bordered `gap: 0`.
+              bordered ? "items-stretch" : "items-baseline gap-x-[var(--descriptions-label-gap)]",
+            )
           : // Vertical (default): label over value. The shared --field-label-gap matches
             // FormField / Form so the label→value gap is consistent everywhere.
-            "grid gap-[var(--field-label-gap)]",
+            // Bordered: the label cell meets its value cell, as in the horizontal case above.
+            cn("grid", !bordered && "gap-[var(--field-label-gap)]"),
         legacySpan,
         className,
       )}
