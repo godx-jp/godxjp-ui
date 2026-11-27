@@ -11,6 +11,7 @@ import {
   Legend,
   Line,
   LineChart as RLineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -22,6 +23,7 @@ import type {
   ChartDatum,
   ChartSeriesProp,
   ChartDatumSelect,
+  ChartReferenceLineProp,
 } from "../../props/components/charts.prop";
 import { cn } from "../../lib/utils";
 import { EmptyState } from "../data-display/empty-state";
@@ -38,6 +40,16 @@ import { listFormat } from "../../lib/intl-cache";
  */
 type CartesianKind = "line" | "bar" | "area";
 
+/** Reference-line tone → the colour token it is drawn in. */
+const REFERENCE_TONE: Record<NonNullable<ChartReferenceLineProp["tone"]>, string> = {
+  muted: "--muted-foreground",
+  primary: "--primary",
+  accent: "--accent-foreground",
+  warning: "--warning",
+  destructive: "--destructive",
+  success: "--success",
+};
+
 type CartesianChartProps = {
   kind: CartesianKind;
   data: ChartDatum[];
@@ -53,6 +65,8 @@ type CartesianChartProps = {
   valueDomain?: [number, number];
   valueTicks?: number[];
   numberFormat?: Intl.NumberFormatOptions;
+  referenceLines?: ChartReferenceLineProp[];
+  textAlternative?: string;
   emptyMessage?: string;
   onDatumSelect?: ChartDatumSelect;
   onCategoryClick?: (datum: ChartDatum, index: number) => void;
@@ -83,6 +97,8 @@ export function CartesianChart({
   valueDomain,
   valueTicks,
   numberFormat,
+  referenceLines,
+  textAlternative,
   emptyMessage,
   onCategoryClick,
   onDatumSelect,
@@ -245,6 +261,46 @@ export function CartesianChart({
     );
   };
 
+  /**
+   * Reference lines (vertical charts only): dashed, in their tone, label INSIDE the plot at the right
+   * edge — above the line, or below it when the line sits in the top 15% of the value range, so the
+   * label never leaves the plot box (390px included). The value range is the explicit domain, else
+   * the data's own extent with the lines in it (`ifOverflow="extendDomain"` widens the axis the same way).
+   */
+  const plotted = data.flatMap((d) =>
+    series.flatMap((s) => {
+      const v = d[s.dataKey];
+      return typeof v === "number" && Number.isFinite(v) ? [v] : [];
+    }),
+  );
+  const refs = (referenceLines ?? []).filter((r) => Number.isFinite(r.y));
+  const extent = [...plotted, ...refs.map((r) => r.y)];
+  const [lo, hi] = valueDomain ?? [Math.min(...extent), Math.max(...extent)];
+  const referenceMarks = refs.map((r, i) => {
+    const color = `hsl(var(${REFERENCE_TONE[r.tone ?? "muted"]}))`;
+    const nearTop = hi > lo && (r.y - lo) / (hi - lo) > 0.85;
+    return (
+      <ReferenceLine
+        key={`ref-${i}`}
+        y={r.y}
+        stroke={color}
+        strokeDasharray="6 4"
+        ifOverflow="extendDomain"
+        className="ui-chart-reference-line"
+        label={
+          r.label
+            ? {
+                value: r.label,
+                // On a zero-height line recharts' "insideBottom…" sits ABOVE it, "insideTop…" below.
+                position: nearTop ? "insideTopRight" : "insideBottomRight",
+                className: `ui-chart-reference-label ui-chart-reference-label--${r.tone ?? "muted"}`,
+              }
+            : undefined
+        }
+      />
+    );
+  });
+
   const axes = (numberAxisVertical: boolean) => (
     <>
       {/* No `strokeDasharray` here: `--chart-grid-line-dash` owns the dash from
@@ -287,6 +343,7 @@ export function CartesianChart({
           />
         </>
       )}
+      {numberAxisVertical ? referenceMarks : null}
       <Tooltip formatter={(value) => fmt.format(Number(value))} />
       {showLegend ? <Legend /> : null}
     </>
@@ -402,8 +459,8 @@ export function CartesianChart({
       label={label}
       showCaption={showCaption}
       description={description}
-      summaryRows={summary.rows}
-      imgSummary={summary.img}
+      summaryRows={textAlternative === undefined ? summary.rows : []}
+      imgSummary={textAlternative ?? summary.img}
       hasData={hasData}
       height={resolvedHeight}
       className={cn(onCategoryClick && "ui-chart-clickable", className)}

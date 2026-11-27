@@ -419,3 +419,30 @@
 .ui-chart-canvas:has(.ui-chart-datum) .recharts-text {
   direction: ltr;
 }
+
+/* Reference lines (LineChart / AreaChart / BarChart `referenceLines`). The label is `.recharts-text`,
+ * which the rule above paints muted, so its tone colour comes from here (a presentation attribute
+ * would lose to that rule). A halo in the page colour keeps it legible over the grid and the series. */
+.ui-chart .recharts-text.ui-chart-reference-label {
+  font-weight: var(--font-weight-medium);
+  paint-order: stroke;
+  stroke: hsl(var(--background));
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  fill: hsl(var(--muted-foreground));
+}
+.ui-chart .recharts-text.ui-chart-reference-label--primary {
+  fill: hsl(var(--primary));
+}
+.ui-chart .recharts-text.ui-chart-reference-label--accent {
+  fill: hsl(var(--accent-foreground));
+}
+.ui-chart .recharts-text.ui-chart-reference-label--warning {
+  fill: hsl(var(--warning));
+}
+.ui-chart .recharts-text.ui-chart-reference-label--destructive {
+  fill: hsl(var(--destructive));
+}
+.ui-chart .recharts-text.ui-chart-reference-label--success {
+  fill: hsl(var(--success));
+}

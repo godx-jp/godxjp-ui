@@ -138,7 +138,8 @@ export function ChartFrame({
         {description ? <>{description} </> : null}
         {hasData ? imgSummary : null}
       </p>
-      {hasData ? (
+      {/* An empty `summaryRows` (a caller's `textAlternative` replaced it) renders no list at all. */}
+      {hasData && summaryRows.length > 0 ? (
         <ul className="sr-only">
           {summaryRows.map((row, i) => (
             <li key={i}>{row}</li>

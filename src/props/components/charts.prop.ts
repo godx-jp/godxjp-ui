@@ -39,6 +39,20 @@ export type ChartDatumSelect<T = ChartDatum> = (
   context: { seriesKey: string; index: number },
 ) => void;
 
+/**
+ * One horizontal reference line across the plot at a value — a record low, a target, a limit. Drawn
+ * dashed in its tone, with its label inside the plot at the right edge: above the line, or below it
+ * when the line sits near the top of the plot (the label never leaves the plot box).
+ */
+export type ChartReferenceLineProp = {
+  /** Position on the value axis, in data units. */
+  y: number;
+  /** Already-translated text painted on the line (e.g. 「最安 ¥27,980（11/14）」). Omitted = no label. */
+  label?: string;
+  /** Token tone of the line and its label. Defaults to `muted`. */
+  tone?: "muted" | "primary" | "accent" | "warning" | "destructive" | "success";
+};
+
 /** Shared base for the cartesian charts (Line / Bar / Area). */
 type ChartCartesianBase = {
   /** Row data. Each row is one category with a value per series. */
@@ -85,6 +99,18 @@ type ChartCartesianBase = {
   valueTicks?: number[];
   /** `Intl.NumberFormat` options for axis ticks + tooltip values (locale is automatic). */
   numberFormat?: Intl.NumberFormatOptions;
+  /**
+   * Horizontal reference lines on the value axis (vertical charts; ignored on a horizontal bar).
+   * The value axis widens to keep each line inside the plot.
+   */
+  referenceLines?: ChartReferenceLineProp[];
+  /**
+   * A caller-supplied screen-reader text alternative that REPLACES the per-point list (and the
+   * computed "N series, M points" summary on the plot). For a series the page must not hand out
+   * point by point as text (a price history), give the few figures a reader needs instead — the
+   * low, the high, the latest. Omitted, every plotted value is listed (WCAG 1.1.1 default).
+   */
+  textAlternative?: string;
   /** Message shown when `data` is empty. Defaults to a localized "no data". */
   emptyMessage?: EmptyMessageProp;
   /** Select a finite datum by pointer or Enter/Space. Arrows navigate categories and series. */

@@ -1947,6 +1947,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "referenceLines",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartReferenceLineProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "series",
           "origin": "owned",
           "required": true,
@@ -2000,6 +2008,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "textAlternative",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
@@ -2591,6 +2607,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "referenceLines",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartReferenceLineProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "series",
           "origin": "owned",
           "required": true,
@@ -2636,6 +2660,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "textAlternative",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
@@ -11842,6 +11874,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "referenceLines",
+          "origin": "owned",
+          "required": false,
+          "type": "ChartReferenceLineProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "series",
           "origin": "owned",
           "required": true,
@@ -11887,6 +11927,14 @@
           "required": false,
           "type": "SizeProp | undefined",
           "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "textAlternative",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {

@@ -8,6 +8,13 @@ starting `**Display corruption** (affects X–Y):`, so the affected range shows 
 
 ## [Unreleased]
 
+## [33.30.7-caimono.1] - 2026-11-27
+
+Prerelease for Caimono (dist-tag `caimono`).
+
+- **LineChart / AreaChart / BarChart `referenceLines`** — `[{ y, label?, tone? }]`: a dashed horizontal line at a value (record low, target, limit) in its token tone, its label inside the plot at the right edge (above the line, below it when the line is in the top 15% of the range; it never leaves the plot box, 390px included). The value axis widens to keep the line in view. Regression test in Chromium at 390 / 1440.
+- **Cartesian charts `textAlternative`** — a caller-supplied screen-reader text alternative that replaces the per-point sr-only list and the computed summary on the plot, for series a page must not hand out point by point as text (a price history). Omitted, every value is still listed.
+
 ## [33.30.7-caimono.0] - 2026-11-25
 
 Prerelease for Caimono (dist-tag `caimono`; `latest` stays 33.30.5). It also puts into source the two fixes that 33.30.6-caimono.0 shipped without a commit:
